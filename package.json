@@ -4,8 +4,8 @@
   "license": "MIT",
   "scripts": {},
   "private": true,
-  "dependencies": {},
   "devDependencies": {
+    "@nx/js": "16.4.2",
     "nx": "16.4.2"
   },
   "workspaces": [
