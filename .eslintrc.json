@@ -1,10 +1,31 @@
 {
   "root": true,
   "ignorePatterns": ["**/*"],
-  "plugins": ["@nx"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@nx", "@typescript-eslint"],
   "overrides": [
     {
-      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "files": ["*.ts"],
+      "extends": [
+        "plugin:@nx/typescript",
+        "airbnb-base",
+        "airbnb-typescript/base",
+        "prettier"
+      ],
+      "parserOptions": {
+        "project": ["tsconfig.base.json"]
+      },
+      "rules": {
+        "@typescript-eslint/no-implicit-any-catch": "off"
+      }
+    },
+    {
+      "files": ["*.js"],
+      "extends": ["plugin:@nx/javascript", "airbnb-base", "prettier"],
+      "rules": {}
+    },
+    {
+      "files": ["*.ts", "*.js"],
       "rules": {
         "@nx/enforce-module-boundaries": [
           "error",
@@ -18,25 +39,30 @@
               }
             ]
           }
-        ]
+        ],
+        "import/no-extraneous-dependencies": ["error", { "packageDir": ["."] }],
+        "no-await-in-loop": "off",
+        "no-restricted-syntax": "off",
+        "no-use-before-define": "off",
+        "@typescript-eslint/no-use-before-define": "off",
+        "dot-notation": "off",
+        "@typescript-eslint/dot-notation": "off",
+        "import/prefer-default-export": "off",
+        "no-continue": "off"
       }
     },
     {
-      "files": ["*.ts", "*.tsx"],
-      "extends": ["plugin:@nx/typescript"],
-      "rules": {}
-    },
-    {
-      "files": ["*.js", "*.jsx"],
-      "extends": ["plugin:@nx/javascript"],
-      "rules": {}
-    },
-    {
-      "files": ["*.spec.ts", "*.spec.tsx", "*.spec.js", "*.spec.jsx"],
+      "files": ["*.spec.ts", "*.spec.js"],
       "env": {
         "jest": true
       },
       "rules": {}
+    },
+    {
+      "files": ["scripts/**/*.ts"],
+      "rules": {
+        "no-console": "off"
+      }
     }
   ]
 }
