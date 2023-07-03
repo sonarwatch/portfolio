@@ -30,7 +30,12 @@
     "packages/*"
   ],
   "dependencies": {
-    "tslib": "^2.3.0"
+    "@ethersproject/address": "^5.7.0",
+    "@ethersproject/bytes": "^5.7.0",
+    "@solana/web3.js": "^1.77.3",
+    "bitcoin-address-validation": "^2.2.1",
+    "tslib": "^2.3.0",
+    "unstorage": "^1.7.0"
   },
   "nx": {
     "includedScripts": []
