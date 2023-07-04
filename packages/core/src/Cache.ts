@@ -78,8 +78,9 @@ function getDriver(): Driver {
     case 'mongodb':
       return mongodbDriver({
         connectionString:
-          process.env['CACHE_MONGO_CONNECTION'] || 'mongodb://localhost:27017/',
-        databaseName: process.env['CACHE_MONGO_DATABASE'] || 'portfolio',
+          process.env['CACHE_MONGODB_CONNECTION'] ||
+          'mongodb://localhost:27017/',
+        databaseName: process.env['CACHE_MONGODB_DATABASE'] || 'portfolio',
         collectionName: 'main',
       });
     case 'redis':
