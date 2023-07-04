@@ -3,7 +3,7 @@ import { cachePrefix } from './constants';
 
 const jobExecutor: JobExecutor = async (context: Context) => {
   const { cache } = context;
-  await cache.set('abc', 'dfg', {
+  await cache.setItem('abc', 'dfg', {
     prefix: cachePrefix,
     networkId: NetworkId.solana,
   });

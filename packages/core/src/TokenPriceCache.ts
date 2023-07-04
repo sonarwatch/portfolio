@@ -23,11 +23,14 @@ export class TokenPriceCache {
   }
 
   has(address: string, networkId: NetworkIdType) {
-    return this.cache.has(address, { prefix: TOKEN_PRICE_PREFIX, networkId });
+    return this.cache.hasItem(address, {
+      prefix: TOKEN_PRICE_PREFIX,
+      networkId,
+    });
   }
 
   async get(address: string, networkId: NetworkIdType) {
-    const tokenPrice = await this.cache.get<TokenPrice>(address, {
+    const tokenPrice = await this.cache.getItem<TokenPrice>(address, {
       prefix: TOKEN_PRICE_PREFIX,
       networkId,
     });
@@ -40,27 +43,27 @@ export class TokenPriceCache {
   }
 
   async refresh(address: string, networkId: NetworkIdType) {
-    const cachedTokenPrice = await this.cache.get<TokenPrice>(address, {
+    const cachedTokenPrice = await this.cache.getItem<TokenPrice>(address, {
       prefix: TOKEN_PRICE_PREFIX,
       networkId,
     });
     if (!cachedTokenPrice) return;
     const newTokenPrice = tokenPriceFromSources(cachedTokenPrice.sources);
     if (!newTokenPrice) {
-      await this.cache.remove(address, {
+      await this.cache.removeItem(address, {
         prefix: TOKEN_PRICE_PREFIX,
         networkId,
       });
       return;
     }
-    await this.cache.set(newTokenPrice.address, newTokenPrice, {
+    await this.cache.setItem(newTokenPrice.address, newTokenPrice, {
       prefix: TOKEN_PRICE_PREFIX,
       networkId: newTokenPrice.networkId,
     });
   }
 
   async refreshAll(networkId: NetworkIdType) {
-    const addresses = await this.cache.keys({
+    const addresses = await this.cache.getKeys({
       prefix: TOKEN_PRICE_PREFIX,
       networkId,
     });
@@ -71,15 +74,18 @@ export class TokenPriceCache {
   }
 
   async set(source: TokenPriceSource) {
-    const cachedTokenPrice = await this.cache.get<TokenPrice>(source.address, {
-      prefix: TOKEN_PRICE_PREFIX,
-      networkId: source.networkId,
-    });
+    const cachedTokenPrice = await this.cache.getItem<TokenPrice>(
+      source.address,
+      {
+        prefix: TOKEN_PRICE_PREFIX,
+        networkId: source.networkId,
+      }
+    );
     const cachedSources = cachedTokenPrice?.sources || [];
 
     const newSources = pushTokenPriceSource(cachedSources, source);
     if (!newSources) {
-      await this.cache.remove(source.address, {
+      await this.cache.removeItem(source.address, {
         prefix: TOKEN_PRICE_PREFIX,
         networkId: source.networkId,
       });
@@ -87,13 +93,13 @@ export class TokenPriceCache {
     }
     const newTokenPrice = tokenPriceFromSources(newSources);
     if (!newTokenPrice) {
-      await this.cache.remove(source.address, {
+      await this.cache.removeItem(source.address, {
         prefix: TOKEN_PRICE_PREFIX,
         networkId: source.networkId,
       });
       return;
     }
-    await this.cache.set(newTokenPrice.address, newTokenPrice, {
+    await this.cache.setItem(newTokenPrice.address, newTokenPrice, {
       prefix: TOKEN_PRICE_PREFIX,
       networkId: newTokenPrice.networkId,
     });

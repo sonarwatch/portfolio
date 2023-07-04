@@ -43,7 +43,7 @@ const fetcherExecutor: FetcherExecutor = async (
   if (lendingAccountBalances) {
     for (let index = 0; index < lendingAccountBalances.length; index += 1) {
       const accountBalanceInfo = lendingAccountBalances[index];
-      const bankInfo = await context?.cache.get<BankInfo>(
+      const bankInfo = await context?.cache.getItem<BankInfo>(
         accountBalanceInfo.bankPk.toString(),
         {
           prefix,

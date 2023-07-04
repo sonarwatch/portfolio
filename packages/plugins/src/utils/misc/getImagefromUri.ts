@@ -14,7 +14,7 @@ export async function getImagefromUri(
 ): Promise<string | undefined> {
   if (!uri || uri.length > nftImagesMaxLength) return undefined;
 
-  const cachedImage = await cache.get<string>(uri, {
+  const cachedImage = await cache.getItem<string>(uri, {
     prefix,
     networkId,
   });
@@ -27,7 +27,7 @@ export async function getImagefromUri(
   if (isIpfsUrl(uri)) image = await getImagefromIpfsUrl(uri);
 
   if (image && image.length > nftImagesMaxLength) image = undefined;
-  cache.set(uri, image || nftImagesUndefinedValue, {
+  cache.setItem(uri, image || nftImagesUndefinedValue, {
     prefix,
     networkId,
   });

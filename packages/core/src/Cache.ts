@@ -8,7 +8,9 @@ import { NetworkIdType } from './Network';
 export type TransactionOptions = {
   prefix: string;
   networkId?: NetworkIdType;
+  ttl?: number;
 };
+const ttlPrefix = 'ttl';
 
 export class Cache {
   private readonly storage: Storage;
@@ -19,30 +21,49 @@ export class Cache {
     });
   }
 
-  has(key: string, opts: TransactionOptions) {
-    const fullKey = getFullKey(key, opts);
-    return this.storage.hasItem(fullKey);
+  async hasItem(key: string, opts: TransactionOptions) {
+    const item = await this.getItem(key, opts);
+    return item !== undefined;
   }
 
-  get<K extends StorageValue>(
+  async getItem<K extends StorageValue>(
     key: string,
     opts: TransactionOptions
   ): Promise<K | undefined> {
     const fullKey = getFullKey(key, opts);
+    const ttl = await this.getItem<number>(fullKey, {
+      prefix: ttlPrefix,
+    });
+    if (ttl && ttl < Date.now()) {
+      await this.removeItem(key, opts);
+      return undefined;
+    }
     return this.storage.getItem(fullKey) as Promise<K | undefined>;
   }
 
-  set<K extends StorageValue>(key: string, value: K, opts: TransactionOptions) {
+  async setItem<K extends StorageValue>(
+    key: string,
+    value: K,
+    opts: TransactionOptions
+  ) {
     const fullKey = getFullKey(key, opts);
+    if (opts.ttl) {
+      await this.setItem(fullKey, Date.now() + opts.ttl, {
+        prefix: ttlPrefix,
+      });
+    }
     return this.storage.setItem(fullKey, value);
   }
 
-  remove(key: string, opts: TransactionOptions) {
+  async removeItem(key: string, opts: TransactionOptions) {
     const fullKey = getFullKey(key, opts);
+    await this.removeItem(fullKey, {
+      prefix: ttlPrefix,
+    });
     return this.storage.removeItem(fullKey);
   }
 
-  async keys(opts: TransactionOptions) {
+  async getKeys(opts: TransactionOptions) {
     const fullBase = getFullBase(opts);
     return (await this.storage.getKeys(fullBase)).map((s) =>
       s.substring(fullBase.length)

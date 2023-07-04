@@ -19,7 +19,7 @@ const jobExecutor: JobExecutor = async (context: Context) => {
 
   for (let index = 0; index < banksRawData.length; index += 1) {
     const bank = banksRawData[index];
-    await cache.set(
+    await cache.setItem(
       bank.pubkey.toString(),
       {
         ...bank,
