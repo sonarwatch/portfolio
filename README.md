@@ -14,6 +14,9 @@ npx nx generate @sonarwatch/portfolio-plugins:plugin my-super-protocol
 # Serve jobs
 npx nx run plugins:serve-jobs
 
+# Run a job
+npx nx run plugins:run-job marinade
+
 # Run a fetcher
 npx nx run plugins:run-fetcher marinade DemoSX9F2zXfQLtBr56Yr5he15P7viZWsYJpSDAX3tKG
 ```
