@@ -1,5 +1,7 @@
 import { Storage, createStorage, StorageValue, Driver } from 'unstorage';
 import fsDriver from 'unstorage/drivers/fs';
+import mongodbDriver from 'unstorage/drivers/mongodb';
+import redisDriver from 'unstorage/drivers/redis';
 
 import { NetworkIdType } from './Network';
 
@@ -65,7 +67,32 @@ function getFullBase(opts: TransactionOptions) {
   return fullBase;
 }
 
+function getDriver(): Driver {
+  switch (process.env['CACHE_DRIVER']) {
+    case 'filesystem':
+      return fsDriver({
+        base: process.env['CACHE_FILESYSTEM_BASE']
+          ? `${process.env['CACHE_FILESYSTEM_BASE']}/main`
+          : './cache/main',
+      });
+    case 'mongodb':
+      return mongodbDriver({
+        connectionString:
+          process.env['CACHE_MONGO_CONNECTION'] || 'mongodb://localhost:27017/',
+        databaseName: process.env['CACHE_MONGO_DATABASE'] || 'portfolio',
+        collectionName: 'main',
+      });
+    case 'redis':
+      return redisDriver({
+        url: process.env['CACHE_REDIS_URL'] || '127.0.0.1:6379',
+        tls: process.env['CACHE_REDIS_TLS'] === 'true' ? {} : undefined,
+        base: 'main',
+      });
+    default:
+      return fsDriver({ base: './cache/main' });
+  }
+}
+
 export function getCache() {
-  const driver = fsDriver({ base: './cache' });
-  return new Cache(driver);
+  return new Cache(getDriver());
 }

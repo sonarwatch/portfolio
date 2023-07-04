@@ -1,5 +1,8 @@
 import { Driver } from 'unstorage';
 import fsDriver from 'unstorage/drivers/fs';
+import mongodbDriver from 'unstorage/drivers/mongodb';
+import redisDriver from 'unstorage/drivers/redis';
+
 import { NetworkIdType } from './Network';
 import { Cache } from './Cache';
 import {
@@ -97,7 +100,32 @@ export class TokenPriceCache {
   }
 }
 
+function getDriver(): Driver {
+  switch (process.env['CACHE_DRIVER']) {
+    case 'filesystem':
+      return fsDriver({
+        base: process.env['CACHE_FILESYSTEM_BASE']
+          ? `${process.env['CACHE_FILESYSTEM_BASE']}/tokencache`
+          : './cache/tokencache',
+      });
+    case 'mongodb':
+      return mongodbDriver({
+        connectionString:
+          process.env['CACHE_MONGO_CONNECTION'] || 'mongodb://localhost:27017/',
+        databaseName: process.env['CACHE_MONGO_DATABASE'] || 'portfolio',
+        collectionName: 'tokencache',
+      });
+    case 'redis':
+      return redisDriver({
+        url: process.env['CACHE_REDIS_URL'] || '127.0.0.1:6379',
+        tls: process.env['CACHE_REDIS_TLS'] === 'true' ? {} : undefined,
+        base: 'tokencache',
+      });
+    default:
+      return fsDriver({ base: './cache/tokencache' });
+  }
+}
+
 export function getTokenPriceCache() {
-  const driver = fsDriver({ base: './cache/tokenprice' });
-  return new TokenPriceCache(driver);
+  return new TokenPriceCache(getDriver());
 }
