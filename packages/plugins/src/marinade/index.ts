@@ -1,44 +1,18 @@
-import {
-  Context,
-  FetcherExecutor,
-  NetworkId,
-  PortfolioAssetType,
-  PortfolioElementSingle,
-  PortfolioElementType,
-  solanaNativeAddress,
-} from '@sonarwatch/portfolio-core';
+import { Fetcher, Job, NetworkId } from '@sonarwatch/portfolio-core';
+import jobExecutor from './jobExecutor';
+import fetcherExecutor from './fetcherExecutor';
 
-const fetcherExecutor: FetcherExecutor = async (
-  owner: string,
-  context: Context
-) => {
-  const { tokenPriceCache } = context;
-  const solTokenPrice = await tokenPriceCache.get(
-    solanaNativeAddress,
-    NetworkId.solana
-  );
-  const amount = 10;
-  const price = solTokenPrice?.price || null;
-  const value = price ? amount * price : null;
-  const element: PortfolioElementSingle = {
+export const jobs: Job[] = [
+  {
+    id: 'marinade',
+    executor: jobExecutor,
+  },
+];
+
+export const fetchers: Fetcher[] = [
+  {
+    id: 'marinade',
     networkId: NetworkId.solana,
-    label: 'Deposit',
-    platformId: 'marinade',
-    type: PortfolioElementType.single,
-    value,
-    data: {
-      asset: {
-        type: PortfolioAssetType.token,
-        networkId: NetworkId.solana,
-        value,
-        data: {
-          address: solanaNativeAddress,
-          amount,
-          price,
-        },
-      },
-    },
-  };
-  return [element];
-};
-export default fetcherExecutor;
+    executor: fetcherExecutor,
+  },
+];
