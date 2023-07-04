@@ -28,3 +28,10 @@ Have a look at the [Nx Console extensions](https://nx.dev/nx-console). It provid
 ## Ready to deploy?
 
 Just run `nx build demoapp` to build the application. The build artifacts will be stored in the `dist/` directory, ready to be deployed.
+
+## Deploy
+
+```bash
+npx nx run core:version --releaseAs=minor
+npx nx run plugins:version --releaseAs=minor
+```
