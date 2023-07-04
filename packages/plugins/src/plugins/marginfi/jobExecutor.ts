@@ -1,5 +1,5 @@
 import { Context, JobExecutor, NetworkId } from '@sonarwatch/portfolio-core';
-import { MarginfiProgram } from './constants';
+import { MarginfiProgram, prefix } from './constants';
 import { bankStruct } from './structs/Bank';
 import { banksFilters } from './filters';
 import { wrappedI80F48toBigNumber } from './helpers';
@@ -31,7 +31,7 @@ const jobExecutor: JobExecutor = async (context: Context) => {
         ).div(10 ** bank.mintDecimals),
       },
       {
-        prefix: 'marginfi',
+        prefix,
         networkId: NetworkId.solana,
       }
     );

@@ -41,6 +41,7 @@
     "@ethersproject/bytes": "^5.7.0",
     "@metaplex-foundation/beet": "^0.7.1",
     "@metaplex-foundation/beet-solana": "^0.4.0",
+    "@metaplex-foundation/js": "^0.19.4",
     "@mysten/sui.js": "^0.37.1",
     "@solana/web3.js": "^1.77.3",
     "aptos": "^1.12.0",

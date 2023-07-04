@@ -2,7 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import { solanaNetwork } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 
-export const cachePrefix = 'marginfi';
+export const prefix = 'marginfi-banks';
 export const platformId = 'marginfi';
 
 export const MarginfiProgram = new PublicKey(
