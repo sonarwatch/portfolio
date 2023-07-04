@@ -38,6 +38,20 @@
           "codeCoverage": true
         }
       }
+    },
+    "version": {
+      "executor": "@jscutlery/semver:version",
+      "dependsOn": ["build"],
+      "options": {
+        "postTargets": ["core:npm"],
+        "allowEmptyRelease": true
+      }
+    },
+    "npm": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      }
     }
   },
   "tags": []
