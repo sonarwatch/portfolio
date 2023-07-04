@@ -1,1 +1,2 @@
 export const cachePrefix = '<%= id %>';
+export const platformId = '<%= id %>';

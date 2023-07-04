@@ -7,6 +7,7 @@ import {
   PortfolioElementType,
   solanaNativeAddress,
 } from '@sonarwatch/portfolio-core';
+import { platformId } from './constants';
 
 const fetcherExecutor: FetcherExecutor = async (
   owner: string,
@@ -23,7 +24,7 @@ const fetcherExecutor: FetcherExecutor = async (
   const element: PortfolioElementSingle = {
     networkId: NetworkId.solana,
     label: 'Deposit',
-    platformId: '<%= id %>',
+    platformId,
     type: PortfolioElementType.single,
     value,
     data: {
