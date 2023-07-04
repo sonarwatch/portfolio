@@ -4,7 +4,7 @@ import { getBasicAuthHeaders } from '../misc/getBasicAuthHeaders';
 import { rpcEnpoints } from './constants';
 
 export default function getClientSui() {
-  const rpcEndpoint = rpcEnpoints[NetworkId.aptos];
+  const rpcEndpoint = rpcEnpoints[NetworkId.sui];
   const httpHeaders = rpcEndpoint.basicAuth
     ? getBasicAuthHeaders(
         rpcEndpoint.basicAuth.username,
