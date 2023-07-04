@@ -30,6 +30,7 @@ async function runFetcher() {
     context
   );
   console.log('Fetched.');
+  console.log('Portfolio elements:');
   console.log(util.inspect(res, false, null, true));
   process.exit(0);
 }
