@@ -9,11 +9,11 @@ import {
   PortfolioElementType,
   solanaNativeAddress,
 } from '@sonarwatch/portfolio-core';
-import { getParsedProgramAccounts } from '../utils/solana';
+import { getParsedProgramAccounts } from '../../utils/solana';
 import { marinadeTicketProgramId, platformId, solFactor } from './constants';
 import { ticketStruct } from './structs';
 import { ticketFilters } from './filters';
-import { getClientSolana } from '../utils/clients';
+import { getClientSolana } from '../../utils/clients';
 
 const fetcherExecutor: FetcherExecutor = async (
   owner: string,
