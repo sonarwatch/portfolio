@@ -16,7 +16,8 @@
         "project": ["tsconfig.base.json"]
       },
       "rules": {
-        "@typescript-eslint/no-implicit-any-catch": "off"
+        "@typescript-eslint/no-implicit-any-catch": "off",
+        "@typescript-eslint/lines-between-class-members": "off"
       }
     },
     {

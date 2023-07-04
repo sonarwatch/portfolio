@@ -1,9 +1,9 @@
 import { PublicKey } from '@solana/web3.js';
-import { AddressSystem, AddressSystemType } from '../Address';
-import { NetworkIdType } from '../Network';
 import { validate, Network } from 'bitcoin-address-validation';
 import { isAddress } from '@ethersproject/address';
 import { isHexString } from '@ethersproject/bytes';
+import { NetworkIdType } from '../Network';
+import { AddressSystem, AddressSystemType } from '../Address';
 import { networks } from '../constants';
 
 export function isBitcoinAddress(address: string): boolean {
@@ -19,19 +19,22 @@ export function isEvmAddress(address: string): boolean {
   return isAddress(address.toLocaleLowerCase());
 }
 export function assertEvmAddress(address: string): void {
-  if (!isEvmAddress(address)) throw new Error(`Evm address is not valid: ${address}`);
+  if (!isEvmAddress(address))
+    throw new Error(`Evm address is not valid: ${address}`);
 }
 
 export function isMoveAddress(address: string): boolean {
   return isHexString(address, 32);
 }
 export function assertMoveAddress(address: string): void {
-  if (!isMoveAddress(address)) throw new Error(`Move address is not valid: ${address}`);
+  if (!isMoveAddress(address))
+    throw new Error(`Move address is not valid: ${address}`);
 }
 
 export function isSolanaAddress(address: string): boolean {
   if (address.length > 44) return false;
   try {
+    // eslint-disable-next-line no-new
     new PublicKey(address);
     return true;
   } catch (error) {
@@ -50,7 +53,10 @@ const validators: Record<AddressSystemType, (address: string) => boolean> = {
   [AddressSystem.move]: isMoveAddress,
 };
 
-export function isAddressValid(address: string, networkId: NetworkIdType): boolean {
+export function isAddressValid(
+  address: string,
+  networkId: NetworkIdType
+): boolean {
   const network = networks[networkId];
   if (!network) throw new Error(`NetworkId not supported: ${networkId}`);
 
@@ -58,7 +64,10 @@ export function isAddressValid(address: string, networkId: NetworkIdType): boole
   return validator(address);
 }
 
-export function assertAddressValid(address: string, networkId: NetworkIdType): void {
+export function assertAddressValid(
+  address: string,
+  networkId: NetworkIdType
+): void {
   if (!isAddressValid(address, networkId))
     throw new Error(`Address is not valid: [${networkId}][${address}]`);
 }
