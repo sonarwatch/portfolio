@@ -1,12 +1,9 @@
 import axios, { AxiosResponse } from 'axios';
-import {
-  NetworkIdType,
-  TokenPriceSource,
-  shuffleArray,
-  sleep,
-} from '@sonarwatch/portfolio-core';
+import { NetworkIdType, TokenPriceSource } from '@sonarwatch/portfolio-core';
 import { nIdsToFetch, coingeckoCoinsPriceUrl } from './constants';
 import { CoingeckoSimpleRes, TokenData } from './types';
+import shuffleArray from '../../utils/misc/shuffleArray';
+import sleep from '../../utils/misc/sleep';
 
 export async function getCoingeckoSources(
   networkId: NetworkIdType,

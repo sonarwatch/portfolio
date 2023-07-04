@@ -1,4 +1,10 @@
-import { aprToApy, apyToApr } from './utils';
+export function aprToApy(apr: number, compoundFrequency = 365) {
+  return (1 + apr / compoundFrequency) ** compoundFrequency - 1;
+}
+
+export function apyToApr(apy: number, compoundFrequency = 365): number {
+  return ((1 + apy) ** (1 / compoundFrequency) - 1) * compoundFrequency;
+}
 
 export type Yield = {
   // 0.05 mean 5% APR

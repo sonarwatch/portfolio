@@ -4,9 +4,9 @@ import {
   NetworkId,
   getCache,
   getTokenPriceCache,
-  sleep,
 } from '@sonarwatch/portfolio-core';
 import { jobs } from '../src';
+import sleep from '../src/utils/misc/sleep';
 
 async function main() {
   const context: Context = {
