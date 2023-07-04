@@ -14,6 +14,7 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
+    "resolveJsonModule": true,
     "paths": {
       "@sonarwatch/portfolio-core": ["packages/core/src/index.ts"],
       "@sonarwatch/portfolio-plugins": ["packages/plugins/src/index.ts"]
