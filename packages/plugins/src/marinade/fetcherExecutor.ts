@@ -9,17 +9,17 @@ import {
   PortfolioElementType,
   solanaNativeAddress,
 } from '@sonarwatch/portfolio-core';
-import { Connection } from '@solana/web3.js';
 import { getParsedProgramAccounts } from '../utils/solana';
 import { marinadeTicketProgramId, platformId, solFactor } from './constants';
 import { ticketStruct } from './structs';
 import { ticketFilters } from './filters';
+import { getClientSolana } from '../utils/clients';
 
 const fetcherExecutor: FetcherExecutor = async (
   owner: string,
   context: Context
 ) => {
-  const connection = new Connection('');
+  const connection = getClientSolana();
   const tickets = await getParsedProgramAccounts(
     connection,
     ticketStruct,
