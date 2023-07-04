@@ -7,3 +7,5 @@ export * from './compareName';
 export * from './compareUsdValue';
 export * from './formatTokenPrice';
 export * from './formatUniTokenInfo';
+export * from './getAssetsFromElement';
+export * from './getAssetsFromElements';
