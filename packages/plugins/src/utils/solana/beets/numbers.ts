@@ -1,17 +1,20 @@
-import { FixedSizeBeet, SupportedTypeDefinition } from '@metaplex-foundation/beet';
+import {
+  FixedSizeBeet,
+  SupportedTypeDefinition,
+} from '@metaplex-foundation/beet';
 import BigNumber from 'bignumber.js';
 import { BN } from 'bn.js';
 import { BEET_SONARWATCH_PACKAGE } from './helpers';
 
 function unsignedLargeBeet(byteSize: number, description: string) {
   return {
-    write: function (buf: Buffer, offset: number, value: BigNumber) {
+    write(buf: Buffer, offset: number, value: BigNumber) {
       const bn = new BN(value.toString());
       const bytesArray = bn.toArray('le', this.byteSize);
       const bytesArrayBuf = Buffer.from(bytesArray);
       bytesArrayBuf.copy(buf, offset, 0, this.byteSize);
     },
-    read: function (buf: Buffer, offset: number): BigNumber {
+    read(buf: Buffer, offset: number): BigNumber {
       const subarray = buf.subarray(offset, offset + this.byteSize);
       return new BigNumber(new BN(subarray, 'le').toString());
     },
@@ -28,13 +31,13 @@ export const u512: FixedSizeBeet<BigNumber> = unsignedLargeBeet(64, 'u512');
 function signedLargeBeet(byteSize: number, description: string) {
   const bitSize = byteSize * 8;
   return {
-    write: function (buf: Buffer, offset: number, value: BigNumber) {
+    write(buf: Buffer, offset: number, value: BigNumber) {
       const bn = new BN(value.toString()).toTwos(bitSize);
       const bytesArray = bn.toArray('le', this.byteSize);
       const bytesArrayBuf = Buffer.from(bytesArray);
       bytesArrayBuf.copy(buf, offset, 0, this.byteSize);
     },
-    read: function (buf: Buffer, offset: number): BigNumber {
+    read(buf: Buffer, offset: number): BigNumber {
       const subarray = buf.subarray(offset, offset + this.byteSize);
       const x = new BN(subarray, 'le');
       return new BigNumber(x.fromTwos(bitSize).toString());

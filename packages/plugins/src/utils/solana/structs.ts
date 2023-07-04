@@ -1,8 +1,8 @@
 import { BeetStruct, u32, u8, bool } from '@metaplex-foundation/beet';
-import { u64 } from './beets/numbers';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { PublicKey } from '@solana/web3.js';
 import { BigNumber } from 'bignumber.js';
+import { u64 } from './beets/numbers';
 
 export type MintAccount = {
   readonly mintAuthorityOption: number;
