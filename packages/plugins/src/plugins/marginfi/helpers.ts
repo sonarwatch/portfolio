@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { Decimal } from 'decimal.js';
+import Decimal from 'decimal.js';
 import { BankInfo } from './types';
 
 export function wrappedI80F48toBigNumber(
