@@ -5,8 +5,8 @@ import {
 } from '@metaplex-foundation/beet';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { PublicKey } from '@solana/web3.js';
-import { blob, u64 } from '@sonarwatch/beet';
 import BigNumber from 'bignumber.js';
+import { blob, u64 } from '../../utils/solana';
 
 export type SingleListing = {
   padding: Buffer;

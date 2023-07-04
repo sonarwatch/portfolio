@@ -20,13 +20,12 @@ import { getParsedProgramAccounts } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import { singleListingStruct } from './struct';
 import { singleListingFilter } from './filters';
+import { getImagefromUri } from '../../utils/misc/getImagefromUri';
 
 const fetcherExecutor: FetcherExecutor = async (
   owner: string,
   context: Context
 ) => {
-  const { tokenPriceCache } = context;
-  const miscStorage = AssetStorage<string>;
   const connection = getClientSolana();
   const metaplex = new Metaplex(connection);
   const singleListings = await getParsedProgramAccounts(
@@ -46,17 +45,16 @@ const fetcherExecutor: FetcherExecutor = async (
   });
   if (!nftsMetadata) return [];
 
-  const argss = nftsMetadata.map((nftMetadata) => [
-    nftMetadata?.uri,
-    NetworkId.solana,
-    this.miscStorage,
-  ]);
+  const promises = nftsMetadata.map((nftMetadata) => {
+    if (!nftMetadata?.uri) return undefined;
+    return getImagefromUri(nftMetadata?.uri, NetworkId.solana, context.cache);
+  });
 
-  const imageResults = await runInBatchWithArgss(getImagefromUri, argss);
+  const imageResults = await Promise.allSettled(promises);
   const assets: PortfolioAsset[] = [];
 
   nftsMetadata.forEach((nftMetadata, i) => {
-    if (!nftMetadata) return [];
+    if (!nftMetadata) return;
     const imageResult = imageResults[i];
     const image =
       imageResult.status === 'fulfilled' ? imageResult.value : undefined;
@@ -97,6 +95,7 @@ const fetcherExecutor: FetcherExecutor = async (
     };
     assets.push(asset);
   });
+
   if (assets.length === 0) return [];
   const element: PortfolioElementMultiple = {
     type: PortfolioElementType.multiple,

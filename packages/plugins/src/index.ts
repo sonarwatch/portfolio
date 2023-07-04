@@ -12,6 +12,7 @@ import {
   jobs as marginfiJobs,
   fetchers as marginfiFetchers,
 } from './plugins/marginfi';
+import { fetchers as tensorFetchers } from './plugins/tensor';
 
 export const jobs: Job[] = [
   ...marginfiJobs,
@@ -20,6 +21,7 @@ export const jobs: Job[] = [
   ...wallettokensJobs,
 ];
 export const fetchers: Fetcher[] = [
+  ...tensorFetchers,
   ...marginfiFetchers,
   ...marinadeFetchers,
   ...raydiumFetchers,
