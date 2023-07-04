@@ -29,7 +29,6 @@ async function runFetcher() {
     'tEsT1vjsJeKHw9GH5HpnQszn2LWmjR6q1AVCDCj51nd',
     context
   );
-  console.log('Fetched.');
   console.log('Portfolio elements:');
   console.log(util.inspect(res, false, null, true));
   process.exit(0);
