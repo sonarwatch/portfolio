@@ -7,15 +7,16 @@ import {
   PortfolioElementType,
   Yield,
   aprToApy,
+  getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
 import { MarginfiProgram } from './constants';
-import { getParsedProgramAccounts } from '../utils/solana';
 import { marginfiAccountStruct } from './structs/MarginfiAccount';
 import { getInterestRates, wrappedI80F48toBigNumber } from './helpers';
-import { tokenPriceToAssetToken } from '../utils/misc/tokenPriceToAssetToken';
 import { accountsFilter } from './filters';
 import { BankInfo } from './types';
-import { getClientSolana } from '../utils/clients';
+import { getParsedProgramAccounts } from '../../utils/solana';
+import { getClientSolana } from '../../utils/clients';
+import { tokenPriceToAssetToken } from '../../utils/misc/tokenPriceToAssetToken';
 
 const fetcherExecutor: FetcherExecutor = async (
   owner: string,

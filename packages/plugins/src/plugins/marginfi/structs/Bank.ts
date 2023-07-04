@@ -7,7 +7,7 @@ import { publicKey } from '@metaplex-foundation/beet-solana';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { WrappedI80F48, wrappedI80F48Struct } from './common';
-import { blob, i64, u128, u64 } from '../../utils/solana';
+import { blob, i64, u128, u64 } from '../../../utils/solana';
 
 export enum BankOperationalState {
   Paused,
