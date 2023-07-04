@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export default async function runInBatch<T>(
   functionsToRun: (() => Promise<T>)[],
   batchSize = 100
