@@ -8,10 +8,19 @@ import {
   jobs as raydiumJobs,
   fetchers as raydiumFetchers,
 } from './plugins/raydium';
+import {
+  jobs as marginfiJobs,
+  fetchers as marginfiFetchers,
+} from './plugins/marginfi';
 
 export const jobs: Job[] = [
+  ...marginfiJobs,
   ...marinadeJobs,
   ...raydiumJobs,
   ...wallettokensJobs,
 ];
-export const fetchers: Fetcher[] = [...marinadeFetchers, ...raydiumFetchers];
+export const fetchers: Fetcher[] = [
+  ...marginfiFetchers,
+  ...marinadeFetchers,
+  ...raydiumFetchers,
+];

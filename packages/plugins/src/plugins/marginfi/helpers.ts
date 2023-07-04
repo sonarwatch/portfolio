@@ -7,9 +7,10 @@ export function wrappedI80F48toBigNumber(
   scaleDecimal = 0
 ): BigNumber {
   if (!value) return new BigNumber(0);
+  const newValue = new BigNumber(value);
 
   const numbers = new Decimal(
-    `${value.isNegative() ? '-' : ''}0b${value.abs().toString(2)}p-48`
+    `${newValue.isNegative() ? '-' : ''}0b${newValue.abs().toString(2)}p-48`
   ).dividedBy(10 ** scaleDecimal);
   return new BigNumber(numbers.toString());
 }
