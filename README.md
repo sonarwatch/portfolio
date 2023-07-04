@@ -5,6 +5,8 @@
 ```bash
 # Getting started
 npm install
+cp .env.example .env
+# Set your RPCs
 
 # Generate a plugin
 npx nx generate @sonarwatch/portfolio-plugins:plugin my-super-protocol
