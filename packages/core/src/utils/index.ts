@@ -5,3 +5,5 @@ export * from './formatTokenAddress';
 export * from './getElementLendingValues';
 export * from './compareName';
 export * from './compareUsdValue';
+export * from './formatTokenPrice';
+export * from './formatUniTokenInfo';
