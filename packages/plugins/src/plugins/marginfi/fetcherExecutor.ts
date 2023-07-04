@@ -9,7 +9,7 @@ import {
   aprToApy,
   getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
-import { MarginfiProgram } from './constants';
+import { MarginfiProgram, platformId, prefix } from './constants';
 import { marginfiAccountStruct } from './structs/MarginfiAccount';
 import { getInterestRates, wrappedI80F48toBigNumber } from './helpers';
 import { accountsFilter } from './filters';
@@ -46,7 +46,7 @@ const fetcherExecutor: FetcherExecutor = async (
       const bankInfo = await context?.cache.get<BankInfo>(
         accountBalanceInfo.bankPk.toString(),
         {
-          prefix: 'marginfi',
+          prefix,
           networkId: NetworkId.solana,
         }
       );
@@ -121,7 +121,7 @@ const fetcherExecutor: FetcherExecutor = async (
   const element: PortfolioElement = {
     type: PortfolioElementType.borrowlend,
     networkId: NetworkId.solana,
-    platformId: 'marginfi',
+    platformId,
     label: 'Lending',
     value,
     data: {
