@@ -5,6 +5,8 @@
   "scripts": {},
   "private": true,
   "devDependencies": {
+    "@nx/devkit": "16.4.2",
+    "@nx/plugin": "16.4.2",
     "@nx/eslint-plugin": "16.4.2",
     "@nx/jest": "16.4.2",
     "@nx/js": "16.4.2",
