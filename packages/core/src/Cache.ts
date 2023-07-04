@@ -1,5 +1,5 @@
 import { Storage, createStorage, StorageValue, Driver } from 'unstorage';
-import mongodbDriver from 'unstorage/drivers/mongodb';
+import fsDriver from 'unstorage/drivers/fs';
 
 import { NetworkIdType } from './Network';
 
@@ -66,16 +66,6 @@ function getFullBase(opts: TransactionOptions) {
 }
 
 export function getCache() {
-  const connectionString =
-    process.env['CACHE_MONGODB_CONNECTION_STRING'] ||
-    'mongodb://localhost:27017';
-  const databaseName = process.env['CACHE_MONGODB_DB_NAME'] || 'portfolio';
-  const collectionName =
-    process.env['CACHE_MONGODB_COLLECTION_NAME'] || 'cache';
-  const driver = mongodbDriver({
-    connectionString,
-    databaseName,
-    collectionName,
-  });
+  const driver = fsDriver({ base: './cache' });
   return new Cache(driver);
 }

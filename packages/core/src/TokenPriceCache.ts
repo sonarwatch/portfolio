@@ -1,5 +1,5 @@
 import { Driver } from 'unstorage';
-import mongodbDriver from 'unstorage/drivers/mongodb';
+import fsDriver from 'unstorage/drivers/fs';
 import { NetworkIdType } from './Network';
 import { Cache } from './Cache';
 import {
@@ -98,16 +98,6 @@ export class TokenPriceCache {
 }
 
 export function getTokenPriceCache() {
-  const connectionString =
-    process.env['CACHE_MONGODB_CONNECTION_STRING'] ||
-    'mongodb://localhost:27017';
-  const databaseName = process.env['CACHE_MONGODB_DB_NAME'] || 'portfolio';
-  const collectionName =
-    process.env['CACHE_MONGODB_COLLECTION_NAME'] || 'cache-token-price';
-  const driver = mongodbDriver({
-    connectionString,
-    databaseName,
-    collectionName,
-  });
+  const driver = fsDriver({ base: './cache/tokenprice' });
   return new TokenPriceCache(driver);
 }

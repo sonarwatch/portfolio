@@ -3,6 +3,9 @@
 # env file
 .env
 
+# cache
+cache
+
 # compiled output
 dist
 tmp
