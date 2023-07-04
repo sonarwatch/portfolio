@@ -3,6 +3,9 @@
 ## Useful commands
 
 ```bash
+# Getting started
+npm install
+
 # Generate a plugin
 npx nx generate @sonarwatch/portfolio-plugins:plugin my-super-protocol
 
