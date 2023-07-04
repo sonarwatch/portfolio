@@ -9,6 +9,7 @@
 ```
 npx nx generate @sonarwatch/portfolio-plugins:plugin solend
 npx nx run plugins:serve-jobs
+npx nx run plugins:run-fetcher -- marinade
 ```
 
 ## Generate code
