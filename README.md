@@ -7,7 +7,7 @@
 ## Useful commands
 
 ```
-npx nx generate @sonarwatch/portfolio-plugins:plugin solend
+npx nx generate @sonarwatch/portfolio-plugins:plugin my-super-protocol
 npx nx run plugins:serve-jobs
 npx nx run plugins:run-fetcher -- marinade
 ```
