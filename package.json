@@ -11,6 +11,7 @@
     "@nx/js": "16.4.2",
     "@nx/linter": "16.4.2",
     "@nx/plugin": "16.4.2",
+    "@types/bn.js": "^5.1.1",
     "@types/jest": "^29.4.0",
     "@types/node": "18.7.1",
     "@typescript-eslint/eslint-plugin": "^5.58.0",
