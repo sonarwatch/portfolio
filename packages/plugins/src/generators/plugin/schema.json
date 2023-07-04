@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "Plugin",
+  "title": "",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What id would you like to use for your adapter?"
+    },
+    "networkIds": {
+      "type": "array",
+      "description": "Provide the network",
+      "enum": ["solana", "ethereum"],
+      "minItems": 1,
+      "x-prompt": {
+        "message": "Which networks would you like to use for your adapter?",
+        "multiselect": true,
+        "type": "list",
+        "items": [
+          {
+            "value": "bitcoin",
+            "label": "Bitcoin"
+          },
+          {
+            "value": "solana",
+            "label": "Solana"
+          },
+          {
+            "value": "ethereum",
+            "label": "Ethereum"
+          },
+          {
+            "value": "avalanche",
+            "label": "Avalanche"
+          },
+          {
+            "value": "aptos",
+            "label": "Aptos"
+          },
+          {
+            "value": "sui",
+            "label": "Sui"
+          }
+        ]
+      }
+    }
+  },
+  "required": ["id"]
+}

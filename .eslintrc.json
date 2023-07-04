@@ -40,7 +40,12 @@
             ]
           }
         ],
-        "import/no-extraneous-dependencies": ["error", { "packageDir": ["."] }],
+        "import/no-extraneous-dependencies": [
+          "error",
+          {
+            "packageDir": ["."]
+          }
+        ],
         "no-await-in-loop": "off",
         "no-restricted-syntax": "off",
         "no-use-before-define": "off",
@@ -63,6 +68,11 @@
       "rules": {
         "no-console": "off"
       }
+    },
+    {
+      "files": "*.json",
+      "parser": "jsonc-eslint-parser",
+      "rules": {}
     }
   ]
 }
