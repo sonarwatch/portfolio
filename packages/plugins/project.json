@@ -14,6 +14,10 @@
         "assets": ["packages/plugins/*.md"]
       }
     },
+    "serve-jobs": {
+      "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/serve-jobs.ts",
+      "dependsOn": ["build"]
+    },
     "publish": {
       "command": "node tools/scripts/publish.mjs plugins {args.ver} {args.tag}",
       "dependsOn": ["build"]

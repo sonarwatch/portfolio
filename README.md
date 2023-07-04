@@ -8,6 +8,7 @@
 
 ```
 npx nx generate @sonarwatch/portfolio-plugins:plugin solend
+npx nx run plugins:serve-jobs
 ```
 
 ## Generate code
