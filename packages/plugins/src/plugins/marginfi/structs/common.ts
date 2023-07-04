@@ -1,6 +1,6 @@
 import { BeetStruct } from '@metaplex-foundation/beet';
-import { i128 } from '@sonarwatch/beet';
 import BigNumber from 'bignumber.js';
+import { i128 } from '../../../utils/solana';
 
 export type WrappedI80F48 = {
   value: BigNumber;
