@@ -4,6 +4,7 @@ import {
   getCache,
   getTokenPriceCache,
 } from '@sonarwatch/portfolio-core';
+import ora from 'ora';
 import { fetchers } from '../src';
 
 const fetcherId = process.argv.at(2);
@@ -25,10 +26,12 @@ async function runFetcher() {
   };
 
   console.log('Fetching...');
+  const spinner = ora('Loading unicorns').start();
   const res = await fetcher.executor(
     'tEsT1vjsJeKHw9GH5HpnQszn2LWmjR6q1AVCDCj51nd',
     context
   );
+  spinner.succeed();
   console.log('Fetched.');
   console.log('Portfolio elements:');
   console.log(util.inspect(res, false, null, true));
