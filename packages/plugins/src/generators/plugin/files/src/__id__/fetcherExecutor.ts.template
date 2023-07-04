@@ -23,7 +23,7 @@ const fetcherExecutor: FetcherExecutor = async (
   const element: PortfolioElementSingle = {
     networkId: NetworkId.solana,
     label: 'Deposit',
-    platformId: 'marinade',
+    platformId: '<%= id %>',
     type: PortfolioElementType.single,
     value,
     data: {

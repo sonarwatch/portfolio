@@ -4,14 +4,14 @@ import fetcherExecutor from './fetcherExecutor';
 
 export const jobs: Job[] = [
   {
-    id: 'marinade',
+    id: '<%= id %>',
     executor: jobExecutor,
   },
 ];
 
 export const fetchers: Fetcher[] = [
   {
-    id: 'marinade',
+    id: '<%= id %>',
     networkId: NetworkId.solana,
     executor: fetcherExecutor,
   },
