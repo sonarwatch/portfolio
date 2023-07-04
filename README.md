@@ -14,6 +14,9 @@ npx nx generate @sonarwatch/portfolio-plugins:plugin my-super-protocol
 # Serve jobs
 npx nx run plugins:serve-jobs
 
+# Run a job
+npx nx run plugins:run-job marinade
+
 # Run a fetcher
 npx nx run plugins:run-fetcher marinade DemoSX9F2zXfQLtBr56Yr5he15P7viZWsYJpSDAX3tKG
 ```
@@ -25,3 +28,12 @@ Have a look at the [Nx Console extensions](https://nx.dev/nx-console). It provid
 ## Ready to deploy?
 
 Just run `nx build demoapp` to build the application. The build artifacts will be stored in the `dist/` directory, ready to be deployed.
+
+## Deploy
+
+```bash
+npx nx run-many -t version
+
+npx nx run core:version --releaseAs=minor
+npx nx run plugins:version --releaseAs=minor
+```

@@ -3,6 +3,7 @@ import {
   Context,
   getCache,
   getTokenPriceCache,
+  runFetcherExecutor,
 } from '@sonarwatch/portfolio-core';
 import { fetchers } from '../src';
 
@@ -31,7 +32,7 @@ async function runFetcher() {
   };
 
   console.log('Fetching...');
-  const elements = await fetcher.executor(owner, context);
+  const elements = await runFetcherExecutor(fetcher, owner, context);
   console.log('Portfolio elements:');
   console.log(util.inspect(elements, false, null, true));
   process.exit(0);

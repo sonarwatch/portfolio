@@ -22,6 +22,10 @@
       "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/run-fetcher.ts",
       "dependsOn": ["build"]
     },
+    "run-job": {
+      "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/run-job.ts",
+      "dependsOn": ["build"]
+    },
     "publish": {
       "command": "node tools/scripts/publish.mjs plugins {args.ver} {args.tag}",
       "dependsOn": ["build"]
@@ -49,6 +53,20 @@
           "ci": true,
           "codeCoverage": true
         }
+      }
+    },
+    "version": {
+      "executor": "@jscutlery/semver:version",
+      "dependsOn": ["build"],
+      "options": {
+        "postTargets": ["plugins:npm"],
+        "allowEmptyRelease": true
+      }
+    },
+    "npm": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
       }
     }
   },
