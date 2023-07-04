@@ -64,8 +64,8 @@ export type PortfolioAssetCollectibleData = {
   dataUri?: string;
   collection?: {
     id: string;
-    name: string;
     floorPrice: UsdValue;
+    name?: string;
   };
 };
 export type PortfolioAssetCollectible = PortfolioAssetCommon & {
