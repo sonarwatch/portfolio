@@ -13,7 +13,7 @@ npx nx generate @sonarwatch/portfolio-plugins:plugin my-super-protocol
 npx nx run plugins:serve-jobs
 
 # Run a fetcher
-npx nx run plugins:run-fetcher -- marinade
+npx nx run plugins:run-fetcher marinade
 ```
 
 ## Want better Editor Integration?
