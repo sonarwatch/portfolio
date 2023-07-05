@@ -1,10 +1,5 @@
 import util from 'node:util';
-import {
-  Context,
-  getCache,
-  getTokenPriceCache,
-  runFetcherExecutor,
-} from '@sonarwatch/portfolio-core';
+import { getCache, runFetcherExecutor } from '@sonarwatch/portfolio-core';
 import { fetchers } from '../src';
 
 const fetcherId = process.argv.at(2);
@@ -26,13 +21,10 @@ async function runFetcher() {
     process.exit(1);
   }
 
-  const context: Context = {
-    cache: getCache(),
-    tokenPriceCache: getTokenPriceCache(),
-  };
+  const cache = getCache();
 
   console.log('Fetching...');
-  const elements = await runFetcherExecutor(fetcher, owner, context);
+  const elements = await runFetcherExecutor(fetcher, owner, cache);
   console.log('Portfolio elements:');
   console.log(util.inspect(elements, false, null, true));
   process.exit(0);
