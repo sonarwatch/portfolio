@@ -2,7 +2,7 @@ import {
   JobExecutor,
   NetworkId,
   UniTokenList,
-  getTokenPriceCache,
+  getCache,
   solanaNetwork,
 } from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
@@ -10,7 +10,7 @@ import { TokenData } from '../types';
 import { getCoingeckoSources } from '../helpers';
 
 const jobExecutor: JobExecutor = async () => {
-  const tokenPriceCache = getTokenPriceCache();
+  const cache = getCache();
 
   const tokenListResponse: AxiosResponse<UniTokenList> | null = await axios
     .get(solanaNetwork.tokenListUrl)
@@ -38,7 +38,7 @@ const jobExecutor: JobExecutor = async () => {
   const sources = await getCoingeckoSources(NetworkId.solana, tokensData);
   for (let i = 0; i < sources.length; i += 1) {
     const source = sources[i];
-    await tokenPriceCache.set(source);
+    await cache.setTokenPriceSource(source);
   }
 };
 export default jobExecutor;

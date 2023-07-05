@@ -10,7 +10,6 @@ export * from './Platform';
 export * from './Portfolio';
 export * from './TokenList';
 export * from './TokenPrice';
-export * from './TokenPriceCache';
 export * from './Yield';
 export * from './Job';
 export * from './Fetcher';
