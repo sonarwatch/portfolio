@@ -11,6 +11,7 @@
     "@nx/jest": "16.4.3",
     "@nx/js": "16.4.3",
     "@nx/linter": "16.4.3",
+    "@nx/node": "16.4.3",
     "@nx/plugin": "16.4.3",
     "@types/bn.js": "^5.1.1",
     "@types/jest": "^29.4.0",
