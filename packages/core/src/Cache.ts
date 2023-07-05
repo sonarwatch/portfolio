@@ -4,12 +4,19 @@ import mongodbDriver from 'unstorage/drivers/mongodb';
 import redisDriver from 'unstorage/drivers/redis';
 
 import { NetworkIdType } from './Network';
+import {
+  TokenPrice,
+  TokenPriceSource,
+  pushTokenPriceSource,
+  tokenPriceFromSources,
+} from './TokenPrice';
 
 export type TransactionOptions = {
   prefix: string;
   networkId?: NetworkIdType;
 };
 const ttlPrefix = 'ttl';
+const tokenPriceSourcePrefix = 'tokenpricesource';
 
 export class Cache {
   private readonly storage: Storage;
@@ -20,9 +27,14 @@ export class Cache {
     });
   }
 
-  async hasItem(key: string, opts: TransactionOptions) {
+  async hasItem(key: string, opts: TransactionOptions): Promise<boolean> {
     const item = await this.getItem(key, opts);
     return item !== undefined;
+  }
+
+  async hasTokenPrice(address: string, networkId: NetworkIdType) {
+    const tokenPrice = await this.getTokenPrice(address, networkId);
+    return tokenPrice !== undefined;
   }
 
   async getItem<K extends StorageValue>(
@@ -30,14 +42,34 @@ export class Cache {
     opts: TransactionOptions
   ): Promise<K | undefined> {
     const fullKey = getFullKey(key, opts);
-    const ttl = await this.getItem<number>(fullKey, {
-      prefix: ttlPrefix,
-    });
+    let ttl;
+    if (opts.prefix !== ttlPrefix) {
+      ttl = await this.getItem<number>(fullKey, {
+        prefix: ttlPrefix,
+      });
+    }
     if (ttl && ttl < Date.now()) {
       await this.removeItem(key, opts);
       return undefined;
     }
     return this.storage.getItem(fullKey) as Promise<K | undefined>;
+  }
+
+  async getTokenPrice(address: string, networkId: NetworkIdType) {
+    const sources = await this.getTokenPriceSources(address, networkId);
+    if (!sources) return undefined;
+    const tokenPrice = tokenPriceFromSources(sources);
+    return tokenPrice;
+  }
+
+  private async getTokenPriceSources(
+    address: string,
+    networkId: NetworkIdType
+  ) {
+    return this.getItem<TokenPriceSource[]>(address, {
+      prefix: tokenPriceSourcePrefix,
+      networkId,
+    });
   }
 
   async getItems<K extends StorageValue>(
@@ -60,6 +92,17 @@ export class Cache {
     return itemsMap;
   }
 
+  async getTokenPrices(networkId: NetworkIdType) {
+    const addresses = await this.getTokenPriceAddresses(networkId);
+    const tokenPrices: Map<string, TokenPrice> = new Map();
+    for (let i = 0; i < addresses.length; i += 1) {
+      const address = addresses[i];
+      const item = await this.getTokenPrice(address, networkId);
+      if (item !== undefined) tokenPrices.set(address, item);
+    }
+    return tokenPrices;
+  }
+
   async setItem<K extends StorageValue>(
     key: string,
     value: K,
@@ -75,11 +118,33 @@ export class Cache {
     return this.storage.setItem(fullKey, value);
   }
 
+  async setTokenPriceSource(source: TokenPriceSource) {
+    let cSources = await this.getItem<TokenPriceSource[]>(source.address, {
+      prefix: tokenPriceSourcePrefix,
+      networkId: source.networkId,
+    });
+    if (!cSources) cSources = [];
+    const newSources = pushTokenPriceSource(cSources, source);
+    if (!newSources) {
+      await this.removeItem(source.address, {
+        prefix: tokenPriceSourcePrefix,
+        networkId: source.networkId,
+      });
+      return;
+    }
+    await this.setItem(source.address, newSources, {
+      prefix: tokenPriceSourcePrefix,
+      networkId: source.networkId,
+    });
+  }
+
   async removeItem(key: string, opts: TransactionOptions) {
     const fullKey = getFullKey(key, opts);
-    await this.removeItem(fullKey, {
-      prefix: ttlPrefix,
-    });
+    if (opts.prefix !== ttlPrefix) {
+      await this.removeItem(fullKey, {
+        prefix: ttlPrefix,
+      });
+    }
     return this.storage.removeItem(fullKey);
   }
 
@@ -98,6 +163,13 @@ export class Cache {
     return (await this.storage.getKeys(fullBase)).map((s) =>
       s.substring(fullBase.length)
     );
+  }
+
+  async getTokenPriceAddresses(networkId: NetworkIdType) {
+    return this.getKeys({
+      prefix: tokenPriceSourcePrefix,
+      networkId,
+    });
   }
 
   dispose() {
