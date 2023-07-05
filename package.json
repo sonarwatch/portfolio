@@ -2,7 +2,9 @@
   "name": "portfolio",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "build": "nx build"
+  },
   "private": true,
   "devDependencies": {
     "@jscutlery/semver": "^3.0.0",
