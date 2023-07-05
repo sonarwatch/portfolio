@@ -8,7 +8,6 @@ import { NetworkIdType } from './Network';
 export type TransactionOptions = {
   prefix: string;
   networkId?: NetworkIdType;
-  ttl?: number;
 };
 const ttlPrefix = 'ttl';
 
@@ -41,14 +40,35 @@ export class Cache {
     return this.storage.getItem(fullKey) as Promise<K | undefined>;
   }
 
+  async getItems<K extends StorageValue>(
+    opts: TransactionOptions
+  ): Promise<K[]> {
+    const itemsMap = await this.getItemsAsMap<K>(opts);
+    return Array.from(itemsMap.values());
+  }
+
+  async getItemsAsMap<K extends StorageValue>(
+    opts: TransactionOptions
+  ): Promise<Map<string, K>> {
+    const keys = await this.getKeys(opts);
+    const itemsMap: Map<string, K> = new Map();
+    for (let i = 0; i < keys.length; i += 1) {
+      const key = keys[i];
+      const item = await this.getItem<K>(key, opts);
+      if (item !== undefined) itemsMap.set(key, item);
+    }
+    return itemsMap;
+  }
+
   async setItem<K extends StorageValue>(
     key: string,
     value: K,
-    opts: TransactionOptions
+    opts: TransactionOptions,
+    ttl?: number
   ) {
     const fullKey = getFullKey(key, opts);
-    if (opts.ttl) {
-      await this.setItem(fullKey, Date.now() + opts.ttl, {
+    if (ttl) {
+      await this.setItem(fullKey, Date.now() + ttl, {
         prefix: ttlPrefix,
       });
     }
@@ -65,6 +85,16 @@ export class Cache {
 
   async getKeys(opts: TransactionOptions) {
     const fullBase = getFullBase(opts);
+    const keys = (await this.storage.getKeys(fullBase)).map((s) =>
+      s.substring(fullBase.length)
+    );
+
+    // Verifying that key is still alive
+    for (let i = 0; i < keys.length; i += 1) {
+      const key = keys[i];
+      await this.hasItem(key, opts);
+    }
+
     return (await this.storage.getKeys(fullBase)).map((s) =>
       s.substring(fullBase.length)
     );
