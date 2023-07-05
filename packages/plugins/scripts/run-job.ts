@@ -1,8 +1,4 @@
-import {
-  Context,
-  getCache,
-  getTokenPriceCache,
-} from '@sonarwatch/portfolio-core';
+import { getCache } from '@sonarwatch/portfolio-core';
 import { jobs } from '../src';
 
 const jobId = process.argv.at(2);
@@ -18,13 +14,10 @@ async function runJob() {
     process.exit(1);
   }
 
-  const context: Context = {
-    cache: getCache(),
-    tokenPriceCache: getTokenPriceCache(),
-  };
+  const cache = getCache();
 
   console.log(`Running job: ${jobId}`);
-  await job.executor(context);
+  await job.executor(cache);
   console.log('Finished');
   process.exit(0);
 }
