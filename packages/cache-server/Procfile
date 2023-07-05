@@ -1,1 +1,1 @@
-web: node ./dist/apps/api-main/main.js
+web: node ./dist/packages/cache-server/main.js
