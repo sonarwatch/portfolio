@@ -44,13 +44,42 @@ export async function pluginGenerator(
 ) {
   const id = toKebabCase(options.id);
   const libraryRoot = readProjectConfiguration(tree, 'plugins').root;
-  generateFiles(tree, path.join(__dirname, 'files'), libraryRoot, {
+  const { addJob, addFetcher } = options;
+
+  const substitutions = {
     id,
-    networkIds: options.networkIds,
     pascalCaseId: idToPascalCase(id),
     spacedPascalCaseId: idToSpacedPascalCase(id),
     loweredPascalCaseId: lowerFirstLetter(idToPascalCase(id)),
-  });
+    addJob,
+    addFetcher,
+  };
+
+  generateFiles(
+    tree,
+    path.join(__dirname, 'common'),
+    libraryRoot,
+    substitutions
+  );
+
+  if (addJob) {
+    generateFiles(
+      tree,
+      path.join(__dirname, 'files', 'addJob'),
+      libraryRoot,
+      substitutions
+    );
+  }
+
+  if (addFetcher) {
+    generateFiles(
+      tree,
+      path.join(__dirname, 'files', 'addFetcher'),
+      libraryRoot,
+      substitutions
+    );
+  }
+
   await formatFiles(tree);
 }
 

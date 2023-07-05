@@ -1,4 +1,5 @@
 export interface PluginGeneratorSchema {
   id: string;
-  networkIds: NetworkIdType[];
+  addJob: boolean;
+  addFetcher: boolean;
 }

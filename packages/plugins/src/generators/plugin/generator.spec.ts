@@ -1,7 +1,6 @@
 import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
 import { Tree, readProjectConfiguration } from '@nx/devkit';
 
-import { NetworkId } from '@sonarwatch/portfolio-core';
 import { pluginGenerator } from './generator';
 import { PluginGeneratorSchema } from './schema.d';
 
@@ -9,7 +8,8 @@ describe('plugin generator', () => {
   let tree: Tree;
   const options: PluginGeneratorSchema = {
     id: 'test',
-    networkIds: [NetworkId.solana],
+    addFetcher: true,
+    addJob: true,
   };
 
   beforeEach(() => {

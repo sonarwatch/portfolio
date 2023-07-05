@@ -6,48 +6,29 @@
   "properties": {
     "id": {
       "type": "string",
-      "description": "",
+      "description": "The id of the plugin",
       "$default": {
         "$source": "argv",
         "index": 0
       },
       "x-prompt": "What id would you like to use for your adapter?"
     },
-    "networkIds": {
-      "type": "array",
-      "description": "Provide the network",
-      "enum": ["solana", "ethereum"],
-      "minItems": 1,
+    "addJob": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether or not to add a Job to the plugin",
       "x-prompt": {
-        "message": "Which networks would you like to use for your adapter?",
-        "multiselect": true,
-        "type": "list",
-        "items": [
-          {
-            "value": "bitcoin",
-            "label": "Bitcoin"
-          },
-          {
-            "value": "solana",
-            "label": "Solana"
-          },
-          {
-            "value": "ethereum",
-            "label": "Ethereum"
-          },
-          {
-            "value": "avalanche",
-            "label": "Avalanche"
-          },
-          {
-            "value": "aptos",
-            "label": "Aptos"
-          },
-          {
-            "value": "sui",
-            "label": "Sui"
-          }
-        ]
+        "type": "boolean",
+        "message": "Do you want to add a Job to your plugin?"
+      }
+    },
+    "addFetcher": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether or not to add a Fetcher to the plugin",
+      "x-prompt": {
+        "type": "boolean",
+        "message": "Do you want to add a Fetcher to your plugin?"
       }
     }
   },

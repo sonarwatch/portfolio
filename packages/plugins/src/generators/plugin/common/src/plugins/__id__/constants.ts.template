@@ -1,0 +1,2 @@
+export const prefix = '<%= id %>';
+export const platformId = '<%= id %>';

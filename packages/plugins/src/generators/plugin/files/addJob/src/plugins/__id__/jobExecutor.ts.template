@@ -1,0 +1,10 @@
+import { Cache, JobExecutor, NetworkId } from '@sonarwatch/portfolio-core';
+import { prefix } from './constants';
+
+const jobExecutor: JobExecutor = async (cache: Cache) => {
+  await cache.setItem('abc', 'def', {
+    prefix,
+    networkId: NetworkId.solana,
+  });
+};
+export default jobExecutor;
