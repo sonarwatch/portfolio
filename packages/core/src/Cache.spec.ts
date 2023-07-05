@@ -5,8 +5,19 @@ import { TokenPriceSource } from './TokenPrice';
 import { NetworkId } from './Network';
 
 describe('Cache', () => {
-  it('should works', () => {
-    expect(true).toBeTruthy();
+  it('should works', async () => {
+    const key = 'key';
+    const value = 'value';
+    const prefix = 'prefix';
+    const driver = memoryDriver();
+    const cache = new Cache(driver);
+    await cache.setItem(key, value, {
+      prefix,
+    });
+    const item = await cache.getItem(key, {
+      prefix,
+    });
+    expect(item).toBe(value);
   });
 
   it('should set token price sources', async () => {
@@ -38,5 +49,30 @@ describe('Cache', () => {
     );
     expect(tokenPrice).toBeDefined();
     expect(tokenPrice?.price).toBe(1.5);
+  });
+
+  it('should works with ttl', async () => {
+    const key = 'key';
+    const value = 'value';
+    const prefix = 'prefix';
+    const driver = memoryDriver();
+    const cache = new Cache(driver);
+    await cache.setItem(
+      key,
+      value,
+      {
+        prefix,
+      },
+      500
+    );
+    const item = await cache.getItem(key, {
+      prefix,
+    });
+    expect(item).toBe(value);
+    await sleep(600);
+    const item2 = await cache.getItem(key, {
+      prefix,
+    });
+    expect(item2).toBeUndefined();
   });
 });
