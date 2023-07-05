@@ -1,5 +1,5 @@
 import {
-  Context,
+  Cache,
   FetcherExecutor,
   NetworkId,
   PortfolioAsset,
@@ -24,7 +24,7 @@ import { getImagefromUri } from '../../utils/misc/getImagefromUri';
 
 const fetcherExecutor: FetcherExecutor = async (
   owner: string,
-  context: Context
+  cache: Cache
 ) => {
   const connection = getClientSolana();
   const metaplex = new Metaplex(connection);
@@ -47,7 +47,7 @@ const fetcherExecutor: FetcherExecutor = async (
 
   const promises = nftsMetadata.map((nftMetadata) => {
     if (!nftMetadata?.uri) return undefined;
-    return getImagefromUri(nftMetadata?.uri, NetworkId.solana, context.cache);
+    return getImagefromUri(nftMetadata?.uri, NetworkId.solana, cache);
   });
 
   const imageResults = await Promise.allSettled(promises);

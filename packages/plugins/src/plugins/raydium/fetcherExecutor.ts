@@ -1,5 +1,5 @@
 import {
-  Context,
+  Cache,
   FetcherExecutor,
   NetworkId,
   PortfolioAssetType,
@@ -11,9 +11,8 @@ import { platformId } from './constants';
 
 const fetcherExecutor: FetcherExecutor = async (
   owner: string,
-  context: Context
+  cache: Cache
 ) => {
-  const { cache } = context;
   const solTokenPrice = await cache.getTokenPrice(
     solanaNativeAddress,
     NetworkId.solana

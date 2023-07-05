@@ -1,5 +1,5 @@
 import {
-  Context,
+  Cache,
   FetcherExecutor,
   NetworkId,
   PortfolioAsset,
@@ -17,7 +17,7 @@ import { getClientSolana } from '../../utils/clients';
 
 const fetcherExecutor: FetcherExecutor = async (
   owner: string,
-  context: Context
+  cache: Cache
 ) => {
   const connection = getClientSolana();
   const tickets = await getParsedProgramAccounts(
@@ -29,7 +29,6 @@ const fetcherExecutor: FetcherExecutor = async (
   if (tickets.length === 0) return [];
 
   const assets: PortfolioAsset[] = [];
-  const { cache } = context;
   for (let i = 0; i < tickets.length; i += 1) {
     const ticket = tickets[i];
     const amount = ticket.lamportsAmount.div(solFactor).toNumber();

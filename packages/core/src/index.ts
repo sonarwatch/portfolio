@@ -2,7 +2,6 @@ export * from './constants';
 export * from './errors';
 export * from './utils';
 export * from './Address';
-export * from './Context';
 export * from './UsdValue';
 export * from './Client';
 export * from './Network';

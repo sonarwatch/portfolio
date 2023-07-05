@@ -1,11 +1,11 @@
-import { Context } from './Context';
+import { Cache } from './Cache';
 import { NetworkIdType } from './Network';
 import { PortfolioElement } from './Portfolio';
 import { formatAddress } from './utils';
 
 export type FetcherExecutor = (
   owner: string,
-  context: Context
+  cache: Cache
 ) => Promise<PortfolioElement[]>;
 export type Fetcher = {
   id: string;
@@ -16,8 +16,8 @@ export type Fetcher = {
 export function runFetcherExecutor(
   fetcher: Fetcher,
   owner: string,
-  context: Context
+  cache: Cache
 ) {
   const fOwner = formatAddress(owner, fetcher.networkId);
-  return fetcher.executor(fOwner, context);
+  return fetcher.executor(fOwner, cache);
 }

@@ -1,5 +1,5 @@
 import {
-  Context,
+  Cache,
   FetcherExecutor,
   NetworkId,
   PortfolioAsset,
@@ -20,9 +20,8 @@ import { tokenPriceToAssetToken } from '../../utils/misc/tokenPriceToAssetToken'
 
 const fetcherExecutor: FetcherExecutor = async (
   owner: string,
-  context: Context
+  cache: Cache
 ) => {
-  const { cache } = context;
   const connection = getClientSolana();
 
   const accounts = await getParsedProgramAccounts(
@@ -43,7 +42,7 @@ const fetcherExecutor: FetcherExecutor = async (
   if (lendingAccountBalances) {
     for (let index = 0; index < lendingAccountBalances.length; index += 1) {
       const accountBalanceInfo = lendingAccountBalances[index];
-      const bankInfo = await context?.cache.getItem<BankInfo>(
+      const bankInfo = await cache.getItem<BankInfo>(
         accountBalanceInfo.bankPk.toString(),
         {
           prefix,
