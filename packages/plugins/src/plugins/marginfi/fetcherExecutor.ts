@@ -22,7 +22,7 @@ const fetcherExecutor: FetcherExecutor = async (
   owner: string,
   context: Context
 ) => {
-  const { tokenPriceCache } = context;
+  const { cache } = context;
   const connection = getClientSolana();
 
   const accounts = await getParsedProgramAccounts(
@@ -53,7 +53,7 @@ const fetcherExecutor: FetcherExecutor = async (
       if (!bankInfo) continue;
 
       const { lendingApr, borrowingApr } = getInterestRates(bankInfo);
-      const tokenPrice = await tokenPriceCache.get(
+      const tokenPrice = await cache.getTokenPrice(
         bankInfo.mint.toString(),
         NetworkId.solana
       );

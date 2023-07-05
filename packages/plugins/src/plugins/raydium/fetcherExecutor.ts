@@ -13,8 +13,8 @@ const fetcherExecutor: FetcherExecutor = async (
   owner: string,
   context: Context
 ) => {
-  const { tokenPriceCache } = context;
-  const solTokenPrice = await tokenPriceCache.get(
+  const { cache } = context;
+  const solTokenPrice = await cache.getTokenPrice(
     solanaNativeAddress,
     NetworkId.solana
   );

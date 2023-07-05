@@ -29,11 +29,11 @@ const fetcherExecutor: FetcherExecutor = async (
   if (tickets.length === 0) return [];
 
   const assets: PortfolioAsset[] = [];
-  const { tokenPriceCache } = context;
+  const { cache } = context;
   for (let i = 0; i < tickets.length; i += 1) {
     const ticket = tickets[i];
     const amount = ticket.lamportsAmount.div(solFactor).toNumber();
-    const tokenPrice = await tokenPriceCache.get(
+    const tokenPrice = await cache.getTokenPrice(
       solanaNativeAddress,
       NetworkId.solana
     );
