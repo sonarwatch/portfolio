@@ -210,6 +210,7 @@ export function getCacheDriver(): Driver {
       return redisDriver({
         url: process.env['CACHE_DRIVER_REDIS_URL'] || '127.0.0.1:6379',
         tls: process.env['CACHE_DRIVER_REDIS_TLS'] === 'true' ? {} : undefined,
+        db: parseInt(process.env['CACHE_DRIVER_REDIS_DB'] || '0', 10),
       });
     default:
       return fsDriver({ base: './cache' });
