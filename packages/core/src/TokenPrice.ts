@@ -36,11 +36,6 @@ export type TokenPrice = {
   timestamp: number; // in ms
 };
 
-export type TokenPriceCached = {
-  tokenPrice: TokenPrice;
-  sources: TokenPriceSource[];
-};
-
 export function tokenPriceFromSources(
   sources: TokenPriceSource[]
 ): TokenPrice | undefined {
