@@ -19,7 +19,7 @@ const ttlPrefix = 'ttl';
 const tokenPriceSourcePrefix = 'tokenpricesource';
 
 export class Cache {
-  private readonly storage: Storage;
+  readonly storage: Storage;
 
   constructor(driver: Driver) {
     this.storage = createStorage({
