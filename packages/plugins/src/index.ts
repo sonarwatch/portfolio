@@ -20,6 +20,7 @@ export const jobs: Job[] = [
   ...raydiumJobs,
   ...wallettokensJobs,
 ];
+
 export const fetchers: Fetcher[] = [
   ...tensorFetchers,
   ...marginfiFetchers,
