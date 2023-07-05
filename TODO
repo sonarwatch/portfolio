@@ -2,9 +2,9 @@
 
 - Mettre un cache de cache sur TokenPrice
 - Improve generator
-- Create cache server public
 
 # DONE
 
+- Create cache server public
 - Host caches sur server
 - Merge les 2 caches
