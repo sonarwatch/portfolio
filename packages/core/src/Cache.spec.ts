@@ -20,6 +20,34 @@ describe('Cache', () => {
     expect(item).toBe(value);
   });
 
+  it('should use token price cache', async () => {
+    const driver = memoryDriver();
+    const cache = new Cache(driver);
+    const sourceA: TokenPriceSource = {
+      address: '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R',
+      decimals: 9,
+      id: 'sourceA',
+      isBase: true,
+      networkId: NetworkId.solana,
+      price: 1,
+      timestamp: Date.now(),
+      weight: 0.5,
+    };
+    await cache.setTokenPriceSource(sourceA);
+    const tokenPrice = await cache.getTokenPrice(
+      sourceA.address,
+      NetworkId.solana
+    );
+    expect(tokenPrice).toBeDefined();
+    expect(tokenPrice?.price).toBe(1);
+    const fasterTokenPrice = await cache.getTokenPrice(
+      sourceA.address,
+      NetworkId.solana
+    );
+    expect(fasterTokenPrice).toBeDefined();
+    expect(fasterTokenPrice?.price).toBe(1);
+  });
+
   it('should set token price sources', async () => {
     const driver = memoryDriver();
     const cache = new Cache(driver);

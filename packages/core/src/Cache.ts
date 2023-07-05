@@ -18,9 +18,16 @@ export type TransactionOptions = {
 };
 const ttlPrefix = 'ttl';
 const tokenPriceSourcePrefix = 'tokenpricesource';
+const tokenPricesCacheTtl = 10 * 1000;
+
+type CachedTokenPrice = {
+  tp: TokenPrice;
+  ts: number;
+};
 
 export class Cache {
   readonly storage: Storage;
+  private tokenPricesCache: Map<string, CachedTokenPrice> = new Map();
 
   constructor(driver: Driver) {
     this.storage = createStorage({
@@ -56,10 +63,38 @@ export class Cache {
     return this.storage.getItem(fullKey) as Promise<K | undefined>;
   }
 
+  async getCachedTokenPrice(address: string, networkId: NetworkIdType) {
+    const cachedTokenPrice = this.tokenPricesCache.get(
+      getTokenPriceCacheKey(address, networkId)
+    );
+    if (!cachedTokenPrice) {
+      this.tokenPricesCache.delete(getTokenPriceCacheKey(address, networkId));
+      return undefined;
+    }
+    if (Date.now() > cachedTokenPrice.ts + tokenPricesCacheTtl) {
+      this.tokenPricesCache.delete(getTokenPriceCacheKey(address, networkId));
+      return undefined;
+    }
+    return cachedTokenPrice.tp;
+  }
+
   async getTokenPrice(address: string, networkId: NetworkIdType) {
+    // Check if in cache
+    const cTokenPrice = await this.getCachedTokenPrice(address, networkId);
+    if (cTokenPrice) return cTokenPrice;
+
     const sources = await this.getTokenPriceSources(address, networkId);
     if (!sources) return undefined;
     const tokenPrice = tokenPriceFromSources(sources);
+
+    // Set in cache if tokenPrice is valide
+    if (tokenPrice) {
+      this.tokenPricesCache.set(getTokenPriceCacheKey(address, networkId), {
+        tp: tokenPrice,
+        ts: Date.now(),
+      });
+    }
+
     return tokenPrice;
   }
 
@@ -176,6 +211,13 @@ export class Cache {
   dispose() {
     return this.storage.dispose();
   }
+}
+
+function getTokenPriceCacheKey(
+  address: string,
+  networkId: NetworkIdType
+): string {
+  return `${address}-${networkId}`;
 }
 
 function getFullKey(key: string, opts: TransactionOptions): string {
