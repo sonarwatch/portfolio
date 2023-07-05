@@ -1,10 +1,10 @@
-/* eslint-disable no-constant-condition */
 import { getCache } from '@sonarwatch/portfolio-core';
 import { jobs } from '../src';
 import sleep from '../src/utils/misc/sleep';
 
 async function main() {
   const cache = getCache();
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     for (let i = 0; i < jobs.length; i += 1) {
       const job = jobs[i];
