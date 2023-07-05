@@ -13,8 +13,10 @@ import {
   fetchers as marginfiFetchers,
 } from './plugins/marginfi';
 import { fetchers as tensorFetchers } from './plugins/tensor';
+import { jobs as fooJobs, fetchers as fooFetchers } from './plugins/foo';
 
 export const jobs: Job[] = [
+  ...fooJobs,
   ...marginfiJobs,
   ...marinadeJobs,
   ...raydiumJobs,
@@ -22,6 +24,7 @@ export const jobs: Job[] = [
 ];
 
 export const fetchers: Fetcher[] = [
+  ...fooFetchers,
   ...tensorFetchers,
   ...marginfiFetchers,
   ...marinadeFetchers,
