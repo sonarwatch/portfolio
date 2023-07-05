@@ -7,6 +7,7 @@ import {
   PortfolioAssetType,
   PortfolioElementMultiple,
   PortfolioElementType,
+  getUsdValueSumStrict,
   solanaNativeAddress,
 } from '@sonarwatch/portfolio-core';
 import { getParsedProgramAccounts } from '../../utils/solana';
@@ -58,7 +59,7 @@ const fetcherExecutor: FetcherExecutor = async (
     networkId: NetworkId.solana,
     platformId,
     label: 'Rewards',
-    value: null,
+    value: getUsdValueSumStrict(assets.map((a) => a.value)),
     data: {
       assets,
     },
