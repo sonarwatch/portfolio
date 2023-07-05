@@ -194,9 +194,7 @@ function getDriver(): Driver {
   switch (process.env['CACHE_DRIVER']) {
     case 'filesystem':
       return fsDriver({
-        base: process.env['CACHE_FILESYSTEM_BASE']
-          ? `${process.env['CACHE_FILESYSTEM_BASE']}/main`
-          : './cache/main',
+        base: process.env['CACHE_FILESYSTEM_BASE'] || './cache',
       });
     case 'mongodb':
       return mongodbDriver({
@@ -204,16 +202,15 @@ function getDriver(): Driver {
           process.env['CACHE_MONGODB_CONNECTION'] ||
           'mongodb://localhost:27017/',
         databaseName: process.env['CACHE_MONGODB_DATABASE'] || 'portfolio',
-        collectionName: 'main',
+        collectionName: 'cache',
       });
     case 'redis':
       return redisDriver({
         url: process.env['CACHE_REDIS_URL'] || '127.0.0.1:6379',
         tls: process.env['CACHE_REDIS_TLS'] === 'true' ? {} : undefined,
-        base: 'main',
       });
     default:
-      return fsDriver({ base: './cache/main' });
+      return fsDriver({ base: './cache' });
   }
 }
 
