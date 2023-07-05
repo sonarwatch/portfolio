@@ -2,6 +2,7 @@ import { Storage, createStorage, StorageValue, Driver } from 'unstorage';
 import fsDriver from 'unstorage/drivers/fs';
 import mongodbDriver from 'unstorage/drivers/mongodb';
 import redisDriver from 'unstorage/drivers/redis';
+import httpDriver from 'unstorage/drivers/http';
 
 import { NetworkIdType } from './Network';
 import {
@@ -190,24 +191,25 @@ function getFullBase(opts: TransactionOptions) {
   return fullBase;
 }
 
-function getDriver(): Driver {
-  switch (process.env['CACHE_DRIVER']) {
+export function getCacheDriver(): Driver {
+  switch (process.env['CACHE_DRIVER_TYPE']) {
     case 'filesystem':
       return fsDriver({
-        base: process.env['CACHE_FILESYSTEM_BASE'] || './cache',
+        base: process.env['CACHE_DRIVER_FILESYSTEM_BASE'] || './cache',
       });
     case 'mongodb':
       return mongodbDriver({
         connectionString:
-          process.env['CACHE_MONGODB_CONNECTION'] ||
+          process.env['CACHE_DRIVER_MONGODB_CONNECTION'] ||
           'mongodb://localhost:27017/',
-        databaseName: process.env['CACHE_MONGODB_DATABASE'] || 'portfolio',
+        databaseName:
+          process.env['CACHE_DRIVER_MONGODB_DATABASE'] || 'portfolio',
         collectionName: 'cache',
       });
     case 'redis':
       return redisDriver({
-        url: process.env['CACHE_REDIS_URL'] || '127.0.0.1:6379',
-        tls: process.env['CACHE_REDIS_TLS'] === 'true' ? {} : undefined,
+        url: process.env['CACHE_DRIVER_REDIS_URL'] || '127.0.0.1:6379',
+        tls: process.env['CACHE_DRIVER_REDIS_TLS'] === 'true' ? {} : undefined,
       });
     default:
       return fsDriver({ base: './cache' });
@@ -215,5 +217,17 @@ function getDriver(): Driver {
 }
 
 export function getCache() {
-  return new Cache(getDriver());
+  const base = process.env['CACHE_SERVER_ENDPOINT'] || 'http://localhost:3000/';
+  const bearerToken = process.env['CACHE_SERVER_BEARER_TOKEN'];
+  const headers = bearerToken
+    ? {
+        Authorization: `Bearer ${bearerToken}`,
+      }
+    : undefined;
+
+  const driver = httpDriver({
+    base,
+    headers,
+  });
+  return new Cache(driver);
 }
