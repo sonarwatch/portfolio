@@ -9,5 +9,7 @@ export * from './formatTokenPrice';
 export * from './formatUniTokenInfo';
 export * from './getAssetsFromElement';
 export * from './getAssetsFromElements';
+export * from './getUsdValueSum';
+export * from './getUsdValueSumStrict';
 export * from './sortPortfolioElement';
 export * from './sortPortfolioElements';
