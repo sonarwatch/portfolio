@@ -1,18 +1,4 @@
-import { Fetcher, Job, NetworkId } from '@sonarwatch/portfolio-core';
-import jobExecutor from './jobExecutor';
-import fetcherExecutor from './fetcherExecutor';
+import { Fetcher } from '@sonarwatch/portfolio-core';
+import ticketsFetcher from './ticketsFetcher';
 
-export const jobs: Job[] = [
-  {
-    id: 'marinade',
-    executor: jobExecutor,
-  },
-];
-
-export const fetchers: Fetcher[] = [
-  {
-    id: 'marinade',
-    networkId: NetworkId.solana,
-    executor: fetcherExecutor,
-  },
-];
+export const fetchers: Fetcher[] = [ticketsFetcher];

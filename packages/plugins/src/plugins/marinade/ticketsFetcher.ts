@@ -1,5 +1,6 @@
 import {
   Cache,
+  Fetcher,
   FetcherExecutor,
   NetworkId,
   PortfolioAsset,
@@ -16,10 +17,7 @@ import { ticketStruct } from './structs';
 import { ticketFilters } from './filters';
 import { getClientSolana } from '../../utils/clients';
 
-const fetcherExecutor: FetcherExecutor = async (
-  owner: string,
-  cache: Cache
-) => {
+const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
   const tickets = await getParsedProgramAccounts(
     connection,
@@ -66,4 +64,11 @@ const fetcherExecutor: FetcherExecutor = async (
   };
   return [element];
 };
-export default fetcherExecutor;
+
+const fetcher: Fetcher = {
+  id: `${platformId}-tickets`,
+  networkId: NetworkId.solana,
+  executor,
+};
+
+export default fetcher;
