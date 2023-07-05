@@ -1,8 +1,10 @@
 # TODO
 
 - Mettre un cache de cache sur TokenPrice
-- Host caches sur server
+- Improve generator
+- Create cache server public
 
 # DONE
 
+- Host caches sur server
 - Merge les 2 caches
