@@ -1,0 +1,1 @@
+web: node ./dist/apps/api-main/main.js
