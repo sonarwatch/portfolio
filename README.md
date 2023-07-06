@@ -35,7 +35,8 @@ Just run `nx build demoapp` to build the application. The build artifacts will b
 ## Deploy
 
 ```bash
-npx nx run-many -t version
+npx nx run core:version --releaseAs=patch
+npx nx run plugins:version --releaseAs=patch
 
 npx nx run core:version --releaseAs=minor
 npx nx run plugins:version --releaseAs=minor
