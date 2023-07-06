@@ -16,4 +16,3 @@ export const jobs: Job[] = [
     executor: jobExecutorGenerator(NetworkId.avalanche),
   },
 ];
-console.log('jobs:', jobs);
