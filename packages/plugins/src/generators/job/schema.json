@@ -4,22 +4,14 @@
   "title": "",
   "type": "object",
   "properties": {
-    "jobName": {
-      "type": "string",
-      "description": "",
-      "$default": {
-        "$source": "argv",
-        "index": 0
-      },
-      "x-prompt": "What name would you like to use?"
-    },
     "pluginId": {
       "type": "string",
-      "description": "",
-      "$default": {
-        "$source": "argv",
-        "index": 1
-      },
+      "description": "Plugin in which the Job will be placed",
+      "x-prompt": "In which plugin should the job be placed??"
+    },
+    "jobName": {
+      "type": "string",
+      "description": "Name of the job",
       "x-prompt": "What name would you like to use?"
     }
   },
