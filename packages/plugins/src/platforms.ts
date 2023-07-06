@@ -1,4 +1,4 @@
-import { Platform } from '../Platform';
+import { Platform } from '@sonarwatch/portfolio-core';
 
 export const marinadePlatform: Platform = {
   id: 'marinade',
@@ -19,4 +19,14 @@ export const wallettokensPlatform: Platform = {
   id: 'wallettokens',
   name: 'Tokens',
   image: 'https://beta.sonar.watch/img/platforms/wallettokens.png',
+};
+export const marginfiPlatform: Platform = {
+  id: 'marginfi',
+  name: 'Marginfi',
+  image: 'https://beta.sonar.watch/img/platforms/marginfi.png',
+};
+export const tensorPlatform: Platform = {
+  id: 'tensor',
+  name: 'Tensor',
+  image: 'https://beta.sonar.watch/img/platforms/tensor.png',
 };
