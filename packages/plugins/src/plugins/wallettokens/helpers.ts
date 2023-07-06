@@ -1,5 +1,9 @@
 import axios, { AxiosResponse } from 'axios';
-import { NetworkIdType, TokenPriceSource } from '@sonarwatch/portfolio-core';
+import {
+  NetworkIdType,
+  TokenPriceSource,
+  UniTokenList,
+} from '@sonarwatch/portfolio-core';
 import { nIdsToFetch, coingeckoCoinsPriceUrl } from './constants';
 import { CoingeckoSimpleRes, TokenData } from './types';
 import shuffleArray from '../../utils/misc/shuffleArray';
@@ -70,4 +74,24 @@ async function getPricesFromCoingeckoIds(
     await sleep(5000);
   }
   return priceByCoingeckoId;
+}
+
+export async function getTokensData(
+  tokenList: UniTokenList
+): Promise<TokenData[]> {
+  const tokensData = tokenList.tokens.reduce((cTokensData: TokenData[], ti) => {
+    if (!ti.extensions) return cTokensData;
+    const { coingeckoId } = ti.extensions;
+    if (typeof coingeckoId !== 'string') return cTokensData;
+
+    const tokenData: TokenData = {
+      address: ti.address,
+      coingeckoId,
+      decimals: ti.decimals,
+      isBase: true,
+    };
+    cTokensData.push(tokenData);
+    return cTokensData;
+  }, []);
+  return tokensData;
 }
