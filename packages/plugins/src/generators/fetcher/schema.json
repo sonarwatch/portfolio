@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "Fetcher",
+  "title": "",
+  "type": "object",
+  "properties": {
+    "pluginId": {
+      "type": "string",
+      "description": "Plugin in which the Fetcher will be placed",
+      "x-prompt": "In which plugin should the fetcher be placed??"
+    },
+    "fetcherName": {
+      "type": "string",
+      "description": "Name of the fetcher",
+      "x-prompt": "What name would you like to use for your fetcher?"
+    },
+    "networkId": {
+      "type": "string",
+      "description": "NetworkId of the fetcher",
+      "x-prompt": "What is the networkId of the fetcher?"
+    }
+  },
+  "required": ["pluginId", "fetcherName", "networkId"]
+}
