@@ -7,9 +7,7 @@ import { PluginGeneratorSchema } from './schema.d';
 describe('plugin generator', () => {
   let tree: Tree;
   const options: PluginGeneratorSchema = {
-    id: 'test',
-    addFetcher: true,
-    addJob: true,
+    id: 'foo',
   };
 
   beforeEach(() => {

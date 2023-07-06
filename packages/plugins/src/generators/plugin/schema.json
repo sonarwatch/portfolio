@@ -12,24 +12,6 @@
         "index": 0
       },
       "x-prompt": "What id would you like to use for your adapter?"
-    },
-    "addJob": {
-      "type": "boolean",
-      "default": true,
-      "description": "Whether or not to add a Job to the plugin",
-      "x-prompt": {
-        "type": "boolean",
-        "message": "Do you want to add a Job to your plugin?"
-      }
-    },
-    "addFetcher": {
-      "type": "boolean",
-      "default": true,
-      "description": "Whether or not to add a Fetcher to the plugin",
-      "x-prompt": {
-        "type": "boolean",
-        "message": "Do you want to add a Fetcher to your plugin?"
-      }
     }
   },
   "required": ["id"]
