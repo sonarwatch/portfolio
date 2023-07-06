@@ -11,6 +11,9 @@ cp .env.example .env
 # Generate a plugin
 npx nx generate @sonarwatch/portfolio-plugins:plugin my-super-protocol
 
+# Generator a job
+npx nx generate @sonarwatch/portfolio-plugins:job --jobName=test --pluginId=foo
+
 # Run cache-server in background
 npx nx run cache-server:serve
 
