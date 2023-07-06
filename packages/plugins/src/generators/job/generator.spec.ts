@@ -6,7 +6,7 @@ import { JobGeneratorSchema } from './schema.d';
 
 describe('job generator', () => {
   let tree: Tree;
-  const options: JobGeneratorSchema = { name: 'test', pluginId: 'foo' };
+  const options: JobGeneratorSchema = { jobName: 'test', pluginId: 'foo' };
 
   beforeEach(() => {
     tree = createTreeWithEmptyWorkspace();

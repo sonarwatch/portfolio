@@ -6,19 +6,7 @@ import {
 } from '@nx/devkit';
 import * as path from 'path';
 import { PluginGeneratorSchema } from './schema.d';
-
-const toKebabCaseRegexp =
-  /[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g;
-
-function toKebabCase(str: string): string {
-  if (!str) return '';
-  return (
-    str
-      .match(toKebabCaseRegexp)
-      ?.map((x) => x.toLowerCase())
-      .join('-') || ''
-  );
-}
+import { toKebabCase } from '../helpers';
 
 function trimAndUpper(text: string) {
   return text.replace(/-/, '').toUpperCase();

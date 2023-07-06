@@ -4,7 +4,7 @@
   "title": "",
   "type": "object",
   "properties": {
-    "name": {
+    "jobName": {
       "type": "string",
       "description": "",
       "$default": {
@@ -23,5 +23,5 @@
       "x-prompt": "What name would you like to use?"
     }
   },
-  "required": ["name", "pluginId"]
+  "required": ["jobName", "pluginId"]
 }

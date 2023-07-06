@@ -5,7 +5,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   // do some stuff
 };
 const job: Job = {
-  id: `${platformId}-<%= name %>`,
+  id: `${platformId}-<%= jobName %>`,
   executor,
 };
 export default job;

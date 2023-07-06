@@ -1,4 +1,4 @@
 export interface JobGeneratorSchema {
-  name: string;
+  jobName: string;
   pluginId: string;
 }
