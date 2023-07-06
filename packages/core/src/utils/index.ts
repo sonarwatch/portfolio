@@ -13,3 +13,4 @@ export * from './getUsdValueSum';
 export * from './getUsdValueSumStrict';
 export * from './sortPortfolioElement';
 export * from './sortPortfolioElements';
+export * from './assetNetworkId';
