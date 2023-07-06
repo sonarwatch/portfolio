@@ -15,10 +15,10 @@ export const walletnftsPlatform: Platform = {
   name: 'NFTs',
   image: 'https://beta.sonar.watch/img/platforms/walletnfts.png',
 };
-export const wallettokensPlatform: Platform = {
-  id: 'wallettokens',
+export const walletTokensPlatform: Platform = {
+  id: 'wallet-tokens',
   name: 'Tokens',
-  image: 'https://beta.sonar.watch/img/platforms/wallettokens.png',
+  image: 'https://beta.sonar.watch/img/platforms/wallet-tokens.png',
 };
 export const marginfiPlatform: Platform = {
   id: 'marginfi',
