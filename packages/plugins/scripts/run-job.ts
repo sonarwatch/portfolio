@@ -16,9 +16,12 @@ async function runJob() {
 
   const cache = getCache();
 
+  const startDate = Date.now();
   console.log(`Running job: ${jobId}`);
   await job.executor(cache);
-  console.log('Finished');
+
+  const duration = ((Date.now() - startDate) / 1000).toFixed(2);
+  console.log(`Finished (${duration}s)`);
   process.exit(0);
 }
 
