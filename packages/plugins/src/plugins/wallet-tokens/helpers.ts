@@ -71,7 +71,7 @@ async function getPricesFromCoingeckoIds(
       if (!usd) continue;
       priceByCoingeckoId.set(id, usd);
     }
-    await sleep(5000);
+    await sleep(10000);
   }
   return priceByCoingeckoId;
 }

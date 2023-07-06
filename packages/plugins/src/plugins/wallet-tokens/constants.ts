@@ -1,4 +1,4 @@
-export const nIdsToFetch = 10;
+export const nIdsToFetch = 50;
 
 // Coingecko URLs
 export const coingeckoCoinsListUrl =
