@@ -14,10 +14,6 @@
         "assets": ["packages/plugins/*.md"]
       }
     },
-    "serve-jobs": {
-      "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/serve-jobs.ts",
-      "dependsOn": ["build"]
-    },
     "run-fetcher": {
       "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/run-fetcher.ts",
       "dependsOn": ["build"]
