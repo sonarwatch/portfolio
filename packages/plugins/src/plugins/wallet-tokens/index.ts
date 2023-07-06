@@ -15,4 +15,12 @@ export const jobs: Job[] = [
     id: `${walletTokensPlatform.id}-${NetworkId.avalanche}`,
     executor: jobExecutorGenerator(NetworkId.avalanche),
   },
+  {
+    id: `${walletTokensPlatform.id}-${NetworkId.aptos}`,
+    executor: jobExecutorGenerator(NetworkId.aptos),
+  },
+  {
+    id: `${walletTokensPlatform.id}-${NetworkId.sui}`,
+    executor: jobExecutorGenerator(NetworkId.sui),
+  },
 ];
