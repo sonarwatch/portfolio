@@ -1,7 +1,11 @@
 import { listen } from 'listhen';
 import { createStorageServer } from 'unstorage/server';
-import { jobs } from '@sonarwatch/portfolio-plugins';
-import { Cache, getCacheDriver } from '@sonarwatch/portfolio-core';
+import {
+  jobs as portfolioJobs,
+  walletTokensPlatform,
+} from '@sonarwatch/portfolio-plugins';
+import { Cache, Job, getCacheDriver } from '@sonarwatch/portfolio-core';
+import durationForHumans, { sleep } from './helpers';
 
 const isServerPublic = process.env['CACHE_SERVER_PUBLIC'] === 'true';
 const bearerToken = process.env['CACHE_SERVER_BEARER_TOKEN'];
@@ -32,15 +36,37 @@ const storageServer = createStorageServer(cache.storage, {
 
 async function main() {
   await listen(storageServer.handle);
+
+  // Split jobs into 2 arrays of jobs
+  const [walletTokensJobs, otherJobs] = portfolioJobs.reduce(
+    ([pass, fail]: [Job[], Job[]], elem: Job): [Job[], Job[]] =>
+      elem.id.startsWith(walletTokensPlatform.id)
+        ? [[...pass, elem], fail]
+        : [pass, [...fail, elem]],
+    [[], []]
+  );
+
+  runJobs(walletTokensJobs);
+  runJobs(otherJobs);
+}
+
+async function runJobs(jobs: Job[]) {
   // eslint-disable-next-line no-constant-condition
   while (true) {
     for (let i = 0; i < jobs.length; i += 1) {
       const job = jobs[i];
-      await job.executor(cache).catch((e) => {
-        console.error(`job executor error: ${job.id}`, e);
+      const startDate = Date.now();
+      let failed = false;
+
+      await job.executor(cache).catch(() => {
+        failed = true;
       });
-      console.info(`job executor success: ${job.id}`);
+
+      const duration = durationForHumans(Date.now() - startDate);
+      console.info(`${job.id} [${failed ? 'FAILED' : 'SUCCESS'}][${duration}]`);
+      await sleep(5000);
     }
+    await sleep(5000);
   }
 }
 
