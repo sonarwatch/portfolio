@@ -1,7 +1,7 @@
 import { assertAddressSystem } from './assertAddressSystem';
 
 describe('assertAddressSystem', () => {
-  it('should works', async () => {
+  it('should works', () => {
     const addressSystem = assertAddressSystem('move');
     expect(addressSystem).toBeDefined();
     expect(() => {
