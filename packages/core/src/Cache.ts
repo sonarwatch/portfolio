@@ -24,11 +24,55 @@ type CachedTokenPrice = {
   ts: number;
 };
 
+export type CacheConfig =
+  | CacheConfigRedis
+  | CacheConfigFilesystem
+  | CacheConfigHttp;
+
+export type CacheConfigHttp = {
+  type: 'http';
+  params: CacheConfigHttpParams;
+};
+export type CacheConfigHttpParams = {
+  base: string;
+  headers?: Record<string, string>;
+};
+
+export type CacheConfigRedis = {
+  type: 'redis';
+  params: CacheConfigRedisParams;
+};
+export type CacheConfigRedisParams = {
+  url: string;
+  tls: boolean;
+  db: number;
+};
+
+export type CacheConfigFilesystem = {
+  type: 'filesystem';
+  params: CacheConfigFilesystemParams;
+};
+export type CacheConfigFilesystemParams = {
+  base: string;
+};
+
+export type CacheConfigParams = {
+  filesystem: {
+    endpoint: string;
+  };
+  redis: {
+    url: string;
+    tls: boolean;
+    db: number;
+  };
+};
+
 export class Cache {
   readonly storage: Storage;
   private tokenPricesCache: Map<string, CachedTokenPrice> = new Map();
 
-  constructor(driver: Driver) {
+  constructor(cacheConfig: CacheConfig) {
+    const driver = getDriverFromCacheConfig(cacheConfig);
     this.storage = createStorage({
       driver,
     });
@@ -232,44 +276,70 @@ function getFullBase(opts: TransactionOptions) {
   return fullBase;
 }
 
-export function getCacheDriver(): Driver {
-  switch (process.env['CACHE_DRIVER_TYPE']) {
+function getDriverFromCacheConfig(cacheConfig: CacheConfig) {
+  switch (cacheConfig.type) {
     case 'filesystem':
       return fsDriver({
-        base: process.env['CACHE_DRIVER_FILESYSTEM_BASE'] || './cache',
-      });
-    // case 'mongodb':
-    //   return mongodbDriver({
-    //     connectionString:
-    //       process.env['CACHE_DRIVER_MONGODB_CONNECTION'] ||
-    //       'mongodb://localhost:27017/',
-    //     databaseName:
-    //       process.env['CACHE_DRIVER_MONGODB_DATABASE'] || 'portfolio',
-    //     collectionName: 'cache',
-    //   });
+        base: cacheConfig.params.base,
+      }) as Driver;
     case 'redis':
       return redisDriver({
-        url: process.env['CACHE_DRIVER_REDIS_URL'] || '127.0.0.1:6379',
-        tls: process.env['CACHE_DRIVER_REDIS_TLS'] === 'true' ? {} : undefined,
-        db: parseInt(process.env['CACHE_DRIVER_REDIS_DB'] || '0', 10),
-      });
+        url: cacheConfig.params.url,
+        tls: cacheConfig.params.tls ? {} : undefined,
+        db: cacheConfig.params.db,
+      }) as Driver;
+    case 'http':
+      return httpDriver({
+        base: cacheConfig.params.base,
+        headers: cacheConfig.params.headers,
+      }) as Driver;
     default:
-      return fsDriver({ base: './cache' });
+      throw new Error('CacheConfig type is not valid');
+  }
+}
+
+export function getCacheConfig(): CacheConfig {
+  switch (process.env['CACHE_CONFIG_TYPE']) {
+    case 'filesystem':
+      return {
+        type: 'filesystem',
+        params: {
+          base: process.env['CACHE_CONFIG_FILESYSTEM_BASE'] || './cache',
+        },
+      };
+    case 'redis':
+      return {
+        type: 'redis',
+        params: {
+          url: process.env['CACHE_CONFIG_REDIS_URL'] || '127.0.0.1:6379',
+          tls: process.env['CACHE_CONFIG_REDIS_TLS'] === 'true',
+          db: parseInt(process.env['CACHE_CONFIG_REDIS_DB'] || '0', 10),
+        },
+      };
+    case 'http':
+      return {
+        type: 'http',
+        params: {
+          base:
+            process.env['CACHE_CONFIG_HTTP_BASE'] || 'http://localhost:3000/',
+          headers: process.env['CACHE_CONFIG_HTTP_BEARER']
+            ? {
+                Authorization: `Bearer ${process.env['CACHE_CONFIG_HTTP_BEARER']}`,
+              }
+            : undefined,
+        },
+      };
+    default:
+      return {
+        type: 'filesystem',
+        params: {
+          base: process.env['CACHE_CONFIG_FILESYSTEM_BASE'] || './cache',
+        },
+      };
   }
 }
 
 export function getCache() {
-  const base = process.env['CACHE_SERVER_ENDPOINT'] || 'http://localhost:3000/';
-  const bearerToken = process.env['CACHE_SERVER_BEARER_TOKEN'];
-  const headers = bearerToken
-    ? {
-        Authorization: `Bearer ${bearerToken}`,
-      }
-    : undefined;
-
-  const driver = httpDriver({
-    base,
-    headers,
-  });
-  return new Cache(driver);
+  const cacheConfig = getCacheConfig();
+  return new Cache(cacheConfig);
 }

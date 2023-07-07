@@ -3,7 +3,7 @@ import { Cache } from './Cache';
 import { NetworkIdType } from './Network';
 import { PortfolioElement } from './Portfolio';
 import { networks } from './constants';
-import { formatAddress } from './utils';
+import { formatAddress, formatAddressByNetworkId } from './utils';
 
 export type FetcherExecutor = (
   owner: string,
@@ -80,5 +80,6 @@ export async function runFetchersByNetworkId(
 }
 
 export function runFetcher(owner: string, fetcher: Fetcher, cache: Cache) {
-  return runFetchersByNetworkId(owner, fetcher.networkId, [fetcher], cache);
+  const fOwner = formatAddressByNetworkId(owner, fetcher.networkId);
+  return fetcher.executor(fOwner, cache);
 }

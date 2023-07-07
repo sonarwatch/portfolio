@@ -4,25 +4,24 @@ import {
   jobs as portfolioJobs,
   walletTokensPlatform,
 } from '@sonarwatch/portfolio-plugins';
-import { Cache, Job, getCacheDriver } from '@sonarwatch/portfolio-core';
+import { Job, getCache } from '@sonarwatch/portfolio-core';
 import durationForHumans, { sleep } from './helpers';
 
-const isServerPublic = process.env['CACHE_SERVER_PUBLIC'] === 'true';
-const bearerToken = process.env['CACHE_SERVER_BEARER_TOKEN'];
+const isPublic = process.env['IS_PUBLIC'] === 'true';
+const bearerToken = process.env['BEARER_TOKEN'];
 const expectedAuthorizationHeader = `Bearer ${bearerToken}`;
 
-if (!isServerPublic && (!bearerToken || bearerToken === '')) {
+if (!isPublic && (!bearerToken || bearerToken === '')) {
   console.error('Server is not public and bearer token is missing');
   process.exit(1);
 }
 
-const driver = getCacheDriver();
-const cache = new Cache(driver);
+const cache = getCache();
 
 const storageServer = createStorageServer(cache.storage, {
   authorize(req) {
     // Always authorize when server is public
-    if (isServerPublic) return;
+    if (isPublic) return;
 
     // Always authorize reading
     if (req.type === 'read') return;
