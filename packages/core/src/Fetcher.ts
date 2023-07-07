@@ -36,7 +36,9 @@ export async function runFetchers(
     (f) => networks[f.networkId].addressSystem === addressSystem
   );
   if (!isFetchersValids)
-    throw new Error('Not all fetchers have the right address system');
+    throw new Error(
+      `Not all fetchers have the right address system: ${addressSystem}`
+    );
 
   const promises = fetchers.map((f) => f.executor(fOwner, cache));
   const result = await Promise.allSettled(promises);
@@ -69,6 +71,10 @@ export async function runFetchersByNetworkId(
   fetchers: Fetcher[],
   cache: Cache
 ) {
+  const isFetchersValids = fetchers.every((f) => f.networkId === networkId);
+  if (!isFetchersValids)
+    throw new Error(`Not all fetchers have the right network id: ${networkId}`);
+
   const { addressSystem } = networks[networkId];
   return runFetchers(owner, addressSystem, fetchers, cache);
 }
