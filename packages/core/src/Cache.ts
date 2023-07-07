@@ -1,6 +1,5 @@
 import { Storage, createStorage, StorageValue, Driver } from 'unstorage';
 import fsDriver from 'unstorage/drivers/fs';
-import mongodbDriver from 'unstorage/drivers/mongodb';
 import redisDriver from 'unstorage/drivers/redis';
 import httpDriver from 'unstorage/drivers/http';
 
@@ -239,15 +238,15 @@ export function getCacheDriver(): Driver {
       return fsDriver({
         base: process.env['CACHE_DRIVER_FILESYSTEM_BASE'] || './cache',
       });
-    case 'mongodb':
-      return mongodbDriver({
-        connectionString:
-          process.env['CACHE_DRIVER_MONGODB_CONNECTION'] ||
-          'mongodb://localhost:27017/',
-        databaseName:
-          process.env['CACHE_DRIVER_MONGODB_DATABASE'] || 'portfolio',
-        collectionName: 'cache',
-      });
+    // case 'mongodb':
+    //   return mongodbDriver({
+    //     connectionString:
+    //       process.env['CACHE_DRIVER_MONGODB_CONNECTION'] ||
+    //       'mongodb://localhost:27017/',
+    //     databaseName:
+    //       process.env['CACHE_DRIVER_MONGODB_DATABASE'] || 'portfolio',
+    //     collectionName: 'cache',
+    //   });
     case 'redis':
       return redisDriver({
         url: process.env['CACHE_DRIVER_REDIS_URL'] || '127.0.0.1:6379',
