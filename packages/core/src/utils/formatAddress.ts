@@ -36,10 +36,19 @@ const formatters: Record<AddressSystemType, (address: string) => string> = {
   [AddressSystem.move]: formatMoveAddress,
 };
 
-export function formatAddress(address: string, networkId: NetworkIdType) {
+export function formatAddress(
+  address: string,
+  addressSystem: AddressSystemType
+) {
+  const formatter = formatters[addressSystem];
+  return formatter(address);
+}
+
+export function formatAddressByNetworkId(
+  address: string,
+  networkId: NetworkIdType
+) {
   const network = networks[networkId];
   if (!network) throw new Error(`NetworkId not supported: ${networkId}`);
-
-  const formatter = formatters[network.addressSystem];
-  return formatter(address);
+  return formatAddress(address, network.addressSystem);
 }

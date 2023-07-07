@@ -1,5 +1,5 @@
 import util from 'node:util';
-import { getCache, runFetcherExecutor } from '@sonarwatch/portfolio-core';
+import { getCache, runFetcher } from '@sonarwatch/portfolio-core';
 import { fetchers } from '../src';
 
 const fetcherId = process.argv.at(2);
@@ -10,7 +10,7 @@ if (!fetcherId || fetcherId === '') {
 
 const owner = process.argv.at(3);
 
-async function runFetcher() {
+async function main() {
   const fetcher = fetchers.find((f) => f.id === fetcherId);
   if (!fetcher) {
     console.error(`Fetcher cannot be found: ${fetcherId}`);
@@ -24,10 +24,10 @@ async function runFetcher() {
   const cache = getCache();
 
   console.log('Fetching...');
-  const elements = await runFetcherExecutor(fetcher, owner, cache);
+  const elements = await runFetcher(owner, fetcher, cache);
   console.log('Portfolio elements:');
   console.log(util.inspect(elements, false, null, true));
   process.exit(0);
 }
 
-runFetcher();
+main();
