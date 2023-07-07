@@ -12,5 +12,7 @@ export function assertNetworkIdIncluded(
   networkIds: NetworkIdType[]
 ): void {
   if (!isNetworkIdIncluded(networkId, networkIds))
-    throw new Error(`Network id is not included: ${networkId} [${networkIds.join(',')}]`);
+    throw new Error(
+      `Network id is not included: ${networkId} [${networkIds.join(',')}]`
+    );
 }
