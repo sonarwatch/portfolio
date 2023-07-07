@@ -1,4 +1,3 @@
-import crypto from 'node:crypto';
 import { getAddress } from '@ethersproject/address';
 import { NetworkIdType } from '../Network';
 import { AddressSystem, AddressSystemType } from '../Address';
@@ -9,6 +8,8 @@ import {
   assertMoveTokenAddress,
   assertSolanaTokenAddress,
 } from './validTokenAddress';
+import { md5 } from './md5';
+import { isMd5 } from './isMd5';
 
 export function formatBitcoinTokenAddress(address: string) {
   assertBitcoinTokenAddress(address);
@@ -17,7 +18,8 @@ export function formatBitcoinTokenAddress(address: string) {
 
 export function formatMoveTokenAddress(address: string) {
   assertMoveTokenAddress(address);
-  return crypto.createHash('md5').update(address).digest('hex');
+  if (isMd5(address)) return address;
+  return md5(address);
 }
 
 export function formatEvmTokenAddress(address: string) {
