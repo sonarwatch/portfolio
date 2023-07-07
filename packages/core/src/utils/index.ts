@@ -14,3 +14,4 @@ export * from './getUsdValueSumStrict';
 export * from './sortPortfolioElement';
 export * from './sortPortfolioElements';
 export * from './assertNetworkId';
+export * from './assertAddressSystem';
