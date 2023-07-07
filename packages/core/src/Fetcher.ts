@@ -23,7 +23,7 @@ export type FetcherResult = {
   succeededFetcherIds: string[];
   failedFetcherIds: string[];
   elements: PortfolioElement[];
-  errors: Error[];
+  errors: Record<string, string>;
 };
 
 export async function runFetchers(
@@ -46,12 +46,12 @@ export async function runFetchers(
 
   const failedFetcherIds: string[] = [];
   const succeededFetcherIds: string[] = [];
-  const errors: Error[] = [];
+  const errors: Record<string, string> = {};
   const elements = result.flatMap((r, index) => {
     const fetcherId = fetchers[index].id;
     if (r.status === 'rejected') {
       failedFetcherIds.push(fetcherId);
-      errors.push(r.reason);
+      errors[fetcherId] = r.reason.message || 'Unknown error';
       return [];
     }
     succeededFetcherIds.push(fetcherId);
