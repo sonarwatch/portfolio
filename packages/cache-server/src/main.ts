@@ -57,8 +57,9 @@ async function runJobs(jobs: Job[]) {
       const startDate = Date.now();
       let failed = false;
 
-      await job.executor(cache).catch(() => {
+      await job.executor(cache).catch((e) => {
         failed = true;
+        console.log(e);
       });
 
       const duration = durationForHumans(Date.now() - startDate);
