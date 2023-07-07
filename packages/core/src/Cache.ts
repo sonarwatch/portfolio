@@ -103,7 +103,8 @@ export class Cache {
       await this.removeItem(key, opts);
       return undefined;
     }
-    return this.storage.getItem(fullKey) as Promise<K | undefined>;
+    const item = await this.storage.getItem<K>(fullKey).catch(() => null);
+    return item === null ? undefined : (item as K);
   }
 
   async getCachedTokenPrice(address: string, networkId: NetworkIdType) {
