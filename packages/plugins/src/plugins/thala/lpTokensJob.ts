@@ -21,7 +21,6 @@ import {
   MoveResource,
   getAccountResources,
   getNestedType,
-  parseTypeString,
 } from '../../utils/aptos';
 import { getClientAptos } from '../../utils/clients';
 import { ThalaTokenPairMetadataData as TokenPairMetadataData } from './types';
