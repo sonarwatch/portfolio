@@ -2,6 +2,7 @@
 
 - Improve generator
 - Revoir les platforms
+- Fix parseTypeString function
 
 # DONE
 
