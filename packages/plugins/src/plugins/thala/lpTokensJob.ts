@@ -21,6 +21,7 @@ import {
   MoveResource,
   getAccountResources,
   getNestedType,
+  parseTypeString,
 } from '../../utils/aptos';
 import { getClientAptos } from '../../utils/clients';
 import { ThalaTokenPairMetadataData as TokenPairMetadataData } from './types';
@@ -106,11 +107,10 @@ const executor: JobExecutor = async (cache: Cache) => {
 
     if (totalReserveValue === 0) continue;
     const price = totalReserveValue / lpSupply;
-
     await cache.setTokenPriceSource({
       id: platformId,
       weight: 1,
-      address: `<${lpType}`,
+      address: lpType.substring(0, lpType.length - 1),
       networkId: NetworkId.aptos,
       isBase: false,
       decimals: lpDecimals,
