@@ -1,5 +1,6 @@
 export * from './networkIdIncluded';
 export * from './validAddress';
+export * from './validTokenAddress';
 export * from './formatAddress';
 export * from './formatTokenAddress';
 export * from './getElementLendingValues';
