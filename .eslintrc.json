@@ -54,7 +54,8 @@
         "dot-notation": "off",
         "@typescript-eslint/dot-notation": "off",
         "import/prefer-default-export": "off",
-        "no-continue": "off"
+        "no-continue": "off",
+        "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }]
       }
     },
     {
