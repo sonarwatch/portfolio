@@ -1,14 +1,6 @@
-import { TokenPrice, TokenPriceUnderlying } from '../TokenPrice';
+import { TokenPrice } from '../TokenPrice';
 import { formatTokenAddress } from './formatTokenAddress';
-
-function formatTokenPriceUnderlying(
-  tpu: TokenPriceUnderlying
-): TokenPriceUnderlying {
-  return {
-    ...tpu,
-    address: formatTokenAddress(tpu.address, tpu.networkId),
-  };
-}
+import { formatTokenPriceUnderlying } from './formatTokenPriceUnderlying';
 
 export function formatTokenPrice(tokenPrice: TokenPrice): TokenPrice {
   return {
