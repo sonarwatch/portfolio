@@ -23,9 +23,11 @@ async function main() {
 
   const cache = getCache();
 
+  const startDate = Date.now();
   console.log('Fetching...');
   const elements = await runFetcher(owner, fetcher, cache);
-  console.log('Portfolio elements:');
+  const duration = ((Date.now() - startDate) / 1000).toFixed(2);
+  console.log(`Finished (${duration}s)`);
   console.log(util.inspect(elements, false, null, true));
   process.exit(0);
 }
