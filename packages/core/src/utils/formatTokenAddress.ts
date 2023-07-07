@@ -1,29 +1,32 @@
+import crypto from 'node:crypto';
 import { getAddress } from '@ethersproject/address';
-import {
-  assertBitcoinAddress,
-  assertEvmAddress,
-  assertSolanaAddress,
-} from './validAddress';
 import { NetworkIdType } from '../Network';
 import { AddressSystem, AddressSystemType } from '../Address';
 import { networks } from '../constants';
+import {
+  assertBitcoinTokenAddress,
+  assertEvmTokenAddress,
+  assertMoveTokenAddress,
+  assertSolanaTokenAddress,
+} from './validTokenAddress';
 
 export function formatBitcoinTokenAddress(address: string) {
-  assertBitcoinAddress(address);
+  assertBitcoinTokenAddress(address);
   return address;
 }
 
 export function formatMoveTokenAddress(address: string) {
-  return address;
+  assertMoveTokenAddress(address);
+  return crypto.createHash('md5').update('some_string').digest('hex');
 }
 
 export function formatEvmTokenAddress(address: string) {
-  assertEvmAddress(address);
+  assertEvmTokenAddress(address);
   return getAddress(address.toLocaleLowerCase());
 }
 
 export function formatSolanaTokenAddress(address: string) {
-  assertSolanaAddress(address);
+  assertSolanaTokenAddress(address);
   return address;
 }
 
