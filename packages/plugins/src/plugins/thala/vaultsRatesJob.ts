@@ -23,7 +23,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       getNestedType(resource.type),
       fp64ToFloat(BigInt(vaultData.interest_annual_rate_ratio.v)),
       {
-        prefix: platformId,
+        prefix: `${platformId}-vaultsRates`,
       }
     );
   });

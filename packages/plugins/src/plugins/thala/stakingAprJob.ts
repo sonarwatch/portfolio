@@ -14,7 +14,9 @@ const executor: JobExecutor = async (cache: Cache) => {
     marketsInfoRes.data.data.apy &&
     typeof marketsInfoRes.data.data.apy === 'number'
   )
-    cache.setItem('apr', marketsInfoRes.data.data.apy, { prefix: platformId });
+    cache.setItem('mod-apr', marketsInfoRes.data.data.apy, {
+      prefix: `${platformId}-stabilityPool`,
+    });
 };
 
 const job: Job = {

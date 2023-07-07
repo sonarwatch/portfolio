@@ -87,7 +87,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       if (tokenAmount.isZero()) continue;
 
       const tokenPrice = await cache.getTokenPrice(token, NetworkId.aptos);
-      if (!tokenPrice) continue;
+      if (!tokenPrice || tokenPrice === undefined) continue;
 
       const reserveAmount = new BigNumber(tokenAmount)
         .div(10 ** tokenPrice.decimals)
@@ -103,13 +103,14 @@ const executor: JobExecutor = async (cache: Cache) => {
         amountPerLp: reserveAmount / lpSupply,
       });
     }
+
     if (totalReserveValue === 0) continue;
     const price = totalReserveValue / lpSupply;
 
     await cache.setTokenPriceSource({
       id: platformId,
       weight: 1,
-      address: lpType,
+      address: `<${lpType}`,
       networkId: NetworkId.aptos,
       isBase: false,
       decimals: lpDecimals,
