@@ -1,6 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import { validate, Network } from 'bitcoin-address-validation';
-import { isAddress } from '@ethersproject/address';
+import { isAddress as isAddressEthers } from '@ethersproject/address';
 import { isHexString } from '@ethersproject/bytes';
 import { NetworkIdType } from '../Network';
 import { AddressSystem, AddressSystemType } from '../Address';
@@ -16,7 +16,7 @@ export function assertBitcoinAddress(address: string): void {
 
 export function isEvmAddress(address: string): boolean {
   if (!address.startsWith('0x')) return false;
-  return isAddress(address.toLocaleLowerCase());
+  return isAddressEthers(address.toLocaleLowerCase());
 }
 export function assertEvmAddress(address: string): void {
   if (!isEvmAddress(address))
@@ -53,10 +53,7 @@ const validators: Record<AddressSystemType, (address: string) => boolean> = {
   [AddressSystem.move]: isMoveAddress,
 };
 
-export function isAddressValid(
-  address: string,
-  networkId: NetworkIdType
-): boolean {
+export function isAddress(address: string, networkId: NetworkIdType): boolean {
   const network = networks[networkId];
   if (!network) throw new Error(`NetworkId not supported: ${networkId}`);
 
@@ -68,6 +65,6 @@ export function assertAddressValid(
   address: string,
   networkId: NetworkIdType
 ): void {
-  if (!isAddressValid(address, networkId))
+  if (!isAddress(address, networkId))
     throw new Error(`Address is not valid: [${networkId}][${address}]`);
 }

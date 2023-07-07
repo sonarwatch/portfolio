@@ -10,6 +10,7 @@ import {
   pushTokenPriceSource,
   tokenPriceFromSources,
 } from './TokenPrice';
+import { formatTokenAddress, formatTokenPriceSource } from './utils';
 
 export type TransactionOptions = {
   prefix: string;
@@ -84,7 +85,8 @@ export class Cache {
   }
 
   async hasTokenPrice(address: string, networkId: NetworkIdType) {
-    const tokenPrice = await this.getTokenPrice(address, networkId);
+    const fAddress = formatTokenAddress(address, networkId);
+    const tokenPrice = await this.getTokenPrice(fAddress, networkId);
     return tokenPrice !== undefined;
   }
 
@@ -107,7 +109,7 @@ export class Cache {
     return item === null ? undefined : (item as K);
   }
 
-  async getCachedTokenPrice(address: string, networkId: NetworkIdType) {
+  private async getCachedTokenPrice(address: string, networkId: NetworkIdType) {
     const cachedTokenPrice = this.tokenPricesCache.get(
       getTokenPriceCacheKey(address, networkId)
     );
@@ -123,17 +125,19 @@ export class Cache {
   }
 
   async getTokenPrice(address: string, networkId: NetworkIdType) {
+    const fAddress = formatTokenAddress(address, networkId);
+
     // Check if in cache
-    const cTokenPrice = await this.getCachedTokenPrice(address, networkId);
+    const cTokenPrice = await this.getCachedTokenPrice(fAddress, networkId);
     if (cTokenPrice) return cTokenPrice;
 
-    const sources = await this.getTokenPriceSources(address, networkId);
+    const sources = await this.getTokenPriceSources(fAddress, networkId);
     if (!sources) return undefined;
     const tokenPrice = tokenPriceFromSources(sources);
 
     // Set in cache if tokenPrice is valide
     if (tokenPrice) {
-      this.tokenPricesCache.set(getTokenPriceCacheKey(address, networkId), {
+      this.tokenPricesCache.set(getTokenPriceCacheKey(fAddress, networkId), {
         tp: tokenPrice,
         ts: Date.now(),
       });
@@ -199,22 +203,23 @@ export class Cache {
   }
 
   async setTokenPriceSource(source: TokenPriceSource) {
-    let cSources = await this.getItem<TokenPriceSource[]>(source.address, {
+    const fSource = formatTokenPriceSource(source);
+    let cSources = await this.getItem<TokenPriceSource[]>(fSource.address, {
       prefix: tokenPriceSourcePrefix,
-      networkId: source.networkId,
+      networkId: fSource.networkId,
     });
     if (!cSources) cSources = [];
-    const newSources = pushTokenPriceSource(cSources, source);
+    const newSources = pushTokenPriceSource(cSources, fSource);
     if (!newSources) {
-      await this.removeItem(source.address, {
+      await this.removeItem(fSource.address, {
         prefix: tokenPriceSourcePrefix,
-        networkId: source.networkId,
+        networkId: fSource.networkId,
       });
       return;
     }
-    await this.setItem(source.address, newSources, {
+    await this.setItem(fSource.address, newSources, {
       prefix: tokenPriceSourcePrefix,
-      networkId: source.networkId,
+      networkId: fSource.networkId,
     });
   }
 
