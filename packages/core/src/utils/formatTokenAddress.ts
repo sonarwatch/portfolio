@@ -17,7 +17,7 @@ export function formatBitcoinTokenAddress(address: string) {
 
 export function formatMoveTokenAddress(address: string) {
   assertMoveTokenAddress(address);
-  return crypto.createHash('md5').update('some_string').digest('hex');
+  return crypto.createHash('md5').update(address).digest('hex');
 }
 
 export function formatEvmTokenAddress(address: string) {
