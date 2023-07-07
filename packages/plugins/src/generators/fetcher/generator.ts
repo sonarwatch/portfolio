@@ -6,7 +6,7 @@ import {
 } from '@nx/devkit';
 import { existsSync } from 'node:fs';
 import * as path from 'path';
-import { assetNetworkId } from '@sonarwatch/portfolio-core';
+import { assertNetworkId } from '@sonarwatch/portfolio-core';
 import { FetcherGeneratorSchema } from './schema.d';
 import { toKebabCase } from '../helpers';
 
@@ -17,7 +17,7 @@ export async function fetcherGenerator(
   const fetcherName = toKebabCase(options.fetcherName);
   const pluginId = toKebabCase(options.pluginId);
   const { networkId } = options;
-  assetNetworkId(networkId);
+  assertNetworkId(networkId);
 
   const libraryRoot = readProjectConfiguration(tree, 'plugins').root;
 
