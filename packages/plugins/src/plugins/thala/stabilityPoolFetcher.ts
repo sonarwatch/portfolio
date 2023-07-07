@@ -42,7 +42,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     +depositAmountString / 10 ** aptosNetwork.native.decimals;
   if (depositAmount === 0) return [];
 
-  const depositTokenPrice = await cache.getCachedTokenPrice(
+  const depositTokenPrice = await cache.getTokenPrice(
     modCoin.toString(),
     NetworkId.aptos
   );
@@ -64,7 +64,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const rewardsAmount: number =
     +rewardsAmountString / 10 ** aptosNetwork.native.decimals;
-  const rewardsTokenPrice = await cache.getCachedTokenPrice(
+  const rewardsTokenPrice = await cache.getTokenPrice(
     thlCoin.toString(),
     NetworkId.aptos
   );

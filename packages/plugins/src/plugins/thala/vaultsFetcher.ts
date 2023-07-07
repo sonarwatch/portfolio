@@ -23,7 +23,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (!resources) return [];
 
   const borrowedAsset = modCoin;
-  const borrowedTokenPrice = await cache.getCachedTokenPrice(
+  const borrowedTokenPrice = await cache.getTokenPrice(
     borrowedAsset,
     NetworkId.aptos
   );
@@ -43,7 +43,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const vaultType = resource.type;
 
     const suppliedAsset = getNestedType(vaultType);
-    const suppliedTokenPrice = await cache.getCachedTokenPrice(
+    const suppliedTokenPrice = await cache.getTokenPrice(
       suppliedAsset,
       NetworkId.aptos
     );
