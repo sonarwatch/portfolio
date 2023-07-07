@@ -1,6 +1,9 @@
 import { Fetcher, Job } from '@sonarwatch/portfolio-core';
 import * as platformsObj from './platforms';
-import { jobs as walletTokensJobs } from './plugins/wallet-tokens';
+import {
+  jobs as walletTokensJobs,
+  fetchers as walletTokensFetchers,
+} from './plugins/wallet-tokens';
 import { fetchers as marinadeFetchers } from './plugins/marinade';
 import {
   jobs as marginfiJobs,
@@ -26,4 +29,5 @@ export const fetchers: Fetcher[] = [
   ...marginfiFetchers,
   ...marinadeFetchers,
   ...thalaFetchers,
+  ...walletTokensFetchers,
 ];

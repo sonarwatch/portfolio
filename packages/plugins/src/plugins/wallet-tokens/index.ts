@@ -1,8 +1,13 @@
-import { Job, NetworkId } from '@sonarwatch/portfolio-core';
+import { Fetcher, Job, NetworkId } from '@sonarwatch/portfolio-core';
 import { walletTokensPlatform } from '../../platforms';
 import jobExecutorGenerator from './jobExecutorGenerator';
+import aptosFetcher from './fetchers/aptos';
 
 export const jobs: Job[] = [
+  {
+    id: `${walletTokensPlatform.id}-${NetworkId.aptos}`,
+    executor: jobExecutorGenerator(NetworkId.aptos),
+  },
   {
     id: `${walletTokensPlatform.id}-${NetworkId.solana}`,
     executor: jobExecutorGenerator(NetworkId.solana),
@@ -16,11 +21,9 @@ export const jobs: Job[] = [
     executor: jobExecutorGenerator(NetworkId.avalanche),
   },
   {
-    id: `${walletTokensPlatform.id}-${NetworkId.aptos}`,
-    executor: jobExecutorGenerator(NetworkId.aptos),
-  },
-  {
     id: `${walletTokensPlatform.id}-${NetworkId.sui}`,
     executor: jobExecutorGenerator(NetworkId.sui),
   },
 ];
+
+export const fetchers: Fetcher[] = [aptosFetcher];
