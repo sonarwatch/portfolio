@@ -3,7 +3,7 @@ import {
   assertBitcoinAddress,
   assertEvmAddress,
   assertSolanaAddress,
-} from './addressValid';
+} from './validAddress';
 import { NetworkIdType } from '../Network';
 import { AddressSystem, AddressSystemType } from '../Address';
 import { networks } from '../constants';

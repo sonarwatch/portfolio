@@ -4,7 +4,7 @@ import {
   assertEvmAddress,
   assertMoveAddress,
   assertSolanaAddress,
-} from './addressValid';
+} from './validAddress';
 import { NetworkIdType } from '../Network';
 import { AddressSystem, AddressSystemType } from '../Address';
 import { networks } from '../constants';
