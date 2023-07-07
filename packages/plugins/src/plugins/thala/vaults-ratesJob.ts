@@ -6,7 +6,8 @@ import {
 } from './constants';
 import { getClientAptos } from '../../utils/clients';
 import { VaultCollateralParamsRessource } from './types';
-import { fp64ToFloat, getNestedType } from './helpers';
+import { fp64ToFloat } from './helpers';
+import { getAccountResources, getNestedType } from '../../utils/aptos';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientAptos();

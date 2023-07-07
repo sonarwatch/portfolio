@@ -1,9 +1,4 @@
 /* eslint-disable no-bitwise */
-export function getNestedType(type: string) {
-  const index = type.indexOf('<');
-  return type.slice(index + 1, -1);
-}
-
 export function fp64ToFloat(a: bigint): number {
   // avoid large number
   let mask = BigInt('0xffffffff000000000000000000000000');

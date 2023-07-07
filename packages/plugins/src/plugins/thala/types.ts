@@ -53,3 +53,22 @@ export type VaultCollateralParamsRessource = {
   redemption_fee_ratio: VFloat;
   redemption_mode_enabled: boolean;
 };
+
+export type LiquidswapLiquidityPoolData = {
+  coin_x_reserve: { value: string };
+  coin_y_reserve: { value: string };
+  x_scale: string;
+  y_scale: string;
+};
+
+export type ThalaTokenPairMetadataData = {
+  asset_0: { value: string };
+  asset_1: { value: string };
+  asset_2: { value: string };
+  asset_3: { value: string };
+};
+
+export enum PoolType {
+  WEIGHTED,
+  STABLE,
+}
