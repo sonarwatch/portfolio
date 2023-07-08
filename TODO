@@ -1,11 +1,10 @@
 # TODO
 
+# DONE
+
 - Improve generator
 - Revoir les platforms
 - Fix parseTypeString function
-
-# DONE
-
 - Mettre un cache de cache sur TokenPrice
 - Create cache server public
 - Host caches sur server
