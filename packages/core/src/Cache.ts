@@ -2,7 +2,8 @@ import { Storage, createStorage, StorageValue, Driver } from 'unstorage';
 import fsDriver from 'unstorage/drivers/fs';
 import redisDriver from 'unstorage/drivers/redis';
 import httpDriver from 'unstorage/drivers/http';
-import memoryDriver from 'unstorage/drivers/memory';
+import overlayDriver from './overlayDriver';
+import memoryDriver from './memoryDriver';
 
 import { NetworkIdType } from './Network';
 import {
@@ -17,7 +18,7 @@ export type TransactionOptions = {
   prefix: string;
   networkId?: NetworkIdType;
 };
-const ttlPrefix = 'ttl';
+
 const tokenPriceSourcePrefix = 'tokenpricesource';
 const tokenPricesCacheTtl = 10 * 1000;
 
@@ -27,10 +28,19 @@ type CachedTokenPrice = {
 };
 
 export type CacheConfig =
+  | CacheConfigOverlayHttp
   | CacheConfigMemory
   | CacheConfigRedis
   | CacheConfigFilesystem
   | CacheConfigHttp;
+
+export type CacheConfigOverlayHttp = {
+  type: 'overlayHttp';
+  params: CacheConfigOverlayHttpParams;
+};
+export type CacheConfigOverlayHttpParams = {
+  bases: string[];
+};
 
 export type CacheConfigMemory = {
   type: 'memory';
@@ -105,16 +115,6 @@ export class Cache {
     opts: TransactionOptions
   ): Promise<K | undefined> {
     const fullKey = getFullKey(key, opts);
-    let ttl;
-    if (opts.prefix !== ttlPrefix) {
-      ttl = await this.getItem<number>(fullKey, {
-        prefix: ttlPrefix,
-      });
-    }
-    if (ttl && ttl < Date.now()) {
-      await this.removeItem(key, opts);
-      return undefined;
-    }
     const item = await this.storage.getItem<K>(fullKey).catch(() => null);
     return item === null ? undefined : (item as K);
   }
@@ -200,15 +200,9 @@ export class Cache {
   async setItem<K extends StorageValue>(
     key: string,
     value: K,
-    opts: TransactionOptions,
-    ttl?: number
+    opts: TransactionOptions
   ) {
     const fullKey = getFullKey(key, opts);
-    if (ttl) {
-      await this.setItem(fullKey, Date.now() + ttl, {
-        prefix: ttlPrefix,
-      });
-    }
     return this.storage.setItem(fullKey, value);
   }
 
@@ -235,11 +229,6 @@ export class Cache {
 
   async removeItem(key: string, opts: TransactionOptions) {
     const fullKey = getFullKey(key, opts);
-    if (opts.prefix !== ttlPrefix) {
-      await this.removeItem(fullKey, {
-        prefix: ttlPrefix,
-      });
-    }
     return this.storage.removeItem(fullKey);
   }
 
@@ -294,8 +283,14 @@ function getFullBase(opts: TransactionOptions) {
 
 function getDriverFromCacheConfig(cacheConfig: CacheConfig) {
   switch (cacheConfig.type) {
+    case 'overlayHttp':
+      return overlayDriver({
+        layers: cacheConfig.params.bases.map((base) => httpDriver({ base })),
+      }) as Driver;
     case 'memory':
-      return memoryDriver() as Driver;
+      return memoryDriver({
+        ttl: 60 * 60 * 1000,
+      }) as Driver;
     case 'filesystem':
       return fsDriver({
         base: cacheConfig.params.base,
@@ -318,6 +313,16 @@ function getDriverFromCacheConfig(cacheConfig: CacheConfig) {
 
 export function getCacheConfig(): CacheConfig {
   switch (process.env['CACHE_CONFIG_TYPE']) {
+    case 'overlayHttp':
+      return {
+        type: 'overlayHttp',
+        params: {
+          bases: (
+            process.env['CACHE_CONFIG_OVERLAY_HTTP_BASES'] ||
+            'http://localhost:3000/,https://portfolio-cache-server.sonar.watch/'
+          ).split(','),
+        },
+      };
     case 'memory':
       return {
         type: 'memory',

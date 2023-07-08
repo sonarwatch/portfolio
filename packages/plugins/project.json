@@ -14,6 +14,10 @@
         "assets": ["packages/plugins/*.md"]
       }
     },
+    "serve-cache": {
+      "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/serve-cache.ts",
+      "dependsOn": ["build"]
+    },
     "run-fetcher": {
       "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/run-fetcher.ts",
       "dependsOn": ["build"]
