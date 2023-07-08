@@ -2,7 +2,8 @@ import { Storage, createStorage, StorageValue, Driver } from 'unstorage';
 import fsDriver from 'unstorage/drivers/fs';
 import redisDriver from 'unstorage/drivers/redis';
 import httpDriver from 'unstorage/drivers/http';
-import memoryDriver from 'unstorage/drivers/memory';
+import overlay from 'unstorage/drivers/overlay';
+import memoryDriver from './memoryDriver';
 
 import { NetworkIdType } from './Network';
 import {
@@ -27,10 +28,19 @@ type CachedTokenPrice = {
 };
 
 export type CacheConfig =
+  | CacheConfigOverlayHttp
   | CacheConfigMemory
   | CacheConfigRedis
   | CacheConfigFilesystem
   | CacheConfigHttp;
+
+export type CacheConfigOverlayHttp = {
+  type: 'overlayHttp';
+  params: CacheConfigOverlayHttpParams;
+};
+export type CacheConfigOverlayHttpParams = {
+  bases: string[];
+};
 
 export type CacheConfigMemory = {
   type: 'memory';
@@ -294,8 +304,14 @@ function getFullBase(opts: TransactionOptions) {
 
 function getDriverFromCacheConfig(cacheConfig: CacheConfig) {
   switch (cacheConfig.type) {
+    case 'overlayHttp':
+      return overlay({
+        layers: cacheConfig.params.bases.map((base) => httpDriver({ base })),
+      }) as Driver;
     case 'memory':
-      return memoryDriver() as Driver;
+      return memoryDriver({
+        ttl: 60 * 60 * 1000,
+      }) as Driver;
     case 'filesystem':
       return fsDriver({
         base: cacheConfig.params.base,
@@ -318,6 +334,16 @@ function getDriverFromCacheConfig(cacheConfig: CacheConfig) {
 
 export function getCacheConfig(): CacheConfig {
   switch (process.env['CACHE_CONFIG_TYPE']) {
+    case 'overlayHttp':
+      return {
+        type: 'overlayHttp',
+        params: {
+          bases: (
+            process.env['CACHE_CONFIG_OVERLAY_HTTP_BASES'] ||
+            'http://localhost:3000/,https://portfolio-cache-server.sonar.watch/'
+          ).split(','),
+        },
+      };
     case 'memory':
       return {
         type: 'memory',
