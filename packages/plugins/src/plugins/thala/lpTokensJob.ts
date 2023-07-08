@@ -116,7 +116,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     await cache.setTokenPriceSource({
       id: platformId,
       weight: 1,
-      address: lpType.substring(0, lpType.length - 1),
+      address: poolInfo.type,
       networkId: NetworkId.aptos,
       platformId,
       decimals: lpDecimals,
