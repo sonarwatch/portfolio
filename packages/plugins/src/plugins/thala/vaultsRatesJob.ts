@@ -11,7 +11,9 @@ import { getAccountResources, getNestedType } from '../../utils/aptos';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientAptos();
+  console.log('connection:', connection.nodeUrl);
   const vaultsRate = await getAccountResources(connection, programAdressThala);
+  console.log('vaultsRate:', vaultsRate);
   if (!vaultsRate) return;
 
   vaultsRate.forEach((resource) => {
