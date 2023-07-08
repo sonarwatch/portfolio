@@ -2,6 +2,7 @@ import { Storage, createStorage, StorageValue, Driver } from 'unstorage';
 import fsDriver from 'unstorage/drivers/fs';
 import redisDriver from 'unstorage/drivers/redis';
 import httpDriver from 'unstorage/drivers/http';
+import memoryDriver from 'unstorage/drivers/memory';
 
 import { NetworkIdType } from './Network';
 import {
@@ -26,9 +27,18 @@ type CachedTokenPrice = {
 };
 
 export type CacheConfig =
+  | CacheConfigMemory
   | CacheConfigRedis
   | CacheConfigFilesystem
   | CacheConfigHttp;
+
+export type CacheConfigMemory = {
+  type: 'memory';
+  params: CacheConfigMemoryParams;
+};
+export type CacheConfigMemoryParams = {
+  //
+};
 
 export type CacheConfigHttp = {
   type: 'http';
@@ -284,6 +294,8 @@ function getFullBase(opts: TransactionOptions) {
 
 function getDriverFromCacheConfig(cacheConfig: CacheConfig) {
   switch (cacheConfig.type) {
+    case 'memory':
+      return memoryDriver() as Driver;
     case 'filesystem':
       return fsDriver({
         base: cacheConfig.params.base,
@@ -306,6 +318,11 @@ function getDriverFromCacheConfig(cacheConfig: CacheConfig) {
 
 export function getCacheConfig(): CacheConfig {
   switch (process.env['CACHE_CONFIG_TYPE']) {
+    case 'memory':
+      return {
+        type: 'memory',
+        params: {},
+      };
     case 'filesystem':
       return {
         type: 'filesystem',
