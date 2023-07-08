@@ -21,12 +21,12 @@ export const stabilityEndpoint = 'https://app.thala.fi/api/total-stability';
 
 export const programAddressLP =
   '0x48271d39d0b05bd6efca2278f22277d6fcc375504f9839fd73f74ace240861af';
-export const lpStableTypePrefix = `${programAddressLP}::stable_pool::StablePoolToken<`;
-export const lpWeightedTypePrefix = `${programAddressLP}::weighted_pool::WeightedPoolToken<`;
-export const lpStableTypeTokenPrefix = `${programAddressLP}::weighted_pool::WeightedPool<`;
-export const lpWeightedTypeTokenPrefix = `${programAddressLP}::weighted_pool::WeightedPool<`;
-export const lpStableCoinInfoTypePrefix = `${coinInfo}<${lpStableTypePrefix}`;
-export const lpWeightedCoinInfoTypePrefix = `${coinInfo}<${lpWeightedTypePrefix}`;
+export const lpStableTypeTokenPrefix = `${programAddressLP}::stable_pool::StablePoolToken`;
+export const lpWeightedTypeTokenPrefix = `${programAddressLP}::weighted_pool::WeightedPoolToken`;
+export const lpStableTypePrefix = `${programAddressLP}::stable_pool::StablePool`;
+export const lpWeightedTypePrefix = `${programAddressLP}::weighted_pool::WeightedPool`;
+export const lpStableCoinInfoTypePrefix = `${coinInfo}<${lpStableTypeTokenPrefix}`;
+export const lpWeightedCoinInfoTypePrefix = `${coinInfo}<${lpWeightedTypeTokenPrefix}`;
 
 export const stabilityDepositPayload = (owner: string) => ({
   function: liquidityDeposit,

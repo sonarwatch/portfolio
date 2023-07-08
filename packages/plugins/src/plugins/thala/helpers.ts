@@ -30,3 +30,7 @@ export function fp64ToFloat(a: bigint): number {
   }
   return result;
 }
+
+export function tokenToLpType(tokenType: string): string {
+  return tokenType.replace('PoolToken', 'Pool');
+}
