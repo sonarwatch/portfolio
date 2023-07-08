@@ -1,1 +1,0 @@
-web: node ./dist/packages/cache-server/main.js
