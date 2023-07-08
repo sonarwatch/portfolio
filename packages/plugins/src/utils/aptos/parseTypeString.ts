@@ -37,15 +37,19 @@ function splitKeysString(keysString: string) {
     if (char === '<') depth += 1;
     if (depth === 0 && char === ',' && nextChar === ' ') indexes.push(i);
   }
+  if (indexes.length === 0) return [keysString];
   const typeStrings = [];
-  let cKeysString = `${keysString}`;
+  let cKeysString = keysString;
+  let sum = 0;
   for (let i = 0; i < indexes.length; i++) {
-    const index = indexes[i];
+    let index = indexes[i];
+    index -= sum;
     typeStrings.push(cKeysString.slice(0, index));
     cKeysString = cKeysString.slice(index + 2);
     if (i === indexes.length - 1) {
       typeStrings.push(cKeysString);
     }
+    sum += index + 2;
   }
   return typeStrings;
 }
