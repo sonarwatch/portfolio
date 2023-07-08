@@ -10,10 +10,10 @@ export const aavePlatform: Platform = {
   name: 'AAVE',
   image: 'https://beta.sonar.watch/img/platforms/aave.png',
 };
-export const walletnftsPlatform: Platform = {
-  id: 'walletnfts',
+export const walletNftsPlatform: Platform = {
+  id: 'wallet-nfts',
   name: 'NFTs',
-  image: 'https://beta.sonar.watch/img/platforms/walletnfts.png',
+  image: 'https://beta.sonar.watch/img/platforms/wallet-nfts.png',
 };
 export const walletTokensPlatform: Platform = {
   id: 'wallet-tokens',
