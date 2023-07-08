@@ -8,8 +8,6 @@ import {
   assertMoveTokenAddress,
   assertSolanaTokenAddress,
 } from './validTokenAddress';
-import { md5 } from './md5';
-import { isMd5 } from './isMd5';
 
 export function formatBitcoinTokenAddress(address: string) {
   assertBitcoinTokenAddress(address);
@@ -18,8 +16,7 @@ export function formatBitcoinTokenAddress(address: string) {
 
 export function formatMoveTokenAddress(address: string) {
   assertMoveTokenAddress(address);
-  if (isMd5(address)) return address;
-  return md5(address);
+  return address;
 }
 
 export function formatEvmTokenAddress(address: string) {
