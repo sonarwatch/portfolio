@@ -12,7 +12,7 @@ export default defineDriver((opts: MemoryStorageOptions = {}) => {
   const { ttl } = opts;
   return {
     name: DRIVER_NAME,
-    options: {},
+    options: opts,
     hasItem(key) {
       return data.has(key);
     },
