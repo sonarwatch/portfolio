@@ -44,4 +44,6 @@ npx nx run plugins:version --releaseAs=patch
 
 npx nx run core:version --releaseAs=minor
 npx nx run plugins:version --releaseAs=minor
+
+npx nx run core:version --releaseAs=patch ; npx nx run plugins:version --releaseAs=patch
 ```
