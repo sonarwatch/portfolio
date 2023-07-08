@@ -18,7 +18,7 @@ export type TransactionOptions = {
   prefix: string;
   networkId?: NetworkIdType;
 };
-const ttlPrefix = 'ttl';
+
 const tokenPriceSourcePrefix = 'tokenpricesource';
 const tokenPricesCacheTtl = 10 * 1000;
 
@@ -115,16 +115,6 @@ export class Cache {
     opts: TransactionOptions
   ): Promise<K | undefined> {
     const fullKey = getFullKey(key, opts);
-    let ttl;
-    if (opts.prefix !== ttlPrefix) {
-      ttl = await this.getItem<number>(fullKey, {
-        prefix: ttlPrefix,
-      });
-    }
-    if (ttl && ttl < Date.now()) {
-      await this.removeItem(key, opts);
-      return undefined;
-    }
     const item = await this.storage.getItem<K>(fullKey).catch(() => null);
     return item === null ? undefined : (item as K);
   }
@@ -210,15 +200,9 @@ export class Cache {
   async setItem<K extends StorageValue>(
     key: string,
     value: K,
-    opts: TransactionOptions,
-    ttl?: number
+    opts: TransactionOptions
   ) {
     const fullKey = getFullKey(key, opts);
-    if (ttl) {
-      await this.setItem(fullKey, Date.now() + ttl, {
-        prefix: ttlPrefix,
-      });
-    }
     return this.storage.setItem(fullKey, value);
   }
 
@@ -245,11 +229,6 @@ export class Cache {
 
   async removeItem(key: string, opts: TransactionOptions) {
     const fullKey = getFullKey(key, opts);
-    if (opts.prefix !== ttlPrefix) {
-      await this.removeItem(fullKey, {
-        prefix: ttlPrefix,
-      });
-    }
     return this.storage.removeItem(fullKey);
   }
 
