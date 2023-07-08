@@ -25,6 +25,7 @@ npx nx run plugins:run-job marinade
 
 # Run a fetcher
 npx nx run plugins:run-fetcher marinade DemoSX9F2zXfQLtBr56Yr5he15P7viZWsYJpSDAX3tKG
+npx nx run plugins:run-fetcher wallet-tokens-aptos \"0xaa3fca2b46efb0c9b63e9c92ee31a28b9f22ca52a36967151416706f2ca138c6\"
 ```
 
 ## Want better Editor Integration?
