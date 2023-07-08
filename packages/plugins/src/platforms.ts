@@ -30,3 +30,8 @@ export const tensorPlatform: Platform = {
   name: 'Tensor',
   image: 'https://beta.sonar.watch/img/platforms/tensor.png',
 };
+export const thalaPlatform: Platform = {
+  id: 'thala',
+  name: 'Thala',
+  image: 'https://beta.sonar.watch/img/platforms/thala.png',
+};
