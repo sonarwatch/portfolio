@@ -118,7 +118,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       weight: 1,
       address: lpType.substring(0, lpType.length - 1),
       networkId: NetworkId.aptos,
-      isBase: false,
+      platformId,
       decimals: lpDecimals,
       price,
       underlyings,

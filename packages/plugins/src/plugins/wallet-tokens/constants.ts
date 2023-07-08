@@ -1,6 +1,8 @@
+import { walletTokensPlatform } from '../../platforms';
+
 export const nIdsToFetch = 50;
 
-export const platformId = 'wallet-tokens';
+export const platformId = walletTokensPlatform.id;
 // Coingecko URLs
 export const coingeckoCoinsListUrl =
   'https://api.coingecko.com/api/v3/coins/list';

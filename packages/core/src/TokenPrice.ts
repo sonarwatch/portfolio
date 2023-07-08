@@ -18,7 +18,7 @@ export type TokenPriceSource = {
   weight: number; // number between 0 and 1
   address: string;
   networkId: NetworkIdType;
-  isBase: boolean;
+  platformId: string;
   decimals: number;
   price: number;
   underlyings?: TokenPriceUnderlying[];
@@ -28,7 +28,7 @@ export type TokenPriceSource = {
 export type TokenPrice = {
   address: string;
   networkId: NetworkIdType;
-  isBase: boolean;
+  platformId: string;
   decimals: number;
   price: number;
   underlyings?: TokenPriceUnderlying[];
@@ -63,7 +63,7 @@ export function tokenPriceFromSources(
   return {
     address: latestSource.address,
     networkId: latestSource.networkId,
-    isBase: latestSource.isBase,
+    platformId: latestSource.platformId,
     decimals: latestSource.decimals,
     price,
     underlyings: latestSource.underlyings,

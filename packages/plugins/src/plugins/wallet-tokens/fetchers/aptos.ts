@@ -42,7 +42,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const tokenPrice = await cache.getTokenPrice(coinType, NetworkId.aptos);
     if (!tokenPrice) continue;
-    if (!tokenPrice.isBase) continue;
+    if (tokenPrice.platformId !== platformId) continue;
 
     const coinStoreData = resource.data as CoinStoreData;
     const amount = new BigNumber(coinStoreData.coin.value)

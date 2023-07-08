@@ -1,7 +1,7 @@
 export type TokenData = {
   address: string;
   decimals: number;
-  isBase: boolean;
+  platformId: string;
   coingeckoId: string;
 };
 

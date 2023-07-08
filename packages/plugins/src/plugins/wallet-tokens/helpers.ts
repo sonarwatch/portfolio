@@ -4,7 +4,7 @@ import {
   TokenPriceSource,
   UniTokenList,
 } from '@sonarwatch/portfolio-core';
-import { nIdsToFetch, coingeckoCoinsPriceUrl } from './constants';
+import { nIdsToFetch, coingeckoCoinsPriceUrl, platformId } from './constants';
 import { CoingeckoSimpleRes, TokenData } from './types';
 import shuffleArray from '../../utils/misc/shuffleArray';
 import sleep from '../../utils/misc/sleep';
@@ -32,7 +32,7 @@ export async function getCoingeckoSources(
       const source: TokenPriceSource = {
         address: td.address,
         networkId,
-        isBase: td.isBase,
+        platformId: td.platformId,
         decimals: td.decimals,
         price,
         timestamp: Date.now(),
@@ -88,7 +88,7 @@ export async function getTokensData(
       address: ti.address,
       coingeckoId,
       decimals: ti.decimals,
-      isBase: true,
+      platformId,
     };
     cTokensData.push(tokenData);
     return cTokensData;
