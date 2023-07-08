@@ -12,15 +12,23 @@ export const viemChainsByNetworkId: Record<EvmNetworkIdType, Chain> = {
 };
 
 const urlEndpoints: Record<NetworkIdType, string> = {
-  bitcoin: process.env['BITCOIN_RPC'] || 'https://blockstream.info/api/',
-  solana: process.env['SOLANA_RPC'] || 'https://api.mainnet-beta.solana.com',
+  bitcoin:
+    process.env['PORTFOLIO_BITCOIN_RPC'] || 'https://blockstream.info/api/',
+  solana:
+    process.env['PORTFOLIO_SOLANA_RPC'] ||
+    'https://api.mainnet-beta.solana.com',
   ethereum:
-    process.env['ETHEREUM_RPC'] || 'https://eth-mainnet.g.alchemy.com/v2',
+    process.env['PORTFOLIO_ETHEREUM_RPC'] ||
+    'https://eth-mainnet.g.alchemy.com/v2',
   avalanche:
-    process.env['AVALANCHE_RPC'] || 'https://api.avax.network/ext/bc/C/rpc',
-  aptos: process.env['APTOS_RPC'] || 'https://fullnode.mainnet.aptoslabs.com',
+    process.env['PORTFOLIO_AVALANCHE_RPC'] ||
+    'https://api.avax.network/ext/bc/C/rpc',
+  aptos:
+    process.env['PORTFOLIO_APTOS_RPC'] ||
+    'https://fullnode.mainnet.aptoslabs.com',
   sui:
-    process.env['SUI_RPC'] || 'https://sui-mainnet-rpc-germany.allthatnode.com',
+    process.env['PORTFOLIO_SUI_RPC'] ||
+    'https://sui-mainnet-rpc-germany.allthatnode.com',
 };
 
 export const rpcEnpoints: Record<NetworkIdType, RpcEndpoint> =
