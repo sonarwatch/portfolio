@@ -17,8 +17,8 @@ npx nx generate @sonarwatch/portfolio-plugins:job --jobName=test --pluginId=foo
 # Generator a fetcher
 npx nx generate @sonarwatch/portfolio-plugins:fetcher --fetcherName=test --pluginId=foo
 
-# Run cache-server in background
-npx nx run cache-server:serve
+# Serve cache in background
+npx nx run plugins:serve-cache
 
 # Run a job
 npx nx run plugins:run-job marinade
