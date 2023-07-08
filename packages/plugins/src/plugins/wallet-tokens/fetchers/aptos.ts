@@ -15,9 +15,10 @@ import { platformId } from '../constants';
 import { getClientAptos } from '../../../utils/clients';
 import {
   CoinStoreData,
+  coinStore,
   getAccountResources,
-  getNestedType,
   isCoinStoreRessourceType,
+  parseTypeString,
 } from '../../../utils/aptos';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
@@ -31,7 +32,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const resourceType = resource.type;
     if (!isCoinStoreRessourceType(resourceType)) continue;
 
-    const coinType = getNestedType(resource.type);
+    const parseCoinType = parseTypeString(resource.type);
+
+    if (parseCoinType.root !== coinStore) continue;
+    if (!parseCoinType.keys) continue;
+
+    const coinType = parseCoinType.keys.at(0)?.type;
+    if (coinType === undefined) continue;
 
     const tokenPrice = await cache.getTokenPrice(coinType, NetworkId.aptos);
     if (!tokenPrice) continue;
