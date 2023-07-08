@@ -85,14 +85,9 @@ describe('Cache', () => {
     const prefix = 'prefix';
     const driver = memoryDriver();
     const cache = new Cache(driver);
-    await cache.setItem(
-      key,
-      value,
-      {
-        prefix,
-      },
-      500
-    );
+    await cache.setItem(key, value, {
+      prefix,
+    });
     const item = await cache.getItem(key, {
       prefix,
     });
