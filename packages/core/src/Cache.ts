@@ -2,7 +2,7 @@ import { Storage, createStorage, StorageValue, Driver } from 'unstorage';
 import fsDriver from 'unstorage/drivers/fs';
 import redisDriver from 'unstorage/drivers/redis';
 import httpDriver from 'unstorage/drivers/http';
-import overlay from 'unstorage/drivers/overlay';
+import overlayDriver from './overlayDriver';
 import memoryDriver from './memoryDriver';
 
 import { NetworkIdType } from './Network';
@@ -284,7 +284,7 @@ function getFullBase(opts: TransactionOptions) {
 function getDriverFromCacheConfig(cacheConfig: CacheConfig) {
   switch (cacheConfig.type) {
     case 'overlayHttp':
-      return overlay({
+      return overlayDriver({
         layers: cacheConfig.params.bases.map((base) => httpDriver({ base })),
       }) as Driver;
     case 'memory':
