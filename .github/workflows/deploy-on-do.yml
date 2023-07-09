@@ -7,8 +7,9 @@ on:
       - main
 
 jobs:
-  build:
+  main:
     runs-on: ubuntu-latest
     steps:
-      run: |
-        curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}" "https://api.digitalocean.com/v2/apps/${{ secrets.DIGITALOCEAN_APP_NAME }}/deployments"
+      - name: REST API with curl
+        run: |
+          curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}" "https://api.digitalocean.com/v2/apps/${{ secrets.DIGITALOCEAN_APP_NAME }}/deployments"
