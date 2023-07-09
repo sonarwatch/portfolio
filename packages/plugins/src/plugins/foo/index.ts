@@ -1,6 +1,6 @@
 import { Fetcher, Job } from '@sonarwatch/portfolio-core';
-import ammJob from './ammJob';
+import marketsJob from './marketsJob';
 import positionFetcher from './positionFetcher';
 
-export const jobs: Job[] = [ammJob];
+export const jobs: Job[] = [marketsJob];
 export const fetchers: Fetcher[] = [positionFetcher];
