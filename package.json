@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "nx build"
+    "build": "nx build",
+    "serve-cache-and-jobs": "nx run plugins:serve-cache-and-jobs"
   },
   "private": true,
   "devDependencies": {
