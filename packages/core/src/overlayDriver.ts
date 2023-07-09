@@ -26,7 +26,13 @@ export default defineDriver((options: OverlayStorageOptions) => ({
   },
   async getItem(key) {
     for (const layer of options.layers) {
-      const value = await layer.getItem(key);
+      let value;
+      try {
+        value = await layer.getItem(key);
+      } catch (error) {
+        value = null;
+      }
+
       if (value === OVERLAY_REMOVED) {
         return null;
       }
