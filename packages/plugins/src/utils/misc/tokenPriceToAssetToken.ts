@@ -7,7 +7,7 @@ import {
   formatTokenAddress,
 } from '@sonarwatch/portfolio-core';
 
-export function tokenPriceToAssetToken(
+export default function tokenPriceToAssetToken(
   address: string,
   amount: number,
   networkId: NetworkIdType,

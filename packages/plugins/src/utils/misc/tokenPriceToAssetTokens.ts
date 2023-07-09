@@ -3,9 +3,9 @@ import {
   PortfolioAssetToken,
   TokenPrice,
 } from '@sonarwatch/portfolio-core';
-import { tokenPriceToAssetToken } from './tokenPriceToAssetToken';
+import tokenPriceToAssetToken from './tokenPriceToAssetToken';
 
-export function tokenPriceToAssetTokens(
+export default function tokenPriceToAssetTokens(
   address: string,
   amount: number,
   networkId: NetworkIdType,

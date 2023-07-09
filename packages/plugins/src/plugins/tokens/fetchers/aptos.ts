@@ -12,8 +12,8 @@ import {
 } from '@sonarwatch/portfolio-core';
 
 import BigNumber from 'bignumber.js';
-import { tokenPriceToAssetTokens } from 'packages/plugins/src/utils/misc/tokenPriceToAssetTokens';
-import { tokenPriceToAssetToken } from 'packages/plugins/src/utils/misc/tokenPriceToAssetToken';
+import tokenPriceToAssetTokens from '../../../utils/misc/tokenPriceToAssetTokens';
+import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import { walletTokensPlatform } from '../../../platforms';
 import { getClientAptos } from '../../../utils/clients';
 import {

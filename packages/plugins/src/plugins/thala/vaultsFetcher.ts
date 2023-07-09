@@ -14,7 +14,7 @@ import { modCoin, platformId, vaultFilter } from './constants';
 import { getClientAptos } from '../../utils/clients';
 import { getAccountResources, getNestedType } from '../../utils/aptos';
 import { VaultRessource } from './types';
-import { tokenPriceToAssetToken } from '../../utils/misc/tokenPriceToAssetToken';
+import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientAptos();

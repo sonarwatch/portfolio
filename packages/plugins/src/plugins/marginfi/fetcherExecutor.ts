@@ -16,7 +16,7 @@ import { accountsFilter } from './filters';
 import { BankInfo } from './types';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
-import { tokenPriceToAssetToken } from '../../utils/misc/tokenPriceToAssetToken';
+import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 const fetcherExecutor: FetcherExecutor = async (
   owner: string,
