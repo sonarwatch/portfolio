@@ -1,10 +1,10 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { AptosClient } from 'aptos';
-import { rpcEnpoints } from './constants';
+import { getRpcEndpoint } from './constants';
 import { getBasicAuthHeaders } from '../misc/getBasicAuthHeaders';
 
 export default function getClientAptos() {
-  const rpcEndpoint = rpcEnpoints[NetworkId.aptos];
+  const rpcEndpoint = getRpcEndpoint(NetworkId.aptos);
   const headers = rpcEndpoint.basicAuth
     ? getBasicAuthHeaders(
         rpcEndpoint.basicAuth?.username,

@@ -1,10 +1,10 @@
 import { JsonRpcClient, JsonRpcProvider } from '@mysten/sui.js';
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { getBasicAuthHeaders } from '../misc/getBasicAuthHeaders';
-import { rpcEnpoints } from './constants';
+import { getRpcEndpoint } from './constants';
 
 export default function getClientSui() {
-  const rpcEndpoint = rpcEnpoints[NetworkId.sui];
+  const rpcEndpoint = getRpcEndpoint(NetworkId.sui);
   const httpHeaders = rpcEndpoint.basicAuth
     ? getBasicAuthHeaders(
         rpcEndpoint.basicAuth.username,
