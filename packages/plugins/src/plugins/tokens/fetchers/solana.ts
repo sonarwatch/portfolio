@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { PublicKey } from '@metaplex-foundation/js';
 import {
   Cache,
@@ -14,7 +13,6 @@ import {
   solanaNetwork,
 } from '@sonarwatch/portfolio-core';
 import { Connection } from '@solana/web3.js';
-import { tokenPriceToAssetToken } from '../../../utils/misc/tokenPriceToAssetToken';
 import { walletTokensPlatform } from '../../../platforms';
 import { getClientSolana } from '../../../utils/clients';
 import {
@@ -22,6 +20,7 @@ import {
   TokenAccount,
   getTokenAccountsByOwner,
 } from '../../../utils/solana';
+import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 
 const solFactor = 10 ** solanaNetwork.native.decimals;
 
