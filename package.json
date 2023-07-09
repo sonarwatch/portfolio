@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "nx build"
+    "build": "nx build",
+    "serve-cache-and-jobs": "nx run plugins:serve-cache-and-jobs"
   },
   "private": true,
   "devDependencies": {
@@ -48,7 +49,7 @@
     "@metaplex-foundation/js": "^0.19.4",
     "@mysten/sui.js": "^0.37.1",
     "@solana/web3.js": "^1.77.3",
-    "aptos": "^1.12.0",
+    "aptos": "^1.13.1",
     "axios": "^1.4.0",
     "bignumber.js": "^9.1.1",
     "bitcoin-address-validation": "^2.2.1",

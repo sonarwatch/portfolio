@@ -4,9 +4,10 @@ import {
   PortfolioAssetType,
   TokenPrice,
   TokenPriceUnderlying,
+  formatTokenAddress,
 } from '@sonarwatch/portfolio-core';
 
-export function tokenPriceToAssetToken(
+export default function tokenPriceToAssetToken(
   address: string,
   amount: number,
   networkId: NetworkIdType,
@@ -17,7 +18,7 @@ export function tokenPriceToAssetToken(
     networkId,
     value: tokenPrice ? tokenPrice.price * amount : null,
     data: {
-      address,
+      address: formatTokenAddress(address, networkId),
       amount,
       price: tokenPrice ? tokenPrice.price : null,
     },

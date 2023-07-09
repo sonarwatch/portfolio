@@ -5,7 +5,8 @@ import {
   walletTokensPlatform,
 } from '@sonarwatch/portfolio-plugins';
 import { Job, getCache } from '@sonarwatch/portfolio-core';
-import durationForHumans, { sleep } from './helpers';
+import sleep from '../src/utils/misc/sleep';
+import durationForHumans from '../src/utils/misc/durationForHumans';
 
 const isPublic = process.env['IS_PUBLIC'] === 'true';
 const bearerToken = process.env['BEARER_TOKEN'];

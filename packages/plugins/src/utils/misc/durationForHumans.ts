@@ -1,9 +1,3 @@
-export async function sleep(ms = 100) {
-  return new Promise((r) => {
-    setTimeout(r, ms);
-  });
-}
-
 export default function durationForHumans(milliseconds: number) {
   if (milliseconds < 100) {
     return `${milliseconds}ms`;

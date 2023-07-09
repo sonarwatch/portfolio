@@ -17,10 +17,10 @@ export * from './platforms';
 export const platforms = Object.values(platformsObj);
 
 export const jobs: Job[] = [
+  ...thalaJobs,
   ...fooJobs,
   ...marginfiJobs,
   ...tokensJobs,
-  ...thalaJobs,
 ];
 
 export const fetchers: Fetcher[] = [

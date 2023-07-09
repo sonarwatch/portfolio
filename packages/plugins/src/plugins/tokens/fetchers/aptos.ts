@@ -3,10 +3,8 @@ import {
   Fetcher,
   FetcherExecutor,
   NetworkId,
-  PortfolioAsset,
-  PortfolioAssetType,
+  PortfolioAssetToken,
   PortfolioElement,
-  PortfolioElementLiquidity,
   PortfolioElementMultiple,
   PortfolioElementType,
   PortfolioLiquidity,
@@ -14,7 +12,8 @@ import {
 } from '@sonarwatch/portfolio-core';
 
 import BigNumber from 'bignumber.js';
-import { tokenPriceToAssetToken } from '../../../utils/misc/tokenPriceToAssetToken';
+import tokenPriceToAssetTokens from '../../../utils/misc/tokenPriceToAssetTokens';
+import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import { walletTokensPlatform } from '../../../platforms';
 import { getClientAptos } from '../../../utils/clients';
 import {
@@ -29,98 +28,87 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientAptos();
   const resources = await getAccountResources(client, owner);
   if (!resources) return [];
-  const walletTokens: PortfolioAsset[] = [];
-  const lpTokens: Record<string, PortfolioLiquidity[]> = {};
+
+  const walletTokensAssets: PortfolioAssetToken[] = [];
+  const liquiditiesByPlatformId: Record<string, PortfolioLiquidity[]> = {};
 
   for (let i = 0; i < resources.length; i++) {
     const resource = resources[i];
     const resourceType = resource.type;
     if (!isCoinStoreRessourceType(resourceType)) continue;
 
-    const parseCoinType = parseTypeString(resource.type);
-
+    const parseCoinType = parseTypeString(resourceType);
     if (parseCoinType.root !== coinStore) continue;
     if (!parseCoinType.keys) continue;
 
     const coinType = parseCoinType.keys.at(0)?.type;
     if (coinType === undefined) continue;
 
+    const coinStoreData = resource.data as CoinStoreData;
+    const rawAmount = new BigNumber(coinStoreData.coin.value);
+    if (rawAmount.isZero()) continue;
+
     const tokenPrice = await cache.getTokenPrice(coinType, NetworkId.aptos);
     if (!tokenPrice) continue;
 
-    const coinStoreData = resource.data as CoinStoreData;
-    const amount = new BigNumber(coinStoreData.coin.value)
-      .div(10 ** tokenPrice.decimals)
-      .toNumber();
+    const amount = rawAmount.div(10 ** tokenPrice.decimals).toNumber();
     if (amount === 0) continue;
 
-    const price = tokenPrice?.price || null;
-    const value = price ? amount * price : null;
-
-    const asset: PortfolioAsset = {
-      networkId: NetworkId.aptos,
-      type: PortfolioAssetType.token,
-      value,
-      data: { address: coinType, price, amount },
-    };
     if (tokenPrice.platformId !== walletTokensPlatform.id) {
-      if (!tokenPrice.underlyings) continue;
-      const underlyingsAsset: PortfolioAsset[] = [];
-
-      tokenPrice.underlyings.forEach((underlying) => {
-        if (!tokenPrice.underlyings) return;
-        underlyingsAsset.push(
-          tokenPriceToAssetToken(
-            underlying.address,
-            amount * underlying.amountPerLp,
-            NetworkId.aptos,
-            underlying
-          )
-        );
-      });
-      const lpToken: PortfolioLiquidity = {
-        assets: underlyingsAsset,
-        assetsValue: getUsdValueSum(underlyingsAsset.map((a) => a.value)),
+      const assets = tokenPriceToAssetTokens(
+        coinType,
+        amount,
+        NetworkId.aptos,
+        tokenPrice
+      );
+      const liquidity: PortfolioLiquidity = {
+        assets,
+        assetsValue: getUsdValueSum(assets.map((a) => a.value)),
         rewardAssets: [],
         rewardAssetsValue: 0,
-        value: getUsdValueSum(underlyingsAsset.map((a) => a.value)),
+        value: getUsdValueSum(assets.map((a) => a.value)),
         yields: [],
       };
-      if (lpTokens[tokenPrice.platformId] === undefined) {
-        lpTokens[tokenPrice.platformId] = [];
+      if (!liquiditiesByPlatformId[tokenPrice.platformId]) {
+        liquiditiesByPlatformId[tokenPrice.platformId] = [];
       }
-      lpTokens[tokenPrice.platformId].push(lpToken);
+      liquiditiesByPlatformId[tokenPrice.platformId].push(liquidity);
     } else {
-      walletTokens.push(asset);
+      walletTokensAssets.push(
+        tokenPriceToAssetToken(coinType, amount, NetworkId.aptos, tokenPrice)
+      );
     }
   }
+
   const elements: PortfolioElement[] = [];
-  if (walletTokens.length === 0) return [];
-  const walletTokensElement: PortfolioElementMultiple = {
-    type: PortfolioElementType.multiple,
-    networkId: NetworkId.aptos,
-    platformId: walletTokensPlatform.id,
-    label: 'Wallet',
-    value: getUsdValueSum(walletTokens.map((a) => a.value)),
-    data: {
-      assets: walletTokens,
-    },
-  };
-  const platformIds = Object.keys(lpTokens);
-  platformIds.forEach((platformId) => {
-    const liquidityElement: PortfolioElementLiquidity = {
+  if (walletTokensAssets.length > 0) {
+    const walletTokensElement: PortfolioElementMultiple = {
+      type: PortfolioElementType.multiple,
+      networkId: NetworkId.aptos,
+      platformId: walletTokensPlatform.id,
+      label: 'Wallet',
+      value: getUsdValueSum(walletTokensAssets.map((a) => a.value)),
+      data: {
+        assets: walletTokensAssets,
+      },
+    };
+    elements.push(walletTokensElement);
+  }
+
+  for (const [platformId, liquidities] of Object.entries(
+    liquiditiesByPlatformId
+  )) {
+    elements.push({
       type: PortfolioElementType.liquidity,
       networkId: NetworkId.aptos,
       platformId,
       label: 'LiquidityPool',
-      value: getUsdValueSum(lpTokens[platformId].map((a) => a.value)),
+      value: getUsdValueSum(liquidities.map((a) => a.value)),
       data: {
-        liquidities: lpTokens[platformId],
+        liquidities,
       },
-    };
-    elements.push(liquidityElement);
-  });
-  elements.push(walletTokensElement);
+    });
+  }
   return elements;
 };
 

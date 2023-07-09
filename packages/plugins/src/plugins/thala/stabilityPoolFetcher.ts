@@ -19,7 +19,7 @@ import {
 } from './constants';
 import { getView } from '../../utils/aptos';
 import { getClientAptos } from '../../utils/clients';
-import { tokenPriceToAssetToken } from '../../utils/misc/tokenPriceToAssetToken';
+import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientAptos();
