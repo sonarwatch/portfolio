@@ -7,9 +7,12 @@ on:
       - main
 
 jobs:
-  main:
+  deployment:
     runs-on: ubuntu-latest
     steps:
-      - name: REST API with curl
+      - name: Deploy app#1
         run: |
-          curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}" "https://api.digitalocean.com/v2/apps/${{ secrets.DIGITALOCEAN_APP_NAME }}/deployments"
+          curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}" "https://api.digitalocean.com/v2/apps/${{ secrets.DIGITALOCEAN_APP_NAME_1 }}/deployments"
+      - name: Deploy app#2
+        run: |
+          curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}" "https://api.digitalocean.com/v2/apps/${{ secrets.DIGITALOCEAN_APP_NAME_2 }}/deployments"
