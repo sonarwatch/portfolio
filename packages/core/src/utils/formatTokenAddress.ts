@@ -18,6 +18,7 @@ export function formatMoveTokenAddress(address: string) {
   assertMoveTokenAddress(address);
   return address
     .trim()
+    .replace('::', '__')
     .replace(',', '-')
     .replace(/[^\w\s-]/g, '')
     .replace(/[\s_-]+/g, '-');
