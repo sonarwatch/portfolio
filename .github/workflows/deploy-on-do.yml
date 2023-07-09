@@ -10,7 +10,5 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: digitalocean/app_action@v1.1.5
-        with:
-          app_name: ${{ secrets.DIGITALOCEAN_APP_NAME }}
-          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      run: |
+        curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}" "https://api.digitalocean.com/v2/apps/${{ secrets.DIGITALOCEAN_APP_NAME }}/deployments"
