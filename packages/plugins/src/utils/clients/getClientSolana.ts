@@ -5,6 +5,7 @@ import { rpcEnpoints } from './constants';
 
 export default function getClientSolana() {
   const rpcEndpoint = rpcEnpoints[NetworkId.solana];
+  console.log('rpcEndpoint:', rpcEndpoint);
   const httpHeaders = rpcEndpoint.basicAuth
     ? getBasicAuthHeaders(
         rpcEndpoint.basicAuth.username,
