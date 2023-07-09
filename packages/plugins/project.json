@@ -14,9 +14,6 @@
         "assets": ["packages/plugins/*.md"]
       }
     },
-    "serve-cache-and-jobs": {
-      "command": "ts-node -P packages/plugins/tsconfig.script.json --transpile-only packages/plugins/scripts/serve-cache-and-jobs.ts"
-    },
     "serve-cache": {
       "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/serve-cache.ts",
       "dependsOn": ["build"]
