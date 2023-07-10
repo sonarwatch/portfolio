@@ -27,8 +27,8 @@ async function main() {
   console.log('Fetching...');
   const elements = await runFetcher(owner, fetcher, cache);
   const duration = ((Date.now() - startDate) / 1000).toFixed(2);
-  console.log(`Finished (${duration}s)`);
   console.log(util.inspect(elements, false, null, true));
+  console.log(`Finished in: ${duration}s`);
   process.exit(0);
 }
 
