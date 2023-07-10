@@ -23,12 +23,10 @@ async function main() {
 
   const cache = getCache();
 
-  const startDate = Date.now();
   console.log('Fetching...');
-  const elements = await runFetcher(owner, fetcher, cache);
-  const duration = ((Date.now() - startDate) / 1000).toFixed(2);
-  console.log(util.inspect(elements, false, null, true));
-  console.log(`Finished in: ${duration}s`);
+  const fetcherResult = await runFetcher(owner, fetcher, cache);
+  console.log(util.inspect(fetcherResult.elements, false, null, true));
+  console.log(`Finished in: ${fetcherResult.duration}s`);
   process.exit(0);
 }
 

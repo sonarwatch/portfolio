@@ -18,6 +18,14 @@ export type Fetcher = {
 
 export type FetcherResult = {
   owner: string;
+  fetcherId: string;
+  networdkId: NetworkIdType;
+  elements: PortfolioElement[];
+  duration: number;
+};
+
+export type FetchersResult = {
+  owner: string;
   addressSystem: AddressSystemType;
   fetcherIds: string[];
   succeededFetcherIds: string[];
@@ -31,7 +39,7 @@ export async function runFetchers(
   addressSystem: AddressSystemType,
   fetchers: Fetcher[],
   cache: Cache
-): Promise<FetcherResult> {
+): Promise<FetchersResult> {
   const fOwner = formatAddress(owner, addressSystem);
   const isFetchersValids = fetchers.every(
     (f) => networks[f.networkId].addressSystem === addressSystem
@@ -83,7 +91,19 @@ export async function runFetchersByNetworkId(
   return runFetchers(owner, addressSystem, fetchers, cache);
 }
 
-export function runFetcher(owner: string, fetcher: Fetcher, cache: Cache) {
+export async function runFetcher(
+  owner: string,
+  fetcher: Fetcher,
+  cache: Cache
+): Promise<FetcherResult> {
+  const startDate = Date.now();
   const fOwner = formatAddressByNetworkId(owner, fetcher.networkId);
-  return fetcher.executor(fOwner, cache);
+  const elements = await fetcher.executor(fOwner, cache);
+  return {
+    owner: fOwner,
+    fetcherId: fetcher.id,
+    networdkId: fetcher.networkId,
+    elements,
+    duration: Date.now() - startDate,
+  };
 }
