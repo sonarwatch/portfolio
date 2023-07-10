@@ -1,6 +1,7 @@
 import util from 'node:util';
 import { getCache, runFetcher } from '@sonarwatch/portfolio-core';
 import { fetchers } from '../src';
+import durationForHumans from '../src/utils/misc/durationForHumans';
 
 const fetcherId = process.argv.at(2);
 if (!fetcherId || fetcherId === '') {
@@ -26,7 +27,7 @@ async function main() {
   console.log('Fetching...');
   const fetcherResult = await runFetcher(owner, fetcher, cache);
   console.log(util.inspect(fetcherResult.elements, false, null, true));
-  console.log(`Finished in: ${fetcherResult.duration}s`);
+  console.log(`Finished in: ${durationForHumans(fetcherResult.duration)}s`);
   process.exit(0);
 }
 
