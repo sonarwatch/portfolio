@@ -1,9 +1,9 @@
-export default function durationForHumans(milliseconds: number) {
-  if (milliseconds < 100) {
-    return `${milliseconds}ms`;
+export default function durationForHumans(durationMs: number) {
+  if (durationMs < 100) {
+    return `${durationMs}ms`;
   }
 
-  const seconds = milliseconds / 1000;
+  const seconds = durationMs / 1000;
   if (seconds < 60) {
     return `${seconds.toFixed(2)}s`;
   }
