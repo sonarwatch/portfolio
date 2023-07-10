@@ -13,15 +13,11 @@ import {
   solanaNetwork,
 } from '@sonarwatch/portfolio-core';
 import { Connection } from '@solana/web3.js';
-import runInBatch from 'packages/plugins/src/utils/misc/runInBatch';
 import { walletTokensPlatform } from '../../../platforms';
 import { getClientSolana } from '../../../utils/clients';
-import {
-  ParsedAccount,
-  TokenAccount,
-  getTokenAccountsByOwner,
-} from '../../../utils/solana';
+import { getTokenAccountsByOwner } from '../../../utils/solana';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
+import runInBatch from '../../../utils/misc/runInBatch';
 
 const solFactor = 10 ** solanaNetwork.native.decimals;
 
