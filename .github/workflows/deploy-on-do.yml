@@ -3,9 +3,8 @@ name: Deploy on DO
 on:
   workflow_dispatch:
   push:
-    tags:
-      - core-**
-      - plugins-**
+    branches:
+      - main
 
 jobs:
   deployment:
