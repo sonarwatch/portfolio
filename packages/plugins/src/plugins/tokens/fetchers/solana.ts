@@ -10,29 +10,22 @@ import {
   PortfolioElementType,
   TokenPrice,
   getUsdValueSum,
-  solanaNetwork,
 } from '@sonarwatch/portfolio-core';
-import { Connection } from '@solana/web3.js';
 import { walletTokensPlatform } from '../../../platforms';
 import { getClientSolana } from '../../../utils/clients';
 import { getTokenAccountsByOwner } from '../../../utils/solana';
-import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import runInBatch from '../../../utils/misc/runInBatch';
-
-const solFactor = 10 ** solanaNetwork.native.decimals;
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
   const ownerPubKey = new PublicKey(owner);
-  const balancePromise = getBalance(ownerPubKey, client, cache);
 
   const tokenAccounts = await getTokenAccountsByOwner(client, ownerPubKey);
   const mints = [...new Set(tokenAccounts.map((ta) => ta.mint.toString()))];
 
-  const functionsToRun = mints.map(
-    (mint) => () => cache.getTokenPrice(mint, NetworkId.solana)
+  const results = await runInBatch(
+    mints.map((mint) => () => cache.getTokenPrice(mint, NetworkId.solana))
   );
-  const results = await runInBatch(functionsToRun);
   const tokenPrices: Map<string, TokenPrice> = new Map();
   results.forEach((r) => {
     if (r.status === 'rejected') return;
@@ -61,10 +54,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     });
   }
 
-  // Native sol
-  const balanceAsset = await balancePromise;
-  if (balanceAsset) assets.push(balanceAsset);
-
   if (assets.length === 0) return [];
   const element: PortfolioElementMultiple = {
     type: PortfolioElementType.multiple,
@@ -78,29 +67,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   };
   return [element];
 };
-
-async function getBalance(
-  owner: PublicKey,
-  client: Connection,
-  cache: Cache
-): Promise<PortfolioAssetToken | null> {
-  const pTokenPrice = cache.getTokenPrice(
-    solanaNetwork.native.address,
-    NetworkId.solana
-  );
-  const amountLamports = await client.getBalance(owner);
-  if (amountLamports === 0) return null;
-
-  const amount = amountLamports / solFactor;
-  const solTokenPrice = await pTokenPrice;
-
-  return tokenPriceToAssetToken(
-    solanaNetwork.native.address,
-    amount,
-    NetworkId.solana,
-    solTokenPrice
-  );
-}
 
 const fetcher: Fetcher = {
   id: `${walletTokensPlatform.id}-solana`,
