@@ -11,6 +11,8 @@ jobs:
   deployment:
     runs-on: ubuntu-latest
     steps:
+      - name: Sleep for 30 sec
+        run: sleep 30
       - name: Deploy app#1
         run: |
           curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}" "https://api.digitalocean.com/v2/apps/${{ secrets.DIGITALOCEAN_APP_NAME_1 }}/deployments"
