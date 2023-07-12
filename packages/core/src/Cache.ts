@@ -20,7 +20,7 @@ export type TransactionOptions = {
 };
 
 const tokenPriceSourcePrefix = 'tokenpricesource';
-const tokenPricesCacheTtl = 10 * 1000;
+const tokenPricesCacheTtl = 120 * 1000;
 
 type CachedTokenPrice = {
   tp: TokenPrice;
