@@ -3,7 +3,11 @@ import { Cache } from './Cache';
 import { NetworkIdType } from './Network';
 import { PortfolioElement } from './Portfolio';
 import { networks } from './constants';
-import { formatAddress, formatAddressByNetworkId } from './utils';
+import {
+  formatAddress,
+  formatAddressByNetworkId,
+  getAddressSystem,
+} from './utils';
 
 export type FetcherExecutor = (
   owner: string,
@@ -36,27 +40,28 @@ export type FetchersResult = {
 
 export async function runFetchers(
   owner: string,
-  addressSystem: AddressSystemType,
   fetchers: Fetcher[],
   cache: Cache
 ): Promise<FetchersResult> {
+  const addressSystem = getAddressSystem(owner);
+  if (!addressSystem)
+    throw new Error(
+      `Owner address does not correspond to any address system: ${owner}`
+    );
   const fOwner = formatAddress(owner, addressSystem);
-  const isFetchersValids = fetchers.every(
+
+  const fFetchers = fetchers.filter(
     (f) => networks[f.networkId].addressSystem === addressSystem
   );
-  if (!isFetchersValids)
-    throw new Error(
-      `Not all fetchers have the right address system: ${addressSystem}`
-    );
 
-  const promises = fetchers.map((f) => f.executor(fOwner, cache));
+  const promises = fFetchers.map((f) => f.executor(fOwner, cache));
   const result = await Promise.allSettled(promises);
 
   const failedFetcherIds: string[] = [];
   const succeededFetcherIds: string[] = [];
   const errors: Record<string, string> = {};
   const elements = result.flatMap((r, index) => {
-    const fetcherId = fetchers[index].id;
+    const fetcherId = fFetchers[index].id;
     if (r.status === 'rejected') {
       failedFetcherIds.push(fetcherId);
       errors[fetcherId] = r.reason.message || 'Unknown error';
@@ -83,12 +88,7 @@ export async function runFetchersByNetworkId(
   fetchers: Fetcher[],
   cache: Cache
 ) {
-  const isFetchersValids = fetchers.every((f) => f.networkId === networkId);
-  if (!isFetchersValids)
-    throw new Error(`Not all fetchers have the right network id: ${networkId}`);
-
-  const { addressSystem } = networks[networkId];
-  return runFetchers(owner, addressSystem, fetchers, cache);
+  return runFetchers(owner, fetchers, cache);
 }
 
 export async function runFetcher(
