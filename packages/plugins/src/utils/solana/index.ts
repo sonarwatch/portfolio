@@ -2,6 +2,7 @@ export * from './beets/buffers';
 export * from './beets/numbers';
 export * from './constants';
 export * from './getParsedProgramAccounts';
+export * from './getParsedMultipleAccountsInfo';
 export * from './getProgramAccountsSafe';
 export * from './getTokenAccountsByOwner';
 export * from './structs';
