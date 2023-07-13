@@ -1,4 +1,10 @@
-import { Fetcher, Job } from '@sonarwatch/portfolio-core';
+import {
+  AddressSystem,
+  AddressSystemType,
+  Fetcher,
+  Job,
+  getAddressSystemFromNetworkId,
+} from '@sonarwatch/portfolio-core';
 import * as platformsObj from './platforms';
 import {
   jobs as tokensJobs,
@@ -31,3 +37,16 @@ export const fetchers: Fetcher[] = [
   ...thalaFetchers,
   ...tokensFetchers,
 ];
+
+const iFetchersByAddressSystem: Record<string, Fetcher[]> = {};
+Object.values(AddressSystem).forEach((addressSystem) => {
+  iFetchersByAddressSystem[addressSystem] = [];
+});
+fetchers.forEach((f) => {
+  const addressSystem = getAddressSystemFromNetworkId(f.networkId);
+  iFetchersByAddressSystem[addressSystem].push(f);
+});
+export const fetchersByAddressSystem = iFetchersByAddressSystem as Record<
+  AddressSystemType,
+  Fetcher[]
+>;
