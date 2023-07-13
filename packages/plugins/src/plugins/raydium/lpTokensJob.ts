@@ -7,38 +7,66 @@ import {
   TokenPriceUnderlying,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@metaplex-foundation/js';
-import { AMM_PROGRAM_ID_V4, platformId } from './constants';
+import { AMM_PROGRAM_ID_V4, AMM_PROGRAM_ID_V5, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import {
+  AmmInfoV4,
+  AmmInfoV5,
   OpenOrdersV1,
   OpenOrdersV2,
   ammInfoV4Struct,
+  ammInfoV5Struct,
   openOrdersV1Struct,
   openOrdersV2Struct,
 } from './structs';
 import {
   MintAccount,
   TokenAccount,
-  getParsedProgramAccounts,
   mintAccountStruct,
   tokenAccountStruct,
 } from '../../utils/solana';
-import { ammV4Filter } from './filters';
+import { ammV4Filter, ammV5Filter } from './filters';
 import { LiquidityPoolStatus } from './types';
 import runInBatch from '../../utils/misc/runInBatch';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 
+const ammInfos = [
+  {
+    versionId: 4,
+    struct: ammInfoV4Struct,
+    programId: AMM_PROGRAM_ID_V4,
+    filters: ammV4Filter,
+  },
+  {
+    versionId: 5,
+    struct: ammInfoV5Struct,
+    programId: AMM_PROGRAM_ID_V5,
+    filters: ammV5Filter,
+  },
+];
+
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
+  const ammsRaws: (AmmInfoV4 | AmmInfoV5)[] = [];
 
-  // AMM V4
-  const ammV4AccountsRaw = await getParsedProgramAccounts(
-    client,
-    ammInfoV4Struct,
-    AMM_PROGRAM_ID_V4,
-    ammV4Filter
-  );
-  const ammV4Accounts = ammV4AccountsRaw.filter((a) => {
+  for (let id = 0; id < ammInfos.length; id++) {
+    const ammInfo = ammInfos[id];
+    const { struct, programId, filters } = ammInfo;
+
+    const ammsRes = await client.getProgramAccounts(programId, { filters });
+    const cAmms = ammsRes.map(
+      (poolRes) => struct.deserialize(poolRes.account.data)[0]
+    );
+    ammsRaws.push(...cAmms);
+  }
+  // // AMM V4
+  // const ammV4AccountsRaw = await getParsedProgramAccounts(
+  //   client,
+  //   ammInfoV4Struct,
+  //   AMM_PROGRAM_ID_V4,
+  //   ammV4Filter
+  // );
+  const ammsAccounts = ammsRaws.filter((a) => {
     if (a.status.toNumber() === LiquidityPoolStatus.Disabled) return false;
     if (a.status.toNumber() === LiquidityPoolStatus.Uninitialized) return false;
     if (a.lpMintAddress.toString() === '11111111111111111111111111111111')
@@ -49,7 +77,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   const mints: Set<string> = new Set();
   const addresses: PublicKey[] = [];
-  ammV4Accounts.forEach((amm) => {
+  ammsAccounts.forEach((amm) => {
     addresses.push(
       amm.poolCoinTokenAccount,
       amm.poolPcTokenAccount,
@@ -85,7 +113,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       tokenAccountStruct.deserialize(poolPcTokenAccountInfo.data)[0]
     );
     if (
-      ammV4Accounts[i / 4].serumProgramId.toString() ===
+      ammsAccounts[i / 4].serumProgramId.toString() ===
       '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'
     ) {
       ammsOpenOrdersMap.set(
@@ -114,8 +142,8 @@ const executor: JobExecutor = async (cache: Cache) => {
     tokenPrices.set(r.value.address, r.value);
   });
 
-  for (let i = 0; i < ammV4Accounts.length; i += 1) {
-    const amm = ammV4Accounts[i];
+  for (let i = 0; i < ammsAccounts.length; i += 1) {
+    const amm = ammsAccounts[i];
     const coinTokenPrice = tokenPrices.get(amm.coinMintAddress.toString());
     const pcTokenPrice = tokenPrices.get(amm.pcMintAddress.toString());
     if (!pcTokenPrice || !coinTokenPrice) continue;
