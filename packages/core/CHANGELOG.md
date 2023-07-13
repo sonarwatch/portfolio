@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.28](https://github.com/sonarwatch/portfolio/compare/core-0.4.27...core-0.4.28) (2023-07-13)
+
+
+### Reverts
+
+* Revert "fix" ([a93952e](https://github.com/sonarwatch/portfolio/commit/a93952e9e6ad61547691bf5e00af35a892a0b81c))
+
+
+
 ## [0.4.27](https://github.com/sonarwatch/portfolio/compare/core-0.4.26...core-0.4.27) (2023-07-13)
 
 
