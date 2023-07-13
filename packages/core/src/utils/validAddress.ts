@@ -53,18 +53,25 @@ const validators: Record<AddressSystemType, (address: string) => boolean> = {
   [AddressSystem.move]: isMoveAddress,
 };
 
-export function isAddress(address: string, networkId: NetworkIdType): boolean {
-  const network = networks[networkId];
-  if (!network) throw new Error(`NetworkId not supported: ${networkId}`);
+export function getAddressSystem(address: string): AddressSystemType | null {
+  for (const [addressSystem, validator] of Object.entries(validators)) {
+    if (validator(address)) return addressSystem as AddressSystemType;
+  }
+  return null;
+}
 
-  const validator = validators[network.addressSystem];
+export function isAddress(
+  address: string,
+  addressSystem: AddressSystemType
+): boolean {
+  const validator = validators[addressSystem];
   return validator(address);
 }
 
-export function assertAddressValid(
+export function assertAddress(
   address: string,
-  networkId: NetworkIdType
+  addressSystem: AddressSystemType
 ): void {
-  if (!isAddress(address, networkId))
-    throw new Error(`Address is not valid: [${networkId}][${address}]`);
+  if (!isAddress(address, addressSystem))
+    throw new Error(`Address is not valid: [${addressSystem}][${address}]`);
 }
