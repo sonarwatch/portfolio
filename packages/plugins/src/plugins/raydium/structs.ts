@@ -103,7 +103,7 @@ export type OpenOrdersV2 = {
 };
 export const openOrdersV2Struct = new BeetStruct<OpenOrdersV2>(
   [
-    ['buffer', blob(5)],
+    ['buffer', blob(6)],
 
     ['accountFlags', accountFlagStruct],
 

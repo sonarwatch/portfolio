@@ -9,7 +9,13 @@ import {
 import { PublicKey } from '@metaplex-foundation/js';
 import { AMM_PROGRAM_ID_V4, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
-import { OpenOrdersV2, ammInfoV4Struct, openOrdersV2Struct } from './structs';
+import {
+  OpenOrdersV1,
+  OpenOrdersV2,
+  ammInfoV4Struct,
+  openOrdersV1Struct,
+  openOrdersV2Struct,
+} from './structs';
 import {
   MintAccount,
   TokenAccount,
@@ -54,7 +60,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     mints.add(amm.pcMintAddress.toString());
   });
   const tokenAccountsMap: Map<string, TokenAccount> = new Map();
-  const ammsOpenOrdersMap: Map<string, OpenOrdersV2> = new Map();
+  const ammsOpenOrdersMap: Map<string, OpenOrdersV2 | OpenOrdersV1> = new Map();
   const mintAccountsMap: Map<string, MintAccount> = new Map();
   const accountsRes = await getMultipleAccountsInfoSafe(client, addresses);
   for (let i = 0; i < accountsRes.length; i += 4) {
@@ -78,10 +84,20 @@ const executor: JobExecutor = async (cache: Cache) => {
       addresses[i + 1].toString(),
       tokenAccountStruct.deserialize(poolPcTokenAccountInfo.data)[0]
     );
-    ammsOpenOrdersMap.set(
-      addresses[i + 2].toString(),
-      openOrdersV2Struct.deserialize(ammOpenOrdersInfo.data)[0]
-    );
+    if (
+      ammV4Accounts[i / 4].serumProgramId.toString() ===
+      '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'
+    ) {
+      ammsOpenOrdersMap.set(
+        addresses[i + 2].toString(),
+        openOrdersV1Struct.deserialize(ammOpenOrdersInfo.data)[0]
+      );
+    } else {
+      ammsOpenOrdersMap.set(
+        addresses[i + 2].toString(),
+        openOrdersV2Struct.deserialize(ammOpenOrdersInfo.data)[0]
+      );
+    }
     mintAccountsMap.set(
       addresses[i + 3].toString(),
       mintAccountStruct.deserialize(lpMintAddressInfo.data)[0]
@@ -136,9 +152,13 @@ const executor: JobExecutor = async (cache: Cache) => {
     const lpMintAccount = mintAccountsMap.get(lpMint.toString());
     if (!lpMintAccount) continue;
 
-    const lpSupply = lpMintAccount.supply;
     const lpDecimals = lpMintAccount.decimals;
+    const lpSupply = lpMintAccount.supply.div(10 ** lpDecimals);
     if (!lpDecimals || !lpSupply) continue;
+
+    const tvl = coinValueLocked.plus(pcValueLocked);
+    const price = tvl.div(lpSupply).toNumber();
+
     const underlyings: TokenPriceUnderlying[] = [];
     underlyings.push({
       networkId: NetworkId.solana,
@@ -154,9 +174,6 @@ const executor: JobExecutor = async (cache: Cache) => {
       price: pcTokenPrice.price,
       amountPerLp: pcAmount.div(lpSupply).toNumber(),
     });
-    const tvl = coinValueLocked.plus(pcValueLocked);
-    const price = tvl.div(lpSupply).toNumber();
-
     await cache.setTokenPriceSource({
       id: platformId,
       weight: 1,
