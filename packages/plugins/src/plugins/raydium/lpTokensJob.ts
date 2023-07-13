@@ -1,123 +1,187 @@
-import { Cache, Job, JobExecutor, NetworkId } from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
+import {
+  Cache,
+  Job,
+  JobExecutor,
+  NetworkId,
+  TokenPrice,
+  TokenPriceUnderlying,
+} from '@sonarwatch/portfolio-core';
+import { PublicKey } from '@metaplex-foundation/js';
+import { BeetStruct } from '@metaplex-foundation/beet';
 import { AMM_PROGRAM_ID_V4, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
+import { OpenOrdersV2, ammInfoV4Struct, openOrdersV2Struct } from './structs';
 import {
-  accountStruc,
-  ammInfoV4Struct,
-  ammInfoV5Struct,
-  openOrdersV2Struct,
-} from './structs';
-import { getParsedProgramAccounts } from '../../utils/solana';
+  MintAccount,
+  TokenAccount,
+  getParsedProgramAccounts,
+  mintAccountStruct,
+  tokenAccountStruct,
+} from '../../utils/solana';
 import { ammV4Filter } from './filters';
-import { getParsedMultipleAccountsInfo } from '../../utils/solana/getParsedMultipleAccountsInfo';
-import { fetchTokenSupplyAndDecimals } from '../../utils/solana/fetchTokenSupplyAndDecimals';
+import { LiquidityPoolStatus } from './types';
+import runInBatch from '../../utils/misc/runInBatch';
+import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
+import { isMintAccount, isOpenOrderAccount, isTokenAccount } from './helpers';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
 
-  // AMM V5
-  const ammV5Accounts = await getParsedProgramAccounts(
+  // AMM V4
+  const ammV4Accounts = await getParsedProgramAccounts(
     client,
     ammInfoV4Struct,
     AMM_PROGRAM_ID_V4,
     ammV4Filter
   );
-  console.log(
-    'constexecutor:JobExecutor= ~ ammInfoV4Struct:',
-    ammInfoV4Struct.byteSize
-  );
-  console.log(
-    'constexecutor:JobExecutor= ~ ammV4Accounts.length:',
-    ammV5Accounts.length
-  );
+  const mints: string[] = [];
+  const addresses: PublicKey[] = [];
+  const structs: (
+    | BeetStruct<TokenAccount>
+    | BeetStruct<OpenOrdersV2>
+    | BeetStruct<MintAccount>
+  )[] = [];
 
-  for (let i = 0; i < ammV5Accounts.length; i += 1) {
-    const amm = ammV5Accounts[i];
+  for (let i = 0; i < ammV4Accounts.length; i += 1) {
+    const amm = ammV4Accounts[i];
+
+    if (amm.lpMintAddress.toString() === '11111111111111111111111111111111')
+      continue;
+
+    mints.push(amm.coinMintAddress.toString(), amm.pcMintAddress.toString());
+
+    addresses.push(
+      amm.poolCoinTokenAccount,
+      amm.poolPcTokenAccount,
+      amm.ammOpenOrders,
+      amm.lpMintAddress
+    );
+    structs.push(
+      tokenAccountStruct,
+      tokenAccountStruct,
+      openOrdersV2Struct,
+      mintAccountStruct
+    );
+  }
+
+  const tokenPriceResults = await runInBatch(
+    mints.map((mint) => () => cache.getTokenPrice(mint, NetworkId.solana))
+  );
+  const tokenPrices: Map<string, TokenPrice> = new Map();
+  tokenPriceResults.forEach((r) => {
+    if (r.status === 'rejected') return;
+    if (!r.value) return;
+    tokenPrices.set(r.value.address, r.value);
+  });
+
+  const accountRes = await getMultipleAccountsInfoSafe(client, addresses);
+  if (!accountRes) return;
+  if (accountRes.length !== structs.length) return;
+  const accountByAddress: Map<
+    string,
+    TokenAccount | OpenOrdersV2 | MintAccount
+  > = new Map();
+  for (let index = 0; index < accountRes.length; index++) {
+    const account = accountRes[index];
+    const struct = structs[index];
+    const address = addresses[index];
+    if (!account || !struct || !address) continue;
+    const deserializedAccount = struct.deserialize(account.data)[0];
+    accountByAddress.set(address.toString(), deserializedAccount);
+  }
+
+  for (let i = 0; i < ammV4Accounts.length; i += 1) {
+    const underlyings: TokenPriceUnderlying[] = [];
+    const amm = ammV4Accounts[i];
+    if (
+      [
+        LiquidityPoolStatus.Disabled,
+        LiquidityPoolStatus.Uninitialized,
+      ].includes(amm.status.toNumber())
+    )
+      continue;
     if (amm.lpMintAddress.toString() === '11111111111111111111111111111111')
       continue;
     if (amm.pcMintAddress.toString() === amm.serumMarket.toString()) continue;
 
-    const coinPrice = await cache.getTokenPrice(
-      amm.coinMintAddress.toString(),
-      NetworkId.solana
-    );
-    const pcPrice = await cache.getTokenPrice(
-      amm.pcMintAddress.toString(),
-      NetworkId.solana
-    );
-    if (!pcPrice || !coinPrice) continue;
+    const coinTokenPrice = tokenPrices.get(amm.coinMintAddress.toString());
+    const pcTokenPrice = tokenPrices.get(amm.pcMintAddress.toString());
+    if (!pcTokenPrice || !coinTokenPrice) continue;
 
-    const addresses = [
-      amm.poolCoinTokenAccount,
-      amm.poolPcTokenAccount,
-      amm.ammOpenOrders,
-    ];
-    const accountsRes = await getParsedMultipleAccountsInfo(
-      client,
-      accountStruc,
-      addresses
+    const poolCoinTokenAccount = accountByAddress.get(
+      amm.poolCoinTokenAccount.toString()
     );
-    const openOrderAccountInfo = await getParsedMultipleAccountsInfo(
-      client,
-      openOrdersV2Struct,
-      [amm.ammOpenOrders]
+
+    const poolPcTokenAccount = accountByAddress.get(
+      amm.poolPcTokenAccount.toString()
     );
-    if (!accountsRes || !openOrderAccountInfo) return;
-    const poolCoinTokenAccount = accountsRes.at(0);
-    const poolPcTokenAccount = accountsRes.at(1);
-    const ammOpenOrders = openOrderAccountInfo.at(0);
+    const ammOpenOrders = accountByAddress.get(amm.ammOpenOrders.toString());
     if (!poolCoinTokenAccount || !poolPcTokenAccount || !ammOpenOrders)
       continue;
 
-    let coinAmountWei = new BigNumber(poolCoinTokenAccount.amount.toString());
-    let pcAmountWei = new BigNumber(poolPcTokenAccount.amount.toString());
+    if (
+      !isTokenAccount(poolCoinTokenAccount) ||
+      !isTokenAccount(poolPcTokenAccount) ||
+      !isOpenOrderAccount(ammOpenOrders)
+    )
+      continue;
+    let coinAmountWei = poolCoinTokenAccount.amount;
+    let pcAmountWei = poolPcTokenAccount.amount;
 
     const { baseTokenTotal, quoteTokenTotal } = ammOpenOrders;
-    coinAmountWei = coinAmountWei.plus(
-      new BigNumber(baseTokenTotal.toString())
-    );
-    pcAmountWei = pcAmountWei.plus(new BigNumber(quoteTokenTotal.toString()));
+    coinAmountWei = coinAmountWei.plus(baseTokenTotal);
+    pcAmountWei = pcAmountWei.plus(quoteTokenTotal);
 
     const { needTakePnlCoin, needTakePnlPc, coinDecimals, pcDecimals } = amm;
-    coinAmountWei = coinAmountWei.minus(
-      new BigNumber(needTakePnlCoin.toString())
-    );
-    pcAmountWei = pcAmountWei.minus(new BigNumber(needTakePnlPc.toString()));
+    coinAmountWei = coinAmountWei.minus(needTakePnlCoin);
+    pcAmountWei = pcAmountWei.minus(needTakePnlPc);
 
     const coinAmount = coinAmountWei
-      .dividedBy(new BigNumber(10 ** coinDecimals.toNumber()))
-      .toNumber();
-    const pcAmount = pcAmountWei
-      .dividedBy(new BigNumber(10 ** pcDecimals.toNumber()))
+      .dividedBy(10 ** coinDecimals.toNumber())
       .toNumber();
 
-    const coinValueLocked = coinAmount * coinPrice.price;
-    const pcValueLocked = pcAmount * pcPrice.price;
+    const pcAmount = pcAmountWei
+      .dividedBy(10 ** pcDecimals.toNumber())
+      .toNumber();
+
+    const coinValueLocked = coinAmount * coinTokenPrice.price;
+    const pcValueLocked = pcAmount * pcTokenPrice.price;
 
     const lpMint = amm.lpMintAddress;
-    const lpSupplyAndDecimals = await fetchTokenSupplyAndDecimals(
-      lpMint,
-      client,
-      0
-    );
-    const lpSupply = lpSupplyAndDecimals?.supply;
-    const lpDecimals = lpSupplyAndDecimals?.decimals;
-    if (!lpDecimals || !lpSupply) continue;
+    const mintAccount = accountByAddress.get(lpMint.toString());
+    if (!mintAccount) continue;
+    if (!isMintAccount(mintAccount)) continue;
 
+    const lpSupply = mintAccount?.supply.toNumber();
+    const lpDecimals = mintAccount?.decimals;
+    if (!lpDecimals || !lpSupply) continue;
+    underlyings.push({
+      networkId: NetworkId.solana,
+      address: coinTokenPrice.address,
+      decimals: coinTokenPrice.decimals,
+      price: coinTokenPrice.price,
+      amountPerLp: coinAmount / lpSupply,
+    });
+    underlyings.push({
+      networkId: NetworkId.solana,
+      address: pcTokenPrice.address,
+      decimals: pcTokenPrice.decimals,
+      price: pcTokenPrice.price,
+      amountPerLp: pcAmount / lpSupply,
+    });
     const tvl = coinValueLocked + pcValueLocked;
     if (tvl < 2000) continue;
-    const value = tvl / lpSupply;
+    const price = tvl / lpSupply;
 
-    cache.setTokenPriceSource({
+    await cache.setTokenPriceSource({
       id: platformId,
       weight: 1,
       address: lpMint.toString(),
       networkId: NetworkId.solana,
       platformId,
       decimals: lpDecimals,
-      price: value,
-      underlyings: [],
+      price,
+      underlyings,
       timestamp: Date.now(),
     });
   }

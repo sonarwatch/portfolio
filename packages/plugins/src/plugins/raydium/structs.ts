@@ -2,8 +2,6 @@ import {
   BeetStruct,
   FixableBeetStruct,
   bool,
-  u32,
-  u8,
   uniformFixedSizeArray,
 } from '@metaplex-foundation/beet';
 import { PublicKey } from '@metaplex-foundation/js';
@@ -82,12 +80,46 @@ export const openOrdersV1Struct = new BeetStruct<OpenOrdersV1>(
 );
 
 // V2 is the same Layout but an additional field : referrerRebatesAccrued
-export type OpenOrdersV2 = OpenOrdersV1 & {
+export type OpenOrdersV2 = {
+  buffer: Buffer;
+
+  accountFlags: AccountFlag;
+
+  market: PublicKey;
+  owner: PublicKey;
+
+  baseTokenFree: BigNumber;
+  baseTokenTotal: BigNumber;
+  quoteTokenFree: BigNumber;
+  quoteTokenTotal: BigNumber;
+
+  freeSlotBits: BigNumber;
+  isBidBits: BigNumber;
+
+  orders: BigNumber[];
+  clientIds: BigNumber[];
   referrerRebatesAccrued: BigNumber;
+  buffer2: Buffer;
 };
 export const openOrdersV2Struct = new BeetStruct<OpenOrdersV2>(
   [
-    ...openOrdersV1Struct.fields.splice(-1),
+    ['buffer', blob(5)],
+
+    ['accountFlags', accountFlagStruct],
+
+    ['market', publicKey],
+    ['owner', publicKey],
+
+    ['baseTokenFree', u64],
+    ['baseTokenTotal', u64],
+    ['quoteTokenFree', u64],
+    ['quoteTokenTotal', u64],
+
+    ['freeSlotBits', u128],
+    ['isBidBits', u128],
+
+    ['orders', uniformFixedSizeArray(u128, 128)],
+    ['clientIds', uniformFixedSizeArray(u64, 128)],
 
     ['referrerRebatesAccrued', u64],
 
@@ -96,39 +128,7 @@ export const openOrdersV2Struct = new BeetStruct<OpenOrdersV2>(
   (args) => args as OpenOrdersV2
 );
 
-export type Account = {
-  mint: PublicKey;
-  owner: PublicKey;
-  amount: BigNumber;
-  delegateOption: BigNumber;
-  delegate: PublicKey;
-  state: number;
-  isNativeOption: BigNumber;
-  isNative: BigNumber;
-  delegatedAmount: BigNumber;
-  closeAuthorityOption: BigNumber;
-  closeAuthority: PublicKey;
-};
-
-export const accountStruc = new BeetStruct<Account>(
-  [
-    ['mint', publicKey],
-    ['owner', publicKey],
-    ['amount', u64],
-    ['delegateOption', u32],
-    ['delegate', publicKey],
-    ['state', u8],
-    ['isNativeOption', u32],
-    ['isNative', u64],
-    ['delegatedAmount', u64],
-    ['closeAuthorityOption', u32],
-    ['closeAuthority', publicKey],
-  ],
-  (args) => args as Account
-);
-
 export type AmmInfoV4 = {
-  buffer: Buffer;
   status: BigNumber;
   nonce: BigNumber;
   orderNum: BigNumber;
@@ -185,7 +185,6 @@ export type AmmInfoV4 = {
 
 export const ammInfoV4Struct = new BeetStruct<AmmInfoV4>(
   [
-    ['buffer', blob(8)],
     ['status', u64],
     ['nonce', u64],
     ['orderNum', u64],
@@ -242,7 +241,6 @@ export const ammInfoV4Struct = new BeetStruct<AmmInfoV4>(
   (args) => args as AmmInfoV4
 );
 export type AmmInfoV5 = {
-  buffer: Buffer;
   accountType: BigNumber;
   status: BigNumber;
   nonce: BigNumber;
@@ -304,7 +302,6 @@ export type AmmInfoV5 = {
 
 export const ammInfoV5Struct = new BeetStruct<AmmInfoV5>(
   [
-    ['buffer', blob(8)],
     ['accountType', u64],
     ['status', u64],
     ['nonce', u64],
@@ -361,13 +358,12 @@ export const ammInfoV5Struct = new BeetStruct<AmmInfoV5>(
     ['serumProgramId', publicKey],
     ['ammTargetOrders', publicKey],
     ['ammOwner', publicKey],
-    ['padding', blob(512)],
+    ['padding', uniformFixedSizeArray(u64, 64)],
   ],
   (args) => args as AmmInfoV5
 );
 
 export type UserFarmInfoV5 = {
-  buffer: Buffer;
   state: BigNumber;
   poolId: PublicKey;
   stakerOwner: PublicKey;
@@ -379,7 +375,6 @@ export type UserFarmInfoV5 = {
 
 export const userFarmInfoV5Struct = new FixableBeetStruct<UserFarmInfoV5>(
   [
-    ['buffer', blob(8)],
     ['state', u64],
     ['poolId', publicKey],
     ['stakerOwner', publicKey],
