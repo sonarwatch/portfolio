@@ -1,10 +1,4 @@
-import {
-  AddressSystem,
-  AddressSystemType,
-  Fetcher,
-  Job,
-  getAddressSystemFromNetworkId,
-} from '@sonarwatch/portfolio-core';
+import { Fetcher, Job } from '@sonarwatch/portfolio-core';
 import * as platformsObj from './platforms';
 import {
   jobs as tokensJobs,
