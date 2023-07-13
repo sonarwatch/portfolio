@@ -47,8 +47,8 @@ export function assertSolanaAddress(address: string): void {
 const validators: Record<AddressSystemType, (address: string) => boolean> = {
   [AddressSystem.solana]: isSolanaAddress,
   [AddressSystem.evm]: isEvmAddress,
-  [AddressSystem.bitcoin]: isBitcoinAddress,
   [AddressSystem.move]: isMoveAddress,
+  [AddressSystem.bitcoin]: isBitcoinAddress,
 };
 
 export function getAddressSystem(address: string): AddressSystemType | null {
