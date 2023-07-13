@@ -18,6 +18,7 @@ import {
 import { jobs as thalaJobs, fetchers as thalaFetchers } from './plugins/thala';
 import { fetchers as tensorFetchers } from './plugins/tensor';
 import { jobs as fooJobs, fetchers as fooFetchers } from './plugins/foo';
+import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
 export * from './platforms';
 export const platforms = Object.values(platformsObj);
@@ -38,15 +39,4 @@ export const fetchers: Fetcher[] = [
   ...tokensFetchers,
 ];
 
-const iFetchersByAddressSystem: Record<string, Fetcher[]> = {};
-Object.values(AddressSystem).forEach((addressSystem) => {
-  iFetchersByAddressSystem[addressSystem] = [];
-});
-fetchers.forEach((f) => {
-  const addressSystem = getAddressSystemFromNetworkId(f.networkId);
-  iFetchersByAddressSystem[addressSystem].push(f);
-});
-export const fetchersByAddressSystem = iFetchersByAddressSystem as Record<
-  AddressSystemType,
-  Fetcher[]
->;
+export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
