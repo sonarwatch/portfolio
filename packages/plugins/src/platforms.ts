@@ -35,3 +35,8 @@ export const thalaPlatform: Platform = {
   name: 'Thala',
   image: 'https://beta.sonar.watch/img/platforms/thala.png',
 };
+export const raydiumPlatform: Platform = {
+  id: 'raydium',
+  name: 'Raydium',
+  image: 'https://beta.sonar.watch/img/platforms/raydium.png',
+};
