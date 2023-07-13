@@ -5,9 +5,10 @@ import {
   FetcherExecutor,
   NetworkId,
   PortfolioAssetToken,
-  PortfolioAssetType,
+  PortfolioElement,
   PortfolioElementMultiple,
   PortfolioElementType,
+  PortfolioLiquidity,
   TokenPrice,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
@@ -15,6 +16,8 @@ import { walletTokensPlatform } from '../../../platforms';
 import { getClientSolana } from '../../../utils/clients';
 import { getTokenAccountsByOwner } from '../../../utils/solana';
 import runInBatch from '../../../utils/misc/runInBatch';
+import tokenPriceToAssetTokens from '../../../utils/misc/tokenPriceToAssetTokens';
+import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -33,10 +36,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     tokenPrices.set(r.value.address, r.value);
   });
 
-  const assets: PortfolioAssetToken[] = [];
+  const walletTokensAssets: PortfolioAssetToken[] = [];
+  const liquiditiesByPlatformId: Record<string, PortfolioLiquidity[]> = {};
+
   for (let i = 0; i < tokenAccounts.length; i++) {
     const tokenAccount = tokenAccounts[i];
     if (tokenAccount.amount.isZero()) continue;
+
     const address = tokenAccount.mint.toString();
     const tokenPrice = tokenPrices.get(address);
     if (!tokenPrice) continue;
@@ -44,28 +50,61 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const amount = tokenAccount.amount
       .div(10 ** tokenPrice.decimals)
       .toNumber();
-    const { price } = tokenPrice;
-    const value = price * amount;
-    assets.push({
-      type: PortfolioAssetType.token,
+
+    if (tokenPrice.platformId !== walletTokensPlatform.id) {
+      const assets = tokenPriceToAssetTokens(
+        address,
+        amount,
+        NetworkId.solana,
+        tokenPrice
+      );
+      const liquidity: PortfolioLiquidity = {
+        assets,
+        assetsValue: getUsdValueSum(assets.map((a) => a.value)),
+        rewardAssets: [],
+        rewardAssetsValue: 0,
+        value: getUsdValueSum(assets.map((a) => a.value)),
+        yields: [],
+      };
+      if (!liquiditiesByPlatformId[tokenPrice.platformId]) {
+        liquiditiesByPlatformId[tokenPrice.platformId] = [];
+      }
+      liquiditiesByPlatformId[tokenPrice.platformId].push(liquidity);
+    } else {
+      walletTokensAssets.push(
+        tokenPriceToAssetToken(address, amount, NetworkId.solana, tokenPrice)
+      );
+    }
+  }
+  const elements: PortfolioElement[] = [];
+  if (walletTokensAssets.length > 0) {
+    const walletTokensElement: PortfolioElementMultiple = {
+      type: PortfolioElementType.multiple,
       networkId: NetworkId.solana,
-      value,
-      data: { address, amount, price },
+      platformId: walletTokensPlatform.id,
+      label: 'Wallet',
+      value: getUsdValueSum(walletTokensAssets.map((a) => a.value)),
+      data: {
+        assets: walletTokensAssets,
+      },
+    };
+    elements.push(walletTokensElement);
+  }
+  for (const [platformId, liquidities] of Object.entries(
+    liquiditiesByPlatformId
+  )) {
+    elements.push({
+      type: PortfolioElementType.liquidity,
+      networkId: NetworkId.solana,
+      platformId,
+      label: 'LiquidityPool',
+      value: getUsdValueSum(liquidities.map((a) => a.value)),
+      data: {
+        liquidities,
+      },
     });
   }
-
-  if (assets.length === 0) return [];
-  const element: PortfolioElementMultiple = {
-    type: PortfolioElementType.multiple,
-    networkId: NetworkId.solana,
-    platformId: walletTokensPlatform.id,
-    label: 'Wallet',
-    value: getUsdValueSum(assets.map((a) => a.value)),
-    data: {
-      assets,
-    },
-  };
-  return [element];
+  return elements;
 };
 
 const fetcher: Fetcher = {
