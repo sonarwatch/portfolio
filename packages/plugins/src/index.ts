@@ -9,10 +9,11 @@ import {
   jobs as marginfiJobs,
   fetchers as marginfiFetchers,
 } from './plugins/marginfi';
+import { jobs as raydiumJobs } from './plugins/raydium';
 import {
-  jobs as raydiumJobs,
-  // fetchers as raydiumFetchers,
-} from './plugins/raydium';
+  jobs as solendJobs,
+  fetchers as solendFetchers,
+} from './plugins/solend';
 import { jobs as thalaJobs, fetchers as thalaFetchers } from './plugins/thala';
 import { fetchers as tensorFetchers } from './plugins/tensor';
 import { jobs as fooJobs, fetchers as fooFetchers } from './plugins/foo';
@@ -22,20 +23,22 @@ export * from './platforms';
 export const platforms = Object.values(platformsObj);
 
 export const jobs: Job[] = [
+  ...tokensJobs,
   ...thalaJobs,
   ...fooJobs,
   ...marginfiJobs,
   ...raydiumJobs,
-  ...tokensJobs,
+  ...solendJobs,
 ];
 
 export const fetchers: Fetcher[] = [
+  ...tokensFetchers,
   ...fooFetchers,
   ...tensorFetchers,
   ...marginfiFetchers,
   ...marinadeFetchers,
+  ...solendFetchers,
   ...thalaFetchers,
-  ...tokensFetchers,
 ];
 
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);

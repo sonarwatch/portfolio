@@ -40,3 +40,8 @@ export const raydiumPlatform: Platform = {
   name: 'Raydium',
   image: 'https://beta.sonar.watch/img/platforms/raydium.png',
 };
+export const solendPlatform: Platform = {
+  id: 'solend',
+  name: 'Solend',
+  image: 'https://beta.sonar.watch/img/platforms/solend.png',
+};

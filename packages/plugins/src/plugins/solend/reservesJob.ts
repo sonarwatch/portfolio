@@ -4,14 +4,14 @@ import {
   marketsPrefix,
   platformId,
   reserveEndpoint,
-  reservesPrefix,
+  reservesPrefix as prefix,
 } from './constants';
 import { ApiResponse, MarketInfo, ReserveInfo } from './types';
 import sleep from '../../utils/misc/sleep';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const markets = await cache.getItems<MarketInfo>({ prefix: marketsPrefix });
-  const reservesAddressesByMarket = Array.from(markets.values()).map((m) =>
+  const reservesAddressesByMarket = markets.map((m) =>
     m.reserves.map((r) => r.address)
   );
   for (let i = 0; i < reservesAddressesByMarket.length; i += 1) {
@@ -25,8 +25,8 @@ const executor: JobExecutor = async (cache: Cache) => {
     if (!reservesInfoRes) continue;
     for (let j = 0; j < reservesInfoRes.data.results.length; j += 1) {
       const reserveInfo = reservesInfoRes.data.results[j];
-      cache.setItem(reservesAddresses[j], reserveInfo, {
-        prefix: reservesPrefix,
+      await cache.setItem(reservesAddresses[j], reserveInfo, {
+        prefix,
         networkId: NetworkId.solana,
       });
     }

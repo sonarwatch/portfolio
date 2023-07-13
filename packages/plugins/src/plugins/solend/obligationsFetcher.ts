@@ -95,6 +95,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const { liquidity, collateral } = reserve;
       const lMint = liquidity.mintPubkey;
       const lTokenPrice = await cache.getTokenPrice(lMint, NetworkId.solana);
+      if (!lTokenPrice) continue;
 
       const decimals = liquidity.mintDecimals;
       const reserveBorrowAmount = new BigNumber(liquidity.borrowedAmountWads)

@@ -1,7 +1,7 @@
 import { Cache, Job, JobExecutor, NetworkId } from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
 import {
-  reservesPrefix as prefix,
+  marketsPrefix as prefix,
   platformId,
   marketsEndpoint,
 } from './constants';
@@ -13,13 +13,8 @@ const executor: JobExecutor = async (cache: Cache) => {
     marketsEndpoint
   );
   const marketsInfo = marketsInfoRes.data;
-  const markets: Map<string, MarketInfo> = new Map();
   for (const marketInfo of marketsInfo) {
-    markets.set(marketInfo.address, {
-      ...marketInfo,
-      name: upperFirst(marketInfo.name),
-    });
-    cache.setItem(
+    await cache.setItem(
       marketInfo.address,
       {
         ...marketInfo,
