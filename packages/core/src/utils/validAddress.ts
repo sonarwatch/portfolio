@@ -2,9 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import { validate, Network } from 'bitcoin-address-validation';
 import { isAddress as isAddressEthers } from '@ethersproject/address';
 import { isHexString } from '@ethersproject/bytes';
-import { NetworkIdType } from '../Network';
 import { AddressSystem, AddressSystemType } from '../Address';
-import { networks } from '../constants';
 
 export function isBitcoinAddress(address: string): boolean {
   return validate(address, Network.mainnet);
