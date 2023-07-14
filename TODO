@@ -1,9 +1,11 @@
 # TODO
 
 - Fix le "-" dans le nom du fichier d'un fetcher lors de leur génération
+- cache getItems(string[])
 
 # DONE
 
+- "name" pour un compte de lending
 - Improve generator
 - Revoir les platforms
 - Fix parseTypeString function

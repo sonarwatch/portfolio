@@ -89,6 +89,7 @@ export type PortfolioElementCommon = {
   value: UsdValue;
   type: PortfolioElementTypeType;
   label: PortfolioElementLabel;
+  name?: string;
   tags?: string[];
   proxyInfo?: ProxyInfo;
 };
