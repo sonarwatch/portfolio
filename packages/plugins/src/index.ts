@@ -17,6 +17,7 @@ import {
   jobs as raydiumJobs,
   fetchers as raydiumFetchers,
 } from './plugins/raydium';
+import { jobs as orcaJobs, fetchers as orcaFetchers } from './plugins/orca';
 import { jobs as thalaJobs, fetchers as thalaFetchers } from './plugins/thala';
 import { fetchers as tensorFetchers } from './plugins/tensor';
 import { jobs as fooJobs, fetchers as fooFetchers } from './plugins/foo';
@@ -32,6 +33,7 @@ export const jobs: Job[] = [
   ...marginfiJobs,
   ...raydiumJobs,
   ...solendJobs,
+  ...orcaJobs,
 ];
 
 export const fetchers: Fetcher[] = [
@@ -43,7 +45,7 @@ export const fetchers: Fetcher[] = [
   ...solendFetchers,
   ...thalaFetchers,
   ...raydiumFetchers,
-  ...tokensFetchers,
+  ...orcaFetchers,
 ];
 
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
