@@ -11,7 +11,7 @@ import {
 } from './plugins/marginfi';
 import {
   jobs as raydiumJobs,
-  // fetchers as raydiumFetchers,
+  fetchers as raydiumFetchers,
 } from './plugins/raydium';
 import { jobs as thalaJobs, fetchers as thalaFetchers } from './plugins/thala';
 import { fetchers as tensorFetchers } from './plugins/tensor';
@@ -34,5 +34,6 @@ export const fetchers: Fetcher[] = [
   ...marginfiFetchers,
   ...marinadeFetchers,
   ...thalaFetchers,
+  ...raydiumFetchers,
   ...tokensFetchers,
 ];
