@@ -1,5 +1,5 @@
 import { GetProgramAccountsFilter } from '@solana/web3.js';
-import { ammInfoV4Struct, ammInfoV5Struct } from './structs';
+import { ammInfoV4Struct, ammInfoV5Struct } from './structs/amms';
 
 export const ammV4Filter: GetProgramAccountsFilter[] = [
   { dataSize: ammInfoV4Struct.byteSize },

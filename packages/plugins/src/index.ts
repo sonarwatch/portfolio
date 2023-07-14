@@ -9,11 +9,14 @@ import {
   jobs as marginfiJobs,
   fetchers as marginfiFetchers,
 } from './plugins/marginfi';
-import { jobs as raydiumJobs } from './plugins/raydium';
 import {
   jobs as solendJobs,
   fetchers as solendFetchers,
 } from './plugins/solend';
+import {
+  jobs as raydiumJobs,
+  fetchers as raydiumFetchers,
+} from './plugins/raydium';
 import { jobs as thalaJobs, fetchers as thalaFetchers } from './plugins/thala';
 import { fetchers as tensorFetchers } from './plugins/tensor';
 import { jobs as fooJobs, fetchers as fooFetchers } from './plugins/foo';
@@ -39,6 +42,8 @@ export const fetchers: Fetcher[] = [
   ...marinadeFetchers,
   ...solendFetchers,
   ...thalaFetchers,
+  ...raydiumFetchers,
+  ...tokensFetchers,
 ];
 
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);

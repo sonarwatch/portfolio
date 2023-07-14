@@ -7,18 +7,20 @@ import {
   TokenPriceUnderlying,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@metaplex-foundation/js';
-import { AMM_PROGRAM_ID_V4, AMM_PROGRAM_ID_V5, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
+import { AMM_PROGRAM_ID_V4, AMM_PROGRAM_ID_V5, platformId } from './constants';
 import {
   AmmInfoV4,
   AmmInfoV5,
-  OpenOrdersV1,
-  OpenOrdersV2,
   ammInfoV4Struct,
   ammInfoV5Struct,
+} from './structs/amms';
+import {
+  OpenOrdersV1,
+  OpenOrdersV2,
   openOrdersV1Struct,
   openOrdersV2Struct,
-} from './structs';
+} from './structs/openOrders';
 import {
   MintAccount,
   TokenAccount,
@@ -59,13 +61,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     );
     ammsRaws.push(...cAmms);
   }
-  // // AMM V4
-  // const ammV4AccountsRaw = await getParsedProgramAccounts(
-  //   client,
-  //   ammInfoV4Struct,
-  //   AMM_PROGRAM_ID_V4,
-  //   ammV4Filter
-  // );
+
   const ammsAccounts = ammsRaws.filter((a) => {
     if (a.status.toNumber() === LiquidityPoolStatus.Disabled) return false;
     if (a.status.toNumber() === LiquidityPoolStatus.Uninitialized) return false;
