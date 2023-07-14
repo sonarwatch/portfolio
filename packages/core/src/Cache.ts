@@ -184,11 +184,11 @@ export class Cache {
   async getAllItems<K extends StorageValue>(
     opts: TransactionOptions
   ): Promise<K[]> {
-    const itemsMap = await this.getItemsAsMap<K>(opts);
+    const itemsMap = await this.getAllItemsAsMap<K>(opts);
     return Array.from(itemsMap.values());
   }
 
-  async getItemsAsMap<K extends StorageValue>(
+  async getAllItemsAsMap<K extends StorageValue>(
     opts: TransactionOptions
   ): Promise<Map<string, K>> {
     const keys = await this.getKeys(opts);
