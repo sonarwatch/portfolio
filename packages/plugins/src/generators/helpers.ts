@@ -10,3 +10,22 @@ export function toKebabCase(str: string): string {
       .join('-') || ''
   );
 }
+
+function trimAndUpper(text: string) {
+  return text.replace(/-/, '').toUpperCase();
+}
+function spaceAndUpper(text: string) {
+  return text.replace(/-/, ' ').toUpperCase();
+}
+
+export function lowerFirstLetter(string: string): string {
+  return string.charAt(0).toLocaleLowerCase() + string.slice(1);
+}
+
+export function idToPascalCase(id: string) {
+  return id.replace(/(^\w|-\w)/g, trimAndUpper);
+}
+
+export function idToSpacedPascalCase(id: string) {
+  return id.replace(/(^\w|-\w)/g, spaceAndUpper);
+}
