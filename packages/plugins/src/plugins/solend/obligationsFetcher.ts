@@ -169,7 +169,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       platformId,
       label: 'Lending',
       value,
-      // name: market.name,
+      name: market.name,
       data: {
         borrowedAssets,
         borrowedValue,
