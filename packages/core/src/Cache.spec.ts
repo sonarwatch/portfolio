@@ -1,4 +1,3 @@
-import memoryDriver from 'unstorage/drivers/memory';
 import { Cache } from './Cache';
 import sleep from './helpers/sleep';
 import { TokenPriceSource } from './TokenPrice';
@@ -9,8 +8,10 @@ describe('Cache', () => {
     const key = 'key';
     const value = 'value';
     const prefix = 'prefix';
-    const driver = memoryDriver();
-    const cache = new Cache(driver);
+    const cache = new Cache({
+      type: 'memory',
+      params: {},
+    });
     await cache.setItem(key, value, {
       prefix,
     });
@@ -21,8 +22,10 @@ describe('Cache', () => {
   });
 
   it('should use token price cache', async () => {
-    const driver = memoryDriver();
-    const cache = new Cache(driver);
+    const cache = new Cache({
+      type: 'memory',
+      params: {},
+    });
     const sourceA: TokenPriceSource = {
       address: '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R',
       decimals: 9,
@@ -49,8 +52,10 @@ describe('Cache', () => {
   });
 
   it('should set token price sources', async () => {
-    const driver = memoryDriver();
-    const cache = new Cache(driver);
+    const cache = new Cache({
+      type: 'memory',
+      params: {},
+    });
     const sourceA: TokenPriceSource = {
       address: '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R',
       decimals: 9,
@@ -83,8 +88,12 @@ describe('Cache', () => {
     const key = 'key';
     const value = 'value';
     const prefix = 'prefix';
-    const driver = memoryDriver();
-    const cache = new Cache(driver);
+    const cache = new Cache({
+      type: 'memory',
+      params: {
+        ttl: 500,
+      },
+    });
     await cache.setItem(key, value, {
       prefix,
     });
@@ -97,5 +106,33 @@ describe('Cache', () => {
       prefix,
     });
     expect(item2).toBeUndefined();
+  });
+
+  it('should get items', async () => {
+    const keys = ['key-1', 'key-2', 'key-3', 'key-4'];
+    const values = ['value-1', 'value-2', 'value-3', 'value-4'];
+    const prefix = 'prefix';
+    const cache = new Cache({
+      type: 'memory',
+      params: {},
+    });
+    await cache.setItem(keys[0], values[0], {
+      prefix,
+    });
+    await cache.setItem(keys[1], values[1], {
+      prefix,
+    });
+    await cache.setItem(keys[2], values[2], {
+      prefix,
+    });
+    await cache.setItem(keys[3], values[3], {
+      prefix,
+    });
+
+    const items = await cache.getItems([keys[1], keys[3], keys[0]], {
+      prefix,
+    });
+
+    expect(items).toStrictEqual([values[1], values[3], values[0]]);
   });
 });

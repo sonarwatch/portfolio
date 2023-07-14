@@ -10,7 +10,9 @@ import { ApiResponse, MarketInfo, ReserveInfo } from './types';
 import sleep from '../../utils/misc/sleep';
 
 const executor: JobExecutor = async (cache: Cache) => {
-  const markets = await cache.getItems<MarketInfo>({ prefix: marketsPrefix });
+  const markets = await cache.getAllItems<MarketInfo>({
+    prefix: marketsPrefix,
+  });
   const reservesAddressesByMarket = markets.map((m) =>
     m.reserves.map((r) => r.address)
   );

@@ -13,6 +13,7 @@ import {
   tokenPriceFromSources,
 } from './TokenPrice';
 import { formatTokenAddress, formatTokenPriceSource } from './utils';
+import runInBatch from './helpers/runInBatch';
 
 export type TransactionOptions = {
   prefix: string;
@@ -47,7 +48,7 @@ export type CacheConfigMemory = {
   params: CacheConfigMemoryParams;
 };
 export type CacheConfigMemoryParams = {
-  //
+  ttl?: number;
 };
 
 export type CacheConfigHttp = {
@@ -167,6 +168,20 @@ export class Cache {
   }
 
   async getItems<K extends StorageValue>(
+    keys: string[],
+    opts: TransactionOptions
+  ): Promise<(K | undefined)[]> {
+    const res = await runInBatch(
+      keys.map((k) => () => this.getItem<K>(k, opts)),
+      20
+    );
+    return res.map((r) => {
+      if (r.status === 'rejected') return undefined;
+      return r.value;
+    });
+  }
+
+  async getAllItems<K extends StorageValue>(
     opts: TransactionOptions
   ): Promise<K[]> {
     const itemsMap = await this.getItemsAsMap<K>(opts);
@@ -289,7 +304,7 @@ function getDriverFromCacheConfig(cacheConfig: CacheConfig) {
       }) as Driver;
     case 'memory':
       return memoryDriver({
-        ttl: 60 * 60 * 1000,
+        ttl: cacheConfig.params.ttl || 60 * 60 * 1000,
       }) as Driver;
     case 'filesystem':
       return fsDriver({

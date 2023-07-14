@@ -29,7 +29,7 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
   const obligationAddresses = [];
-  const markets = await cache.getItems<MarketInfo>({
+  const markets = await cache.getAllItems<MarketInfo>({
     prefix: marketsPrefix,
     networkId: NetworkId.solana,
   });
