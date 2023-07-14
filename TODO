@@ -1,9 +1,9 @@
 # TODO
 
-- Fix le "-" dans le nom du fichier d'un fetcher lors de leur génération
 
 # DONE
 
+- Fix le "-" dans le nom du fichier d'un fetcher lors de leur génération
 - cache getItems(string[])
 - "name" pour un compte de lending
 - Improve generator

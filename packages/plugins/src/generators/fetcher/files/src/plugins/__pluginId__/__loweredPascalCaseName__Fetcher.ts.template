@@ -14,7 +14,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-<%= fetcherName %>`,
+  id: `${platformId}-<%= name %>`,
   networkId: NetworkId.<%= networkId %>,
   executor,
 };

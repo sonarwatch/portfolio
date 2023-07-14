@@ -8,13 +8,18 @@ import { existsSync } from 'node:fs';
 import * as path from 'path';
 import { assertNetworkId } from '@sonarwatch/portfolio-core';
 import { FetcherGeneratorSchema } from './schema.d';
-import { toKebabCase } from '../helpers';
+import {
+  idToPascalCase,
+  idToSpacedPascalCase,
+  lowerFirstLetter,
+  toKebabCase,
+} from '../helpers';
 
 export async function fetcherGenerator(
   tree: Tree,
   options: FetcherGeneratorSchema
 ) {
-  const fetcherName = toKebabCase(options.fetcherName);
+  const name = toKebabCase(options.fetcherName);
   const pluginId = toKebabCase(options.pluginId);
   const { networkId } = options;
   assertNetworkId(networkId);
@@ -27,7 +32,10 @@ export async function fetcherGenerator(
 
   const substitutions = {
     pluginId,
-    fetcherName,
+    name,
+    pascalCaseName: idToPascalCase(name),
+    spacedPascalCaseName: idToSpacedPascalCase(name),
+    loweredPascalCaseName: lowerFirstLetter(idToPascalCase(name)),
     networkId,
   };
 
