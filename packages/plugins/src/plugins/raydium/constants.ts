@@ -9,3 +9,9 @@ export const AMM_PROGRAM_ID_V4 = new PublicKey(
 export const AMM_PROGRAM_ID_V5 = new PublicKey(
   '5quBtoiQqxF9Jv6KYKctB59NT3gtJD2Y65kdnB1Uev3h'
 );
+
+export const raydiumProgram = new PublicKey(
+  'CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK'
+);
+
+export const clmmNFTName = 'Raydium Concentrated Liquidity';
