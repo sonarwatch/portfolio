@@ -7,10 +7,15 @@ import {
 import * as path from 'path';
 import { existsSync } from 'node:fs';
 import { JobGeneratorSchema } from './schema.d';
-import { toKebabCase } from '../helpers';
+import {
+  idToPascalCase,
+  idToSpacedPascalCase,
+  lowerFirstLetter,
+  toKebabCase,
+} from '../helpers';
 
 export async function jobGenerator(tree: Tree, options: JobGeneratorSchema) {
-  const jobName = toKebabCase(options.jobName);
+  const name = toKebabCase(options.jobName);
   const pluginId = toKebabCase(options.pluginId);
   const libraryRoot = readProjectConfiguration(tree, 'plugins').root;
 
@@ -20,7 +25,10 @@ export async function jobGenerator(tree: Tree, options: JobGeneratorSchema) {
 
   const substitutions = {
     pluginId,
-    jobName,
+    name,
+    pascalCaseName: idToPascalCase(name),
+    spacedPascalCaseName: idToSpacedPascalCase(name),
+    loweredPascalCaseName: lowerFirstLetter(idToPascalCase(name)),
   };
 
   generateFiles(
