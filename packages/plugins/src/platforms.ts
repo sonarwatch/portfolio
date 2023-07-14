@@ -45,3 +45,8 @@ export const solendPlatform: Platform = {
   name: 'Solend',
   image: 'https://beta.sonar.watch/img/platforms/solend.png',
 };
+export const orcaPlatform: Platform = {
+  id: 'orca',
+  name: 'Orca',
+  image: 'https://beta.sonar.watch/img/platforms/orca.png',
+};
