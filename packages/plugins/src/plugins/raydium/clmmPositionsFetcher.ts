@@ -13,10 +13,7 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getAmountsFromLiquidity, tickIndexToSqrtPriceX64 } from './helpers';
 import { getParsedMultipleAccountsInfo } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
-import {
-  personalPositionStateStruct,
-  poolStateStruct,
-} from './structs/clmmPositions';
+import { personalPositionStateStruct, poolStateStruct } from './structs/clmms';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -61,7 +58,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
   if (!poolsStateInfo) return [];
 
-  // Do we have a problem if we have multiple positions on the same pool ? Seems not.
   if (poolsStateInfo.length !== personalPositionsInfo.length) return [];
 
   const assets: PortfolioLiquidity[] = [];

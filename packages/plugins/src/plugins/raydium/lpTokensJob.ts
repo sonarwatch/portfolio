@@ -61,13 +61,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     );
     ammsRaws.push(...cAmms);
   }
-  // // AMM V4
-  // const ammV4AccountsRaw = await getParsedProgramAccounts(
-  //   client,
-  //   ammInfoV4Struct,
-  //   AMM_PROGRAM_ID_V4,
-  //   ammV4Filter
-  // );
+
   const ammsAccounts = ammsRaws.filter((a) => {
     if (a.status.toNumber() === LiquidityPoolStatus.Disabled) return false;
     if (a.status.toNumber() === LiquidityPoolStatus.Uninitialized) return false;
