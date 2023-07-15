@@ -61,13 +61,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
 
   // TODO : improve once we have getItems(string[])
-  const allWhirlpoolsInfo = await cache.getItems<ParsedAccount<Whirlpool>>({
-    prefix: whirlpoolPrefix,
-    networkId: NetworkId.solana,
-  });
+  const allWhirlpoolsInfo = await cache.getItems<ParsedAccount<Whirlpool>>(
+    Array.from(whirlpoolAddresses),
+    {
+      prefix: whirlpoolPrefix,
+      networkId: NetworkId.solana,
+    }
+  );
   const tokensMints: string[] = [];
   const whirlpoolMap: Map<string, Whirlpool> = new Map();
   allWhirlpoolsInfo.forEach((wInfo) => {
+    if (!wInfo) return;
     if (whirlpoolAddresses.has(wInfo.pubkey.toString())) {
       whirlpoolMap.set(wInfo.pubkey.toString(), wInfo);
       tokensMints.push(
