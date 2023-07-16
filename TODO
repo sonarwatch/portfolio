@@ -2,6 +2,7 @@
 
 - Opti orca-clmm-positions
 - Opti raydium-clmm-positions
+- Fix les packages utilisant @metaplex-fundation/js (build fail)
 
 # DONE
 
