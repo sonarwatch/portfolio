@@ -1,5 +1,6 @@
 import {
   Cache,
+  Fetcher,
   FetcherExecutor,
   NetworkId,
   PortfolioAsset,
@@ -22,10 +23,7 @@ import { singleListingStruct } from './struct';
 import { singleListingFilter } from './filters';
 import { getImagefromUri } from '../../utils/misc/getImagefromUri';
 
-const fetcherExecutor: FetcherExecutor = async (
-  owner: string,
-  cache: Cache
-) => {
+const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
   const metaplex = new Metaplex(connection);
   const singleListings = await getParsedProgramAccounts(
@@ -110,4 +108,11 @@ const fetcherExecutor: FetcherExecutor = async (
   };
   return [element];
 };
-export default fetcherExecutor;
+
+const fetcher: Fetcher = {
+  id: `${platformId}-linsting`,
+  networkId: NetworkId.solana,
+  executor,
+};
+
+export default fetcher;

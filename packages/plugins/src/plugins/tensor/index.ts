@@ -1,10 +1,6 @@
-import { Fetcher, NetworkId } from '@sonarwatch/portfolio-core';
-import fetcherExecutor from './fetcherExecutor';
+import { Fetcher } from '@sonarwatch/portfolio-core';
+// import tensorFetcher from './tensorFetcher';
 
 export const fetchers: Fetcher[] = [
-  {
-    id: 'tensor',
-    networkId: NetworkId.solana,
-    executor: fetcherExecutor,
-  },
+  // tensorFetcher
 ];
