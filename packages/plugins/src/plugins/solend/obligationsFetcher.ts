@@ -10,8 +10,8 @@ import {
   apyToApr,
   getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
-import { PublicKey } from '@metaplex-foundation/js';
 import BigNumber from 'bignumber.js';
+import { PublicKey } from '@solana/web3.js';
 import {
   marketsPrefix,
   pid,
