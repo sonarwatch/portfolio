@@ -1,6 +1,6 @@
 import { Cache, Job, JobExecutor, NetworkId } from '@sonarwatch/portfolio-core';
-import { PublicKey } from '@metaplex-foundation/js';
-import { platformId, programId } from './constants';
+import { PublicKey } from '@solana/web3.js';
+import { platformId, vaultsProgramId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { vaultStruct } from './struct';
@@ -11,7 +11,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   const vaultAccounts = await getParsedProgramAccounts(
     client,
     vaultStruct,
-    programId
+    vaultsProgramId
   );
 
   for (let i = 0; i < vaultAccounts.length; i += 1) {
