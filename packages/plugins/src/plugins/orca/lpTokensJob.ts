@@ -1,5 +1,5 @@
 import { Cache, Job, JobExecutor, NetworkId } from '@sonarwatch/portfolio-core';
-import { PublicKey } from '@metaplex-foundation/js';
+import { PublicKey } from '@solana/web3.js';
 import { aquafarmsProgram, platformId } from './constants';
 import { aquafarmFilters } from './filters';
 import { getClientSolana } from '../../utils/clients';

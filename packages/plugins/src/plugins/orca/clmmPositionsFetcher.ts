@@ -7,7 +7,8 @@ import {
   PortfolioLiquidity,
   TokenPrice,
 } from '@sonarwatch/portfolio-core';
-import { Metaplex, PublicKey } from '@metaplex-foundation/js';
+import { Metaplex } from '@metaplex-foundation/js';
+import { PublicKey } from '@solana/web3.js';
 import { platformId, whirlpoolPrefix, whirlpoolProgram } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import {

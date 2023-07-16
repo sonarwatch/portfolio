@@ -1,4 +1,3 @@
-import { PublicKey } from '@metaplex-foundation/js';
 import {
   Cache,
   Fetcher,
@@ -8,6 +7,7 @@ import {
   PortfolioElementType,
   solanaNetwork,
 } from '@sonarwatch/portfolio-core';
+import { PublicKey } from '@solana/web3.js';
 import { walletTokensPlatform } from '../../../platforms';
 import { getClientSolana } from '../../../utils/clients';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';

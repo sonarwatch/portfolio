@@ -3,9 +3,9 @@ import {
   bool,
   uniformFixedSizeArray,
 } from '@metaplex-foundation/beet';
-import { PublicKey } from '@metaplex-foundation/js';
 import BigNumber from 'bignumber.js';
 import { publicKey } from '@metaplex-foundation/beet-solana';
+import { PublicKey } from '@solana/web3.js';
 import { blob, u128, u64 } from '../../../utils/solana';
 
 // Serum Open Order might need to be move

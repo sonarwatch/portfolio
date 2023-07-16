@@ -9,12 +9,12 @@ import {
 } from '@sonarwatch/portfolio-core';
 import {
   Metaplex,
-  PublicKey,
   Token,
   isNftWithToken,
   isSftWithToken,
 } from '@metaplex-foundation/js';
 import BigNumber from 'bignumber.js';
+import { PublicKey } from '@solana/web3.js';
 import { platformId, tensorProgram } from './constants';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';

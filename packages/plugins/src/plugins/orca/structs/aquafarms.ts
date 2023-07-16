@@ -1,7 +1,7 @@
 import { BeetStruct, u8 } from '@metaplex-foundation/beet';
 import { publicKey } from '@metaplex-foundation/beet-solana';
-import { PublicKey } from '@metaplex-foundation/js';
 import BigNumber from 'bignumber.js';
+import { PublicKey } from '@solana/web3.js';
 import { blob, u256, u64 } from '../../../utils/solana';
 
 export type AMMV4Info = {

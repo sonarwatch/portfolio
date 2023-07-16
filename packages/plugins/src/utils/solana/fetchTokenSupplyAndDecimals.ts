@@ -1,5 +1,4 @@
-import { PublicKey } from '@metaplex-foundation/js';
-import { Connection } from '@solana/web3.js';
+import { Connection, PublicKey } from '@solana/web3.js';
 import sleep from '../misc/sleep';
 
 const solMints = [

@@ -6,8 +6,8 @@ import {
   uniformFixedSizeArray,
 } from '@metaplex-foundation/beet';
 import { publicKey } from '@metaplex-foundation/beet-solana';
-import { PublicKey } from '@metaplex-foundation/js';
 import BigNumber from 'bignumber.js';
+import { PublicKey } from '@solana/web3.js';
 import { blob, u128, u64 } from '../../../utils/solana';
 
 export type PositionRewardInfo = {

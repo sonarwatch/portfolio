@@ -1,4 +1,4 @@
-import { PublicKey } from '@metaplex-foundation/js';
+import { PublicKey } from '@solana/web3.js';
 
 export const platformId = 'orca';
 

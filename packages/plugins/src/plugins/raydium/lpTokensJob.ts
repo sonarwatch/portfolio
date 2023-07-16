@@ -6,7 +6,7 @@ import {
   TokenPrice,
   TokenPriceUnderlying,
 } from '@sonarwatch/portfolio-core';
-import { PublicKey } from '@metaplex-foundation/js';
+import { PublicKey } from '@solana/web3.js';
 import { getClientSolana } from '../../utils/clients';
 import { AMM_PROGRAM_ID_V4, AMM_PROGRAM_ID_V5, platformId } from './constants';
 import {

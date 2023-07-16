@@ -7,7 +7,8 @@ import {
   PortfolioElementType,
   PortfolioLiquidity,
 } from '@sonarwatch/portfolio-core';
-import { Metaplex, PublicKey } from '@metaplex-foundation/js';
+import { Metaplex } from '@metaplex-foundation/js';
+import { PublicKey } from '@solana/web3.js';
 import { clmmNFTName, platformId, raydiumProgram } from './constants';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getAmountsFromLiquidity, tickIndexToSqrtPriceX64 } from './helpers';
