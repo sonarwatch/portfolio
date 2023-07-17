@@ -8,5 +8,5 @@ export const vaultsProgramId = new PublicKey(
 );
 
 export const poolsProgramId = new PublicKey(
-  'MERLuDFBMmsHnsBPZw2sDQZHvXFMwp8EdjudcU2HKky'
+  'Eo7WjKq67rjJQSZxS6z3YkapzY3eMj6Xy8X5EQVn5UaB'
 );
