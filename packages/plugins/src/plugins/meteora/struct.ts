@@ -177,7 +177,7 @@ export const poolFeesStruct = new BeetStruct<PoolFees>(
   (args) => args as PoolFees
 );
 
-export type PoolStateConstant = {
+export type PoolState = {
   buffer: Buffer;
   lpMint: PublicKey;
   tokenAMint: PublicKey;
@@ -198,7 +198,7 @@ export type PoolStateConstant = {
   curveType: CurveType;
 };
 
-export const poolStateConstantStruct = new FixableBeetStruct<PoolStateConstant>(
+export const poolStateStruct = new FixableBeetStruct<PoolState>(
   [
     ['buffer', blob(8)],
     ['lpMint', publicKey],
@@ -219,52 +219,5 @@ export const poolStateConstantStruct = new FixableBeetStruct<PoolStateConstant>(
     ['padding', paddingStruct],
     ['curveType', u8],
   ],
-  (args) => args as PoolStateConstant
-);
-
-export type PoolStateStable = {
-  buffer: Buffer;
-  lpMint: PublicKey;
-  tokenAMint: PublicKey;
-  tokenBMint: PublicKey;
-  aVault: PublicKey;
-  bVault: PublicKey;
-  aVaultLp: PublicKey;
-  bVaultLp: PublicKey;
-  aVaultLpBump: number;
-  enabled: boolean;
-  adminTokenAFee: PublicKey;
-  adminTokenBFee: PublicKey;
-  admin: PublicKey;
-  fees: PoolFees;
-  poolType: PoolType;
-  stake: PublicKey;
-  padding: Padding;
-  curveType: CurveType;
-  curveParameters: StableParams;
-};
-
-export const poolStateStableStruct = new FixableBeetStruct<PoolStateStable>(
-  [
-    ['buffer', blob(8)],
-    ['lpMint', publicKey],
-    ['tokenAMint', publicKey],
-    ['tokenBMint', publicKey],
-    ['aVault', publicKey],
-    ['bVault', publicKey],
-    ['aVaultLp', publicKey],
-    ['bVaultLp', publicKey],
-    ['aVaultLpBump', u8],
-    ['enabled', bool],
-    ['adminTokenAFee', publicKey],
-    ['adminTokenBFee', publicKey],
-    ['admin', publicKey],
-    ['fees', poolFeesStruct],
-    ['poolType', u8],
-    ['stake', publicKey],
-    ['padding', paddingStruct],
-    ['curveType', u8],
-    ['curveParameters', stableParamsStruct],
-  ],
-  (args) => args as PoolStateStable
+  (args) => args as PoolState
 );

@@ -14,36 +14,37 @@ import {
   MintAccount,
   TokenAccount,
   getParsedMultipleAccountsInfo,
+  getParsedProgramAccounts,
   mintAccountStruct,
   tokenAccountStruct,
 } from '../../utils/solana';
 import { pools } from './pools';
 import { fetchTokenSupplyAndDecimals } from '../../utils/solana/fetchTokenSupplyAndDecimals';
-import {
-  PoolStateConstant,
-  PoolStateStable,
-  poolStateConstantStruct,
-  poolStateStableStruct,
-} from './struct';
+import { PoolState, poolStateStruct } from './struct';
 import runInBatch from '../../utils/misc/runInBatch';
+import { constantPoolsFilters, stablePoolsFilters } from './filters';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
 
-  const poolsAccountsRaw = await client.getProgramAccounts(poolsProgramId);
-  const poolsAcountsUnfiltered: (PoolStateStable | PoolStateConstant)[] = [];
-  // TODO : improve by looking for the CurveType byte instead of fixed size
-  poolsAccountsRaw.forEach((pool) => {
-    if (pool.account.data.length === 944) {
-      poolsAcountsUnfiltered.push(
-        poolStateConstantStruct.deserialize(pool.account.data)[0]
-      );
-    } else if (pool.account.data.length === 1387) {
-      poolsAcountsUnfiltered.push(
-        poolStateStableStruct.deserialize(pool.account.data)[0]
-      );
-    }
-  });
+  const constantPoolsAccounts = await getParsedProgramAccounts(
+    client,
+    poolStateStruct,
+    poolsProgramId,
+    constantPoolsFilters
+  );
+  const stablePoolsAccounts = await getParsedProgramAccounts(
+    client,
+    poolStateStruct,
+    poolsProgramId,
+    stablePoolsFilters
+  );
+
+  const poolsAcountsUnfiltered: PoolState[] = [
+    ...stablePoolsAccounts,
+    ...constantPoolsAccounts,
+  ];
+
   const poolsAccounts = poolsAcountsUnfiltered.filter((poolAccount) => {
     if (poolAccount.enabled === false) return false;
     if (
@@ -57,15 +58,15 @@ const executor: JobExecutor = async (cache: Cache) => {
   });
 
   // Store all tokens, mint, addresses
-  const tokensAccountsAddresses: Set<PublicKey> = new Set();
+  const vaultsLpAddresses: Set<PublicKey> = new Set();
   const tokensMint: Set<PublicKey> = new Set();
-  const mintsAddresses: Set<PublicKey> = new Set();
+  const lpMints: Set<PublicKey> = new Set();
   poolsAccounts.forEach((poolAccount) => {
-    tokensAccountsAddresses.add(poolAccount.aVaultLp);
-    tokensAccountsAddresses.add(poolAccount.bVaultLp);
+    vaultsLpAddresses.add(poolAccount.aVaultLp);
+    vaultsLpAddresses.add(poolAccount.bVaultLp);
     tokensMint.add(poolAccount.tokenAMint);
     tokensMint.add(poolAccount.tokenBMint);
-    mintsAddresses.add(poolAccount.lpMint);
+    lpMints.add(poolAccount.lpMint);
   });
 
   // Get all token prices
@@ -85,7 +86,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   const tokensAccounts = await getParsedMultipleAccountsInfo(
     client,
     tokenAccountStruct,
-    Array.from(tokensAccountsAddresses)
+    Array.from(vaultsLpAddresses)
   );
   if (!tokensAccounts) return;
   const tokenAccountByAddress: Map<PublicKey, TokenAccount> = new Map();
@@ -101,7 +102,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   const mintsAccounts = await getParsedMultipleAccountsInfo(
     client,
     mintAccountStruct,
-    Array.from(mintsAddresses)
+    Array.from(lpMints)
   );
   const mintsAccountByAddress: Map<PublicKey, MintAccount> = new Map();
   mintsAccounts.forEach((mintAccount) => {
