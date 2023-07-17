@@ -27,6 +27,7 @@ import { constantPoolsFilters, stablePoolsFilters } from './filters';
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
 
+  // Get all 2-tokens pool (permissionless)
   const constantPoolsAccounts = await getParsedProgramAccounts(
     client,
     poolStateStruct,
@@ -57,7 +58,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     return true;
   });
 
-  // Store all tokens, mint, addresses
+  // Store all tokens, lpmint, lpVaults
   const vaultsLpAddresses: Set<PublicKey> = new Set();
   const tokensMint: Set<PublicKey> = new Set();
   const lpMints: Set<PublicKey> = new Set();
@@ -82,7 +83,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     tokenPrices.set(r.value.address, r.value);
   });
 
-  // Get all tokens accounts
+  // Get all vaults token accounts
   const tokensAccounts = await getParsedMultipleAccountsInfo(
     client,
     tokenAccountStruct,
@@ -174,7 +175,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     });
   }
 
-  // Old Pools
+  // Get all multi-tokens pools
   const meteoraPools = pools;
   const reserverAddresses: Set<PublicKey> = new Set();
   meteoraPools.forEach((pool) => {
