@@ -9,6 +9,7 @@ export interface MemoryStorageOptions {
 export default defineDriver((opts: MemoryStorageOptions = {}) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const data = new Map<string, any>();
+  const timeouts = new Map<string, NodeJS.Timeout>();
   const { ttl } = opts;
   return {
     name: DRIVER_NAME,
@@ -23,12 +24,20 @@ export default defineDriver((opts: MemoryStorageOptions = {}) => {
       return data.get(key) || null;
     },
     setItem(key, value) {
-      data.set(key, value);
+      // Clear previous timeout
+      const prevTimeout = timeouts.get(key);
+      if (prevTimeout) clearTimeout(prevTimeout);
+
+      // Set new timout
       if (ttl) {
-        setTimeout(() => {
+        const timeout = setTimeout(() => {
           data.delete(key);
         }, ttl);
+        timeouts.set(key, timeout);
       }
+
+      // Set item
+      data.set(key, value);
     },
     setItemRaw(key, value) {
       data.set(key, value);
