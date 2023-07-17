@@ -207,6 +207,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     const { address } = pool;
     const underlyings = [];
     let supplyValue = 0;
+    let checkedTokensPrices = 0;
     for (let index = 0; index < pool.reserveAccounts.length; index++) {
       const reserveAccount = reservesAccountByAddress.get(
         pool.reserveAccounts[index]
@@ -218,6 +219,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         NetworkId.solana
       );
       if (!reserveTokenPrice) continue;
+      checkedTokensPrices += 1;
 
       const reserveAmount = new BigNumber(reserveAccount.amount.toString())
         .div(10 ** reserveTokenPrice.decimals)
@@ -234,6 +236,9 @@ const executor: JobExecutor = async (cache: Cache) => {
       underlyings.push(underlying);
       supplyValue += reserveValue;
     }
+
+    // don't push the LP if one tokenPrice was not found.
+    if (checkedTokensPrices < pool.reserveAccounts.length) continue;
 
     const tokenSupplyAndDecimalsRes = await fetchTokenSupplyAndDecimals(
       new PublicKey(address),
