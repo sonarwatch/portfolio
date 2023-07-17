@@ -9,7 +9,7 @@ export const pools = [
     ],
   },
   {
-    symbol: 'UST-3Pool',
+    symbol: 'UST-3Pool', // Not active anymore
     address: '57h4LEnBooHrKbacYWGCFghmrTzYPVn8PwZkzTzRLvHa',
     reserveAccounts: [
       'Go93HBNLMK6QnSHyZTViAoti9GCmSRhkeZMiVoJmcrud',
@@ -18,7 +18,7 @@ export const pools = [
     ],
   },
   {
-    symbol: 'pSOL-2Pool',
+    symbol: 'pSOL-SOL',
     address: 'GHhDU9Y7HM37v6cQyaie1A3aZdfpCDp6ScJ5zZn2c3uk',
     reserveAccounts: [
       '9odMAiRbk5aDEbFWeYrsLZAS54C7XdBUv63t4oMRcWkM',
@@ -71,7 +71,7 @@ export const pools = [
     ],
   },
   {
-    symbol: 'USTv2-3Pool',
+    symbol: 'USTv2-3Pool', // Not active anymore
     address: 'DJjevoCBomzgNe76pNDd8stAcMS4x7Y99giuNpqGLa2f',
     reserveAccounts: [
       '65sR8agQm768HYCjktunDJG3bbQszi7U8VD4pAKEYiXW',
@@ -99,7 +99,7 @@ export const pools = [
     ],
   },
   {
-    symbol: 'fUSD-3Pool',
+    symbol: 'fUSD-3Pool', // Not active anymore
     address: 'ALkfYpjMp1Bzn1JHCJkAKm4sU1EQt8RiFfX1ufVawuLV',
     reserveAccounts: [
       '3tu1Pac9N8sP8R9zHwmFvU258CPhbRSweVjdb2K2SVjt',
@@ -115,6 +115,25 @@ export const pools = [
       'CRj4DCzp7hDXyNgVhagNJmTmKjtsVLBtPDzjk6JeE2CL',
       '2hHSmtBb7WzCaNFVun7CCmNq445dyQ9e1Tf66GCQGtjV',
       '4ZYrDMtLE3HGWjeE9W2L3psZP7SMASnez9rzqmpfnTxa',
+    ],
+  },
+  {
+    symbol: 'avaxUSD-3Pool',
+    address: '2jDEKWC4LYcyhxtQ6ZGZzK1Q9NYDrmZcR2EPRoHyx6Vy',
+    reserveAccounts: [
+      'CJNW2xGWHzyfZ2y2up9i11p7ZUm1ARvgfQ9Smzzj9arb',
+      'FaqLJMJNLs1cFULzHFzhmoJd4FJukq9f1HHTHJnvbEyx',
+      'V1pdBYfXxCx1sidPpQ3HoQfoEiHBCnPZe3iPEBSDJBr',
+    ],
+  },
+  {
+    symbol: 'aaUSDT-4Pool',
+    address: 'FFM9rneg7pFbedUbuJdrwzje9WfKzJzv7jqcpeUQuGCy',
+    reserveAccounts: [
+      '7AiubbXXefRK3Tw83Y2XGovBwZ691pcdkts2S7zNE43Q',
+      '9UMESFcuCBj8bUw6kGDx8zut1g495Y6TcyATm3ht2kqP',
+      'FznWTeu44sR9WvqVtekzGQn82z7BxErkcpDDDSmvncYY',
+      'Ez1dYUW8FGhrJGHe4e84JTmyZYFwpjwM7GuhSaBth5Xh',
     ],
   },
 ];
