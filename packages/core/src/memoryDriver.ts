@@ -27,6 +27,7 @@ export default defineDriver((opts: MemoryStorageOptions = {}) => {
       // Clear previous timeout
       const prevTimeout = timeouts.get(key);
       if (prevTimeout) clearTimeout(prevTimeout);
+      timeouts.delete(key);
 
       // Set new timout
       if (ttl) {
