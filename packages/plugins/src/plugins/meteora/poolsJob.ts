@@ -144,7 +144,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
     const tvl = totalValueTokenA.plus(totalValueTokenB);
     const price = tvl.dividedBy(lpSupply).toNumber();
-    console.log('push LP : ', lpMint.toString());
+
     const underlyings: TokenPriceUnderlying[] = [];
     underlyings.push({
       networkId: NetworkId.solana,
