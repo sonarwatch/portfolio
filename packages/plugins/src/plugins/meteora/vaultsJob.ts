@@ -5,13 +5,15 @@ import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { vaultStruct } from './struct';
 import { fetchTokenSupplyAndDecimals } from '../../utils/solana/fetchTokenSupplyAndDecimals';
+import { vaultsFilters } from './filters';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
   const vaultAccounts = await getParsedProgramAccounts(
     client,
     vaultStruct,
-    vaultsProgramId
+    vaultsProgramId,
+    vaultsFilters
   );
 
   for (let i = 0; i < vaultAccounts.length; i += 1) {
