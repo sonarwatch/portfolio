@@ -27,10 +27,14 @@ const executor: JobExecutor = async (cache: Cache) => {
     if (!reservesInfoRes) continue;
     for (let j = 0; j < reservesInfoRes.data.results.length; j += 1) {
       const reserveInfo = reservesInfoRes.data.results[j];
-      await cache.setItem(reservesAddresses[j], reserveInfo, {
-        prefix,
-        networkId: NetworkId.solana,
-      });
+      await cache.setItem(
+        reservesAddresses[j],
+        { pubkey: reservesAddresses[j], ...reserveInfo },
+        {
+          prefix,
+          networkId: NetworkId.solana,
+        }
+      );
     }
     await sleep(200);
   }

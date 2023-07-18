@@ -42,6 +42,10 @@ export interface ReserveInfo {
   rewards: RewardInfo[];
 }
 
+export type ReserveInfoExtended = ReserveInfo & {
+  pubkey: string;
+};
+
 export interface ReserveData {
   version: number;
   lastUpdate: {
