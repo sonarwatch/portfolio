@@ -50,3 +50,8 @@ export const orcaPlatform: Platform = {
   name: 'Orca',
   image: 'https://beta.sonar.watch/img/platforms/orca.png',
 };
+export const meteoraPlatform: Platform = {
+  id: 'meteora',
+  name: 'Meteora',
+  image: 'https://beta.sonar.watch/img/platforms/meteora.png',
+};
