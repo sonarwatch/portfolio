@@ -20,18 +20,23 @@ export type FetcherResult = {
   owner: string;
   fetcherId: string;
   networdkId: NetworkIdType;
-  elements: PortfolioElement[];
   duration: number;
+  elements: PortfolioElement[];
+};
+
+export type FetcherReport = {
+  id: string;
+  status: 'succeeded' | 'failed';
+  duration?: number;
+  error?: string;
 };
 
 export type FetchersResult = {
+  date: number;
   owner: string;
   addressSystem: AddressSystemType;
-  fetcherIds: string[];
-  succeededFetcherIds: string[];
-  failedFetcherIds: string[];
+  fetcherReports: FetcherReport[];
   elements: PortfolioElement[];
-  errors: Record<string, string>;
 };
 
 export async function runFetchers(
@@ -49,31 +54,38 @@ export async function runFetchers(
       `Not all fetchers have the right address system: ${addressSystem}`
     );
 
-  const promises = fetchers.map((f) => f.executor(fOwner, cache));
+  const promises = fetchers.map((f) => runFetcher(fOwner, f, cache));
   const result = await Promise.allSettled(promises);
 
-  const failedFetcherIds: string[] = [];
-  const succeededFetcherIds: string[] = [];
-  const errors: Record<string, string> = {};
+  const fReports: FetcherReport[] = [];
   const elements = result.flatMap((r, index) => {
-    const fetcherId = fetchers[index].id;
-    if (r.status === 'rejected') {
-      failedFetcherIds.push(fetcherId);
-      errors[fetcherId] = r.reason.message || 'Unknown error';
-      return [];
+    let fReport: FetcherReport;
+    if (r.status === 'fulfilled') {
+      fReport = {
+        id: fetchers[index].id,
+        status: 'succeeded',
+        duration: r.value.duration,
+        error: undefined,
+      };
+    } else {
+      fReport = {
+        id: fetchers[index].id,
+        status: 'failed',
+        duration: undefined,
+        error: r.reason.message || 'Unknown error',
+      };
     }
-    succeededFetcherIds.push(fetcherId);
-    return r.value;
+    fReports.push(fReport);
+
+    if (r.status === 'rejected') return [];
+    return r.value.elements;
   });
-  const fetcherIds = failedFetcherIds.concat(succeededFetcherIds);
   return {
+    date: Date.now(),
     owner: fOwner,
     addressSystem,
-    fetcherIds,
-    succeededFetcherIds,
-    failedFetcherIds,
+    fetcherReports: fReports,
     elements,
-    errors,
   };
 }
 
@@ -103,7 +115,7 @@ export async function runFetcher(
     owner: fOwner,
     fetcherId: fetcher.id,
     networdkId: fetcher.networkId,
-    elements,
     duration: Date.now() - startDate,
+    elements,
   };
 }
