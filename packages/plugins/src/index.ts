@@ -18,6 +18,7 @@ import {
   fetchers as raydiumFetchers,
 } from './plugins/raydium';
 import { jobs as orcaJobs, fetchers as orcaFetchers } from './plugins/orca';
+import { jobs as meteoraJobs } from './plugins/meteora';
 import { jobs as thalaJobs, fetchers as thalaFetchers } from './plugins/thala';
 import { fetchers as tensorFetchers } from './plugins/tensor';
 import { jobs as fooJobs, fetchers as fooFetchers } from './plugins/foo';
@@ -33,6 +34,7 @@ export const jobs: Job[] = [
   ...marginfiJobs,
   ...raydiumJobs,
   ...solendJobs,
+  ...meteoraJobs,
   ...orcaJobs,
 ];
 
