@@ -20,18 +20,19 @@ export type FetcherResult = {
   owner: string;
   fetcherId: string;
   networdkId: NetworkIdType;
-  elements: PortfolioElement[];
   duration: number;
+  elements: PortfolioElement[];
 };
 
 export type FetchersResult = {
+  date: number;
   owner: string;
   addressSystem: AddressSystemType;
   fetcherIds: string[];
   succeededFetcherIds: string[];
   failedFetcherIds: string[];
-  elements: PortfolioElement[];
   errors: Record<string, string>;
+  elements: PortfolioElement[];
 };
 
 export async function runFetchers(
@@ -67,13 +68,14 @@ export async function runFetchers(
   });
   const fetcherIds = failedFetcherIds.concat(succeededFetcherIds);
   return {
+    date: Date.now(),
     owner: fOwner,
     addressSystem,
     fetcherIds,
     succeededFetcherIds,
     failedFetcherIds,
-    elements,
     errors,
+    elements,
   };
 }
 
@@ -103,7 +105,7 @@ export async function runFetcher(
     owner: fOwner,
     fetcherId: fetcher.id,
     networdkId: fetcher.networkId,
-    elements,
     duration: Date.now() - startDate,
+    elements,
   };
 }
