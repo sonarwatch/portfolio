@@ -90,7 +90,7 @@ export function calculateUtilization(
 }
 
 export function calculateBorrowRate(bank: SpotMarket): BigNumber {
-  return calculateInterestRate(bank);
+  return calculateInterestRate(bank).div(SPOT_MARKET_UTILIZATION_PRECISION);
 }
 
 export function calculateDepositRate(bank: SpotMarket): BigNumber {

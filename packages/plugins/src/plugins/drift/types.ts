@@ -1,5 +1,6 @@
 import { SpotMarket } from './struct';
 
 export type SpotMarketEnhanced = SpotMarket & {
-  apr?: number;
+  depositApr: number;
+  borrowApr: number;
 };

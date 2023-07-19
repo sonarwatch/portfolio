@@ -4,7 +4,8 @@ import { getParsedProgramAccounts } from '../../utils/solana';
 import { spotMarketStruct } from './struct';
 import { marketFilter } from './filters';
 import { getClientSolana } from '../../utils/clients';
-import { calculateDepositRate } from './helpers';
+import { calculateBorrowRate, calculateDepositRate } from './helpers';
+import { SpotMarketEnhanced } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -17,12 +18,14 @@ const executor: JobExecutor = async (cache: Cache) => {
   if (!spotMarketsAccount) return;
   for (let index = 0; index < spotMarketsAccount.length; index++) {
     const spotMarketAccount = spotMarketsAccount[index];
-    const apr = calculateDepositRate(spotMarketAccount).toNumber();
-    await cache.setItem(
+    const depositApr = calculateDepositRate(spotMarketAccount).toNumber();
+    const borrowApr = calculateBorrowRate(spotMarketAccount).toNumber();
+    await cache.setItem<SpotMarketEnhanced>(
       spotMarketsAccount[index].marketIndex.toString(),
       {
         ...spotMarketAccount,
-        apr,
+        depositApr,
+        borrowApr,
       },
       { prefix: prefixSpotMarkets, networkId: NetworkId.solana }
     );

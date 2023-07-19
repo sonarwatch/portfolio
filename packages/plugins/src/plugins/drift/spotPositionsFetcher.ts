@@ -104,16 +104,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const tokenPrice = tokenPrices.get(spotMarket.mint.toString());
       if (!tokenPrice || tokenPrice === null) continue;
 
-      const apr: Yield = spotMarket.apr
-        ? {
-            apr: spotMarket.apr,
-            apy: aprToApy(spotMarket.apr),
-          }
-        : {
-            apr: 0,
-            apy: 0,
-          };
-
       let tokenAmount = new BigNumber(0);
       if (
         spotMarket.marketIndex !== 0 &&
@@ -144,7 +134,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             tokenPrice
           )
         );
-        suppliedYields.push([apr]);
+        suppliedYields.push([
+          {
+            apr: spotMarket.depositApr,
+            apy: aprToApy(spotMarket.depositApr),
+          },
+        ]);
       } else if (spotPosition.balanceType === SpotBalanceType.Borrow) {
         borrowedAssets.push(
           tokenPriceToAssetToken(
@@ -157,7 +152,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             tokenPrice
           )
         );
-        borrowedYields.push([apr]);
+        borrowedYields.push([
+          {
+            apr: spotMarket.borrowApr,
+            apy: aprToApy(spotMarket.borrowApr),
+          },
+        ]);
       }
     }
 
