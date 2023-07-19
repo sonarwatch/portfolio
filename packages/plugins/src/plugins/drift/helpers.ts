@@ -9,6 +9,11 @@ export const SPOT_MARKET_UTILIZATION_PRECISION_EXP = new BigNumber(6);
 export const SPOT_MARKET_UTILIZATION_PRECISION = new BigNumber(10).pow(
   SPOT_MARKET_UTILIZATION_PRECISION_EXP
 );
+export const PERCENTAGE_PRECISION_EXP = new BigNumber(6);
+export const PERCENTAGE_PRECISION = new BigNumber(10).pow(
+  PERCENTAGE_PRECISION_EXP
+);
+export const CONCENTRATION_PRECISION = PERCENTAGE_PRECISION;
 
 export const divCeil = (a: BigNumber, b: BigNumber): BigNumber => {
   const quotient = a.div(b);
@@ -80,7 +85,64 @@ export function calculateUtilization(
       .multipliedBy(SPOT_MARKET_UTILIZATION_PRECISION)
       .div(tokenDepositAmount);
   }
+
   return utilization;
+}
+
+export function calculateBorrowRate(bank: SpotMarket): BigNumber {
+  return calculateInterestRate(bank);
+}
+
+export function calculateDepositRate(bank: SpotMarket): BigNumber {
+  const utilization = calculateUtilization(bank);
+  const borrowRate = calculateBorrowRate(bank);
+  const depositRate = borrowRate
+    .multipliedBy(
+      PERCENTAGE_PRECISION.minus(new BigNumber(bank.insuranceFund.totalFactor))
+    )
+    .multipliedBy(utilization)
+    .div(SPOT_MARKET_UTILIZATION_PRECISION)
+    .div(SPOT_MARKET_UTILIZATION_PRECISION) // Not sure why but this fixes a precision issue, give 0.0X numbers
+    .div(PERCENTAGE_PRECISION);
+  return depositRate;
+}
+
+export function calculateInterestRate(
+  bank: SpotMarket,
+  delta = ZERO
+): BigNumber {
+  const utilization = calculateUtilization(bank, delta);
+  let interestRate: BigNumber;
+  if (utilization.gt(new BigNumber(bank.optimalUtilization))) {
+    const surplusUtilization = utilization.minus(
+      new BigNumber(bank.optimalUtilization)
+    );
+    const borrowRateSlope = new BigNumber(
+      bank.maxBorrowRate - bank.optimalBorrowRate
+    )
+      .multipliedBy(SPOT_MARKET_UTILIZATION_PRECISION)
+      .div(
+        SPOT_MARKET_UTILIZATION_PRECISION.minus(
+          new BigNumber(bank.optimalUtilization)
+        )
+      );
+
+    interestRate = new BigNumber(bank.optimalBorrowRate).plus(
+      surplusUtilization
+        .multipliedBy(borrowRateSlope)
+        .div(SPOT_MARKET_UTILIZATION_PRECISION)
+    );
+  } else {
+    const borrowRateSlope = new BigNumber(bank.optimalBorrowRate)
+      .multipliedBy(SPOT_MARKET_UTILIZATION_PRECISION)
+      .div(new BigNumber(bank.optimalUtilization));
+
+    interestRate = utilization
+      .multipliedBy(borrowRateSlope)
+      .div(SPOT_MARKET_UTILIZATION_PRECISION);
+  }
+
+  return interestRate;
 }
 
 export function isSpotPositionAvailable(position: SpotPosition): boolean {
