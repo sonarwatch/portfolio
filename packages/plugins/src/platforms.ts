@@ -55,3 +55,8 @@ export const meteoraPlatform: Platform = {
   name: 'Meteora',
   image: 'https://beta.sonar.watch/img/platforms/meteora.png',
 };
+export const driftPlatform: Platform = {
+  id: 'drift',
+  name: 'Drift',
+  image: 'https://beta.sonar.watch/img/platforms/drift.png',
+};
