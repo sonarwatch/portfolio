@@ -23,6 +23,7 @@ import { jobs as meteoraJobs } from './plugins/meteora';
 import { jobs as thalaJobs, fetchers as thalaFetchers } from './plugins/thala';
 import { fetchers as tensorFetchers } from './plugins/tensor';
 import { jobs as fooJobs, fetchers as fooFetchers } from './plugins/foo';
+import { jobs as driftJobs, fetchers as driftFetchers } from './plugins/drift';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
 export * from './Cache';
@@ -39,6 +40,7 @@ export const jobs: Job[] = [
   ...solendJobs,
   ...meteoraJobs,
   ...orcaJobs,
+  ...driftJobs,
 ];
 
 export const fetchers: Fetcher[] = [
@@ -51,6 +53,7 @@ export const fetchers: Fetcher[] = [
   ...thalaFetchers,
   ...raydiumFetchers,
   ...orcaFetchers,
+  ...driftFetchers,
 ];
 
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
