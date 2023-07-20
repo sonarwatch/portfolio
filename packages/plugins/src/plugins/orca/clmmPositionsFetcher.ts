@@ -1,7 +1,4 @@
 import {
-  Cache,
-  Fetcher,
-  FetcherExecutor,
   NetworkId,
   PortfolioElementType,
   PortfolioLiquidity,
@@ -15,6 +12,7 @@ import {
   ParsedAccount,
   getParsedMultipleAccountsInfo,
 } from '../../utils/solana';
+import { Cache } from '../../Cache';
 import { Whirlpool, positionStruct } from './structs/whirlpool';
 import {
   getTokenAmountsFromLiquidity,
@@ -22,6 +20,7 @@ import {
 } from './helpers';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import runInBatch from '../../utils/misc/runInBatch';
+import { Fetcher, FetcherExecutor } from '../../Fetcher';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();

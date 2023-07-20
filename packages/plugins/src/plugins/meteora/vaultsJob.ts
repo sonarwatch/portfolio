@@ -1,4 +1,4 @@
-import { Cache, Job, JobExecutor, NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { platformId, vaultsProgramId } from './constants';
 import { getClientSolana } from '../../utils/clients';
@@ -6,6 +6,8 @@ import { getParsedProgramAccounts } from '../../utils/solana';
 import { vaultStruct } from './struct';
 import { fetchTokenSupplyAndDecimals } from '../../utils/solana/fetchTokenSupplyAndDecimals';
 import { vaultsFilters } from './filters';
+import { Job, JobExecutor } from '../../Job';
+import { Cache } from '../../Cache';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();

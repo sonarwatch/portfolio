@@ -1,5 +1,6 @@
-import { Fetcher, Job } from '@sonarwatch/portfolio-core';
 // import lpJob from './lpTokensJob';
+import { Fetcher } from '../../Fetcher';
+import { Job } from '../../Job';
 import whirlpoolJob from './whirlpoolsJob';
 // import clmmPositionsFetcher from './clmmPositionsFetcher';
 

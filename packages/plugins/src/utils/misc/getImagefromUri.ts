@@ -1,7 +1,8 @@
-import { Cache, NetworkIdType } from '@sonarwatch/portfolio-core';
+import { NetworkIdType } from '@sonarwatch/portfolio-core';
 import axios from 'axios';
 import isHttpUrl from './isHttpUrl';
 import isIpfsUrl from './isIpfsUrl';
+import { Cache } from '../../Cache';
 
 const nftImagesMaxLength = 2000;
 const prefix = 'nftimage';

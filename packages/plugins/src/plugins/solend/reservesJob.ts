@@ -1,11 +1,13 @@
 import axios, { AxiosResponse } from 'axios';
-import { Cache, Job, JobExecutor, NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import {
   marketsPrefix,
   platformId,
   reserveEndpoint,
   reservesPrefix as prefix,
 } from './constants';
+import { Cache } from '../../Cache';
+import { Job, JobExecutor } from '../../Job';
 import { ApiResponse, MarketInfo, ReserveInfo } from './types';
 import sleep from '../../utils/misc/sleep';
 

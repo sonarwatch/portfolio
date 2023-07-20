@@ -1,7 +1,4 @@
 import {
-  Cache,
-  Fetcher,
-  FetcherExecutor,
   NetworkId,
   PortfolioAsset,
   PortfolioElement,
@@ -13,6 +10,8 @@ import {
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
+import { Cache } from '../../Cache';
+import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
   marketsPrefix,
   pid,

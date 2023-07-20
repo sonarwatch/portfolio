@@ -1,7 +1,4 @@
 import {
-  Cache,
-  Fetcher,
-  FetcherExecutor,
   NetworkId,
   PortfolioElementLiquidity,
   PortfolioElementType,
@@ -15,6 +12,8 @@ import { getAmountsFromLiquidity, tickIndexToSqrtPriceX64 } from './helpers';
 import { getParsedMultipleAccountsInfo } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import { personalPositionStateStruct, poolStateStruct } from './structs/clmms';
+import { Cache } from '../../Cache';
+import { Fetcher, FetcherExecutor } from '../../Fetcher';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();

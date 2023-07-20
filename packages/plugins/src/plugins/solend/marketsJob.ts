@@ -1,4 +1,4 @@
-import { Cache, Job, JobExecutor, NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
 import {
   marketsPrefix as prefix,
@@ -7,6 +7,8 @@ import {
 } from './constants';
 import { MarketInfo } from './types';
 import { upperFirst } from './helpers';
+import { Cache } from '../../Cache';
+import { Job, JobExecutor } from '../../Job';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const marketsInfoRes: AxiosResponse<MarketInfo[]> = await axios.get(

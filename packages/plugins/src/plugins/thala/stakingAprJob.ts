@@ -1,7 +1,8 @@
-import { Cache, Job, JobExecutor } from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
 import { platformId, stabilityEndpoint } from './constants';
 import { LiquidityInfo } from './types';
+import { Cache } from '../../Cache';
+import { Job, JobExecutor } from '../../Job';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const marketsInfoRes: AxiosResponse<LiquidityInfo> | null = await axios

@@ -1,4 +1,4 @@
-import { Cache, Job, JobExecutor, NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { aquafarmsProgram, platformId } from './constants';
 import { aquafarmFilters } from './filters';
@@ -8,6 +8,8 @@ import { TokenAccount, tokenAccountStruct } from '../../utils/solana';
 import { fetchTokenSupplyAndDecimals } from '../../utils/solana/fetchTokenSupplyAndDecimals';
 // import { getYields } from './helpers';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
+import { Job, JobExecutor } from '../../Job';
+import { Cache } from '../../Cache';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();

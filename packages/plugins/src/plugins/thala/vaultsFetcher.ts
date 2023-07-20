@@ -1,7 +1,4 @@
 import {
-  Cache,
-  Fetcher,
-  FetcherExecutor,
   NetworkId,
   PortfolioAsset,
   PortfolioElement,
@@ -10,6 +7,8 @@ import {
   apyToApr,
   getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
+import { Cache } from '../../Cache';
+import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { modCoin, platformId, vaultFilter } from './constants';
 import { getClientAptos } from '../../utils/clients';
 import { getAccountResources, getNestedType } from '../../utils/aptos';

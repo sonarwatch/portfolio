@@ -1,7 +1,4 @@
 import {
-  Cache,
-  Fetcher,
-  FetcherExecutor,
   NetworkId,
   PortfolioAssetToken,
   PortfolioElement,
@@ -12,6 +9,8 @@ import {
 } from '@sonarwatch/portfolio-core';
 
 import BigNumber from 'bignumber.js';
+import { Cache } from '../../../Cache';
+import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import tokenPriceToAssetTokens from '../../../utils/misc/tokenPriceToAssetTokens';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import { walletTokensPlatform } from '../../../platforms';

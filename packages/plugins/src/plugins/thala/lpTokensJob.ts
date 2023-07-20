@@ -1,10 +1,4 @@
-import {
-  Cache,
-  Job,
-  JobExecutor,
-  NetworkId,
-  TokenPriceUnderlying,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId, TokenPriceUnderlying } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import {
   lpStableTypePrefix,
@@ -24,6 +18,8 @@ import {
 import { getClientAptos } from '../../utils/clients';
 import { ThalaTokenPairMetadataData as TokenPairMetadataData } from './types';
 import { tokenToLpType } from './helpers';
+import { Cache } from '../../Cache';
+import { Job, JobExecutor } from '../../Job';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientAptos();

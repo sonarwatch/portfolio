@@ -1,9 +1,9 @@
 import {
   AddressSystem,
   AddressSystemType,
-  Fetcher,
   getAddressSystemFromNetworkId,
 } from '@sonarwatch/portfolio-core';
+import { Fetcher } from '../../Fetcher';
 
 export function getFetchersByAddressSystem(fetchers: Fetcher[]) {
   const fetchersByAddressSystem: Record<string, Fetcher[]> = {};

@@ -1,7 +1,4 @@
 import {
-  Cache,
-  Fetcher,
-  FetcherExecutor,
   NetworkId,
   PortfolioAsset,
   PortfolioAssetType,
@@ -22,6 +19,8 @@ import { getClientSolana } from '../../utils/clients';
 import { singleListingStruct } from './struct';
 import { singleListingFilter } from './filters';
 import { getImagefromUri } from '../../utils/misc/getImagefromUri';
+import { Cache } from '../../Cache';
+import { Fetcher, FetcherExecutor } from '../../Fetcher';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();

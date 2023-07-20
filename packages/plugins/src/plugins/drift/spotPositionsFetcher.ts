@@ -1,7 +1,4 @@
 import {
-  Cache,
-  Fetcher,
-  FetcherExecutor,
   NetworkId,
   PortfolioAsset,
   PortfolioElement,
@@ -12,6 +9,8 @@ import {
   getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
+import { Cache } from '../../Cache';
+import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { DriftProgram, platformId, prefixSpotMarkets } from './constants';
 import { SpotBalanceType, userAccountStruct } from './struct';
 import { accountsFilter } from './filters';

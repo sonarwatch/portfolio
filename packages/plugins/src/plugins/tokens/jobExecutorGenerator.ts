@@ -1,12 +1,12 @@
 import {
-  Cache,
-  JobExecutor,
   NetworkIdType,
   UniTokenList,
   networks,
 } from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
 import { getCoingeckoSources, getTokensData } from './helpers';
+import { Cache } from '../../Cache';
+import { JobExecutor } from '../../Job';
 
 export default function jobExecutorGenerator(
   networkId: NetworkIdType

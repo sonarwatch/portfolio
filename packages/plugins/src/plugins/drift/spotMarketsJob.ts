@@ -1,4 +1,4 @@
-import { Cache, Job, JobExecutor, NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { DriftProgram, platformId, prefixSpotMarkets } from './constants';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { spotMarketStruct } from './struct';
@@ -6,6 +6,8 @@ import { marketFilter } from './filters';
 import { getClientSolana } from '../../utils/clients';
 import { calculateBorrowRate, calculateDepositRate } from './helpers';
 import { SpotMarketEnhanced } from './types';
+import { Cache } from '../../Cache';
+import { Job, JobExecutor } from '../../Job';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();

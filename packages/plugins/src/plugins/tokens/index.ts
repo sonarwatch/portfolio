@@ -1,9 +1,11 @@
-import { Fetcher, Job, NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { walletTokensPlatform } from '../../platforms';
 import jobExecutorGenerator from './jobExecutorGenerator';
 import aptosFetcher from './fetchers/aptos';
 import solanaFetcher from './fetchers/solana';
 import solanaNativeFetcher from './fetchers/solana-native';
+import { Job } from '../../Job';
+import { Fetcher } from '../../Fetcher';
 
 export const jobs: Job[] = [
   {

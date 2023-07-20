@@ -1,7 +1,4 @@
 import {
-  Cache,
-  Fetcher,
-  FetcherExecutor,
   NetworkId,
   PortfolioAssetToken,
   PortfolioElement,
@@ -12,6 +9,8 @@ import {
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
+import { Cache } from '../../../Cache';
+import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { walletTokensPlatform } from '../../../platforms';
 import { getClientSolana } from '../../../utils/clients';
 import { getTokenAccountsByOwner } from '../../../utils/solana';

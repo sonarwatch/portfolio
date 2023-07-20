@@ -1,7 +1,4 @@
 import {
-  Cache,
-  Fetcher,
-  FetcherExecutor,
   NetworkId,
   PortfolioElementLiquidity,
   PortfolioElementType,
@@ -10,6 +7,8 @@ import {
   aprToApy,
   aptosNetwork,
 } from '@sonarwatch/portfolio-core';
+import { Cache } from '../../Cache';
+import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
   modCoin,
   platformId,
