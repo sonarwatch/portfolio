@@ -1,10 +1,9 @@
 import { PublicKey } from '@solana/web3.js';
 import { solanaNetwork } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
-import { marginfiPlatform } from '../../platforms';
 
 export const prefix = 'marginfi-banks';
-export const platformId = marginfiPlatform.id;
+export const platformId = 'marginfi';
 
 export const MarginfiProgram = new PublicKey(
   'MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA'

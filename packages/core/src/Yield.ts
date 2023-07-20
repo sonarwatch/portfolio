@@ -22,3 +22,16 @@ export const createYieldFromApy = (apy: number): Yield => ({
   apr: apyToApr(apy),
   apy,
 });
+
+export const ratesPrefix = `rates`;
+
+export type AssetRate = {
+  tokenAddress: string;
+  depositYield: Yield;
+  depositedAmount: number;
+  borrowYield: Yield;
+  borrowedAmount: number;
+  utilizationRatio?: number;
+  platformId: string;
+  poolName: string;
+};
