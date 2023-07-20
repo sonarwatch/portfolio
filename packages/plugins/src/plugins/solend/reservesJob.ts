@@ -36,9 +36,10 @@ const executor: JobExecutor = async (cache: Cache) => {
     if (!reservesInfoRes) continue;
     for (let j = 0; j < reservesInfoRes.data.results.length; j += 1) {
       const reserveInfo = reservesInfoRes.data.results[j];
+      const reserveAddress = reservesAddresses[j];
       await cache.setItem(
-        reservesAddresses[j],
-        { pubkey: reservesAddresses[j], ...reserveInfo },
+        reserveAddress,
+        { pubkey: reserveAddress, ...reserveInfo },
         {
           prefix,
           networkId: NetworkId.solana,
@@ -76,7 +77,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         poolName,
       };
 
-      await cache.setItem(`${reservesAddresses[j]}-${tokenAddress}`, rate, {
+      await cache.setItem(`${reserveAddress}-${tokenAddress}`, rate, {
         prefix: borrowLendRatesPrefix,
         networkId: NetworkId.solana,
       });
