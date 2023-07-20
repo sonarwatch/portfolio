@@ -39,13 +39,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     marketsByAddress.set(market.address.toString(), market);
   });
 
-  for (const marketInfo of markets.values()) {
+  for (const marketInfo of markets) {
     const seeds = [
       getObligationSeed(marketInfo.address, 0),
       getObligationSeed(marketInfo.address, 1),
       getObligationSeed(marketInfo.address, 2),
     ];
-    for (let i = 0; i < seeds.length; i++) {
+    for (let i = 0; i < seeds.length; i += 1) {
       const seed = seeds[i];
       const obligationAddress = await PublicKey.createWithSeed(
         new PublicKey(owner),
@@ -125,7 +125,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     for (let j = 0; j < market.reserves.length; j += 1) {
       const { address: reserveAddress } = market.reserves[j];
-      // const reserveInfo2 = reservesInfos[j];
       const reserveInfo = reserveByAddress.get(reserveAddress);
       if (!reserveInfo) continue;
 
@@ -150,56 +149,62 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       // Deposit
       const deposit = depositsMap.get(reserveAddress);
       if (deposit) {
-        const suppliedAmount = deposit.depositedAmount
-          .div(10 ** decimals)
-          .times(reserveDepositAmount / collateralSupply)
-          .toNumber();
-        const apy = +reserveInfo.rates.supplyInterest / 100;
-        const cSuppliedYields: Yield[] = [
-          {
-            apr: apyToApr(apy),
-            apy,
-          },
-        ];
-        suppliedYields.push(cSuppliedYields);
-        suppliedAssets.push(
-          tokenPriceToAssetToken(
-            lMint,
-            suppliedAmount,
-            NetworkId.solana,
-            lTokenPrice
-          )
-        );
+        if (!deposit.depositedAmount.isZero()) {
+          const suppliedAmount = deposit.depositedAmount
+            .div(10 ** decimals)
+            .times(reserveDepositAmount / collateralSupply)
+            .toNumber();
+          const apy = +reserveInfo.rates.supplyInterest / 100;
+          const cSuppliedYields: Yield[] = [
+            {
+              apr: apyToApr(apy),
+              apy,
+            },
+          ];
+          suppliedYields.push(cSuppliedYields);
+          suppliedAssets.push(
+            tokenPriceToAssetToken(
+              lMint,
+              suppliedAmount,
+              NetworkId.solana,
+              lTokenPrice
+            )
+          );
+        }
       }
 
       // Borrow
       const borrow = borrowsMap.get(reserveAddress);
       if (borrow) {
-        const borrowedAmount = borrow.borrowedAmountWads
-          .times(new BigNumber(liquidity.cumulativeBorrowRateWads))
-          .div(borrow.cumulativeBorrowRateWads)
-          .dividedBy(new BigNumber(10 ** (wadsDecimal + decimals)))
-          .toNumber();
-        const apy = +reserveInfo.rates.borrowInterest / 100;
-        const cBorrowedYields: Yield[] = [
-          {
-            apr: apyToApr(apy),
-            apy,
-          },
-        ];
-        borrowedYields.push(cBorrowedYields);
-        borrowedAssets.push(
-          tokenPriceToAssetToken(
-            lMint,
-            borrowedAmount,
-            NetworkId.solana,
-            lTokenPrice
-          )
-        );
+        if (!borrow.borrowedAmountWads.isZero()) {
+          const borrowedAmount = borrow.borrowedAmountWads
+            .times(new BigNumber(liquidity.cumulativeBorrowRateWads))
+            .div(borrow.cumulativeBorrowRateWads)
+            .dividedBy(new BigNumber(10 ** (wadsDecimal + decimals)))
+            .toNumber();
+          const apy = +reserveInfo.rates.borrowInterest / 100;
+          const cBorrowedYields: Yield[] = [
+            {
+              apr: apyToApr(apy),
+              apy,
+            },
+          ];
+          borrowedYields.push(cBorrowedYields);
+          borrowedAssets.push(
+            tokenPriceToAssetToken(
+              lMint,
+              borrowedAmount,
+              NetworkId.solana,
+              lTokenPrice
+            )
+          );
+        }
       }
     }
     const { borrowedValue, collateralRatio, suppliedValue, value } =
       getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
+
+    if (borrowedValue === 0 && suppliedValue === 0) continue;
 
     elements.push({
       type: PortfolioElementType.borrowlend,

@@ -4,5 +4,5 @@ import reservesJob from './reservesJob';
 import marketsJob from './marketsJob';
 import obligationFetcher from './obligationsFetcher';
 
-export const jobs: Job[] = [reservesJob, marketsJob];
+export const jobs: Job[] = [marketsJob, reservesJob];
 export const fetchers: Fetcher[] = [obligationFetcher];
