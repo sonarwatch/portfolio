@@ -1,4 +1,4 @@
-import { Fetcher } from '@sonarwatch/portfolio-core';
+import { Fetcher } from '../../Fetcher';
 import ticketsFetcher from './ticketsFetcher';
 
 export const fetchers: Fetcher[] = [ticketsFetcher];

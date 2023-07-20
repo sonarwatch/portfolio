@@ -1,7 +1,4 @@
 import {
-  Cache,
-  Fetcher,
-  FetcherExecutor,
   NetworkId,
   PortfolioAsset,
   PortfolioAssetToken,
@@ -16,6 +13,8 @@ import { marinadeTicketProgramId, platformId, solFactor } from './constants';
 import { ticketStruct } from './structs';
 import { ticketFilters } from './filters';
 import { getClientSolana } from '../../utils/clients';
+import { Cache } from '../../Cache';
+import { Fetcher, FetcherExecutor } from '../../Fetcher';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();

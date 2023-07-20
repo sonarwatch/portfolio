@@ -1,9 +1,12 @@
-import { AddressSystemType } from './Address';
+import {
+  AddressSystemType,
+  NetworkIdType,
+  PortfolioElement,
+  formatAddress,
+  formatAddressByNetworkId,
+  networks,
+} from '@sonarwatch/portfolio-core';
 import { Cache } from './Cache';
-import { NetworkIdType } from './Network';
-import { PortfolioElement } from './Portfolio';
-import { networks } from './constants';
-import { formatAddress, formatAddressByNetworkId } from './utils';
 
 export type FetcherExecutor = (
   owner: string,

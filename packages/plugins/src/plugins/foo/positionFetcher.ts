@@ -1,14 +1,13 @@
 import {
-  Cache,
-  Fetcher,
-  FetcherExecutor,
   NetworkId,
   PortfolioAssetType,
   PortfolioElementSingle,
   PortfolioElementType,
   ethereumNativeAddress,
 } from '@sonarwatch/portfolio-core';
+import { Cache } from '../../Cache';
 import { platformId } from './constants';
+import { Fetcher, FetcherExecutor } from '../../Fetcher';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const ethTokenPrice = await cache.getTokenPrice(

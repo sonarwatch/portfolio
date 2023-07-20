@@ -1,6 +1,6 @@
 import { createStorage } from 'unstorage';
 import memoryDriver from './memoryDriver';
-import sleep from './helpers/sleep';
+import sleep from './utils/misc/sleep';
 
 describe('MemoryDriver', () => {
   it('should works', async () => {

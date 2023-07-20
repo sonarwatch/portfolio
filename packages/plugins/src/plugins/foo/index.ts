@@ -1,4 +1,5 @@
-import { Fetcher, Job } from '@sonarwatch/portfolio-core';
+import { Fetcher } from '../../Fetcher';
+import { Job } from '../../Job';
 import marketsJob from './marketsJob';
 import positionFetcher from './positionFetcher';
 

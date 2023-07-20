@@ -1,7 +1,4 @@
 import {
-  Cache,
-  Job,
-  JobExecutor,
   NetworkId,
   TokenPrice,
   TokenPriceUnderlying,
@@ -23,6 +20,8 @@ import { fetchTokenSupplyAndDecimals } from '../../utils/solana/fetchTokenSupply
 import { PoolState, poolStateStruct } from './struct';
 import runInBatch from '../../utils/misc/runInBatch';
 import { constantPoolsFilters, stablePoolsFilters } from './filters';
+import { Cache } from '../../Cache';
+import { Job, JobExecutor } from '../../Job';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();

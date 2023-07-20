@@ -1,4 +1,5 @@
-import { Fetcher, Job } from '@sonarwatch/portfolio-core';
+import { Fetcher } from './Fetcher';
+import { Job } from './Job';
 import * as platformsObj from './platforms';
 import {
   jobs as tokensJobs,
@@ -23,6 +24,8 @@ import { jobs as thalaJobs, fetchers as thalaFetchers } from './plugins/thala';
 import { fetchers as tensorFetchers } from './plugins/tensor';
 import { jobs as fooJobs, fetchers as fooFetchers } from './plugins/foo';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
+
+export * from './Cache';
 
 export * from './platforms';
 export const platforms = Object.values(platformsObj);

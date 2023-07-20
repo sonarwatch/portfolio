@@ -1,6 +1,4 @@
 import {
-  Cache,
-  FetcherExecutor,
   NetworkId,
   PortfolioAsset,
   PortfolioElement,
@@ -19,6 +17,8 @@ import { ParsedAccount, getParsedProgramAccounts } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import runInBatch from '../../utils/misc/runInBatch';
+import { FetcherExecutor } from '../../Fetcher';
+import { Cache } from '../../Cache';
 
 const fetcherExecutor: FetcherExecutor = async (
   owner: string,

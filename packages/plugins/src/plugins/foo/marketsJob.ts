@@ -1,4 +1,6 @@
-import { Cache, Job, JobExecutor, NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { Cache } from '../../Cache';
+import { Job, JobExecutor } from '../../Job';
 import { marketsCachePrefix, platformId } from './constants';
 
 const executor: JobExecutor = async (cache: Cache) => {

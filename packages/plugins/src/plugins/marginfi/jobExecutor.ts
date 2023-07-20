@@ -1,10 +1,12 @@
-import { Cache, JobExecutor, NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { MarginfiProgram, prefix } from './constants';
 import { bankStruct } from './structs/Bank';
 import { banksFilters } from './filters';
 import { wrappedI80F48toBigNumber } from './helpers';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
+import { Cache } from '../../Cache';
+import { JobExecutor } from '../../Job';
 
 const jobExecutor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
