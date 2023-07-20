@@ -1,9 +1,9 @@
 import axios, { AxiosResponse } from 'axios';
 import {
   NetworkId,
-  AssetRate,
+  BorrowLendRate,
   apyToApr,
-  ratesPrefix,
+  borrowLendRatesPrefix,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import {
@@ -60,7 +60,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         .toNumber();
       const depositedAmount = borrowedAmount + reserveAvailableAmount;
 
-      const reserveRates: AssetRate = {
+      const rate: BorrowLendRate = {
         tokenAddress,
         borrowYield: {
           apy: borrowApy,
@@ -76,14 +76,10 @@ const executor: JobExecutor = async (cache: Cache) => {
         poolName,
       };
 
-      await cache.setItem(
-        `${reservesAddresses[j]}-${tokenAddress}`,
-        reserveRates,
-        {
-          prefix: ratesPrefix,
-          networkId: NetworkId.solana,
-        }
-      );
+      await cache.setItem(`${reservesAddresses[j]}-${tokenAddress}`, rate, {
+        prefix: borrowLendRatesPrefix,
+        networkId: NetworkId.solana,
+      });
     }
   }
 };

@@ -23,9 +23,9 @@ export const createYieldFromApy = (apy: number): Yield => ({
   apy,
 });
 
-export const ratesPrefix = `rates`;
+export const borrowLendRatesPrefix = 'bl-rates';
 
-export type AssetRate = {
+export type BorrowLendRate = {
   tokenAddress: string;
   depositYield: Yield;
   depositedAmount: number;

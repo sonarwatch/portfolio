@@ -1,8 +1,8 @@
 import {
   NetworkId,
-  AssetRate,
+  BorrowLendRate,
   aprToApy,
-  ratesPrefix,
+  borrowLendRatesPrefix,
 } from '@sonarwatch/portfolio-core';
 import { MarginfiProgram, platformId, prefix } from './constants';
 import { bankStruct } from './structs/Bank';
@@ -53,7 +53,7 @@ const jobExecutor: JobExecutor = async (cache: Cache) => {
 
     const tokenAddress = bank.mint.toString();
 
-    const reserveRates: AssetRate = {
+    const rate: BorrowLendRate = {
       tokenAddress,
       borrowYield: {
         apy: aprToApy(borrowingApr),
@@ -69,14 +69,10 @@ const jobExecutor: JobExecutor = async (cache: Cache) => {
       poolName: 'Main',
     };
 
-    await cache.setItem(
-      `${bank.pubkey.toString()}-${tokenAddress}`,
-      reserveRates,
-      {
-        prefix: ratesPrefix,
-        networkId: NetworkId.solana,
-      }
-    );
+    await cache.setItem(`${bank.pubkey.toString()}-${tokenAddress}`, rate, {
+      prefix: borrowLendRatesPrefix,
+      networkId: NetworkId.solana,
+    });
   }
 };
 export default jobExecutor;
