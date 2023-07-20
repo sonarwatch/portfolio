@@ -10,3 +10,4 @@ export * from './Portfolio';
 export * from './TokenList';
 export * from './TokenPrice';
 export * from './Yield';
+export * from './BorrowLendRate';
