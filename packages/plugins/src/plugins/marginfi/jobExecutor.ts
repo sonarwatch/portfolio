@@ -1,6 +1,6 @@
 import {
-  NetworkId,
   BorrowLendRate,
+  NetworkId,
   aprToApy,
   borrowLendRatesPrefix,
 } from '@sonarwatch/portfolio-core';
