@@ -1,10 +1,7 @@
 import util from 'node:util';
-import {
-  assertNetworkId,
-  getCache,
-  runFetchersByNetworkId,
-} from '@sonarwatch/portfolio-core';
-import { fetchers } from '../src';
+import { assertNetworkId } from '@sonarwatch/portfolio-core';
+import { fetchers, getCache } from '../src';
+import { runFetchersByNetworkId } from '../src/Fetcher';
 
 const networkId = process.argv.at(2);
 if (!networkId || networkId === '') {

@@ -1,7 +1,7 @@
 import util from 'node:util';
-import { getCache, runFetcher } from '@sonarwatch/portfolio-core';
-import { fetchers } from '../src';
+import { fetchers, getCache } from '../src';
 import durationForHumans from '../src/utils/misc/durationForHumans';
+import { runFetcher } from '../src/Fetcher';
 
 const fetcherId = process.argv.at(2);
 if (!fetcherId || fetcherId === '') {

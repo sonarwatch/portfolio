@@ -1,6 +1,6 @@
-import { Cache, CacheConfig } from '@sonarwatch/portfolio-core';
 import { listen } from 'listhen';
 import { createStorageServer } from 'unstorage/server';
+import { Cache, CacheConfig } from '../src';
 
 const cacheConfig: CacheConfig = {
   type: 'memory',

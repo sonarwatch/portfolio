@@ -1,5 +1,4 @@
-import { getCache } from '@sonarwatch/portfolio-core';
-import { jobs } from '../src';
+import { getCache, jobs } from '../src';
 
 const jobId = process.argv.at(2);
 if (!jobId || jobId === '') {
