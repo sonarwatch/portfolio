@@ -1,6 +1,7 @@
 import { UsdValue } from './UsdValue';
 import { NetworkIdType } from './Network';
 import { Yield } from './Yield';
+import { AddressSystemType } from './Address';
 
 export const PortfolioAssetType = {
   generic: 'generic',
@@ -156,3 +157,26 @@ export type PortfolioElement =
   | PortfolioElementMultiple
   | PortfolioElementLiquidity
   | PortfolioElementBorrowLend;
+
+export type FetcherResult = {
+  owner: string;
+  fetcherId: string;
+  networdkId: NetworkIdType;
+  duration: number;
+  elements: PortfolioElement[];
+};
+
+export type FetcherReport = {
+  id: string;
+  status: 'succeeded' | 'failed';
+  duration?: number;
+  error?: string;
+};
+
+export type FetchersResult = {
+  date: number;
+  owner: string;
+  addressSystem: AddressSystemType;
+  fetcherReports: FetcherReport[];
+  elements: PortfolioElement[];
+};

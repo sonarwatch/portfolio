@@ -1,5 +1,8 @@
 import {
   AddressSystemType,
+  FetcherReport,
+  FetcherResult,
+  FetchersResult,
   NetworkIdType,
   PortfolioElement,
   formatAddress,
@@ -17,29 +20,6 @@ export type Fetcher = {
   id: string;
   networkId: NetworkIdType;
   executor: FetcherExecutor;
-};
-
-export type FetcherResult = {
-  owner: string;
-  fetcherId: string;
-  networdkId: NetworkIdType;
-  duration: number;
-  elements: PortfolioElement[];
-};
-
-export type FetcherReport = {
-  id: string;
-  status: 'succeeded' | 'failed';
-  duration?: number;
-  error?: string;
-};
-
-export type FetchersResult = {
-  date: number;
-  owner: string;
-  addressSystem: AddressSystemType;
-  fetcherReports: FetcherReport[];
-  elements: PortfolioElement[];
 };
 
 export async function runFetchers(

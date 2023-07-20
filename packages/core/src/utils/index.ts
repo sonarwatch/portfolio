@@ -19,4 +19,3 @@ export * from './sortPortfolioElement';
 export * from './sortPortfolioElements';
 export * from './assertNetworkId';
 export * from './assertAddressSystem';
-export * from './md5';
