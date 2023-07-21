@@ -24,6 +24,7 @@ import { jobs as thalaJobs, fetchers as thalaFetchers } from './plugins/thala';
 import { fetchers as tensorFetchers } from './plugins/tensor';
 import { jobs as fooJobs, fetchers as fooFetchers } from './plugins/foo';
 import { jobs as driftJobs, fetchers as driftFetchers } from './plugins/drift';
+import { jobs as mangoJobs, fetchers as mangoFetchers } from './plugins/mango';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
 export * from './Cache';
@@ -41,6 +42,7 @@ export const jobs: Job[] = [
   ...meteoraJobs,
   ...orcaJobs,
   ...driftJobs,
+  ...mangoJobs,
 ];
 
 export const fetchers: Fetcher[] = [
@@ -54,6 +56,7 @@ export const fetchers: Fetcher[] = [
   ...raydiumFetchers,
   ...orcaFetchers,
   ...driftFetchers,
+  ...mangoFetchers,
 ];
 
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
