@@ -60,3 +60,8 @@ export const driftPlatform: Platform = {
   name: 'Drift',
   image: 'https://beta.sonar.watch/img/platforms/drift.png',
 };
+export const mangoPlatform: Platform = {
+  id: 'mango',
+  name: 'Mango',
+  image: 'https://beta.sonar.watch/img/platforms/mango.png',
+};
