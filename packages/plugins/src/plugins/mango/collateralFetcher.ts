@@ -57,7 +57,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elements: PortfolioElement[] = [];
   for (let index = 0; index < userAccounts.length; index++) {
     const userAccount = userAccounts[index];
-
     if (!userAccount) continue;
 
     if (!userAccount.tokens) continue;
@@ -69,10 +68,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const suppliedYields: Yield[][] = [];
     const rewardAssets: PortfolioAsset[] = [];
 
-    for (let id = 0; id < tokenPositions.length; id++) {
-      const tokenPosition = tokenPositions[id];
+    for (let i = 0; i < tokenPositions.length; i++) {
+      const tokenPosition = tokenPositions[i];
       // empty positions
       if (tokenPosition.tokenIndex === 65535) continue;
+      if (tokenPosition.indexedPosition.isZero()) continue;
 
       const { tokenIndex } = tokenPosition;
       const bank = bankByIndex.get(tokenIndex);
@@ -82,9 +82,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const tokenPrice = tokenPrices.get(mint);
       if (!tokenPrice) continue;
 
-      if (tokenPosition.indexedPosition.isZero()) continue;
       // Deposit
       if (tokenPosition.indexedPosition.isPositive()) {
+        // Error when using bank.depositIndex.multipliedBy() : no such function
         const depositIndex = new BigNumber(bank.depositIndex);
         const assetToken = tokenPriceToAssetToken(
           mint,
