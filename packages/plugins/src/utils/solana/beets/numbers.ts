@@ -4,6 +4,7 @@ import {
 } from '@metaplex-foundation/beet';
 import BigNumber from 'bignumber.js';
 import { BN } from 'bn.js';
+import Decimal from 'decimal.js';
 import { BEET_SONARWATCH_PACKAGE } from './helpers';
 
 function unsignedLargeBeet(byteSize: number, description: string) {
@@ -22,6 +23,49 @@ function unsignedLargeBeet(byteSize: number, description: string) {
     description,
   };
 }
+
+function unsignedSplittedFloatLargeBeet(
+  integerSize: number,
+  floatSize: number,
+  description: string
+) {
+  const byteSize = integerSize + floatSize;
+  const bitSize = byteSize * 8;
+  return {
+    write(buf: Buffer, offset: number, value: BigNumber) {
+      const bn = new BN(value.toString()).toTwos(bitSize);
+      const bytesArray = bn.toArray('le', byteSize);
+      const bytesArrayBuf = Buffer.from(bytesArray);
+      bytesArrayBuf.copy(buf, offset, 0, byteSize);
+    },
+    read(buf: Buffer, offset: number): BigNumber {
+      const subarray = buf.subarray(offset, offset + byteSize);
+      const x = new BN(subarray, 'le');
+      const value = new BigNumber(x.fromTwos(bitSize).toString());
+      if (!value) return new BigNumber(0);
+
+      const numbers = new Decimal(
+        `${value.isNegative() ? '-' : ''}0b${value.abs().toString(2)}p-${
+          floatSize * 8
+        }`
+      ).dividedBy(10 ** 0);
+      return new BigNumber(numbers.toString());
+    },
+    byteSize,
+    description,
+  };
+}
+
+export const f32: FixedSizeBeet<BigNumber> = unsignedSplittedFloatLargeBeet(
+  2,
+  2,
+  'f32'
+);
+export const f64: FixedSizeBeet<BigNumber> = unsignedSplittedFloatLargeBeet(
+  4,
+  4,
+  'f64'
+);
 
 export const u64: FixedSizeBeet<BigNumber> = unsignedLargeBeet(8, 'u64');
 export const u128: FixedSizeBeet<BigNumber> = unsignedLargeBeet(16, 'u128');
@@ -52,8 +96,16 @@ export const i128: FixedSizeBeet<BigNumber> = signedLargeBeet(16, 'i128');
 export const i256: FixedSizeBeet<BigNumber> = signedLargeBeet(32, 'i256');
 export const i512: FixedSizeBeet<BigNumber> = signedLargeBeet(64, 'i512');
 
+export const i80f48: FixedSizeBeet<BigNumber> = unsignedSplittedFloatLargeBeet(
+  10,
+  6,
+  'i80f48'
+);
+
 export type NumbersExports = keyof typeof import('./numbers');
 export type NumbersTypeMapKey =
+  | 'f32'
+  | 'f64'
   | 'u64'
   | 'u128'
   | 'u256'
@@ -61,7 +113,8 @@ export type NumbersTypeMapKey =
   | 'i64'
   | 'i128'
   | 'i256'
-  | 'i512';
+  | 'i512'
+  | 'i80f48';
 
 export type NumbersTypeMap = Record<
   NumbersTypeMapKey,
@@ -71,6 +124,8 @@ export type NumbersTypeMap = Record<
 // prettier-ignore
 export const numbersTypeMap: NumbersTypeMap = {
   // Big Number, they use, the 'BigNumber' type which is defined in this package
+  f32  : { beet: 'f32',  isFixable: false, sourcePack: BEET_SONARWATCH_PACKAGE, ts: 'BigNumber', pack: BEET_SONARWATCH_PACKAGE  },
+  f64  : { beet: 'f64',  isFixable: false, sourcePack: BEET_SONARWATCH_PACKAGE, ts: 'BigNumber', pack: BEET_SONARWATCH_PACKAGE  },
   u64  : { beet: 'u64',  isFixable: false, sourcePack: BEET_SONARWATCH_PACKAGE, ts: 'BigNumber', pack: BEET_SONARWATCH_PACKAGE  },
   u128 : { beet: 'u128', isFixable: false, sourcePack: BEET_SONARWATCH_PACKAGE, ts: 'BigNumber', pack: BEET_SONARWATCH_PACKAGE  },
   u256 : { beet: 'u256', isFixable: false, sourcePack: BEET_SONARWATCH_PACKAGE, ts: 'BigNumber', pack: BEET_SONARWATCH_PACKAGE  },
@@ -79,4 +134,5 @@ export const numbersTypeMap: NumbersTypeMap = {
   i128 : { beet: 'i128', isFixable: false, sourcePack: BEET_SONARWATCH_PACKAGE, ts: 'BigNumber', pack: BEET_SONARWATCH_PACKAGE  },
   i256 : { beet: 'i256', isFixable: false, sourcePack: BEET_SONARWATCH_PACKAGE, ts: 'BigNumber', pack: BEET_SONARWATCH_PACKAGE  },
   i512 : { beet: 'i512', isFixable: false, sourcePack: BEET_SONARWATCH_PACKAGE, ts: 'BigNumber', pack: BEET_SONARWATCH_PACKAGE  },
+  i80f48 : { beet: 'i80f48', isFixable: false, sourcePack: BEET_SONARWATCH_PACKAGE, ts: 'BigNumber', pack: BEET_SONARWATCH_PACKAGE  },
 }
