@@ -1,4 +1,9 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import {
+  BorrowLendRate,
+  NetworkId,
+  aprToApy,
+  borrowLendRatesPrefix,
+} from '@sonarwatch/portfolio-core';
 import { DriftProgram, platformId, prefixSpotMarkets } from './constants';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { spotMarketStruct } from './struct';
@@ -30,6 +35,39 @@ const executor: JobExecutor = async (cache: Cache) => {
         borrowApr,
       },
       { prefix: prefixSpotMarkets, networkId: NetworkId.solana }
+    );
+    const { decimals } = spotMarketAccount;
+    const tokenAddress = spotMarketAccount.mint.toString();
+    const borrowedAmount = spotMarketAccount.borrowBalance
+      .div(10 ** decimals)
+      .toNumber();
+    const depositedAmount = spotMarketAccount.depositBalance
+      .div(10 ** decimals)
+      .toNumber();
+
+    const rate: BorrowLendRate = {
+      tokenAddress,
+      borrowYield: {
+        apy: aprToApy(borrowApr),
+        apr: borrowApr,
+      },
+      borrowedAmount,
+      depositYield: {
+        apy: aprToApy(depositApr),
+        apr: depositApr,
+      },
+      depositedAmount,
+      platformId,
+      poolName: 'Main',
+    };
+
+    await cache.setItem(
+      `${spotMarketAccount.vault.toString()}-${tokenAddress}`,
+      rate,
+      {
+        prefix: borrowLendRatesPrefix,
+        networkId: NetworkId.solana,
+      }
     );
   }
 };

@@ -1,8 +1,13 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
-import { MarginfiProgram, prefix } from './constants';
+import {
+  BorrowLendRate,
+  NetworkId,
+  aprToApy,
+  borrowLendRatesPrefix,
+} from '@sonarwatch/portfolio-core';
+import { MarginfiProgram, platformId, prefix } from './constants';
 import { bankStruct } from './structs/Bank';
 import { banksFilters } from './filters';
-import { wrappedI80F48toBigNumber } from './helpers';
+import { getInterestRates, wrappedI80F48toBigNumber } from './helpers';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import { Cache } from '../../Cache';
@@ -36,6 +41,41 @@ const jobExecutor: JobExecutor = async (cache: Cache) => {
         networkId: NetworkId.solana,
       }
     );
+
+    const { lendingApr, borrowingApr } = getInterestRates(bank);
+    const depositedAmount = wrappedI80F48toBigNumber(bank.liabilityShareValue)
+      .times(wrappedI80F48toBigNumber(bank.totalLiabilityShares))
+      .toNumber();
+
+    const borrowedAmount = wrappedI80F48toBigNumber(bank.assetShareValue)
+      .times(wrappedI80F48toBigNumber(bank.totalAssetShares))
+      .toNumber();
+
+    const tokenAddress = bank.mint.toString();
+
+    const poolName =
+      bank.config.riskTier === 0 ? 'Global Pool' : 'Isolated Pool';
+
+    const rate: BorrowLendRate = {
+      tokenAddress,
+      borrowYield: {
+        apy: aprToApy(borrowingApr),
+        apr: borrowingApr,
+      },
+      borrowedAmount,
+      depositYield: {
+        apy: aprToApy(lendingApr),
+        apr: lendingApr,
+      },
+      depositedAmount,
+      platformId,
+      poolName,
+    };
+
+    await cache.setItem(`${bank.pubkey.toString()}-${tokenAddress}`, rate, {
+      prefix: borrowLendRatesPrefix,
+      networkId: NetworkId.solana,
+    });
   }
 };
 export default jobExecutor;

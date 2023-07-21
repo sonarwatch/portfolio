@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import Decimal from 'decimal.js';
-import { BankInfo } from './types';
+import { Bank } from './structs/Bank';
 
 export function wrappedI80F48toBigNumber(
   { value }: { value: BigNumber },
@@ -18,7 +18,7 @@ export function wrappedI80F48toBigNumber(
 // AMELIORER LE PRINCIPE DENVOYER A CHAQUE FOIS LA BANK AUX FONCTIONS
 // AMELIORER LE PRINCIPE DE UNWRAP LES I80F48 A CHAQUE FOIS
 
-export function getInterestRates(bank: BankInfo): {
+export function getInterestRates(bank: Bank): {
   lendingApr: number;
   borrowingApr: number;
 } {
@@ -54,7 +54,7 @@ export function getInterestRates(bank: BankInfo): {
   return { lendingApr: lendingApy, borrowingApr: borrowingApy };
 }
 
-function interestRateCurve(bank: BankInfo) {
+function interestRateCurve(bank: Bank) {
   const { optimalUtilizationRate, plateauInterestRate, maxInterestRate } =
     bank.config.interestRateConfig;
 
