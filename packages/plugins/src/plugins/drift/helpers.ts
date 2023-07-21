@@ -102,7 +102,6 @@ export function calculateDepositRate(bank: SpotMarket): BigNumber {
     )
     .multipliedBy(utilization)
     .div(SPOT_MARKET_UTILIZATION_PRECISION)
-    .div(SPOT_MARKET_UTILIZATION_PRECISION) // Not sure why but this fixes a precision issue, give 0.0X numbers
     .div(PERCENTAGE_PRECISION);
   return depositRate;
 }
