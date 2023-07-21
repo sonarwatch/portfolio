@@ -4,12 +4,18 @@ import {
   aprToApy,
   borrowLendRatesPrefix,
 } from '@sonarwatch/portfolio-core';
+import BigNumber from 'bignumber.js';
 import { DriftProgram, platformId, prefixSpotMarkets } from './constants';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { spotMarketStruct } from './struct';
 import { marketFilter } from './filters';
 import { getClientSolana } from '../../utils/clients';
-import { calculateBorrowRate, calculateDepositRate } from './helpers';
+import {
+  SPOT_MARKET_RATE_PRECISION,
+  calculateBorrowRate,
+  calculateDepositRate,
+  divCeil,
+} from './helpers';
 import { SpotMarketEnhanced } from './types';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
@@ -37,12 +43,27 @@ const executor: JobExecutor = async (cache: Cache) => {
       { prefix: prefixSpotMarkets, networkId: NetworkId.solana }
     );
     const { decimals } = spotMarketAccount;
+    const precisionDecrease = new BigNumber(10).pow(
+      new BigNumber(19 - decimals)
+    );
+
     const tokenAddress = spotMarketAccount.mint.toString();
-    const borrowedAmount = spotMarketAccount.borrowBalance
-      .div(10 ** decimals)
-      .toNumber();
+    const borrowedAmount = divCeil(
+      spotMarketAccount.borrowBalance.multipliedBy(
+        spotMarketAccount.cumulativeBorrowInterest.div(
+          SPOT_MARKET_RATE_PRECISION
+        )
+      ),
+      precisionDecrease
+    ).toNumber();
+
     const depositedAmount = spotMarketAccount.depositBalance
-      .div(10 ** decimals)
+      .multipliedBy(
+        spotMarketAccount.cumulativeDepositInterest.div(
+          SPOT_MARKET_RATE_PRECISION
+        )
+      )
+      .div(precisionDecrease)
       .toNumber();
 
     const rate: BorrowLendRate = {

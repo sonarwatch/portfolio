@@ -9,6 +9,10 @@ export const SPOT_MARKET_UTILIZATION_PRECISION_EXP = new BigNumber(6);
 export const SPOT_MARKET_UTILIZATION_PRECISION = new BigNumber(10).pow(
   SPOT_MARKET_UTILIZATION_PRECISION_EXP
 );
+export const SPOT_MARKET_RATE_PRECISION_EXP = new BigNumber(6);
+export const SPOT_MARKET_RATE_PRECISION = new BigNumber(10).pow(
+  SPOT_MARKET_RATE_PRECISION_EXP
+);
 export const PERCENTAGE_PRECISION_EXP = new BigNumber(6);
 export const PERCENTAGE_PRECISION = new BigNumber(10).pow(
   PERCENTAGE_PRECISION_EXP
