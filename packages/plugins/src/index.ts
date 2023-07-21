@@ -28,6 +28,8 @@ import { jobs as mangoJobs, fetchers as mangoFetchers } from './plugins/mango';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
 export * from './Cache';
+export * from './Fetcher';
+export * from './Job';
 
 export * from './platforms';
 export const platforms = Object.values(platformsObj);
