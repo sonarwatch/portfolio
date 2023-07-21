@@ -53,6 +53,9 @@ const jobExecutor: JobExecutor = async (cache: Cache) => {
 
     const tokenAddress = bank.mint.toString();
 
+    const poolName =
+      bank.config.riskTier === 0 ? 'Global Pool' : 'Isolated Pool';
+
     const rate: BorrowLendRate = {
       tokenAddress,
       borrowYield: {
@@ -66,7 +69,7 @@ const jobExecutor: JobExecutor = async (cache: Cache) => {
       },
       depositedAmount,
       platformId,
-      poolName: 'Main',
+      poolName,
     };
 
     await cache.setItem(`${bank.pubkey.toString()}-${tokenAddress}`, rate, {

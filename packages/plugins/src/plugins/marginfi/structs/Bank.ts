@@ -51,12 +51,13 @@ export type BankConfig = {
   assetWeightMaint: WrappedI80F48;
   liabilityWeightInit: WrappedI80F48;
   liabilityWeightMaint: WrappedI80F48;
-  depositLimit: number;
+  depositLimit: BigNumber;
   interestRateConfig: InterestRateConfig;
   operationalState: BankOperationalState;
-  oracleSetup: BigNumber;
+  oracleSetup: number;
   oracleKeys: PublicKey[];
-  borrowLimit: number;
+  ignore1: number[];
+  borrowLimit: BigNumber;
   riskTier: RiskTier;
   padding: BigNumber[];
 };
@@ -72,6 +73,7 @@ export const bankConfigStruct = new FixableBeetStruct<BankConfig>(
     ['operationalState', u8],
     ['oracleSetup', u8],
     ['oracleKeys', uniformFixedSizeArray(publicKey, 5)],
+    ['ignore1', uniformFixedSizeArray(u8, 6)],
     ['borrowLimit', u64],
     ['riskTier', u8],
     ['padding', uniformFixedSizeArray(u64, 6)],
