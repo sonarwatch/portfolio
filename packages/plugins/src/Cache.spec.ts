@@ -1,7 +1,6 @@
+import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
 import { Cache } from './Cache';
-import sleep from './helpers/sleep';
-import { TokenPriceSource } from './TokenPrice';
-import { NetworkId } from './Network';
+import sleep from './utils/misc/sleep';
 
 describe('Cache', () => {
   it('should works', async () => {

@@ -18,10 +18,23 @@ export default defineDriver((opts: MemoryStorageOptions = {}) => {
       return data.has(key);
     },
     getItem(key) {
-      return data.get(key) || null;
+      const item = data.get(key);
+      if (item === undefined) return null;
+      return item;
     },
     getItemRaw(key) {
-      return data.get(key) || null;
+      const item = data.get(key);
+      if (item === undefined) return null;
+      return item;
+    },
+    getItems(items) {
+      return items.map((i) => {
+        const item = data.get(i.key);
+        return {
+          key: i.key,
+          value: item !== undefined ? item : null,
+        };
+      });
     },
     setItem(key, value) {
       // Clear previous timeout
