@@ -66,6 +66,8 @@ const executor: JobExecutor = async (cache: Cache) => {
       .div(precisionDecrease)
       .toNumber();
 
+    if (borrowedAmount <= 10 && depositedAmount <= 10) continue;
+
     const rate: BorrowLendRate = {
       tokenAddress,
       borrowYield: {

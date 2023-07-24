@@ -51,6 +51,8 @@ const jobExecutor: JobExecutor = async (cache: Cache) => {
       .times(wrappedI80F48toBigNumber(bank.totalAssetShares))
       .toNumber();
 
+    if (borrowedAmount <= 10 && depositedAmount <= 10) continue;
+
     const tokenAddress = bank.mint.toString();
 
     const poolName =

@@ -42,6 +42,8 @@ const executor: JobExecutor = async (cache: Cache) => {
     const borrowedAmount = 0;
     const depositedAmount = 0;
 
+    if (borrowedAmount <= 10 && depositedAmount <= 10) continue;
+
     const rate: BorrowLendRate = {
       tokenAddress,
       borrowYield: {
