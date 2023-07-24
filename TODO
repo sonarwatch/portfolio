@@ -3,6 +3,8 @@
 - Opti orca-clmm-positions
 - Opti raydium-clmm-positions
 - Fix les packages utilisant @metaplex-fundation/js (build fail)
+- Déplacer les plateformes dans le package plugins
+- Rename address en id dans les tokens & ajouter la properties tokenContract
 
 # DONE
 

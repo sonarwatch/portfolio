@@ -1,4 +1,3 @@
-// import { Cache, Job, JobExecutor } from '@sonarwatch/portfolio-core';
 import {
   BorrowLendRate,
   NetworkId,
@@ -13,6 +12,7 @@ import { bankStruct } from './struct';
 import { banksFilter } from './filters';
 import { getBorrowRate, getDepositRate } from './helpers';
 import { getClientSolana } from '../../utils/clients';
+import { fetchTokenSupplyAndDecimals } from '../../utils/solana/fetchTokenSupplyAndDecimals';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -39,8 +39,20 @@ const executor: JobExecutor = async (cache: Cache) => {
     );
 
     const tokenAddress = bank.mint.toString();
-    const borrowedAmount = 0;
-    const depositedAmount = 0;
+    const res = await fetchTokenSupplyAndDecimals(bank.mint, client);
+    if (!res) continue;
+    const { decimals } = res;
+
+    const borrowedAmount = bank.depositIndex
+      .multipliedBy(bank.indexedDeposits)
+      .dividedBy(10 ** decimals)
+      .toNumber();
+    const depositedAmount = bank.borrowIndex
+      .multipliedBy(bank.indexedBorrows)
+      .dividedBy(10 ** decimals)
+      .toNumber();
+
+    if (borrowedAmount <= 10 && depositedAmount <= 10) continue;
 
     const rate: BorrowLendRate = {
       tokenAddress,

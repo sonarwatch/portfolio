@@ -60,6 +60,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         .dividedBy(10 ** decimals)
         .toNumber();
       const depositedAmount = borrowedAmount + reserveAvailableAmount;
+      if (borrowedAmount <= 10 && depositedAmount <= 10) continue;
 
       const rate: BorrowLendRate = {
         tokenAddress,
