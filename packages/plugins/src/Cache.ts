@@ -249,16 +249,6 @@ export class Cache {
 
   async getKeys(opts: TransactionOptions) {
     const fullBase = getFullBase(opts);
-    const keys = (await this.storage.getKeys(fullBase)).map((s) =>
-      s.substring(fullBase.length)
-    );
-
-    // Verifying that key is still alive
-    for (let i = 0; i < keys.length; i += 1) {
-      const key = keys[i];
-      await this.hasItem(key, opts);
-    }
-
     return (await this.storage.getKeys(fullBase)).map((s) =>
       s.substring(fullBase.length)
     );
