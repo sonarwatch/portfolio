@@ -13,6 +13,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 import overlayDriver from './overlayDriver';
 import memoryDriver from './memoryDriver';
+import runInBatch from './utils/misc/runInBatch';
 
 export type TransactionOptions = {
   prefix: string;
@@ -198,10 +199,17 @@ export class Cache {
   async getTokenPrices(networkId: NetworkIdType) {
     const addresses = await this.getTokenPriceAddresses(networkId);
     const tokenPrices: Map<string, TokenPrice> = new Map();
-    for (let i = 0; i < addresses.length; i += 1) {
-      const address = addresses[i];
-      const item = await this.getTokenPrice(address, networkId);
-      if (item !== undefined) tokenPrices.set(address, item);
+
+    const results = await runInBatch(
+      addresses.map((a) => () => this.getTokenPrice(a, networkId)),
+      20
+    );
+
+    for (let i = 0; i < results.length; i += 1) {
+      const result = results[i];
+      if (result.status === 'rejected') continue;
+      if (result.value !== undefined)
+        tokenPrices.set(addresses[i], result.value);
     }
     return tokenPrices;
   }
