@@ -13,7 +13,6 @@ import {
 } from '@sonarwatch/portfolio-core';
 import overlayDriver from './overlayDriver';
 import memoryDriver from './memoryDriver';
-import runInBatch from './utils/misc/runInBatch';
 
 export type TransactionOptions = {
   prefix: string;
@@ -171,14 +170,9 @@ export class Cache {
     keys: string[],
     opts: TransactionOptions
   ): Promise<(K | undefined)[]> {
-    const res = await runInBatch(
-      keys.map((k) => () => this.getItem<K>(k, opts)),
-      20
-    );
-    return res.map((r) => {
-      if (r.status === 'rejected') return undefined;
-      return r.value;
-    });
+    const fullKeys = keys.map((k) => getFullKey(k, opts));
+    const res = await this.storage.getItems(fullKeys);
+    return res.map((r) => r.value as K);
   }
 
   async getAllItems<K extends StorageValue>(
@@ -193,10 +187,10 @@ export class Cache {
   ): Promise<Map<string, K>> {
     const keys = await this.getKeys(opts);
     const itemsMap: Map<string, K> = new Map();
-    for (let i = 0; i < keys.length; i += 1) {
-      const key = keys[i];
-      const item = await this.getItem<K>(key, opts);
-      if (item !== undefined) itemsMap.set(key, item);
+    const items = await this.getItems<K>(keys, opts);
+    for (let i = 0; i < items.length; i += 1) {
+      const item = items[i];
+      if (item !== undefined) itemsMap.set(keys[i], item);
     }
     return itemsMap;
   }
@@ -249,9 +243,8 @@ export class Cache {
 
   async getKeys(opts: TransactionOptions) {
     const fullBase = getFullBase(opts);
-    return (await this.storage.getKeys(fullBase)).map((s) =>
-      s.substring(fullBase.length)
-    );
+    const keys = await this.storage.getKeys(fullBase);
+    return keys.map((s) => s.substring(fullBase.length));
   }
 
   async getTokenPriceAddresses(networkId: NetworkIdType) {

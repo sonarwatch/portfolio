@@ -117,21 +117,35 @@ describe('Cache', () => {
     });
     await cache.setItem(keys[0], values[0], {
       prefix,
+      networkId: 'solana',
     });
     await cache.setItem(keys[1], values[1], {
       prefix,
+      networkId: 'solana',
     });
     await cache.setItem(keys[2], values[2], {
       prefix,
+      networkId: 'solana',
     });
     await cache.setItem(keys[3], values[3], {
       prefix,
+      networkId: 'solana',
+    });
+    await cache.setItem('key-5', 'value-5', {
+      prefix,
+      networkId: 'avalanche',
     });
 
     const items = await cache.getItems([keys[1], keys[3], keys[0]], {
       prefix,
+      networkId: 'solana',
     });
-
     expect(items).toStrictEqual([values[1], values[3], values[0]]);
+
+    const allItems = await cache.getAllItems({
+      prefix,
+      networkId: 'solana',
+    });
+    expect(allItems).toStrictEqual(values);
   });
 });
