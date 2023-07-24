@@ -3,6 +3,7 @@ import { walletTokensPlatform } from '../../platforms';
 import jobExecutorGenerator from './jobExecutorGenerator';
 import aptosFetcher from './fetchers/aptos';
 import solanaFetcher from './fetchers/solana';
+import suiFetcher from './fetchers/sui';
 import solanaNativeFetcher from './fetchers/solana-native';
 import { Job } from '../../Job';
 import { Fetcher } from '../../Fetcher';
@@ -34,4 +35,5 @@ export const fetchers: Fetcher[] = [
   aptosFetcher,
   solanaFetcher,
   solanaNativeFetcher,
+  suiFetcher,
 ];
