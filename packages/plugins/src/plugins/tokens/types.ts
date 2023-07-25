@@ -23,10 +23,10 @@ export type TokenList = {
   tags: object;
   logoURI: string;
   keywords: string[];
-  tokens: TokenListItem[];
+  tokens: Token[];
 };
 
-export type TokenListItem = {
+export type Token = {
   chainId: number;
   address: string;
   decimals: number;
