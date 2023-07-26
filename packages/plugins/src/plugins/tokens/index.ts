@@ -4,11 +4,11 @@ import jobExecutorGenerator from './jobExecutorGenerator';
 import aptosFetcher from './fetchers/aptos';
 import solanaFetcher from './fetchers/solana';
 import suiFetcher from './fetchers/sui';
-import ethereumFetcher from './fetchers/ethereum';
 import solanaNativeFetcher from './fetchers/solana-native';
 import { Job } from '../../Job';
 import tokenListsJob from './tokenListsJob';
 import { Fetcher } from '../../Fetcher';
+import { evmFetchers } from './fetchers/evms';
 
 export const jobs: Job[] = [
   {
@@ -39,5 +39,5 @@ export const fetchers: Fetcher[] = [
   solanaFetcher,
   solanaNativeFetcher,
   suiFetcher,
-  ethereumFetcher,
+  ...evmFetchers(),
 ];

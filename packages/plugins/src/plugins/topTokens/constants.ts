@@ -1,4 +1,3 @@
-export const platformId = 'topTokens';
 export const coingeckoPrefix = 'coingecko';
 
 export const coingeckoMarketsUrl =

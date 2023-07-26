@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { coingeckoMarketsUrl, platformId, coingeckoPrefix } from './constants';
+import { coingeckoMarketsUrl, coingeckoPrefix } from './constants';
 import { CoingeckoMarketsRes } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -21,14 +21,14 @@ const executor: JobExecutor = async (cache: Cache) => {
   const tokens = coingeckoRes.data;
 
   await cache.setItem(
-    platformId,
+    'topTokens',
     tokens.map((token) => token.id),
     { prefix: coingeckoPrefix }
   );
 };
 
 const job: Job = {
-  id: `${platformId}-topTokens`,
+  id: `topTokens`,
   executor,
 };
 export default job;
