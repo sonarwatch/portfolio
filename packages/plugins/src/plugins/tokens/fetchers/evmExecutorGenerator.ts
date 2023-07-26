@@ -17,7 +17,7 @@ import { erc20ABI } from '../../../utils/evm/erc20Abi';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import { TokenList } from '../types';
 
-export default function getEvmExecutor(
+export default function getEvmFetcherExecutor(
   networkId: EvmNetworkIdType,
   topTokens: boolean
 ): FetcherExecutor {
