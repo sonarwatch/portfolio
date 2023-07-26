@@ -17,15 +17,14 @@ const executor: JobExecutor = async (cache: Cache) => {
     .catch(() => null);
 
   if (!coingeckoRes) return;
-  const topIds: string[] = [];
-  if (coingeckoRes.status === 200) {
-    const tokens = coingeckoRes.data;
-    for (let index = 0; index < tokens.length; index++) {
-      const token = tokens[index];
-      topIds.push(token.id);
-    }
-  }
-  await cache.setItem(platformId, topIds, { prefix: coingeckoPrefix });
+  if (coingeckoRes.status !== 200) return;
+  const tokens = coingeckoRes.data;
+
+  await cache.setItem(
+    platformId,
+    tokens.map((token) => token.id),
+    { prefix: coingeckoPrefix }
+  );
 };
 
 const job: Job = {
