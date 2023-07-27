@@ -223,7 +223,7 @@ describe('Cache', () => {
 
     const tokenAAddress = '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R';
     const sourceATokenA: TokenPriceSource = {
-      address: '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R',
+      address: tokenAAddress,
       decimals: 9,
       id: 'sourceA',
       networkId: NetworkId.solana,
@@ -289,5 +289,81 @@ describe('Cache', () => {
 
     expect(tokenPriceB?.price).toBe(1.5);
     expect(tokenPriceC?.price).toBe(3);
+  });
+
+  it('should getTokenPrices', async () => {
+    const cache = new Cache({
+      type: 'memory',
+      params: {},
+    });
+
+    const tokenAAddress = '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R';
+    const sourceATokenA: TokenPriceSource = {
+      address: tokenAAddress,
+      decimals: 9,
+      id: 'sourceA',
+      networkId: NetworkId.solana,
+      platformId: 'platformId',
+      price: 1,
+      timestamp: Date.now(),
+      weight: 0.5,
+    };
+    const sourceBTokenA: TokenPriceSource = {
+      ...sourceATokenA,
+      id: 'sourceB',
+      price: 2,
+    };
+
+    const tokenBAddress = '0x514910771AF9Ca656af840dff83E8264EcF986CA';
+    const sourceATokenB: TokenPriceSource = {
+      address: tokenBAddress,
+      decimals: 18,
+      id: 'sourceA',
+      networkId: NetworkId.ethereum,
+      platformId: 'platformId',
+      price: 1,
+      timestamp: Date.now(),
+      weight: 0.5,
+    };
+    const sourceBTokenB: TokenPriceSource = {
+      ...sourceATokenB,
+      id: 'sourceB',
+      price: 2,
+    };
+
+    const tokenCAddress = '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984';
+    const sourceATokenC: TokenPriceSource = {
+      address: tokenCAddress,
+      decimals: 18,
+      id: 'sourceA',
+      networkId: NetworkId.ethereum,
+      platformId: 'platformId',
+      price: 2,
+      timestamp: Date.now(),
+      weight: 0.5,
+    };
+    const sourceBTokenC: TokenPriceSource = {
+      ...sourceATokenC,
+      id: 'sourceB',
+      price: 4,
+    };
+
+    await cache.setTokenPriceSource(sourceATokenA);
+    await cache.setTokenPriceSource(sourceBTokenA);
+    await cache.setTokenPriceSource(sourceATokenB);
+    await cache.setTokenPriceSource(sourceBTokenB);
+    await cache.setTokenPriceSource(sourceATokenC);
+    await cache.setTokenPriceSource(sourceBTokenC);
+
+    const tokenPrices = await cache.getTokenPrices(
+      [tokenCAddress, tokenBAddress, tokenCAddress],
+      NetworkId.ethereum
+    );
+
+    expect(tokenPrices.at(0)?.address).toBe(tokenCAddress);
+    expect(tokenPrices.at(1)?.address).toBe(tokenBAddress);
+    expect(tokenPrices.at(2)?.address).toBe(tokenCAddress);
+    expect(tokenPrices.at(0)?.price).toBe(3);
+    expect(tokenPrices.at(1)?.price).toBe(1.5);
   });
 });

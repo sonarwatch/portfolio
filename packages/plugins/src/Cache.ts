@@ -120,7 +120,7 @@ export class Cache {
     return item === null ? undefined : (item as K);
   }
 
-  private async getCachedTokenPrice(address: string, networkId: NetworkIdType) {
+  private getCachedTokenPrice(address: string, networkId: NetworkIdType) {
     const cachedTokenPrice = this.tokenPricesCache.get(
       getTokenPriceCacheKey(address, networkId)
     );
@@ -139,7 +139,7 @@ export class Cache {
     const fAddress = formatTokenAddress(address, networkId);
 
     // Check if in cache
-    const cTokenPrice = await this.getCachedTokenPrice(fAddress, networkId);
+    const cTokenPrice = this.getCachedTokenPrice(fAddress, networkId);
     if (cTokenPrice) return cTokenPrice;
 
     const sources = await this.getTokenPriceSources(fAddress, networkId);
@@ -157,11 +157,54 @@ export class Cache {
     return tokenPrice;
   }
 
+  async getTokenPrices(addresses: string[], networkId: NetworkIdType) {
+    const fAddresses = addresses.map((a) => formatTokenAddress(a, networkId));
+    const ffAddresses = [...new Set(fAddresses)];
+
+    const tokenPriceByAddress: Map<string, TokenPrice | undefined> = new Map();
+    const notCachedAddresses: string[] = [];
+    ffAddresses.forEach((address) => {
+      const tokenPrice = this.getCachedTokenPrice(address, networkId);
+      if (tokenPrice) tokenPriceByAddress.set(address, tokenPrice);
+      else notCachedAddresses.push(address);
+    });
+
+    const notCachedSources = await this.getTokenPricesSources(
+      notCachedAddresses,
+      networkId
+    );
+    notCachedSources.forEach((sources, i) => {
+      const address = notCachedAddresses[i];
+      if (!sources) tokenPriceByAddress.set(address, undefined);
+      else {
+        const tokenPrice = tokenPriceFromSources(sources);
+        tokenPriceByAddress.set(address, tokenPriceFromSources(sources));
+        if (tokenPrice) {
+          this.tokenPricesCache.set(getTokenPriceCacheKey(address, networkId), {
+            tp: tokenPrice,
+            ts: Date.now(),
+          });
+        }
+      }
+    });
+    return fAddresses.map((address) => tokenPriceByAddress.get(address));
+  }
+
   private async getTokenPriceSources(
     address: string,
     networkId: NetworkIdType
   ) {
     return this.getItem<TokenPriceSource[]>(address, {
+      prefix: tokenPriceSourcePrefix,
+      networkId,
+    });
+  }
+
+  private async getTokenPricesSources(
+    addresses: string[],
+    networkId: NetworkIdType
+  ) {
+    return this.getItems<TokenPriceSource[]>(addresses, {
       prefix: tokenPriceSourcePrefix,
       networkId,
     });
