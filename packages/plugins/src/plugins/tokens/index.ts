@@ -8,7 +8,7 @@ import solanaNativeFetcher from './fetchers/solana-native';
 import { Job } from '../../Job';
 import tokenListsJob from './tokenListsJob';
 import { Fetcher } from '../../Fetcher';
-import { evmFetchers } from './fetchers/evms';
+import { fetchers as evmFetchers } from './fetchers/evms';
 
 export const jobs: Job[] = [
   {
@@ -39,5 +39,5 @@ export const fetchers: Fetcher[] = [
   solanaFetcher,
   solanaNativeFetcher,
   suiFetcher,
-  ...evmFetchers(),
+  ...evmFetchers,
 ];

@@ -8,15 +8,15 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { BigNumber } from 'bignumber.js';
 import { getAddress } from 'viem';
-import { Cache } from '../../../Cache';
-import { FetcherExecutor } from '../../../Fetcher';
-import { walletTokensPlatform } from '../../../platforms';
-import { getEvmClient } from '../../../utils/clients';
-import runInBatch from '../../../utils/misc/runInBatch';
-import { erc20ABI } from '../../../utils/evm/erc20Abi';
-import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import { TokenList } from '../types';
-import { tokenListsPrefix } from '../constants';
+import { Cache } from '../../../../Cache';
+import { FetcherExecutor } from '../../../../Fetcher';
+import { walletTokensPlatform } from '../../../../platforms';
+import { getEvmClient } from '../../../../utils/clients';
+import runInBatch from '../../../../utils/misc/runInBatch';
+import { erc20ABI } from '../../../../utils/evm/erc20Abi';
+import tokenPriceToAssetToken from '../../../../utils/misc/tokenPriceToAssetToken';
+import { TokenList } from '../../types';
+import { tokenListsPrefix } from '../../constants';
 
 export default function getEvmFetcherExecutor(
   networkId: EvmNetworkIdType,
