@@ -1,7 +1,8 @@
 import axios, { AxiosResponse } from 'axios';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { coingeckoMarketsUrl, coingeckoPrefix } from './constants';
+import { coingeckoMarketsUrl } from './constants';
 import { CoingeckoMarketsRes } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -21,9 +22,9 @@ const executor: JobExecutor = async (cache: Cache) => {
   const tokens = coingeckoRes.data;
 
   await cache.setItem(
-    'topTokens',
+    NetworkId.ethereum,
     tokens.map((token) => token.id),
-    { prefix: coingeckoPrefix }
+    { prefix: 'topTokens' }
   );
 };
 
