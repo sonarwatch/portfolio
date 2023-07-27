@@ -5,7 +5,7 @@ import {
   jobs as tokensJobs,
   fetchers as tokensFetchers,
 } from './plugins/tokens';
-import { jobs as topTokensJob } from './plugins/topTokens';
+import { jobs as topTokensJob } from './plugins/top-tokens';
 import { fetchers as marinadeFetchers } from './plugins/marinade';
 import {
   jobs as marginfiJobs,
