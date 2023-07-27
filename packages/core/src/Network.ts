@@ -11,7 +11,9 @@ export const NetworkId = {
 
 export type NetworkIdType = (typeof NetworkId)[keyof typeof NetworkId];
 export type MoveNetworkIdType = typeof NetworkId.aptos | typeof NetworkId.sui;
-export type EvmNetworkIdType = typeof NetworkId.ethereum | typeof NetworkId.avalanche;
+export type EvmNetworkIdType =
+  | typeof NetworkId.ethereum
+  | typeof NetworkId.avalanche;
 
 export type Network = {
   id: NetworkIdType;

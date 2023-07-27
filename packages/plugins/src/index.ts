@@ -5,6 +5,7 @@ import {
   jobs as tokensJobs,
   fetchers as tokensFetchers,
 } from './plugins/tokens';
+import { jobs as topTokensJob } from './plugins/topTokens';
 import { fetchers as marinadeFetchers } from './plugins/marinade';
 import {
   jobs as marginfiJobs,
@@ -36,6 +37,7 @@ export const platforms = Object.values(platformsObj);
 
 export const jobs: Job[] = [
   ...tokensJobs,
+  ...topTokensJob,
   ...thalaJobs,
   ...fooJobs,
   ...marginfiJobs,

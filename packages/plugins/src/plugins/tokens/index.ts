@@ -6,7 +6,9 @@ import solanaFetcher from './fetchers/solana';
 import suiFetcher from './fetchers/sui';
 import solanaNativeFetcher from './fetchers/solana-native';
 import { Job } from '../../Job';
+import tokenListsJob from './tokenListsJob';
 import { Fetcher } from '../../Fetcher';
+import { fetchers as evmFetchers } from './fetchers/evms';
 
 export const jobs: Job[] = [
   {
@@ -29,6 +31,7 @@ export const jobs: Job[] = [
     id: `${walletTokensPlatform.id}-${NetworkId.sui}`,
     executor: jobExecutorGenerator(NetworkId.sui),
   },
+  tokenListsJob,
 ];
 
 export const fetchers: Fetcher[] = [
@@ -36,4 +39,5 @@ export const fetchers: Fetcher[] = [
   solanaFetcher,
   solanaNativeFetcher,
   suiFetcher,
+  ...evmFetchers,
 ];
