@@ -2,6 +2,7 @@ import { assertNetworkId, networks } from '@sonarwatch/portfolio-core';
 import axios from 'axios';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
+import { tokenListsPrefix } from './constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
   for (const network in networks) {
@@ -10,13 +11,13 @@ const executor: JobExecutor = async (cache: Cache) => {
       const { tokenListUrl } = networks[networkId];
       const tokenList = await axios.get(tokenListUrl);
       await cache.setItem(networkId, tokenList.data, {
-        prefix: 'tokenList',
+        prefix: tokenListsPrefix,
       });
     }
   }
 };
 const job: Job = {
-  id: `tokenLists`,
+  id: 'token-lists',
   executor,
 };
 export default job;
