@@ -279,7 +279,7 @@ describe('Cache', () => {
     await cache.setTokenPriceSource(sourceATokenC);
     await cache.setTokenPriceSource(sourceBTokenC);
 
-    const tokenPrices = await cache.getTokenPrices(NetworkId.ethereum);
+    const tokenPrices = await cache.getAllTokenPrices(NetworkId.ethereum);
     const tokenPriceA = tokenPrices.get(tokenAAddress);
     const tokenPriceB = tokenPrices.get(tokenBAddress);
     const tokenPriceC = tokenPrices.get(tokenCAddress);

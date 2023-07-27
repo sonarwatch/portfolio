@@ -196,7 +196,7 @@ export class Cache {
     return itemsMap;
   }
 
-  async getTokenPrices(networkId: NetworkIdType) {
+  async getAllTokenPrices(networkId: NetworkIdType) {
     const addresses = await this.getTokenPriceAddresses(networkId);
     const tokenPrices: Map<string, TokenPrice> = new Map();
 
