@@ -5,11 +5,11 @@
 - Fix les packages utilisant @metaplex-fundation/js (build fail)
 - Déplacer les plateformes dans le package plugins
 - Rename address en id dans les tokens & ajouter la properties tokenContract
-- Rename cache.getTokenPrices en getAllTokenPrices et créer getTokenPrices
 - Ajout d'un module de decimals dans le cache
 
 # DONE
 
+- Rename cache.getTokenPrices en getAllTokenPrices et créer getTokenPrices
 - Fix le "-" dans le nom du fichier d'un fetcher lors de leur génération
 - cache getItems(string[])
 - "name" pour un compte de lending
