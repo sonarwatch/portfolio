@@ -3,12 +3,13 @@ import {
   NetworkIdType,
   RpcEndpoint,
 } from '@sonarwatch/portfolio-core';
-import { Chain, avalanche, mainnet } from 'viem/chains';
+import { Chain, avalanche, mainnet, polygon } from 'viem/chains';
 import urlToRpcEndpoint from './urlToRpcEndpoint';
 
 export const viemChainsByNetworkId: Record<EvmNetworkIdType, Chain> = {
   ethereum: mainnet,
   avalanche,
+  polygon,
 };
 
 export function getUrlEndpoints(): Record<NetworkIdType, string> {
@@ -24,6 +25,8 @@ export function getUrlEndpoints(): Record<NetworkIdType, string> {
     avalanche:
       process.env['PORTFOLIO_AVALANCHE_RPC'] ||
       'https://api.avax.network/ext/bc/C/rpc',
+    polygon:
+      process.env['PORTFOLIO_POLYGON_RPC'] || 'https://polygon.llamarpc.com',
     aptos:
       process.env['PORTFOLIO_APTOS_RPC'] ||
       'https://fullnode.mainnet.aptoslabs.com',

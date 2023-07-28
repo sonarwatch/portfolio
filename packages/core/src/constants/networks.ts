@@ -7,6 +7,8 @@ import {
   bitcoinNativeAddress,
   ethereumNativeAddress,
   ethereumNativeWrappedAddress,
+  polygonNativeAddress,
+  polygonNativeWrappedAddress,
   solanaNativeAddress,
   suiNativeAddress,
 } from './addresses';
@@ -70,6 +72,27 @@ export const avalancheNetwork: Network = {
   tokenListUrl:
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.avalanche.tokenlist.json',
 };
+export const polygonNetwork: Network = {
+  id: NetworkId.polygon,
+  name: 'Polygon',
+  image: 'https://beta.sonar.watch/img/networks/polygon.png',
+  addressSystem: AddressSystem.evm,
+  chainId: 137,
+  native: {
+    address: polygonNativeAddress,
+    decimals: 18,
+    coingeckoId: 'matic-network',
+  },
+  nativeWrapped: {
+    address: polygonNativeWrappedAddress,
+    decimals: 18,
+    coingeckoId: 'wmatic',
+  },
+  isLive: true,
+  coingeckoPlatformId: 'polygon-pos',
+  tokenListUrl:
+    'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.polygon.tokenlist.json',
+};
 export const solanaNetwork: Network = {
   id: NetworkId.solana,
   name: 'Solana',
@@ -125,6 +148,7 @@ export const suiNetwork: Network = {
 export const networks: Record<NetworkIdType, Network> = {
   [NetworkId.aptos]: aptosNetwork,
   [NetworkId.avalanche]: avalancheNetwork,
+  [NetworkId.polygon]: polygonNetwork,
   [NetworkId.bitcoin]: bitcoinNetwork,
   [NetworkId.ethereum]: ethereumNetwork,
   [NetworkId.solana]: solanaNetwork,

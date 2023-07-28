@@ -28,6 +28,10 @@ export const jobs: Job[] = [
     executor: jobExecutorGenerator(NetworkId.avalanche),
   },
   {
+    id: `${walletTokensPlatform.id}-${NetworkId.polygon}`,
+    executor: jobExecutorGenerator(NetworkId.polygon),
+  },
+  {
     id: `${walletTokensPlatform.id}-${NetworkId.sui}`,
     executor: jobExecutorGenerator(NetworkId.sui),
   },

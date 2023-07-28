@@ -5,6 +5,7 @@ export const NetworkId = {
   solana: 'solana',
   ethereum: 'ethereum',
   avalanche: 'avalanche',
+  polygon: 'polygon',
   aptos: 'aptos',
   sui: 'sui',
 } as const;
@@ -13,7 +14,8 @@ export type NetworkIdType = (typeof NetworkId)[keyof typeof NetworkId];
 export type MoveNetworkIdType = typeof NetworkId.aptos | typeof NetworkId.sui;
 export type EvmNetworkIdType =
   | typeof NetworkId.ethereum
-  | typeof NetworkId.avalanche;
+  | typeof NetworkId.avalanche
+  | typeof NetworkId.polygon;
 
 export type Network = {
   id: NetworkIdType;
