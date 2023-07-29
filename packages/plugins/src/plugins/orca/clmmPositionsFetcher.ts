@@ -14,13 +14,10 @@ import {
 } from '../../utils/solana';
 import { Cache } from '../../Cache';
 import { Whirlpool, positionStruct } from './structs/whirlpool';
-import {
-  getTokenAmountsFromLiquidity,
-  tickIndexToSqrtPriceX64,
-} from './helpers';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import runInBatch from '../../utils/misc/runInBatch';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
+import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -111,9 +108,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const { tokenAmountA, tokenAmountB } = getTokenAmountsFromLiquidity(
       positionInfo.liquidity.toNumber(),
-      tickIndexToSqrtPriceX64(whirlpoolInfo.tickCurrentIndex),
-      tickIndexToSqrtPriceX64(positionInfo.tickLowerIndex),
-      tickIndexToSqrtPriceX64(positionInfo.tickUpperIndex),
+      whirlpoolInfo.tickCurrentIndex,
+      positionInfo.tickLowerIndex,
+      positionInfo.tickUpperIndex,
       0
     );
 
