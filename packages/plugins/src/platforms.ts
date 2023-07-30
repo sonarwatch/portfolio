@@ -65,3 +65,13 @@ export const mangoPlatform: Platform = {
   name: 'Mango',
   image: 'https://beta.sonar.watch/img/platforms/mango.png',
 };
+export const cetusPlatform: Platform = {
+  id: 'cetus',
+  name: 'Cetus',
+  image: 'https://beta.sonar.watch/img/platforms/cetus.png',
+};
+export const turbosPlatform: Platform = {
+  id: 'turbos',
+  name: 'Turbos',
+  image: 'https://beta.sonar.watch/img/platforms/turbos.png',
+};
