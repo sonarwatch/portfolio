@@ -28,10 +28,7 @@ export type PoolFields = {
   }[];
   reward_last_updated_time_ms: string;
   sqrt_price: string;
-  tick_current_index: {
-    type: string;
-    fields: { bits: number };
-  };
+  tick_current_index: Bits;
   tick_map: {
     type: string;
     fields: {
@@ -44,14 +41,22 @@ export type PoolFields = {
 };
 export type Types = [string, string, string];
 
+export type Bits = {
+  type: string;
+  fields: { bits: number };
+};
+
 export type Pool = PoolFields & {
   objectId: string;
   type: string;
   types: Types;
 };
 
-export type NftField = {
+export type NFTFields = {
+  coin_type_a: CoinType;
+  coin_type_b: CoinType;
   description: string;
+  fee_type: CoinType;
   id: { id: string };
   img_url: string;
   name: string;
@@ -59,7 +64,14 @@ export type NftField = {
   position_id: string;
 };
 
-export type PositionField = {
+export type CoinType = {
+  type: string;
+  fields: {
+    name: string;
+  };
+};
+
+export type PositionFields = {
   fee_growth_inside_a: string;
   fee_growth_inside_b: string;
   id: { id: string };
@@ -71,38 +83,10 @@ export type PositionField = {
       reward_growth_inside: string;
     };
   }[];
-  tick_lower_index: {
-    type: string;
-    fields: { bits: number };
-  };
-  tick_upper_index: {
-    type: string;
-    fields: { bits: number };
-  };
+  tick_lower_index: Bits;
+  tick_upper_index: Bits;
   tokens_owed_a: string;
   tokens_owed_b: string;
-};
-
-export type PositionTickField = {
-  id: { id: string };
-  name: { type: string; fields: { bits: number } };
-  value: {
-    type: string;
-    fields: {
-      fee_growth_outside_a: string;
-      fee_growth_outside_b: string;
-      id: { id: string };
-      initialized: boolean;
-      liquidity_gross: string;
-      liquidity_net: {
-        fields: {
-          bits: string;
-        };
-        type: string;
-      };
-      reward_growths_outside: [string, string, string];
-    };
-  };
 };
 
 export type PositionTick = {

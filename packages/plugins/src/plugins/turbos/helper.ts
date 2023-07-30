@@ -4,7 +4,8 @@ import {
   getObjectId,
   getObjectType,
 } from '@mysten/sui.js';
-import { Pool, PoolFields, Types } from './types';
+import { Bits, Pool, PoolFields, Types } from './types';
+import { asIntN } from '../cetus/helpers';
 
 export function parsePoolType(type: string, length: 2): [string, string];
 export function parsePoolType(type: string, length: 3): Types;
@@ -28,4 +29,15 @@ export function parsePool(pool: SuiObjectResponse): Pool {
     type,
     types: parsePoolType(type, 3),
   };
+}
+
+export function formatForNative(coin: string): string {
+  return coin ===
+    '0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI'
+    ? '0x2::sui::SUI'
+    : coin;
+}
+
+export function bitsToNumber(bits: Bits) {
+  return asIntN(BigInt(bits.fields.bits));
 }
