@@ -5,7 +5,10 @@ import {
   jobs as tokensJobs,
   fetchers as tokensFetchers,
 } from './plugins/tokens';
-import { fetchers as nativeStakeFetchers } from './plugins/native-stake';
+import {
+  fetchers as nativeStakeFetchers,
+  jobs as nativeStakeJobs,
+} from './plugins/native-stake';
 import { fetchers as marinadeFetchers } from './plugins/marinade';
 import {
   jobs as marginfiJobs,
@@ -42,6 +45,7 @@ export const platforms = Object.values(platformsObj);
 
 export const jobs: Job[] = [
   ...tokensJobs,
+  ...nativeStakeJobs,
   ...thalaJobs,
   ...fooJobs,
   ...marginfiJobs,
