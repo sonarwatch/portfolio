@@ -21,3 +21,8 @@ export * from './mergePortfolioElementMultiples';
 export * from './sortPortfolioElement';
 export * from './sortPortfolioElements';
 export * from './uniTokenInfoToTokenInfo';
+export * from './getAddressFromAsset';
+export * from './getImageFromAsset';
+export * from './getImageFromAssets';
+export * from './getLabelFromAsset';
+export * from './getLabelFromAssets';
