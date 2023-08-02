@@ -14,7 +14,7 @@ export const fetchers: Fetcher[] = [
   ...evmNetworksIds
     .map((networkId) => [
       {
-        id: `${walletTokensPlatform.id}-${networkId}`,
+        id: `${walletTokensPlatform.id}-${networkId}-native`,
         networkId,
         executor: getEvmFetcherNativeExecutor(networkId),
       },
