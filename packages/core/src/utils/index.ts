@@ -1,3 +1,5 @@
+export * from './assertNetworkId';
+export * from './assertAddressSystem';
 export * from './networkIdIncluded';
 export * from './validAddress';
 export * from './validTokenAddress';
@@ -15,7 +17,6 @@ export * from './getAssetsFromElement';
 export * from './getAssetsFromElements';
 export * from './getUsdValueSum';
 export * from './getUsdValueSumStrict';
+export * from './mergePortfolioElementMultiples';
 export * from './sortPortfolioElement';
 export * from './sortPortfolioElements';
-export * from './assertNetworkId';
-export * from './assertAddressSystem';
