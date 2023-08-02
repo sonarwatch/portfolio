@@ -20,3 +20,4 @@ export * from './getUsdValueSumStrict';
 export * from './mergePortfolioElementMultiples';
 export * from './sortPortfolioElement';
 export * from './sortPortfolioElements';
+export * from './uniswapTokenInfoToTokenInfo';

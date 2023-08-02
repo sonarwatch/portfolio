@@ -1,6 +1,13 @@
 // Based on https://github.com/Uniswap/token-lists
 
-export type UniTokenInfoExtensionValue = string | number | boolean | null | undefined;
+import { NetworkIdType } from './Network';
+
+export type UniTokenInfoExtensionValue =
+  | string
+  | number
+  | boolean
+  | null
+  | undefined;
 
 export interface UniTokenInfo {
   readonly chainId: number;
@@ -25,3 +32,7 @@ export type UniTokenList = {
     patch: number;
   };
 };
+
+export interface TokenInfo extends UniTokenInfo {
+  readonly networkId: NetworkIdType;
+}
