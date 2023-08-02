@@ -1,3 +1,4 @@
+import { Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from './Fetcher';
 import { Job } from './Job';
 import * as platformsObj from './platforms';
@@ -37,7 +38,7 @@ export * from './Fetcher';
 export * from './Job';
 
 export * from './platforms';
-export const platforms = Object.values(platformsObj);
+export const platforms: Platform[] = Object.values(platformsObj);
 
 export const jobs: Job[] = [
   ...tokensJobs,
