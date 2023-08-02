@@ -14,7 +14,6 @@ import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { walletTokensPlatform } from '../../../platforms';
 import { getClientSolana } from '../../../utils/clients';
 import { getTokenAccountsByOwner } from '../../../utils/solana';
-import runInBatch from '../../../utils/misc/runInBatch';
 import tokenPriceToAssetTokens from '../../../utils/misc/tokenPriceToAssetTokens';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 
