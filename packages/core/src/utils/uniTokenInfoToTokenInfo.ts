@@ -2,7 +2,7 @@ import { NetworkIdType } from '../Network';
 import { TokenInfo, UniTokenInfo } from '../TokenList';
 import { formatTokenAddress } from './formatTokenAddress';
 
-export function uniswapTokenInfoToTokenInfo(
+export function uniTokenInfoToTokenInfo(
   uTokenInfo: UniTokenInfo,
   networkId: NetworkIdType
 ): TokenInfo {
@@ -10,7 +10,6 @@ export function uniswapTokenInfoToTokenInfo(
     networkId,
     address: formatTokenAddress(uTokenInfo.address, networkId),
     decimals: uTokenInfo.decimals,
-    chainId: uTokenInfo.chainId,
     name: uTokenInfo.name,
     symbol: uTokenInfo.symbol,
     extensions: uTokenInfo.extensions,

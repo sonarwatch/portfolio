@@ -33,6 +33,6 @@ export type UniTokenList = {
   };
 };
 
-export interface TokenInfo extends UniTokenInfo {
+export interface TokenInfo extends Omit<UniTokenInfo, 'chainId'> {
   readonly networkId: NetworkIdType;
 }
