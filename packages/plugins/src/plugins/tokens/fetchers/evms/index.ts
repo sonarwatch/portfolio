@@ -9,15 +9,23 @@ const evmNetworksIds: EvmNetworkIdType[] = [
   NetworkId.avalanche,
   NetworkId.polygon,
 ];
+const evmNativeNetworksIds: EvmNetworkIdType[] = [
+  NetworkId.ethereum,
+  NetworkId.avalanche,
+];
 
 export const fetchers: Fetcher[] = [
-  ...evmNetworksIds
+  ...evmNativeNetworksIds
     .map((networkId) => [
       {
         id: `${walletTokensPlatform.id}-${networkId}-native`,
         networkId,
         executor: getEvmFetcherNativeExecutor(networkId),
       },
+    ])
+    .flat(),
+  ...evmNetworksIds
+    .map((networkId) => [
       {
         id: `${walletTokensPlatform.id}-${networkId}-top`,
         networkId,
