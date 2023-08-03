@@ -19,7 +19,12 @@ export const fetchers: Fetcher[] = [
         executor: getEvmFetcherNativeExecutor(networkId),
       },
       {
-        id: `${walletTokensPlatform.id}-${networkId}`,
+        id: `${walletTokensPlatform.id}-${networkId}-top`,
+        networkId,
+        executor: getEvmFetcherExecutor(networkId, true),
+      },
+      {
+        id: `${walletTokensPlatform.id}-${networkId}-bottom`,
         networkId,
         executor: getEvmFetcherExecutor(networkId, false),
       },

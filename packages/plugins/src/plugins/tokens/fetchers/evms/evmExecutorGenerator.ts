@@ -12,45 +12,49 @@ import { Cache } from '../../../../Cache';
 import { FetcherExecutor } from '../../../../Fetcher';
 import { walletTokensPlatform } from '../../../../platforms';
 import { getEvmClient } from '../../../../utils/clients';
-import runInBatch from '../../../../utils/misc/runInBatch';
 import { erc20ABI } from '../../../../utils/evm/erc20Abi';
 import tokenPriceToAssetToken from '../../../../utils/misc/tokenPriceToAssetToken';
 import { TokenList } from '../../types';
 import { tokenListsPrefix } from '../../constants';
+import { topTokensPrefix } from '../../../top-tokens/constants';
 
+const maxTopTokens = 50;
 export default function getEvmFetcherExecutor(
   networkId: EvmNetworkIdType,
   topTokens: boolean
 ): FetcherExecutor {
   return async (owner: string, cache: Cache) => {
-    if (topTokens) return [];
+    if (!topTokens) return [];
 
-    const client = getEvmClient(networkId);
+    // tokenListAddresses
     const tokenList = await cache.getItem<TokenList>(networkId, {
       prefix: tokenListsPrefix,
     });
     if (!tokenList || tokenList.tokens.length === 0) return [];
+    const tokenListAddresses = tokenList.tokens.map((token) => token.address);
 
-    const tokensAddresses = tokenList.tokens.map((token) => token.address);
+    // topAddresses
+    const topAddresses: string[] | undefined = (
+      await cache.getItem<string[]>(networkId, {
+        prefix: topTokensPrefix,
+      })
+    )?.slice(0, maxTopTokens);
+    if (!topAddresses) return [];
 
-    const results = await runInBatch(
-      tokensAddresses.map(
-        (contract) => () => cache.getTokenPrice(contract, networkId)
-      )
+    // addresses = tokenListAddresses ∩ topAddresses
+    const addresses = tokenListAddresses.filter((x) =>
+      topAddresses.includes(x)
     );
-    const tokenPrices: TokenPrice[] = [];
-    results.forEach((r) => {
-      if (r.status === 'rejected') return;
-      if (!r.value) return;
-      tokenPrices.push(r.value);
-    });
+    const tPricesRes = await cache.getTokenPrices(addresses, networkId);
+    const tokenPrices: TokenPrice[] = tPricesRes.filter(
+      (tp) => tp !== undefined
+    ) as TokenPrice[];
 
     const commonProps = {
       abi: erc20ABI,
       functionName: 'balanceOf',
       args: [getAddress(owner)],
     } as const;
-
     const contracts = tokenPrices.map(
       (tp) =>
         ({
@@ -58,6 +62,7 @@ export default function getEvmFetcherExecutor(
           ...commonProps,
         } as const)
     );
+    const client = getEvmClient(networkId);
     const contractsRes = await client.multicall({ contracts });
 
     const walletTokensAssets: PortfolioAssetToken[] = [];
