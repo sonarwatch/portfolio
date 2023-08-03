@@ -1,6 +1,6 @@
 import {
   EvmNetworkIdType,
-  PortfolioElementSingle,
+  PortfolioElementMultiple,
   PortfolioElementType,
   networks,
 } from '@sonarwatch/portfolio-core';
@@ -22,25 +22,25 @@ export default function getEvmFetcherNativeExecutor(
     if (!tokenPrice) return [];
 
     const balance = await client.getBalance({ address: getAddress(owner) });
-    if (!balance) return [];
-
     const amount = new BigNumber(balance.toString())
       .div(10 ** tokenPrice.decimals)
       .toNumber();
+    if (amount === 0) return [];
+
     const asset = tokenPriceToAssetToken(
       address,
       amount,
       networkId,
       tokenPrice
     );
-    const element: PortfolioElementSingle = {
-      type: PortfolioElementType.single,
+    const element: PortfolioElementMultiple = {
+      type: PortfolioElementType.multiple,
       networkId,
       platformId: walletTokensPlatform.id,
       label: 'Wallet',
       value: asset.value,
       data: {
-        asset,
+        assets: [asset],
       },
     };
     return [element];
