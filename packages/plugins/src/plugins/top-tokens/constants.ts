@@ -1,2 +1,2 @@
-export const coingeckoMarketsUrl =
-  'https://api.coingecko.com/api/v3/coins/markets';
+export const topTokensPrefix = 'top-tokens';
+export const topAddressesMaxSize = 300;
