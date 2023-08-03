@@ -28,7 +28,6 @@ import {
 } from './plugins/turbos';
 import { jobs as thalaJobs, fetchers as thalaFetchers } from './plugins/thala';
 import { fetchers as tensorFetchers } from './plugins/tensor';
-import { jobs as fooJobs, fetchers as fooFetchers } from './plugins/foo';
 import { jobs as driftJobs, fetchers as driftFetchers } from './plugins/drift';
 import { jobs as mangoJobs, fetchers as mangoFetchers } from './plugins/mango';
 import { jobs as topTokensJobs } from './plugins/top-tokens';
@@ -44,7 +43,6 @@ export const platforms: Platform[] = Object.values(platformsObj);
 export const jobs: Job[] = [
   ...tokensJobs,
   ...thalaJobs,
-  ...fooJobs,
   ...marginfiJobs,
   ...raydiumJobs,
   ...solendJobs,
@@ -59,7 +57,6 @@ export const jobs: Job[] = [
 
 export const fetchers: Fetcher[] = [
   ...tokensFetchers,
-  ...fooFetchers,
   ...tensorFetchers,
   ...marginfiFetchers,
   ...marinadeFetchers,
