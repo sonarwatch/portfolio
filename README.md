@@ -39,6 +39,8 @@ Some examples of <b>Fetchers</b> :
 
 You can create as many <b>Fetchers</b> as needed by plugins, each <b>Fetcher</b> being entitled to a Networkd (Solana, Sui, Aptos etc..).
 
+You always need to provide a <b>user address</b> to run a fetcher.
+
 # How to start ?
 
 ## Setup your environnement
@@ -84,13 +86,27 @@ You're now ready to try your `Fetcher` or `Job` by running the following command
 - Job :
 
 ```bash
-npx nx run plugins:run-job marinade
+npx nx run plugins:run-job jobId
+```
+
+Example :
+
+```bash
+# Run the job mango-banks
+npx nx run plugins:run-job mango-banks
 ```
 
 - Fetcher (remember to provide an address):
 
 ```bash
-npx nx run plugins:run-fetcher marinade DemoSX9F2zXfQLtBr56Yr5he15P7viZWsYJpSDAX3tKG
+npx nx run plugins:run-fetcher fetcherId userAddress
+```
+
+Example :
+
+```bash
+# Run the fetcher mango-collateral on the address Demo...tKG
+npx nx run plugins:run-fetcher mango-collateral DemoSX9F2zXfQLtBr56Yr5he15P7viZWsYJpSDAX3tKG
 ```
 
 # Useful commands
@@ -116,10 +132,12 @@ npx nx generate @sonarwatch/portfolio-plugins:fetcher --fetcherName=test --plugi
 npx nx run plugins:serve-cache
 
 # Run a job
-npx nx run plugins:run-job marinade
+npx nx run plugins:run-job mango-banks
+npx nx run plugins:run-job wallet-tokens-aptos
 
 # Run a fetcher
-npx nx run plugins:run-fetcher marinade DemoSX9F2zXfQLtBr56Yr5he15P7viZWsYJpSDAX3tKG
+npx nx run plugins:run-fetcher mango-collateral DemoSX9F2zXfQLtBr56Yr5he15P7viZWsYJpSDAX3tKG
+npx nx run plugins:run-fetcher marinade-tickets DemoSX9F2zXfQLtBr56Yr5he15P7viZWsYJpSDAX3tKG
 npx nx run plugins:run-fetcher wallet-tokens-aptos \"0xaa3fca2b46efb0c9b63e9c92ee31a28b9f22ca52a36967151416706f2ca138c6\"
 ```
 
