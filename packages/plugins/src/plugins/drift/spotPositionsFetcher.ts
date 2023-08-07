@@ -159,6 +159,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         ]);
       }
     }
+    if (suppliedAssets.length === 0 && borrowedAssets.length === 0) continue;
 
     const { borrowedValue, collateralRatio, suppliedValue, value } =
       getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
@@ -182,6 +183,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       name: decodeName(userAccount.name),
     });
   }
+
   return elements;
 };
 
