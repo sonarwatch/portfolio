@@ -40,7 +40,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   for (let i = 0; i < programAccounts.length; i += 1) {
     const stakeAccount = programAccounts[i];
-    const amount = new BigNumber(stakeAccount.account.lamports)
+    const amount = new BigNumber(stakeAccount.stake)
       .dividedBy(new BigNumber(10 ** 9))
       .toNumber();
     const value = amount * solTokenPrice.price;
