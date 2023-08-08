@@ -37,6 +37,7 @@ import { jobs as driftJobs, fetchers as driftFetchers } from './plugins/drift';
 import { jobs as mangoJobs, fetchers as mangoFetchers } from './plugins/mango';
 import { jobs as topTokensJobs } from './plugins/top-tokens';
 import { jobs as pancakeswapJobs } from './plugins/pancakeswap';
+import { jobs as liquidswapJobs } from './plugins/liquidswap';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
 export * from './Cache';
@@ -61,6 +62,7 @@ export const jobs: Job[] = [
   ...turbosJobs,
   ...topTokensJobs,
   ...pancakeswapJobs,
+  ...liquidswapJobs,
 ];
 
 export const fetchers: Fetcher[] = [
