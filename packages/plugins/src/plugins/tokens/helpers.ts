@@ -4,10 +4,11 @@ import {
   TokenPriceSource,
   UniTokenList,
 } from '@sonarwatch/portfolio-core';
-import { nIdsToFetch, coingeckoCoinsPriceUrl, platformId } from './constants';
+import { nIdsToFetch, platformId } from './constants';
 import { CoingeckoSimpleRes, TokenData } from './types';
 import shuffleArray from '../../utils/misc/shuffleArray';
 import sleep from '../../utils/misc/sleep';
+import { coingeckoCoinsPriceUrl } from '../../utils/coingecko/constants';
 
 export async function getCoingeckoSources(
   networkId: NetworkIdType,

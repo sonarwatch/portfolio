@@ -16,7 +16,7 @@ import {
 export const bitcoinNetwork: Network = {
   id: NetworkId.bitcoin,
   name: 'Bitcoin',
-  image: 'https://beta.sonar.watch/img/networks/bitcoin.png',
+  image: 'https://alpha.sonar.watch/img/networks/bitcoin.png',
   addressSystem: AddressSystem.bitcoin,
   chainId: 1,
   native: {
@@ -33,7 +33,7 @@ export const bitcoinNetwork: Network = {
 export const ethereumNetwork: Network = {
   id: NetworkId.ethereum,
   name: 'Ethereum',
-  image: 'https://beta.sonar.watch/img/networks/ethereum.png',
+  image: 'https://alpha.sonar.watch/img/networks/ethereum.png',
   addressSystem: AddressSystem.evm,
   chainId: 1,
   native: {
@@ -54,7 +54,7 @@ export const ethereumNetwork: Network = {
 export const avalancheNetwork: Network = {
   id: NetworkId.avalanche,
   name: 'Avalanche',
-  image: 'https://beta.sonar.watch/img/networks/avalanche.png',
+  image: 'https://alpha.sonar.watch/img/networks/avalanche.png',
   addressSystem: AddressSystem.evm,
   chainId: 43114,
   native: {
@@ -75,7 +75,7 @@ export const avalancheNetwork: Network = {
 export const polygonNetwork: Network = {
   id: NetworkId.polygon,
   name: 'Polygon',
-  image: 'https://beta.sonar.watch/img/networks/polygon.png',
+  image: 'https://alpha.sonar.watch/img/networks/polygon.png',
   addressSystem: AddressSystem.evm,
   chainId: 137,
   native: {
@@ -96,7 +96,7 @@ export const polygonNetwork: Network = {
 export const solanaNetwork: Network = {
   id: NetworkId.solana,
   name: 'Solana',
-  image: 'https://beta.sonar.watch/img/networks/solana.png',
+  image: 'https://alpha.sonar.watch/img/networks/solana.png',
   addressSystem: AddressSystem.solana,
   chainId: 101,
   native: {
@@ -113,7 +113,7 @@ export const solanaNetwork: Network = {
 export const aptosNetwork: Network = {
   id: NetworkId.aptos,
   name: 'Aptos',
-  image: 'https://beta.sonar.watch/img/networks/aptos.png',
+  image: 'https://alpha.sonar.watch/img/networks/aptos.png',
   addressSystem: AddressSystem.move,
   chainId: 1,
   native: {
@@ -130,7 +130,7 @@ export const aptosNetwork: Network = {
 export const suiNetwork: Network = {
   id: NetworkId.sui,
   name: 'Sui',
-  image: 'https://beta.sonar.watch/img/networks/sui.png',
+  image: 'https://alpha.sonar.watch/img/networks/sui.png',
   addressSystem: AddressSystem.move,
   chainId: 1,
   native: {

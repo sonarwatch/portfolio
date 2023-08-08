@@ -1,77 +1,77 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 
-export const marinadePlatform: Platform = {
-  id: 'marinade',
-  name: 'Marinade',
-  image: 'https://beta.sonar.watch/img/platforms/marinade.png',
-};
-export const aavePlatform: Platform = {
-  id: 'aave',
-  name: 'AAVE',
-  image: 'https://beta.sonar.watch/img/platforms/aave.png',
+export const walletTokensPlatform: Platform = {
+  id: 'wallet-tokens',
+  name: 'Tokens',
+  image: 'https://alpha.sonar.watch/img/platforms/wallet-tokens.png',
 };
 export const walletNftsPlatform: Platform = {
   id: 'wallet-nfts',
   name: 'NFTs',
-  image: 'https://beta.sonar.watch/img/platforms/wallet-nfts.png',
+  image: 'https://alpha.sonar.watch/img/platforms/wallet-nfts.png',
 };
-export const walletTokensPlatform: Platform = {
-  id: 'wallet-tokens',
-  name: 'Tokens',
-  image: 'https://beta.sonar.watch/img/platforms/wallet-tokens.png',
+export const marinadePlatform: Platform = {
+  id: 'marinade',
+  name: 'Marinade',
+  image: 'https://alpha.sonar.watch/img/platforms/marinade.png',
+};
+export const aavePlatform: Platform = {
+  id: 'aave',
+  name: 'AAVE',
+  image: 'https://alpha.sonar.watch/img/platforms/aave.png',
 };
 export const marginfiPlatform: Platform = {
   id: 'marginfi',
   name: 'Marginfi',
-  image: 'https://beta.sonar.watch/img/platforms/marginfi.png',
+  image: 'https://alpha.sonar.watch/img/platforms/marginfi.png',
 };
 export const tensorPlatform: Platform = {
   id: 'tensor',
   name: 'Tensor',
-  image: 'https://beta.sonar.watch/img/platforms/tensor.png',
+  image: 'https://alpha.sonar.watch/img/platforms/tensor.png',
 };
 export const thalaPlatform: Platform = {
   id: 'thala',
   name: 'Thala',
-  image: 'https://beta.sonar.watch/img/platforms/thala.png',
+  image: 'https://alpha.sonar.watch/img/platforms/thala.png',
 };
 export const raydiumPlatform: Platform = {
   id: 'raydium',
   name: 'Raydium',
-  image: 'https://beta.sonar.watch/img/platforms/raydium.png',
+  image: 'https://alpha.sonar.watch/img/platforms/raydium.png',
 };
 export const solendPlatform: Platform = {
   id: 'solend',
   name: 'Solend',
-  image: 'https://beta.sonar.watch/img/platforms/solend.png',
+  image: 'https://alpha.sonar.watch/img/platforms/solend.png',
 };
 export const orcaPlatform: Platform = {
   id: 'orca',
   name: 'Orca',
-  image: 'https://beta.sonar.watch/img/platforms/orca.png',
+  image: 'https://alpha.sonar.watch/img/platforms/orca.png',
 };
 export const meteoraPlatform: Platform = {
   id: 'meteora',
   name: 'Meteora',
-  image: 'https://beta.sonar.watch/img/platforms/meteora.png',
+  image: 'https://alpha.sonar.watch/img/platforms/meteora.png',
 };
 export const driftPlatform: Platform = {
   id: 'drift',
   name: 'Drift',
-  image: 'https://beta.sonar.watch/img/platforms/drift.png',
+  image: 'https://alpha.sonar.watch/img/platforms/drift.png',
 };
 export const mangoPlatform: Platform = {
   id: 'mango',
   name: 'Mango',
-  image: 'https://beta.sonar.watch/img/platforms/mango.png',
+  image: 'https://alpha.sonar.watch/img/platforms/mango.png',
 };
 export const cetusPlatform: Platform = {
   id: 'cetus',
   name: 'Cetus',
-  image: 'https://beta.sonar.watch/img/platforms/cetus.png',
+  image: 'https://alpha.sonar.watch/img/platforms/cetus.png',
 };
 export const turbosPlatform: Platform = {
   id: 'turbos',
   name: 'Turbos',
-  image: 'https://beta.sonar.watch/img/platforms/turbos.png',
+  image: 'https://alpha.sonar.watch/img/platforms/turbos.png',
 };

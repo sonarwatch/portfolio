@@ -14,7 +14,6 @@ import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { walletTokensPlatform } from '../../../platforms';
 import { getClientSolana } from '../../../utils/clients';
 import { getTokenAccountsByOwner } from '../../../utils/solana';
-import runInBatch from '../../../utils/misc/runInBatch';
 import tokenPriceToAssetTokens from '../../../utils/misc/tokenPriceToAssetTokens';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 
@@ -25,14 +24,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const tokenAccounts = await getTokenAccountsByOwner(client, ownerPubKey);
   const mints = [...new Set(tokenAccounts.map((ta) => ta.mint.toString()))];
 
-  const results = await runInBatch(
-    mints.map((mint) => () => cache.getTokenPrice(mint, NetworkId.solana))
-  );
+  const tokenPricesArray = await cache.getTokenPrices(mints, NetworkId.solana);
   const tokenPrices: Map<string, TokenPrice> = new Map();
-  results.forEach((r) => {
-    if (r.status === 'rejected') return;
-    if (!r.value) return;
-    tokenPrices.set(r.value.address, r.value);
+  tokenPricesArray.forEach((tokenPrice) => {
+    if (!tokenPrice) return;
+    tokenPrices.set(tokenPrice.address, tokenPrice);
   });
 
   const walletTokensAssets: PortfolioAssetToken[] = [];

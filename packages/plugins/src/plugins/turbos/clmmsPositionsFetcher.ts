@@ -50,6 +50,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       nftPositionFields
     );
   }
+  if (clmmPositionsIds.length === 0) return [];
 
   const pools = await cache.getItems<Pool>(clmmPoolsIds, {
     prefix: clmmPoolsPrefix,
@@ -130,6 +131,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     });
     totalLiquidityValue += value;
   }
+  if (assets.length === 0) return [];
 
   return [
     {

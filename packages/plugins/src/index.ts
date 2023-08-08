@@ -1,3 +1,4 @@
+import { Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from './Fetcher';
 import { Job } from './Job';
 import * as platformsObj from './platforms';
@@ -31,9 +32,9 @@ import {
 } from './plugins/turbos';
 import { jobs as thalaJobs, fetchers as thalaFetchers } from './plugins/thala';
 import { fetchers as tensorFetchers } from './plugins/tensor';
-import { jobs as fooJobs, fetchers as fooFetchers } from './plugins/foo';
 import { jobs as driftJobs, fetchers as driftFetchers } from './plugins/drift';
 import { jobs as mangoJobs, fetchers as mangoFetchers } from './plugins/mango';
+import { jobs as topTokensJobs } from './plugins/top-tokens';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
 export * from './Cache';
@@ -41,13 +42,12 @@ export * from './Fetcher';
 export * from './Job';
 
 export * from './platforms';
-export const platforms = Object.values(platformsObj);
+export const platforms: Platform[] = Object.values(platformsObj);
 
 export const jobs: Job[] = [
   ...tokensJobs,
   ...nativeStakeJobs,
   ...thalaJobs,
-  ...fooJobs,
   ...marginfiJobs,
   ...raydiumJobs,
   ...solendJobs,
@@ -57,12 +57,12 @@ export const jobs: Job[] = [
   ...mangoJobs,
   ...cetusJobs,
   ...turbosJobs,
+  ...topTokensJobs,
 ];
 
 export const fetchers: Fetcher[] = [
   ...tokensFetchers,
   ...nativeStakeFetchers,
-  ...fooFetchers,
   ...tensorFetchers,
   ...marginfiFetchers,
   ...marinadeFetchers,

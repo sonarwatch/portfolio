@@ -2,6 +2,58 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.5.21](https://github.com/sonarwatch/portfolio/compare/plugins-0.5.20...plugins-0.5.21) (2023-08-07)
+
+
+
+## [0.5.20](https://github.com/sonarwatch/portfolio/compare/plugins-0.5.19...plugins-0.5.20) (2023-08-03)
+
+
+
+## [0.5.19](https://github.com/sonarwatch/portfolio/compare/plugins-0.5.18...plugins-0.5.19) (2023-08-03)
+
+
+
+## [0.5.18](https://github.com/sonarwatch/portfolio/compare/plugins-0.5.17...plugins-0.5.18) (2023-08-03)
+
+
+
+## [0.5.17](https://github.com/sonarwatch/portfolio/compare/plugins-0.5.16...plugins-0.5.17) (2023-08-03)
+
+
+
+## [0.5.16](https://github.com/sonarwatch/portfolio/compare/plugins-0.5.15...plugins-0.5.16) (2023-08-02)
+
+
+
+## [0.5.15](https://github.com/sonarwatch/portfolio/compare/plugins-0.5.14...plugins-0.5.15) (2023-08-02)
+
+
+
+## [0.5.14](https://github.com/sonarwatch/portfolio/compare/plugins-0.5.13...plugins-0.5.14) (2023-08-02)
+
+
+
+## [0.5.13](https://github.com/sonarwatch/portfolio/compare/plugins-0.5.12...plugins-0.5.13) (2023-08-02)
+
+
+
+## [0.5.12](https://github.com/sonarwatch/portfolio/compare/plugins-0.5.11...plugins-0.5.12) (2023-08-02)
+
+
+
+## [0.5.11](https://github.com/sonarwatch/portfolio/compare/plugins-0.5.10...plugins-0.5.11) (2023-08-02)
+
+
+
+## [0.5.10](https://github.com/sonarwatch/portfolio/compare/plugins-0.5.9...plugins-0.5.10) (2023-08-02)
+
+
+
+## [0.5.9](https://github.com/sonarwatch/portfolio/compare/plugins-0.5.8...plugins-0.5.9) (2023-07-31)
+
+
+
 ## [0.5.8](https://github.com/sonarwatch/portfolio/compare/plugins-0.5.7...plugins-0.5.8) (2023-07-27)
 
 

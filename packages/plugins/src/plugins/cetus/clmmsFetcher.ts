@@ -55,6 +55,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       poolsById.set(pool.poolAddress, pool);
     }
   });
+  if (poolsById.size === 0) return [];
 
   const assets: PortfolioLiquidity[] = [];
   let totalLiquidityValue = 0;
@@ -112,6 +113,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     });
     totalLiquidityValue += value;
   }
+  if (assets.length === 0) return [];
 
   return [
     {
