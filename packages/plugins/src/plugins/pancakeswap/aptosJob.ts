@@ -78,8 +78,10 @@ const executor: JobExecutor = async (cache: Cache) => {
     let priceY: number;
     let reserveAmountX: BigNumber;
     let reserveAmountY: BigNumber;
+
     if (!tokenPriceX || !tokenPriceY) {
       let unknownTokenDecimals: number[];
+
       if (!tokenPriceX && tokenPriceY) {
         unknownTokenDecimals = (await client.view({
           function: '0x1::coin::decimals',
@@ -87,16 +89,18 @@ const executor: JobExecutor = async (cache: Cache) => {
           arguments: [],
         })) as number[];
         if (unknownTokenDecimals.length !== 1) continue;
+
         [decimalsX] = unknownTokenDecimals;
         decimalsY = tokenPriceY.decimals;
 
         reserveAmountX = new BigNumber(tokenPairData.balance_x.value).div(
           10 ** decimalsX
         );
-        reserveAmountY = new BigNumber(tokenPairData.balance_x.value).div(
+        reserveAmountY = new BigNumber(tokenPairData.balance_y.value).div(
           10 ** decimalsY
         );
         priceY = tokenPriceY.price;
+
         priceX = reserveAmountY
           .multipliedBy(priceY)
           .dividedBy(reserveAmountX)
@@ -118,12 +122,13 @@ const executor: JobExecutor = async (cache: Cache) => {
           arguments: [],
         })) as number[];
         if (unknownTokenDecimals.length !== 1) continue;
+
         decimalsX = tokenPriceX.decimals;
         [decimalsY] = unknownTokenDecimals;
         reserveAmountX = new BigNumber(tokenPairData.balance_x.value).div(
           10 ** decimalsX
         );
-        reserveAmountY = new BigNumber(tokenPairData.balance_x.value).div(
+        reserveAmountY = new BigNumber(tokenPairData.balance_y.value).div(
           10 ** decimalsY
         );
         priceX = tokenPriceX.price;
@@ -152,7 +157,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       reserveAmountX = new BigNumber(tokenPairData.balance_x.value).div(
         10 ** decimalsX
       );
-      reserveAmountY = new BigNumber(tokenPairData.balance_x.value).div(
+      reserveAmountY = new BigNumber(tokenPairData.balance_y.value).div(
         10 ** decimalsY
       );
     }
