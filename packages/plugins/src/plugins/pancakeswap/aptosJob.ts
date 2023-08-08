@@ -16,6 +16,7 @@ import {
   getAccountResources,
   getNestedType,
 } from '../../utils/aptos';
+import getSourceWeight from '../../utils/misc/getSourceWeight';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientAptos();
@@ -100,14 +101,19 @@ const executor: JobExecutor = async (cache: Cache) => {
           10 ** decimalsY
         );
         priceY = tokenPriceY.price;
-
+        if (
+          reserveAmountY.multipliedBy(priceY).multipliedBy(2).isLessThan(10000)
+        )
+          continue;
         priceX = reserveAmountY
           .multipliedBy(priceY)
           .dividedBy(reserveAmountX)
           .toNumber();
         await cache.setTokenPriceSource({
-          id: platformId,
-          weight: 1,
+          id: `${platformId}-${tokenPairId}`,
+          weight: getSourceWeight(
+            reserveAmountY.multipliedBy(priceY).multipliedBy(2)
+          ),
           address: typeX,
           networkId: NetworkId.aptos,
           platformId,
@@ -132,13 +138,19 @@ const executor: JobExecutor = async (cache: Cache) => {
           10 ** decimalsY
         );
         priceX = tokenPriceX.price;
+        if (
+          reserveAmountX.multipliedBy(priceX).multipliedBy(2).isLessThan(10000)
+        )
+          continue;
         priceY = reserveAmountX
           .multipliedBy(priceX)
           .dividedBy(reserveAmountY)
           .toNumber();
         await cache.setTokenPriceSource({
-          id: platformId,
-          weight: 1,
+          id: `${platformId}-${tokenPairId}`,
+          weight: getSourceWeight(
+            reserveAmountX.multipliedBy(priceX).multipliedBy(2)
+          ),
           address: typeY,
           networkId: NetworkId.aptos,
           platformId,
