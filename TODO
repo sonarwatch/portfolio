@@ -1,5 +1,6 @@
 # TODO
 
+- Fix le problème d'import Job et Fetcher lors de la génération d'un plugin
 - Opti orca-clmm-positions
 - Opti raydium-clmm-positions
 - Fix les packages utilisant @metaplex-fundation/js (build fail)
