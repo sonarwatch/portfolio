@@ -75,3 +75,8 @@ export const turbosPlatform: Platform = {
   name: 'Turbos',
   image: 'https://alpha.sonar.watch/img/platforms/turbos.png',
 };
+export const meeiroPlatform: Platform = {
+  id: 'meeiro',
+  name: 'Meeiro',
+  image: 'https://alpha.sonar.watch/img/platforms/meeiro.png',
+};
