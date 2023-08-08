@@ -7,6 +7,7 @@
 - Déplacer les plateformes dans le package plugins
 - Rename address en id dans les tokens & ajouter la properties tokenContract
 - Ajout d'un module de decimals dans le cache
+- Ajout de la fonction cache.setTokensPricesSource(), utile pour des AMM
 
 # DONE
 
