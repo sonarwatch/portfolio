@@ -7,5 +7,3 @@ export const programAddress =
 
 export const lpTypePrefix = `${programAddress}::swap::LPToken<`;
 export const lpCoinInfoTypePrefix = `${coinInfo}<${lpTypePrefix}`;
-
-export const coinDecimalsFunction = '0x1::coin::decimals';

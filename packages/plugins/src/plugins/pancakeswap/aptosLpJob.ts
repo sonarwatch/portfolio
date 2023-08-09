@@ -2,17 +2,13 @@ import BigNumber from 'bignumber.js';
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import {
-  coinDecimalsFunction,
-  lpCoinInfoTypePrefix,
-  platformId,
-  programAddress,
-} from './constants';
+import { lpCoinInfoTypePrefix, platformId, programAddress } from './constants';
 import { PancakeSwapTokenPairMetadataData as TokenPairMetadataData } from './types';
 import { getClientAptos } from '../../utils/clients';
 import {
   CoinInfoData,
   MoveResource,
+  coinDecimals,
   getAccountResources,
   getNestedType,
 } from '../../utils/aptos';
@@ -36,6 +32,12 @@ const executor: JobExecutor = async (cache: Cache) => {
     const lpInfoData = resource.data as CoinInfoData;
     const lpSupplyString = lpInfoData.supply?.vec[0]?.integer.vec[0]?.value;
     if (!lpSupplyString) continue;
+
+    const lpDecimals = lpInfoData.decimals;
+    const lpSupply = new BigNumber(lpSupplyString)
+      .div(10 ** lpDecimals)
+      .toNumber();
+    if (lpSupply === 0) continue;
 
     const tokenPairId = getNestedType(lpType);
 
@@ -67,11 +69,11 @@ const executor: JobExecutor = async (cache: Cache) => {
     if (!tokenPriceX && !tokenPriceY) continue;
 
     const tokenPairData = tokenPairResource.data;
-    const lpDecimals = lpInfoData.decimals;
-    const lpSupply = new BigNumber(lpSupplyString)
-      .div(10 ** lpDecimals)
-      .toNumber();
-    if (lpSupply === 0) continue;
+    if (
+      tokenPairData.balance_x.value === '0' &&
+      tokenPairData.balance_y.value === '0'
+    )
+      continue;
 
     let decimalsX: number;
     let decimalsY: number;
@@ -85,7 +87,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
       if (!tokenPriceX && tokenPriceY) {
         unknownTokenDecimals = (await client.view({
-          function: '0x1::coin::decimals',
+          function: coinDecimals,
           type_arguments: [typeX],
           arguments: [],
         })) as number[];
@@ -123,7 +125,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         });
       } else if (!tokenPriceY && tokenPriceX) {
         unknownTokenDecimals = (await client.view({
-          function: coinDecimalsFunction,
+          function: coinDecimals,
           type_arguments: [typeY],
           arguments: [],
         })) as number[];
@@ -212,7 +214,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 };
 
 const job: Job = {
-  id: `${platformId}-aptos`,
+  id: `${platformId}-aptos-lp`,
   executor,
 };
 export default job;
