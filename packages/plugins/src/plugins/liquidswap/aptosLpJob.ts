@@ -14,6 +14,7 @@ import {
 import { getClientAptos } from '../../utils/clients';
 import { lpCoinInfoTypePrefix, platformId, programAddress } from './constants';
 import getSourceWeight from '../../utils/misc/getSourceWeight';
+import { walletTokensPlatform } from '../../platforms';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientAptos();
@@ -121,7 +122,7 @@ const executor: JobExecutor = async (cache: Cache) => {
           ),
           address: typeX,
           networkId: NetworkId.aptos,
-          platformId,
+          platformId: walletTokensPlatform.id,
           decimals: decimalsX,
           price: priceX,
           timestamp: Date.now(),
@@ -158,7 +159,7 @@ const executor: JobExecutor = async (cache: Cache) => {
           ),
           address: typeY,
           networkId: NetworkId.aptos,
-          platformId,
+          platformId: walletTokensPlatform.id,
           decimals: decimalsY,
           price: priceY,
           timestamp: Date.now(),
