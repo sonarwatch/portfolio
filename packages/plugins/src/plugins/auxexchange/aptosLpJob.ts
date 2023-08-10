@@ -10,7 +10,7 @@ import {
 } from '../../utils/aptos';
 import { getClientAptos } from '../../utils/clients';
 import { lpCoinInfoTypePrefix, platformId, programAddress } from './constants';
-import addLpAndTokensPricesSource, { PoolData } from '../liquidswap/helpers';
+import setLpPriceSource, { PoolData } from '../../utils/misc/setLpPriceSource';
 
 type PoolReserves = {
   x_reserve: { value: string };
@@ -61,36 +61,10 @@ const executor: JobExecutor = async (cache: Cache) => {
       lpDecimals,
       reserveTokenX: new BigNumber(tokenPairData.x_reserve.value),
       reserveTokenY: new BigNumber(tokenPairData.y_reserve.value),
+      mintTokenX: typeX,
+      mintTokenY: typeY,
     };
-
-    await addLpAndTokensPricesSource(
-      cache,
-      [typeX, typeY],
-      poolData,
-      NetworkId.aptos,
-      platformId
-    );
-
-    // const tokenPrices = await cache.getTokenPrices(
-    //   [typeX, typeY],
-    //   NetworkId.aptos
-    // );
-    // const tokenPriceX = tokenPrices[0];
-    // const tokenPriceY = tokenPrices[1];
-    // if (!tokenPriceX || !tokenPriceY) continue;
-
-    // const reserveAmountX = new BigNumber(tokenPairData.x_reserve.value)
-    //   .div(10 ** tokenPriceX.decimals)
-    //   .toNumber();
-    // const reserveAmountY = new BigNumber(tokenPairData.y_reserve.value)
-    //   .div(10 ** tokenPriceY.decimals)
-    //   .toNumber();
-    // const reserveValueX = reserveAmountX * tokenPriceX.price;
-    // const reserveValueY = reserveAmountY * tokenPriceY.price;
-    // const price = (reserveValueX + reserveValueY) / lpSupply;
-
-    // const amountPerLpX = reserveAmountX / lpSupply;
-    // const amountPerLpY = reserveAmountY / lpSupply;
+    await setLpPriceSource(cache, poolData, NetworkId.aptos, platformId);
   }
 };
 
