@@ -13,6 +13,7 @@ import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { stakeAccountStruct } from './structs';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { nativeStakePlatform } from '../../platforms';
 
 const stakeProgramId = new PublicKey(
   'Stake11111111111111111111111111111111111111'
@@ -54,7 +55,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
     elements.push({
       networkId: NetworkId.solana,
-      platformId: NetworkId.solana,
+      platformId: nativeStakePlatform.id,
       type: 'multiple',
       label: 'Staked',
       tags: ['Native Stake'],

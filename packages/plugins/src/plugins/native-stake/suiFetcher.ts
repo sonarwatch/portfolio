@@ -10,6 +10,7 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId } from './constants';
 import { getClientSui } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { nativeStakePlatform } from '../../platforms';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -45,7 +46,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
     elements.push({
       networkId: NetworkId.sui,
-      platformId: NetworkId.sui,
+      platformId: nativeStakePlatform.id,
       type: 'multiple',
       label: 'Staked',
       tags: ['Native Stake'],

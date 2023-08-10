@@ -9,6 +9,7 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId, validatorsKey, validatorsPrefix } from './constants';
 import { getClientAptos } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { nativeStakePlatform } from '../../platforms';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientAptos();
@@ -53,7 +54,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
     elements.push({
       networkId: NetworkId.aptos,
-      platformId: NetworkId.aptos,
+      platformId: nativeStakePlatform.id,
       type: 'multiple',
       label: 'Staked',
       tags: ['Native Stake'],
