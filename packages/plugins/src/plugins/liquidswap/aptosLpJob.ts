@@ -76,7 +76,6 @@ const executor: JobExecutor = async (cache: Cache) => {
     );
     const tokenPriceX = tokenPrices[0];
     const tokenPriceY = tokenPrices[1];
-    if (!tokenPriceX && !tokenPriceY) continue;
 
     let decimalsX: number;
     let decimalsY: number;
