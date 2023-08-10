@@ -54,7 +54,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
     elements.push({
       networkId: NetworkId.solana,
-      platformId,
+      platformId: NetworkId.solana,
       type: 'multiple',
       label: 'Staked',
       tags: ['Native Stake'],

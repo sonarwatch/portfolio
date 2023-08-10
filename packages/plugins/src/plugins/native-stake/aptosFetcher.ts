@@ -53,7 +53,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
     elements.push({
       networkId: NetworkId.aptos,
-      platformId,
+      platformId: NetworkId.aptos,
       type: 'multiple',
       label: 'Staked',
       tags: ['Native Stake'],

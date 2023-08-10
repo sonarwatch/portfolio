@@ -45,7 +45,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
     elements.push({
       networkId: NetworkId.sui,
-      platformId,
+      platformId: NetworkId.sui,
       type: 'multiple',
       label: 'Staked',
       tags: ['Native Stake'],

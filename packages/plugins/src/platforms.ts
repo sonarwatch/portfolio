@@ -110,3 +110,18 @@ export const meeiroPlatform: Platform = {
   name: 'Meeiro',
   image: 'https://alpha.sonar.watch/img/platforms/meeiro.png',
 };
+export const solanaPlatform: Platform = {
+  id: 'solana',
+  name: 'Solana',
+  image: 'https://alpha.sonar.watch/img/networks/solana.png',
+};
+export const aptosPlatform: Platform = {
+  id: 'aptos',
+  name: 'Aptos',
+  image: 'https://alpha.sonar.watch/img/networks/aptos.png',
+};
+export const suiPlatform: Platform = {
+  id: 'sui',
+  name: 'Sui',
+  image: 'https://alpha.sonar.watch/img/networks/sui.png',
+};
