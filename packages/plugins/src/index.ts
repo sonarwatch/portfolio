@@ -38,6 +38,7 @@ import { jobs as mangoJobs, fetchers as mangoFetchers } from './plugins/mango';
 import { jobs as topTokensJobs } from './plugins/top-tokens';
 import { jobs as pancakeswapJobs } from './plugins/pancakeswap';
 import { jobs as liquidswapJobs } from './plugins/liquidswap';
+import { jobs as auxexchangeJobs } from './plugins/auxexchange';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
 export * from './Cache';
@@ -63,6 +64,7 @@ export const jobs: Job[] = [
   ...topTokensJobs,
   ...pancakeswapJobs,
   ...liquidswapJobs,
+  ...auxexchangeJobs,
 ];
 
 export const fetchers: Fetcher[] = [
