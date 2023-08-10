@@ -4,7 +4,7 @@ import {
   PortfolioAssetType,
 } from '../Portfolio';
 
-export function getCollectiblessfromAssets(
+export function getCollectiblesFromAssets(
   assets: PortfolioAsset[]
 ): PortfolioAssetCollectible[] {
   return assets.filter(
