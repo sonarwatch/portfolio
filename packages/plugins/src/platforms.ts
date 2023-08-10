@@ -35,6 +35,36 @@ export const thalaPlatform: Platform = {
   name: 'Thala',
   image: 'https://alpha.sonar.watch/img/platforms/thala.png',
 };
+export const tortugaPlatform: Platform = {
+  id: 'tortuga',
+  name: 'Tortuga Finance',
+  image: 'https://alpha.sonar.watch/img/platforms/tortuga.png',
+};
+export const auxExchangePlatform: Platform = {
+  id: 'auxexchange',
+  name: 'Aux Exchange',
+  image: 'https://alpha.sonar.watch/img/platforms/auxexchange.png',
+};
+export const pancakeswapPlatform: Platform = {
+  id: 'pancakeswap',
+  name: 'PancakeSwap',
+  image: 'https://alpha.sonar.watch/img/platforms/pancakeswap.png',
+};
+export const liquidswapPlatform: Platform = {
+  id: 'liquidswap',
+  name: 'Liquidswap',
+  image: 'https://alpha.sonar.watch/img/platforms/liquidswap.png',
+};
+export const dittoPlatform: Platform = {
+  id: 'ditto',
+  name: 'Ditto Finance',
+  image: 'https://alpha.sonar.watch/img/platforms/ditto.png',
+};
+export const animeswapPlatform: Platform = {
+  id: 'animeswap',
+  name: 'AnimeSwap',
+  image: 'https://alpha.sonar.watch/img/platforms/animeswap.png',
+};
 export const raydiumPlatform: Platform = {
   id: 'raydium',
   name: 'Raydium',
@@ -74,4 +104,14 @@ export const turbosPlatform: Platform = {
   id: 'turbos',
   name: 'Turbos',
   image: 'https://alpha.sonar.watch/img/platforms/turbos.png',
+};
+export const meeiroPlatform: Platform = {
+  id: 'meeiro',
+  name: 'Meeiro',
+  image: 'https://alpha.sonar.watch/img/platforms/meeiro.png',
+};
+export const nativeStakePlatform: Platform = {
+  id: 'nativeStake',
+  name: 'Native Stake',
+  image: 'https://alpha.sonar.watch/img/platforms/nativeStake.png',
 };
