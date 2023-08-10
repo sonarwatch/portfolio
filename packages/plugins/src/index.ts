@@ -32,9 +32,13 @@ import {
 } from './plugins/turbos';
 import { jobs as thalaJobs, fetchers as thalaFetchers } from './plugins/thala';
 import { fetchers as tensorFetchers } from './plugins/tensor';
+import { fetchers as aptosStakingFetchers } from './plugins/staking-aptos';
 import { jobs as driftJobs, fetchers as driftFetchers } from './plugins/drift';
 import { jobs as mangoJobs, fetchers as mangoFetchers } from './plugins/mango';
 import { jobs as topTokensJobs } from './plugins/top-tokens';
+import { jobs as pancakeswapJobs } from './plugins/pancakeswap';
+import { jobs as liquidswapJobs } from './plugins/liquidswap';
+import { jobs as auxexchangeJobs } from './plugins/auxexchange';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
 export * from './Cache';
@@ -58,6 +62,9 @@ export const jobs: Job[] = [
   ...cetusJobs,
   ...turbosJobs,
   ...topTokensJobs,
+  ...pancakeswapJobs,
+  ...liquidswapJobs,
+  ...auxexchangeJobs,
 ];
 
 export const fetchers: Fetcher[] = [
@@ -74,6 +81,7 @@ export const fetchers: Fetcher[] = [
   ...mangoFetchers,
   ...cetusFetchers,
   ...turbosFetchers,
+  ...aptosStakingFetchers,
 ];
 
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);

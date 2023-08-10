@@ -1,7 +1,6 @@
-import { thalaPlatform } from '../../platforms';
 import { coinInfo } from '../../utils/aptos';
 
-export const platformId = thalaPlatform.id;
+export const platformId = 'thala';
 export const programAdressThala =
   '0x6f986d146e4a90b828d8c12c14b6f4e003fdff11a8eecceceb63744363eaac01';
 
