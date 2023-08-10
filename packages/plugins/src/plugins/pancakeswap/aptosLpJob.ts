@@ -8,12 +8,10 @@ import { getClientAptos } from '../../utils/clients';
 import {
   CoinInfoData,
   MoveResource,
-  coinDecimals,
   getAccountResources,
   getNestedType,
 } from '../../utils/aptos';
-import getSourceWeight from '../../utils/misc/getSourceWeight';
-import { walletTokensPlatform } from '../../platforms';
+import setLpPriceSource, { PoolData } from '../../utils/misc/setLpPriceSource';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientAptos();
@@ -61,13 +59,6 @@ const executor: JobExecutor = async (cache: Cache) => {
     if (!typeX) throw new Error(`Failed to get typeX: ${typeX}`);
     if (!typeY) throw new Error(`Failed to get typeY: ${typeY}`);
     if (typeX.includes('TestToken') || typeY.includes('TestToken')) continue;
-    const tokenPrices = await cache.getTokenPrices(
-      [typeX, typeY],
-      NetworkId.aptos
-    );
-    const tokenPriceX = tokenPrices[0];
-    const tokenPriceY = tokenPrices[1];
-    if (!tokenPriceX && !tokenPriceY) continue;
 
     const tokenPairData = tokenPairResource.data;
     if (
@@ -76,141 +67,16 @@ const executor: JobExecutor = async (cache: Cache) => {
     )
       continue;
 
-    let decimalsX: number;
-    let decimalsY: number;
-    let priceX: number;
-    let priceY: number;
-    let reserveAmountX: BigNumber;
-    let reserveAmountY: BigNumber;
-
-    if (!tokenPriceX || !tokenPriceY) {
-      let unknownTokenDecimals: number[];
-
-      if (!tokenPriceX && tokenPriceY) {
-        unknownTokenDecimals = (await client.view({
-          function: coinDecimals,
-          type_arguments: [typeX],
-          arguments: [],
-        })) as number[];
-        if (unknownTokenDecimals.length !== 1) continue;
-
-        [decimalsX] = unknownTokenDecimals;
-        decimalsY = tokenPriceY.decimals;
-
-        reserveAmountX = new BigNumber(tokenPairData.balance_x.value).div(
-          10 ** decimalsX
-        );
-        reserveAmountY = new BigNumber(tokenPairData.balance_y.value).div(
-          10 ** decimalsY
-        );
-        priceY = tokenPriceY.price;
-        if (
-          reserveAmountY.multipliedBy(priceY).multipliedBy(2).isLessThan(10000)
-        )
-          continue;
-        priceX = reserveAmountY
-          .multipliedBy(priceY)
-          .dividedBy(reserveAmountX)
-          .toNumber();
-        await cache.setTokenPriceSource({
-          id: `${platformId}-${tokenPairId}`,
-          weight: getSourceWeight(
-            reserveAmountY.multipliedBy(priceY).multipliedBy(2)
-          ),
-          address: typeX,
-          networkId: NetworkId.aptos,
-          platformId: walletTokensPlatform.id,
-          decimals: decimalsX,
-          price: priceX,
-          timestamp: Date.now(),
-        });
-      } else if (!tokenPriceY && tokenPriceX) {
-        unknownTokenDecimals = (await client.view({
-          function: coinDecimals,
-          type_arguments: [typeY],
-          arguments: [],
-        })) as number[];
-        if (unknownTokenDecimals.length !== 1) continue;
-
-        decimalsX = tokenPriceX.decimals;
-        [decimalsY] = unknownTokenDecimals;
-        reserveAmountX = new BigNumber(tokenPairData.balance_x.value).div(
-          10 ** decimalsX
-        );
-        reserveAmountY = new BigNumber(tokenPairData.balance_y.value).div(
-          10 ** decimalsY
-        );
-        priceX = tokenPriceX.price;
-        if (
-          reserveAmountX.multipliedBy(priceX).multipliedBy(2).isLessThan(10000)
-        )
-          continue;
-        priceY = reserveAmountX
-          .multipliedBy(priceX)
-          .dividedBy(reserveAmountY)
-          .toNumber();
-        await cache.setTokenPriceSource({
-          id: `${platformId}-${tokenPairId}`,
-          weight: getSourceWeight(
-            reserveAmountX.multipliedBy(priceX).multipliedBy(2)
-          ),
-          address: typeY,
-          networkId: NetworkId.aptos,
-          platformId: walletTokensPlatform.id,
-          decimals: decimalsY,
-          price: priceY,
-          timestamp: Date.now(),
-        });
-      } else {
-        continue;
-      }
-    } else {
-      decimalsX = tokenPriceX.decimals;
-      decimalsY = tokenPriceY.decimals;
-      priceX = tokenPriceX.price;
-      priceY = tokenPriceY.price;
-      reserveAmountX = new BigNumber(tokenPairData.balance_x.value).div(
-        10 ** decimalsX
-      );
-      reserveAmountY = new BigNumber(tokenPairData.balance_y.value).div(
-        10 ** decimalsY
-      );
-    }
-    const reserveValueX = reserveAmountX.multipliedBy(priceX);
-    const reserveValueY = reserveAmountY.multipliedBy(priceY);
-    const price = reserveValueX
-      .plus(reserveValueY)
-      .dividedBy(lpSupply)
-      .toNumber();
-    const amountPerLpX = reserveAmountX.dividedBy(lpSupply).toNumber();
-    const amountPerLpY = reserveAmountY.dividedBy(lpSupply).toNumber();
-
-    await cache.setTokenPriceSource({
-      id: platformId,
-      weight: 1,
-      address: lpType,
-      networkId: NetworkId.aptos,
-      platformId,
-      decimals: lpDecimals,
-      price,
-      underlyings: [
-        {
-          networkId: NetworkId.aptos,
-          address: typeX,
-          decimals: decimalsX,
-          price: priceX,
-          amountPerLp: amountPerLpX,
-        },
-        {
-          networkId: NetworkId.aptos,
-          address: typeY,
-          decimals: decimalsY,
-          price: priceY,
-          amountPerLp: amountPerLpY,
-        },
-      ],
-      timestamp: Date.now(),
-    });
+    const poolData: PoolData = {
+      id: lpType,
+      lpDecimals,
+      supply: new BigNumber(lpSupply),
+      mintTokenX: typeX,
+      mintTokenY: typeY,
+      reserveTokenX: new BigNumber(tokenPairData.balance_x.value),
+      reserveTokenY: new BigNumber(tokenPairData.balance_y.value),
+    };
+    await setLpPriceSource(cache, poolData, NetworkId.aptos, platformId);
   }
 };
 

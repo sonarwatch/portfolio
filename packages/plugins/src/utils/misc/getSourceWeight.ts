@@ -12,6 +12,6 @@ export default function getSourceWeight(poolUsdValue: BigNumber): number {
   if (poolUsdValue.isGreaterThan(usdValueForWeightOfOne)) return 1;
   return poolUsdValue
     .dividedBy(usdValueForWeightOfOne)
-    .decimalPlaces(2, BigNumber.ROUND_CEIL)
+    .decimalPlaces(3, BigNumber.ROUND_CEIL)
     .toNumber();
 }
