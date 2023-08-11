@@ -110,6 +110,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         value: null,
         floorPrice: null,
         image,
+        imageUri: image,
         name: output.name,
         collectionId: output.collection?.address.toString(),
       },
