@@ -8,22 +8,22 @@ export const lendingConfigs: Map<NetworkIdType, LendingConfig[]> = new Map([
       {
         chainId: networks.avalanche.chainId,
         networkId: NetworkId.avalanche,
-        elementName: 'Aave V3',
-        lendingPoolAddressProvider:
-          '0xa97684ead0e402dC232d5A977953DF7ECBaB3CDb',
-        uiIncentiveDataProviderAddress:
-          '0x265d414f80b0fca9505710e6F16dB4b67555D365',
-        uiPoolDataProviderAddress: '0xF71DBe0FAEF1473ffC607d4c555dfF0aEaDb878d',
-      },
-      {
-        chainId: networks.avalanche.chainId,
-        networkId: NetworkId.avalanche,
         elementName: 'Aave V2',
         lendingPoolAddressProvider:
           '0xb6A86025F0FE1862B372cb0ca18CE3EDe02A318f',
         uiIncentiveDataProviderAddress:
           '0x11979886A6dBAE27D7a72c49fCF3F23240D647bF',
         uiPoolDataProviderAddress: '0x00e50FAB64eBB37b87df06Aa46b8B35d5f1A4e1A',
+      },
+      {
+        chainId: networks.avalanche.chainId,
+        networkId: NetworkId.avalanche,
+        elementName: 'Aave V3',
+        lendingPoolAddressProvider:
+          '0xa97684ead0e402dC232d5A977953DF7ECBaB3CDb',
+        uiIncentiveDataProviderAddress:
+          '0x265d414f80b0fca9505710e6F16dB4b67555D365',
+        uiPoolDataProviderAddress: '0xF71DBe0FAEF1473ffC607d4c555dfF0aEaDb878d',
       },
     ],
   ],
