@@ -36,8 +36,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   const accountInfos = await getMultipleAccountsInfoSafe(client, accounts);
 
-  const mints: PublicKey[] = [];
-
+  const mints: Set<string> = new Set();
   for (let i = 0; i < swaps.length; i++) {
     const reserveAInfo = accountInfos[i * 3];
     const reserveBInfo = accountInfos[i * 3 + 1];
@@ -47,21 +46,18 @@ const executor: JobExecutor = async (cache: Cache) => {
 
     const reserveA = tokenAccountStruct.deserialize(reserveAInfo.data)[0];
     const reserveB = tokenAccountStruct.deserialize(reserveBInfo.data)[0];
-    mints.push(reserveA.mint);
-    mints.push(reserveB.mint);
+    mints.add(reserveA.mint.toString());
+    mints.add(reserveB.mint.toString());
   }
 
-  const tokenPriceResults = await runInBatch(
-    [...mints].map(
-      (mint) => () => cache.getTokenPrice(mint.toBase58(), NetworkId.solana)
-    )
+  const tokenPricesAsArray = await cache.getTokenPrices(
+    Array.from(mints),
+    NetworkId.solana
   );
-
   const tokenPrices: Map<string, TokenPrice> = new Map();
-  tokenPriceResults.forEach((r) => {
-    if (r.status === 'rejected') return;
-    if (!r.value) return;
-    tokenPrices.set(r.value.address, r.value);
+  tokenPricesAsArray.forEach((tokenPrice) => {
+    if (!tokenPrice) return;
+    tokenPrices.set(tokenPrice.address, tokenPrice);
   });
 
   for (let i = 0; i < swaps.length; i++) {
