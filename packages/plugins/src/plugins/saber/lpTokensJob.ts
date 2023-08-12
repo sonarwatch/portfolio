@@ -76,15 +76,15 @@ const executor: JobExecutor = async (cache: Cache) => {
 
     if (!priceA || !priceB) continue;
 
-    const coinHoldings = reserveA.amount
+    const coinValue = reserveA.amount
       .multipliedBy(priceA.price)
       .div(10 ** priceA.decimals);
-    const pcHoldings = reserveB.amount
+    const pcValue = reserveB.amount
       .multipliedBy(priceB.price)
       .div(10 ** priceB.decimals);
 
-    const lpTokenPrice = coinHoldings
-      .plus(pcHoldings)
+    const lpTokenPrice = coinValue
+      .plus(pcValue)
       .div(lpMint.supply)
       .div(10 ** lpMint.decimals);
 
