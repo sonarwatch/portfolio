@@ -94,18 +94,14 @@ const executor: JobExecutor = async (cache: Cache) => {
         address: priceA.address,
         decimals: priceA.decimals,
         price: priceA.price,
-        amountPerLp: new BigNumber(reserveA.amount)
-          .div(lpMint.supply)
-          .toNumber(),
+        amountPerLp: reserveA.amount.div(lpMint.supply).toNumber(),
       },
       {
         networkId: NetworkId.solana,
         address: priceB.address,
         decimals: priceB.decimals,
         price: priceB.price,
-        amountPerLp: new BigNumber(reserveB.amount)
-          .div(lpMint.supply)
-          .toNumber(),
+        amountPerLp: reserveB.amount.div(lpMint.supply).toNumber(),
       },
     ];
 
