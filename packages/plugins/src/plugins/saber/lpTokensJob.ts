@@ -60,6 +60,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   });
 
   for (let i = 0; i < swaps.length; i++) {
+    const swap = swaps[i];
     const reserveAInfo = accountInfos[i * 3];
     const reserveBInfo = accountInfos[i * 3 + 1];
     const lpMintInfo = accountInfos[i * 3 + 2];
@@ -87,25 +88,31 @@ const executor: JobExecutor = async (cache: Cache) => {
       .div(lpMint.supply)
       .div(10 ** lpMint.decimals);
 
-    const underlyings: TokenPriceUnderlying[] = [];
-    underlyings.push({
-      networkId: NetworkId.solana,
-      address: priceA.address,
-      decimals: priceA.decimals,
-      price: priceA.price,
-      amountPerLp: new BigNumber(reserveA.amount).div(lpMint.supply).toNumber(),
-    });
-    underlyings.push({
-      networkId: NetworkId.solana,
-      address: priceB.address,
-      decimals: priceB.decimals,
-      price: priceB.price,
-      amountPerLp: new BigNumber(reserveB.amount).div(lpMint.supply).toNumber(),
-    });
+    const underlyings: TokenPriceUnderlying[] = [
+      {
+        networkId: NetworkId.solana,
+        address: priceA.address,
+        decimals: priceA.decimals,
+        price: priceA.price,
+        amountPerLp: new BigNumber(reserveA.amount)
+          .div(lpMint.supply)
+          .toNumber(),
+      },
+      {
+        networkId: NetworkId.solana,
+        address: priceB.address,
+        decimals: priceB.decimals,
+        price: priceB.price,
+        amountPerLp: new BigNumber(reserveB.amount)
+          .div(lpMint.supply)
+          .toNumber(),
+      },
+    ];
+
     await cache.setTokenPriceSource({
       id: platformId,
       weight: 1,
-      address: swaps[i].addresses.lpTokenMint,
+      address: swap.addresses.lpTokenMint,
       networkId: NetworkId.solana,
       platformId,
       decimals: lpMint.decimals,
