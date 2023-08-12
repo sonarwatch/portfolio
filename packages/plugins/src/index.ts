@@ -33,6 +33,7 @@ import {
 } from './plugins/turbos';
 import { jobs as thalaJobs, fetchers as thalaFetchers } from './plugins/thala';
 import { fetchers as tensorFetchers } from './plugins/tensor';
+import { fetchers as aaveFetchers, jobs as aaveJobs } from './plugins/aave';
 import { fetchers as aptosStakingFetchers } from './plugins/staking-aptos';
 import { jobs as driftJobs, fetchers as driftFetchers } from './plugins/drift';
 import { jobs as mangoJobs, fetchers as mangoFetchers } from './plugins/mango';
@@ -67,6 +68,7 @@ export const jobs: Job[] = [
   ...liquidswapJobs,
   ...auxexchangeJobs,
   ...saberJobs,
+  ...aaveJobs,
 ];
 
 export const fetchers: Fetcher[] = [
@@ -84,6 +86,7 @@ export const fetchers: Fetcher[] = [
   ...cetusFetchers,
   ...turbosFetchers,
   ...aptosStakingFetchers,
+  ...aaveFetchers,
 ];
 
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
