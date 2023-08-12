@@ -22,7 +22,18 @@ This repository is divided in <b>plugins</b>, each plugin can have :
 
 ## What is a Job ?
 
-A <b>Job</b> will store data into our <b>Cache</b>, those data are usually common data for all users (information about the deposited amount of a token on a lending protocol, LiquidityPool prices, etc..)
+A <b>Job</b> will store data into our <b>Cache</b>, those data are usually common data for all users (information about the amounts of a tokens on a lending protocol, liquidity pools prices, etc..)
+
+To add data to the Cache, you will mainly use the following methods on the `cache` object :
+
+- Add a price for a specific Token address (token, lp, etc...) : `cache.setTokenPriceSource()`
+- Add any item : `cache.setItem()`
+
+<u><b>Warning</b></u> If your Job is adding prices for tokens, make sure to verify those prices by :
+
+1. Running your local cache.
+2. Running your Job, this will add prices into your local cache.
+3. Running the Fetcher `wallet-tokens-<networkId>`, this will fetch all tokens within the wallet and get the prices from the Cache (local + distant). (see below for commands)
 
 You can create as many <b>Jobs</b> as needed by plugins.
 
@@ -81,6 +92,7 @@ Before anything, you need to run the <b>Cache</b> on your local network, simply 
 npx nx run plugins:serve-cache
 ```
 
+If you are adding a liquidity protocol
 You're now ready to try your `Fetcher` or `Job` by running the following commands :
 
 - Job :
