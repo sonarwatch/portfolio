@@ -16,6 +16,10 @@ import {
   fetchers as marginfiFetchers,
 } from './plugins/marginfi';
 import {
+  jobs as saberJobs,
+  fetchers as saberFetchers,
+} from './plugins/saber';
+import {
   jobs as solendJobs,
   fetchers as solendFetchers,
 } from './plugins/solend';
@@ -65,6 +69,7 @@ export const jobs: Job[] = [
   ...pancakeswapJobs,
   ...liquidswapJobs,
   ...auxexchangeJobs,
+  ...saberJobs,
 ];
 
 export const fetchers: Fetcher[] = [
@@ -82,6 +87,7 @@ export const fetchers: Fetcher[] = [
   ...cetusFetchers,
   ...turbosFetchers,
   ...aptosStakingFetchers,
+  ...saberFetchers,
 ];
 
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
