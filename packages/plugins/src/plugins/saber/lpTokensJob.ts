@@ -86,7 +86,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     const lpTokenPrice = coinValue
       .plus(pcValue)
       .div(lpMint.supply)
-      .div(10 ** lpMint.decimals);
+      .times(10 ** lpMint.decimals);
 
     const underlyings: TokenPriceUnderlying[] = [
       {
