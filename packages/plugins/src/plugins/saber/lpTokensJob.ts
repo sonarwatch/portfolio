@@ -12,7 +12,6 @@ import { getClientSolana } from '../../utils/clients';
 import { platformId, SABER_SWAPS } from './constants';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 import { tokenAccountStruct, mintAccountStruct } from '../../utils/solana';
-import runInBatch from '../../utils/misc/runInBatch';
 import { SaberSwap } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {
