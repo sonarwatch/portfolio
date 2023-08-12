@@ -1,11 +1,10 @@
 import { PublicKey } from '@solana/web3.js';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import {
   NetworkId,
   TokenPrice,
   TokenPriceUnderlying,
 } from '@sonarwatch/portfolio-core';
-import { BN } from 'bn.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
@@ -13,12 +12,17 @@ import { getClientSolana } from '../../utils/clients';
 import { platformId, SABER_SWAPS } from './constants';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 import { tokenAccountStruct, mintAccountStruct } from '../../utils/solana';
-
 import runInBatch from '../../utils/misc/runInBatch';
+import { SaberSwap } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
-  const swaps = (await axios.get(SABER_SWAPS).catch(() => ({ data: [] }))).data;
+  const swapsResponse: AxiosResponse<SaberSwap[]> | null = await axios
+    .get(SABER_SWAPS)
+    .catch(() => null);
+  if (!swapsResponse) return;
+  const swaps = swapsResponse.data;
+
   const accounts = [];
   for (let i = 0; i < swaps.length; i++) {
     const reserveA = swaps[i].addresses.reserves[0];
@@ -59,7 +63,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     if (!r.value) return;
     tokenPrices.set(r.value.address, r.value);
   });
-  const counter = 0;
+
   for (let i = 0; i < swaps.length; i++) {
     const reserveAInfo = accountInfos[i * 3];
     const reserveBInfo = accountInfos[i * 3 + 1];
