@@ -115,3 +115,8 @@ export const nativeStakePlatform: Platform = {
   name: 'Native Stake',
   image: 'https://alpha.sonar.watch/img/platforms/native-stake.png',
 };
+export const saberPlatform: Platform = {
+  id: 'saber',
+  name: 'Saber',
+  image: 'https://alpha.sonar.watch/img/platforms/saber.png',
+};
