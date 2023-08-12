@@ -69,6 +69,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     const reserveA = tokenAccountStruct.deserialize(reserveAInfo.data)[0];
     const reserveB = tokenAccountStruct.deserialize(reserveBInfo.data)[0];
     const lpMint = mintAccountStruct.deserialize(lpMintInfo.data)[0];
+    if (lpMint.supply.isZero()) return;
 
     const priceA = tokenPrices.get(reserveA.mint.toBase58());
     const priceB = tokenPrices.get(reserveB.mint.toBase58());
