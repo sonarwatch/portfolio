@@ -47,19 +47,12 @@ const executor: JobExecutor = async (cache: Cache) => {
     });
 
     if (!poolDataProvider || !incentiveDataProvider) continue;
-    let reserves;
-    try {
-      reserves = await poolDataProvider.getReservesHumanized({
-        lendingPoolAddressProvider,
-      });
-    } catch (error) {
-      // This is probably because of a contract upgrade.
-      // Make sure contracts in /constants.ts are up-to-date.
-      console.warn(
-        `Unable to parse pool data (getReservesHumanized) - [${networkId}][${lendingPoolAddressProvider}]`
-      );
-      continue;
-    }
+
+    // If it fails, this is probably because of a contract upgrade.
+    // Make sure contracts in /constants.ts are up-to-date.
+    const reserves = await poolDataProvider.getReservesHumanized({
+      lendingPoolAddressProvider,
+    });
 
     const reservesArray = reserves.reservesData;
     const { baseCurrencyData } = reserves;
@@ -89,7 +82,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       marketReferencePriceInUsd,
       marketReferenceCurrencyDecimals,
     };
-    await cache.setItem(`${lendingPoolAddressProvider}`, lendingData, {
+    await cache.setItem(lendingPoolAddressProvider, lendingData, {
       prefix: lendingPoolsPrefix,
       networkId,
     });
