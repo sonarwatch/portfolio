@@ -37,10 +37,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     serumV3ProgramId,
     serumOrdersV2Filter(owner)
   );
-  const openOrders = [...serumOpenOrdersAccounts, ...openBookOrdersAccounts];
+  const ordersAccounts = [
+    ...serumOpenOrdersAccounts.map((order) => ({
+      ...order,
+      program: serumV3ProgramId,
+    })),
+    ...openBookOrdersAccounts.map((order) => ({
+      ...order,
+      program: openBookV3ProgramId,
+    })),
+  ];
   const marketsAddresses: Set<PublicKey> = new Set();
-  for (let i = 0; i < openOrders.length; i++) {
-    const order = openOrders[i];
+  for (let i = 0; i < ordersAccounts.length; i++) {
+    const order = ordersAccounts[i];
     marketsAddresses.add(order.market);
   }
 
@@ -56,7 +65,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   for (let i = 0; i < marketsAccounts.length; i++) {
     const market = marketsAccounts[i];
     if (!market) continue;
-
     marketsByAddress.set(market.ownAddress.toString(), market);
     tokensMints.add(market.quoteMint.toString());
   }
@@ -73,10 +81,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     tokenPrices.set(r.value.address, r.value);
   });
 
-  let totalValue = 0;
-  const liquidities: PortfolioLiquidity[] = [];
-  for (let i = 0; i < openOrders.length; i += 1) {
-    const openOrder = openOrders[i];
+  let serumTotalValue = 0;
+  let openBookTotalValue = 0;
+  const serumLiquidities: PortfolioLiquidity[] = [];
+  const openBookLiquidities: PortfolioLiquidity[] = [];
+  for (let i = 0; i < ordersAccounts.length; i += 1) {
+    const openOrder = ordersAccounts[i];
     const market = marketsByAddress.get(openOrder.market.toString());
     if (!market) continue;
 
@@ -101,28 +111,50 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const rewardAssets = [
       tokenPriceToAssetToken(baseMint.toString(), 0, NetworkId.solana),
     ];
-    liquidities.push({
-      assets,
-      assetsValue,
-      rewardAssets,
-      rewardAssetsValue: 0,
-      value: assetsValue,
-      yields: [],
-    });
-    totalValue += assetsValue;
+
+    if (openOrder.program === serumV3ProgramId) {
+      serumLiquidities.push({
+        assets,
+        assetsValue,
+        rewardAssets,
+        rewardAssetsValue: 0,
+        value: assetsValue,
+        yields: [],
+      });
+      serumTotalValue += assetsValue;
+    } else {
+      openBookLiquidities.push({
+        assets,
+        assetsValue,
+        rewardAssets,
+        rewardAssetsValue: 0,
+        value: assetsValue,
+        yields: [],
+      });
+      openBookTotalValue += assetsValue;
+    }
   }
 
-  const element: PortfolioElement = {
+  const openBookElement: PortfolioElement = {
     type: 'liquidity',
     networkId: NetworkId.solana,
     platformId,
-    value: totalValue,
+    value: openBookTotalValue,
+    label: 'Deposit',
+    tags: ['OpenBook Orders'],
+    data: { liquidities: openBookLiquidities },
+  };
+  const serumElement: PortfolioElement = {
+    type: 'liquidity',
+    networkId: NetworkId.solana,
+    platformId,
+    value: serumTotalValue,
     label: 'Deposit',
     tags: ['Serum Open Orders'],
-    data: { liquidities },
+    data: { liquidities: serumLiquidities },
   };
 
-  return [element];
+  return [openBookElement, serumElement];
 };
 
 const fetcher: Fetcher = {
