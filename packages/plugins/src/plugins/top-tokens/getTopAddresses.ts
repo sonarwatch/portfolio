@@ -49,16 +49,16 @@ export default async function getTopAddresses(
           params: {
             vs_currency: 'usd',
             order: 'market_cap_desc',
-            per_page: 200,
+            per_page: 250,
             page,
           },
           timeout: 5000,
         }
       )
       .catch(() => null);
-    await sleep(4000);
+    await sleep(20000);
     if (!coinsMarketsRes) {
-      await sleep(10000);
+      await sleep(120000);
       continue;
     }
     coinsMarketsRes.data.forEach((coinMarket) => {
