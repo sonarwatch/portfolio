@@ -16,7 +16,6 @@ import {
   networks,
 } from '@sonarwatch/portfolio-core';
 import {
-  RewardInfoHumanized,
   UiIncentiveDataProvider,
   UiPoolDataProvider,
 } from '@aave/contract-helpers';
@@ -121,9 +120,7 @@ export async function fetchLendingForAddress(
       lendingPoolAddressProvider
     );
     const elementData = getElementLendingData(networkId, userSummary);
-    if (elementData.value === 0) {
-      continue;
-    }
+    if (elementData.value === 0) continue;
 
     const element: PortfolioElementBorrowLend = {
       type: PortfolioElementType.borrowlend,
@@ -274,7 +271,7 @@ export function getSuppliedAsset(
     type: PortfolioAssetType.token,
     value: +(+userReserveData.underlyingBalanceUSD).toFixed(2),
     data: {
-      address: userReserveData.underlyingAsset,
+      address: formatTokenAddress(userReserveData.underlyingAsset, networkId),
       amount: +userReserveData.underlyingBalance,
       price: +userReserveData.reserve.priceInUSD,
     },
@@ -306,7 +303,11 @@ function getRewardAssets(
         type: PortfolioAssetType.token,
         networkId,
         value,
-        data: { address: rewardAddress, amount, price },
+        data: {
+          address: formatTokenAddress(rewardAddress, networkId),
+          amount,
+          price,
+        },
       };
       rewardAssets.push(rewardAsset);
     }
@@ -372,43 +373,4 @@ export function getElementLendingData(
     value,
   };
   return elementData;
-}
-
-function getTokenAddressesFromRewards(
-  rewards: RewardInfoHumanized[],
-  networkId: NetworkIdType
-) {
-  return rewards.map((r) =>
-    formatTokenAddress(r.rewardTokenAddress, networkId)
-  );
-}
-
-export function getTokenAddressesFromLendingData(
-  lendingData: LendingData
-): string[] {
-  const { networkId, reserveIncentives } = lendingData;
-  const rewards = reserveIncentives
-    .map((reserveIncentive) => [
-      ...reserveIncentive.aIncentiveData.rewardsTokenInformation,
-      ...reserveIncentive.sIncentiveData.rewardsTokenInformation,
-      ...reserveIncentive.vIncentiveData.rewardsTokenInformation,
-    ])
-    .flat();
-  return getTokenAddressesFromRewards(rewards, networkId);
-}
-export function getTokenAddressesFromLendingDatas(
-  lendingDatas: LendingData[]
-): Map<NetworkIdType, string[]> {
-  const tokenAddresses: { [k in NetworkIdType]?: string[] } = {};
-  lendingDatas.forEach((lendingData) => {
-    const { networkId } = lendingData;
-    const cTokenAddresses = getTokenAddressesFromLendingData(lendingData);
-    if (!tokenAddresses[networkId]) tokenAddresses[networkId] = [];
-    tokenAddresses[networkId]?.push(...cTokenAddresses);
-  });
-
-  return new Map(Object.entries(tokenAddresses)) as Map<
-    NetworkIdType,
-    string[]
-  >;
 }
