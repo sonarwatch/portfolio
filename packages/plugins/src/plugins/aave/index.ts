@@ -1,6 +1,6 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import DSA from 'dsa-connect';
-import Web3 from 'web3';
+import Web3 from 'web3-v1';
 import { ChainId } from '@aave/contract-helpers';
 import { Job } from '../../Job';
 import { Fetcher } from '../../Fetcher';

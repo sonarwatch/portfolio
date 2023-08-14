@@ -68,7 +68,8 @@
     "tslib": "^2.3.0",
     "unstorage": "^1.8.0",
     "viem": "^1.2.9",
-    "web3": "^4.0.3"
+    "web3-v4": "npm:web3@^4.0.3",
+    "web3-v1": "npm:web3@^1.5.0"
   },
   "nx": {
     "includedScripts": []
