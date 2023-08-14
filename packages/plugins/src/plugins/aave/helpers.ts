@@ -28,6 +28,8 @@ import { Cache } from '../../Cache';
 import { getUrlEndpoint } from '../../utils/clients/constants';
 import { platformId } from './constants';
 
+export const lendingPoolsPrefix = 'aave-lendingPools';
+
 export async function fetchLendingForAddress(
   address: string,
   networkId: NetworkIdType,
@@ -47,7 +49,7 @@ export async function fetchLendingForAddress(
     const lendingData = await cache.getItem<LendingData>(
       lendingPoolAddressProvider,
       {
-        prefix: 'aave-lendingPools',
+        prefix: lendingPoolsPrefix,
         networkId,
       }
     );

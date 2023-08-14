@@ -10,6 +10,7 @@ import { Job, JobExecutor } from '../../Job';
 import { lendingConfigs, platformId } from './constants';
 import { LendingData } from './types';
 import { getUrlEndpoint } from '../../utils/clients/constants';
+import { lendingPoolsPrefix } from './helpers';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const lendingConfigsArray = Array.from(lendingConfigs.values()).flat();
@@ -89,7 +90,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       marketReferenceCurrencyDecimals,
     };
     await cache.setItem(`${lendingPoolAddressProvider}`, lendingData, {
-      prefix: 'aave-lendingPools',
+      prefix: lendingPoolsPrefix,
       networkId,
     });
   }
