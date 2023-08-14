@@ -8,10 +8,9 @@ import { getRpcEndpoint } from '../../utils/clients/constants';
 export default function getLendingFetcherExecutor(
   networkId: EvmNetworkIdType
 ): FetcherExecutor {
-  const rpcEndpoint = getRpcEndpoint(networkId);
-  const instadappDSA = getDSA(networkId, rpcEndpoint);
-
   return async (owner: string, cache: Cache) => {
+    const rpcEndpoint = getRpcEndpoint(networkId);
+    const instadappDSA = getDSA(networkId, rpcEndpoint);
     const addresses = [owner];
 
     const accounts = await instadappDSA.getAccounts(owner);
