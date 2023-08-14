@@ -4,14 +4,14 @@ import { walletTokensPlatform } from '../../../../platforms';
 import getEvmFetcherExecutor from './evmExecutorGenerator';
 import getEvmFetcherNativeExecutor from './evmNativeExecutorGenerator';
 
+const evmNativeNetworksIds: EvmNetworkIdType[] = [
+  NetworkId.ethereum,
+  NetworkId.avalanche,
+];
 const evmNetworksIds: EvmNetworkIdType[] = [
   NetworkId.ethereum,
   NetworkId.avalanche,
   NetworkId.polygon,
-];
-const evmNativeNetworksIds: EvmNetworkIdType[] = [
-  NetworkId.ethereum,
-  NetworkId.avalanche,
 ];
 
 export const fetchers: Fetcher[] = [
