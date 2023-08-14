@@ -1,4 +1,5 @@
 import {
+  EvmNetworkIdType,
   NetworkIdType,
   PortfolioAsset,
   PortfolioAssetToken,
@@ -8,6 +9,7 @@ import {
   PortfolioElementBorrowLendData,
   PortfolioElementType,
   ProxyInfo,
+  RpcEndpoint,
   Yield,
   formatTokenAddress,
   getElementLendingValues,
@@ -23,12 +25,45 @@ import {
   UserIncentiveDict,
   formatUserSummaryAndIncentives,
 } from '@aave/math-utils';
+import Web3 from 'web3-v1';
+import DSA, { ChainId } from 'dsa-connect';
 import { LendingConfig, LendingData } from './types';
 import { Cache } from '../../Cache';
-import { getUrlEndpoint } from '../../utils/clients/constants';
+import { getRpcEndpoint } from '../../utils/clients/constants';
 import { platformId } from './constants';
+import { getBasicAuthHeaders } from '../../utils/misc/getBasicAuthHeaders';
 
 export const lendingPoolsPrefix = 'aave-lendingPools';
+
+export function getDSA(networkId: EvmNetworkIdType, rpcEndpoint: RpcEndpoint) {
+  const authHeaders = rpcEndpoint.basicAuth
+    ? getBasicAuthHeaders(
+        rpcEndpoint.basicAuth.username,
+        rpcEndpoint.basicAuth.password
+      )
+    : undefined;
+  const httpHeaders = authHeaders
+    ? [
+        {
+          name: 'Authorization',
+          value: authHeaders.Authorization,
+        },
+      ]
+    : undefined;
+
+  const network = networks[networkId];
+
+  return new DSA(
+    {
+      web3: new Web3(
+        new Web3.providers.HttpProvider(rpcEndpoint.url, {
+          headers: httpHeaders,
+        })
+      ),
+    },
+    network.chainId as ChainId
+  );
+}
 
 export async function fetchLendingForAddress(
   address: string,
@@ -55,9 +90,14 @@ export async function fetchLendingForAddress(
     );
     if (!lendingData) continue;
 
+    const rpcEndpoint = getRpcEndpoint(networkId);
+    const user = rpcEndpoint.basicAuth?.username;
+    const password = rpcEndpoint.basicAuth?.password;
     const provider = new StaticJsonRpcProvider(
       {
-        url: getUrlEndpoint(networkId),
+        url: rpcEndpoint.url,
+        user,
+        password,
       },
       networks[networkId].chainId
     );

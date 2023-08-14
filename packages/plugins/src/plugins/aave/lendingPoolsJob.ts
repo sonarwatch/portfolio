@@ -1,4 +1,3 @@
-import { networks } from '@sonarwatch/portfolio-core';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import {
   UiIncentiveDataProvider,
@@ -9,7 +8,7 @@ import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { lendingConfigs, platformId } from './constants';
 import { LendingData } from './types';
-import { getUrlEndpoint } from '../../utils/clients/constants';
+import { getRpcEndpoint } from '../../utils/clients/constants';
 import { lendingPoolsPrefix } from './helpers';
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -18,6 +17,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   for (let i = 0; i < lendingConfigsArray.length; i++) {
     const lendingConfig = lendingConfigsArray[i];
     if (!lendingConfig) continue;
+
     const {
       uiPoolDataProviderAddress,
       uiIncentiveDataProviderAddress,
@@ -26,24 +26,29 @@ const executor: JobExecutor = async (cache: Cache) => {
       networkId,
     } = lendingConfig;
 
+    const rpcEndpoint = getRpcEndpoint(networkId);
+    const user = rpcEndpoint.basicAuth?.username;
+    const password = rpcEndpoint.basicAuth?.password;
     const provider = new StaticJsonRpcProvider(
       {
-        url: getUrlEndpoint(lendingConfig.networkId),
+        url: rpcEndpoint.url,
+        user,
+        password,
       },
-      networks[lendingConfig.networkId].chainId
+      chainId
     );
     if (!provider) continue;
 
     const poolDataProvider = new UiPoolDataProvider({
       uiPoolDataProviderAddress,
       provider,
-      chainId: lendingConfig.chainId,
+      chainId,
     });
 
     const incentiveDataProvider = new UiIncentiveDataProvider({
       uiIncentiveDataProviderAddress,
       provider,
-      chainId: lendingConfig.chainId,
+      chainId,
     });
 
     if (!poolDataProvider || !incentiveDataProvider) continue;
