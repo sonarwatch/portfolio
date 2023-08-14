@@ -52,13 +52,11 @@ const executor: JobExecutor = async (cache: Cache) => {
         lendingPoolAddressProvider,
       });
     } catch (error) {
+      // This is probably because of a contract upgrade.
+      // Make sure contracts in /constants.ts are up-to-date.
       console.warn(
-        `Unable to parse data for network/lendingPoolContract : ${networkId}/${lendingPoolAddressProvider}`
+        `Unable to parse pool data (getReservesHumanized) - [${networkId}][${lendingPoolAddressProvider}]`
       );
-      console.warn(
-        'This is probably because of a contract upgrade. \n Please make sure contracts in /constants are up-to-date.'
-      );
-      console.warn('Error is :', error);
       continue;
     }
 
