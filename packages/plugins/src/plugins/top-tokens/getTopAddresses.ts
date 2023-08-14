@@ -57,7 +57,10 @@ export default async function getTopAddresses(
       )
       .catch(() => null);
     await sleep(4000);
-    if (!coinsMarketsRes) continue;
+    if (!coinsMarketsRes) {
+      await sleep(10000);
+      continue;
+    }
     coinsMarketsRes.data.forEach((coinMarket) => {
       const address = addressById.get(coinMarket.id);
       if (!address) return;
