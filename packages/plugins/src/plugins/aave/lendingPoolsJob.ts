@@ -1,4 +1,5 @@
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
+import 'reflect-metadata';
 import {
   UiIncentiveDataProvider,
   UiPoolDataProvider,
