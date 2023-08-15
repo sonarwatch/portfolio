@@ -14,7 +14,7 @@ import { getParsedProgramAccounts } from '../../../utils/solana';
 import { serumOrdersV2Filter } from './filters';
 import runInBatch from '../../../utils/misc/runInBatch';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import { serumMarketsPrefix, clobVersions } from './constants';
+import { clobVersions } from './constants';
 import { CLOBMarket } from './types';
 import { serumPlatform } from '../../../platforms';
 
@@ -36,7 +36,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const markets = await cache.getItems<CLOBMarket>(
     Array.from(marketsAddresses),
     {
-      prefix: serumMarketsPrefix,
+      prefix: clobVersions.serumV3.prefix,
     }
   );
 

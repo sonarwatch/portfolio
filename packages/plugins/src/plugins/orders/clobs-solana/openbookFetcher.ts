@@ -15,7 +15,7 @@ import { openOrdersV2Struct } from '../../raydium/structs/openOrders';
 import runInBatch from '../../../utils/misc/runInBatch';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import { openbookPlatform } from '../../../platforms';
-import { clobVersions, openbookMarketsPrefix } from './constants';
+import { clobVersions } from './constants';
 import { serumOrdersV2Filter } from './filters';
 import { CLOBMarket } from './types';
 
@@ -37,7 +37,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const markets = await cache.getItems<CLOBMarket>(
     Array.from(marketsAddresses),
     {
-      prefix: openbookMarketsPrefix,
+      prefix: clobVersions.openbookV1.prefix,
       networkId: NetworkId.solana,
     }
   );
