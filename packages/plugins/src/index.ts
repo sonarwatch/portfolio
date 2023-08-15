@@ -33,7 +33,10 @@ import {
 } from './plugins/turbos';
 import { jobs as thalaJobs, fetchers as thalaFetchers } from './plugins/thala';
 import { fetchers as tensorFetchers } from './plugins/tensor';
-import { fetchers as ordersFetchers } from './plugins/orders';
+import {
+  fetchers as ordersFetchers,
+  jobs as ordersJobs,
+} from './plugins/orders';
 import { fetchers as aaveFetchers, jobs as aaveJobs } from './plugins/aave';
 import { fetchers as aptosStakingFetchers } from './plugins/staking-aptos';
 import { jobs as driftJobs, fetchers as driftFetchers } from './plugins/drift';
@@ -70,6 +73,7 @@ export const jobs: Job[] = [
   ...auxexchangeJobs,
   ...saberJobs,
   ...aaveJobs,
+  ...ordersJobs,
 ];
 
 export const fetchers: Fetcher[] = [

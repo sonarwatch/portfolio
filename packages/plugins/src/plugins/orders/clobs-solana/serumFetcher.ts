@@ -4,36 +4,56 @@ import {
   PortfolioElementMultiple,
   TokenPrice,
 } from '@sonarwatch/portfolio-core';
-import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
-import { platformId, jupiterLimitProgramId } from '../constants';
+import { platformId } from '../constants';
 import { getClientSolana } from '../../../utils/clients';
-import { limitOrderStruct } from './struct';
 import { getParsedProgramAccounts } from '../../../utils/solana';
-import { jupiterLimitsFilter } from './filters';
+import { serumOrdersV2Filter } from './filters';
 import runInBatch from '../../../utils/misc/runInBatch';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import { jupiterPlatform } from '../../../platforms';
+import { serumMarketsPrefix, serumV3ProgramId } from './constants';
+import { CLOBMarket } from './types';
+import { openOrdersV2Struct } from './structs';
+import { serumPlatform } from '../../../platforms';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const limitOrdersAccounts = await getParsedProgramAccounts(
+  const ordersAccounts = await getParsedProgramAccounts(
     client,
-    limitOrderStruct,
-    jupiterLimitProgramId,
-    jupiterLimitsFilter(owner)
+    openOrdersV2Struct,
+    serumV3ProgramId,
+    serumOrdersV2Filter(owner)
   );
 
-  const tokensMints: Set<PublicKey> = new Set();
-  for (let i = 0; i < limitOrdersAccounts.length; i += 1) {
-    tokensMints.add(limitOrdersAccounts[i].inputMint);
+  const marketsAddresses: Set<string> = new Set();
+  for (let i = 0; i < ordersAccounts.length; i++) {
+    marketsAddresses.add(ordersAccounts[i].market.toString());
   }
+
+  const markets = await cache.getItems<CLOBMarket>(
+    Array.from(marketsAddresses),
+    {
+      prefix: serumMarketsPrefix,
+    }
+  );
+
+  if (!markets) return [];
+
+  const marketsByAddress: Map<string, CLOBMarket> = new Map();
+  const tokensMints: Set<string> = new Set();
+  for (let i = 0; i < markets.length; i++) {
+    const market = markets[i];
+    if (!market) continue;
+    marketsByAddress.set(market.address, market);
+    tokensMints.add(market.quoteMint.toString());
+  }
+
   const tokenPriceResults = await runInBatch(
     [...Array.from(tokensMints)].map(
-      (mint) => () => cache.getTokenPrice(mint.toString(), NetworkId.solana)
+      (mint) => () => cache.getTokenPrice(mint, NetworkId.solana)
     )
   );
   const tokenPrices: Map<string, TokenPrice> = new Map();
@@ -44,13 +64,16 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
 
   const rawAmountByMint: Map<string, BigNumber> = new Map();
-  for (let i = 0; i < limitOrdersAccounts.length; i += 1) {
-    const limOrder = limitOrdersAccounts[i];
-    const mint = limOrder.inputMint.toString();
+  for (let i = 0; i < ordersAccounts.length; i += 1) {
+    const openOrder = ordersAccounts[i];
+    const market = marketsByAddress.get(openOrder.market.toString());
+    if (!market) continue;
 
-    const amountLeftInOrder = limOrder.makingAmount;
-    const totalAmount = rawAmountByMint.get(mint);
-    rawAmountByMint.set(mint, amountLeftInOrder.plus(totalAmount || 0));
+    const quoteMint = market.quoteMint.toString();
+    const amountLeftInOrder = openOrder.quoteTokenTotal;
+
+    const totalAmount = rawAmountByMint.get(quoteMint);
+    rawAmountByMint.set(quoteMint, amountLeftInOrder.plus(totalAmount || 0));
   }
 
   let value = 0;
@@ -58,8 +81,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   for (const [mint, rawAmount] of rawAmountByMint) {
     const tokenPrice = tokenPrices.get(mint);
     if (!tokenPrice) continue;
+
     const amount = rawAmount.dividedBy(10 ** tokenPrice.decimals).toNumber();
     if (amount === 0) continue;
+
     const asset = tokenPriceToAssetToken(
       mint,
       amount,
@@ -72,21 +97,21 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (assets.length === 0) return [];
 
-  const element: PortfolioElementMultiple = {
+  const serumElement: PortfolioElementMultiple = {
     type: 'multiple',
     networkId: NetworkId.solana,
-    platformId: jupiterPlatform.id,
+    platformId: serumPlatform.id,
     value,
     label: 'Deposit',
     tags: ['Limit Orders'],
     data: { assets },
   };
 
-  return [element];
+  return [serumElement];
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-jupiter-limit`,
+  id: `${platformId}-${serumPlatform.id}`,
   networkId: NetworkId.solana,
   executor,
 };
