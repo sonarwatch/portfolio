@@ -5,6 +5,7 @@ import {
   TokenPrice,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
+import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { platformId } from '../constants';
@@ -13,7 +14,7 @@ import { getParsedProgramAccounts } from '../../../utils/solana';
 import { serumOrdersV2Filter } from './filters';
 import runInBatch from '../../../utils/misc/runInBatch';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import { serumMarketsPrefix, serumV3ProgramId } from './constants';
+import { serumMarketsPrefix, clobVersions } from './constants';
 import { CLOBMarket } from './types';
 import { openOrdersV2Struct } from './structs';
 import { serumPlatform } from '../../../platforms';
@@ -24,7 +25,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const ordersAccounts = await getParsedProgramAccounts(
     client,
     openOrdersV2Struct,
-    serumV3ProgramId,
+    new PublicKey(clobVersions.serumV3.programId),
     serumOrdersV2Filter(owner)
   );
 

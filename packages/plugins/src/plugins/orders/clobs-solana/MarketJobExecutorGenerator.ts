@@ -1,4 +1,5 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
+import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../../Cache';
 import { JobExecutor } from '../../../Job';
 import { getClientSolana } from '../../../utils/clients';
@@ -18,7 +19,7 @@ export default function getMarketJobExecutor(
     const marketsAccounts = await getParsedProgramAccounts(
       client,
       clobProgramInfo.struct,
-      clobProgramInfo.programId,
+      new PublicKey(clobProgramInfo.programId),
       dataSizeStructFilter(clobProgramInfo.struct)
     );
 

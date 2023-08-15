@@ -10,14 +10,56 @@ import BigNumber from 'bignumber.js';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { blob, i64, i80f48, u128, u64 } from '../../../utils/solana';
 
-export enum AccountFlags {
-  none,
-}
+export type AccountFlag = {
+  initialized: boolean;
+  market: boolean;
+  openOrders: boolean;
+  requestQueue: boolean;
+  eventQueue: boolean;
+  bids: boolean;
+  asks: boolean;
+};
+export const accountFlagStruct = new BeetStruct<AccountFlag>(
+  [
+    ['initialized', bool],
+    ['market', bool],
+    ['openOrders', bool],
+    ['requestQueue', bool],
+    ['eventQueue', bool],
+    ['bids', bool],
+    ['asks', bool],
+  ],
+  (args) => args as AccountFlag
+);
+
+export type OracleConfig = {
+  confFilter: BigNumber;
+  maxStalenessSlots: BigNumber;
+  reserved: number[];
+};
+
+export const oracleConfigStruct = new BeetStruct<OracleConfig>(
+  [
+    ['confFilter', i80f48],
+    ['maxStalenessSlots', i64],
+    ['reserved', uniformFixedSizeArray(u8, 72)],
+  ],
+  (args) => args as OracleConfig
+);
+
+export type NonZeroPubkeyOption = {
+  key: PublicKey;
+};
+
+export const nonZeroPubkeyOptionStruct = new BeetStruct<NonZeroPubkeyOption>(
+  [['key', publicKey]],
+  (args) => args as NonZeroPubkeyOption
+);
 
 export type SerumMarketV1 = {
   buffer: Buffer;
   bump: Buffer;
-  accountFlags: AccountFlags;
+  accountFlags: AccountFlag;
   ownAddress: PublicKey;
   vaultSignerNonce: BigNumber;
   baseMint: PublicKey;
@@ -42,8 +84,8 @@ export type SerumMarketV1 = {
 export const serumMarketV1Struct = new BeetStruct<SerumMarketV1>(
   [
     ['buffer', blob(8)],
-    ['bump', blob(4)],
-    ['accountFlags', u8],
+    ['bump', blob(5)],
+    ['accountFlags', accountFlagStruct],
     ['ownAddress', publicKey],
     ['vaultSignerNonce', u64],
     ['baseMint', publicKey],
@@ -70,7 +112,7 @@ export const serumMarketV1Struct = new BeetStruct<SerumMarketV1>(
 export type SerumMarketV2 = {
   buffer: Buffer;
   bump: Buffer;
-  accountFlags: AccountFlags;
+  accountFlags: AccountFlag;
   ownAddress: PublicKey;
   vaultSignerNonce: BigNumber;
   baseMint: PublicKey;
@@ -96,8 +138,8 @@ export type SerumMarketV2 = {
 export const serumMarketV2Struct = new BeetStruct<SerumMarketV2>(
   [
     ['buffer', blob(8)],
-    ['bump', blob(4)],
-    ['accountFlags', u8],
+    ['bump', blob(5)],
+    ['accountFlags', accountFlagStruct],
     ['ownAddress', publicKey],
     ['vaultSignerNonce', u64],
     ['baseMint', publicKey],
@@ -125,7 +167,7 @@ export const serumMarketV2Struct = new BeetStruct<SerumMarketV2>(
 export type SerumMarketV3 = {
   buffer: Buffer;
   buffer1: Buffer;
-  accountFlags: AccountFlags;
+  accountFlags: AccountFlag;
   ownAddress: PublicKey;
   vaultSignerNonce: BigNumber;
   baseMint: PublicKey;
@@ -155,8 +197,8 @@ export type SerumMarketV3 = {
 export const serumMarketV3Struct = new BeetStruct<SerumMarketV3>(
   [
     ['buffer', blob(8)],
-    ['buffer1', blob(4)],
-    ['accountFlags', u8],
+    ['buffer1', blob(5)],
+    ['accountFlags', accountFlagStruct],
     ['ownAddress', publicKey],
     ['vaultSignerNonce', u64],
     ['baseMint', publicKey],
@@ -185,50 +227,85 @@ export const serumMarketV3Struct = new BeetStruct<SerumMarketV3>(
   (args) => args as SerumMarketV3
 );
 
-export type OracleConfig = {
-  confFilter: BigNumber;
-  maxStalenessSlots: BigNumber;
+export type OpenbookMarketV1 = {
+  bump: number;
+  base_decimals: number;
+  quote_decimals: number;
+  padding1: number[];
+  market_authority: PublicKey;
+  time_expiry: BigNumber;
+  collect_fee_admin: PublicKey;
+  open_orders_admin: NonZeroPubkeyOption;
+  consume_events_admin: NonZeroPubkeyOption;
+  close_market_admin: NonZeroPubkeyOption;
+  name: number[];
+  bids: PublicKey;
+  asks: PublicKey;
+  event_queue: PublicKey;
+  oracle_a: NonZeroPubkeyOption;
+  oracle_b: NonZeroPubkeyOption;
+  oracle_config: OracleConfig;
+  quote_lot_size: BigNumber;
+  base_lot_size: BigNumber;
+  seq_num: BigNumber;
+  registration_time: BigNumber;
+  maker_fee: BigNumber;
+  taker_fee: BigNumber;
+  fees_accrued: BigNumber;
+  fees_to_referrers: BigNumber;
+  referrer_rebates_accrued: BigNumber;
+  fees_available: BigNumber;
+  maker_volume: BigNumber;
+  taker_volume_wo_oo: BigNumber;
+  base_mint: PublicKey;
+  quote_mint: PublicKey;
+  market_base_vault: PublicKey;
+  base_deposit_total: BigNumber;
+  market_quote_vault: PublicKey;
+  quote_deposit_total: BigNumber;
   reserved: number[];
 };
 
-export const oracleConfigStruct = new BeetStruct<OracleConfig>(
+export const openbookMarketV1Struct = new BeetStruct<OpenbookMarketV1>(
   [
-    ['confFilter', i80f48],
-    ['maxStalenessSlots', i64],
-    ['reserved', uniformFixedSizeArray(u8, 72)],
+    ['bump', u8],
+    ['base_decimals', u8],
+    ['quote_decimals', u8],
+    ['padding1', uniformFixedSizeArray(u8, 5)],
+    ['market_authority', publicKey],
+    ['time_expiry', i64],
+    ['collect_fee_admin', publicKey],
+    ['open_orders_admin', nonZeroPubkeyOptionStruct],
+    ['consume_events_admin', nonZeroPubkeyOptionStruct],
+    ['close_market_admin', nonZeroPubkeyOptionStruct],
+    ['name', uniformFixedSizeArray(u8, 16)],
+    ['bids', publicKey],
+    ['asks', publicKey],
+    ['event_queue', publicKey],
+    ['oracle_a', nonZeroPubkeyOptionStruct],
+    ['oracle_b', nonZeroPubkeyOptionStruct],
+    ['oracle_config', oracleConfigStruct],
+    ['quote_lot_size', i64],
+    ['base_lot_size', i64],
+    ['seq_num', u64],
+    ['registration_time', u64],
+    ['maker_fee', i64],
+    ['taker_fee', i64],
+    ['fees_accrued', u64],
+    ['fees_to_referrers', u64],
+    ['referrer_rebates_accrued', u64],
+    ['fees_available', u64],
+    ['maker_volume', u64],
+    ['taker_volume_wo_oo', u64],
+    ['base_mint', publicKey],
+    ['quote_mint', publicKey],
+    ['market_base_vault', publicKey],
+    ['base_deposit_total', u64],
+    ['market_quote_vault', publicKey],
+    ['quote_deposit_total', u64],
+    ['reserved', uniformFixedSizeArray(u8, 128)],
   ],
-  (args) => args as OracleConfig
-);
-
-export type NonZeroPubkeyOption = {
-  key: PublicKey;
-};
-
-export const nonZeroPubkeyOptionStruct = new BeetStruct<NonZeroPubkeyOption>(
-  [['key', publicKey]],
-  (args) => args as NonZeroPubkeyOption
-);
-
-export type AccountFlag = {
-  initialized: boolean;
-  market: boolean;
-  openOrders: boolean;
-  requestQueue: boolean;
-  eventQueue: boolean;
-  bids: boolean;
-  asks: boolean;
-};
-export const accountFlagStruct = new BeetStruct<AccountFlag>(
-  [
-    ['initialized', bool],
-    ['market', bool],
-    ['openOrders', bool],
-    ['requestQueue', bool],
-    ['eventQueue', bool],
-    ['bids', bool],
-    ['asks', bool],
-  ],
-  (args) => args as AccountFlag
+  (args) => args as OpenbookMarketV1
 );
 
 export type OpenOrdersV1 = {
@@ -404,5 +481,7 @@ export const openOrdersV3Struct = new BeetStruct<OpenOrdersV3>(
   (args) => args as OpenOrdersV3
 );
 
-export type CLOBMarketAccount = SerumMarketV1 | SerumMarketV2 | SerumMarketV3;
+export type CLOBMarketAccount =
+  // | OpenbookMarketV1
+  SerumMarketV1 | SerumMarketV2 | SerumMarketV3;
 export type CLOBOrderStruct = OpenOrdersV1 | OpenOrdersV2 | OpenOrdersV3;

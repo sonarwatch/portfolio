@@ -5,6 +5,7 @@ import {
   TokenPrice,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
+import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { platformId } from '../constants';
@@ -14,7 +15,7 @@ import { openOrdersV2Struct } from '../../raydium/structs/openOrders';
 import runInBatch from '../../../utils/misc/runInBatch';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import { openbookPlatform } from '../../../platforms';
-import { openBookV1ProgramId, openbookMarketsPrefix } from './constants';
+import { clobVersions, openbookMarketsPrefix } from './constants';
 import { serumOrdersV2Filter } from './filters';
 import { CLOBMarket } from './types';
 
@@ -23,7 +24,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const ordersAccounts = await getParsedProgramAccounts(
     client,
     openOrdersV2Struct,
-    openBookV1ProgramId,
+    new PublicKey(clobVersions.openbookV1.programId),
     serumOrdersV2Filter(owner)
   );
   if (ordersAccounts.length === 0) return [];
