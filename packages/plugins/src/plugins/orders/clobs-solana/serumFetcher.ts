@@ -16,7 +16,6 @@ import runInBatch from '../../../utils/misc/runInBatch';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import { serumMarketsPrefix, clobVersions } from './constants';
 import { CLOBMarket } from './types';
-import { openOrdersV2Struct } from './structs';
 import { serumPlatform } from '../../../platforms';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
@@ -24,7 +23,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const ordersAccounts = await getParsedProgramAccounts(
     client,
-    openOrdersV2Struct,
+    clobVersions.serumV3.orderStruct,
     new PublicKey(clobVersions.serumV3.programId),
     serumOrdersV2Filter(owner)
   );

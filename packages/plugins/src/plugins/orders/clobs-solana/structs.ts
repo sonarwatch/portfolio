@@ -59,7 +59,7 @@ export const nonZeroPubkeyOptionStruct = new BeetStruct<NonZeroPubkeyOption>(
 export type SerumMarketV1 = {
   buffer: Buffer;
   bump: Buffer;
-  accountFlags: AccountFlag;
+  accountFlags: number;
   ownAddress: PublicKey;
   vaultSignerNonce: BigNumber;
   baseMint: PublicKey;
@@ -84,8 +84,8 @@ export type SerumMarketV1 = {
 export const serumMarketV1Struct = new BeetStruct<SerumMarketV1>(
   [
     ['buffer', blob(8)],
-    ['bump', blob(5)],
-    ['accountFlags', accountFlagStruct],
+    ['bump', blob(4)],
+    ['accountFlags', u8],
     ['ownAddress', publicKey],
     ['vaultSignerNonce', u64],
     ['baseMint', publicKey],
@@ -112,7 +112,7 @@ export const serumMarketV1Struct = new BeetStruct<SerumMarketV1>(
 export type SerumMarketV2 = {
   buffer: Buffer;
   bump: Buffer;
-  accountFlags: AccountFlag;
+  accountFlags: number;
   ownAddress: PublicKey;
   vaultSignerNonce: BigNumber;
   baseMint: PublicKey;
@@ -138,8 +138,8 @@ export type SerumMarketV2 = {
 export const serumMarketV2Struct = new BeetStruct<SerumMarketV2>(
   [
     ['buffer', blob(8)],
-    ['bump', blob(5)],
-    ['accountFlags', accountFlagStruct],
+    ['bump', blob(4)],
+    ['accountFlags', u8],
     ['ownAddress', publicKey],
     ['vaultSignerNonce', u64],
     ['baseMint', publicKey],
@@ -167,7 +167,7 @@ export const serumMarketV2Struct = new BeetStruct<SerumMarketV2>(
 export type SerumMarketV3 = {
   buffer: Buffer;
   buffer1: Buffer;
-  accountFlags: AccountFlag;
+  accountFlags: number;
   ownAddress: PublicKey;
   vaultSignerNonce: BigNumber;
   baseMint: PublicKey;
@@ -197,8 +197,8 @@ export type SerumMarketV3 = {
 export const serumMarketV3Struct = new BeetStruct<SerumMarketV3>(
   [
     ['buffer', blob(8)],
-    ['buffer1', blob(5)],
-    ['accountFlags', accountFlagStruct],
+    ['buffer1', blob(4)],
+    ['accountFlags', u8],
     ['ownAddress', publicKey],
     ['vaultSignerNonce', u64],
     ['baseMint', publicKey],
@@ -484,4 +484,4 @@ export const openOrdersV3Struct = new BeetStruct<OpenOrdersV3>(
 export type CLOBMarketAccount =
   // | OpenbookMarketV1
   SerumMarketV1 | SerumMarketV2 | SerumMarketV3;
-export type CLOBOrderStruct = OpenOrdersV1 | OpenOrdersV2 | OpenOrdersV3;
+export type CLOBOrderStruct = OpenOrdersV1 | OpenOrdersV2;
