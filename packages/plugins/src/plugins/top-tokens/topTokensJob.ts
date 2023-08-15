@@ -8,7 +8,7 @@ import { CoingeckoCoinsListResponse } from '../../utils/coingecko/types';
 import sleep from '../../utils/misc/sleep';
 import getTopAddresses from './getTopAddresses';
 
-const networkIds = [NetworkId.ethereum, NetworkId.polygon, NetworkId.avalanche];
+const networkIds = [NetworkId.avalanche, NetworkId.polygon, NetworkId.ethereum];
 
 const executor: JobExecutor = async (cache: Cache) => {
   const coingeckoCoinsListRes: AxiosResponse<CoingeckoCoinsListResponse> | null =
@@ -20,11 +20,11 @@ const executor: JobExecutor = async (cache: Cache) => {
         timeout: 5000,
       })
       .catch(() => null);
-  await sleep(20000);
+  await sleep(60000);
   if (!coingeckoCoinsListRes || !coingeckoCoinsListRes.data) return;
 
   for (let i = 0; i < networkIds.length; i++) {
-    await sleep(10000);
+    await sleep(60000);
     const networkId = networkIds[i];
     try {
       const topTokens = await getTopAddresses(
@@ -38,6 +38,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       //
     }
   }
+  await sleep(60000);
 };
 
 const job: Job = {
