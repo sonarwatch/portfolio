@@ -44,6 +44,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const amount = new BigNumber(stakeAccount.stake)
       .dividedBy(new BigNumber(10 ** 9))
       .toNumber();
+    if (amount === 0) continue;
     const value = amount * solTokenPrice.price;
     const { voter } = stakeAccount;
 
