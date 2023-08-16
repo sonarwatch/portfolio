@@ -135,3 +135,8 @@ export const openbookPlatform: Platform = {
   name: 'OpenBook',
   image: 'https://alpha.sonar.watch/img/platforms/openbook.png',
 };
+export const morphoPlatform: Platform = {
+  id: 'morpho',
+  name: 'Morpho',
+  image: 'https://alpha.sonar.watch/img/platforms/morpho.png',
+};

@@ -39,6 +39,10 @@ import {
 } from './plugins/orders';
 import { fetchers as aaveFetchers, jobs as aaveJobs } from './plugins/aave';
 import { fetchers as aptosStakingFetchers } from './plugins/staking-aptos';
+import {
+  fetchers as morphoFetchers,
+  jobs as morphoJobs,
+} from './plugins/morpho';
 import { jobs as driftJobs, fetchers as driftFetchers } from './plugins/drift';
 import { jobs as mangoJobs, fetchers as mangoFetchers } from './plugins/mango';
 import { jobs as topTokensJobs } from './plugins/top-tokens';
@@ -74,6 +78,7 @@ export const jobs: Job[] = [
   ...saberJobs,
   ...aaveJobs,
   ...ordersJobs,
+  ...morphoJobs,
 ];
 
 export const fetchers: Fetcher[] = [
@@ -93,6 +98,7 @@ export const fetchers: Fetcher[] = [
   ...aptosStakingFetchers,
   ...aaveFetchers,
   ...ordersFetchers,
+  ...morphoFetchers,
 ];
 
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);

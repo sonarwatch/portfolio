@@ -46,6 +46,7 @@ export function getElementLendingValues(
   return {
     borrowedValue,
     suppliedValue,
+    rewardsValue,
     collateralRatio,
     value,
   };
