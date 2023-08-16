@@ -120,3 +120,18 @@ export const saberPlatform: Platform = {
   name: 'Saber',
   image: 'https://alpha.sonar.watch/img/platforms/saber.png',
 };
+export const jupiterPlatform: Platform = {
+  id: 'jupiter',
+  name: 'Jupiter',
+  image: 'https://alpha.sonar.watch/img/platforms/jupiter.png',
+};
+export const serumPlatform: Platform = {
+  id: 'serum',
+  name: 'Serum',
+  image: 'https://alpha.sonar.watch/img/platforms/serum.png',
+};
+export const openbookPlatform: Platform = {
+  id: 'openbook',
+  name: 'OpenBook',
+  image: 'https://alpha.sonar.watch/img/platforms/openbook.png',
+};
