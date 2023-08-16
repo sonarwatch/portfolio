@@ -7,12 +7,12 @@ import { getParsedProgramAccounts } from '../../../utils/solana';
 
 import { dataSizeStructFilter } from './filters';
 import { CLOBMarketAccount } from './structs';
-import { CLOBMarket, CLOBProgramInfo } from './types';
+import { CLOBMarket, CLOBVersion } from './types';
 
 const networkId = NetworkId.solana;
 
 export default function getMarketJobExecutor(
-  clobProgramInfo: CLOBProgramInfo
+  clobProgramInfo: CLOBVersion
 ): JobExecutor {
   return async (cache: Cache) => {
     const client = getClientSolana();
@@ -29,7 +29,7 @@ export default function getMarketJobExecutor(
 
 async function addMarketsToCache(
   cache: Cache,
-  clobProgramInfo: CLOBProgramInfo,
+  clobProgramInfo: CLOBVersion,
   marketsAccounts: CLOBMarketAccount[]
 ) {
   for (let i = 0; i < marketsAccounts.length; i++) {

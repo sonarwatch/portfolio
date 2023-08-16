@@ -187,10 +187,10 @@ export type SerumMarketV3 = {
   quoteLotSize: BigNumber;
   feeRateBps: BigNumber;
   referrerRebatesAccrued: BigNumber;
-  authority: PublicKey;
-  pruneAuthority: PublicKey;
-  consumeEventsAuthority: PublicKey;
-  buffer2: Buffer;
+  // authority: PublicKey;
+  // pruneAuthority: PublicKey;
+  // consumeEventsAuthority: PublicKey;
+  // buffer2: Buffer;
   buffer3: Buffer;
 };
 
@@ -218,10 +218,10 @@ export const serumMarketV3Struct = new BeetStruct<SerumMarketV3>(
     ['quoteLotSize', u64],
     ['feeRateBps', u64],
     ['referrerRebatesAccrued', u64],
-    ['authority', publicKey],
-    ['pruneAuthority', publicKey],
-    ['consumeEventsAuthority', publicKey],
-    ['buffer2', blob(992)],
+    // ['authority', publicKey],
+    // ['pruneAuthority', publicKey],
+    // ['consumeEventsAuthority', publicKey],
+    // ['buffer2', blob(992)],
     ['buffer3', blob(7)],
   ],
   (args) => args as SerumMarketV3

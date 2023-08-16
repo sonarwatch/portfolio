@@ -11,7 +11,8 @@ export type CLOBMarket = {
   programId: string;
 };
 
-export type CLOBProgramInfo = {
+export type CLOBVersion = {
+  name: string;
   programId: string;
   struct: BeetStruct<CLOBMarketAccount, Partial<CLOBMarketAccount>>;
   orderStruct: BeetStruct<CLOBOrderStruct, Partial<CLOBOrderStruct>>;

@@ -16,7 +16,7 @@ import runInBatch from '../../../utils/misc/runInBatch';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import { openbookPlatform } from '../../../platforms';
 import { clobVersions } from './constants';
-import { serumOrdersV2Filter } from './filters';
+import { serumOrdersFilter } from './filters';
 import { CLOBMarket } from './types';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
@@ -25,7 +25,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     client,
     openOrdersV2Struct,
     new PublicKey(clobVersions.openbookV1.programId),
-    serumOrdersV2Filter(owner)
+    serumOrdersFilter(owner, openOrdersV2Struct)
   );
   if (ordersAccounts.length === 0) return [];
 

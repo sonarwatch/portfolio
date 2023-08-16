@@ -1,9 +1,10 @@
 import { GetProgramAccountsFilter } from '@solana/web3.js';
 import { BeetStruct } from '@metaplex-foundation/beet';
-import { CLOBMarketAccount, openOrdersV2Struct } from './structs';
+import { CLOBMarketAccount, CLOBOrderStruct } from './structs';
 
-export const serumOrdersV2Filter = (
-  owner: string
+export const serumOrdersFilter = (
+  owner: string,
+  struct: BeetStruct<CLOBOrderStruct>
 ): GetProgramAccountsFilter[] => [
   {
     memcmp: {
@@ -12,7 +13,7 @@ export const serumOrdersV2Filter = (
     },
   },
   {
-    dataSize: openOrdersV2Struct.byteSize,
+    dataSize: struct.byteSize,
   },
 ];
 
