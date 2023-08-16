@@ -71,10 +71,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (!market) continue;
 
     const quoteMint = market.quoteMint.toString();
-    const amountLeftInOrder = openOrder.quoteTokenTotal;
+    const amountLeftToFill = openOrder.quoteTokenTotal;
 
     const totalAmount = rawAmountByMint.get(quoteMint);
-    rawAmountByMint.set(quoteMint, amountLeftInOrder.plus(totalAmount || 0));
+    rawAmountByMint.set(quoteMint, amountLeftToFill.plus(totalAmount || 0));
   }
 
   let value = 0;
