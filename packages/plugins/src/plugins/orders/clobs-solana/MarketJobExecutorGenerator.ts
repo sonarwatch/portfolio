@@ -12,36 +12,36 @@ import { CLOBMarket, CLOBVersion } from './types';
 const networkId = NetworkId.solana;
 
 export default function getMarketJobExecutor(
-  clobProgramInfo: CLOBVersion
+  clobVersion: CLOBVersion
 ): JobExecutor {
   return async (cache: Cache) => {
     const client = getClientSolana();
     const marketsAccounts = await getParsedProgramAccounts(
       client,
-      clobProgramInfo.struct,
-      new PublicKey(clobProgramInfo.programId),
-      dataSizeStructFilter(clobProgramInfo.struct)
+      clobVersion.struct,
+      new PublicKey(clobVersion.programId),
+      dataSizeStructFilter(clobVersion.struct)
     );
 
-    await addMarketsToCache(cache, clobProgramInfo, marketsAccounts);
+    await addMarketsToCache(cache, clobVersion, marketsAccounts);
   };
 }
 
 async function addMarketsToCache(
   cache: Cache,
-  clobProgramInfo: CLOBVersion,
+  clobVersion: CLOBVersion,
   marketsAccounts: CLOBMarketAccount[]
 ) {
   for (let i = 0; i < marketsAccounts.length; i++) {
     const marketAccount = marketsAccounts[i];
     const marketData = getCLOBMarket(
       marketAccount,
-      clobProgramInfo.programId.toString()
+      clobVersion.programId.toString()
     );
     if (!marketData) continue;
 
     await cache.setItem(marketAccount.ownAddress.toString(), marketData, {
-      prefix: clobProgramInfo.prefix,
+      prefix: clobVersion.prefix,
       networkId,
     });
   }

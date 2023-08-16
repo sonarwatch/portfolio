@@ -18,16 +18,16 @@ import { CLOBMarket, CLOBVersion } from './types';
 import { serumPlatform } from '../../../platforms';
 
 export default function getSerumFetcherExecutor(
-  serumInfo: CLOBVersion
+  serumVersion: CLOBVersion
 ): FetcherExecutor {
   return async (owner: string, cache: Cache) => {
     const client = getClientSolana();
 
     const ordersAccounts = await getParsedProgramAccounts(
       client,
-      serumInfo.orderStruct,
-      new PublicKey(serumInfo.programId),
-      serumOrdersFilter(owner, serumInfo.orderStruct)
+      serumVersion.orderStruct,
+      new PublicKey(serumVersion.programId),
+      serumOrdersFilter(owner, serumVersion.orderStruct)
     );
 
     const marketsAddresses: Set<string> = new Set();
@@ -38,7 +38,7 @@ export default function getSerumFetcherExecutor(
     const markets = await cache.getItems<CLOBMarket>(
       Array.from(marketsAddresses),
       {
-        prefix: serumInfo.prefix,
+        prefix: serumVersion.prefix,
         networkId: NetworkId.solana,
       }
     );
@@ -154,7 +154,8 @@ export default function getSerumFetcherExecutor(
         platformId: serumPlatform.id,
         value,
         label: 'Deposit',
-        tags: ['In Open Orders', serumInfo.name],
+        name: 'In Open Orders',
+        tags: [serumVersion.name],
         data: { assets: openOrdersAssets },
       });
     }
@@ -164,8 +165,9 @@ export default function getSerumFetcherExecutor(
         networkId: NetworkId.solana,
         platformId: serumPlatform.id,
         value: emptyAccountsValue,
-        label: 'Rewards',
-        tags: ['Empty Orders Accounts', serumInfo.name],
+        label: 'Deposit',
+        name: 'Empty Orders Accounts',
+        tags: [serumVersion.name],
         data: { assets: emptyAccountsAssets },
       });
     }
@@ -176,7 +178,8 @@ export default function getSerumFetcherExecutor(
         platformId: serumPlatform.id,
         value: unsettledValue,
         label: 'Rewards',
-        tags: ['Unsettled Balances', serumInfo.name],
+        name: 'Unsettled Balances',
+        tags: [serumVersion.name],
         data: { assets: unsettledBalancesAssets },
       });
     }
