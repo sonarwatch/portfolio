@@ -120,3 +120,8 @@ export const saberPlatform: Platform = {
   name: 'Saber',
   image: 'https://alpha.sonar.watch/img/platforms/saber.png',
 };
+export const morphoPlatform: Platform = {
+  id: 'morpho',
+  name: 'Morpho',
+  image: 'https://alpha.sonar.watch/img/platforms/morpho.png',
+};
