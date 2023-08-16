@@ -1,6 +1,19 @@
 import { NetworkId, NetworkIdType } from '@sonarwatch/portfolio-core';
 
 const forcedAddresses: Map<NetworkIdType, string[]> = new Map([
-  [NetworkId.ethereum, ['0xBe9895146f7AF43049ca1c1AE358B0541Ea49704']],
+  [
+    NetworkId.ethereum,
+    [
+      '0xBe9895146f7AF43049ca1c1AE358B0541Ea49704',
+      '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+      '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+      '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
+      '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0',
+      '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
+      '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
+      '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+      '0xae78736Cd615f374D3085123A210448E74Fc6393',
+    ],
+  ],
 ]);
 export default forcedAddresses;
