@@ -6,6 +6,10 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 
 
+## [0.5.50](https://github.com/sonarwatch/portfolio/compare/core-0.5.49...core-0.5.50) (2023-08-17)
+
+
+
 ## [0.5.49](https://github.com/sonarwatch/portfolio/compare/core-0.5.48...core-0.5.49) (2023-08-17)
 
 
