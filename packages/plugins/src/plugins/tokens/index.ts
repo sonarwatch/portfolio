@@ -4,6 +4,7 @@ import jobExecutorGenerator from './jobExecutorGenerator';
 import aptosFetcher from './fetchers/aptos';
 import solanaFetcher from './fetchers/solana';
 import suiFetcher from './fetchers/sui';
+import seiFetcher from './fetchers/sei';
 import solanaNativeFetcher from './fetchers/solana-native';
 import solanaNftsFetcher from './fetchers/solana-nfts';
 import solanaNftsUnderlyingsFetcher from './fetchers/solana-nfts-underlyings';
@@ -37,6 +38,10 @@ export const jobs: Job[] = [
     id: `${walletTokensPlatform.id}-${NetworkId.sui}`,
     executor: jobExecutorGenerator(NetworkId.sui),
   },
+  {
+    id: `${walletTokensPlatform.id}-${NetworkId.sei}`,
+    executor: jobExecutorGenerator(NetworkId.sei),
+  },
   tokenListsJob,
 ];
 
@@ -47,5 +52,6 @@ export const fetchers: Fetcher[] = [
   solanaNftsFetcher,
   solanaNftsUnderlyingsFetcher,
   suiFetcher,
+  seiFetcher,
   ...evmFetchers,
 ];

@@ -8,6 +8,7 @@ export const NetworkId = {
   polygon: 'polygon',
   aptos: 'aptos',
   sui: 'sui',
+  sei: 'sei',
 } as const;
 
 export type NetworkIdType = (typeof NetworkId)[keyof typeof NetworkId];

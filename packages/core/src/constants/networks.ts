@@ -9,6 +9,7 @@ import {
   ethereumNativeWrappedAddress,
   polygonNativeAddress,
   polygonNativeWrappedAddress,
+  seiNativeAddress,
   solanaNativeAddress,
   suiNativeAddress,
 } from './addresses';
@@ -145,6 +146,24 @@ export const suiNetwork: Network = {
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.sui.tokenlist.json',
 };
 
+export const seiNetwork: Network = {
+  id: NetworkId.sei,
+  name: 'Sei',
+  image: 'https://alpha.sonar.watch/img/networks/sei.png',
+  addressSystem: AddressSystem.sei,
+  chainId: 1,
+  native: {
+    address: seiNativeAddress,
+    decimals: 6,
+    coingeckoId: 'sui',
+  },
+  nativeWrapped: null,
+  isLive: true,
+  coingeckoPlatformId: 'sei',
+  tokenListUrl:
+    'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.sei.tokenlist.json',
+};
+
 export const networks: Record<NetworkIdType, Network> = {
   [NetworkId.aptos]: aptosNetwork,
   [NetworkId.avalanche]: avalancheNetwork,
@@ -153,4 +172,5 @@ export const networks: Record<NetworkIdType, Network> = {
   [NetworkId.ethereum]: ethereumNetwork,
   [NetworkId.solana]: solanaNetwork,
   [NetworkId.sui]: suiNetwork,
+  [NetworkId.sei]: seiNetwork,
 };
