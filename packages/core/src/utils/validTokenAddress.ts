@@ -36,11 +36,21 @@ export function assertSolanaTokenAddress(address: string): void {
     throw new Error(`Solana token address is not valid: ${address}`);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function isSeiTokenAddress(address: string): boolean {
+  return true;
+}
+export function assertSeiTokenAddress(address: string): void {
+  if (!isSeiTokenAddress(address))
+    throw new Error(`Sei token address is not valid: ${address}`);
+}
+
 const validators: Record<AddressSystemType, (address: string) => boolean> = {
   [AddressSystem.solana]: isSolanaTokenAddress,
   [AddressSystem.evm]: isEvmTokenAddress,
   [AddressSystem.bitcoin]: isBitcoinTokenAddress,
   [AddressSystem.move]: isMoveTokenAddress,
+  [AddressSystem.sei]: isSeiTokenAddress,
 };
 
 export function isTokenAddressValid(

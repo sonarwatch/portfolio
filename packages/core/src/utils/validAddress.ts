@@ -44,11 +44,20 @@ export function assertSolanaAddress(address: string): void {
     throw new Error(`Solana address is not valid: ${address}`);
 }
 
+export function isSeiAddress(address: string): boolean {
+  return address.startsWith('sei');
+}
+export function assertSeiAddress(address: string): void {
+  if (!isSeiAddress(address))
+    throw new Error(`Sei address is not valid: ${address}`);
+}
+
 const validators: Record<AddressSystemType, (address: string) => boolean> = {
   [AddressSystem.solana]: isSolanaAddress,
   [AddressSystem.evm]: isEvmAddress,
   [AddressSystem.move]: isMoveAddress,
   [AddressSystem.bitcoin]: isBitcoinAddress,
+  [AddressSystem.sei]: isSeiAddress,
 };
 
 export function getAddressSystem(address: string): AddressSystemType | null {
