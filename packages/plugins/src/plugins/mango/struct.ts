@@ -2,6 +2,7 @@ import {
   BeetStruct,
   FixableBeetStruct,
   array,
+  bool,
   u16,
   u32,
   u8,
@@ -10,7 +11,20 @@ import {
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { blob, f32, f64, i64, i80f48, u128, u64 } from '../../utils/solana';
+import {
+  blob,
+  f32,
+  f64,
+  i128,
+  i64,
+  i80f48,
+  u128,
+  u64,
+} from '../../utils/solana';
+
+const MAX_TOKENS = 16;
+const MAX_PAIRS = MAX_TOKENS - 1;
+const MAX_NODE_BANKS = 8;
 
 export type StablePriceModel = {
   stablePrice: BigNumber;
@@ -348,4 +362,288 @@ export const mangoAccountStruct = new FixableBeetStruct<MangoAccount>(
     ['perpOpenOrders', array(perpOpenOrderStruct)],
   ],
   (args) => args as MangoAccount
+);
+
+export type PerpAccount = {
+  basePosition: BigNumber;
+  quotePosition: BigNumber;
+  longSettledFunding: BigNumber;
+  shortSettledFunding: BigNumber;
+  bidsQuantity: BigNumber;
+  asksQuantity: BigNumber;
+  takerBase: BigNumber;
+  takerQuote: BigNumber;
+  mngoAccrued: BigNumber;
+};
+
+export const perpAccountStruct = new BeetStruct<PerpAccount>(
+  [
+    ['basePosition', i64], // i64
+    ['quotePosition', i80f48],
+    ['longSettledFunding', i80f48],
+    ['shortSettledFunding', i80f48],
+    ['bidsQuantity', i64], // i64
+    ['asksQuantity', i64], // i64
+    ['takerBase', i64], // i64
+    ['takerQuote', i64], // i64
+    ['mngoAccrued', u64], // u64
+  ],
+  (args) => args as PerpAccount
+);
+
+export type MetaData = {
+  dataType: number;
+  version: number;
+  isInitialized: number;
+  extraInfo: number[];
+};
+
+export const metaDataStruct = new BeetStruct<MetaData>(
+  [
+    ['dataType', u8],
+    ['version', u8],
+    ['isInitialized', u8],
+    ['extraInfo', uniformFixedSizeArray(u8, 5)],
+  ],
+  (args) => args as MetaData
+);
+
+export enum Side {
+  buy,
+  sell,
+}
+
+export type MangoAccountV3 = {
+  // buffer: Buffer;
+  metaData: MetaData;
+  mangoGroup: PublicKey;
+  owner: PublicKey;
+
+  inMarginBasket: boolean[]; // 15
+  numInMarginBasket: number; // u8
+  deposits: BigNumber[]; // 16
+  borrows: BigNumber[]; // 16
+
+  spotOpenOrders: PublicKey[]; // 15
+  perpAccounts: PerpAccount[]; // 15
+
+  orderMarket: number[]; // 64 * u8
+  orderSide: Side[]; // 64 * bool
+  orders: BigNumber[]; // i128 * 64
+  clientOrderIds: BigNumber[]; // u64 * 64
+
+  msrmAmount: BigNumber; // u64
+
+  beingLiquidated: boolean;
+  isBankrupt: boolean;
+  info: number[]; // u8 * 32
+
+  advancedOrdersKey: PublicKey;
+
+  notUpgradable: boolean;
+  delegate: PublicKey;
+};
+
+export const mangoAccountV3Struct = new BeetStruct<MangoAccountV3>(
+  [
+    // ['buffer', blob(8)],
+    ['metaData', metaDataStruct],
+    ['mangoGroup', publicKey],
+    ['owner', publicKey],
+
+    ['inMarginBasket', uniformFixedSizeArray(bool, MAX_PAIRS)],
+    ['numInMarginBasket', u8],
+    ['deposits', uniformFixedSizeArray(i80f48, MAX_TOKENS)],
+    ['borrows', uniformFixedSizeArray(i80f48, MAX_TOKENS)],
+
+    ['spotOpenOrders', uniformFixedSizeArray(publicKey, MAX_PAIRS)],
+    ['perpAccounts', uniformFixedSizeArray(perpAccountStruct, MAX_PAIRS)],
+
+    ['orderMarket', uniformFixedSizeArray(u8, 64)],
+    ['orderSide', uniformFixedSizeArray(u8, 64)],
+    ['orders', uniformFixedSizeArray(i128, 64)],
+    ['clientOrderIds', uniformFixedSizeArray(u64, 64)],
+
+    ['msrmAmount', u64],
+
+    ['beingLiquidated', bool],
+    ['isBankrupt', bool],
+    ['info', uniformFixedSizeArray(u8, 32)],
+
+    ['advancedOrdersKey', publicKey],
+
+    ['notUpgradable', bool],
+    ['delegate', publicKey],
+  ],
+  (args) => args as MangoAccountV3
+);
+
+export type SpotMarketInfo = {
+  spotMarket: PublicKey;
+  maintAssetWeight: BigNumber;
+  initAssetWeight: BigNumber;
+  maintLiabWeight: BigNumber;
+  initLiabWeight: BigNumber;
+  liquidationFee: BigNumber;
+};
+
+export const spotMarketInfoStruct = new BeetStruct<SpotMarketInfo>(
+  [
+    ['spotMarket', publicKey],
+    ['maintAssetWeight', i80f48],
+    ['initAssetWeight', i80f48],
+    ['maintLiabWeight', i80f48],
+    ['initLiabWeight', i80f48],
+    ['liquidationFee', i80f48],
+  ],
+  (args) => args as SpotMarketInfo
+);
+
+export type PerpMarketInfo = {
+  perpMarket: PublicKey;
+  maintAssetWeight: BigNumber;
+  initAssetWeight: BigNumber;
+  maintLiabWeight: BigNumber;
+  initLiabWeight: BigNumber;
+  liquidationFee: BigNumber;
+  makerFee: BigNumber;
+  takerFee: BigNumber;
+  baseLotSize: BigNumber;
+  quoteLotSize: BigNumber;
+};
+export const perpMarketInfoStruct = new BeetStruct<PerpMarketInfo>(
+  [
+    ['perpMarket', publicKey],
+    ['maintAssetWeight', i80f48],
+    ['initAssetWeight', i80f48],
+    ['maintLiabWeight', i80f48],
+    ['initLiabWeight', i80f48],
+    ['liquidationFee', i80f48],
+    ['makerFee', i80f48],
+    ['takerFee', i80f48],
+    ['baseLotSize', i64],
+    ['quoteLotSize', i64],
+  ],
+  (args) => args as PerpMarketInfo
+);
+
+export type TokenInfo = {
+  mint: PublicKey;
+  rootBank: PublicKey;
+  decimals: number;
+  spotMarketMode: number;
+  perpMarketMode: number;
+  oracleInactive: boolean;
+  padding: number[];
+};
+
+export const tokenInfoStruct = new BeetStruct<TokenInfo>(
+  [
+    ['mint', publicKey],
+    ['rootBank', publicKey],
+    ['decimals', u8],
+    ['spotMarketMode', u8],
+    ['perpMarketMode', u8],
+    ['oracleInactive', bool],
+    ['padding', uniformFixedSizeArray(u8, 4)],
+  ],
+  (args) => args as TokenInfo
+);
+
+export type MangoGroupV3 = {
+  // buffer: Buffer;
+  metaData: MetaData;
+  numOracles: BigNumber; // usize?
+
+  tokens: TokenInfo[];
+  spotMarkets: SpotMarketInfo[];
+  perpMarkets: PerpMarketInfo[];
+
+  oracles: PublicKey[];
+
+  signerNonce: BigNumber;
+  signerKey: PublicKey;
+  admin: PublicKey;
+  dexProgramId: PublicKey;
+  mangoCache: PublicKey;
+  validInterval: BigNumber;
+  insuranceVault: PublicKey;
+  srmVault: PublicKey;
+  msrmVault: PublicKey;
+  feesVault: PublicKey;
+
+  maxMangoAccounts: BigNumber;
+  numMangoAccounts: BigNumber;
+  refSurchargeCentibpsTier1: BigNumber;
+  refShareCentibpsTier1: BigNumber;
+  refMngoRequired: BigNumber;
+  refSurchargeCentibpsTier2: number;
+  refShareCentibpsTier2: number;
+  refMngoTier2Factor: number;
+  padding: number[];
+};
+
+export const mangoGroupV3Struct = new BeetStruct<MangoGroupV3>(
+  [
+    // ['buffer', blob(8)],
+    ['metaData', metaDataStruct],
+    ['numOracles', u64], // usize?
+
+    ['tokens', uniformFixedSizeArray(tokenInfoStruct, MAX_TOKENS)],
+    ['spotMarkets', uniformFixedSizeArray(spotMarketInfoStruct, MAX_PAIRS)],
+    ['perpMarkets', uniformFixedSizeArray(perpMarketInfoStruct, MAX_PAIRS)],
+
+    ['oracles', uniformFixedSizeArray(publicKey, MAX_PAIRS)],
+
+    ['signerNonce', u64],
+    ['signerKey', publicKey],
+    ['admin', publicKey],
+    ['dexProgramId', publicKey],
+    ['mangoCache', publicKey],
+    ['validInterval', u64],
+    ['insuranceVault', publicKey],
+    ['srmVault', publicKey],
+    ['msrmVault', publicKey],
+    ['feesVault', publicKey],
+
+    ['maxMangoAccounts', u32],
+    ['numMangoAccounts', u32],
+    ['refSurchargeCentibpsTier1', u32],
+    ['refShareCentibpsTier1', u32],
+    ['refMngoRequired', u64],
+    ['refSurchargeCentibpsTier2', u16],
+    ['refShareCentibpsTier2', u16],
+    ['refMngoTier2Factor', u8],
+    ['padding', uniformFixedSizeArray(u8, 3)],
+  ],
+  (args) => args as MangoGroupV3
+);
+
+export type RootBank = {
+  metaData: MetaData;
+  optimalUtil: BigNumber;
+  optimalRate: BigNumber;
+  maxRate: BigNumber;
+  numNodeBanks: BigNumber; // usize?
+  nodeBanks: PublicKey[];
+  depositIndex: BigNumber;
+  borrowIndex: BigNumber;
+  lastUpdated: BigNumber;
+  padding: number[];
+};
+
+export const rootBankStruct = new FixableBeetStruct<RootBank>(
+  [
+    ['metaData', metaDataStruct],
+    ['optimalUtil', i80f48],
+    ['optimalRate', i80f48],
+    ['maxRate', i80f48],
+    ['numNodeBanks', u64], // usize?
+    ['nodeBanks', uniformFixedSizeArray(publicKey, MAX_NODE_BANKS)],
+    ['depositIndex', i80f48],
+    ['borrowIndex', i80f48],
+    ['lastUpdated', u64],
+    ['padding', uniformFixedSizeArray(u8, 64)],
+  ],
+  (args) => args as RootBank
 );

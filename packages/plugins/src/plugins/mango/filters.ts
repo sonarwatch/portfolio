@@ -35,3 +35,33 @@ export const banksFilter: GetProgramAccountsFilter[] = [
     },
   },
 ];
+
+export const groupFilter: GetProgramAccountsFilter[] = [
+  {
+    dataSize: 6032,
+  },
+];
+
+export const rootBankFilter: GetProgramAccountsFilter[] = [
+  {
+    dataSize: 424,
+  },
+];
+
+export const redeemFilter = (owner: string): GetProgramAccountsFilter[] => [
+  {
+    memcmp: {
+      offset: 8,
+      bytes: '98pjRuQjK3qA6gXts96PqZT4Ze5QmnCmt3QYjhbUSPue',
+    },
+  },
+  {
+    dataSize: 4296,
+  },
+  {
+    memcmp: {
+      offset: 40,
+      bytes: owner,
+    },
+  },
+];
