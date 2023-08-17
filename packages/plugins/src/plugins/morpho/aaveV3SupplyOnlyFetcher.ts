@@ -33,7 +33,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     platformId,
     label: 'Lending',
     value: asset.value,
-    name: 'AaveV3',
+    name: 'Aave-V3 Supply Only',
     data: {
       liquidities: [
         {

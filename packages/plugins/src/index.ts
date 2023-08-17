@@ -49,6 +49,7 @@ import { jobs as topTokensJobs } from './plugins/top-tokens';
 import { jobs as pancakeswapJobs } from './plugins/pancakeswap';
 import { jobs as liquidswapJobs } from './plugins/liquidswap';
 import { jobs as auxexchangeJobs } from './plugins/auxexchange';
+import { jobs as makerJobs } from './plugins/maker';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
 export * from './Cache';
@@ -79,6 +80,7 @@ export const jobs: Job[] = [
   ...aaveJobs,
   ...ordersJobs,
   ...morphoJobs,
+  ...makerJobs,
 ];
 
 export const fetchers: Fetcher[] = [
