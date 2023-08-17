@@ -3,6 +3,7 @@ import {
   assertBitcoinAddress,
   assertEvmAddress,
   assertMoveAddress,
+  assertSeiAddress,
   assertSolanaAddress,
 } from './validAddress';
 import { NetworkIdType } from '../Network';
@@ -29,11 +30,17 @@ export function formatSolanaAddress(address: string) {
   return address;
 }
 
+export function formatSeiAddress(address: string) {
+  assertSeiAddress(address);
+  return address.toLocaleLowerCase();
+}
+
 const formatters: Record<AddressSystemType, (address: string) => string> = {
   [AddressSystem.solana]: formatSolanaAddress,
   [AddressSystem.bitcoin]: formatBitcoinAddress,
   [AddressSystem.evm]: formatEvmAddress,
   [AddressSystem.move]: formatMoveAddress,
+  [AddressSystem.sei]: formatSeiAddress,
 };
 
 export function formatAddress(

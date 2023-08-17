@@ -6,6 +6,7 @@ import {
   assertBitcoinTokenAddress,
   assertEvmTokenAddress,
   assertMoveTokenAddress,
+  assertSeiTokenAddress,
   assertSolanaTokenAddress,
 } from './validTokenAddress';
 
@@ -34,11 +35,17 @@ export function formatSolanaTokenAddress(address: string) {
   return address;
 }
 
+export function formatSeiTokenAddress(address: string) {
+  assertSeiTokenAddress(address);
+  return address;
+}
+
 const formatters: Record<AddressSystemType, (address: string) => string> = {
   [AddressSystem.solana]: formatSolanaTokenAddress,
   [AddressSystem.bitcoin]: formatBitcoinTokenAddress,
   [AddressSystem.evm]: formatEvmTokenAddress,
   [AddressSystem.move]: formatMoveTokenAddress,
+  [AddressSystem.sei]: formatSeiTokenAddress,
 };
 
 export function formatTokenAddress(address: string, networkId: NetworkIdType) {
