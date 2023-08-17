@@ -37,6 +37,10 @@ export const jobs: Job[] = [
     id: `${walletTokensPlatform.id}-${NetworkId.sui}`,
     executor: jobExecutorGenerator(NetworkId.sui),
   },
+  {
+    id: `${walletTokensPlatform.id}-${NetworkId.sei}`,
+    executor: jobExecutorGenerator(NetworkId.sei),
+  },
   tokenListsJob,
 ];
 
