@@ -12,8 +12,8 @@ import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { walletTokensPlatform } from '../../../platforms';
 import { getClientSolana } from '../../../utils/clients';
 import { Cache } from '../../../Cache';
-import { getRaydiumCLMMPositions } from '../../raydium/clmmPositionsFetcher';
-import { getWhirlpoolPositions } from '../../orca/clmmPositionsFetcher';
+import { getRaydiumCLMMPositions } from '../../raydium/getRaydiumCLMMPositions';
+import { getWhirlpoolPositions } from '../../orca/getWhirlpoolPositions';
 import { isARaydiumPosition } from '../../raydium/helpers';
 import { isAnOrcaPosition } from '../../orca/helpers';
 
