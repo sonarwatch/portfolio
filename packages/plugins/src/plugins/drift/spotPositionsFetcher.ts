@@ -51,10 +51,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
   );
   if (!spotMarketsItems) return [];
+
   const spotMarketByIndex: Map<number, SpotMarketEnhanced> = new Map();
   const tokensMints: Set<string> = new Set();
   for (const spotMarketItem of spotMarketsItems) {
     if (!spotMarketItem) continue;
+
     spotMarketByIndex.set(spotMarketItem.marketIndex, spotMarketItem);
     tokensMints.add(spotMarketItem.mint.toString());
   }
@@ -84,6 +86,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     // Each account has up to 8 SpotPositions
     for (const spotPosition of userAccount.spotPositions) {
+      if (spotPosition.scaledBalance.isZero()) continue;
       const countForBase =
         marketIndexRef === undefined ||
         spotPosition.marketIndex === marketIndexRef;

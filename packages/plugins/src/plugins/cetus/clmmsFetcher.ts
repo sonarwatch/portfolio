@@ -31,7 +31,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     },
     filter: { Package: clmmPoolPackageId },
   });
-  if (!ownerRes.data) return [];
+  if (!ownerRes.data || ownerRes.data.length === 0) return [];
 
   const clmmPositions: Position[] = [];
   for (let i = 0; i < ownerRes.data.length; i++) {
@@ -43,6 +43,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       clmmPositions.push(position);
     }
   }
+  if (clmmPositions.length === 0) return [];
 
   const poolsIds = clmmPositions.map((position) => position.pool);
   const pools = await cache.getItems<Pool>(poolsIds, {

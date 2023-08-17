@@ -29,6 +29,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     MangoProgram,
     accountsFilter(owner)
   );
+  if (userAccounts.length === 0) return [];
+
   const banks = await cache.getAllItems<BankEnhanced>({
     prefix: banksPrefix,
     networkId: NetworkId.solana,
@@ -53,14 +55,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     tokenPrices.set(r.value.address, r.value);
   });
 
-  if (!userAccounts) return [];
   const elements: PortfolioElement[] = [];
   for (let index = 0; index < userAccounts.length; index++) {
     const userAccount = userAccounts[index];
-    if (!userAccount) continue;
-
-    if (!userAccount.tokens) continue;
     const tokenPositions = userAccount.tokens;
+    if (tokenPositions.length === 0) continue;
 
     const borrowedAssets: PortfolioAsset[] = [];
     const borrowedYields: Yield[][] = [];
@@ -131,6 +130,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           ]);
       }
     }
+
+    if (suppliedAssets.length === 0 && borrowedAssets.length === 0) return [];
+
     const { borrowedValue, collateralRatio, suppliedValue, value } =
       getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
     elements.push({

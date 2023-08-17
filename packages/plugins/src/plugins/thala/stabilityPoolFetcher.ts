@@ -29,11 +29,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (!stabilityPoolDepositView || stabilityPoolDepositView.length === 0)
     return [];
 
-  const claimableView = await getView(
-    connection,
-    stabilityClaimablePayload(owner)
-  );
-
   const depositAmountString = stabilityPoolDepositView.at(0);
   if (!depositAmountString) return [];
 
@@ -51,6 +46,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     depositAmount,
     NetworkId.aptos,
     depositTokenPrice
+  );
+
+  const claimableView = await getView(
+    connection,
+    stabilityClaimablePayload(owner)
   );
 
   const assetsValue: number | null = !depositTokenPrice

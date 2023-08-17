@@ -24,10 +24,10 @@ const fetcherExecutor: FetcherExecutor = async (
   owner: string,
   cache: Cache
 ) => {
-  const connection = getClientSolana();
+  const client = getClientSolana();
 
   const accounts = await getParsedProgramAccounts(
-    connection,
+    client,
     marginfiAccountStruct,
     MarginfiProgram,
     accountsFilter(owner)
@@ -35,7 +35,7 @@ const fetcherExecutor: FetcherExecutor = async (
   if (accounts.length === 0) return [];
 
   const lendingAccountBalances = accounts.at(0)?.lendingAccount.balances;
-  if (!lendingAccountBalances) return [];
+  if (!lendingAccountBalances || lendingAccountBalances.length === 0) return [];
 
   const borrowedAssets: PortfolioAsset[] = [];
   const borrowedYields: Yield[][] = [];
@@ -53,6 +53,8 @@ const fetcherExecutor: FetcherExecutor = async (
       networkId: NetworkId.solana,
     }
   );
+  if (banksInfo.length === 0) return [];
+
   const banksInfoByAddress: Map<string, BankInfo> = new Map();
   const tokensAddresses: Set<string> = new Set();
   banksInfo.forEach((bankInfo) => {
@@ -133,15 +135,10 @@ const fetcherExecutor: FetcherExecutor = async (
     borrowedYields.push(bankBorrowedYields);
   }
 
+  if (suppliedAssets.length === 0 && borrowedAssets.length === 0) return [];
+
   const { borrowedValue, collateralRatio, suppliedValue, value } =
     getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
-
-  if (
-    borrowedAssets.length === 0 &&
-    suppliedAssets.length === 0 &&
-    rewardAssets.length === 0
-  )
-    return [];
 
   const element: PortfolioElement = {
     type: PortfolioElementType.borrowlend,
