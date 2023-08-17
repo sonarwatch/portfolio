@@ -279,12 +279,12 @@ const fromX64Decimal = (num: Decimal) => num.times(Decimal.pow(2, -64));
 const toX64Decimal = (num: Decimal) => num.times(Decimal.pow(2, 64));
 
 export function getTokenAmountsFromLiquidity(
-  liquidity: number,
+  liquidity: BigNumber,
   tickCurrentIndex: number,
   tickLowerIndex: number,
   tickUpperIndex: number,
   roundUp: number
-): { tokenAmountA: number; tokenAmountB: number } {
+): { tokenAmountA: BigNumber; tokenAmountB: BigNumber } {
   const currentSqrtPrice = tickIndexToSqrtPriceX64(tickCurrentIndex);
   const lowerSqrtPrice = tickIndexToSqrtPriceX64(tickLowerIndex);
   const upperSqrtPrice = tickIndexToSqrtPriceX64(tickUpperIndex);
@@ -317,13 +317,13 @@ export function getTokenAmountsFromLiquidity(
 
   if (roundUp) {
     return {
-      tokenAmountA: tokenA.ceil().toNumber(),
-      tokenAmountB: tokenB.ceil().toNumber(),
+      tokenAmountA: new BigNumber(tokenA.ceil().toString()),
+      tokenAmountB: new BigNumber(tokenB.ceil().toString()),
     };
   }
 
   return {
-    tokenAmountA: tokenA.floor().toNumber(),
-    tokenAmountB: tokenB.floor().toNumber(),
+    tokenAmountA: new BigNumber(tokenA.floor().toString()),
+    tokenAmountB: new BigNumber(tokenB.floor().toString()),
   };
 }

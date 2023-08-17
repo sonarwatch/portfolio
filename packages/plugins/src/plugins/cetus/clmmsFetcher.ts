@@ -64,7 +64,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (!pool) continue;
 
     const { tokenAmountA, tokenAmountB } = getTokenAmountsFromLiquidity(
-      new BigNumber(clmmPosition.liquidity).toNumber(),
+      new BigNumber(clmmPosition.liquidity),
       pool.current_tick_index,
       clmmPosition.tick_lower_index,
       clmmPosition.tick_upper_index,
@@ -79,7 +79,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const assetTokenA = tokenPriceToAssetToken(
       pool.coinTypeA,
-      tokenAmountA / 10 ** tokenPriceA.decimals,
+      tokenAmountA.dividedBy(10 ** tokenPriceA.decimals).toNumber(),
       NetworkId.sui,
       tokenPriceA
     );
@@ -91,7 +91,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const assetTokenB = tokenPriceToAssetToken(
       pool.coinTypeB,
-      tokenAmountB / 10 ** tokenPriceB.decimals,
+      tokenAmountB.dividedBy(10 ** tokenPriceB.decimals).toNumber(),
       NetworkId.sui,
       tokenPriceB
     );

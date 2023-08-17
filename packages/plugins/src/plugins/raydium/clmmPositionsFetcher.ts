@@ -1,44 +1,40 @@
 import {
   NetworkId,
+  PortfolioElement,
   PortfolioElementLiquidity,
   PortfolioElementType,
   PortfolioLiquidity,
 } from '@sonarwatch/portfolio-core';
-import { Metaplex } from '@metaplex-foundation/js';
+import { FindNftsByOwnerOutput } from '@metaplex-foundation/js';
 import { PublicKey } from '@solana/web3.js';
-import { clmmNFTName, platformId, raydiumProgram } from './constants';
+import { platformId, raydiumProgram } from './constants';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { getAmountsFromLiquidity, tickIndexToSqrtPriceX64 } from './helpers';
 import { getParsedMultipleAccountsInfo } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import { personalPositionStateStruct, poolStateStruct } from './structs/clmms';
 import { Cache } from '../../Cache';
-import { Fetcher, FetcherExecutor } from '../../Fetcher';
+import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 
-const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
+export async function getRaydiumCLMMPositions(
+  cache: Cache,
+  nfts: FindNftsByOwnerOutput
+): Promise<PortfolioElement[]> {
   const client = getClientSolana();
-  const metaplex = new Metaplex(client);
-
-  const nfts = await metaplex.nfts().findAllByOwner({
-    owner: new PublicKey(owner),
-  });
 
   const positionsProgramAddress: PublicKey[] = [];
   nfts.forEach((nft) => {
-    if (nft && nft.name === clmmNFTName) {
-      const address =
-        nft.model === 'metadata'
-          ? new PublicKey(nft.mintAddress.toString())
-          : new PublicKey(nft.mint.address.toString());
+    const address =
+      nft.model === 'metadata'
+        ? new PublicKey(nft.mintAddress.toString())
+        : new PublicKey(nft.mint.address.toString());
 
-      const positionSeed = [Buffer.from('position'), address.toBuffer()];
+    const positionSeed = [Buffer.from('position'), address.toBuffer()];
 
-      const [programAddress] = PublicKey.findProgramAddressSync(
-        positionSeed,
-        raydiumProgram
-      );
-      positionsProgramAddress.push(programAddress);
-    }
+    const [programAddress] = PublicKey.findProgramAddressSync(
+      positionSeed,
+      raydiumProgram
+    );
+    positionsProgramAddress.push(programAddress);
   });
   if (positionsProgramAddress.length === 0) return [];
 
@@ -75,12 +71,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       !poolStateInfo.tickCurrent
     )
       continue;
-    const { tokenAmountA, tokenAmountB } = getAmountsFromLiquidity(
+    const { tokenAmountA, tokenAmountB } = getTokenAmountsFromLiquidity(
       personalPositionInfo.liquidity,
-      tickIndexToSqrtPriceX64(poolStateInfo.tickCurrent),
-      tickIndexToSqrtPriceX64(personalPositionInfo.tickLowerIndex),
-      tickIndexToSqrtPriceX64(personalPositionInfo.tickUpperIndex),
-      true
+      poolStateInfo.tickCurrent,
+      personalPositionInfo.tickLowerIndex,
+      personalPositionInfo.tickUpperIndex,
+      0
     );
     if (!tokenAmountA || !tokenAmountB) continue;
     const tokenPriceA = await cache.getTokenPrice(
@@ -90,7 +86,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (!tokenPriceA) continue;
     const assetTokenA = tokenPriceToAssetToken(
       poolStateInfo.tokenMint0.toString(),
-      tokenAmountA.toNumber() / 10 ** tokenPriceA.decimals,
+      tokenAmountA.dividedBy(10 ** tokenPriceA.decimals).toNumber(),
       NetworkId.solana,
       tokenPriceA
     );
@@ -101,7 +97,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (!tokenPriceB) continue;
     const assetTokenB = tokenPriceToAssetToken(
       poolStateInfo.tokenMint1.toString(),
-      tokenAmountB.toNumber() / 10 ** tokenPriceB.decimals,
+      tokenAmountB.dividedBy(10 ** tokenPriceB.decimals).toNumber(),
       NetworkId.solana,
       tokenPriceB
     );
@@ -128,7 +124,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   elements.push({
     type: PortfolioElementType.liquidity,
     networkId: NetworkId.solana,
-    platformId: 'raydium',
+    platformId,
     label: 'LiquidityPool',
     tags: ['Concentrated'],
     value: totalLiquidityValue,
@@ -138,12 +134,4 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
 
   return elements;
-};
-
-const fetcher: Fetcher = {
-  id: `${platformId}-clmm-positions`,
-  networkId: NetworkId.solana,
-  executor,
-};
-
-export default fetcher;
+}
