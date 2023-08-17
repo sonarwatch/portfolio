@@ -50,6 +50,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     redeemFilter(owner)
   );
 
+  if (redeemAccounts.length === 0) return [];
+
   const tokenPriceResults = await runInBatch(
     mints.map((mint) => () => cache.getTokenPrice(mint, NetworkId.solana))
   );
@@ -112,6 +114,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       }
     }
   }
+
+  if (suppliedAssets.length === 0) return [];
 
   const elements: PortfolioElement[] = [];
   const { borrowedValue, collateralRatio, suppliedValue, value } =
