@@ -68,7 +68,8 @@ export default function getSerumFetcherExecutor(
     });
 
     const rawAmountByMint: Map<string, BigNumber> = new Map();
-    const emptyAccounts: number[] = [];
+    let solBalanceEmptyAccounts: BigNumber = new BigNumber(0);
+    let nbEmptyAccounts = 0;
     const unsettledBalances: Map<string, BigNumber> = new Map();
     for (let i = 0; i < ordersAccounts.length; i += 1) {
       const openOrder = ordersAccounts[i];
@@ -87,7 +88,10 @@ export default function getSerumFetcherExecutor(
         );
       }
       if (amountLeftToFill.isZero() && amountLeftToRecover.isZero()) {
-        emptyAccounts.push(openOrder.lamports / 10 ** 9);
+        solBalanceEmptyAccounts = solBalanceEmptyAccounts.plus(
+          openOrder.lamports / 10 ** 9
+        );
+        nbEmptyAccounts += 1;
       } else {
         const totalAmount = rawAmountByMint.get(quoteMint);
         rawAmountByMint.set(quoteMint, amountLeftToFill.plus(totalAmount || 0));
@@ -113,20 +117,6 @@ export default function getSerumFetcherExecutor(
       value += asset.value ? asset.value : 0;
     }
 
-    let emptyAccountsValue = 0;
-    const emptyAccountsAssets: PortfolioAsset[] = [];
-    const solTokenPrice = tokenPrices.get(networks.solana.native.address);
-    for (const amount of emptyAccounts) {
-      const asset = tokenPriceToAssetToken(
-        networks.solana.native.address,
-        amount,
-        NetworkId.solana,
-        solTokenPrice
-      );
-      emptyAccountsAssets.push(asset);
-      emptyAccountsValue += asset.value ? asset.value : 0;
-    }
-
     let unsettledValue = 0;
     const unsettledBalancesAssets: PortfolioAsset[] = [];
     for (const [mint, rawAmount] of unsettledBalances) {
@@ -145,7 +135,28 @@ export default function getSerumFetcherExecutor(
       unsettledBalancesAssets.push(asset);
       unsettledValue += asset.value ? asset.value : 0;
     }
+
     const elements: PortfolioElement[] = [];
+
+    const solTokenPrice = tokenPrices.get(networks.solana.native.address);
+    if (solBalanceEmptyAccounts.isGreaterThan(0) && solTokenPrice) {
+      const asset = tokenPriceToAssetToken(
+        networks.solana.native.address,
+        solBalanceEmptyAccounts.toNumber(),
+        NetworkId.solana,
+        solTokenPrice
+      );
+      elements.push({
+        type: 'single',
+        networkId: NetworkId.solana,
+        platformId: serumPlatform.id,
+        value: asset.value,
+        label: 'Deposit',
+        name: `Empty Orders Accounts (${nbEmptyAccounts})`,
+        tags: [serumVersion.name],
+        data: { asset },
+      });
+    }
 
     if (openOrdersAssets.length !== 0) {
       elements.push({
@@ -157,18 +168,6 @@ export default function getSerumFetcherExecutor(
         name: 'In Open Orders',
         tags: [serumVersion.name],
         data: { assets: openOrdersAssets },
-      });
-    }
-    if (emptyAccountsAssets.length !== 0) {
-      elements.push({
-        type: 'multiple',
-        networkId: NetworkId.solana,
-        platformId: serumPlatform.id,
-        value: emptyAccountsValue,
-        label: 'Deposit',
-        name: 'Empty Orders Accounts',
-        tags: [serumVersion.name],
-        data: { assets: emptyAccountsAssets },
       });
     }
     if (unsettledBalancesAssets.length !== 0) {
