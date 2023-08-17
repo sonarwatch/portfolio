@@ -32,7 +32,7 @@ export function formatSolanaAddress(address: string) {
 
 export function formatSeiAddress(address: string) {
   assertSeiAddress(address);
-  return address;
+  return address.toLocaleLowerCase();
 }
 
 const formatters: Record<AddressSystemType, (address: string) => string> = {
