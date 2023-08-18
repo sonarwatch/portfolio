@@ -8,12 +8,7 @@ import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSolana } from '../../utils/clients';
 import { AMM_PROGRAM_ID_V4, AMM_PROGRAM_ID_V5, platformId } from './constants';
-import {
-  AmmInfoV4,
-  AmmInfoV5,
-  ammInfoV4Struct,
-  ammInfoV5Struct,
-} from './structs/amms';
+import { ammInfoV4Struct, ammInfoV5Struct } from './structs/amms';
 import {
   OpenOrdersV1,
   OpenOrdersV2,
@@ -27,37 +22,41 @@ import {
   tokenAccountStruct,
 } from '../../utils/solana';
 import { ammV4Filter, ammV5Filter } from './filters';
-import { LiquidityPoolStatus } from './types';
+import { EnhancedAmmInfo, LiquidityPoolStatus } from './types';
 import runInBatch from '../../utils/misc/runInBatch';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 
-const ammInfos = [
+const ammsDetails = [
   {
     versionId: 4,
     struct: ammInfoV4Struct,
     programId: AMM_PROGRAM_ID_V4,
     filters: ammV4Filter,
+    name: 'Pools V4',
   },
   {
     versionId: 5,
     struct: ammInfoV5Struct,
     programId: AMM_PROGRAM_ID_V5,
     filters: ammV5Filter,
+    name: 'Pools V5',
   },
 ];
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
-  const ammsRaws: (AmmInfoV4 | AmmInfoV5)[] = [];
+  const ammsRaws: EnhancedAmmInfo[] = [];
 
-  for (let id = 0; id < ammInfos.length; id++) {
-    const ammInfo = ammInfos[id];
-    const { struct, programId, filters } = ammInfo;
+  for (let id = 0; id < ammsDetails.length; id++) {
+    const ammDetails = ammsDetails[id];
+    const { struct, programId, filters, versionId, name: ammName } = ammDetails;
 
     const ammsRes = await client.getProgramAccounts(programId, { filters });
-    const cAmms = ammsRes.map(
-      (poolRes) => struct.deserialize(poolRes.account.data)[0]
-    );
+    const cAmms: EnhancedAmmInfo[] = ammsRes.map((poolRes) => ({
+      ...struct.deserialize(poolRes.account.data)[0],
+      versionId,
+      ammName,
+    }));
     ammsRaws.push(...cAmms);
   }
 
@@ -206,6 +205,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       decimals: lpDecimals,
       price,
       underlyings,
+      elementName: amm.ammName,
       timestamp: Date.now(),
     });
   }

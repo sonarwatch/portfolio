@@ -21,6 +21,7 @@ export type TokenPriceSource = {
   platformId: string;
   decimals: number;
   price: number;
+  elementName?: string;
   underlyings?: TokenPriceUnderlying[];
   timestamp: number; // in ms
 };
@@ -31,6 +32,7 @@ export type TokenPrice = {
   platformId: string;
   decimals: number;
   price: number;
+  elementName?: string;
   underlyings?: TokenPriceUnderlying[];
   sources: TokenPriceSource[];
   timestamp: number; // in ms
@@ -67,6 +69,7 @@ export function tokenPriceFromSources(
     decimals: latestSource.decimals,
     price,
     underlyings: latestSource.underlyings,
+    elementName: latestSource.elementName,
     timestamp: Date.now(),
     sources: updatedSources,
   };

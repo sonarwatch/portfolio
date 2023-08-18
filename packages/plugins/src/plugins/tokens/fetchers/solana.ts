@@ -17,6 +17,22 @@ import { getTokenAccountsByOwner } from '../../../utils/solana';
 import tokenPriceToAssetTokens from '../../../utils/misc/tokenPriceToAssetTokens';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 
+function getTag(platformId: string, elementName?: string) {
+  return `${platformId}${elementName ? `<|>${elementName}` : ''}`;
+}
+
+function parseTag(tag: string): {
+  platformId: string;
+  elementName?: string;
+} {
+  const split = tag.split('<|>', 2);
+  if (split.length < 1) throw new Error(`Tag is not valid: ${tag}`);
+  return {
+    platformId: split[0],
+    elementName: split.at(1),
+  };
+}
+
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
   const ownerPubKey = new PublicKey(owner);
@@ -32,7 +48,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
 
   const walletTokensAssets: PortfolioAssetToken[] = [];
-  const liquiditiesByPlatformId: Record<string, PortfolioLiquidity[]> = {};
+  const liquiditiesByTag: Record<string, PortfolioLiquidity[]> = {};
 
   for (let i = 0; i < tokenAccounts.length; i++) {
     const tokenAccount = tokenAccounts[i];
@@ -61,10 +77,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         value: getUsdValueSum(assets.map((a) => a.value)),
         yields: [],
       };
-      if (!liquiditiesByPlatformId[tokenPrice.platformId]) {
-        liquiditiesByPlatformId[tokenPrice.platformId] = [];
+      const tag = getTag(tokenPrice.networkId, tokenPrice.elementName);
+      if (!liquiditiesByTag[tag]) {
+        liquiditiesByTag[tag] = [];
       }
-      liquiditiesByPlatformId[tokenPrice.platformId].push(liquidity);
+      liquiditiesByTag[tag].push(liquidity);
     } else {
       walletTokensAssets.push(
         tokenPriceToAssetToken(address, amount, NetworkId.solana, tokenPrice)
@@ -85,13 +102,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     };
     elements.push(walletTokensElement);
   }
-  for (const [platformId, liquidities] of Object.entries(
-    liquiditiesByPlatformId
-  )) {
+  for (const [tag, liquidities] of Object.entries(liquiditiesByTag)) {
+    const { platformId, elementName } = parseTag(tag);
     elements.push({
       type: PortfolioElementType.liquidity,
       networkId: NetworkId.solana,
       platformId,
+      name: elementName,
       label: 'LiquidityPool',
       value: getUsdValueSum(liquidities.map((a) => a.value)),
       data: {
