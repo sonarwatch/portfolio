@@ -14,4 +14,4 @@ export const raydiumProgram = new PublicKey(
   'CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK'
 );
 
-export const clmmNFTName = 'Raydium Concentrated Liquidity';
+export const positionsIdentifier = 'Raydium Concentrated Liquidity';

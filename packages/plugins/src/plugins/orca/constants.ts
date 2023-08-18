@@ -7,6 +7,7 @@ export const aquafarmsProgram = new PublicKey(
   '82yxjeMsvaURa4MbZZ7WZZHfobirZYkH1zF8fmeGtyaQ'
 );
 
+export const positionsIdentifier = 'Orca Whirlpool Position';
 export const whirlpoolPrefix = `${platformId}-whirlpool`;
 export const whirlpoolProgram = new PublicKey(
   'whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc'

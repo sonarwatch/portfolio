@@ -1,10 +1,11 @@
 import {
   NetworkId,
+  PortfolioElement,
   PortfolioElementType,
   PortfolioLiquidity,
   TokenPrice,
 } from '@sonarwatch/portfolio-core';
-import { Metaplex } from '@metaplex-foundation/js';
+import { FindNftsByOwnerOutput } from '@metaplex-foundation/js';
 import { PublicKey } from '@solana/web3.js';
 import { platformId, whirlpoolPrefix, whirlpoolProgram } from './constants';
 import { getClientSolana } from '../../utils/clients';
@@ -16,32 +17,28 @@ import { Cache } from '../../Cache';
 import { Whirlpool, positionStruct } from './structs/whirlpool';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import runInBatch from '../../utils/misc/runInBatch';
-import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 
-const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
+export async function getWhirlpoolPositions(
+  cache: Cache,
+  nfts: FindNftsByOwnerOutput
+): Promise<PortfolioElement[]> {
   const client = getClientSolana();
-  const metaplex = new Metaplex(client);
-  if (!owner) return [];
-  const nfts = await metaplex.nfts().findAllByOwner({
-    owner: new PublicKey(owner),
-  });
   const positionsProgramAddress: PublicKey[] = [];
+
   nfts.forEach((nft) => {
-    if (nft && nft.name === 'Orca Whirlpool Position') {
-      const address =
-        nft.model === 'metadata'
-          ? new PublicKey(nft.mintAddress.toString())
-          : new PublicKey(nft.mint.address.toString());
+    const address =
+      nft.model === 'metadata'
+        ? new PublicKey(nft.mintAddress.toString())
+        : new PublicKey(nft.mint.address.toString());
 
-      const positionSeed = [Buffer.from('position'), address.toBuffer()];
+    const positionSeed = [Buffer.from('position'), address.toBuffer()];
 
-      const [positionPublicKey] = PublicKey.findProgramAddressSync(
-        positionSeed,
-        whirlpoolProgram
-      );
-      positionsProgramAddress.push(positionPublicKey);
-    }
+    const [programAddress] = PublicKey.findProgramAddressSync(
+      positionSeed,
+      whirlpoolProgram
+    );
+    positionsProgramAddress.push(programAddress);
   });
   if (positionsProgramAddress.length === 0) return [];
 
@@ -57,7 +54,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (pos) whirlpoolAddresses.add(pos.whirlpool.toString());
   });
 
-  // TODO : improve once we have getItems(string[])
   const allWhirlpoolsInfo = await cache.getItems<ParsedAccount<Whirlpool>>(
     Array.from(whirlpoolAddresses),
     {
@@ -107,7 +103,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       continue;
 
     const { tokenAmountA, tokenAmountB } = getTokenAmountsFromLiquidity(
-      positionInfo.liquidity.toNumber(),
+      positionInfo.liquidity,
       whirlpoolInfo.tickCurrentIndex,
       positionInfo.tickLowerIndex,
       positionInfo.tickUpperIndex,
@@ -119,7 +115,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const assetTokenA = tokenPriceToAssetToken(
       whirlpoolInfo.tokenMintA.toString(),
-      tokenAmountA / 10 ** tokenPriceA.decimals,
+      tokenAmountA.dividedBy(10 ** tokenPriceA.decimals).toNumber(),
       NetworkId.solana,
       tokenPriceA
     );
@@ -128,7 +124,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const assetTokenB = tokenPriceToAssetToken(
       whirlpoolInfo.tokenMintB.toString(),
-      tokenAmountB / 10 ** tokenPriceB.decimals,
+      tokenAmountB.dividedBy(10 ** tokenPriceB.decimals).toNumber(),
       NetworkId.solana,
       tokenPriceB
     );
@@ -156,7 +152,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     {
       type: PortfolioElementType.liquidity,
       networkId: NetworkId.solana,
-      platformId: 'orca',
+      platformId,
       label: 'LiquidityPool',
       tags: ['Concentrated'],
       value: totalLiquidityValue,
@@ -165,12 +161,4 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       },
     },
   ];
-};
-
-const fetcher: Fetcher = {
-  id: `${platformId}-clmm-positions`,
-  networkId: NetworkId.solana,
-  executor,
-};
-
-export default fetcher;
+}

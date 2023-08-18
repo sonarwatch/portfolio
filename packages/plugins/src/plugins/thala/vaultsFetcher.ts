@@ -30,15 +30,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const elements: PortfolioElement[] = [];
   for (let index = 0; index < resources.length; index++) {
+    const resource = resources[index];
+    if (!resource.type.startsWith(vaultFilter)) continue;
+
     const borrowedAssets: PortfolioAsset[] = [];
     const borrowedYields: Yield[][] = [];
     const suppliedAssets: PortfolioAsset[] = [];
     const suppliedYields: Yield[][] = [];
     const rewardAssets: PortfolioAsset[] = [];
-    const resource = resources[index];
-    if (!resource.type.startsWith(vaultFilter)) continue;
 
     const vaultData = resource.data as VaultRessource;
+    if (vaultData.collateral.value === 0 && vaultData.debt) continue;
+
     const vaultType = resource.type;
 
     const suppliedAsset = getNestedType(vaultType);
@@ -46,7 +49,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       suppliedAsset,
       NetworkId.aptos
     );
-    if (!suppliedTokenPrice || !suppliedTokenPrice.decimals) continue;
+    if (!suppliedTokenPrice) continue;
 
     const suppliedAmount =
       vaultData.collateral.value / 10 ** suppliedTokenPrice.decimals;

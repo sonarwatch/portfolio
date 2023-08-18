@@ -34,6 +34,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     prefix: marketsPrefix,
     networkId: NetworkId.solana,
   });
+  if (markets.length === 0) return [];
   const marketsByAddress: Map<string, MarketInfo> = new Map();
   markets.forEach((market) => {
     marketsByAddress.set(market.address.toString(), market);
@@ -55,18 +56,22 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       obligationAddresses.push(obligationAddress);
     }
   }
+  if (obligationAddresses.length === 0) return [];
 
   const obligations = await getParsedMultipleAccountsInfo(
     client,
     obligationStruct,
     obligationAddresses
   );
+  if (obligations.length === 0) return [];
 
   const reserveAddresses: Set<string> = new Set();
   obligations.forEach((obligation) => {
     if (!obligation) return;
+
     const market = marketsByAddress.get(obligation.lendingMarket.toString());
     if (!market) return;
+
     market.reserves.forEach((reserve) => {
       reserveAddresses.add(reserve.address);
     });
@@ -79,17 +84,21 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
   );
   if (!reservesInfos) return [];
+
   const reserveByAddress: Map<string, ReserveInfo> = new Map();
   reservesInfos.forEach((reserve) => {
     if (!reserve) return;
+
     reserveByAddress.set(reserve.pubkey, reserve);
   });
 
   const tokensAddresses: Set<string> = new Set();
   reservesInfos.forEach((reserveInfo) => {
     if (!reserveInfo) return;
+
     tokensAddresses.add(reserveInfo.reserve.liquidity.mintPubkey);
   });
+
   const tokenPriceResults = await runInBatch(
     [...tokensAddresses].map(
       (mint) => () => cache.getTokenPrice(mint, NetworkId.solana)
@@ -201,10 +210,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         }
       }
     }
+    if (suppliedAssets.length === 0 && borrowedAssets.length === 0) continue;
+
     const { borrowedValue, collateralRatio, suppliedValue, value } =
       getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
-
-    if (borrowedValue === 0 && suppliedValue === 0) continue;
 
     elements.push({
       type: PortfolioElementType.borrowlend,

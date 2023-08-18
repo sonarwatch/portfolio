@@ -26,6 +26,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     jupiterLimitProgramId,
     jupiterLimitsFilter(owner)
   );
+  if (limitOrdersAccounts.length === 0) return [];
 
   const tokensMints: Set<PublicKey> = new Set();
   for (let i = 0; i < limitOrdersAccounts.length; i += 1) {

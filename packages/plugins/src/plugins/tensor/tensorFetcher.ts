@@ -12,7 +12,6 @@ import {
   isSftWithToken,
 } from '@metaplex-foundation/js';
 import BigNumber from 'bignumber.js';
-import { PublicKey } from '@solana/web3.js';
 import { platformId, tensorProgram } from './constants';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
@@ -31,11 +30,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     tensorProgram,
     singleListingFilter(owner)
   );
-  if (!singleListings) return [];
-  const mints: PublicKey[] = [];
-  singleListings.forEach((listing) => {
-    mints.push(listing.nftMint);
-  });
+  if (singleListings.length === 0) return [];
+
+  const mints = singleListings.map((listing) => listing.nftMint);
 
   const nftsMetadata = await metaplex.nfts().findAllByMintList({
     mints,
@@ -94,6 +91,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
 
   if (assets.length === 0) return [];
+
   const element: PortfolioElementMultiple = {
     type: PortfolioElementType.multiple,
     networkId: NetworkId.solana,
