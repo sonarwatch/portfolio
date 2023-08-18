@@ -46,8 +46,8 @@
     "packages/*"
   ],
   "dependencies": {
-    "@aave/contract-helpers": "^1.18.2",
-    "@aave/math-utils": "^1.18.2",
+    "@aave/contract-helpers": "^1.18.3",
+    "@aave/math-utils": "^1.18.3",
     "@ethersproject/address": "^5.7.0",
     "@ethersproject/bignumber": "^5.7.0",
     "@ethersproject/bytes": "^5.7.0",
