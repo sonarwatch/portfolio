@@ -10,6 +10,9 @@ import {
   networks,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from './Cache';
+import promiseTimeout from './utils/misc/promiseTimeout';
+
+const runFetcherTimeout = 60000;
 
 export type FetcherExecutor = (
   owner: string,
@@ -93,12 +96,18 @@ export async function runFetcher(
 ): Promise<FetcherResult> {
   const startDate = Date.now();
   const fOwner = formatAddressByNetworkId(owner, fetcher.networkId);
-  const elements = await fetcher.executor(fOwner, cache);
-  return {
-    owner: fOwner,
-    fetcherId: fetcher.id,
-    networdkId: fetcher.networkId,
-    duration: Date.now() - startDate,
-    elements,
-  };
+  const fetcherPromise = fetcher.executor(fOwner, cache).then(
+    (elements): FetcherResult => ({
+      owner: fOwner,
+      fetcherId: fetcher.id,
+      networdkId: fetcher.networkId,
+      duration: Date.now() - startDate,
+      elements,
+    })
+  );
+  return promiseTimeout(
+    fetcherPromise,
+    runFetcherTimeout,
+    `Fetcher timed out: ${fetcher.id}`
+  );
 }
