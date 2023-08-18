@@ -1,5 +1,6 @@
 import { NetworkIdType } from '@sonarwatch/portfolio-core';
-import { getClientAptos } from '../clients';
+import { PublicKey } from '@solana/web3.js';
+import { getClientAptos, getClientSolana } from '../clients';
 import { coinDecimals } from '../aptos';
 
 /**
@@ -24,6 +25,11 @@ export async function getDecimalsForToken(
       })) as number[];
       if (viewRes.length !== 1) return undefined;
       return viewRes[0];
+    }
+    case 'solana': {
+      const client = getClientSolana();
+      const res = await client.getTokenSupply(new PublicKey(address));
+      return res.value.decimals ? res.value.decimals : undefined;
     }
     default:
       throw new Error('getDecimalsForToken : Network not supported');

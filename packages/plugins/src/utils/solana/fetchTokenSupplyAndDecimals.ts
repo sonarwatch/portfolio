@@ -11,14 +11,7 @@ export async function fetchTokenSupplyAndDecimals(
   client: Connection,
   sleepMultiplier = 1
 ): Promise<{ supply: number; decimals: number } | undefined> {
-  let mintPublicKey;
-  if (typeof mint === 'string') {
-    mintPublicKey = new PublicKey(mint);
-  } else {
-    mintPublicKey = mint;
-  }
-
-  if (solMints.includes(mintPublicKey.toString())) {
+  if (solMints.includes(mint.toString())) {
     const supply = await client.getSupply();
     await sleep(200 * sleepMultiplier);
     return {
@@ -26,7 +19,7 @@ export async function fetchTokenSupplyAndDecimals(
       decimals: 9,
     };
   }
-  const tokenSupplyRes = await client.getTokenSupply(mintPublicKey);
+  const tokenSupplyRes = await client.getTokenSupply(mint);
   if (!tokenSupplyRes.value.uiAmount) return undefined;
   await sleep(200 * sleepMultiplier);
   return {
