@@ -45,14 +45,14 @@ export default async function setLpPriceSource(
     ? tokenPriceX.decimals
     : await getDecimalsForToken(tokenX, networkId);
 
-  const decimalsY = tokenPriceY
+  const decimalsTokenY = tokenPriceY
     ? tokenPriceY.decimals
     : await getDecimalsForToken(tokenY, networkId);
 
-  if (!decimalsTokenX || !decimalsY) return;
+  if (!decimalsTokenX || !decimalsTokenY) return;
 
   const reserveAmountX = poolData.reserveTokenX.div(10 ** decimalsTokenX);
-  const reserveAmountY = poolData.reserveTokenY.div(10 ** decimalsY);
+  const reserveAmountY = poolData.reserveTokenY.div(10 ** decimalsTokenY);
 
   let priceTokenX: number;
   let priceTokenY: number;
@@ -82,7 +82,7 @@ export default async function setLpPriceSource(
       reserveAmountX.multipliedBy(priceTokenX).multipliedBy(2)
     );
     const address = tokenPriceX ? tokenX : tokenY;
-    const decimals = tokenPriceX ? decimalsTokenX : decimalsY;
+    const decimals = tokenPriceX ? decimalsTokenX : decimalsTokenY;
     const price = tokenPriceX ? priceTokenX : priceTokenY;
     await cache.setTokenPriceSource({
       id: `${platformId}-${poolData.id}`,
@@ -125,7 +125,7 @@ export default async function setLpPriceSource(
       {
         networkId,
         address: tokenY,
-        decimals: decimalsY,
+        decimals: decimalsTokenY,
         price: priceTokenY,
         amountPerLp: amountPerLpY,
       },

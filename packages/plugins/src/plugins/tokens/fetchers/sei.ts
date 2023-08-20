@@ -17,6 +17,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = await getClientSei();
   const balances = await getAllBalances(client.cosmos.bank.v1beta1, owner);
   if (balances.length === 0) return [];
+  balances.forEach((b) => console.log(`${b.denom}:${b.amount}`));
 
   const tokenPrices = await cache.getTokenPrices(
     balances.map((b) => b.denom),

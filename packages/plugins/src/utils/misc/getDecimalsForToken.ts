@@ -1,7 +1,11 @@
-import { NetworkIdType } from '@sonarwatch/portfolio-core';
+import { NetworkId, NetworkIdType } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
+import { getCosmWasmClient } from '@sei-js/core';
 import { getClientAptos, getClientSolana } from '../clients';
 import { coinDecimals } from '../aptos';
+import { getUrlEndpoint } from '../clients/constants';
+import { TokenInfo } from '../../plugins/seaswap/types';
+import { tokenInfoQueryMsg } from '../sei';
 
 /**
  * Return the decimals of a token on any network using RPC calls.
@@ -30,6 +34,17 @@ export async function getDecimalsForToken(
       const client = getClientSolana();
       const res = await client.getTokenSupply(new PublicKey(address));
       return res.value.decimals ? res.value.decimals : undefined;
+    }
+    case 'sei': {
+      if (!address.startsWith('sei')) return undefined;
+      const cosmWasmClient = await getCosmWasmClient(
+        getUrlEndpoint(NetworkId.sei)
+      );
+      const tokenInfo = (await cosmWasmClient.queryContractSmart(
+        address,
+        JSON.parse(tokenInfoQueryMsg)
+      )) as TokenInfo;
+      return tokenInfo.decimals || undefined;
     }
     default:
       throw new Error('getDecimalsForToken : Network not supported');
