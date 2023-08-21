@@ -48,6 +48,7 @@
   "dependencies": {
     "@aave/contract-helpers": "^1.18.3",
     "@aave/math-utils": "^1.18.3",
+    "@cosmjs/cosmwasm-stargate": "^0.31.1",
     "@ethersproject/address": "^5.7.0",
     "@ethersproject/bignumber": "^5.7.0",
     "@ethersproject/bytes": "^5.7.0",

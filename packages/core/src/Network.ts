@@ -17,6 +17,7 @@ export type EvmNetworkIdType =
   | typeof NetworkId.ethereum
   | typeof NetworkId.avalanche
   | typeof NetworkId.polygon;
+export type CosmosNetworkIdType = typeof NetworkId.sei;
 
 export type Network = {
   id: NetworkIdType;
