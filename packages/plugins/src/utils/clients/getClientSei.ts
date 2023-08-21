@@ -5,7 +5,7 @@ import { getUrlEndpoint } from './constants';
 
 export default function getClientSei() {
   const urlEndpoint = getUrlEndpoint(NetworkId.sei);
-  return seiprotocol.ClientFactory.createLCDClient({
-    restEndpoint: urlEndpoint,
+  return seiprotocol.ClientFactory.createRPCQueryClient({
+    rpcEndpoint: urlEndpoint,
   });
 }
