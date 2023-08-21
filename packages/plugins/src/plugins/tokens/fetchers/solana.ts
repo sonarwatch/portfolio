@@ -77,7 +77,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         value: getUsdValueSum(assets.map((a) => a.value)),
         yields: [],
       };
-      const tag = getTag(tokenPrice.networkId, tokenPrice.elementName);
+      const tag = getTag(tokenPrice.platformId, tokenPrice.elementName);
       if (!liquiditiesByTag[tag]) {
         liquiditiesByTag[tag] = [];
       }
@@ -104,6 +104,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   }
   for (const [tag, liquidities] of Object.entries(liquiditiesByTag)) {
     const { platformId, elementName } = parseTag(tag);
+    console.log('platformId:', platformId);
     elements.push({
       type: PortfolioElementType.liquidity,
       networkId: NetworkId.solana,
