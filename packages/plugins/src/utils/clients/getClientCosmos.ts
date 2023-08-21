@@ -1,7 +1,7 @@
-import { seiprotocol } from '@sei-js/proto';
+import { cosmos } from 'osmojs';
 
 export default function getClientCosmos() {
-  return seiprotocol.ClientFactory.createRPCQueryClient({
+  return cosmos.ClientFactory.createRPCQueryClient({
     rpcEndpoint: 'https://cosmos-rpc.polkachu.com/',
   });
 }
