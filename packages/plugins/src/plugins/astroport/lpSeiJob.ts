@@ -3,7 +3,7 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { lpTokensCode, platformId } from './constants';
+import { lpTokensCode, newLpTokensCode, platformId } from './constants';
 import { getUrlEndpoint } from '../../utils/clients/constants';
 import {
   minterQueryMsg,
@@ -17,9 +17,11 @@ import { PoolInfo } from './types';
 const executor: JobExecutor = async (cache: Cache) => {
   const cosmWasmClient = await getCosmWasmClient(getUrlEndpoint(NetworkId.sei));
 
+  const newLpContracts = await cosmWasmClient.getContracts(newLpTokensCode);
   const lpContracts = await cosmWasmClient.getContracts(lpTokensCode);
+  const contracts = [...newLpContracts, ...lpContracts];
 
-  for (const lpContract of lpContracts) {
+  for (const lpContract of contracts) {
     const lpTokenInfo = (await cosmWasmClient.queryContractSmart(
       lpContract,
       JSON.parse(tokenInfoQueryMsg)

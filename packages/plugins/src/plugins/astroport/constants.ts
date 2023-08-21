@@ -9,4 +9,5 @@ export const router =
 export const pairSeiUsdc =
   'sei1g5s84juvcjamggl6t36pejc4489zgkx4tg42j9m6pfruskv8ajcqml2xsq';
 
+export const newLpTokensCode = 149;
 export const lpTokensCode = 3;
