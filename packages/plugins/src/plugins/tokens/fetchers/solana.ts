@@ -104,7 +104,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   }
   for (const [tag, liquidities] of Object.entries(liquiditiesByTag)) {
     const { platformId, elementName } = parseTag(tag);
-    console.log('platformId:', platformId);
     elements.push({
       type: PortfolioElementType.liquidity,
       networkId: NetworkId.solana,
