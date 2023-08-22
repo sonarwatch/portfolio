@@ -20,7 +20,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     owner
   );
   if (balances.length === 0) return [];
-  balances.forEach((b) => console.log(`${b.denom}:${b.amount}`));
 
   const tokenPrices = await cache.getTokenPrices(
     balances.map((b) => b.denom),

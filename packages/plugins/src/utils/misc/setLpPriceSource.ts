@@ -69,6 +69,9 @@ export default async function setLpPriceSource(
       .dividedBy(reserveAmountY)
       .toNumber();
   } else {
+    console.log(
+      'SetLpPrice : Unable to compute price, requires at least 1 price reference, got 0.'
+    );
     return;
   }
 
