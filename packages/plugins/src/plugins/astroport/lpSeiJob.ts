@@ -11,7 +11,9 @@ import {
   tokenInfoQueryMsg,
 } from '../../utils/sei';
 import { MinterInfo, TokenInfo } from '../seaswap/types';
-import setLpPriceSource, { PoolData } from '../../utils/misc/setLpPriceSource';
+import computeAndStoreLpPrice, {
+  PoolData,
+} from '../../utils/misc/computeAndStoreLpPrice';
 import { PoolInfo } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -69,7 +71,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       reserveTokenY: amountTokenY,
       supply: new BigNumber(minterLpInfo.total_share),
     };
-    await setLpPriceSource(cache, poolData, NetworkId.sei, platformId);
+    await computeAndStoreLpPrice(cache, poolData, NetworkId.sei, platformId);
   }
 };
 

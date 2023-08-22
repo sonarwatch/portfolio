@@ -8,7 +8,7 @@ import { TokenInfo } from '../../plugins/seaswap/types';
 import { tokenInfoQueryMsg } from '../sei';
 
 /**
- * Return the decimals of a token on any network using RPC calls.
+ * Return the decimals of a token on any network using RPC calls or TokenList.
  *
  * @param address The mint/address of the token.
  * @param networkId The network on which to execute the request.
@@ -42,11 +42,9 @@ export async function getDecimalsForToken(
           denom: address,
         });
         const denoms = rep.metadata.denomUnits;
-        if (denoms[0]) return denoms[0].exponent;
-        return undefined;
+        return denoms[denoms.length - 1].exponent;
       }
       if (address.startsWith('ibc')) {
-        console.log('Get Decimals : not implemented');
         return 0;
       }
       if (address.startsWith('sei')) {

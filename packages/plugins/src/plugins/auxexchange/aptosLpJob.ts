@@ -10,7 +10,9 @@ import {
 } from '../../utils/aptos';
 import { getClientAptos } from '../../utils/clients';
 import { lpCoinInfoTypePrefix, platformId, programAddress } from './constants';
-import setLpPriceSource, { PoolData } from '../../utils/misc/setLpPriceSource';
+import computeAndStoreLpPrice, {
+  PoolData,
+} from '../../utils/misc/computeAndStoreLpPrice';
 
 type PoolReserves = {
   x_reserve: { value: string };
@@ -64,7 +66,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       mintTokenX: typeX,
       mintTokenY: typeY,
     };
-    await setLpPriceSource(cache, poolData, NetworkId.aptos, platformId);
+    await computeAndStoreLpPrice(cache, poolData, NetworkId.aptos, platformId);
   }
 };
 

@@ -6,7 +6,9 @@ import { Job, JobExecutor } from '../../Job';
 import { getUrlEndpoint } from '../../utils/clients/constants';
 import { platformId, lpTokensCode, lpTokensNames } from './constants';
 import { MinterInfo, PoolInfo, TokenInfo } from './types';
-import setLpPriceSource, { PoolData } from '../../utils/misc/setLpPriceSource';
+import computeAndStoreLpPrice, {
+  PoolData,
+} from '../../utils/misc/computeAndStoreLpPrice';
 import {
   infoQueryMsg,
   minterQueryMsg,
@@ -67,7 +69,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       reserveTokenY: new BigNumber(minterLpInfo.token2_reserve),
       supply: new BigNumber(minterLpInfo.lp_token_supply),
     };
-    await setLpPriceSource(cache, poolData, NetworkId.sei, platformId);
+    await computeAndStoreLpPrice(cache, poolData, NetworkId.sei, platformId);
   }
 };
 

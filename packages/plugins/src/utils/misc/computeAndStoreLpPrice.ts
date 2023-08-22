@@ -1,9 +1,8 @@
 import { NetworkIdType } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
-import { walletTokensPlatform } from '../../platforms';
-import getSourceWeight from './getSourceWeight';
 import { getDecimalsForToken } from './getDecimalsForToken';
+import computeAndStoreTokenPrice from './computeAndStoreTokenPrice';
 
 const minimumLiquidity = new BigNumber(5000);
 
@@ -28,7 +27,7 @@ export type PoolData = {
  * @param platformId The platform from which the price is calculated
  *
  */
-export default async function setLpPriceSource(
+export default async function computeAndStoreLpPrice(
   cache: Cache,
   poolData: PoolData,
   networkId: NetworkIdType,
@@ -54,50 +53,22 @@ export default async function setLpPriceSource(
   const reserveAmountX = poolData.reserveTokenX.div(10 ** decimalsTokenX);
   const reserveAmountY = poolData.reserveTokenY.div(10 ** decimalsTokenY);
 
-  let priceTokenX: number;
-  let priceTokenY: number;
-  if (!tokenPriceX && tokenPriceY) {
-    priceTokenY = tokenPriceY.price;
-    priceTokenX = reserveAmountY
-      .multipliedBy(priceTokenY)
-      .dividedBy(reserveAmountX)
-      .toNumber();
-  } else if (!tokenPriceY && tokenPriceX) {
-    priceTokenX = tokenPriceX.price;
-    priceTokenY = reserveAmountX
-      .multipliedBy(priceTokenX)
-      .dividedBy(reserveAmountY)
-      .toNumber();
-  } else {
-    console.log(
-      'SetLpPrice : Unable to compute price, requires at least 1 price reference, got 0.'
-    );
-    return;
-  }
+  const tokensPrices = await computeAndStoreTokenPrice(
+    cache,
+    `${platformId}-${poolData.id}`,
+    networkId,
+    { mint: tokenX, tokenPrice: tokenPriceX, reserve: reserveAmountX },
+    { mint: tokenY, tokenPrice: tokenPriceY, reserve: reserveAmountY }
+  );
+  if (!tokensPrices) return;
+
+  const priceTokenX = tokensPrices.priceX;
+  const priceTokenY = tokensPrices.priceY;
 
   const totalLiquidity = reserveAmountX
     .multipliedBy(priceTokenX)
     .plus(reserveAmountY.multipliedBy(priceTokenY));
   if (totalLiquidity.isLessThan(minimumLiquidity)) return;
-
-  if (!tokenPriceX || !tokenPriceY) {
-    const weight = getSourceWeight(
-      reserveAmountX.multipliedBy(priceTokenX).multipliedBy(2)
-    );
-    const address = tokenPriceX ? tokenX : tokenY;
-    const decimals = tokenPriceX ? decimalsTokenX : decimalsTokenY;
-    const price = tokenPriceX ? priceTokenX : priceTokenY;
-    await cache.setTokenPriceSource({
-      id: `${platformId}-${poolData.id}`,
-      weight,
-      address,
-      networkId,
-      platformId: walletTokensPlatform.id,
-      decimals,
-      price,
-      timestamp: Date.now(),
-    });
-  }
 
   const reserveValueX = reserveAmountX.multipliedBy(priceTokenX);
   const reserveValueY = reserveAmountY.multipliedBy(priceTokenY);
