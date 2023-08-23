@@ -140,3 +140,18 @@ export const morphoPlatform: Platform = {
   name: 'Morpho',
   image: 'https://alpha.sonar.watch/img/platforms/morpho.png',
 };
+export const fuzioPlatform: Platform = {
+  id: 'fuzio',
+  name: 'Fuzio',
+  image: 'https://alpha.sonar.watch/img/platforms/fuzio.png',
+};
+export const astroportPlatform: Platform = {
+  id: 'astroport',
+  name: 'Astroport',
+  image: 'https://alpha.sonar.watch/img/platforms/astroport.png',
+};
+export const seaswapPlatform: Platform = {
+  id: 'seaswap',
+  name: 'Seaswap',
+  image: 'https://alpha.sonar.watch/img/platforms/seaswap.png',
+};
