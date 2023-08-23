@@ -51,7 +51,7 @@ export async function getDecimalsForToken(
         const client = await getCosmWasmClient(getUrlEndpoint(NetworkId.sei));
         const tokenInfo = (await client.queryContractSmart(
           address,
-          JSON.parse(tokenInfoQueryMsg)
+          tokenInfoQueryMsg
         )) as TokenInfo;
         return tokenInfo.decimals || undefined;
       }

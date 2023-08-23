@@ -6,11 +6,12 @@ import { Job, JobExecutor } from '../../Job';
 import { lpTokensCode, newLpTokensCode, platformId } from './constants';
 import { getUrlEndpoint } from '../../utils/clients/constants';
 import {
+  MinterInfo,
+  TokenInfo,
   minterQueryMsg,
   poolQueryMsg,
   tokenInfoQueryMsg,
 } from '../../utils/sei';
-import { MinterInfo, TokenInfo } from '../seaswap/types';
 import computeAndStoreLpPrice, {
   PoolData,
 } from '../../utils/misc/computeAndStoreLpPrice';
@@ -26,20 +27,20 @@ const executor: JobExecutor = async (cache: Cache) => {
   for (const lpContract of contracts) {
     const lpTokenInfo = (await cosmWasmClient.queryContractSmart(
       lpContract,
-      JSON.parse(tokenInfoQueryMsg)
+      tokenInfoQueryMsg
     )) as TokenInfo;
     if (!lpTokenInfo || new BigNumber(lpTokenInfo.total_supply).isZero())
       continue;
 
     const minter = (await cosmWasmClient.queryContractSmart(
       lpContract,
-      JSON.parse(minterQueryMsg)
+      minterQueryMsg
     )) as MinterInfo;
     if (!minter || !minter.minter) continue;
 
     const minterLpInfo = (await cosmWasmClient.queryContractSmart(
       minter.minter,
-      JSON.parse(poolQueryMsg)
+      poolQueryMsg
     )) as PoolInfo;
     if (!minterLpInfo) continue;
     if (minterLpInfo.assets.length !== 2) continue;

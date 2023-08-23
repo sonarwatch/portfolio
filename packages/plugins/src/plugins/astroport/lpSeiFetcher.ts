@@ -12,8 +12,8 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { lpTokensCode, platformId } from './constants';
 import { getUrlEndpoint } from '../../utils/clients/constants';
 import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
-import { Balance } from '../seaswap/types';
 import getQueryBalanceByOwner from '../../utils/sei/getQueryBalanceByOwner';
+import { Balance } from '../../utils/sei';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const cosmWasmClient = await getCosmWasmClient(getUrlEndpoint(NetworkId.sei));

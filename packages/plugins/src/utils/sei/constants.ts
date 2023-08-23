@@ -1,14 +1,14 @@
-export const infoQueryMsg = `{
+export const infoQueryMsg = JSON.parse(`{
   "info": {}
-}`;
-export const tokenInfoQueryMsg = `{
+}`);
+export const tokenInfoQueryMsg = JSON.parse(`{
   "token_info": {}
-}`;
+}`);
 
-export const minterQueryMsg = `{
+export const minterQueryMsg = JSON.parse(`{
   "minter": {}
-}`;
+}`);
 
-export const poolQueryMsg = `{
+export const poolQueryMsg = JSON.parse(`{
   "pool": {}
-}`;
+}`);

@@ -53,7 +53,8 @@ import {
 import {
   jobs as seaswapJobs,
   fetchers as seaswapFetchers,
-} from './plugins/seaswap';
+} from './plugins/liquiditypools-sei';
+import { jobs as fuzioJobs } from './plugins/fuzio';
 import { jobs as pancakeswapJobs } from './plugins/pancakeswap';
 import { jobs as liquidswapJobs } from './plugins/liquidswap';
 import { jobs as auxexchangeJobs } from './plugins/auxexchange';
@@ -91,6 +92,7 @@ export const jobs: Job[] = [
   ...makerJobs,
   ...astroportJobs,
   ...seaswapJobs,
+  ...fuzioJobs,
 ];
 
 export const fetchers: Fetcher[] = [

@@ -7,25 +7,11 @@ export type PoolInfo = {
   token2_reserve: string;
 };
 
-// export type Denom = Native | CW20;
-// export type Native = { native: string };
-// export type CW20 = { cw20: string };
-
 export type TokenInfo = {
   decimals: number;
   name: string;
   symbol: string;
   total_supply: string;
-};
-
-export type TokenMetaData = {
-  amount: number;
-  id: string;
-  name: string;
-  precision: number;
-  price: number;
-  symbol: string;
-  type: string;
 };
 
 export type MinterInfo = {
