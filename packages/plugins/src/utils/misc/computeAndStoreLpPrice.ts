@@ -74,13 +74,15 @@ export default async function computeAndStoreLpPrice(
   const reserveValueX = reserveAmountX.multipliedBy(partialTokenX.price);
   const reserveValueY = reserveAmountY.multipliedBy(partialTokenY.price);
 
+  const poolSupply = poolData.supply.dividedBy(10 ** poolData.lpDecimals);
+
   const lpPrice = reserveValueX
     .plus(reserveValueY)
-    .dividedBy(poolData.supply.dividedBy(10 ** poolData.lpDecimals))
+    .dividedBy(poolSupply)
     .toNumber();
 
-  const amountPerLpX = reserveAmountX.dividedBy(poolData.supply).toNumber();
-  const amountPerLpY = reserveAmountY.dividedBy(poolData.supply).toNumber();
+  const amountXPerLp = reserveAmountX.dividedBy(poolSupply).toNumber();
+  const amountYPerLp = reserveAmountY.dividedBy(poolSupply).toNumber();
 
   await cache.setTokenPriceSource({
     id: platformId,
@@ -93,11 +95,11 @@ export default async function computeAndStoreLpPrice(
     underlyings: [
       {
         ...partialTokenX,
-        amountPerLp: amountPerLpX,
+        amountPerLp: amountXPerLp,
       },
       {
         ...partialTokenY,
-        amountPerLp: amountPerLpY,
+        amountPerLp: amountYPerLp,
       },
     ],
     timestamp: Date.now(),
