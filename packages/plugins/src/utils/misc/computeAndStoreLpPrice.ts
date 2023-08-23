@@ -53,13 +53,16 @@ export default async function computeAndStoreLpPrice(
   const reserveAmountX = poolData.reserveTokenX.div(10 ** decimalsTokenX);
   const reserveAmountY = poolData.reserveTokenY.div(10 ** decimalsTokenY);
 
-  const tokensPrices = await computeAndStoreTokenPrice(
-    cache,
-    `${platformId}-${poolData.id}`,
-    networkId,
-    { mint: tokenX, tokenPrice: tokenPriceX, reserve: reserveAmountX },
-    { mint: tokenY, tokenPrice: tokenPriceY, reserve: reserveAmountY }
-  );
+  const tokensPrices =
+    tokenPriceX && tokenPriceY
+      ? { priceX: tokenPriceX?.price, priceY: tokenPriceY?.price }
+      : await computeAndStoreTokenPrice(
+          cache,
+          `${platformId}-${poolData.id}`,
+          networkId,
+          { mint: tokenX, tokenPrice: tokenPriceX, reserve: reserveAmountX },
+          { mint: tokenY, tokenPrice: tokenPriceY, reserve: reserveAmountY }
+        );
   if (!tokensPrices) return;
 
   const priceTokenX = tokensPrices.priceX;
@@ -74,7 +77,7 @@ export default async function computeAndStoreLpPrice(
   const reserveValueY = reserveAmountY.multipliedBy(priceTokenY);
   const lpPrice = reserveValueX
     .plus(reserveValueY)
-    .dividedBy(poolData.supply)
+    .dividedBy(poolData.supply.dividedBy(10 ** poolData.lpDecimals))
     .toNumber();
 
   const amountPerLpX = reserveAmountX.dividedBy(poolData.supply).toNumber();
