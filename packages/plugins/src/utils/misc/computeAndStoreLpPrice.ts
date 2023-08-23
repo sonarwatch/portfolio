@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import checkComputeAndStoreTokensPrices from './computeAndStoreTokenPrice';
 
+// This number is used to prevent very low liquidity pools to be added, as a safeguard against price manipulation.
 const minimumLiquidity = new BigNumber(5000);
 
 export type PoolData = {
@@ -16,7 +17,8 @@ export type PoolData = {
 };
 /**
  * Add a price source for a pool in the cache.
- * If one of the token composing the pool doesn't have a price in the cache, add a new token price source for it.
+ * If one of the token composing the pool doesn't have a price and can be safely calculated, add a new token price.
+ * WARNING : check tokensToRelyOnByNetwork for further details on how the new token price is calculated.
  *
  * @param cache The cache on which the LP price will be stored
  * @param tokenMintX The address/mint of the first token
@@ -34,37 +36,23 @@ export default async function computeAndStoreLpPrice(
 ) {
   const tokenX = poolData.mintTokenX;
   const tokenY = poolData.mintTokenY;
-
-  const tokenPrices = await cache.getTokenPrices([tokenX, tokenY], networkId);
-  const tokenPriceX = tokenPrices[0];
-  const tokenPriceY = tokenPrices[1];
+  const rawReserveX = poolData.reserveTokenX;
+  const rawReserveY = poolData.reserveTokenY;
 
   const partialTokensPrices = await checkComputeAndStoreTokensPrices(
     cache,
     `${platformId}-${poolData.id}`,
     networkId,
-    {
-      mint: tokenX,
-      tokenPrice: tokenPriceX,
-      rawReserve: poolData.reserveTokenX,
-    },
-    {
-      mint: tokenY,
-      tokenPrice: tokenPriceY,
-      rawReserve: poolData.reserveTokenY,
-    }
+    { mint: tokenX, rawReserve: rawReserveX },
+    { mint: tokenY, rawReserve: rawReserveY }
   );
   if (!partialTokensPrices) return;
 
   const partialTokenX = partialTokensPrices.partialTokenUnderlyingX;
   const partialTokenY = partialTokensPrices.partialTokenUnderlyingY;
 
-  const reserveAmountX = poolData.reserveTokenX.div(
-    10 ** partialTokenX.decimals
-  );
-  const reserveAmountY = poolData.reserveTokenY.div(
-    10 ** partialTokenY.decimals
-  );
+  const reserveAmountX = rawReserveX.div(10 ** partialTokenX.decimals);
+  const reserveAmountY = rawReserveY.div(10 ** partialTokenY.decimals);
 
   const totalLiquidity = reserveAmountX
     .multipliedBy(partialTokenX.price)

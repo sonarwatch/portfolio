@@ -1,7 +1,8 @@
 import {
+  NetworkId,
   NetworkIdType,
-  TokenPrice,
   TokenPriceSource,
+  networks,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -11,7 +12,6 @@ import { getDecimalsForToken } from './getDecimalsForToken';
 
 export type TokenInfo = {
   mint: string;
-  tokenPrice: TokenPrice | undefined;
   rawReserve: BigNumber;
 };
 
@@ -21,6 +21,53 @@ export type PartialTokenUnderlying = {
   decimals: number;
   price: number;
 };
+
+/**
+ * This list is used to avoid calulating low liquidity tokens with others low liquidity tokens.
+ * To prevent wrong prices (with very low precision) to be calculated, we setup a list of tokens to rely on.
+ * These tokens have very low chance of having price manipulation.
+ * Therefore, they can be safely used to compute other tokens prices.
+ *
+ * If you think other tokens should be added to this list, please send a PR.
+ */
+export const tokensToRelyOnByNetwork: Map<NetworkIdType, string[]> = new Map([
+  [
+    NetworkId.sei,
+    [
+      networks.sei.native.address,
+      'ibc/ED07A3391A112B175915CD8FAF43A2DA8E4790EDE12566649D0C2F97716B8518', // OSMO
+      'factory/sei189adguawugk3e55zn63z8r9ll29xrjwca636ra7v7gxuzn98sxyqwzt47l/Hq4tuDzhRBnxw3tFA5n6M52NVMVcC19XggbyDiJKCD6H', // USDCet
+    ],
+  ],
+  [
+    NetworkId.solana,
+    [
+      networks.solana.native.address,
+      'So11111111111111111111111111111111111111112', // WSOL
+      'J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn', // jito SOL
+      'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So', // mSOL
+      '7dHbWXmci3dT8UFYWYZweBLXgycu7Y3iL6trKn1Y7ARj', // lido SOL
+      'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', // USDC
+      'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB', // USDT
+    ],
+  ],
+  [
+    NetworkId.aptos,
+    [
+      networks.aptos.native.address,
+      '0x5e156f1207d0ebfa19a9eeff00d62a282278fb8719f4fab3a586a0a2c0fffbea::coin::T', // USDCet
+      '0x6f986d146e4a90b828d8c12c14b6f4e003fdff11a8eecceceb63744363eaac01::mod_coin::MOD', // MOD (Move Dollar)
+    ],
+  ],
+  [
+    NetworkId.sui,
+    [
+      networks.sui.native.address,
+      '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN', // USDCet
+      '0x6864a6f921804860930db6ddbe2e16acdf8504495ea7481637a1c8b9a8fe54b::cetus::CETUS', // CETUS
+    ],
+  ],
+]);
 
 export default async function checkComputeAndStoreTokensPrices(
   cache: Cache,
@@ -35,15 +82,52 @@ export default async function checkComputeAndStoreTokensPrices(
     }
   | undefined
 > {
+  const tokenPrices = await cache.getTokenPrices(
+    [tokenX.mint, tokenY.mint],
+    networkId
+  );
+  const tokenPriceX = tokenPrices[0];
+  const tokenPriceY = tokenPrices[1];
+
+  if (!tokenPriceX && !tokenPriceY) return undefined;
+
   let partialTokenUnderlyingX;
   let partialTokenUnderlyingY;
-  if (!tokenX.tokenPrice || !tokenY.tokenPrice) {
-    const decimalsTokenX = tokenX.tokenPrice
-      ? tokenX.tokenPrice.decimals
+
+  if (tokenPriceX && tokenPriceY) {
+    partialTokenUnderlyingX = {
+      networkId,
+      address: tokenX.mint,
+      decimals: tokenPriceX.decimals,
+      price: tokenPriceX.price,
+    };
+
+    partialTokenUnderlyingY = {
+      networkId,
+      address: tokenY.mint,
+      decimals: tokenPriceY.decimals,
+      price: tokenPriceY.price,
+    };
+    return { partialTokenUnderlyingX, partialTokenUnderlyingY };
+  }
+
+  const tokensToRelyOn = tokensToRelyOnByNetwork.get(networkId);
+
+  if (!tokensToRelyOn) return undefined;
+
+  if (
+    !tokensToRelyOn.includes(tokenX.mint) ||
+    !tokensToRelyOn.includes(tokenY.mint)
+  )
+    return undefined;
+
+  if (!tokenPriceX || !tokenPriceY) {
+    const decimalsTokenX = tokenPriceX
+      ? tokenPriceX.decimals
       : await getDecimalsForToken(tokenX.mint, networkId);
 
-    const decimalsTokenY = tokenY.tokenPrice
-      ? tokenY.tokenPrice.decimals
+    const decimalsTokenY = tokenPriceY
+      ? tokenPriceY.decimals
       : await getDecimalsForToken(tokenY.mint, networkId);
     if (decimalsTokenX === undefined || decimalsTokenY === undefined)
       return undefined;
@@ -54,22 +138,19 @@ export default async function checkComputeAndStoreTokensPrices(
     let priceX: number;
     let priceY: number;
 
-    if (!tokenX.tokenPrice && tokenY.tokenPrice) {
+    if (!tokenPriceX && tokenPriceY) {
       priceX = tokenY.rawReserve
-        .multipliedBy(tokenY.tokenPrice.price)
+        .multipliedBy(tokenPriceY.price)
         .dividedBy(tokenXReserve)
         .toNumber();
-      priceY = tokenY.tokenPrice.price;
-    } else if (!tokenY.tokenPrice && tokenX.tokenPrice) {
-      priceX = tokenX.tokenPrice.price;
+      priceY = tokenPriceY.price;
+    } else if (!tokenPriceY && tokenPriceX) {
+      priceX = tokenPriceX.price;
       priceY = tokenXReserve
-        .multipliedBy(tokenX.tokenPrice.price)
+        .multipliedBy(tokenPriceX.price)
         .dividedBy(tokenYReserve)
         .toNumber();
     } else {
-      console.log(
-        'computeAndStoreTokenPrice : Unable to compute token price, requires at least one token to compute a price.'
-      );
       return undefined;
     }
 
@@ -77,9 +158,9 @@ export default async function checkComputeAndStoreTokensPrices(
       tokenXReserve.multipliedBy(priceX).multipliedBy(2)
     );
 
-    const address = tokenX.tokenPrice ? tokenY.mint : tokenX.mint;
-    const price = tokenX.tokenPrice ? priceY : priceX;
-    const decimals = tokenX.tokenPrice ? decimalsTokenY : decimalsTokenX;
+    const address = tokenPriceX ? tokenY.mint : tokenX.mint;
+    const price = tokenPriceX ? priceY : priceX;
+    const decimals = tokenPriceX ? decimalsTokenY : decimalsTokenX;
     if (decimals === undefined) return undefined;
 
     const tokenPriceSourceDest: TokenPriceSource = {
@@ -108,23 +189,7 @@ export default async function checkComputeAndStoreTokensPrices(
     };
 
     await cache.setTokenPriceSource(tokenPriceSourceDest);
-  } else if (tokenX.tokenPrice && tokenY.tokenPrice) {
-    partialTokenUnderlyingX = {
-      networkId,
-      address: tokenX.mint,
-      decimals: tokenX.tokenPrice.decimals,
-      price: tokenX.tokenPrice.price,
-    };
-
-    partialTokenUnderlyingY = {
-      networkId,
-      address: tokenY.mint,
-      decimals: tokenY.tokenPrice.decimals,
-      price: tokenY.tokenPrice.price,
-    };
-  } else {
-    return undefined;
+    return { partialTokenUnderlyingX, partialTokenUnderlyingY };
   }
-
-  return { partialTokenUnderlyingX, partialTokenUnderlyingY };
+  return undefined;
 }
