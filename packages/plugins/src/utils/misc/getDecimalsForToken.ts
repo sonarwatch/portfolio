@@ -4,8 +4,7 @@ import { getCosmWasmClient } from '@sei-js/core';
 import { getClientAptos, getClientSei, getClientSolana } from '../clients';
 import { coinDecimals } from '../aptos';
 import { getUrlEndpoint } from '../clients/constants';
-import { TokenInfo } from '../../plugins/liquiditypools-sei/types';
-import { tokenInfoQueryMsg } from '../sei';
+import { TokenInfo, tokenInfoQueryMsg } from '../sei';
 
 /**
  * Return the decimals of a token on any network using RPC calls or TokenList.

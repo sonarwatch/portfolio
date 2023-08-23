@@ -51,10 +51,9 @@ import {
   fetchers as astroportFetchers,
 } from './plugins/astroport';
 import {
-  jobs as seaswapJobs,
-  fetchers as seaswapFetchers,
+  jobs as liquidityPoolsJobs,
+  fetchers as liquidityPoolsFetchers,
 } from './plugins/liquiditypools-sei';
-import { jobs as fuzioJobs } from './plugins/fuzio';
 import { jobs as pancakeswapJobs } from './plugins/pancakeswap';
 import { jobs as liquidswapJobs } from './plugins/liquidswap';
 import { jobs as auxexchangeJobs } from './plugins/auxexchange';
@@ -90,9 +89,8 @@ export const jobs: Job[] = [
   ...ordersJobs,
   ...morphoJobs,
   ...makerJobs,
+  ...liquidityPoolsJobs,
   ...astroportJobs,
-  ...seaswapJobs,
-  ...fuzioJobs,
 ];
 
 export const fetchers: Fetcher[] = [
@@ -113,7 +111,7 @@ export const fetchers: Fetcher[] = [
   ...aaveFetchers,
   ...ordersFetchers,
   ...morphoFetchers,
-  ...seaswapFetchers,
+  ...liquidityPoolsFetchers,
   ...astroportFetchers,
 ];
 
