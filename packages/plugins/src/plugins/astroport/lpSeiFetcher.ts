@@ -61,7 +61,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   elements.push({
     type: PortfolioElementType.liquidity,
-    networkId: NetworkId.solana,
+    networkId: NetworkId.sei,
     platformId,
     name: 'Liquidities',
     label: 'LiquidityPool',
