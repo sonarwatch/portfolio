@@ -12,7 +12,9 @@ import {
 } from '../../utils/aptos';
 import { getClientAptos } from '../../utils/clients';
 import { lpCoinInfoTypePrefix, platformId, programAddress } from './constants';
-import setLpPriceSource, { PoolData } from '../../utils/misc/setLpPriceSource';
+import computeAndStoreLpPrice, {
+  PoolData,
+} from '../../utils/misc/computeAndStoreLpPrice';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientAptos();
@@ -77,7 +79,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       reserveTokenX: new BigNumber(liquidityPoolData.coin_x_reserve.value),
       reserveTokenY: new BigNumber(liquidityPoolData.coin_y_reserve.value),
     };
-    await setLpPriceSource(cache, poolData, NetworkId.aptos, platformId);
+    await computeAndStoreLpPrice(cache, poolData, NetworkId.aptos, platformId);
   }
 };
 

@@ -46,6 +46,14 @@ import {
 import { jobs as driftJobs, fetchers as driftFetchers } from './plugins/drift';
 import { jobs as mangoJobs, fetchers as mangoFetchers } from './plugins/mango';
 import { jobs as topTokensJobs } from './plugins/top-tokens';
+import {
+  jobs as astroportJobs,
+  fetchers as astroportFetchers,
+} from './plugins/astroport';
+import {
+  jobs as liquidityPoolsJobs,
+  fetchers as liquidityPoolsFetchers,
+} from './plugins/liquiditypools-sei';
 import { jobs as pancakeswapJobs } from './plugins/pancakeswap';
 import { jobs as liquidswapJobs } from './plugins/liquidswap';
 import { jobs as auxexchangeJobs } from './plugins/auxexchange';
@@ -81,6 +89,8 @@ export const jobs: Job[] = [
   ...ordersJobs,
   ...morphoJobs,
   ...makerJobs,
+  ...liquidityPoolsJobs,
+  ...astroportJobs,
 ];
 
 export const fetchers: Fetcher[] = [
@@ -101,6 +111,8 @@ export const fetchers: Fetcher[] = [
   ...aaveFetchers,
   ...ordersFetchers,
   ...morphoFetchers,
+  ...liquidityPoolsFetchers,
+  ...astroportFetchers,
 ];
 
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
