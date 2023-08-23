@@ -1,8 +1,7 @@
 import { NetworkIdType } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
-import { getDecimalsForToken } from './getDecimalsForToken';
-import computeAndStoreTokenPrice from './computeAndStoreTokenPrice';
+import checkComputeAndStoreTokensPrices from './computeAndStoreTokenPrice';
 
 const minimumLiquidity = new BigNumber(5000);
 
@@ -40,41 +39,41 @@ export default async function computeAndStoreLpPrice(
   const tokenPriceX = tokenPrices[0];
   const tokenPriceY = tokenPrices[1];
 
-  const decimalsTokenX = tokenPriceX
-    ? tokenPriceX.decimals
-    : await getDecimalsForToken(tokenX, networkId);
+  const partialTokensPrices = await checkComputeAndStoreTokensPrices(
+    cache,
+    `${platformId}-${poolData.id}`,
+    networkId,
+    {
+      mint: tokenX,
+      tokenPrice: tokenPriceX,
+      rawReserve: poolData.reserveTokenX,
+    },
+    {
+      mint: tokenY,
+      tokenPrice: tokenPriceY,
+      rawReserve: poolData.reserveTokenY,
+    }
+  );
+  if (!partialTokensPrices) return;
 
-  const decimalsTokenY = tokenPriceY
-    ? tokenPriceY.decimals
-    : await getDecimalsForToken(tokenY, networkId);
+  const partialTokenX = partialTokensPrices.partialTokenUnderlyingX;
+  const partialTokenY = partialTokensPrices.partialTokenUnderlyingY;
 
-  if (!decimalsTokenX || !decimalsTokenY) return;
-
-  const reserveAmountX = poolData.reserveTokenX.div(10 ** decimalsTokenX);
-  const reserveAmountY = poolData.reserveTokenY.div(10 ** decimalsTokenY);
-
-  const tokensPrices =
-    tokenPriceX && tokenPriceY
-      ? { priceX: tokenPriceX?.price, priceY: tokenPriceY?.price }
-      : await computeAndStoreTokenPrice(
-          cache,
-          `${platformId}-${poolData.id}`,
-          networkId,
-          { mint: tokenX, tokenPrice: tokenPriceX, reserve: reserveAmountX },
-          { mint: tokenY, tokenPrice: tokenPriceY, reserve: reserveAmountY }
-        );
-  if (!tokensPrices) return;
-
-  const priceTokenX = tokensPrices.priceX;
-  const priceTokenY = tokensPrices.priceY;
+  const reserveAmountX = poolData.reserveTokenX.div(
+    10 ** partialTokenX.decimals
+  );
+  const reserveAmountY = poolData.reserveTokenY.div(
+    10 ** partialTokenY.decimals
+  );
 
   const totalLiquidity = reserveAmountX
-    .multipliedBy(priceTokenX)
-    .plus(reserveAmountY.multipliedBy(priceTokenY));
+    .multipliedBy(partialTokenX.price)
+    .plus(reserveAmountY.multipliedBy(partialTokenY.price));
   if (totalLiquidity.isLessThan(minimumLiquidity)) return;
 
-  const reserveValueX = reserveAmountX.multipliedBy(priceTokenX);
-  const reserveValueY = reserveAmountY.multipliedBy(priceTokenY);
+  const reserveValueX = reserveAmountX.multipliedBy(partialTokenX.price);
+  const reserveValueY = reserveAmountY.multipliedBy(partialTokenY.price);
+
   const lpPrice = reserveValueX
     .plus(reserveValueY)
     .dividedBy(poolData.supply.dividedBy(10 ** poolData.lpDecimals))
@@ -93,17 +92,11 @@ export default async function computeAndStoreLpPrice(
     price: lpPrice,
     underlyings: [
       {
-        networkId,
-        address: tokenX,
-        decimals: decimalsTokenX,
-        price: priceTokenX,
+        ...partialTokenX,
         amountPerLp: amountPerLpX,
       },
       {
-        networkId,
-        address: tokenY,
-        decimals: decimalsTokenY,
-        price: priceTokenY,
+        ...partialTokenY,
         amountPerLp: amountPerLpY,
       },
     ],
