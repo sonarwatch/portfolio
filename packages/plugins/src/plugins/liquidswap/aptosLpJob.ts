@@ -46,6 +46,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     const lpSupply = new BigNumber(lpSupplyString)
       .div(10 ** lpDecimals)
       .toNumber();
+    if (lpSupply === 0) continue;
 
     const liquidityPoolId = getNestedType(lpType);
     const splits = liquidityPoolId.split(', ');
