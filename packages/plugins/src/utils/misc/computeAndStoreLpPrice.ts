@@ -13,7 +13,9 @@ export type PoolData = {
   reserveTokenX: BigNumber;
   reserveTokenY: BigNumber;
   mintTokenX: string;
+  decimalX?: number;
   mintTokenY: string;
+  decimalY?: number;
 };
 /**
  * Add a price source for a pool in the cache.
@@ -36,6 +38,8 @@ export default async function computeAndStoreLpPrice(
 ) {
   const tokenX = poolData.mintTokenX;
   const tokenY = poolData.mintTokenY;
+  const { decimalX } = poolData;
+  const { decimalY } = poolData;
   const rawReserveX = poolData.reserveTokenX;
   const rawReserveY = poolData.reserveTokenY;
 
@@ -43,8 +47,8 @@ export default async function computeAndStoreLpPrice(
     cache,
     `${platformId}-${poolData.id}`,
     networkId,
-    { mint: tokenX, rawReserve: rawReserveX },
-    { mint: tokenY, rawReserve: rawReserveY }
+    { mint: tokenX, decimal: decimalX, rawReserve: rawReserveX },
+    { mint: tokenY, decimal: decimalY, rawReserve: rawReserveY }
   );
   if (!partialTokensPrices) return;
 

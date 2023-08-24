@@ -12,6 +12,7 @@ import { getDecimalsForToken } from './getDecimalsForToken';
 
 export type TokenInfo = {
   mint: string;
+  decimal?: number;
   rawReserve: BigNumber;
 };
 
@@ -88,7 +89,6 @@ export default async function checkComputeAndStoreTokensPrices(
   );
   const tokenPriceX = tokenPrices[0];
   const tokenPriceY = tokenPrices[1];
-
   if (!tokenPriceX && !tokenPriceY) return undefined;
 
   let partialTokenUnderlyingX;
@@ -116,19 +116,30 @@ export default async function checkComputeAndStoreTokensPrices(
   if (!tokensToRelyOn) return undefined;
 
   if (
-    !tokensToRelyOn.includes(tokenX.mint) ||
+    !tokensToRelyOn.includes(tokenX.mint) &&
     !tokensToRelyOn.includes(tokenY.mint)
   )
     return undefined;
 
   if (!tokenPriceX || !tokenPriceY) {
-    const decimalsTokenX = tokenPriceX
-      ? tokenPriceX.decimals
-      : await getDecimalsForToken(tokenX.mint, networkId);
+    let decimalsTokenX;
+    if (tokenX.decimal) {
+      decimalsTokenX = tokenX.decimal;
+    } else if (tokenPriceX) {
+      decimalsTokenX = tokenPriceX.decimals;
+    } else {
+      decimalsTokenX = await getDecimalsForToken(tokenX.mint, networkId);
+    }
 
-    const decimalsTokenY = tokenPriceY
-      ? tokenPriceY.decimals
-      : await getDecimalsForToken(tokenY.mint, networkId);
+    let decimalsTokenY;
+    if (tokenY.decimal) {
+      decimalsTokenY = tokenY.decimal;
+    } else if (tokenPriceY) {
+      decimalsTokenY = tokenPriceY.decimals;
+    } else {
+      decimalsTokenY = await getDecimalsForToken(tokenY.mint, networkId);
+    }
+
     if (decimalsTokenX === undefined || decimalsTokenY === undefined)
       return undefined;
 
