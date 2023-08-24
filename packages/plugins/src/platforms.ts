@@ -155,3 +155,8 @@ export const seaswapPlatform: Platform = {
   name: 'Seaswap',
   image: 'https://alpha.sonar.watch/img/platforms/seaswap.png',
 };
+export const aftermathPlatform: Platform = {
+  id: 'aftermath',
+  name: 'Aftermath',
+  image: 'https://alpha.sonar.watch/img/platforms/aftermath.png',
+};

@@ -55,6 +55,7 @@ import {
   fetchers as liquidityPoolsFetchers,
 } from './plugins/liquiditypools-sei';
 import { jobs as pancakeswapJobs } from './plugins/pancakeswap';
+import { jobs as aftermathJobs } from './plugins/aftermath';
 import { jobs as liquidswapJobs } from './plugins/liquidswap';
 import { jobs as auxexchangeJobs } from './plugins/auxexchange';
 import { jobs as makerJobs } from './plugins/maker';
@@ -91,6 +92,7 @@ export const jobs: Job[] = [
   ...makerJobs,
   ...liquidityPoolsJobs,
   ...astroportJobs,
+  ...aftermathJobs,
 ];
 
 export const fetchers: Fetcher[] = [
