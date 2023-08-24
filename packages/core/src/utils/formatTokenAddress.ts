@@ -37,7 +37,7 @@ export function formatSolanaTokenAddress(address: string) {
 
 export function formatSeiTokenAddress(address: string) {
   assertSeiTokenAddress(address);
-  return address.replace('/', '_');
+  return address.replace(/\//g, '_');
 }
 
 const formatters: Record<AddressSystemType, (address: string) => string> = {
