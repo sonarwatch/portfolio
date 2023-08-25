@@ -1,16 +1,17 @@
 # TODO
 
 - Fix le problème d'import Job et Fetcher lors de la génération d'un plugin
-- Opti orca-clmm-positions
-- Opti raydium-clmm-positions
-- Fix les packages utilisant @metaplex-fundation/js (build fail)
 - Déplacer les plateformes dans le package plugins
 - Rename address en id dans les tokens & ajouter la properties tokenContract
 - Ajout d'un module de decimals dans le cache
 - Ajout de la fonction cache.setTokensPricesSource(), utile pour des AMM
+- Auto Initialisation du cache dans portolfio-api
 
 # DONE
 
+- Fix les packages utilisant @metaplex-fundation/js (build fail)
+- Opti orca-clmm-positions
+- Opti raydium-clmm-positions
 - Rename cache.getTokenPrices en getAllTokenPrices et créer getTokenPrices
 - Fix le "-" dans le nom du fichier d'un fetcher lors de leur génération
 - cache getItems(string[])
