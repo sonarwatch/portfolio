@@ -43,10 +43,8 @@ const executor: JobExecutor = async (cache: Cache) => {
     if (!lpSupplyString) continue;
     const lpDecimals = lpInfoResource.data.decimals;
 
-    const lpSupply = new BigNumber(lpSupplyString)
-      .div(10 ** lpDecimals)
-      .toNumber();
-    if (lpSupply === 0) continue;
+    const lpSupply = new BigNumber(lpSupplyString);
+    if (lpSupply.isZero()) continue;
 
     const liquidityPoolId = getNestedType(lpType);
     const splits = liquidityPoolId.split(', ');
@@ -74,7 +72,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     const poolData: PoolData = {
       id: lpType,
       lpDecimals,
-      supply: new BigNumber(lpSupply),
+      supply: lpSupply,
       mintTokenX: typeX,
       mintTokenY: typeY,
       reserveTokenX: new BigNumber(liquidityPoolData.coin_x_reserve.value),
