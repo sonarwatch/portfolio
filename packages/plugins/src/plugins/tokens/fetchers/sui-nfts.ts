@@ -98,7 +98,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${walletNftsPlatform.id}-sui`,
+  id: `${walletNftsPlatform.id}-${NetworkId.sui}`,
   networkId: NetworkId.sui,
   executor,
 };

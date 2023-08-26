@@ -2,9 +2,10 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import { walletTokensPlatform } from '../../platforms';
 import jobExecutorGenerator from './jobExecutorGenerator';
 import aptosFetcher from './fetchers/aptos';
+import aptosNftsFetcher from './fetchers/aptos-nfts';
 import solanaFetcher from './fetchers/solana';
 import suiFetcher from './fetchers/sui';
-import suiNftFetcher from './fetchers/sui-nfts';
+import suiNftsFetcher from './fetchers/sui-nfts';
 import seiFetcher from './fetchers/sei';
 import solanaNativeFetcher from './fetchers/solana-native';
 import solanaNftsFetcher from './fetchers/solana-nfts';
@@ -48,12 +49,13 @@ export const jobs: Job[] = [
 
 export const fetchers: Fetcher[] = [
   aptosFetcher,
+  aptosNftsFetcher,
   solanaFetcher,
   solanaNativeFetcher,
   solanaNftsFetcher,
   solanaNftsUnderlyingsFetcher,
   suiFetcher,
-  suiNftFetcher,
+  suiNftsFetcher,
   seiFetcher,
   ...evmFetchers,
 ];
