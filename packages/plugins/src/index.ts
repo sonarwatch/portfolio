@@ -83,7 +83,6 @@ export const jobs: Job[] = [
   ...turbosJobs,
   ...topTokensJobs,
   ...pancakeswapJobs,
-  ...liquidswapJobs,
   ...auxexchangeJobs,
   ...saberJobs,
   ...aaveJobs,
@@ -93,6 +92,7 @@ export const jobs: Job[] = [
   ...liquidityPoolsJobs,
   ...astroportJobs,
   ...aftermathJobs,
+  ...liquidswapJobs,
 ];
 
 export const fetchers: Fetcher[] = [
