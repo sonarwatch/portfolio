@@ -137,6 +137,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     poolsPromises.push(
       cache.setTokenPriceSource({
         networkId: NetworkId.solana,
+        elementName: 'Standard Pools (deprecated)',
         platformId,
         id: platformId,
         weight: 1,
@@ -212,21 +213,14 @@ const executor: JobExecutor = async (cache: Cache) => {
     farmsPromises.push(
       cache.setTokenPriceSource({
         id: platformId,
+        elementName: 'Aquafarms (deprecated)',
         weight: 1,
         address: farmMint.toString(),
         networkId: NetworkId.solana,
         platformId,
         decimals: farmDecimals,
         price,
-        underlyings: [
-          {
-            networkId: NetworkId.solana,
-            address: baseToken.address,
-            decimals: baseToken.decimals,
-            price: baseToken.price,
-            amountPerLp: baseVaultAmount / baseVaultValue,
-          },
-        ],
+        underlyings: baseToken.underlyings,
         timestamp: Date.now(),
       })
     );
