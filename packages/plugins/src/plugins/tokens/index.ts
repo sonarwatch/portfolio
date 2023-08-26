@@ -4,6 +4,7 @@ import jobExecutorGenerator from './jobExecutorGenerator';
 import aptosFetcher from './fetchers/aptos';
 import solanaFetcher from './fetchers/solana';
 import suiFetcher from './fetchers/sui';
+import suiNftFetcher from './fetchers/sui-nfts';
 import seiFetcher from './fetchers/sei';
 import solanaNativeFetcher from './fetchers/solana-native';
 import solanaNftsFetcher from './fetchers/solana-nfts';
@@ -52,6 +53,7 @@ export const fetchers: Fetcher[] = [
   solanaNftsFetcher,
   solanaNftsUnderlyingsFetcher,
   suiFetcher,
+  suiNftFetcher,
   seiFetcher,
   ...evmFetchers,
 ];
