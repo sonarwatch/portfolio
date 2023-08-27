@@ -59,6 +59,7 @@ import { jobs as aftermathJobs } from './plugins/aftermath';
 import { jobs as liquidswapJobs } from './plugins/liquidswap';
 import { jobs as auxexchangeJobs } from './plugins/auxexchange';
 import { jobs as makerJobs } from './plugins/maker';
+import { jobs as naviJobs } from './plugins/navi';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
 export * from './Cache';
@@ -93,6 +94,7 @@ export const jobs: Job[] = [
   ...astroportJobs,
   ...aftermathJobs,
   ...liquidswapJobs,
+  ...naviJobs,
 ];
 
 export const fetchers: Fetcher[] = [
