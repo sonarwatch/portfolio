@@ -74,8 +74,13 @@ export async function getImagefromHttpUrl(
   const res2 = await axios.get(url, {
     timeout: 5000,
   });
-  const dataImage = res2.data.image;
-  if (typeof dataImage === 'string') return dataImage;
+
+  const uri = res2.data.image;
+  let image: string | undefined;
+  if (isHttpUrl(uri)) image = await getImagefromHttpUrl(uri);
+  if (isIpfsUrl(uri)) image = await getImagefromIpfsUrl(uri);
+
+  if (typeof uri === 'string') return image;
   return undefined;
 }
 
