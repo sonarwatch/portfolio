@@ -15,11 +15,10 @@ import {
 import { walletNftsPlatform } from '../../../platforms';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSui } from '../../../utils/clients';
-import { Cache } from '../../../Cache';
 import { DisplayInfo, SuiNFTMetadata } from '../types';
 import getFormattedCollectionNameAndId from '../../../utils/sui/getFormattedCollectionNameAndId';
 
-const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
+const executor: FetcherExecutor = async (owner: string) => {
   const client = getClientSui();
 
   const assets: PortfolioAssetCollectible[] = [];
