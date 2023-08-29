@@ -7,25 +7,14 @@ import {
   PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
 import { Network, Provider } from 'aptos';
-import axios, { AxiosResponse } from 'axios';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { walletNftsPlatform } from '../../../platforms';
 import runInBatch from '../../../utils/misc/runInBatch';
+import { getImagefromUri } from '../../../utils/misc/getImagefromUri';
 
 const prefix = 'nft-images-aptos';
 const noImageValue = 'noimage';
-
-type NftMetadata = {
-  name: string;
-  description?: string;
-  image: string;
-  dna?: string;
-  edition?: number;
-  date?: number;
-  attributes?: { trait_type: string; value: string }[];
-  compiler?: string;
-};
 
 type TokenInfo = {
   __typename?: 'current_token_ownerships_v2';
@@ -77,9 +66,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const cachedImages = await cache.getItems<string>(
     nfts
-      .map((o) =>
-        o.current_token_data ? o.current_token_data.token_data_id : []
-      )
+      .map((o) => (o.current_token_data ? o.current_token_data.token_uri : []))
       .flat(),
     {
       prefix,
@@ -91,29 +78,24 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const missings: TokenInfo[] = [];
   nfts.forEach(async (o, i) => {
     if (!o.current_token_data) return;
-    const tokenUri = o.current_token_data.token_uri;
-    const cachedImage =
-      cachedImages[i] || isAnImageLink(tokenUri) ? tokenUri : undefined;
-    const address = o.current_token_data.token_data_id;
+    const cachedImage = cachedImages[i];
+    const address = o.current_token_data.token_uri;
     if (cachedImage) {
       images.set(address, cachedImage);
     } else missings.push(o);
   });
 
-  const res: PromiseSettledResult<AxiosResponse<NftMetadata> | undefined>[] =
-    await runInBatch(
-      missings.map(
-        (o) => () =>
-          axios
-            .get(getQueryableUrlFromAnyUrl(o.current_token_data?.token_uri))
-            .catch(() => undefined)
-      ),
-      5
-    );
+  const res = await runInBatch(
+    missings.map(
+      (o) => () =>
+        getImagefromUri(o.current_token_data?.token_uri, NetworkId.aptos, cache)
+    ),
+    10
+  );
 
   const promises = res.map((r, i) => {
-    const image = r.status !== 'rejected' ? r.value?.data.image : undefined;
-    const address = missings[i].current_token_data?.token_data_id;
+    const image = r.status !== 'rejected' ? r.value : undefined;
+    const address = missings[i].current_token_data?.token_uri;
     if (!address) return undefined;
     if (r.status === 'rejected' || !image) {
       return cache.setItem(address, noImageValue, {
@@ -121,9 +103,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         networkId: NetworkId.aptos,
       });
     }
-    const imageUrl = getQueryableUrlFromAnyUrl(image);
-    images.set(address, imageUrl);
-    return cache.setItem(address, imageUrl, {
+    images.set(address, image);
+    return cache.setItem(address, image, {
       prefix,
       networkId: NetworkId.aptos,
     });
@@ -134,10 +115,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     .map((nft) => {
       if (!nft.current_token_data) return [];
       const address = nft.current_token_data.token_data_id;
+      const dataUri = nft.current_token_data.token_uri;
 
       const { amount } = nft;
 
-      let image = images.get(address);
+      let image = images.get(dataUri);
       if (image === noImageValue) image = undefined;
 
       return {
@@ -147,7 +129,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         data: {
           address,
           amount,
-          dataUri: nft.current_token_data.token_uri,
+          dataUri,
           price: null,
           value: null,
           floorPrice: null,
@@ -182,22 +164,3 @@ const fetcher: Fetcher = {
 };
 
 export default fetcher;
-
-function getQueryableUrlFromAnyUrl(metadataUrl: string | undefined): string {
-  if (!metadataUrl) return '';
-  if (metadataUrl.startsWith('ipfs')) {
-    let url = metadataUrl.replace('ipfs://', '');
-    const num = url.lastIndexOf('/');
-    url = `https://${url.slice(0, num)}.ipfs.dweb.link${url.slice(num)}`;
-    return url;
-  }
-  if (metadataUrl.startsWith('https://')) {
-    return metadataUrl;
-  }
-  return '';
-}
-
-function isAnImageLink(url: string | undefined): boolean {
-  if (!url) return true;
-  return url.includes('.png') || url.includes('.jpeg');
-}
