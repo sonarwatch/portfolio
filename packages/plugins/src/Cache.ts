@@ -12,7 +12,10 @@ import {
   tokenPriceFromSources,
 } from '@sonarwatch/portfolio-core';
 import overlayDriver from './overlayDriver';
-import memoryDriver from './memoryDriver';
+import memoryDriver, {
+  DRIVER_SW_MEMORY_NAME,
+  MemoryDriver,
+} from './memoryDriver';
 import runInBatch from './utils/misc/runInBatch';
 
 export type TransactionOptions = {
@@ -91,13 +94,27 @@ export type CacheConfigParams = {
 
 export class Cache {
   readonly storage: Storage;
+  readonly driver: Driver;
   private tokenPricesCache: Map<string, CachedTokenPrice> = new Map();
 
   constructor(cacheConfig: CacheConfig) {
-    const driver = getDriverFromCacheConfig(cacheConfig);
+    this.driver = getDriverFromCacheConfig(cacheConfig);
     this.storage = createStorage({
-      driver,
+      driver: this.driver,
     });
+  }
+
+  importData(data: Map<string, string>): void {
+    if (this.driver.name === DRIVER_SW_MEMORY_NAME) {
+      (this.driver as MemoryDriver).importData(data, 20 * 60 * 1000);
+    }
+  }
+
+  exportData(): Map<string, string> {
+    if (this.driver.name === DRIVER_SW_MEMORY_NAME) {
+      return (this.driver as MemoryDriver).exportData();
+    }
+    return new Map();
   }
 
   async hasItem(key: string, opts: TransactionOptions): Promise<boolean> {
