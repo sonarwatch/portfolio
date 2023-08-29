@@ -1,6 +1,6 @@
 import { GetProgramAccountsFilter } from '@solana/web3.js';
 import { BeetStruct } from '@metaplex-foundation/beet';
-import { CLOBMarketAccount, CLOBOrderStruct } from './structs';
+import { CLOBOrderStruct } from './structs';
 
 export const serumOrdersFilter = (
   owner: string,
@@ -18,7 +18,7 @@ export const serumOrdersFilter = (
 ];
 
 export const dataSizeStructFilter = (
-  struct: BeetStruct<CLOBMarketAccount>
+  struct: BeetStruct<any>
 ): GetProgramAccountsFilter[] => [
   {
     dataSize: struct.byteSize,
