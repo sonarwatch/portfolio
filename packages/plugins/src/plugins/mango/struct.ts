@@ -22,6 +22,8 @@ import {
   u64,
 } from '../../utils/solana';
 
+// https://github.com/blockworks-foundation/mango-v4/blob/0f10cb4d925c78f8548da53e1ba518d4df521004/mango_v4.json
+
 const MAX_TOKENS = 16;
 const MAX_PAIRS = MAX_TOKENS - 1;
 const MAX_NODE_BANKS = 8;
