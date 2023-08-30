@@ -9,6 +9,8 @@ import BigNumber from 'bignumber.js';
 import { WrappedI80F48, wrappedI80F48Struct } from './common';
 import { blob, i64, u128, u64 } from '../../../utils/solana';
 
+// https://github.com/mrgnlabs/mrgn-ts/blob/ea61c4b40a35554549289f559ea0cb66767923df/packages/marginfi-client-v2/src/idl/marginfi.json
+
 export enum BankOperationalState {
   Paused,
   Operational,

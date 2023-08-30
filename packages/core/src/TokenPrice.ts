@@ -112,3 +112,23 @@ export function updateTokenPriceSources(
 
   return newSources;
 }
+
+export function getTokenPriceUnderlyingFromTokenPrice(
+  tokenPrice: TokenPrice,
+  amountPerLp: number
+): TokenPriceUnderlying {
+  return { ...tokenPrice, amountPerLp };
+}
+
+export function getTokenPricesUnderlyingsFromTokensPrices(
+  tokensPrices: TokenPrice[],
+  amountsPerLp: number[]
+): TokenPriceUnderlying[] {
+  return tokensPrices.map((t, i) => ({
+    address: t.address,
+    decimals: t.decimals,
+    networkId: t.networkId,
+    price: t.price,
+    amountPerLp: amountsPerLp[i],
+  }));
+}
