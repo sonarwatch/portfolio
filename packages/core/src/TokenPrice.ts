@@ -112,3 +112,17 @@ export function updateTokenPriceSources(
 
   return newSources;
 }
+
+export function getTokenPriceUnderlyingFromTokenPrice(
+  tokenPrice: TokenPrice,
+  amountPerLp: number
+): TokenPriceUnderlying {
+  return { ...tokenPrice, amountPerLp };
+}
+
+export function getTokenPricesUnderlyingsFromTokensPrices(
+  tokensPrices: TokenPrice[],
+  amountsPerLp: number[]
+): TokenPriceUnderlying[] {
+  return tokensPrices.map((t, i) => ({ ...t, amountPerLp: amountsPerLp[i] }));
+}
