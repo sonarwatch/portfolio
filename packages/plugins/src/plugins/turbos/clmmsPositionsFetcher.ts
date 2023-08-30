@@ -88,7 +88,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       bitsToNumber(pool.tick_current_index),
       bitsToNumber(clmmPosition.tick_lower_index),
       bitsToNumber(clmmPosition.tick_upper_index),
-      0
+      false
     );
 
     // TODO : améliorer le problème du 0x000002::sui::SUI + manque de 0x

@@ -69,7 +69,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       pool.current_tick_index,
       clmmPosition.tick_lower_index,
       clmmPosition.tick_upper_index,
-      0
+      false
     );
 
     const tokenPriceA = await cache.getTokenPrice(

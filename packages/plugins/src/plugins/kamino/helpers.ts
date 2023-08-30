@@ -28,7 +28,7 @@ export function getTokenAmountsFromInfos(
       orcaPool.tickCurrentIndex,
       orcaPosition.tickLowerIndex,
       orcaPosition.tickUpperIndex,
-      1
+      false
     );
   }
   if (strategy.strategyDex.toNumber() === dexToNumber('RAYDIUM')) {
@@ -39,7 +39,7 @@ export function getTokenAmountsFromInfos(
       orcaPool.tickCurrent,
       orcaPosition.tickLowerIndex,
       orcaPosition.tickUpperIndex,
-      1
+      false
     );
   }
   throw new Error(`Invalid dex ${strategy.strategyDex.toString()}`);

@@ -76,7 +76,7 @@ export async function getRaydiumCLMMPositions(
       poolStateInfo.tickCurrent,
       personalPositionInfo.tickLowerIndex,
       personalPositionInfo.tickUpperIndex,
-      0
+      false
     );
     if (!tokenAmountA || !tokenAmountB) continue;
     const tokenPriceA = await cache.getTokenPrice(

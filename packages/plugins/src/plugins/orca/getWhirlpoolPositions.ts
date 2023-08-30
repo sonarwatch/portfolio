@@ -107,7 +107,7 @@ export async function getWhirlpoolPositions(
       whirlpoolInfo.tickCurrentIndex,
       positionInfo.tickLowerIndex,
       positionInfo.tickUpperIndex,
-      0
+      false
     );
 
     const tokenPriceA = tokenPrices.get(whirlpoolInfo.tokenMintA.toString());
