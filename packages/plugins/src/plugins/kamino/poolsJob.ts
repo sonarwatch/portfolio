@@ -8,25 +8,24 @@ import { Job, JobExecutor } from '../../Job';
 import { getClientSolana } from '../../utils/clients';
 import { platformId, programId } from './constants';
 import { getParsedProgramAccounts } from '../../utils/solana';
-import { dataSizeStructFilter } from '../orders/clobs-solana/filters';
-import { whirlpoolPositionStruct } from './structs';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 import { fetchTokenSupplyAndDecimals } from '../../utils/solana/fetchTokenSupplyAndDecimals';
-import { dexToNumber, getTokenAmountsFromInfos } from './helpers';
+import { dexToNumber, getTokenAmountsFromInfos, isActive } from './helpers';
 import { positionStruct, whirlpoolStruct } from '../orca/structs/whirlpool';
 import {
   personalPositionStateStruct,
   poolStateStruct,
 } from '../raydium/structs/clmms';
-// import { whirlpoolStrategyStruct } from '.';
+import { whirlpoolStrategyStruct } from './structs';
+import { dataSizeFilter } from '../../utils/solana/filters';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
   const strategies = await getParsedProgramAccounts(
     client,
-    whirlpoolPositionStruct,
+    whirlpoolStrategyStruct,
     programId,
-    dataSizeStructFilter(whirlpoolPositionStruct)
+    dataSizeFilter(whirlpoolStrategyStruct)
   );
 
   const tokensMint = strategies
@@ -40,16 +39,13 @@ const executor: JobExecutor = async (cache: Cache) => {
     tP ? tokenPriceByAddress.set(tP.address, tP) : undefined
   );
 
-  const strategiesPositions = strategies.map((pool) => pool.position);
-  const strategiesWhirlpool = strategies.map((pool) => pool.whirlpool);
+  const positions = strategies.map((strategy) => strategy.position);
+  const pools = strategies.map((strategy) => strategy.pool);
 
   const strategiesPositionsAndWhirlpool = [];
-  strategiesPositionsAndWhirlpool.push(
-    ...strategiesPositions,
-    ...strategiesWhirlpool
-  );
+  strategiesPositionsAndWhirlpool.push(...positions, ...pools);
 
-  const positionSizeIndex = strategiesPositions.length;
+  const positionSizeIndex = positions.length;
   const positionAndWhirlpoolAccountsInfo = await getMultipleAccountsInfoSafe(
     client,
     strategiesPositionsAndWhirlpool
@@ -58,20 +54,19 @@ const executor: JobExecutor = async (cache: Cache) => {
   for (let i = 0; i < strategies.length; i += 1) {
     const strategy = strategies[i];
 
+    if (!isActive(strategy)) continue;
+
     // Here is a Kamino error.
     // They've tested a pool with 11111111111111111111111111111111 for whirlpool
-    if (
-      strategiesWhirlpool[i].toString() === '11111111111111111111111111111111'
-    )
-      continue;
+    if (pools[i].toString() === '11111111111111111111111111111111') continue;
 
     const tokenPriceA = tokenPriceByAddress.get(strategy.tokenAMint.toString());
     const tokenPriceB = tokenPriceByAddress.get(strategy.tokenBMint.toString());
     if (!tokenPriceA || !tokenPriceB) continue;
 
-    const lpTokenMint = strategy.sharesMint;
+    const address = strategy.sharesMint;
     const lpSupplyAndDecimals = await fetchTokenSupplyAndDecimals(
-      lpTokenMint,
+      address,
       client,
       0
     );
@@ -102,7 +97,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       pool,
       position
     );
-    // const { amountA, amountB } = getStrategyBalances(strategy, pool, position);
+
     const tokenAAmount = tokenAmountB
       .div(10 ** tokenPriceA.decimals)
       .toNumber();
@@ -124,7 +119,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     );
 
     await cache.setTokenPriceSource({
-      address: lpTokenMint.toString(),
+      address: address.toString(),
       decimals,
       id: platformId,
       networkId: NetworkId.solana,
@@ -132,7 +127,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       price,
       timestamp: Date.now(),
       weight: 1,
-      elementName: 'Kamino Vault',
+      elementName: 'Vault',
       underlyings,
     });
   }

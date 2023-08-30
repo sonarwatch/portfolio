@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 import { Position, Whirlpool } from '../orca/structs/whirlpool';
 import { PersonalPositionState, PoolState } from '../raydium/structs/clmms';
-import { WhirlpoolPosition } from './structs';
+import { WhirlpoolStrategy } from './structs';
 
 const dexes = ['ORCA', 'RAYDIUM', 'CREMA'];
 
@@ -16,7 +16,7 @@ export function dexToNumber(dex: string) {
 }
 
 export function getTokenAmountsFromInfos(
-  strategy: WhirlpoolPosition,
+  strategy: WhirlpoolStrategy,
   pool: PoolState | Whirlpool,
   position: PersonalPositionState | Position
 ): { tokenAmountA: BigNumber; tokenAmountB: BigNumber } {
@@ -43,4 +43,20 @@ export function getTokenAmountsFromInfos(
     );
   }
   throw new Error(`Invalid dex ${strategy.strategyDex.toString()}`);
+}
+
+const statusByNum = new Map([
+  [0, 'IGNORED'],
+  [1, 'SHADOW'],
+  [2, 'LIVE'],
+  [3, 'DEPRECATED'],
+  [4, 'STAGING'],
+]);
+
+export function isActive(strategy: WhirlpoolStrategy): boolean {
+  if (strategy.sharesIssued.isZero()) return false;
+  const status = statusByNum.get(strategy.status.toNumber());
+  if (!status) return false;
+  if (status === 'IGNORED' || status === 'STAGING') return false;
+  return true;
 }
