@@ -1,6 +1,5 @@
 import { fuzioPlatform, seaswapPlatform } from '../../platforms';
 
-export const platformId = 'liquidityPools-sei';
 export const lpsContractsPrefix = 'lpcontracts';
 
 export const lpsCodeByPlatform: Map<string, number[]> = new Map([
