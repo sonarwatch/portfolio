@@ -16,11 +16,3 @@ export const serumOrdersFilter = (
     dataSize: struct.byteSize,
   },
 ];
-
-export const dataSizeStructFilter = (
-  struct: BeetStruct<any>
-): GetProgramAccountsFilter[] => [
-  {
-    dataSize: struct.byteSize,
-  },
-];
