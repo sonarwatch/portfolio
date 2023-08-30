@@ -8,7 +8,7 @@ import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
-import { platformId, jupiterLimitProgramId } from '../constants';
+import { pluginId, jupiterLimitProgramId } from '../constants';
 import { getClientSolana } from '../../../utils/clients';
 import { limitOrderStruct } from './struct';
 import { getParsedProgramAccounts } from '../../../utils/solana';
@@ -87,7 +87,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-jupiter-limit`,
+  id: `${pluginId}-jupiter-limit`,
   networkId: NetworkId.solana,
   executor,
 };
