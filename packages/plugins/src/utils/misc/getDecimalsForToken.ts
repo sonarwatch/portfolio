@@ -6,6 +6,11 @@ import { coinDecimals } from '../aptos';
 import { getUrlEndpoint } from '../clients/constants';
 import { TokenInfo, tokenInfoQueryMsg } from '../sei';
 
+const solMints = [
+  '11111111111111111111111111111111',
+  'So11111111111111111111111111111111111111112',
+];
+
 /**
  * Return the decimals of a token on any network using RPC calls or TokenList.
  *
@@ -31,6 +36,9 @@ export async function getDecimalsForToken(
     }
     case 'solana': {
       const client = getClientSolana();
+      if (solMints.includes(address)) {
+        return 9;
+      }
       const res = await client.getTokenSupply(new PublicKey(address));
       return res.value.decimals ? res.value.decimals : undefined;
     }
