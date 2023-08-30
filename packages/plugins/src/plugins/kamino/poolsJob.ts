@@ -9,7 +9,6 @@ import { getClientSolana } from '../../utils/clients';
 import { platformId, programId } from './constants';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
-import { fetchTokenSupplyAndDecimals } from '../../utils/solana/fetchTokenSupplyAndDecimals';
 import { dexToNumber, getTokenAmountsFromInfos, isActive } from './helpers';
 import { positionStruct, whirlpoolStruct } from '../orca/structs/whirlpool';
 import {
@@ -65,14 +64,8 @@ const executor: JobExecutor = async (cache: Cache) => {
     if (!tokenPriceA || !tokenPriceB) continue;
 
     const address = strategy.sharesMint;
-    const lpSupplyAndDecimals = await fetchTokenSupplyAndDecimals(
-      address,
-      client,
-      0
-    );
-    if (!lpSupplyAndDecimals) continue;
-    const { supply } = lpSupplyAndDecimals;
-    const { decimals } = lpSupplyAndDecimals;
+    const decimals = strategy.sharesMintDecimals.toNumber();
+    const supply = strategy.sharesIssued.dividedBy(10 ** decimals);
 
     const isOrca = strategy.strategyDex.toNumber() === dexToNumber('ORCA');
 
@@ -92,32 +85,48 @@ const executor: JobExecutor = async (cache: Cache) => {
       ? positionStruct.deserialize(positionData)[0]
       : personalPositionStateStruct.deserialize(positionData)[0];
 
-    const { tokenAmountB, tokenAmountA } = getTokenAmountsFromInfos(
+    const { tokenAmountA, tokenAmountB } = getTokenAmountsFromInfos(
       strategy,
       pool,
       position
     );
 
-    const tokenAAmount = tokenAmountB
-      .div(10 ** tokenPriceA.decimals)
-      .toNumber();
-    const tokenBAmount = tokenAmountA
-      .div(10 ** tokenPriceB.decimals)
-      .toNumber();
+    const tokenAAmount = tokenAmountA
+      .plus(strategy.tokenAAmounts)
+      .div(10 ** strategy.tokenAMintDecimals.toNumber());
+    const tokenBAmount = tokenAmountB
+      .plus(strategy.tokenBAmounts)
+      .div(10 ** strategy.tokenBMintDecimals.toNumber());
 
-    const tokenALocked = tokenAAmount * tokenPriceA.price;
-    const tokenBLocked = tokenBAmount * tokenPriceB.price;
+    const tokenALocked = tokenAAmount.multipliedBy(tokenPriceA.price);
+    const tokenBLocked = tokenBAmount.multipliedBy(tokenPriceB.price);
+    const tvl = tokenALocked.plus(tokenBLocked);
+    if (tvl.isLessThan(5)) continue;
 
-    const tvl = tokenALocked + tokenBLocked;
-    if (tvl <= 5) continue;
-
-    const price = tvl / supply;
+    const price = tvl.dividedBy(supply).toNumber();
 
     const underlyings = getTokenPricesUnderlyingsFromTokensPrices(
       [tokenPriceA, tokenPriceB],
-      [tokenAAmount / supply, tokenBAmount / supply]
+      [
+        tokenAAmount.dividedBy(supply).toNumber(),
+        tokenBAmount.dividedBy(supply).toNumber(),
+      ]
     );
 
+    // if (supply.isGreaterThan(20000)) {
+    //   console.log('Strat : ', strategy.pubkey.toString());
+    //   console.log('Shares Mint : ', strategy.sharesMint.toString());
+    //   console.log('Initial tokenAmountA:', tokenAmountA.toNumber());
+    //   console.log('Token A Amount', tokenAAmount.toNumber());
+    //   console.log('Initial tokenAmountB:', tokenAmountB.toNumber());
+    //   console.log('Token B Amount', tokenBAmount.toNumber());
+    //   console.log('Token A tvl', tokenALocked.toNumber());
+    //   console.log('Token B tvl', tokenBLocked.toNumber());
+    //   console.log('Supply:', supply.toNumber());
+    //   console.log('Total tvl', tvl.toNumber());
+    //   console.log('Price:', price);
+    //   console.log('Underlyings:', underlyings);
+    // }
     await cache.setTokenPriceSource({
       address: address.toString(),
       decimals,

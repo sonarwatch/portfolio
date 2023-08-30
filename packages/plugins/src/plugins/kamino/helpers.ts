@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js';
-import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 import { Position, Whirlpool } from '../orca/structs/whirlpool';
 import { PersonalPositionState, PoolState } from '../raydium/structs/clmms';
 import { WhirlpoolStrategy } from './structs';
+import { ParsedAccount } from '../../utils/solana';
+import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 
 const dexes = ['ORCA', 'RAYDIUM', 'CREMA'];
 
@@ -16,31 +17,60 @@ export function dexToNumber(dex: string) {
 }
 
 export function getTokenAmountsFromInfos(
-  strategy: WhirlpoolStrategy,
+  strategy: ParsedAccount<WhirlpoolStrategy>,
   pool: PoolState | Whirlpool,
   position: PersonalPositionState | Position
 ): { tokenAmountA: BigNumber; tokenAmountB: BigNumber } {
   if (strategy.strategyDex.toNumber() === dexToNumber('ORCA')) {
     const orcaPool = pool as Whirlpool;
     const orcaPosition = position as Position;
+
     return getTokenAmountsFromLiquidity(
-      orcaPool.liquidity,
+      orcaPosition.liquidity,
       orcaPool.tickCurrentIndex,
       orcaPosition.tickLowerIndex,
       orcaPosition.tickUpperIndex,
       false
     );
+
+    // const whirlpoolSqrtPrice = orcaPool.sqrtPrice;
+    // const vaultPositionLiquidity = orcaPosition.liquidity;
+    // const vaultPositionTickLowerIndex = orcaPosition.tickLowerIndex;
+    // const vaultPositionTickUpperIndex = orcaPosition.tickUpperIndex;
+    // const priceLower = orcaTickToPriceX64(vaultPositionTickLowerIndex);
+    // const priceUpper = orcaTickToPriceX64(vaultPositionTickUpperIndex);
+    // return getOrcaTokenAmountsFromLiquidity(
+    //   vaultPositionLiquidity.toNumber(),
+    //   whirlpoolSqrtPrice,
+    //   priceLower,
+    //   priceUpper,
+    //   false
+    // );
   }
   if (strategy.strategyDex.toNumber() === dexToNumber('RAYDIUM')) {
-    const orcaPool = pool as PoolState;
-    const orcaPosition = position as PersonalPositionState;
+    const raydiumPool = pool as PoolState;
+    const raydiumPosition = position as PersonalPositionState;
+
     return getTokenAmountsFromLiquidity(
-      orcaPool.liquidity,
-      orcaPool.tickCurrent,
-      orcaPosition.tickLowerIndex,
-      orcaPosition.tickUpperIndex,
+      raydiumPosition.liquidity,
+      raydiumPool.tickCurrent,
+      raydiumPosition.tickLowerIndex,
+      raydiumPosition.tickUpperIndex,
       false
     );
+    // const lowerSqrtPriceX64 = new BigNumber(
+    //   raydiumTickToPriceX64(raydiumPosition.tickLowerIndex).toString()
+    // );
+    // const upperSqrtPriceX64 = new BigNumber(
+    //   raydiumTickToPriceX64(raydiumPosition.tickUpperIndex).toString()
+    // );
+    // return getRaydiumTokenAmountsFromLiquidity(
+    //   new BigNumber(raydiumPool.sqrtPriceX64),
+    //   lowerSqrtPriceX64,
+    //   upperSqrtPriceX64,
+    //   raydiumPosition.liquidity,
+    //   false
+    // );
   }
   throw new Error(`Invalid dex ${strategy.strategyDex.toString()}`);
 }
