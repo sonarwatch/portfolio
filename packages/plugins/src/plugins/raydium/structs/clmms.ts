@@ -162,8 +162,8 @@ export const poolStateStruct = new BeetStruct<PoolState>(
 
     ['status', u8],
 
-    ['rewardInfos', uniformFixedSizeArray(rewardInfoStruct, 3)],
     ['padding', uniformFixedSizeArray(u8, 7)],
+    ['rewardInfos', uniformFixedSizeArray(rewardInfoStruct, 3)],
     ['tickArrayBitmap', uniformFixedSizeArray(u64, 16)],
 
     ['totalFeesToken0', u64],
@@ -173,7 +173,7 @@ export const poolStateStruct = new BeetStruct<PoolState>(
     ['fundFeesToken0', u64],
     ['fundFeesToken1', u64],
     ['openTime', u64],
-    ['padding1', uniformFixedSizeArray(u64, 25)],
+    ['padding1', uniformFixedSizeArray(u64, 26)],
     ['padding2', uniformFixedSizeArray(u64, 32)],
   ],
   (args) => args as PoolState
