@@ -124,5 +124,11 @@ export function getTokenPricesUnderlyingsFromTokensPrices(
   tokensPrices: TokenPrice[],
   amountsPerLp: number[]
 ): TokenPriceUnderlying[] {
-  return tokensPrices.map((t, i) => ({ ...t, amountPerLp: amountsPerLp[i] }));
+  return tokensPrices.map((t, i) => ({
+    address: t.address,
+    decimals: t.decimals,
+    networkId: t.networkId,
+    price: t.price,
+    amountPerLp: amountsPerLp[i],
+  }));
 }
