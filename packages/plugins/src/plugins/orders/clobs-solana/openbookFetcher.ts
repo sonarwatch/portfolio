@@ -14,8 +14,7 @@ import { getParsedProgramAccounts } from '../../../utils/solana';
 import { openOrdersV2Struct } from '../../raydium/structs/openOrders';
 import runInBatch from '../../../utils/misc/runInBatch';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import { openbookPlatform } from '../../../platforms';
-import { clobVersions } from './constants';
+import { clobVersions, openbookPlatform } from './constants';
 import { serumOrdersFilter } from './filters';
 import { CLOBMarket } from './types';
 

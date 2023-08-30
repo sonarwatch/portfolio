@@ -1,4 +1,11 @@
+import { Platform } from '@sonarwatch/portfolio-core';
+
 export const platformId = 'turbos';
+export const turbosPlatform: Platform = {
+  id: platformId,
+  name: 'Turbos',
+  image: 'https://alpha.sonar.watch/img/platforms/turbos.png',
+};
 export const clmmPoolsPrefix = `${platformId}-clmmPools`;
 
 export const poolTableId =

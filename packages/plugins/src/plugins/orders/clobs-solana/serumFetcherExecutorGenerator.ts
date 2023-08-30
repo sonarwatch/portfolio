@@ -15,7 +15,7 @@ import { serumOrdersFilter } from './filters';
 import runInBatch from '../../../utils/misc/runInBatch';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import { CLOBMarket, CLOBVersion } from './types';
-import { serumPlatform } from '../../../platforms';
+import { serumPlatform } from './constants';
 
 export default function getSerumFetcherExecutor(
   serumVersion: CLOBVersion

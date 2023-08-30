@@ -1,8 +1,8 @@
 import { EvmNetworkIdType, NetworkId } from '@sonarwatch/portfolio-core';
 import { Fetcher } from '../../../../Fetcher';
-import { walletTokensPlatform } from '../../../../platforms';
 import getEvmFetcherExecutor from './evmExecutorGenerator';
 import getEvmFetcherNativeExecutor from './evmNativeExecutorGenerator';
+import { walletTokensPlatform } from '../../constants';
 
 const evmNativeNetworksIds: EvmNetworkIdType[] = [
   NetworkId.ethereum,

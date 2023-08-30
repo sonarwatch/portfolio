@@ -1,4 +1,4 @@
-import { openbookPlatform, serumPlatform } from '../../../platforms';
+import { Platform } from '@sonarwatch/portfolio-core';
 import {
   openOrdersV2Struct,
   serumMarketV1Struct,
@@ -8,6 +8,16 @@ import {
 import { CLOBVersion } from './types';
 import { openOrdersV1Struct } from '../../raydium/structs/openOrders';
 
+export const openbookPlatform: Platform = {
+  id: 'openbook',
+  name: 'OpenBook',
+  image: 'https://alpha.sonar.watch/img/platforms/openbook.png',
+};
+export const serumPlatform: Platform = {
+  id: 'serum',
+  name: 'Serum',
+  image: 'https://alpha.sonar.watch/img/platforms/serum.png',
+};
 export const clobVersions = {
   serumV1: {
     name: 'Serum V1',

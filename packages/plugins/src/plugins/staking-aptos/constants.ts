@@ -1,9 +1,14 @@
 import BigNumber from 'bignumber.js';
+import { Platform } from '@sonarwatch/portfolio-core';
 import { MoveResource, parseTypeString } from '../../utils/aptos';
 import { MeeiroStakeData, StakeConfig, StakeInfo } from './types';
-import { meeiroPlatform } from '../../platforms';
 
 // Meeiro
+export const meeiroPlatform: Platform = {
+  id: 'meeiro',
+  name: 'Meeiro',
+  image: 'https://alpha.sonar.watch/img/platforms/meeiro.png',
+};
 const programMeeiro =
   '0x514cfb77665f99a2e4c65a5614039c66d13e00e98daf4c86305651d29fd953e5';
 const prefixMeeiro = `${programMeeiro}::Staking::StakeInfo<`;

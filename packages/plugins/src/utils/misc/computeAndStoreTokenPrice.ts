@@ -7,8 +7,8 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import getSourceWeight from './getSourceWeight';
-import { walletTokensPlatform } from '../../platforms';
 import { getDecimalsForToken } from './getDecimalsForToken';
+import { walletTokensPlatform } from '../../plugins/tokens/constants';
 
 export type TokenInfo = {
   mint: string;

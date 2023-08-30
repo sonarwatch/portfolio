@@ -12,11 +12,11 @@ import {
   getObjectId,
   getObjectType,
 } from '@mysten/sui.js';
-import { walletNftsPlatform } from '../../../platforms';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSui } from '../../../utils/clients';
 import { DisplayInfo, SuiNFTMetadata } from '../types';
 import getFormattedCollectionNameAndId from '../../../utils/sui/getFormattedCollectionNameAndId';
+import { walletNftsPlatform } from '../constants';
 
 const executor: FetcherExecutor = async (owner: string) => {
   const client = getClientSui();

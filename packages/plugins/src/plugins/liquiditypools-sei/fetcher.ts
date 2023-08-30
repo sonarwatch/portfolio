@@ -9,7 +9,7 @@ import { getCosmWasmClient } from '@sei-js/core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { lpsCodeByPlatform, lpsContractsPrefix, platformId } from './constants';
+import { lpsCodeByPlatform, lpsContractsPrefix, pluginId } from './constants';
 import { getUrlEndpoint } from '../../utils/clients/constants';
 import { PlatformContracts } from './types';
 import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
@@ -94,7 +94,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}`,
+  id: `${pluginId}`,
   networkId: NetworkId.sei,
   executor,
 };

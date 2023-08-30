@@ -9,9 +9,9 @@ import {
 import { Network, Provider } from 'aptos';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
-import { walletNftsPlatform } from '../../../platforms';
 import runInBatch from '../../../utils/misc/runInBatch';
 import { getImagefromUri } from '../../../utils/misc/getImagefromUri';
+import { walletNftsPlatform } from '../constants';
 
 const prefix = 'nft-images-aptos';
 const noImageValue = 'noimage';

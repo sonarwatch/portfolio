@@ -1,6 +1,12 @@
 import { PublicKey } from '@solana/web3.js';
+import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'orca';
+export const orcaPlatform: Platform = {
+  id: platformId,
+  name: 'Orca',
+  image: 'https://alpha.sonar.watch/img/platforms/orca.png',
+};
 export const poolsProgram = new PublicKey(
   '9W959DqEETiGZocYWCQPaJ6sBmUzgfxXfqGeTEdp3aQP'
 );

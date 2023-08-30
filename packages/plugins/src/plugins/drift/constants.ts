@@ -1,6 +1,12 @@
 import { PublicKey } from '@solana/web3.js';
+import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'drift';
+export const driftPlatform: Platform = {
+  id: platformId,
+  name: 'Drift',
+  image: 'https://alpha.sonar.watch/img/platforms/drift.png',
+};
 export const prefixSpotMarkets = `${platformId}-spotMarkets`;
 
 export const DriftProgram = new PublicKey(

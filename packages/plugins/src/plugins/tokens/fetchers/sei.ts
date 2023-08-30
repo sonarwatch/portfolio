@@ -9,7 +9,7 @@ import {
 import { BigNumber } from 'bignumber.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
-import { walletTokensPlatform } from '../../../platforms';
+import { walletTokensPlatform } from '../constants';
 import { getClientSei } from '../../../utils/clients';
 import { getAllBalances } from '../../../utils/sei';
 

@@ -1,9 +1,14 @@
 import { PublicKey } from '@solana/web3.js';
-import { solanaNetwork } from '@sonarwatch/portfolio-core';
+import { Platform, solanaNetwork } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
-import { marinadePlatform } from '../../platforms';
 
-export const platformId = marinadePlatform.id;
+export const platformId = 'marinade';
+export const marinadePlatform: Platform = {
+  id: platformId,
+  name: 'Marinade',
+  image: 'https://alpha.sonar.watch/img/platforms/marinade.png',
+};
+
 export const cachePrefix = 'marinade';
 export const marinadeTicketProgramId = new PublicKey(
   'MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD'

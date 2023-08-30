@@ -1,6 +1,12 @@
+import { Platform } from '@sonarwatch/portfolio-core';
 import { coinInfo } from '../../utils/aptos';
 
 export const platformId = 'thala';
+export const thalaPlatform: Platform = {
+  id: platformId,
+  name: 'Thala',
+  image: 'https://alpha.sonar.watch/img/platforms/thala.png',
+};
 export const programAdressThala =
   '0x6f986d146e4a90b828d8c12c14b6f4e003fdff11a8eecceceb63744363eaac01';
 

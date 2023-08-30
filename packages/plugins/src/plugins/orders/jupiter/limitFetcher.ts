@@ -15,7 +15,7 @@ import { getParsedProgramAccounts } from '../../../utils/solana';
 import { jupiterLimitsFilter } from './filters';
 import runInBatch from '../../../utils/misc/runInBatch';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import { jupiterPlatform } from '../../../platforms';
+import { jupiterPlatform } from './constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();

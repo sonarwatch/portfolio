@@ -1,6 +1,12 @@
 import { PublicKey } from '@solana/web3.js';
+import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'native-stake';
+export const nativeStakePlatform: Platform = {
+  id: platformId,
+  name: 'Native Stake',
+  image: 'https://alpha.sonar.watch/img/platforms/native-stake.png',
+};
 export const validatorsKey = 'activeValidators';
 export const validatorsPrefix = `${platformId}-validators`;
 export const marinadeNativeManager = new PublicKey(

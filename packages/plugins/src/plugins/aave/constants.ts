@@ -1,5 +1,16 @@
-import { NetworkId, NetworkIdType, networks } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  NetworkIdType,
+  Platform,
+  networks,
+} from '@sonarwatch/portfolio-core';
 import { LendingConfig } from './types';
+
+export const aavePlatform: Platform = {
+  id: 'aave',
+  name: 'AAVE',
+  image: 'https://alpha.sonar.watch/img/platforms/aave.png',
+};
 
 export const lendingConfigs: Map<NetworkIdType, LendingConfig[]> = new Map([
   [

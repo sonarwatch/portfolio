@@ -1,10 +1,11 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId, Platform } from '@sonarwatch/portfolio-core';
 import { Job } from '../../Job';
 import { Fetcher } from '../../Fetcher';
 import lendingPoolsJob from './lendingPoolsJob';
 import getLendingFetcherExecutor from './getLendingFetcherExecutor';
-import { platformId } from './constants';
+import { aavePlatform, platformId } from './constants';
 
+export const platforms: Platform[] = [aavePlatform];
 export const jobs: Job[] = [lendingPoolsJob];
 export const fetchers: Fetcher[] = [
   {

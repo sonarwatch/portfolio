@@ -13,7 +13,6 @@ import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import tokenPriceToAssetTokens from '../../../utils/misc/tokenPriceToAssetTokens';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import { walletTokensPlatform } from '../../../platforms';
 import { getClientAptos } from '../../../utils/clients';
 import {
   CoinStoreData,
@@ -22,6 +21,7 @@ import {
   isCoinStoreRessourceType,
   parseTypeString,
 } from '../../../utils/aptos';
+import { walletTokensPlatform } from '../constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientAptos();

@@ -8,9 +8,9 @@ import { getAddress } from 'viem';
 import BigNumber from 'bignumber.js';
 import { FetcherExecutor } from '../../../../Fetcher';
 import { getEvmClient } from '../../../../utils/clients';
-import { walletTokensPlatform } from '../../../../platforms';
 import tokenPriceToAssetToken from '../../../../utils/misc/tokenPriceToAssetToken';
 import { Cache } from '../../../../Cache';
+import { walletTokensPlatform } from '../../constants';
 
 export default function getEvmFetcherNativeExecutor(
   networkId: EvmNetworkIdType

@@ -1,7 +1,12 @@
 import { PublicKey } from '@solana/web3.js';
+import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'raydium';
-
+export const raydiumPlatform: Platform = {
+  id: platformId,
+  name: 'Raydium',
+  image: 'https://alpha.sonar.watch/img/platforms/raydium.png',
+};
 export const AMM_PROGRAM_ID_V4 = new PublicKey(
   '675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8'
 );

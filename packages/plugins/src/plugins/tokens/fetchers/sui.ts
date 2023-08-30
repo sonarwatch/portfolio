@@ -10,10 +10,9 @@ import {
 
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
-import { walletTokensPlatform } from '../../../platforms';
 import { getClientSui } from '../../../utils/clients';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import { platformId } from '../constants';
+import { walletTokensPlatform } from '../constants';
 import runInBatch from '../../../utils/misc/runInBatch';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
@@ -54,7 +53,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const element: PortfolioElementMultiple = {
     type: PortfolioElementType.multiple,
     networkId: NetworkId.sui,
-    platformId,
+    platformId: walletTokensPlatform.id,
     label: 'Wallet',
     value: getUsdValueSum(walletTokensAssets.map((a) => a.value)),
     data: {

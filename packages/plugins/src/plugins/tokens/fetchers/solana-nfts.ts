@@ -15,7 +15,7 @@ import {
 } from '@metaplex-foundation/js';
 import BigNumber from 'bignumber.js';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
-import { walletNftsPlatform, walletTokensPlatform } from '../../../platforms';
+import { walletNftsPlatform, walletTokensPlatform } from '../constants';
 import { getClientSolana } from '../../../utils/clients';
 import { Cache } from '../../../Cache';
 import runInBatch from '../../../utils/misc/runInBatch';

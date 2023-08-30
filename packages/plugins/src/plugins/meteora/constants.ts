@@ -1,6 +1,13 @@
 import { PublicKey } from '@solana/web3.js';
+import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'meteora';
+export const meteoraPlatform: Platform = {
+  id: 'meteora',
+  name: 'Meteora',
+  image: 'https://alpha.sonar.watch/img/platforms/meteora.png',
+};
+
 export const prefixVaults = `${platformId}-vaults`;
 
 export const vaultsProgramId = new PublicKey(

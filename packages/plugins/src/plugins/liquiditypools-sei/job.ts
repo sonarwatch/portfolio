@@ -8,6 +8,7 @@ import {
   lpsCodeByPlatform,
   lpsContractsPrefix,
   lpsNamesByPlatform,
+  pluginId,
 } from './constants';
 import {
   MinterInfo,
@@ -104,7 +105,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 };
 
 const job: Job = {
-  id: 'liquidityPools-sei',
+  id: pluginId,
   executor,
 };
 export default job;

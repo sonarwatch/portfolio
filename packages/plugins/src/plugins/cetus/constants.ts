@@ -1,4 +1,11 @@
+import { Platform } from '@sonarwatch/portfolio-core';
+
 export const platformId = 'cetus';
+export const cetusPlatform: Platform = {
+  id: platformId,
+  name: 'Cetus',
+  image: 'https://alpha.sonar.watch/img/platforms/cetus.png',
+};
 export const clmmPoolsPrefix = `${platformId}-clmmPools`;
 
 export const clmmPoolPackageId =

@@ -12,6 +12,7 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
   marinadeNativeManager,
   marinadeNativeMerger,
+  nativeStakePlatform,
   platformId,
 } from './constants';
 import { stakeAccountsFilter } from './filters';
@@ -19,7 +20,6 @@ import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { stakeAccountStruct } from './structs';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { nativeStakePlatform } from '../../platforms';
 
 const stakeProgramId = new PublicKey(
   'Stake11111111111111111111111111111111111111'

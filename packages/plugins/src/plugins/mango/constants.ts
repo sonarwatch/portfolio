@@ -1,6 +1,12 @@
 import { PublicKey } from '@solana/web3.js';
+import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'mango';
+export const mangoPlatform: Platform = {
+  id: platformId,
+  name: 'Mango',
+  image: 'https://alpha.sonar.watch/img/platforms/mango.png',
+};
 export const banksPrefix = `${platformId}-banks`;
 export const rootBankPrefix = `${platformId}-rootBank`;
 export const groupPrefix = `${platformId}-group`;

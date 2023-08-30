@@ -9,7 +9,7 @@ import {
   Sft,
 } from '@metaplex-foundation/js';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
-import { walletTokensPlatform } from '../../../platforms';
+import { walletTokensPlatform } from '../constants';
 import { getClientSolana } from '../../../utils/clients';
 import { Cache } from '../../../Cache';
 import { getRaydiumCLMMPositions } from '../../raydium/getRaydiumCLMMPositions';

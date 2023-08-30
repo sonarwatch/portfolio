@@ -7,7 +7,7 @@ import {
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
-import { walletTokensPlatform } from '../../../platforms';
+import { walletTokensPlatform } from '../constants';
 import { getClientSolana } from '../../../utils/clients';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 

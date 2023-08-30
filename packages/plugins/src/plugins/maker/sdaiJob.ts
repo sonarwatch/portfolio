@@ -14,7 +14,7 @@ import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getEvmClient } from '../../utils/clients';
 import { potAbi } from './abis';
-import { walletTokensPlatform } from '../../platforms';
+import { walletTokensPlatform } from '../tokens/constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const daiTokenPrice = await cache.getTokenPrice(

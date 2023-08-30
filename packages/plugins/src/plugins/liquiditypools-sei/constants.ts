@@ -1,4 +1,16 @@
-import { fuzioPlatform, seaswapPlatform } from '../../platforms';
+import { Platform } from '@sonarwatch/portfolio-core';
+
+export const pluginId = 'liquidityPools-sei';
+export const fuzioPlatform: Platform = {
+  id: 'fuzio',
+  name: 'Fuzio',
+  image: 'https://alpha.sonar.watch/img/platforms/fuzio.png',
+};
+export const seaswapPlatform: Platform = {
+  id: 'seaswap',
+  name: 'Seaswap',
+  image: 'https://alpha.sonar.watch/img/platforms/seaswap.png',
+};
 
 export const lpsContractsPrefix = 'lpcontracts';
 
