@@ -104,7 +104,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 };
 
 const job: Job = {
-  id: `liquidityPools-sei`,
+  id: 'liquidityPools-sei',
   executor,
 };
 export default job;
