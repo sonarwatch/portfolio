@@ -14,16 +14,67 @@ import {
 } from '@mysten/sui.js';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSui } from '../../../utils/clients';
-import { DisplayInfo, SuiNFTMetadata } from '../types';
+import { DisplayInfo, KioskContent, SuiNFTMetadata } from '../types';
 import getFormattedCollectionNameAndId from '../../../utils/sui/getFormattedCollectionNameAndId';
 import { walletNftsPlatform } from '../constants';
+import { kioskItemType, obKioskStructType } from '../../../utils/sui/constants';
 
 const executor: FetcherExecutor = async (owner: string) => {
   const client = getClientSui();
 
   const assets: PortfolioAssetCollectible[] = [];
+  let obKioskObjects;
   let ownedNFTsObjects;
   let cursor;
+  const kioskItemsAddresses: Set<string> = new Set();
+
+  do {
+    obKioskObjects = await client.getOwnedObjects({
+      owner,
+      filter: {
+        StructType: obKioskStructType,
+      },
+      options: {
+        showContent: true,
+      },
+      cursor,
+    });
+    cursor = obKioskObjects.nextCursor;
+
+    for (const obKioskObject of obKioskObjects.data) {
+      if (!obKioskObject.data || !obKioskObject.data.content) continue;
+
+      const contentObject = obKioskObject.data.content as KioskContent;
+      if (!contentObject.fields.kiosk) continue;
+
+      const dynamicFields = await client.getDynamicFields({
+        parentId: contentObject.fields.kiosk,
+      });
+      if (dynamicFields.data.length === 0) continue;
+
+      const dynamicObjects = dynamicFields.data.filter(
+        (field) => field.type === 'DynamicObject'
+      );
+      if (
+        dynamicObjects.length !== 1 ||
+        dynamicObjects[0].name.type !== kioskItemType
+      )
+        continue;
+      kioskItemsAddresses.add(dynamicObjects[0].objectId);
+    }
+  } while (obKioskObjects.hasNextPage);
+
+  let nftKioskObjects = await client.multiGetObjects({
+    ids: Array.from(kioskItemsAddresses),
+    options: {
+      showContent: true,
+      showDisplay: true,
+      showType: true,
+      showOwner: true,
+    },
+  });
+
+  cursor = undefined;
   do {
     ownedNFTsObjects = await client.getOwnedObjects({
       owner,
@@ -37,7 +88,12 @@ const executor: FetcherExecutor = async (owner: string) => {
     });
     cursor = ownedNFTsObjects.nextCursor;
 
-    for (const ownedObject of ownedNFTsObjects.data) {
+    const ownedObjects =
+      nftKioskObjects.length > 0
+        ? [...ownedNFTsObjects.data, ...nftKioskObjects]
+        : ownedNFTsObjects.data;
+
+    for (const ownedObject of ownedObjects) {
       if (!ownedObject.data || !ownedObject.data.content) continue;
       const type = getObjectType(ownedObject);
       if (!type) continue;
@@ -80,6 +136,7 @@ const executor: FetcherExecutor = async (owner: string) => {
       });
       continue;
     }
+    nftKioskObjects = [];
   } while (ownedNFTsObjects.hasNextPage);
 
   if (assets.length === 0) return [];

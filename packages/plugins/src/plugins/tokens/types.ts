@@ -77,3 +77,16 @@ export type DisplayInfo = {
   link: string;
   name: string;
 };
+
+export type KioskContent = {
+  dataType: string;
+  type: string;
+  hasPublicTransfer: boolean;
+  fields: {
+    id: {
+      id: string;
+    };
+    kiosk: string;
+    owner: string;
+  };
+};
