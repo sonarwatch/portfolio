@@ -43,6 +43,7 @@ export async function getDecimalsForToken(
       return res.value.decimals ? res.value.decimals : undefined;
     }
     case 'sei': {
+      // TODO : add cache.getItem<decimalsInfo>(formatAddres(address))
       if (address.startsWith('factory')) {
         const client = await getClientSei();
         const rep = await client.cosmos.bank.v1beta1.denomMetadata({
