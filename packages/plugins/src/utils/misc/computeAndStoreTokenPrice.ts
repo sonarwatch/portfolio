@@ -150,7 +150,7 @@ export default async function checkComputeAndStoreTokensPrices(
     let priceY: number;
 
     if (!tokenPriceX && tokenPriceY) {
-      priceX = tokenY.rawReserve
+      priceX = tokenYReserve
         .multipliedBy(tokenPriceY.price)
         .dividedBy(tokenXReserve)
         .toNumber();
