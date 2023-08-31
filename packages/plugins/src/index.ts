@@ -125,6 +125,11 @@ import {
 } from './plugins/kamino';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
+export {
+  walletTokensPlatform,
+  walletNftsPlatform,
+} from './plugins/tokens/constants';
+
 export * from './Cache';
 export * from './Fetcher';
 export * from './Job';
