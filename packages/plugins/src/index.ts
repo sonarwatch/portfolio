@@ -119,7 +119,10 @@ import {
   jobs as auxexchangeJobs,
 } from './plugins/auxexchange';
 import { jobs as makerJobs } from './plugins/maker';
-import { jobs as kaminoJobs } from './plugins/kamino';
+import {
+  jobs as kaminoJobs,
+  platforms as kaminoPlatforms,
+} from './plugins/kamino';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
 export * from './Cache';
@@ -153,6 +156,7 @@ export const platforms: Platform[] = [
   ...morphoPlatforms,
   ...mangoPlatforms,
   ...astroportPlatforms,
+  ...kaminoPlatforms,
 ];
 
 // JOBS //
