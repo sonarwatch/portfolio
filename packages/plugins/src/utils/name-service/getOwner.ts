@@ -2,6 +2,7 @@ import {
   AddressSystemType,
   NetworkId,
   NetworkIdType,
+  formatAddress,
   getAddressSystemFromNetworkId,
 } from '@sonarwatch/portfolio-core';
 import { getOwnerSolana, isSolanaName } from './solana';
@@ -58,7 +59,7 @@ export async function getOwner(name: string): Promise<{
   }
 
   return {
-    address,
+    address: address ? formatAddress(address, addressSystem) : null,
     addressSystem,
     networkId,
   };

@@ -1,7 +1,9 @@
+import { AddressSystem } from '@sonarwatch/portfolio-core';
 import { getOwnerSolana } from './solana';
 import { getOwnerAvalanche } from './avalanche';
 import { getOwnerEthereum } from './ethereum';
 import { getOwner } from './getOwner';
+import { getNames } from './getNames';
 
 describe('name-service', () => {
   it('should works for ethereum', async () => {
