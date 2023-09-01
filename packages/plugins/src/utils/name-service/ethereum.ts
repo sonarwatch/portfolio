@@ -1,5 +1,17 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
-import { getEvmClient } from '../clients';
+import { NetworkId, formatEvmAddress } from '@sonarwatch/portfolio-core';
+import { normalize } from 'viem/ens';
+import { getEvmClient, getEvmEthersClient } from '../clients';
+
+export function isEthereumName(name: string): boolean {
+  return name.endsWith('.eth') && normalize(name) === name;
+}
+
+export async function getOwnerEthereum(name: string): Promise<string | null> {
+  const client = getEvmEthersClient(NetworkId.ethereum);
+  const owner = await client.resolveName(name);
+  if (!owner) return null;
+  return formatEvmAddress(owner);
+}
 
 export async function getNamesEthereum(address: string): Promise<string[]> {
   const client = getEvmClient(NetworkId.ethereum);

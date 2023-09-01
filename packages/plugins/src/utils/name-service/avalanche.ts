@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId, formatEvmAddress } from '@sonarwatch/portfolio-core';
 import { getEvmClient } from '../clients';
 
 const resolutionUtilsV2Address = '0x1ea4e7A798557001b99D88D6b4ba7F7fc79406A9';
@@ -21,6 +21,22 @@ const abi = [
     type: 'function',
   },
 ] as const;
+
+export function isAvalancheName(name: string): boolean {
+  return name.endsWith('.avax');
+}
+
+export async function getOwnerAvalanche(name: string): Promise<string | null> {
+  const client = getEvmClient(NetworkId.avalanche);
+  const owner = await client.readContract({
+    abi,
+    address: resolutionUtilsV2Address,
+    functionName: 'resolveStandard',
+    args: [name, BigInt(3)],
+  });
+  if (owner === '') return null;
+  return formatEvmAddress(owner);
+}
 
 export async function getNamesAvalanche(address: string): Promise<string[]> {
   const client = getEvmClient(NetworkId.avalanche);
