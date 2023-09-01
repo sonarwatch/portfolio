@@ -1,7 +1,7 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Name } from './types';
-import { getNamesEthereum } from './getNamesEthereum';
-import { getNamesAvalanche } from './getNamesAvalanche';
+import { getNamesEthereum } from './ethereum';
+import { getNamesAvalanche } from './avalanche';
 
 export async function getNamesEvm(address: string): Promise<Name[]> {
   const promises = [

@@ -10,6 +10,16 @@ const abi = [
     stateMutability: 'view',
     type: 'function',
   },
+  {
+    inputs: [
+      { internalType: 'string', name: 'name', type: 'string' },
+      { internalType: 'uint256', name: 'key', type: 'uint256' },
+    ],
+    name: 'resolveStandard',
+    outputs: [{ internalType: 'string', name: 'value', type: 'string' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
 ] as const;
 
 export async function getNamesAvalanche(address: string): Promise<string[]> {

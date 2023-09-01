@@ -4,9 +4,9 @@ import {
   NetworkId,
   formatAddress,
 } from '@sonarwatch/portfolio-core';
-import { getNamesEvm } from './getNamesEvm';
+import { getNamesEvm } from './evm';
 import { Name } from './types';
-import { getNamesSolana } from './getNamesSolana';
+import { getNamesSolana } from './solana';
 
 export async function getNames(
   address: string,
