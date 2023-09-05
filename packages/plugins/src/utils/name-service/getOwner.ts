@@ -1,5 +1,4 @@
 import {
-  AddressSystemType,
   NetworkId,
   NetworkIdType,
   formatAddress,
@@ -8,6 +7,7 @@ import {
 import { getOwnerSolana, isSolanaName } from './solana';
 import { getOwnerEthereum, isEthereumName } from './ethereum';
 import { isAvalancheName } from './avalanche';
+import { NSOwner } from './types';
 
 const verifiers: {
   networkId: NetworkIdType;
@@ -35,11 +35,7 @@ function getNetworkIdFromName(name: string) {
   throw new Error(`Name is not valid: ${name}`);
 }
 
-export async function getOwner(name: string): Promise<{
-  address: string | null;
-  addressSystem: AddressSystemType;
-  networkId: NetworkIdType;
-}> {
+export async function getOwner(name: string): Promise<NSOwner> {
   const networkId = getNetworkIdFromName(name);
   const addressSystem = getAddressSystemFromNetworkId(networkId);
   let address: string | null = null;

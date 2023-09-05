@@ -1,17 +1,17 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import { Name } from './types';
+import { NSName } from './types';
 import { getNamesEthereum } from './ethereum';
 import { getNamesAvalanche } from './avalanche';
 
-export async function getNamesEvm(address: string): Promise<Name[]> {
+export async function getNamesEvm(address: string): Promise<NSName[]> {
   const promises = [
-    getNamesEthereum(address).then((names): Name[] =>
+    getNamesEthereum(address).then((names): NSName[] =>
       names.map((name) => ({
         name,
         networkId: NetworkId.ethereum,
       }))
     ),
-    getNamesAvalanche(address).then((names): Name[] =>
+    getNamesAvalanche(address).then((names): NSName[] =>
       names.map((name) => ({
         name,
         networkId: NetworkId.avalanche,
