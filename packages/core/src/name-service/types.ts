@@ -1,4 +1,5 @@
-import { AddressSystemType, NetworkIdType } from '@sonarwatch/portfolio-core';
+import { AddressSystemType } from '../Address';
+import { NetworkIdType } from '../Network';
 
 export type NSName = {
   name: string;

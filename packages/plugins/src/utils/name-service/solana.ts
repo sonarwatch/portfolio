@@ -6,10 +6,6 @@ import {
 } from '@bonfida/spl-name-service';
 import { getClientSolana } from '../clients';
 
-export function isSolanaName(name: string): boolean {
-  return name.endsWith('.sol');
-}
-
 export async function getOwnerSolana(name: string): Promise<string | null> {
   const client = getClientSolana();
   const domainName = name.slice(0, -4);

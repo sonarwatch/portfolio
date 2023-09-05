@@ -1,11 +1,11 @@
 import {
   AddressSystem,
   AddressSystemType,
+  NSName,
   NetworkId,
   formatAddress,
 } from '@sonarwatch/portfolio-core';
 import { getNamesEvm } from './evm';
-import { NSName } from './types';
 import { getNamesSolana } from './solana';
 
 export async function getNames(

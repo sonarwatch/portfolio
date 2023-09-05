@@ -22,10 +22,6 @@ const abi = [
   },
 ] as const;
 
-export function isAvalancheName(name: string): boolean {
-  return name.endsWith('.avax');
-}
-
 export async function getOwnerAvalanche(name: string): Promise<string | null> {
   const client = getEvmClient(NetworkId.avalanche);
   const owner = await client.readContract({

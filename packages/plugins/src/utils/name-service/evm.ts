@@ -1,5 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
-import { NSName } from './types';
+import { NSName, NetworkId } from '@sonarwatch/portfolio-core';
 import { getNamesEthereum } from './ethereum';
 import { getNamesAvalanche } from './avalanche';
 
