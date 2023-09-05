@@ -36,4 +36,4 @@ export class PortfolioError extends Error {
   }
 }
 
-export type PorfolioErrorSource = 'adapter' | 'manager';
+export type PorfolioErrorSource = 'adapter' | 'manager' | 'sdk';
