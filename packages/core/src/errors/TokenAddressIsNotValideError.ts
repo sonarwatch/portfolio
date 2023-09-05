@@ -12,9 +12,7 @@ export class TokenAddressIsNotValideError extends PortfolioError {
     super(
       'Token address is not valid',
       'sdk',
-      `Token address is not valid: [${address}]${
-        addressSystem ? `[${addressSystem}]` : ''
-      }`,
+      `${address}${addressSystem ? ` / ${addressSystem}` : ''}`,
       cause
     );
   }

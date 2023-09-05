@@ -15,20 +15,9 @@ export class PortfolioError extends Error {
     this.source = source;
     this.sourceDetails = sourceDetails;
     this.cause = cause;
-    this.message = `${this.message}\n\nSource: ${this.getFullSource()}${
-      this.cause ? `\n\nCaused By: ${this.cause.message}` : ''
-    }\n`;
-  }
-
-  getCapitalizedSource(): string {
-    return this.source[0].toUpperCase() + this.source.slice(1);
-  }
-
-  getFullSource(): string {
-    const capitalizedSource = this.getCapitalizedSource();
-    const sourceDetails = this.sourceDetails ? ` > ${this.sourceDetails}` : '';
-
-    return capitalizedSource + sourceDetails;
+    this.message = `${this.message}${
+      this.sourceDetails ? `: [${this.sourceDetails}]` : ''
+    }`;
   }
 
   override toString() {

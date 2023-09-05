@@ -12,9 +12,7 @@ export class AddressIsNotValidError extends PortfolioError {
     super(
       'Address is not valid',
       'sdk',
-      `Address is not valid: [${address}]${
-        addressSystem ? `[${addressSystem}]` : ''
-      }`,
+      `${address}${addressSystem ? ` / ${addressSystem}` : ''}`,
       cause
     );
   }
