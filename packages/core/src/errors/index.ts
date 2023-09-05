@@ -5,3 +5,4 @@ export * from './AdapterRefreshTimedOutError';
 export * from './PortfolioError';
 export * from './AddressIsNotValideError';
 export * from './TokenAddressIsNotValideError';
+export * from './NameIsNotValidError';

@@ -1,4 +1,5 @@
 import {
+  NameIsNotValidError,
   NetworkId,
   NetworkIdType,
   formatAddress,
@@ -32,7 +33,7 @@ function getNetworkIdFromName(name: string) {
     const verifier = verifiers[i];
     if (verifier.verifier(name)) return verifier.networkId;
   }
-  throw new Error(`Name is not valid: ${name}`);
+  throw new NameIsNotValidError(name);
 }
 
 export async function getOwner(name: string): Promise<NSOwner> {
