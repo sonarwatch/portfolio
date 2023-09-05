@@ -67,13 +67,10 @@ export function getAddressSystem(address: string): AddressSystemType | null {
   return null;
 }
 
-export function getAddressSystemOrFail(
-  address: string
-): AddressSystemType | null {
-  for (const [addressSystem, validator] of Object.entries(validators)) {
-    if (validator(address)) return addressSystem as AddressSystemType;
-  }
-  throw new Error(`Address is not valid: ${address}`);
+export function getAddressSystemOrFail(address: string): AddressSystemType {
+  const addressSystem = getAddressSystem(address);
+  if (!addressSystem) throw new Error(`Address is not valid: ${address}`);
+  return addressSystem;
 }
 
 export function isAddress(
