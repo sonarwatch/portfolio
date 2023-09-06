@@ -3,13 +3,14 @@ import { validate, Network } from 'bitcoin-address-validation';
 import { isAddress as isAddressEthers } from '@ethersproject/address';
 import { isHexString } from '@ethersproject/bytes';
 import { AddressSystem, AddressSystemType } from '../Address';
+import { AddressIsNotValidError } from '../errors/AddressIsNotValideError';
 
 export function isBitcoinAddress(address: string): boolean {
   return validate(address, Network.mainnet);
 }
 export function assertBitcoinAddress(address: string): void {
   if (!isBitcoinAddress(address))
-    throw new Error(`Bitcoin address is not valid: ${address}`);
+    throw new AddressIsNotValidError(address, AddressSystem.bitcoin);
 }
 
 export function isEvmAddress(address: string): boolean {
@@ -18,7 +19,7 @@ export function isEvmAddress(address: string): boolean {
 }
 export function assertEvmAddress(address: string): void {
   if (!isEvmAddress(address))
-    throw new Error(`Evm address is not valid: ${address}`);
+    throw new AddressIsNotValidError(address, AddressSystem.evm);
 }
 
 export function isMoveAddress(address: string): boolean {
@@ -26,7 +27,7 @@ export function isMoveAddress(address: string): boolean {
 }
 export function assertMoveAddress(address: string): void {
   if (!isMoveAddress(address))
-    throw new Error(`Move address is not valid: ${address}`);
+    throw new AddressIsNotValidError(address, AddressSystem.move);
 }
 
 export function isSolanaAddress(address: string): boolean {
@@ -41,7 +42,7 @@ export function isSolanaAddress(address: string): boolean {
 }
 export function assertSolanaAddress(address: string): void {
   if (!isSolanaAddress(address))
-    throw new Error(`Solana address is not valid: ${address}`);
+    throw new AddressIsNotValidError(address, AddressSystem.solana);
 }
 
 export function isSeiAddress(address: string): boolean {
@@ -49,7 +50,7 @@ export function isSeiAddress(address: string): boolean {
 }
 export function assertSeiAddress(address: string): void {
   if (!isSeiAddress(address))
-    throw new Error(`Sei address is not valid: ${address}`);
+    throw new AddressIsNotValidError(address, AddressSystem.sei);
 }
 
 const validators: Record<AddressSystemType, (address: string) => boolean> = {
@@ -67,6 +68,12 @@ export function getAddressSystem(address: string): AddressSystemType | null {
   return null;
 }
 
+export function getAddressSystemOrFail(address: string): AddressSystemType {
+  const addressSystem = getAddressSystem(address);
+  if (!addressSystem) throw new AddressIsNotValidError(address);
+  return addressSystem;
+}
+
 export function isAddress(
   address: string,
   addressSystem: AddressSystemType
@@ -80,5 +87,5 @@ export function assertAddress(
   addressSystem: AddressSystemType
 ): void {
   if (!isAddress(address, addressSystem))
-    throw new Error(`Address is not valid: [${addressSystem}][${address}]`);
+    throw new AddressIsNotValidError(address, addressSystem);
 }

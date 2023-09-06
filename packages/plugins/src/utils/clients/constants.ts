@@ -21,8 +21,7 @@ export function getUrlEndpoints(): Record<NetworkIdType, string> {
       process.env['PORTFOLIO_SOLANA_RPC'] ||
       'https://api.mainnet-beta.solana.com',
     ethereum:
-      process.env['PORTFOLIO_ETHEREUM_RPC'] ||
-      'https://eth-mainnet.g.alchemy.com/v2',
+      process.env['PORTFOLIO_ETHEREUM_RPC'] || 'https://eth.llamarpc.com',
     avalanche:
       process.env['PORTFOLIO_AVALANCHE_RPC'] ||
       'https://api.avax.network/ext/bc/C/rpc',

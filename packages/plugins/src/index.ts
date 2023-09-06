@@ -128,6 +128,7 @@ export {
 export * from './Cache';
 export * from './Fetcher';
 export * from './Job';
+export * from './utils/name-service';
 
 // PLATFORMS //
 export const platforms: Platform[] = [

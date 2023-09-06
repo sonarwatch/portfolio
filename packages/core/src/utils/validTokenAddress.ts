@@ -2,13 +2,14 @@ import { NetworkIdType } from '../Network';
 import { AddressSystem, AddressSystemType } from '../Address';
 import { bitcoinNativeAddress, networks } from '../constants';
 import { isEvmAddress, isSolanaAddress } from './validAddress';
+import { TokenAddressIsNotValideError } from '../errors';
 
 export function isBitcoinTokenAddress(address: string): boolean {
   return address === bitcoinNativeAddress;
 }
 export function assertBitcoinTokenAddress(address: string): void {
   if (!isBitcoinTokenAddress(address))
-    throw new Error(`Bitcoin token address is not valid: ${address}`);
+    throw new TokenAddressIsNotValideError(address, AddressSystem.bitcoin);
 }
 
 export function isEvmTokenAddress(address: string): boolean {
@@ -16,7 +17,7 @@ export function isEvmTokenAddress(address: string): boolean {
 }
 export function assertEvmTokenAddress(address: string): void {
   if (!isEvmTokenAddress(address))
-    throw new Error(`Evm token address is not valid: ${address}`);
+    throw new TokenAddressIsNotValideError(address, AddressSystem.evm);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -25,7 +26,7 @@ export function isMoveTokenAddress(address: string): boolean {
 }
 export function assertMoveTokenAddress(address: string): void {
   if (!isMoveTokenAddress(address))
-    throw new Error(`Move token address is not valid: ${address}`);
+    throw new TokenAddressIsNotValideError(address, AddressSystem.move);
 }
 
 export function isSolanaTokenAddress(address: string): boolean {
@@ -33,7 +34,7 @@ export function isSolanaTokenAddress(address: string): boolean {
 }
 export function assertSolanaTokenAddress(address: string): void {
   if (!isSolanaTokenAddress(address))
-    throw new Error(`Solana token address is not valid: ${address}`);
+    throw new TokenAddressIsNotValideError(address, AddressSystem.solana);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -42,7 +43,7 @@ export function isSeiTokenAddress(address: string): boolean {
 }
 export function assertSeiTokenAddress(address: string): void {
   if (!isSeiTokenAddress(address))
-    throw new Error(`Sei token address is not valid: ${address}`);
+    throw new TokenAddressIsNotValideError(address, AddressSystem.sei);
 }
 
 const validators: Record<AddressSystemType, (address: string) => boolean> = {
