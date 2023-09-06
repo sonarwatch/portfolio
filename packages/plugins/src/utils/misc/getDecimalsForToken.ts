@@ -9,7 +9,7 @@ import { getClientAptos, getClientSei, getClientSolana } from '../clients';
 import { coinDecimals } from '../aptos';
 import { getUrlEndpoint } from '../clients/constants';
 import { TokenInfo, tokenInfoQueryMsg } from '../sei';
-import { Cache, getCacheConfig } from '../../Cache';
+import { Cache } from '../../Cache';
 import { tokenListsDetailsPrefix } from '../../plugins/tokens/constants';
 import { Token } from '../../plugins/tokens/types';
 
@@ -21,16 +21,17 @@ const solMints = [
 /**
  * Return the decimals of a token on any network using RPC calls or TokenList.
  *
+ * @param cache Cache where to look for decimals
  * @param address The mint/address of the token.
  * @param networkId The network on which to execute the request.
  *
  * @returns The number of decimals or undefined if unsucessful request.
  */
 export async function getDecimalsForToken(
+  cache: Cache,
   address: string,
   networkId: NetworkIdType
 ): Promise<number | undefined> {
-  const cache = new Cache(getCacheConfig());
   const tokenDetails = await cache.getItem<Token>(
     formatAddressByNetworkId(address, networkId),
     {
