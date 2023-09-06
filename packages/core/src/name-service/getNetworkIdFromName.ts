@@ -37,3 +37,7 @@ export function getNetworkIdFromNameOrFail(name: string): NetworkIdType {
   if (!networkId) throw new NameIsNotValidError(name);
   return networkId;
 }
+
+export function isNameValid(name: string): boolean {
+  return getNetworkIdFromName(name) !== null;
+}
