@@ -93,11 +93,6 @@ import {
 } from './plugins/mango';
 import { jobs as topTokensJobs } from './plugins/top-tokens';
 import {
-  platforms as astroportPlatforms,
-  jobs as astroportJobs,
-  fetchers as astroportFetchers,
-} from './plugins/astroport';
-import {
   platforms as liquidityPoolsSeiPlatforms,
   jobs as liquidityPoolsSeiJobs,
   fetchers as liquidityPoolsSeiFetchers,
@@ -160,7 +155,6 @@ export const platforms: Platform[] = [
   ...stakingAptosPlatforms,
   ...morphoPlatforms,
   ...mangoPlatforms,
-  ...astroportPlatforms,
   ...kaminoPlatforms,
 ];
 
@@ -187,7 +181,6 @@ export const jobs: Job[] = [
   ...morphoJobs,
   ...makerJobs,
   ...liquidityPoolsSeiJobs,
-  ...astroportJobs,
   ...aftermathJobs,
   ...liquidswapJobs,
   ...kaminoJobs,
@@ -213,6 +206,5 @@ export const fetchers: Fetcher[] = [
   ...ordersFetchers,
   ...morphoFetchers,
   ...liquidityPoolsSeiFetchers,
-  ...astroportFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
