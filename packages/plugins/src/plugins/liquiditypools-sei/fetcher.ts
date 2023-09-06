@@ -89,7 +89,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${pluginId}`,
+  id: pluginId,
   networkId: NetworkId.sei,
   executor,
 };
