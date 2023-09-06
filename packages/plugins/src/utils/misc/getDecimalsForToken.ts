@@ -1,10 +1,17 @@
-import { NetworkId, NetworkIdType } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  NetworkIdType,
+  formatAddressByNetworkId,
+} from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { getCosmWasmClient } from '@sei-js/core';
 import { getClientAptos, getClientSei, getClientSolana } from '../clients';
 import { coinDecimals } from '../aptos';
 import { getUrlEndpoint } from '../clients/constants';
 import { TokenInfo, tokenInfoQueryMsg } from '../sei';
+import { Cache, getCacheConfig } from '../../Cache';
+import { tokenListsDetailsPrefix } from '../../plugins/tokens/constants';
+import { Token } from '../../plugins/tokens/types';
 
 const solMints = [
   '11111111111111111111111111111111',
@@ -23,6 +30,15 @@ export async function getDecimalsForToken(
   address: string,
   networkId: NetworkIdType
 ): Promise<number | undefined> {
+  const cache = new Cache(getCacheConfig());
+  const tokenDetails = await cache.getItem<Token>(
+    formatAddressByNetworkId(address, networkId),
+    {
+      prefix: tokenListsDetailsPrefix,
+      networkId: NetworkId.sei,
+    }
+  );
+  if (tokenDetails) return tokenDetails.decimals;
   switch (networkId) {
     case 'aptos': {
       const client = getClientAptos();
@@ -43,7 +59,6 @@ export async function getDecimalsForToken(
       return res.value.decimals ? res.value.decimals : undefined;
     }
     case 'sei': {
-      // TODO : add cache.getItem<decimalsInfo>(formatAddres(address))
       if (address.startsWith('factory')) {
         const client = await getClientSei();
         const rep = await client.cosmos.bank.v1beta1.denomMetadata({
@@ -53,7 +68,8 @@ export async function getDecimalsForToken(
         return denoms[denoms.length - 1].exponent;
       }
       if (address.startsWith('ibc')) {
-        return 0;
+        // No solution yet for IBC tokens
+        return undefined;
       }
       if (address.startsWith('sei')) {
         const client = await getCosmWasmClient(getUrlEndpoint(NetworkId.sei));
