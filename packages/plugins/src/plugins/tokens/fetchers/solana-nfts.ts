@@ -98,6 +98,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     let image = images.get(address);
     if (image === noImageValue) image = undefined;
 
+    const collection = output.collection
+      ? { id: output.collection.address.toString(), floorPrice: null }
+      : undefined;
+
     return {
       networkId: NetworkId.solana,
       type: PortfolioAssetType.collectible,
@@ -112,7 +116,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         image,
         imageUri: image,
         name: output.name,
-        collectionId: output.collection?.address.toString(),
+        collection,
       },
     };
   });
