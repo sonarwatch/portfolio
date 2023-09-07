@@ -9,6 +9,7 @@ import {
   assertSeiTokenAddress,
   assertSolanaTokenAddress,
 } from './validTokenAddress';
+import { isASuiAlias } from './isAnAlias';
 
 export function formatBitcoinTokenAddress(address: string) {
   assertBitcoinTokenAddress(address);
@@ -17,7 +18,8 @@ export function formatBitcoinTokenAddress(address: string) {
 
 export function formatMoveTokenAddress(address: string) {
   assertMoveTokenAddress(address);
-  return address
+  const tAddress = isASuiAlias(address) ? networks.sui.native.address : address;
+  return tAddress
     .trim()
     .replace('::', '__')
     .replace(',', '-')

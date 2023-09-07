@@ -1,7 +1,8 @@
 export const bitcoinNativeAddress = 'bitcoin';
 export const solanaNativeAddress = '11111111111111111111111111111111';
 export const aptosNativeAddress = '0x1::aptos_coin::AptosCoin';
-export const suiNativeAddress = '0x2::sui::SUI';
+export const suiNativeAddress =
+  '0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI';
 export const seiNativeAddress = 'usei';
 export const ethereumNativeAddress =
   '0x0000000000000000000000000000000000000000';
