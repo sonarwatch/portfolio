@@ -127,6 +127,11 @@ import {
   fetchers as naviFetchers,
   platforms as naviPlatforms,
 } from './plugins/navi';
+import {
+  fetchers as scallopFetchers,
+  jobs as scallopJobs,
+  platforms as scallopPlatforms
+} from './plugins/scallop';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
 export {
@@ -169,6 +174,7 @@ export const platforms: Platform[] = [
   ...kaminoPlatforms,
   ...bucketPlatforms,
   ...naviPlatforms,
+  ...scallopPlatforms
 ];
 
 // JOBS //
@@ -198,6 +204,7 @@ export const jobs: Job[] = [
   ...liquidswapJobs,
   ...kaminoJobs,
   ...naviJobs,
+  ...scallopJobs
 ];
 
 // FETCHERS //
@@ -222,5 +229,6 @@ export const fetchers: Fetcher[] = [
   ...liquidityPoolsSeiFetchers,
   ...bucketFetchers,
   ...naviFetchers,
+  ...scallopFetchers
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
