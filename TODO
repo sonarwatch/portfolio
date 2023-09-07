@@ -1,5 +1,6 @@
 # TODO
 
+- Fix le problème d'import Job et Fetcher lors de la génération d'un plugin (toujours présent)
 - Rename address en id dans les tokens & ajouter la properties tokenContract
 - Ajout de la fonction cache.setTokensPricesSource(), utile pour des AMM
 - Auto Initialisation du cache dans portolfio-api
@@ -9,7 +10,6 @@
 # DONE
 
 - Déplacer les plateformes dans le dossier des plugins correspondant ?
-- Fix le problème d'import Job et Fetcher lors de la génération d'un plugin
 - Ajout d'un module de decimals dans le cache
 - Fix les packages utilisant @metaplex-fundation/js (build fail)
 - Opti orca-clmm-positions
