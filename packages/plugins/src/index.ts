@@ -118,6 +118,10 @@ import {
   jobs as kaminoJobs,
   platforms as kaminoPlatforms,
 } from './plugins/kamino';
+import {
+  fetchers as bucketFetchers,
+  platforms as bucketPlatforms,
+} from './plugins/bucket';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
 export {
@@ -157,6 +161,7 @@ export const platforms: Platform[] = [
   ...morphoPlatforms,
   ...mangoPlatforms,
   ...kaminoPlatforms,
+  ...bucketPlatforms,
 ];
 
 // JOBS //
@@ -207,5 +212,6 @@ export const fetchers: Fetcher[] = [
   ...ordersFetchers,
   ...morphoFetchers,
   ...liquidityPoolsSeiFetchers,
+  ...bucketFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
