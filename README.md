@@ -135,10 +135,10 @@ cp .env.example .env
 npx nx generate @sonarwatch/portfolio-plugins:plugin my-super-protocol
 
 # Generator a job
-npx nx generate @sonarwatch/portfolio-plugins:job --jobName=test --pluginId=foo
+npx nx generate @sonarwatch/portfolio-plugins:job --jobName=myJob --pluginId=my-super-protocol
 
 # Generator a fetcher
-npx nx generate @sonarwatch/portfolio-plugins:fetcher --fetcherName=test --pluginId=foo
+npx nx generate @sonarwatch/portfolio-plugins:fetcher --fetcherName=myFetcher --pluginId=my-super-protocol
 
 # Serve cache in background
 npx nx run plugins:serve-cache
