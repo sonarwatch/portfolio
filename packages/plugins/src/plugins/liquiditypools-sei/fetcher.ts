@@ -9,7 +9,7 @@ import { getCosmWasmClient } from '@sei-js/core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { lpsCodeByPlatform, lpsContractsPrefix, pluginId } from './constants';
+import { pluginId } from './constants';
 import { getUrlEndpoint } from '../../utils/clients/constants';
 import { PlatformContracts } from './types';
 import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
@@ -19,16 +19,11 @@ import { Balance } from '../../utils/sei';
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const cosmWasmClient = await getCosmWasmClient(getUrlEndpoint(NetworkId.sei));
 
-  const lpPlatforms = Array.from(lpsCodeByPlatform.keys());
-
   const contractsByPlatform: Map<string, string[]> = new Map();
-  const platformsContracts = await cache.getItems<PlatformContracts>(
-    lpPlatforms,
-    {
-      prefix: lpsContractsPrefix,
-      networkId: NetworkId.sei,
-    }
-  );
+  const platformsContracts = await cache.getAllItems<PlatformContracts>({
+    prefix: pluginId,
+    networkId: NetworkId.sei,
+  });
   if (!platformsContracts) return [];
   platformsContracts.forEach((platform) => {
     if (platform) {
@@ -38,13 +33,16 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const elements: PortfolioElement[] = [];
 
-  for (const platform of lpPlatforms) {
+  for (const platform of contractsByPlatform.keys()) {
     const contracts = contractsByPlatform.get(platform);
     if (!contracts) continue;
 
     const liquidities: PortfolioLiquidity[] = [];
 
     for (const contract of contracts) {
+      const tokenPrice = await cache.getTokenPrice(contract, NetworkId.sei);
+      if (!tokenPrice) continue;
+
       const balance = (await cosmWasmClient.queryContractSmart(
         contract,
         getQueryBalanceByOwner(owner)
@@ -53,9 +51,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
       const rawAmount = new BigNumber(balance.balance);
       if (rawAmount.isZero()) continue;
-
-      const tokenPrice = await cache.getTokenPrice(contract, NetworkId.sei);
-      if (!tokenPrice) continue;
 
       const amount = rawAmount.div(10 ** tokenPrice.decimals).toNumber();
 
@@ -94,7 +89,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${pluginId}`,
+  id: pluginId,
   networkId: NetworkId.sei,
   executor,
 };

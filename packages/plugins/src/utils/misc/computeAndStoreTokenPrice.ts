@@ -128,7 +128,7 @@ export default async function checkComputeAndStoreTokensPrices(
     } else if (tokenPriceX) {
       decimalsTokenX = tokenPriceX.decimals;
     } else {
-      decimalsTokenX = await getDecimalsForToken(tokenX.mint, networkId);
+      decimalsTokenX = await getDecimalsForToken(cache, tokenX.mint, networkId);
     }
 
     let decimalsTokenY;
@@ -137,7 +137,7 @@ export default async function checkComputeAndStoreTokensPrices(
     } else if (tokenPriceY) {
       decimalsTokenY = tokenPriceY.decimals;
     } else {
-      decimalsTokenY = await getDecimalsForToken(tokenY.mint, networkId);
+      decimalsTokenY = await getDecimalsForToken(cache, tokenY.mint, networkId);
     }
 
     if (decimalsTokenX === undefined || decimalsTokenY === undefined)

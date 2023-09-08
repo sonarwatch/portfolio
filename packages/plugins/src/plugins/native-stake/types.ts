@@ -20,3 +20,12 @@ export type ValidatorSet = {
     total_voting_power: string;
   };
 };
+
+export type DelegationResponse = {
+  delegation: {
+    delegatorAddress: string;
+    validatorAddress: string;
+    shares: string;
+  };
+  balance: { denom: string; amount: string };
+};

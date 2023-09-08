@@ -1,10 +1,17 @@
-import { NetworkId, NetworkIdType } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  NetworkIdType,
+  formatTokenAddress,
+} from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { getCosmWasmClient } from '@sei-js/core';
 import { getClientAptos, getClientSei, getClientSolana } from '../clients';
 import { coinDecimals } from '../aptos';
 import { getUrlEndpoint } from '../clients/constants';
 import { TokenInfo, tokenInfoQueryMsg } from '../sei';
+import { Cache } from '../../Cache';
+import { tokenListsDetailsPrefix } from '../../plugins/tokens/constants';
+import { Token } from '../../plugins/tokens/types';
 
 const solMints = [
   '11111111111111111111111111111111',
@@ -14,15 +21,26 @@ const solMints = [
 /**
  * Return the decimals of a token on any network using RPC calls or TokenList.
  *
+ * @param cache Cache where to look for decimals
  * @param address The mint/address of the token.
  * @param networkId The network on which to execute the request.
  *
  * @returns The number of decimals or undefined if unsucessful request.
  */
 export async function getDecimalsForToken(
+  cache: Cache,
   address: string,
   networkId: NetworkIdType
 ): Promise<number | undefined> {
+  const tokenDetails = await cache.getItem<Token>(
+    formatTokenAddress(address, networkId),
+    {
+      prefix: tokenListsDetailsPrefix,
+      networkId,
+    }
+  );
+  if (tokenDetails) return tokenDetails.decimals;
+
   switch (networkId) {
     case 'aptos': {
       const client = getClientAptos();
@@ -43,7 +61,6 @@ export async function getDecimalsForToken(
       return res.value.decimals ? res.value.decimals : undefined;
     }
     case 'sei': {
-      // TODO : add cache.getItem<decimalsInfo>(formatAddres(address))
       if (address.startsWith('factory')) {
         const client = await getClientSei();
         const rep = await client.cosmos.bank.v1beta1.denomMetadata({
@@ -53,7 +70,8 @@ export async function getDecimalsForToken(
         return denoms[denoms.length - 1].exponent;
       }
       if (address.startsWith('ibc')) {
-        return 0;
+        // No solution yet for IBC tokens
+        return undefined;
       }
       if (address.startsWith('sei')) {
         const client = await getCosmWasmClient(getUrlEndpoint(NetworkId.sei));
