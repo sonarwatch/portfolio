@@ -122,7 +122,11 @@ import {
   fetchers as bucketFetchers,
   platforms as bucketPlatforms,
 } from './plugins/bucket';
-import { jobs as naviJobs, fetchers as naviFetchers } from './plugins/navi';
+import {
+  jobs as naviJobs,
+  fetchers as naviFetchers,
+  platforms as naviPlatforms,
+} from './plugins/navi';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
 export {
@@ -163,6 +167,7 @@ export const platforms: Platform[] = [
   ...mangoPlatforms,
   ...kaminoPlatforms,
   ...bucketPlatforms,
+  ...naviPlatforms,
 ];
 
 // JOBS //
