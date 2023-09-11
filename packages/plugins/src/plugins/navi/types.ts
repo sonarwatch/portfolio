@@ -1,21 +1,7 @@
-import BigNumber from 'bignumber.js';
-
-export type UserState = {
-  type: string;
-  fields: {
-    id: {
-      id: string;
-    };
-    size: number;
-  };
-};
-
 export type Balance = {
-  type: string;
-  fields: {
-    total_supply: BigNumber;
-    user_state: UserState;
-  };
+  id: { id: string };
+  name: string;
+  value: string;
 };
 
 export type BorrowRateFactors = {
