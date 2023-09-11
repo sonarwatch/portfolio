@@ -122,6 +122,7 @@ import {
   fetchers as bucketFetchers,
   platforms as bucketPlatforms,
 } from './plugins/bucket';
+import { jobs as naviJobs, fetchers as naviFetchers } from './plugins/navi';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
 export {
@@ -190,6 +191,7 @@ export const jobs: Job[] = [
   ...aftermathJobs,
   ...liquidswapJobs,
   ...kaminoJobs,
+  ...naviJobs,
 ];
 
 // FETCHERS //
@@ -213,5 +215,6 @@ export const fetchers: Fetcher[] = [
   ...morphoFetchers,
   ...liquidityPoolsSeiFetchers,
   ...bucketFetchers,
+  ...naviFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
