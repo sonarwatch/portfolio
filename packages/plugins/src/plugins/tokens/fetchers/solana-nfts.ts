@@ -26,7 +26,6 @@ const noImageValue = 'noimage';
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
   const metaplex = new Metaplex(client);
-
   const outputs = await metaplex.nfts().findAllByOwner({
     owner: new PublicKey(owner),
   });
@@ -110,9 +109,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         amount,
         dataUri: output.uri,
         price: null,
-        value: null,
-        floorPrice: null,
-        image,
         imageUri: image,
         name: output.name,
         collection,
