@@ -10,6 +10,79 @@ export type BorrowIndexes = {
   [k in string]?: ObjectContentFields;
 };
 
+export type InterestModel = {
+  // [k in CoinNames]?: ObjectContentFields;
+  [k in string]?: ObjectContentFields;
+};
+
+export type InterestModelData = {
+  base_borrow_rate_per_sec: {
+    fields : {
+      value: string;
+    }
+  };
+  borrow_rate_on_high_kink: {
+    fields : {
+      value: string;
+    }
+  };
+  borrow_rate_on_mid_kink: {
+    fields : {
+      value: string;
+    }
+  };
+  borrow_weight: {
+    fields : {
+      value: string;
+    }
+  };
+  high_kink: {
+    fields: {
+      value: string;
+    }
+  };
+  interest_rate_scale: string;
+  max_borrow_rate: {
+    fields: {
+      value: string;
+    }
+  };
+  mid_kink: {
+    fields: {
+      value: string;
+    }
+  };
+  min_borrow_amount: string;
+  revenue_factor: {
+    fields : {
+      value: string
+    }
+  };
+  type: {
+    fields: {
+      name: string;
+    }
+  }
+};
+
+export type BorrowIndexData = {
+  borrow_index: string;
+  interest_rate: {
+    fields: {
+      value: string;
+    }
+  };
+  interest_rate_scale: string;
+  last_updated: string;
+};
+
+export type BalanceSheetData = {
+  cash: string;
+  debt: string;
+  market_coin_supply: string;
+  revenue: string;
+};
+
 const MARKET_DATA_FIELDS = [
   'asset_active_states',
   'borrow_dynamics',
@@ -79,4 +152,5 @@ export type MarketData = {
 export type MarketJobResult = {
   balanceSheets: BalanceSheet;
   borrowIndexes: BorrowIndexes;
+  interestModels: InterestModel;
 };

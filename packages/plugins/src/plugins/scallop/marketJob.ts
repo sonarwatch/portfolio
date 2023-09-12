@@ -11,7 +11,7 @@ import {
   addressKey
 } from './constants';
 import { AddressInfo, Core } from "./types";
-import type { BalanceSheet, BorrowIndexes, MarketData } from "./types";
+import type { BalanceSheet, BorrowIndexes, InterestModel, MarketData } from "./types";
 import { getCoinTypeMetadataHelper } from "./helpers";
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -68,11 +68,27 @@ const executor: JobExecutor = async (cache: Cache) => {
     }));
   }
 
+  // get interest models
+  const interestModels: InterestModel = {};
+  const interestModelsParentId = marketData.interest_models.fields.table.fields.id.id;
+  for(const coinName of Object.keys(pools)) {
+    interestModels[coinName] = getObjectFields(await client.getDynamicFieldObject({
+      parentId: interestModelsParentId,
+      name: {
+        type: '0x1::type_name::TypeName',
+        value: {
+          name: pools[coinName].coinType.substring(2)
+        }
+      }
+    }))
+  }
+
   await cache.setItem(
     marketKey,
     {
       balanceSheets,
-      borrowIndexes
+      borrowIndexes,
+      interestModels,
     },
     {
       prefix,
