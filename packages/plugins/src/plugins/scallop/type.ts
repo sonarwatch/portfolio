@@ -1,3 +1,5 @@
+import { CoinMetadata } from "@mysten/sui.js";
+
 export interface AddressInfo {
   id: string;
   mainnet: Network;
@@ -72,6 +74,7 @@ export interface Package {
   upgradeCap: string;
 }
 
-export type BalanceSheet = {
-  
+export type CoinTypeMetadata = {
+  coinType: string;
+  metadata: CoinMetadata | null;
 }
