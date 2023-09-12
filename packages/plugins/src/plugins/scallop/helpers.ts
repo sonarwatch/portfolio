@@ -9,15 +9,20 @@ const SUI_ID = '0x00000000000000000000000000000000000000000000000000000000000000
 const client = getClientSui();
 
 export async function getCoinTypeMetadata(cache: Cache): Promise<{ [k: string]: CoinTypeMetadata }> {
-  const coinTypes: { [k: string]: CoinTypeMetadata } = {};
-  const addressData = await cache.getItem<AddressInfo>(addressKey, {
+  
+  const addressInfo = await cache.getItem<AddressInfo>(addressKey, {
     prefix: addressPrefix,
     networkId: NetworkId.sui
   });
 
-  if (!addressData) return {};
+  if (!addressInfo) return {};
 
-  const coins = new Map<string, Coin>(Object.entries(addressData.mainnet.core.coins));
+  return getCoinTypeMetadataHelper(addressInfo);
+}
+
+export async function getCoinTypeMetadataHelper(addressInfo: AddressInfo): Promise<{ [k: string]: CoinTypeMetadata }> {
+  const coinTypes: { [k: string]: CoinTypeMetadata } = {};
+  const coins = new Map<string, Coin>(Object.entries(addressInfo.mainnet.core.coins));
   const coinNames: string[] = Array.from(coins.keys());
 
   for (const coinName of coinNames) {
