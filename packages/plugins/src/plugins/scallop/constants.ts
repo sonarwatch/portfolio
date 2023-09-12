@@ -4,3 +4,5 @@ export const addressPrefix = `${platformId}-address`;
 
 export const obligationKeyPackageId = `${PROTOCOL_OBJECT_ID}::obligation::ObligationKey`;
 export const addressEndpoint = 'https://sui.api.scallop.io/addresses/6462a088a7ace142bb6d7e9b';
+export const addressKey = 'scallop-address-key';
+export const marketKey = 'scallop-market-key';

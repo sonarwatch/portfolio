@@ -1,4 +1,3 @@
-
 export interface AddressInfo {
   id: string;
   mainnet: Network;
