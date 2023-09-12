@@ -69,8 +69,8 @@ export type MarketData = {
   vault: {
     type: string;
     fields: {
-      [l in VaultFieldsName]: object;
-    } & { balance_sheets: BasicField & WitTable; };
+      [l in VaultFieldsName]: BasicField & WitTable;
+    };
   };
   borrow_dynamics: BasicField & WitTable;
   interest_models: BasicField & WitTable;
