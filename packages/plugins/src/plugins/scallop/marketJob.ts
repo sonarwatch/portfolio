@@ -7,7 +7,8 @@ import {
   platformId,
   marketKey,
   addressPrefix,
-  marketPrefix as prefix
+  marketPrefix as prefix,
+  addressKey
 } from './constants';
 import { AddressInfo, Core } from "./types";
 import type { BalanceSheet, BorrowIndexes, MarketData } from "./types";
@@ -16,7 +17,7 @@ import { getCoinTypeMetadataHelper } from "./helpers";
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
 
-  const addressData = await cache.getItem<AddressInfo>(marketKey, {
+  const addressData = await cache.getItem<AddressInfo>(addressKey, {
     prefix: addressPrefix,
     networkId: NetworkId.sui,
   });
