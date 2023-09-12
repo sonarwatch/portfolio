@@ -62,7 +62,7 @@
     "@mysten/sui.js": "^0.37.1",
     "@sei-js/core": "^3.0.1",
     "@sei-js/proto": "^3.0.1",
-    "@solana/web3.js": "^1.78.0",
+    "@solana/web3.js": "^1.78.4",
     "aptos": "^1.13.1",
     "axios": "^1.4.0",
     "bignumber.js": "^9.1.1",
