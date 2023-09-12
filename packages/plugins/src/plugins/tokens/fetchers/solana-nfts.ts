@@ -25,11 +25,10 @@ const noImageValue = 'noimage';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
-  const ownerPubKey = new PublicKey(owner);
   const metaplex = new Metaplex(client);
 
   const outputs = await metaplex.nfts().findAllByOwner({
-    owner: ownerPubKey,
+    owner: new PublicKey(owner),
   });
   const cachedImages = await cache.getItems<string>(
     outputs.map((o) =>
@@ -59,7 +58,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const res = await runInBatch(
     missings.map((o) => () => metaplex.nfts().load({ metadata: o })),
-    5
+    7
   );
 
   const promises = res.map((r, i) => {
