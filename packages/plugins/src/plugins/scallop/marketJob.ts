@@ -57,7 +57,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   const borrowIndexes: BorrowIndexes = {};
   const borrowIndexesParentId = marketData.borrow_dynamics.fields.table.fields.id.id;
   for (const coinName of Object.keys(pools)) {
-    balanceSheets[coinName] = getObjectFields(await client.getDynamicFieldObject({
+    borrowIndexes[coinName] = getObjectFields(await client.getDynamicFieldObject({
       parentId: borrowIndexesParentId,
       name: {
         type: '0x1::type_name::TypeName',
