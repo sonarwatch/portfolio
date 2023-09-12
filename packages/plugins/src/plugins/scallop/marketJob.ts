@@ -1,16 +1,17 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
+import { getObjectFields } from "@mysten/sui.js";
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSui } from '../../utils/clients';
 import {
   platformId,
   marketKey,
-  addressKey,
-  addressPrefix
+  addressPrefix,
+  marketPrefix as prefix
 } from './constants';
 import { AddressInfo, Core } from "./types";
-import type { BalanceSheet, Coin, CoinNames, MarketData } from "./types";
-import { getObjectFields } from "@mysten/sui.js";
+import type { BalanceSheet, BorrowIndexes, MarketData } from "./types";
+import { getCoinTypeMetadataHelper } from "./helpers";
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
@@ -20,10 +21,10 @@ const executor: JobExecutor = async (cache: Cache) => {
     networkId: NetworkId.sui,
   });
 
-  if (!addressData) return {};
+  if (!addressData) return;
 
   // ['cetus', 'apt', ...]
-  const pools: {[k in CoinNames]: Coin} = (addressData.mainnet.core as Core).coins;
+  const pools = await getCoinTypeMetadataHelper(addressData);
   const marketId: string = (addressData.mainnet.core as Core).market;
 
   // get market data
@@ -33,27 +34,55 @@ const executor: JobExecutor = async (cache: Cache) => {
       showContent: true
     }
   });
+  const marketData = getObjectFields(marketObject) as MarketData;
 
   // get balance sheet
   const balanceSheets: BalanceSheet = {};
-  const marketData = getObjectFields(marketObject) as MarketData;
   const balanceSheetParentId = marketData.vault.fields.balance_sheets.fields
     .table.fields.id.id;
-
-  for(const coinName of Object.keys(pools)) {
+  for (const coinName of Object.keys(pools)) {
     balanceSheets[coinName] = getObjectFields(await client.getDynamicFieldObject({
       parentId: balanceSheetParentId,
       name: {
         type: '0x1::type_name::TypeName',
         value: {
-          name: COIN_TYPES
+          name: pools[coinName].coinType.substring(2)
         }
       }
-    }))
+    }));
   }
 
-  const job: Job = {
-    id: `${platformId}-market`,
-    executor,
-  };
-  export default job;
+  // get borrow indexes
+  const borrowIndexes: BorrowIndexes = {};
+  const borrowIndexesParentId = marketData.borrow_dynamics.fields.table.fields.id.id;
+  for (const coinName of Object.keys(pools)) {
+    balanceSheets[coinName] = getObjectFields(await client.getDynamicFieldObject({
+      parentId: borrowIndexesParentId,
+      name: {
+        type: '0x1::type_name::TypeName',
+        value: {
+          name: pools[coinName].coinType.substring(2)
+        }
+      }
+    }));
+  }
+
+  await cache.setItem(
+    marketKey,
+    {
+      balanceSheets,
+      borrowIndexes
+    },
+    {
+      prefix,
+      networkId: NetworkId.sui
+    }
+  );
+};
+
+const job: Job = {
+  id: `${platformId}-market`,
+  executor,
+};
+
+export default job;
