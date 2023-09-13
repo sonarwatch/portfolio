@@ -138,6 +138,7 @@ export * from './Cache';
 export * from './Fetcher';
 export * from './Job';
 export * from './utils/name-service';
+export * from './utils/blank';
 
 // PLATFORMS //
 export const platforms: Platform[] = [
