@@ -121,6 +121,10 @@ Example :
 npx nx run plugins:run-fetcher mango-collateral DemoSX9F2zXfQLtBr56Yr5he15P7viZWsYJpSDAX3tKG
 ```
 
+# Missing a token price ?
+
+If you need the price of a token but don't find it in the Cache, please submit a PR to our [token list repository](https://github.com/sonarwatch/token-lists)
+
 # Useful commands
 
 Here is a list of useful command that can help you during your integration.
