@@ -88,7 +88,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const cBalanceSheet = balanceSheetData['value'].fields as BalanceSheetData;
 
     const borrowRate = Number(cBorrowIndex.interest_rate.fields.value) / 2 ** 32;
-    const borrowRateScale = Number(cInterestModel.interest_rate_scale);
+    const borrowRateScale = Number(cBorrowIndex.interest_rate_scale);
     const borrowIndex = Number(cBorrowIndex.borrow_index);
     const lastUpdated = Number(cBorrowIndex.last_updated);
     const cash = Number(cBalanceSheet.cash);

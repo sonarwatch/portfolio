@@ -89,6 +89,10 @@ export async function getOwnerObject(owner: string, query?: SuiObjectResponseQue
   return objects;
 }
 
+export function formatDecimal(amount: number, decimal: number) {
+  return amount / 10 ** decimal
+}
+
 export function getCoinType(type: string) {
   const structTag = normalizeStructTag(type);
   return structTag.substring(structTag.indexOf('<') + 1, structTag.indexOf('>'));
