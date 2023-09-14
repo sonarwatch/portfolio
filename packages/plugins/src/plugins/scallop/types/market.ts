@@ -149,8 +149,19 @@ export type MarketData = {
   interest_models: BasicField & WitTable;
 };
 
+export type MarketJobData = {
+  coin: string;
+  decimal: number;
+  coinType: string;
+  growthInterest: number;
+  borrowInterestRate: number;
+  supplyInterestRate: number;
+  debt: number;
+  cash: number;
+  marketCoinSupply: number;
+  reserve: number;
+}
+
 export type MarketJobResult = {
-  balanceSheets: BalanceSheet;
-  borrowIndexes: BorrowIndexes;
-  interestModels: InterestModel;
+  [T in string]: MarketJobData
 };

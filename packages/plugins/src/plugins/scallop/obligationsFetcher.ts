@@ -4,7 +4,7 @@ import Decimal from 'decimal.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { marketKey, obligationKeyPackageId, platformId, marketPrefix as prefix } from './constants';
-import { BorrowIndexData, CollateralAsset, DebtAsset, MarketJobResult } from './types';
+import { CollateralAsset, DebtAsset, MarketJobResult } from './types';
 import { formatDecimal, getCoinTypeMetadata, getOwnerObject } from './helpers';
 import { getClientSui } from '../../utils/clients';
 import runInBatch from '../../utils/misc/runInBatch';
@@ -37,8 +37,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     })
   ])
   if (!marketData || allOwnedObjects.length === 0) return [];
-  const { borrowIndexes } = marketData
-  if (!borrowIndexes) return [];
 
   const collaterals: { [T in string]: number } = {};
   const debts: { [T in string]: number } = {};
@@ -47,28 +45,26 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const obligationFields = getObjectFields(obligation);
     if (!obligationFields) continue;
     const obligationId = obligationFields['ownership'].fields.of;
-    const account = await client.getObject({
+    const account = getObjectFields(await client.getObject({
       id: obligationId,
       options: {
         showContent: true,
       }
-    });
+    }));
     if (!account) continue;
-    const accountFields = getObjectFields(account);
-    if (!accountFields) continue;
-    const accountCollateralsId = accountFields['collaterals'].fields.table.fields.id.id;
-    const accountDebtsId = accountFields['debts'].fields.table.fields.id.id;
 
-    const accountCollateralsAssets = accountFields['collaterals'].fields.keys.fields.contents as CollateralAsset[];
-    const accountDebtsAssets = accountFields['debts'].fields.keys.fields.contents as DebtAsset[];
+    const accountCollateralsId = account['collaterals'].fields.table.fields.id.id;
+    const accountDebtsId = account['debts'].fields.table.fields.id.id;
+    const accountCollateralsAssets = account['collaterals'].fields.keys.fields.contents as CollateralAsset[];
+    const accountDebtsAssets = account['debts'].fields.keys.fields.contents as DebtAsset[];
+
     await Promise.all([
       Promise.all(
         accountCollateralsAssets.map(async ({ fields }) => {
           if (!collaterals[fields.name]) {
             collaterals[fields.name] = 0;
           }
-
-          const assetObject = await client.getDynamicFieldObject({
+          const asset = getObjectFields(await client.getDynamicFieldObject({
             parentId: accountCollateralsId,
             name: {
               type: '0x1::type_name::TypeName',
@@ -76,12 +72,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
                 name: fields.name,
               }
             }
-          });
-
-          const assetFields = getObjectFields(assetObject);
-          if (assetFields) {
-            collaterals[fields.name] += Number(assetFields['value'].fields.amount ?? 0)
-          }
+          }));
+          if (!asset) return;
+          collaterals[fields.name] += Number(asset['value'].fields.amount ?? 0)
         })
       ),
 
@@ -92,8 +85,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           if (!debts[fields.name]) {
             debts[fields.name] = 0;
           }
-
-          const assetObject = await client.getDynamicFieldObject({
+          const asset = getObjectFields(await client.getDynamicFieldObject({
             parentId: accountDebtsId,
             name: {
               type: '0x1::type_name::TypeName',
@@ -101,51 +93,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
                 name: fields.name,
               }
             }
-          })
-
-          const assetFields = getObjectFields(assetObject);
-          if (!assetFields) return;
-          let debtAmount = Number(assetFields['value'].fields.amount ?? 0);
-          const borrowIndexFields = borrowIndexes[coinName]?.['value'].fields;
-          const currentTimestamp = Math.floor(new Date().getTime() / 1000);
-          const timeDelta = new Decimal(currentTimestamp - Number(borrowIndexFields.last_updated));
-          const interestRate = new Decimal(borrowIndexFields.interest_rate.fields.value).div(2 ** 32);
-          const indexDelta = new Decimal(borrowIndexFields.borrow_index).mul(timeDelta.mul(interestRate));
-          const currentBorrowIndex = new Decimal(borrowIndexFields.borrow_index).plus(
-            indexDelta.div(new Decimal(borrowIndexFields.interest_rate_scale))
-          );
-          const currentDebtAmount = new Decimal(debtAmount).mul(
-            currentBorrowIndex.div(assetFields['value'].fields.borrow_index)
-          );
-          debtAmount = currentDebtAmount.toNumber();
-          debts[fields.name] = debtAmount;
+          }));
+          const market = marketData[coinName];
+          if (!asset || !market) return;
+          debts[fields.name] = new Decimal(Number(asset['value'].fields.amount ?? 0)).mul(market.growthInterest + 1).toNumber();
         })
       )
     ])
   }
 
-  const result: {collaterals: Map<string, {name: string, amount: number}>, debts: Map<string, {name: string, amount: number}>} = {
-    collaterals: new Map(),
-    debts: new Map(),
-  };
-
-  for (const coinType of Object.keys(collaterals)) {
-    const metadata = ctmValues.find((value) => value.coinType === normalizeStructTag(coinType));
-    result.collaterals.set(coinType, {
-      name: metadata?.metadata?.symbol.toLowerCase() ?? '',
-      amount: formatDecimal(collaterals[coinType], metadata?.metadata?.decimals ?? 0)
-    })
-  }
-  for (const coinType of Object.keys(debts)) {
-    const metadata = ctmValues.find((value) => value.coinType === normalizeStructTag(coinType));
-    result.debts.set(coinType, {
-      name: metadata?.metadata?.symbol.toLowerCase() ?? '',
-      amount: formatDecimal(debts[coinType], metadata?.metadata?.decimals ?? 0)
-    })
-  }
-
   const tokenAddresses = ctmValues.map((value) => formatMoveTokenAddress(value.coinType))
-  const tokenPriceResult = await await runInBatch([...tokenAddresses].map(
+  const tokenPriceResult = await runInBatch([...tokenAddresses].map(
     (address) => () => cache.getTokenPrice(address, NetworkId.sui)
   ))
   const tokenPrices: Map<string, TokenPrice> = new Map();
@@ -155,61 +113,60 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     tokenPrices.set(r.value.address, r.value);
   })
 
-  result.collaterals.forEach((value, key) => {
-    const address = formatMoveTokenAddress(`0x${key}`);
-    suppliedAssets.push(tokenPriceToAssetToken(
-      address,
-      value.amount,
-      NetworkId.sui,
-      tokenPrices.get(address)
-    ));
-  })
+  for (const coinType of Object.keys(collaterals)) {
+    const metadata = ctmValues.find((value) => value.coinType === normalizeStructTag(coinType));
+    const address = formatMoveTokenAddress(`0x${coinType}`);
+    suppliedAssets.push(
+      tokenPriceToAssetToken(
+        address,
+        formatDecimal(collaterals[coinType], metadata?.metadata?.decimals ?? 0),
+        NetworkId.sui,
+        tokenPrices.get(address)
+      )
+    );
+  }
 
-  result.debts.forEach((value, key) => {
-    const address = formatMoveTokenAddress(`0x${key}`);
+  for (const coinType of Object.keys(debts)) {
+    const metadata = ctmValues.find((value) => value.coinType === normalizeStructTag(coinType));
+    const coinName = metadata?.metadata?.symbol.toLowerCase() ?? '';
+    const market = marketData[coinName];
+    if (!market) continue;
+    const address = formatMoveTokenAddress(`0x${coinType}`);
     borrowedAssets.push(tokenPriceToAssetToken(
       address,
-      value.amount,
+      formatDecimal(debts[coinType], metadata?.metadata?.decimals ?? 0),
       NetworkId.sui,
       tokenPrices.get(address)
     ));
-    const borrowIndex = borrowIndexes[value.name]?.['value'].fields as BorrowIndexData;
-    const borrowRate = Number(borrowIndex.interest_rate.fields.value) / 2 ** 32;
-    const borrowRateScale = Number(borrowIndex.interest_rate_scale);
-    const borrowYearFactor = 24 * 365 * 3600;
-
-    const calculatedBorrowRate = (borrowRate * borrowYearFactor) / borrowRateScale
-
     borrowedYields.push([
       {
-        apr: calculatedBorrowRate,
-        apy: aprToApy(calculatedBorrowRate)
+        apr: market.borrowInterestRate,
+        apy: aprToApy(market.borrowInterestRate)
       }
-    ])
-  })
+    ]);
+  }
 
-  const { borrowedValue, collateralRatio, suppliedValue, value } =
-    getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
+  const { borrowedValue, collateralRatio, suppliedValue, value } = getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
 
-    elements.push({
-      type: PortfolioElementType.borrowlend,
-      networkId: NetworkId.sui,
-      platformId,
-      label: 'Lending',
-      name: 'Obligations',
+  elements.push({
+    type: PortfolioElementType.borrowlend,
+    networkId: NetworkId.sui,
+    platformId,
+    label: 'Lending',
+    name: 'Scallop Obligations',
+    value,
+    data: {
+      borrowedAssets,
+      borrowedValue,
+      borrowedYields,
+      suppliedAssets,
+      suppliedValue,
+      suppliedYields,
+      collateralRatio,
+      rewardAssets,
       value,
-      data: {
-        borrowedAssets,
-        borrowedValue,
-        borrowedYields,
-        suppliedAssets,
-        suppliedValue,
-        suppliedYields,
-        collateralRatio,
-        rewardAssets,
-        value,
-      }
-    })
+    }
+  });
   return elements;
 };
 
