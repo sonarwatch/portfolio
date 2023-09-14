@@ -14,6 +14,7 @@ import {
 import { AddressInfo, Core } from "./types";
 import type { BalanceSheet, BalanceSheetData, BorrowIndexData, BorrowIndexes, InterestModel, InterestModelData, MarketData, MarketJobResult } from "./types";
 import { getCoinTypeMetadataHelper } from "./helpers";
+import runInBatch from "../../utils/misc/runInBatch";
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
@@ -42,7 +43,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   const balanceSheets: BalanceSheet = {};
   const balanceSheetParentId = marketData.vault.fields.balance_sheets.fields
     .table.fields.id.id;
-  for (const coinName of Object.keys(pools)) {
+  const balanceSheetPromises = Object.keys(pools).map((coinName) => async () => {
     balanceSheets[coinName] = getObjectFields(await client.getDynamicFieldObject({
       parentId: balanceSheetParentId,
       name: {
@@ -52,12 +53,14 @@ const executor: JobExecutor = async (cache: Cache) => {
         }
       }
     }));
-  }
+  });
+
+  await runInBatch(balanceSheetPromises, 5);
 
   // get borrow indexes
   const borrowIndexes: BorrowIndexes = {};
   const borrowIndexesParentId = marketData.borrow_dynamics.fields.table.fields.id.id;
-  for (const coinName of Object.keys(pools)) {
+  const borrowIndexesPromises = Object.keys(pools).map((coinName) => async () => {
     borrowIndexes[coinName] = getObjectFields(await client.getDynamicFieldObject({
       parentId: borrowIndexesParentId,
       name: {
@@ -67,7 +70,9 @@ const executor: JobExecutor = async (cache: Cache) => {
         }
       }
     }));
-  }
+  });
+
+  await runInBatch(borrowIndexesPromises, 5);
 
   // get interest models
   const interestModels: InterestModel = {};
@@ -81,13 +86,13 @@ const executor: JobExecutor = async (cache: Cache) => {
           name: pools[coinName].coinType.substring(2)
         }
       }
-    }))
+    }));
   }
 
   const market: MarketJobResult = {};
   const borrowYearFactor = 24 * 365 * 3600;
   for (const asset of Object.keys(pools)) {
-    const interestModelData = interestModels[asset]
+    const interestModelData = interestModels[asset];
     const borrowIndexData = borrowIndexes[asset];
     const balanceSheetData = balanceSheets[asset];
     if (!interestModelData || !borrowIndexData || !balanceSheetData) continue;
@@ -107,7 +112,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     const reserveFactor = Number(cInterestModel.revenue_factor.fields.value) / 2 ** 32;
     const marketCoinSupply = Number(cBalanceSheet.market_coin_supply);
     // calculated  data
-    const calculatedBorrowRate = (borrowRate * borrowYearFactor) / borrowRateScale
+    const calculatedBorrowRate = (borrowRate * borrowYearFactor) / borrowRateScale;
     const timeDelta = Math.floor(new Date().getTime() / 1000) - lastUpdated;
     const borrowIndexDelta = BigNumber(borrowIndex)
       .multipliedBy(BigNumber(timeDelta).multipliedBy(borrowRate))
@@ -122,7 +127,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     const currentTotalReserve = BigNumber(reserve).plus(
       increasedDebt.multipliedBy(reserveFactor)
     );
-    const calculatedMaxBorrowRate = (maxBorrowRate * borrowYearFactor) / borrowRateScale
+    const calculatedMaxBorrowRate = (maxBorrowRate * borrowYearFactor) / borrowRateScale;
     const currentTotalSupply = BigNumber(currentTotalDebt).plus(
       Math.max(cash - currentTotalReserve.toNumber(), 0)
     );
@@ -150,7 +155,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       cash,
       marketCoinSupply,
       reserve,
-    }
+    };
   }
 
   await cache.setItem(

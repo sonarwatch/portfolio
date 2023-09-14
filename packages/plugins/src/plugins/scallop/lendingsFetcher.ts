@@ -7,9 +7,8 @@ import { getCoinTypeMetadata, getOwnerObject } from './helpers';
 import { getLending } from './getLending';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { MarketJobResult } from './types';
-import runInBatch from '../../utils/misc/runInBatch';
 
-const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
+const executor: FetcherExecutor = async (ownerAddress: string, cache: Cache) => {
   const elements: PortfolioElement[] = [];
   const borrowedAssets: PortfolioAsset[] = [];
   const borrowedYields: Yield[][] = [];
@@ -17,11 +16,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const suppliedYields: Yield[][] = [];
   const rewardAssets: PortfolioAsset[] = [];
 
-  const coinTypeMetadata = await getCoinTypeMetadata(cache);
-  const coinName = Object.keys(coinTypeMetadata);
+  const coinTypeMetadatas = await getCoinTypeMetadata(cache);
+  const coinNames = Object.keys(coinTypeMetadatas);
   const filterOwnerObject: SuiObjectDataFilter = {
     MatchAny: [
-      ...Object.values(coinTypeMetadata).map((value) => ({
+      ...Object.values(coinTypeMetadatas).map((value) => ({
         StructType: `0x2::coin::Coin<${marketCoinPackageId}<${value.coinType}>>`
       })),
       {
@@ -31,7 +30,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   }
 
   const [allOwnedObjects, marketData] = await Promise.all([
-    getOwnerObject(owner, { filter: filterOwnerObject }),
+    getOwnerObject(ownerAddress, { filter: filterOwnerObject }),
     cache.getItem<MarketJobResult>(marketKey, {
       prefix,
       networkId: NetworkId.sui
@@ -41,30 +40,30 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const lendingRate: { [key: string]: number } = {};
 
-  coinName.forEach((name: string) => {
-    const market = marketData[name];
+  coinNames.forEach((coinName: string) => {
+    const market = marketData[coinName];
     if(!market) return;
-    lendingRate[name] =
+    lendingRate[coinName] =
         (Number(market.debt) +
           Number(market.cash) -
           Number(market.reserve)) /
         Number(market.marketCoinSupply);
   });
   
-  const lending = getLending(allOwnedObjects, lendingRate, coinTypeMetadata);
-  const tokenAddresses = Object.values(lending).map((value) => formatMoveTokenAddress(value.coinType))
-  const tokenPriceResult = await await runInBatch([...tokenAddresses].map(
-    (address) => () => cache.getTokenPrice(address, NetworkId.sui)
-  ))
+  const lending = getLending(allOwnedObjects, lendingRate, coinTypeMetadatas);
+
+  const tokenAddresses = Object.values(lending).map((value) => value.coinType);
+  const tokenPriceResult = await cache.getTokenPrices(tokenAddresses, NetworkId.sui);
   const tokenPrices: Map<string, TokenPrice> = new Map();
+  
   tokenPriceResult.forEach((r) => {
-    if (r.status === 'rejected') return;
-    if (!r.value) return;
-    tokenPrices.set(r.value.address, r.value);
+    if(!r) return;
+    tokenPrices.set(r.address, r);
   })
-  for (const asset of Object.keys(lending)) {
-    const lendingAsset = lending[asset];
-    const market = marketData[asset];
+
+  for (const assetName of Object.keys(lending)) {
+    const lendingAsset = lending[assetName];
+    const market = marketData[assetName];
     if(!market) continue;
     const addressMove = formatMoveTokenAddress(lendingAsset.coinType);
     const tokenPrice = tokenPrices.get(addressMove);
