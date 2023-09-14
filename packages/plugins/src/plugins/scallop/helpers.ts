@@ -1,9 +1,10 @@
 import { NetworkId } from "@sonarwatch/portfolio-core";
-import { CoinMetadata, PaginatedObjectsResponse, SuiObjectData, SuiObjectResponseQuery, normalizeStructTag } from "@mysten/sui.js";
+import { CoinMetadata, PaginatedObjectsResponse, SuiObjectData, SuiObjectResponseQuery, getObjectFields, getObjectType, normalizeStructTag } from "@mysten/sui.js";
 import { Cache } from "../../Cache";
 import { addressKey, addressPrefix } from "./constants";
 import { AddressInfo, Coin, CoinTypeMetadata } from "./types";
 import { getClientSui } from "../../utils/clients";
+import runInBatch from "../../utils/misc/runInBatch";
 
 const SUI_ID = '0x0000000000000000000000000000000000000000000000000000000000000002';
 const client = getClientSui();
@@ -25,11 +26,11 @@ export async function getCoinTypeMetadataHelper(addressInfo: AddressInfo): Promi
   const coins = new Map<string, Coin>(Object.entries(addressInfo.mainnet.core.coins));
   const coinNames: string[] = Array.from(coins.keys());
 
-  for (const coinName of coinNames) {
+  const coinTypeMetadata = coinNames.map((coinName) => async () => {
     const detail = coins.get(coinName);
-    if(!detail) continue;
+    if(!detail) return;
 
-    if (detail.id === SUI_ID) {
+    if(detail.id === SUI_ID) {
       const coinType = `${SUI_ID}::sui::SUI`;
       coinTypes[coinName] = {
         coinType,
@@ -43,16 +44,17 @@ export async function getCoinTypeMetadataHelper(addressInfo: AddressInfo): Promi
           showContent: true,
         }
       });
-      if (object.data && object.data.content && 'fields' in object.data.content) {
-        const structTag = object.data.content.type;
-        const coinType = getCoinType(structTag);
-        coinTypes[coinName] = {
-          coinType,
-          metadata: object.data.content.fields as CoinMetadata
-        };
-      }
+      const objType = getObjectType(object)
+      const objFields = getObjectFields(object);
+      if(!objType || !objFields) return;
+      coinTypes[coinName] = {
+        coinType: getCoinType(objType),
+        metadata: objFields as CoinMetadata
+      };
     }
-  }
+
+  })
+  await runInBatch(coinTypeMetadata, 5);
   return coinTypes;
 }
 
