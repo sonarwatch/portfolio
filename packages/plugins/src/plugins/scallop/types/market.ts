@@ -17,52 +17,52 @@ export type InterestModel = {
 
 export type InterestModelData = {
   base_borrow_rate_per_sec: {
-    fields : {
+    fields: {
       value: string;
-    }
+    };
   };
   borrow_rate_on_high_kink: {
-    fields : {
+    fields: {
       value: string;
-    }
+    };
   };
   borrow_rate_on_mid_kink: {
-    fields : {
+    fields: {
       value: string;
-    }
+    };
   };
   borrow_weight: {
-    fields : {
+    fields: {
       value: string;
-    }
+    };
   };
   high_kink: {
     fields: {
       value: string;
-    }
+    };
   };
   interest_rate_scale: string;
   max_borrow_rate: {
     fields: {
       value: string;
-    }
+    };
   };
   mid_kink: {
     fields: {
       value: string;
-    }
+    };
   };
   min_borrow_amount: string;
   revenue_factor: {
-    fields : {
-      value: string
-    }
+    fields: {
+      value: string;
+    };
   };
   type: {
     fields: {
       name: string;
-    }
-  }
+    };
+  };
 };
 
 export type BorrowIndexData = {
@@ -70,7 +70,7 @@ export type BorrowIndexData = {
   interest_rate: {
     fields: {
       value: string;
-    }
+    };
   };
   interest_rate_scale: string;
   last_updated: string;
@@ -160,8 +160,34 @@ export type MarketJobData = {
   cash: number;
   marketCoinSupply: number;
   reserve: number;
-}
+};
 
 export type MarketJobResult = {
   [T in string]: MarketJobData
+};
+
+export type ObligationKeyFields = {
+  id: IdField;
+  ownership: BasicField & { fields: { id: IdField, of: string; }; };
+};
+
+type BalanceBag = BasicField & {
+  fields: {
+    id: IdField;
+    bag: BasicField & { fields: { id: IdField; size: string; }; };
+  };
+};
+
+export type ObligationAccount = {
+  balances: BalanceBag,
+  borrow_locked: boolean;
+  collaterals: WitTable;
+  debts: WitTable;
+  deposit_collateral_locked: boolean;
+  id: IdField;
+  liquidate_locked: boolean;
+  lock_key: string | null;
+  repay_locked: boolean;
+  rewards_point: string;
+  withdraw_collateral_locked: boolean;
 };
