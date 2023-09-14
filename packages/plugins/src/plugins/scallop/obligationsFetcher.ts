@@ -10,7 +10,7 @@ import { getClientSui } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import runInBatch from "../../utils/misc/runInBatch";
 
-const executor: FetcherExecutor = async (ownerAddress: string, cache: Cache) => {
+const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
   const elements: PortfolioElement[] = [];
   const borrowedAssets: PortfolioAsset[] = [];
@@ -30,7 +30,7 @@ const executor: FetcherExecutor = async (ownerAddress: string, cache: Cache) => 
   };
 
   const [ownedObligationKeys, marketData] = await Promise.all([
-    getOwnerObject(ownerAddress, { filter: filterOwnerObject }),
+    getOwnerObject(owner, { filter: filterOwnerObject }),
     cache.getItem<MarketJobResult>(marketKey, {
       prefix,
       networkId: NetworkId.sui
