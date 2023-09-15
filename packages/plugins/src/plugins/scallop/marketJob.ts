@@ -104,7 +104,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     const borrowRate = Number(cBorrowIndex.interest_rate.fields.value) / 2 ** 32;
     const borrowRateScale = Number(cBorrowIndex.interest_rate_scale);
     const borrowIndex = Number(cBorrowIndex.borrow_index);
-    const maxBorrowRate = Number(cInterestModel.max_borrow_rate);
+    const maxBorrowRate = Number(cInterestModel.max_borrow_rate.fields.value) / 2 ** 32;
     const lastUpdated = Number(cBorrowIndex.last_updated);
     const cash = Number(cBalanceSheet.cash);
     const debt = Number(cBalanceSheet.debt);
