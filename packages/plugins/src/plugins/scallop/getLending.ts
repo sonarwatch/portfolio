@@ -18,7 +18,7 @@ export function getLending(ownedMarketCoins: SuiObjectData[], lendingRate: { [T 
         if (parsed.name === 'Coin') {
             const balance = new BigNumber(fields?.['balance'] ?? 0);
             if(!userMarketCoins[coinName]) {
-                userMarketCoins[coinName] = {coinType, amount: new BigNumber(0)};
+                userMarketCoins[coinName] = {coinType: normalizeStructTag(coinType), amount: new BigNumber(0)};
             }
             userMarketCoins[coinName] = {...userMarketCoins[coinName], amount: userMarketCoins[coinName].amount.plus(balance)}
         }
