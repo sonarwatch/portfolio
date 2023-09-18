@@ -3,7 +3,7 @@ import { Platform } from '@sonarwatch/portfolio-core';
 export const platformId = 'navi';
 export const naviPlatform: Platform = {
   id: platformId,
-  name: 'Navi',
+  name: 'NAVI',
   image: `https://alpha.sonar.watch/img/platforms/${platformId}.png`,
 };
 
