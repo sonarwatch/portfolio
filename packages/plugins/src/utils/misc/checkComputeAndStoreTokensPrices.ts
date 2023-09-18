@@ -66,6 +66,7 @@ export const tokensToRelyOnByNetwork: Map<NetworkIdType, string[]> = new Map([
       networks.sui.native.address,
       '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN', // USDCet
       '0x6864a6f921804860930db6ddbe2e16acdf8504495ea7481637a1c8b9a8fe54b::cetus::CETUS', // CETUS
+      '0x2::sui::SUI',
     ],
   ],
 ]);

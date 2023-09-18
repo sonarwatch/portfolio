@@ -5,11 +5,13 @@ import {
   normalizeSuiObjectId,
 } from '@mysten/sui.js';
 import { NetworkId } from '@sonarwatch/portfolio-core';
+import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSui } from '../../utils/clients';
 import { clmmPoolsPrefix, clmmPoolsHandle, platformId } from './constants';
 import { getPoolFromObject } from './helpers';
+import storeTokenPricesFromSqrt from '../../utils/clmm/tokenPricesFromSqrt';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
@@ -17,6 +19,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   const accounts: DynamicFieldPage = await client.getDynamicFields({
     parentId: clmmPoolsHandle,
   });
+
   const warpIds = accounts.data.map((item) => item.objectId);
   const objects = await client.multiGetObjects({
     ids: warpIds,
@@ -39,6 +42,17 @@ const executor: JobExecutor = async (cache: Cache) => {
 
     const pool = getPoolFromObject(poolObject);
     if (!pool) continue;
+
+    await storeTokenPricesFromSqrt(
+      cache,
+      NetworkId.sui,
+      pool.poolAddress,
+      new BigNumber(pool.coinAmountA),
+      new BigNumber(pool.coinAmountB),
+      new BigNumber(pool.current_sqrt_price),
+      pool.coinTypeA,
+      pool.coinTypeB
+    );
 
     await cache.setItem(poolId, pool, {
       prefix: clmmPoolsPrefix,

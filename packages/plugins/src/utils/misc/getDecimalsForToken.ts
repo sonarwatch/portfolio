@@ -5,7 +5,12 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { getCosmWasmClient } from '@sei-js/core';
-import { getClientAptos, getClientSei, getClientSolana } from '../clients';
+import {
+  getClientAptos,
+  getClientSei,
+  getClientSolana,
+  getClientSui,
+} from '../clients';
 import { coinDecimals } from '../aptos';
 import { getUrlEndpoint } from '../clients/constants';
 import { TokenInfo, tokenInfoQueryMsg } from '../sei';
@@ -81,6 +86,12 @@ export async function getDecimalsForToken(
         )) as TokenInfo;
         return tokenInfo.decimals || undefined;
       }
+      return undefined;
+    }
+    case 'sui': {
+      const client = getClientSui();
+      const coinMetadata = await client.getCoinMetadata({ coinType: address });
+      if (coinMetadata) return coinMetadata.decimals;
       return undefined;
     }
     default:
