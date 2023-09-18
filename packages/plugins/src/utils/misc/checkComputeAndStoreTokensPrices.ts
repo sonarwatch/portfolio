@@ -83,6 +83,16 @@ export default async function checkComputeAndStoreTokensPrices(
     }
   | undefined
 > {
+  const tokensToRelyOn = tokensToRelyOnByNetwork.get(networkId);
+
+  if (!tokensToRelyOn) return undefined;
+
+  if (
+    !tokensToRelyOn.includes(tokenX.mint) &&
+    !tokensToRelyOn.includes(tokenY.mint)
+  )
+    return undefined;
+
   const tokenPrices = await cache.getTokenPrices(
     [tokenX.mint, tokenY.mint],
     networkId
@@ -110,16 +120,6 @@ export default async function checkComputeAndStoreTokensPrices(
     };
     return { partialTokenUnderlyingX, partialTokenUnderlyingY };
   }
-
-  const tokensToRelyOn = tokensToRelyOnByNetwork.get(networkId);
-
-  if (!tokensToRelyOn) return undefined;
-
-  if (
-    !tokensToRelyOn.includes(tokenX.mint) &&
-    !tokensToRelyOn.includes(tokenY.mint)
-  )
-    return undefined;
 
   if (!tokenPriceX || !tokenPriceY) {
     let decimalsTokenX;

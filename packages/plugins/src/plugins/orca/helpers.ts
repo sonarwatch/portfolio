@@ -330,3 +330,13 @@ export function getOrcaTokenAmountsFromLiquidity(
     tokenAmountB: new BigNumber(tokenB.floor().toString()),
   };
 }
+
+export function sqrtPriceX64ToPrice(
+  sqrtPriceX64: BigNumber,
+  decimalsA: number,
+  decimalsB: number
+): Decimal {
+  return fromX64Decimal(new Decimal(sqrtPriceX64.toString()))
+    .pow(2)
+    .mul(Decimal.pow(10, decimalsA - decimalsB));
+}
