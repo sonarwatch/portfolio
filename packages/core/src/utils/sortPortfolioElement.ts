@@ -1,5 +1,4 @@
 import { compareUsdValue } from './compareUsdValue';
-import { compareName } from './compareName';
 import {
   PortfolioElement,
   PortfolioElementBorrowLend,
@@ -7,6 +6,7 @@ import {
   PortfolioElementMultiple,
   PortfolioElementType,
 } from '../Portfolio';
+import { sortAssets } from './sortAssets';
 
 export function sortPortfolioElement(
   element: PortfolioElement
@@ -29,14 +29,7 @@ export function sortElementMultiple(
   element: PortfolioElementMultiple
 ): PortfolioElementMultiple {
   const sortedElement = element;
-  sortedElement.data.assets.sort((a, b) => {
-    let result = compareUsdValue(a.value, b.value);
-    if (result === 0) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      result = compareName((a as any).name, (b as any).name);
-    }
-    return result;
-  });
+  sortedElement.data.assets = sortAssets(sortedElement.data.assets);
   return sortedElement;
 }
 
