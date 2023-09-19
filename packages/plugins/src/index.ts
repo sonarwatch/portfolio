@@ -121,6 +121,7 @@ import {
 import {
   fetchers as scallopFetchers,
   jobs as scallopJobs,
+  platforms as scallopPlatforms
 } from './plugins/scallop';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
@@ -161,6 +162,7 @@ export const platforms: Platform[] = [
   ...morphoPlatforms,
   ...mangoPlatforms,
   ...kaminoPlatforms,
+  ...scallopPlatforms
 ];
 
 // JOBS //
