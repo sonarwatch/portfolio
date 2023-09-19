@@ -7,6 +7,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { getNamesEvm } from './evm';
 import { getNamesSolana } from './solana';
+import { getNamesAptos } from './aptos';
 
 export async function getNames(
   address: string,
@@ -25,6 +26,8 @@ export async function getNames(
           networkId: NetworkId.solana,
         }))
       );
+    case AddressSystem.move:
+      return [...(await getNamesAptos(fAddress))];
     default:
       return [];
   }

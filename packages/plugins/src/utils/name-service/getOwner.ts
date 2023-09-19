@@ -7,6 +7,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { getOwnerSolana } from './solana';
 import { getOwnerEthereum } from './ethereum';
+import { getOwnerAptos } from './aptos';
 
 export async function getOwner(name: string): Promise<NSOwner> {
   const networkId = getNetworkIdFromNameOrFail(name);
@@ -22,6 +23,9 @@ export async function getOwner(name: string): Promise<NSOwner> {
       break;
     case NetworkId.ethereum:
       address = await getOwnerEthereum(name);
+      break;
+    case NetworkId.aptos:
+      address = await getOwnerAptos(name);
       break;
     default:
       break;
