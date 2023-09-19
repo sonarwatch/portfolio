@@ -21,6 +21,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const coinTypeMetadata = await getCoinTypeMetadata(cache);
   const ctmValues = Object.values(coinTypeMetadata);
+  if(ctmValues.length === 0) return [];
   const filterOwnerObject: SuiObjectDataFilter = {
     MatchAny: [
       {

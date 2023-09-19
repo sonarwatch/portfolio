@@ -1,12 +1,12 @@
 import { NetworkId, PortfolioAsset, PortfolioElement, PortfolioElementType, TokenPrice, Yield, aprToApy, formatMoveTokenAddress, getElementLendingValues } from '@sonarwatch/portfolio-core';
-import { SuiObjectDataFilter } from '@mysten/sui.js';
+import { SuiObjectDataFilter, getObjectFields, getObjectType, normalizeStructTag, parseStructTag } from '@mysten/sui.js';
+import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { marketCoinPackageId, marketKey, platformId, spoolAccountPackageId, marketPrefix as prefix } from './constants';
 import { getCoinTypeMetadata, getOwnerObject } from './helpers';
-import { getLending } from './getLending';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { MarketJobResult } from './types';
+import { MarketJobResult, UserLending } from './types';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elements: PortfolioElement[] = [];
@@ -18,6 +18,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const coinTypeMetadatas = await getCoinTypeMetadata(cache);
   const coinNames = Object.keys(coinTypeMetadatas);
+  if(coinNames.length === 0) return [];
   const filterOwnerObject: SuiObjectDataFilter = {
     MatchAny: [
       ...Object.values(coinTypeMetadatas).map((value) => ({
@@ -42,29 +43,45 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   coinNames.forEach((coinName: string) => {
     const market = marketData[coinName];
-    if(!market) return;
+    if (!market) return;
     lendingRate[coinName] =
-        (Number(market.debt) +
-          Number(market.cash) -
-          Number(market.reserve)) /
-        Number(market.marketCoinSupply);
+      (Number(market.debt) +
+        Number(market.cash) -
+        Number(market.reserve)) /
+      Number(market.marketCoinSupply);
   });
-  
-  const lending = getLending(allOwnedObjects, lendingRate, coinTypeMetadatas);
 
-  const tokenAddresses = Object.values(lending).map((value) => value.coinType);
+  // get user lending assets
+  const lendingAssets: { [key: string]: UserLending } = {};
+  const getValue = Object.values(coinTypeMetadatas);
+  for (const ownedMarketCoin of allOwnedObjects) {
+    const objType = getObjectType(ownedMarketCoin);
+    if (!objType) continue;
+    const parsed = parseStructTag(objType);
+    const coinType = objType.substring(objType.indexOf('MarketCoin<') + 11, objType.indexOf('>'));
+    const fields = getObjectFields(ownedMarketCoin);
+    const coinName = getValue.find((value) => value.coinType === normalizeStructTag(coinType))?.metadata?.symbol.toLowerCase();
+    if (!coinName || !fields) continue;
+    if (!lendingAssets[coinName]) {
+      lendingAssets[coinName] = { coinType: normalizeStructTag(coinType), amount: new BigNumber(0) };
+    }
+    const balance = BigNumber((parsed.name === 'Coin' ? fields['balance'] : fields['stakes']) ?? 0);
+    lendingAssets[coinName] = { ...lendingAssets[coinName], amount: lendingAssets[coinName].amount.plus(balance) }
+  }
+
+  const tokenAddresses = Object.values(lendingAssets).map((value) => value.coinType);
   const tokenPriceResult = await cache.getTokenPrices(tokenAddresses, NetworkId.sui);
   const tokenPrices: Map<string, TokenPrice> = new Map();
-  
+
   tokenPriceResult.forEach((r) => {
-    if(!r) return;
+    if (!r) return;
     tokenPrices.set(r.address, r);
   })
 
-  for (const assetName of Object.keys(lending)) {
-    const lendingAsset = lending[assetName];
+  for (const assetName of Object.keys(lendingAssets)) {
+    const lendingAsset = lendingAssets[assetName];
     const market = marketData[assetName];
-    if(!market) continue;
+    if (!market) continue;
     const addressMove = formatMoveTokenAddress(lendingAsset.coinType);
     const tokenPrice = tokenPrices.get(addressMove);
     suppliedYields.push([
@@ -73,9 +90,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         apr: market.supplyInterestRate
       }
     ]);
+    const lendingAmount = lendingAsset.amount
+      .multipliedBy(lendingRate[assetName])
+      .dividedBy(10 ** (coinTypeMetadatas[assetName]?.metadata?.decimals ?? 0))
+      .toNumber();
     const assetToken = tokenPriceToAssetToken(
       addressMove,
-      lendingAsset.amount,
+      lendingAmount,
       NetworkId.sui,
       tokenPrice
     )
