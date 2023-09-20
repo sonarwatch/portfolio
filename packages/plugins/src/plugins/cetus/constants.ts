@@ -13,5 +13,4 @@ export const clmmPoolPackageId =
 
 export const clmmType = `${clmmPoolPackageId}::position::Position`;
 
-export const clmmPoolsHandle =
-  '0x37f60eb2d9d227949b95da8fea810db3c32d1e1fa8ed87434fc51664f87d83cb';
+export const createPoolEvent = `${clmmPoolPackageId}::factory::CreatePoolEvent`;

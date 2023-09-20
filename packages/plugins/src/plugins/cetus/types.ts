@@ -98,3 +98,10 @@ export type PositionReward = {
   reward_growth_inside_1: string;
   reward_growth_inside_2: string;
 };
+
+export type ParsedJsonEvent = {
+  coin_type_a: string;
+  coin_type_b: string;
+  pool_id: string;
+  tick_spacing: number;
+};
