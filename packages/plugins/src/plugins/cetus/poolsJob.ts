@@ -7,23 +7,15 @@ import { clmmPoolsPrefix, createPoolEvent, platformId } from './constants';
 import { getPoolFromObject } from './helpers';
 import storeTokenPricesFromSqrt from '../../utils/clmm/tokenPricesFromSqrt';
 import { ParsedJsonEvent } from './types';
+import getMultipleSuiObjectsSafe from '../../utils/sui/getMultipleObjectsSafe';
+import queryEventsSafe from '../../utils/sui/queryEventSafe';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
 
-  const eventsData = [];
-  let resp;
-  let cursor;
-  do {
-    resp = await client.queryEvents({
-      query: {
-        MoveEventType: createPoolEvent,
-      },
-      cursor,
-    });
-    cursor = resp.nextCursor;
-    if (resp.data.length > 0) eventsData.push(...resp.data);
-  } while (resp.hasNextPage);
+  const eventsData = await queryEventsSafe(client, {
+    MoveEventType: createPoolEvent,
+  });
 
   const poolsAddresses = eventsData
     .map((eventData) =>
@@ -33,15 +25,10 @@ const executor: JobExecutor = async (cache: Cache) => {
     )
     .flat();
 
-  const poolsObjects = [];
-  for (let i = 0; i < poolsAddresses.length / 50; i++) {
-    const addresses = poolsAddresses.slice(i * 50, i * 50 + 50);
-    const tempObjects = await client.multiGetObjects({
-      ids: addresses,
-      options: { showContent: true, showType: true },
-    });
-    poolsObjects.push(...tempObjects);
-  }
+  const poolsObjects = await getMultipleSuiObjectsSafe(client, poolsAddresses, {
+    showContent: true,
+    showType: true,
+  });
 
   for (const poolObject of poolsObjects) {
     const poolId = poolObject.data?.objectId;
