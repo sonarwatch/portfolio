@@ -5,14 +5,21 @@ import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSui } from '../../utils/clients';
 import {
-  platformId,
   marketKey,
   addressPrefix,
   marketPrefix as prefix,
   addressKey
 } from './constants';
 import { AddressInfo, Core } from "./types";
-import type { BalanceSheet, BalanceSheetData, BorrowIndexData, BorrowIndexes, InterestModel, InterestModelData, MarketData, MarketJobResult } from "./types";
+import type {
+  BalanceSheet,
+  BalanceSheetData,
+  BorrowIndexData,
+  BorrowIndexes, InterestModel,
+  InterestModelData,
+  MarketData,
+  MarketJobResult
+} from "./types";
 import { getCoinTypeMetadataHelper } from "./helpers";
 import runInBatch from "../../utils/misc/runInBatch";
 
@@ -169,7 +176,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 };
 
 const job: Job = {
-  id: `${platformId}-market`,
+  id: prefix,
   executor,
 };
 

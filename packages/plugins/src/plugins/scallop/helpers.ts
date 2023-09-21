@@ -1,12 +1,20 @@
 import { NetworkId } from "@sonarwatch/portfolio-core";
-import { CoinMetadata, PaginatedObjectsResponse, SuiObjectData, SuiObjectResponseQuery, getObjectFields, getObjectType, normalizeStructTag } from "@mysten/sui.js";
+import { CoinMetadata,
+  PaginatedObjectsResponse,
+  SUI_TYPE_ARG,
+  SuiObjectData,
+  SuiObjectResponseQuery,
+  getObjectFields,
+  getObjectType,
+  normalizeStructTag
+} from "@mysten/sui.js";
 import { Cache } from "../../Cache";
 import { addressKey, addressPrefix } from "./constants";
 import { AddressInfo, Coin, CoinTypeMetadata } from "./types";
 import { getClientSui } from "../../utils/clients";
 import runInBatch from "../../utils/misc/runInBatch";
 
-const SUI_ID = '0x0000000000000000000000000000000000000000000000000000000000000002';
+const SUI_TYPE = normalizeStructTag(SUI_TYPE_ARG);
 const client = getClientSui();
 
 export async function getCoinTypeMetadata(cache: Cache): Promise<{ [k: string]: CoinTypeMetadata }> {
@@ -30,11 +38,10 @@ export async function getCoinTypeMetadataHelper(addressInfo: AddressInfo): Promi
     const detail = coins.get(coinName);
     if(!detail) return;
 
-    if(detail.id === SUI_ID) {
-      const coinType = `${SUI_ID}::sui::SUI`;
+    if(SUI_TYPE.includes(detail.id)) {
       coinTypes[coinName] = {
-        coinType,
-        metadata: await client.getCoinMetadata({ coinType })
+        coinType: SUI_TYPE,
+        metadata: await client.getCoinMetadata({ coinType: SUI_TYPE })
       };
     } else {
       const object = await client.getObject({
