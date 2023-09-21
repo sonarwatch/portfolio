@@ -1,11 +1,28 @@
-import { NetworkId, PortfolioAsset, PortfolioElement, PortfolioElementType, TokenPrice, Yield, aprToApy, formatMoveTokenAddress, getElementLendingValues } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  PortfolioAsset,
+  PortfolioElement,
+  PortfolioElementType,
+  TokenPrice,
+  Yield,
+  aprToApy,
+  formatMoveTokenAddress,
+  getElementLendingValues
+} from '@sonarwatch/portfolio-core';
 import { SuiObjectDataFilter, getObjectFields, normalizeStructTag } from '@mysten/sui.js';
 import Decimal from 'decimal.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { marketKey, obligationKeyPackageId, platformId, marketPrefix as prefix } from './constants';
-import { MarketJobResult, ObligationAccount, ObligationKeyFields } from './types';
-import { formatDecimal, getCoinTypeMetadata, getOwnerObject } from './helpers';
+import {
+  marketKey,
+  obligationKeyPackageId,
+  platformId,
+  poolsKey,
+  poolsPrefix,
+  marketPrefix as prefix
+} from './constants';
+import { MarketJobResult, ObligationAccount, ObligationKeyFields, Pools } from './types';
+import { formatDecimal, getOwnerObject } from './helpers';
 import { getClientSui } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import runInBatch from "../../utils/misc/runInBatch";
@@ -19,9 +36,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const suppliedYields: Yield[][] = [];
   const rewardAssets: PortfolioAsset[] = [];
 
-  const coinTypeMetadata = await getCoinTypeMetadata(cache);
+  const coinTypeMetadata = await cache.getItem<Pools>(poolsKey, {
+    prefix: poolsPrefix,
+    networkId: NetworkId.sui
+  });
+  if(!coinTypeMetadata) return [];
+
   const ctmValues = Object.values(coinTypeMetadata);
   if(ctmValues.length === 0) return [];
+  
   const filterOwnerObject: SuiObjectDataFilter = {
     MatchAny: [
       {

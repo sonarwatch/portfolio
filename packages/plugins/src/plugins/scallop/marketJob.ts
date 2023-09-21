@@ -8,7 +8,9 @@ import {
   marketKey,
   addressPrefix,
   marketPrefix as prefix,
-  addressKey
+  addressKey,
+  poolsKey,
+  poolsPrefix
 } from './constants';
 import { AddressInfo, Core } from "./types";
 import type {
@@ -18,9 +20,9 @@ import type {
   BorrowIndexes, InterestModel,
   InterestModelData,
   MarketData,
-  MarketJobResult
+  MarketJobResult,
+  Pools
 } from "./types";
-import { getCoinTypeMetadataHelper } from "./helpers";
 import runInBatch from "../../utils/misc/runInBatch";
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -30,11 +32,15 @@ const executor: JobExecutor = async (cache: Cache) => {
     prefix: addressPrefix,
     networkId: NetworkId.sui,
   });
-
   if (!addressData) return;
 
   // ['cetus', 'apt', ...]
-  const pools = await getCoinTypeMetadataHelper(addressData);
+  const pools = await cache.getItem<Pools>(poolsKey, {
+    prefix: poolsPrefix,
+    networkId: NetworkId.sui
+  });
+  if(!pools) return;
+
   const marketId: string = (addressData.mainnet.core as Core).market;
 
   // get market data

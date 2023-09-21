@@ -3,10 +3,10 @@ import { SuiObjectDataFilter, getObjectFields, getObjectType, normalizeStructTag
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { marketCoinPackageId, marketKey, platformId, spoolAccountPackageId, marketPrefix as prefix } from './constants';
-import { getCoinTypeMetadata, getOwnerObject } from './helpers';
+import { marketCoinPackageId, marketKey, platformId, spoolAccountPackageId, marketPrefix as prefix, poolsKey, poolsPrefix } from './constants';
+import { getOwnerObject } from './helpers';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { MarketJobResult, UserLending } from './types';
+import { MarketJobResult, Pools, UserLending } from './types';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elements: PortfolioElement[] = [];
@@ -16,7 +16,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const suppliedYields: Yield[][] = [];
   const rewardAssets: PortfolioAsset[] = [];
 
-  const coinTypeMetadatas = await getCoinTypeMetadata(cache);
+  const coinTypeMetadatas = await cache.getItem<Pools>(poolsKey, {
+    prefix: poolsPrefix,
+    networkId: NetworkId.sui
+  });
+  if(!coinTypeMetadatas) return [];
+  
   const coinNames = Object.keys(coinTypeMetadatas);
   if(coinNames.length === 0) return [];
   
