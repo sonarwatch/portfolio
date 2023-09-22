@@ -16,18 +16,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const suppliedYields: Yield[][] = [];
   const rewardAssets: PortfolioAsset[] = [];
 
-  const coinTypeMetadatas = await cache.getItem<Pools>(poolsKey, {
+  const pools = await cache.getItem<Pools>(poolsKey, {
     prefix: poolsPrefix,
     networkId: NetworkId.sui
   });
-  if(!coinTypeMetadatas) return [];
+  if(!pools) return [];
   
-  const coinNames = Object.keys(coinTypeMetadatas);
-  if(coinNames.length === 0) return [];
+  const poolValues = Object.values(pools);
+  if(poolValues.length === 0) return [];
   
   const filterOwnerObject: SuiObjectDataFilter = {
     MatchAny: [
-      ...Object.values(coinTypeMetadatas).map((value) => ({
+      ...poolValues.map((value) => ({
         StructType: `0x2::coin::Coin<${marketCoinPackageId}<${value.coinType}>>`
       })),
       {
@@ -45,23 +45,21 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   ])
   if (!marketData || allOwnedObjects.length === 0) return [];
 
-  const lendingRate: { [key: string]: number } = {};
+  const lendingRate: Map<string, number> = new Map();
 
-  coinNames.forEach((coinName: string) => {
+  Object.keys(pools).forEach((coinName: string) => {
     const market = marketData[coinName];
     if (!market) return;
-    lendingRate[coinName] =
-      (
-        Number(market.debt) +
-        Number(market.cash) -
-        Number(market.reserve)) /
-        Number(market.marketCoinSupply
-      );
+    lendingRate.set(coinName, (
+      Number(market.debt) +
+      Number(market.cash) -
+      Number(market.reserve)) /
+      Number(market.marketCoinSupply)
+    );
   });
 
   // get user lending assets
-  const lendingAssets: { [key: string]: UserLending } = {};
-  const getValue = Object.values(coinTypeMetadatas);
+  const lendingAssets: { [key: string]:  UserLending } = {};
   for (const ownedMarketCoin of allOwnedObjects) {
     const objType = getObjectType(ownedMarketCoin);
     if (!objType) continue;
@@ -69,7 +67,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const parsed = parseStructTag(objType);
     const coinType = normalizeStructTag(objType.substring(objType.indexOf('MarketCoin<') + 11, objType.indexOf('>')));
     const fields = getObjectFields(ownedMarketCoin);
-    const coinName = getValue.find((value) => value.coinType === coinType)?.metadata?.symbol.toLowerCase();
+    const coinName = poolValues.find((value) => value.coinType === coinType)?.metadata?.symbol.toLowerCase();
     
     if (!coinName || !fields) continue;
     if (!lendingAssets[coinName]) {
@@ -89,23 +87,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     tokenPrices.set(r.address, r);
   })
 
-  for (const assetName of Object.keys(lendingAssets)) {
-    const lendingAsset = lendingAssets[assetName];
+  for (const [assetName, assetValue] of Object.entries(lendingAssets)) {
     const market = marketData[assetName];
     if (!market) continue;
     
-    const addressMove = formatMoveTokenAddress(lendingAsset.coinType);
-    const tokenPrice = tokenPrices.get(addressMove);
-    suppliedYields.push([
-      {
-        apy: aprToApy(market.supplyInterestRate),
-        apr: market.supplyInterestRate
-      }
-    ]);
-    
-    const lendingAmount = lendingAsset.amount
-      .multipliedBy(lendingRate[assetName])
-      .dividedBy(10 ** (coinTypeMetadatas[assetName]?.metadata?.decimals ?? 0))
+    const addressMove = formatMoveTokenAddress(assetValue.coinType);
+    const tokenPrice = tokenPrices.get(addressMove);    
+    const lendingAmount = assetValue.amount
+      .multipliedBy(lendingRate.get(assetName) ?? 0)
+      .dividedBy(10 ** (pools[assetName]?.metadata?.decimals ?? 0))
       .toNumber();
     
     const assetToken = tokenPriceToAssetToken(
@@ -115,6 +105,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       tokenPrice
     );
 
+    suppliedYields.push([
+      {
+        apy: aprToApy(market.supplyInterestRate),
+        apr: market.supplyInterestRate
+      }
+    ]);
     suppliedAssets.push(assetToken);
   }
   const { borrowedValue, collateralRatio, suppliedValue, value } =
