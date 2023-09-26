@@ -40,11 +40,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     prefix: poolsPrefix,
     networkId: NetworkId.sui
   });
-  if(!coinTypeMetadata) return [];
+  if (!coinTypeMetadata) return [];
 
   const ctmValues = Object.values(coinTypeMetadata);
-  if(ctmValues.length === 0) return [];
-  
+  if (ctmValues.length === 0) return [];
+
   const filterOwnerObject: SuiObjectDataFilter = {
     MatchAny: [
       {
@@ -106,7 +106,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       if (!coinName) return;
 
       const market = marketData[coinName];
-      if(!market) return
+      if (!market) return
 
       if (!debts[fields.name]) {
         debts[fields.name] = 0;
@@ -121,8 +121,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         }
       }));
       if (!asset) return;
-
-      debts[fields.name] = new Decimal(Number(asset['value'].fields.amount ?? 0)).mul(market.growthInterest + 1).toNumber();
+      debts[fields.name] += new Decimal(Number(asset['value'].fields.amount ?? 0)).mul(market.growthInterest + 1).toNumber();
     });
 
     await Promise.all([runInBatch(accountCollateralsAssetsPromises, 5), runInBatch(accountDebtsAssetsPromises, 5)]); // calculate collateral and debts at once, 3 coinType per batch
