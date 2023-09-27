@@ -27,7 +27,7 @@ export async function getNames(
         }))
       );
     case AddressSystem.move:
-      return [...(await getNamesAptos(fAddress))];
+      return getNamesAptos(fAddress);
     default:
       return [];
   }
