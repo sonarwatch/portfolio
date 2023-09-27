@@ -12,6 +12,7 @@ export * from './formatTokenPrice';
 export * from './formatTokenPriceUnderlying';
 export * from './formatTokenPriceSource';
 export * from './formatUniTokenInfo';
+export * from './getNetworkById';
 export * from './getAddressSystemFromNetworkId';
 export * from './getAssetsFromElement';
 export * from './getAssetsFromElements';
