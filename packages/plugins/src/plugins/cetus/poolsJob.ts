@@ -1,41 +1,35 @@
-import {
-  DynamicFieldPage,
-  ObjectContentFields,
-  getObjectFields,
-  normalizeSuiObjectId,
-} from '@mysten/sui.js';
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSui } from '../../utils/clients';
-import { clmmPoolsPrefix, clmmPoolsHandle, platformId } from './constants';
+import { clmmPoolsPrefix, createPoolEvent, platformId } from './constants';
 import { getPoolFromObject } from './helpers';
 import storeTokenPricesFromSqrt from '../../utils/clmm/tokenPricesFromSqrt';
+import { ParsedJsonEvent } from './types';
+import getMultipleSuiObjectsSafe from '../../utils/sui/getMultipleObjectsSafe';
+import queryEventsSafe from '../../utils/sui/queryEventSafe';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
 
-  const accounts: DynamicFieldPage = await client.getDynamicFields({
-    parentId: clmmPoolsHandle,
+  const eventsData = await queryEventsSafe(client, {
+    MoveEventType: createPoolEvent,
   });
 
-  const warpIds = accounts.data.map((item) => item.objectId);
-  const objects = await client.multiGetObjects({
-    ids: warpIds,
-    options: { showContent: true },
-  });
-  const poolsAddresses = objects.map((object) => {
-    const { fields } = (getObjectFields(object) as ObjectContentFields)[
-      'value'
-    ];
-    return normalizeSuiObjectId(fields['pool_address']);
+  const poolsAddresses = eventsData
+    .map((eventData) =>
+      eventData.parsedJson
+        ? (eventData.parsedJson as ParsedJsonEvent).pool_id
+        : []
+    )
+    .flat();
+
+  const poolsObjects = await getMultipleSuiObjectsSafe(client, poolsAddresses, {
+    showContent: true,
+    showType: true,
   });
 
-  const poolsObjects = await client.multiGetObjects({
-    ids: poolsAddresses,
-    options: { showContent: true, showType: true },
-  });
   for (const poolObject of poolsObjects) {
     const poolId = poolObject.data?.objectId;
     if (!poolId) continue;

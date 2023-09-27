@@ -7,3 +7,7 @@ export function isEthereumName(name: string): boolean {
 export function isSolanaName(name: string): boolean {
   return name.endsWith('.sol');
 }
+
+export function isAptosName(name: string): boolean {
+  return name.endsWith('.apt');
+}

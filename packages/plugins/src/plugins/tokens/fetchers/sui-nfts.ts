@@ -18,6 +18,7 @@ import { DisplayInfo, KioskContent, SuiNFTMetadata } from '../types';
 import getFormattedCollectionNameAndId from '../../../utils/sui/getFormattedCollectionNameAndId';
 import { walletNftsPlatform } from '../constants';
 import { kioskItemType, obKioskStructType } from '../../../utils/sui/constants';
+import getMultipleSuiObjectsSafe from '../../../utils/sui/getMultipleObjectsSafe';
 
 const executor: FetcherExecutor = async (owner: string) => {
   const client = getClientSui();
@@ -64,15 +65,16 @@ const executor: FetcherExecutor = async (owner: string) => {
     }
   } while (obKioskObjects.hasNextPage);
 
-  let nftKioskObjects = await client.multiGetObjects({
-    ids: Array.from(kioskItemsAddresses),
-    options: {
+  let nftKioskObjects = await getMultipleSuiObjectsSafe(
+    client,
+    Array.from(kioskItemsAddresses),
+    {
       showContent: true,
       showDisplay: true,
       showType: true,
       showOwner: true,
-    },
-  });
+    }
+  );
 
   cursor = undefined;
   do {
