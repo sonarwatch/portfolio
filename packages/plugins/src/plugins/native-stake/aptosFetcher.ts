@@ -62,7 +62,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       type: 'multiple',
       label: 'Staked',
       tags: ['Native Stake'],
-      name: validatorAddress,
       value: asset.value,
       data: {
         assets: [asset],
