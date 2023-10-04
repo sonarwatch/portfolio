@@ -1,5 +1,6 @@
 # TODO
 
+- Setup polygon node
 - Rename address en id dans les tokens & ajouter la properties tokenContract
 - Ajout de la fonction cache.setTokensPricesSource(), utile pour des AMM
 - Auto Initialisation du cache dans portolfio-api
