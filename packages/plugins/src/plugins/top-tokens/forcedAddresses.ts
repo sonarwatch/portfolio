@@ -17,7 +17,13 @@ const forcedAddresses: Map<NetworkIdType, string[]> = new Map([
       '0x83F20F44975D03b1b09e64809B757c47f942BEeA',
     ],
   ],
-  [NetworkId.polygon, ['0x03b54A6e9a984069379fae1a4fC4dBAE93B3bCCD']],
+  [
+    NetworkId.polygon,
+    [
+      '0x03b54A6e9a984069379fae1a4fC4dBAE93B3bCCD',
+      '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+    ],
+  ],
   [NetworkId.avalanche, ['0x152b9d0FdC40C096757F570A51E494bd4b943E50']],
 ]);
 export default forcedAddresses;
