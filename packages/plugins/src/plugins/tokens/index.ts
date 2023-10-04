@@ -5,6 +5,7 @@ import solanaFetcher from './fetchers/solana';
 import suiFetcher from './fetchers/sui';
 import suiNftsFetcher from './fetchers/sui-nfts';
 import seiFetcher from './fetchers/sei';
+import bitcoinFetcher from './fetchers/bitcoin';
 import solanaNativeFetcher from './fetchers/solana-native';
 import solanaCNftsFetcher from './fetchers/solana-cnfts';
 import solanaNftsFetcher from './fetchers/solana-nfts';
@@ -17,6 +18,10 @@ import { walletNftsPlatform, walletTokensPlatform } from './constants';
 
 export const platforms: Platform[] = [walletTokensPlatform, walletNftsPlatform];
 export const jobs: Job[] = [
+  {
+    id: `${walletTokensPlatform.id}-${NetworkId.bitcoin}`,
+    executor: jobExecutorGenerator(NetworkId.bitcoin),
+  },
   {
     id: `${walletTokensPlatform.id}-${NetworkId.aptos}`,
     executor: jobExecutorGenerator(NetworkId.aptos),
@@ -58,5 +63,6 @@ export const fetchers: Fetcher[] = [
   suiFetcher,
   suiNftsFetcher,
   seiFetcher,
+  bitcoinFetcher,
   ...evmFetchers,
 ];
