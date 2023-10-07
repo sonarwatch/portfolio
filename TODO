@@ -1,14 +1,13 @@
 # TODO
 
-- Setup polygon node
 - Rename address en id dans les tokens & ajouter la properties tokenContract
 - Ajout de la fonction cache.setTokensPricesSource(), utile pour des AMM
 - Auto Initialisation du cache dans portolfio-api
-- Gestion des name services
 - Verifier qu'une address a deja passé au moins un TX avant de tout fetch
 
 # DONE
 
+- Gestion des name services
 - Fix le problème d'import Job et Fetcher lors de la génération d'un plugin (toujours présent)
 - Déplacer les plateformes dans le dossier des plugins correspondant ?
 - Ajout d'un module de decimals dans le cache
