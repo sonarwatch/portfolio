@@ -15,6 +15,7 @@ const forcedAddresses: Map<NetworkIdType, string[]> = new Map([
       '0xae78736Cd615f374D3085123A210448E74Fc6393',
       '0x06AF07097C9Eeb7fD685c692751D5C66dB49c215',
       '0x83F20F44975D03b1b09e64809B757c47f942BEeA',
+      '0x5f98805A4E8be255a32880FDeC7F6728C6568bA0',
     ],
   ],
   [
