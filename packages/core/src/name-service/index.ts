@@ -1,3 +1,3 @@
 export * from './types';
-export * from './isNetworkIdName';
+export * from './nameCheckers';
 export * from './getNetworkIdFromName';

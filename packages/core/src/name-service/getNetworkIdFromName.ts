@@ -1,48 +1,25 @@
-import { NetworkId, NetworkIdType } from '../Network';
+import { AddressSystemType } from '../Address';
 import { NameIsNotValidError } from '../errors';
-import {
-  isAptosName,
-  isAvalancheName,
-  isEthereumName,
-  isSolanaName,
-} from './isNetworkIdName';
+import { nameCheckers } from './nameCheckers';
 
-const verifiers: {
-  networkId: NetworkIdType;
-  verifier: (name: string) => boolean;
-}[] = [
-  {
-    networkId: NetworkId.solana,
-    verifier: isSolanaName,
-  },
-  {
-    networkId: NetworkId.ethereum,
-    verifier: isEthereumName,
-  },
-  {
-    networkId: NetworkId.avalanche,
-    verifier: isAvalancheName,
-  },
-  {
-    networkId: NetworkId.aptos,
-    verifier: isAptosName,
-  },
-];
-
-export function getNetworkIdFromName(name: string): NetworkIdType | null {
-  for (let i = 0; i < verifiers.length; i++) {
-    const verifier = verifiers[i];
-    if (verifier.verifier(name)) return verifier.networkId;
+export function getAddressSystemFromName(
+  name: string
+): AddressSystemType | null {
+  for (let i = 0; i < nameCheckers.length; i++) {
+    const nameChecker = nameCheckers[i];
+    if (nameChecker.checker(name)) return nameChecker.addressSystem;
   }
   return null;
 }
 
-export function getNetworkIdFromNameOrFail(name: string): NetworkIdType {
-  const networkId = getNetworkIdFromName(name);
-  if (!networkId) throw new NameIsNotValidError(name);
-  return networkId;
+export function getAddressSystemFromNameOrFail(
+  name: string
+): AddressSystemType {
+  const addressSystem = getAddressSystemFromName(name);
+  if (!addressSystem) throw new NameIsNotValidError(name);
+  return addressSystem;
 }
 
 export function isNameValid(name: string): boolean {
-  return getNetworkIdFromName(name) !== null;
+  return getAddressSystemFromName(name) !== null;
 }

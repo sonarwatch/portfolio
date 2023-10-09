@@ -1,13 +1,13 @@
 import { AddressSystemType } from '../Address';
 import { NetworkIdType } from '../Network';
 
-export type NSName = {
-  name: string;
-  networkId: NetworkIdType;
+export type NSOwner = {
+  address: string;
+  addressSystem: AddressSystemType;
 };
 
-export type NSOwner = {
-  address: string | null;
+export type NameChecker = {
   addressSystem: AddressSystemType;
-  networkId: NetworkIdType;
+  networkId?: NetworkIdType;
+  checker: (name: string) => boolean;
 };
