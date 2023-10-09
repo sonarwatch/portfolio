@@ -6,6 +6,7 @@ async function getOwner(name: string): Promise<string | null> {
     `https://www.aptosnames.com/api/mainnet/v1/address/${name}`
   );
   const { address } = await response.json();
+  if (!address) return null;
   return address;
 }
 
@@ -14,7 +15,8 @@ async function getNames(address: string): Promise<string[]> {
     `https://www.aptosnames.com/api/mainnet/v1/primary-name/${address}`
   );
   const { name } = await response.json();
-  return [name];
+  if (!name) return [];
+  return [`${name}.apt`];
 }
 
 export const nameService: NameService = {
