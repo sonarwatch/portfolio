@@ -1,34 +1,45 @@
 import util from 'node:util';
+import { isAddress, networks } from '@sonarwatch/portfolio-core';
 import { fetchers, getCache } from '../src';
 import durationForHumans from '../src/utils/misc/durationForHumans';
 import { runFetcher } from '../src/Fetcher';
 
-const fetcherId = process.argv.at(2);
-if (!fetcherId || fetcherId === '') {
+const argFetcherId = process.argv.at(2);
+if (!argFetcherId || argFetcherId === '') {
   console.error('Fetcher ID is missing');
   process.exit(1);
 }
 
-const owner = process.argv.at(3);
+const argOwner = process.argv.at(3);
+if (!argOwner || argOwner === '') {
+  console.error('Owner is missing');
+  process.exit(1);
+}
 
-async function main() {
+async function main(owner: string, fetcherId: string) {
+  let fOwner = owner;
   const fetcher = fetchers.find((f) => f.id === fetcherId);
   if (!fetcher) {
     console.error(`Fetcher cannot be found: ${fetcherId}`);
     process.exit(1);
   }
-  if (!owner || owner === '') {
-    console.error('Owner is missing');
+
+  const network = networks[fetcher.networkId];
+  if (!isAddress(fOwner, network.addressSystem)) {
+    fOwner = `0x${fOwner}`;
+  }
+  if (!isAddress(fOwner, network.addressSystem)) {
+    console.error(`Owner address is not valid: ${owner}`);
     process.exit(1);
   }
 
   const cache = getCache();
 
   console.log('Fetching...');
-  const fetcherResult = await runFetcher(owner, fetcher, cache);
+  const fetcherResult = await runFetcher(fOwner, fetcher, cache);
   console.log(util.inspect(fetcherResult.elements, false, null, true));
   console.log(`Finished in: ${durationForHumans(fetcherResult.duration)}s`);
   process.exit(0);
 }
 
-main();
+main(argOwner, argFetcherId);
