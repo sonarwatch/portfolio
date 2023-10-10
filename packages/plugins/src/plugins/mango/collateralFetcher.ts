@@ -60,7 +60,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const userAccount = userAccounts[index];
     const tokenPositions = userAccount.tokens;
     if (tokenPositions.length === 0) continue;
-
     const borrowedAssets: PortfolioAsset[] = [];
     const borrowedYields: Yield[][] = [];
     const suppliedAssets: PortfolioAsset[] = [];
@@ -83,7 +82,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
       // Deposit
       if (tokenPosition.indexedPosition.isPositive()) {
-        // Error when using bank.depositIndex.multipliedBy() : no such function
         const depositIndex = new BigNumber(bank.depositIndex);
         const assetToken = tokenPriceToAssetToken(
           mint,
@@ -132,7 +130,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       }
     }
 
-    if (suppliedAssets.length === 0 && borrowedAssets.length === 0) return [];
+    if (suppliedAssets.length === 0 && borrowedAssets.length === 0) continue;
 
     const { borrowedValue, collateralRatio, suppliedValue, value } =
       getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
