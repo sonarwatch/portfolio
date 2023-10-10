@@ -107,9 +107,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           ]);
         // Borrow
       } else {
+        const borrowIndex = new BigNumber(bank.borrowIndex);
         const assetToken = tokenPriceToAssetToken(
           mint,
-          bank.borrowIndex
+          borrowIndex
             .multipliedBy(tokenPosition.indexedPosition)
             .dividedBy(10 ** tokenPrice.decimals)
             .abs()
