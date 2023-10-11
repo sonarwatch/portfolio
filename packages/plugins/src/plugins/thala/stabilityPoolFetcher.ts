@@ -103,7 +103,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     networkId: NetworkId.aptos,
     platformId: 'thala',
     type: PortfolioElementType.liquidity,
-    label: 'Lending',
+    label: 'Staked',
     value,
     data: {
       liquidities,
