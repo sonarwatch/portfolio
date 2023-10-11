@@ -23,6 +23,7 @@ const forcedAddresses: Map<NetworkIdType, string[]> = new Map([
     [
       '0x03b54A6e9a984069379fae1a4fC4dBAE93B3bCCD',
       '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+      '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
     ],
   ],
   [NetworkId.avalanche, ['0x152b9d0FdC40C096757F570A51E494bd4b943E50']],
