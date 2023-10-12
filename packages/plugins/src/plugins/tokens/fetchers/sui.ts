@@ -17,14 +17,13 @@ import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import { walletTokensPlatform } from '../constants';
 import runInBatch from '../../../utils/misc/runInBatch';
 import tokenPriceToAssetTokens from '../../../utils/misc/tokenPriceToAssetTokens';
-import { getTag, parseTag } from './solana';
+import { getTag, parseTag } from '../helpers';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
   const coinsBalances = await client.getAllBalances({ owner });
   const coinsTypes = [...new Set(coinsBalances.map((cb) => cb.coinType))];
-  console.log('constexecutor:FetcherExecutor= ~ coinsTypes:', coinsTypes);
   const results = await runInBatch(
     coinsTypes.map(
       (coinType) => () => cache.getTokenPrice(coinType, NetworkId.sui)
