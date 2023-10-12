@@ -17,11 +17,11 @@ import { getTokenAccountsByOwner } from '../../../utils/solana';
 import tokenPriceToAssetTokens from '../../../utils/misc/tokenPriceToAssetTokens';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 
-function getTag(platformId: string, elementName?: string) {
+export function getTag(platformId: string, elementName?: string) {
   return `${platformId}${elementName ? `<|>${elementName}` : ''}`;
 }
 
-function parseTag(tag: string): {
+export function parseTag(tag: string): {
   platformId: string;
   elementName?: string;
 } {
