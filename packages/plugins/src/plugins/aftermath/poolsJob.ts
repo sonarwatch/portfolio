@@ -1,6 +1,6 @@
 import { getObjectFields, getObjectId } from '@mysten/sui.js';
 import BigNumber from 'bignumber.js';
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId, TokenPriceUnderlying } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSui } from '../../utils/clients';
@@ -8,13 +8,15 @@ import { lpCoinsTable, platformId } from './constants';
 import { PoolInfo } from './types';
 import computeAndStoreLpPrice, {
   PoolData,
+  minimumLiquidity,
 } from '../../utils/misc/computeAndStoreLpPrice';
 import getMultipleSuiObjectsSafe from '../../utils/sui/getMultipleObjectsSafe';
 import getDynamicFieldsSafe from '../../utils/sui/getDynamicFieldsSafe';
+import { parseTypeString } from '../../utils/aptos';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
-
+  const networkId = NetworkId.sui;
   const coinsTableFields = await getDynamicFieldsSafe(client, lpCoinsTable);
 
   const poolFactoryIds = coinsTableFields.map(getObjectId);
@@ -49,12 +51,67 @@ const executor: JobExecutor = async (cache: Cache) => {
 
     if (poolInfo.lp_supply.fields.value === '0') continue;
 
+    const moveType = parseTypeString(poolInfo.lp_supply.type);
+    if (!moveType.keys) continue;
+
+    const address = moveType.keys[0].type;
     if (poolInfo.normalized_balances.length > 2) {
-      // TODO : handle more than 2 tokens by LP
-      continue;
+      const totalTokens = poolInfo.normalized_balances.length;
+      const mints = poolInfo.type_names.map((type) => `0x${type}`);
+      const rawTokensPrices = await cache.getTokenPrices(mints, NetworkId.sui);
+      if (!rawTokensPrices) continue;
+
+      const tokensPrices = rawTokensPrices.filter(
+        (tokenPrice) => tokenPrice !== undefined
+      );
+      if (tokensPrices.length === 0) continue;
+
+      const tokenPriceRef = tokensPrices[0]?.price;
+      if (!tokenPriceRef) continue;
+
+      const decimals = poolInfo.lp_decimals;
+      const poolSupply = new BigNumber(
+        poolInfo.lp_supply.fields.value
+      ).dividedBy(10 ** decimals);
+
+      let totalLiquidity = new BigNumber(0);
+      const underlyings: TokenPriceUnderlying[] = [];
+      for (let i = 0; i < totalTokens; i++) {
+        const coinDecimal = poolInfo.coin_decimals[i];
+        const reserveAmount = new BigNumber(poolInfo.normalized_balances[i])
+          .dividedBy(10 ** coinDecimal)
+          .dividedBy(poolInfo.decimal_scalars[i]);
+        const tokenLiquidity = reserveAmount.multipliedBy(tokenPriceRef);
+        const amountPerLp = reserveAmount.dividedBy(poolSupply).toNumber();
+
+        totalLiquidity = totalLiquidity.plus(tokenLiquidity);
+        underlyings.push({
+          address: mints[i],
+          amountPerLp,
+          decimals: coinDecimal,
+          networkId,
+          price: tokenPriceRef,
+        });
+      }
+
+      if (totalLiquidity.isLessThan(minimumLiquidity)) continue;
+
+      const price = totalLiquidity.dividedBy(poolSupply).toNumber();
+
+      await cache.setTokenPriceSource({
+        id: platformId,
+        weight: 1,
+        address,
+        networkId,
+        platformId,
+        decimals,
+        price,
+        underlyings,
+        timestamp: Date.now(),
+      });
     } else {
       const poolData: PoolData = {
-        id: poolInfo.id.id,
+        id: address,
         lpDecimals: poolInfo.lp_decimals,
         mintTokenX: `0x${poolInfo.type_names[0]}`,
         decimalX: poolInfo.coin_decimals[0],
@@ -68,7 +125,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         ),
         supply: new BigNumber(poolInfo.lp_supply.fields.value),
       };
-      await computeAndStoreLpPrice(cache, poolData, NetworkId.sui, platformId);
+      await computeAndStoreLpPrice(cache, poolData, networkId, platformId);
     }
   }
 };
