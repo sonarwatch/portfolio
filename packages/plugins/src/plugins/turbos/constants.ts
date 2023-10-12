@@ -5,6 +5,7 @@ export const turbosPlatform: Platform = {
   id: platformId,
   name: 'Turbos',
   image: 'https://alpha.sonar.watch/img/platforms/turbos.png',
+  defiLlamaId: 'turbos',
 };
 export const clmmPoolsPrefix = `${platformId}-clmmPools`;
 

@@ -5,6 +5,7 @@ export const naviPlatform: Platform = {
   id: platformId,
   name: 'NAVI',
   image: `https://alpha.sonar.watch/img/platforms/${platformId}.png`,
+  defiLlamaId: 'navi-protocol',
 };
 
 export const reservesPrefix = platformId;

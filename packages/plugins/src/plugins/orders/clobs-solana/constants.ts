@@ -12,11 +12,13 @@ export const openbookPlatform: Platform = {
   id: 'openbook',
   name: 'OpenBook',
   image: 'https://alpha.sonar.watch/img/platforms/openbook.png',
+  defiLlamaId: 'openbook',
 };
 export const serumPlatform: Platform = {
   id: 'serum',
   name: 'Serum',
   image: 'https://alpha.sonar.watch/img/platforms/serum.png',
+  defiLlamaId: 'serum',
 };
 export const clobVersions = {
   serumV1: {

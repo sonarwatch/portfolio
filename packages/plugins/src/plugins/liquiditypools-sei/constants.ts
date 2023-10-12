@@ -10,11 +10,13 @@ export const fuzioPlatform: Platform = {
   id: 'fuzio',
   name: 'Fuzio',
   image: 'https://alpha.sonar.watch/img/platforms/fuzio.png',
+  defiLlamaId: 'fuzio',
 };
 export const seaswapPlatform: Platform = {
   id: 'seaswap',
   name: 'Seaswap',
   image: 'https://alpha.sonar.watch/img/platforms/seaswap.png',
+  defiLlamaId: 'seaswap',
 };
 export const astroportPlatform: Platform = {
   id: 'astroport',

@@ -1,4 +1,12 @@
+import { Platform } from '@sonarwatch/portfolio-core';
+
 export const platformId = 'maker';
+export const makerPlatform: Platform = {
+  id: platformId,
+  name: 'Maker DAO',
+  image: 'https://alpha.sonar.watch/img/platforms/mango.png',
+  defiLlamaId: 'makerdao',
+};
 
 export const daiAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
 export const daiDecimals = 18;

@@ -5,6 +5,7 @@ export const saberPlatform: Platform = {
   id: platformId,
   name: 'Saber',
   image: 'https://alpha.sonar.watch/img/platforms/saber.png',
+  defiLlamaId: 'saber',
 };
 export const SABER_SWAPS =
   'https://raw.githubusercontent.com/saber-hq/saber-registry-dist/master/data/swaps.mainnet.json';

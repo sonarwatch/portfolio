@@ -10,6 +10,7 @@ export const aavePlatform: Platform = {
   id: 'aave',
   name: 'AAVE',
   image: 'https://alpha.sonar.watch/img/platforms/aave.png',
+  defiLlamaId: 'parent#aave',
 };
 
 export const lendingConfigs: Map<NetworkIdType, LendingConfig[]> = new Map([

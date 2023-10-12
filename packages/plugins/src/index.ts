@@ -113,7 +113,10 @@ import {
   platforms as auxexchangePlatforms,
   jobs as auxexchangeJobs,
 } from './plugins/auxexchange';
-import { jobs as makerJobs } from './plugins/maker';
+import {
+  jobs as makerJobs,
+  platforms as makerPlatforms,
+} from './plugins/maker';
 import {
   jobs as kaminoJobs,
   platforms as kaminoPlatforms,
@@ -169,6 +172,7 @@ export const platforms: Platform[] = [
   ...kaminoPlatforms,
   ...bucketPlatforms,
   ...naviPlatforms,
+  ...makerPlatforms,
 ];
 
 // JOBS //
