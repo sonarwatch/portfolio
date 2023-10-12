@@ -16,22 +16,7 @@ import { getClientSolana } from '../../../utils/clients';
 import { getTokenAccountsByOwner } from '../../../utils/solana';
 import tokenPriceToAssetTokens from '../../../utils/misc/tokenPriceToAssetTokens';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-
-function getTag(platformId: string, elementName?: string) {
-  return `${platformId}${elementName ? `<|>${elementName}` : ''}`;
-}
-
-function parseTag(tag: string): {
-  platformId: string;
-  elementName?: string;
-} {
-  const split = tag.split('<|>', 2);
-  if (split.length < 1) throw new Error(`Tag is not valid: ${tag}`);
-  return {
-    platformId: split[0],
-    elementName: split.at(1),
-  };
-}
+import { getTag, parseTag } from '../helpers';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
