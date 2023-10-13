@@ -8,6 +8,8 @@ export const meeiroPlatform: Platform = {
   id: 'meeiro',
   name: 'Meeiro',
   image: 'https://alpha.sonar.watch/img/platforms/meeiro.png',
+  website: 'https://meeiro.xyz/',
+  twitter: 'https://twitter.com/Meeiro_xyz',
 };
 const programMeeiro =
   '0x514cfb77665f99a2e4c65a5614039c66d13e00e98daf4c86305651d29fd953e5';

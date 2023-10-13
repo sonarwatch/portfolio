@@ -22,6 +22,8 @@ export const astroportPlatform: Platform = {
   id: 'astroport',
   name: 'Astroport',
   image: 'https://alpha.sonar.watch/img/platforms/astroport.png',
+  website: 'https://astroport.fi',
+  twitter: 'https://twitter.com/astroport_fi',
 };
 
 export const liquidityPoolsInfos: LiquidityPoolsInfo[] = [
