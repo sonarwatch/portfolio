@@ -61,7 +61,7 @@
     },
     "version": {
       "executor": "@jscutlery/semver:version",
-      "dependsOn": ["test", "build"],
+      "dependsOn": ["build"],
       "options": {
         "postTargets": ["plugins:npm"],
         "allowEmptyRelease": true
