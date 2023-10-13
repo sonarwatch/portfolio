@@ -5,6 +5,33 @@
 - Auto Initialisation du cache dans portolfio-api
 - Verifier qu'une address a deja passé au moins un TX avant de tout fetch
 
+- Lido
+- Lybra Finance
+- Rocket Pool
+- Bianance staked ETH
+- Coinbase staked ETH
+- Summer.fi
+- stUSDT
+
+- MakerDAO
+- Frax Finanace
+
+- Uniswap
+- Compound
+- Instadapp
+- Curve
+- Convex
+- PancakeSwap
+- Balancer
+- Liquity
+- Stargate
+- Sushi
+- Yearn
+- Aura
+- Synthetix
+- Venus
+- Radiant
+
 # DONE
 
 - Gestion des name services
