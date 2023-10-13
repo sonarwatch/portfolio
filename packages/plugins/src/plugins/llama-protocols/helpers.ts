@@ -14,6 +14,8 @@ export function shrinkLlamaProtocol(
     deadUrl: protocol.deadUrl,
     openSource: protocol.openSource,
     rugged: protocol.rugged,
-    twitter: `https://twitter.com/${protocol.twitter}`,
+    twitter: protocol.twitter
+      ? `https://twitter.com/${protocol.twitter}`
+      : undefined,
   };
 }
