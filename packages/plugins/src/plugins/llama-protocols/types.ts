@@ -47,7 +47,6 @@ export type LlamaProtocol = {
   id: string;
   name: string;
   url: string;
-  chain: string;
   logo: string;
   twitter?: null | string;
   slug: string;

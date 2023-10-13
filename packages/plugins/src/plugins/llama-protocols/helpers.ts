@@ -4,7 +4,6 @@ export function shrinkLlamaProtocol(
   protocol: LlamaProtocolFull
 ): LlamaProtocol {
   return {
-    chain: protocol.chain,
     id: protocol.id,
     logo: protocol.logo,
     name: protocol.name,
