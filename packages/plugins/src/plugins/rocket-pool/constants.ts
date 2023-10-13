@@ -10,9 +10,9 @@ export const fooPlatform: Platform = {
 };
 export const marketsCachePrefix = `${platformId}-markets`;
 export const minipoolManagerAddress =
-  '0x6293b8abc1f36afb22406be5f96d893072a8cf3a';
+  '0x6293B8abC1F36aFB22406Be5f96D893072A8cF3a';
 export const nodeStakingAddress = '0x0d8D8f8541B12A0e1194B7CC4b6D954b90AB82ec';
-export const rplAddress = '0xd33526068d116ce69f19a9ee46f0bd304f21a51f';
+export const rplAddress = '0xD33526068D116cE69F19A9ee46F0bd304F21A51f';
 export const rplDecimals = 18;
 export const ethFactor = new BigNumber(10 ** ethereumNetwork.native.decimals);
 export const rplFactor = new BigNumber(10 ** rplDecimals);
