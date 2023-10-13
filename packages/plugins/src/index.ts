@@ -1,6 +1,7 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from './Fetcher';
 import { Job } from './Job';
+import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 import {
   platforms as tokensPlatforms,
   jobs as tokensJobs,
@@ -130,7 +131,10 @@ import {
   fetchers as naviFetchers,
   platforms as naviPlatforms,
 } from './plugins/navi';
-import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
+import {
+  fetchers as rocketpoolFetchers,
+  platforms as rocketpoolPlatforms,
+} from './plugins/rocket-pool';
 
 export {
   walletTokensPlatform,
@@ -174,6 +178,7 @@ export const platforms: Platform[] = [
   ...bucketPlatforms,
   ...naviPlatforms,
   ...makerPlatforms,
+  ...rocketpoolPlatforms,
 ];
 
 // JOBS //
@@ -227,5 +232,6 @@ export const fetchers: Fetcher[] = [
   ...liquidityPoolsSeiFetchers,
   ...bucketFetchers,
   ...naviFetchers,
+  ...rocketpoolFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
