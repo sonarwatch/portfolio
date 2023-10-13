@@ -2,6 +2,7 @@ export * from './constants';
 export * from './errors';
 export * from './name-service';
 export * from './utils';
+export * from './llama';
 export * from './Address';
 export * from './UsdValue';
 export * from './Client';

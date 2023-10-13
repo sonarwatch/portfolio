@@ -1,4 +1,4 @@
-import { LlamaProtocol, LlamaProtocolFull } from './types';
+import { LlamaProtocol, LlamaProtocolFull } from '@sonarwatch/portfolio-core';
 
 export function shrinkLlamaProtocol(
   protocol: LlamaProtocolFull

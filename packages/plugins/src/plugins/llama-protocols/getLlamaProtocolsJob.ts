@@ -1,8 +1,11 @@
-import { Platform } from '@sonarwatch/portfolio-core';
+import {
+  LlamaProtocol,
+  LlamaProtocolFull,
+  Platform,
+} from '@sonarwatch/portfolio-core';
 import axios from 'axios';
 import { Cache } from '../../Cache';
 import { JobExecutor } from '../../Job';
-import { LlamaProtocol, LlamaProtocolFull } from './types';
 import { shrinkLlamaProtocol } from './helpers';
 import { llamaProtocolsCacheKey, llamaProtocolsCachePrefix } from './constants';
 
