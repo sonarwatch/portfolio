@@ -11,13 +11,13 @@ import { openOrdersV1Struct } from '../../raydium/structs/openOrders';
 export const openbookPlatform: Platform = {
   id: 'openbook',
   name: 'OpenBook',
-  image: 'https://alpha.sonar.watch/img/platforms/openbook.png',
+  image: 'https://sonar.watch/img/platforms/openbook.png',
   defiLlamaId: 'openbook',
 };
 export const serumPlatform: Platform = {
   id: 'serum',
   name: 'Serum',
-  image: 'https://alpha.sonar.watch/img/platforms/serum.png',
+  image: 'https://sonar.watch/img/platforms/serum.png',
   defiLlamaId: 'serum',
 };
 export const clobVersions = {

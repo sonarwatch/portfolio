@@ -5,7 +5,7 @@ export const platformId = 'native-stake';
 export const nativeStakePlatform: Platform = {
   id: platformId,
   name: 'Native Stake',
-  image: 'https://alpha.sonar.watch/img/platforms/native-stake.png',
+  image: 'https://sonar.watch/img/platforms/native-stake.png',
 };
 export const validatorsKey = 'activeValidators';
 export const validatorsPrefix = `${platformId}-validators`;

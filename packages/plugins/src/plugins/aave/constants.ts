@@ -9,7 +9,7 @@ import { LendingConfig } from './types';
 export const aavePlatform: Platform = {
   id: 'aave',
   name: 'AAVE',
-  image: 'https://alpha.sonar.watch/img/platforms/aave.png',
+  image: 'https://sonar.watch/img/platforms/aave.png',
   defiLlamaId: 'parent#aave',
 };
 

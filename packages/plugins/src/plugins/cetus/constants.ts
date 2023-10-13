@@ -4,7 +4,7 @@ export const platformId = 'cetus';
 export const cetusPlatform: Platform = {
   id: platformId,
   name: 'Cetus',
-  image: 'https://alpha.sonar.watch/img/platforms/cetus.png',
+  image: 'https://sonar.watch/img/platforms/cetus.png',
   defiLlamaId: 'cetus',
 };
 export const clmmPoolsPrefix = `${platformId}-clmmPools`;

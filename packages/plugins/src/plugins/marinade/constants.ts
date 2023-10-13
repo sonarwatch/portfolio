@@ -6,7 +6,7 @@ export const platformId = 'marinade';
 export const marinadePlatform: Platform = {
   id: platformId,
   name: 'Marinade',
-  image: 'https://alpha.sonar.watch/img/platforms/marinade.png',
+  image: 'https://sonar.watch/img/platforms/marinade.png',
   defiLlamaId: 'marinade-finance',
 };
 

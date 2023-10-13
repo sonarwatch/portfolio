@@ -5,7 +5,7 @@ export const platformId = 'raydium';
 export const raydiumPlatform: Platform = {
   id: platformId,
   name: 'Raydium',
-  image: 'https://alpha.sonar.watch/img/platforms/raydium.png',
+  image: 'https://sonar.watch/img/platforms/raydium.png',
   defiLlamaId: 'raydium',
 };
 export const AMM_PROGRAM_ID_V4 = new PublicKey(

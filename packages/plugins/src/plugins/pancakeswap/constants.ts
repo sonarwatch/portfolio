@@ -5,7 +5,7 @@ export const platformId = 'pancakeswap';
 export const pancakeswapPlatform: Platform = {
   id: platformId,
   name: 'PancakeSwap',
-  image: 'https://alpha.sonar.watch/img/platforms/pancakeswap.png',
+  image: 'https://sonar.watch/img/platforms/pancakeswap.png',
   defiLlamaId: 'parent#pancakeswap',
 };
 export const programAddress =

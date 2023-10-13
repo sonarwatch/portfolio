@@ -5,7 +5,7 @@ export const platformId = 'orca';
 export const orcaPlatform: Platform = {
   id: platformId,
   name: 'Orca',
-  image: 'https://alpha.sonar.watch/img/platforms/orca.png',
+  image: 'https://sonar.watch/img/platforms/orca.png',
   defiLlamaId: 'orca',
 };
 export const poolsProgram = new PublicKey(

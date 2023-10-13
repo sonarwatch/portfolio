@@ -5,7 +5,7 @@ export const platformId = 'thala';
 export const thalaPlatform: Platform = {
   id: platformId,
   name: 'Thala',
-  image: 'https://alpha.sonar.watch/img/platforms/thala.png',
+  image: 'https://sonar.watch/img/platforms/thala.png',
   defiLlamaId: 'parent#thala-labs',
 };
 export const programAdressThala =

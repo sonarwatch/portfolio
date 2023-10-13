@@ -5,7 +5,7 @@ export const platformId = 'liquidswap';
 export const liquidswapPlatform: Platform = {
   id: platformId,
   name: 'Liquidswap',
-  image: 'https://alpha.sonar.watch/img/platforms/liquidswap.png',
+  image: 'https://sonar.watch/img/platforms/liquidswap.png',
   defiLlamaId: 'liquidswap',
 };
 export const programAddress =

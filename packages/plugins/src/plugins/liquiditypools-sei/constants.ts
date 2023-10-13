@@ -9,19 +9,19 @@ export const pluginId = 'liquidityPools-sei';
 export const fuzioPlatform: Platform = {
   id: 'fuzio',
   name: 'Fuzio',
-  image: 'https://alpha.sonar.watch/img/platforms/fuzio.png',
+  image: 'https://sonar.watch/img/platforms/fuzio.png',
   defiLlamaId: 'fuzio',
 };
 export const seaswapPlatform: Platform = {
   id: 'seaswap',
   name: 'Seaswap',
-  image: 'https://alpha.sonar.watch/img/platforms/seaswap.png',
+  image: 'https://sonar.watch/img/platforms/seaswap.png',
   defiLlamaId: 'seaswap',
 };
 export const astroportPlatform: Platform = {
   id: 'astroport',
   name: 'Astroport',
-  image: 'https://alpha.sonar.watch/img/platforms/astroport.png',
+  image: 'https://sonar.watch/img/platforms/astroport.png',
   website: 'https://astroport.fi',
   twitter: 'https://twitter.com/astroport_fi',
 };
