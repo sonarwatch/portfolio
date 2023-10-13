@@ -76,7 +76,7 @@
     "reflect-metadata": "^0.1.13",
     "tslib": "^2.3.0",
     "unstorage": "^1.9.0",
-    "viem": "^1.14.0",
+    "viem": "^1.16.5",
     "web3-v1": "npm:web3@^1.5.0",
     "web3-v4": "npm:web3@^4.0.3"
   },
