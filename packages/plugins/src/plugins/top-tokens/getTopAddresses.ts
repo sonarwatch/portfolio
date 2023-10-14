@@ -23,7 +23,7 @@ export default async function getTopAddresses(
 
   const addressById: Map<string, string> = new Map();
   coingeckoCoinsListResponse.forEach((gCoin) => {
-    const address = gCoin.platforms[network.coingeckoPlatformId];
+    const address = gCoin.platforms[network.geckoId];
     if (!address) return;
     addressById.set(gCoin.id, formatTokenAddress(address, networkId));
   });
