@@ -27,7 +27,7 @@ export const bitcoinNetwork: Network = {
   },
   nativeWrapped: null,
   isLive: true,
-  coingeckoPlatformId: 'bitcoin',
+  geckoId: 'bitcoin',
   llamaId: 'Bitcoin',
   tokenListUrl:
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.bitcoin.tokenlist.json',
@@ -49,7 +49,7 @@ export const ethereumNetwork: Network = {
     coingeckoId: 'weth',
   },
   isLive: true,
-  coingeckoPlatformId: 'ethereum',
+  geckoId: 'ethereum',
   llamaId: 'Ethereum',
   tokenListUrl:
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.ethereum.tokenlist.json',
@@ -71,7 +71,7 @@ export const avalancheNetwork: Network = {
     coingeckoId: 'wrapped-avax',
   },
   isLive: true,
-  coingeckoPlatformId: 'avalanche',
+  geckoId: 'avalanche',
   llamaId: 'Avalanche',
   tokenListUrl:
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.avalanche.tokenlist.json',
@@ -93,7 +93,7 @@ export const polygonNetwork: Network = {
     coingeckoId: 'wmatic',
   },
   isLive: true,
-  coingeckoPlatformId: 'polygon-pos',
+  geckoId: 'polygon-pos',
   llamaId: 'Polygon',
   tokenListUrl:
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.polygon.tokenlist.json',
@@ -111,7 +111,7 @@ export const solanaNetwork: Network = {
   },
   nativeWrapped: null,
   isLive: true,
-  coingeckoPlatformId: 'solana',
+  geckoId: 'solana',
   llamaId: 'Solana',
   tokenListUrl:
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.solana.tokenlist.json',
@@ -129,7 +129,7 @@ export const aptosNetwork: Network = {
   },
   nativeWrapped: null,
   isLive: true,
-  coingeckoPlatformId: 'aptos',
+  geckoId: 'aptos',
   llamaId: 'Aptos',
   tokenListUrl:
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.aptos.tokenlist.json',
@@ -147,7 +147,7 @@ export const suiNetwork: Network = {
   },
   nativeWrapped: null,
   isLive: true,
-  coingeckoPlatformId: 'sui',
+  geckoId: 'sui',
   llamaId: 'Sui',
   tokenListUrl:
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.sui.tokenlist.json',
@@ -166,7 +166,7 @@ export const seiNetwork: Network = {
   },
   nativeWrapped: null,
   isLive: true,
-  coingeckoPlatformId: 'sei',
+  geckoId: 'sei',
   llamaId: 'Sei',
   tokenListUrl:
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.sei.tokenlist.json',
