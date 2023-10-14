@@ -24,6 +24,7 @@ export const astroportPlatform: Platform = {
   image: 'https://sonar.watch/img/platforms/astroport.png',
   website: 'https://astroport.fi',
   twitter: 'https://twitter.com/astroport_fi',
+  defiLlamaId: 'astroport',
 };
 
 export const liquidityPoolsInfos: LiquidityPoolsInfo[] = [
