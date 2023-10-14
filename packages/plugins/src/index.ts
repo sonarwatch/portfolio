@@ -135,6 +135,7 @@ import {
   fetchers as rocketpoolFetchers,
   platforms as rocketpoolPlatforms,
 } from './plugins/rocket-pool';
+import { platforms as lidoPlatforms } from './plugins/lido';
 
 export {
   walletTokensPlatform,
@@ -179,6 +180,7 @@ export const platforms: Platform[] = [
   ...naviPlatforms,
   ...makerPlatforms,
   ...rocketpoolPlatforms,
+  ...lidoPlatforms,
 ];
 
 // JOBS //
