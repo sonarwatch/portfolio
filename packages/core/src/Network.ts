@@ -35,7 +35,7 @@ export type Network = {
     coingeckoId: string;
   } | null;
   isLive: boolean;
-  geckoId: string;
+  coingeckoPlatformId: string;
   tokenListUrl: string;
   description?: string;
   website?: string;
