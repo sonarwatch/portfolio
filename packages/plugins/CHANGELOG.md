@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.8.22](https://github.com/sonarwatch/portfolio/compare/plugins-0.8.21...plugins-0.8.22) (2023-10-14)
+
+
+### Reverts
+
+* Revert "rename" ([ffcf477](https://github.com/sonarwatch/portfolio/commit/ffcf47783e7dcb924c7685a4c7784a2385b526c2))
+
+
+
 ## [0.8.21](https://github.com/sonarwatch/portfolio/compare/plugins-0.8.20...plugins-0.8.21) (2023-10-13)
 
 
