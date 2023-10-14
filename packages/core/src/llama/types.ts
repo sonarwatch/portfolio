@@ -1,3 +1,5 @@
+import { NetworkIdType } from '../Network';
+
 export type LlamaProtocolFull = {
   id: string;
   name: string;
@@ -54,4 +56,5 @@ export type LlamaProtocol = {
   openSource?: boolean;
   deadUrl?: boolean;
   rugged?: boolean;
+  networkIds: NetworkIdType[];
 };

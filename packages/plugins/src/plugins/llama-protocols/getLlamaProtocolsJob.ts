@@ -6,7 +6,7 @@ import {
 import axios from 'axios';
 import { Cache } from '../../Cache';
 import { JobExecutor } from '../../Job';
-import { shrinkLlamaProtocol } from './helpers';
+import { llamaChainsToNetworkIds, shrinkLlamaProtocol } from './helpers';
 import { llamaProtocolsCacheKey, llamaProtocolsCachePrefix } from './constants';
 
 const llamaUrl = 'https://api.llama.fi/protocols';
@@ -37,10 +37,17 @@ export function getLlamaProtocolsJob(platforms: Platform[]): JobExecutor {
         if (!protocols[platformId2]) {
           protocols[platformId2] = {
             ...shrinkLlamaProtocol(llamaProtocol),
+            networkIds: [],
             tvl: 0,
           };
         }
         protocols[platformId2].tvl += llamaProtocol.tvl;
+        protocols[platformId2].networkIds.push(
+          ...llamaChainsToNetworkIds(llamaProtocol.chains)
+        );
+        protocols[platformId2].networkIds = [
+          ...new Set(protocols[platformId2].networkIds),
+        ];
       }
     }
     await cache.setItem(llamaProtocolsCacheKey, JSON.stringify(protocols), {

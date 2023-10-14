@@ -1,4 +1,9 @@
-import { LlamaProtocol, LlamaProtocolFull } from '@sonarwatch/portfolio-core';
+import {
+  LlamaProtocol,
+  LlamaProtocolFull,
+  NetworkIdType,
+  getNetworkByLlamaId,
+} from '@sonarwatch/portfolio-core';
 
 export function shrinkLlamaProtocol(
   protocol: LlamaProtocolFull
@@ -16,5 +21,18 @@ export function shrinkLlamaProtocol(
     twitter: protocol.twitter
       ? `https://twitter.com/${protocol.twitter}`
       : undefined,
+    networkIds: llamaChainsToNetworkIds(protocol.chains),
   };
+}
+
+export function llamaChainsToNetworkIds(
+  llamaChains: string[]
+): NetworkIdType[] {
+  const networkIds = llamaChains.reduce((acc: NetworkIdType[], chain) => {
+    const network = getNetworkByLlamaId(chain);
+    if (!network) return acc;
+    acc.push(network.id);
+    return acc;
+  }, []);
+  return [...new Set(networkIds)];
 }

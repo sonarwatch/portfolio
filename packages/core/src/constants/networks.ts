@@ -183,6 +183,8 @@ export const networks: Record<NetworkIdType, Network> = {
   [NetworkId.sei]: seiNetwork,
 };
 
+export const networksAsArray = Object.values(networks);
+
 export const evmNetworks: Network[] = Object.values(networks).filter(
   (n) => n.addressSystem === AddressSystem.evm
 );
