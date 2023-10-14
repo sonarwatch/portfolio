@@ -28,6 +28,7 @@ export const bitcoinNetwork: Network = {
   nativeWrapped: null,
   isLive: true,
   coingeckoPlatformId: 'bitcoin',
+  llamaId: 'Bitcoin',
   tokenListUrl:
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.bitcoin.tokenlist.json',
 };
@@ -49,6 +50,7 @@ export const ethereumNetwork: Network = {
   },
   isLive: true,
   coingeckoPlatformId: 'ethereum',
+  llamaId: 'Ethereum',
   tokenListUrl:
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.ethereum.tokenlist.json',
 };
@@ -70,6 +72,7 @@ export const avalancheNetwork: Network = {
   },
   isLive: true,
   coingeckoPlatformId: 'avalanche',
+  llamaId: 'Avalanche',
   tokenListUrl:
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.avalanche.tokenlist.json',
 };
@@ -91,6 +94,7 @@ export const polygonNetwork: Network = {
   },
   isLive: true,
   coingeckoPlatformId: 'polygon-pos',
+  llamaId: 'Polygon',
   tokenListUrl:
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.polygon.tokenlist.json',
 };
@@ -108,6 +112,7 @@ export const solanaNetwork: Network = {
   nativeWrapped: null,
   isLive: true,
   coingeckoPlatformId: 'solana',
+  llamaId: 'Solana',
   tokenListUrl:
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.solana.tokenlist.json',
 };
@@ -125,6 +130,7 @@ export const aptosNetwork: Network = {
   nativeWrapped: null,
   isLive: true,
   coingeckoPlatformId: 'aptos',
+  llamaId: 'Aptos',
   tokenListUrl:
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.aptos.tokenlist.json',
 };
@@ -142,6 +148,7 @@ export const suiNetwork: Network = {
   nativeWrapped: null,
   isLive: true,
   coingeckoPlatformId: 'sui',
+  llamaId: 'Sui',
   tokenListUrl:
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.sui.tokenlist.json',
 };
@@ -160,6 +167,7 @@ export const seiNetwork: Network = {
   nativeWrapped: null,
   isLive: true,
   coingeckoPlatformId: 'sei',
+  llamaId: 'Sei',
   tokenListUrl:
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.sei.tokenlist.json',
 };

@@ -36,6 +36,7 @@ export type Network = {
   } | null;
   isLive: boolean;
   coingeckoPlatformId: string;
+  llamaId: string;
   tokenListUrl: string;
   description?: string;
   website?: string;
