@@ -50,6 +50,7 @@
     "@aave/math-utils": "^1.18.3",
     "@bonfida/spl-name-service": "^1.0.10",
     "@cosmjs/cosmwasm-stargate": "^0.31.1",
+    "@curvefi/api": "^2.48.1",
     "@ethersproject/address": "^5.7.0",
     "@ethersproject/bignumber": "^5.7.0",
     "@ethersproject/bytes": "^5.7.0",
