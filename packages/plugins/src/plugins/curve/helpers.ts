@@ -1,7 +1,13 @@
 import axios, { AxiosResponse } from 'axios';
+import { NetworkId, NetworkIdType } from '@sonarwatch/portfolio-core';
 import { RegistryId } from './types';
-import { CrvNetworkId, apiBaseUrl } from './constants';
+import {
+  CrvNetworkId,
+  apiBaseUrl,
+  crvNetworkIdBySwNetworkId,
+} from './constants';
 import { GetPoolsResponse, PoolDatum } from './getPoolsTypes';
+import { GaugeDatum, GetAllGaugesResponse } from './getAllGaugesTypes';
 
 function getPoolsEndpoints(crvNetworkId: CrvNetworkId) {
   return Object.values(RegistryId).map(
@@ -30,4 +36,33 @@ export async function getPoolsData(
     poolsData.push(...fPoolData);
   }
   return poolsData;
+}
+
+function getGaugeNetworkId(gauge: GaugeDatum): NetworkIdType | null {
+  if (gauge.side_chain === false) return NetworkId.ethereum;
+  const nameFirstPart = gauge.name.split('-').at(0);
+  if (!nameFirstPart) return null;
+
+  const crvNetworkId = CrvNetworkId[nameFirstPart as CrvNetworkId];
+  if (!crvNetworkId) return null;
+  return crvNetworkIdBySwNetworkId[crvNetworkId];
+}
+
+export async function getAllGaugesData(): Promise<
+  Partial<Record<NetworkIdType, GaugeDatum[]>>
+> {
+  const getAllGaugesRes: AxiosResponse<GetAllGaugesResponse> | null =
+    await axios.get(`${apiBaseUrl}/getAllGauges`).catch(() => null);
+  const allGaugesData = getAllGaugesRes?.data.data;
+  if (!allGaugesData) return {};
+
+  const gauges: Partial<Record<NetworkIdType, GaugeDatum[]>> = {};
+  const allGauges = Object.values(allGaugesData);
+  allGauges.forEach((gauge) => {
+    const networkId = getGaugeNetworkId(gauge);
+    if (!networkId) return;
+    if (!gauges[networkId]) gauges[networkId] = [];
+    gauges[networkId]?.push(gauge);
+  });
+  return gauges;
 }

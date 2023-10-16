@@ -12,7 +12,11 @@ export const fooPlatform: Platform = {
   defiLlamaId: 'parent#curve-finance',
 };
 export const poolsCachePrefix = `${platformId}-pools`;
+export const gaugesCachePrefix = `${platformId}-gauges`;
 export const lpAddresesCachePrefix = `${platformId}-lp-addresses`;
+export const poolsAddresesCachePrefix = `${platformId}-pools-addresses`;
+export const gaugesAddresesCachePrefix = `${platformId}-gauges-addresses`;
+
 export const apiBaseUrl = 'https://api.curve.fi/api';
 
 export enum CrvNetworkId {
