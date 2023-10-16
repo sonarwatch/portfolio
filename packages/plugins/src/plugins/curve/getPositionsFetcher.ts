@@ -119,7 +119,7 @@ export function getPositionsFetcher(crvNetworkId: CrvNetworkId): Fetcher {
     }
 
     const elements: PortfolioElementLiquidity[] = [];
-    if (poolLiquidities.length === 0) {
+    if (poolLiquidities.length !== 0) {
       const element: PortfolioElementLiquidity = {
         networkId,
         platformId,
@@ -132,7 +132,7 @@ export function getPositionsFetcher(crvNetworkId: CrvNetworkId): Fetcher {
       };
       elements.push(element);
     }
-    if (gaugeLiquidities.length === 0) {
+    if (gaugeLiquidities.length !== 0) {
       const element: PortfolioElementLiquidity = {
         networkId,
         platformId,
