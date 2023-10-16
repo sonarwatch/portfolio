@@ -136,6 +136,11 @@ import {
   platforms as rocketpoolPlatforms,
 } from './plugins/rocket-pool';
 import { platforms as lidoPlatforms } from './plugins/lido';
+import {
+  jobs as curveJobs,
+  fetchers as curveFetchers,
+  platforms as curvePlatforms,
+} from './plugins/curve';
 
 export {
   walletTokensPlatform,
@@ -181,6 +186,7 @@ export const platforms: Platform[] = [
   ...makerPlatforms,
   ...rocketpoolPlatforms,
   ...lidoPlatforms,
+  ...curvePlatforms,
 ];
 
 // JOBS //
@@ -210,6 +216,7 @@ export const jobs: Job[] = [
   ...liquidswapJobs,
   ...kaminoJobs,
   ...naviJobs,
+  ...curveJobs,
 ];
 
 // FETCHERS //
@@ -235,5 +242,6 @@ export const fetchers: Fetcher[] = [
   ...bucketFetchers,
   ...naviFetchers,
   ...rocketpoolFetchers,
+  ...curveFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
