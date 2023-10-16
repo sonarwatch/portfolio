@@ -21,8 +21,8 @@ import {
   poolsPrefix,
   marketPrefix as prefix
 } from './constants';
-import { MarketJobResult, ObligationAccount, ObligationKeyFields, Pools } from './types';
-import { formatDecimal, getOwnerObject } from './helpers';
+import { MarketJobResult, ObligationAccount, ObligationKeyFields, Pools, UserObligations } from './types';
+import { formatDecimal, getOwnerObject, shortenAddress } from './helpers';
 import { getClientSui } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import runInBatch from "../../utils/misc/runInBatch";
@@ -30,10 +30,6 @@ import runInBatch from "../../utils/misc/runInBatch";
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
   const elements: PortfolioElement[] = [];
-  const borrowedAssets: PortfolioAsset[] = [];
-  const borrowedYields: Yield[][] = [];
-  const suppliedAssets: PortfolioAsset[] = [];
-  const suppliedYields: Yield[][] = [];
   const rewardAssets: PortfolioAsset[] = [];
 
   const coinTypeMetadata = await cache.getItem<Pools>(poolsKey, {
@@ -62,13 +58,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   ]);
   if (!marketData || ownedObligationKeys.length === 0) return [];
 
-  const collaterals: { [k: string]: number; } = {};
-  const debts: { [k: string]: number; } = {};
+  const userObligations: UserObligations = {};
 
   const debtsAndCollateralCalculationPromises = ownedObligationKeys.map((obligationKey) => async () => {
     const obligationKeyFields = getObjectFields(obligationKey) as ObligationKeyFields;
     if (!obligationKeyFields) return;
     const obligationId = obligationKeyFields.ownership.fields.of;
+    if(!userObligations[obligationId]) {
+      userObligations[obligationId] = {
+        collaterals: {},
+        debts: {},
+      };
+    }
     const account = getObjectFields(await client.getObject({
       id: obligationId,
       options: {
@@ -84,8 +85,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     // get user collateral
     const accountCollateralsAssetsPromises = accountCollateralsAssets.map(({ fields }) => async () => {
-      if (!collaterals[fields.name]) {
-        collaterals[fields.name] = 0;
+      if (!userObligations[obligationId].collaterals[fields.name]) {
+        userObligations[obligationId].collaterals[fields.name] = 0;
       }
       const asset = getObjectFields(await client.getDynamicFieldObject({
         parentId: accountCollateralsId,
@@ -97,7 +98,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         }
       }));
       if (!asset) return;
-      collaterals[fields.name] += Number(asset['value'].fields.amount ?? 0);
+      userObligations[obligationId].collaterals[fields.name] += Number(asset['value'].fields.amount ?? 0);
     });
 
     // get user debt
@@ -108,8 +109,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const market = marketData[coinName];
       if (!market) return
 
-      if (!debts[fields.name]) {
-        debts[fields.name] = 0;
+      if (!userObligations[obligationId].debts[fields.name]) {
+        userObligations[obligationId].debts[fields.name] = 0;
       }
       const asset = getObjectFields(await client.getDynamicFieldObject({
         parentId: accountDebtsId,
@@ -121,7 +122,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         }
       }));
       if (!asset) return;
-      debts[fields.name] += new Decimal(Number(asset['value'].fields.amount ?? 0)).mul(market.growthInterest + 1).toNumber();
+      userObligations[obligationId].debts[fields.name] += new Decimal(Number(asset['value'].fields.amount ?? 0)).mul(market.growthInterest + 1).toNumber();
     });
 
     await Promise.all([runInBatch(accountCollateralsAssetsPromises, 5), runInBatch(accountDebtsAssetsPromises, 5)]); // calculate collateral and debts at once, 3 coinType per batch
@@ -137,60 +138,66 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     tokenPrices.set(r.address, r);
   });
 
-  for (const coinType of Object.keys(collaterals)) {
-    const metadata = ctmValues.find((value) => value.coinType === normalizeStructTag(coinType));
-    const address = formatMoveTokenAddress(`0x${coinType}`);
-    suppliedAssets.push(
-      tokenPriceToAssetToken(
+  for(const account of Object.keys(userObligations)) {
+    const borrowedAssets: PortfolioAsset[] = [];
+    const borrowedYields: Yield[][] = [];
+    const suppliedAssets: PortfolioAsset[] = [];
+    const suppliedYields: Yield[][] = [];
+
+    const { collaterals, debts } = userObligations[account];
+
+    for (const coinType of Object.keys(collaterals)) {
+      const metadata = ctmValues.find((value) => value.coinType === normalizeStructTag(coinType));
+      const address = formatMoveTokenAddress(`0x${coinType}`);
+      suppliedAssets.push(
+        tokenPriceToAssetToken(
+          address,
+          formatDecimal(collaterals[coinType], metadata?.metadata?.decimals ?? 0),
+          NetworkId.sui,
+          tokenPrices.get(address)
+        )
+      );
+    }
+    for (const coinType of Object.keys(debts)) {
+      const metadata = ctmValues.find((value) => value.coinType === normalizeStructTag(coinType));
+      const coinName = metadata?.metadata?.symbol.toLowerCase() ?? '';
+      const market = marketData[coinName];
+      if (!market) continue;
+      const address = formatMoveTokenAddress(`0x${coinType}`);
+      borrowedAssets.push(tokenPriceToAssetToken(
         address,
-        formatDecimal(collaterals[coinType], metadata?.metadata?.decimals ?? 0),
+        formatDecimal(debts[coinType], metadata?.metadata?.decimals ?? 0),
         NetworkId.sui,
         tokenPrices.get(address)
-      )
-    );
-  }
-
-  for (const coinType of Object.keys(debts)) {
-    const metadata = ctmValues.find((value) => value.coinType === normalizeStructTag(coinType));
-    const coinName = metadata?.metadata?.symbol.toLowerCase() ?? '';
-    const market = marketData[coinName];
-    if (!market) continue;
-    const address = formatMoveTokenAddress(`0x${coinType}`);
-    borrowedAssets.push(tokenPriceToAssetToken(
-      address,
-      formatDecimal(debts[coinType], metadata?.metadata?.decimals ?? 0),
-      NetworkId.sui,
-      tokenPrices.get(address)
-    ));
-    borrowedYields.push([
-      {
-        apr: market.borrowInterestRate,
-        apy: aprToApy(market.borrowInterestRate)
-      }
-    ]);
-  }
-
-  const { borrowedValue, collateralRatio, suppliedValue, value } = getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
-
-  elements.push({
-    type: PortfolioElementType.borrowlend,
-    networkId: NetworkId.sui,
-    platformId,
-    label: 'Lending',
-    name: 'Scallop Obligations',
-    value,
-    data: {
-      borrowedAssets,
-      borrowedValue,
-      borrowedYields,
-      suppliedAssets,
-      suppliedValue,
-      suppliedYields,
-      collateralRatio,
-      rewardAssets,
-      value,
+      ));
+      borrowedYields.push([
+        {
+          apr: market.borrowInterestRate,
+          apy: aprToApy(market.borrowInterestRate)
+        }
+      ]);
     }
-  });
+    const { borrowedValue, collateralRatio, suppliedValue, value } = getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
+    elements.push({
+      type: PortfolioElementType.borrowlend,
+      networkId: NetworkId.sui,
+      platformId,
+      label: 'Lending',
+      name: `${shortenAddress(account, 5, 3)} Obligations`,
+      value,
+      data: {
+        borrowedAssets,
+        borrowedValue,
+        borrowedYields,
+        suppliedAssets,
+        suppliedValue,
+        suppliedYields,
+        collateralRatio,
+        rewardAssets,
+        value,
+      }
+    });
+  }
   return elements;
 };
 

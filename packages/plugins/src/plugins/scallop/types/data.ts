@@ -6,6 +6,13 @@ export type UserLending = {
     amount: BigNumber;
 };
 
+export type UserObligations = {
+    [T in string]: {
+        collaterals: {[K in string]: number},
+        debts: {[K in string]: number}
+    }
+}
+
 export type Pools = {
     [T in string]: CoinTypeMetadata
 }
