@@ -4,12 +4,12 @@ import { Job } from '../../Job';
 import { CrvNetworkId, fooPlatform } from './constants';
 import poolsJob from './poolsJob';
 import gaugesJob from './gaugesJob';
-import { getPoolsPositionFetcher } from './getPoolsPositionFetcher';
+import { getPositionsFetcher } from './getPositionsFetcher';
 
 export const platforms: Platform[] = [fooPlatform];
 export const jobs: Job[] = [poolsJob, gaugesJob];
 export const fetchers: Fetcher[] = [
-  getPoolsPositionFetcher(CrvNetworkId.ethereum),
-  getPoolsPositionFetcher(CrvNetworkId.polygon),
-  getPoolsPositionFetcher(CrvNetworkId.avalanche),
+  getPositionsFetcher(CrvNetworkId.ethereum),
+  getPositionsFetcher(CrvNetworkId.polygon),
+  getPositionsFetcher(CrvNetworkId.avalanche),
 ];

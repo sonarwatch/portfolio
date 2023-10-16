@@ -3,9 +3,9 @@ import { Job, JobExecutor } from '../../Job';
 import {
   poolsCachePrefix,
   platformId,
-  lpAddresesCachePrefix,
   crvNetworkIds,
   crvNetworkIdBySwNetworkId,
+  poolsByAddressPrefix,
 } from './constants';
 import { getPoolsData } from './helpers';
 
@@ -17,16 +17,25 @@ const executor: JobExecutor = async (cache: Cache) => {
     const pools = await getPoolsData(crvNetworkId);
     for (let j = 0; j < pools.length; j++) {
       const pool = pools[j];
-      await cache.setItem(pool.lpTokenAddress, pool, {
+      await cache.setItem(pool.address, pool, {
         prefix: poolsCachePrefix,
         networkId,
       });
     }
-    const lpTokenAddresses = pools.map((p) => p.lpTokenAddress);
-    await cache.setItem(lpAddresesCachePrefix, lpTokenAddresses, {
-      prefix: lpAddresesCachePrefix,
-      networkId,
+
+    const poolsByAddresses: Map<string, string> = new Map();
+    pools.forEach((p) => {
+      poolsByAddresses.set(p.lpTokenAddress, p.address);
+      if (p.gaugeAddress) poolsByAddresses.set(p.gaugeAddress, p.address);
     });
+    await cache.setItem(
+      poolsByAddressPrefix,
+      Object.fromEntries(poolsByAddresses),
+      {
+        prefix: poolsByAddressPrefix,
+        networkId,
+      }
+    );
   }
 };
 const job: Job = {
