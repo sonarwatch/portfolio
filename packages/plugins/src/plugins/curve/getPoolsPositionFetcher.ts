@@ -52,6 +52,7 @@ export function getPoolsPositionFetcher(crvNetworkId: CrvNetworkId): Fetcher {
       nonZeroAmounts.push(new BigNumber((r.result as bigint).toString()));
       nonZeroAddresses.push(lpAddresses[i]);
     });
+    if (nonZeroAddresses.length === 0) return [];
 
     const pools = await cache.getItems<PoolDatum>(nonZeroAddresses, {
       prefix: poolsCachePrefix,
