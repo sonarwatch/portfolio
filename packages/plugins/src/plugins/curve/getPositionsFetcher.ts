@@ -4,6 +4,7 @@ import {
   PortfolioElementLiquidity,
   PortfolioElementType,
   PortfolioLiquidity,
+  formatTokenAddress,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import { getAddress } from 'viem';
@@ -95,7 +96,7 @@ export function getPositionsFetcher(crvNetworkId: CrvNetworkId): Fetcher {
           networkId,
           type: PortfolioAssetType.token,
           data: {
-            address: coin.address,
+            address: formatTokenAddress(coin.address, networkId),
             amount,
             price: coin.usdPrice || null,
           },
