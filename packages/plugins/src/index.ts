@@ -2,6 +2,7 @@ import { Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from './Fetcher';
 import { Job } from './Job';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
+import orphanPlatorms from './orphanPlatorms';
 import {
   platforms as tokensPlatforms,
   jobs as tokensJobs,
@@ -156,6 +157,7 @@ export * from './plugins/llama-protocols';
 
 // PLATFORMS //
 export const platforms: Platform[] = [
+  ...orphanPlatorms,
   ...aavePlatforms,
   ...orcaPlatforms,
   ...cetusPlatforms,
