@@ -15,9 +15,10 @@ import {
   reserveParentId,
   reservesKey,
   reservesPrefix,
+  indexFactor,
+  rateFactor,
 } from './constants';
 import { ReserveData } from './types';
-import { indexFactor, rateFactor } from './collateralFetcher';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();

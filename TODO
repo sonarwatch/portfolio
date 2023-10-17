@@ -4,6 +4,7 @@
 - Ajout de la fonction cache.setTokensPricesSource(), utile pour des AMM
 - Auto Initialisation du cache dans portolfio-api
 - Verifier qu'une address a deja passé au moins un TX avant de tout fetch
+- Fix curve AAVE pools (0x7f90122BF0700F9E7e1F688fe926940E8839F353 https://api.curve.fi/api/getPools/avalanche)
 
 - Lybra Finance
 - Bianance staked ETH
