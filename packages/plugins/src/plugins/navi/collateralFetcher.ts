@@ -21,8 +21,8 @@ import { getClientSui } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { Balance, ReserveData } from './types';
 
-const indexFactor = 18;
-const rateFactor = 27;
+export const indexFactor = 18;
+export const rateFactor = 27;
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
