@@ -92,6 +92,43 @@ const executor: JobExecutor = async (cache: Cache) => {
       prefix: lendingPoolsPrefix,
       networkId,
     });
+    if (lendingConfig.version !== 3) continue;
+
+    const underlyingAssetPrices = await cache.getTokenPrices(
+      lendingData.formattedReserves.map((r) => r.underlyingAsset),
+      networkId
+    );
+    for (let j = 0; j < lendingData.formattedReserves.length; j++) {
+      const formattedReserve = lendingData.formattedReserves[j];
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const aTokenAddress = (formattedReserve as any).aTokenAddress as string;
+      if (!aTokenAddress) continue;
+
+      const underlyingAssetPrice = underlyingAssetPrices[j];
+      if (!underlyingAssetPrice) continue;
+
+      await cache.setTokenPriceSource({
+        id: platformId,
+        weight: 1,
+        address: aTokenAddress,
+        networkId,
+        platformId,
+        decimals: formattedReserve.decimals,
+        price: underlyingAssetPrice.price,
+        underlyings: [
+          {
+            address: formattedReserve.underlyingAsset,
+            amountPerLp: 1,
+            decimals: formattedReserve.decimals,
+            networkId,
+            price: underlyingAssetPrice.price,
+          },
+        ],
+        elementName: lendingConfig.elementName,
+        timestamp: Date.now(),
+      });
+    }
   }
 };
 

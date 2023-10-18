@@ -11,6 +11,7 @@ export type LendingConfig = {
   lendingPoolAddressProvider: string;
   uiIncentiveDataProviderAddress: string;
   uiPoolDataProviderAddress: string;
+  version: number;
 };
 
 export type LendingData = {
