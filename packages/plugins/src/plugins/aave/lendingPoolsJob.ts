@@ -108,7 +108,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         poolName: elementName,
       };
 
-      await cache.setItem(`${elementName}-${tokenAddress}`, rate, {
+      await cache.setItem(`${elementName.trim()}-${tokenAddress}`, rate, {
         prefix: borrowLendRatesPrefix,
         networkId,
       });
