@@ -20,15 +20,15 @@
     },
     "run-fetcher": {
       "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/run-fetcher.ts",
-      "dependsOn": ["build"]
+      "dependsOn": []
     },
     "run-fetchers-by-network-id": {
       "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/run-fetchers-by-network-id.ts",
-      "dependsOn": ["build"]
+      "dependsOn": []
     },
     "run-job": {
       "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/run-job.ts",
-      "dependsOn": ["build"]
+      "dependsOn": []
     },
     "publish": {
       "command": "node tools/scripts/publish.mjs plugins {args.ver} {args.tag}",
