@@ -5,6 +5,7 @@ import {
   PortfolioElementType,
   Yield,
   getElementLendingValues,
+  zeroAddress,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -23,9 +24,7 @@ import { cdpManagerAbi, proxyRegAbi, vatAbi } from './abis';
 import { getDSA } from '../../utils/evm/getDSA';
 import { IlkData } from './type';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-
-const zeroAddress = '0x0000000000000000000000000000000000000000';
-const zero = BigInt(0);
+import { zeroBigInt } from '../../utils/misc/constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   // Get the user's proxy address
@@ -56,7 +55,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   let nexts: bigint[] = [];
   let step = 0;
   firstResults.forEach((firstResult) => {
-    if (!firstResult.result || firstResult.result === BigInt(0)) return;
+    if (!firstResult.result || firstResult.result === zeroBigInt) return;
     nexts.push(firstResult.result);
     cdps.push(firstResult.result);
   });
@@ -73,7 +72,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     nexts = [];
     for (let i = 0; i < listResults.length; i++) {
       const listResult = listResults[i];
-      if (!listResult.result || listResult.result[1] === BigInt(0)) continue;
+      if (!listResult.result || listResult.result[1] === zeroBigInt) continue;
       nexts.push(listResult.result[1]);
       cdps.push(listResult.result[1]);
     }
@@ -140,7 +139,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       if (!ilk) continue;
 
       // Supplied
-      if (ink !== zero) {
+      if (ink !== zeroBigInt) {
         const amount = new BigNumber(ink.toString())
           .div(10 ** ilk.dec)
           .toNumber();
@@ -155,7 +154,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       }
 
       // Borrowed
-      if (art !== zero) {
+      if (art !== zeroBigInt) {
         const amount = new BigNumber(art.toString())
           .times(new BigNumber(ilk.rate))
           .div(10 ** 27)

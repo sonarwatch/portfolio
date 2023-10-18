@@ -20,8 +20,7 @@ import { getEvmClient } from '../../utils/clients';
 import { PoolDatum } from './getPoolsTypes';
 import { balanceOfAbI } from './abis';
 import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
-
-const zero = BigInt(0);
+import { zeroBigInt } from '../../utils/misc/constants';
 
 export function getPositionsFetcher(crvNetworkId: CrvNetworkId): Fetcher {
   const networkId = crvNetworkIdBySwNetworkId[crvNetworkId];
@@ -51,7 +50,7 @@ export function getPositionsFetcher(crvNetworkId: CrvNetworkId): Fetcher {
     const balanceOfByAddress: Map<string, BigNumber> = new Map();
     balanceOfResults.forEach((r, i) => {
       if (r.status === 'failure') return;
-      if ((r.result as bigint) === zero) return;
+      if ((r.result as bigint) === zeroBigInt) return;
       const address = addresses[i];
       const poolAddress = poolsByAddress[address];
       if (!poolAddress) return;
