@@ -3,10 +3,11 @@ import { SuiObjectDataFilter, getObjectFields, getObjectType, normalizeStructTag
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { marketCoinPackageId, marketKey, platformId, spoolAccountPackageId, marketPrefix as prefix, poolsKey, poolsPrefix } from './constants';
+import { marketCoinPackageId, marketKey, platformId, spoolAccountPackageId, marketPrefix as prefix, poolsKey, poolsPrefix, spoolsKey, spoolsPrefix } from './constants';
 import { getOwnerObject } from './helpers';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { MarketJobResult, Pools, UserLending } from './types';
+import { MarketJobResult, Pools, SpoolJobResult, UserLending, UserStakeAccounts } from './types';
+
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elements: PortfolioElement[] = [];
@@ -20,11 +21,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     prefix: poolsPrefix,
     networkId: NetworkId.sui
   });
-  if(!pools) return [];
-  
+
+  if (!pools) return [];
+
   const poolValues = Object.values(pools);
-  if(poolValues.length === 0) return [];
-  
+  if (poolValues.length === 0) return [];
+
   const filterOwnerObject: SuiObjectDataFilter = {
     MatchAny: [
       ...poolValues.map((value) => ({
@@ -36,15 +38,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     ]
   };
 
-  const [allOwnedObjects, marketData] = await Promise.all([
+  const [allOwnedObjects, marketData, spoolData] = await Promise.all([
     getOwnerObject(owner, { filter: filterOwnerObject }),
     cache.getItem<MarketJobResult>(marketKey, {
       prefix,
       networkId: NetworkId.sui
+    }),
+    cache.getItem<SpoolJobResult>(spoolsKey, {
+      prefix: spoolsPrefix,
+      networkId: NetworkId.sui
     })
   ])
-  if (!marketData || allOwnedObjects.length === 0) return [];
-
+  if (!marketData || allOwnedObjects.length === 0 || !spoolData) return [];
+  if (Object.keys(marketData).length === 0 || Object.keys(spoolData).length === 0) return [];
   const lendingRate: Map<string, number> = new Map();
 
   Object.keys(pools).forEach((coinName: string) => {
@@ -59,23 +65,49 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
 
   // get user lending assets
-  const lendingAssets: { [key: string]:  UserLending } = {};
+  const lendingAssets: { [key: string]: UserLending } = {};
+  const stakedAccount: UserStakeAccounts = {};
   for (const ownedMarketCoin of allOwnedObjects) {
     const objType = getObjectType(ownedMarketCoin);
     if (!objType) continue;
-    
+
     const parsed = parseStructTag(objType);
     const coinType = normalizeStructTag(objType.substring(objType.indexOf('MarketCoin<') + 11, objType.indexOf('>')));
     const fields = getObjectFields(ownedMarketCoin);
     const coinName = poolValues.find((value) => value.coinType === coinType)?.metadata?.symbol.toLowerCase();
-    
+
     if (!coinName || !fields) continue;
     if (!lendingAssets[coinName]) {
       lendingAssets[coinName] = { coinType, amount: new BigNumber(0) };
     }
-    
+    if (fields['stakes']) {
+      if (!stakedAccount[`s${coinName}`]) {
+        stakedAccount[`s${coinName}`] = [];
+      }
+      stakedAccount[`s${coinName}`].push({ points: fields['points'], index: fields['index'], stakes: fields['stakes'] })
+    }
     const balance = BigNumber((parsed.name === 'Coin' ? fields['balance'] : fields['stakes']) ?? 0);
     lendingAssets[coinName] = { ...lendingAssets[coinName], amount: lendingAssets[coinName].amount.plus(balance) };
+  }
+
+  let pendingReward = BigNumber(0);
+
+  for (const spoolCoin of Object.keys(stakedAccount)) {
+    for (const { points, index, stakes } of stakedAccount[spoolCoin]) {
+      if (spoolData[spoolCoin]) {
+        const baseIndexRate = 1_000_000_000;
+        const increasedPointRate = spoolData[spoolCoin].currentPointIndex
+          ? BigNumber(BigNumber(spoolData[spoolCoin].currentPointIndex).minus(index)).dividedBy(baseIndexRate)
+          : 0
+        pendingReward = pendingReward.plus(
+          BigNumber(stakes)
+            .multipliedBy(increasedPointRate)
+            .plus(points)
+            .multipliedBy(spoolData[spoolCoin].exchangeRateNumerator)
+            .dividedBy(spoolData[spoolCoin].exchangeRateDenominator)
+        );
+      }
+    }
   }
 
   const tokenAddresses = Object.values(lendingAssets).map((value) => value.coinType);
@@ -87,17 +119,28 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     tokenPrices.set(r.address, r);
   })
 
+  const rewardTokenAddress = formatMoveTokenAddress(pools['sui'].coinType);
+  const rewardTokenPrice = tokenPrices.get(rewardTokenAddress);    
+
+  const rewardAssetToken = tokenPriceToAssetToken(
+    rewardTokenAddress,
+    pendingReward.dividedBy(10 ** (pools['sui']?.metadata?.decimals ?? 0)).toNumber(),
+    NetworkId.sui,
+    rewardTokenPrice
+  );
+  rewardAssets.push(rewardAssetToken);
+
   for (const [assetName, assetValue] of Object.entries(lendingAssets)) {
     const market = marketData[assetName];
     if (!market) continue;
-    
+
     const addressMove = formatMoveTokenAddress(assetValue.coinType);
     const tokenPrice = tokenPrices.get(addressMove);    
     const lendingAmount = assetValue.amount
       .multipliedBy(lendingRate.get(assetName) ?? 0)
       .dividedBy(10 ** (pools[assetName]?.metadata?.decimals ?? 0))
       .toNumber();
-    
+
     const assetToken = tokenPriceToAssetToken(
       addressMove,
       lendingAmount,

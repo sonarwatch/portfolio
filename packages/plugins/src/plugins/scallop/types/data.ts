@@ -13,6 +13,10 @@ export type UserObligations = {
     }
 }
 
+export type UserStakeAccounts = {
+    [T in string]: { points: string, index: string, stakes: string }[];
+}
+
 export type Pools = {
     [T in string]: CoinTypeMetadata
 }

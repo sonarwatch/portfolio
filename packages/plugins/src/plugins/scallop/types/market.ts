@@ -1,4 +1,5 @@
 import { ObjectContentFields } from "@mysten/sui.js";
+import BigNumber from "bignumber.js";
 
 export type BalanceSheet = {
   // [k in CoinNames]?: ObjectContentFields;
@@ -161,6 +162,16 @@ export type MarketJobData = {
   marketCoinSupply: number;
   reserve: number;
 };
+
+export type SpoolJobData = {
+  currentPointIndex: BigNumber;
+  exchangeRateNumerator: number;
+  exchangeRateDenominator: number
+}
+
+export type SpoolJobResult = {
+  [T in string]: SpoolJobData;
+}
 
 export type MarketJobResult = {
   [T in string]: MarketJobData

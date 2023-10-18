@@ -9,6 +9,13 @@ export interface AddressInfo {
 
 export interface Network {
   core: Core;
+  spool: Spool;
+}
+
+export interface Spool {
+  id: string;
+  adminCap: string;
+  pools: Map<string, SpoolCoin>;
 }
 
 export interface Core {
@@ -27,6 +34,11 @@ export interface Coin {
   metaData: string;
   treasury: string;
   oracle: CoinOracle;
+}
+
+export interface SpoolCoin {
+  id: string;
+  rewardPoolId: string;
 }
 
 export interface CoinOracle {
