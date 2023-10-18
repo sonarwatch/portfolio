@@ -129,8 +129,6 @@ const executor: JobExecutor = async (cache: Cache) => {
       networkId,
     });
 
-    // aTokens (v3 only)
-    if (lendingConfig.version !== 3) continue;
     const underlyingAssetPrices = await cache.getTokenPrices(
       lendingData.formattedReserves.map((r) => r.underlyingAsset),
       networkId
