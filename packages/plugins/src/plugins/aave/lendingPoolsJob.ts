@@ -10,7 +10,6 @@ import {
   aprToApy,
   borrowLendRatesPrefix,
 } from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { lendingConfigs, platformId } from './constants';
@@ -31,6 +30,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       lendingPoolAddressProvider,
       chainId,
       networkId,
+      elementName,
     } = lendingConfig;
 
     const rpcEndpoint = getRpcEndpoint(networkId);
@@ -83,22 +83,15 @@ const executor: JobExecutor = async (cache: Cache) => {
       marketReferencePriceInUsd,
       reserveIncentives,
     });
-    const poolName = lendingConfig.elementName;
 
+    // Borrow Lend Rates
     for (const formattedReserve of formattedReserves) {
       if (!formattedReserve.isActive) continue;
       const tokenAddress = formattedReserve.underlyingAsset;
-      const lendingApr = new BigNumber(formattedReserve.supplyAPR).toNumber();
-      const borrowingApr = new BigNumber(
-        formattedReserve.variableBorrowAPR
-      ).toNumber();
-      const depositedAmount = new BigNumber(
-        formattedReserve.totalLiquidity
-      ).toNumber();
-      const borrowedAmount = new BigNumber(
-        formattedReserve.totalDebt
-      ).toNumber();
-
+      const lendingApr = Number(formattedReserve.supplyAPR);
+      const borrowingApr = Number(formattedReserve.variableBorrowAPR);
+      const depositedAmount = Number(formattedReserve.totalLiquidity);
+      const borrowedAmount = Number(formattedReserve.totalDebt);
       const rate: BorrowLendRate = {
         tokenAddress,
         borrowYield: {
@@ -112,10 +105,10 @@ const executor: JobExecutor = async (cache: Cache) => {
         },
         depositedAmount,
         platformId,
-        poolName,
+        poolName: elementName,
       };
 
-      await cache.setItem(`${poolName}-${tokenAddress}`, rate, {
+      await cache.setItem(`${elementName}-${tokenAddress}`, rate, {
         prefix: borrowLendRatesPrefix,
         networkId,
       });
@@ -135,8 +128,9 @@ const executor: JobExecutor = async (cache: Cache) => {
       prefix: lendingPoolsPrefix,
       networkId,
     });
-    if (lendingConfig.version !== 3) continue;
 
+    // aTokens (v3 only)
+    if (lendingConfig.version !== 3) continue;
     const underlyingAssetPrices = await cache.getTokenPrices(
       lendingData.formattedReserves.map((r) => r.underlyingAsset),
       networkId
@@ -168,7 +162,7 @@ const executor: JobExecutor = async (cache: Cache) => {
             price: underlyingAssetPrice.price,
           },
         ],
-        elementName: lendingConfig.elementName,
+        elementName,
         timestamp: Date.now(),
       });
     }
