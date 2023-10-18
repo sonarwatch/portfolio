@@ -118,6 +118,7 @@ import {
 import {
   jobs as makerJobs,
   platforms as makerPlatforms,
+  fetchers as makerFetchers,
 } from './plugins/maker';
 import {
   jobs as kaminoJobs,
@@ -245,5 +246,6 @@ export const fetchers: Fetcher[] = [
   ...naviFetchers,
   ...rocketpoolFetchers,
   ...curveFetchers,
+  ...makerFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
