@@ -1,3 +1,5 @@
+import { TokenPrice } from '@sonarwatch/portfolio-core';
+
 export type GetPoolsResponse = {
   success: boolean;
   data: GetPoolsData;
@@ -5,12 +7,12 @@ export type GetPoolsResponse = {
 };
 
 export type GetPoolsData = {
-  poolData: PoolDatum[];
+  poolData: PoolDatumRaw[];
   tvlAll: number;
   tvl: number;
 };
 
-export type PoolDatum = {
+export type PoolDatumRaw = {
   id: string;
   address: string;
   coinsAddresses: string[];
@@ -39,6 +41,10 @@ export type PoolDatum = {
   zapAddress?: string;
   underlyingCoins?: Coin[];
   priceOracle?: number;
+};
+
+export type PoolDatum = PoolDatumRaw & {
+  coinsTokenPrices: Record<string, TokenPrice>;
 };
 
 export enum AssetTypeName {

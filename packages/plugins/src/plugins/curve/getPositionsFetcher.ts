@@ -1,10 +1,8 @@
 import {
   PortfolioAssetToken,
-  PortfolioAssetType,
   PortfolioElementLiquidity,
   PortfolioElementType,
   PortfolioLiquidity,
-  formatTokenAddress,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import { getAddress } from 'viem';
@@ -21,6 +19,7 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getEvmClient } from '../../utils/clients';
 import { PoolDatum } from './getPoolsTypes';
 import { balanceOfAbI } from './abis';
+import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
 
 const zero = BigInt(0);
 
@@ -87,22 +86,22 @@ export function getPositionsFetcher(crvNetworkId: CrvNetworkId): Fetcher {
       const coins = pool.underlyingCoins || pool.coins;
       const supply = new BigNumber(pool.totalSupply);
       const shares = balance.div(supply);
-      const assets: PortfolioAssetToken[] = coins.map((coin) => {
-        const amount = new BigNumber(coin.poolBalance)
-          .times(shares)
-          .div(10 ** Number(coin.decimals))
-          .toNumber();
-        return {
-          networkId,
-          type: PortfolioAssetType.token,
-          data: {
-            address: formatTokenAddress(coin.address, networkId),
+      const assets: PortfolioAssetToken[] = coins
+        .map((coin) => {
+          const amount = new BigNumber(coin.poolBalance)
+            .times(shares)
+            .div(10 ** Number(coin.decimals))
+            .toNumber();
+          const tokenPrice = pool.coinsTokenPrices[coin.address];
+          return tokenPriceToAssetTokens(
+            coin.address,
             amount,
-            price: coin.usdPrice || null,
-          },
-          value: coin.usdPrice ? coin.usdPrice * amount : null,
-        };
-      });
+            networkId,
+            tokenPrice,
+            coin.usdPrice || undefined
+          );
+        })
+        .flat();
 
       const value = getUsdValueSum(assets.map((a) => a.value));
       const liquidity: PortfolioLiquidity = {

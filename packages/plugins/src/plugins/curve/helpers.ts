@@ -6,7 +6,7 @@ import {
   apiBaseUrl,
   crvNetworkIdBySwNetworkId,
 } from './constants';
-import { GetPoolsResponse, PoolDatum } from './getPoolsTypes';
+import { GetPoolsResponse, PoolDatumRaw } from './getPoolsTypes';
 import { GaugeDatum, GetAllGaugesResponse } from './getAllGaugesTypes';
 
 function getPoolsEndpoints(crvNetworkId: CrvNetworkId) {
@@ -17,8 +17,8 @@ function getPoolsEndpoints(crvNetworkId: CrvNetworkId) {
 
 export async function getPoolsData(
   crvNetworkId: CrvNetworkId
-): Promise<PoolDatum[]> {
-  const poolsData: PoolDatum[] = [];
+): Promise<PoolDatumRaw[]> {
+  const poolsData: PoolDatumRaw[] = [];
   const endpoints = getPoolsEndpoints(crvNetworkId);
   for (let i = 0; i < endpoints.length; i++) {
     const endpoint = endpoints[i];
