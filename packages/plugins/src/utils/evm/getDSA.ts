@@ -1,37 +1,12 @@
-import Web3 from 'web3-v1';
 import DSA, { ChainId } from 'dsa-connect';
-import {
-  EvmNetworkIdType,
-  RpcEndpoint,
-  networks,
-} from '@sonarwatch/portfolio-core';
-import { getBasicAuthHeaders } from '../misc/getBasicAuthHeaders';
+import { EvmNetworkIdType, networks } from '@sonarwatch/portfolio-core';
+import { getEvmWeb3V1Client } from '../clients';
 
-export function getDSA(networkId: EvmNetworkIdType, rpcEndpoint: RpcEndpoint) {
-  const authHeaders = rpcEndpoint.basicAuth
-    ? getBasicAuthHeaders(
-        rpcEndpoint.basicAuth.username,
-        rpcEndpoint.basicAuth.password
-      )
-    : undefined;
-  const httpHeaders = authHeaders
-    ? [
-        {
-          name: 'Authorization',
-          value: authHeaders.Authorization,
-        },
-      ]
-    : undefined;
-
+export function getDSA(networkId: EvmNetworkIdType) {
   const network = networks[networkId];
-
   return new DSA(
     {
-      web3: new Web3(
-        new Web3.providers.HttpProvider(rpcEndpoint.url, {
-          headers: httpHeaders,
-        })
-      ),
+      web3: getEvmWeb3V1Client(networkId),
     },
     network.chainId as ChainId
   );
