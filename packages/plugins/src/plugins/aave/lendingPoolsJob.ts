@@ -5,6 +5,12 @@ import {
   UiPoolDataProvider,
 } from '@aave/contract-helpers';
 import { formatReservesAndIncentives } from '@aave/math-utils';
+import {
+  BorrowLendRate,
+  aprToApy,
+  borrowLendRatesPrefix,
+} from '@sonarwatch/portfolio-core';
+import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { lendingConfigs, platformId } from './constants';
@@ -77,6 +83,43 @@ const executor: JobExecutor = async (cache: Cache) => {
       marketReferencePriceInUsd,
       reserveIncentives,
     });
+    const poolName = lendingConfig.elementName;
+
+    for (const formattedReserve of formattedReserves) {
+      if (!formattedReserve.isActive) continue;
+      const tokenAddress = formattedReserve.underlyingAsset;
+      const lendingApr = new BigNumber(formattedReserve.supplyAPR).toNumber();
+      const borrowingApr = new BigNumber(
+        formattedReserve.variableBorrowAPR
+      ).toNumber();
+      const depositedAmount = new BigNumber(
+        formattedReserve.totalLiquidity
+      ).toNumber();
+      const borrowedAmount = new BigNumber(
+        formattedReserve.totalDebt
+      ).toNumber();
+
+      const rate: BorrowLendRate = {
+        tokenAddress,
+        borrowYield: {
+          apy: aprToApy(borrowingApr),
+          apr: borrowingApr,
+        },
+        borrowedAmount,
+        depositYield: {
+          apy: aprToApy(lendingApr),
+          apr: lendingApr,
+        },
+        depositedAmount,
+        platformId,
+        poolName,
+      };
+
+      await cache.setItem(`${poolName}-${tokenAddress}`, rate, {
+        prefix: borrowLendRatesPrefix,
+        networkId,
+      });
+    }
 
     const lendingData: LendingData = {
       lendingPoolAddressProvider,
