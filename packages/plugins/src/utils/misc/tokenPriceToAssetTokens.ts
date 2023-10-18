@@ -9,10 +9,13 @@ export default function tokenPriceToAssetTokens(
   address: string,
   amount: number,
   networkId: NetworkIdType,
-  tokenPrice?: TokenPrice | null
+  tokenPrice?: TokenPrice | null,
+  price?: number
 ): PortfolioAssetToken[] {
   if (!tokenPrice || !tokenPrice.underlyings)
-    return [tokenPriceToAssetToken(address, amount, networkId, tokenPrice)];
+    return [
+      tokenPriceToAssetToken(address, amount, networkId, tokenPrice, price),
+    ];
   return tokenPrice.underlyings.map((tokenPriceUnderlying) =>
     tokenPriceToAssetToken(
       tokenPriceUnderlying.address,
