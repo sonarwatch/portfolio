@@ -31,5 +31,29 @@ const otphanPlatforms: Platform[] = [
     name: 'Coinbase Staked ETH',
     image: 'https://sonar.watch/img/platforms/coinbasestakedeth.png',
   },
+  {
+    id: 'jito',
+    defiLlamaId: 'jito',
+    name: 'Jito',
+    image: 'https://sonar.watch/img/platforms/jito.png',
+  },
+  {
+    id: 'blaze',
+    defiLlamaId: 'blazestake',
+    name: 'Blaze Staked SOL',
+    image: 'https://sonar.watch/img/platforms/blaze.png',
+  },
+  {
+    id: 'frax',
+    defiLlamaId: 'frax-ether',
+    name: 'Frax Staked ETH',
+    image: 'https://sonar.watch/img/platforms/frax.png',
+  },
+  {
+    id: 'stakewise',
+    defiLlamaId: 'stakewise',
+    name: 'StakeWise Staked ETH',
+    image: 'https://sonar.watch/img/platforms/stakewise.png',
+  },
 ];
 export default otphanPlatforms;
