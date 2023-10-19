@@ -22,3 +22,5 @@ export const scallopPlatform: Platform = {
     name: 'Scallop',
     image: `https://alpha.sonar.watch/img/platforms/${platformId}.png`
 }
+
+export const baseIndexRate = 1_000_000_000;

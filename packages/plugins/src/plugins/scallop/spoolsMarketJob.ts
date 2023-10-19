@@ -3,7 +3,7 @@ import { getObjectFields } from '@mysten/sui.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { addressKey, addressPrefix, spoolsKey, spoolsPrefix as prefix } from './constants';
+import { addressKey, addressPrefix, spoolsKey, spoolsPrefix as prefix, baseIndexRate } from './constants';
 import { AddressInfo, SpoolCoin, SpoolJobResult } from './types';
 import { getClientSui } from '../../utils/clients';
 
@@ -52,8 +52,6 @@ const executor: JobExecutor = async (cache: Cache) => {
       const distributedPoint = stakeFields['distributed_point'];
       const pointPerPeriod = stakeFields['distributed_point_per_period'];
       const { index } = stakeFields;
-
-      const baseIndexRate = 1_000_000_000;
 
       const timeDelta = BigNumber(
         Math.floor(new Date().getTime() / 1000) - lastUpdate

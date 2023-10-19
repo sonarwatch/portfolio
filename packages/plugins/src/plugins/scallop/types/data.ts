@@ -8,8 +8,8 @@ export type UserLending = {
 
 export type UserObligations = {
     [T in string]: {
-        collaterals: {[K in string]: number},
-        debts: {[K in string]: number}
+        collaterals: {[K in string]: BigNumber},
+        debts: {[K in string]: BigNumber}
     }
 }
 

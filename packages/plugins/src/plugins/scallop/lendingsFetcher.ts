@@ -3,7 +3,7 @@ import { SuiObjectDataFilter, getObjectFields, getObjectType, normalizeStructTag
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { marketCoinPackageId, marketKey, platformId, spoolAccountPackageId, marketPrefix as prefix, poolsKey, poolsPrefix, spoolsKey, spoolsPrefix } from './constants';
+import { marketCoinPackageId, marketKey, platformId, spoolAccountPackageId, marketPrefix as prefix, poolsKey, poolsPrefix, spoolsKey, spoolsPrefix, baseIndexRate } from './constants';
 import { getOwnerObject } from './helpers';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { MarketJobResult, Pools, SpoolJobResult, UserLending, UserStakeAccounts } from './types';
@@ -94,7 +94,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   for (const spoolCoin of Object.keys(stakedAccount)) {
     for (const { points, index, stakes } of stakedAccount[spoolCoin]) {
       if (spoolData[spoolCoin]) {
-        const baseIndexRate = 1_000_000_000;
         const increasedPointRate = spoolData[spoolCoin].currentPointIndex
           ? BigNumber(BigNumber(spoolData[spoolCoin].currentPointIndex).minus(index)).dividedBy(baseIndexRate)
           : 0
@@ -123,7 +122,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const rewardAssetToken = tokenPriceToAssetToken(
     rewardTokenAddress,
-    pendingReward.dividedBy(10 ** (pools['sui']?.metadata?.decimals ?? 0)).toNumber(),
+    pendingReward.shiftedBy(-1 * (pools['sui']?.metadata?.decimals ?? 0)).toNumber(),
     NetworkId.sui,
     rewardTokenPrice
   );
@@ -137,7 +136,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const tokenPrice = tokenPrices.get(addressMove);    
     const lendingAmount = assetValue.amount
       .multipliedBy(lendingRate.get(assetName) ?? 0)
-      .dividedBy(10 ** (pools[assetName]?.metadata?.decimals ?? 0))
+      .shiftedBy(-1 * (pools[assetName]?.metadata?.decimals ?? 0))
       .toNumber();
     const assetToken = tokenPriceToAssetToken(
       addressMove,
