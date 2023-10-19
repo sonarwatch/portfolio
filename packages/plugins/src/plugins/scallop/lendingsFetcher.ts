@@ -75,7 +75,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const coinType = normalizeStructTag(objType.substring(objType.indexOf('MarketCoin<') + 11, objType.indexOf('>')));
     const fields = getObjectFields(ownedMarketCoin);
     const coinName = poolValues.find((value) => value.coinType === coinType)?.metadata?.symbol.toLowerCase();
-
     if (!coinName || !fields) continue;
     if (!lendingAssets[coinName]) {
       lendingAssets[coinName] = { coinType, amount: new BigNumber(0) };
@@ -140,7 +139,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       .multipliedBy(lendingRate.get(assetName) ?? 0)
       .dividedBy(10 ** (pools[assetName]?.metadata?.decimals ?? 0))
       .toNumber();
-
     const assetToken = tokenPriceToAssetToken(
       addressMove,
       lendingAmount,

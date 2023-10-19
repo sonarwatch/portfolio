@@ -25,8 +25,7 @@ export function getUrlEndpoints(): Record<NetworkIdType, string> {
     avalanche:
       process.env['PORTFOLIO_AVALANCHE_RPC'] ||
       'https://api.avax.network/ext/bc/C/rpc',
-    polygon:
-      process.env['PORTFOLIO_POLYGON_RPC'] || 'https://polygon.llamarpc.com',
+    polygon: process.env['PORTFOLIO_POLYGON_RPC'] || 'https://1rpc.io/matic',
     aptos:
       process.env['PORTFOLIO_APTOS_RPC'] ||
       'https://fullnode.mainnet.aptoslabs.com',

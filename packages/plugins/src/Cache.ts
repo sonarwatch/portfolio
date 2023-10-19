@@ -106,7 +106,7 @@ export class Cache {
 
   importData(data: Map<string, string>): void {
     if (this.driver.name === DRIVER_SW_MEMORY_NAME) {
-      (this.driver as MemoryDriver).importData(data, 20 * 60 * 1000);
+      (this.driver as MemoryDriver).importData(data, 60 * 60 * 1000);
     }
   }
 

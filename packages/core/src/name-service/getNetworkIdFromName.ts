@@ -1,6 +1,7 @@
 import { NetworkId, NetworkIdType } from '../Network';
 import { NameIsNotValidError } from '../errors';
 import {
+  isAptosName,
   isAvalancheName,
   isEthereumName,
   isSolanaName,
@@ -21,6 +22,10 @@ const verifiers: {
   {
     networkId: NetworkId.avalanche,
     verifier: isAvalancheName,
+  },
+  {
+    networkId: NetworkId.aptos,
+    verifier: isAptosName,
   },
 ];
 

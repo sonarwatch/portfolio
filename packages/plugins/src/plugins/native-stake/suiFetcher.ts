@@ -24,7 +24,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const elements: PortfolioElement[] = [];
   for (let i = 0; i < stakedValidators.length; i++) {
-    const { stakes, validatorAddress } = stakedValidators[i];
+    const { stakes } = stakedValidators[i];
     if (stakes.length === 0) continue;
 
     const assets: PortfolioAssetToken[] = [];
@@ -49,7 +49,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       type: 'multiple',
       label: 'Staked',
       tags: ['Native Stake'],
-      name: validatorAddress,
       value,
       data: {
         assets,

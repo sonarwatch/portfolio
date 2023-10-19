@@ -2,6 +2,46 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.8.6](https://github.com/sonarwatch/portfolio/compare/plugins-0.8.5...plugins-0.8.6) (2023-10-08)
+
+
+
+## [0.8.5](https://github.com/sonarwatch/portfolio/compare/plugins-0.8.4...plugins-0.8.5) (2023-10-07)
+
+
+
+## [0.8.4](https://github.com/sonarwatch/portfolio/compare/plugins-0.8.3...plugins-0.8.4) (2023-10-04)
+
+
+
+## [0.8.3](https://github.com/sonarwatch/portfolio/compare/plugins-0.8.2...plugins-0.8.3) (2023-10-03)
+
+
+
+## [0.8.2](https://github.com/sonarwatch/portfolio/compare/plugins-0.8.1...plugins-0.8.2) (2023-09-27)
+
+
+
+## [0.8.1](https://github.com/sonarwatch/portfolio/compare/plugins-0.8.0...plugins-0.8.1) (2023-09-27)
+
+
+
+# [0.8.0](https://github.com/sonarwatch/portfolio/compare/plugins-0.7.16...plugins-0.8.0) (2023-09-18)
+
+
+
+## [0.7.16](https://github.com/sonarwatch/portfolio/compare/plugins-0.7.15...plugins-0.7.16) (2023-09-13)
+
+
+
+## [0.7.15](https://github.com/sonarwatch/portfolio/compare/plugins-0.7.14...plugins-0.7.15) (2023-09-12)
+
+
+
+## [0.7.14](https://github.com/sonarwatch/portfolio/compare/plugins-0.7.13...plugins-0.7.14) (2023-09-08)
+
+
+
 ## [0.7.13](https://github.com/sonarwatch/portfolio/compare/plugins-0.7.12...plugins-0.7.13) (2023-09-06)
 
 

@@ -1,10 +1,10 @@
 import { NetworkIdType } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
-import checkComputeAndStoreTokensPrices from './computeAndStoreTokenPrice';
+import checkComputeAndStoreTokensPrices from './checkComputeAndStoreTokensPrices';
 
 // This number is used to prevent very low liquidity pools to be added, as a safeguard against price manipulation.
-const minimumLiquidity = new BigNumber(5000);
+export const minimumLiquidity = new BigNumber(5000);
 
 export type PoolData = {
   id: string;

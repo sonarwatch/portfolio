@@ -119,6 +119,15 @@ import {
   platforms as kaminoPlatforms,
 } from './plugins/kamino';
 import {
+  fetchers as bucketFetchers,
+  platforms as bucketPlatforms,
+} from './plugins/bucket';
+import {
+  jobs as naviJobs,
+  fetchers as naviFetchers,
+  platforms as naviPlatforms,
+} from './plugins/navi';
+import {
   fetchers as scallopFetchers,
   jobs as scallopJobs,
   platforms as scallopPlatforms
@@ -134,6 +143,7 @@ export * from './Cache';
 export * from './Fetcher';
 export * from './Job';
 export * from './utils/name-service';
+export * from './utils/blank';
 
 // PLATFORMS //
 export const platforms: Platform[] = [
@@ -162,6 +172,8 @@ export const platforms: Platform[] = [
   ...morphoPlatforms,
   ...mangoPlatforms,
   ...kaminoPlatforms,
+  ...bucketPlatforms,
+  ...naviPlatforms,
   ...scallopPlatforms
 ];
 
@@ -191,6 +203,7 @@ export const jobs: Job[] = [
   ...aftermathJobs,
   ...liquidswapJobs,
   ...kaminoJobs,
+  ...naviJobs,
   ...scallopJobs
 ];
 
@@ -214,6 +227,8 @@ export const fetchers: Fetcher[] = [
   ...ordersFetchers,
   ...morphoFetchers,
   ...liquidityPoolsSeiFetchers,
+  ...bucketFetchers,
+  ...naviFetchers,
   ...scallopFetchers
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);

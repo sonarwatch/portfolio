@@ -1,4 +1,4 @@
-import { DynamicFieldPage, getObjectFields, getObjectId } from '@mysten/sui.js';
+import { getObjectFields, getObjectId } from '@mysten/sui.js';
 import BigNumber from 'bignumber.js';
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
@@ -9,22 +9,22 @@ import { PoolInfo } from './types';
 import computeAndStoreLpPrice, {
   PoolData,
 } from '../../utils/misc/computeAndStoreLpPrice';
+import getMultipleSuiObjectsSafe from '../../utils/sui/getMultipleObjectsSafe';
+import getDynamicFieldsSafe from '../../utils/sui/getDynamicFieldsSafe';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
 
-  const coinsTableFields: DynamicFieldPage = await client.getDynamicFields({
-    parentId: lpCoinsTable,
-  });
-  const poolFactoryIds = coinsTableFields.data.map(getObjectId);
+  const coinsTableFields = await getDynamicFieldsSafe(client, lpCoinsTable);
+
+  const poolFactoryIds = coinsTableFields.map(getObjectId);
   if (!poolFactoryIds.length) return;
 
-  const poolsObjects = await client.multiGetObjects({
-    ids: poolFactoryIds,
-    options: { showContent: true },
+  const pObjects = await getMultipleSuiObjectsSafe(client, poolFactoryIds, {
+    showContent: true,
   });
 
-  const poolsIds = poolsObjects
+  const poolsIds = pObjects
     .map((poolObject) => {
       if (poolObject.data && poolObject.data.content) {
         const fields = getObjectFields(poolObject) as {
@@ -39,9 +39,8 @@ const executor: JobExecutor = async (cache: Cache) => {
     .flat();
   if (!poolsIds.length) return;
 
-  const poolsInfo = await client.multiGetObjects({
-    ids: poolsIds,
-    options: { showContent: true },
+  const poolsInfo = await getMultipleSuiObjectsSafe(client, poolsIds, {
+    showContent: true,
   });
 
   for (const pool of poolsInfo) {
@@ -61,8 +60,12 @@ const executor: JobExecutor = async (cache: Cache) => {
         decimalX: poolInfo.coin_decimals[0],
         mintTokenY: `0x${poolInfo.type_names[1]}`,
         decimalY: poolInfo.coin_decimals[1],
-        reserveTokenX: new BigNumber(poolInfo.normalized_balances[0]),
-        reserveTokenY: new BigNumber(poolInfo.normalized_balances[1]),
+        reserveTokenX: new BigNumber(poolInfo.normalized_balances[0]).dividedBy(
+          poolInfo.decimal_scalars[0]
+        ),
+        reserveTokenY: new BigNumber(poolInfo.normalized_balances[1]).dividedBy(
+          poolInfo.decimal_scalars[1]
+        ),
         supply: new BigNumber(poolInfo.lp_supply.fields.value),
       };
       await computeAndStoreLpPrice(cache, poolData, NetworkId.sui, platformId);

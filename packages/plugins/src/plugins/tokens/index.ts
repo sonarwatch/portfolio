@@ -1,12 +1,13 @@
 import { NetworkId, Platform } from '@sonarwatch/portfolio-core';
 import jobExecutorGenerator from './jobExecutorGenerator';
 import aptosFetcher from './fetchers/aptos';
-import aptosNftsFetcher from './fetchers/aptos-nfts';
 import solanaFetcher from './fetchers/solana';
 import suiFetcher from './fetchers/sui';
 import suiNftsFetcher from './fetchers/sui-nfts';
 import seiFetcher from './fetchers/sei';
+import bitcoinFetcher from './fetchers/bitcoin';
 import solanaNativeFetcher from './fetchers/solana-native';
+import solanaCNftsFetcher from './fetchers/solana-cnfts';
 import solanaNftsFetcher from './fetchers/solana-nfts';
 import solanaNftsUnderlyingsFetcher from './fetchers/solana-nfts-underlyings';
 import { Job } from '../../Job';
@@ -17,6 +18,10 @@ import { walletNftsPlatform, walletTokensPlatform } from './constants';
 
 export const platforms: Platform[] = [walletTokensPlatform, walletNftsPlatform];
 export const jobs: Job[] = [
+  {
+    id: `${walletTokensPlatform.id}-${NetworkId.bitcoin}`,
+    executor: jobExecutorGenerator(NetworkId.bitcoin),
+  },
   {
     id: `${walletTokensPlatform.id}-${NetworkId.aptos}`,
     executor: jobExecutorGenerator(NetworkId.aptos),
@@ -50,13 +55,14 @@ export const jobs: Job[] = [
 
 export const fetchers: Fetcher[] = [
   aptosFetcher,
-  aptosNftsFetcher,
   solanaFetcher,
   solanaNativeFetcher,
   solanaNftsFetcher,
+  solanaCNftsFetcher,
   solanaNftsUnderlyingsFetcher,
   suiFetcher,
   suiNftsFetcher,
   seiFetcher,
+  bitcoinFetcher,
   ...evmFetchers,
 ];

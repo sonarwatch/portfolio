@@ -62,7 +62,7 @@
     "@mysten/sui.js": "^0.37.1",
     "@sei-js/core": "^3.0.1",
     "@sei-js/proto": "^3.0.1",
-    "@solana/web3.js": "^1.78.0",
+    "@solana/web3.js": "^1.78.4",
     "aptos": "^1.13.1",
     "axios": "^1.4.0",
     "bignumber.js": "^9.1.1",
@@ -77,7 +77,7 @@
     "reflect-metadata": "^0.1.13",
     "tslib": "^2.3.0",
     "unstorage": "^1.9.0",
-    "viem": "^1.2.9",
+    "viem": "^1.14.0",
     "web3-v1": "npm:web3@^1.5.0",
     "web3-v4": "npm:web3@^4.0.3"
   },

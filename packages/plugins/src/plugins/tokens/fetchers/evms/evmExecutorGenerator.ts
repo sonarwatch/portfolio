@@ -17,7 +17,7 @@ import { TokenList } from '../../types';
 import { tokenListsPrefix, walletTokensPlatform } from '../../constants';
 import { topTokensPrefix } from '../../../top-tokens/constants';
 
-const maxTopTokens = 50;
+const maxTopTokens = 75;
 export default function getEvmFetcherExecutor(
   networkId: EvmNetworkIdType,
   topTokens: boolean
