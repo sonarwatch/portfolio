@@ -1,5 +1,6 @@
 import { ObjectContentFields } from "@mysten/sui.js";
 import BigNumber from "bignumber.js";
+import { BasicField, IdField, WitTable } from "./basic";
 
 export type BalanceSheet = {
   // [k in CoinNames]?: ObjectContentFields;
@@ -104,34 +105,6 @@ const VAULT_FIELDS = [
   'underlying_balances'
 ] as const;
 
-type BasicField = {
-  type: string;
-  fields: object;
-};
-
-type IdField = {
-  id: string;
-};
-
-type NameField = {
-  name: string;
-};
-
-type ContentFields = {
-  contents: (BasicField & { fields: NameField; })[];
-};
-
-type WitTable = {
-  fields: {
-    id: IdField;
-    keys: BasicField & { fields: ContentFields; };
-    table: BasicField & {
-      fields: { id: IdField; },
-      size: string;
-    };
-    with_keys: boolean;
-  };
-};
 
 export type MarketDataFieldsName = (typeof MARKET_DATA_FIELDS)[number];
 export type VaultFieldsName = (typeof VAULT_FIELDS)[number];
