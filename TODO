@@ -5,6 +5,7 @@
 - Auto Initialisation du cache dans portolfio-api
 - Verifier qu'une address a deja passé au moins un TX avant de tout fetch
 - cache.getTokenPrices seems to be bugged first fetch
+- Lock system (sur maker ou stargate par example)
 
 - Lybra Finance
 - Summer.fi
