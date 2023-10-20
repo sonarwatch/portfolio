@@ -3,7 +3,7 @@ import { Platform } from '@sonarwatch/portfolio-core';
 export const platformId = 'aftermath';
 
 export const aftermathPlatform: Platform = {
-  id: 'aftermath',
+  id: platformId,
   name: 'Aftermath',
   image: 'https://sonar.watch/img/platforms/aftermath.png',
   defiLlamaId: 'aftermath-finance',
