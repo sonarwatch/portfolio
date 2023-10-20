@@ -15,6 +15,7 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getEvmClient } from '../../utils/clients';
 import { votingEscrowAbi } from './abis';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { zeroBigInt } from '../../utils/misc/constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getEvmClient(NetworkId.ethereum);
@@ -25,7 +26,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     functionName: 'locked',
     args: [owner as `0x${string}`],
   });
-  if (lockedResponse[0] === BigInt(0)) return [];
+  if (lockedResponse[0] === zeroBigInt) return [];
 
   const crvTokenPrice = await cache.getTokenPrice(
     crvAddress,

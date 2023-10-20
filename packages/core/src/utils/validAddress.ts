@@ -40,12 +40,17 @@ export function isSolanaAddress(address: string): boolean {
     return false;
   }
   // Slow-path; actually attempt to decode the input string.
-  const bytes = base58.serialize(address);
-  const numBytes = bytes.byteLength;
-  if (numBytes !== 32) {
+
+  try {
+    const bytes = base58.serialize(address);
+    const numBytes = bytes.byteLength;
+    if (numBytes !== 32) {
+      return false;
+    }
+    return true;
+  } catch (error) {
     return false;
   }
-  return true;
 }
 export function assertSolanaAddress(address: string): void {
   if (!isSolanaAddress(address))
