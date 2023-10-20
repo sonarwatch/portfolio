@@ -143,6 +143,11 @@ import {
   fetchers as curveFetchers,
   platforms as curvePlatforms,
 } from './plugins/curve';
+import {
+  jobs as compoundJobs,
+  fetchers as compoundFetchers,
+  platforms as compoundPlatforms,
+} from './plugins/compound';
 
 export {
   walletTokensPlatform,
@@ -190,6 +195,7 @@ export const platforms: Platform[] = [
   ...rocketpoolPlatforms,
   ...lidoPlatforms,
   ...curvePlatforms,
+  ...compoundPlatforms,
 ];
 
 // JOBS //
@@ -220,6 +226,7 @@ export const jobs: Job[] = [
   ...kaminoJobs,
   ...naviJobs,
   ...curveJobs,
+  ...compoundJobs,
 ];
 
 // FETCHERS //
@@ -247,5 +254,6 @@ export const fetchers: Fetcher[] = [
   ...rocketpoolFetchers,
   ...curveFetchers,
   ...makerFetchers,
+  ...compoundFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
