@@ -142,6 +142,11 @@ import {
   fetchers as curveFetchers,
   platforms as curvePlatforms,
 } from './plugins/curve';
+import {
+  jobs as stargateJobs,
+  fetchers as stargateFetchers,
+  platforms as stargatePlatforms,
+} from './plugins/stargate';
 
 export {
   walletTokensPlatform,
@@ -189,6 +194,7 @@ export const platforms: Platform[] = [
   ...rocketpoolPlatforms,
   ...lidoPlatforms,
   ...curvePlatforms,
+  ...stargatePlatforms,
 ];
 
 // JOBS //
@@ -219,6 +225,7 @@ export const jobs: Job[] = [
   ...kaminoJobs,
   ...naviJobs,
   ...curveJobs,
+  ...stargateJobs,
 ];
 
 // FETCHERS //
@@ -245,5 +252,6 @@ export const fetchers: Fetcher[] = [
   ...naviFetchers,
   ...rocketpoolFetchers,
   ...curveFetchers,
+  ...stargateFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
