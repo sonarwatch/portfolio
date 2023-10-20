@@ -69,7 +69,7 @@ export default function getPositionsV3Fetcher(
     const tokenPrices = await cache.getItem<Record<string, TokenPrice>>(
       comethTokenPricesPrefix,
       {
-        prefix: comethTokenPricesPrefix,
+        prefix: platformId,
         networkId,
       }
     );

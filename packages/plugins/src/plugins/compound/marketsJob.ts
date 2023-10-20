@@ -24,7 +24,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
     await cache.setItem(comethTokenPricesPrefix, tokenPricesObj, {
       networkId,
-      prefix: comethTokenPricesPrefix,
+      prefix: platformId,
     });
   }
 };
