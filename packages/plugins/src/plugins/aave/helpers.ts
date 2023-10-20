@@ -195,7 +195,7 @@ export function getStableBorrowedAsset(
     type: PortfolioAssetType.token,
     value: +(+userReserveData.stableBorrowsUSD).toFixed(2),
     data: {
-      address: userReserveData.underlyingAsset,
+      address: formatTokenAddress(userReserveData.underlyingAsset, networkId),
       amount: +userReserveData.stableBorrows,
       price: +userReserveData.reserve.priceInUSD,
     },

@@ -9,6 +9,7 @@ import {
   BorrowLendRate,
   aprToApy,
   borrowLendRatesPrefix,
+  formatTokenAddress,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
@@ -87,7 +88,10 @@ const executor: JobExecutor = async (cache: Cache) => {
     // Borrow Lend Rates
     for (const formattedReserve of formattedReserves) {
       if (!formattedReserve.isActive) continue;
-      const tokenAddress = formattedReserve.underlyingAsset;
+      const tokenAddress = formatTokenAddress(
+        formattedReserve.underlyingAsset,
+        networkId
+      );
       const lendingApr = Number(formattedReserve.supplyAPR);
       const borrowingApr = Number(formattedReserve.variableBorrowAPR);
       const depositedAmount = Number(formattedReserve.totalLiquidity);
