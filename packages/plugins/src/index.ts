@@ -148,6 +148,11 @@ import {
   fetchers as compoundFetchers,
   platforms as compoundPlatforms,
 } from './plugins/compound';
+import {
+  jobs as stargateJobs,
+  fetchers as stargateFetchers,
+  platforms as stargatePlatforms,
+} from './plugins/stargate';
 
 export {
   walletTokensPlatform,
@@ -196,6 +201,7 @@ export const platforms: Platform[] = [
   ...lidoPlatforms,
   ...curvePlatforms,
   ...compoundPlatforms,
+  ...stargatePlatforms,
 ];
 
 // JOBS //
@@ -227,6 +233,7 @@ export const jobs: Job[] = [
   ...naviJobs,
   ...curveJobs,
   ...compoundJobs,
+  ...stargateJobs,
 ];
 
 // FETCHERS //
@@ -253,6 +260,7 @@ export const fetchers: Fetcher[] = [
   ...naviFetchers,
   ...rocketpoolFetchers,
   ...curveFetchers,
+  ...stargateFetchers,
   ...makerFetchers,
   ...compoundFetchers,
 ];
