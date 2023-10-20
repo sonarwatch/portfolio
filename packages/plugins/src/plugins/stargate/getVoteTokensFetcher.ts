@@ -16,9 +16,6 @@ export function getVoteTokensFetcher(config: StgConfig): Fetcher {
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const client = getEvmClient(networkId);
 
-    const tokenPrice = await cache.getTokenPrice(stgAddress, networkId);
-    if (!tokenPrice) return [];
-
     const contract = {
       address: votingEscrow,
       abi: lockedAbi,
@@ -27,6 +24,9 @@ export function getVoteTokensFetcher(config: StgConfig): Fetcher {
     } as const;
     const results = await client.readContract(contract);
     if (results[0] === BigInt(0)) return [];
+
+    const tokenPrice = await cache.getTokenPrice(stgAddress, networkId);
+    if (!tokenPrice) return [];
 
     const amountLocked = Number(results[0]) / 10 ** tokenPrice.decimals;
 

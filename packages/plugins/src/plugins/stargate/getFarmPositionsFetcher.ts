@@ -22,9 +22,6 @@ export function getFarmsPositionsFetcher(config: StgConfig): Fetcher {
     });
     if (!farms) return [];
 
-    const lpTokenPrices = await cache.getTokenPrices(farms, networkId);
-    if (!lpTokenPrices) return [];
-
     const contracts = [];
     for (let i = BigInt(0); i < farms.length; i++) {
       contracts.push({
@@ -40,6 +37,11 @@ export function getFarmsPositionsFetcher(config: StgConfig): Fetcher {
     const balances = results.map((res) =>
       res.status === 'failure' ? BigInt(0) : res.result[0]
     );
+    if (balances.reduce((sum, current) => sum + Number(current), 0) === 0)
+      return [];
+
+    const lpTokenPrices = await cache.getTokenPrices(farms, networkId);
+    if (!lpTokenPrices) return [];
 
     const farmsLiquidities: PortfolioLiquidity[] = [];
     for (let i = 0; i < balances.length; i++) {
