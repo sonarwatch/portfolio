@@ -23,9 +23,6 @@ export function getPoolsPositionsFetcher(config: StgConfig): Fetcher {
 
     if (!poolsAddresses) return [];
 
-    const tokenPrices = await cache.getTokenPrices(poolsAddresses, networkId);
-    if (!tokenPrices) return [];
-
     const contracts = poolsAddresses.map(
       (pool) =>
         ({
@@ -41,6 +38,11 @@ export function getPoolsPositionsFetcher(config: StgConfig): Fetcher {
     const balances = results.map((res) =>
       res.status === 'failure' ? BigInt(0) : res.result
     );
+    if (balances.reduce((sum, current) => sum + Number(current), 0) === 0)
+      return [];
+
+    const tokenPrices = await cache.getTokenPrices(poolsAddresses, networkId);
+    if (!tokenPrices) return [];
 
     const poolLiquidities: PortfolioLiquidity[] = [];
     for (let i = 0; i < balances.length; i++) {
