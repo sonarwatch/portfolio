@@ -156,6 +156,11 @@ import {
   fetchers as stargateFetchers,
   platforms as stargatePlatforms,
 } from './plugins/stargate';
+import {
+  platforms as staderPlatforms,
+  jobs as staderJobs,
+  fetchers as staderFetchers,
+} from './plugins/stader';
 
 export {
   walletTokensPlatform,
@@ -205,6 +210,7 @@ export const platforms: Platform[] = [
   ...curvePlatforms,
   ...compoundPlatforms,
   ...stargatePlatforms,
+  ...staderPlatforms,
 ];
 
 // JOBS //
@@ -237,6 +243,7 @@ export const jobs: Job[] = [
   ...curveJobs,
   ...compoundJobs,
   ...stargateJobs,
+  ...staderJobs,
 ];
 
 // FETCHERS //
@@ -267,5 +274,6 @@ export const fetchers: Fetcher[] = [
   ...makerFetchers,
   ...compoundFetchers,
   ...lidoFetchers,
+  ...staderFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
