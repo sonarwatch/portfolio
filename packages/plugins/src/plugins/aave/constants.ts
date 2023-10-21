@@ -13,6 +13,14 @@ export const aavePlatform: Platform = {
   image: 'https://sonar.watch/img/platforms/aave.png',
   defiLlamaId: 'parent#aave',
 };
+export const aaveAddress = '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9';
+export const aaveDecimals = 18;
+export const stkAaveAddress = '0x4da27a545c0c5b758a6ba100e3a049001de870f5';
+export const stkAaveDecimals = 18;
+export const stkAbptAddress = '0xa1116930326d21fb917d5a27f1e9943a9595fb47';
+export const stkAbptDecimals = 18;
+export const abptAddress = '0xC697051d1C6296C24aE3bceF39acA743861D9A81';
+export const abptDecimals = 18;
 
 export const lendingConfigs: Map<NetworkIdType, LendingConfig[]> = new Map([
   [

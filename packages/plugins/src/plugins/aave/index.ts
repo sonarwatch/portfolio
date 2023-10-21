@@ -3,6 +3,7 @@ import { Job } from '../../Job';
 import { Fetcher } from '../../Fetcher';
 import lendingPoolsJob from './lendingPoolsJob';
 import getLendingFetcherExecutor from './getLendingFetcherExecutor';
+import stakingFetcher from './stakingFetcher';
 import { aavePlatform, platformId } from './constants';
 
 export const platforms: Platform[] = [aavePlatform];
@@ -23,4 +24,5 @@ export const fetchers: Fetcher[] = [
     networkId: NetworkId.avalanche,
     executor: getLendingFetcherExecutor(NetworkId.avalanche),
   },
+  stakingFetcher,
 ];
