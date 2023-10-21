@@ -218,7 +218,7 @@ export function getVarriableBorrowedAsset(
     type: PortfolioAssetType.token,
     value: +(+userReserveData.variableBorrowsUSD).toFixed(2),
     data: {
-      address: userReserveData.underlyingAsset,
+      address: formatTokenAddress(userReserveData.underlyingAsset, networkId),
       amount: +userReserveData.variableBorrows,
       price: +userReserveData.reserve.priceInUSD,
     },
