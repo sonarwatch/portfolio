@@ -9,7 +9,6 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import {
-  ethFactor,
   minipoolManagerAddress,
   nodeStakingAddress,
   platformId,
@@ -19,6 +18,7 @@ import {
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getEvmClient } from '../../utils/clients';
 import { minipoolAbi, minipoolManagerAbi, nodeStakingAbi } from './abis';
+import { ethFactor } from '../../utils/evm/constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getEvmClient(NetworkId.ethereum);

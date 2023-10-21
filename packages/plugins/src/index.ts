@@ -137,7 +137,10 @@ import {
   fetchers as rocketpoolFetchers,
   platforms as rocketpoolPlatforms,
 } from './plugins/rocket-pool';
-import { platforms as lidoPlatforms } from './plugins/lido';
+import {
+  platforms as lidoPlatforms,
+  fetchers as lidoFetchers,
+} from './plugins/lido';
 import {
   jobs as curveJobs,
   fetchers as curveFetchers,
@@ -263,5 +266,6 @@ export const fetchers: Fetcher[] = [
   ...stargateFetchers,
   ...makerFetchers,
   ...compoundFetchers,
+  ...lidoFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
