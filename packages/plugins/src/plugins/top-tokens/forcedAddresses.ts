@@ -42,6 +42,7 @@ const forcedAddresses: Map<NetworkIdType, string[]> = new Map([
       '0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7', // USDT
       '0xc7198437980c041c805a1edcba50c1ce5db95118', // USDT.e
       '0xd586e7f844cea2f87f50152665bcbc2c279d8d70', // DAI.e
+      '0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab', // weth.e
     ],
   ],
 ]);
