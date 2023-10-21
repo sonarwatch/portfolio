@@ -141,6 +141,7 @@ export default function getPositionsV3Fetcher(
         networkId: NetworkId.ethereum,
         platformId,
         label: 'Lending',
+        name: 'Compound V3',
         value,
         data: {
           borrowedAssets,
