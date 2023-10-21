@@ -140,9 +140,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
       // Supplied
       if (ink !== zeroBigInt) {
-        const amount = new BigNumber(ink.toString())
-          .div(10 ** ilk.dec)
-          .toNumber();
+        const amount = new BigNumber(ink.toString()).div(10 ** 18).toNumber();
         const asset = tokenPriceToAssetToken(
           ilk.gem,
           amount,
