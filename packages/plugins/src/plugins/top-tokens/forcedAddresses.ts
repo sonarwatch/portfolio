@@ -19,6 +19,7 @@ const forcedAddresses: Map<NetworkIdType, string[]> = new Map([
       '0xa2E3356610840701BDf5611a53974510Ae27E2e1', // Binance wBETH
       '0x25eC98773D7b4ceD4cAFaB96A2A1c0945f145e10', // stUSDT
       '0xA35b1B31Ce002FBF2058D22F30f95D405200A15b', // ETHx Stader
+      '0xf03A7Eb46d01d9EcAA104558C732Cf82f6B6B645', // MaticX Stader
     ],
   ],
   [
@@ -29,6 +30,7 @@ const forcedAddresses: Map<NetworkIdType, string[]> = new Map([
       '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359', // USDC
       '0xc2132D05D31c914a87C6611C10748AEb04B58e8F', // USDT
       '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063', // DAI
+      '0xfa68FB4628DFF1028CFEc22b4162FCcd0d45efb6', // MaticX Stader
     ],
   ],
   [NetworkId.avalanche, ['0x152b9d0FdC40C096757F570A51E494bd4b943E50']],
