@@ -18,6 +18,7 @@ const forcedAddresses: Map<NetworkIdType, string[]> = new Map([
       '0xBe9895146f7AF43049ca1c1AE358B0541Ea49704', // Coinbase CBETH
       '0xa2E3356610840701BDf5611a53974510Ae27E2e1', // Binance wBETH
       '0x25eC98773D7b4ceD4cAFaB96A2A1c0945f145e10', // stUSDT
+      '0xA35b1B31Ce002FBF2058D22F30f95D405200A15b', // ETHx Stader
     ],
   ],
   [
