@@ -2,7 +2,7 @@ import { Platform } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 
 export const platformId = 'rocketpool';
-export const fooPlatform: Platform = {
+export const rocketPoolPlatform: Platform = {
   id: platformId,
   name: 'Rocket Pool',
   defiLlamaId: 'rocket-pool',

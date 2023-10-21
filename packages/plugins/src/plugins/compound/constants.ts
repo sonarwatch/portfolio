@@ -6,7 +6,7 @@ import {
 import { MarketDetail } from './types';
 
 export const platformId = 'compound';
-export const fooPlatform: Platform = {
+export const compoundPlatform: Platform = {
   id: platformId,
   name: 'Compound',
   image: 'https://sonar.watch/img/platforms/compound.png',
