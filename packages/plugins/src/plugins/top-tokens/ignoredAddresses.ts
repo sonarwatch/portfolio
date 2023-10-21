@@ -4,8 +4,8 @@ const ignoredAddresses: Map<NetworkIdType, string[]> = new Map([
   [
     NetworkId.ethereum,
     [
-      '0x4da27a545c0c5b758a6ba100e3a049001de870f5', // stkAAVE
-      '0xa1116930326d21fb917d5a27f1e9943a9595fb47', // stkABPT Aave
+      '0x4da27a545c0c5B758a6BA100e3a049001de870f5', // stkAAVE
+      '0xa1116930326D21fB917d5A27F1E9943A9595fb47', // stkABPT Aave
     ],
   ],
   [NetworkId.polygon, []],
