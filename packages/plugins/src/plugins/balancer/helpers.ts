@@ -9,10 +9,10 @@ import request, { gql } from 'graphql-request';
 import BigNumber from 'bignumber.js';
 import { Pool } from './types';
 import { Cache } from '../../Cache';
-import { platformId, poolsCacheKey } from './constants';
+import { platformId, poolsV2CacheKey } from './constants';
 import runInBatch from '../../utils/misc/runInBatch';
 
-export async function getBalancerPools(
+export async function getBalancerPoolsV2(
   url: string,
   networkId: NetworkIdType,
   cache: Cache
@@ -29,6 +29,7 @@ export async function getBalancerPools(
         address
         symbol
         totalLiquidity
+        totalShares
         tokens {
           balance
           decimals
@@ -70,13 +71,13 @@ export async function getBalancerPools(
       const address = formatTokenAddress(token.address, networkId);
       const tokenPrice = tokenPricesByAddress.get(address);
       if (!tokenPrice) break;
-      tvl = tvl.plus(new BigNumber(token.balance).times(token.balance));
+      tvl = tvl.plus(new BigNumber(token.balance).times(tokenPrice.price));
       underlyings.push({
         networkId,
         address,
         decimals: token.decimals,
         price: tokenPrice.price,
-        amountPerLp: new BigNumber(pool.totalLiquidity)
+        amountPerLp: new BigNumber(pool.totalShares)
           .div(token.balance)
           .toNumber(),
       });
@@ -84,7 +85,7 @@ export async function getBalancerPools(
     if (underlyings.length !== pool.tokens.length) continue;
     if (underlyings.length === 0) continue;
 
-    const price = tvl.div(pool.totalLiquidity).toNumber();
+    const price = tvl.div(pool.totalShares).toNumber();
     const lpAddress = formatTokenAddress(pool.address, networkId);
     const source: TokenPriceSource = {
       id: platformId,
@@ -101,7 +102,7 @@ export async function getBalancerPools(
     await cache.setTokenPriceSource(source);
     poolAddresses.push(lpAddress);
   }
-  await cache.setItem(poolsCacheKey, poolAddresses, {
+  await cache.setItem(poolsV2CacheKey, poolAddresses, {
     prefix: platformId,
     networkId,
   });

@@ -4,6 +4,7 @@ export type Pool = {
   symbol: string;
   tokens: PoolToken[];
   totalLiquidity: string;
+  totalShares: string;
 };
 
 export type PoolToken = {

@@ -4,17 +4,17 @@ import { erc20ABI } from './erc20Abi';
 import { zeroBigInt } from '../misc/constants';
 
 export async function getBalances(
-  owner: `0x${string}`,
-  addresses: `0x${string}`[],
+  owner: string,
+  addresses: string[],
   networkId: EvmNetworkIdType
-) {
+): Promise<(bigint | null)[]> {
   const client = getEvmClient(networkId);
   const balances = await client.multicall({
     contracts: addresses.map((a) => ({
       abi: erc20ABI,
-      address: a,
+      address: a as `0x${string}`,
       functionName: 'balanceOf',
-      args: [owner],
+      args: [owner as `0x${string}`],
     })),
   });
   return balances.map((b) =>
