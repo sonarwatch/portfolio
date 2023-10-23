@@ -161,6 +161,11 @@ import {
   jobs as staderJobs,
   fetchers as staderFetchers,
 } from './plugins/stader';
+import {
+  platforms as balancerPlatforms,
+  jobs as balancerJobs,
+  fetchers as balancerFetchers,
+} from './plugins/balancer';
 
 export {
   walletTokensPlatform,
@@ -211,6 +216,7 @@ export const platforms: Platform[] = [
   ...compoundPlatforms,
   ...stargatePlatforms,
   ...staderPlatforms,
+  ...balancerPlatforms,
 ];
 
 // JOBS //
@@ -244,6 +250,7 @@ export const jobs: Job[] = [
   ...compoundJobs,
   ...stargateJobs,
   ...staderJobs,
+  ...balancerJobs,
 ];
 
 // FETCHERS //
@@ -275,5 +282,6 @@ export const fetchers: Fetcher[] = [
   ...compoundFetchers,
   ...lidoFetchers,
   ...staderFetchers,
+  ...balancerFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
