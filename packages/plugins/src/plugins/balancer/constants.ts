@@ -7,8 +7,7 @@ export const platform: Platform = {
   image: 'https://sonar.watch/img/platforms/balancer.png',
   defiLlamaId: 'parent#balancer', // from https://defillama.com/docs/api
 };
-export const poolsCachePrefix = `${platformId}-pools`;
-export const farmsCachePrefix = `${platformId}-farms`;
+export const poolsCacheKey = `${platformId}-pools`;
 
 export const ethereumGaugeControllerAddress =
   '0xC128468b7Ce63eA702C1f104D55A2566b13D3ABD';

@@ -9,7 +9,7 @@ import request, { gql } from 'graphql-request';
 import BigNumber from 'bignumber.js';
 import { Pool } from './types';
 import { Cache } from '../../Cache';
-import { platformId } from './constants';
+import { platformId, poolsCacheKey } from './constants';
 import runInBatch from '../../utils/misc/runInBatch';
 
 export async function getBalancerPools(
@@ -58,6 +58,7 @@ export async function getBalancerPools(
     tokenPricesByAddress.set(r.value.address, r.value);
   });
 
+  const poolAddresses: string[] = [];
   for (let i = 0; i < pools.length; i++) {
     const pool = pools[i];
     if (!pool.address || !pool.tokens || !pool.id) continue;
@@ -84,9 +85,10 @@ export async function getBalancerPools(
     if (underlyings.length === 0) continue;
 
     const price = tvl.div(pool.totalLiquidity).toNumber();
+    const lpAddress = formatTokenAddress(pool.address, networkId);
     const source: TokenPriceSource = {
       id: platformId,
-      address: pool.address,
+      address: lpAddress,
       decimals: 18,
       networkId,
       platformId: 'balancer',
@@ -97,5 +99,10 @@ export async function getBalancerPools(
       underlyings,
     };
     await cache.setTokenPriceSource(source);
+    poolAddresses.push(lpAddress);
   }
+  await cache.setItem(poolsCacheKey, poolAddresses, {
+    prefix: platformId,
+    networkId,
+  });
 }
