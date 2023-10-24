@@ -11,7 +11,6 @@ import { Job, JobExecutor } from '../../Job';
 import { platformId, poolsAndGaugesV2CacheKey } from './constants';
 import { getBalancerPoolsV2 } from './helpers/pools';
 import { getBalancerGaugesV2 } from './helpers/gauges';
-import runInBatch from '../../utils/misc/runInBatch';
 import { GaugesByPool } from './types';
 
 const poolConfigs = [
@@ -49,16 +48,14 @@ const executor: JobExecutor = async (cache: Cache) => {
       ...new Set(pools.map((p) => p.tokens.map((t) => t.address)).flat()),
     ];
 
-    const tokenPriceResults = await runInBatch(
-      [...underlyingAddresses].map(
-        (a) => () => cache.getTokenPrice(a, networkId)
-      )
+    const tokenPrices = await cache.getTokenPrices(
+      underlyingAddresses,
+      networkId
     );
     const tokenPricesByAddress: Map<string, TokenPrice> = new Map();
-    tokenPriceResults.forEach((r) => {
-      if (r.status === 'rejected') return;
-      if (!r.value) return;
-      tokenPricesByAddress.set(r.value.address, r.value);
+    tokenPrices.forEach((tp) => {
+      if (!tp) return;
+      tokenPricesByAddress.set(tp.address, tp);
     });
 
     const gGaugesByPool: GaugesByPool = {};
