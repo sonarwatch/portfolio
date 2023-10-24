@@ -13,3 +13,5 @@ export type PoolToken = {
   address: string;
   balance: string;
 };
+
+export type GaugesByPool = Record<string, string[]>;

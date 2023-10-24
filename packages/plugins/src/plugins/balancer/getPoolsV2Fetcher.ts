@@ -1,40 +1,123 @@
 import {
   EvmNetworkIdType,
+  PortfolioElementLiquidity,
   PortfolioElementType,
   PortfolioLiquidity,
+  TokenPrice,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
+import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
-import { platformId, poolsV2CacheKey } from './constants';
+import { platformId, poolsAndGaugesV2CacheKey } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { getTokenAssets } from '../../utils/evm/getTokenAssets';
+import { GaugesByPool } from './types';
+import { getBalances } from '../../utils/evm/getBalances';
+import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
+
+type UserBalance = {
+  poolAddress: string;
+  poolBalance: bigint | null;
+  gauges: {
+    gaugeAddress: string;
+    gaugeBalance: bigint;
+  }[];
+};
+
+function getLiquidity(
+  balance: bigint,
+  tokenPrice: TokenPrice
+): PortfolioLiquidity {
+  const amount = new BigNumber(balance.toString())
+    .div(10 ** tokenPrice.decimals)
+    .toNumber();
+  console.log('amount:', amount);
+
+  const assets = tokenPriceToAssetTokens(
+    tokenPrice.address,
+    amount,
+    tokenPrice.networkId,
+    tokenPrice
+  );
+  const value = getUsdValueSum(assets.map((a) => a.value));
+  return {
+    assets,
+    assetsValue: getUsdValueSum(assets.map((a) => a.value)),
+    rewardAssets: [],
+    rewardAssetsValue: null,
+    value,
+    yields: [],
+  };
+}
 
 function getPoolsV2Fetcher(networkId: EvmNetworkIdType): Fetcher {
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-    const poolAddresses = await cache.getItem<string[]>(poolsV2CacheKey, {
-      prefix: platformId,
-      networkId,
-    });
-    if (!poolAddresses) return [];
-    const assetss = await getTokenAssets(
-      owner,
-      poolAddresses,
-      networkId,
-      cache
-    );
-    const liquidities: PortfolioLiquidity[] = assetss.map((assets) => {
-      const value = getUsdValueSum(assets.map((a) => a.value));
-      return {
-        assets,
-        assetsValue: getUsdValueSum(assets.map((a) => a.value)),
-        rewardAssets: [],
-        rewardAssetsValue: null,
-        value,
-        yields: [],
-      };
-    });
-    return [
+    const gaugesByPool = await cache.getItem<GaugesByPool>(
+      poolsAndGaugesV2CacheKey,
       {
+        prefix: platformId,
+        networkId,
+      }
+    );
+    if (!gaugesByPool) return [];
+
+    const poolAddresses = Object.keys(gaugesByPool);
+    const gaugeAddresses = Object.values(gaugesByPool).flat();
+    const poolBalances = await getBalances(owner, poolAddresses, networkId);
+    const gaugeBalances = await getBalances(owner, gaugeAddresses, networkId);
+
+    const usefulPoolAddresses: string[] = [];
+    const userBalances: UserBalance[] = [];
+    let gaugeCount = 0;
+    for (let i = 0; i < poolAddresses.length; i++) {
+      const poolAddress = poolAddresses[i];
+      const poolBalance = poolBalances[i];
+      const cGaugeAddresses = gaugesByPool[poolAddress];
+      const userBalance: UserBalance = {
+        poolAddress,
+        poolBalance,
+        gauges: [],
+      };
+      for (let j = 0; j < cGaugeAddresses.length; j++) {
+        const gaugeAddress = cGaugeAddresses[j];
+        const gaugeBalance = gaugeBalances[gaugeCount + j];
+        if (gaugeBalance) {
+          userBalance.gauges.push({
+            gaugeAddress,
+            gaugeBalance,
+          });
+        }
+      }
+      gaugeCount += cGaugeAddresses.length;
+
+      if (userBalance.poolBalance || userBalance.gauges.length !== 0) {
+        userBalances.push(userBalance);
+        usefulPoolAddresses.push(poolAddress);
+      }
+    }
+    if (usefulPoolAddresses.length === 0) return [];
+    const tokenPrices = await cache.getTokenPrices(
+      usefulPoolAddresses,
+      networkId
+    );
+
+    const poolLiquidities: PortfolioLiquidity[] = [];
+    const farmLiquidities: PortfolioLiquidity[] = [];
+    userBalances.forEach((userBalance, i) => {
+      const tokenPrice = tokenPrices[i];
+      if (!tokenPrice) return;
+      if (userBalance.poolBalance) {
+        const liquidity = getLiquidity(userBalance.poolBalance, tokenPrice);
+        poolLiquidities.push(liquidity);
+      }
+      userBalance.gauges.forEach((gauge) => {
+        const liquidity = getLiquidity(gauge.gaugeBalance, tokenPrice);
+        farmLiquidities.push(liquidity);
+      });
+    });
+
+    const elements: PortfolioElementLiquidity[] = [];
+    if (poolLiquidities.length !== 0) {
+      elements.push({
         type: PortfolioElementType.liquidity,
         label: 'LiquidityPool',
         networkId,
@@ -42,14 +125,28 @@ function getPoolsV2Fetcher(networkId: EvmNetworkIdType): Fetcher {
         value: 1,
         name: 'Balancer V2',
         data: {
-          liquidities,
+          liquidities: poolLiquidities,
         },
-      },
-    ];
+      });
+    }
+    if (farmLiquidities.length !== 0) {
+      elements.push({
+        type: PortfolioElementType.liquidity,
+        label: 'Farming',
+        networkId,
+        platformId,
+        value: 1,
+        name: 'Balancer V2',
+        data: {
+          liquidities: farmLiquidities,
+        },
+      });
+    }
+    return elements;
   };
 
   return {
-    id: `${platformId}-${networkId}-pools-v2`,
+    id: `${platformId}-${networkId}-v2`,
     networkId,
     executor,
   };
