@@ -33,6 +33,17 @@ const forcedAddresses: Map<NetworkIdType, string[]> = new Map([
       '0xfa68FB4628DFF1028CFEc22b4162FCcd0d45efb6', // MaticX Stader
     ],
   ],
-  [NetworkId.avalanche, ['0x152b9d0FdC40C096757F570A51E494bd4b943E50']],
+  [
+    NetworkId.avalanche,
+    [
+      '0x152b9d0FdC40C096757F570A51E494bd4b943E50', // BTC.b
+      '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E', // USDC
+      '0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664', // USDC.e
+      '0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7', // USDT
+      '0xc7198437980c041c805A1EDcbA50c1Ce5db95118', // USDT.e
+      '0xd586E7F844cEa2F87f50152665BCbc2C279D8d70', // DAI.e
+      '0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB', // weth.e
+    ],
+  ],
 ]);
 export default forcedAddresses;

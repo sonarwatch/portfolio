@@ -5,7 +5,7 @@ import {
   PortfolioElementType,
   Yield,
   getElementLendingValues,
-  zeroAddress,
+  zeroAddressEvm,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -40,7 +40,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
 
   const proxyAddresses = [owner, ...instadappAccounts.map((a) => a.address)];
-  if (ownerProxyRes !== zeroAddress) proxyAddresses.push(ownerProxyRes);
+  if (ownerProxyRes !== zeroAddressEvm) proxyAddresses.push(ownerProxyRes);
   if (proxyAddresses.length === 0) return [];
 
   const cdps: bigint[] = [];

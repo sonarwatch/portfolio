@@ -4,7 +4,7 @@ export const aptosNativeAddress = '0x1::aptos_coin::AptosCoin';
 export const suiNativeAddress =
   '0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI';
 export const seiNativeAddress = 'usei';
-export const zeroAddress = '0x0000000000000000000000000000000000000000';
+export const zeroAddressEvm = '0x0000000000000000000000000000000000000000';
 export const ethereumNativeAddress =
   '0x0000000000000000000000000000000000000000';
 export const polygonNativeAddress =
