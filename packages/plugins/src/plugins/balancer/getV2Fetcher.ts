@@ -30,7 +30,6 @@ function getLiquidity(
   const amount = new BigNumber(balance.toString())
     .div(10 ** tokenPrice.decimals)
     .toNumber();
-  console.log('amount:', amount);
 
   const assets = tokenPriceToAssetTokens(
     tokenPrice.address,
