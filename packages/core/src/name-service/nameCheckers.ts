@@ -54,5 +54,6 @@ export const nameCheckers: NameChecker[] = [
   glowNameChecker,
   avalancheNameChecker,
   aptosNameChecker,
+  // Please leave allDomains at the end.
   allDomainsNameChecker,
 ];
