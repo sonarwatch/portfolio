@@ -5,11 +5,13 @@ export const platformId = 'scallop';
 export const addressPrefix = `${platformId}-address`;
 export const marketPrefix = `${platformId}-market`;
 export const poolsPrefix = `${platformId}-pools`;
+export const spoolsPrefix = `${platformId}-spoolsmarket`;
 
 export const addressEndpoint = 'https://sui.api.scallop.io/addresses/6462a088a7ace142bb6d7e9b';
 export const addressKey = 'scallop-address-key';
 export const marketKey = 'scallop-market-key';
 export const poolsKey = 'scallop-pools-key';
+export const spoolsKey = 'scallop-spoolsmarket-key';
 
 export const spoolAccountPackageId = `0xe87f1b2d498106a2c61421cec75b7b5c5e348512b0dc263949a0e7a3c256571a::spool_account::SpoolAccount`;
 export const marketCoinPackageId = `${PROTOCOL_OBJECT_ID}::reserve::MarketCoin`
@@ -20,3 +22,5 @@ export const scallopPlatform: Platform = {
     name: 'Scallop',
     image: `https://alpha.sonar.watch/img/platforms/${platformId}.png`
 }
+
+export const baseIndexRate = 1_000_000_000;
