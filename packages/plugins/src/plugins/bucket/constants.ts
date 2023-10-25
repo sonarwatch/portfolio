@@ -4,7 +4,8 @@ export const platformId = 'bucket';
 export const bucketPlatform: Platform = {
   id: platformId,
   name: 'Bucket',
-  image: 'https://alpha.sonar.watch/img/platforms/bucket.png',
+  image: 'https://sonar.watch/img/platforms/bucket.png',
+  defiLlamaId: 'bucket-protocol',
 };
 
 export const bottleType =

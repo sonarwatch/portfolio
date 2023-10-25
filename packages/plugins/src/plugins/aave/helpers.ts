@@ -1,5 +1,4 @@
 import {
-  EvmNetworkIdType,
   NetworkIdType,
   PortfolioAsset,
   PortfolioAssetToken,
@@ -9,7 +8,6 @@ import {
   PortfolioElementBorrowLendData,
   PortfolioElementType,
   ProxyInfo,
-  RpcEndpoint,
   Yield,
   formatTokenAddress,
   getElementLendingValues,
@@ -24,45 +22,12 @@ import {
   UserIncentiveDict,
   formatUserSummaryAndIncentives,
 } from '@aave/math-utils';
-import Web3 from 'web3-v1';
-import DSA, { ChainId } from 'dsa-connect';
 import { LendingConfig, LendingData } from './types';
 import { Cache } from '../../Cache';
 import { getRpcEndpoint } from '../../utils/clients/constants';
 import { platformId } from './constants';
-import { getBasicAuthHeaders } from '../../utils/misc/getBasicAuthHeaders';
 
 export const lendingPoolsPrefix = 'aave-lendingPools';
-
-export function getDSA(networkId: EvmNetworkIdType, rpcEndpoint: RpcEndpoint) {
-  const authHeaders = rpcEndpoint.basicAuth
-    ? getBasicAuthHeaders(
-        rpcEndpoint.basicAuth.username,
-        rpcEndpoint.basicAuth.password
-      )
-    : undefined;
-  const httpHeaders = authHeaders
-    ? [
-        {
-          name: 'Authorization',
-          value: authHeaders.Authorization,
-        },
-      ]
-    : undefined;
-
-  const network = networks[networkId];
-
-  return new DSA(
-    {
-      web3: new Web3(
-        new Web3.providers.HttpProvider(rpcEndpoint.url, {
-          headers: httpHeaders,
-        })
-      ),
-    },
-    network.chainId as ChainId
-  );
-}
 
 export async function fetchLendingForAddress(
   address: string,
@@ -230,7 +195,7 @@ export function getStableBorrowedAsset(
     type: PortfolioAssetType.token,
     value: +(+userReserveData.stableBorrowsUSD).toFixed(2),
     data: {
-      address: userReserveData.underlyingAsset,
+      address: formatTokenAddress(userReserveData.underlyingAsset, networkId),
       amount: +userReserveData.stableBorrows,
       price: +userReserveData.reserve.priceInUSD,
     },
@@ -253,7 +218,7 @@ export function getVarriableBorrowedAsset(
     type: PortfolioAssetType.token,
     value: +(+userReserveData.variableBorrowsUSD).toFixed(2),
     data: {
-      address: userReserveData.underlyingAsset,
+      address: formatTokenAddress(userReserveData.underlyingAsset, networkId),
       amount: +userReserveData.variableBorrows,
       price: +userReserveData.reserve.priceInUSD,
     },

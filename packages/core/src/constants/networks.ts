@@ -17,7 +17,7 @@ import {
 export const bitcoinNetwork: Network = {
   id: NetworkId.bitcoin,
   name: 'Bitcoin',
-  image: 'https://alpha.sonar.watch/img/networks/bitcoin.png',
+  image: 'https://sonar.watch/img/networks/bitcoin.png',
   addressSystem: AddressSystem.bitcoin,
   chainId: 1,
   native: {
@@ -27,14 +27,15 @@ export const bitcoinNetwork: Network = {
   },
   nativeWrapped: null,
   isLive: true,
-  coingeckoPlatformId: 'bitcoin',
+  geckoId: 'bitcoin',
+  llamaId: 'Bitcoin',
   tokenListUrl:
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.bitcoin.tokenlist.json',
 };
 export const ethereumNetwork: Network = {
   id: NetworkId.ethereum,
   name: 'Ethereum',
-  image: 'https://alpha.sonar.watch/img/networks/ethereum.png',
+  image: 'https://sonar.watch/img/networks/ethereum.png',
   addressSystem: AddressSystem.evm,
   chainId: 1,
   native: {
@@ -48,14 +49,15 @@ export const ethereumNetwork: Network = {
     coingeckoId: 'weth',
   },
   isLive: true,
-  coingeckoPlatformId: 'ethereum',
+  geckoId: 'ethereum',
+  llamaId: 'Ethereum',
   tokenListUrl:
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.ethereum.tokenlist.json',
 };
 export const avalancheNetwork: Network = {
   id: NetworkId.avalanche,
   name: 'Avalanche',
-  image: 'https://alpha.sonar.watch/img/networks/avalanche.png',
+  image: 'https://sonar.watch/img/networks/avalanche.png',
   addressSystem: AddressSystem.evm,
   chainId: 43114,
   native: {
@@ -69,14 +71,15 @@ export const avalancheNetwork: Network = {
     coingeckoId: 'wrapped-avax',
   },
   isLive: true,
-  coingeckoPlatformId: 'avalanche',
+  geckoId: 'avalanche',
+  llamaId: 'Avalanche',
   tokenListUrl:
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.avalanche.tokenlist.json',
 };
 export const polygonNetwork: Network = {
   id: NetworkId.polygon,
   name: 'Polygon',
-  image: 'https://alpha.sonar.watch/img/networks/polygon.png',
+  image: 'https://sonar.watch/img/networks/polygon.png',
   addressSystem: AddressSystem.evm,
   chainId: 137,
   native: {
@@ -90,14 +93,15 @@ export const polygonNetwork: Network = {
     coingeckoId: 'wmatic',
   },
   isLive: true,
-  coingeckoPlatformId: 'polygon-pos',
+  geckoId: 'polygon-pos',
+  llamaId: 'Polygon',
   tokenListUrl:
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.polygon.tokenlist.json',
 };
 export const solanaNetwork: Network = {
   id: NetworkId.solana,
   name: 'Solana',
-  image: 'https://alpha.sonar.watch/img/networks/solana.png',
+  image: 'https://sonar.watch/img/networks/solana.png',
   addressSystem: AddressSystem.solana,
   chainId: 101,
   native: {
@@ -107,14 +111,15 @@ export const solanaNetwork: Network = {
   },
   nativeWrapped: null,
   isLive: true,
-  coingeckoPlatformId: 'solana',
+  geckoId: 'solana',
+  llamaId: 'Solana',
   tokenListUrl:
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.solana.tokenlist.json',
 };
 export const aptosNetwork: Network = {
   id: NetworkId.aptos,
   name: 'Aptos',
-  image: 'https://alpha.sonar.watch/img/networks/aptos.png',
+  image: 'https://sonar.watch/img/networks/aptos.png',
   addressSystem: AddressSystem.move,
   chainId: 1,
   native: {
@@ -124,14 +129,15 @@ export const aptosNetwork: Network = {
   },
   nativeWrapped: null,
   isLive: true,
-  coingeckoPlatformId: 'aptos',
+  geckoId: 'aptos',
+  llamaId: 'Aptos',
   tokenListUrl:
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.aptos.tokenlist.json',
 };
 export const suiNetwork: Network = {
   id: NetworkId.sui,
   name: 'Sui',
-  image: 'https://alpha.sonar.watch/img/networks/sui.png',
+  image: 'https://sonar.watch/img/networks/sui.png',
   addressSystem: AddressSystem.move,
   chainId: 1,
   native: {
@@ -141,7 +147,8 @@ export const suiNetwork: Network = {
   },
   nativeWrapped: null,
   isLive: true,
-  coingeckoPlatformId: 'sui',
+  geckoId: 'sui',
+  llamaId: 'Sui',
   tokenListUrl:
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.sui.tokenlist.json',
 };
@@ -149,7 +156,7 @@ export const suiNetwork: Network = {
 export const seiNetwork: Network = {
   id: NetworkId.sei,
   name: 'Sei',
-  image: 'https://alpha.sonar.watch/img/networks/sei.png',
+  image: 'https://sonar.watch/img/networks/sei.png',
   addressSystem: AddressSystem.sei,
   chainId: 1,
   native: {
@@ -159,7 +166,8 @@ export const seiNetwork: Network = {
   },
   nativeWrapped: null,
   isLive: true,
-  coingeckoPlatformId: 'sei',
+  geckoId: 'sei',
+  llamaId: 'Sei',
   tokenListUrl:
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.sei.tokenlist.json',
 };
@@ -174,6 +182,8 @@ export const networks: Record<NetworkIdType, Network> = {
   [NetworkId.sui]: suiNetwork,
   [NetworkId.sei]: seiNetwork,
 };
+
+export const networksAsArray = Object.values(networks);
 
 export const evmNetworks: Network[] = Object.values(networks).filter(
   (n) => n.addressSystem === AddressSystem.evm

@@ -13,6 +13,7 @@ export * from './formatTokenPriceUnderlying';
 export * from './formatTokenPriceSource';
 export * from './formatUniTokenInfo';
 export * from './getNetworkById';
+export * from './getNetworkByLlamaId';
 export * from './getAddressSystemFromNetworkId';
 export * from './getAssetsFromElement';
 export * from './getAssetsFromElements';

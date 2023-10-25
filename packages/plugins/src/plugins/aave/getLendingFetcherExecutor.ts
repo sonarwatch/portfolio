@@ -1,16 +1,15 @@
 import { EvmNetworkIdType, ProxyInfo } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
-import { fetchLendingForAddress, getDSA } from './helpers';
+import { fetchLendingForAddress } from './helpers';
 import { FetcherExecutor } from '../../Fetcher';
 import { lendingConfigs } from './constants';
-import { getRpcEndpoint } from '../../utils/clients/constants';
+import { getDSA } from '../../utils/evm/getDSA';
 
 export default function getLendingFetcherExecutor(
   networkId: EvmNetworkIdType
 ): FetcherExecutor {
   return async (owner: string, cache: Cache) => {
-    const rpcEndpoint = getRpcEndpoint(networkId);
-    const instadappDSA = getDSA(networkId, rpcEndpoint);
+    const instadappDSA = getDSA(networkId);
     const addresses = [owner];
 
     const accounts = await instadappDSA.getAccounts(owner);

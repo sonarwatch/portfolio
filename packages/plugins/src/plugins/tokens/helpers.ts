@@ -10,6 +10,8 @@ import shuffleArray from '../../utils/misc/shuffleArray';
 import sleep from '../../utils/misc/sleep';
 import { coingeckoCoinsPriceUrl } from '../../utils/coingecko/constants';
 
+const tagSeparator = '<|>';
+
 export async function getCoingeckoSources(
   networkId: NetworkIdType,
   tokensData: TokenData[]
@@ -95,4 +97,20 @@ export async function getTokensData(
     return cTokensData;
   }, []);
   return tokensData;
+}
+
+export function getTag(platformId: string, elementName?: string) {
+  return `${platformId}${elementName ? `${tagSeparator}${elementName}` : ''}`;
+}
+
+export function parseTag(tag: string): {
+  platformId: string;
+  elementName?: string;
+} {
+  const split = tag.split(tagSeparator, 2);
+  if (split.length < 1) throw new Error(`Tag is not valid: ${tag}`);
+  return {
+    platformId: split[0],
+    elementName: split.at(1),
+  };
 }

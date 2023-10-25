@@ -15,6 +15,7 @@ import tokenListsJob from './tokenListsJob';
 import { Fetcher } from '../../Fetcher';
 import { fetchers as evmFetchers } from './fetchers/evms';
 import { walletNftsPlatform, walletTokensPlatform } from './constants';
+import {} from 'graphql';
 
 export const platforms: Platform[] = [walletTokensPlatform, walletNftsPlatform];
 export const jobs: Job[] = [

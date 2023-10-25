@@ -4,6 +4,17 @@ export type Balance = {
   value: string;
 };
 
+export type ReserveBalance = {
+  type: string;
+  fields: {
+    total_supply: string;
+    user_state: {
+      type: string;
+      fields: { id: { id: string }; size: string };
+    };
+  };
+};
+
 export type BorrowRateFactors = {
   type: string;
   fields: {
@@ -32,7 +43,7 @@ export type ReserveData = {
   value: {
     type: string;
     fields: {
-      borrow_balance: Balance;
+      borrow_balance: ReserveBalance;
       borrow_cap_ceiling: string;
       borrow_rate_factors: BorrowRateFactors;
       coin_type: string;
@@ -49,7 +60,7 @@ export type ReserveData = {
       reserve_field_a: string;
       reserve_field_b: string;
       reserve_field_c: string;
-      supply_balance: Balance;
+      supply_balance: ReserveBalance;
       supply_cap_ceiling: string;
       treasury_balance: string;
       treasury_factor: string;

@@ -1,34 +1,17 @@
-import {
-  AddressSystem,
-  AddressSystemType,
-  NSName,
-  NetworkId,
-  formatAddress,
-} from '@sonarwatch/portfolio-core';
-import { getNamesEvm } from './evm';
-import { getNamesSolana } from './solana';
-import { getNamesAptos } from './aptos';
+import { AddressSystemType } from '@sonarwatch/portfolio-core';
+import { nameServices } from './nameServices';
 
 export async function getNames(
   address: string,
   addressSystem: AddressSystemType
-): Promise<NSName[]> {
-  const fAddress = formatAddress(address, addressSystem);
-  switch (addressSystem) {
-    case AddressSystem.bitcoin:
-      return [];
-    case AddressSystem.evm:
-      return getNamesEvm(fAddress);
-    case AddressSystem.solana:
-      return getNamesSolana(fAddress).then((names): NSName[] =>
-        names.map((name) => ({
-          name,
-          networkId: NetworkId.solana,
-        }))
-      );
-    case AddressSystem.move:
-      return getNamesAptos(fAddress);
-    default:
-      return [];
+): Promise<string[]> {
+  const names: string[] = [];
+  for (let i = 0; i < nameServices.length; i++) {
+    const nameService = nameServices[i];
+    if (nameService.checker.addressSystem !== addressSystem) continue;
+
+    const cNames = await nameService.getNames(address);
+    names.push(...cNames);
   }
+  return names;
 }

@@ -13,6 +13,7 @@ import {
 } from '../../utils/coingecko/types';
 import { topAddressesMaxSize } from './constants';
 import sleep from '../../utils/misc/sleep';
+import ignoredAddresses from './ignoredAddresses';
 
 export default async function getTopAddresses(
   networkId: NetworkIdType,
@@ -23,7 +24,7 @@ export default async function getTopAddresses(
 
   const addressById: Map<string, string> = new Map();
   coingeckoCoinsListResponse.forEach((gCoin) => {
-    const address = gCoin.platforms[network.coingeckoPlatformId];
+    const address = gCoin.platforms[network.geckoId];
     if (!address) return;
     addressById.set(gCoin.id, formatTokenAddress(address, networkId));
   });
@@ -39,6 +40,7 @@ export default async function getTopAddresses(
     );
   }
 
+  const cIgnoredAddresses = ignoredAddresses.get(network.id);
   let page = 0;
   while (addresses.size < topAddressesMaxSize && page < 20) {
     page += 1;
@@ -64,6 +66,7 @@ export default async function getTopAddresses(
     coinsMarketsRes.data.forEach((coinMarket) => {
       const address = addressById.get(coinMarket.id);
       if (!address) return;
+      if (cIgnoredAddresses?.includes(address)) return;
       addresses.add(address);
     });
   }

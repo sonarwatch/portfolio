@@ -1,7 +1,7 @@
-import { PublicKey } from '@solana/web3.js';
 import { validate, Network } from 'bitcoin-address-validation';
 import { isAddress as isAddressEthers } from '@ethersproject/address';
 import { isHexString } from '@ethersproject/bytes';
+import { base58 } from '@metaplex-foundation/umi-serializers-encodings';
 import { AddressSystem, AddressSystemType } from '../Address';
 import { AddressIsNotValidError } from '../errors/AddressIsNotValideError';
 
@@ -31,10 +31,22 @@ export function assertMoveAddress(address: string): void {
 }
 
 export function isSolanaAddress(address: string): boolean {
-  if (address.length > 44) return false;
+  if (
+    // Lowest address (32 bytes of zeroes)
+    address.length < 32 ||
+    // Highest address (32 bytes of 255)
+    address.length > 44
+  ) {
+    return false;
+  }
+  // Slow-path; actually attempt to decode the input string.
+
   try {
-    // eslint-disable-next-line no-new
-    new PublicKey(address);
+    const bytes = base58.serialize(address);
+    const numBytes = bytes.byteLength;
+    if (numBytes !== 32) {
+      return false;
+    }
     return true;
   } catch (error) {
     return false;

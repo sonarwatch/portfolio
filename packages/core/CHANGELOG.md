@@ -2,6 +2,175 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.8.47](https://github.com/sonarwatch/portfolio/compare/core-0.8.46...core-0.8.47) (2023-10-24)
+
+
+
+## [0.8.46](https://github.com/sonarwatch/portfolio/compare/core-0.8.45...core-0.8.46) (2023-10-24)
+
+
+
+## [0.8.45](https://github.com/sonarwatch/portfolio/compare/core-0.8.44...core-0.8.45) (2023-10-23)
+
+
+
+## [0.8.44](https://github.com/sonarwatch/portfolio/compare/core-0.8.43...core-0.8.44) (2023-10-23)
+
+
+
+## [0.8.43](https://github.com/sonarwatch/portfolio/compare/core-0.8.42...core-0.8.43) (2023-10-23)
+
+
+
+## [0.8.42](https://github.com/sonarwatch/portfolio/compare/core-0.8.41...core-0.8.42) (2023-10-23)
+
+
+
+## [0.8.41](https://github.com/sonarwatch/portfolio/compare/core-0.8.40...core-0.8.41) (2023-10-23)
+
+
+
+## [0.8.40](https://github.com/sonarwatch/portfolio/compare/core-0.8.39...core-0.8.40) (2023-10-23)
+
+
+
+## [0.8.39](https://github.com/sonarwatch/portfolio/compare/core-0.8.38...core-0.8.39) (2023-10-23)
+
+
+
+## [0.8.38](https://github.com/sonarwatch/portfolio/compare/core-0.8.37...core-0.8.38) (2023-10-21)
+
+
+
+## [0.8.37](https://github.com/sonarwatch/portfolio/compare/core-0.8.36...core-0.8.37) (2023-10-21)
+
+
+
+## [0.8.36](https://github.com/sonarwatch/portfolio/compare/core-0.8.35...core-0.8.36) (2023-10-21)
+
+
+
+## [0.8.35](https://github.com/sonarwatch/portfolio/compare/core-0.8.34...core-0.8.35) (2023-10-21)
+
+
+
+## [0.8.34](https://github.com/sonarwatch/portfolio/compare/core-0.8.33...core-0.8.34) (2023-10-20)
+
+
+
+## [0.8.33](https://github.com/sonarwatch/portfolio/compare/core-0.8.32...core-0.8.33) (2023-10-18)
+
+
+
+## [0.8.32](https://github.com/sonarwatch/portfolio/compare/core-0.8.31...core-0.8.32) (2023-10-18)
+
+
+
+## [0.8.31](https://github.com/sonarwatch/portfolio/compare/core-0.8.30...core-0.8.31) (2023-10-18)
+
+
+
+## [0.8.30](https://github.com/sonarwatch/portfolio/compare/core-0.8.29...core-0.8.30) (2023-10-18)
+
+
+
+## [0.8.29](https://github.com/sonarwatch/portfolio/compare/core-0.8.28...core-0.8.29) (2023-10-17)
+
+
+
+## [0.8.28](https://github.com/sonarwatch/portfolio/compare/core-0.8.27...core-0.8.28) (2023-10-17)
+
+
+
+## [0.8.27](https://github.com/sonarwatch/portfolio/compare/core-0.8.26...core-0.8.27) (2023-10-16)
+
+
+
+## [0.8.26](https://github.com/sonarwatch/portfolio/compare/core-0.8.25...core-0.8.26) (2023-10-16)
+
+
+
+## [0.8.25](https://github.com/sonarwatch/portfolio/compare/core-0.8.24...core-0.8.25) (2023-10-16)
+
+
+
+## [0.8.24](https://github.com/sonarwatch/portfolio/compare/core-0.8.23...core-0.8.24) (2023-10-14)
+
+
+
+## [0.8.23](https://github.com/sonarwatch/portfolio/compare/core-0.8.22...core-0.8.23) (2023-10-14)
+
+
+
+## [0.8.22](https://github.com/sonarwatch/portfolio/compare/core-0.8.21...core-0.8.22) (2023-10-14)
+
+
+### Reverts
+
+* Revert "rename" ([ffcf477](https://github.com/sonarwatch/portfolio/commit/ffcf47783e7dcb924c7685a4c7784a2385b526c2))
+
+
+
+## [0.8.21](https://github.com/sonarwatch/portfolio/compare/core-0.8.20...core-0.8.21) (2023-10-13)
+
+
+
+## [0.8.20](https://github.com/sonarwatch/portfolio/compare/core-0.8.19...core-0.8.20) (2023-10-13)
+
+
+
+## [0.8.19](https://github.com/sonarwatch/portfolio/compare/core-0.8.18...core-0.8.19) (2023-10-13)
+
+
+
+## [0.8.18](https://github.com/sonarwatch/portfolio/compare/core-0.8.17...core-0.8.18) (2023-10-13)
+
+
+
+## [0.8.17](https://github.com/sonarwatch/portfolio/compare/core-0.8.16...core-0.8.17) (2023-10-13)
+
+
+
+## [0.8.16](https://github.com/sonarwatch/portfolio/compare/core-0.8.15...core-0.8.16) (2023-10-13)
+
+
+
+## [0.8.15](https://github.com/sonarwatch/portfolio/compare/core-0.8.14...core-0.8.15) (2023-10-13)
+
+
+
+## [0.8.14](https://github.com/sonarwatch/portfolio/compare/core-0.8.13...core-0.8.14) (2023-10-13)
+
+
+
+## [0.8.13](https://github.com/sonarwatch/portfolio/compare/core-0.8.12...core-0.8.13) (2023-10-13)
+
+
+
+## [0.8.12](https://github.com/sonarwatch/portfolio/compare/core-0.8.11...core-0.8.12) (2023-10-13)
+
+
+
+## [0.8.11](https://github.com/sonarwatch/portfolio/compare/core-0.8.10...core-0.8.11) (2023-10-13)
+
+
+
+## [0.8.10](https://github.com/sonarwatch/portfolio/compare/core-0.8.9...core-0.8.10) (2023-10-12)
+
+
+
+## [0.8.9](https://github.com/sonarwatch/portfolio/compare/core-0.8.8...core-0.8.9) (2023-10-12)
+
+
+
+## [0.8.8](https://github.com/sonarwatch/portfolio/compare/core-0.8.7...core-0.8.8) (2023-10-10)
+
+
+
+## [0.8.7](https://github.com/sonarwatch/portfolio/compare/core-0.8.6...core-0.8.7) (2023-10-09)
+
+
+
 ## [0.8.6](https://github.com/sonarwatch/portfolio/compare/core-0.8.5...core-0.8.6) (2023-10-08)
 
 

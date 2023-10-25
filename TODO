@@ -4,9 +4,29 @@
 - Ajout de la fonction cache.setTokensPricesSource(), utile pour des AMM
 - Auto Initialisation du cache dans portolfio-api
 - Verifier qu'une address a deja passé au moins un TX avant de tout fetch
+- cache.getTokenPrices seems to be bugged first fetch
+- Lock system (sur maker ou stargate par example)
+
+- Lybra Finance
+- Summer.fi
+
+- Frax Finanace
+- Uniswap
+- Instadapp
+- Convex
+- PancakeSwap
+- Balancer
+- Liquity
+- Sushi
+- Yearn
+- Aura
+- Synthetix
+- Venus
+- Radiant
 
 # DONE
 
+- Fix curve AAVE pools (0x7f90122BF0700F9E7e1F688fe926940E8839F353 https://api.curve.fi/api/getPools/avalanche)
 - Gestion des name services
 - Fix le problème d'import Job et Fetcher lors de la génération d'un plugin (toujours présent)
 - Déplacer les plateformes dans le dossier des plugins correspondant ?

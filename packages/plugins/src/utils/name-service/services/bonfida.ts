@@ -4,9 +4,11 @@ import {
   getDomainKeySync,
   getFavoriteDomain,
 } from '@bonfida/spl-name-service';
-import { getClientSolana } from '../clients';
+import { bonfidaNameChecker } from '@sonarwatch/portfolio-core';
+import { getClientSolana } from '../../clients';
+import { NameService } from '../types';
 
-export async function getOwnerSolana(name: string): Promise<string | null> {
+async function getOwner(name: string): Promise<string | null> {
   const client = getClientSolana();
   const domainName = name.slice(0, -4);
   const { pubkey } = getDomainKeySync(domainName);
@@ -19,7 +21,7 @@ export async function getOwnerSolana(name: string): Promise<string | null> {
   return null;
 }
 
-export async function getNamesSolana(address: string): Promise<string[]> {
+async function getNames(address: string): Promise<string[]> {
   const client = getClientSolana();
   const owner = new PublicKey(address);
 
@@ -29,3 +31,10 @@ export async function getNamesSolana(address: string): Promise<string[]> {
   if (!reverse) return [];
   return [`${reverse}.sol`];
 }
+
+export const nameService: NameService = {
+  id: 'bonfida',
+  checker: bonfidaNameChecker,
+  getNames,
+  getOwner,
+};

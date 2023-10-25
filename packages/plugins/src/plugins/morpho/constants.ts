@@ -4,7 +4,8 @@ export const platformId = 'morpho';
 export const morphoPlatform: Platform = {
   id: platformId,
   name: 'Morpho',
-  image: 'https://alpha.sonar.watch/img/platforms/morpho.png',
+  image: 'https://sonar.watch/img/platforms/morpho.png',
+  defiLlamaId: 'parent#morpho',
 };
 export const updatedIndexesPrefix = `${platformId}-updated-indexes`;
 export const morphoAaveV3Address = '0x33333aea097c193e66081E930c33020272b33333';

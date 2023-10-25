@@ -7,7 +7,8 @@ export const platformId = 'marginfi';
 export const marginfiPlatform: Platform = {
   id: platformId,
   name: 'Marginfi',
-  image: 'https://alpha.sonar.watch/img/platforms/marginfi.png',
+  image: 'https://sonar.watch/img/platforms/marginfi.png',
+  defiLlamaId: 'parent#marginfi',
 };
 export const MarginfiProgram = new PublicKey(
   'MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA'

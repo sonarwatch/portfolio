@@ -4,7 +4,8 @@ export const platformId = 'navi';
 export const naviPlatform: Platform = {
   id: platformId,
   name: 'NAVI',
-  image: `https://alpha.sonar.watch/img/platforms/${platformId}.png`,
+  image: `https://sonar.watch/img/platforms/${platformId}.png`,
+  defiLlamaId: 'navi-protocol',
 };
 
 export const reservesPrefix = platformId;
@@ -12,6 +13,9 @@ export const reservesKey = 'reserves';
 
 export const reserveParentId =
   '0xe6d4c6610b86ce7735ea754596d71d72d10c7980b5052fc3c8cdf8d09fea9b4b';
+
+export const indexFactor = 18;
+export const rateFactor = 27;
 
 export const poolsInfos = [
   {

@@ -1,6 +1,8 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from './Fetcher';
 import { Job } from './Job';
+import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
+import orphanPlatorms from './orphanPlatorms';
 import {
   platforms as tokensPlatforms,
   jobs as tokensJobs,
@@ -113,7 +115,11 @@ import {
   platforms as auxexchangePlatforms,
   jobs as auxexchangeJobs,
 } from './plugins/auxexchange';
-import { jobs as makerJobs } from './plugins/maker';
+import {
+  jobs as makerJobs,
+  platforms as makerPlatforms,
+  fetchers as makerFetchers,
+} from './plugins/maker';
 import {
   jobs as kaminoJobs,
   platforms as kaminoPlatforms,
@@ -132,7 +138,44 @@ import {
   jobs as scallopJobs,
   platforms as scallopPlatforms
 } from './plugins/scallop';
-import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
+import {
+  fetchers as rocketpoolFetchers,
+  platforms as rocketpoolPlatforms,
+} from './plugins/rocket-pool';
+import {
+  platforms as lidoPlatforms,
+  fetchers as lidoFetchers,
+} from './plugins/lido';
+import {
+  jobs as curveJobs,
+  fetchers as curveFetchers,
+  platforms as curvePlatforms,
+} from './plugins/curve';
+import {
+  jobs as compoundJobs,
+  fetchers as compoundFetchers,
+  platforms as compoundPlatforms,
+} from './plugins/compound';
+import {
+  jobs as stargateJobs,
+  fetchers as stargateFetchers,
+  platforms as stargatePlatforms,
+} from './plugins/stargate';
+import {
+  platforms as staderPlatforms,
+  jobs as staderJobs,
+  fetchers as staderFetchers,
+} from './plugins/stader';
+import {
+  platforms as uniswapPlatforms,
+  jobs as uniswapJobs,
+  fetchers as uniswapFetchers,
+} from './plugins/uniswap';
+import {
+  platforms as balancerPlatforms,
+  jobs as balancerJobs,
+  fetchers as balancerFetchers,
+} from './plugins/balancer';
 
 export {
   walletTokensPlatform,
@@ -144,9 +187,11 @@ export * from './Fetcher';
 export * from './Job';
 export * from './utils/name-service';
 export * from './utils/blank';
+export * from './plugins/llama-protocols';
 
 // PLATFORMS //
 export const platforms: Platform[] = [
+  ...orphanPlatorms,
   ...aavePlatforms,
   ...orcaPlatforms,
   ...cetusPlatforms,
@@ -174,7 +219,16 @@ export const platforms: Platform[] = [
   ...kaminoPlatforms,
   ...bucketPlatforms,
   ...naviPlatforms,
-  ...scallopPlatforms
+  ...scallopPlatforms,
+  ...makerPlatforms,
+  ...rocketpoolPlatforms,
+  ...lidoPlatforms,
+  ...curvePlatforms,
+  ...compoundPlatforms,
+  ...stargatePlatforms,
+  ...staderPlatforms,
+  ...uniswapPlatforms,
+  ...balancerPlatforms,
 ];
 
 // JOBS //
@@ -204,7 +258,13 @@ export const jobs: Job[] = [
   ...liquidswapJobs,
   ...kaminoJobs,
   ...naviJobs,
-  ...scallopJobs
+  ...scallopJobs,
+  ...curveJobs,
+  ...compoundJobs,
+  ...stargateJobs,
+  ...staderJobs,
+  ...uniswapJobs,
+  ...balancerJobs,
 ];
 
 // FETCHERS //
@@ -229,6 +289,15 @@ export const fetchers: Fetcher[] = [
   ...liquidityPoolsSeiFetchers,
   ...bucketFetchers,
   ...naviFetchers,
-  ...scallopFetchers
+  ...scallopFetchers,
+  ...rocketpoolFetchers,
+  ...curveFetchers,
+  ...stargateFetchers,
+  ...makerFetchers,
+  ...compoundFetchers,
+  ...lidoFetchers,
+  ...staderFetchers,
+  ...uniswapFetchers,
+  ...balancerFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
