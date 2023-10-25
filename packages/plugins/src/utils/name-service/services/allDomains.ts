@@ -17,7 +17,7 @@ async function getNames(address: string): Promise<string[]> {
   const parser = new TldParser(client);
   const mainDomain = await parser.getMainDomain(address).catch(()=> undefined)
   if (!mainDomain) return [];
-  return [`${mainDomain.domain}.${mainDomain.tld}`];
+  return [`${mainDomain.domain}${mainDomain.tld}`];
 }
 
 export const nameService: NameService = {
