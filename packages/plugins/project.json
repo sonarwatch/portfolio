@@ -11,7 +11,8 @@
         "outputPath": "dist/packages/plugins",
         "main": "packages/plugins/src/index.ts",
         "tsConfig": "packages/plugins/tsconfig.lib.json",
-        "assets": ["packages/plugins/*.md"]
+        "assets": ["packages/plugins/*.md"],
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "serve-cache": {
@@ -35,7 +36,7 @@
       "dependsOn": ["build"]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": [
