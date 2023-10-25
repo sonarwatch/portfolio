@@ -15,9 +15,10 @@ async function getNames(address: string): Promise<string[]> {
   const client = getClientSolana();
 
   const parser = new TldParser(client);
-  const mainDomain = await parser.getMainDomain(address).catch(() => undefined)
-  if (!mainDomain) return [];
-  return [`${mainDomain.domain}${mainDomain.tld}`];
+  const allDomainsWithNameAccounts = await parser.getParsedAllUserDomains(address).catch(() => undefined)
+  if (!allDomainsWithNameAccounts) return [];
+
+  return allDomainsWithNameAccounts.map((domainsWithNameAccounts) => domainsWithNameAccounts.domain);;
 }
 
 export const nameService: NameService = {
