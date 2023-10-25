@@ -17,7 +17,6 @@ async function getNames(address: string): Promise<string[]> {
   const parser = new TldParser(client);
   const allDomainsWithNameAccounts = await parser.getParsedAllUserDomains(address).catch(() => undefined)
   if (!allDomainsWithNameAccounts) return [];
-
   return allDomainsWithNameAccounts.map((domainsWithNameAccounts) => domainsWithNameAccounts.domain);;
 }
 
