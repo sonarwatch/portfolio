@@ -1,6 +1,6 @@
 import { nameService as ensNameService } from './services/ens';
 import { nameService as aptosNameService } from './services/aptos';
-import { nameService as allNameService } from './services/allDomains';
+import { nameService as allDomainsNameService } from './services/allDomains';
 import { getOwner } from './getOwner';
 
 describe('name-service', () => {
@@ -46,19 +46,19 @@ describe('name-service', () => {
   });
 
   it('should getOwner for allDomains', async () => {
-    const owner = await allNameService.getOwner('miester.all');
+    const owner = await allDomainsNameService.getOwner('miester.all');
     expect(owner).toBe(
       '2EGGxj2qbNAJNgLCPKca8sxZYetyTjnoRspTPjzN2D67'
     );
 
-    const owner2 = await allNameService.getOwner(
+    const owner2 = await allDomainsNameService.getOwner(
       'miaster.all'
     );
     expect(owner2).toBe(null);
   });
 
   it('should getNames for allDomains', async () => {
-    const names = await allNameService.getNames(
+    const names = await allDomainsNameService.getNames(
       '2EGGxj2qbNAJNgLCPKca8sxZYetyTjnoRspTPjzN2D67'
     );
     expect(names.some((name) => name === 'miester.abc')).toBe(true);

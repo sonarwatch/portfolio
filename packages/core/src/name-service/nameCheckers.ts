@@ -39,7 +39,7 @@ export const aptosNameChecker: NameChecker = {
   },
 };
 // ## AllDomains
-export const allNameChecker: NameChecker = {
+export const allDomainsNameChecker: NameChecker = {
   addressSystem: AddressSystem.solana,
   checker(name) {
     return name.split(".").length === 2;
@@ -54,5 +54,5 @@ export const nameCheckers: NameChecker[] = [
   glowNameChecker,
   avalancheNameChecker,
   aptosNameChecker,
-  allNameChecker,
+  allDomainsNameChecker,
 ];
