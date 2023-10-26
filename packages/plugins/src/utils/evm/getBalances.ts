@@ -1,6 +1,6 @@
 import { EvmNetworkIdType } from '@sonarwatch/portfolio-core';
 import { getEvmClient } from '../clients';
-import { erc20ABI } from './erc20Abi';
+import { balanceOfErc20ABI } from './erc20Abi';
 import { zeroBigInt } from '../misc/constants';
 
 export async function getBalances(
@@ -11,7 +11,7 @@ export async function getBalances(
   const client = getEvmClient(networkId);
   const balances = await client.multicall({
     contracts: addresses.map((a) => ({
-      abi: erc20ABI,
+      abi: balanceOfErc20ABI,
       address: a as `0x${string}`,
       functionName: 'balanceOf',
       args: [owner as `0x${string}`],

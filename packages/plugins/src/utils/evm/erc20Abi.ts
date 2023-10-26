@@ -1,4 +1,4 @@
-export const erc20ABI = [
+export const balanceOfErc20ABI = [
   {
     type: 'function',
     name: 'balanceOf',

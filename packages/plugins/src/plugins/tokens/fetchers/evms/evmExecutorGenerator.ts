@@ -11,7 +11,7 @@ import { getAddress } from 'viem';
 import { Cache } from '../../../../Cache';
 import { FetcherExecutor } from '../../../../Fetcher';
 import { getEvmClient } from '../../../../utils/clients';
-import { erc20ABI } from '../../../../utils/evm/erc20Abi';
+import { balanceOfErc20ABI } from '../../../../utils/evm/erc20Abi';
 import tokenPriceToAssetToken from '../../../../utils/misc/tokenPriceToAssetToken';
 import { TokenList } from '../../types';
 import { tokenListsPrefix, walletTokensPlatform } from '../../constants';
@@ -50,7 +50,7 @@ export default function getEvmFetcherExecutor(
     ) as TokenPrice[];
 
     const commonProps = {
-      abi: erc20ABI,
+      abi: balanceOfErc20ABI,
       functionName: 'balanceOf',
       args: [getAddress(owner)],
     } as const;
