@@ -4,9 +4,10 @@ import { Job } from '../../Job';
 import stakingFetcher from './stakingFetcher';
 import bptFarmingFetcher from './bptFarmingFetcher';
 import bptStakingFetcher from './bptStakingFetcher';
+import bptInfoJob from './bptInfoJob';
 import { paraswapPlatform } from './constants';
 
-export const jobs: Job[] = [];
+export const jobs: Job[] = [bptInfoJob];
 export const fetchers: Fetcher[] = [
   stakingFetcher,
   bptFarmingFetcher,

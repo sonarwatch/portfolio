@@ -10,11 +10,12 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { PSPToken, bptParaFarmer, platformId } from './constants';
+import { PSPToken, bptInfoKey, bptParaFarmer, platformId } from './constants';
 import { getEvmClient } from '../../utils/clients';
 import { balanceOfErc20ABI } from '../../utils/evm/erc20Abi';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { getPoolTokensAbi, getTotalRewardsAbi, totalSupplyAbi } from './abis';
+import { getTotalRewardsAbi } from './abis';
+import { BptInfo } from './types';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getEvmClient(NetworkId.ethereum);
@@ -29,38 +30,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const balance = await client.readContract(balanceOfContract);
   if (balance === BigInt(0)) return [];
 
-  const totalSupplyContract = {
-    address: bptParaFarmer.token,
-    abi: totalSupplyAbi,
-    functionName: totalSupplyAbi[0].name,
-  } as const;
-
-  const getPoolContract = {
-    address: bptParaFarmer.vault,
-    abi: getPoolTokensAbi,
-    functionName: getPoolTokensAbi[0].name,
-    args: [bptParaFarmer.poolId],
-  } as const;
-
   const totalRewardsContract = {
-    address: bptParaFarmer.poolId,
+    address: bptParaFarmer.address,
     abi: getTotalRewardsAbi,
     functionName: getTotalRewardsAbi[0].name,
     args: [owner as `0x${string}`],
   } as const;
 
+  const pendingReward = await client.readContract(totalRewardsContract);
+
   const { underlyings } = bptParaFarmer;
 
-  const [totalSupply, poolTokens, pendingReward] = await Promise.all([
-    client.readContract(totalSupplyContract),
-    client.readContract(getPoolContract),
-    client.readContract(totalRewardsContract),
-  ]);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [tokens, balances, lastChangeBlock] = poolTokens;
-
   const tokensPrices = await cache.getTokenPrices(
-    [...bptParaFarmer.underlyings, PSPToken.address],
+    bptParaFarmer.underlyings,
     NetworkId.ethereum
   );
 
@@ -70,7 +52,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     tokenPriceById.set(tokenPrice.address, tokenPrice);
   }
 
-  if (tokenPriceById.values.length === 0) return [];
+  const bptInfo = await cache.getItem<BptInfo>(bptInfoKey, {
+    prefix: platformId,
+    networkId: NetworkId.ethereum,
+  });
+  if (!bptInfo) return [];
+
+  const { balances } = bptInfo.farming;
+  const { totalSupply } = bptInfo.farming;
 
   const liquidities: PortfolioLiquidity[] = [];
   const assets: PortfolioAssetToken[] = [];
@@ -82,7 +71,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const underlyingsAmount = new BigNumber(balances[i].toString())
       .multipliedBy(new BigNumber(balance.toString()))
-      .dividedBy(new BigNumber(totalSupply.toString()))
+      .dividedBy(totalSupply)
+      .dividedBy(10 ** tokenPrice.decimals)
       .toNumber();
 
     assets.push(
@@ -97,11 +87,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (assets.length === 0) return [];
 
   const pspTokenPrice = tokenPriceById.get(PSPToken.address);
-  if (pspTokenPrice) {
+  if (pspTokenPrice && pendingReward > BigInt(0)) {
     rewardAssets.push(
       tokenPriceToAssetToken(
         PSPToken.address,
-        Number(pendingReward),
+        new BigNumber(pendingReward.toString())
+          .dividedBy(10 ** pspTokenPrice.decimals)
+          .toNumber(),
         NetworkId.ethereum,
         pspTokenPrice
       )

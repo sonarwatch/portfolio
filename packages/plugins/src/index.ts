@@ -173,6 +173,7 @@ import {
 } from './plugins/balancer';
 import {
   platforms as paraswapPlatforms,
+  jobs as paraswapJobs,
   fetchers as paraswapFetchers,
 } from './plugins/paraswap';
 
@@ -263,6 +264,7 @@ export const jobs: Job[] = [
   ...staderJobs,
   ...uniswapJobs,
   ...balancerJobs,
+  ...paraswapJobs,
 ];
 
 // FETCHERS //

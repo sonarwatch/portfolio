@@ -9,11 +9,11 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { bptParaStake, platformId } from './constants';
+import { bptInfoKey, bptParaStake, platformId } from './constants';
 import { getEvmClient } from '../../utils/clients';
 import { balanceOfErc20ABI } from '../../utils/evm/erc20Abi';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { getPoolTokensAbi, totalSupplyAbi } from './abis';
+import { BptInfo } from './types';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getEvmClient(NetworkId.ethereum);
@@ -28,27 +28,16 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const balance = await client.readContract(balanceOfContract);
   if (balance === BigInt(0)) return [];
 
-  const totalSupplyContract = {
-    address: bptParaStake.token,
-    abi: totalSupplyAbi,
-    functionName: totalSupplyAbi[0].name,
-  } as const;
-
-  const getPoolContract = {
-    address: bptParaStake.vault,
-    abi: getPoolTokensAbi,
-    functionName: getPoolTokensAbi[0].name,
-    args: [bptParaStake.poolId],
-  } as const;
-
   const { underlyings } = bptParaStake;
 
-  const [totalSupply, poolTokens] = await Promise.all([
-    client.readContract(totalSupplyContract),
-    client.readContract(getPoolContract),
-  ]);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [tokens, balances, lastChangeBlock] = poolTokens;
+  const bptInfo = await cache.getItem<BptInfo>(bptInfoKey, {
+    prefix: platformId,
+    networkId: NetworkId.ethereum,
+  });
+  if (!bptInfo) return [];
+
+  const balancesBis = bptInfo.farming.balances;
+  const totalSupplyBis = bptInfo.farming.totalSupply;
 
   const tokensPrices = await cache.getTokenPrices(
     bptParaStake.underlyings,
@@ -68,9 +57,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const tokenPrice = tokenPriceById.get(underlying);
     if (!tokenPrice) continue;
 
-    const underlyingsAmount = new BigNumber(balances[i].toString())
+    const underlyingsAmount = new BigNumber(balancesBis[i].toString())
       .multipliedBy(new BigNumber(balance.toString()))
-      .dividedBy(new BigNumber(totalSupply.toString()))
+      .dividedBy(totalSupplyBis)
       .dividedBy(10 ** tokenPrice.decimals)
       .toNumber();
 

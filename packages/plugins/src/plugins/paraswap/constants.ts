@@ -10,9 +10,11 @@ export const paraswapPlatform: Platform = {
   image: 'https://sonar.watch/img/platforms/paraswap.png',
 };
 
+export const bptInfoKey = 'bptInfo';
+
 export const PSPToken = {
   chain: 'ethereum',
-  address: '0xcafe001067cdef266afb7eb5a286dcfd277f3de5',
+  address: '0xcAfE001067cDEF266AfB7Eb5A286dCFD277f3dE5',
   symbol: 'PSP',
   decimals: 18,
 };

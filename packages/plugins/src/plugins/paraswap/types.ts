@@ -7,3 +7,14 @@ export type ContractInfo = {
   vault: `0x${string}`;
   provider?: string;
 };
+
+export type BptInfo = {
+  farming: {
+    totalSupply: string;
+    balances: string[];
+  };
+  staking: {
+    totalSupply: string;
+    balances: string[];
+  };
+};
