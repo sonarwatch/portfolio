@@ -121,7 +121,7 @@ function getPoolsV2Fetcher(networkId: EvmNetworkIdType): Fetcher {
         label: 'LiquidityPool',
         networkId,
         platformId,
-        value: 1,
+        value: getUsdValueSum(poolLiquidities.map((a) => a.value)),
         name: 'Balancer V2',
         data: {
           liquidities: poolLiquidities,
@@ -134,7 +134,7 @@ function getPoolsV2Fetcher(networkId: EvmNetworkIdType): Fetcher {
         label: 'Farming',
         networkId,
         platformId,
-        value: 1,
+        value: getUsdValueSum(farmLiquidities.map((a) => a.value)),
         name: 'Balancer V2',
         data: {
           liquidities: farmLiquidities,
