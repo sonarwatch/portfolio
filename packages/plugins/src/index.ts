@@ -171,6 +171,10 @@ import {
   jobs as balancerJobs,
   fetchers as balancerFetchers,
 } from './plugins/balancer';
+import {
+  platforms as paraswapPlatforms,
+  fetchers as paraswapFetchers,
+} from './plugins/paraswap';
 
 export {
   walletTokensPlatform,
@@ -223,6 +227,7 @@ export const platforms: Platform[] = [
   ...staderPlatforms,
   ...uniswapPlatforms,
   ...balancerPlatforms,
+  ...paraswapPlatforms,
 ];
 
 // JOBS //
@@ -291,5 +296,6 @@ export const fetchers: Fetcher[] = [
   ...staderFetchers,
   ...uniswapFetchers,
   ...balancerFetchers,
+  ...paraswapFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
