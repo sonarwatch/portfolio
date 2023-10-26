@@ -10,5 +10,6 @@ const ignoredAddresses: Map<NetworkIdType, string[]> = new Map([
   ],
   [NetworkId.polygon, []],
   [NetworkId.avalanche, []],
+  [NetworkId.bnb, []],
 ]);
 export default ignoredAddresses;

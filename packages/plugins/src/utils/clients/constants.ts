@@ -3,13 +3,14 @@ import {
   NetworkIdType,
   RpcEndpoint,
 } from '@sonarwatch/portfolio-core';
-import { Chain, avalanche, mainnet, polygon } from 'viem/chains';
+import { Chain, avalanche, mainnet, polygon, bsc } from 'viem/chains';
 import urlToRpcEndpoint from './urlToRpcEndpoint';
 
 export const viemChainsByNetworkId: Record<EvmNetworkIdType, Chain> = {
   ethereum: mainnet,
   avalanche,
   polygon,
+  bnb: bsc,
 };
 
 export function getUrlEndpoints(): Record<NetworkIdType, string> {
@@ -17,6 +18,7 @@ export function getUrlEndpoints(): Record<NetworkIdType, string> {
     sei: process.env['PORTFOLIO_SEI_RPC'] || 'https://sei-rpc.brocha.in/',
     bitcoin:
       process.env['PORTFOLIO_BITCOIN_RPC'] || 'https://blockstream.info/api/',
+    bnb: process.env['PORTFOLIO_BNB_RPC'] || 'https://binance.llamarpc.com',
     solana:
       process.env['PORTFOLIO_SOLANA_RPC'] ||
       'https://api.mainnet-beta.solana.com',
