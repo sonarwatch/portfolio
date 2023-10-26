@@ -2,68 +2,37 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getEvmClient } from '../../utils/clients';
-import {
-  bptInfoKey,
-  bptParaFarmer,
-  bptParaStake,
-  platformId,
-} from './constants';
+import { bptInfoKey, platformId, poolAddresses } from './constants';
 import { getPoolTokensAbi, totalSupplyAbi } from './abis';
-import { BptInfo } from './types';
+import { PoolInfo } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getEvmClient(NetworkId.ethereum);
 
-  const totalSupplyFarmingContract = {
-    address: bptParaFarmer.token,
+  const totalSupplyContract = {
+    address: poolAddresses.token,
     abi: totalSupplyAbi,
     functionName: totalSupplyAbi[0].name,
   } as const;
 
-  const getPoolFarmingContract = {
-    address: bptParaFarmer.vault,
+  const getPoolContract = {
+    address: poolAddresses.vault,
     abi: getPoolTokensAbi,
     functionName: getPoolTokensAbi[0].name,
-    args: [bptParaFarmer.poolId],
+    args: [poolAddresses.poolId],
   } as const;
 
-  const totalSupplyStakingContract = {
-    address: bptParaStake.token,
-    abi: totalSupplyAbi,
-    functionName: totalSupplyAbi[0].name,
-  } as const;
-
-  const getPoolStakingContract = {
-    address: bptParaStake.vault,
-    abi: getPoolTokensAbi,
-    functionName: getPoolTokensAbi[0].name,
-    args: [bptParaStake.poolId],
-  } as const;
-
-  const [
-    totalSupplyStaking,
-    stakingPoolTokens,
-    totalSupplyFarming,
-    farmingPoolTokens,
-  ] = await Promise.all([
-    client.readContract(totalSupplyStakingContract),
-    client.readContract(getPoolStakingContract),
-    client.readContract(totalSupplyFarmingContract),
-    client.readContract(getPoolFarmingContract),
+  const [totalSupply, poolTokens] = await Promise.all([
+    client.readContract(totalSupplyContract),
+    client.readContract(getPoolContract),
   ]);
 
-  const bptInfo: BptInfo = {
-    farming: {
-      totalSupply: totalSupplyStaking.toString(),
-      balances: farmingPoolTokens[1].map((balance) => balance.toString()),
-    },
-    staking: {
-      totalSupply: totalSupplyFarming.toString(),
-      balances: stakingPoolTokens[1].map((balance) => balance.toString()),
-    },
+  const poolInfo: PoolInfo = {
+    totalSupply: totalSupply.toString(),
+    balances: poolTokens[1].map((balance) => balance.toString()),
   };
 
-  await cache.setItem(bptInfoKey, bptInfo, {
+  await cache.setItem(bptInfoKey, poolInfo, {
     prefix: platformId,
     networkId: NetworkId.ethereum,
   });

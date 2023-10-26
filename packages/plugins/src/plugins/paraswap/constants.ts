@@ -19,29 +19,26 @@ export const PSPToken = {
   decimals: 18,
 };
 
-export const bptParaStake: ContractInfo = {
-  chain: 'ethereum',
-  address: '0x593f39a4ba26a9c8ed2128ac95d109e8e403c485',
-  token: '0xCB0e14e96f2cEFA8550ad8e4aeA344F211E5061d',
+export const poolAddresses = {
+  token: '0xCB0e14e96f2cEFA8550ad8e4aeA344F211E5061d' as `0x${string}`,
   underlyings: [
     '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
     '0xcAfE001067cDEF266AfB7Eb5A286dCFD277f3dE5',
   ],
-  poolId: '0xcb0e14e96f2cefa8550ad8e4aea344f211e5061d00020000000000000000011a',
-  vault: '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
+  poolId:
+    '0xcb0e14e96f2cefa8550ad8e4aea344f211e5061d00020000000000000000011a' as `0x${string}`,
+  vault: '0xBA12222222228d8Ba445958a75a0704d566BF2C8' as `0x${string}`,
+};
+
+export const bptParaStaker: ContractInfo = {
+  chain: 'ethereum',
+  address: '0x593f39a4ba26a9c8ed2128ac95d109e8e403c485',
   provider: 'balancer',
 };
 
 export const bptParaFarmer: ContractInfo = {
   chain: 'ethereum',
   address: '0xc8dc2ec5f5e02be8b37a8444a1931f02374a17ab',
-  token: '0xCB0e14e96f2cEFA8550ad8e4aeA344F211E5061d',
-  underlyings: [
-    '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-    '0xcAfE001067cDEF266AfB7Eb5A286dCFD277f3dE5',
-  ],
-  poolId: '0xcb0e14e96f2cefa8550ad8e4aea344f211e5061d00020000000000000000011a',
-  vault: '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
   provider: 'balancer',
 };
 

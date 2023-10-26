@@ -37,3 +37,32 @@ export const totalSupplyAbi = [
     type: 'function',
   },
 ] as const;
+
+export const pendingWithdrawalsAbi = [
+  {
+    name: 'userVsWithdrawals',
+    inputs: [
+      { internalType: 'address', name: 'staker', type: 'address' },
+      { internalType: 'int256', name: 'id', type: 'int256' },
+    ],
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'releaseTime',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint8',
+        name: 'status',
+        type: 'uint8',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const;

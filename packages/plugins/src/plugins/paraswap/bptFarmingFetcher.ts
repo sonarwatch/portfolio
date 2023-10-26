@@ -10,12 +10,18 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { PSPToken, bptInfoKey, bptParaFarmer, platformId } from './constants';
+import {
+  PSPToken,
+  bptInfoKey,
+  bptParaFarmer,
+  platformId,
+  poolAddresses,
+} from './constants';
 import { getEvmClient } from '../../utils/clients';
 import { balanceOfErc20ABI } from '../../utils/evm/erc20Abi';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getTotalRewardsAbi } from './abis';
-import { BptInfo } from './types';
+import { PoolInfo } from './types';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getEvmClient(NetworkId.ethereum);
@@ -39,10 +45,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const pendingReward = await client.readContract(totalRewardsContract);
 
-  const { underlyings } = bptParaFarmer;
+  const { underlyings } = poolAddresses;
 
   const tokensPrices = await cache.getTokenPrices(
-    bptParaFarmer.underlyings,
+    underlyings,
     NetworkId.ethereum
   );
 
@@ -52,14 +58,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     tokenPriceById.set(tokenPrice.address, tokenPrice);
   }
 
-  const bptInfo = await cache.getItem<BptInfo>(bptInfoKey, {
+  const bptInfo = await cache.getItem<PoolInfo>(bptInfoKey, {
     prefix: platformId,
     networkId: NetworkId.ethereum,
   });
   if (!bptInfo) return [];
 
-  const { balances } = bptInfo.farming;
-  const { totalSupply } = bptInfo.farming;
+  const { balances } = bptInfo;
+  const { totalSupply } = bptInfo;
 
   const liquidities: PortfolioLiquidity[] = [];
   const assets: PortfolioAssetToken[] = [];
