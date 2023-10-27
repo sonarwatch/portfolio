@@ -6,6 +6,7 @@
 - Verifier qu'une address a deja passé au moins un TX avant de tout fetch
 - cache.getTokenPrices seems to be bugged first fetch
 - Lock system (sur maker ou stargate par example)
+- Check Maker Vault fetche (longest fetcher)
 
 - Lybra Finance
 - Summer.fi
