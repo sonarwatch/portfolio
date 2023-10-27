@@ -8,3 +8,10 @@ export type PoolInfo = {
   totalSupply: string;
   balances: string[];
 };
+
+export enum WithdrawStatus {
+  UNUSED,
+  UNLOCKING,
+  RELEASED,
+  CANCELLED,
+}

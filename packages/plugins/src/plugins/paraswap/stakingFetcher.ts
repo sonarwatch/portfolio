@@ -3,17 +3,17 @@ import {
   PortfolioAssetToken,
   PortfolioElement,
   PortfolioElementType,
-  TokenPrice,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, stakers } from './constants';
+import { PSPToken, platformId, stakers } from './constants';
 import { getEvmClient } from '../../utils/clients';
 import { balanceOfErc20ABI } from '../../utils/evm/erc20Abi';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { pendingWithdrawalsAbi } from './abis';
+import { userVsNextIDAbi, userVsWithdrawalsAbi } from './abis';
+import { WithdrawStatus } from './types';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getEvmClient(NetworkId.ethereum);
@@ -25,86 +25,107 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   } as const;
 
   const baseUnlockingContract = {
-    abi: pendingWithdrawalsAbi,
+    abi: userVsWithdrawalsAbi,
     functionName: 'userVsWithdrawals',
-    args: [owner as `0x${string}`, BigInt(0)],
-    // Here we might miss pending withdrawal if user has more than 1
-    // We will need to find a way to know how many pending withdrawals exist for a user
   } as const;
 
-  const tokens: Set<string> = new Set();
   const lockedContracts = [];
   const unlockingContracts = [];
   for (const staker of stakers) {
-    tokens.add(staker.token);
-    unlockingContracts.push({
-      ...baseUnlockingContract,
+    const nbrOfWithdrawContract = {
       address: staker.address as `0x${string}`,
-    });
+      abi: userVsNextIDAbi,
+      functionName: userVsNextIDAbi[0].name,
+      args: [owner as `0x${string}`],
+    } as const;
+
+    const nbrOfWithdraws = await client.readContract(nbrOfWithdrawContract);
+    for (let i = BigInt(0); i < nbrOfWithdraws; i++) {
+      unlockingContracts.push({
+        address: staker.address as `0x${string}`,
+        ...baseUnlockingContract,
+        args: [owner as `0x${string}`, i],
+      } as const);
+    }
     lockedContracts.push({
       ...baseLockedContract,
       address: staker.address as `0x${string}`,
     } as const);
   }
 
-  const [tokensPrices, lockedBalancesRes, unlockingBalancesRes] =
-    await Promise.all([
-      cache.getTokenPrices(Array.from(tokens), NetworkId.ethereum),
-      client.multicall({ contracts: lockedContracts }),
-      client.multicall({ contracts: unlockingContracts }),
-    ]);
+  const [lockedBalancesRes, unlockingBalancesRes] = await Promise.all([
+    client.multicall({ contracts: lockedContracts }),
+    client.multicall({ contracts: unlockingContracts }),
+  ]);
 
-  const tokenPriceById: Map<string, TokenPrice> = new Map();
-  for (const tokenPrice of tokensPrices) {
-    if (!tokenPrice) continue;
-    tokenPriceById.set(tokenPrice.address, tokenPrice);
+  const lockedBalances = lockedBalancesRes.map((res) =>
+    res.status === 'failure' ? BigInt(0) : res.result
+  );
+  const unlockingBalances = [];
+  const statuses = [];
+  for (let n = 0; n < unlockingBalancesRes.length; n++) {
+    const res = unlockingBalancesRes[n];
+    if (res.status === 'success') {
+      unlockingBalances.push(res.result[0]);
+      statuses.push(res.result[2]);
+    } else {
+      unlockingBalances.push(BigInt(0));
+      statuses.push(undefined);
+    }
   }
 
-  const lockedAssets: PortfolioAssetToken[] = [];
+  if (
+    !lockedBalances.some((value) => value !== BigInt(0)) &&
+    !unlockingBalances.some((value) => value !== BigInt(0))
+  )
+    return [];
+
+  const pspTokenPrice = await cache.getTokenPrice(
+    PSPToken.address,
+    NetworkId.ethereum
+  );
+  if (!pspTokenPrice) return [];
+
   const unlockingAssets: PortfolioAssetToken[] = [];
-  for (let i = 0; i < stakers.length; i++) {
-    const staker = stakers[i];
-    const lockedAmountRes = lockedBalancesRes[i];
-    const unlockingAmountRes = unlockingBalancesRes[i];
 
-    const tokenPrice = tokenPriceById.get(staker.token);
-    if (!tokenPrice) continue;
+  for (let j = 0; j < unlockingBalances.length; j++) {
+    const unlockingAmount = new BigNumber(
+      unlockingBalances[j].toString()
+    ).dividedBy(10 ** pspTokenPrice.decimals);
+    const status = statuses[j];
 
-    const lockedAmount =
-      lockedAmountRes.status === 'failure'
-        ? undefined
-        : new BigNumber(lockedAmountRes.result.toString())
-            .dividedBy(10 ** tokenPrice.decimals)
-            .toNumber();
-
-    const unlockingAmount =
-      unlockingAmountRes.status === 'failure'
-        ? undefined
-        : new BigNumber(unlockingAmountRes.result[0].toString())
-            .dividedBy(10 ** tokenPrice.decimals)
-            .toNumber();
-
-    if (lockedAmount) {
-      lockedAssets.push(
-        tokenPriceToAssetToken(
-          tokenPrice.address,
-          lockedAmount,
-          NetworkId.ethereum,
-          tokenPrice
-        )
-      );
-    }
-
-    if (unlockingAmount) {
+    if (
+      status &&
+      status === WithdrawStatus.UNLOCKING &&
+      unlockingAmount.isGreaterThan(0)
+    ) {
       // TODO : Unlocking date can be found here, not supported by our Data Structure for now.
       // const unlockEpoch = Number(unlockingAmountRes.result?.[1]);
       // const dateToDisplay = new Date(unlockEpoch * 1000).toLocaleDateString();
       unlockingAssets.push(
         tokenPriceToAssetToken(
-          tokenPrice.address,
-          unlockingAmount,
+          pspTokenPrice.address,
+          unlockingAmount.toNumber(),
           NetworkId.ethereum,
-          tokenPrice
+          pspTokenPrice
+        )
+      );
+    }
+  }
+
+  const lockedAssets: PortfolioAssetToken[] = [];
+  for (let i = 0; i < lockedBalances.length; i++) {
+    const lockedAmount = new BigNumber(lockedBalances[i].toString()).dividedBy(
+      10 ** pspTokenPrice.decimals
+    );
+
+    if (lockedAmount.isGreaterThan(0)) {
+      lockedAssets.push(
+        tokenPriceToAssetToken(
+          pspTokenPrice.address,
+          lockedAmount.toNumber(),
+          NetworkId.ethereum,
+          pspTokenPrice
         )
       );
     }

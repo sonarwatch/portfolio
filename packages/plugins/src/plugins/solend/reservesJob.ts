@@ -4,6 +4,7 @@ import {
   BorrowLendRate,
   apyToApr,
   borrowLendRatesPrefix,
+  TokenPrice,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import {
@@ -16,6 +17,8 @@ import {
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { ApiResponse, MarketInfo, ReserveInfo } from './types';
+import { getDecimalsForToken } from '../../utils/misc/getDecimalsForToken';
+import { walletTokensPlatform } from '../tokens/constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const markets = await cache.getAllItems<MarketInfo>({
@@ -24,6 +27,8 @@ const executor: JobExecutor = async (cache: Cache) => {
   const reservesAddressesByMarket = markets.map((m) =>
     m.reserves.map((r) => r.address)
   );
+
+  const promises = [];
   for (let i = 0; i < reservesAddressesByMarket.length; i += 1) {
     const reservesAddresses = reservesAddressesByMarket[i];
     const poolName = markets[i].name;
@@ -34,6 +39,16 @@ const executor: JobExecutor = async (cache: Cache) => {
           //
         });
     if (!reservesInfoRes) continue;
+    const mints = reservesInfoRes.data.results.map(
+      (res) => res.reserve.liquidity.mintPubkey
+    );
+    const tokensPrices = await cache.getTokenPrices(mints, NetworkId.solana);
+
+    const tokenPriceById: Map<string, TokenPrice> = new Map();
+    tokensPrices.forEach((tokenPrice) =>
+      tokenPrice ? tokenPriceById.set(tokenPrice.address, tokenPrice) : []
+    );
+
     for (let j = 0; j < reservesInfoRes.data.results.length; j += 1) {
       const reserveInfo = reservesInfoRes.data.results[j];
       const reserveAddress = reservesAddresses[j];
@@ -46,7 +61,8 @@ const executor: JobExecutor = async (cache: Cache) => {
         }
       );
       const { reserve } = reserveInfo;
-      const { liquidity } = reserve;
+      const { liquidity, collateral } = reserve;
+      const { mintPubkey, mintDecimals } = liquidity;
       const decimals = liquidity.mintDecimals;
       const tokenAddress = reserveInfo.reserve.collateral.mintPubkey;
 
@@ -59,7 +75,40 @@ const executor: JobExecutor = async (cache: Cache) => {
       const reserveAvailableAmount = new BigNumber(liquidity.availableAmount)
         .dividedBy(10 ** decimals)
         .toNumber();
+
+      const collateralTotalSupply = new BigNumber(
+        collateral.mintTotalSupply.toString()
+      )
+        .dividedBy(new BigNumber(10 ** mintDecimals))
+        .toNumber();
       const depositedAmount = borrowedAmount + reserveAvailableAmount;
+
+      // Compute the price of the cToken https://solend.fi/ctokens
+      const mintTokenPrice = tokenPriceById.get(mintPubkey);
+      const cPrice = mintTokenPrice
+        ? mintTokenPrice.price * (depositedAmount / collateralTotalSupply)
+        : undefined;
+      if (cPrice) {
+        const cDecimals = await getDecimalsForToken(
+          cache,
+          collateral.mintPubkey.toString(),
+          NetworkId.solana
+        );
+        if (cDecimals)
+          promises.push(
+            cache.setTokenPriceSource({
+              address: collateral.mintPubkey.toString(),
+              decimals: cDecimals,
+              id: platformId,
+              networkId: NetworkId.solana,
+              platformId: walletTokensPlatform.id,
+              price: cPrice,
+              timestamp: Date.now(),
+              weight: 1,
+            })
+          );
+      }
+
       if (borrowedAmount <= 10 && depositedAmount <= 10) continue;
 
       const rate: BorrowLendRate = {
@@ -78,12 +127,15 @@ const executor: JobExecutor = async (cache: Cache) => {
         poolName,
       };
 
-      await cache.setItem(`${reserveAddress}-${tokenAddress}`, rate, {
-        prefix: borrowLendRatesPrefix,
-        networkId: NetworkId.solana,
-      });
+      promises.push(
+        cache.setItem(`${reserveAddress}-${tokenAddress}`, rate, {
+          prefix: borrowLendRatesPrefix,
+          networkId: NetworkId.solana,
+        })
+      );
     }
   }
+  await Promise.all(promises);
 };
 
 const job: Job = {

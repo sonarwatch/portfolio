@@ -38,8 +38,7 @@ export function getPoolsPositionsFetcher(config: StgConfig): Fetcher {
     const balances = results.map((res) =>
       res.status === 'failure' ? BigInt(0) : res.result
     );
-    if (balances.reduce((sum, current) => sum + Number(current), 0) === 0)
-      return [];
+    if (!balances.some((value) => value !== BigInt(0))) return [];
 
     const tokenPrices = await cache.getTokenPrices(poolsAddresses, networkId);
     if (!tokenPrices) return [];
@@ -83,7 +82,6 @@ export function getPoolsPositionsFetcher(config: StgConfig): Fetcher {
         networkId,
         platformId,
         label: 'LiquidityPool',
-        name: 'Pools',
         type: PortfolioElementType.liquidity,
         data: {
           liquidities: poolLiquidities,
