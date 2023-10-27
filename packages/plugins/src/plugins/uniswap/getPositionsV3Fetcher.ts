@@ -37,6 +37,8 @@ export function getPositionsV3Fetcher(config: UniswapConfig): Fetcher {
 
     const nbrOfPositions = await client.readContract(balanceOfContract);
 
+    if (nbrOfPositions === BigInt(0)) return [];
+
     // Get the tokenIndex of the pool for each positions
     const baseTokenOfOwner = {
       address: config.positionManager,

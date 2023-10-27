@@ -37,8 +37,7 @@ export function getFarmsPositionsFetcher(config: StgConfig): Fetcher {
     const balances = results.map((res) =>
       res.status === 'failure' ? BigInt(0) : res.result[0]
     );
-    if (balances.reduce((sum, current) => sum + Number(current), 0) === 0)
-      return [];
+    if (!balances.some((value) => value !== BigInt(0))) return [];
 
     const lpTokenPrices = await cache.getTokenPrices(farms, networkId);
     if (!lpTokenPrices) return [];
@@ -87,8 +86,7 @@ export function getFarmsPositionsFetcher(config: StgConfig): Fetcher {
       {
         networkId,
         platformId,
-        label: 'LiquidityPool',
-        name: 'Farms',
+        label: 'Farming',
         type: PortfolioElementType.liquidity,
         data: {
           liquidities: farmsLiquidities,
