@@ -66,3 +66,48 @@ export const pendingWithdrawalsAbi = [
     type: 'function',
   },
 ] as const;
+
+export const userVsWithdrawalsAbi = [
+  {
+    name: 'userVsWithdrawals',
+    inputs: [
+      { internalType: 'address', name: 'staker', type: 'address' },
+      { internalType: 'int256', name: 'id', type: 'int256' },
+    ],
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: 'amountPSP',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'releaseBlockNumber',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint8',
+        name: 'status',
+        type: 'uint8',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const;
+
+export const userVsNextIDAbi = [
+  {
+    name: 'userVsNextID',
+    inputs: [{ internalType: 'address', name: 'user', type: 'address' }],
+    outputs: [
+      {
+        internalType: 'int256',
+        name: 'nextID',
+        type: 'int256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const;
