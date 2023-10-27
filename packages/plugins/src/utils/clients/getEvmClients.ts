@@ -10,5 +10,6 @@ export default function getEvmClients(): Record<
     avalanche: getEvmClient(NetworkId.avalanche),
     ethereum: getEvmClient(NetworkId.ethereum),
     polygon: getEvmClient(NetworkId.polygon),
+    bnb: getEvmClient(NetworkId.bnb),
   };
 }

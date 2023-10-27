@@ -10,6 +10,7 @@ const evmNativeNetworksIds: EvmNetworkIdType[] = [
 ];
 const evmNetworksIds: EvmNetworkIdType[] = [
   NetworkId.ethereum,
+  NetworkId.bnb,
   NetworkId.avalanche,
   NetworkId.polygon,
 ];

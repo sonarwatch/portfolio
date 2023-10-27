@@ -8,7 +8,12 @@ import { CoingeckoCoinsListResponse } from '../../utils/coingecko/types';
 import sleep from '../../utils/misc/sleep';
 import getTopAddresses from './getTopAddresses';
 
-const networkIds = [NetworkId.avalanche, NetworkId.polygon, NetworkId.ethereum];
+const networkIds = [
+  NetworkId.avalanche,
+  NetworkId.polygon,
+  NetworkId.ethereum,
+  NetworkId.bnb,
+];
 
 const executor: JobExecutor = async (cache: Cache) => {
   const coingeckoCoinsListRes: AxiosResponse<CoingeckoCoinsListResponse> | null =

@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.8.49](https://github.com/sonarwatch/portfolio/compare/core-0.8.48...core-0.8.49) (2023-10-26)
+
+
+
+## [0.8.48](https://github.com/sonarwatch/portfolio/compare/core-0.8.47...core-0.8.48) (2023-10-26)
+
+
+### Reverts
+
+* Revert "upgrade nx" ([62550ba](https://github.com/sonarwatch/portfolio/commit/62550bab2e60d40b8616465843dad4d3ad612bbd))
+
+
+
 ## [0.8.47](https://github.com/sonarwatch/portfolio/compare/core-0.8.46...core-0.8.47) (2023-10-24)
 
 

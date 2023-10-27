@@ -9,6 +9,7 @@ export const NetworkId = {
   aptos: 'aptos',
   sui: 'sui',
   sei: 'sei',
+  bnb: 'bnb',
 } as const;
 
 export type NetworkIdType = (typeof NetworkId)[keyof typeof NetworkId];
@@ -16,7 +17,8 @@ export type MoveNetworkIdType = typeof NetworkId.aptos | typeof NetworkId.sui;
 export type EvmNetworkIdType =
   | typeof NetworkId.ethereum
   | typeof NetworkId.avalanche
-  | typeof NetworkId.polygon;
+  | typeof NetworkId.polygon
+  | typeof NetworkId.bnb;
 export type CosmosNetworkIdType = typeof NetworkId.sei;
 
 export type Network = {

@@ -5,6 +5,8 @@ import {
   avalancheNativeAddress,
   avalancheNativeWrappedAddress,
   bitcoinNativeAddress,
+  bnbNativeAddress,
+  bnbNativeWrappedAddress,
   ethereumNativeAddress,
   ethereumNativeWrappedAddress,
   polygonNativeAddress,
@@ -172,11 +174,35 @@ export const seiNetwork: Network = {
     'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.sei.tokenlist.json',
 };
 
+export const bnbNetwork: Network = {
+  id: NetworkId.bnb,
+  name: 'bnb',
+  image: 'https://sonar.watch/img/networks/bnb.png',
+  addressSystem: AddressSystem.evm,
+  chainId: 56,
+  native: {
+    address: bnbNativeAddress,
+    decimals: 18,
+    coingeckoId: 'binancecoin',
+  },
+  nativeWrapped: {
+    address: bnbNativeWrappedAddress,
+    decimals: 18,
+    coingeckoId: 'wbnb',
+  },
+  isLive: true,
+  geckoId: 'binance-smart-chain',
+  llamaId: 'BSC',
+  tokenListUrl:
+    'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.bnb.tokenlist.json',
+};
+
 export const networks: Record<NetworkIdType, Network> = {
   [NetworkId.aptos]: aptosNetwork,
   [NetworkId.avalanche]: avalancheNetwork,
   [NetworkId.polygon]: polygonNetwork,
   [NetworkId.bitcoin]: bitcoinNetwork,
+  [NetworkId.bnb]: bnbNetwork,
   [NetworkId.ethereum]: ethereumNetwork,
   [NetworkId.solana]: solanaNetwork,
   [NetworkId.sui]: suiNetwork,
