@@ -167,6 +167,10 @@ import {
   fetchers as uniswapFetchers,
 } from './plugins/uniswap';
 import {
+  jobs as uniswapV2Jobs,
+  fetchers as uniswapV2Fetchers,
+} from './plugins/uniswap-v2';
+import {
   platforms as balancerPlatforms,
   jobs as balancerJobs,
   fetchers as balancerFetchers,
@@ -262,6 +266,7 @@ export const jobs: Job[] = [
   ...compoundJobs,
   ...stargateJobs,
   ...staderJobs,
+  ...uniswapV2Jobs,
   ...uniswapJobs,
   ...balancerJobs,
   ...paraswapJobs,
@@ -296,6 +301,7 @@ export const fetchers: Fetcher[] = [
   ...compoundFetchers,
   ...lidoFetchers,
   ...staderFetchers,
+  ...uniswapV2Fetchers,
   ...uniswapFetchers,
   ...balancerFetchers,
   ...paraswapFetchers,
