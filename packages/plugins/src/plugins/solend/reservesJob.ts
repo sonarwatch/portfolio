@@ -18,7 +18,6 @@ import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { ApiResponse, MarketInfo, ReserveInfo } from './types';
 import { getDecimalsForToken } from '../../utils/misc/getDecimalsForToken';
-import { walletTokensPlatform } from '../tokens/constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const markets = await cache.getAllItems<MarketInfo>({
@@ -101,7 +100,7 @@ const executor: JobExecutor = async (cache: Cache) => {
               decimals: cDecimals,
               id: platformId,
               networkId: NetworkId.solana,
-              platformId: walletTokensPlatform.id,
+              platformId,
               price: cPrice,
               timestamp: Date.now(),
               weight: 1,
