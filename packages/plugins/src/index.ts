@@ -180,6 +180,10 @@ import {
   jobs as paraswapJobs,
   fetchers as paraswapFetchers,
 } from './plugins/paraswap';
+import {
+  platforms as realmsPlatforms,
+  fetchers as realmsFetchers,
+} from './plugins/realms';
 
 export {
   walletTokensPlatform,
@@ -233,6 +237,7 @@ export const platforms: Platform[] = [
   ...uniswapPlatforms,
   ...balancerPlatforms,
   ...paraswapPlatforms,
+  ...realmsPlatforms,
 ];
 
 // JOBS //
@@ -305,5 +310,6 @@ export const fetchers: Fetcher[] = [
   ...uniswapFetchers,
   ...balancerFetchers,
   ...paraswapFetchers,
+  ...realmsFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
