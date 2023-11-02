@@ -176,7 +176,7 @@ export const seiNetwork: Network = {
 
 export const bnbNetwork: Network = {
   id: NetworkId.bnb,
-  name: 'bnb',
+  name: 'BNB Chain',
   image: 'https://sonar.watch/img/networks/bnb.png',
   addressSystem: AddressSystem.evm,
   chainId: 56,
