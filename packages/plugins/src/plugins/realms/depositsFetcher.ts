@@ -4,9 +4,10 @@ import {
   TokenPrice,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
+import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, voteProgramId } from './constants';
+import { platformId, splGovProgramsKey } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { voteAccountStruct } from './structs';
@@ -16,15 +17,26 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const oldVoteAccounts = await getParsedProgramAccounts(
-    client,
-    voteAccountStruct,
-    voteProgramId,
-    voteAccountFilters(owner)
-  );
+  const programs = await cache.getItem<string[]>(splGovProgramsKey, {
+    prefix: platformId,
+    networkId: NetworkId.solana,
+  });
 
-  // Job : fetch all existing registrer of GovMAI
-  // Fetcher : fetch all voter for an address on each registrar
+  const promises = [];
+  if (programs) {
+    for (const program of programs) {
+      promises.push(
+        getParsedProgramAccounts(
+          client,
+          voteAccountStruct,
+          new PublicKey(program),
+          voteAccountFilters(owner)
+        )
+      );
+    }
+  }
+
+  const oldVoteAccounts = (await Promise.all(promises)).flat();
 
   if (oldVoteAccounts.length === 0) return [];
 
@@ -38,6 +50,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const assets: PortfolioAsset[] = [];
   for (const voteAccount of oldVoteAccounts) {
+    if (voteAccount.amount.isZero()) continue;
     const tokenMint = voteAccount.mint.toString();
     const tokenPrice = tokenPriceByMint.get(tokenMint);
     if (!tokenPrice) continue;

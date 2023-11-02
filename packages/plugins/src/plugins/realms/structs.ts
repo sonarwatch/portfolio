@@ -2,6 +2,7 @@ import {
   BeetStruct,
   bool,
   i8,
+  u16,
   u8,
   uniformFixedSizeArray,
 } from '@metaplex-foundation/beet';
@@ -155,4 +156,19 @@ export const registrarStruct = new BeetStruct<Registrar>(
     ['reserved3', uniformFixedSizeArray(u64, 11)],
   ],
   (args) => args as Registrar
+);
+
+export type Governance = {
+  buffer: Buffer;
+  field1: PublicKey;
+  padding: number[];
+};
+
+export const governanceStruct = new BeetStruct<Governance>(
+  [
+    ['buffer', blob(8)],
+    ['field1', publicKey],
+    ['padding', uniformFixedSizeArray(u16, 10)],
+  ],
+  (args) => args as Governance
 );

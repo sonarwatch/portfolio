@@ -182,6 +182,7 @@ import {
 } from './plugins/paraswap';
 import {
   platforms as realmsPlatforms,
+  jobs as realmsJobs,
   fetchers as realmsFetchers,
 } from './plugins/realms';
 
@@ -275,6 +276,7 @@ export const jobs: Job[] = [
   ...uniswapJobs,
   ...balancerJobs,
   ...paraswapJobs,
+  ...realmsJobs,
 ];
 
 // FETCHERS //

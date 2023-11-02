@@ -14,8 +14,17 @@ export const voterAccountFilters = (address: string) => [
   { dataSize: voterStruct.byteSize },
   {
     memcmp: {
-      offset: 8,
+      offset: 65,
       bytes: address,
+    },
+  },
+];
+
+export const governanceAccountFilter = () => [
+  {
+    memcmp: {
+      offset: 0,
+      bytes: '2',
     },
   },
 ];
