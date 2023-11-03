@@ -185,6 +185,11 @@ import {
   jobs as realmsJobs,
   fetchers as realmsFetchers,
 } from './plugins/realms';
+import {
+  platforms as maplePlatforms,
+  jobs as mapleJobs,
+  fetchers as mapleFetchers,
+} from './plugins/maple';
 
 export {
   walletTokensPlatform,
@@ -239,6 +244,7 @@ export const platforms: Platform[] = [
   ...balancerPlatforms,
   ...paraswapPlatforms,
   ...realmsPlatforms,
+  ...maplePlatforms,
 ];
 
 // JOBS //
@@ -277,6 +283,7 @@ export const jobs: Job[] = [
   ...balancerJobs,
   ...paraswapJobs,
   ...realmsJobs,
+  ...mapleJobs,
 ];
 
 // FETCHERS //
@@ -313,5 +320,6 @@ export const fetchers: Fetcher[] = [
   ...balancerFetchers,
   ...paraswapFetchers,
   ...realmsFetchers,
+  ...mapleFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
