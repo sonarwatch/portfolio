@@ -54,7 +54,7 @@ You always need to provide a <b>user address</b> to run a fetcher.
 
 # How to start ?
 
-## Setup your environnement
+## Setup your environment
 
 1. <b>Clone</b> this repository.
 2. Run
@@ -79,7 +79,7 @@ npx nx generate @sonarwatch/portfolio-plugins:plugin my-super-protocol
 
 ## Import your fetchers and jobs
 
-Once you're down writting the logic on your `Job` or `Fetcher` :
+Once you're down writing the logic on your `Job` or `Fetcher` :
 
 1. Add your `Job`(s) and `Fetcher`(s) to your `index.ts` file in your `plugin` folder
 2. Add your `Fetchers` and `Jobs` to the `packages\plugins\src\index.ts` file
