@@ -11,13 +11,10 @@
 
 - Lybra Finance
 - Summer.fi
-
 - Frax Finanace
-- Uniswap
 - Instadapp
 - Convex
 - PancakeSwap
-- Balancer
 - Liquity
 - Sushi
 - Yearn
@@ -47,3 +44,5 @@
 - Create cache server public
 - Host caches sur server
 - Merge les 2 caches
+- Uniswap
+- Balancer
