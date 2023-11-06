@@ -14,6 +14,7 @@ export async function getPairsV2(url: string) {
         id
         reserve0
         reserve1
+        totalSupply
         token0 {
           id
           decimals
