@@ -170,7 +170,7 @@ export async function getWhirlpoolPositions(
       networkId: NetworkId.solana,
       platformId,
       label: 'LiquidityPool',
-      tags: ['Concentrated'],
+      name: 'Concentrated',
       value: totalLiquidityValue,
       data: {
         liquidities: assets,
