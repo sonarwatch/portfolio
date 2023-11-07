@@ -26,6 +26,7 @@ export default async function storeTokenPricesFromSqrt(
 
   if (!tokensToRelyOn.includes(mintX) && !tokensToRelyOn.includes(mintY))
     return undefined;
+
   const tokensPrices = await cache.getTokenPrices([mintX, mintY], networkId);
   const tokenPriceX = tokensPrices[0];
   const tokenPriceY = tokensPrices[1];
