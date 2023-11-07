@@ -13,7 +13,10 @@ import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { walletTokensPlatform } from '../constants';
 import { getClientSolana } from '../../../utils/clients';
-import { getTokenAccountsByOwner } from '../../../utils/solana';
+import {
+  getTokenAccountsByOwner,
+  solanaToken2022Pid,
+} from '../../../utils/solana';
 import tokenPriceToAssetTokens from '../../../utils/misc/tokenPriceToAssetTokens';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import { getTag, parseTag } from '../helpers';
@@ -22,7 +25,16 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
   const ownerPubKey = new PublicKey(owner);
 
-  const tokenAccounts = await getTokenAccountsByOwner(client, ownerPubKey);
+  const tokenRegularAccounts = await getTokenAccountsByOwner(
+    client,
+    ownerPubKey
+  );
+  const token2022Accounts = await getTokenAccountsByOwner(
+    client,
+    ownerPubKey,
+    solanaToken2022Pid
+  );
+  const tokenAccounts = [...token2022Accounts, ...tokenRegularAccounts];
   const mints = [...new Set(tokenAccounts.map((ta) => ta.mint.toString()))];
 
   const tokenPricesArray = await cache.getTokenPrices(mints, NetworkId.solana);
