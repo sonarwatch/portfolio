@@ -176,6 +176,10 @@ import {
   jobs as paraswapJobs,
   fetchers as paraswapFetchers,
 } from './plugins/paraswap';
+import {
+  platforms as hawksightPlatforms,
+  fetchers as hawksightFetchers,
+} from './plugins/hawksight';
 
 export {
   walletTokensPlatform,
@@ -229,6 +233,7 @@ export const platforms: Platform[] = [
   ...uniswapPlatforms,
   ...balancerPlatforms,
   ...paraswapPlatforms,
+  ...hawksightPlatforms,
 ];
 
 // JOBS //
@@ -299,5 +304,6 @@ export const fetchers: Fetcher[] = [
   ...uniswapFetchers,
   ...balancerFetchers,
   ...paraswapFetchers,
+  ...hawksightFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
