@@ -6,7 +6,7 @@ export const aftermathPlatform: Platform = {
   id: platformId,
   name: 'Aftermath',
   image: 'https://sonar.watch/img/platforms/aftermath.png',
-  defiLlamaId: 'aftermath-finance',
+  defiLlamaId: 'parent#aftermath-finance',
 };
 
 export const lpCoinsTable =
