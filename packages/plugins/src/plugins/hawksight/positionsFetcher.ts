@@ -16,23 +16,29 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const derivedAddress = getHawksightUserPda(new PublicKey(owner));
   const tokenAccounts = await getTokenAccountsByOwner(client, derivedAddress);
+  if (tokenAccounts.length === 0) return [];
+
   const accounts = [];
   for (const tokenAccount of tokenAccounts) {
     accounts.push(tokenAccount.mint.toString());
   }
   const nfts: FindNftsByOwnerOutput = [];
 
-  const portfolioElements = await Promise.all([
-    // This handles Kamino, Saber, Marinade
-    tokenFetcher.executor(derivedAddress.toString(), cache),
-    // This handles Orca
-    getWhirlpoolPositions(cache, nfts, accounts),
-    // This handles Solend
-    obligationsFetcher.executor(derivedAddress.toString(), cache),
-  ]);
+  const portfolioElements = (
+    await Promise.all([
+      // This handles Kamino, Saber, Marinade
+      tokenFetcher.executor(derivedAddress.toString(), cache),
+      // This handles Orca
+      getWhirlpoolPositions(cache, nfts, accounts),
+      // This handles Solend
+      obligationsFetcher.executor(derivedAddress.toString(), cache),
+    ])
+  ).flat();
+
+  if (portfolioElements.length === 0) return [];
 
   const elements: PortfolioElement[] = [];
-  for (const element of portfolioElements.flat()) {
+  for (const element of portfolioElements) {
     const tmpElement = element;
     tmpElement.name = tmpElement.platformId;
     tmpElement.platformId = platformId;
