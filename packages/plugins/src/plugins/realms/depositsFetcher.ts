@@ -21,19 +21,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     prefix: platformId,
     networkId: NetworkId.solana,
   });
+  if (!programs) return [];
 
   const promises = [];
-  if (programs) {
-    for (const program of programs) {
-      promises.push(
-        getParsedProgramAccounts(
-          client,
-          voteAccountStruct,
-          new PublicKey(program),
-          voteAccountFilters(owner)
-        )
-      );
-    }
+  for (const program of programs) {
+    promises.push(
+      getParsedProgramAccounts(
+        client,
+        voteAccountStruct,
+        new PublicKey(program),
+        voteAccountFilters(owner)
+      )
+    );
   }
 
   const oldVoteAccounts = (await Promise.all(promises)).flat();
