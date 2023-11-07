@@ -6,6 +6,7 @@ import { getDerivedAccount } from './helpers';
 import solendDepositsFetcher from '../solend/obligationsFetcher';
 import driftDepositsFetcher from '../drift/spotPositionsFetcher';
 import { fetchers as marginfiDepositsFetchers } from '../marginfi/index';
+import { walletTokensPlatform } from '../tokens/constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const pda = getDerivedAccount(owner);
@@ -23,7 +24,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elements: PortfolioElement[] = [];
   for (const element of portfolioElements) {
     const tmpElement = element;
-    tmpElement.name = tmpElement.platformId;
+    tmpElement.name =
+      tmpElement.platformId === walletTokensPlatform.id
+        ? 'Tokens/Rewards'
+        : tmpElement.platformId.slice(0, 1).toUpperCase() +
+          tmpElement.platformId.slice(1);
     tmpElement.platformId = platformId;
     elements.push({
       ...tmpElement,

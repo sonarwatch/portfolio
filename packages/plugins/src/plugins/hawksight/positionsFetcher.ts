@@ -10,6 +10,7 @@ import tokenFetcher from '../tokens/fetchers/solana';
 import { getClientSolana } from '../../utils/clients';
 import { getWhirlpoolPositions } from '../orca/getWhirlpoolPositions';
 import { getTokenAccountsByOwner } from '../../utils/solana';
+import { walletTokensPlatform } from '../tokens/constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -40,7 +41,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elements: PortfolioElement[] = [];
   for (const element of portfolioElements) {
     const tmpElement = element;
-    tmpElement.name = tmpElement.platformId;
+    tmpElement.name =
+      tmpElement.platformId === walletTokensPlatform.id
+        ? 'Tokens/Rewards'
+        : tmpElement.platformId.slice(0, 1).toUpperCase() +
+          tmpElement.platformId.slice(1);
     tmpElement.platformId = platformId;
     elements.push({
       ...tmpElement,
