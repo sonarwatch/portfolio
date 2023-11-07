@@ -194,6 +194,11 @@ import {
   jobs as mapleJobs,
   fetchers as mapleFetchers,
 } from './plugins/maple';
+import {
+  platforms as flexlendPlatforms,
+  jobs as flexlendJobs,
+  fetchers as flexlendFetchers,
+} from './plugins/flexlend';
 
 export {
   walletTokensPlatform,
@@ -250,6 +255,7 @@ export const platforms: Platform[] = [
   ...hawksightPlatforms,
   ...realmsPlatforms,
   ...maplePlatforms,
+  ...flexlendPlatforms,
 ];
 
 // JOBS //
@@ -289,6 +295,7 @@ export const jobs: Job[] = [
   ...paraswapJobs,
   ...realmsJobs,
   ...mapleJobs,
+  ...flexlendJobs,
 ];
 
 // FETCHERS //
@@ -327,5 +334,6 @@ export const fetchers: Fetcher[] = [
   ...hawksightFetchers,
   ...realmsFetchers,
   ...mapleFetchers,
+  ...flexlendFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
