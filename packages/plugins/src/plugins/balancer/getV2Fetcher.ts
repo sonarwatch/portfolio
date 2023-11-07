@@ -40,7 +40,7 @@ function getLiquidity(
   const value = getUsdValueSum(assets.map((a) => a.value));
   return {
     assets,
-    assetsValue: getUsdValueSum(assets.map((a) => a.value)),
+    assetsValue: value,
     rewardAssets: [],
     rewardAssetsValue: null,
     value,

@@ -167,6 +167,10 @@ import {
   fetchers as uniswapFetchers,
 } from './plugins/uniswap';
 import {
+  jobs as uniswapV2Jobs,
+  fetchers as uniswapV2Fetchers,
+} from './plugins/uniswap-v2';
+import {
   platforms as balancerPlatforms,
   jobs as balancerJobs,
   fetchers as balancerFetchers,
@@ -180,6 +184,16 @@ import {
   platforms as hawksightPlatforms,
   fetchers as hawksightFetchers,
 } from './plugins/hawksight';
+import {
+  platforms as realmsPlatforms,
+  jobs as realmsJobs,
+  fetchers as realmsFetchers,
+} from './plugins/realms';
+import {
+  platforms as maplePlatforms,
+  jobs as mapleJobs,
+  fetchers as mapleFetchers,
+} from './plugins/maple';
 
 export {
   walletTokensPlatform,
@@ -234,6 +248,8 @@ export const platforms: Platform[] = [
   ...balancerPlatforms,
   ...paraswapPlatforms,
   ...hawksightPlatforms,
+  ...realmsPlatforms,
+  ...maplePlatforms,
 ];
 
 // JOBS //
@@ -267,9 +283,12 @@ export const jobs: Job[] = [
   ...compoundJobs,
   ...stargateJobs,
   ...staderJobs,
+  ...uniswapV2Jobs,
   ...uniswapJobs,
   ...balancerJobs,
   ...paraswapJobs,
+  ...realmsJobs,
+  ...mapleJobs,
 ];
 
 // FETCHERS //
@@ -301,9 +320,12 @@ export const fetchers: Fetcher[] = [
   ...compoundFetchers,
   ...lidoFetchers,
   ...staderFetchers,
+  ...uniswapV2Fetchers,
   ...uniswapFetchers,
   ...balancerFetchers,
   ...paraswapFetchers,
   ...hawksightFetchers,
+  ...realmsFetchers,
+  ...mapleFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);

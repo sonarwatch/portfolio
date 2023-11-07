@@ -6,16 +6,16 @@
 - Verifier qu'une address a deja passé au moins un TX avant de tout fetch
 - cache.getTokenPrices seems to be bugged first fetch
 - Lock system (sur maker ou stargate par example)
+- Check Maker Vault fetche (longest fetcher)
+- Solana Token 2022 support
+- Ajouter les assets dans les calls API (params)
 
 - Lybra Finance
 - Summer.fi
-
 - Frax Finanace
-- Uniswap
 - Instadapp
 - Convex
 - PancakeSwap
-- Balancer
 - Liquity
 - Sushi
 - Yearn
@@ -26,22 +26,5 @@
 
 # DONE
 
-- Fix curve AAVE pools (0x7f90122BF0700F9E7e1F688fe926940E8839F353 https://api.curve.fi/api/getPools/avalanche)
-- Gestion des name services
-- Fix le problème d'import Job et Fetcher lors de la génération d'un plugin (toujours présent)
-- Déplacer les plateformes dans le dossier des plugins correspondant ?
-- Ajout d'un module de decimals dans le cache
-- Fix les packages utilisant @metaplex-fundation/js (build fail)
-- Opti orca-clmm-positions
-- Opti raydium-clmm-positions
-- Rename cache.getTokenPrices en getAllTokenPrices et créer getTokenPrices
-- Fix le "-" dans le nom du fichier d'un fetcher lors de leur génération
-- cache getItems(string[])
-- "name" pour un compte de lending
-- Improve generator
-- Revoir les platforms
-- Fix parseTypeString function
-- Mettre un cache de cache sur TokenPrice
-- Create cache server public
-- Host caches sur server
-- Merge les 2 caches
+- Uniswap
+- Balancer
