@@ -21,7 +21,8 @@ import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLi
 
 export async function getWhirlpoolPositions(
   cache: Cache,
-  nfts: FindNftsByOwnerOutput
+  nfts: FindNftsByOwnerOutput,
+  additionalAccounts?: string[]
 ): Promise<PortfolioElement[]> {
   const client = getClientSolana();
   const positionsProgramAddress: PublicKey[] = [];
@@ -40,6 +41,21 @@ export async function getWhirlpoolPositions(
     );
     positionsProgramAddress.push(programAddress);
   });
+
+  if (additionalAccounts) {
+    for (const account of additionalAccounts) {
+      const positionSeed = [
+        Buffer.from('position'),
+        new PublicKey(account).toBuffer(),
+      ];
+
+      const [programAddress] = PublicKey.findProgramAddressSync(
+        positionSeed,
+        whirlpoolProgram
+      );
+      positionsProgramAddress.push(programAddress);
+    }
+  }
   if (positionsProgramAddress.length === 0) return [];
 
   const positionsInfo = await getParsedMultipleAccountsInfo(
@@ -154,7 +170,7 @@ export async function getWhirlpoolPositions(
       networkId: NetworkId.solana,
       platformId,
       label: 'LiquidityPool',
-      tags: ['Concentrated'],
+      name: 'Concentrated',
       value: totalLiquidityValue,
       data: {
         liquidities: assets,

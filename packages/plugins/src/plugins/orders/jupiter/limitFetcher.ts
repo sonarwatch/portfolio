@@ -4,7 +4,6 @@ import {
   PortfolioElementMultiple,
   TokenPrice,
 } from '@sonarwatch/portfolio-core';
-import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
@@ -13,7 +12,6 @@ import { getClientSolana } from '../../../utils/clients';
 import { limitOrderStruct } from './struct';
 import { getParsedProgramAccounts } from '../../../utils/solana';
 import { jupiterLimitsFilter } from './filters';
-import runInBatch from '../../../utils/misc/runInBatch';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import { jupiterPlatform } from './constants';
 
@@ -28,20 +26,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
   if (limitOrdersAccounts.length === 0) return [];
 
-  const tokensMints: Set<PublicKey> = new Set();
+  const tokensMints: Set<string> = new Set();
   for (let i = 0; i < limitOrdersAccounts.length; i += 1) {
-    tokensMints.add(limitOrdersAccounts[i].inputMint);
+    tokensMints.add(limitOrdersAccounts[i].inputMint.toString());
   }
-  const tokenPriceResults = await runInBatch(
-    [...Array.from(tokensMints)].map(
-      (mint) => () => cache.getTokenPrice(mint.toString(), NetworkId.solana)
-    )
+  const tokenPriceResults = await cache.getTokenPrices(
+    Array.from(tokensMints),
+    NetworkId.solana
   );
-  const tokenPrices: Map<string, TokenPrice> = new Map();
-  tokenPriceResults.forEach((r) => {
-    if (r.status === 'rejected') return;
-    if (!r.value) return;
-    tokenPrices.set(r.value.address, r.value);
+
+  const tokenPriceById: Map<string, TokenPrice> = new Map();
+  tokenPriceResults.forEach((tP) => {
+    if (!tP) return;
+    tokenPriceById.set(tP.address, tP);
   });
 
   const rawAmountByMint: Map<string, BigNumber> = new Map();
@@ -57,10 +54,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   let value = 0;
   const assets: PortfolioAsset[] = [];
   for (const [mint, rawAmount] of rawAmountByMint) {
-    const tokenPrice = tokenPrices.get(mint);
+    if (rawAmount.isZero()) continue;
+
+    const tokenPrice = tokenPriceById.get(mint);
     if (!tokenPrice) continue;
+
     const amount = rawAmount.dividedBy(10 ** tokenPrice.decimals).toNumber();
-    if (amount === 0) continue;
     const asset = tokenPriceToAssetToken(
       mint,
       amount,

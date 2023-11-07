@@ -181,6 +181,10 @@ import {
   fetchers as paraswapFetchers,
 } from './plugins/paraswap';
 import {
+  platforms as hawksightPlatforms,
+  fetchers as hawksightFetchers,
+} from './plugins/hawksight';
+import {
   platforms as realmsPlatforms,
   jobs as realmsJobs,
   fetchers as realmsFetchers,
@@ -243,6 +247,7 @@ export const platforms: Platform[] = [
   ...uniswapPlatforms,
   ...balancerPlatforms,
   ...paraswapPlatforms,
+  ...hawksightPlatforms,
   ...realmsPlatforms,
   ...maplePlatforms,
 ];
@@ -319,6 +324,7 @@ export const fetchers: Fetcher[] = [
   ...uniswapFetchers,
   ...balancerFetchers,
   ...paraswapFetchers,
+  ...hawksightFetchers,
   ...realmsFetchers,
   ...mapleFetchers,
 ];

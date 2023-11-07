@@ -48,12 +48,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   for (let n = 0; n < outputs.length; n++) {
     const nft = outputs[n];
     for (const identifier of appraiserByIdentifier.keys()) {
-      if (identifier(nft))
+      if (identifier(nft)) {
         if (!nftsByIndentifier.get(identifier)) {
           nftsByIndentifier.set(identifier, [nft]);
         } else {
           nftsByIndentifier.get(identifier)?.push(nft);
         }
+      }
     }
   }
 

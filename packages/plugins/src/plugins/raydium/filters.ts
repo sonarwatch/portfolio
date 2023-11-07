@@ -8,3 +8,7 @@ export const ammV4Filter: GetProgramAccountsFilter[] = [
 export const ammV5Filter: GetProgramAccountsFilter[] = [
   { dataSize: ammInfoV5Struct.byteSize },
 ];
+
+export const poolsStateFilter: GetProgramAccountsFilter[] = [
+  { dataSize: 1544 },
+];

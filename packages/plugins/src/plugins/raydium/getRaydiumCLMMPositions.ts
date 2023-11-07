@@ -7,11 +7,11 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { FindNftsByOwnerOutput } from '@metaplex-foundation/js';
 import { PublicKey } from '@solana/web3.js';
-import { platformId, raydiumProgram } from './constants';
+import { platformId, poolStatesPrefix, raydiumProgram } from './constants';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getParsedMultipleAccountsInfo } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
-import { personalPositionStateStruct, poolStateStruct } from './structs/clmms';
+import { PoolState, personalPositionStateStruct } from './structs/clmms';
 import { Cache } from '../../Cache';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 
@@ -45,21 +45,20 @@ export async function getRaydiumCLMMPositions(
   );
   if (!personalPositionsInfo || personalPositionsInfo.length === 0) return [];
 
-  const poolsStateInfo = await getParsedMultipleAccountsInfo(
-    client,
-    poolStateStruct,
-    personalPositionsInfo.flatMap((position) =>
-      position ? position.poolId : []
-    )
+  const poolsIds: string[] = personalPositionsInfo.flatMap((position) =>
+    position ? position.poolId.toString() : []
   );
-  if (!poolsStateInfo) return [];
 
-  if (poolsStateInfo.length !== personalPositionsInfo.length) return [];
+  const poolStatesInfo = await cache.getItems<PoolState>(poolsIds, {
+    prefix: poolStatesPrefix,
+    networkId: NetworkId.solana,
+  });
 
   const assets: PortfolioLiquidity[] = [];
   let totalLiquidityValue = 0;
   for (let index = 0; index < personalPositionsInfo.length; index++) {
-    const poolStateInfo = poolsStateInfo[index];
+    const poolStateInfo = poolStatesInfo[index];
+
     if (!poolStateInfo) continue;
 
     const personalPositionInfo = personalPositionsInfo[index];
@@ -126,7 +125,7 @@ export async function getRaydiumCLMMPositions(
     networkId: NetworkId.solana,
     platformId,
     label: 'LiquidityPool',
-    tags: ['Concentrated'],
+    name: 'Concentrated',
     value: totalLiquidityValue,
     data: {
       liquidities: assets,
