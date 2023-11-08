@@ -9,19 +9,20 @@ import {
   getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
+import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { DriftProgram, platformId, prefixSpotMarkets } from './constants';
 import { SpotBalanceType, userAccountStruct } from './struct';
-import { accountsFilter } from './filters';
 import {
   decodeName,
   getSignedTokenAmount,
   getTokenAmount,
+  getUserAccountsPublicKeys,
   isSpotPositionAvailable,
 } from './helpers';
 import { SpotMarketEnhanced } from './types';
-import { getParsedProgramAccounts } from '../../utils/solana';
+import { getParsedMultipleAccountsInfo } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import runInBatch from '../../utils/misc/runInBatch';
@@ -29,16 +30,30 @@ import runInBatch from '../../utils/misc/runInBatch';
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const userAccounts = await getParsedProgramAccounts(
-    client,
-    userAccountStruct,
-    DriftProgram,
-    accountsFilter(owner)
-  );
+  let id = 0;
+  const userAccounts = [];
+  let parsedAccount;
+  do {
+    const accountPubKeys = getUserAccountsPublicKeys(
+      DriftProgram,
+      new PublicKey(owner),
+      id,
+      id + 3
+    );
+    parsedAccount = await getParsedMultipleAccountsInfo(
+      client,
+      userAccountStruct,
+      accountPubKeys
+    );
+    userAccounts.push(...parsedAccount);
+    id += 3;
+  } while (parsedAccount[parsedAccount.length]);
+
   if (!userAccounts) return [];
 
   const spotMarketIndexes: Set<string> = new Set();
   for (const userAccount of userAccounts) {
+    if (!userAccount) continue;
     for (const spotPosition of userAccount.spotPositions) {
       spotMarketIndexes.add(spotPosition.marketIndex.toString());
     }
@@ -76,6 +91,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elements: PortfolioElement[] = [];
   // One user can have multiple sub-account
   for (const userAccount of userAccounts) {
+    if (!userAccount) continue;
     const borrowedAssets: PortfolioAsset[] = [];
     const borrowedYields: Yield[][] = [];
     const suppliedAssets: PortfolioAsset[] = [];

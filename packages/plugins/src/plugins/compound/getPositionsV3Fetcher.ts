@@ -1,6 +1,5 @@
 import {
   EvmNetworkIdType,
-  NetworkId,
   PortfolioAsset,
   PortfolioElementBorrowLend,
   PortfolioElementType,
@@ -21,6 +20,7 @@ import { comethAbi } from './abis';
 import { UserCollateralResult } from './types';
 import { zeroBigInt } from '../../utils/misc/constants';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { balanceOfErc20ABI } from '../../utils/evm/erc20Abi';
 
 export default function getPositionsV3Fetcher(
   networkId: EvmNetworkIdType
@@ -28,20 +28,38 @@ export default function getPositionsV3Fetcher(
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const markets = marketDetails.get(networkId);
     if (!markets) return [];
-
     const client = getEvmClient(networkId);
 
     // Supply
     const userCollateralContracts = markets
       .map((m) =>
-        m.assets.map((asset) => ({
-          abi: comethAbi,
-          address: m.cometAddress,
-          functionName: 'userCollateral',
-          args: [owner, asset.address],
-        }))
+        m.assets.map(
+          (asset) =>
+            ({
+              abi: comethAbi,
+              address: m.cometAddress,
+              functionName: 'userCollateral',
+              args: [owner as `0x${string}`, asset.address],
+            } as const)
+        )
       )
       .flat();
+
+    const userBaseCollateralContracts = markets.map(
+      (m) =>
+        ({
+          abi: balanceOfErc20ABI,
+          functionName: 'balanceOf',
+          address: m.cometAddress,
+          args: [owner as `0x${string}`],
+        } as const)
+    );
+    const userBaseCollateralResponses = await client.multicall({
+      contracts: userBaseCollateralContracts,
+    });
+    const isBaseSupplyNotZero = userBaseCollateralResponses.some(
+      (r) => r.status === 'success' && r.result !== zeroBigInt
+    );
     const userCollateralResponses = await client.multicall({
       contracts: userCollateralContracts,
     });
@@ -52,12 +70,15 @@ export default function getPositionsV3Fetcher(
     );
 
     // Borrow
-    const borrowBalanceOfContracts = markets.map((m) => ({
-      abi: comethAbi,
-      address: m.cometAddress,
-      functionName: 'borrowBalanceOf',
-      args: [owner],
-    }));
+    const borrowBalanceOfContracts = markets.map(
+      (m) =>
+        ({
+          abi: comethAbi,
+          address: m.cometAddress,
+          functionName: 'borrowBalanceOf',
+          args: [owner as `0x${string}`],
+        } as const)
+    );
     const borrowBalanceOfResponses = await client.multicall({
       contracts: borrowBalanceOfContracts,
     });
@@ -65,7 +86,7 @@ export default function getPositionsV3Fetcher(
       (r) => r.status === 'success' && (r.result as bigint) !== zeroBigInt
     );
 
-    if (!isSupplyNotZero && !isBorrowNotZero) return [];
+    if (!isSupplyNotZero && !isBorrowNotZero && !isBaseSupplyNotZero) return [];
     const tokenPrices = await cache.getItem<Record<string, TokenPrice>>(
       comethTokenPricesPrefix,
       {
@@ -128,6 +149,26 @@ export default function getPositionsV3Fetcher(
         suppliedAssets.push(asset);
         suppliedYields.push([]);
       }
+
+      const userBaseCollateralResponse = userBaseCollateralResponses[i];
+      if (userBaseCollateralResponse.status !== 'failure') {
+        const amount = new BigNumber(
+          userBaseCollateralResponse.result.toString()
+        )
+          .dividedBy(10 ** marketDetail.baseAssetDecimals)
+          .toNumber();
+        const baseAsset = tokenPriceToAssetToken(
+          marketDetail.baseAssetAddress,
+          amount,
+          networkId,
+          tokenPrices[marketDetail.baseAssetAddress]
+        );
+        if (amount !== 0) {
+          suppliedAssets.push(baseAsset);
+          suppliedYields.push([]);
+        }
+      }
+
       if (
         borrowedAssets.length === 0 &&
         suppliedAssets.length === 0 &&
@@ -138,7 +179,7 @@ export default function getPositionsV3Fetcher(
         getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
       elements.push({
         type: PortfolioElementType.borrowlend,
-        networkId: NetworkId.ethereum,
+        networkId,
         platformId,
         label: 'Lending',
         name: 'Compound V3',
@@ -161,7 +202,7 @@ export default function getPositionsV3Fetcher(
 
   return {
     id: `${platformId}-${networkId}-positions-v3`,
-    networkId: NetworkId.ethereum,
+    networkId,
     executor,
   };
 }

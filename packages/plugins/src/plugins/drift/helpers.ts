@@ -1,4 +1,6 @@
 import BigNumber from 'bignumber.js';
+import { PublicKey } from '@solana/web3.js';
+import { BN } from 'bn.js';
 import { SpotBalanceType, SpotMarket, SpotPosition } from './struct';
 
 export const ZERO = new BigNumber(0);
@@ -155,4 +157,48 @@ export function isSpotPositionAvailable(position: SpotPosition): boolean {
 export function decodeName(bytes: number[]): string {
   const buffer = Buffer.from(bytes);
   return buffer.toString('utf8').trim();
+}
+
+export function getUserAccountPublicKey(
+  programId: PublicKey,
+  owner: PublicKey,
+  subAccountId: number
+): PublicKey {
+  return PublicKey.findProgramAddressSync(
+    [
+      Buffer.from('user', 'utf8'),
+      owner.toBuffer(),
+      new BN(subAccountId).toArrayLike(Buffer, 'le', 2),
+    ],
+    programId
+  )[0];
+}
+
+export function getUserMainAccountPublicKey(
+  programId: PublicKey,
+  owner: PublicKey
+) {
+  return getUserAccountPublicKey(programId, owner, 0);
+}
+
+export function getUserAccountsPublicKeys(
+  programId: PublicKey,
+  owner: PublicKey,
+  startId: number,
+  endId: number
+): PublicKey[] {
+  const keys = [];
+  for (let i = startId; i < endId; i++) {
+    keys.push(
+      PublicKey.findProgramAddressSync(
+        [
+          Buffer.from('user', 'utf8'),
+          owner.toBuffer(),
+          new BN(i).toArrayLike(Buffer, 'le', 2),
+        ],
+        programId
+      )[0]
+    );
+  }
+  return keys;
 }
