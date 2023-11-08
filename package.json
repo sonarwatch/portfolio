@@ -6,7 +6,8 @@
     "build": "nx build",
     "nx:version": "run-s nx:version:core nx:version:plugins",
     "nx:version:plugins": "nx run plugins:version --releaseAs=patch",
-    "nx:version:core": "nx run core:version --releaseAs=patch"
+    "nx:version:core": "nx run core:version --releaseAs=patch",
+    "postversion": "git push && git push --tags"
   },
   "private": true,
   "devDependencies": {
