@@ -163,8 +163,10 @@ export default function getPositionsV3Fetcher(
           networkId,
           tokenPrices[marketDetail.baseAssetAddress]
         );
-        suppliedAssets.push(baseAsset);
-        suppliedYields.push([]);
+        if (amount !== 0) {
+          suppliedAssets.push(baseAsset);
+          suppliedYields.push([]);
+        }
       }
 
       if (
