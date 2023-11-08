@@ -1,6 +1,5 @@
 import {
   EvmNetworkIdType,
-  NetworkId,
   PortfolioAsset,
   PortfolioElementBorrowLend,
   PortfolioElementType,
@@ -138,7 +137,7 @@ export default function getPositionsV3Fetcher(
         getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
       elements.push({
         type: PortfolioElementType.borrowlend,
-        networkId: NetworkId.ethereum,
+        networkId,
         platformId,
         label: 'Lending',
         name: 'Compound V3',
@@ -161,7 +160,7 @@ export default function getPositionsV3Fetcher(
 
   return {
     id: `${platformId}-${networkId}-positions-v3`,
-    networkId: NetworkId.ethereum,
+    networkId,
     executor,
   };
 }
