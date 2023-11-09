@@ -204,6 +204,10 @@ import {
   jobs as fluxbeamJobs,
   fetchers as fluxbeamFetchers,
 } from './plugins/fluxbeam';
+import {
+  jobs as jupiterJobs,
+  fetchers as jupiterFetchers,
+} from './plugins/jupiter';
 
 export {
   walletTokensPlatform,
@@ -303,6 +307,7 @@ export const jobs: Job[] = [
   ...mapleJobs,
   ...flexlendJobs,
   ...fluxbeamJobs,
+  ...jupiterJobs,
 ];
 
 // FETCHERS //
@@ -343,5 +348,6 @@ export const fetchers: Fetcher[] = [
   ...mapleFetchers,
   ...flexlendFetchers,
   ...fluxbeamFetchers,
+  ...jupiterFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
