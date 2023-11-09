@@ -4,7 +4,8 @@ import { Job } from '../../Job';
 import { driftPlatform } from './constants';
 import spotMarketsJob from './spotMarketsJob';
 import spotPositionsFetcher from './spotPositionsFetcher';
+import insuranceFundFetcher from './insuranceFundFetcher';
 
 export const platforms: Platform[] = [driftPlatform];
 export const jobs: Job[] = [spotMarketsJob];
-export const fetchers: Fetcher[] = [spotPositionsFetcher];
+export const fetchers: Fetcher[] = [spotPositionsFetcher, insuranceFundFetcher];

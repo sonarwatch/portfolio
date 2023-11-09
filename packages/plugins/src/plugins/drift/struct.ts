@@ -238,7 +238,7 @@ export const historicalOracleDataStruct = new BeetStruct<HistoricalOracleData>(
 export type InsuranceFund = {
   vault: PublicKey;
   totalShares: BigNumber;
-  uszrShares: BigNumber;
+  userShares: BigNumber;
   sharesBase: BigNumber;
   unstakingPeriod: BigNumber;
   lastRevenueSettleTs: BigNumber;
@@ -251,7 +251,7 @@ export const insuranceFundStruct = new BeetStruct<InsuranceFund>(
   [
     ['vault', publicKey],
     ['totalShares', u128],
-    ['uszrShares', u128],
+    ['userShares', u128],
     ['sharesBase', u128],
     ['unstakingPeriod', i64],
     ['lastRevenueSettleTs', i64],
@@ -464,4 +464,35 @@ export const userAccountStruct = new BeetStruct<UserAccount>(
     ['padding', uniformFixedSizeArray(u8, 21)],
   ],
   (args) => args as UserAccount
+);
+
+export type InsuranceFundStake = {
+  buffer: Buffer;
+  authority: PublicKey;
+  ifShares: BigNumber;
+  lastWithdrawRequestShares: BigNumber;
+  ifBase: BigNumber;
+  lastValidTs: BigNumber;
+  lastWithdrawRequestValue: BigNumber;
+  lastWithdrawRequestTs: BigNumber;
+  costBasis: BigNumber;
+  marketIndex: number;
+  padding: number[];
+};
+
+export const insuranceFundStakeStruct = new BeetStruct<InsuranceFundStake>(
+  [
+    ['buffer', blob(8)],
+    ['authority', publicKey],
+    ['ifShares', u128],
+    ['lastWithdrawRequestShares', u128],
+    ['ifBase', u128],
+    ['lastValidTs', i64],
+    ['lastWithdrawRequestValue', u64],
+    ['lastWithdrawRequestTs', i64],
+    ['costBasis', i64],
+    ['marketIndex', u16],
+    ['padding', uniformFixedSizeArray(u8, 14)],
+  ],
+  (args) => args as InsuranceFundStake
 );
