@@ -199,6 +199,11 @@ import {
   jobs as flexlendJobs,
   fetchers as flexlendFetchers,
 } from './plugins/flexlend';
+import {
+  platforms as fluxbeamPlatforms,
+  jobs as fluxbeamJobs,
+  fetchers as fluxbeamFetchers,
+} from './plugins/fluxbeam';
 
 export {
   walletTokensPlatform,
@@ -256,6 +261,7 @@ export const platforms: Platform[] = [
   ...realmsPlatforms,
   ...maplePlatforms,
   ...flexlendPlatforms,
+  ...fluxbeamPlatforms,
 ];
 
 // JOBS //
@@ -296,6 +302,7 @@ export const jobs: Job[] = [
   ...realmsJobs,
   ...mapleJobs,
   ...flexlendJobs,
+  ...fluxbeamJobs,
 ];
 
 // FETCHERS //
@@ -335,5 +342,6 @@ export const fetchers: Fetcher[] = [
   ...realmsFetchers,
   ...mapleFetchers,
   ...flexlendFetchers,
+  ...fluxbeamFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
