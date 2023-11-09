@@ -25,7 +25,6 @@ import { SpotMarketEnhanced } from './types';
 import { getParsedMultipleAccountsInfo } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import runInBatch from '../../utils/misc/runInBatch';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -68,24 +67,22 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (!spotMarketsItems) return [];
 
   const spotMarketByIndex: Map<number, SpotMarketEnhanced> = new Map();
-  const tokensMints: Set<string> = new Set();
+  const tokensMints = [];
   for (const spotMarketItem of spotMarketsItems) {
     if (!spotMarketItem) continue;
 
     spotMarketByIndex.set(spotMarketItem.marketIndex, spotMarketItem);
-    tokensMints.add(spotMarketItem.mint.toString());
+    tokensMints.push(spotMarketItem.mint.toString());
   }
 
-  const tokenPriceResults = await runInBatch(
-    [...tokensMints].map(
-      (mint) => () => cache.getTokenPrice(mint.toString(), NetworkId.solana)
-    )
+  const tokensPrices = await cache.getTokenPrices(
+    tokensMints,
+    NetworkId.solana
   );
-  const tokenPrices: Map<string, TokenPrice> = new Map();
-  tokenPriceResults.forEach((r) => {
-    if (r.status === 'rejected') return;
-    if (!r.value) return;
-    tokenPrices.set(r.value.address, r.value);
+  const tokenPriceById: Map<string, TokenPrice> = new Map();
+  tokensPrices.forEach((tP) => {
+    if (!tP) return;
+    tokenPriceById.set(tP.address, tP);
   });
 
   const elements: PortfolioElement[] = [];
@@ -119,7 +116,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const spotMarket = spotMarketByIndex.get(spotPosition.marketIndex);
       if (!spotMarket) continue;
 
-      const tokenPrice = tokenPrices.get(spotMarket.mint.toString());
+      const tokenPrice = tokenPriceById.get(spotMarket.mint.toString());
       if (!tokenPrice || tokenPrice === null) continue;
 
       let tokenAmount = new BigNumber(0);
