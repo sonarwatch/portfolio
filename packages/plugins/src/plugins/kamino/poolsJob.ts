@@ -113,20 +113,6 @@ const executor: JobExecutor = async (cache: Cache) => {
       ]
     );
 
-    // if (supply.isGreaterThan(20000)) {
-    //   console.log('Strat : ', strategy.pubkey.toString());
-    //   console.log('Shares Mint : ', strategy.sharesMint.toString());
-    //   console.log('Initial tokenAmountA:', tokenAmountA.toNumber());
-    //   console.log('Token A Amount', tokenAAmount.toNumber());
-    //   console.log('Initial tokenAmountB:', tokenAmountB.toNumber());
-    //   console.log('Token B Amount', tokenBAmount.toNumber());
-    //   console.log('Token A tvl', tokenALocked.toNumber());
-    //   console.log('Token B tvl', tokenBLocked.toNumber());
-    //   console.log('Supply:', supply.toNumber());
-    //   console.log('Total tvl', tvl.toNumber());
-    //   console.log('Price:', price);
-    //   console.log('Underlyings:', underlyings);
-    // }
     await cache.setTokenPriceSource({
       address: address.toString(),
       decimals,
