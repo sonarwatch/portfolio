@@ -10,6 +10,6 @@ export const driftPlatform: Platform = {
 };
 export const prefixSpotMarkets = `${platformId}-spotMarkets`;
 
-export const DriftProgram = new PublicKey(
+export const driftProgram = new PublicKey(
   'dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH'
 );

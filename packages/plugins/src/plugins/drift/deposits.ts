@@ -7,18 +7,24 @@ import {
   Yield,
   aprToApy,
   getElementLendingValues,
+  getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { DriftProgram, platformId, prefixSpotMarkets } from './constants';
-import { SpotBalanceType, userAccountStruct } from './struct';
+import { driftProgram, platformId, prefixSpotMarkets } from './constants';
+import {
+  SpotBalanceType,
+  insuranceFundStakeStruct,
+  userAccountStruct,
+} from './struct';
 import {
   decodeName,
   getSignedTokenAmount,
   getTokenAmount,
   getUserAccountsPublicKeys,
+  getUserInsuranceFundStakeAccountPublicKey,
   isSpotPositionAvailable,
 } from './helpers';
 import { SpotMarketEnhanced } from './types';
@@ -29,48 +35,21 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  let id = 0;
-  const userAccounts = [];
-  let parsedAccount;
-  do {
-    const accountPubKeys = getUserAccountsPublicKeys(
-      DriftProgram,
-      new PublicKey(owner),
-      id,
-      id + 3
-    );
-    parsedAccount = await getParsedMultipleAccountsInfo(
-      client,
-      userAccountStruct,
-      accountPubKeys
-    );
-    userAccounts.push(...parsedAccount);
-    id += 3;
-  } while (parsedAccount[parsedAccount.length]);
-
-  if (!userAccounts) return [];
-
-  const spotMarketIndexes: Set<string> = new Set();
-  for (const userAccount of userAccounts) {
-    if (!userAccount) continue;
-    for (const spotPosition of userAccount.spotPositions) {
-      spotMarketIndexes.add(spotPosition.marketIndex.toString());
-    }
-  }
-  const spotMarketsItems = await cache.getItems<SpotMarketEnhanced>(
-    Array.from(spotMarketIndexes),
-    {
-      prefix: prefixSpotMarkets,
-      networkId: NetworkId.solana,
-    }
-  );
-  if (!spotMarketsItems) return [];
+  const spotMarketsItems = await cache.getAllItems<SpotMarketEnhanced>({
+    prefix: prefixSpotMarkets,
+    networkId: NetworkId.solana,
+  });
 
   const spotMarketByIndex: Map<number, SpotMarketEnhanced> = new Map();
   const tokensMints = [];
+  const insuranceFundStakeAccountsAddresses: PublicKey[] = [];
   for (const spotMarketItem of spotMarketsItems) {
-    if (!spotMarketItem) continue;
-
+    insuranceFundStakeAccountsAddresses[spotMarketItem.marketIndex] =
+      getUserInsuranceFundStakeAccountPublicKey(
+        driftProgram,
+        new PublicKey(owner),
+        spotMarketItem.marketIndex
+      );
     spotMarketByIndex.set(spotMarketItem.marketIndex, spotMarketItem);
     tokensMints.push(spotMarketItem.mint.toString());
   }
@@ -85,7 +64,67 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     tokenPriceById.set(tP.address, tP);
   });
 
+  const insuranceAccounts = await getParsedMultipleAccountsInfo(
+    client,
+    insuranceFundStakeStruct,
+    insuranceFundStakeAccountsAddresses
+  );
+
   const elements: PortfolioElement[] = [];
+  if (insuranceAccounts) {
+    const assets: PortfolioAsset[] = [];
+    insuranceAccounts.forEach((account, i) => {
+      if (!account || account.costBasis.isZero()) return;
+      const mint = spotMarketByIndex.get(i)?.mint.toString();
+      if (!mint) return;
+      const tokenPrice = tokenPriceById.get(mint);
+      if (!tokenPrice) return;
+      assets.push(
+        tokenPriceToAssetToken(
+          mint,
+          account.costBasis.dividedBy(10 ** tokenPrice.decimals).toNumber(),
+          NetworkId.solana,
+          tokenPrice
+        )
+      );
+    });
+
+    if (assets.length !== 0) {
+      elements.push({
+        networkId: NetworkId.solana,
+        label: 'Staked',
+        name: 'Insurance Fund',
+        platformId,
+        type: PortfolioElementType.multiple,
+        value: getUsdValueSum(assets.map((a) => a.value)),
+        data: {
+          assets,
+        },
+      });
+    }
+  }
+
+  let id = 0;
+  const userAccounts = [];
+  let parsedAccount;
+  do {
+    const accountPubKeys = getUserAccountsPublicKeys(
+      driftProgram,
+      new PublicKey(owner),
+      id,
+      id + 3
+    );
+    parsedAccount = await getParsedMultipleAccountsInfo(
+      client,
+      userAccountStruct,
+      accountPubKeys
+    );
+    userAccounts.push(...parsedAccount);
+    id += 3;
+  } while (parsedAccount[parsedAccount.length]);
+
+  if (!userAccounts) return elements;
+
   // One user can have multiple sub-account
   for (const userAccount of userAccounts) {
     if (!userAccount) continue;
@@ -204,7 +243,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-spotPositions`,
+  id: `${platformId}-deposits`,
   networkId: NetworkId.solana,
   executor,
 };
