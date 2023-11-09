@@ -199,6 +199,10 @@ import {
   jobs as flexlendJobs,
   fetchers as flexlendFetchers,
 } from './plugins/flexlend';
+import {
+  jobs as jupiterJobs,
+  fetchers as jupiterFetchers,
+} from './plugins/jupiter';
 
 export {
   walletTokensPlatform,
@@ -296,6 +300,7 @@ export const jobs: Job[] = [
   ...realmsJobs,
   ...mapleJobs,
   ...flexlendJobs,
+  ...jupiterJobs,
 ];
 
 // FETCHERS //
@@ -335,5 +340,6 @@ export const fetchers: Fetcher[] = [
   ...realmsFetchers,
   ...mapleFetchers,
   ...flexlendFetchers,
+  ...jupiterFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
