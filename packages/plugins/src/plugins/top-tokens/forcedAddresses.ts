@@ -20,6 +20,7 @@ const forcedAddresses: Map<NetworkIdType, string[]> = new Map([
       '0x25eC98773D7b4ceD4cAFaB96A2A1c0945f145e10', // stUSDT
       '0xA35b1B31Ce002FBF2058D22F30f95D405200A15b', // ETHx Stader
       '0xf03A7Eb46d01d9EcAA104558C732Cf82f6B6B645', // MaticX Stader
+      '0xA0D3707c569ff8C87FA923d3823eC5D81c98Be78', // InstaDapp ETH V2
     ],
   ],
   [
