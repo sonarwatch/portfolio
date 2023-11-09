@@ -5,7 +5,7 @@ import {
   borrowLendRatesPrefix,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
-import { DriftProgram, platformId, prefixSpotMarkets } from './constants';
+import { driftProgram, platformId, prefixSpotMarkets } from './constants';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { spotMarketStruct } from './struct';
 import { marketFilter } from './filters';
@@ -25,7 +25,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   const spotMarketsAccount = await getParsedProgramAccounts(
     client,
     spotMarketStruct,
-    DriftProgram,
+    driftProgram,
     marketFilter
   );
   if (!spotMarketsAccount) return;

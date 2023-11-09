@@ -202,3 +202,18 @@ export function getUserAccountsPublicKeys(
   }
   return keys;
 }
+
+export function getUserInsuranceFundStakeAccountPublicKey(
+  programId: PublicKey,
+  owner: PublicKey,
+  marketIndex: number
+) {
+  return PublicKey.findProgramAddressSync(
+    [
+      Buffer.from('insurance_fund_stake', 'utf8'),
+      owner.toBuffer(),
+      new BN(marketIndex).toArrayLike(Buffer, 'le', 2),
+    ],
+    programId
+  )[0];
+}

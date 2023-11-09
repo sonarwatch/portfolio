@@ -7,35 +7,109 @@ import {
   Yield,
   aprToApy,
   getElementLendingValues,
+  getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { DriftProgram, platformId, prefixSpotMarkets } from './constants';
-import { SpotBalanceType, userAccountStruct } from './struct';
+import { driftProgram, platformId, prefixSpotMarkets } from './constants';
+import {
+  SpotBalanceType,
+  insuranceFundStakeStruct,
+  userAccountStruct,
+} from './struct';
 import {
   decodeName,
   getSignedTokenAmount,
   getTokenAmount,
   getUserAccountsPublicKeys,
+  getUserInsuranceFundStakeAccountPublicKey,
   isSpotPositionAvailable,
 } from './helpers';
 import { SpotMarketEnhanced } from './types';
 import { getParsedMultipleAccountsInfo } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import runInBatch from '../../utils/misc/runInBatch';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
+
+  const spotMarketsItems = await cache.getAllItems<SpotMarketEnhanced>({
+    prefix: prefixSpotMarkets,
+    networkId: NetworkId.solana,
+  });
+
+  const spotMarketByIndex: Map<number, SpotMarketEnhanced> = new Map();
+  const tokensMints = [];
+  const insuranceFundStakeAccountsAddresses: PublicKey[] = [];
+  for (const spotMarketItem of spotMarketsItems) {
+    insuranceFundStakeAccountsAddresses[spotMarketItem.marketIndex] =
+      getUserInsuranceFundStakeAccountPublicKey(
+        driftProgram,
+        new PublicKey(owner),
+        spotMarketItem.marketIndex
+      );
+    spotMarketByIndex.set(spotMarketItem.marketIndex, spotMarketItem);
+    tokensMints.push(spotMarketItem.mint.toString());
+  }
+
+  const tokensPrices = await cache.getTokenPrices(
+    tokensMints,
+    NetworkId.solana
+  );
+  const tokenPriceById: Map<string, TokenPrice> = new Map();
+  tokensPrices.forEach((tP) => {
+    if (!tP) return;
+    tokenPriceById.set(tP.address, tP);
+  });
+
+  const insuranceAccounts = await getParsedMultipleAccountsInfo(
+    client,
+    insuranceFundStakeStruct,
+    insuranceFundStakeAccountsAddresses
+  );
+
+  const elements: PortfolioElement[] = [];
+  if (insuranceAccounts) {
+    const assets: PortfolioAsset[] = [];
+    insuranceAccounts.forEach((account, i) => {
+      if (!account || account.costBasis.isZero()) return;
+      const mint = spotMarketByIndex.get(i)?.mint.toString();
+      if (!mint) return;
+      const tokenPrice = tokenPriceById.get(mint);
+      if (!tokenPrice) return;
+      assets.push(
+        tokenPriceToAssetToken(
+          mint,
+          account.costBasis.dividedBy(10 ** tokenPrice.decimals).toNumber(),
+          NetworkId.solana,
+          tokenPrice
+        )
+      );
+    });
+
+    if (assets.length !== 0) {
+      elements.push({
+        networkId: NetworkId.solana,
+        label: 'Staked',
+        name: 'Insurance Fund',
+        platformId,
+        type: PortfolioElementType.multiple,
+        value: getUsdValueSum(assets.map((a) => a.value)),
+        data: {
+          assets,
+        },
+      });
+    }
+  }
 
   let id = 0;
   const userAccounts = [];
   let parsedAccount;
   do {
     const accountPubKeys = getUserAccountsPublicKeys(
-      DriftProgram,
+      driftProgram,
       new PublicKey(owner),
       id,
       id + 3
@@ -49,46 +123,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     id += 3;
   } while (parsedAccount[parsedAccount.length]);
 
-  if (!userAccounts) return [];
+  if (!userAccounts) return elements;
 
-  const spotMarketIndexes: Set<string> = new Set();
-  for (const userAccount of userAccounts) {
-    if (!userAccount) continue;
-    for (const spotPosition of userAccount.spotPositions) {
-      spotMarketIndexes.add(spotPosition.marketIndex.toString());
-    }
-  }
-  const spotMarketsItems = await cache.getItems<SpotMarketEnhanced>(
-    Array.from(spotMarketIndexes),
-    {
-      prefix: prefixSpotMarkets,
-      networkId: NetworkId.solana,
-    }
-  );
-  if (!spotMarketsItems) return [];
-
-  const spotMarketByIndex: Map<number, SpotMarketEnhanced> = new Map();
-  const tokensMints: Set<string> = new Set();
-  for (const spotMarketItem of spotMarketsItems) {
-    if (!spotMarketItem) continue;
-
-    spotMarketByIndex.set(spotMarketItem.marketIndex, spotMarketItem);
-    tokensMints.add(spotMarketItem.mint.toString());
-  }
-
-  const tokenPriceResults = await runInBatch(
-    [...tokensMints].map(
-      (mint) => () => cache.getTokenPrice(mint.toString(), NetworkId.solana)
-    )
-  );
-  const tokenPrices: Map<string, TokenPrice> = new Map();
-  tokenPriceResults.forEach((r) => {
-    if (r.status === 'rejected') return;
-    if (!r.value) return;
-    tokenPrices.set(r.value.address, r.value);
-  });
-
-  const elements: PortfolioElement[] = [];
   // One user can have multiple sub-account
   for (const userAccount of userAccounts) {
     if (!userAccount) continue;
@@ -119,7 +155,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const spotMarket = spotMarketByIndex.get(spotPosition.marketIndex);
       if (!spotMarket) continue;
 
-      const tokenPrice = tokenPrices.get(spotMarket.mint.toString());
+      const tokenPrice = tokenPriceById.get(spotMarket.mint.toString());
       if (!tokenPrice || tokenPrice === null) continue;
 
       let tokenAmount = new BigNumber(0);
@@ -207,7 +243,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-spotPositions`,
+  id: `${platformId}-deposits`,
   networkId: NetworkId.solana,
   executor,
 };

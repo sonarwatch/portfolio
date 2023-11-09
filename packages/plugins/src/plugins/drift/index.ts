@@ -3,7 +3,7 @@ import { Fetcher } from '../../Fetcher';
 import { Job } from '../../Job';
 import { driftPlatform } from './constants';
 import spotMarketsJob from './spotMarketsJob';
-import spotPositionsFetcher from './spotPositionsFetcher';
+import spotPositionsFetcher from './deposits';
 
 export const platforms: Platform[] = [driftPlatform];
 export const jobs: Job[] = [spotMarketsJob];

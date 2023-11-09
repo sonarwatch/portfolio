@@ -4,7 +4,7 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId } from './constants';
 import { getDerivedAccount } from './helpers';
 import solendDepositsFetcher from '../solend/obligationsFetcher';
-import driftDepositsFetcher from '../drift/spotPositionsFetcher';
+import driftDepositsFetcher from '../drift/deposits';
 import { fetchers as marginfiDepositsFetchers } from '../marginfi/index';
 import { walletTokensPlatform } from '../tokens/constants';
 
