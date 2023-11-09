@@ -200,6 +200,11 @@ import {
   fetchers as flexlendFetchers,
 } from './plugins/flexlend';
 import {
+  platforms as fluxbeamPlatforms,
+  jobs as fluxbeamJobs,
+  fetchers as fluxbeamFetchers,
+} from './plugins/fluxbeam';
+import {
   jobs as jupiterJobs,
   fetchers as jupiterFetchers,
 } from './plugins/jupiter';
@@ -260,6 +265,7 @@ export const platforms: Platform[] = [
   ...realmsPlatforms,
   ...maplePlatforms,
   ...flexlendPlatforms,
+  ...fluxbeamPlatforms,
 ];
 
 // JOBS //
@@ -300,6 +306,7 @@ export const jobs: Job[] = [
   ...realmsJobs,
   ...mapleJobs,
   ...flexlendJobs,
+  ...fluxbeamJobs,
   ...jupiterJobs,
 ];
 
@@ -340,6 +347,7 @@ export const fetchers: Fetcher[] = [
   ...realmsFetchers,
   ...mapleFetchers,
   ...flexlendFetchers,
+  ...fluxbeamFetchers,
   ...jupiterFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
