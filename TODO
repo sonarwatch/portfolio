@@ -7,7 +7,6 @@
 - cache.getTokenPrices seems to be bugged first fetch
 - Lock system (sur maker ou stargate par example)
 - Check Maker Vault fetche (longest fetcher)
-- Solana Token 2022 support
 - Ajouter les assets dans les calls API (params)
 
 - Lybra Finance
@@ -26,5 +25,6 @@
 
 # DONE
 
+- Solana Token 2022 support
 - Uniswap
 - Balancer
