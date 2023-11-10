@@ -208,6 +208,11 @@ import {
   jobs as jupiterJobs,
   fetchers as jupiterFetchers,
 } from './plugins/jupiter';
+import {
+  platforms as zetaPlatforms,
+  jobs as zetaJobs,
+  fetchers as zetaFetchers,
+} from './plugins/zeta';
 
 export {
   walletTokensPlatform,
@@ -266,6 +271,7 @@ export const platforms: Platform[] = [
   ...maplePlatforms,
   ...flexlendPlatforms,
   ...fluxbeamPlatforms,
+  ...zetaPlatforms,
 ];
 
 // JOBS //
@@ -308,6 +314,7 @@ export const jobs: Job[] = [
   ...flexlendJobs,
   ...fluxbeamJobs,
   ...jupiterJobs,
+  ...zetaJobs,
 ];
 
 // FETCHERS //
@@ -349,5 +356,6 @@ export const fetchers: Fetcher[] = [
   ...flexlendFetchers,
   ...fluxbeamFetchers,
   ...jupiterFetchers,
+  ...zetaFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
