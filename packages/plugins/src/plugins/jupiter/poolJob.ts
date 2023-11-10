@@ -65,19 +65,22 @@ const executor: JobExecutor = async (cache: Cache) => {
     10 ** lpTokenSupply.value.decimals
   );
 
+  const price = poolAccount.aumUsd.dividedBy(10 ** 6).dividedBy(lpAmount);
+
   const underlyingsAmounts = tokensAmounts
     .map((amount) => amount.dividedBy(lpAmount))
     .flat();
 
-  const price = tokensAmounts
+  const basePrice = tokensAmounts
     .map((amount, i) => amount.multipliedBy(tokensPrices[i].price))
     .reduce((sum, current) => current.plus(sum), new BigNumber(0))
-    .dividedBy(lpAmount)
-    .toNumber();
+    .dividedBy(lpAmount);
+
+  const factor = price.dividedBy(basePrice);
 
   const underlyings = getTokenPricesUnderlyingsFromTokensPrices(
     tokensPrices,
-    underlyingsAmounts.map((a) => a.toNumber())
+    underlyingsAmounts.map((a) => a.multipliedBy(factor).toNumber())
   );
   await cache.setTokenPriceSource({
     address: jlpToken.toString(),
@@ -86,7 +89,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     networkId: NetworkId.solana,
     elementName: 'JLP Pool',
     platformId,
-    price,
+    price: price.toNumber(),
     timestamp: Date.now(),
     weight: 1,
     underlyings,
