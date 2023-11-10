@@ -1,10 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
-import BigNumber from 'bignumber.js';
-import {
-  NetworkId,
-  TokenPrice,
-  TokenPriceSource,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId, TokenPrice } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { fluxbeamPoolsPid, platformId } from './constants';
@@ -18,6 +13,7 @@ import {
   tokenAccountStruct,
 } from '../../utils/solana';
 import { poolStruct } from './structs';
+import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
@@ -50,16 +46,6 @@ const executor: JobExecutor = async (cache: Cache) => {
   const tokenMintsAddresses = pools
     .map((pool) => [pool.tokenAMint.toString(), pool.tokenBMint.toString()])
     .flat();
-  // const tokenMints = await getParsedMultipleAccountsInfo(
-  //   connection,
-  //   mintAccountStruct,
-  //   tokenMintsAddresses
-  // );
-  // const tokenMintsMap: Map<string, ParsedAccount<MintAccount>> = new Map();
-  // tokenMints.forEach((tokenMint) => {
-  //   if (!tokenMint) return;
-  //   tokenMintsMap.set(tokenMint.pubkey.toString(), tokenMint);
-  // });
 
   const tokenPriceResults = await cache.getTokenPrices(
     tokenMintsAddresses,
@@ -85,45 +71,31 @@ const executor: JobExecutor = async (cache: Cache) => {
     const tokenAccountB = tokenAccountsMap.get(pool.tokenB.toString());
     if (!tokenAccountA || !tokenAccountB) continue;
 
-    const amountA = new BigNumber(tokenAccountA.amount.toString())
-      .div(10 ** tokenPriceA.decimals)
-      .toNumber();
-    const amountB = new BigNumber(tokenAccountB.amount.toString())
-      .div(10 ** tokenPriceB.decimals)
-      .toNumber();
-    const lpSupply = new BigNumber(poolMint.supply)
-      .div(10 ** poolMint.decimals)
-      .toNumber();
-    const price =
-      (amountA * tokenPriceA.price + amountB * tokenPriceB.price) / lpSupply;
-
-    const source: TokenPriceSource = {
-      networkId: NetworkId.solana,
-      elementName: 'Pools',
+    const source = getLpTokenSourceRaw(
+      NetworkId.solana,
       platformId,
-      id: platformId,
-      weight: 1,
-      address: pool.poolMint.toString(),
-      price,
-      decimals: poolMint.decimals,
-      underlyings: [
+      platformId,
+      'Pools',
+      {
+        address: pool.poolMint.toString(),
+        decimals: poolMint.decimals,
+        supplyRaw: poolMint.supply,
+      },
+      [
         {
-          networkId: NetworkId.solana,
-          address: tokenPriceA.address.toString(),
+          address: tokenPriceA.address,
           decimals: tokenPriceA.decimals,
           price: tokenPriceA.price,
-          amountPerLp: amountA / lpSupply,
+          reserveAmountRaw: tokenAccountA.amount,
         },
         {
-          networkId: NetworkId.solana,
-          address: tokenPriceB.address.toString(),
+          address: tokenPriceB.address,
           decimals: tokenPriceB.decimals,
           price: tokenPriceB.price,
-          amountPerLp: amountB / lpSupply,
+          reserveAmountRaw: tokenAccountB.amount,
         },
-      ],
-      timestamp: Date.now(),
-    };
+      ]
+    );
     await cache.setTokenPriceSource(source);
   }
 };
