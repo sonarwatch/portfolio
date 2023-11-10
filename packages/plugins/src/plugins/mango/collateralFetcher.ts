@@ -121,7 +121,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         borrowedAssets.push(assetToken);
         const apr = bank.borrowApr;
         if (apr)
-          suppliedYields.push([
+          borrowedYields.push([
             {
               apr,
               apy: aprToApy(apr),
