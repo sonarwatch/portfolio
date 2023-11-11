@@ -159,6 +159,13 @@ npx nx run plugins:run-fetcher wallet-tokens-aptos aa3fca2b46efb0c9b63e9c92ee31a
 npx nx run plugins:run-fetcher wallet-tokens-ethereum-top \"0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045\"
 ```
 
+## Build
+
+```bash
+npx nx run core:build
+npx nx run plugins:build
+```
+
 ## Deploy
 
 ```bash
