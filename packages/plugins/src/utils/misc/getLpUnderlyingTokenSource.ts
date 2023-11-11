@@ -11,6 +11,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import getSourceWeight from './getSourceWeight';
+import { walletTokensPlatform } from '../../plugins/tokens/constants';
 
 export type PoolData = {
   id: string;
@@ -108,7 +109,7 @@ export default function getLpUnderlyingTokenSource(
   const source: TokenPriceSource = {
     id: sourceId,
     networkId,
-    platformId,
+    platformId: walletTokensPlatform.id,
     address: unknownUnderlaying.address,
     decimals: unknownUnderlaying.decimals,
     price,
