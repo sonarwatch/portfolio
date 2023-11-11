@@ -5,6 +5,7 @@ import { Job, JobExecutor } from '../../Job';
 import { fluxbeamPoolsPid, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import {
+  MintAccount,
   ParsedAccount,
   TokenAccount,
   getParsedMultipleAccountsInfo,
@@ -14,22 +15,25 @@ import {
 } from '../../utils/solana';
 import { poolStruct } from './structs';
 import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
+import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
-  const pools = await getParsedProgramAccounts(
+  let pools = await getParsedProgramAccounts(
     connection,
     poolStruct,
     new PublicKey(fluxbeamPoolsPid),
     [{ dataSize: poolStruct.byteSize }]
   );
-  const tokenAccountsAddresses = pools
+  pools = pools.filter((pool) => pool.isInitialized);
+
+  const reserveAccountsAddresses = pools
     .map((pool) => [pool.tokenA, pool.tokenB])
     .flat();
   const tokenAccounts = await getParsedMultipleAccountsInfo(
     connection,
     tokenAccountStruct,
-    tokenAccountsAddresses
+    reserveAccountsAddresses
   );
   const tokenAccountsMap: Map<string, ParsedAccount<TokenAccount>> = new Map();
   tokenAccounts.forEach((tokenAccount) => {
@@ -43,9 +47,30 @@ const executor: JobExecutor = async (cache: Cache) => {
     pools.map((p) => p.poolMint)
   );
 
-  const tokenMintsAddresses = pools
-    .map((pool) => [pool.tokenAMint.toString(), pool.tokenBMint.toString()])
-    .flat();
+  const tokenMintsAddresses = [
+    ...new Set(
+      pools
+        .map((pool) => [pool.tokenAMint.toString(), pool.tokenBMint.toString()])
+        .flat()
+    ),
+  ];
+
+  const tokenMintsAccounts = await getParsedMultipleAccountsInfo(
+    connection,
+    mintAccountStruct,
+    tokenMintsAddresses.map((a) => new PublicKey(a))
+  );
+  const tokenMintsAccountsMap: Map<
+    string,
+    ParsedAccount<MintAccount>
+  > = new Map();
+  tokenMintsAccounts.forEach((tokenMintAccount) => {
+    if (!tokenMintAccount) return;
+    tokenMintsAccountsMap.set(
+      tokenMintAccount.pubkey.toString(),
+      tokenMintAccount
+    );
+  });
 
   const tokenPriceResults = await cache.getTokenPrices(
     tokenMintsAddresses,
@@ -63,15 +88,38 @@ const executor: JobExecutor = async (cache: Cache) => {
     const poolMint = poolMints[i];
     if (!poolMint) continue;
 
-    const tokenPriceA = tokenPrices.get(pool.tokenAMint.toString());
-    const tokenPriceB = tokenPrices.get(pool.tokenBMint.toString());
-    if (!tokenPriceA || !tokenPriceB) continue;
-
     const tokenAccountA = tokenAccountsMap.get(pool.tokenA.toString());
     const tokenAccountB = tokenAccountsMap.get(pool.tokenB.toString());
     if (!tokenAccountA || !tokenAccountB) continue;
+    const mintAccountA = tokenMintsAccountsMap.get(pool.tokenAMint.toString());
+    const mintAccountB = tokenMintsAccountsMap.get(pool.tokenBMint.toString());
+    if (!mintAccountA || !mintAccountB) continue;
+    const tokenPriceA = tokenPrices.get(pool.tokenAMint.toString());
+    const tokenPriceB = tokenPrices.get(pool.tokenBMint.toString());
 
-    const source = getLpTokenSourceRaw(
+    const underlyingsSource = getLpUnderlyingTokenSource(
+      platformId,
+      platformId,
+      NetworkId.solana,
+      {
+        address: pool.tokenAMint.toString(),
+        decimals: mintAccountA.decimals,
+        reserveAmountRaw: tokenAccountA.amount,
+        tokenPrice: tokenPriceA,
+      },
+      {
+        address: pool.tokenBMint.toString(),
+        decimals: mintAccountB.decimals,
+        reserveAmountRaw: tokenAccountB.amount,
+        tokenPrice: tokenPriceB,
+      }
+    );
+    if (underlyingsSource) {
+      await cache.setTokenPriceSource(underlyingsSource);
+    }
+
+    if (!tokenPriceA || !tokenPriceB) continue;
+    const lpSource = getLpTokenSourceRaw(
       NetworkId.solana,
       platformId,
       platformId,
@@ -96,7 +144,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         },
       ]
     );
-    await cache.setTokenPriceSource(source);
+    await cache.setTokenPriceSource(lpSource);
   }
 };
 const job: Job = {

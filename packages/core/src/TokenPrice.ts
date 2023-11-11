@@ -3,7 +3,7 @@ import { deepClone } from './helpers';
 
 const SOURCE_TTL = 60 * 60 * 1000;
 const MAX_N_SOURCES = 10;
-const coingeckoSourceId = 'coingecko';
+export const coingeckoSourceId = 'coingecko';
 
 export type TokenPriceUnderlying = {
   networkId: NetworkIdType;

@@ -1,4 +1,4 @@
-import { BeetStruct, u8 } from '@metaplex-foundation/beet';
+import { BeetStruct, bool, u8 } from '@metaplex-foundation/beet';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
@@ -50,7 +50,7 @@ export const swapCurveStruct = new BeetStruct<SwapCurve>(
 
 export type Pool = {
   padding: Buffer;
-  isInitialized: number;
+  isInitialized: boolean;
   bumpSeed: number;
   tokenProgramId: PublicKey;
   tokenA: PublicKey;
@@ -66,7 +66,7 @@ export type Pool = {
 export const poolStruct = new BeetStruct<Pool>(
   [
     ['padding', blob(1)],
-    ['isInitialized', u8],
+    ['isInitialized', bool],
     ['bumpSeed', u8],
     ['tokenProgramId', publicKey],
     ['tokenA', publicKey],
