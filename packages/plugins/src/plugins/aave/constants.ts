@@ -12,6 +12,7 @@ export const aavePlatform: Platform = {
   name: 'AAVE',
   image: 'https://sonar.watch/img/platforms/aave.png',
   defiLlamaId: 'parent#aave',
+  website: 'https://aave.com/',
 };
 export const aaveAddress = '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9';
 export const aaveDecimals = 18;

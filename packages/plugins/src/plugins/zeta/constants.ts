@@ -7,6 +7,7 @@ export const zetaPlatform: Platform = {
   name: 'Zeta',
   image: 'https://sonar.watch/img/platforms/zeta.png',
   defiLlamaId: 'zeta',
+  website: 'https://www.zeta.markets/',
 };
 
 export const usdcMint = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';

@@ -7,6 +7,7 @@ export const meteoraPlatform: Platform = {
   name: 'Meteora',
   image: 'https://sonar.watch/img/platforms/meteora.png',
   defiLlamaId: 'parent#meteora',
+  website: 'https://meteora.ag/',
 };
 
 export const prefixVaults = `${platformId}-vaults`;

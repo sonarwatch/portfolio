@@ -7,6 +7,7 @@ export const uniswapPlatform: Platform = {
   name: 'Uniswap',
   image: 'https://sonar.watch/img/platforms/uniswap.png',
   defiLlamaId: 'parent#uniswap',
+  website: 'https://uniswap.org/',
 };
 
 export const poolsPrefix = 'uniswap-v3';

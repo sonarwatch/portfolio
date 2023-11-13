@@ -6,6 +6,7 @@ export const bucketPlatform: Platform = {
   name: 'Bucket',
   image: 'https://sonar.watch/img/platforms/bucket.png',
   defiLlamaId: 'bucket-protocol',
+  website: 'https://bucketprotocol.io/',
 };
 
 export const bottleType =

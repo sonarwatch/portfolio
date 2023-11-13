@@ -7,6 +7,7 @@ export const pancakeswapPlatform: Platform = {
   name: 'PancakeSwap',
   image: 'https://sonar.watch/img/platforms/pancakeswap.png',
   defiLlamaId: 'parent#pancakeswap',
+  website: 'https://pancakeswap.finance/',
 };
 export const programAddress =
   '0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa';

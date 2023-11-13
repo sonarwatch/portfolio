@@ -7,6 +7,7 @@ export const rocketPoolPlatform: Platform = {
   name: 'Rocket Pool',
   defiLlamaId: 'rocket-pool',
   image: 'https://sonar.watch/img/platforms/rocketpool.png',
+  website: 'https://rocketpool.net/',
 };
 export const marketsCachePrefix = `${platformId}-markets`;
 export const minipoolManagerAddress =

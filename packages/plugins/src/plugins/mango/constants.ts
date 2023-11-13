@@ -7,6 +7,7 @@ export const mangoPlatform: Platform = {
   name: 'Mango',
   image: 'https://sonar.watch/img/platforms/mango.png',
   defiLlamaId: 'parent#mango-markets',
+  website: 'https://mango.markets/',
 };
 export const banksPrefix = `${platformId}-banks`;
 export const rootBankPrefix = `${platformId}-rootBank`;

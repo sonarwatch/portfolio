@@ -7,6 +7,7 @@ export const auxExchangePlatform: Platform = {
   name: 'Aux Exchange',
   image: 'https://sonar.watch/img/platforms/auxexchange.png',
   defiLlamaId: 'aux-exchange',
+  website: 'https://aux.exchange/',
 };
 
 export const programAddress =
