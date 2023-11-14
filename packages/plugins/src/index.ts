@@ -134,6 +134,11 @@ import {
   platforms as naviPlatforms,
 } from './plugins/navi';
 import {
+  fetchers as scallopFetchers,
+  jobs as scallopJobs,
+  platforms as scallopPlatforms
+} from './plugins/scallop';
+import {
   fetchers as rocketpoolFetchers,
   platforms as rocketpoolPlatforms,
 } from './plugins/rocket-pool';
@@ -256,6 +261,7 @@ export const platforms: Platform[] = [
   ...kaminoPlatforms,
   ...bucketPlatforms,
   ...naviPlatforms,
+  ...scallopPlatforms,
   ...makerPlatforms,
   ...rocketpoolPlatforms,
   ...lidoPlatforms,
@@ -301,6 +307,7 @@ export const jobs: Job[] = [
   ...liquidswapJobs,
   ...kaminoJobs,
   ...naviJobs,
+  ...scallopJobs,
   ...curveJobs,
   ...compoundJobs,
   ...stargateJobs,
@@ -339,6 +346,7 @@ export const fetchers: Fetcher[] = [
   ...liquidityPoolsSeiFetchers,
   ...bucketFetchers,
   ...naviFetchers,
+  ...scallopFetchers,
   ...rocketpoolFetchers,
   ...curveFetchers,
   ...stargateFetchers,
