@@ -10,8 +10,8 @@ export const jobs: Job[] = [
   {
     id: `${uniswapPlatform}-v2`,
     executor: uniPoolV2JobExecutorGenerator(
-      uniswapPlatform,
       theGraphUrl,
+      uniswapPlatform,
       NetworkId.ethereum
     ),
   },

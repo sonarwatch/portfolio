@@ -75,15 +75,13 @@ export default function uniPoolV2JobExecutorGenerator(
     const tokenAddresses = [
       ...new Set(pairs.map((p) => [p.token0.id, p.token1.id]).flat()),
     ];
-    const tokenPrices = await cache.getTokenPrices(
-      tokenAddresses,
-      NetworkId.ethereum
-    );
+    const tokenPrices = await cache.getTokenPrices(tokenAddresses, networkId);
     const tokenPricesByAddress: Map<string, TokenPrice> = new Map();
     tokenPrices.forEach((tp) => {
       if (!tp) return;
       tokenPricesByAddress.set(tp.address, tp);
     });
+    console.log('return ~ tokenPrices:', tokenPrices);
 
     const pairAddresses: string[] = [];
     for (let i = 0; i < pairs.length; i++) {
@@ -97,7 +95,7 @@ export default function uniPoolV2JobExecutorGenerator(
       let tvl = new BigNumber(0);
       for (let j = 0; j < underlyingsTokens.length; j++) {
         const [address, amount] = underlyingsTokens[j];
-        const fAddress = formatTokenAddress(address, NetworkId.ethereum);
+        const fAddress = formatTokenAddress(address, networkId);
         const tokenPrice = tokenPricesByAddress.get(fAddress);
         if (!tokenPrice) break;
         tvl = tvl.plus(new BigNumber(amount).times(tokenPrice.price));
@@ -112,7 +110,7 @@ export default function uniPoolV2JobExecutorGenerator(
       if (underlyings.length !== underlyingsTokens.length) continue;
 
       const price = tvl.div(pair.totalSupply).toNumber();
-      const lpAddress = formatTokenAddress(pair.id, NetworkId.ethereum);
+      const lpAddress = formatTokenAddress(pair.id, networkId);
       const source: TokenPriceSource = {
         id: platformId,
         address: lpAddress,

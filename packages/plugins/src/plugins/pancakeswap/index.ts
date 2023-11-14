@@ -12,16 +12,16 @@ export const jobs: Job[] = [
   {
     id: `${platformId}-v2-${NetworkId.ethereum}`,
     executor: uniPoolV2JobExecutorGenerator(
-      platformId,
       theGraphUrlEthV2,
+      platformId,
       NetworkId.ethereum
     ),
   },
   {
     id: `${platformId}-v2-${NetworkId.bnb}`,
     executor: uniPoolV2JobExecutorGenerator(
-      platformId,
       '0xca143ce32fe78f1f7019d7d551a6402fc5350c73',
+      platformId,
       NetworkId.bnb
     ),
   },
@@ -34,5 +34,10 @@ export const fetchers: Fetcher[] = [
       NetworkId.ethereum
     ),
     networkId: NetworkId.ethereum,
+  },
+  {
+    id: `${platformId}-v2-${NetworkId.bnb}`,
+    executor: getUniV2PoolsBalancesFetcherGenerator(platformId, NetworkId.bnb),
+    networkId: NetworkId.bnb,
   },
 ];

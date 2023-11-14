@@ -102,6 +102,7 @@ import {
 import {
   platforms as pancakeswapPlatforms,
   jobs as pancakeswapJobs,
+  fetchers as pancakeswapFetchers,
 } from './plugins/pancakeswap';
 import {
   platforms as aftermathPlatforms,
@@ -333,6 +334,7 @@ export const fetchers: Fetcher[] = [
   ...cetusFetchers,
   ...turbosFetchers,
   ...stakingAptosFetchers,
+  ...pancakeswapFetchers,
   ...aaveFetchers,
   ...ordersFetchers,
   ...morphoFetchers,

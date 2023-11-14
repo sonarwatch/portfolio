@@ -38,7 +38,7 @@ export const abi = {
   reserves: {
     constant: true,
     inputs: [],
-    name: 'token1',
+    name: 'getReserves',
     outputs: [
       { internalType: 'uint112', name: '_reserve0', type: 'uint112' },
       { internalType: 'uint112', name: '_reserve1', type: 'uint112' },
