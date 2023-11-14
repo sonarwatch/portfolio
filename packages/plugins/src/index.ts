@@ -213,6 +213,7 @@ import {
   jobs as zetaJobs,
   fetchers as zetaFetchers,
 } from './plugins/zeta';
+import { fetchers as franciumFetchers } from './plugins/francium';
 
 export {
   walletTokensPlatform,
@@ -357,5 +358,6 @@ export const fetchers: Fetcher[] = [
   ...fluxbeamFetchers,
   ...jupiterFetchers,
   ...zetaFetchers,
+  ...franciumFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
