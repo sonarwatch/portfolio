@@ -38,6 +38,15 @@ export const aptosNameChecker: NameChecker = {
     return name.endsWith('.apt');
   },
 };
+// ## AllDomains
+export const allDomainsNameChecker: NameChecker = {
+  addressSystem: AddressSystem.solana,
+  checker(name) {
+    return name.split(".").length === 2;
+  },
+};
+
+
 
 export const nameCheckers: NameChecker[] = [
   ensNameChecker,
@@ -45,4 +54,6 @@ export const nameCheckers: NameChecker[] = [
   glowNameChecker,
   avalancheNameChecker,
   aptosNameChecker,
+  // Please leave allDomains at the end.
+  allDomainsNameChecker,
 ];
