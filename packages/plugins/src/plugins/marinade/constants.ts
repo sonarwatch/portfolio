@@ -8,6 +8,7 @@ export const marinadePlatform: Platform = {
   name: 'Marinade',
   image: 'https://sonar.watch/img/platforms/marinade.png',
   defiLlamaId: 'parent#marinade-finance',
+  website: 'https://marinade.finance/',
 };
 
 export const cachePrefix = 'marinade';

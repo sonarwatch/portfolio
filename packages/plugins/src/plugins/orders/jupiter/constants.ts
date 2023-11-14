@@ -5,4 +5,5 @@ export const jupiterPlatform: Platform = {
   name: 'Jupiter',
   image: 'https://sonar.watch/img/platforms/jupiter.png',
   defiLlamaId: 'jupiter-aggregator',
+  website: 'https://jup.ag/',
 };

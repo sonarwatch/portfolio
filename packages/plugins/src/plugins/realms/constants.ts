@@ -7,6 +7,7 @@ export const realmsPlatform: Platform = {
   name: 'Realms',
   image: 'https://sonar.watch/img/platforms/realms.png',
   defiLlamaId: 'spl-governance',
+  website: 'https://app.realms.today/',
 };
 
 export const splGovProgramsKey = 'splGovernancePrograms';

@@ -10,6 +10,7 @@ export const curvePlatform: Platform = {
   name: 'Curve Finance',
   image: 'https://sonar.watch/img/platforms/curve.png',
   defiLlamaId: 'parent#curve-finance',
+  website: 'https://curve.fi/',
 };
 export const poolsCachePrefix = `${platformId}-pools`;
 export const gaugesCachePrefix = `${platformId}-gauges`;

@@ -7,4 +7,5 @@ export const hawksightPlatform: Platform = {
   name: 'Hawksight',
   image: 'https://sonar.watch/img/platforms/hawksight.png',
   defiLlamaId: 'hawksight',
+  website: 'https://hawksight.co/',
 };

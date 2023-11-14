@@ -6,6 +6,7 @@ export const platform: Platform = {
   name: 'Balancer',
   image: 'https://sonar.watch/img/platforms/balancer.png',
   defiLlamaId: 'parent#balancer', // from https://defillama.com/docs/api
+  website: 'https://balancer.fi/',
 };
 export const poolsAndGaugesV2CacheKey = `${platformId}-pools-and-gauges-v2`;
 

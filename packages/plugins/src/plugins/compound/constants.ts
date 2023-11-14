@@ -11,6 +11,7 @@ export const compoundPlatform: Platform = {
   name: 'Compound',
   image: 'https://sonar.watch/img/platforms/compound.png',
   defiLlamaId: 'parent#compound-finance', // from https://defillama.com/docs/api
+  website: 'https://compound.finance/',
 };
 
 export const comethTokenPricesPrefix = 'cometh-token-prices';

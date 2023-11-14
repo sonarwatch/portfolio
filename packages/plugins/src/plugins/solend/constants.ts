@@ -7,6 +7,7 @@ export const solendPlatform: Platform = {
   name: 'Solend',
   image: 'https://sonar.watch/img/platforms/solend.png',
   defiLlamaId: 'solend',
+  website: 'https://solend.fi/',
 };
 export const marketsPrefix = `${platformId}-markets`;
 export const reservesPrefix = `${platformId}-reserves`;

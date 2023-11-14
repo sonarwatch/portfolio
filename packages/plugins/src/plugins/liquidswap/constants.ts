@@ -7,6 +7,7 @@ export const liquidswapPlatform: Platform = {
   name: 'Liquidswap',
   image: 'https://sonar.watch/img/platforms/liquidswap.png',
   defiLlamaId: 'liquidswap',
+  website: 'https://liquidswap.com',
 };
 export const programAddress =
   '0x5a97986a9d031c4567e15b797be516910cfcb4156312482efc6a19c0a30c948';

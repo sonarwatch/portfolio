@@ -7,6 +7,7 @@ export const orcaPlatform: Platform = {
   name: 'Orca',
   image: 'https://sonar.watch/img/platforms/orca.png',
   defiLlamaId: 'orca',
+  website: 'https://www.orca.so/',
 };
 export const poolsProgram = new PublicKey(
   '9W959DqEETiGZocYWCQPaJ6sBmUzgfxXfqGeTEdp3aQP'

@@ -7,6 +7,7 @@ export const maplePlatform: Platform = {
   name: 'Maple',
   image: 'https://sonar.watch/img/platforms/maple.png',
   defiLlamaId: 'parent#maple-finance',
+  website: 'https://www.maple.finance/',
 };
 
 export const solanaLoanToken = 'AxuK8gNvN4Q8HtgHxFbePP6b84SpmcNTPdFA1E164Hgs';

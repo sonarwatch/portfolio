@@ -6,6 +6,7 @@ export const kaminoPlatform: Platform = {
   id: platformId,
   name: 'Kamino',
   image: `https://sonar.watch/img/platforms/${platformId}.png`,
+  website: 'https://kamino.finance/',
   defiLlamaId: 'parent#kamino-finance',
 };
 export const programId = new PublicKey(

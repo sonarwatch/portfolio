@@ -6,6 +6,7 @@ export const lidoPlatform: Platform = {
   name: 'Lido',
   image: 'https://sonar.watch/img/platforms/lido.png',
   defiLlamaId: 'lido',
+  website: 'https://lido.fi/',
 };
 
 export const withdrawlQueueAddress =

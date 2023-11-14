@@ -7,6 +7,7 @@ export const driftPlatform: Platform = {
   name: 'Drift',
   image: 'https://sonar.watch/img/platforms/drift.png',
   defiLlamaId: 'drift',
+  website: 'https://www.drift.trade/',
 };
 export const prefixSpotMarkets = `${platformId}-spotMarkets`;
 

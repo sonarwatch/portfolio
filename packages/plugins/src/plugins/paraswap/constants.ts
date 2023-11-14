@@ -8,6 +8,7 @@ export const paraswapPlatform: Platform = {
   name: 'Paraswap',
   defiLlamaId: 'paraswap',
   image: 'https://sonar.watch/img/platforms/paraswap.png',
+  website: 'https://paraswap.io/',
 };
 
 export const bptInfoKey = 'bptInfo';

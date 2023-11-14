@@ -8,6 +8,7 @@ export const stargatePlatform: Platform = {
   name: 'Stargate',
   image: 'https://sonar.watch/img/platforms/stargate.png',
   defiLlamaId: 'stargate',
+  website: 'https://stargate.finance/',
 };
 
 export const poolsKey = 'pools';

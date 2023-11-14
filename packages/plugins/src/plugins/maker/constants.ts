@@ -6,6 +6,7 @@ export const makerPlatform: Platform = {
   name: 'Maker DAO',
   image: 'https://sonar.watch/img/platforms/maker.png',
   defiLlamaId: 'makerdao',
+  website: 'https://makerdao.com/',
 };
 
 export const ilksPrefix = `${platformId}-ilks`;

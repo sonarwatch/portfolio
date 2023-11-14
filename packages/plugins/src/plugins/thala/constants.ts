@@ -7,6 +7,7 @@ export const thalaPlatform: Platform = {
   name: 'Thala',
   image: 'https://sonar.watch/img/platforms/thala.png',
   defiLlamaId: 'parent#thala-labs',
+  website: 'https://www.thala.fi/',
 };
 export const programAdressThala =
   '0x6f986d146e4a90b828d8c12c14b6f4e003fdff11a8eecceceb63744363eaac01';
