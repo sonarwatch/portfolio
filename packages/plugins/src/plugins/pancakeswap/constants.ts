@@ -13,3 +13,8 @@ export const programAddress =
 
 export const lpTypePrefix = `${programAddress}::swap::LPToken<`;
 export const lpCoinInfoTypePrefix = `${coinInfo}<${lpTypePrefix}`;
+
+export const theGraphUrlEthV2 =
+  'https://api.thegraph.com/subgraphs/name/pancakeswap/exhange-eth';
+
+// See all Subgraph links : https://docs.pancakeswap.finance/developers/api/subgraph
