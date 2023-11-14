@@ -24,6 +24,7 @@ export const scallopPlatform: Platform = {
   name: 'Scallop',
   image: `https://sonar.watch/img/platforms/${platformId}.png`,
   defiLlamaId: 'parent#scallop',
+  website: 'https://app.scallop.io/',
 };
 
 export const baseIndexRate = 1_000_000_000;
