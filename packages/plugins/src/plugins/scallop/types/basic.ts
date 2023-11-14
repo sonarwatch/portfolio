@@ -12,15 +12,15 @@ export type NameField = {
 };
 
 export type ContentFields = {
-  contents: (BasicField & { fields: NameField; })[];
+  contents: (BasicField & { fields: NameField })[];
 };
 
 export type WitTable = {
   fields: {
     id: IdField;
-    keys: BasicField & { fields: ContentFields; };
+    keys: BasicField & { fields: ContentFields };
     table: BasicField & {
-      fields: { id: IdField; },
+      fields: { id: IdField };
       size: string;
     };
     with_keys: boolean;

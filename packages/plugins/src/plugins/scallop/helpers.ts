@@ -2,32 +2,36 @@ import {
   PaginatedObjectsResponse,
   SuiObjectData,
   SuiObjectResponseQuery,
-} from "@mysten/sui.js";
-import { getClientSui } from "../../utils/clients";
+} from '@mysten/sui.js';
+import { getClientSui } from '../../utils/clients';
 
 const client = getClientSui();
 
-export async function getOwnerObject(owner: string, query?: SuiObjectResponseQuery) {
+export async function getOwnerObject(
+  owner: string,
+  query?: SuiObjectResponseQuery
+) {
   const objects: SuiObjectData[] = [];
   let cursor:
     | string
     | {
-      objectId: string;
-      atCheckpoint?: number | undefined;
-    }
+        objectId: string;
+        atCheckpoint?: number | undefined;
+      }
     | null = null;
 
   do {
-    const { data, nextCursor }: PaginatedObjectsResponse = await client.getOwnedObjects({
-      owner,
-      filter: query?.filter,
-      options: query?.options ?? {
-        showType: true,
-        showContent: true,
-        showDisplay: true,
-      },
-      cursor,
-    });
+    const { data, nextCursor }: PaginatedObjectsResponse =
+      await client.getOwnedObjects({
+        owner,
+        filter: query?.filter,
+        options: query?.options ?? {
+          showType: true,
+          showContent: true,
+          showDisplay: true,
+        },
+        cursor,
+      });
 
     if (!data || !data.length) {
       break;
@@ -41,7 +45,7 @@ export async function getOwnerObject(owner: string, query?: SuiObjectResponseQue
 }
 
 export function formatDecimal(amount: number, decimal: number) {
-  return amount / 10 ** decimal
+  return amount / 10 ** decimal;
 }
 
 export function shortenAddress(address: string, start = 4, end = 4) {

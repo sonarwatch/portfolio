@@ -3,7 +3,13 @@ import { getObjectFields } from '@mysten/sui.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { addressKey, addressPrefix, spoolsKey, spoolsPrefix as prefix, baseIndexRate } from './constants';
+import {
+  addressKey,
+  addressPrefix,
+  spoolsKey,
+  spoolsPrefix as prefix,
+  baseIndexRate,
+} from './constants';
 import { AddressInfo, SpoolCoin, SpoolJobResult } from './types';
 import { getClientSui } from '../../utils/clients';
 
@@ -12,12 +18,14 @@ const client = getClientSui();
 const executor: JobExecutor = async (cache: Cache) => {
   const address = await cache.getItem<AddressInfo>(addressKey, {
     prefix: addressPrefix,
-    networkId: NetworkId.sui
+    networkId: NetworkId.sui,
   });
 
   if (!address) return;
 
-  const spoolCoin = new Map<string, SpoolCoin>(Object.entries(address.mainnet.spool.pools));
+  const spoolCoin = new Map<string, SpoolCoin>(
+    Object.entries(address.mainnet.spool.pools)
+  );
   const spoolCoinNames: string[] = Array.from(spoolCoin.keys());
   const spoolMarketData: SpoolJobResult = {};
 
@@ -30,15 +38,15 @@ const executor: JobExecutor = async (cache: Cache) => {
       client.getObject({
         id: poolId,
         options: {
-          showContent: true
-        }
+          showContent: true,
+        },
       }),
       client.getObject({
         id: rewardPoolId,
         options: {
-          showContent: true
-        }
-      })
+          showContent: true,
+        },
+      }),
     ]);
 
     if (stakeObjectResponse.data && rewardObjectResponse.data) {
@@ -58,9 +66,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       )
         .dividedBy(period)
         .toFixed(0);
-      const remainingPoints = BigNumber(maxPoint).minus(
-        distributedPoint
-      );
+      const remainingPoints = BigNumber(maxPoint).minus(distributedPoint);
       const accumulatedPoints = BigNumber.minimum(
         BigNumber(timeDelta).multipliedBy(pointPerPeriod),
         remainingPoints
@@ -78,24 +84,24 @@ const executor: JobExecutor = async (cache: Cache) => {
         currentPointIndex: BigNumber(index).plus(
           accumulatedPoints.dividedBy(staked).isFinite()
             ? BigNumber(baseIndexRate)
-              .multipliedBy(accumulatedPoints)
-              .dividedBy(staked)
+                .multipliedBy(accumulatedPoints)
+                .dividedBy(staked)
             : BigNumber(0)
         ),
-        exchangeRateDenominator: Number(rewardFields['exchange_rate_numerator']),
-        exchangeRateNumerator: Number(rewardFields['exchange_rate_denominator']),
-      }
+        exchangeRateDenominator: Number(
+          rewardFields['exchange_rate_numerator']
+        ),
+        exchangeRateNumerator: Number(
+          rewardFields['exchange_rate_denominator']
+        ),
+      };
     }
   }
 
-  await cache.setItem(
-    spoolsKey,
-    spoolMarketData,
-    {
-      prefix,
-      networkId: NetworkId.sui
-    }
-  );
+  await cache.setItem(spoolsKey, spoolMarketData, {
+    prefix,
+    networkId: NetworkId.sui,
+  });
 };
 
 const job: Job = {

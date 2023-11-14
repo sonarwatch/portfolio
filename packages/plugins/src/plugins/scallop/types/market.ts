@@ -1,6 +1,6 @@
-import { ObjectContentFields } from "@mysten/sui.js";
-import BigNumber from "bignumber.js";
-import { BasicField, IdField, WitTable } from "./basic";
+import { ObjectContentFields } from '@mysten/sui.js';
+import BigNumber from 'bignumber.js';
+import { BasicField, IdField, WitTable } from './basic';
 
 export type BalanceSheet = {
   // [k in CoinNames]?: ObjectContentFields;
@@ -102,17 +102,15 @@ const VAULT_FIELDS = [
   'flash_loan_fees',
   'id',
   'market_coin_supplies',
-  'underlying_balances'
+  'underlying_balances',
 ] as const;
-
 
 export type MarketDataFieldsName = (typeof MARKET_DATA_FIELDS)[number];
 export type VaultFieldsName = (typeof VAULT_FIELDS)[number];
 
 export type MarketData = {
-  [k in MarketDataFieldsName]: object
-} &
-{
+  [k in MarketDataFieldsName]: object;
+} & {
   vault: {
     type: string;
     fields: {
@@ -139,31 +137,31 @@ export type MarketJobData = {
 export type SpoolJobData = {
   currentPointIndex: BigNumber;
   exchangeRateNumerator: number;
-  exchangeRateDenominator: number
-}
+  exchangeRateDenominator: number;
+};
 
 export type SpoolJobResult = {
   [T in string]: SpoolJobData;
-}
+};
 
 export type MarketJobResult = {
-  [T in string]: MarketJobData
+  [T in string]: MarketJobData;
 };
 
 export type ObligationKeyFields = {
   id: IdField;
-  ownership: BasicField & { fields: { id: IdField, of: string; }; };
+  ownership: BasicField & { fields: { id: IdField; of: string } };
 };
 
 type BalanceBag = BasicField & {
   fields: {
     id: IdField;
-    bag: BasicField & { fields: { id: IdField; size: string; }; };
+    bag: BasicField & { fields: { id: IdField; size: string } };
   };
 };
 
 export type ObligationAccount = {
-  balances: BalanceBag,
+  balances: BalanceBag;
   borrow_locked: boolean;
   collaterals: WitTable;
   debts: WitTable;
