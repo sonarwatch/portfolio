@@ -119,16 +119,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const rewardTokenAddress = formatMoveTokenAddress(pools['sui'].coinType);
   const rewardTokenPrice = tokenPrices.get(rewardTokenAddress);    
-
+  const pendingRewardDecimal = pendingReward.shiftedBy(-1 * (pools['sui']?.metadata?.decimals ?? 0)).toNumber();
   const rewardAssetToken = tokenPriceToAssetToken(
     rewardTokenAddress,
-    pendingReward.shiftedBy(-1 * (pools['sui']?.metadata?.decimals ?? 0)).toNumber(),
+    pendingRewardDecimal,
     NetworkId.sui,
     rewardTokenPrice
   );
   rewardAssets.push(rewardAssetToken);
 
   for (const [assetName, assetValue] of Object.entries(lendingAssets)) {
+    if (assetValue.amount.isZero()) continue;
+
     const market = marketData[assetName];
     if (!market) continue;
 
@@ -153,6 +155,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     ]);
     suppliedAssets.push(assetToken);
   }
+  if ( suppliedAssets.length === 0 && borrowedAssets.length === 0 && (rewardAssets.length === 0 || pendingRewardDecimal === 0)) return [];
   const { borrowedValue, collateralRatio, suppliedValue, value } =
     getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
   elements.push({
@@ -161,7 +164,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     platformId,
     label: 'Lending',
     value,
-    name: 'Scallop Lending',
     data: {
       borrowedAssets,
       borrowedValue,

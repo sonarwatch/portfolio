@@ -20,7 +20,7 @@ export const obligationKeyPackageId = `${PROTOCOL_OBJECT_ID}::obligation::Obliga
 export const scallopPlatform: Platform = {
     id: platformId,
     name: 'Scallop',
-    image: `https://alpha.sonar.watch/img/platforms/${platformId}.png`
+    image: `https://sonar.watch/img/platforms/${platformId}.png`
 }
 
 export const baseIndexRate = 1_000_000_000;
