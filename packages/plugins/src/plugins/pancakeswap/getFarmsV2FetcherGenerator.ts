@@ -119,6 +119,8 @@ export default function getFarmsV2FetcherGenerator(
       });
     }
 
+    if (liquidities.length === 0) return [];
+
     return [
       {
         networkId,
