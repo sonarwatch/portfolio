@@ -8,7 +8,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { FetcherExecutor } from '../../Fetcher';
 import { getEvmClient } from '../../utils/clients';
-import { abi } from './abis';
+import { stakersAbi } from './abis';
 import { StakerInfo } from './types';
 import { Cache } from '../../Cache';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
@@ -24,9 +24,9 @@ export default function getStakersBalancesFetcherGenerator(
     const stakerBalanceContracts = [];
     for (const stakerInfo of stakersInfos) {
       const stakerBalanceContract = {
-        abi: [abi.userInfo],
+        abi: [stakersAbi.userInfo],
         address: stakerInfo.contract as `0x${string}`,
-        functionName: abi.userInfo.name,
+        functionName: stakersAbi.userInfo.name,
         args: [address],
       } as const;
       stakerBalanceContracts.push(stakerBalanceContract);

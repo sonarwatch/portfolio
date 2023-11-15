@@ -1,4 +1,4 @@
-export const abi = {
+export const stakersAbi = {
   stakedToken: {
     inputs: [],
     name: 'stakedToken',
@@ -51,6 +51,80 @@ export const abi = {
       { internalType: 'uint256', name: 'userBoostedShare', type: 'uint256' },
       { internalType: 'bool', name: 'locked', type: 'bool' },
       { internalType: 'uint256', name: 'lockedAmount', type: 'uint256' },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+} as const;
+
+export const farmsAbi = {
+  poolInfo: {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    name: 'poolInfo',
+    outputs: [
+      {
+        internalType: 'contract IERC20',
+        name: 'lpToken',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'mcv2PoolId',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'totalAmount',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  poolLength: {
+    inputs: [],
+    name: 'poolLength',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  userInfo: {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    name: 'userInfo',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'lastActionTime',
+        type: 'uint256',
+      },
     ],
     stateMutability: 'view',
     type: 'function',

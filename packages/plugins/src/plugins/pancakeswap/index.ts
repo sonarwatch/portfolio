@@ -3,6 +3,9 @@ import { Job } from '../../Job';
 import { Fetcher } from '../../Fetcher';
 import aptosJob from './aptosLpJob';
 import {
+  masterChefBnb,
+  masterChefV2Bnb,
+  masterChefV2Ethereum,
   pancakeswapPlatform,
   platformId,
   stakersBnb,
@@ -13,6 +16,7 @@ import uniPoolV2JobExecutorGenerator from '../uniswap-v2/poolJobExecutorGenerato
 import getUniV2PoolsBalancesFetcherGenerator from '../uniswap-v2/getUniV2PoolsBalancesFetcherGenerator';
 import getStakersBalancesFetcherGenerator from './getStakersBalancesFetcherGenerator';
 import stakerCakeFetcher from './stakerCakeFetcher';
+import getFarmsV2FetcherGenerator from './getFarmsV2FetcherGenerator';
 
 export const platforms: Platform[] = [pancakeswapPlatform];
 export const jobs: Job[] = [
@@ -37,9 +41,17 @@ export const jobs: Job[] = [
 export const fetchers: Fetcher[] = [
   // Ethereum
   {
-    id: `${platformId}-poolsv2-${NetworkId.ethereum}`,
+    id: `${platformId}-poolsV2-${NetworkId.ethereum}`,
     executor: getUniV2PoolsBalancesFetcherGenerator(
       platformId,
+      NetworkId.ethereum
+    ),
+    networkId: NetworkId.ethereum,
+  },
+  {
+    id: `${platformId}-farmsV2-${NetworkId.ethereum}`,
+    executor: getFarmsV2FetcherGenerator(
+      masterChefV2Ethereum,
       NetworkId.ethereum
     ),
     networkId: NetworkId.ethereum,
@@ -53,10 +65,21 @@ export const fetchers: Fetcher[] = [
     ),
     networkId: NetworkId.ethereum,
   },
+
   // BNB
   {
-    id: `${platformId}-poolsv2-${NetworkId.bnb}`,
+    id: `${platformId}-poolsV2-${NetworkId.bnb}`,
     executor: getUniV2PoolsBalancesFetcherGenerator(platformId, NetworkId.bnb),
+    networkId: NetworkId.bnb,
+  },
+  {
+    id: `${platformId}-farmsV1-${NetworkId.ethereum}`,
+    executor: getFarmsV2FetcherGenerator(masterChefBnb, NetworkId.bnb),
+    networkId: NetworkId.bnb,
+  },
+  {
+    id: `${platformId}-farmsV2-${NetworkId.ethereum}`,
+    executor: getFarmsV2FetcherGenerator(masterChefV2Bnb, NetworkId.bnb),
     networkId: NetworkId.bnb,
   },
   {

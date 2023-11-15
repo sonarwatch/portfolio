@@ -6,7 +6,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { abi } from './abis';
+import { stakersAbi } from './abis';
 import { Cache } from '../../Cache';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { platformId, stakerCake } from './constants';
@@ -19,9 +19,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const stakerBalanceContracts = [];
   for (const stakerInfo of stakerCake) {
     const stakerBalanceContract = {
-      abi: [abi.userInfos],
+      abi: [stakersAbi.userInfos],
       address: stakerInfo.contract as `0x${string}`,
-      functionName: abi.userInfos.name,
+      functionName: stakersAbi.userInfos.name,
       args: [address],
     } as const;
     stakerBalanceContracts.push(stakerBalanceContract);
