@@ -16,20 +16,45 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const networkId = NetworkId.bnb;
   const client = getEvmClient(networkId);
   const address = owner as `0x${string}`;
-  const stakerBalanceContracts = [];
+  const userInfosContracts = [];
+  const balanceOfContracts = [];
+  const totalSharesContracts = [];
   for (const stakerInfo of stakerCake) {
-    const stakerBalanceContract = {
+    const userInfoContract = {
       abi: [stakersAbi.userInfos],
       address: stakerInfo.contract as `0x${string}`,
       functionName: stakersAbi.userInfos.name,
       args: [address],
     } as const;
-    stakerBalanceContracts.push(stakerBalanceContract);
+
+    const balanceOfContract = {
+      abi: [stakersAbi.balanceOf],
+      address: stakerInfo.contract as `0x${string}`,
+      functionName: stakersAbi.balanceOf.name,
+    } as const;
+
+    const totalSharesContract = {
+      abi: [stakersAbi.totalShares],
+      address: stakerInfo.contract as `0x${string}`,
+      functionName: stakersAbi.totalShares.name,
+    } as const;
+
+    userInfosContracts.push(userInfoContract);
+    balanceOfContracts.push(balanceOfContract);
+    totalSharesContracts.push(totalSharesContract);
   }
 
-  const stakersBalancesRes = await client.multicall({
-    contracts: stakerBalanceContracts,
-  });
+  const [userInfosRes, balancesOfRes, totalsSharesRes] = await Promise.all([
+    client.multicall({
+      contracts: userInfosContracts,
+    }),
+    client.multicall({
+      contracts: balanceOfContracts,
+    }),
+    client.multicall({
+      contracts: totalSharesContracts,
+    }),
+  ]);
 
   const cakeTokenPrice = await cache.getTokenPrice(
     '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
@@ -39,12 +64,22 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const assets: PortfolioAsset[] = [];
   for (let i = 0; i < stakerCake.length; i++) {
-    const balanceRes = stakersBalancesRes[i];
+    const userInfoRes = userInfosRes[i];
+    const balanceOfRes = balancesOfRes[i];
+    const totalSharesRes = totalsSharesRes[i];
 
-    if (balanceRes.status === 'failure') continue;
-    if (balanceRes.result[8] === BigInt(0)) continue;
+    if (
+      userInfoRes.status === 'failure' ||
+      balanceOfRes.status === 'failure' ||
+      totalSharesRes.status === 'failure'
+    )
+      continue;
+    if (userInfoRes.result[0] === BigInt(0)) continue;
 
-    const amount = new BigNumber(balanceRes.result[8].toString())
+    const amount = new BigNumber(balanceOfRes.result.toString())
+      .multipliedBy(userInfoRes.result[0].toString())
+      .dividedBy(totalSharesRes.result.toString())
+      .minus(userInfoRes.result[6].toString())
       .dividedBy(10 ** stakerCake[i].decimals)
       .toNumber();
 

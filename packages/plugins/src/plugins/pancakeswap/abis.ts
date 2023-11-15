@@ -1,4 +1,16 @@
 export const stakersAbi = {
+  balanceOf: {
+    type: 'function',
+    name: 'balanceOf',
+    stateMutability: 'view',
+    inputs: [],
+    outputs: [
+      {
+        name: '',
+        type: 'uint256',
+      },
+    ],
+  },
   stakedToken: {
     inputs: [],
     name: 'stakedToken',
@@ -54,6 +66,18 @@ export const stakersAbi = {
     ],
     stateMutability: 'view',
     type: 'function',
+  },
+  totalShares: {
+    type: 'function',
+    name: 'totalShares',
+    stateMutability: 'view',
+    inputs: [],
+    outputs: [
+      {
+        name: '',
+        type: 'uint256',
+      },
+    ],
   },
 } as const;
 
