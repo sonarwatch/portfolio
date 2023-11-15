@@ -8,13 +8,11 @@ import { Cache } from '../../Cache';
 import { pairsV2Key } from './constants';
 import { FetcherExecutor } from '../../Fetcher';
 import { getTokenAssets } from '../../utils/evm/getTokenAssets';
-import upperCaseFirstLetter from '../../utils/misc/upperCaseFirstLetter';
 
 export default function getUniV2PoolsBalancesFetcherGenerator(
   platformId: string,
   networkId: EvmNetworkIdType
 ): FetcherExecutor {
-  const name = `${upperCaseFirstLetter(platformId)} V2`;
   return async (owner: string, cache: Cache) => {
     const pairsV2 = await cache.getItem<string[]>(pairsV2Key, {
       networkId,
@@ -44,7 +42,7 @@ export default function getUniV2PoolsBalancesFetcherGenerator(
         networkId,
         platformId,
         value: getUsdValueSum(liquidities.map((l) => l.value)),
-        name,
+        name: 'V2',
         data: {
           liquidities,
         },

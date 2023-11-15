@@ -3,7 +3,6 @@ import { Job } from '../../Job';
 import { Fetcher } from '../../Fetcher';
 import aptosJob from './aptosLpJob';
 import {
-  masterChefBnb,
   masterChefV2Bnb,
   masterChefV2Ethereum,
   networksConfigs,
@@ -79,13 +78,13 @@ export const fetchers: Fetcher[] = [
     executor: getUniV2PoolsBalancesFetcherGenerator(platformId, NetworkId.bnb),
     networkId: NetworkId.bnb,
   },
+  // {
+  //   id: `${platformId}-farmsV1-${NetworkId.bnb}`,
+  //   executor: getFarmsV2FetcherGenerator(masterChefBnb, NetworkId.bnb),
+  //   networkId: NetworkId.bnb,
+  // },
   {
-    id: `${platformId}-farmsV1-${NetworkId.ethereum}`,
-    executor: getFarmsV2FetcherGenerator(masterChefBnb, NetworkId.bnb),
-    networkId: NetworkId.bnb,
-  },
-  {
-    id: `${platformId}-farmsV2-${NetworkId.ethereum}`,
+    id: `${platformId}-farmsV2-${NetworkId.bnb}`,
     executor: getFarmsV2FetcherGenerator(masterChefV2Bnb, NetworkId.bnb),
     networkId: NetworkId.bnb,
   },

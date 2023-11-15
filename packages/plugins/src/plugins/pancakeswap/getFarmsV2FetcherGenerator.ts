@@ -124,6 +124,7 @@ export default function getFarmsV2FetcherGenerator(
         networkId,
         platformId,
         label: 'Farming',
+        name: 'V2',
         type: PortfolioElementType.liquidity,
         data: {
           liquidities,
