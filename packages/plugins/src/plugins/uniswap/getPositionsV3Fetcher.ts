@@ -18,12 +18,17 @@ import {
   ticksAbi,
   tokenOfOwnerByIndexAbi,
 } from './abis';
-import { PoolInfo, Position, PositionData, UniswapConfig } from './types';
+import {
+  PoolInfo,
+  Position,
+  PositionData,
+  UniswapNetworkConfig,
+} from './types';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 export function getPositionsV3Fetcher(
-  config: UniswapConfig,
+  config: UniswapNetworkConfig,
   platformId: string
 ): Fetcher {
   const { networkId } = config;

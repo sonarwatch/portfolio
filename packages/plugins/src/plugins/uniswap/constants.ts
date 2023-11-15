@@ -1,5 +1,5 @@
 import { NetworkId, Platform } from '@sonarwatch/portfolio-core';
-import { UniswapConfig } from './types';
+import { UniswapNetworkConfig } from './types';
 
 export const platformId = 'uniswap';
 export const uniswapPlatform: Platform = {
@@ -12,7 +12,7 @@ export const uniswapPlatform: Platform = {
 export const poolsPrefix = 'uniswap-v3';
 export const poolsKey = 'poolsInfo';
 
-export const uniswapNetworksConfigs: UniswapConfig[] = [
+export const uniswapNetworksConfigs: UniswapNetworkConfig[] = [
   {
     networkId: NetworkId.ethereum,
     factory: '0x1f98431c8ad98523631ae4a59f267346ea31f984',

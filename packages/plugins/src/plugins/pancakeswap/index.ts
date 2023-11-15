@@ -6,6 +6,7 @@ import {
   masterChefBnb,
   masterChefV2Bnb,
   masterChefV2Ethereum,
+  networksConfigs,
   pancakeswapPlatform,
   platformId,
   stakersBnb,
@@ -17,7 +18,6 @@ import getUniV2PoolsBalancesFetcherGenerator from '../uniswap-v2/getUniV2PoolsBa
 import getStakersBalancesFetcherGenerator from './getStakersBalancesFetcherGenerator';
 import stakerCakeFetcher from './stakerCakeFetcher';
 import getFarmsV2FetcherGenerator from './getFarmsV2FetcherGenerator';
-import { uniswapNetworksConfigs } from '../uniswap/constants';
 import { getPositionsV3Fetcher } from '../uniswap/getPositionsV3Fetcher';
 
 export const platforms: Platform[] = [pancakeswapPlatform];
@@ -45,9 +45,7 @@ export const jobs: Job[] = [
 ];
 export const fetchers: Fetcher[] = [
   // V3 (all EVMs)
-  ...uniswapNetworksConfigs.map((config) =>
-    getPositionsV3Fetcher(config, platformId)
-  ),
+  ...networksConfigs.map((config) => getPositionsV3Fetcher(config, platformId)),
   // V2 Ethereum
   {
     id: `${platformId}-poolsV2-${NetworkId.ethereum}`,
