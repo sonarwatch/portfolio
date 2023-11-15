@@ -1,6 +1,5 @@
 import {
   EvmNetworkIdType,
-  NetworkId,
   TokenPrice,
   TokenPriceSource,
   TokenPriceUnderlying,
@@ -81,7 +80,6 @@ export default function uniPoolV2JobExecutorGenerator(
       if (!tp) return;
       tokenPricesByAddress.set(tp.address, tp);
     });
-    console.log('return ~ tokenPrices:', tokenPrices);
 
     const pairAddresses: string[] = [];
     for (let i = 0; i < pairs.length; i++) {
