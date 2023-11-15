@@ -2,7 +2,7 @@ import request, { gql } from 'graphql-request';
 
 import { TheGraphUniV2Pair } from './types';
 
-export async function getPairsV2(url: string) {
+export async function getPairsV2FromTheGraph(url: string) {
   const query = gql`
     {
       pairs(

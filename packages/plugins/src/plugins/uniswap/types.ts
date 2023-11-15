@@ -53,7 +53,7 @@ export type PositionData = {
   };
 };
 
-export type UniswapConfig = {
+export type UniswapNetworkConfig = {
   networkId: EvmNetworkIdType;
   positionManager: `0x${string}`;
   factory: `0x${string}`;

@@ -6,7 +6,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, poolsKey, poolsPrefix } from './constants';
+import { poolsKey, poolsPrefix } from './constants';
 import { balanceOfAbI } from '../curve/abis';
 import { getEvmClient } from '../../utils/clients';
 import {
@@ -18,11 +18,19 @@ import {
   ticksAbi,
   tokenOfOwnerByIndexAbi,
 } from './abis';
-import { PoolInfo, Position, PositionData, UniswapConfig } from './types';
+import {
+  PoolInfo,
+  Position,
+  PositionData,
+  UniswapNetworkConfig,
+} from './types';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
-export function getPositionsV3Fetcher(config: UniswapConfig): Fetcher {
+export function getPositionsV3Fetcher(
+  config: UniswapNetworkConfig,
+  platformId: string
+): Fetcher {
   const { networkId } = config;
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const client = getEvmClient(networkId);
