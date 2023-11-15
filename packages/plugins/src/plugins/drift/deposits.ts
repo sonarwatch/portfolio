@@ -74,7 +74,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (insuranceAccounts) {
     const assets: PortfolioAsset[] = [];
     insuranceAccounts.forEach((account, i) => {
-      if (!account || account.costBasis.isZero()) return;
+      if (!account || account.costBasis.isLessThan(0)) return;
       const mint = spotMarketByIndex.get(i)?.mint.toString();
       if (!mint) return;
       const tokenPrice = tokenPriceById.get(mint);
