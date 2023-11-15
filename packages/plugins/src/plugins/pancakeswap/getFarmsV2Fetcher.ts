@@ -15,7 +15,7 @@ import { getEvmClient } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { FetcherExecutor } from '../../Fetcher';
 
-export default function getFarmsV2FetcherGenerator(
+export default function getFarmsV2Fetcher(
   masterChef: string,
   networkId: EvmNetworkIdType
 ): FetcherExecutor {

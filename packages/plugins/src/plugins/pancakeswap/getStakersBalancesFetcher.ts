@@ -13,7 +13,7 @@ import { StakerInfo } from './types';
 import { Cache } from '../../Cache';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
-export default function getStakersBalancesFetcherGenerator(
+export default function getStakersBalancesFetcher(
   stakersInfos: StakerInfo[],
   networkId: EvmNetworkIdType,
   platformId: string

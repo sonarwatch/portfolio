@@ -9,7 +9,7 @@ import { pairsV2Key } from './constants';
 import { FetcherExecutor } from '../../Fetcher';
 import { getTokenAssets } from '../../utils/evm/getTokenAssets';
 
-export default function getUniV2PoolsBalancesFetcherGenerator(
+export default function getPositionsV2Fetcher(
   platformId: string,
   networkId: EvmNetworkIdType
 ): FetcherExecutor {

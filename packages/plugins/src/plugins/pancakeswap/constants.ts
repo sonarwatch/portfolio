@@ -20,6 +20,8 @@ export const lpCoinInfoTypePrefix = `${coinInfo}<${lpTypePrefix}`;
 export const theGraphUrlEthV2 =
   'https://api.thegraph.com/subgraphs/name/pancakeswap/exhange-eth';
 
+export const factoryV2Bnb = '0xca143ce32fe78f1f7019d7d551a6402fc5350c73';
+
 // See all Subgraph links : https://docs.pancakeswap.finance/developers/api/subgraph
 
 export const stakersBnb: StakerInfo[] = [

@@ -17,7 +17,7 @@ import upperCaseFirstLetter from '../../utils/misc/upperCaseFirstLetter';
 
 const maxPairsToFetch = 100;
 
-export default function uniPoolV2JobExecutorGenerator(
+export default function getPoolsJob(
   contractOrTheGraphUrl: string,
   platformId: string,
   networkId: EvmNetworkIdType,
