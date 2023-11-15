@@ -47,13 +47,9 @@ describe('name-service', () => {
 
   it('should getOwner for allDomains', async () => {
     const owner = await allDomainsNameService.getOwner('miester.all');
-    expect(owner).toBe(
-      '2EGGxj2qbNAJNgLCPKca8sxZYetyTjnoRspTPjzN2D67'
-    );
+    expect(owner).toBe('2EGGxj2qbNAJNgLCPKca8sxZYetyTjnoRspTPjzN2D67');
 
-    const owner2 = await allDomainsNameService.getOwner(
-      'miaster.all'
-    );
+    const owner2 = await allDomainsNameService.getOwner('miaster.all');
     expect(owner2).toBe(null);
   });
 
