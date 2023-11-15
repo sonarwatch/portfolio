@@ -1,6 +1,7 @@
-import { Platform } from '@sonarwatch/portfolio-core';
+import { NetworkId, Platform } from '@sonarwatch/portfolio-core';
 import { coinInfo } from '../../utils/aptos';
 import { StakerInfo } from './types';
+import { UniswapConfig } from '../uniswap/types';
 
 export const platformId = 'pancakeswap';
 export const pancakeswapPlatform: Platform = {
@@ -96,3 +97,16 @@ export const masterChefBnb = '0x73feaa1eE314F8c655E354234017bE2193C9E24E';
 export const masterChefV2Bnb = '0xa5f8C5Dbd5F286960b9d90548680aE5ebFf07652';
 export const masterChefV2Ethereum =
   '0x2e71b2688019ebdfdde5a45e6921aaebb15b25fb';
+
+export const pancakeswapUniV3Configs: UniswapConfig[] = [
+  {
+    networkId: NetworkId.bnb,
+    factory: '0x0BFbCF9fa4f9C56B0F40a671Ad40E0805A091865',
+    positionManager: '0x46A15B0b27311cedF172AB29E4f4766fbE7F4364',
+  },
+  {
+    networkId: NetworkId.ethereum,
+    factory: '0x0BFbCF9fa4f9C56B0F40a671Ad40E0805A091865',
+    positionManager: '0x46A15B0b27311cedF172AB29E4f4766fbE7F4364',
+  },
+];
