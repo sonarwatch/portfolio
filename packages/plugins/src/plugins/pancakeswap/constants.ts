@@ -1,5 +1,6 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 import { coinInfo } from '../../utils/aptos';
+import { StakerInfo } from './types';
 
 export const platformId = 'pancakeswap';
 export const pancakeswapPlatform: Platform = {
@@ -18,3 +19,75 @@ export const theGraphUrlEthV2 =
   'https://api.thegraph.com/subgraphs/name/pancakeswap/exhange-eth';
 
 // See all Subgraph links : https://docs.pancakeswap.finance/developers/api/subgraph
+
+export const stakersBnb: StakerInfo[] = [
+  {
+    contract: '0xa683C30d47BCd31fB1399b80A4475bc960b903e3',
+    decimals: 18,
+    token: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
+  },
+  {
+    contract: '0xDe9FC6485b5f4A1905d8011fcd201EB78CF34073',
+    decimals: 18,
+    token: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
+  },
+  {
+    contract: '0x7cE7A5C3241629763899474500D8db1fDFf1dab6',
+    decimals: 18,
+    token: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
+  },
+  {
+    contract: '0x08C9d626a2F0CC1ed9BD07eBEdeF8929F45B83d3',
+    decimals: 18,
+    token: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
+  },
+  {
+    contract: '0x68Cc90351a79A4c10078FE021bE430b7a12aaA09',
+    decimals: 18,
+    token: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
+  },
+  {
+    contract: '0x365F744c8b7608253697cA2Ed561537B65a3438B',
+    decimals: 18,
+    token: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
+  },
+];
+
+export const stakerCake: StakerInfo[] = [
+  {
+    contract: '0x45c54210128a065de780C4B0Df3d16664f7f859e',
+    decimals: 18,
+    token: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
+  },
+];
+
+export const stakersEthereum: StakerInfo[] = [
+  {
+    contract: '0xd7136b50e641cfff9d0aeb5c4617c779a80f0c8b',
+    decimals: 18,
+    token: '0x152649eA73beAb28c5b49B26eb48f7EAD6d4c898',
+  },
+  {
+    contract: '0x5a8c87047c290dd8a2e1a1a2d2341da41d1aa009',
+    decimals: 18,
+    token: '0x152649eA73beAb28c5b49B26eb48f7EAD6d4c898',
+  },
+  {
+    contract: '0x5ec855219e236b75e7cfba0d56105b9cc88b4a18',
+    decimals: 18,
+    token: '0x152649eA73beAb28c5b49B26eb48f7EAD6d4c898',
+  },
+  {
+    contract: '0x3bb1cca68756a7e0ffebf59d52174784047f3de8',
+    decimals: 18,
+    token: '0x152649eA73beAb28c5b49B26eb48f7EAD6d4c898',
+  },
+];
+
+export const stakerCakeEthereum: StakerInfo[] = [
+  {
+    contract: '0x45c54210128a065de780C4B0Df3d16664f7f859e',
+    decimals: 18,
+    token: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
+  },
+];

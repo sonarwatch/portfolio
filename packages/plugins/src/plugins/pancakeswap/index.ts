@@ -2,9 +2,17 @@ import { NetworkId, Platform } from '@sonarwatch/portfolio-core';
 import { Job } from '../../Job';
 import { Fetcher } from '../../Fetcher';
 import aptosJob from './aptosLpJob';
-import { pancakeswapPlatform, platformId, theGraphUrlEthV2 } from './constants';
+import {
+  pancakeswapPlatform,
+  platformId,
+  stakersBnb,
+  stakersEthereum,
+  theGraphUrlEthV2,
+} from './constants';
 import uniPoolV2JobExecutorGenerator from '../uniswap-v2/poolJobExecutorGenerator';
 import getUniV2PoolsBalancesFetcherGenerator from '../uniswap-v2/getUniV2PoolsBalancesFetcherGenerator';
+import getStakersBalancesFetcherGenerator from './getStakersBalancesFetcherGenerator';
+import stakerCakeFetcher from './stakerCakeFetcher';
 
 export const platforms: Platform[] = [pancakeswapPlatform];
 export const jobs: Job[] = [
@@ -27,8 +35,9 @@ export const jobs: Job[] = [
   },
 ];
 export const fetchers: Fetcher[] = [
+  // Ethereum
   {
-    id: `${platformId}-v2-${NetworkId.ethereum}`,
+    id: `${platformId}-poolsv2-${NetworkId.ethereum}`,
     executor: getUniV2PoolsBalancesFetcherGenerator(
       platformId,
       NetworkId.ethereum
@@ -36,8 +45,28 @@ export const fetchers: Fetcher[] = [
     networkId: NetworkId.ethereum,
   },
   {
-    id: `${platformId}-v2-${NetworkId.bnb}`,
+    id: `${platformId}-stakers-${NetworkId.ethereum}`,
+    executor: getStakersBalancesFetcherGenerator(
+      stakersEthereum,
+      NetworkId.ethereum,
+      platformId
+    ),
+    networkId: NetworkId.ethereum,
+  },
+  // BNB
+  {
+    id: `${platformId}-poolsv2-${NetworkId.bnb}`,
     executor: getUniV2PoolsBalancesFetcherGenerator(platformId, NetworkId.bnb),
     networkId: NetworkId.bnb,
   },
+  {
+    id: `${platformId}-stakers-${NetworkId.bnb}`,
+    executor: getStakersBalancesFetcherGenerator(
+      stakersBnb,
+      NetworkId.bnb,
+      platformId
+    ),
+    networkId: NetworkId.bnb,
+  },
+  stakerCakeFetcher,
 ];
