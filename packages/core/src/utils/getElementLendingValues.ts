@@ -1,14 +1,20 @@
 import { PortfolioAsset } from '../Portfolio';
 import { UsdValue } from '../UsdValue';
 
-function getCollateralRatio(suppliedValue: UsdValue, borrowedValue: UsdValue) {
+function getCollateralAndHealthRatios(
+  suppliedValue: UsdValue,
+  borrowedValue: UsdValue
+) {
   let collateralRatio: number | null = null;
+  let healthRatio: number | null = null;
   if (borrowedValue === 0) {
     collateralRatio = -1;
+    healthRatio = 1;
   } else if (suppliedValue && borrowedValue) {
     collateralRatio = suppliedValue / borrowedValue;
+    healthRatio = (suppliedValue - 2 * borrowedValue) / suppliedValue;
   }
-  return collateralRatio;
+  return [collateralRatio, healthRatio];
 }
 
 export function getElementLendingValues(
@@ -31,10 +37,8 @@ export function getElementLendingValues(
       acc !== null && asset.value !== null ? acc + asset.value : null,
     0
   );
-  const collateralRatio: number | null = getCollateralRatio(
-    suppliedValue,
-    borrowedValue
-  );
+  const [collateralRatio, healthRatio]: (number | null)[] =
+    getCollateralAndHealthRatios(suppliedValue, borrowedValue);
 
   // Total value
   let value =
@@ -48,6 +52,7 @@ export function getElementLendingValues(
     suppliedValue,
     rewardsValue,
     collateralRatio,
+    healthRatio,
     value,
   };
 }

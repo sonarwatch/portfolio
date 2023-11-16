@@ -145,6 +145,7 @@ export type PortfolioElementBorrowLendData = {
   // null means unknown
   // 1.5 means 150%
   collateralRatio: number | null;
+  healthRatio: number | null;
 };
 
 export type PortfolioElementBorrowLend = PortfolioElementCommon & {

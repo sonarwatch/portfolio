@@ -137,7 +137,7 @@ const fetcherExecutor: FetcherExecutor = async (
 
   if (suppliedAssets.length === 0 && borrowedAssets.length === 0) return [];
 
-  const { borrowedValue, collateralRatio, suppliedValue, value } =
+  const { borrowedValue, collateralRatio, healthRatio, suppliedValue, value } =
     getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
 
   const element: PortfolioElement = {
@@ -154,6 +154,7 @@ const fetcherExecutor: FetcherExecutor = async (
       suppliedValue,
       suppliedYields,
       collateralRatio,
+      healthRatio,
       rewardAssets,
       value,
     },
