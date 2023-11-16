@@ -101,6 +101,13 @@ const fetcherExecutor: FetcherExecutor = async (
           tokenPrice
         )
       );
+      const bankLendingYields: Yield[] = [
+        {
+          apr: lendingApr,
+          apy: aprToApy(lendingApr),
+        },
+      ];
+      suppliedYields.push(bankLendingYields);
     }
 
     if (!accountBalanceInfo.liabilityShares.value.isZero()) {
@@ -118,21 +125,14 @@ const fetcherExecutor: FetcherExecutor = async (
           tokenPrice
         )
       );
+      const bankBorrowedYields: Yield[] = [
+        {
+          apr: borrowingApr,
+          apy: aprToApy(borrowingApr),
+        },
+      ];
+      borrowedYields.push(bankBorrowedYields);
     }
-    const bankLendingYields: Yield[] = [
-      {
-        apr: lendingApr,
-        apy: aprToApy(lendingApr),
-      },
-    ];
-    const bankBorrowedYields: Yield[] = [
-      {
-        apr: borrowingApr,
-        apy: aprToApy(borrowingApr),
-      },
-    ];
-    suppliedYields.push(bankLendingYields);
-    borrowedYields.push(bankBorrowedYields);
   }
 
   if (suppliedAssets.length === 0 && borrowedAssets.length === 0) return [];
