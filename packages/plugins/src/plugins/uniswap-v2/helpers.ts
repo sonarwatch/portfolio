@@ -7,7 +7,7 @@ export async function getPairsV2FromTheGraph(url: string) {
     {
       pairs(
         orderBy: reserveUSD
-        first: 500
+        first: 300
         orderDirection: desc
         where: { trackedReserveETH_not: "0" }
       ) {

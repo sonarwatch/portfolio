@@ -132,7 +132,7 @@ export default function getPoolsJob(
 
   return {
     executor,
-    id: `${platformId}-${networkId}-pools-v3`,
+    id: `${platformId}-${networkId}-pools-${version.toLowerCase()}`,
   };
 }
 
