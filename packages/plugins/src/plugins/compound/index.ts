@@ -14,10 +14,10 @@ import getPositionsV2Fetcher from './getPositionsV2Fetcher';
 export const platforms: Platform[] = [compoundPlatform];
 export const jobs: Job[] = [
   marketsJob,
-  getMarketsV2Job(platformId, NetworkId.ethereum, comptrollerV2Ethereum),
+  getMarketsV2Job(NetworkId.ethereum, platformId, comptrollerV2Ethereum),
 ];
 export const fetchers: Fetcher[] = [
   getPositionsV3Fetcher(NetworkId.ethereum),
   getPositionsV3Fetcher(NetworkId.polygon),
-  getPositionsV2Fetcher(platformId, NetworkId.ethereum),
+  getPositionsV2Fetcher(NetworkId.ethereum, platformId),
 ];

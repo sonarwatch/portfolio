@@ -29,7 +29,8 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 export function getPositionsV3Fetcher(
   config: UniswapNetworkConfig,
-  platformId: string
+  platformId: string,
+  version: string
 ): Fetcher {
   const { networkId } = config;
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
@@ -367,8 +368,7 @@ export function getPositionsV3Fetcher(
         networkId,
         platformId,
         label: 'LiquidityPool',
-        tags: ['Concentrated'],
-        name: 'V3',
+        name: version,
         value: totalLiquidityValue,
         data: {
           liquidities: assets,

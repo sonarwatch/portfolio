@@ -8,8 +8,8 @@ import { MarketV2Detail } from './types';
 import { marketDetailsKey } from './constants';
 
 export default function getMarketsV2Job(
-  platformId: string,
   networkId: EvmNetworkIdType,
+  platformId: string,
   comptroller: string
 ): Job {
   const client = getEvmClient(networkId);

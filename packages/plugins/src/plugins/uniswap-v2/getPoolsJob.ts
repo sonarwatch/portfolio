@@ -7,26 +7,25 @@ import {
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
-import { JobExecutor } from '../../Job';
+import { Job, JobExecutor } from '../../Job';
 import { getPairsV2FromTheGraph } from './helpers';
 import { pairsV2Key } from './constants';
 import { getEvmClient } from '../../utils/clients';
 import { abi } from './abis';
 import { TheGraphUniV2Pair, UniV2Pair } from './types';
-import upperCaseFirstLetter from '../../utils/misc/upperCaseFirstLetter';
 
 const maxPairsToFetch = 100;
 
 export default function getPoolsJob(
-  contractOrTheGraphUrl: string,
-  platformId: string,
   networkId: EvmNetworkIdType,
+  platformId: string,
+  version: string,
+  contractOrTheGraphUrl: string,
   forcedPools?: `0x${string}`[]
-): JobExecutor {
+): Job {
   const client = getEvmClient(networkId);
-  const elementName = `${upperCaseFirstLetter(platformId)} V2`;
 
-  return async (cache: Cache) => {
+  const executor: JobExecutor = async (cache: Cache) => {
     let pairs: (UniV2Pair | TheGraphUniV2Pair)[] = [];
     if (contractOrTheGraphUrl.startsWith('0x')) {
       const contract = contractOrTheGraphUrl as `0x${string}`;
@@ -118,7 +117,7 @@ export default function getPoolsJob(
         price,
         timestamp: Date.now(),
         weight: 1,
-        elementName,
+        elementName: version,
         underlyings,
       };
       await cache.setTokenPriceSource(source);
@@ -129,6 +128,11 @@ export default function getPoolsJob(
       prefix: platformId,
       networkId,
     });
+  };
+
+  return {
+    executor,
+    id: `${platformId}-${networkId}-pools-v3`,
   };
 }
 

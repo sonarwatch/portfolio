@@ -18,8 +18,8 @@ import { marketDetailsKey } from './constants';
 import { getBDecimal } from './helpers';
 
 export default function getPositionsV2Fetcher(
-  platformId: string,
-  networkId: EvmNetworkIdType
+  networkId: EvmNetworkIdType,
+  platformId: string
 ): Fetcher {
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const client = getEvmClient(networkId);

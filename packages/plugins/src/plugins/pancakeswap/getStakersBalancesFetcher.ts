@@ -6,7 +6,7 @@ import {
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
-import { FetcherExecutor } from '../../Fetcher';
+import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getEvmClient } from '../../utils/clients';
 import { stakersAbi } from './abis';
 import { StakerInfo } from './types';
@@ -14,12 +14,12 @@ import { Cache } from '../../Cache';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 export default function getStakersBalancesFetcher(
-  stakersInfos: StakerInfo[],
   networkId: EvmNetworkIdType,
-  platformId: string
-): FetcherExecutor {
+  platformId: string,
+  stakersInfos: StakerInfo[]
+): Fetcher {
   const client = getEvmClient(networkId);
-  return async (owner: string, cache: Cache) => {
+  const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const address = owner as `0x${string}`;
     const stakerBalanceContracts = [];
     for (const stakerInfo of stakersInfos) {
@@ -84,5 +84,11 @@ export default function getStakersBalancesFetcher(
         },
       },
     ];
+  };
+
+  return {
+    executor,
+    id: `${platformId}-${networkId}-stakers`,
+    networkId,
   };
 }

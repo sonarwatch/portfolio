@@ -13,13 +13,14 @@ import { pairsV2Key } from '../uniswap-v2/constants';
 import { farmsAbi } from './abis';
 import { getEvmClient } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { FetcherExecutor } from '../../Fetcher';
+import { Fetcher, FetcherExecutor } from '../../Fetcher';
 
 export default function getFarmsV2Fetcher(
-  masterChef: string,
-  networkId: EvmNetworkIdType
-): FetcherExecutor {
-  return async (owner: string, cache: Cache) => {
+  networkId: EvmNetworkIdType,
+  version: string,
+  masterChef: string
+): Fetcher {
+  const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const client = getEvmClient(networkId);
     const pairsV2 = await cache.getItem<string[]>(pairsV2Key, {
       networkId,
@@ -126,7 +127,7 @@ export default function getFarmsV2Fetcher(
         networkId,
         platformId,
         label: 'Farming',
-        name: 'V2',
+        name: version,
         type: PortfolioElementType.liquidity,
         data: {
           liquidities,
@@ -134,5 +135,11 @@ export default function getFarmsV2Fetcher(
         value: getUsdValueSum(liquidities.map((a) => a.value)),
       },
     ];
+  };
+
+  return {
+    executor,
+    id: `${platformId}-${networkId}-farms-${version}`,
+    networkId,
   };
 }

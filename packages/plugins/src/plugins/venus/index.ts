@@ -6,9 +6,9 @@ import { comptrollerVenus, platformId, venusPlatform } from './constants';
 import getPositionsV2Fetcher from '../compound/getPositionsV2Fetcher';
 
 export const jobs: Job[] = [
-  getMarketsV2Job(platformId, NetworkId.bnb, comptrollerVenus),
+  getMarketsV2Job(NetworkId.bnb, platformId, comptrollerVenus),
 ];
 export const fetchers: Fetcher[] = [
-  getPositionsV2Fetcher(platformId, NetworkId.bnb),
+  getPositionsV2Fetcher(NetworkId.bnb, platformId),
 ];
 export const platforms: Platform[] = [venusPlatform];
