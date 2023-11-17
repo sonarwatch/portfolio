@@ -137,7 +137,7 @@ import {
 import {
   fetchers as scallopFetchers,
   jobs as scallopJobs,
-  platforms as scallopPlatforms
+  platforms as scallopPlatforms,
 } from './plugins/scallop';
 import {
   fetchers as rocketpoolFetchers,
@@ -219,6 +219,11 @@ import {
   jobs as zetaJobs,
   fetchers as zetaFetchers,
 } from './plugins/zeta';
+import {
+  platforms as venusPlatforms,
+  jobs as venusJobs,
+  fetchers as venusFetchers,
+} from './plugins/venus';
 
 export {
   walletTokensPlatform,
@@ -279,6 +284,7 @@ export const platforms: Platform[] = [
   ...flexlendPlatforms,
   ...fluxbeamPlatforms,
   ...zetaPlatforms,
+  ...venusPlatforms,
 ];
 
 // JOBS //
@@ -323,6 +329,7 @@ export const jobs: Job[] = [
   ...fluxbeamJobs,
   ...jupiterJobs,
   ...zetaJobs,
+  ...venusJobs,
 ];
 
 // FETCHERS //
@@ -367,5 +374,6 @@ export const fetchers: Fetcher[] = [
   ...fluxbeamFetchers,
   ...jupiterFetchers,
   ...zetaFetchers,
+  ...venusFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
