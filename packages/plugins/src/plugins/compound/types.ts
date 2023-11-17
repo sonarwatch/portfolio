@@ -13,3 +13,11 @@ export type MarketDetail = {
     decimals: number;
   }[];
 };
+
+export type MarketV2Detail = {
+  networkId: EvmNetworkIdType;
+  address: `0x${string}`;
+  name?: string;
+  exchangeRate: string;
+  underlyings: string[];
+};

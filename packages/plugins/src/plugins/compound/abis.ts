@@ -58,3 +58,70 @@ export const comethAbi = [
     type: 'function',
   },
 ] as const;
+
+export const compoundV2Abi = {
+  // getAllMarkets: {
+  //   constant: true,
+  //   inputs: [],
+  //   name: 'getAllMarkets',
+  //   outputs: [
+  //     { internalType: 'contract CToken[]', name: '', type: 'address[]' },
+  //   ],
+  //   payable: false,
+  //   stateMutability: 'view',
+  //   type: 'function',
+  // },
+  allMarkets: {
+    constant: true,
+    inputs: [{ internalType: 'uint256', name: 'index', type: 'uint256' }],
+    name: 'allMarkets',
+    outputs: [{ internalType: 'address', name: 'address', type: 'address' }],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  markets: {
+    constant: true,
+    inputs: [{ internalType: 'address', name: '', type: 'address' }],
+    name: 'markets',
+    outputs: [
+      { internalType: 'bool', name: 'isListed', type: 'bool' },
+      {
+        internalType: 'uint256',
+        name: 'collateralFactorMantissa',
+        type: 'uint256',
+      },
+      { internalType: 'bool', name: 'isComped', type: 'bool' },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  underlying: {
+    constant: true,
+    inputs: [],
+    name: 'underlying',
+    outputs: [{ name: '', type: 'address' }],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  borrowBalanceStored: {
+    constant: false,
+    inputs: [{ internalType: 'address', name: 'account', type: 'address' }],
+    name: 'borrowBalanceStored',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  exchangeRateStored: {
+    constant: false,
+    inputs: [],
+    name: 'exchangeRateStored',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+} as const;

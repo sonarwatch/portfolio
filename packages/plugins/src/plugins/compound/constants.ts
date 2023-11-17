@@ -14,7 +14,10 @@ export const compoundPlatform: Platform = {
   website: 'https://compound.finance/',
 };
 
+export const marketDetailsKey = 'marketsDetails';
 export const comethTokenPricesPrefix = 'cometh-token-prices';
+export const comptrollerV2Ethereum =
+  '0x3d9819210A31b4961b30EF54bE2aeD79B9c9Cd3B';
 
 export const marketDetails: Map<EvmNetworkIdType, MarketDetail[]> = new Map([
   [
