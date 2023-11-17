@@ -17,7 +17,6 @@ import {
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { ApiResponse, MarketInfo, ReserveInfo } from './types';
-import { getDecimalsForToken } from '../../utils/misc/getDecimalsForToken';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const markets = await cache.getAllItems<MarketInfo>({
@@ -61,8 +60,9 @@ const executor: JobExecutor = async (cache: Cache) => {
       );
       const { reserve } = reserveInfo;
       const { liquidity, collateral } = reserve;
-      const { mintPubkey, mintDecimals } = liquidity;
+      const { mintPubkey } = liquidity;
       const decimals = liquidity.mintDecimals;
+      const cTokenExchangeRate = new BigNumber(reserve.cTokenExchangeRate);
       const tokenAddress = reserveInfo.reserve.collateral.mintPubkey;
 
       const borrowApy = +reserveInfo.rates.borrowInterest / 100;
@@ -75,37 +75,26 @@ const executor: JobExecutor = async (cache: Cache) => {
         .dividedBy(10 ** decimals)
         .toNumber();
 
-      const collateralTotalSupply = new BigNumber(
-        collateral.mintTotalSupply.toString()
-      )
-        .dividedBy(new BigNumber(10 ** mintDecimals))
-        .toNumber();
       const depositedAmount = borrowedAmount + reserveAvailableAmount;
 
       // Compute the price of the cToken https://solend.fi/ctokens
       const mintTokenPrice = tokenPriceById.get(mintPubkey);
       const cPrice = mintTokenPrice
-        ? mintTokenPrice.price * (depositedAmount / collateralTotalSupply)
+        ? cTokenExchangeRate.multipliedBy(mintTokenPrice.price).toNumber()
         : undefined;
       if (cPrice) {
-        const cDecimals = await getDecimalsForToken(
-          cache,
-          collateral.mintPubkey.toString(),
-          NetworkId.solana
+        promises.push(
+          cache.setTokenPriceSource({
+            address: collateral.mintPubkey.toString(),
+            decimals,
+            id: platformId,
+            networkId: NetworkId.solana,
+            platformId,
+            price: cPrice,
+            timestamp: Date.now(),
+            weight: 1,
+          })
         );
-        if (cDecimals)
-          promises.push(
-            cache.setTokenPriceSource({
-              address: collateral.mintPubkey.toString(),
-              decimals: cDecimals,
-              id: platformId,
-              networkId: NetworkId.solana,
-              platformId,
-              price: cPrice,
-              timestamp: Date.now(),
-              weight: 1,
-            })
-          );
       }
 
       if (borrowedAmount <= 10 && depositedAmount <= 10) continue;

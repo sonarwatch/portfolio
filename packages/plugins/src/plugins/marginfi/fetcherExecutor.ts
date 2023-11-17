@@ -42,6 +42,8 @@ const fetcherExecutor: FetcherExecutor = async (
   const suppliedAssets: PortfolioAsset[] = [];
   const suppliedYields: Yield[][] = [];
   const rewardAssets: PortfolioAsset[] = [];
+  const suppliedLtvs: number[] = [];
+  const borrowedWeights: number[] = [];
 
   const balancesAddresses = lendingAccountBalances.map(
     (lendingAccountBalance) => lendingAccountBalance.bankPk.toString()
@@ -87,6 +89,11 @@ const fetcherExecutor: FetcherExecutor = async (
     if (!tokenPrice) continue;
 
     if (!accountBalanceInfo.assetShares.value.isZero()) {
+      suppliedLtvs.push(
+        wrappedI80F48toBigNumber(bankInfo.config.assetWeightMaint)
+          .decimalPlaces(2)
+          .toNumber()
+      );
       const suppliedQuantity = wrappedI80F48toBigNumber(
         accountBalanceInfo.assetShares
       )
@@ -111,6 +118,11 @@ const fetcherExecutor: FetcherExecutor = async (
     }
 
     if (!accountBalanceInfo.liabilityShares.value.isZero()) {
+      borrowedWeights.push(
+        wrappedI80F48toBigNumber(bankInfo.config.liabilityWeightMaint)
+          .decimalPlaces(2)
+          .toNumber()
+      );
       const borrowedQuantity = wrappedI80F48toBigNumber(
         accountBalanceInfo.liabilityShares
       )
@@ -138,7 +150,13 @@ const fetcherExecutor: FetcherExecutor = async (
   if (suppliedAssets.length === 0 && borrowedAssets.length === 0) return [];
 
   const { borrowedValue, collateralRatio, healthRatio, suppliedValue, value } =
-    getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
+    getElementLendingValues(
+      suppliedAssets,
+      borrowedAssets,
+      rewardAssets,
+      suppliedLtvs,
+      borrowedWeights
+    );
 
   const element: PortfolioElement = {
     type: PortfolioElementType.borrowlend,

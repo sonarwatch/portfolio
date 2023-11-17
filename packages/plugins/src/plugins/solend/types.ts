@@ -83,7 +83,9 @@ export interface ReserveData {
     protocolLiquidationFee: number;
     protocolTakeRate: number;
     borrowedAmountWads: string;
+    addedBorrowWeightBPS: string;
   };
+  cTokenExchangeRate: string;
 }
 
 export interface RatesInfo {
