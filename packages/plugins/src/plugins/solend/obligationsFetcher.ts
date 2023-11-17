@@ -131,6 +131,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const suppliedAssets: PortfolioAsset[] = [];
     const suppliedYields: Yield[][] = [];
     const rewardAssets: PortfolioAsset[] = [];
+    const suppliedLtvs: number[] = [];
+    const borrowedWeights: number[] = [];
 
     for (let j = 0; j < market.reserves.length; j += 1) {
       const { address: reserveAddress } = market.reserves[j];
@@ -163,6 +165,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             .div(10 ** decimals)
             .times(reserveDepositAmount / collateralSupply)
             .toNumber();
+
+          suppliedLtvs.push(reserve.config.liquidationThreshold / 100);
+
           const apy = +reserveInfo.rates.supplyInterest / 100;
           const cSuppliedYields: Yield[] = [
             {
@@ -191,6 +196,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             .div(borrow.cumulativeBorrowRateWads)
             .dividedBy(new BigNumber(10 ** (wadsDecimal + decimals)))
             .toNumber();
+
+          borrowedWeights.push(
+            new BigNumber(reserve.config.addedBorrowWeightBPS)
+              .dividedBy(10 ** 20)
+              .plus(1)
+              .toNumber()
+          );
+
           const apy = +reserveInfo.rates.borrowInterest / 100;
           const cBorrowedYields: Yield[] = [
             {
@@ -212,8 +225,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
     if (suppliedAssets.length === 0 && borrowedAssets.length === 0) continue;
 
-    const { borrowedValue, collateralRatio, suppliedValue, value } =
-      getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
+    const {
+      borrowedValue,
+      collateralRatio,
+      suppliedValue,
+      value,
+      healthRatio,
+    } = getElementLendingValues(
+      suppliedAssets,
+      borrowedAssets,
+      rewardAssets,
+      suppliedLtvs,
+      borrowedWeights
+    );
 
     elements.push({
       type: PortfolioElementType.borrowlend,
@@ -230,6 +254,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         suppliedValue,
         suppliedYields,
         collateralRatio,
+        healthRatio,
         rewardAssets,
         value,
       },

@@ -145,6 +145,11 @@ export type PortfolioElementBorrowLendData = {
   // null means unknown
   // 1.5 means 150%
   collateralRatio: number | null;
+
+  // 0 means 0% (close to liquidation)
+  // 1 means 100% (full health)
+  // -1 means unknown
+  healthRatio?: number | null;
 };
 
 export type PortfolioElementBorrowLend = PortfolioElementCommon & {
