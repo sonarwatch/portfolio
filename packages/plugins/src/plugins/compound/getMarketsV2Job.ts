@@ -95,7 +95,7 @@ export default function getMarketsV2Job(
           networkId,
           address: market,
           exchangeRate: exchangeRateStoredRes.result.toString(),
-          // If the underlying call fail, it's the cETH token
+          // If the underlying call fail, it's the native underlying
           underlyings: [
             underlyingsTokenAddresseRes.status === 'success'
               ? underlyingsTokenAddresseRes.result.toString()

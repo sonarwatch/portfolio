@@ -15,6 +15,7 @@ import { balanceOfErc20ABI } from '../../utils/evm/erc20Abi';
 import { getEvmClient } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { marketDetailsKey } from './constants';
+import { getBDecimal } from './helpers';
 
 export default function getPositionsV2Fetcher(
   platformId: string,
@@ -99,16 +100,18 @@ export default function getPositionsV2Fetcher(
         );
       }
 
+      const bDecimals = getBDecimal(networkId);
       if (
         borrowBalance.status === 'success' &&
-        borrowBalance.result > BigInt(0)
+        borrowBalance.result > BigInt(0) &&
+        bDecimals
       ) {
         underlyings.forEach((underlying) =>
           borrowedAssets.push(
             tokenPriceToAssetToken(
               underlying,
               new BigNumber(borrowBalance.result.toString())
-                .dividedBy(10 ** 6)
+                .dividedBy(10 ** bDecimals)
                 .toNumber(),
               networkId,
               tokenPrice
