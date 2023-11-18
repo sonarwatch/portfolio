@@ -2,12 +2,12 @@ import request, { gql } from 'graphql-request';
 
 import { TheGraphUniV2Pair } from './types';
 
-export async function getPairsV2FromTheGraph(url: string) {
+export async function getPairsV2FromTheGraph(url: string, length = 300) {
   const query = gql`
     {
       pairs(
         orderBy: reserveUSD
-        first: 300
+        first: ${length}
         orderDirection: desc
         where: { trackedReserveETH_not: "0" }
       ) {
