@@ -1,11 +1,12 @@
-import { PublicClient, createPublicClient, http } from 'viem';
+import { createPublicClient, http } from 'viem';
 import { EvmNetworkIdType } from '@sonarwatch/portfolio-core';
 import { getBasicAuthHeaders } from '../misc/getBasicAuthHeaders';
 import { getRpcEndpoint, viemChainsByNetworkId } from './constants';
+import { EvmClient } from './types';
 
 export default function getEvmClient(
   evmNetworkId: EvmNetworkIdType
-): PublicClient {
+): EvmClient {
   const rpcEndpoint = getRpcEndpoint(evmNetworkId);
   const headers = rpcEndpoint.basicAuth
     ? getBasicAuthHeaders(
