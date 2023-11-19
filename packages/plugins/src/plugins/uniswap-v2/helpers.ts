@@ -2,6 +2,10 @@ import request, { gql } from 'graphql-request';
 
 import { TheGraphUniV2Pair } from './types';
 
+export function getPairKey(version: string) {
+  return `pools-${version.toLocaleLowerCase()}`;
+}
+
 export async function getPairsV2FromTheGraph(url: string, length = 300) {
   const query = gql`
     {

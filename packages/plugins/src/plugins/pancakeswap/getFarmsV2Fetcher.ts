@@ -9,11 +9,11 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { platformId } from './constants';
-import { pairsV2Key } from '../uniswap-v2/constants';
 import { farmsAbi } from './abis';
 import { getEvmClient } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
+import { getPairKey } from '../uniswap-v2/helpers';
 
 export default function getFarmsV2Fetcher(
   networkId: EvmNetworkIdType,
@@ -22,7 +22,7 @@ export default function getFarmsV2Fetcher(
 ): Fetcher {
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const client = getEvmClient(networkId);
-    const pairsV2 = await cache.getItem<string[]>(pairsV2Key, {
+    const pairsV2 = await cache.getItem<string[]>(getPairKey('v2'), {
       networkId,
       prefix: platformId,
     });

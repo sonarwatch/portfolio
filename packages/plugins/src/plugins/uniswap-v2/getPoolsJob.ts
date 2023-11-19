@@ -8,8 +8,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { getPairsV2FromTheGraph } from './helpers';
-import { pairsV2Key } from './constants';
+import { getPairKey, getPairsV2FromTheGraph } from './helpers';
 import { getEvmClient } from '../../utils/clients';
 import { abi } from './abis';
 import { TheGraphUniV2Pair, UniV2Pair } from './types';
@@ -66,7 +65,6 @@ export default function getPoolsJob(
     } else if (contractOrTheGraphUrl.startsWith('https://api.thegraph.com/')) {
       pairs = await getPairsV2FromTheGraph(contractOrTheGraphUrl);
     } else {
-      console.error('Wrong contract or TheGraph url :', contractOrTheGraphUrl);
       return;
     }
 
@@ -124,7 +122,7 @@ export default function getPoolsJob(
       pairAddresses.push(lpAddress);
     }
 
-    await cache.setItem(pairsV2Key, pairAddresses, {
+    await cache.setItem(getPairKey(version), pairAddresses, {
       prefix: platformId,
       networkId,
     });

@@ -5,9 +5,9 @@ import {
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
-import { pairsV2Key } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getTokenAssets } from '../../utils/evm/getTokenAssets';
+import { getPairKey } from './helpers';
 
 export default function getPositionsV2Fetcher(
   networkId: EvmNetworkIdType,
@@ -15,7 +15,7 @@ export default function getPositionsV2Fetcher(
   version: string
 ): Fetcher {
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-    const pairsV2 = await cache.getItem<string[]>(pairsV2Key, {
+    const pairsV2 = await cache.getItem<string[]>(getPairKey(version), {
       networkId,
       prefix: platformId,
     });
