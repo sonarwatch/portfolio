@@ -15,7 +15,7 @@ import {
   personalPositionStateStruct,
   poolStateStruct,
 } from '../raydium/structs/clmms';
-import { whirlpoolStrategyStruct } from './structs';
+import { whirlpoolStrategyStruct } from './structs/vaults';
 import { dataSizeFilter } from '../../utils/solana/filters';
 
 const executor: JobExecutor = async (cache: Cache) => {

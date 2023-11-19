@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { Position, Whirlpool } from '../orca/structs/whirlpool';
 import { PersonalPositionState, PoolState } from '../raydium/structs/clmms';
-import { WhirlpoolStrategy } from './structs';
+import { WhirlpoolStrategy } from './structs/vaults';
 import { ParsedAccount } from '../../utils/solana';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 

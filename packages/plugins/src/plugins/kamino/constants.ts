@@ -12,3 +12,7 @@ export const kaminoPlatform: Platform = {
 export const programId = new PublicKey(
   '6LtLpnUFNByNXLyCoK9wA2MykKAmQNZKBdY8s47dehDc'
 );
+
+export const klendProgramId = new PublicKey(
+  'KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD'
+);
