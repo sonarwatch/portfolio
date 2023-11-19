@@ -199,7 +199,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
           borrowedWeights.push(
             new BigNumber(reserve.config.addedBorrowWeightBPS)
-              .dividedBy(10 ** 20)
+              .dividedBy(10 ** 4)
               .plus(1)
               .toNumber()
           );
