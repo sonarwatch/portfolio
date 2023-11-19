@@ -224,6 +224,11 @@ import {
   jobs as venusJobs,
   fetchers as venusFetchers,
 } from './plugins/venus';
+import {
+  platforms as sushiswapPlatforms,
+  jobs as sushiswapJobs,
+  fetchers as sushiswapFetchers,
+} from './plugins/sushiswap';
 
 export {
   walletTokensPlatform,
@@ -285,6 +290,7 @@ export const platforms: Platform[] = [
   ...fluxbeamPlatforms,
   ...zetaPlatforms,
   ...venusPlatforms,
+  ...sushiswapPlatforms,
 ];
 
 // JOBS //
@@ -330,6 +336,7 @@ export const jobs: Job[] = [
   ...jupiterJobs,
   ...zetaJobs,
   ...venusJobs,
+  ...sushiswapJobs,
 ];
 
 // FETCHERS //
@@ -375,5 +382,6 @@ export const fetchers: Fetcher[] = [
   ...jupiterFetchers,
   ...zetaFetchers,
   ...venusFetchers,
+  ...sushiswapFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
