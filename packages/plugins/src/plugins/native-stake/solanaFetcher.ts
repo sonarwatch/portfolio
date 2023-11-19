@@ -10,8 +10,7 @@ import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
-  marinadeNativeManager,
-  marinadeNativeMerger,
+  marinadeNativeManagerAddresses,
   nativeStakePlatform,
   platformId,
 } from './constants';
@@ -20,6 +19,7 @@ import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { stakeAccountStruct } from './structs';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { marinadePlatform } from '../marinade/constants';
 
 const stakeProgramId = new PublicKey(
   'Stake11111111111111111111111111111111111111'
@@ -45,7 +45,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const elements: PortfolioElement[] = [];
   const nativeAssets: PortfolioAsset[] = [];
-  const marinadeNativeAssets: PortfolioAsset[] = [];
+  let marinadeNativeAmount = 0;
+  let accounts = 0;
   for (let i = 0; i < programAccounts.length; i += 1) {
     const stakeAccount = programAccounts[i];
     const amount = new BigNumber(stakeAccount.stake)
@@ -53,19 +54,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       .toNumber();
     if (amount === 0) continue;
 
-    const stakedAsset = tokenPriceToAssetToken(
-      solanaNetwork.native.address,
-      amount,
-      NetworkId.solana,
-      solTokenPrice
-    );
     if (
-      stakeAccount.staker === marinadeNativeManager ||
-      stakeAccount.staker === marinadeNativeMerger
+      marinadeNativeManagerAddresses.includes(stakeAccount.staker.toString())
     ) {
-      marinadeNativeAssets.push(stakedAsset);
+      marinadeNativeAmount += amount;
+      accounts += 1;
     } else {
-      nativeAssets.push(stakedAsset);
+      nativeAssets.push(
+        tokenPriceToAssetToken(
+          solanaNetwork.native.address,
+          amount,
+          NetworkId.solana,
+          solTokenPrice
+        )
+      );
     }
   }
 
@@ -81,16 +83,21 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       },
     });
   }
-  if (marinadeNativeAssets.length !== 0) {
+  if (marinadeNativeAmount !== 0) {
     elements.push({
       networkId: NetworkId.solana,
-      platformId: nativeStakePlatform.id,
-      type: 'multiple',
+      platformId: marinadePlatform.id,
+      type: 'single',
       label: 'Staked',
-      tags: ['Marinade Native'],
-      value: getUsdValueSum(marinadeNativeAssets.map((a) => a.value)),
+      name: `Native (${accounts} validators)`,
+      value: marinadeNativeAmount * solTokenPrice.price,
       data: {
-        assets: marinadeNativeAssets,
+        asset: tokenPriceToAssetToken(
+          solanaNetwork.native.address,
+          marinadeNativeAmount,
+          NetworkId.solana,
+          solTokenPrice
+        ),
       },
     });
   }

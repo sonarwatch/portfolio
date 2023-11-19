@@ -1,4 +1,3 @@
-import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'native-stake';
@@ -9,10 +8,9 @@ export const nativeStakePlatform: Platform = {
 };
 export const validatorsKey = 'activeValidators';
 export const validatorsPrefix = `${platformId}-validators`;
-export const marinadeNativeManager = new PublicKey(
-  'noMa7dN4cHQLV4ZonXrC29HTKFpxrpFbDLK5Gub8W8t'
-);
 
-export const marinadeNativeMerger = new PublicKey(
-  'noMa7dN4cHQLV4ZonXrC29HTKFpxrpFbDLK5Gub8W8t'
-);
+export const marinadeNativeManagerAddresses = [
+  'stWirqFCf2Uts1JBL1Jsd3r6VBWhgnpdPxCTe1MFjrq',
+  'noMa7dN4cHQLV4ZonXrC29HTKFpxrpFbDLK5Gub8W8t',
+  'noMa7dN4cHQLV4ZonXrC29HTKFpxrpFbDLK5Gub8W8t',
+];
