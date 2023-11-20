@@ -23,4 +23,13 @@ export const fetchers: Fetcher[] = [
   getPositionsV2Fetcher(NetworkId.polygon, platform.id, 'v2'),
   getPositionsV2Fetcher(NetworkId.avalanche, platform.id, 'v2'),
   getPositionsV2Fetcher(NetworkId.bnb, platform.id, 'v2'),
+  // getUniV3PositionsFetcher(
+  //   {
+  //     networkId: NetworkId.ethereum,
+  //     factory: '0xbACEB8eC6b9355Dfc0269C18bac9d6E2Bdc29C4F',
+  //     positionManager: '0x2214A42d8e2A1d20635c2cb0664422c528B6A432',
+  //   },
+  //   platform.id,
+  //   'v3'
+  // ),
 ];

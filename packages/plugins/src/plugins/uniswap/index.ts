@@ -7,12 +7,12 @@ import {
   uniswapNetworksConfigs,
   uniswapPlatform,
 } from './constants';
-import { getPositionsV3Fetcher } from './getPositionsV3Fetcher';
+import { getUniV3PositionsFetcher } from './getPositionsV3Fetcher';
 
 export const jobs: Job[] = [];
 export const fetchers: Fetcher[] = [
   ...uniswapNetworksConfigs.map((config) =>
-    getPositionsV3Fetcher(config, platformId, 'V3')
+    getUniV3PositionsFetcher(config, platformId, 'V3')
   ),
 ];
 export const platforms: Platform[] = [uniswapPlatform];
