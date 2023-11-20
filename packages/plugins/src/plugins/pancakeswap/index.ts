@@ -25,7 +25,7 @@ export const jobs: Job[] = [
   // Aptos
   aptosJob,
   // Ethereum
-  getPoolsJob(NetworkId.ethereum, platformId, 'V1', theGraphUrlEthV2),
+  getPoolsJob(NetworkId.ethereum, platformId, 'V2', theGraphUrlEthV2),
   // BNB
   getPoolsJob(NetworkId.bnb, platformId, 'V1', factoryV2Bnb),
 ];
