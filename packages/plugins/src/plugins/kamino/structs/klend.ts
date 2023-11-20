@@ -107,7 +107,7 @@ export type Obligation = {
 
 export const obligationStruct = new BeetStruct<Obligation>(
   [
-    ['buffer', blob(8)],
+    ['buffer', blob(8)], // 8 + 64 + 64 + 8 + 8*7 + 32
     ['tag', u64],
     ['lastUpdate', lastUpdateStruct],
     ['lendingMarket', publicKey],

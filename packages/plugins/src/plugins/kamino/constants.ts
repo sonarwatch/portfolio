@@ -16,5 +16,5 @@ export const programId = new PublicKey(
 export const klendProgramId = new PublicKey(
   'KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD'
 );
-export const marketsPrefix = `${platformId}-markets`;
-export const reservesPrefix = `${platformId}-reserves`;
+export const marketsKey = `markets`;
+export const reservesKey = `reserves`;
