@@ -4,8 +4,8 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { Cache } from '../../Cache';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
-import { obligationStruct } from '../solend/structs';
 import { dataSizeFilter } from '../../utils/solana/filters';
+import { obligationStruct } from './structs/klend';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
