@@ -3,7 +3,7 @@ import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
-import { dataSizeFilter } from '../../utils/solana/filters';
+import { dataStructSizeFilter } from '../../utils/solana/filters';
 import { klendProgramId, marketsKey, platformId } from './constants';
 import { lendingMarketStruct } from './structs/klend';
 
@@ -13,7 +13,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     client,
     lendingMarketStruct,
     klendProgramId,
-    dataSizeFilter(lendingMarketStruct)
+    dataStructSizeFilter(lendingMarketStruct)
   );
   if (lendingMarketAccounts.length !== 0)
     await cache.setItem(marketsKey, lendingMarketAccounts, {

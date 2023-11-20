@@ -8,8 +8,14 @@ import {
   WithdrawalCaps,
 } from './structs/klend';
 
-export type ReserveEnhanced = {
-  [K: string]: Reserve;
+export type ReserveDataEnhanced = ReserveData & {
+  supplyApr: number;
+  borrowApr: number;
+};
+
+export type ReserveEnhanced = Reserve & {
+  supplyApr: number;
+  borrowApr: number;
 };
 
 export type ReserveConfig = {

@@ -6,7 +6,7 @@ import { getClientSolana } from '../../../utils/clients';
 import { getParsedProgramAccounts } from '../../../utils/solana';
 import { CLOBMarketAccount } from './structs';
 import { CLOBMarket, CLOBVersion } from './types';
-import { dataSizeFilter } from '../../../utils/solana/filters';
+import { dataStructSizeFilter } from '../../../utils/solana/filters';
 
 const networkId = NetworkId.solana;
 
@@ -19,7 +19,7 @@ export default function getMarketJobExecutor(
       client,
       clobVersion.struct,
       new PublicKey(clobVersion.programId),
-      dataSizeFilter(clobVersion.struct)
+      dataStructSizeFilter(clobVersion.struct)
     );
 
     await addMarketsToCache(cache, clobVersion, marketsAccounts);

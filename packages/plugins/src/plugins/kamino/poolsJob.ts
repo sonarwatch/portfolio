@@ -16,7 +16,7 @@ import {
   poolStateStruct,
 } from '../raydium/structs/clmms';
 import { whirlpoolStrategyStruct } from './structs/vaults';
-import { dataSizeFilter } from '../../utils/solana/filters';
+import { dataStructSizeFilter } from '../../utils/solana/filters';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -24,7 +24,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     client,
     whirlpoolStrategyStruct,
     programId,
-    dataSizeFilter(whirlpoolStrategyStruct)
+    dataStructSizeFilter(whirlpoolStrategyStruct)
   );
 
   const tokensMint = strategies

@@ -1,6 +1,8 @@
 import {
   BeetStruct,
+  FixableBeetStruct,
   u16,
+  u32,
   u8,
   uniformFixedSizeArray,
 } from '@metaplex-foundation/beet';
@@ -295,23 +297,23 @@ export const tokenInfoStruct = new BeetStruct<TokenInfo>(
   (args) => args as TokenInfo
 );
 
-// export type CurvePoint = {
-//   utilizationRateBps: number;
-//   borrowRateBps: number;
-// };
-// export const CurvePointStruct = new BeetStruct<CurvePoint>(
-//   [
-//     ['utilizationRateBps', u32],
-//     ['borrowRateBps', u32],
-//   ],
-//   (args) => args as CurvePoint
-// );
+export type CurvePoint = {
+  utilizationRateBps: number;
+  borrowRateBps: number;
+};
+export const CurvePointStruct = new BeetStruct<CurvePoint>(
+  [
+    ['utilizationRateBps', u32],
+    ['borrowRateBps', u32],
+  ],
+  (args) => args as CurvePoint
+);
 
 export type BorrowRateCurve = {
-  points: Buffer;
+  points: CurvePoint[];
 };
-export const borrowRateCurveStruct = new BeetStruct<BorrowRateCurve>(
-  [['points', blob((32 * 2 * 11) / 8)]],
+export const borrowRateCurveStruct = new FixableBeetStruct<BorrowRateCurve>(
+  [['points', uniformFixedSizeArray(CurvePointStruct, 11)]],
   (args) => args as BorrowRateCurve
 );
 
@@ -355,7 +357,7 @@ export type ReserveConfig = {
   elevationGroups: number[];
   reserved1: number[];
 };
-export const reserveConfigStruct = new BeetStruct<ReserveConfig>(
+export const reserveConfigStruct = new FixableBeetStruct<ReserveConfig>(
   [
     ['status', u8],
     ['assetTier', u8],
@@ -460,7 +462,7 @@ export type Reserve = {
   configPadding: BigNumber[];
   padding: BigNumber[];
 };
-export const reserveStruct = new BeetStruct<Reserve>(
+export const reserveStruct = new FixableBeetStruct<Reserve>(
   [
     ['buffer', blob(8)],
     ['version', u64],

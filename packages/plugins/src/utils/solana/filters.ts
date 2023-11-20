@@ -8,10 +8,16 @@ import { GetProgramAccountsFilter } from '@solana/web3.js';
  *
  * @returns GetProgramAccountsFilter
  */
-export const dataSizeFilter = (
+export const dataStructSizeFilter = (
   struct: BeetStruct<unknown>
 ): GetProgramAccountsFilter[] => [
   {
     dataSize: struct.byteSize,
+  },
+];
+
+export const dataSizeFilter = (size: number): GetProgramAccountsFilter[] => [
+  {
+    dataSize: size,
   },
 ];

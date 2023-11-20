@@ -1,12 +1,13 @@
 import {
   NetworkId,
   PortfolioAsset,
+  PortfolioElement,
   PortfolioElementType,
   TokenPrice,
   Yield,
+  aprToApy,
   getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
-import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { platformId, reservesKey } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -15,13 +16,29 @@ import { getClientSolana } from '../../utils/clients';
 import { obligationStruct } from './structs/klend';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { ReserveData } from './types';
+import { ReserveDataEnhanced } from './types';
+import { getParsedMultipleAccountsInfo } from '../../utils/solana';
+import { getLendingPda, getMultiplyPdas } from './helpers';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
   const networkId = NetworkId.solana;
 
-  const reserves = await cache.getItem<Record<string, ReserveData>>(
+  const lendingAccount = await getParsedAccountInfo(
+    client,
+    obligationStruct,
+    getLendingPda(owner)
+  );
+
+  const multiplyAccounts = await getParsedMultipleAccountsInfo(
+    client,
+    obligationStruct,
+    getMultiplyPdas(owner)
+  );
+
+  if (!lendingAccount && !multiplyAccounts) return [];
+
+  const reserves = await cache.getItem<Record<string, ReserveDataEnhanced>>(
     reservesKey,
     {
       prefix: platformId,
@@ -30,103 +47,226 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
   if (!reserves) return [];
 
-  const obligationAccounts = await getParsedAccountInfo(
-    client,
-    obligationStruct,
-    new PublicKey('4VnE9WB3JC5eE3jqmruz3ftwQu4TiHRAH2Gi4DS5qkYh')
-  );
-  if (!obligationAccounts) return [];
-
-  const tokenAddresses = Object.entries(reserves).map(
-    (entry) => reserves[entry[0]].liquidity.mintPubkey
+  const tokenAddresses = Object.entries(reserves).map((entry) =>
+    reserves[entry[0]].liquidity.mintPubkey.toString()
   );
 
   const tokensPrices = await cache.getTokenPrices(tokenAddresses, networkId);
   const tokenPriceById: Map<string, TokenPrice> = new Map();
   tokensPrices.forEach((tP) => (tP ? tokenPriceById.set(tP.address, tP) : []));
 
-  const borrowedAssets: PortfolioAsset[] = [];
-  const borrowedYields: Yield[][] = [];
-  const suppliedAssets: PortfolioAsset[] = [];
-  const suppliedYields: Yield[][] = [];
-  const rewardAssets: PortfolioAsset[] = [];
-  const suppliedLtvs: number[] = [];
-  const borrowedWeights: number[] = [];
-  for (const deposit of obligationAccounts.deposits) {
-    if (
-      deposit.depositReserve.toString() ===
-        '11111111111111111111111111111111' ||
-      deposit.depositedAmount.isLessThanOrEqualTo(0)
-    )
-      continue;
+  const elements: PortfolioElement[] = [];
 
-    const amountRaw = deposit.depositedAmount;
-    const reserve = reserves[deposit.depositReserve.toString()];
-    const mint = reserve.liquidity.mintPubkey;
-    const tokenPrice = tokenPriceById.get(mint);
-    const amount = amountRaw
-      .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
-      .toNumber();
-    suppliedAssets.push(
-      tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
-    );
-    suppliedLtvs.push(reserve.config.loanToValuePct / 100);
-  }
+  // *************
+  // KLend : https://app.kamino.finance/lending
+  // *************
 
-  for (const borrow of obligationAccounts.borrows) {
-    if (
-      borrow.borrowReserve.toString() === '11111111111111111111111111111111' ||
-      borrow.borrowedAmountSf.isLessThanOrEqualTo(0)
-    )
-      continue;
+  if (lendingAccount) {
+    const borrowedAssets: PortfolioAsset[] = [];
+    const borrowedYields: Yield[][] = [];
+    const suppliedAssets: PortfolioAsset[] = [];
+    const suppliedYields: Yield[][] = [];
+    const rewardAssets: PortfolioAsset[] = [];
+    const suppliedLtvs: number[] = [];
+    const borrowedWeights: number[] = [];
+    for (const deposit of lendingAccount.deposits) {
+      if (
+        deposit.depositReserve.toString() ===
+          '11111111111111111111111111111111' ||
+        deposit.depositedAmount.isLessThanOrEqualTo(0)
+      )
+        continue;
 
-    const amountRaw = borrow.borrowedAmountSf.dividedBy(
-      borrow.cumulativeBorrowRateBsf.value0
-    );
-    const reserve = reserves[borrow.borrowReserve.toString()];
-    const mint = reserve.liquidity.mintPubkey;
-    const tokenPrice = tokenPriceById.get(mint);
-    const amount = amountRaw
-      .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
-      .toNumber();
-    borrowedAssets.push(
-      tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
-    );
-    borrowedWeights.push(Number(reserve.config.borrowFactorPct) / 100);
-  }
+      const amountRaw = deposit.depositedAmount;
+      const reserve = reserves[deposit.depositReserve.toString()];
+      if (!reserve) continue;
 
-  if (suppliedAssets.length === 0 && borrowedAssets.length === 0) return [];
+      const mint = reserve.liquidity.mintPubkey;
+      const tokenPrice = tokenPriceById.get(mint);
+      const amount = amountRaw
+        .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
+        .toNumber();
+      suppliedAssets.push(
+        tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
+      );
+      suppliedLtvs.push(reserve.config.loanToValuePct / 100);
+      suppliedYields.push([
+        { apr: reserve.supplyApr, apy: aprToApy(reserve.supplyApr) },
+      ]);
+    }
 
-  const { borrowedValue, collateralRatio, suppliedValue, value, healthRatio } =
-    getElementLendingValues(
-      suppliedAssets,
-      borrowedAssets,
-      rewardAssets,
-      suppliedLtvs,
-      borrowedWeights
-    );
+    for (const borrow of lendingAccount.borrows) {
+      if (
+        borrow.borrowReserve.toString() ===
+          '11111111111111111111111111111111' ||
+        borrow.borrowedAmountSf.isLessThanOrEqualTo(0)
+      )
+        continue;
 
-  return [
-    {
-      type: PortfolioElementType.borrowlend,
-      networkId,
-      platformId,
-      label: 'Lending',
-      value,
-      data: {
-        borrowedAssets,
+      const amountRaw = borrow.borrowedAmountSf.dividedBy(
+        borrow.cumulativeBorrowRateBsf.value0
+      );
+      const reserve = reserves[borrow.borrowReserve.toString()];
+      if (!reserve) continue;
+
+      const mint = reserve.liquidity.mintPubkey;
+      const tokenPrice = tokenPriceById.get(mint);
+      const amount = amountRaw
+        .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
+        .toNumber();
+      borrowedAssets.push(
+        tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
+      );
+      borrowedWeights.push(Number(reserve.config.borrowFactorPct) / 100);
+      borrowedYields.push([
+        { apr: reserve.borrowApr, apy: aprToApy(reserve.borrowApr) },
+      ]);
+    }
+
+    if (suppliedAssets.length !== 0 && borrowedAssets.length !== 0) {
+      const {
         borrowedValue,
-        borrowedYields,
-        suppliedAssets,
-        suppliedValue,
-        suppliedYields,
         collateralRatio,
-        healthRatio,
-        rewardAssets,
+        suppliedValue,
         value,
-      },
-    },
-  ];
+        healthRatio,
+      } = getElementLendingValues(
+        suppliedAssets,
+        borrowedAssets,
+        rewardAssets,
+        suppliedLtvs,
+        borrowedWeights
+      );
+
+      elements.push({
+        type: PortfolioElementType.borrowlend,
+        networkId,
+        platformId,
+        label: 'Lending',
+        value,
+        data: {
+          borrowedAssets,
+          borrowedValue,
+          borrowedYields,
+          suppliedAssets,
+          suppliedValue,
+          suppliedYields,
+          collateralRatio,
+          healthRatio,
+          rewardAssets,
+          value,
+        },
+      });
+    }
+  }
+
+  // ******
+  // Multiply :  https://app.kamino.finance/lending/multiply
+  // ******
+
+  for (const multiplyAccount of multiplyAccounts) {
+    if (!multiplyAccount) continue;
+
+    const borrowedAssets: PortfolioAsset[] = [];
+    const borrowedYields: Yield[][] = [];
+    const suppliedAssets: PortfolioAsset[] = [];
+    const suppliedYields: Yield[][] = [];
+    const rewardAssets: PortfolioAsset[] = [];
+    const suppliedLtvs: number[] = [];
+    const borrowedWeights: number[] = [];
+
+    for (const deposit of multiplyAccount.deposits) {
+      if (
+        deposit.depositReserve.toString() ===
+          '11111111111111111111111111111111' ||
+        deposit.depositedAmount.isLessThanOrEqualTo(0)
+      )
+        continue;
+
+      const amountRaw = deposit.depositedAmount;
+      const reserve = reserves[deposit.depositReserve.toString()];
+      if (!reserve) continue;
+
+      const mint = reserve.liquidity.mintPubkey;
+      const tokenPrice = tokenPriceById.get(mint);
+      const amount = amountRaw
+        .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
+        .toNumber();
+      suppliedAssets.push(
+        tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
+      );
+      suppliedLtvs.push(reserve.config.loanToValuePct / 100);
+      suppliedYields.push([
+        { apr: reserve.supplyApr, apy: aprToApy(reserve.supplyApr) },
+      ]);
+    }
+
+    for (const borrow of multiplyAccount.borrows) {
+      if (
+        borrow.borrowReserve.toString() ===
+          '11111111111111111111111111111111' ||
+        borrow.borrowedAmountSf.isLessThanOrEqualTo(0)
+      )
+        continue;
+
+      const amountRaw = borrow.borrowedAmountSf.dividedBy(
+        borrow.cumulativeBorrowRateBsf.value0
+      );
+      const reserve = reserves[borrow.borrowReserve.toString()];
+      if (!reserve) continue;
+
+      const mint = reserve.liquidity.mintPubkey;
+      const tokenPrice = tokenPriceById.get(mint);
+      const amount = amountRaw
+        .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
+        .toNumber();
+      borrowedAssets.push(
+        tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
+      );
+      borrowedWeights.push(Number(reserve.config.borrowFactorPct) / 100);
+      borrowedYields.push([
+        { apr: reserve.borrowApr, apy: aprToApy(reserve.borrowApr) },
+      ]);
+    }
+
+    if (suppliedAssets.length !== 0 && borrowedAssets.length !== 0) {
+      const {
+        borrowedValue,
+        collateralRatio,
+        suppliedValue,
+        value,
+        healthRatio,
+      } = getElementLendingValues(
+        suppliedAssets,
+        borrowedAssets,
+        rewardAssets,
+        suppliedLtvs,
+        borrowedWeights
+      );
+
+      elements.push({
+        type: PortfolioElementType.borrowlend,
+        networkId,
+        platformId,
+        label: 'Lending',
+        name: 'Multiply',
+        value,
+        data: {
+          borrowedAssets,
+          borrowedValue,
+          borrowedYields,
+          suppliedAssets,
+          suppliedValue,
+          suppliedYields,
+          collateralRatio,
+          healthRatio,
+          rewardAssets,
+          value,
+        },
+      });
+    }
+  }
+  return elements;
 };
 
 const fetcher: Fetcher = {
