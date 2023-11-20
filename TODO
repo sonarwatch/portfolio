@@ -16,12 +16,14 @@
 - Convex
 - PancakeSwap
 - Liquity
-- Sushi
 - Yearn
 - Aura
 - Synthetix
-- Venus
 - Radiant
+
+# Fixes
+- [Solend] Mettre les markets dans un seul item de cache
+- [Health Factor] Utiliser les prix oracles
 
 # DONE
 
