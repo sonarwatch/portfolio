@@ -90,9 +90,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
       );
       suppliedLtvs.push(reserve.config.loanToValuePct / 100);
-      suppliedYields.push([
-        { apr: reserve.supplyApr, apy: aprToApy(reserve.supplyApr) },
-      ]);
+      // suppliedYields.push([
+      //   { apr: reserve.supplyApr, apy: aprToApy(reserve.supplyApr) },
+      // ]);
     }
 
     for (const borrow of lendingAccount.borrows) {
@@ -118,9 +118,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
       );
       borrowedWeights.push(Number(reserve.config.borrowFactorPct) / 100);
-      borrowedYields.push([
-        { apr: reserve.borrowApr, apy: aprToApy(reserve.borrowApr) },
-      ]);
+      // borrowedYields.push([
+      //   { apr: reserve.borrowApr, apy: aprToApy(reserve.borrowApr) },
+      // ]);
     }
 
     if (suppliedAssets.length !== 0 && borrowedAssets.length !== 0) {
@@ -196,11 +196,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
       );
       suppliedLtvs.push(reserve.config.loanToValuePct / 100);
-      suppliedYields.push([
-        { apr: reserve.supplyApr, apy: aprToApy(reserve.supplyApr) },
-      ]);
+      // suppliedYields.push([
+      //   { apr: reserve.supplyApr, apy: aprToApy(reserve.supplyApr) },
+      // ]);
     }
-
     for (const borrow of multiplyAccount.borrows) {
       if (
         borrow.borrowReserve.toString() ===
@@ -224,9 +223,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
       );
       borrowedWeights.push(Number(reserve.config.borrowFactorPct) / 100);
-      borrowedYields.push([
-        { apr: reserve.borrowApr, apy: aprToApy(reserve.borrowApr) },
-      ]);
+      // borrowedYields.push([
+      //   { apr: reserve.borrowApr, apy: aprToApy(reserve.borrowApr) },
+      // ]);
     }
 
     if (suppliedAssets.length !== 0 && borrowedAssets.length !== 0) {
@@ -259,7 +258,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           suppliedValue,
           suppliedYields,
           collateralRatio,
-          healthRatio,
+          healthRatio: -healthRatio / 0.9,
           rewardAssets,
           value,
         },
