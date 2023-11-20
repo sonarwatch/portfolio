@@ -9,14 +9,18 @@ import { getClientSolana } from '../../utils/clients';
 import { platformId, programId } from './constants';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
-import { dexToNumber, getTokenAmountsFromInfos, isActive } from './helpers';
+import {
+  dexToNumber,
+  getTokenAmountsFromInfos,
+  isActive,
+} from './helpers/vaults';
 import { positionStruct, whirlpoolStruct } from '../orca/structs/whirlpool';
 import {
   personalPositionStateStruct,
   poolStateStruct,
 } from '../raydium/structs/clmms';
-import { whirlpoolStrategyStruct } from './structs';
-import { dataSizeFilter } from '../../utils/solana/filters';
+import { whirlpoolStrategyStruct } from './structs/vaults';
+import { dataStructSizeFilter } from '../../utils/solana/filters';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -24,7 +28,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     client,
     whirlpoolStrategyStruct,
     programId,
-    dataSizeFilter(whirlpoolStrategyStruct)
+    dataStructSizeFilter(whirlpoolStrategyStruct)
   );
 
   const tokensMint = strategies

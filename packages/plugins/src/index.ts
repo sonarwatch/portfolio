@@ -123,6 +123,7 @@ import {
 } from './plugins/maker';
 import {
   jobs as kaminoJobs,
+  fetchers as kaminoFetchers,
   platforms as kaminoPlatforms,
 } from './plugins/kamino';
 import {
@@ -352,6 +353,7 @@ export const fetchers: Fetcher[] = [
   ...orcaFetchers,
   ...driftFetchers,
   ...mangoFetchers,
+  ...kaminoFetchers,
   ...cetusFetchers,
   ...turbosFetchers,
   ...stakingAptosFetchers,
