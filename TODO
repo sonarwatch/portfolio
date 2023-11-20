@@ -21,6 +21,10 @@
 - Synthetix
 - Radiant
 
+# Fixes
+- [Solend] Mettre les markets dans un seul item de cache
+- [Health Factor] Utiliser les prix oracles
+
 # DONE
 
 - Solana Token 2022 support
