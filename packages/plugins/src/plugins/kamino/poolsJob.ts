@@ -9,7 +9,11 @@ import { getClientSolana } from '../../utils/clients';
 import { platformId, programId } from './constants';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
-import { dexToNumber, getTokenAmountsFromInfos, isActive } from './helpers';
+import {
+  dexToNumber,
+  getTokenAmountsFromInfos,
+  isActive,
+} from './helpers/vaults';
 import { positionStruct, whirlpoolStruct } from '../orca/structs/whirlpool';
 import {
   personalPositionStateStruct,

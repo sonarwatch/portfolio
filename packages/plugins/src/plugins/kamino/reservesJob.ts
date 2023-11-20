@@ -6,7 +6,7 @@ import { getParsedProgramAccounts } from '../../utils/solana';
 import { dataSizeFilter } from '../../utils/solana/filters';
 import { klendProgramId, platformId, reservesKey } from './constants';
 import { reserveStruct } from './structs/klend';
-import { calculateBorrowAPR, calculateSupplyAPR } from './helpers';
+import { calculateBorrowAPR, calculateSupplyAPR } from './helpers/apr';
 import { ReserveEnhanced } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {

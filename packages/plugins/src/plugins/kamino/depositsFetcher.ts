@@ -5,7 +5,6 @@ import {
   PortfolioElementType,
   TokenPrice,
   Yield,
-  aprToApy,
   getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
@@ -18,7 +17,11 @@ import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { ReserveDataEnhanced } from './types';
 import { getParsedMultipleAccountsInfo } from '../../utils/solana';
-import { getLendingPda, getMultiplyPdas } from './helpers';
+import {
+  getLendingPda,
+  getLeveragePdas,
+  getMultiplyPdas,
+} from './helpers/pdas';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -36,7 +39,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     getMultiplyPdas(owner)
   );
 
-  if (!lendingAccount && !multiplyAccounts) return [];
+  const leverageAccounts = await getParsedMultipleAccountsInfo(
+    client,
+    obligationStruct,
+    getLeveragePdas(owner)
+  );
+
+  if (!lendingAccount && !multiplyAccounts && !leverageAccounts) return [];
 
   const reserves = await cache.getItem<Record<string, ReserveDataEnhanced>>(
     reservesKey,
@@ -259,6 +268,112 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           suppliedYields,
           collateralRatio,
           healthRatio: -healthRatio / 0.9,
+          rewardAssets,
+          value,
+        },
+      });
+    }
+  }
+
+  // ******
+  // Leverage :  https://app.kamino.finance/lending/leverage
+  // ******
+
+  for (const leverageAccount of leverageAccounts) {
+    if (!leverageAccount) continue;
+
+    const borrowedAssets: PortfolioAsset[] = [];
+    const borrowedYields: Yield[][] = [];
+    const suppliedAssets: PortfolioAsset[] = [];
+    const suppliedYields: Yield[][] = [];
+    const rewardAssets: PortfolioAsset[] = [];
+    const suppliedLtvs: number[] = [];
+    const borrowedWeights: number[] = [];
+
+    for (const deposit of leverageAccount.deposits) {
+      if (
+        deposit.depositReserve.toString() ===
+          '11111111111111111111111111111111' ||
+        deposit.depositedAmount.isLessThanOrEqualTo(0)
+      )
+        continue;
+
+      const amountRaw = deposit.depositedAmount;
+      const reserve = reserves[deposit.depositReserve.toString()];
+      if (!reserve) continue;
+
+      const mint = reserve.liquidity.mintPubkey;
+      const tokenPrice = tokenPriceById.get(mint);
+      const amount = amountRaw
+        .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
+        .toNumber();
+      suppliedAssets.push(
+        tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
+      );
+      suppliedLtvs.push(reserve.config.loanToValuePct / 100);
+      // suppliedYields.push([
+      //   { apr: reserve.supplyApr, apy: aprToApy(reserve.supplyApr) },
+      // ]);
+    }
+    for (const borrow of leverageAccount.borrows) {
+      if (
+        borrow.borrowReserve.toString() ===
+          '11111111111111111111111111111111' ||
+        borrow.borrowedAmountSf.isLessThanOrEqualTo(0)
+      )
+        continue;
+
+      const amountRaw = borrow.borrowedAmountSf.dividedBy(
+        borrow.cumulativeBorrowRateBsf.value0
+      );
+      const reserve = reserves[borrow.borrowReserve.toString()];
+      if (!reserve) continue;
+
+      const mint = reserve.liquidity.mintPubkey;
+      const tokenPrice = tokenPriceById.get(mint);
+      const amount = amountRaw
+        .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
+        .toNumber();
+      borrowedAssets.push(
+        tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
+      );
+      borrowedWeights.push(Number(reserve.config.borrowFactorPct) / 100);
+      // borrowedYields.push([
+      //   { apr: reserve.borrowApr, apy: aprToApy(reserve.borrowApr) },
+      // ]);
+    }
+
+    if (suppliedAssets.length !== 0 && borrowedAssets.length !== 0) {
+      const {
+        borrowedValue,
+        collateralRatio,
+        suppliedValue,
+        value,
+        healthRatio,
+      } = getElementLendingValues(
+        suppliedAssets,
+        borrowedAssets,
+        rewardAssets,
+        suppliedLtvs,
+        borrowedWeights
+      );
+
+      elements.push({
+        type: PortfolioElementType.borrowlend,
+        networkId,
+        platformId,
+        label: 'Lending',
+        name: 'Leverage',
+        value,
+        data: {
+          borrowedAssets,
+          borrowedValue,
+          borrowedYields,
+          suppliedAssets,
+          suppliedValue,
+          suppliedYields,
+          collateralRatio,
+          healthRatio: healthRatio / 0.9,
           rewardAssets,
           value,
         },
