@@ -27,7 +27,7 @@ import {
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
-export function getPositionsV3Fetcher(
+export function getUniV3PositionsFetcher(
   config: UniswapNetworkConfig,
   platformId: string,
   version: string
@@ -294,7 +294,7 @@ export function getPositionsV3Fetcher(
       tokenPriceByAddress.set(tokenPrice.address, tokenPrice);
     }
 
-    const assets: PortfolioLiquidity[] = [];
+    const liquidities: PortfolioLiquidity[] = [];
     let totalLiquidityValue = 0;
 
     // Create each position element
@@ -349,7 +349,7 @@ export function getPositionsV3Fetcher(
         continue;
 
       const value = assetToken0.value + assetToken1.value;
-      assets.push({
+      liquidities.push({
         assets: [assetToken0, assetToken1],
         assetsValue: value,
         rewardAssets: [],
@@ -360,7 +360,7 @@ export function getPositionsV3Fetcher(
       totalLiquidityValue += value;
     }
 
-    if (assets.length === 0) return [];
+    if (liquidities.length === 0) return [];
 
     return [
       {
@@ -371,7 +371,7 @@ export function getPositionsV3Fetcher(
         name: version,
         value: totalLiquidityValue,
         data: {
-          liquidities: assets,
+          liquidities,
         },
       },
     ];
@@ -379,7 +379,7 @@ export function getPositionsV3Fetcher(
 
   return {
     executor,
-    id: `${platformId}-${networkId}-v3-positions`,
+    id: `${platformId}-${networkId}-positions-${version.toLocaleLowerCase()}`,
     networkId,
   };
 }

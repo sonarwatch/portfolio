@@ -17,7 +17,7 @@ import getPoolsJob from '../uniswap-v2/getPoolsJob';
 import getPositionsV2Fetcher from '../uniswap-v2/getPositionsV2Fetcher';
 import getStakersBalancesFetcher from './getStakersBalancesFetcher';
 import stakerCakeFetcher from './stakerCakeFetcher';
-import { getPositionsV3Fetcher } from '../uniswap/getPositionsV3Fetcher';
+import { getUniV3PositionsFetcher } from '../uniswap/getPositionsV3Fetcher';
 import getFarmsV2Fetcher from './getFarmsV2Fetcher';
 
 export const platforms: Platform[] = [pancakeswapPlatform];
@@ -25,14 +25,14 @@ export const jobs: Job[] = [
   // Aptos
   aptosJob,
   // Ethereum
-  getPoolsJob(NetworkId.ethereum, platformId, 'V1', theGraphUrlEthV2),
+  getPoolsJob(NetworkId.ethereum, platformId, 'V2', theGraphUrlEthV2),
   // BNB
   getPoolsJob(NetworkId.bnb, platformId, 'V1', factoryV2Bnb),
 ];
 export const fetchers: Fetcher[] = [
   // V3 (all EVMs)
   ...networksConfigs.map((config) =>
-    getPositionsV3Fetcher(config, platformId, 'V3')
+    getUniV3PositionsFetcher(config, platformId, 'V3')
   ),
   // V2 Ethereum
   getPositionsV2Fetcher(NetworkId.ethereum, platformId, 'V2'),

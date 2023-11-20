@@ -53,7 +53,7 @@ export default function getPositionsV2Fetcher(
 
   return {
     executor,
-    id: `${platformId}-${networkId}-positions-${version}`,
+    id: `${platformId}-${networkId}-positions-${version.toLocaleLowerCase()}`,
     networkId,
   };
 }
