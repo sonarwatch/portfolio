@@ -132,7 +132,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       // ]);
     }
 
-    if (suppliedAssets.length !== 0 && borrowedAssets.length !== 0) {
+    if (suppliedAssets.length !== 0 || borrowedAssets.length !== 0) {
       const {
         borrowedValue,
         collateralRatio,
@@ -237,7 +237,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       // ]);
     }
 
-    if (suppliedAssets.length !== 0 && borrowedAssets.length !== 0) {
+    if (suppliedAssets.length !== 0 || borrowedAssets.length !== 0) {
       const {
         borrowedValue,
         collateralRatio,
@@ -343,7 +343,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       // ]);
     }
 
-    if (suppliedAssets.length !== 0 && borrowedAssets.length !== 0) {
+    if (suppliedAssets.length !== 0 || borrowedAssets.length !== 0) {
       const {
         borrowedValue,
         collateralRatio,
