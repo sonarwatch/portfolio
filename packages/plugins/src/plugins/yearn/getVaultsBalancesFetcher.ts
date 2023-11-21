@@ -27,6 +27,13 @@ export default function getVaultsBalancesFetcher(
     });
     if (!vaults) return [];
 
+    const balances = await getBalances(
+      networkId,
+      vaults.map((v) => v.address),
+      owner
+    );
+    if (balances.length === 0) return [];
+
     const tokenAddresses = vaults
       .map((v) => (v.endorsed ? v.token.address : []))
       .flat();
@@ -36,19 +43,17 @@ export default function getVaultsBalancesFetcher(
       tP ? tokenPriceById.set(tP.address, tP) : []
     );
 
-    const balances = await getBalances(
-      networkId,
-      vaults.map((v) => v.address),
-      owner
-    );
     const liquiditiesByVersion: Record<string, PortfolioLiquidity[]> = {};
-    balances.forEach(async (b, index) => {
-      if (b > BigInt(0)) {
+    for (let index = 0; index < balances.length; index++) {
+      const balance = balances[index];
+      if (balance > BigInt(0)) {
         const vaultData = vaults[index];
-        const amount = new BigNumber(b.toString())
+        const amount = new BigNumber(balance.toString())
           .dividedBy(new BigNumber(10).pow(vaultData.decimals))
           .toNumber();
         const tokenPrice = tokenPriceById.get(vaultData.token.address);
+        if (!tokenPrice) continue;
+
         const asset = tokenPriceToAssetToken(
           vaultData.token.address,
           amount,
@@ -75,7 +80,7 @@ export default function getVaultsBalancesFetcher(
           liquiditiesByVersion[vaultData.type] = [liquidity];
         }
       }
-    });
+    }
     const elements: PortfolioElement[] = [];
     for (const [name, liquidities] of Object.entries(liquiditiesByVersion)) {
       if (liquidities.length > 0)

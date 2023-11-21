@@ -1,5 +1,15 @@
 import { Network } from '@sonarwatch/portfolio-core';
 
+export type Contract = {
+  address: string;
+  underlying: string;
+};
+
+export type LockerInfo = {
+  amount: bigint;
+  unlockTime: bigint;
+};
+
 export type YearnConfig = {
   network: Network;
   chainId: number;
