@@ -10,9 +10,11 @@ import {
 } from './constants';
 import getPoolsJob from '../uniswap-v2/getPoolsJob';
 import getPositionsV2Fetcher from '../uniswap-v2/getPositionsV2Fetcher';
+import aptosPoolsJob from './aptos/poolsJob';
 
 export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [
+  aptosPoolsJob,
   getPoolsJob(NetworkId.ethereum, platform.id, 'v2', ethereumTheGraphV2),
   getPoolsJob(NetworkId.polygon, platform.id, 'v2', polygonTheGraphV2),
   getPoolsJob(NetworkId.avalanche, platform.id, 'v2', avalancheTheGraphV2),
