@@ -17,7 +17,7 @@ import getPoolsJob from '../uniswap-v2/getPoolsJob';
 import getPositionsV2Fetcher from '../uniswap-v2/getPositionsV2Fetcher';
 import getStakersBalancesFetcher from './getStakersBalancesFetcher';
 import stakerCakeFetcher from './stakerCakeFetcher';
-import { getUniV3PositionsFetcher } from '../uniswap/getPositionsV3Fetcher';
+import { getUniV3PositionsFetcher } from '../uniswap/getUniV3PositionsFetcher';
 import getFarmsV2Fetcher from './getFarmsV2Fetcher';
 
 export const platforms: Platform[] = [pancakeswapPlatform];

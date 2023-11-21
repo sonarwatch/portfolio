@@ -7,7 +7,7 @@ import {
   uniswapNetworksConfigs,
   uniswapPlatform,
 } from './constants';
-import { getUniV3PositionsFetcher } from './getPositionsV3Fetcher';
+import { getUniV3PositionsFetcher } from './getUniV3PositionsFetcher';
 
 export const jobs: Job[] = [];
 export const fetchers: Fetcher[] = [
