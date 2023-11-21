@@ -10,7 +10,7 @@ import {
 } from '@metaplex-foundation/beet';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import BigNumber from 'bignumber.js';
-import { blob, i64, u128, u64 } from '../../utils/solana';
+import { blob, i64, u128, u64 } from '../../../utils/solana';
 
 // https://github.com/hubbleprotocol/hubble-common/blob/master/packages/hubble-idl/src/kamino.json
 

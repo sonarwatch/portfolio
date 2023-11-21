@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js';
-import { Position, Whirlpool } from '../orca/structs/whirlpool';
-import { PersonalPositionState, PoolState } from '../raydium/structs/clmms';
-import { WhirlpoolStrategy } from './structs';
-import { ParsedAccount } from '../../utils/solana';
-import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
+import { Position, Whirlpool } from '../../orca/structs/whirlpool';
+import { PersonalPositionState, PoolState } from '../../raydium/structs/clmms';
+import { WhirlpoolStrategy } from '../structs/vaults';
+import { ParsedAccount } from '../../../utils/solana';
+import { getTokenAmountsFromLiquidity } from '../../../utils/clmm/tokenAmountFromLiquidity';
 
 const dexes = ['ORCA', 'RAYDIUM', 'CREMA'];
 
@@ -32,20 +32,6 @@ export function getTokenAmountsFromInfos(
       orcaPosition.tickUpperIndex,
       false
     );
-
-    // const whirlpoolSqrtPrice = orcaPool.sqrtPrice;
-    // const vaultPositionLiquidity = orcaPosition.liquidity;
-    // const vaultPositionTickLowerIndex = orcaPosition.tickLowerIndex;
-    // const vaultPositionTickUpperIndex = orcaPosition.tickUpperIndex;
-    // const priceLower = orcaTickToPriceX64(vaultPositionTickLowerIndex);
-    // const priceUpper = orcaTickToPriceX64(vaultPositionTickUpperIndex);
-    // return getOrcaTokenAmountsFromLiquidity(
-    //   vaultPositionLiquidity.toNumber(),
-    //   whirlpoolSqrtPrice,
-    //   priceLower,
-    //   priceUpper,
-    //   false
-    // );
   }
   if (strategy.strategyDex.toNumber() === dexToNumber('RAYDIUM')) {
     const raydiumPool = pool as PoolState;
@@ -58,19 +44,6 @@ export function getTokenAmountsFromInfos(
       raydiumPosition.tickUpperIndex,
       false
     );
-    // const lowerSqrtPriceX64 = new BigNumber(
-    //   raydiumTickToPriceX64(raydiumPosition.tickLowerIndex).toString()
-    // );
-    // const upperSqrtPriceX64 = new BigNumber(
-    //   raydiumTickToPriceX64(raydiumPosition.tickUpperIndex).toString()
-    // );
-    // return getRaydiumTokenAmountsFromLiquidity(
-    //   new BigNumber(raydiumPool.sqrtPriceX64),
-    //   lowerSqrtPriceX64,
-    //   upperSqrtPriceX64,
-    //   raydiumPosition.liquidity,
-    //   false
-    // );
   }
   throw new Error(`Invalid dex ${strategy.strategyDex.toString()}`);
 }
