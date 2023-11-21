@@ -9,3 +9,5 @@ export const platform: Platform = {
   // website: 'https://myplatform.com',
   // twitter: 'https://twitter.com/myplatform',
 };
+export const vaultsKey = 'vaults';
+export const yearnApiUrl = 'https://api.yexporter.io/v1/chains';

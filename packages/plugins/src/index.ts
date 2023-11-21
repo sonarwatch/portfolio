@@ -230,6 +230,11 @@ import {
   jobs as sushiswapJobs,
   fetchers as sushiswapFetchers,
 } from './plugins/sushiswap';
+import {
+  platforms as yearnPlatforms,
+  jobs as yearnJobs,
+  fetchers as yearnFetchers,
+} from './plugins/yearn';
 
 export {
   walletTokensPlatform,
@@ -292,6 +297,7 @@ export const platforms: Platform[] = [
   ...zetaPlatforms,
   ...venusPlatforms,
   ...sushiswapPlatforms,
+  ...yearnPlatforms,
 ];
 
 // JOBS //
@@ -338,6 +344,7 @@ export const jobs: Job[] = [
   ...zetaJobs,
   ...venusJobs,
   ...sushiswapJobs,
+  ...yearnJobs,
 ];
 
 // FETCHERS //
@@ -385,5 +392,6 @@ export const fetchers: Fetcher[] = [
   ...zetaFetchers,
   ...venusFetchers,
   ...sushiswapFetchers,
+  ...yearnFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
