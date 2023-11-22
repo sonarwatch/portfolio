@@ -9,3 +9,17 @@ export const platform: Platform = {
   // website: 'https://myplatform.com',
   // twitter: 'https://twitter.com/myplatform',
 };
+
+export const curvePoolsApi = 'https://www.convexfinance.com/api/curve/pools';
+export const prismaPoolsApi =
+  'https://frax.convexfinance.com/api/prisma/convex-pools';
+
+export const curvePoolsArbitrumApi =
+  'https://www.convexfinance.com/api/curve/pools-arbitrum';
+
+export const curvePoolsPolygonApi =
+  'https://www.convexfinance.com/api/curve/pools-polygon';
+
+export const fraxPoolsApi = 'https://frax.convexfinance.com/api/frax/pools';
+
+export const poolsKey = 'pools';

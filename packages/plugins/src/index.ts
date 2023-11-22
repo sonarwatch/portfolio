@@ -235,6 +235,11 @@ import {
   jobs as yearnJobs,
   fetchers as yearnFetchers,
 } from './plugins/yearn';
+import {
+  platforms as convexPlatforms,
+  jobs as convexJobs,
+  fetchers as convexFetchers,
+} from './plugins/convex';
 
 export {
   walletTokensPlatform,
@@ -298,6 +303,7 @@ export const platforms: Platform[] = [
   ...venusPlatforms,
   ...sushiswapPlatforms,
   ...yearnPlatforms,
+  ...convexPlatforms,
 ];
 
 // JOBS //
@@ -345,6 +351,7 @@ export const jobs: Job[] = [
   ...venusJobs,
   ...sushiswapJobs,
   ...yearnJobs,
+  ...convexJobs,
 ];
 
 // FETCHERS //
@@ -393,5 +400,6 @@ export const fetchers: Fetcher[] = [
   ...venusFetchers,
   ...sushiswapFetchers,
   ...yearnFetchers,
+  ...convexFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
