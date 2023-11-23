@@ -235,6 +235,11 @@ import {
   jobs as yearnJobs,
   fetchers as yearnFetchers,
 } from './plugins/yearn';
+import {
+  platforms as atrixPlatforms,
+  jobs as atrixJobs,
+  fetchers as atrixFetchers,
+} from './plugins/atrix';
 
 export {
   walletTokensPlatform,
@@ -298,6 +303,7 @@ export const platforms: Platform[] = [
   ...venusPlatforms,
   ...sushiswapPlatforms,
   ...yearnPlatforms,
+  ...atrixPlatforms,
 ];
 
 // JOBS //
@@ -345,6 +351,7 @@ export const jobs: Job[] = [
   ...venusJobs,
   ...sushiswapJobs,
   ...yearnJobs,
+  ...atrixJobs,
 ];
 
 // FETCHERS //
@@ -393,5 +400,6 @@ export const fetchers: Fetcher[] = [
   ...venusFetchers,
   ...sushiswapFetchers,
   ...yearnFetchers,
+  ...atrixFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
