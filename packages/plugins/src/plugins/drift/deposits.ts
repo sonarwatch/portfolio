@@ -40,6 +40,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     networkId: NetworkId.solana,
   });
 
+  if (spotMarketsItems.length === 0) return [];
+
   const spotMarketByIndex: Map<number, SpotMarketEnhanced> = new Map();
   const tokensMints = [];
   const insuranceFundStakeAccountsAddresses: PublicKey[] = [];
@@ -59,10 +61,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     NetworkId.solana
   );
   const tokenPriceById: Map<string, TokenPrice> = new Map();
-  tokensPrices.forEach((tP) => {
-    if (!tP) return;
-    tokenPriceById.set(tP.address, tP);
-  });
+  tokensPrices.forEach((tP) => (tP ? tokenPriceById.set(tP.address, tP) : []));
 
   const insuranceAccounts = await getParsedMultipleAccountsInfo(
     client,
@@ -112,7 +111,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       driftProgram,
       new PublicKey(owner),
       id,
-      id + 3
+      id + 10
     );
     parsedAccount = await getParsedMultipleAccountsInfo(
       client,
@@ -120,7 +119,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       accountPubKeys
     );
     userAccounts.push(...parsedAccount);
-    id += 3;
+    id += 10;
   } while (parsedAccount[parsedAccount.length]);
 
   if (!userAccounts) return elements;
