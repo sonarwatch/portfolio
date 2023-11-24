@@ -23,6 +23,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const account = await getParsedAccountInfo(client, marginStruct, pda);
 
   if (!account) return [];
+
   const borrowedAssets: PortfolioAsset[] = [];
   const borrowedYields: Yield[][] = [];
   const suppliedAssets: PortfolioAsset[] = [];
@@ -35,6 +36,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const mint = mints[i];
     if (mint === '1111111111111111111111111111111111111111111') continue;
+
     const amount =
       mint ===
       ('So11111111111111111111111111111111111111112' ||
@@ -56,6 +58,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
   }
   const elements: PortfolioElement[] = [];
+
+  if (suppliedAssets.length === 0) return [];
 
   const { borrowedValue, collateralRatio, suppliedValue, value } =
     getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
