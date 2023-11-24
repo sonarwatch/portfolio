@@ -250,6 +250,11 @@ import {
   jobs as gooseFXJobs,
   fetchers as gooseFXFetchers,
 } from './plugins/goosefx';
+import {
+  platforms as rainPlatforms,
+  jobs as rainJobs,
+  fetchers as rainFetchers,
+} from './plugins/rain';
 
 export {
   walletTokensPlatform,
@@ -316,6 +321,7 @@ export const platforms: Platform[] = [
   ...atrixPlatforms,
   ...zeroOnePlatforms,
   ...gooseFXPlatforms,
+  ...rainPlatforms,
 ];
 
 // JOBS //
@@ -366,6 +372,7 @@ export const jobs: Job[] = [
   ...atrixJobs,
   ...zeroOneJobs,
   ...gooseFXJobs,
+  ...rainJobs,
 ];
 
 // FETCHERS //
@@ -417,5 +424,6 @@ export const fetchers: Fetcher[] = [
   ...atrixFetchers,
   ...zeroOneFetchers,
   ...gooseFXFetchers,
+  ...rainFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
