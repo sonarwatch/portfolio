@@ -2,12 +2,12 @@
 
 - Rename address en id dans les tokens & ajouter la properties tokenContract
 - Ajout de la fonction cache.setTokensPricesSource(), utile pour des AMM
-- Auto Initialisation du cache dans portolfio-api
 - Verifier qu'une address a deja passé au moins un TX avant de tout fetch
 - cache.getTokenPrices seems to be bugged first fetch
 - Lock system (sur maker ou stargate par example)
 - Check Maker Vault fetche (longest fetcher)
 - Ajouter les assets dans les calls API (params)
+- Backpack app
 
 - Lybra Finance
 - Summer.fi
@@ -29,6 +29,7 @@
 
 # DONE
 
+- Auto Initialisation du cache dans portolfio-api
 - Solana Token 2022 support
 - Uniswap
 - Balancer
