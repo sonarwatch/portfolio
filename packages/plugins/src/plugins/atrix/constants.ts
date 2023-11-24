@@ -6,8 +6,8 @@ export const platform: Platform = {
   id: platformId,
   name: 'Atrix',
   image: 'https://sonar.watch/img/platforms/atrix.png',
-  // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
-  // website: 'https://myplatform.com',
+  defiLlamaId: 'atrix', // from https://defillama.com/docs/api
+  website: 'https://app.atrix.finance/liquidity',
   // twitter: 'https://twitter.com/myplatform',
 };
 export const atrixV1 = new PublicKey(
@@ -17,3 +17,5 @@ export const atrixV1 = new PublicKey(
 export const atrixV1Staking = new PublicKey(
   'BLDDrex4ZSWBgPYaaH6CQCzkJXWfzCiiur9cSFJT8t3x'
 );
+
+export const atrixApi = 'https://api.atrix.finance/api/all';

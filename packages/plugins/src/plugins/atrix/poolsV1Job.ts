@@ -73,10 +73,6 @@ const executor: JobExecutor = async (cache: Cache) => {
   const tokenPriceById: Map<string, TokenPrice> = new Map();
   tokensPrices.forEach((tP) => (tP ? tokenPriceById.set(tP.address, tP) : []));
 
-  await cache.setItem('pools', poolsAccounts, {
-    prefix: platformId,
-    networkId: NetworkId.solana,
-  });
   const sourcesPromises = [];
   for (const pool of poolsAccounts) {
     const [coinAccount, pcAccount, openOrderAccount] = [
