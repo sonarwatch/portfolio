@@ -36,15 +36,16 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const tokenPrice = tokenPriceById.get(account.mint.toString());
     if (!tokenPrice) continue;
 
-    const amount = account.amountDeposited
-      .dividedBy(10 ** tokenPrice.decimals)
-      .toNumber();
+    const { decimals } = tokenPrice;
+    const amount = account.amountDeposited.dividedBy(10 ** decimals).toNumber();
+
     const asset = tokenPriceToAssetToken(
       account.mint.toString(),
       amount,
       NetworkId.solana,
       tokenPrice
     );
+
     liquidities.push({
       assets: [asset],
       assetsValue: asset.value,
