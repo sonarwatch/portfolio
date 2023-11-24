@@ -4,10 +4,10 @@ import { Platform } from '@sonarwatch/portfolio-core';
 export const platformId = 'goosefx';
 export const platform: Platform = {
   id: platformId,
-  name: 'Goosefx',
+  name: 'GooseFX',
   image: 'https://sonar.watch/img/platforms/goosefx.png',
-  // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
-  // website: 'https://myplatform.com',
+  defiLlamaId: 'goosefx', // from https://defillama.com/docs/api
+  website: 'https://app.goosefx.io/farm',
   // twitter: 'https://twitter.com/myplatform',
 };
 
