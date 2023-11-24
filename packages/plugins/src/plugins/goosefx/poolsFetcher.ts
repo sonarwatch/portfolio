@@ -34,7 +34,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   for (const account of accounts) {
     if (account.amountDeposited.isZero()) continue;
     const tokenPrice = tokenPriceById.get(account.mint.toString());
-    const amount = account.amountDeposited.dividedBy(10 ** 8).toNumber();
+    if (!tokenPrice) continue;
+
+    const amount = account.amountDeposited
+      .dividedBy(10 ** tokenPrice.decimals)
+      .toNumber();
     const asset = tokenPriceToAssetToken(
       account.mint.toString(),
       amount,
