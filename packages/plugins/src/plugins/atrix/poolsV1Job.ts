@@ -107,16 +107,16 @@ const executor: JobExecutor = async (cache: Cache) => {
 
     const poolUnderlyings = [
       {
-        address: pool.pcMint.toString(),
-        reserveAmountRaw: pcAccount.amount.plus(baseTokenTotal),
-        price: pcTokenPrice.price,
-        decimals: pcTokenPrice.decimals,
-      },
-      {
         address: pool.coinMint.toString(),
-        reserveAmountRaw: coinAccount.amount.plus(quoteTokenTotal),
+        reserveAmountRaw: coinAccount.amount.plus(baseTokenTotal),
         price: coinTokenPrice.price,
         decimals: coinTokenPrice.decimals,
+      },
+      {
+        address: pool.pcMint.toString(),
+        reserveAmountRaw: pcAccount.amount.plus(quoteTokenTotal),
+        price: pcTokenPrice.price,
+        decimals: pcTokenPrice.decimals,
       },
     ];
 
