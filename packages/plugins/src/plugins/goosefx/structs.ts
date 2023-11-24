@@ -36,3 +36,41 @@ export const liquidityStruct = new BeetStruct<Liquidity>(
   ],
   (args) => args as Liquidity
 );
+
+export type UnstakingTicket = {
+  totalUnstaked: BigNumber;
+  createdAt: BigNumber;
+};
+
+export const unstakingTicketStruct = new BeetStruct<UnstakingTicket>(
+  [
+    ['totalUnstaked', u64],
+    ['createdAt', i64],
+  ],
+  (args) => args as UnstakingTicket
+);
+
+export type UserMetadata = {
+  buffer: Buffer;
+  owner: PublicKey;
+  accountOpenedAt: BigNumber;
+  totalStaked: BigNumber;
+  lastObservedTap: BigNumber;
+  lastClaimed: BigNumber;
+  totalEarned: BigNumber;
+  unstakingTickets: UnstakingTicket[];
+};
+
+export const userMetadataStruct = new BeetStruct<UserMetadata>(
+  [
+    ['buffer', blob(8)],
+    ['owner', publicKey],
+    ['accountOpenedAt', i64],
+    ['totalStaked', u64],
+    ['lastObservedTap', u64],
+    ['lastClaimed', i64],
+    ['totalEarned', u64],
+    ['unstakingTickets', uniformFixedSizeArray(unstakingTicketStruct, 64)],
+  ],
+  (args) => args as UserMetadata
+);
