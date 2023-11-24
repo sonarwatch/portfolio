@@ -1,5 +1,5 @@
 import { GetProgramAccountsFilter } from '@solana/web3.js';
-import { liquidityStruct } from './structs';
+import { liquidityStruct, userMetadataStruct } from './structs';
 
 export const liquidityAccountFilter = (
   owner: string
@@ -11,4 +11,16 @@ export const liquidityAccountFilter = (
     },
   },
   { dataSize: liquidityStruct.byteSize },
+];
+
+export const stakingAccountFilter = (
+  owner: string
+): GetProgramAccountsFilter[] => [
+  {
+    memcmp: {
+      offset: 8,
+      bytes: owner,
+    },
+  },
+  { dataSize: userMetadataStruct.byteSize },
 ];
