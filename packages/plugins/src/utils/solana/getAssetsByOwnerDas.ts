@@ -2,7 +2,7 @@ import { RpcEndpoint } from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
 import { getBasicAuthHeaders } from '../misc/getBasicAuthHeaders';
 
-export async function getAssetsByOwner(
+export async function getAssetsByOwnerDas(
   rpcEndpoint: RpcEndpoint,
   owner: string
 ) {
@@ -27,6 +27,11 @@ export async function getAssetsByOwner(
           sortBy: {
             sortBy: 'created',
             sortDirection: 'asc',
+          },
+          displayOptions: {
+            showFungible: false,
+            showNativeBalance: false,
+            showInscription: true,
           },
         },
       },
@@ -66,6 +71,25 @@ export type HeliusAsset = {
   supply: Supply | null;
   mutable: boolean;
   burnt: boolean;
+  inscription: Inscription | null;
+  spl20: Spl20 | null;
+};
+
+export type Inscription = {
+  order: number;
+  size: number;
+  contentType: string;
+  encoding: string;
+  validationHash: string;
+  inscriptionDataAccount: string;
+};
+export type Spl20 = {
+  p: string;
+  op: string;
+  tick: string;
+  max?: string;
+  lim?: string;
+  amt?: string;
 };
 
 export type Authority = {

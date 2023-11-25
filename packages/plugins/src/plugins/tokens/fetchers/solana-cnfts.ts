@@ -6,30 +6,37 @@ import {
   PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
-import { getAssetsByOwner } from '../../../utils/solana/getAssetsByOwner';
+import { getAssetsByOwnerDas } from '../../../utils/solana/getAssetsByOwnerDas';
 import { walletNftsPlatform, walletTokensPlatform } from '../constants';
 import { getRpcEndpoint } from '../../../utils/clients/constants';
 
 const executor: FetcherExecutor = async (owner: string) => {
   const rpcEndpoint = getRpcEndpoint(NetworkId.solana);
-  const list = await getAssetsByOwner(rpcEndpoint, owner);
+  const list = await getAssetsByOwnerDas(rpcEndpoint, owner);
 
-  const cNftsItems = list.items.filter((i) => i.compression.compressed);
-  const assets: PortfolioAssetCollectible[] = cNftsItems.map((i) => ({
-    networkId: NetworkId.solana,
-    type: PortfolioAssetType.collectible,
-    value: null,
-    data: {
-      address: i.id,
-      amount: 1,
-      price: null,
-      name: i.content.metadata.name,
-      imageUri: i.content.files.find((f) =>
-        f.mime?.toLocaleLowerCase().startsWith('image')
-      )?.uri,
-      dataUri: i.content.json_uri,
-    },
-  }));
+  const assets: PortfolioAssetCollectible[] = [];
+  const items = list.items.filter((i) => {
+    const isCompressed = i.compression.compressed;
+    const isSplNft = i.spl20 === null && i.inscription !== null;
+    return isCompressed || isSplNft;
+  });
+  items.forEach((i) => {
+    assets.push({
+      networkId: NetworkId.solana,
+      type: PortfolioAssetType.collectible,
+      value: null,
+      data: {
+        address: i.id,
+        amount: 1,
+        price: null,
+        name: i.content.metadata.name,
+        imageUri: i.content.files.find((f) =>
+          f.mime?.toLocaleLowerCase().startsWith('image')
+        )?.uri,
+        dataUri: i.content.json_uri,
+      },
+    });
+  });
   if (assets.length === 0) return [];
   const element: PortfolioElementMultiple = {
     type: PortfolioElementType.multiple,
