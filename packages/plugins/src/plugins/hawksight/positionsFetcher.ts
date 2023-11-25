@@ -4,7 +4,7 @@ import { FindNftsByOwnerOutput } from '@metaplex-foundation/js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId } from './constants';
-import { getHawksightUserPda } from './helper';
+import { getHawksightUserPdas } from './helper';
 import obligationsFetcher from '../solend/obligationsFetcher';
 import tokenFetcher from '../tokens/fetchers/solana';
 import { getClientSolana } from '../../utils/clients';
@@ -15,24 +15,27 @@ import { walletTokensPlatform } from '../tokens/constants';
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const derivedAddress = getHawksightUserPda(new PublicKey(owner));
-  const tokenAccounts = await getTokenAccountsByOwner(client, derivedAddress);
+  const derivedAddresses = getHawksightUserPdas(new PublicKey(owner));
+
+  const tokenAccounts = [
+    await getTokenAccountsByOwner(client, derivedAddresses[0]),
+    await getTokenAccountsByOwner(client, derivedAddresses[1]),
+  ].flat();
   if (tokenAccounts.length === 0) return [];
 
-  const accounts = [];
-  for (const tokenAccount of tokenAccounts) {
-    accounts.push(tokenAccount.mint.toString());
-  }
+  const additionalAccounts = tokenAccounts.map((tA) => tA.mint.toString());
   const nfts: FindNftsByOwnerOutput = [];
 
   const portfolioElements = (
     await Promise.all([
       // This handles Kamino, Saber, Marinade
-      tokenFetcher.executor(derivedAddress.toString(), cache),
+      tokenFetcher.executor(derivedAddresses[0].toString(), cache),
+      tokenFetcher.executor(derivedAddresses[1].toString(), cache),
       // This handles Orca
-      getWhirlpoolPositions(cache, nfts, accounts),
+      getWhirlpoolPositions(cache, nfts, additionalAccounts),
       // This handles Solend
-      obligationsFetcher.executor(derivedAddress.toString(), cache),
+      obligationsFetcher.executor(derivedAddresses[0].toString(), cache),
+      obligationsFetcher.executor(derivedAddresses[1].toString(), cache),
     ])
   ).flat();
 

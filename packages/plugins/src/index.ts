@@ -235,6 +235,21 @@ import {
   jobs as yearnJobs,
   fetchers as yearnFetchers,
 } from './plugins/yearn';
+import {
+  platforms as atrixPlatforms,
+  jobs as atrixJobs,
+  fetchers as atrixFetchers,
+} from './plugins/atrix';
+import {
+  platforms as zeroOnePlatforms,
+  jobs as zeroOneJobs,
+  fetchers as zeroOneFetchers,
+} from './plugins/01';
+import {
+  platforms as gooseFXPlatforms,
+  jobs as gooseFXJobs,
+  fetchers as gooseFXFetchers,
+} from './plugins/goosefx';
 
 export {
   walletTokensPlatform,
@@ -298,6 +313,9 @@ export const platforms: Platform[] = [
   ...venusPlatforms,
   ...sushiswapPlatforms,
   ...yearnPlatforms,
+  ...atrixPlatforms,
+  ...zeroOnePlatforms,
+  ...gooseFXPlatforms,
 ];
 
 // JOBS //
@@ -345,6 +363,9 @@ export const jobs: Job[] = [
   ...venusJobs,
   ...sushiswapJobs,
   ...yearnJobs,
+  ...atrixJobs,
+  ...zeroOneJobs,
+  ...gooseFXJobs,
 ];
 
 // FETCHERS //
@@ -393,5 +414,8 @@ export const fetchers: Fetcher[] = [
   ...venusFetchers,
   ...sushiswapFetchers,
   ...yearnFetchers,
+  ...atrixFetchers,
+  ...zeroOneFetchers,
+  ...gooseFXFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
