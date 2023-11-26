@@ -41,8 +41,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       mint ===
       ('So11111111111111111111111111111111111111112' ||
         'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So')
-        ? rawAmount
-        : rawAmount.dividedBy(1000);
+        ? rawAmount.dividedBy(1000)
+        : rawAmount;
 
     if (amount.isLessThan('0.0001')) continue;
 
