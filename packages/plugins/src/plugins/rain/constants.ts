@@ -14,3 +14,5 @@ export const platform: Platform = {
 export const programId = new PublicKey(
   'RainEraPU5yDoJmTrHdYynK9739GkEfDsE4ffqce2BR'
 );
+
+export const rainApi = 'https://api-v2.rain.fi';

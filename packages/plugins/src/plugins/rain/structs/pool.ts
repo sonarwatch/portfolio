@@ -53,10 +53,10 @@ export const poolConditionStruct = new BeetStruct<PoolCondition>(
     ['isEnabled', bool],
     ['minAge', u64],
     ['minLoan', u64],
-    ['minVolume', u16],
+    ['minVolume', u64],
     ['liquidationThreshold', u16],
     ['padding1', u16],
-    ['padding2', u8],
+    ['padding2', u16],
     ['padding3', u8],
   ],
   (args) => args as PoolCondition

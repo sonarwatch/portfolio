@@ -1,5 +1,5 @@
 import { GetProgramAccountsFilter } from '@solana/web3.js';
-import { poolStruct } from './structs/pool';
+import { loanStruct } from './structs/loan';
 
 export const poolFilter = (owner: string): GetProgramAccountsFilter[] => [
   {
@@ -9,7 +9,7 @@ export const poolFilter = (owner: string): GetProgramAccountsFilter[] => [
     },
   },
   {
-    dataSize: poolStruct.byteSize,
+    dataSize: 1331,
   },
 ];
 
@@ -23,7 +23,7 @@ export const loanBorrowerFilter = (
     },
   },
   {
-    dataSize: poolStruct.byteSize,
+    dataSize: loanStruct.byteSize,
   },
 ];
 
@@ -35,6 +35,6 @@ export const loanLenderFilter = (owner: string): GetProgramAccountsFilter[] => [
     },
   },
   {
-    dataSize: poolStruct.byteSize,
+    dataSize: loanStruct.byteSize,
   },
 ];
