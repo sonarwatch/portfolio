@@ -9,6 +9,9 @@
     "nx:version:core": "nx run core:version --releaseAs=patch",
     "postversion": "git push && git push --tags"
   },
+  "engines": {
+    "node": "~18"
+  },
   "private": true,
   "devDependencies": {
     "@jscutlery/semver": "^3.0.0",
