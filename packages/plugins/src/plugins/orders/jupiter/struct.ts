@@ -1,4 +1,4 @@
-import { BeetStruct, bool } from '@metaplex-foundation/beet';
+import { BeetStruct, bool, u8 } from '@metaplex-foundation/beet';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
@@ -41,4 +41,57 @@ export const limitOrderStruct = new BeetStruct<LimitOrder>(
     ['referral', publicKey],
   ],
   (args) => args as LimitOrder
+);
+
+export type DCA = {
+  buffer: Buffer;
+  user: PublicKey;
+  inputMint: PublicKey;
+  outputMint: PublicKey;
+  idx: BigNumber;
+  nextCycleAt: BigNumber;
+  inDeposited: BigNumber;
+  inWithdrawn: BigNumber;
+  outWithdrawn: BigNumber;
+  inUsed: BigNumber;
+  outReceived: BigNumber;
+  inAmountPerCycle: BigNumber;
+  cycleFrequency: BigNumber;
+  nextCycleAmountLeft: BigNumber;
+  inAccount: PublicKey;
+  outAccount: PublicKey;
+  minOutAmount: BigNumber;
+  maxOutAmount: BigNumber;
+  keeperInBalanceBeforeBorrow: BigNumber;
+  dcaOutBalanceBeforeSwap: BigNumber;
+  createdAt: BigNumber;
+  bump: number;
+};
+
+export const dcaStruct = new BeetStruct<DCA>(
+  [
+    ['buffer', blob(8)],
+    ['user', publicKey],
+    ['inputMint', publicKey],
+    ['outputMint', publicKey],
+    ['idx', u64],
+    ['nextCycleAt', i64],
+    ['inDeposited', u64],
+    ['inWithdrawn', u64],
+    ['outWithdrawn', u64],
+    ['inUsed', u64],
+    ['outReceived', u64],
+    ['inAmountPerCycle', u64],
+    ['cycleFrequency', i64],
+    ['nextCycleAmountLeft', u64],
+    ['inAccount', publicKey],
+    ['outAccount', publicKey],
+    ['minOutAmount', u64],
+    ['maxOutAmount', u64],
+    ['keeperInBalanceBeforeBorrow', u64],
+    ['dcaOutBalanceBeforeSwap', u64],
+    ['createdAt', i64],
+    ['bump', u8],
+  ],
+  (args) => args as DCA
 );

@@ -7,13 +7,13 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
-import { pluginId, jupiterLimitProgramId } from '../constants';
+import { platformId } from '../constants';
 import { getClientSolana } from '../../../utils/clients';
 import { limitOrderStruct } from './struct';
 import { getParsedProgramAccounts } from '../../../utils/solana';
 import { jupiterLimitsFilter } from './filters';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import { jupiterPlatform } from './constants';
+import { jupiterPlatform, limitProgramId } from './constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -21,7 +21,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const limitOrdersAccounts = await getParsedProgramAccounts(
     client,
     limitOrderStruct,
-    jupiterLimitProgramId,
+    limitProgramId,
     jupiterLimitsFilter(owner)
   );
   if (limitOrdersAccounts.length === 0) return [];
@@ -78,7 +78,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     platformId: jupiterPlatform.id,
     value,
     label: 'Deposit',
-    tags: ['Limit Orders'],
+    name: 'Limit Orders',
     data: { assets },
   };
 
@@ -86,7 +86,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${pluginId}-jupiter-limit`,
+  id: `${platformId}-jupiter-limit`,
   networkId: NetworkId.solana,
   executor,
 };

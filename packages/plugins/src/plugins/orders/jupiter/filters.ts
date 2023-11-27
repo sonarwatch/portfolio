@@ -1,4 +1,5 @@
 import { GetProgramAccountsFilter } from '@solana/web3.js';
+import { dcaStruct } from './struct';
 
 export const jupiterLimitsFilter = (
   owner: string
@@ -21,4 +22,14 @@ export const jupiterLimitsFilter = (
       bytes: owner,
     },
   },
+];
+
+export const jupiterDCAFilter = (owner: string): GetProgramAccountsFilter[] => [
+  {
+    memcmp: {
+      offset: 8,
+      bytes: owner,
+    },
+  },
+  { dataSize: dcaStruct.byteSize },
 ];
