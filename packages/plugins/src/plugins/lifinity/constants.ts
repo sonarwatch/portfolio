@@ -6,8 +6,8 @@ export const platform: Platform = {
   id: platformId,
   name: 'Lifinity',
   image: 'https://sonar.watch/img/platforms/lifinity.png',
-  // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
-  // website: 'https://myplatform.com',
+  defiLlamaId: 'parent#lifinity', // from https://defillama.com/docs/api
+  website: 'https://ido.lifinity.io/rewards',
   // twitter: 'https://twitter.com/myplatform',
 };
 
