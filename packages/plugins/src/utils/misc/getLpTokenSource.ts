@@ -22,7 +22,7 @@ export default function getLpTokenSource(
   poolUnderlyings: PoolUnderlying[]
 ): TokenPriceSource {
   const price =
-    poolUnderlyings.reduce((acc, u) => u.reserveAmount * u.price, 0) /
+    poolUnderlyings.reduce((acc, u) => acc + u.reserveAmount * u.price, 0) /
     lpDetails.supply;
 
   return {
