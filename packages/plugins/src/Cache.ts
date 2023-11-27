@@ -388,7 +388,7 @@ export function getCacheConfig(): CacheConfig {
         params: {
           configs: (
             process.env['CACHE_CONFIG_OVERLAY_HTTP_BASES'] ||
-            'http://localhost:3000/,https://portfolio-api.sonar.watch/v1/portfolio/cache/'
+            'http://localhost:3000/,https://portfolio-api-public.sonar.watch/v1/portfolio/cache/'
           )
             .split(',')
             .map((base) => ({
