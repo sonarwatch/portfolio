@@ -34,8 +34,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const daysLocked = escrowAccount.duration
     .dividedBy(60 * 60 * 24)
     .decimalPlaces(0);
+  const yearsLocked = escrowAccount.duration
+    .dividedBy(60 * 60 * 24 * 365)
+    .decimalPlaces(0);
+  const yearsText = yearsLocked.isEqualTo(1)
+    ? `Locked (${yearsLocked} year)`
+    : `Locked (${yearsLocked} years)`;
+
   const status = escrowAccount.escrow_ends_at.isZero()
-    ? 'Locked'
+    ? yearsText
     : `Unlocking (${daysLocked} days left)`;
 
   const lfntyTokenPrice = await cache.getTokenPrice(
