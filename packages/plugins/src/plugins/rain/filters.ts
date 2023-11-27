@@ -23,7 +23,7 @@ export const loanBorrowerFilter = (
     },
   },
   {
-    dataSize: loanStruct.byteSize,
+    dataSize: 1080,
   },
 ];
 
@@ -35,6 +35,6 @@ export const loanLenderFilter = (owner: string): GetProgramAccountsFilter[] => [
     },
   },
   {
-    dataSize: loanStruct.byteSize,
+    dataSize: 1080,
   },
 ];

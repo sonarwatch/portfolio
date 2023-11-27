@@ -35,11 +35,6 @@ export enum Marketplace {
   TensorswapListing,
   MagicEden,
 }
-
-export const marketplaceStruct = new BeetStruct<Marketplace>(
-  [],
-  (args) => args as Marketplace
-);
 export type Sale = {
   isForSale: boolean;
   salePrice: BigNumber;
@@ -116,7 +111,7 @@ export const loanStruct = new BeetStruct<Loan>(
     ['duration', u64],
     ['collection', u32],
     ['liquidation', u16],
-    ['marketplace', marketplaceStruct],
+    ['marketplace', u8],
     ['sale', saleStruct],
     ['createdAt', u64],
     ['expiredAt', u64],
