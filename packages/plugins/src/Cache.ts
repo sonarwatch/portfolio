@@ -18,6 +18,8 @@ import memoryDriver, {
 } from './memoryDriver';
 import runInBatch from './utils/misc/runInBatch';
 
+const publicBearerToken = 'guest';
+
 export type TransactionOptions = {
   prefix: string;
   networkId?: NetworkIdType;
@@ -393,7 +395,7 @@ export function getCacheConfig(): CacheConfig {
             .map((base) => ({
               base,
               headers: {
-                Authorization: 'Bearer guest',
+                Authorization: `Bearer ${publicBearerToken}`,
               },
             })),
         },
