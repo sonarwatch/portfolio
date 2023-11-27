@@ -5,6 +5,10 @@ export type PoolResponse = {
   pool: Pool;
 };
 
+export type CollectionResponse = {
+  collections: Collection[];
+};
+
 export type Pool = {
   owner: string;
   currency: string;
@@ -70,4 +74,34 @@ export type Curve = {
   curveRateDay: number;
   maxDuration: string;
   maxAmount: string;
+};
+
+export type Collection = {
+  collectionId: number;
+  pubkey: string;
+  slug: string;
+  name: string;
+  thumbnail: string;
+  banner: string;
+  nftLocked: string;
+  supply: string;
+  floorPrice: string;
+  isLocked: boolean;
+  offChainData: {
+    collectionNameMe: string;
+    collectionNameTensor: string;
+    collectionName: string;
+    image: string;
+    collectionSolanart: string;
+    isMortgageEnabled: boolean;
+    isPnft: boolean;
+    isClaimable: boolean;
+    collectionHyperspace: string;
+    sharkyApy: number;
+    _id: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string;
+  version: number;
 };
