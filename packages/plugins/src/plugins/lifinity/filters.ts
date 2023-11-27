@@ -1,5 +1,5 @@
 import { GetProgramAccountsFilter } from '@solana/web3.js';
-import { escrowStruct } from './structs';
+import { escrowStruct, lockerStruct } from './structs';
 
 export const escrowFilter = (owner: string): GetProgramAccountsFilter[] => [
   {
@@ -9,4 +9,8 @@ export const escrowFilter = (owner: string): GetProgramAccountsFilter[] => [
     },
   },
   { dataSize: escrowStruct.byteSize },
+];
+
+export const lockerFilter = (): GetProgramAccountsFilter[] => [
+  { dataSize: lockerStruct.byteSize },
 ];

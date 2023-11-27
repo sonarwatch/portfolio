@@ -1,11 +1,10 @@
 import { NetworkId, PortfolioElementType } from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
   LifinityLockerProgramId,
   platformId,
-  veDecimals,
+  lfntyDecimals,
   lfntyMint,
 } from './constants';
 import { getClientSolana } from '../../utils/clients';
@@ -23,14 +22,21 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     LifinityLockerProgramId,
     escrowFilter(owner)
   );
-  if (accounts.length === 0) return [];
+  if (accounts.length === 0 || accounts.length > 1) return [];
 
-  let amount = new BigNumber(0);
-  for (const account of accounts) {
-    amount = amount.plus(account.amount);
-  }
+  const escrowAccount = accounts[0];
+
+  // amount = amount.plus(account.amount.times(daysLocked).dividedBy(1460));
+  const { amount } = escrowAccount;
 
   if (amount.isZero()) return [];
+
+  const daysLocked = escrowAccount.duration
+    .dividedBy(60 * 60 * 24)
+    .decimalPlaces(0);
+  const status = escrowAccount.escrow_ends_at.isZero()
+    ? 'Locked'
+    : `Unlocking (${daysLocked} days left)`;
 
   const lfntyTokenPrice = await cache.getTokenPrice(
     lfntyMint,
@@ -39,19 +45,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const asset = tokenPriceToAssetToken(
     lfntyMint,
-    amount.dividedBy(10 ** veDecimals).toNumber(),
+    amount.dividedBy(10 ** lfntyDecimals).toNumber(),
     NetworkId.solana,
     lfntyTokenPrice
   );
+
   return [
     {
-      label: 'Staked',
+      label: 'Vesting',
       type: PortfolioElementType.single,
       data: { asset },
       networkId: NetworkId.solana,
       platformId,
       value: asset.value,
-      name: 'veLFNTY',
+      name: status,
     },
   ];
 };

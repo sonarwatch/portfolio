@@ -25,5 +25,5 @@ export const rewarder = new PublicKey(
   'LRewdYDnxyP9HXCL6DQYgTaeL9FKb5Pc8Gr4UbVrtnj'
 );
 
-export const veDecimals = 6;
+export const lfntyDecimals = 6;
 export const lfntyMint = 'LFNTYraetVioAPnGJht4yNg2aUZFXR776cMeN9VMjXp';
