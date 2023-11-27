@@ -43,7 +43,7 @@ export type CacheConfigOverlayHttp = {
   params: CacheConfigOverlayHttpParams;
 };
 export type CacheConfigOverlayHttpParams = {
-  bases: string[];
+  configs: { base: string; headers: Record<string, string> }[];
 };
 
 export type CacheConfigMemory = {
@@ -351,7 +351,9 @@ function getDriverFromCacheConfig(cacheConfig: CacheConfig) {
   switch (cacheConfig.type) {
     case 'overlayHttp':
       return overlayDriver({
-        layers: cacheConfig.params.bases.map((base) => httpDriver({ base })),
+        layers: cacheConfig.params.configs.map((c) =>
+          httpDriver({ base: c.base, headers: c.headers })
+        ),
       }) as Driver;
     case 'memory':
       return memoryDriver({
@@ -383,10 +385,17 @@ export function getCacheConfig(): CacheConfig {
       return {
         type: 'overlayHttp',
         params: {
-          bases: (
+          configs: (
             process.env['CACHE_CONFIG_OVERLAY_HTTP_BASES'] ||
             'http://localhost:3000/,https://portfolio-api.sonar.watch/v1/portfolio/cache/'
-          ).split(','),
+          )
+            .split(',')
+            .map((base) => ({
+              base,
+              headers: {
+                Authorization: 'Bearer guest',
+              },
+            })),
         },
       };
     case 'memory':
