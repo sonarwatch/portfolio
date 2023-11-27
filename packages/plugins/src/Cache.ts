@@ -8,6 +8,7 @@ import {
   TokenPriceSource,
   formatTokenAddress,
   formatTokenPriceSource,
+  publicBearerToken,
   pushTokenPriceSource,
   tokenPriceFromSources,
 } from '@sonarwatch/portfolio-core';
@@ -17,8 +18,6 @@ import memoryDriver, {
   MemoryDriver,
 } from './memoryDriver';
 import runInBatch from './utils/misc/runInBatch';
-
-const publicBearerToken = 'guest';
 
 export type TransactionOptions = {
   prefix: string;
