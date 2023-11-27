@@ -72,6 +72,7 @@ export type CacheConfigRedisParams = {
   url: string;
   tls: boolean;
   db: number;
+  ttl?: number;
 };
 
 export type CacheConfigFilesystem = {
@@ -369,6 +370,7 @@ function getDriverFromCacheConfig(cacheConfig: CacheConfig) {
         url: cacheConfig.params.url,
         tls: cacheConfig.params.tls ? {} : undefined,
         db: cacheConfig.params.db,
+        ttl: cacheConfig.params.ttl,
       }) as Driver;
     case 'http':
       return httpDriver({
@@ -418,6 +420,9 @@ export function getCacheConfig(): CacheConfig {
           url: process.env['CACHE_CONFIG_REDIS_URL'] || '127.0.0.1:6379',
           tls: process.env['CACHE_CONFIG_REDIS_TLS'] === 'true',
           db: parseInt(process.env['CACHE_CONFIG_REDIS_DB'] || '0', 10),
+          ttl: process.env['CACHE_CONFIG_REDIS_TTL']
+            ? parseInt(process.env['CACHE_CONFIG_REDIS_TTL'], 10)
+            : undefined,
         },
       };
     case 'http':
