@@ -250,6 +250,11 @@ import {
   jobs as gooseFXJobs,
   fetchers as gooseFXFetchers,
 } from './plugins/goosefx';
+import {
+  platforms as lifinityPlatforms,
+  jobs as lifinityJobs,
+  fetchers as lifinityFetchers,
+} from './plugins/lifinity';
 
 export {
   walletTokensPlatform,
@@ -316,6 +321,7 @@ export const platforms: Platform[] = [
   ...atrixPlatforms,
   ...zeroOnePlatforms,
   ...gooseFXPlatforms,
+  ...lifinityPlatforms,
 ];
 
 // JOBS //
@@ -366,6 +372,7 @@ export const jobs: Job[] = [
   ...atrixJobs,
   ...zeroOneJobs,
   ...gooseFXJobs,
+  ...lifinityJobs,
 ];
 
 // FETCHERS //
@@ -417,5 +424,6 @@ export const fetchers: Fetcher[] = [
   ...atrixFetchers,
   ...zeroOneFetchers,
   ...gooseFXFetchers,
+  ...lifinityFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);

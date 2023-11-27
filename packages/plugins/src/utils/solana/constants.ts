@@ -6,3 +6,7 @@ export const solanaTokenPid = new PublicKey(
 export const solanaToken2022Pid = new PublicKey(
   'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb'
 );
+
+export const associatedTokenProgramId = new PublicKey(
+  'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+);
