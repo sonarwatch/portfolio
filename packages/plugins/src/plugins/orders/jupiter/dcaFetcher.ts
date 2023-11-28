@@ -24,6 +24,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     dcaProgramId,
     jupiterDCAFilter(owner)
   );
+
+  if (accounts.length === 0) return [];
+
   const amountByToken: Map<string, BigNumber> = new Map();
 
   for (const account of accounts) {
