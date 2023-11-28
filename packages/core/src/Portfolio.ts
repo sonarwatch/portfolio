@@ -19,7 +19,8 @@ export type PortfolioElementLabel =
   | 'Lending'
   | 'Vesting'
   | 'Deposit'
-  | 'Rewards';
+  | 'Rewards'
+  | 'Leverage';
 
 export const PortfolioElementType = {
   single: 'single',
