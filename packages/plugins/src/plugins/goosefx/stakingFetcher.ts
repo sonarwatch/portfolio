@@ -25,6 +25,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     stakingAccountFilter(owner)
   );
 
+  if (accounts.length === 0) return [];
+
   const gofxTokenPrice = await cache.getTokenPrice(gofxMint, NetworkId.solana);
   if (!gofxTokenPrice) return [];
 
