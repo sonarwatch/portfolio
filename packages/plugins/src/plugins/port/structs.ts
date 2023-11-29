@@ -1,4 +1,4 @@
-import { BeetStruct, u8 } from '@metaplex-foundation/beet';
+import { BeetStruct, u32, u8 } from '@metaplex-foundation/beet';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
@@ -13,7 +13,6 @@ export type Fees = {
 export const feesStruct = new BeetStruct<Fees>(
   [
     ['borrowFeeWad', u64],
-    ['flashLoanFeeWad', u64],
     ['hostFeePercentage', u8],
   ],
   (args) => args as Fees
@@ -28,9 +27,6 @@ export type ReserveConfig = {
   optimalBorrowRate: number;
   maxBorrowRate: number;
   fees: Fees;
-  depositLimit: BigNumber;
-  borrowLimit: BigNumber;
-  feeReceiver: PublicKey;
 };
 
 export const reserveConfigStruct = new BeetStruct<ReserveConfig>(
@@ -43,9 +39,6 @@ export const reserveConfigStruct = new BeetStruct<ReserveConfig>(
     ['optimalBorrowRate', u8],
     ['maxBorrowRate', u8],
     ['fees', feesStruct],
-    ['depositLimit', u64],
-    ['borrowLimit', u64],
-    ['feeReceiver', publicKey],
   ],
   (args) => args as ReserveConfig
 );
@@ -69,8 +62,9 @@ export type Liquidity = {
   mintPubkey: PublicKey;
   mintDecimals: number;
   supplyPubkey: PublicKey;
-  pythOracle: PublicKey;
-  switchboardOracle: PublicKey;
+  feeReceiver: PublicKey;
+  oracleOption: BigNumber;
+  oraclePubkey: PublicKey;
   availableAmount: BigNumber;
   borrowedAmountWads: BigNumber;
   cumulativeBorrowRateWads: BigNumber;
@@ -82,8 +76,9 @@ export const liquidityStruct = new BeetStruct<Liquidity>(
     ['mintPubkey', publicKey],
     ['mintDecimals', u8],
     ['supplyPubkey', publicKey],
-    ['pythOracle', publicKey],
-    ['switchboardOracle', publicKey],
+    ['feeReceiver', publicKey],
+    ['oracleOption', u32],
+    ['oraclePubkey', publicKey],
     ['availableAmount', u64],
     ['borrowedAmountWads', u128],
     ['cumulativeBorrowRateWads', u128],
@@ -123,7 +118,7 @@ export const reserveStruct = new BeetStruct<Reserve>(
     ['liquidity', liquidityStruct],
     ['collateral', collateralStruct],
     ['config', reserveConfigStruct],
-    ['padding', blob(248)],
+    ['padding', blob(256)],
   ],
   (args) => args as Reserve
 );
@@ -137,7 +132,6 @@ export type Obligation = {
   borrowedValue: BigNumber;
   allowedBorrowValue: BigNumber;
   unhealthyBorrowValue: BigNumber;
-  padding: Buffer;
   depositsLen: number;
   borrowsLen: number;
   dataFlat: Buffer;
@@ -153,46 +147,9 @@ export const obligationStruct = new BeetStruct<Obligation>(
     ['borrowedValue', u128],
     ['allowedBorrowValue', u128],
     ['unhealthyBorrowValue', u128],
-    ['padding', blob(64)],
     ['depositsLen', u8],
     ['borrowsLen', u8],
-    ['dataFlat', blob(1096)],
+    ['dataFlat', blob(776)],
   ],
   (args) => args as Obligation
-);
-
-export type ObligationCollateral = {
-  depositReserve: PublicKey;
-  depositedAmount: BigNumber;
-  marketValue: BigNumber;
-  padding: Buffer;
-};
-
-export const obligationCollateralStruct = new BeetStruct<ObligationCollateral>(
-  [
-    ['depositReserve', publicKey],
-    ['depositedAmount', u64],
-    ['marketValue', u128],
-    ['padding', blob(32)],
-  ],
-  (args) => args as ObligationCollateral
-);
-
-export type ObligationLiquidity = {
-  borrowReserve: PublicKey;
-  cumulativeBorrowRateWads: BigNumber;
-  borrowedAmountWads: BigNumber;
-  marketValue: BigNumber;
-  padding: Buffer;
-};
-
-export const obligationLiquidityStruct = new BeetStruct<ObligationLiquidity>(
-  [
-    ['borrowReserve', publicKey],
-    ['cumulativeBorrowRateWads', u128],
-    ['borrowedAmountWads', u128],
-    ['marketValue', u128],
-    ['padding', blob(32)],
-  ],
-  (args) => args as ObligationLiquidity
 );

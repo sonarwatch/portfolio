@@ -255,6 +255,11 @@ import {
   jobs as lifinityJobs,
   fetchers as lifinityFetchers,
 } from './plugins/lifinity';
+import {
+  platforms as portPlatforms,
+  jobs as portJobs,
+  fetchers as portFetchers,
+} from './plugins/port';
 
 export {
   walletTokensPlatform,
@@ -322,6 +327,7 @@ export const platforms: Platform[] = [
   ...zeroOnePlatforms,
   ...gooseFXPlatforms,
   ...lifinityPlatforms,
+  ...portPlatforms,
 ];
 
 // JOBS //
@@ -373,6 +379,7 @@ export const jobs: Job[] = [
   ...zeroOneJobs,
   ...gooseFXJobs,
   ...lifinityJobs,
+  ...portJobs,
 ];
 
 // FETCHERS //
@@ -425,5 +432,6 @@ export const fetchers: Fetcher[] = [
   ...zeroOneFetchers,
   ...gooseFXFetchers,
   ...lifinityFetchers,
+  ...portFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
