@@ -215,6 +215,7 @@ export type Custody = {
   fundingRateState: FundingRateState;
   bump: number;
   tokenAccountBump: number;
+  buffer1: Buffer;
 };
 export const custodyStruct = new BeetStruct<Custody>(
   [
@@ -232,6 +233,52 @@ export const custodyStruct = new BeetStruct<Custody>(
     ['fundingRateState', fundingRateStateStruct],
     ['bump', u8],
     ['tokenAccountBump', u8],
+    ['buffer1', blob(8)],
   ],
   (args) => args as Custody
+);
+
+export enum Side {
+  None,
+  Long,
+  Short,
+}
+
+export type Position = {
+  buffer: Buffer;
+  owner: PublicKey;
+  pool: PublicKey;
+  custody: PublicKey;
+  collateralCustody: PublicKey;
+  openTime: BigNumber;
+  updateTime: BigNumber;
+  side: Side;
+  price: BigNumber;
+  sizeUsd: BigNumber;
+  collateralUsd: BigNumber;
+  realisedPnlUsd: BigNumber;
+  cumulativeInterestSnapshot: BigNumber;
+  lockedAmount: BigNumber;
+  bump: number;
+};
+
+export const positionStruct = new BeetStruct<Position>(
+  [
+    ['buffer', blob(8)],
+    ['owner', publicKey],
+    ['pool', publicKey],
+    ['custody', publicKey],
+    ['collateralCustody', publicKey],
+    ['openTime', i64],
+    ['updateTime', i64],
+    ['side', u8],
+    ['price', u64],
+    ['sizeUsd', u64],
+    ['collateralUsd', u64],
+    ['realisedPnlUsd', i64],
+    ['cumulativeInterestSnapshot', u128],
+    ['lockedAmount', u64],
+    ['bump', u8],
+  ],
+  (args) => args as Position
 );
