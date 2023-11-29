@@ -16,11 +16,10 @@ import { getParsedProgramAccounts } from '../../utils/solana';
 import { obligationStruct } from './structs';
 import { getClientSolana } from '../../utils/clients';
 import { obligationsFilter } from './filters';
-import { parseDataflat } from '../solend/helpers';
+import { parseDataflat, parseApy } from './helpers';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
 import { wadsDecimal } from '../solend/constants';
-import { parseApy } from './helpers';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -48,7 +47,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
 
   const reserveByAddress: Map<string, ReserveEnhanced> = new Map();
-  for (const market of Object.keys(reservesByMarket)) {
+  for (const market of reservesByMarket.keys()) {
     const reserves = reservesByMarket.get(market);
     if (!reserves) continue;
     reserves.forEach((res) => reserveByAddress.set(res.pubkey, res));

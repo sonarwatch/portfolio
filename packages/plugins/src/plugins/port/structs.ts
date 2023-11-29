@@ -153,3 +153,33 @@ export const obligationStruct = new BeetStruct<Obligation>(
   ],
   (args) => args as Obligation
 );
+
+export type ObligationCollateral = {
+  depositReserve: PublicKey;
+  depositedAmount: BigNumber;
+  marketValue: BigNumber;
+};
+export const obligationCollateralStruct = new BeetStruct<ObligationCollateral>(
+  [
+    ['depositReserve', publicKey],
+    ['depositedAmount', u64],
+    ['marketValue', u128],
+  ],
+  (args) => args as ObligationCollateral
+);
+
+export type ObligationLiquidity = {
+  borrowReserve: PublicKey;
+  cumulativeBorrowRateWads: BigNumber;
+  borrowedAmountWads: BigNumber;
+  marketValue: BigNumber;
+};
+export const obligationLiquidityStruct = new BeetStruct<ObligationLiquidity>(
+  [
+    ['borrowReserve', publicKey],
+    ['cumulativeBorrowRateWads', u128],
+    ['borrowedAmountWads', u128],
+    ['marketValue', u128],
+  ],
+  (args) => args as ObligationLiquidity
+);
