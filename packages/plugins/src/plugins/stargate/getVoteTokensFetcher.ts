@@ -22,22 +22,25 @@ export function getVoteTokensFetcher(config: StgConfig): Fetcher {
       functionName: 'locked',
       args: [owner as `0x${string}`],
     } as const;
-    const results = await client.readContract(contract);
-    if (results[0] === BigInt(0)) return [];
+    const [balance, lockedUntil] = await client.readContract(contract);
+    if (balance === BigInt(0)) return [];
 
     const tokenPrice = await cache.getTokenPrice(stgAddress, networkId);
     if (!tokenPrice) return [];
 
-    const amountLocked = Number(results[0]) / 10 ** tokenPrice.decimals;
+    const amountLocked = Number(balance) / 10 ** tokenPrice.decimals;
 
     const assets: PortfolioAssetToken[] = [
-      tokenPriceToAssetToken(
-        stgAddress,
-        amountLocked,
-        networkId,
-        tokenPrice,
-        tokenPrice.price
-      ),
+      {
+        ...tokenPriceToAssetToken(
+          stgAddress,
+          amountLocked,
+          networkId,
+          tokenPrice,
+          tokenPrice.price
+        ),
+        lockedUntil: Number(lockedUntil),
+      },
     ];
     const value = amountLocked * tokenPrice.price;
 
