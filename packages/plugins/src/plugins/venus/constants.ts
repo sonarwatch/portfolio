@@ -6,7 +6,7 @@ export const venusPlatform: Platform = {
   id: platformId,
   name: upperCaseFirstLetter(platformId),
   image: 'https://sonar.watch/img/platforms/venus.png',
-  defiLlamaId: 'venus',
+  defiLlamaId: 'venus-core-pool',
   website: 'https://app.venus.io/',
 };
 
