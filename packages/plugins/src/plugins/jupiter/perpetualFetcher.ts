@@ -182,6 +182,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         suppliedValue: depositValue,
         suppliedYields,
         collateralRatio: null,
+        healthRatio: null,
         rewardAssets,
         value,
       },
