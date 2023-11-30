@@ -31,7 +31,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     perpsProgramId,
     perpetualsPositionsFilter(owner)
   );
-  if (perpetualsPositions.length === 0) return [];
+  if (
+    perpetualsPositions.length === 0 ||
+    !perpetualsPositions.some((perp) => perp.sizeUsd.isGreaterThan(0))
+  )
+    return [];
 
   const custodiesAccounts = await cache.getItem<CustodyInfo[]>(custodiesKey, {
     prefix: platformId,
@@ -66,6 +70,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const elements: PortfolioElement[] = [];
   for (const position of perpetualsPositions) {
+    if (position.sizeUsd.isLessThanOrEqualTo(0)) continue;
     if (position.side === Side.None) continue;
     const isLong = position.side === Side.Long;
 
