@@ -35,17 +35,22 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     NetworkId.solana
   );
 
-  const asset = {
-    ...tokenPriceToAssetToken(
-      lfntyMint,
-      amount.dividedBy(10 ** lfntyDecimals).toNumber(),
-      NetworkId.solana,
-      lfntyTokenPrice
-    ),
-    lockedUntil: escrowEndsAt.isZero()
-      ? duration.times(1000).plus(Date.now()).toNumber()
-      : escrowEndsAt.toNumber(),
-  };
+  const yearsLocked = duration.dividedBy(60 * 60 * 24 * 365).decimalPlaces(0);
+  const yearsText = yearsLocked.isEqualTo(1)
+    ? `Locked (${yearsLocked} year)`
+    : `Locked (${yearsLocked} years)`;
+  const name = escrowEndsAt.isZero() ? yearsText : undefined;
+
+  const asset = tokenPriceToAssetToken(
+    lfntyMint,
+    amount.dividedBy(10 ** lfntyDecimals).toNumber(),
+    NetworkId.solana,
+    lfntyTokenPrice
+  );
+
+  if (escrowEndsAt.isGreaterThan(0)) {
+    asset.lockedUntil = escrowEndsAt.toNumber();
+  }
 
   return [
     {
@@ -55,6 +60,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       networkId: NetworkId.solana,
       platformId,
       value: asset.value,
+      name,
     },
   ];
 };
