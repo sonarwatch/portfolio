@@ -2,6 +2,10 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.8.114](https://github.com/sonarwatch/portfolio/compare/plugins-0.8.113...plugins-0.8.114) (2023-11-30)
+
+
+
 ## [0.8.113](https://github.com/sonarwatch/portfolio/compare/plugins-0.8.112...plugins-0.8.113) (2023-11-29)
 
 
