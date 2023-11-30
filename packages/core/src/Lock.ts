@@ -8,7 +8,7 @@ export type StandardLock = {
 };
 
 export type UnbondingLock = {
-  type: 'unboding';
+  type: 'unbonding';
   data: {
     periodMs: number;
     startedTs?: number;
@@ -20,7 +20,7 @@ export const createUnbondingLock = (
   periodMs: number,
   startedTs?: number
 ): UnbondingLock => ({
-  type: 'unboding',
+  type: 'unbonding',
   data: {
     periodMs,
     startedTs: startedTs || undefined,
