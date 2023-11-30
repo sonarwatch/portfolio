@@ -94,6 +94,7 @@ export type PortfolioElementCommon = {
   name?: string;
   tags?: string[];
   proxyInfo?: ProxyInfo;
+  lockedUntil?: number;
 };
 
 export type PortfolioElementSingleData = {
