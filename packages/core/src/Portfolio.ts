@@ -35,6 +35,7 @@ export type PortfolioAssetCommon = {
   networkId: NetworkIdType;
   type: PortfolioAssetTypeType;
   value: UsdValue;
+  lockedUntil?: number;
 };
 
 export type PortfolioAssetGenericData = {
@@ -94,7 +95,6 @@ export type PortfolioElementCommon = {
   name?: string;
   tags?: string[];
   proxyInfo?: ProxyInfo;
-  lockedUntil?: number;
 };
 
 export type PortfolioElementSingleData = {
