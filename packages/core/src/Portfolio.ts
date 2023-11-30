@@ -141,9 +141,9 @@ export type PortfolioElementLiquidity = PortfolioElementCommon & {
 
 export type LeverageData = PortfolioAsset & {
   side: Side;
+  leverage: number;
   entryPrice: UsdValue;
   liquiditationPrice: UsdValue;
-  leverage: number;
   unrealizedPnl: UsdValue;
   fees?: Fee[];
 };
@@ -169,7 +169,6 @@ export type PortfolioElementBorrowLendData = {
   healthRatio?: number | null;
 
   // For leverage trading
-  isLeverage?: boolean;
   leverageData?: LeverageData;
 };
 
