@@ -25,25 +25,33 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     stakingAccountFilter(owner)
   );
 
-  if (accounts.length === 0) return [];
+  if (accounts.length === 0 || accounts.length > 1) return [];
+  const stakingAccount = accounts[0];
 
   const gofxTokenPrice = await cache.getTokenPrice(gofxMint, NetworkId.solana);
   if (!gofxTokenPrice) return [];
+  const { decimals } = gofxTokenPrice;
 
   const assets: PortfolioAsset[] = [];
-  for (const account of accounts) {
-    let totalAmount = account.totalStaked;
-    for (const ticket of account.unstakingTickets) {
-      const unlockStartedAt = new Date(ticket.createdAt.times(1000).toNumber());
-      const unlockingAt = new Date(unlockStartedAt.getTime() + sevenDays);
-      if (Date.now() < unlockingAt.getTime())
-        totalAmount = totalAmount.plus(ticket.totalUnstaked);
+  for (const ticket of stakingAccount.unstakingTickets) {
+    const unlockStartedAt = new Date(ticket.createdAt.times(1000).toNumber());
+    const unlockingAt = new Date(unlockStartedAt.getTime() + sevenDays);
+    if (Date.now() < unlockingAt.getTime()) {
+      assets.push({
+        ...tokenPriceToAssetToken(
+          gofxMint,
+          ticket.totalUnstaked.dividedBy(10 ** decimals).toNumber(),
+          NetworkId.solana,
+          gofxTokenPrice
+        ),
+        lockedUntil: unlockingAt.getTime(),
+      });
     }
-    if (totalAmount.isZero()) continue;
-
-    const { decimals } = gofxTokenPrice;
-    const amount = totalAmount.dividedBy(10 ** decimals).toNumber();
-
+  }
+  if (stakingAccount.totalStaked.isGreaterThan(0)) {
+    const amount = stakingAccount.totalStaked
+      .dividedBy(10 ** decimals)
+      .toNumber();
     assets.push(
       tokenPriceToAssetToken(gofxMint, amount, NetworkId.solana, gofxTokenPrice)
     );
