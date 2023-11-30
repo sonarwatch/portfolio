@@ -39,11 +39,11 @@ export type Escrow = {
   owner: PublicKey;
   bump: number;
   amount: BigNumber;
-  escrow_started_at: BigNumber;
-  escrow_ends_at: BigNumber;
-  initial_amount: BigNumber;
+  escrowStartedAt: BigNumber;
+  escrowEndsAt: BigNumber;
+  initialAmount: BigNumber;
   duration: BigNumber;
-  vote_delegate: PublicKey;
+  voteDelegate: PublicKey;
   reserved1: number[];
   reserved2: number[];
 };
@@ -55,11 +55,11 @@ export const escrowStruct = new BeetStruct<Escrow>(
     ['owner', publicKey],
     ['bump', u8],
     ['amount', u64],
-    ['escrow_started_at', i64],
-    ['escrow_ends_at', i64],
-    ['initial_amount', i64],
+    ['escrowStartedAt', i64],
+    ['escrowEndsAt', i64],
+    ['initialAmount', i64],
     ['duration', i64],
-    ['vote_delegate', publicKey],
+    ['voteDelegate', publicKey],
     ['reserved1', uniformFixedSizeArray(u8, 15)],
     ['reserved2', uniformFixedSizeArray(u8, 32)],
   ],

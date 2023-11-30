@@ -26,36 +26,26 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const escrowAccount = accounts[0];
 
-  // amount = amount.plus(account.amount.times(daysLocked).dividedBy(1460));
-  const { amount } = escrowAccount;
+  const { amount, escrowEndsAt, duration } = escrowAccount;
 
   if (amount.isZero()) return [];
-
-  const daysLocked = escrowAccount.duration
-    .dividedBy(60 * 60 * 24)
-    .decimalPlaces(0);
-  const yearsLocked = escrowAccount.duration
-    .dividedBy(60 * 60 * 24 * 365)
-    .decimalPlaces(0);
-  const yearsText = yearsLocked.isEqualTo(1)
-    ? `Locked (${yearsLocked} year)`
-    : `Locked (${yearsLocked} years)`;
-
-  const status = escrowAccount.escrow_ends_at.isZero()
-    ? yearsText
-    : `Unlocking (${daysLocked} days left)`;
 
   const lfntyTokenPrice = await cache.getTokenPrice(
     lfntyMint,
     NetworkId.solana
   );
 
-  const asset = tokenPriceToAssetToken(
-    lfntyMint,
-    amount.dividedBy(10 ** lfntyDecimals).toNumber(),
-    NetworkId.solana,
-    lfntyTokenPrice
-  );
+  const asset = {
+    ...tokenPriceToAssetToken(
+      lfntyMint,
+      amount.dividedBy(10 ** lfntyDecimals).toNumber(),
+      NetworkId.solana,
+      lfntyTokenPrice
+    ),
+    lockedUntil: escrowEndsAt.isZero()
+      ? duration.times(1000).plus(Date.now()).toNumber()
+      : escrowEndsAt.toNumber(),
+  };
 
   return [
     {
@@ -65,7 +55,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       networkId: NetworkId.solana,
       platformId,
       value: asset.value,
-      name: status,
     },
   ];
 };
