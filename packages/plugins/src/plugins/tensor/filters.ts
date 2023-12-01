@@ -12,3 +12,13 @@ export const singleListingFilter = (
     },
   },
 ];
+
+export const poolFilter = (owner: string): GetProgramAccountsFilter[] => [
+  { dataSize: 293 },
+  {
+    memcmp: {
+      bytes: owner,
+      offset: 71,
+    },
+  },
+];
