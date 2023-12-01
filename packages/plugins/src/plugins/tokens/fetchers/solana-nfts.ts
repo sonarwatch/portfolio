@@ -19,6 +19,7 @@ import { walletNftsPlatform, walletTokensPlatform } from '../constants';
 import { getClientSolana } from '../../../utils/clients';
 import { Cache } from '../../../Cache';
 import runInBatch from '../../../utils/misc/runInBatch';
+import getTensorSingleListings from '../../tensor/singleListingFetcher';
 
 const prefix = 'nft-images';
 const noImageValue = 'noimage';
@@ -29,8 +30,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const outputs = await metaplex.nfts().findAllByOwner({
     owner: new PublicKey(owner),
   });
+  const nftsOnTensor = await getTensorSingleListings(owner);
+  const allNfts = [...outputs, ...nftsOnTensor].filter((nft) => nft !== null);
   const cachedImages = await cache.getItems<string>(
-    outputs.map((o) =>
+    allNfts.map((o) =>
       o.model === 'metadata'
         ? o.mintAddress.toString()
         : o.mint.address.toString()
@@ -42,7 +45,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
   const images: Map<string, string> = new Map();
   const missings: Metadata[] = [];
-  outputs.forEach((o, i) => {
+  allNfts.forEach((o, i) => {
     const cachedImage = cachedImages[i];
     if (cachedImage) {
       const address =
@@ -78,7 +81,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
   await Promise.allSettled(promises);
 
-  const assets: PortfolioAssetCollectible[] = outputs.map((output) => {
+  const assets: PortfolioAssetCollectible[] = allNfts.map((output) => {
     const address =
       output.model === 'metadata'
         ? output.mintAddress.toString()
