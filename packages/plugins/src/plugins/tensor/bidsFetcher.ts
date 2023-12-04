@@ -1,7 +1,7 @@
 import {
   NetworkId,
   PortfolioElementType,
-  solanaNativeWrappedAddress,
+  solanaNativeAddress,
   solanaNetwork,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
@@ -40,7 +40,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
 
   const solTokenPrice = await cache.getTokenPrice(
-    solanaNativeWrappedAddress,
+    solanaNativeAddress,
     NetworkId.solana
   );
 
@@ -49,7 +49,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     .toNumber();
 
   const asset = tokenPriceToAssetToken(
-    solanaNativeWrappedAddress,
+    solanaNativeAddress,
     amount,
     NetworkId.solana,
     solTokenPrice
