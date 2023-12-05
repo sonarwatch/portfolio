@@ -1,10 +1,13 @@
 # SonarWatch Portfolio
 
+[![Core NPM Version](https://img.shields.io/npm/v/@sonarwatch/portfolio-core?color=33cd56&label=npm%20core)](https://www.npmjs.com/package/@sonarwatch/portfolio-core)
+[![Plugins NPM Version](https://img.shields.io/npm/v/@sonarwatch/portfolio-plugins?color=33cd56&label=npm%20plugins)](https://www.npmjs.com/package/@sonarwatch/portfolio-plugins)
+
 Useful links:
 
 - [Github repository](https://github.com/sonarwatch/portfolio)
 - [API Rest](https://portfolio-api.sonar.watch/api)
-- [Documentation](https://sonarwatch.github.io/portfolio/index.html)
+- [Documentation](https://sonarwatch.github.io/portfolio/)
 
 This repository powers SonarWatch website by fetching all DeFi assets for a wallet on multiple chains, it covers:
 
