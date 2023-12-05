@@ -3,6 +3,9 @@ import { NetworkIdType } from './Network';
 import { Yield } from './Yield';
 import { AddressSystemType } from './Address';
 
+/**
+ * Represents the type of a portfolio asset.
+ */
 export const PortfolioAssetType = {
   generic: 'generic',
   token: 'token',
@@ -11,6 +14,9 @@ export const PortfolioAssetType = {
 export type PortfolioAssetTypeType =
   (typeof PortfolioAssetType)[keyof typeof PortfolioAssetType];
 
+/**
+ * Represents the label of a portfolio element.
+ */
 export type PortfolioElementLabel =
   | 'Wallet'
   | 'Staked'
@@ -22,6 +28,9 @@ export type PortfolioElementLabel =
   | 'Rewards'
   | 'Leverage';
 
+/**
+ * Represents the type of a portfolio element.
+ */
 export const PortfolioElementType = {
   single: 'single',
   multiple: 'multiple',
@@ -31,6 +40,9 @@ export const PortfolioElementType = {
 export type PortfolioElementTypeType =
   (typeof PortfolioElementType)[keyof typeof PortfolioElementType];
 
+/**
+ * Represents the common properties of a portfolio asset.
+ */
 export type PortfolioAssetCommon = {
   networkId: NetworkIdType;
   type: PortfolioAssetTypeType;
@@ -38,25 +50,42 @@ export type PortfolioAssetCommon = {
   lockedUntil?: number;
 };
 
+/**
+ * Represents the data of a generic portfolio asset.
+ */
 export type PortfolioAssetGenericData = {
   name?: string;
   amount: number;
 };
+
+/**
+ * Represents a generic portfolio asset.
+ */
 export type PortfolioAssetGeneric = PortfolioAssetCommon & {
   type: 'generic';
   data: PortfolioAssetGenericData;
 };
 
+/**
+ * Represents the data of a token portfolio asset.
+ */
 export type PortfolioAssetTokenData = {
   address: string;
   amount: number;
   price: UsdValue;
 };
+
+/**
+ * Represents a token portfolio asset.
+ */
 export type PortfolioAssetToken = PortfolioAssetCommon & {
   type: 'token';
   data: PortfolioAssetTokenData;
 };
 
+/**
+ * Represents the data of a collectible portfolio asset.
+ */
 export type PortfolioAssetCollectibleData = {
   address: string;
   amount: number;
@@ -71,21 +100,34 @@ export type PortfolioAssetCollectibleData = {
     name?: string;
   };
 };
+
+/**
+ * Represents a collectible portfolio asset.
+ */
 export type PortfolioAssetCollectible = PortfolioAssetCommon & {
   type: 'collectible';
   data: PortfolioAssetCollectibleData;
 };
 
+/**
+ * Represents a portfolio asset.
+ */
 export type PortfolioAsset =
   | PortfolioAssetGeneric
   | PortfolioAssetToken
   | PortfolioAssetCollectible;
 
+/**
+ * Represents the information of a proxy.
+ */
 export type ProxyInfo = {
   id: string;
   address: string;
 };
 
+/**
+ * Represents the common properties of a portfolio element.
+ */
 export type PortfolioElementCommon = {
   networkId: NetworkIdType;
   platformId: string;
@@ -97,24 +139,39 @@ export type PortfolioElementCommon = {
   proxyInfo?: ProxyInfo;
 };
 
+/**
+ * Represents the data of a single portfolio element.
+ */
 export type PortfolioElementSingleData = {
   asset: PortfolioAsset;
 };
 
+/**
+ * Represents a single portfolio element.
+ */
 export type PortfolioElementSingle = PortfolioElementCommon & {
   type: 'single';
   data: PortfolioElementSingleData;
 };
 
+/**
+ * Represents the data of a multiple portfolio element.
+ */
 export type PortfolioElementMultipleData = {
   assets: PortfolioAsset[];
 };
 
+/**
+ * Represents a multiple portfolio element.
+ */
 export type PortfolioElementMultiple = PortfolioElementCommon & {
   type: 'multiple';
   data: PortfolioElementMultipleData;
 };
 
+/**
+ * Represents a liquidity.
+ */
 export type PortfolioLiquidity = {
   assets: PortfolioAsset[];
   assetsValue: UsdValue;
@@ -124,15 +181,24 @@ export type PortfolioLiquidity = {
   yields: Yield[];
 };
 
+/**
+ * Represents the data of a liquidity portfolio element.
+ */
 export type PortfolioElementLiquidityData = {
   liquidities: PortfolioLiquidity[];
 };
 
+/**
+ * Represents a liquidity portfolio element.
+ */
 export type PortfolioElementLiquidity = PortfolioElementCommon & {
   type: 'liquidity';
   data: PortfolioElementLiquidityData;
 };
 
+/**
+ * Represents the data of a borrow lend portfolio element.
+ */
 export type PortfolioElementBorrowLendData = {
   value: UsdValue;
   suppliedAssets: PortfolioAsset[];
@@ -154,17 +220,26 @@ export type PortfolioElementBorrowLendData = {
   healthRatio: number | null;
 };
 
+/**
+ * Represents a borrow lend portfolio element.
+ */
 export type PortfolioElementBorrowLend = PortfolioElementCommon & {
   type: 'borrowlend';
   data: PortfolioElementBorrowLendData;
 };
 
+/**
+ * Represents a portfolio element.
+ */
 export type PortfolioElement =
   | PortfolioElementSingle
   | PortfolioElementMultiple
   | PortfolioElementLiquidity
   | PortfolioElementBorrowLend;
 
+/**
+ * Represents the result of a fetcher.
+ */
 export type FetcherResult = {
   owner: string;
   fetcherId: string;
@@ -173,6 +248,9 @@ export type FetcherResult = {
   elements: PortfolioElement[];
 };
 
+/**
+ * Represents the report of a fetcher.
+ */
 export type FetcherReport = {
   id: string;
   status: 'succeeded' | 'failed';
@@ -180,6 +258,9 @@ export type FetcherReport = {
   error?: string;
 };
 
+/**
+ * Represents the result of multiple fetchers.
+ */
 export type FetchersResult = {
   date: number;
   owner: string;
