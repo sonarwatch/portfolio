@@ -2,8 +2,9 @@
 
 Useful links:
 
-- [API Documentation](https://sonarwatch.github.io/portfolio/index.html)
 - [Github repository](https://github.com/sonarwatch/portfolio)
+- [API Rest](https://portfolio-api.sonar.watch/api)
+- [Documentation](https://sonarwatch.github.io/portfolio/index.html)
 
 This repository powers SonarWatch website by fetching all DeFi assets for a wallet on multiple chains, it covers:
 
