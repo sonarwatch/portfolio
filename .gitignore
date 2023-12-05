@@ -3,11 +3,8 @@
 # env file
 .env
 
-# cache
-cache
-
 # docs
-docs
+/docs
 
 # compiled output
 dist
