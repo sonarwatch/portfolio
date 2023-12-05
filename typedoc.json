@@ -1,0 +1,6 @@
+{
+  "entryPoints": ["packages/*"],
+  "name": "SonarWatch Portfolio",
+  "entryPointStrategy": "packages",
+  "includeVersion": false
+}
