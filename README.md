@@ -1,6 +1,6 @@
 # SonarWatch Portfolio
 
-This repository powers SonarWatch website by fetching all DeFi assets for a wallet on multiple chains, it covers :
+This repository powers SonarWatch website by fetching all DeFi assets for a wallet on multiple chains, it covers:
 
 - Tokens value
 - NFTs (listed included)
@@ -8,8 +8,7 @@ This repository powers SonarWatch website by fetching all DeFi assets for a wall
 - Lending and borrowing amount
 - Spot accounts
 - Native stake accounts
-
-& many other to come!
+- many other to come!
 
 # How does it works ?
 
