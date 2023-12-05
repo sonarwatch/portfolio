@@ -23,10 +23,10 @@ export function formatMoveTokenAddress(address: string) {
     : address;
   return tAddress
     .trim()
-    .replace('::', '__')
-    .replace(',', '-')
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_-]+/g, '-');
+    .replaceAll('::', '__')
+    .replaceAll(',', '-')
+    .replaceAll(/[^\w\s-]/g, '')
+    .replaceAll(/[\s_-]+/g, '-');
 }
 
 export function formatEvmTokenAddress(address: string) {
