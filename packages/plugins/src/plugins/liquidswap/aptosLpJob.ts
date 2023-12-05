@@ -32,7 +32,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     }
     resourcesByType.set(resource.type, resource);
   });
-
+  const promises = [];
   for (let i = 0; i < lpsCoinInfo.length; i++) {
     const lpInfoResource = lpsCoinInfo[i];
 
@@ -78,8 +78,11 @@ const executor: JobExecutor = async (cache: Cache) => {
       reserveTokenX: new BigNumber(liquidityPoolData.coin_x_reserve.value),
       reserveTokenY: new BigNumber(liquidityPoolData.coin_y_reserve.value),
     };
-    await computeAndStoreLpPrice(cache, poolData, NetworkId.aptos, platformId);
+    promises.push(
+      computeAndStoreLpPrice(cache, poolData, NetworkId.aptos, platformId)
+    );
   }
+  await Promise.allSettled(promises);
 };
 
 const job: Job = {

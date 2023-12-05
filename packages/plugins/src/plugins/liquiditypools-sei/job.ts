@@ -20,6 +20,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   const cosmWasmClient = await getCosmWasmClient(getUrlEndpoint(NetworkId.sei));
 
   const pushedContractsByPlatform: Map<string, string[]> = new Map();
+  const promises = [];
   for (const liquidityPoolInfo of liquidityPoolsInfos) {
     const { codes } = liquidityPoolInfo;
     const contracts: string[] = [];
@@ -64,7 +65,9 @@ const executor: JobExecutor = async (cache: Cache) => {
         supply,
       };
 
-      await computeAndStoreLpPrice(cache, poolData, NetworkId.sei, platform);
+      promises.push(
+        computeAndStoreLpPrice(cache, poolData, NetworkId.sei, platform)
+      );
 
       if (pushedContractsByPlatform.get(platform)) {
         const pushedContracts = pushedContractsByPlatform.get(platform);
@@ -82,15 +85,19 @@ const executor: JobExecutor = async (cache: Cache) => {
   for (const platform of pushedContractsByPlatform.keys()) {
     const contracts = pushedContractsByPlatform.get(platform);
     if (!contracts || contracts.length === 0) continue;
-    await cache.setItem(
-      platform,
-      { id: platform, contracts },
-      {
-        prefix: pluginId,
-        networkId: NetworkId.sei,
-      }
+    promises.push(
+      cache.setItem(
+        platform,
+        { id: platform, contracts },
+        {
+          prefix: pluginId,
+          networkId: NetworkId.sei,
+        }
+      )
     );
   }
+
+  await Promise.allSettled(promises);
 };
 
 const job: Job = {

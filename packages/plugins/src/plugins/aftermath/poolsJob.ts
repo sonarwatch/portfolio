@@ -45,6 +45,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     showContent: true,
   });
 
+  const promises = [];
   for (const pool of poolsInfo) {
     if (!pool.data || !pool.data.content) continue;
     const poolInfo = getObjectFields(pool) as PoolInfo;
@@ -98,17 +99,19 @@ const executor: JobExecutor = async (cache: Cache) => {
 
       const price = totalLiquidity.dividedBy(poolSupply).toNumber();
 
-      await cache.setTokenPriceSource({
-        id: platformId,
-        weight: 1,
-        address,
-        networkId,
-        platformId,
-        decimals,
-        price,
-        underlyings,
-        timestamp: Date.now(),
-      });
+      promises.push(
+        cache.setTokenPriceSource({
+          id: platformId,
+          weight: 1,
+          address,
+          networkId,
+          platformId,
+          decimals,
+          price,
+          underlyings,
+          timestamp: Date.now(),
+        })
+      );
     } else {
       const poolData: PoolData = {
         id: address,
@@ -125,9 +128,13 @@ const executor: JobExecutor = async (cache: Cache) => {
         ),
         supply: new BigNumber(poolInfo.lp_supply.fields.value),
       };
-      await computeAndStoreLpPrice(cache, poolData, networkId, platformId);
+      promises.push(
+        computeAndStoreLpPrice(cache, poolData, networkId, platformId)
+      );
     }
   }
+
+  await Promise.allSettled(promises);
 };
 
 const job: Job = {

@@ -29,6 +29,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     resourcesByType.set(resource.type, resource);
   });
 
+  const promises = [];
   for (let i = 0; i < resources.length; i++) {
     const resource = resources[i];
     if (!resource.type.startsWith(lpCoinInfoTypePrefix)) continue;
@@ -64,8 +65,12 @@ const executor: JobExecutor = async (cache: Cache) => {
       mintTokenX: typeX,
       mintTokenY: typeY,
     };
-    await computeAndStoreLpPrice(cache, poolData, NetworkId.aptos, platformId);
+    promises.push(
+      computeAndStoreLpPrice(cache, poolData, NetworkId.aptos, platformId)
+    );
   }
+
+  await Promise.allSettled(promises);
 };
 
 const job: Job = {

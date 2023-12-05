@@ -30,6 +30,8 @@ const executor: JobExecutor = async (cache: Cache) => {
     showType: true,
   });
 
+  const promises = [];
+
   for (const poolObject of poolsObjects) {
     const poolId = poolObject.data?.objectId;
     if (!poolId) continue;
@@ -37,22 +39,27 @@ const executor: JobExecutor = async (cache: Cache) => {
     const pool = getPoolFromObject(poolObject);
     if (!pool) continue;
 
-    await storeTokenPricesFromSqrt(
-      cache,
-      NetworkId.sui,
-      pool.poolAddress,
-      new BigNumber(pool.coinAmountA),
-      new BigNumber(pool.coinAmountB),
-      new BigNumber(pool.current_sqrt_price),
-      pool.coinTypeA,
-      pool.coinTypeB
+    promises.push(
+      storeTokenPricesFromSqrt(
+        cache,
+        NetworkId.sui,
+        pool.poolAddress,
+        new BigNumber(pool.coinAmountA),
+        new BigNumber(pool.coinAmountB),
+        new BigNumber(pool.current_sqrt_price),
+        pool.coinTypeA,
+        pool.coinTypeB
+      )
     );
 
-    await cache.setItem(poolId, pool, {
-      prefix: clmmPoolsPrefix,
-      networkId: NetworkId.sui,
-    });
+    promises.push(
+      cache.setItem(poolId, pool, {
+        prefix: clmmPoolsPrefix,
+        networkId: NetworkId.sui,
+      })
+    );
   }
+  await Promise.allSettled(promises);
 };
 
 const job: Job = {

@@ -18,28 +18,36 @@ const executor: JobExecutor = async (cache: Cache) => {
     whirlpoolProgram,
     whirlpoolFilters
   );
+
+  const promises = [];
   for (let id = 0; id < whirlpoolsInfo.length; id++) {
     const whirlpoolInfo = whirlpoolsInfo[id];
     if (whirlpoolInfo.liquidity.isZero()) continue;
 
     const reserveX = await client.getBalance(whirlpoolInfo.tokenVaultA);
     const reserveY = await client.getBalance(whirlpoolInfo.tokenVaultB);
-    await storeTokenPricesFromSqrt(
-      cache,
-      NetworkId.solana,
-      whirlpoolInfo.pubkey.toString(),
-      new BigNumber(reserveX),
-      new BigNumber(reserveY),
-      whirlpoolInfo.sqrtPrice,
-      whirlpoolInfo.tokenMintA.toString(),
-      whirlpoolInfo.tokenMintB.toString()
+    promises.push(
+      storeTokenPricesFromSqrt(
+        cache,
+        NetworkId.solana,
+        whirlpoolInfo.pubkey.toString(),
+        new BigNumber(reserveX),
+        new BigNumber(reserveY),
+        whirlpoolInfo.sqrtPrice,
+        whirlpoolInfo.tokenMintA.toString(),
+        whirlpoolInfo.tokenMintB.toString()
+      )
     );
 
-    await cache.setItem(whirlpoolInfo.pubkey.toString(), whirlpoolInfo, {
-      prefix: whirlpoolPrefix,
-      networkId: NetworkId.solana,
-    });
+    promises.push(
+      cache.setItem(whirlpoolInfo.pubkey.toString(), whirlpoolInfo, {
+        prefix: whirlpoolPrefix,
+        networkId: NetworkId.solana,
+      })
+    );
   }
+
+  await Promise.allSettled(promises);
 };
 
 const job: Job = {
