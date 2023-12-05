@@ -5,9 +5,6 @@ import { AddressSystemType } from './Address';
 
 /**
  * Represents the type of a portfolio asset.
- * @property generic A generic portfolio asset.
- * @property token A token portfolio asset.
- * @property collectible A collectible portfolio asset.
  */
 export const PortfolioAssetType = {
   generic: 'generic',
@@ -45,10 +42,6 @@ export type PortfolioElementTypeType =
 
 /**
  * Represents the common properties of a portfolio asset.
- * @property networkId The network ID.
- * @property type The type of the portfolio asset.
- * @property value The value of the portfolio asset.
- * @property lockedUntil The timestamp until the portfolio asset is locked.
  */
 export type PortfolioAssetCommon = {
   networkId: NetworkIdType;
@@ -59,8 +52,6 @@ export type PortfolioAssetCommon = {
 
 /**
  * Represents the data of a generic portfolio asset.
- * @property name The name of the portfolio asset.
- * @property amount The amount of the portfolio asset.
  */
 export type PortfolioAssetGenericData = {
   name?: string;
@@ -136,14 +127,6 @@ export type ProxyInfo = {
 
 /**
  * Represents the common properties of a portfolio element.
- * @property networkId The network ID of the portfolio element.
- * @property platformId The platform ID of the portfolio element.
- * @property value The value of the portfolio element.
- * @property type The type of the portfolio element.
- * @property label The label of the portfolio element.
- * @property name The name of the portfolio element.
- * @property tags The tags of the portfolio element.
- * @property proxyInfo The proxy information of the portfolio element.
  */
 export type PortfolioElementCommon = {
   networkId: NetworkIdType;
@@ -158,7 +141,6 @@ export type PortfolioElementCommon = {
 
 /**
  * Represents the data of a single portfolio element.
- * @property asset The asset of the single portfolio element.
  */
 export type PortfolioElementSingleData = {
   asset: PortfolioAsset;
@@ -174,7 +156,6 @@ export type PortfolioElementSingle = PortfolioElementCommon & {
 
 /**
  * Represents the data of a multiple portfolio element.
- * @property assets The assets of the multiple portfolio element.
  */
 export type PortfolioElementMultipleData = {
   assets: PortfolioAsset[];
