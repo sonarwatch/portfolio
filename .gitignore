@@ -6,6 +6,9 @@
 # cache
 cache
 
+# docs
+docs
+
 # compiled output
 dist
 tmp
