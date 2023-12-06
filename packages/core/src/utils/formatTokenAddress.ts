@@ -1,7 +1,7 @@
 import { getAddress } from '@ethersproject/address';
 import { NetworkIdType } from '../Network';
 import { AddressSystem, AddressSystemType } from '../Address';
-import { networks } from '../constants';
+import { networks, suiNetwork } from '../constants';
 import {
   assertBitcoinTokenAddress,
   assertEvmTokenAddress,
@@ -19,7 +19,7 @@ export function formatBitcoinTokenAddress(address: string) {
 export function formatMoveTokenAddress(address: string) {
   assertMoveTokenAddress(address);
   const tAddress = isNativeAddressAliasSui(address)
-    ? networks.sui.native.address
+    ? suiNetwork.native.address
     : address;
   return tAddress
     .trim()
