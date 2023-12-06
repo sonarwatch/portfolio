@@ -430,12 +430,13 @@ export function getCacheConfig(): CacheConfig {
         type: 'http',
         params: {
           base:
-            process.env['CACHE_CONFIG_HTTP_BASE'] || 'http://localhost:3000/',
-          headers: process.env['CACHE_CONFIG_HTTP_BEARER']
-            ? {
-                Authorization: `Bearer ${process.env['CACHE_CONFIG_HTTP_BEARER']}`,
-              }
-            : undefined,
+            process.env['CACHE_CONFIG_HTTP_BASE'] ||
+            'https://portfolio-api-public.sonar.watch/v1/portfolio/cache',
+          headers: {
+            Authorization: `Bearer ${
+              process.env['CACHE_CONFIG_HTTP_BEARER'] || publicBearerToken
+            }`,
+          },
         },
       };
     default:
