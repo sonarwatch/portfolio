@@ -1,3 +1,6 @@
+/**
+ * Represents a platform.
+ */
 export type Platform = {
   id: string;
   name: string;

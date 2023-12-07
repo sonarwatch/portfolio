@@ -15,7 +15,6 @@ import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSui } from '../../../utils/clients';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import { walletTokensPlatform } from '../constants';
-import runInBatch from '../../../utils/misc/runInBatch';
 import tokenPriceToAssetTokens from '../../../utils/misc/tokenPriceToAssetTokens';
 import { getTag, parseTag } from '../helpers';
 
@@ -24,27 +23,22 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const coinsBalances = await client.getAllBalances({ owner });
   const coinsTypes = [...new Set(coinsBalances.map((cb) => cb.coinType))];
-  const results = await runInBatch(
-    coinsTypes.map(
-      (coinType) => () => cache.getTokenPrice(coinType, NetworkId.sui)
-    )
-  );
-  const tokenPrices: Map<string, TokenPrice> = new Map();
-  results.forEach((r) => {
-    if (r.status === 'rejected') return;
-    if (!r.value) return;
-    tokenPrices.set(r.value.address, r.value);
+  const tokensPrices = await cache.getTokenPrices(coinsTypes, NetworkId.sui);
+  const tokenPricesMap: Map<string, TokenPrice> = new Map();
+  tokensPrices.forEach((tp) => {
+    if (!tp) return;
+    tokenPricesMap.set(tp.address, tp);
   });
+
   const walletTokensAssets: PortfolioAssetToken[] = [];
   const liquiditiesByTag: Record<string, PortfolioLiquidity[]> = {};
-
   for (let i = 0; i < coinsBalances.length; i++) {
     const coinBalance = coinsBalances[i];
     const amountRaw = Number(coinBalance.totalBalance);
     if (amountRaw === 0) continue;
 
     const { coinType } = coinBalance;
-    const tokenPrice = tokenPrices.get(formatMoveTokenAddress(coinType));
+    const tokenPrice = tokenPricesMap.get(formatMoveTokenAddress(coinType));
     if (!tokenPrice) continue;
 
     const amount = amountRaw / 10 ** tokenPrice.decimals;
