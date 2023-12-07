@@ -1,5 +1,4 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import { PublicKey } from '@solana/web3.js';
 import { platformId, vaultsProgramId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
@@ -8,6 +7,7 @@ import { fetchTokenSupplyAndDecimals } from '../../utils/solana/fetchTokenSupply
 import { vaultsFilters } from './filters';
 import { Job, JobExecutor } from '../../Job';
 import { Cache } from '../../Cache';
+import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -18,17 +18,20 @@ const executor: JobExecutor = async (cache: Cache) => {
     vaultsFilters
   );
 
+  const tokensById = await getTokenPricesMap(
+    vaultAccounts.map((vault) => vault.token_mint.toString()),
+    NetworkId.solana,
+    cache
+  );
+
   for (let i = 0; i < vaultAccounts.length; i += 1) {
     const vault = vaultAccounts[i];
     if (vault.total_amount.isZero()) continue;
-    const vaultTokenPrice = await cache.getTokenPrice(
-      vault.token_mint.toString(),
-      NetworkId.solana
-    );
+    const vaultTokenPrice = tokensById.get(vault.token_mint.toString());
     if (!vaultTokenPrice) continue;
 
     const lpSupplyRes = await fetchTokenSupplyAndDecimals(
-      new PublicKey(vault.lp_mint.toString()),
+      vault.lp_mint,
       client,
       0
     );
@@ -46,6 +49,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       address: vault.lp_mint.toString(),
       networkId: NetworkId.solana,
       platformId,
+      elementName: 'Vault',
       decimals: lpDecimals,
       price,
       underlyings: [
@@ -63,7 +67,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 };
 
 const job: Job = {
-  id: `${platformId}-lp-tokens`,
+  id: `${platformId}-vaults`,
   executor,
 };
 export default job;
