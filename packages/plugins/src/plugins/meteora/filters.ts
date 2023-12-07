@@ -1,9 +1,6 @@
 import { GetProgramAccountsFilter } from '@solana/web3.js';
-import { vaultStruct } from './struct';
 
-export const vaultsFilters: GetProgramAccountsFilter[] = [
-  { dataSize: vaultStruct.byteSize },
-];
+export const vaultsFilters: GetProgramAccountsFilter[] = [{ dataSize: 10240 }];
 
 export const constantPoolsFilters: GetProgramAccountsFilter[] = [
   { dataSize: 944 },
