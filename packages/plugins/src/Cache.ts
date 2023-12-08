@@ -441,10 +441,8 @@ export function getCacheConfig(): CacheConfig {
       };
     default:
       return {
-        type: 'filesystem',
-        params: {
-          base: process.env['CACHE_CONFIG_FILESYSTEM_BASE'] || './cache',
-        },
+        type: 'memory',
+        params: {},
       };
   }
 }
