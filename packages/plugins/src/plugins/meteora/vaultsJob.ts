@@ -58,7 +58,7 @@ const executor: JobExecutor = async (cache: Cache) => {
           address: vaultTokenPrice.address,
           decimals: vaultTokenPrice.decimals,
           price: vaultTokenPrice.price,
-          amountPerLp: vaultAmount / vaultValue,
+          amountPerLp: price / vaultTokenPrice.price,
         },
       ],
       timestamp: Date.now(),
