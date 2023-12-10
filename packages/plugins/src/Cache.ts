@@ -24,6 +24,16 @@ export type TransactionOptions = {
   networkId?: NetworkIdType;
 };
 
+/**
+ * Represents the options for setting an item in the cache.
+ */
+export type TransactionOptionsSetItem = {
+  /**
+   * The time-to-live (TTL) value in milliseconds for the cached item.
+   */
+  ttl?: number;
+};
+
 const tokenPriceSourcePrefix = 'tokenpricesource';
 const tokenPricesCacheTtl = 30 * 1000; // 30 sec
 
@@ -279,12 +289,19 @@ export class Cache {
   async setItem<K extends StorageValue>(
     key: string,
     value: K,
-    opts: TransactionOptions
+    opts: TransactionOptions & TransactionOptionsSetItem
   ) {
     const fullKey = getFullKey(key, opts);
-    return this.storage.setItem(fullKey, value);
-  }
 
+    // ttl
+    let { ttl } = opts;
+    if (this.driver.name === 'redis' && ttl) {
+      ttl = Math.round(ttl / 1000);
+    }
+    return this.storage.setItem(fullKey, value, {
+      ttl,
+    });
+  }
   async setTokenPriceSource(source: TokenPriceSource) {
     const fSource = formatTokenPriceSource(source);
     let cSources = await this.getItem<TokenPriceSource[]>(fSource.address, {
