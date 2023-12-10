@@ -64,12 +64,5 @@ const otphanPlatforms: Platform[] = [
     image: 'https://sonar.watch/img/platforms/stakewise.png',
     website: 'https://stakewise.io/',
   },
-  {
-    id: 'instadapp',
-    defiLlamaId: 'instadapp',
-    name: 'Instadapp',
-    image: 'https://sonar.watch/img/platforms/instadapp.png',
-    website: 'https://instadapp.io/',
-  },
 ];
 export default otphanPlatforms;
