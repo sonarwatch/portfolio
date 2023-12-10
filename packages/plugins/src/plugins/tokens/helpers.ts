@@ -3,12 +3,33 @@ import {
   NetworkIdType,
   TokenPriceSource,
   UniTokenList,
+  UniTokenListVersion,
 } from '@sonarwatch/portfolio-core';
 import { nIdsToFetch, walletTokensPlatform } from './constants';
 import { CoingeckoSimpleRes, TokenData } from './types';
 import shuffleArray from '../../utils/misc/shuffleArray';
 import sleep from '../../utils/misc/sleep';
 import { coingeckoCoinsPriceUrl } from '../../utils/coingecko/constants';
+
+export function compareVersion(
+  versionA: UniTokenListVersion,
+  versionB: UniTokenListVersion
+) {
+  if (versionA.major > versionB.major) return 1;
+  if (versionA.major < versionB.major) return -1;
+  if (versionA.minor > versionB.minor) return 1;
+  if (versionA.minor < versionB.minor) return -1;
+  if (versionA.patch > versionB.patch) return 1;
+  if (versionA.patch < versionB.patch) return -1;
+  return 0;
+}
+
+export function isLatestVersion(
+  newVersion: UniTokenListVersion,
+  oldVersion: UniTokenListVersion
+) {
+  return compareVersion(newVersion, oldVersion) > 0;
+}
 
 const tagSeparator = '<|>';
 
