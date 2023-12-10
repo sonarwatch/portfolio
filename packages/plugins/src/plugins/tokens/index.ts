@@ -1,4 +1,8 @@
-import { NetworkId, Platform } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  Platform,
+  networksAsArray,
+} from '@sonarwatch/portfolio-core';
 import jobExecutorGenerator from './jobExecutorGenerator';
 import aptosFetcher from './fetchers/aptos';
 import solanaFetcher from './fetchers/solana';
@@ -11,7 +15,7 @@ import solanaCNftsFetcher from './fetchers/solana-cnfts';
 import solanaNftsFetcher from './fetchers/solana-nfts';
 import solanaNftsUnderlyingsFetcher from './fetchers/solana-nfts-underlyings';
 import { Job } from '../../Job';
-import tokenListsJob from './tokenListsJob';
+import getTokenListsJob from './getTokenListsJob';
 import { Fetcher } from '../../Fetcher';
 import { fetchers as evmFetchers } from './fetchers/evms';
 import { walletNftsPlatform, walletTokensPlatform } from './constants';
@@ -55,7 +59,7 @@ export const jobs: Job[] = [
     id: `${walletTokensPlatform.id}-${NetworkId.bnb}`,
     executor: jobExecutorGenerator(NetworkId.bnb),
   },
-  tokenListsJob,
+  ...networksAsArray.map((network) => getTokenListsJob(network.id)),
 ];
 
 export const fetchers: Fetcher[] = [

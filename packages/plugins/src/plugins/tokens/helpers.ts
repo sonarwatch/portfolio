@@ -28,7 +28,7 @@ export function isLatestVersion(
   newVersion: UniTokenListVersion,
   oldVersion: UniTokenListVersion
 ) {
-  return compareVersion(newVersion, oldVersion) > 0;
+  return compareVersion(newVersion, oldVersion) === 1;
 }
 
 const tagSeparator = '<|>';
