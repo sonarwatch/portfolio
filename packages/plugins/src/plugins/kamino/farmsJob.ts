@@ -1,0 +1,57 @@
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { Cache } from '../../Cache';
+import { Job, JobExecutor } from '../../Job';
+import { getClientSolana } from '../../utils/clients';
+import { getParsedProgramAccounts } from '../../utils/solana';
+import { dataSizeFilter } from '../../utils/solana/filters';
+import { farmProgramId, farmsKey, platformId } from './constants';
+import { farmStateStruct } from './structs/vaults';
+import { FarmInfo } from './types';
+import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
+
+const executor: JobExecutor = async (cache: Cache) => {
+  const client = getClientSolana();
+
+  const farms = await getParsedProgramAccounts(
+    client,
+    farmStateStruct,
+    farmProgramId,
+    dataSizeFilter(8336)
+  );
+
+  const tokenPriceById = await getTokenPricesMap(
+    farms.map((farm) => farm.token.mint.toString()),
+    NetworkId.solana,
+    cache
+  );
+
+  const farmsInfo: FarmInfo[] = [];
+  farms.forEach((farm) => {
+    if (farm.token.mint.toString() === '11111111111111111111111111111111')
+      return;
+    const kTokenPrice = tokenPriceById.get(farm.token.mint.toString());
+    if (!kTokenPrice) return;
+
+    const farmInfo: FarmInfo = {
+      pubkey: farm.pubkey.toString(),
+      mint: farm.token.mint.toString(),
+      decimals: farm.token.decimals.toNumber(),
+      price: kTokenPrice.price,
+      rewardsMints: farm.rewardInfos.map((r) => r.token.mint.toString()),
+      lockingDuration: farm.lockingDuration.toNumber(),
+      lockingStart: farm.lockingStartTimestamp.toNumber(),
+    };
+    farmsInfo.push(farmInfo);
+  });
+
+  await cache.setItem(farmsKey, farmsInfo, {
+    prefix: platformId,
+    networkId: NetworkId.solana,
+  });
+};
+
+const job: Job = {
+  id: `${platformId}-farms`,
+  executor,
+};
+export default job;
