@@ -100,8 +100,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         unlockingBalances[j].toString()
       ).dividedBy(10 ** pspTokenPrice.decimals);
 
-      const unlockEpoch = Number(unlockingTs[j]);
-
       unlockingAssets.push({
         ...tokenPriceToAssetToken(
           pspTokenPrice.address,
@@ -109,7 +107,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           NetworkId.ethereum,
           pspTokenPrice
         ),
-        lockedUntil: unlockEpoch,
+        attributes: {
+          lockedUntil: Number(unlockingTs[j]),
+        },
       });
     }
   }

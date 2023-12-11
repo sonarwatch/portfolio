@@ -115,6 +115,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     {
       networkId: NetworkId.ethereum,
       type: PortfolioAssetType.token,
+      attributes: {},
       data: {
         address: ethereumNetwork.native.address,
         amount: ethAmount,
@@ -137,6 +138,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     assets.push({
       networkId: NetworkId.ethereum,
       type: PortfolioAssetType.token,
+      attributes: {},
       data: {
         address: rplAddress,
         amount: rplAmount,

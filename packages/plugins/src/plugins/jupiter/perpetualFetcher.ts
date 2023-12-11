@@ -140,6 +140,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       type: 'token',
       networkId: NetworkId.solana,
       value: collatValue,
+      attributes: {},
       data: {
         amount: collatAmount.toNumber(),
         address: collateralCustody.mint,
@@ -150,6 +151,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       type: 'token',
       networkId: NetworkId.solana,
       value: custodyValue,
+      attributes: {},
       data: {
         amount: custodyAmount.toNumber(),
         address: custody.mint,
@@ -160,12 +162,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       type: 'generic',
       networkId: NetworkId.solana,
       value: pnl,
+      attributes: {},
       data: { name: 'PNL ($)', amount: pnl },
     });
     rewardAssets.push({
       type: 'generic',
       networkId: NetworkId.solana,
       value: fees,
+      attributes: {},
       data: { name: 'Fees O/C ($)', amount: fees },
     });
 

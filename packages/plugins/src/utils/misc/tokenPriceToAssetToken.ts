@@ -25,5 +25,6 @@ export default function tokenPriceToAssetToken(
       amount,
       price: fPrice,
     },
+    attributes: {},
   };
 }
