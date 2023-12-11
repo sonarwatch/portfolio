@@ -44,7 +44,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           NetworkId.solana,
           gofxTokenPrice
         ),
-        lockedUntil: unlockingAt.getTime(),
+        attributes: {
+          lockedUntil: unlockingAt.getTime(),
+        },
       });
     }
   }

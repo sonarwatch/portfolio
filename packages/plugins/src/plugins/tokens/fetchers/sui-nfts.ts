@@ -123,6 +123,7 @@ const executor: FetcherExecutor = async (owner: string) => {
         networkId: NetworkId.sui,
         type: PortfolioAssetType.collectible,
         value: null,
+        attributes: {},
         data: {
           address: objectId,
           amount: 1,

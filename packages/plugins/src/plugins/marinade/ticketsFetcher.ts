@@ -41,6 +41,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       type: PortfolioAssetType.token,
       networkId: NetworkId.solana,
       value,
+      attributes: {},
       data: {
         address: solanaNativeAddress,
         price,

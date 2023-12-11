@@ -194,6 +194,7 @@ export function getStableBorrowedAsset(
     networkId,
     type: PortfolioAssetType.token,
     value: +(+userReserveData.stableBorrowsUSD).toFixed(2),
+    attributes: {},
     data: {
       address: formatTokenAddress(userReserveData.underlyingAsset, networkId),
       amount: +userReserveData.stableBorrows,
@@ -217,6 +218,7 @@ export function getVarriableBorrowedAsset(
     networkId,
     type: PortfolioAssetType.token,
     value: +(+userReserveData.variableBorrowsUSD).toFixed(2),
+    attributes: {},
     data: {
       address: formatTokenAddress(userReserveData.underlyingAsset, networkId),
       amount: +userReserveData.variableBorrows,
@@ -235,6 +237,7 @@ export function getSuppliedAsset(
     networkId,
     type: PortfolioAssetType.token,
     value: +(+userReserveData.underlyingBalanceUSD).toFixed(2),
+    attributes: {},
     data: {
       address: formatTokenAddress(userReserveData.underlyingAsset, networkId),
       amount: +userReserveData.underlyingBalance,
@@ -268,6 +271,7 @@ function getRewardAssets(
         type: PortfolioAssetType.token,
         networkId,
         value,
+        attributes: {},
         data: {
           address: formatTokenAddress(rewardAddress, networkId),
           amount,

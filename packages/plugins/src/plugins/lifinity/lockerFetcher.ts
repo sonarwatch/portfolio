@@ -49,7 +49,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
 
   if (escrowEndsAt.isGreaterThan(0)) {
-    asset.lockedUntil = escrowEndsAt.toNumber();
+    asset.attributes.lockedUntil = escrowEndsAt.toNumber();
   }
 
   return [

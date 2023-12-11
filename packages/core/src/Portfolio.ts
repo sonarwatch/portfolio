@@ -28,6 +28,26 @@ export type PortfolioElementLabel =
   | 'Rewards'
   | 'Leverage';
 
+export type PortfolioAssetAttributes = {
+  /**
+   * Represents the date (in ms) when the asset will be unlocked.
+   * If current date is greater than this value, the asset is unlocked.
+   */
+  lockedUntil?: number;
+  /**
+   * Represents the unbondingPeriod (in ms) or string (e.g. 1 epoch).
+   */
+  unbondingPeriod?: number | string;
+  /**
+   * Represents the asset is deprecated.
+   */
+  isDeprecated?: boolean;
+  /**
+   * Represents the asset can be claimed.
+   */
+  isClaimable?: boolean;
+};
+
 /**
  * Represents the type of a portfolio element.
  */
@@ -47,7 +67,7 @@ export type PortfolioAssetCommon = {
   networkId: NetworkIdType;
   type: PortfolioAssetTypeType;
   value: UsdValue;
-  lockedUntil?: number;
+  attributes: PortfolioAssetAttributes;
 };
 
 /**

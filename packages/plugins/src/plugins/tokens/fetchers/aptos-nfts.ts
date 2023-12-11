@@ -126,6 +126,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         networkId: NetworkId.aptos,
         type: PortfolioAssetType.collectible,
         value: null,
+        attributes: {},
         data: {
           address,
           amount,

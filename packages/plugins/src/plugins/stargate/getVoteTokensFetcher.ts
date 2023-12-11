@@ -39,7 +39,9 @@ export function getVoteTokensFetcher(config: StgConfig): Fetcher {
           tokenPrice,
           tokenPrice.price
         ),
-        lockedUntil: Number(lockedUntil),
+        attributes: {
+          lockedUntil: Number(lockedUntil),
+        },
       },
     ];
     const value = amountLocked * tokenPrice.price;
