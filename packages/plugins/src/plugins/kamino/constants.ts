@@ -16,6 +16,10 @@ export const programId = new PublicKey(
 export const klendProgramId = new PublicKey(
   'KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD'
 );
+export const farmProgramId = new PublicKey(
+  'FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr'
+);
+export const farmsKey = 'farms';
 export const lendingMarket = '7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF';
 export const multiplyPairs = [
   [

@@ -88,3 +88,13 @@ export type ReserveData = {
   configPadding: string[];
   padding: string[];
 };
+
+export type FarmInfo = {
+  pubkey: string;
+  mint: string;
+  decimals: number;
+  price: number;
+  rewardsMints: string[];
+  lockingStart: number;
+  lockingDuration: number;
+};
