@@ -44,6 +44,7 @@ import {
 import {
   platforms as meteoraPlatforms,
   jobs as meteoraJobs,
+  fetchers as meteoraFetchers,
 } from './plugins/meteora';
 import {
   platforms as cetusPlatforms,
@@ -441,5 +442,6 @@ export const fetchers: Fetcher[] = [
   ...lifinityFetchers,
   ...portFetchers,
   ...instadappFetchers,
+  ...meteoraFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);

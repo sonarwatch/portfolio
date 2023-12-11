@@ -1,0 +1,24 @@
+export type Farm = {
+  pubkey: string;
+  authority: string;
+  paused: boolean;
+  stakingMint: string;
+  stakingVault: string;
+  rewardAMint: string;
+  rewardAVault: string;
+  rewardBMint: string;
+  rewardBVault: string;
+  rewardDuration: string;
+  rewardDurationEnd: string;
+  lastUpdateTime: string;
+  rewardARate: string;
+  rewardBRate: string;
+  rewardAPerTokenStored: string;
+  rewardBPerTokenStored: string;
+  userStakeCount: number;
+  funders: string[];
+  rewardARateU128: string;
+  rewardBRateU128: string;
+  poolBump: number;
+  totalStaked: string;
+};

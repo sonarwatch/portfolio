@@ -9,3 +9,15 @@ export const constantPoolsFilters: GetProgramAccountsFilter[] = [
 export const stablePoolsFilters: GetProgramAccountsFilter[] = [
   { dataSize: 1387 },
 ];
+
+export const farmAccountFilter = (
+  owner: string
+): GetProgramAccountsFilter[] => [
+  { dataSize: 200 },
+  {
+    memcmp: {
+      offset: 40,
+      bytes: owner,
+    },
+  },
+];

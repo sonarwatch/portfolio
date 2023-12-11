@@ -11,6 +11,7 @@ export const meteoraPlatform: Platform = {
 };
 
 export const prefixVaults = `${platformId}-vaults`;
+export const farmsKey = 'farms';
 
 export const vaultsProgramId = new PublicKey(
   '24Uqj9JCLxUeoC3hGfh5W3s9FM9uCHDS2SG3LYwBpyTi'
@@ -18,4 +19,8 @@ export const vaultsProgramId = new PublicKey(
 
 export const poolsProgramId = new PublicKey(
   'Eo7WjKq67rjJQSZxS6z3YkapzY3eMj6Xy8X5EQVn5UaB'
+);
+
+export const farmProgramId = new PublicKey(
+  'FarmuwXPWXvefWUeqFAa5w6rifLkq5X6E8bimYvrhCB1'
 );

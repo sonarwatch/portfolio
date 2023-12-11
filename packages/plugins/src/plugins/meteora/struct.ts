@@ -2,6 +2,7 @@ import {
   BeetStruct,
   FixableBeetStruct,
   bool,
+  u32,
   u8,
   uniformFixedSizeArray,
 } from '@metaplex-foundation/beet';
@@ -220,4 +221,84 @@ export const poolStateStruct = new FixableBeetStruct<PoolState>(
     ['curveType', u8],
   ],
   (args) => args as PoolState
+);
+
+export type Farm = {
+  buffer: Buffer;
+  authority: PublicKey;
+  paused: boolean;
+  stakingMint: PublicKey;
+  stakingVault: PublicKey;
+  rewardAMint: PublicKey;
+  rewardAVault: PublicKey;
+  rewardBMint: PublicKey;
+  rewardBVault: PublicKey;
+  rewardDuration: BigNumber;
+  rewardDurationEnd: BigNumber;
+  lastUpdateTime: BigNumber;
+  rewardARate: BigNumber;
+  rewardBRate: BigNumber;
+  rewardAPerTokenStored: BigNumber;
+  rewardBPerTokenStored: BigNumber;
+  userStakeCount: number;
+  funders: PublicKey[];
+  rewardARateU128: BigNumber;
+  rewardBRateU128: BigNumber;
+  poolBump: number;
+  totalStaked: BigNumber;
+};
+
+export const farmStruct = new BeetStruct<Farm>(
+  [
+    ['buffer', blob(8)],
+    ['authority', publicKey],
+    ['paused', bool],
+    ['stakingMint', publicKey],
+    ['stakingVault', publicKey],
+    ['rewardAMint', publicKey],
+    ['rewardAVault', publicKey],
+    ['rewardBMint', publicKey],
+    ['rewardBVault', publicKey],
+    ['rewardDuration', u64],
+    ['rewardDurationEnd', u64],
+    ['lastUpdateTime', u64],
+    ['rewardARate', u64],
+    ['rewardBRate', u64],
+    ['rewardAPerTokenStored', u128],
+    ['rewardBPerTokenStored', u128],
+    ['userStakeCount', u32],
+    ['funders', uniformFixedSizeArray(publicKey, 3)],
+    ['rewardARateU128', u128],
+    ['rewardBRateU128', u128],
+    ['poolBump', u8],
+    ['totalStaked', u64],
+  ],
+  (args) => args as Farm
+);
+
+export type FarmAccount = {
+  buffer: Buffer;
+  pool: PublicKey;
+  owner: PublicKey;
+  rewardAPerTokenComplete: BigNumber;
+  rewardBPerTokenComplete: BigNumber;
+  rewardAPerTokenPending: BigNumber;
+  rewardBPerTokenPending: BigNumber;
+  balanceStaked: BigNumber;
+  nonce: number;
+};
+
+export const farmAccountStruct = new BeetStruct<FarmAccount>(
+  [
+    ['buffer', blob(8)],
+    ['pool', publicKey],
+    ['owner', publicKey],
+    ['rewardAPerTokenComplete', u128],
+    ['rewardBPerTokenComplete', u128],
+    ['rewardAPerTokenPending', u64],
+    ['rewardBPerTokenPending', u64],
+    ['balanceStaked', u64],
+    ['nonce', u8],
+  ],
+  (args) => args as FarmAccount
 );
