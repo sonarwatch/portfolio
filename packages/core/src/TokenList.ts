@@ -19,18 +19,18 @@ export interface UniTokenInfo {
   readonly tags?: string[];
   readonly extensions?: Record<string, UniTokenInfoExtensionValue>;
 }
-
+export type UniTokenListVersion = {
+  major: number;
+  minor: number;
+  patch: number;
+};
 export type UniTokenList = {
   name: string;
   logoURI?: string;
   keywords: string[];
   timestamp: string;
   tokens: UniTokenInfo[];
-  version: {
-    major: number;
-    minor: number;
-    patch: number;
-  };
+  version: UniTokenListVersion;
 };
 
 export interface TokenInfo extends Omit<UniTokenInfo, 'chainId'> {

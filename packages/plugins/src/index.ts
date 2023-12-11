@@ -260,6 +260,11 @@ import {
   jobs as portJobs,
   fetchers as portFetchers,
 } from './plugins/port';
+import {
+  platforms as instadappPlatforms,
+  jobs as instadappJobs,
+  fetchers as instadappFetchers,
+} from './plugins/instadapp';
 
 export {
   walletTokensPlatform,
@@ -328,6 +333,7 @@ export const platforms: Platform[] = [
   ...gooseFXPlatforms,
   ...lifinityPlatforms,
   ...portPlatforms,
+  ...instadappPlatforms,
 ];
 
 // JOBS //
@@ -380,6 +386,7 @@ export const jobs: Job[] = [
   ...gooseFXJobs,
   ...lifinityJobs,
   ...portJobs,
+  ...instadappJobs,
 ];
 
 // FETCHERS //
@@ -433,5 +440,6 @@ export const fetchers: Fetcher[] = [
   ...gooseFXFetchers,
   ...lifinityFetchers,
   ...portFetchers,
+  ...instadappFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
