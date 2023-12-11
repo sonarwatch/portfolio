@@ -60,14 +60,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       marinadeNativeAmount += amount;
       accounts += 1;
     } else {
-      nativeAssets.push(
-        tokenPriceToAssetToken(
+      nativeAssets.push({
+        ...tokenPriceToAssetToken(
           solanaNetwork.native.address,
           amount,
           NetworkId.solana,
           solTokenPrice
-        )
-      );
+        ),
+        attributes: {
+          unbondingPeriod: '1 epoch',
+        },
+      });
     }
   }
 
