@@ -11,6 +11,7 @@ import {
   publicBearerToken,
   pushTokenPriceSource,
   tokenPriceFromSources,
+  tokenPriceSourceTtl,
 } from '@sonarwatch/portfolio-core';
 import overlayDriver from './overlayDriver';
 import memoryDriver, {
@@ -35,7 +36,7 @@ export type TransactionOptionsSetItem = {
 };
 
 const tokenPriceSourcePrefix = 'tokenpricesource';
-const tokenPricesCacheTtl = 30 * 1000; // 30 sec
+const tokenPricesLocalCacheTtl = 30 * 1000; // 30 sec
 
 type CachedTokenPrice = {
   tp: TokenPrice;
@@ -157,7 +158,7 @@ export class Cache {
       this.tokenPricesCache.delete(getTokenPriceCacheKey(address, networkId));
       return undefined;
     }
-    if (Date.now() > cachedTokenPrice.ts + tokenPricesCacheTtl) {
+    if (Date.now() > cachedTokenPrice.ts + tokenPricesLocalCacheTtl) {
       this.tokenPricesCache.delete(getTokenPriceCacheKey(address, networkId));
       return undefined;
     }
@@ -320,6 +321,7 @@ export class Cache {
     await this.setItem(fSource.address, newSources, {
       prefix: tokenPriceSourcePrefix,
       networkId: fSource.networkId,
+      ttl: tokenPriceSourceTtl,
     });
   }
 
