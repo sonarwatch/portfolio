@@ -1,11 +1,12 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId, formatTokenAddress } from '@sonarwatch/portfolio-core';
 import { getAddress } from 'viem';
 import BigNumber from 'bignumber.js';
 import { liteConfigs, platformId } from './constants';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getEvmClient } from '../../utils/clients';
-import { liteAbi } from './abis';
+import { liteAbiV1, liteAbiV2 } from './abis';
+import { lpAddressesCachePrefix } from '../../utils/misc/constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getEvmClient(NetworkId.ethereum);
@@ -17,13 +18,25 @@ const executor: JobExecutor = async (cache: Cache) => {
       NetworkId.ethereum
     );
     if (!uTokenPrice) continue;
-    const exchangePrice = await client.readContract({
-      abi: liteAbi,
-      functionName: 'exchangePrice',
-      address: getAddress(config.address),
-    });
+
+    // Get exchange price
+    let exchangePrice: bigint;
+    if (config.version === 2) {
+      exchangePrice = await client.readContract({
+        abi: liteAbiV2,
+        functionName: 'exchangePrice',
+        address: getAddress(config.address),
+      });
+    } else if (config.version === 1) {
+      [exchangePrice] = await client.readContract({
+        abi: liteAbiV1,
+        functionName: 'getCurrentExchangePrice',
+        address: getAddress(config.address),
+      });
+    } else continue;
+
     const ratio = new BigNumber(exchangePrice.toString())
-      .dividedBy(10 ** config.decimals)
+      .dividedBy(10 ** 18)
       .toNumber();
 
     await cache.setTokenPriceSource({
@@ -32,7 +45,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       price: ratio * uTokenPrice.price,
       timestamp: Date.now(),
       weight: 1,
-      elementName: config.name,
+      elementName: 'Instadapp lite',
       underlyings: [
         {
           address: uTokenPrice.address,
@@ -44,9 +57,18 @@ const executor: JobExecutor = async (cache: Cache) => {
       ],
       address: config.address,
       id: `${platformId}-lite`,
-      decimals: uTokenPrice.decimals,
+      decimals: config.decimals,
     });
   }
+
+  await cache.setItem(
+    `${platformId}-lite`,
+    liteConfigs.map((c) => formatTokenAddress(c.address, NetworkId.ethereum)),
+    {
+      prefix: lpAddressesCachePrefix,
+      networkId: NetworkId.ethereum,
+    }
+  );
 };
 
 const job: Job = {

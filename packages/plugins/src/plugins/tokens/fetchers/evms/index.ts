@@ -3,6 +3,7 @@ import { Fetcher } from '../../../../Fetcher';
 import getEvmFetcherExecutor from './evmExecutorGenerator';
 import getEvmFetcherNativeExecutor from './evmNativeExecutorGenerator';
 import { walletTokensPlatform } from '../../constants';
+import getEvmLpFetcher from './getEvmLpFetcher';
 
 const evmNativeNetworksIds: EvmNetworkIdType[] = [
   NetworkId.ethereum,
@@ -16,6 +17,7 @@ const evmNetworksIds: EvmNetworkIdType[] = [
 ];
 
 export const fetchers: Fetcher[] = [
+  ...evmNetworksIds.map((n) => getEvmLpFetcher(n)),
   ...evmNativeNetworksIds
     .map((networkId) => [
       {

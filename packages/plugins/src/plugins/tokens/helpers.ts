@@ -31,8 +31,6 @@ export function isLatestVersion(
   return compareVersion(newVersion, oldVersion) === 1;
 }
 
-const tagSeparator = '<|>';
-
 export async function getCoingeckoSources(
   networkId: NetworkIdType,
   tokensData: TokenData[]
@@ -120,15 +118,17 @@ export async function getTokensData(
   return tokensData;
 }
 
-export function getTag(platformId: string, elementName?: string) {
-  return `${platformId}${elementName ? `${tagSeparator}${elementName}` : ''}`;
+export const lpTagSeparator = '<|>';
+
+export function getLpTag(platformId: string, elementName?: string) {
+  return `${platformId}${elementName ? `${lpTagSeparator}${elementName}` : ''}`;
 }
 
-export function parseTag(tag: string): {
+export function parseLpTag(tag: string): {
   platformId: string;
   elementName?: string;
 } {
-  const split = tag.split(tagSeparator, 2);
+  const split = tag.split(lpTagSeparator, 2);
   if (split.length < 1) throw new Error(`Tag is not valid: ${tag}`);
   return {
     platformId: split[0],
