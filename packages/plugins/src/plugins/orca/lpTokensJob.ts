@@ -1,5 +1,6 @@
-import { NetworkId, TokenPrice } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
+import { PublicKey } from '@solana/web3.js';
 import { aquafarmsProgram, platformId, poolsProgram } from './constants';
 import { poolsFilters, aquafarmFilters } from './filters';
 import { getClientSolana } from '../../utils/clients';
@@ -14,6 +15,11 @@ import { fetchTokenSupplyAndDecimals } from '../../utils/solana/fetchTokenSupply
 import { Job, JobExecutor } from '../../Job';
 import { Cache } from '../../Cache';
 import runInBatch from '../../utils/misc/runInBatch';
+import computeAndStoreLpPrice, {
+  PoolData,
+  minimumLiquidity,
+} from '../../utils/misc/computeAndStoreLpPrice';
+import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -31,33 +37,23 @@ const executor: JobExecutor = async (cache: Cache) => {
     poolsFilters
   );
 
-  const mints: Set<string> = new Set();
-  poolsAccounts.forEach((p) =>
-    mints.add(p.mintA.toString()).add(p.mintB.toString())
-  );
-  farmsAccounts.forEach((a) => mints.add(a.baseTokenMint.toString()));
-
-  const tokenPriceResults = await runInBatch(
-    [...Array.from(mints)].map(
-      (mint) => () => cache.getTokenPrice(mint, NetworkId.solana)
-    )
-  );
-  const tokenPrices: Map<string, TokenPrice> = new Map();
-  tokenPriceResults.forEach((r) => {
-    if (r.status === 'rejected') return;
-    if (!r.value) return;
-    tokenPrices.set(r.value.address, r.value);
+  const mints: string[] = [];
+  const tokensAccountAddresses: PublicKey[] = [];
+  farmsAccounts.forEach((farm) => {
+    mints.push(farm.baseTokenMint.toString());
+    tokensAccountAddresses.push(farm.baseTokenVault);
+  });
+  poolsAccounts.forEach((pool) => {
+    mints.push(...[pool.mintA.toString(), pool.mintB.toString()]);
+    tokensAccountAddresses.push(...[pool.tokenAccountA, pool.tokenAccountB]);
   });
 
-  const tokenAddresses = [
-    ...farmsAccounts.map((a) => a.baseTokenVault),
-    ...poolsAccounts.map((p) => [p.tokenAccountA, p.tokenAccountB]).flat(),
-  ];
+  const tokenPrices = await getTokenPricesMap(mints, NetworkId.solana, cache);
 
   const tokensAccounts = await getParsedMultipleAccountsInfo(
     client,
     tokenAccountStruct,
-    tokenAddresses
+    tokensAccountAddresses
   );
 
   const tokenAccountByAddress: Map<string, TokenAccount> = new Map();
@@ -68,7 +64,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   const batchResult = await runInBatch(
     poolsAccounts.map(
-      (farm) => () => fetchTokenSupplyAndDecimals(farm.tokenPool, client, 0)
+      (pool) => () => fetchTokenSupplyAndDecimals(pool.tokenPool, client, 0)
     )
   );
 
@@ -85,7 +81,6 @@ const executor: JobExecutor = async (cache: Cache) => {
     );
   });
 
-  const poolsPromises: Promise<any>[] = [];
   for (const poolAccount of poolsAccounts) {
     if (
       [
@@ -99,8 +94,10 @@ const executor: JobExecutor = async (cache: Cache) => {
     const lpSupplyAndDecimals = poolTokenInfoByAddress.get(lpMint.toString());
     if (!lpSupplyAndDecimals) continue;
 
-    const lpSupply = lpSupplyAndDecimals.supply;
-    if (lpSupply === 0) continue;
+    const lpSupply = new BigNumber(lpSupplyAndDecimals.supply).times(
+      10 ** lpSupplyAndDecimals.decimals
+    );
+    if (lpSupply.isZero()) continue;
 
     const poolCoinTokenAccount = tokenAccountByAddress.get(
       poolAccount.tokenAccountA.toString()
@@ -114,58 +111,25 @@ const executor: JobExecutor = async (cache: Cache) => {
     const pcToken = tokenPrices.get(poolAccount.mintB.toString());
     if (!coinToken || !pcToken) continue;
 
-    const coinDecimals = coinToken.decimals;
-    const pcDecimals = pcToken.decimals;
-
     const coinAmountWei = new BigNumber(poolCoinTokenAccount.amount.toString());
     const pcAmountWei = new BigNumber(poolPcTokenAccount.amount.toString());
-    const coinAmount = coinAmountWei
-      .dividedBy(new BigNumber(10 ** coinDecimals))
-      .toNumber();
-    const pcAmount = pcAmountWei
-      .dividedBy(new BigNumber(10 ** pcDecimals))
-      .toNumber();
-
-    const coinValueLocked = coinAmount * coinToken.price;
-    const pcValueLocked = pcAmount * pcToken.price;
 
     const lpDecimals = lpSupplyAndDecimals.decimals;
 
-    const tvl = coinValueLocked + pcValueLocked;
-    const price = tvl / lpSupply;
+    const poolData: PoolData = {
+      id: lpMint.toString(),
+      lpDecimals,
+      mintTokenX: poolAccount.mintA.toString(),
+      mintTokenY: poolAccount.mintB.toString(),
+      reserveTokenX: coinAmountWei,
+      reserveTokenY: pcAmountWei,
+      supply: lpSupply,
+      decimalX: coinToken.decimals,
+      decimalY: pcToken.decimals,
+    };
 
-    poolsPromises.push(
-      cache.setTokenPriceSource({
-        networkId: NetworkId.solana,
-        elementName: 'Standard Pools (deprecated)',
-        platformId,
-        id: platformId,
-        weight: 1,
-        address: lpMint.toString(),
-        price,
-        decimals: lpDecimals,
-        underlyings: [
-          {
-            networkId: NetworkId.solana,
-            address: coinToken.address,
-            decimals: coinToken.decimals,
-            price: coinToken.price,
-            amountPerLp: coinAmount / lpSupply,
-          },
-          {
-            networkId: NetworkId.solana,
-            address: pcToken.address,
-            decimals: pcToken.decimals,
-            price: pcToken.price,
-            amountPerLp: pcAmount / lpSupply,
-          },
-        ],
-        timestamp: Date.now(),
-      })
-    );
+    await computeAndStoreLpPrice(cache, poolData, NetworkId.solana, platformId);
   }
-
-  await Promise.allSettled(poolsPromises);
 
   const tokensSupDecResult = await runInBatch(
     farmsAccounts.map(
@@ -185,7 +149,6 @@ const executor: JobExecutor = async (cache: Cache) => {
     );
   });
 
-  const farmsPromises: Promise<any>[] = [];
   for (let i = 0; i < farmsAccounts.length; i += 1) {
     const aquafarm = farmsAccounts[i];
 
@@ -208,24 +171,23 @@ const executor: JobExecutor = async (cache: Cache) => {
       .div(10 ** baseToken.decimals)
       .toNumber();
     const baseVaultValue = baseVaultAmount * baseToken.price;
+
+    if (baseVaultValue < minimumLiquidity.toNumber()) continue;
     const price = baseVaultValue / farmSupply;
 
-    farmsPromises.push(
-      cache.setTokenPriceSource({
-        id: platformId,
-        elementName: 'Aquafarms (deprecated)',
-        weight: 1,
-        address: farmMint.toString(),
-        networkId: NetworkId.solana,
-        platformId,
-        decimals: farmDecimals,
-        price,
-        underlyings: baseToken.underlyings,
-        timestamp: Date.now(),
-      })
-    );
+    await cache.setTokenPriceSource({
+      id: platformId,
+      elementName: 'Aquafarms (deprecated)',
+      weight: 1,
+      address: farmMint.toString(),
+      networkId: NetworkId.solana,
+      platformId,
+      decimals: farmDecimals,
+      price,
+      underlyings: baseToken.underlyings,
+      timestamp: Date.now(),
+    });
   }
-  await Promise.allSettled(farmsPromises);
 };
 
 const job: Job = {
