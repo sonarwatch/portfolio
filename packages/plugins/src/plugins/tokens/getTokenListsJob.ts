@@ -10,7 +10,7 @@ import { Job, JobExecutor } from '../../Job';
 import { tokenListsDetailsPrefix, tokenListsPrefix } from './constants';
 import { isLatestVersion } from './helpers';
 
-const ttl = 1000 * 60 * 60 * 24; // 1 day
+const ttl = 1000 * 60 * 60 * 24 * 7; // 7 days
 
 function getTokenListsJob(networkId: NetworkIdType): Job {
   const executor: JobExecutor = async (cache: Cache) => {
