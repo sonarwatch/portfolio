@@ -31,9 +31,7 @@ export function getUrlEndpoints(): Record<NetworkIdType, string> {
     aptos:
       process.env['PORTFOLIO_APTOS_RPC'] ||
       'https://fullnode.mainnet.aptoslabs.com',
-    sui:
-      process.env['PORTFOLIO_SUI_RPC'] ||
-      'https://sui-mainnet-rpc-germany.allthatnode.com',
+    sui: process.env['PORTFOLIO_SUI_RPC'] || 'https://sui-rpc.publicnode.com',
   };
 }
 
