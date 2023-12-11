@@ -35,9 +35,9 @@ export type PortfolioAssetAttributes = {
    */
   lockedUntil?: number;
   /**
-   * Represents the bondingPeriod (in ms).
+   * Represents the bondingPeriod (in ms) or string (e.g. 1 epoch).
    */
-  bondingPeriod?: number;
+  bondingPeriod?: number | string;
   /**
    * Represents the asset is deprecated.
    */
