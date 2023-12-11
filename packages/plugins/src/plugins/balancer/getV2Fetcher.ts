@@ -3,16 +3,14 @@ import {
   PortfolioElementLiquidity,
   PortfolioElementType,
   PortfolioLiquidity,
-  TokenPrice,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { platformId, poolsAndGaugesV2CacheKey } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { GaugesByPool } from './types';
 import { getBalances } from '../../utils/evm/getBalances';
-import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
+import { getLiquidity } from '../../utils/evm/getLiquidity';
 
 type UserBalance = {
   poolAddress: string;
@@ -22,31 +20,6 @@ type UserBalance = {
     gaugeBalance: bigint;
   }[];
 };
-
-function getLiquidity(
-  balance: bigint,
-  tokenPrice: TokenPrice
-): PortfolioLiquidity {
-  const amount = new BigNumber(balance.toString())
-    .div(10 ** tokenPrice.decimals)
-    .toNumber();
-
-  const assets = tokenPriceToAssetTokens(
-    tokenPrice.address,
-    amount,
-    tokenPrice.networkId,
-    tokenPrice
-  );
-  const value = getUsdValueSum(assets.map((a) => a.value));
-  return {
-    assets,
-    assetsValue: value,
-    rewardAssets: [],
-    rewardAssetsValue: null,
-    value,
-    yields: [],
-  };
-}
 
 function getPoolsV2Fetcher(networkId: EvmNetworkIdType): Fetcher {
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {

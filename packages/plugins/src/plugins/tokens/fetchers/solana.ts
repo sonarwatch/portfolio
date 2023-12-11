@@ -19,7 +19,7 @@ import {
 } from '../../../utils/solana';
 import tokenPriceToAssetTokens from '../../../utils/misc/tokenPriceToAssetTokens';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import { getTag, parseTag } from '../helpers';
+import { getLpTag, parseLpTag } from '../helpers';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -74,7 +74,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         value: getUsdValueSum(assets.map((a) => a.value)),
         yields: [],
       };
-      const tag = getTag(tokenPrice.platformId, tokenPrice.elementName);
+      const tag = getLpTag(tokenPrice.platformId, tokenPrice.elementName);
       if (!liquiditiesByTag[tag]) {
         liquiditiesByTag[tag] = [];
       }
@@ -100,7 +100,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     elements.push(walletTokensElement);
   }
   for (const [tag, liquidities] of Object.entries(liquiditiesByTag)) {
-    const { platformId, elementName } = parseTag(tag);
+    const { platformId, elementName } = parseLpTag(tag);
     elements.push({
       type: PortfolioElementType.liquidity,
       networkId: NetworkId.solana,
