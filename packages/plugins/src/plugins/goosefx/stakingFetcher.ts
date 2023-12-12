@@ -34,21 +34,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const assets: PortfolioAsset[] = [];
   for (const ticket of stakingAccount.unstakingTickets) {
+    if (ticket.totalUnstaked.isZero()) continue;
     const unlockStartedAt = new Date(ticket.createdAt.times(1000).toNumber());
     const unlockingAt = new Date(unlockStartedAt.getTime() + sevenDays);
-    if (Date.now() < unlockingAt.getTime()) {
-      assets.push({
-        ...tokenPriceToAssetToken(
-          gofxMint,
-          ticket.totalUnstaked.dividedBy(10 ** decimals).toNumber(),
-          NetworkId.solana,
-          gofxTokenPrice
-        ),
-        attributes: {
-          lockedUntil: unlockingAt.getTime(),
-        },
-      });
-    }
+    assets.push({
+      ...tokenPriceToAssetToken(
+        gofxMint,
+        ticket.totalUnstaked.dividedBy(10 ** decimals).toNumber(),
+        NetworkId.solana,
+        gofxTokenPrice
+      ),
+      attributes: {
+        lockedUntil: unlockingAt.getTime(),
+      },
+    });
   }
   if (stakingAccount.totalStaked.isGreaterThan(0)) {
     const amount = stakingAccount.totalStaked
