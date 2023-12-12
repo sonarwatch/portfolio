@@ -10,7 +10,7 @@
     "postversion": "git push && git push --tags"
   },
   "engines": {
-    "node": "~18"
+    "node": ">18"
   },
   "private": true,
   "devDependencies": {
