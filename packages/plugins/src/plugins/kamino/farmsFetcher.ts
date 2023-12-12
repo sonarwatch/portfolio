@@ -81,14 +81,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         .dividedBy(10 ** 18)
         .dividedBy(10 ** rewardPrice.decimals)
         .toNumber();
-      rewardAssets.push(
-        tokenPriceToAssetToken(
+      rewardAssets.push({
+        ...tokenPriceToAssetToken(
           rewardMint,
           rewardAmount,
           NetworkId.solana,
           rewardPrice
-        )
-      );
+        ),
+        attributes: { isClaimable: false },
+      });
     }
 
     const assetsValue = getUsdValueSum(assets.map((a) => a.value));
