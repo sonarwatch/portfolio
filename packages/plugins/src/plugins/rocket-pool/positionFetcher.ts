@@ -94,6 +94,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const getNodeDepositBalanceResult = getNodeDepositBalanceResults[i];
     if (
       getFinalisedResult.status === 'failure' ||
+      getFinalisedResult.result === true ||
       getNodeDepositBalanceResult.status === 'failure'
     )
       return;
