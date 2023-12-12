@@ -51,11 +51,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const nativeAssets: PortfolioAsset[] = [];
   for (let i = 0; i < stakeAccounts.length; i += 1) {
     const stakeAccount = stakeAccounts[i];
-    if (stakeAccount.stake.isZero()) continue;
 
-    const amount = new BigNumber(stakeAccount.stake)
+    const amount = new BigNumber(stakeAccount.lamports)
+      .minus(stakeAccount.rentExemptReserve)
       .dividedBy(new BigNumber(10 ** 9))
       .toNumber();
+    if (amount <= 0) continue;
 
     const isMarinade = marinadeManagerAddresses.includes(
       stakeAccount.staker.toString()
@@ -77,7 +78,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       tags.push('Unstaked');
     } else if (epoch && activationEpoch.isGreaterThanOrEqualTo(epoch)) {
       tags.push('Activating');
-    } else if (epoch && deactivationEpoch.isLessThanOrEqualTo(epoch)) {
+    } else if (epoch && deactivationEpoch.isLessThan(epoch)) {
+      tags.push('Unstaked');
+    } else if (epoch && deactivationEpoch.isEqualTo(epoch)) {
       tags.push('Unstaking');
     } else {
       tags.push('Active');
