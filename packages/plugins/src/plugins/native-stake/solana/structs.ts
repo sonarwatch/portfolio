@@ -2,15 +2,37 @@ import { BeetStruct, u8 } from '@metaplex-foundation/beet';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { publicKey } from '@metaplex-foundation/beet-solana';
-import { blob, f64, u64 } from '../../utils/solana';
+import { blob, f64, u64 } from '../../../utils/solana';
+
+export type Lockup = {
+  unixTimestamp: BigNumber;
+  epoch: BigNumber;
+  custodian: PublicKey;
+};
+
+export const lockupStruct = new BeetStruct<Lockup>(
+  [
+    ['unixTimestamp', u64],
+    ['epoch', u64],
+    ['custodian', publicKey],
+  ],
+  (args) => args as Lockup
+);
+
+export enum StakeAccountState {
+  uninitialized,
+  initialized,
+  delegated,
+  rewardsPool,
+}
 
 export type StakeAccount = {
-  state: number;
+  state: StakeAccountState;
   buffer1: Buffer;
   rent_exempt_reserve: BigNumber;
   staker: PublicKey;
   withdrawer: PublicKey;
-  buffer2: Buffer; // lockup
+  lockup: Lockup;
   voter: PublicKey;
   stake: BigNumber;
   activation_epoch: BigNumber;
@@ -26,7 +48,7 @@ export const stakeAccountStruct = new BeetStruct<StakeAccount>(
     ['rent_exempt_reserve', u64],
     ['staker', publicKey],
     ['withdrawer', publicKey],
-    ['buffer2', blob(48)],
+    ['lockup', lockupStruct],
     ['voter', publicKey],
     ['stake', u64],
     ['activation_epoch', u64],
