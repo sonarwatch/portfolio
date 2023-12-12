@@ -1,5 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 
+export const epochInfoCacheKey = 'epoch-info';
 export const stakeProgramId = new PublicKey(
   'Stake11111111111111111111111111111111111111'
 );

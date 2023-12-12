@@ -35,17 +35,17 @@ export type PortfolioAssetAttributes = {
    */
   lockedUntil?: number;
   /**
-   * Represents the unbondingPeriod (in ms) or string (e.g. 1 epoch).
-   */
-  unbondingPeriod?: number | string;
-  /**
-   * Represents the asset is deprecated.
+   * Represents if the asset is deprecated.
    */
   isDeprecated?: boolean;
   /**
-   * Represents the asset can be claimed.
+   * Represents if the asset can be claimed.
    */
   isClaimable?: boolean;
+  /**
+   * Represents the tags of the asset.
+   */
+  tags?: string[];
 };
 
 /**

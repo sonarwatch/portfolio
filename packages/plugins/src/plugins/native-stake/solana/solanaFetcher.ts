@@ -6,6 +6,7 @@ import {
   solanaNetwork,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
+import { EpochInfo } from '@solana/web3.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { nativeStakePlatform, platformId } from '../constants';
@@ -15,7 +16,11 @@ import { stakeAccountsFilter } from './filters';
 import { stakeAccountStruct } from './structs';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import { marinadePlatform } from '../../marinade/constants';
-import { marinadeManagerAddresses, stakeProgramId } from './constants';
+import {
+  epochInfoCacheKey,
+  marinadeManagerAddresses,
+  stakeProgramId,
+} from './constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -34,6 +39,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     NetworkId.solana
   );
   if (!solTokenPrice) return [];
+
+  const epochInfo = await cache.getItem<EpochInfo>(epochInfoCacheKey, {
+    prefix: platformId,
+    networkId: NetworkId.solana,
+  });
+  const epoch = epochInfo?.epoch;
 
   let marinadeNativeAmount = 0;
   let nMarinadeAccounts = 0;
@@ -55,6 +66,23 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       continue;
     }
 
+    // Status tags
+    const { deactivationEpoch, activationEpoch } = stakeAccount;
+    const tags = [];
+    if (
+      epoch &&
+      activationEpoch.isEqualTo(epoch) &&
+      deactivationEpoch.isEqualTo(epoch)
+    ) {
+      tags.push('Unstaked');
+    } else if (epoch && activationEpoch.isGreaterThanOrEqualTo(epoch)) {
+      tags.push('Activating');
+    } else if (epoch && deactivationEpoch.isLessThanOrEqualTo(epoch)) {
+      tags.push('Unstaking');
+    } else {
+      tags.push('Active');
+    }
+
     nativeAssets.push({
       ...tokenPriceToAssetToken(
         solanaNetwork.native.address,
@@ -63,7 +91,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         solTokenPrice
       ),
       attributes: {
-        unbondingPeriod: '1 epoch',
+        tags,
       },
     });
   }
@@ -97,9 +125,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             NetworkId.solana,
             solTokenPrice
           ),
-          attributes: {
-            unbondingPeriod: '1 epoch',
-          },
+          attributes: {},
         },
       },
     });
