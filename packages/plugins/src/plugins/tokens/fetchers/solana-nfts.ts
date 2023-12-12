@@ -23,6 +23,7 @@ import getTensorSingleListings from '../../tensor/singleListingFetcher';
 
 const prefix = 'nft-images';
 const noImageValue = 'noimage';
+const cacheTtl = 60 * 60 * 24 * 2; // 2 days
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -77,6 +78,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     return cache.setItem(address, image, {
       prefix,
       networkId: NetworkId.solana,
+      ttl: cacheTtl,
     });
   });
   await Promise.allSettled(promises);
