@@ -6,12 +6,10 @@ export default async function getTokenPricesMap(
   networkId: NetworkIdType,
   cache: Cache
 ): Promise<Map<string, TokenPrice>> {
-  const mints: Set<string> = new Set();
-  tokensAddresses.forEach((mint) => mints.add(mint));
-  const tokensPrices = await cache.getTokenPrices(Array.from(mints), networkId);
+  const tokensPrices = await cache.getTokenPrices(tokensAddresses, networkId);
   const tokenPriceById: Map<string, TokenPrice> = new Map();
-  tokensPrices.forEach((tP) =>
-    tP ? tokenPriceById.set(tP.address, tP) : undefined
+  tokensPrices.forEach((tP, index) =>
+    tP ? tokenPriceById.set(tokensAddresses[index], tP) : undefined
   );
   return tokenPriceById;
 }
