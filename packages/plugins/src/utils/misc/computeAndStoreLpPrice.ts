@@ -18,6 +18,8 @@ export type PoolData = {
   decimalY?: number;
 };
 /**
+ * @deprecated
+ * This function has been deprecated. Use the getLpTokenSource or getLpTokenSourceRaw instead.
  * Add a price source for a pool in the cache.
  * If one of the token composing the pool doesn't have a price and can be safely calculated, add a new token price.
  * WARNING : check tokensToRelyOnByNetwork for further details on how the new token price is calculated.
