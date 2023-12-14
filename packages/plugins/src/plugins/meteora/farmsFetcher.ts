@@ -105,6 +105,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const rewardAssetsValue = getUsdValueSum(rewardAssets.map((r) => r.value));
     const value = getUsdValueSum([assetsValue, rewardAssetsValue]);
 
+    if (value === 0) continue;
+
     const liquidity: PortfolioLiquidity = {
       value,
       assets,
