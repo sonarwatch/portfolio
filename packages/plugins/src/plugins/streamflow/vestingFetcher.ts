@@ -93,19 +93,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       networkId: NetworkId.ethereum,
       label: 'Vesting',
       platformId,
-      type: PortfolioElementType.liquidity,
+      type: PortfolioElementType.multiple,
       value: getUsdValueSum(assets.map((a) => a.value)),
       data: {
-        liquidities: [
-          {
-            assets,
-            assetsValue: getUsdValueSum(assets.map((a) => a.value)),
-            rewardAssets: [],
-            rewardAssetsValue: 0,
-            value: getUsdValueSum(assets.map((a) => a.value)),
-            yields: [],
-          },
-        ],
+        assets,
       },
     },
   ];
