@@ -266,6 +266,11 @@ import {
   jobs as instadappJobs,
   fetchers as instadappFetchers,
 } from './plugins/instadapp';
+import {
+  platforms as streamflowPlatforms,
+  jobs as streamflowJobs,
+  fetchers as streamflowFetchers,
+} from './plugins/streamflow';
 
 export {
   walletTokensPlatform,
@@ -335,6 +340,7 @@ export const platforms: Platform[] = [
   ...lifinityPlatforms,
   ...portPlatforms,
   ...instadappPlatforms,
+  ...streamflowPlatforms,
 ];
 
 // JOBS //
@@ -388,6 +394,7 @@ export const jobs: Job[] = [
   ...lifinityJobs,
   ...portJobs,
   ...instadappJobs,
+  ...streamflowJobs,
 ];
 
 // FETCHERS //
@@ -443,5 +450,6 @@ export const fetchers: Fetcher[] = [
   ...portFetchers,
   ...instadappFetchers,
   ...meteoraFetchers,
+  ...streamflowFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
