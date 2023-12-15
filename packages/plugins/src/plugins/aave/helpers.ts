@@ -316,7 +316,7 @@ export function getElementLendingData(
     }
   }
   const rewardAssets = getRewardAssets(networkId, calculatedUserIncentives);
-  const { borrowedValue, suppliedValue, healthRatio, collateralRatio, value } =
+  const { borrowedValue, suppliedValue, healthRatio, value } =
     getElementLendingValues(
       suppliedAssets,
       borrowedAssets,
@@ -329,7 +329,7 @@ export function getElementLendingData(
     borrowedAssets,
     borrowedValue,
     borrowedYields,
-    collateralRatio,
+    collateralRatio: null,
     healthRatio,
     suppliedAssets,
     suppliedValue,
