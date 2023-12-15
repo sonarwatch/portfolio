@@ -90,7 +90,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   return [
     {
-      networkId: NetworkId.ethereum,
+      networkId: NetworkId.solana,
       label: 'Vesting',
       platformId,
       type: PortfolioElementType.multiple,
