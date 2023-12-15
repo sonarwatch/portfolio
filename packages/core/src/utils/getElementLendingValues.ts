@@ -10,6 +10,7 @@ function getHealthRatio(
   if (!suppliedLtvs) return null;
   if (suppliedLtvs && suppliedLtvs.length !== suppliedAssets.length)
     throw new Error('suppliedLtvs length doesnt match suppliedAssets');
+  if (borrowedAssets.length === 0) return 1;
 
   const fBorrowedWeights =
     borrowedWeights || new Array<number>(borrowedAssets.length).fill(1);
