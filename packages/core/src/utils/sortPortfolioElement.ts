@@ -36,8 +36,11 @@ export function sortElementMultiple(
 export function sortElementBorrowLend(
   element: PortfolioElementBorrowLend
 ): PortfolioElementBorrowLend {
-  const sortedElement = element;
-  return sortedElement;
+  const sElement = element;
+  sElement.data.borrowedAssets = sortAssets(sElement.data.borrowedAssets);
+  sElement.data.suppliedAssets = sortAssets(sElement.data.suppliedAssets);
+  sElement.data.rewardAssets = sortAssets(sElement.data.rewardAssets);
+  return sElement;
 }
 
 export function sortElementLiquidity(
