@@ -22,7 +22,13 @@ import {
   UserIncentiveDict,
   formatUserSummaryAndIncentives,
 } from '@aave/math-utils';
-import { LendingConfig, LendingData } from './types';
+import {
+  LendingConfig,
+  LendingData,
+  ReserveYieldInfo,
+  UserReserveData,
+  UserSummary,
+} from './types';
 import { Cache } from '../../Cache';
 import { getRpcEndpoint } from '../../utils/clients/constants';
 import { platformId } from './constants';
@@ -133,33 +139,6 @@ export async function getUserSummary(
   return userSummary;
 }
 
-type UserReserveData = {
-  underlyingAsset: string;
-  underlyingBalance: string;
-  underlyingBalanceUSD: string;
-  stableBorrows: string;
-  stableBorrowsUSD: string;
-  variableBorrows: string;
-  variableBorrowsUSD: string;
-  reserve: ReserveYieldInfo;
-  stableBorrowAPR: string;
-  stableBorrowAPY: string;
-};
-
-type UserSummary = {
-  userReservesData: UserReserveData[];
-  calculatedUserIncentives: UserIncentiveDict;
-};
-
-type ReserveYieldInfo = {
-  supplyAPY: string;
-  supplyAPR: string;
-  variableBorrowAPR: string;
-  variableBorrowAPY: string;
-  priceInUSD: string;
-  symbol: string;
-};
-
 export function getSupplyYields(reserve: ReserveYieldInfo) {
   let yields: Yield[] = [];
   if (reserve.supplyAPR !== '0') {
@@ -245,7 +224,15 @@ export function getSuppliedAsset(
     },
   };
   const yields = getSupplyYields(userReserveData.reserve);
-  return { suppliedAsset, yields };
+
+  const liquidationThreshold = Number(
+    userReserveData.reserve.formattedReserveLiquidationThreshold
+  );
+  return {
+    suppliedAsset,
+    yields,
+    ltv: userReserveData.reserve.isIsolated ? 0 : liquidationThreshold,
+  };
 }
 
 function getRewardAssets(
@@ -290,6 +277,7 @@ export function getElementLendingData(
 ) {
   const { calculatedUserIncentives, userReservesData } = userSummary;
   const suppliedAssets: PortfolioAsset[] = [];
+  const suppliedLtvs: number[] = [];
   const suppliedYields: Yield[][] = [];
   const borrowedAssets: PortfolioAsset[] = [];
   const borrowedYields: Yield[][] = [];
@@ -318,17 +306,23 @@ export function getElementLendingData(
 
     // Deposits
     if (userReserveData.underlyingBalance !== '0') {
-      const { suppliedAsset, yields } = getSuppliedAsset(
+      const { suppliedAsset, yields, ltv } = getSuppliedAsset(
         networkId,
         userReserveData
       );
+      suppliedLtvs.push(ltv);
       suppliedYields.push(yields);
       suppliedAssets.push(suppliedAsset);
     }
   }
   const rewardAssets = getRewardAssets(networkId, calculatedUserIncentives);
   const { borrowedValue, suppliedValue, healthRatio, collateralRatio, value } =
-    getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
+    getElementLendingValues(
+      suppliedAssets,
+      borrowedAssets,
+      rewardAssets,
+      suppliedLtvs
+    );
 
   const elementData: PortfolioElementBorrowLendData = {
     rewardAssets,

@@ -1,5 +1,8 @@
 import { ReservesIncentiveDataHumanized } from '@aave/contract-helpers';
-import { formatReservesAndIncentives } from '@aave/math-utils';
+import {
+  formatReservesAndIncentives,
+  UserIncentiveDict,
+} from '@aave/math-utils';
 import { NetworkIdType } from '@sonarwatch/portfolio-core';
 
 type FormattedReserves = ReturnType<typeof formatReservesAndIncentives>;
@@ -23,4 +26,34 @@ export type LendingData = {
   marketReferenceCurrencyDecimals: number;
   formattedReserves: FormattedReserves;
   reserveIncentives: ReservesIncentiveDataHumanized[];
+};
+
+export type UserReserveData = {
+  underlyingAsset: string;
+  underlyingBalance: string;
+  underlyingBalanceUSD: string;
+  stableBorrows: string;
+  stableBorrowsUSD: string;
+  variableBorrows: string;
+  variableBorrowsUSD: string;
+  reserve: ReserveYieldInfo;
+  stableBorrowAPR: string;
+  stableBorrowAPY: string;
+};
+
+export type UserSummary = {
+  userReservesData: UserReserveData[];
+  calculatedUserIncentives: UserIncentiveDict;
+};
+
+export type ReserveYieldInfo = {
+  supplyAPY: string;
+  supplyAPR: string;
+  variableBorrowAPR: string;
+  variableBorrowAPY: string;
+  priceInUSD: string;
+  symbol: string;
+  formattedBaseLTVasCollateral: string;
+  formattedReserveLiquidationThreshold: string;
+  isIsolated: boolean;
 };
