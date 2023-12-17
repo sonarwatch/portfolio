@@ -7,6 +7,7 @@ import axios, { AxiosResponse } from 'axios';
 import { getCoingeckoSources, getTokensData } from './helpers';
 import { Cache } from '../../Cache';
 import { JobExecutor } from '../../Job';
+import sleep from '../../utils/misc/sleep';
 
 export default function jobExecutorGenerator(
   networkId: NetworkIdType
@@ -24,5 +25,6 @@ export default function jobExecutorGenerator(
       const source = sources[i];
       await cache.setTokenPriceSource(source);
     }
+    await sleep(1000 * 60 * 10);
   };
 }
