@@ -14,6 +14,7 @@ export default function jobExecutorGenerator(
 ): JobExecutor {
   const network = networks[networkId];
   return async (cache: Cache) => {
+    await sleep(1000 * 60 * 10);
     const tokenListResponse: AxiosResponse<UniTokenList> | null = await axios
       .get(network.tokenListUrl)
       .catch(() => null);
@@ -25,6 +26,5 @@ export default function jobExecutorGenerator(
       const source = sources[i];
       await cache.setTokenPriceSource(source);
     }
-    await sleep(1000 * 60 * 10);
   };
 }
