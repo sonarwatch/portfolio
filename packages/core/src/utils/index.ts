@@ -31,3 +31,5 @@ export * from './getImageFromAsset';
 export * from './getImageFromAssets';
 export * from './getLabelFromAsset';
 export * from './getLabelFromAssets';
+export * from './healthFactorToHealthRatio';
+export * from './healthRatioToHealthFactor';
