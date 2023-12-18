@@ -15,7 +15,7 @@ export const viemChainsByNetworkId: Record<EvmNetworkIdType, Chain> = {
 
 export function getUrlEndpoints(): Record<NetworkIdType, string> {
   return {
-    sei: process.env['PORTFOLIO_SEI_RPC'] || 'https://sei-rpc.brocha.in/',
+    sei: process.env['PORTFOLIO_SEI_RPC'] || 'https://sei.public-rpc.com/',
     bitcoin:
       process.env['PORTFOLIO_BITCOIN_RPC'] || 'https://blockstream.info/api/',
     bnb: process.env['PORTFOLIO_BNB_RPC'] || 'https://binance.llamarpc.com',
