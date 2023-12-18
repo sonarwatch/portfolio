@@ -14,7 +14,6 @@ import { userStateStruct } from './structs/vaults';
 import { userStateFilter } from './filters';
 import { FarmInfo } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -35,12 +34,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const farmById: Map<string, FarmInfo> = new Map();
   farmsInfo.forEach((farmInfo) => farmById.set(farmInfo.pubkey, farmInfo));
-
-  const tokenPriceById = await getTokenPricesMap(
-    farmsInfo.map((farm) => farm.rewardsMints).flat(),
-    NetworkId.solana,
-    cache
-  );
 
   const liquidities: PortfolioLiquidity[] = [];
 
@@ -65,36 +58,44 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         price
       )
     );
-    for (let i = 0; i < farm.rewardsMints.length; i++) {
-      const rewardMint = farm.rewardsMints[i];
-      if (rewardMint === '11111111111111111111111111111111') continue;
+    // for (let i = 0; i < farm.rewardsMints.length; i++) {
+    //   const rewardMint = farm.rewardsMints[i];
+    //   if (rewardMint === '11111111111111111111111111111111') continue;
 
-      const rewardAmountRaw = userState.rewardsIssuedUnclaimed[i].plus(
-        userState.rewardsTallyScaled[i]
-      );
-      if (rewardAmountRaw.isZero()) continue;
+    //   const rewardAmountRaw = userState.rewardsIssuedUnclaimed[i].plus(
+    //     userState.rewardsTallyScaled[i]
+    //   );
+    //   console.log(
+    //     'constexecutor:FetcherExecutor= ~ userState.rewardsIssuedUnclaimed[i]:',
+    //     userState.rewardsIssuedUnclaimed[i].toNumber()
+    //   );
+    //   console.log(
+    //     'constexecutor:FetcherExecutor= ~ userState.rewardsTallyScaled[i]:',
+    //     userState.rewardsTallyScaled[i].toNumber()
+    //   );
+    //   if (rewardAmountRaw.isZero()) continue;
 
-      const rewardPrice = tokenPriceById.get(rewardMint);
-      if (!rewardPrice) continue;
+    //   const rewardPrice = tokenPriceById.get(rewardMint);
+    //   if (!rewardPrice) continue;
 
-      const rewardAmount = rewardAmountRaw
-        .dividedBy(10 ** 18)
-        .dividedBy(10 ** rewardPrice.decimals)
-        .toNumber();
-      rewardAssets.push({
-        ...tokenPriceToAssetToken(
-          rewardMint,
-          rewardAmount,
-          NetworkId.solana,
-          rewardPrice
-        ),
-        attributes: { isClaimable: false },
-      });
-    }
+    //   const rewardAmount = rewardAmountRaw
+    //     .dividedBy(10 ** 18)
+    //     .dividedBy(10 ** rewardPrice.decimals)
+    //     .toNumber();
+    //   rewardAssets.push({
+    //     ...tokenPriceToAssetToken(
+    //       rewardMint,
+    //       rewardAmount,
+    //       NetworkId.solana,
+    //       rewardPrice
+    //     ),
+    //     attributes: { isClaimable: false },
+    //   });
+    // }
 
     const assetsValue = getUsdValueSum(assets.map((a) => a.value));
-    const rewardAssetsValue = getUsdValueSum(rewardAssets.map((r) => r.value));
-    const value = getUsdValueSum([assetsValue, rewardAssetsValue]);
+    const rewardAssetsValue = null;
+    const value = assetsValue;
 
     const liquidity: PortfolioLiquidity = {
       value,
