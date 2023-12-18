@@ -13,4 +13,4 @@ export const walletNftsPlatform: Platform = {
 
 export const tokenListsPrefix = 'tokenlists';
 export const tokenListsDetailsPrefix = 'tokenlistsdetails';
-export const nIdsToFetch = 50;
+export const nIdsToFetch = 20;

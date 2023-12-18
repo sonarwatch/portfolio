@@ -76,7 +76,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       type: PortfolioElementType.liquidity,
       networkId: NetworkId.sei,
       platformId: platform,
-      name: 'Liquidities',
       label: 'LiquidityPool',
       value: getUsdValueSum(liquidities.map((a) => a.value)),
       data: {

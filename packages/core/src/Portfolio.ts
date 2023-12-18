@@ -253,16 +253,17 @@ export type PortfolioElementBorrowLendData = {
    */
   borrowedYields: Yield[][];
   /**
+   * @deprecated
    * The collateral ratio of the portfolio element.
    * -1 means infinity/no borrow.
    * null means unknown.
    * 1.5 means 150%.
    */
-  collateralRatio: number | null;
+  collateralRatio: null;
   /**
    * The health ratio of the portfolio element.
-   * 1 means 100% / full health / no borrow.
-   * 0 and <0 means can be liquidated.
+   * 1 means full health or no borrow.
+   * 0 or below means can be liquidated.
    * null means unknown.
    */
   healthRatio: number | null;

@@ -175,13 +175,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       rewardAssets.length === 0
     )
       continue;
-    const {
-      borrowedValue,
-      collateralRatio,
-      suppliedValue,
-      value,
-      healthRatio,
-    } = getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
+    const { borrowedValue, suppliedValue, value, healthRatio } =
+      getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
     elements.push({
       type: PortfolioElementType.borrowlend,
       networkId: NetworkId.ethereum,
@@ -195,7 +190,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         suppliedAssets,
         suppliedValue,
         suppliedYields,
-        collateralRatio,
+        collateralRatio: null,
+
         healthRatio,
         rewardAssets,
         value,

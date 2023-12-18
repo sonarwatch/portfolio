@@ -75,6 +75,7 @@ async function getPricesFromCoingeckoIds(
 
   const priceByCoingeckoId = new Map<string, number>();
   while (idsToFetch.length !== 0) {
+    await sleep(10000);
     const currIdsToFetch = idsToFetch.splice(0, nIdsToFetch);
     const coingeckoSimpleRes: AxiosResponse<CoingeckoSimpleRes> | null =
       await axios
@@ -85,7 +86,10 @@ async function getPricesFromCoingeckoIds(
           },
         })
         .catch(() => null);
-    if (!coingeckoSimpleRes) continue;
+    if (!coingeckoSimpleRes) {
+      await sleep(60000);
+      continue;
+    }
 
     for (let i = 0; i < currIdsToFetch.length; i += 1) {
       const id = currIdsToFetch[i];
@@ -93,7 +97,6 @@ async function getPricesFromCoingeckoIds(
       if (!usd) continue;
       priceByCoingeckoId.set(id, usd);
     }
-    await sleep(10000);
   }
   return priceByCoingeckoId;
 }
