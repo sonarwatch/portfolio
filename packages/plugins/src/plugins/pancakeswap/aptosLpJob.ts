@@ -10,10 +10,12 @@ import {
   MoveResource,
   getAccountResources,
   getNestedType,
+  parseTypeString,
 } from '../../utils/aptos';
-import computeAndStoreLpPrice, {
-  PoolData,
-} from '../../utils/misc/computeAndStoreLpPrice';
+import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
+import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
+import { getDecimalsForToken } from '../../utils/misc/getDecimalsForToken';
+import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientAptos();
@@ -24,7 +26,17 @@ const executor: JobExecutor = async (cache: Cache) => {
   resources.forEach((resource) => {
     resourcesByType.set(resource.type, resource);
   });
-  const promises = [];
+
+  const tokenPriceById = await getTokenPricesMap(
+    resources
+      .map((ressource) => {
+        const { keys } = parseTypeString(ressource.type);
+        return keys ? keys.map((key) => key.type) : [];
+      })
+      .flat(),
+    NetworkId.aptos,
+    cache
+  );
   for (let i = 0; i < resources.length; i++) {
     const resource = resources[i];
     if (!resource.type.startsWith(lpCoinInfoTypePrefix)) continue;
@@ -67,20 +79,71 @@ const executor: JobExecutor = async (cache: Cache) => {
     )
       continue;
 
-    const poolData: PoolData = {
-      id: lpType,
-      lpDecimals,
-      supply: lpSupply,
-      mintTokenX: typeX,
-      mintTokenY: typeY,
-      reserveTokenX: new BigNumber(tokenPairData.balance_x.value),
-      reserveTokenY: new BigNumber(tokenPairData.balance_y.value),
-    };
-    promises.push(
-      computeAndStoreLpPrice(cache, poolData, NetworkId.aptos, platformId)
+    const [tokenPriceX, tokenPriceY] = [
+      tokenPriceById.get(typeX),
+      tokenPriceById.get(typeY),
+    ];
+
+    const [decimalsX, decimalsY] = await Promise.all([
+      getDecimalsForToken(cache, typeX, NetworkId.aptos),
+      getDecimalsForToken(cache, typeY, NetworkId.aptos),
+    ]);
+
+    const [reserveAmountRawX, reserveAmountRawY] = [
+      new BigNumber(tokenPairData.balance_x.value),
+      new BigNumber(tokenPairData.balance_y.value),
+    ];
+
+    if (!decimalsX || !decimalsY) continue;
+
+    const underlyingSource = getLpUnderlyingTokenSource(
+      lpType,
+      platformId,
+      NetworkId.aptos,
+      {
+        address: typeX,
+        decimals: decimalsX,
+        reserveAmountRaw: reserveAmountRawX,
+        tokenPrice: tokenPriceX,
+      },
+      {
+        address: typeY,
+        decimals: decimalsY,
+        reserveAmountRaw: reserveAmountRawY,
+        tokenPrice: tokenPriceY,
+      }
     );
+    if (underlyingSource) await cache.setTokenPriceSource(underlyingSource);
+
+    if (!tokenPriceX || !tokenPriceY) continue;
+    const lpSource = getLpTokenSourceRaw(
+      NetworkId.aptos,
+      lpType,
+      platformId,
+      '',
+      {
+        address: lpType,
+        decimals: lpDecimals,
+        supplyRaw: lpSupply,
+      },
+      [
+        {
+          address: tokenPriceX.address,
+          decimals: tokenPriceX.decimals,
+          price: tokenPriceX.price,
+          reserveAmountRaw: reserveAmountRawX,
+        },
+        {
+          address: tokenPriceY.address,
+          decimals: tokenPriceY.decimals,
+          price: tokenPriceY.price,
+          reserveAmountRaw: reserveAmountRawY,
+        },
+      ]
+    );
+
+    await cache.setTokenPriceSource(lpSource);
   }
-  await Promise.allSettled(promises);
 };
 
 const job: Job = {

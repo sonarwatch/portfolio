@@ -6,13 +6,13 @@ import { Job, JobExecutor } from '../../Job';
 import { getClientSui } from '../../utils/clients';
 import { lpCoinsTable, platformId } from './constants';
 import { PoolInfo } from './types';
-import computeAndStoreLpPrice, {
-  PoolData,
-  minimumLiquidity,
-} from '../../utils/misc/computeAndStoreLpPrice';
+import { minimumLiquidity } from '../../utils/misc/computeAndStoreLpPrice';
 import getMultipleSuiObjectsSafe from '../../utils/sui/getMultipleObjectsSafe';
 import getDynamicFieldsSafe from '../../utils/sui/getDynamicFieldsSafe';
 import { parseTypeString } from '../../utils/aptos';
+import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
+import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
+import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
@@ -45,7 +45,17 @@ const executor: JobExecutor = async (cache: Cache) => {
     showContent: true,
   });
 
-  const promises = [];
+  const tokenPriceById = await getTokenPricesMap(
+    poolsInfo
+      .map((pool) =>
+        pool.data ? (getObjectFields(pool) as PoolInfo).type_names : []
+      )
+      .flat()
+      .map((type) => `0x${type}`),
+    networkId,
+    cache
+  );
+
   for (const pool of poolsInfo) {
     if (!pool.data || !pool.data.content) continue;
     const poolInfo = getObjectFields(pool) as PoolInfo;
@@ -99,42 +109,76 @@ const executor: JobExecutor = async (cache: Cache) => {
 
       const price = totalLiquidity.dividedBy(poolSupply).toNumber();
 
-      promises.push(
-        cache.setTokenPriceSource({
-          id: platformId,
-          weight: 1,
-          address,
-          networkId,
-          platformId,
-          decimals,
-          price,
-          underlyings,
-          timestamp: Date.now(),
-        })
-      );
+      await cache.setTokenPriceSource({
+        id: platformId,
+        weight: 1,
+        address,
+        networkId,
+        platformId,
+        decimals,
+        price,
+        underlyings,
+        timestamp: Date.now(),
+      });
     } else {
-      const poolData: PoolData = {
-        id: address,
-        lpDecimals: poolInfo.lp_decimals,
-        mintTokenX: `0x${poolInfo.type_names[0]}`,
-        decimalX: poolInfo.coin_decimals[0],
-        mintTokenY: `0x${poolInfo.type_names[1]}`,
-        decimalY: poolInfo.coin_decimals[1],
-        reserveTokenX: new BigNumber(poolInfo.normalized_balances[0]).dividedBy(
-          poolInfo.decimal_scalars[0]
-        ),
-        reserveTokenY: new BigNumber(poolInfo.normalized_balances[1]).dividedBy(
-          poolInfo.decimal_scalars[1]
-        ),
-        supply: new BigNumber(poolInfo.lp_supply.fields.value),
-      };
-      promises.push(
-        computeAndStoreLpPrice(cache, poolData, networkId, platformId)
+      const tokenPriceA = tokenPriceById.get(`0x${poolInfo.type_names[0]}`);
+      const tokenPriceB = tokenPriceById.get(`0x${poolInfo.type_names[1]}`);
+      const reserveAmountRawA = new BigNumber(
+        poolInfo.normalized_balances[0]
+      ).dividedBy(poolInfo.decimal_scalars[0]);
+      const reserveAmountRawB = new BigNumber(
+        poolInfo.normalized_balances[1]
+      ).dividedBy(poolInfo.decimal_scalars[1]);
+      const underlyingSource = getLpUnderlyingTokenSource(
+        address,
+        platformId,
+        networkId,
+        {
+          address: `0x${poolInfo.type_names[0]}`,
+          decimals: poolInfo.coin_decimals[0],
+          reserveAmountRaw: reserveAmountRawA,
+          tokenPrice: tokenPriceA,
+        },
+        {
+          address: `0x${poolInfo.type_names[1]}`,
+          decimals: poolInfo.coin_decimals[1],
+          reserveAmountRaw: reserveAmountRawB,
+          tokenPrice: tokenPriceB,
+        }
       );
+      if (underlyingSource) await cache.setTokenPriceSource(underlyingSource);
+
+      if (!tokenPriceA || !tokenPriceB) continue;
+
+      const lpSource = getLpTokenSourceRaw(
+        networkId,
+        address,
+        platformId,
+        '',
+        {
+          address,
+          decimals: poolInfo.lp_decimals,
+          supplyRaw: new BigNumber(poolInfo.lp_supply.fields.value),
+        },
+        [
+          {
+            address: tokenPriceA.address,
+            decimals: tokenPriceA.decimals,
+            price: tokenPriceA.price,
+            reserveAmountRaw: reserveAmountRawA,
+          },
+          {
+            address: tokenPriceB.address,
+            decimals: tokenPriceB.decimals,
+            price: tokenPriceB.price,
+            reserveAmountRaw: reserveAmountRawB,
+          },
+        ]
+      );
+
+      await cache.setTokenPriceSource(lpSource);
     }
   }
-
-  await Promise.allSettled(promises);
 };
 
 const job: Job = {

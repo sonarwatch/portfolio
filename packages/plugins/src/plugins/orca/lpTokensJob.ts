@@ -15,11 +15,11 @@ import { fetchTokenSupplyAndDecimals } from '../../utils/solana/fetchTokenSupply
 import { Job, JobExecutor } from '../../Job';
 import { Cache } from '../../Cache';
 import runInBatch from '../../utils/misc/runInBatch';
-import computeAndStoreLpPrice, {
-  PoolData,
-  minimumLiquidity,
-} from '../../utils/misc/computeAndStoreLpPrice';
+import { minimumLiquidity } from '../../utils/misc/computeAndStoreLpPrice';
 import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
+import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
+import { getDecimalsForToken } from '../../utils/misc/getDecimalsForToken';
+import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -107,28 +107,81 @@ const executor: JobExecutor = async (cache: Cache) => {
     );
     if (!poolPcTokenAccount || !poolCoinTokenAccount) continue;
 
-    const coinToken = tokenPrices.get(poolAccount.mintA.toString());
-    const pcToken = tokenPrices.get(poolAccount.mintB.toString());
-    if (!coinToken || !pcToken) continue;
+    const mintA = poolAccount.mintA.toString();
+    const mintB = poolAccount.mintB.toString();
+
+    const tokenPriceA = tokenPrices.get(poolAccount.mintA.toString());
+    const tokenPriceB = tokenPrices.get(poolAccount.mintB.toString());
+
+    const [decimalsA, decimalsB] = await Promise.all([
+      getDecimalsForToken(cache, mintA, NetworkId.solana),
+      getDecimalsForToken(cache, mintB, NetworkId.solana),
+    ]);
+    const lpDecimals = lpSupplyAndDecimals.decimals;
+
+    if (!decimalsA || !decimalsB) continue;
 
     const coinAmountWei = new BigNumber(poolCoinTokenAccount.amount.toString());
     const pcAmountWei = new BigNumber(poolPcTokenAccount.amount.toString());
 
-    const lpDecimals = lpSupplyAndDecimals.decimals;
+    const underlyingSource = getLpUnderlyingTokenSource(
+      lpMint.toString(),
+      platformId,
+      NetworkId.solana,
+      {
+        address: mintA,
+        decimals: decimalsA,
+        reserveAmountRaw: coinAmountWei,
+        tokenPrice: tokenPriceA,
+      },
+      {
+        address: mintB,
+        decimals: decimalsB,
+        reserveAmountRaw: pcAmountWei,
+        tokenPrice: tokenPriceB,
+      }
+    );
+    if (underlyingSource) await cache.setTokenPriceSource(underlyingSource);
 
-    const poolData: PoolData = {
-      id: lpMint.toString(),
-      lpDecimals,
-      mintTokenX: poolAccount.mintA.toString(),
-      mintTokenY: poolAccount.mintB.toString(),
-      reserveTokenX: coinAmountWei,
-      reserveTokenY: pcAmountWei,
-      supply: lpSupply,
-      decimalX: coinToken.decimals,
-      decimalY: pcToken.decimals,
-    };
+    if (!tokenPriceA || !tokenPriceB) continue;
 
-    await computeAndStoreLpPrice(cache, poolData, NetworkId.solana, platformId);
+    const lpSource = getLpTokenSourceRaw(
+      NetworkId.solana,
+      lpMint.toString(),
+      platformId,
+      'Aquafarms (deprecated)',
+      { address: lpMint.toString(), decimals: lpDecimals, supplyRaw: lpSupply },
+      [
+        {
+          address: tokenPriceA.address,
+          decimals: tokenPriceA.decimals,
+          price: tokenPriceA.price,
+          reserveAmountRaw: coinAmountWei,
+        },
+        {
+          address: tokenPriceB.address,
+          decimals: tokenPriceB.decimals,
+          price: tokenPriceB.price,
+          reserveAmountRaw: pcAmountWei,
+        },
+      ]
+    );
+
+    await cache.setTokenPriceSource(lpSource);
+
+    // const poolData: PoolData = {
+    //   id: lpMint.toString(),
+    //   lpDecimals,
+    //   mintTokenX: poolAccount.mintA.toString(),
+    //   mintTokenY: poolAccount.mintB.toString(),
+    //   reserveTokenX: coinAmountWei,
+    //   reserveTokenY: pcAmountWei,
+    //   supply: lpSupply,
+    //   decimalX: tokenPriceA.decimals,
+    //   decimalY: tokenPriceB.decimals,
+    // };
+
+    // await computeAndStoreLpPrice(cache, poolData, NetworkId.solana, platformId);
   }
 
   const tokensSupDecResult = await runInBatch(

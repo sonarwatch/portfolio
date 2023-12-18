@@ -11,20 +11,19 @@ import {
   minterQueryMsg,
   tokenInfoQueryMsg,
 } from '../../utils/sei';
-import computeAndStoreLpPrice, {
-  PoolData,
-} from '../../utils/misc/computeAndStoreLpPrice';
 import isAContract from '../../utils/sei/isAContract';
+import { getDecimalsForToken } from '../../utils/misc/getDecimalsForToken';
+import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
+import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const cosmWasmClient = await getCosmWasmClient(getUrlEndpoint(NetworkId.sei));
 
   const pushedContractsByPlatform: Map<string, string[]> = new Map();
-  const promises = [];
   for (const liquidityPoolInfo of liquidityPoolsInfos) {
     const { codes } = liquidityPoolInfo;
     const contracts: string[] = [];
-    const platform = liquidityPoolInfo.platformId;
+    const { platformId } = liquidityPoolInfo;
     for (let i = 0; i < codes.length; i++) {
       const codesContracts = await cosmWasmClient.getContracts(codes[i]);
       contracts.push(...codesContracts);
@@ -38,7 +37,6 @@ const executor: JobExecutor = async (cache: Cache) => {
         tokenInfoQueryMsg
       )) as TokenInfo;
       if (!lpTokenInfo) continue;
-
       const supply = new BigNumber(lpTokenInfo.total_supply);
       if (supply.isZero()) continue;
 
@@ -55,29 +53,79 @@ const executor: JobExecutor = async (cache: Cache) => {
       const poolInfo = await liquidityPoolInfo.getter(minter.minter);
       if (!poolInfo) continue;
 
-      const poolData: PoolData = {
-        id: lpContract,
-        lpDecimals: lpTokenInfo.decimals,
-        mintTokenX: poolInfo.mintX,
-        mintTokenY: poolInfo.mintY,
-        reserveTokenX: poolInfo.amountX,
-        reserveTokenY: poolInfo.amountY,
-        supply,
-      };
-
-      promises.push(
-        computeAndStoreLpPrice(cache, poolData, NetworkId.sei, platform)
+      const [tokenPriceX, tokenPriceY] = await cache.getTokenPrices(
+        [poolInfo.mintX, poolInfo.mintY],
+        NetworkId.sei
       );
 
-      if (pushedContractsByPlatform.get(platform)) {
-        const pushedContracts = pushedContractsByPlatform.get(platform);
+      const [decimalsX, decimalsY] = await Promise.all([
+        getDecimalsForToken(cache, poolInfo.mintX, NetworkId.sei),
+        getDecimalsForToken(cache, poolInfo.mintY, NetworkId.sei),
+      ]);
+
+      const [reserveAmountRawX, reserveAmountRawY] = [
+        new BigNumber(poolInfo.amountX),
+        new BigNumber(poolInfo.amountY),
+      ];
+
+      if (!decimalsX || !decimalsY) continue;
+
+      const underlyingSource = getLpUnderlyingTokenSource(
+        lpContract,
+        platformId,
+        NetworkId.sei,
+        {
+          address: poolInfo.mintX,
+          decimals: decimalsX,
+          reserveAmountRaw: reserveAmountRawX,
+          tokenPrice: tokenPriceX,
+        },
+        {
+          address: poolInfo.mintY,
+          decimals: decimalsY,
+          reserveAmountRaw: reserveAmountRawY,
+          tokenPrice: tokenPriceY,
+        }
+      );
+      if (underlyingSource) await cache.setTokenPriceSource(underlyingSource);
+
+      if (!tokenPriceX || !tokenPriceY) continue;
+      const lpSource = getLpTokenSourceRaw(
+        NetworkId.sei,
+        lpContract,
+        platformId,
+        '',
+        {
+          address: lpContract,
+          decimals: lpTokenInfo.decimals,
+          supplyRaw: supply,
+        },
+        [
+          {
+            address: tokenPriceX.address,
+            decimals: tokenPriceX.decimals,
+            price: tokenPriceX.price,
+            reserveAmountRaw: reserveAmountRawX,
+          },
+          {
+            address: tokenPriceY.address,
+            decimals: tokenPriceY.decimals,
+            price: tokenPriceY.price,
+            reserveAmountRaw: reserveAmountRawY,
+          },
+        ]
+      );
+      await cache.setTokenPriceSource(lpSource);
+
+      if (pushedContractsByPlatform.get(platformId)) {
+        const pushedContracts = pushedContractsByPlatform.get(platformId);
         if (!pushedContracts) continue;
-        pushedContractsByPlatform.set(platform, [
+        pushedContractsByPlatform.set(platformId, [
           ...pushedContracts,
           lpContract,
         ]);
       } else {
-        pushedContractsByPlatform.set(platform, [lpContract]);
+        pushedContractsByPlatform.set(platformId, [lpContract]);
       }
     }
   }
@@ -85,19 +133,15 @@ const executor: JobExecutor = async (cache: Cache) => {
   for (const platform of pushedContractsByPlatform.keys()) {
     const contracts = pushedContractsByPlatform.get(platform);
     if (!contracts || contracts.length === 0) continue;
-    promises.push(
-      cache.setItem(
-        platform,
-        { id: platform, contracts },
-        {
-          prefix: pluginId,
-          networkId: NetworkId.sei,
-        }
-      )
+    await cache.setItem(
+      platform,
+      { id: platform, contracts },
+      {
+        prefix: pluginId,
+        networkId: NetworkId.sei,
+      }
     );
   }
-
-  await Promise.allSettled(promises);
 };
 
 const job: Job = {
