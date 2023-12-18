@@ -13,7 +13,7 @@ import { walletTokensPlatform } from './constants';
 export default function jobGenerator(networkId: NetworkIdType): Job {
   const network = networks[networkId];
   const executor = async (cache: Cache) => {
-    await sleep(1000 * 60 * 10);
+    await sleep(60000);
     const tokenListResponse: AxiosResponse<UniTokenList> | null = await axios
       .get(network.tokenListUrl)
       .catch(() => null);
