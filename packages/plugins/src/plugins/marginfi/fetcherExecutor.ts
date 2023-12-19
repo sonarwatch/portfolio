@@ -55,9 +55,8 @@ const fetcherExecutor: FetcherExecutor = async (
 
   const elements: PortfolioElement[] = [];
   for (const account of accounts) {
-    const lendingAccountBalances = account.lendingAccount.balances;
-    if (!lendingAccountBalances || lendingAccountBalances.length === 0)
-      return [];
+    const { balances } = account.lendingAccount;
+    if (!balances || balances.length === 0) continue;
 
     const borrowedAssets: PortfolioAsset[] = [];
     const borrowedYields: Yield[][] = [];
@@ -67,26 +66,24 @@ const fetcherExecutor: FetcherExecutor = async (
     const suppliedLtvs: number[] = [];
     const borrowedWeights: number[] = [];
 
-    for (let index = 0; index < lendingAccountBalances.length; index += 1) {
-      const accountBalanceInfo = lendingAccountBalances[index];
-      const bankInfo = banksInfoByAddress.get(
-        accountBalanceInfo.bankPk.toString()
-      );
+    for (let index = 0; index < balances.length; index += 1) {
+      const balance = balances[index];
+      if (balance.bankPk.toString() === '11111111111111111111111111111111')
+        continue;
+      const bankInfo = banksInfoByAddress.get(balance.bankPk.toString());
       if (!bankInfo) continue;
 
       const { lendingApr, borrowingApr } = getInterestRates(bankInfo);
       const tokenPrice = tokenPriceById.get(bankInfo.mint.toString());
       if (!tokenPrice) continue;
 
-      if (!accountBalanceInfo.assetShares.value.isZero()) {
+      if (!balance.assetShares.value.isZero()) {
         suppliedLtvs.push(
           wrappedI80F48toBigNumber(bankInfo.config.assetWeightMaint)
             .decimalPlaces(2)
             .toNumber()
         );
-        const suppliedQuantity = wrappedI80F48toBigNumber(
-          accountBalanceInfo.assetShares
-        )
+        const suppliedQuantity = wrappedI80F48toBigNumber(balance.assetShares)
           .times(bankInfo.dividedAssetShareValue)
           .toNumber();
 
@@ -107,14 +104,14 @@ const fetcherExecutor: FetcherExecutor = async (
         suppliedYields.push(bankLendingYields);
       }
 
-      if (!accountBalanceInfo.liabilityShares.value.isZero()) {
+      if (!balance.liabilityShares.value.isZero()) {
         borrowedWeights.push(
           wrappedI80F48toBigNumber(bankInfo.config.liabilityWeightMaint)
             .decimalPlaces(2)
             .toNumber()
         );
         const borrowedQuantity = wrappedI80F48toBigNumber(
-          accountBalanceInfo.liabilityShares
+          balance.liabilityShares
         )
           .times(bankInfo.dividedLiabilityShareValue)
           .toNumber();
@@ -137,7 +134,7 @@ const fetcherExecutor: FetcherExecutor = async (
       }
     }
 
-    if (suppliedAssets.length === 0 && borrowedAssets.length === 0) return [];
+    if (suppliedAssets.length === 0 && borrowedAssets.length === 0) continue;
 
     const { borrowedValue, healthRatio, suppliedValue, value } =
       getElementLendingValues(
