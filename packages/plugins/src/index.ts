@@ -271,6 +271,11 @@ import {
   jobs as streamflowJobs,
   fetchers as streamflowFetchers,
 } from './plugins/streamflow';
+import {
+  platforms as benqiPlatforms,
+  jobs as benqiJobs,
+  fetchers as benqiFetchers,
+} from './plugins/benqi';
 
 export {
   walletTokensPlatform,
@@ -341,6 +346,7 @@ export const platforms: Platform[] = [
   ...portPlatforms,
   ...instadappPlatforms,
   ...streamflowPlatforms,
+  ...benqiPlatforms,
 ];
 
 // JOBS //
@@ -395,6 +401,7 @@ export const jobs: Job[] = [
   ...portJobs,
   ...instadappJobs,
   ...streamflowJobs,
+  ...benqiJobs,
 ];
 
 // FETCHERS //
@@ -451,5 +458,6 @@ export const fetchers: Fetcher[] = [
   ...instadappFetchers,
   ...meteoraFetchers,
   ...streamflowFetchers,
+  ...benqiFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
