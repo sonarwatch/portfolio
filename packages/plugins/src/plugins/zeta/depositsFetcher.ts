@@ -56,8 +56,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       networkId: NetworkId.solana,
       platformId,
       name: `N° ${account.subaccountIndex.toString()}`,
-      type: PortfolioElementType.single,
-      data: { asset },
+      type: PortfolioElementType.multiple,
+      data: { assets: [asset] },
       value: asset.value,
     });
   }

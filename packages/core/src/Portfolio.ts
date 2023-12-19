@@ -160,6 +160,7 @@ export type PortfolioElementCommon = {
 };
 
 /**
+ * @deprecated
  * Represents the data of a single portfolio element.
  */
 export type PortfolioElementSingleData = {
@@ -167,6 +168,7 @@ export type PortfolioElementSingleData = {
 };
 
 /**
+ * @deprecated
  * Represents a single portfolio element.
  */
 export type PortfolioElementSingle = PortfolioElementCommon & {

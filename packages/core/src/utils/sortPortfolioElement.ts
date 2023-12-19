@@ -12,8 +12,6 @@ export function sortPortfolioElement(
   element: PortfolioElement
 ): PortfolioElement {
   switch (element.type) {
-    case PortfolioElementType.single:
-      return element;
     case PortfolioElementType.multiple:
       return sortElementMultiple(element);
     case PortfolioElementType.borrowlend:

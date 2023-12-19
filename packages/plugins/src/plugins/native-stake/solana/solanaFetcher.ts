@@ -116,20 +116,22 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     elements.push({
       networkId: NetworkId.solana,
       platformId: marinadePlatform.id,
-      type: 'single',
+      type: 'multiple',
       label: 'Staked',
       name: `Native (${nMarinadeAccounts} validators)`,
       value: marinadeNativeAmount * solTokenPrice.price,
       data: {
-        asset: {
-          ...tokenPriceToAssetToken(
-            solanaNetwork.native.address,
-            marinadeNativeAmount,
-            NetworkId.solana,
-            solTokenPrice
-          ),
-          attributes: {},
-        },
+        assets: [
+          {
+            ...tokenPriceToAssetToken(
+              solanaNetwork.native.address,
+              marinadeNativeAmount,
+              NetworkId.solana,
+              solTokenPrice
+            ),
+            attributes: {},
+          },
+        ],
       },
     });
   }

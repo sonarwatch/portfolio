@@ -8,8 +8,6 @@ export function getAssetsFromElement(
   element: PortfolioElement
 ): PortfolioAsset[] {
   switch (element.type) {
-    case PortfolioElementType.single:
-      return [element.data.asset];
     case PortfolioElementType.multiple:
       return [...element.data.assets];
     case PortfolioElementType.liquidity:
