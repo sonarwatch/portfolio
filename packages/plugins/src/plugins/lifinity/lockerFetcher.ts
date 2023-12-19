@@ -55,8 +55,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   return [
     {
       label: 'Vesting',
-      type: PortfolioElementType.single,
-      data: { asset },
+      type: PortfolioElementType.multiple,
+      data: { assets: [asset] },
       networkId: NetworkId.solana,
       platformId,
       value: asset.value,

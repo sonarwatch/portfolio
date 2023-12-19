@@ -147,14 +147,14 @@ export default function getSerumFetcherExecutor(
         solTokenPrice
       );
       elements.push({
-        type: 'single',
+        type: 'multiple',
         networkId: NetworkId.solana,
         platformId: serumPlatform.id,
         value: asset.value,
         label: 'Deposit',
         name: `Empty Orders Accounts (${nbEmptyAccounts})`,
         tags: [serumVersion.name],
-        data: { asset },
+        data: { assets: [asset] },
       });
     }
 

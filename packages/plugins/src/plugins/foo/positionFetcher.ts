@@ -1,7 +1,7 @@
 import {
   NetworkId,
   PortfolioAssetType,
-  PortfolioElementSingle,
+  PortfolioElementMultiple,
   PortfolioElementType,
   ethereumNativeAddress,
 } from '@sonarwatch/portfolio-core';
@@ -18,24 +18,26 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const price = ethTokenPrice?.price || null;
   const value = price ? amount * price : null;
 
-  const element: PortfolioElementSingle = {
+  const element: PortfolioElementMultiple = {
     networkId: NetworkId.ethereum,
     label: 'Deposit',
     platformId,
-    type: PortfolioElementType.single,
+    type: PortfolioElementType.multiple,
     value,
     data: {
-      asset: {
-        type: PortfolioAssetType.token,
-        networkId: NetworkId.ethereum,
-        value,
-        attributes: {},
-        data: {
-          address: ethereumNativeAddress,
-          amount,
-          price,
+      assets: [
+        {
+          type: PortfolioAssetType.token,
+          networkId: NetworkId.ethereum,
+          value,
+          attributes: {},
+          data: {
+            address: ethereumNativeAddress,
+            amount,
+            price,
+          },
         },
-      },
+      ],
     },
   };
 

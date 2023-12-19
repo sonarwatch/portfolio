@@ -57,13 +57,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   return [
     {
-      type: PortfolioElementType.single,
+      type: PortfolioElementType.multiple,
       label: 'Deposit',
       networkId: NetworkId.solana,
       platformId,
       name: 'Bids',
       value: asset.value,
-      data: { asset },
+      data: { assets: [asset] },
     },
   ];
 };
