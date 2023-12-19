@@ -3,7 +3,6 @@ import {
   PortfolioAsset,
   PortfolioElement,
   PortfolioElementType,
-  TokenPrice,
   Yield,
   aprToApy,
   getElementLendingValues,
@@ -16,9 +15,9 @@ import { BankInfo } from './types';
 import { ParsedAccount, getParsedProgramAccounts } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import runInBatch from '../../utils/misc/runInBatch';
 import { FetcherExecutor } from '../../Fetcher';
 import { Cache } from '../../Cache';
+import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
 
 const fetcherExecutor: FetcherExecutor = async (
   owner: string,
@@ -34,27 +33,10 @@ const fetcherExecutor: FetcherExecutor = async (
   );
   if (accounts.length === 0) return [];
 
-  const lendingAccountBalances = accounts.at(0)?.lendingAccount.balances;
-  if (!lendingAccountBalances || lendingAccountBalances.length === 0) return [];
-
-  const borrowedAssets: PortfolioAsset[] = [];
-  const borrowedYields: Yield[][] = [];
-  const suppliedAssets: PortfolioAsset[] = [];
-  const suppliedYields: Yield[][] = [];
-  const rewardAssets: PortfolioAsset[] = [];
-  const suppliedLtvs: number[] = [];
-  const borrowedWeights: number[] = [];
-
-  const balancesAddresses = lendingAccountBalances.map(
-    (lendingAccountBalance) => lendingAccountBalance.bankPk.toString()
-  );
-  const banksInfo = await cache.getItems<ParsedAccount<BankInfo>>(
-    balancesAddresses,
-    {
-      prefix,
-      networkId: NetworkId.solana,
-    }
-  );
+  const banksInfo = await cache.getAllItems<ParsedAccount<BankInfo>>({
+    prefix,
+    networkId: NetworkId.solana,
+  });
   if (banksInfo.length === 0) return [];
 
   const banksInfoByAddress: Map<string, BankInfo> = new Map();
@@ -65,119 +47,129 @@ const fetcherExecutor: FetcherExecutor = async (
     tokensAddresses.add(bankInfo.mint.toString());
   });
 
-  const tokenPriceResults = await runInBatch(
-    [...tokensAddresses].map(
-      (mint) => () => cache.getTokenPrice(mint, NetworkId.solana)
-    )
+  const tokenPriceById = await getTokenPricesMap(
+    Array.from(tokensAddresses),
+    NetworkId.solana,
+    cache
   );
-  const tokenPrices: Map<string, TokenPrice> = new Map();
-  tokenPriceResults.forEach((r) => {
-    if (r.status === 'rejected') return;
-    if (!r.value) return;
-    tokenPrices.set(r.value.address, r.value);
-  });
 
-  for (let index = 0; index < lendingAccountBalances.length; index += 1) {
-    const accountBalanceInfo = lendingAccountBalances[index];
-    const bankInfo = banksInfoByAddress.get(
-      accountBalanceInfo.bankPk.toString()
-    );
-    if (!bankInfo) continue;
+  const elements: PortfolioElement[] = [];
+  for (const account of accounts) {
+    const lendingAccountBalances = account.lendingAccount.balances;
+    if (!lendingAccountBalances || lendingAccountBalances.length === 0)
+      return [];
 
-    const { lendingApr, borrowingApr } = getInterestRates(bankInfo);
-    const tokenPrice = tokenPrices.get(bankInfo.mint.toString());
-    if (!tokenPrice) continue;
+    const borrowedAssets: PortfolioAsset[] = [];
+    const borrowedYields: Yield[][] = [];
+    const suppliedAssets: PortfolioAsset[] = [];
+    const suppliedYields: Yield[][] = [];
+    const rewardAssets: PortfolioAsset[] = [];
+    const suppliedLtvs: number[] = [];
+    const borrowedWeights: number[] = [];
 
-    if (!accountBalanceInfo.assetShares.value.isZero()) {
-      suppliedLtvs.push(
-        wrappedI80F48toBigNumber(bankInfo.config.assetWeightMaint)
-          .decimalPlaces(2)
-          .toNumber()
+    for (let index = 0; index < lendingAccountBalances.length; index += 1) {
+      const accountBalanceInfo = lendingAccountBalances[index];
+      const bankInfo = banksInfoByAddress.get(
+        accountBalanceInfo.bankPk.toString()
       );
-      const suppliedQuantity = wrappedI80F48toBigNumber(
-        accountBalanceInfo.assetShares
-      )
-        .times(bankInfo.dividedAssetShareValue)
-        .toNumber();
+      if (!bankInfo) continue;
 
-      suppliedAssets.push(
-        tokenPriceToAssetToken(
-          bankInfo.mint.toString(),
-          suppliedQuantity,
-          NetworkId.solana,
-          tokenPrice
+      const { lendingApr, borrowingApr } = getInterestRates(bankInfo);
+      const tokenPrice = tokenPriceById.get(bankInfo.mint.toString());
+      if (!tokenPrice) continue;
+
+      if (!accountBalanceInfo.assetShares.value.isZero()) {
+        suppliedLtvs.push(
+          wrappedI80F48toBigNumber(bankInfo.config.assetWeightMaint)
+            .decimalPlaces(2)
+            .toNumber()
+        );
+        const suppliedQuantity = wrappedI80F48toBigNumber(
+          accountBalanceInfo.assetShares
         )
-      );
-      const bankLendingYields: Yield[] = [
-        {
-          apr: lendingApr,
-          apy: aprToApy(lendingApr),
-        },
-      ];
-      suppliedYields.push(bankLendingYields);
+          .times(bankInfo.dividedAssetShareValue)
+          .toNumber();
+
+        suppliedAssets.push(
+          tokenPriceToAssetToken(
+            bankInfo.mint.toString(),
+            suppliedQuantity,
+            NetworkId.solana,
+            tokenPrice
+          )
+        );
+        const bankLendingYields: Yield[] = [
+          {
+            apr: lendingApr,
+            apy: aprToApy(lendingApr),
+          },
+        ];
+        suppliedYields.push(bankLendingYields);
+      }
+
+      if (!accountBalanceInfo.liabilityShares.value.isZero()) {
+        borrowedWeights.push(
+          wrappedI80F48toBigNumber(bankInfo.config.liabilityWeightMaint)
+            .decimalPlaces(2)
+            .toNumber()
+        );
+        const borrowedQuantity = wrappedI80F48toBigNumber(
+          accountBalanceInfo.liabilityShares
+        )
+          .times(bankInfo.dividedLiabilityShareValue)
+          .toNumber();
+
+        borrowedAssets.push(
+          tokenPriceToAssetToken(
+            bankInfo.mint.toString(),
+            borrowedQuantity,
+            NetworkId.solana,
+            tokenPrice
+          )
+        );
+        const bankBorrowedYields: Yield[] = [
+          {
+            apr: borrowingApr,
+            apy: aprToApy(borrowingApr),
+          },
+        ];
+        borrowedYields.push(bankBorrowedYields);
+      }
     }
 
-    if (!accountBalanceInfo.liabilityShares.value.isZero()) {
-      borrowedWeights.push(
-        wrappedI80F48toBigNumber(bankInfo.config.liabilityWeightMaint)
-          .decimalPlaces(2)
-          .toNumber()
-      );
-      const borrowedQuantity = wrappedI80F48toBigNumber(
-        accountBalanceInfo.liabilityShares
-      )
-        .times(bankInfo.dividedLiabilityShareValue)
-        .toNumber();
+    if (suppliedAssets.length === 0 && borrowedAssets.length === 0) return [];
 
-      borrowedAssets.push(
-        tokenPriceToAssetToken(
-          bankInfo.mint.toString(),
-          borrowedQuantity,
-          NetworkId.solana,
-          tokenPrice
-        )
+    const { borrowedValue, healthRatio, suppliedValue, value } =
+      getElementLendingValues(
+        suppliedAssets,
+        borrowedAssets,
+        rewardAssets,
+        suppliedLtvs,
+        borrowedWeights
       );
-      const bankBorrowedYields: Yield[] = [
-        {
-          apr: borrowingApr,
-          apy: aprToApy(borrowingApr),
-        },
-      ];
-      borrowedYields.push(bankBorrowedYields);
-    }
+
+    const element: PortfolioElement = {
+      type: PortfolioElementType.borrowlend,
+      networkId: NetworkId.solana,
+      platformId,
+      label: 'Lending',
+      value,
+      data: {
+        borrowedAssets,
+        borrowedValue,
+        borrowedYields,
+        suppliedAssets,
+        suppliedValue,
+        suppliedYields,
+        collateralRatio: null,
+        healthRatio,
+        rewardAssets,
+        value,
+      },
+    };
+    elements.push(element);
   }
 
-  if (suppliedAssets.length === 0 && borrowedAssets.length === 0) return [];
-
-  const { borrowedValue, healthRatio, suppliedValue, value } =
-    getElementLendingValues(
-      suppliedAssets,
-      borrowedAssets,
-      rewardAssets,
-      suppliedLtvs,
-      borrowedWeights
-    );
-
-  const element: PortfolioElement = {
-    type: PortfolioElementType.borrowlend,
-    networkId: NetworkId.solana,
-    platformId,
-    label: 'Lending',
-    value,
-    data: {
-      borrowedAssets,
-      borrowedValue,
-      borrowedYields,
-      suppliedAssets,
-      suppliedValue,
-      suppliedYields,
-      collateralRatio: null,
-
-      healthRatio,
-      rewardAssets,
-      value,
-    },
-  };
-  return [element];
+  return elements;
 };
 export default fetcherExecutor;
