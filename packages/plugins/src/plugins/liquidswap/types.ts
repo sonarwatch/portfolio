@@ -4,3 +4,10 @@ export type LiquidswapLiquidityPoolData = {
   x_scale: string;
   y_scale: string;
 };
+
+export type LpInfo = {
+  lpType: string;
+  poolType: string;
+  typeX: string;
+  typeY: string;
+};

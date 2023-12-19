@@ -1,22 +1,27 @@
 import BigNumber from 'bignumber.js';
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import { LiquidswapLiquidityPoolData as LiquidityPoolData } from './types';
+import {
+  LiquidswapLiquidityPoolData as LiquidityPoolData,
+  LpInfo,
+} from './types';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import {
   CoinInfoData,
   MoveResource,
   getAccountResources,
-  getCoinAddressFromCoinType,
-  getNestedType,
   parseTypeString,
 } from '../../utils/aptos';
 import { getClientAptos } from '../../utils/clients';
-import { lpCoinInfoTypePrefix, platformId, programAddress } from './constants';
+import {
+  lpCoinInfoTypePrefix,
+  platformId,
+  programAddress,
+  resourceAddress,
+} from './constants';
 import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
-import { getDecimalsForToken } from '../../utils/misc/getDecimalsForToken';
 import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
-import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
+import runInBatch from '../../utils/misc/runInBatch';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientAptos();
@@ -25,53 +30,57 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   const resourcesByType: Map<string, MoveResource<unknown>> = new Map();
   const lpsCoinInfo: MoveResource<CoinInfoData>[] = [];
-  const types: Set<string> = new Set();
+  const tokens: string[] = [];
+  const lpInfos: LpInfo[] = [];
   resources.forEach((resource) => {
     if (resource.type.startsWith(lpCoinInfoTypePrefix)) {
       const lpCoinInfo = resource as MoveResource<CoinInfoData>;
       const supply = lpCoinInfo.data.supply?.vec[0]?.integer.vec[0]?.value;
-      const tempTypes = parseTypeString(resource.type);
-      let { keys } = tempTypes;
-      while (keys && keys[0].keys) {
-        keys = keys[0].keys;
+      if (supply && supply !== '0') {
+        const parsedType = parseTypeString(lpCoinInfo.type);
+        const lpType = parsedType.keys?.at(0)?.type;
+        if (!lpType) return;
+        const parsedLpType = parseTypeString(lpType);
+        const typeX = parsedLpType.keys?.at(0)?.type;
+        const typeY = parsedLpType.keys?.at(1)?.type;
+        const poolType = parsedLpType.keys?.at(2)?.type;
+
+        if (!typeX || !typeY || !poolType) return;
+        tokens.push(...[typeX, typeY]);
+        lpInfos.push({
+          lpType,
+          poolType,
+          typeX,
+          typeY,
+        });
+        lpsCoinInfo.push(lpCoinInfo);
       }
-      if (keys) keys.forEach((key) => types.add(key.type));
-      if (supply && supply !== '0') lpsCoinInfo.push(lpCoinInfo);
       return;
     }
     resourcesByType.set(resource.type, resource);
   });
 
   const tokenPriceById = await getTokenPricesMap(
-    Array.from(types),
+    tokens,
     NetworkId.aptos,
     cache
   );
-
+  // const decimalsByToken: Map<string, number> = new Map();
+  const sources = [];
   for (let i = 0; i < lpsCoinInfo.length; i++) {
     const lpInfoResource = lpsCoinInfo[i];
 
-    const lpType = getNestedType(lpInfoResource.type);
+    const { lpType, poolType, typeX, typeY } = lpInfos[i];
+    if (!lpInfoResource) continue;
     const lpSupplyString =
       lpInfoResource.data.supply?.vec[0]?.integer.vec[0]?.value;
-    if (!lpInfoResource) continue;
     if (!lpSupplyString) continue;
     const lpDecimals = lpInfoResource.data.decimals;
 
     const lpSupply = new BigNumber(lpSupplyString);
     if (lpSupply.isZero()) continue;
 
-    const liquidityPoolId = getNestedType(lpType);
-    const splits = liquidityPoolId.split(', ');
-    const typeX = splits.at(0);
-    const typeY = splits.at(1);
-    const poolType = splits.at(2);
-    if (!typeX) throw new Error(`Failed to get typeX: ${lpType}`);
-    if (!typeY) throw new Error(`Failed to get typeY: ${lpType}`);
-    if (!poolType) throw new Error(`Failed to get pool type: ${lpType}`);
-
-    const creatorAddress = getCoinAddressFromCoinType(poolType);
-    const liquidityPoolType = `${creatorAddress}::liquidity_pool::LiquidityPool<${liquidityPoolId}>`;
+    const liquidityPoolType = `${resourceAddress}::liquidity_pool::LiquidityPool<${typeX}, ${typeY}, ${poolType}>`;
     const liquidityPoolResource = resourcesByType.get(liquidityPoolType) as
       | MoveResource<LiquidityPoolData>
       | undefined;
@@ -88,42 +97,50 @@ const executor: JobExecutor = async (cache: Cache) => {
       tokenPriceById.get(typeX),
       tokenPriceById.get(typeY),
     ];
-    const [decimalsX, decimalsY] = await Promise.all([
-      getDecimalsForToken(cache, typeX, NetworkId.aptos),
-      getDecimalsForToken(cache, typeY, NetworkId.aptos),
-    ]);
     const [reserveAmountRawX, reserveAmountRawY] = [
       new BigNumber(liquidityPoolData.coin_x_reserve.value),
       new BigNumber(liquidityPoolData.coin_y_reserve.value),
     ];
 
-    if (!decimalsX || !decimalsY) continue;
+    // const cachedDecimalsX = decimalsByToken.get(typeX);
+    // const cachedDecimalsY = decimalsByToken.get(typeY);
 
-    const underlyingSource = getLpUnderlyingTokenSource(
-      lpType,
-      platformId,
-      NetworkId.aptos,
-      {
-        address: typeX,
-        decimals: decimalsX,
-        reserveAmountRaw: reserveAmountRawX,
-        tokenPrice: tokenPriceX,
-      },
-      {
-        address: typeY,
-        decimals: decimalsY,
-        reserveAmountRaw: reserveAmountRawY,
-        tokenPrice: tokenPriceY,
-      }
-    );
-    if (underlyingSource) await cache.setTokenPriceSource(underlyingSource);
+    // const decimalsX =
+    //   cachedDecimalsX ||
+    //   (await getDecimalsForToken(cache, typeX, NetworkId.aptos));
+    // const decimalsY =
+    //   cachedDecimalsY ||
+    //   (await getDecimalsForToken(cache, typeY, NetworkId.aptos));
+
+    // if (!decimalsX || !decimalsY) continue;
+    // if (!cachedDecimalsX) decimalsByToken.set(typeX, decimalsX);
+    // if (!cachedDecimalsY) decimalsByToken.set(typeY, decimalsY);
+
+    // const underlyingSource = getLpUnderlyingTokenSource(
+    //   lpType,
+    //   platformId,
+    //   NetworkId.aptos,
+    //   {
+    //     address: typeX,
+    //     decimals: decimalsX,
+    //     reserveAmountRaw: reserveAmountRawX,
+    //     tokenPrice: tokenPriceX,
+    //   },
+    //   {
+    //     address: typeY,
+    //     decimals: decimalsY,
+    //     reserveAmountRaw: reserveAmountRawY,
+    //     tokenPrice: tokenPriceY,
+    //   }
+    // );
+    // if (underlyingSource) sources.push(underlyingSource);
 
     if (!tokenPriceX || !tokenPriceY) continue;
     const lpSource = getLpTokenSourceRaw(
       NetworkId.aptos,
       lpType,
       platformId,
-      '',
+      undefined,
       {
         address: lpType,
         decimals: lpDecimals,
@@ -144,8 +161,15 @@ const executor: JobExecutor = async (cache: Cache) => {
         },
       ]
     );
-    await cache.setTokenPriceSource(lpSource);
+    sources.push(lpSource);
   }
+
+  await runInBatch(
+    sources.map(
+      (tokenPriceSource) => () => cache.setTokenPriceSource(tokenPriceSource)
+    ),
+    50
+  );
 };
 
 const job: Job = {
