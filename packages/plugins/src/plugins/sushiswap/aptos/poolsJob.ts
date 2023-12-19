@@ -61,7 +61,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       NetworkId.aptos,
       platformId,
       platformId,
-      'pools',
+      undefined,
       {
         address: lpType,
         decimals: lpDecimals,
