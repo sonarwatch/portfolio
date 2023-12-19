@@ -19,7 +19,7 @@ export default function getLpTokenSourceRaw(
   networkId: NetworkIdType,
   sourceId: string,
   platformId: string,
-  elementName: string,
+  elementName: string | undefined,
   lpDetailsRaw: LpDetailsRaw,
   poolUnderlyingsRaw: PoolUnderlyingRaw[]
 ): TokenPriceSource {

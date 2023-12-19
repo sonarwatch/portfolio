@@ -17,7 +17,7 @@ export default function getLpTokenSource(
   networkId: NetworkIdType,
   sourceId: string,
   platformId: string,
-  elementName: string,
+  elementName: string | undefined,
   lpDetails: LpDetails,
   poolUnderlyings: PoolUnderlying[]
 ): TokenPriceSource {
