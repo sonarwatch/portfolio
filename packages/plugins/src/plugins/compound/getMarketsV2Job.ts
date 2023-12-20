@@ -6,6 +6,10 @@ import { getEvmClient } from '../../utils/clients';
 import { compoundV2Abi } from './abis';
 import { MarketV2Detail } from './types';
 import { marketDetailsKey } from './constants';
+import {
+  ratePerBlockToApy,
+  ratePerTimestampToApy,
+} from '../../utils/evm/ratePerBlockToApy';
 
 export default function getMarketsV2Job(
   networkId: EvmNetworkIdType,
@@ -44,6 +48,10 @@ export default function getMarketsV2Job(
       marketsInfoRes,
       underlyingsTokenAddressesRes,
       exchangeRatesStoredRes,
+      supplyRatesPerBlockRes,
+      borrowRatesPerBlockRes,
+      supplyRatesPerTimestampRes,
+      borrowRatesPerTimestampRes,
     ] = await Promise.all([
       client.multicall({
         contracts: markets.map(
@@ -76,13 +84,57 @@ export default function getMarketsV2Job(
             } as const)
         ),
       }),
+      client.multicall({
+        contracts: markets.map(
+          (mktAddress) =>
+            ({
+              abi: [compoundV2Abi.supplyRatePerBlock],
+              address: mktAddress,
+              functionName: compoundV2Abi.supplyRatePerBlock.name,
+            } as const)
+        ),
+      }),
+      client.multicall({
+        contracts: markets.map(
+          (mktAddress) =>
+            ({
+              abi: [compoundV2Abi.borrowRatePerBlock],
+              address: mktAddress,
+              functionName: compoundV2Abi.borrowRatePerBlock.name,
+            } as const)
+        ),
+      }),
+      client.multicall({
+        contracts: markets.map(
+          (mktAddress) =>
+            ({
+              abi: [compoundV2Abi.supplyRatePerTimestamp],
+              address: mktAddress,
+              functionName: compoundV2Abi.supplyRatePerTimestamp.name,
+            } as const)
+        ),
+      }),
+      client.multicall({
+        contracts: markets.map(
+          (mktAddress) =>
+            ({
+              abi: [compoundV2Abi.borrowRatePerTimestamp],
+              address: mktAddress,
+              functionName: compoundV2Abi.borrowRatePerTimestamp.name,
+            } as const)
+        ),
+      }),
     ]);
 
     const marketsDetails: MarketV2Detail[] = marketsInfoRes
-      .map((marketInfo, id) => {
-        const market = markets[id];
-        const underlyingsTokenAddresseRes = underlyingsTokenAddressesRes[id];
-        const exchangeRateStoredRes = exchangeRatesStoredRes[id];
+      .map((marketInfo, i) => {
+        const market = markets[i];
+        const underlyingsTokenAddresseRes = underlyingsTokenAddressesRes[i];
+        const exchangeRateStoredRes = exchangeRatesStoredRes[i];
+        const supplyRateResPerBlock = supplyRatesPerBlockRes[i];
+        const borrowRateResPerBlock = borrowRatesPerBlockRes[i];
+        const supplyRateResPerTimestamp = supplyRatesPerTimestampRes[i];
+        const borrowRateResPerTimestamp = borrowRatesPerTimestampRes[i];
         if (
           marketInfo.status === 'failure' ||
           exchangeRateStoredRes.status === 'failure' ||
@@ -101,6 +153,18 @@ export default function getMarketsV2Job(
               ? underlyingsTokenAddresseRes.result.toString()
               : zeroAddress,
           ],
+          borrowApyFromBlock: borrowRateResPerBlock.result
+            ? ratePerBlockToApy(Number(borrowRateResPerBlock.result))
+            : undefined,
+          supplyApyFromBlock: supplyRateResPerBlock.result
+            ? ratePerBlockToApy(Number(supplyRateResPerBlock.result))
+            : undefined,
+          borrowApyFromTimestamp: borrowRateResPerTimestamp.result
+            ? ratePerTimestampToApy(Number(borrowRateResPerTimestamp.result))
+            : undefined,
+          supplyApyFromTimestamp: supplyRateResPerTimestamp.result
+            ? ratePerTimestampToApy(Number(supplyRateResPerTimestamp.result))
+            : undefined,
         };
       })
       .flat();

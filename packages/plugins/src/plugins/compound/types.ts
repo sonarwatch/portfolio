@@ -20,4 +20,8 @@ export type MarketV2Detail = {
   name?: string;
   exchangeRate: string;
   underlyings: string[];
+  supplyApyFromBlock?: number;
+  borrowApyFromBlock?: number;
+  supplyApyFromTimestamp?: number;
+  borrowApyFromTimestamp?: number;
 };
