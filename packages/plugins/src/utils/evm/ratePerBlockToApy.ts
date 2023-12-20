@@ -7,8 +7,7 @@ export function ratePerBlockToApy(rate: number): number {
     .multipliedBy(blocksPerDayETH)
     .plus(1)
     .pow(365)
-    .minus(1)
-    .multipliedBy(100);
+    .minus(1);
   return apy.toNumber();
 }
 
@@ -18,7 +17,6 @@ export function ratePerTimestampToApy(rate: number): number {
     .multipliedBy(timestampPerDay)
     .plus(1)
     .pow(365)
-    .minus(1)
-    .multipliedBy(100);
+    .minus(1);
   return apy.toNumber();
 }
