@@ -127,7 +127,7 @@ export default function getPositionsV2Fetcher(
         const borrowApy =
           market.borrowApyFromBlock || market.borrowApyFromTimestamp;
         if (borrowApy) {
-          borrowedYields.push([{ apr: apyToApr(borrowApy), apy: borrowApy }]);
+          borrowedYields.push([{ apr: -apyToApr(borrowApy), apy: -borrowApy }]);
         }
       }
     }

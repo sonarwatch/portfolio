@@ -102,8 +102,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const stableBorrowedYields: Yield[] = [
       {
-        apr: apyToApr(borrowedAssetRate),
-        apy: borrowedAssetRate,
+        apr: -apyToApr(borrowedAssetRate),
+        apy: -borrowedAssetRate,
       },
     ];
     borrowedYields.push(stableBorrowedYields);

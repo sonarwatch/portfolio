@@ -80,8 +80,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           .toNumber();
         borrowedYields.push([
           {
-            apr: apyToApr(apy),
-            apy,
+            apr: -apyToApr(apy),
+            apy: -apy,
           },
         ]);
       }

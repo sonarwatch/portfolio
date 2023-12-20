@@ -207,8 +207,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           const apy = +reserveInfo.rates.borrowInterest / 100;
           const cBorrowedYields: Yield[] = [
             {
-              apr: apyToApr(apy),
-              apy,
+              apr: -apyToApr(apy),
+              apy: -apy,
             },
           ];
           borrowedYields.push(cBorrowedYields);

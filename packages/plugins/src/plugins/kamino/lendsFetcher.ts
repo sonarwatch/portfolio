@@ -128,7 +128,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       );
       borrowedWeights.push(Number(reserve.config.borrowFactorPct) / 100);
       // borrowedYields.push([
-      //   { apr: reserve.borrowApr, apy: aprToApy(reserve.borrowApr) },
+      //   { apr: -reserve.borrowApr, apy: -aprToApy(reserve.borrowApr) },
       // ]);
     }
 
@@ -229,7 +229,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       );
       borrowedWeights.push(Number(reserve.config.borrowFactorPct) / 100);
       // borrowedYields.push([
-      //   { apr: reserve.borrowApr, apy: aprToApy(reserve.borrowApr) },
+      //   { apr: -reserve.borrowApr, apy: -aprToApy(reserve.borrowApr) },
       // ]);
     }
 
@@ -330,7 +330,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       );
       borrowedWeights.push(Number(reserve.config.borrowFactorPct) / 100);
       // borrowedYields.push([
-      //   { apr: reserve.borrowApr, apy: aprToApy(reserve.borrowApr) },
+      //   { apr: -reserve.borrowApr, apy: -aprToApy(reserve.borrowApr) },
       // ]);
     }
 

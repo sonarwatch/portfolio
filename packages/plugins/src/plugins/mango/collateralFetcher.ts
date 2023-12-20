@@ -123,8 +123,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         if (apr)
           borrowedYields.push([
             {
-              apr,
-              apy: aprToApy(apr),
+              apr: -apr,
+              apy: -aprToApy(apr),
             },
           ]);
       }

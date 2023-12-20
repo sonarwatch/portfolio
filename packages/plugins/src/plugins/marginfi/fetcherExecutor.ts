@@ -126,8 +126,8 @@ const fetcherExecutor: FetcherExecutor = async (
         );
         const bankBorrowedYields: Yield[] = [
           {
-            apr: borrowingApr,
-            apy: aprToApy(borrowingApr),
+            apr: -borrowingApr,
+            apy: -aprToApy(borrowingApr),
           },
         ];
         borrowedYields.push(bankBorrowedYields);

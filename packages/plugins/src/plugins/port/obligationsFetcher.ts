@@ -141,8 +141,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           const apy = parseApy(reserve.borrowApy);
           const cBorrowedYields: Yield[] = [
             {
-              apr: apyToApr(apy),
-              apy,
+              apr: -apyToApr(apy),
+              apy: -apy,
             },
           ];
           borrowedYields.push(cBorrowedYields);
