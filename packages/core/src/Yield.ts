@@ -20,6 +20,7 @@ export function apyToApr(apy: number, compoundFrequency = 365): number {
 
 /**
  * Represents the yield information including APR and APY.
+ * If negative, it means that it costs money to hold the asset.
  */
 export type Yield = {
   apr: number; // APR (Annual Percentage Rate)
