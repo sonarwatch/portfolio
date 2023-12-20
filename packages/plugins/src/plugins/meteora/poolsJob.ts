@@ -1,8 +1,4 @@
-import {
-  NetworkId,
-  TokenPrice,
-  TokenPriceUnderlying,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId, TokenPriceUnderlying } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { platformId, poolsProgramId } from './constants';
@@ -18,10 +14,10 @@ import {
 import { pools } from './pools';
 import { fetchTokenSupplyAndDecimals } from '../../utils/solana/fetchTokenSupplyAndDecimals';
 import { PoolState, poolStateStruct } from './struct';
-import runInBatch from '../../utils/misc/runInBatch';
 import { constantPoolsFilters, stablePoolsFilters } from './filters';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
+import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -39,6 +35,29 @@ const executor: JobExecutor = async (cache: Cache) => {
     poolsProgramId,
     stablePoolsFilters
   );
+
+  // 4pools
+  const meteoraPools = pools;
+  // Get all multi-tokens pools
+  const reserverAddresses: Set<PublicKey> = new Set();
+  meteoraPools.forEach((pool) => {
+    pool.reserveAccounts.forEach((reserve) => {
+      reserverAddresses.add(new PublicKey(reserve));
+    });
+  });
+  const reserveAccounts = await getParsedMultipleAccountsInfo(
+    client,
+    tokenAccountStruct,
+    Array.from(reserverAddresses)
+  );
+  const reservesAccountByAddress: Map<string, TokenAccount> = new Map();
+  reserveAccounts.forEach((reserve) => {
+    if (!reserve) return;
+    reservesAccountByAddress.set(
+      reserve.pubkey.toString(),
+      reserve as TokenAccount
+    );
+  });
 
   const poolsAcountsUnfiltered: PoolState[] = [
     ...stablePoolsAccounts,
@@ -59,28 +78,26 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   // Store all tokens, lpmint, lpVaults
   const vaultsLpAddresses: Set<PublicKey> = new Set();
-  const tokensMint: Set<PublicKey> = new Set();
+  const tokensMint: Set<string> = new Set();
   const lpMints: Set<PublicKey> = new Set();
   poolsAccounts.forEach((poolAccount) => {
     vaultsLpAddresses.add(poolAccount.aVaultLp);
     vaultsLpAddresses.add(poolAccount.bVaultLp);
-    tokensMint.add(poolAccount.tokenAMint);
-    tokensMint.add(poolAccount.tokenBMint);
+    tokensMint.add(poolAccount.tokenAMint.toString());
+    tokensMint.add(poolAccount.tokenBMint.toString());
     lpMints.add(poolAccount.lpMint);
   });
 
-  // Get all token prices
-  const tokenPriceResults = await runInBatch(
-    [...tokensMint].map(
-      (mint) => () => cache.getTokenPrice(mint.toString(), NetworkId.solana)
-    )
+  const tokenPriceById = await getTokenPricesMap(
+    [
+      ...Array.from(tokensMint),
+      ...reserveAccounts
+        .map((account) => (account ? account.mint.toString() : []))
+        .flat(),
+    ],
+    NetworkId.solana,
+    cache
   );
-  const tokenPrices: Map<string, TokenPrice> = new Map();
-  tokenPriceResults.forEach((r) => {
-    if (r.status === 'rejected') return;
-    if (!r.value) return;
-    tokenPrices.set(r.value.address, r.value);
-  });
 
   // Get all vaults token accounts
   const tokensAccounts = await getParsedMultipleAccountsInfo(
@@ -113,8 +130,8 @@ const executor: JobExecutor = async (cache: Cache) => {
   for (let id = 0; id < poolsAccounts.length; id++) {
     const poolAccount = poolsAccounts[id];
 
-    const ATokenPrice = tokenPrices.get(poolAccount.tokenAMint.toString());
-    const BTokenPrice = tokenPrices.get(poolAccount.tokenBMint.toString());
+    const ATokenPrice = tokenPriceById.get(poolAccount.tokenAMint.toString());
+    const BTokenPrice = tokenPriceById.get(poolAccount.tokenBMint.toString());
     if (!BTokenPrice || !ATokenPrice) continue;
 
     const tokenAccountA = tokenAccountByAddress.get(poolAccount.aVaultLp);
@@ -174,66 +191,43 @@ const executor: JobExecutor = async (cache: Cache) => {
     });
   }
 
-  // Get all multi-tokens pools
-  const meteoraPools = pools;
-  const reserverAddresses: Set<PublicKey> = new Set();
-  meteoraPools.forEach((pool) => {
-    pool.reserveAccounts.forEach((reserve) => {
-      reserverAddresses.add(new PublicKey(reserve));
-    });
-  });
-  meteoraPools.map((pool) =>
-    pool.reserveAccounts.map((reserve) => new PublicKey(reserve))
-  );
-  const reserveAccounts = await getParsedMultipleAccountsInfo(
-    client,
-    tokenAccountStruct,
-    Array.from(reserverAddresses)
-  );
-  if (!reserveAccounts) return;
-
-  const reservesAccountByAddress: Map<string, TokenAccount> = new Map();
-  reserveAccounts.forEach((reserve) => {
-    if (!reserve) return;
-    reservesAccountByAddress.set(
-      reserve.pubkey.toString(),
-      reserve as TokenAccount
-    );
-  });
-
+  // 4 pools
   for (let id = 0; id < meteoraPools.length; id++) {
     const pool = meteoraPools[id];
     const { address } = pool;
     const underlyings = [];
     let supplyValue = 0;
     let checkedTokensPrices = 0;
-    for (let index = 0; index < pool.reserveAccounts.length; index++) {
+    const numberOfUnderlyings = pool.reserveAccounts.length;
+    for (let index = 0; index < numberOfUnderlyings; index++) {
       const reserveAccount = reservesAccountByAddress.get(
         pool.reserveAccounts[index]
       );
       if (!reserveAccount) continue;
 
-      const reserveTokenPrice = await cache.getTokenPrice(
-        reserveAccount.mint.toString(),
-        NetworkId.solana
+      const reserveTokenPrice = tokenPriceById.get(
+        reserveAccount.mint.toString()
       );
       if (!reserveTokenPrice) continue;
       checkedTokensPrices += 1;
 
-      const reserveAmount = new BigNumber(reserveAccount.amount.toString())
-        .div(10 ** reserveTokenPrice.decimals)
-        .toNumber();
-      const reserveValue = reserveAmount * reserveTokenPrice.price;
+      const reserveAmount = new BigNumber(reserveAccount.amount.toString()).div(
+        10 ** reserveTokenPrice.decimals
+      );
+      const reserveValue = reserveAmount.multipliedBy(reserveTokenPrice.price);
 
       const underlying = {
         networkId: NetworkId.solana,
         address: reserveTokenPrice.address,
         decimals: reserveTokenPrice.decimals,
         price: reserveTokenPrice.price,
-        amountPerLp: reserveAmount / reserveValue,
+        amountPerLp: reserveAmount
+          .dividedBy(reserveValue)
+          .dividedBy(numberOfUnderlyings)
+          .toNumber(),
       };
       underlyings.push(underlying);
-      supplyValue += reserveValue;
+      supplyValue += reserveValue.toNumber();
     }
 
     // don't push the LP if one tokenPrice was not found.
