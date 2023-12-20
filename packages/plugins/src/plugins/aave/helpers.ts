@@ -157,8 +157,8 @@ export function getVariableBorrowYields(reserve: ReserveYieldInfo) {
   if (reserve.supplyAPR !== '0') {
     yields = [
       {
-        apr: -+reserve.variableBorrowAPR,
-        apy: -+reserve.variableBorrowAPY,
+        apr: +reserve.variableBorrowAPR,
+        apy: +reserve.variableBorrowAPY,
       },
     ];
   }
@@ -182,8 +182,8 @@ export function getStableBorrowedAsset(
   };
   const yields = [
     {
-      apr: -+userReserveData.stableBorrowAPR,
-      apy: -+userReserveData.stableBorrowAPY,
+      apr: +userReserveData.stableBorrowAPR,
+      apy: +userReserveData.stableBorrowAPY,
     },
   ];
   return { stableBorrowedAsset, yields };
