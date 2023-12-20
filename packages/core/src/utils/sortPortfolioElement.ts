@@ -5,6 +5,7 @@ import {
   PortfolioElementLiquidity,
   PortfolioElementMultiple,
   PortfolioElementType,
+  PortfolioLiquidity,
 } from '../Portfolio';
 import { sortAssets } from './sortAssets';
 
@@ -45,8 +46,22 @@ export function sortElementLiquidity(
   element: PortfolioElementLiquidity
 ): PortfolioElementLiquidity {
   const sortedElement = element;
+  sortedElement.data.liquidities = sortedElement.data.liquidities.map((l) =>
+    sortPortfolioLiquidity(l)
+  );
   sortedElement.data.liquidities.sort((a, b) =>
     compareUsdValue(a.value, b.value)
   );
   return sortedElement;
+}
+
+export function sortPortfolioLiquidity(
+  portfolioLiquidity: PortfolioLiquidity
+): PortfolioLiquidity {
+  const sortedPortfolioLiquidity = portfolioLiquidity;
+  sortedPortfolioLiquidity.assets = sortAssets(sortedPortfolioLiquidity.assets);
+  sortedPortfolioLiquidity.rewardAssets = sortAssets(
+    sortedPortfolioLiquidity.rewardAssets
+  );
+  return sortedPortfolioLiquidity;
 }

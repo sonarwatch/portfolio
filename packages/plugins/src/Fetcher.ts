@@ -8,6 +8,7 @@ import {
   formatAddress,
   formatAddressByNetworkId,
   networks,
+  sortPortfolioElement,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from './Cache';
 import promiseTimeout from './utils/misc/promiseTimeout';
@@ -102,7 +103,7 @@ export async function runFetcher(
       fetcherId: fetcher.id,
       networdkId: fetcher.networkId,
       duration: Date.now() - startDate,
-      elements,
+      elements: elements.map((e) => sortPortfolioElement(e)),
     })
   );
   return promiseTimeout(
