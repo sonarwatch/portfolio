@@ -98,7 +98,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       suppliedAssets.push(
         tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
       );
-      suppliedLtvs.push(reserve.config.loanToValuePct / 100);
+      suppliedLtvs.push(reserve.config.liquidationThresholdPct / 100);
       // suppliedYields.push([
       //   { apr: reserve.supplyApr, apy: aprToApy(reserve.supplyApr) },
       // ]);
@@ -111,7 +111,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         borrow.borrowedAmountSf.isLessThanOrEqualTo(0)
       )
         continue;
-
       const amountRaw = borrow.borrowedAmountSf.dividedBy(
         borrow.cumulativeBorrowRateBsf.value0
       );
@@ -200,7 +199,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       suppliedAssets.push(
         tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
       );
-      suppliedLtvs.push(reserve.config.loanToValuePct / 100);
+      suppliedLtvs.push(reserve.config.liquidationThresholdPct / 100);
       // suppliedYields.push([
       //   { apr: reserve.supplyApr, apy: aprToApy(reserve.supplyApr) },
       // ]);
@@ -301,7 +300,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       suppliedAssets.push(
         tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
       );
-      suppliedLtvs.push(reserve.config.loanToValuePct / 100);
+      suppliedLtvs.push(reserve.config.liquidationThresholdPct / 100);
       // suppliedYields.push([
       //   { apr: reserve.supplyApr, apy: aprToApy(reserve.supplyApr) },
       // ]);
