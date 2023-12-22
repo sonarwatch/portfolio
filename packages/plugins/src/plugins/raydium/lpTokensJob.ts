@@ -1,20 +1,10 @@
-import {
-  NetworkId,
-  TokenPrice,
-  TokenPriceUnderlying,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSolana } from '../../utils/clients';
 import { AMM_PROGRAM_ID_V4, AMM_PROGRAM_ID_V5, platformId } from './constants';
 import { ammInfoV4Struct, ammInfoV5Struct } from './structs/amms';
-import {
-  OpenOrdersV1,
-  OpenOrdersV2,
-  openOrdersV1Struct,
-  openOrdersV2Struct,
-} from './structs/openOrders';
 import {
   MintAccount,
   TokenAccount,
@@ -25,6 +15,11 @@ import { ammV4Filter, ammV5Filter } from './filters';
 import { EnhancedAmmInfo, LiquidityPoolStatus } from './types';
 import runInBatch from '../../utils/misc/runInBatch';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
+import { CLOBOrderStruct } from '../orders/clobs-solana/structs';
+import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
+import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
+import { orderStructByProgramId } from '../orders/clobs-solana/constants';
+import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
 
 const ammsDetails = [
   {
@@ -82,7 +77,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     mints.add(amm.pcMintAddress.toString());
   });
   const tokenAccountsMap: Map<string, TokenAccount> = new Map();
-  const ammsOpenOrdersMap: Map<string, OpenOrdersV2 | OpenOrdersV1> = new Map();
+  const ammsOpenOrdersMap: Map<string, CLOBOrderStruct> = new Map();
   const mintAccountsMap: Map<string, MintAccount> = new Map();
   const accountsRes = await getMultipleAccountsInfoSafe(client, addresses);
   for (let i = 0; i < accountsRes.length; i += 4) {
@@ -106,109 +101,132 @@ const executor: JobExecutor = async (cache: Cache) => {
       addresses[i + 1].toString(),
       tokenAccountStruct.deserialize(poolPcTokenAccountInfo.data)[0]
     );
-    if (
-      ammsAccounts[i / 4].serumProgramId.toString() ===
-      '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'
-    ) {
-      ammsOpenOrdersMap.set(
-        addresses[i + 2].toString(),
-        openOrdersV1Struct.deserialize(ammOpenOrdersInfo.data)[0]
-      );
-    } else {
-      ammsOpenOrdersMap.set(
-        addresses[i + 2].toString(),
-        openOrdersV2Struct.deserialize(ammOpenOrdersInfo.data)[0]
-      );
-    }
+    const orderStruct = orderStructByProgramId.get(
+      ammsAccounts[i / 4].serumProgramId.toString()
+    );
+    if (!orderStruct) continue;
+
+    ammsOpenOrdersMap.set(
+      addresses[i + 2].toString(),
+      orderStruct.deserialize(ammOpenOrdersInfo.data)[0]
+    );
     mintAccountsMap.set(
       addresses[i + 3].toString(),
       mintAccountStruct.deserialize(lpMintAddressInfo.data)[0]
     );
   }
 
-  const tokenPriceResults = await runInBatch(
-    [...mints].map((mint) => () => cache.getTokenPrice(mint, NetworkId.solana))
+  const tokenPrices = await getTokenPricesMap(
+    [...mints],
+    NetworkId.solana,
+    cache
   );
-  const tokenPrices: Map<string, TokenPrice> = new Map();
-  tokenPriceResults.forEach((r) => {
-    if (r.status === 'rejected') return;
-    if (!r.value) return;
-    tokenPrices.set(r.value.address, r.value);
-  });
 
+  const tokenPriceSources = [];
   for (let i = 0; i < ammsAccounts.length; i += 1) {
     const amm = ammsAccounts[i];
-    const coinTokenPrice = tokenPrices.get(amm.coinMintAddress.toString());
-    const pcTokenPrice = tokenPrices.get(amm.pcMintAddress.toString());
-    if (!pcTokenPrice || !coinTokenPrice) continue;
 
-    const poolCoinTokenAccount = tokenAccountsMap.get(
+    const mintA = amm.coinMintAddress.toString();
+    const mintB = amm.pcMintAddress.toString();
+
+    const tokenAccountA = tokenAccountsMap.get(
       amm.poolCoinTokenAccount.toString()
     );
-    const poolPcTokenAccount = tokenAccountsMap.get(
+    const tokenAccountB = tokenAccountsMap.get(
       amm.poolPcTokenAccount.toString()
     );
     const ammOpenOrders = ammsOpenOrdersMap.get(amm.ammOpenOrders.toString());
 
-    if (!poolCoinTokenAccount || !poolPcTokenAccount || !ammOpenOrders)
-      continue;
-
-    let coinAmountWei = poolCoinTokenAccount.amount;
-    let pcAmountWei = poolPcTokenAccount.amount;
+    if (!tokenAccountA || !tokenAccountB || !ammOpenOrders) continue;
+    let tokenAmountAWei = tokenAccountA.amount;
+    let tokenAmountBWei = tokenAccountB.amount;
 
     const { baseTokenTotal, quoteTokenTotal } = ammOpenOrders;
-    coinAmountWei = coinAmountWei.plus(baseTokenTotal);
-    pcAmountWei = pcAmountWei.plus(quoteTokenTotal);
+    tokenAmountAWei = tokenAmountAWei.plus(baseTokenTotal);
+    tokenAmountBWei = tokenAmountBWei.plus(quoteTokenTotal);
+    if (tokenAmountAWei.isZero() && tokenAmountBWei.isZero()) continue;
 
-    const { needTakePnlCoin, needTakePnlPc, coinDecimals, pcDecimals } = amm;
-    coinAmountWei = coinAmountWei.minus(needTakePnlCoin);
-    pcAmountWei = pcAmountWei.minus(needTakePnlPc);
+    const decimalsA = amm.coinDecimals.toNumber();
+    const decimalsB = amm.pcDecimals.toNumber();
 
-    const coinAmount = coinAmountWei.dividedBy(10 ** coinDecimals.toNumber());
-    const pcAmount = pcAmountWei.dividedBy(10 ** pcDecimals.toNumber());
+    const { needTakePnlCoin, needTakePnlPc } = amm;
+    tokenAmountAWei = tokenAmountAWei.minus(needTakePnlCoin);
+    tokenAmountBWei = tokenAmountBWei.minus(needTakePnlPc);
 
-    const coinValueLocked = coinAmount.multipliedBy(coinTokenPrice.price);
-    const pcValueLocked = pcAmount.multipliedBy(pcTokenPrice.price);
+    const tokenAmountA = tokenAmountAWei;
+    const tokenAmountB = tokenAmountBWei;
+
+    const [tokenPriceA, tokenPriceB] = [
+      tokenPrices.get(mintA),
+      tokenPrices.get(mintB),
+    ];
 
     const lpMint = amm.lpMintAddress;
+
+    const underlyingSource = getLpUnderlyingTokenSource(
+      lpMint.toString(),
+      platformId,
+      NetworkId.solana,
+      {
+        address: mintA,
+        decimals: decimalsA,
+        reserveAmountRaw: tokenAmountA,
+        tokenPrice: tokenPriceA,
+      },
+      {
+        address: mintB,
+        decimals: decimalsB,
+        reserveAmountRaw: tokenAmountB,
+        tokenPrice: tokenPriceB,
+      }
+    );
+    if (underlyingSource) {
+      await cache.setTokenPriceSource(underlyingSource);
+    }
+
+    if (!tokenPriceB || !tokenPriceA) continue;
+
     const lpMintAccount = mintAccountsMap.get(lpMint.toString());
     if (!lpMintAccount) continue;
 
     const lpDecimals = lpMintAccount.decimals;
-    const lpSupply = lpMintAccount.supply.div(10 ** lpDecimals);
-    if (!lpDecimals || !lpSupply) continue;
+    const lpSupply = lpMintAccount.supply;
+    if (lpSupply.isZero()) continue;
 
-    const tvl = coinValueLocked.plus(pcValueLocked);
-    const price = tvl.div(lpSupply).toNumber();
-
-    const underlyings: TokenPriceUnderlying[] = [];
-    underlyings.push({
-      networkId: NetworkId.solana,
-      address: coinTokenPrice.address,
-      decimals: coinTokenPrice.decimals,
-      price: coinTokenPrice.price,
-      amountPerLp: coinAmount.div(lpSupply).toNumber(),
-    });
-    underlyings.push({
-      networkId: NetworkId.solana,
-      address: pcTokenPrice.address,
-      decimals: pcTokenPrice.decimals,
-      price: pcTokenPrice.price,
-      amountPerLp: pcAmount.div(lpSupply).toNumber(),
-    });
-    await cache.setTokenPriceSource({
-      id: platformId,
-      weight: 1,
-      address: lpMint.toString(),
-      networkId: NetworkId.solana,
-      platformId,
-      decimals: lpDecimals,
-      price,
-      underlyings,
-      elementName: amm.ammName,
-      timestamp: Date.now(),
-    });
+    tokenPriceSources.push(
+      getLpTokenSourceRaw(
+        NetworkId.solana,
+        lpMint.toString(),
+        platformId,
+        amm.ammName,
+        {
+          address: lpMint.toString(),
+          decimals: lpDecimals,
+          supplyRaw: lpSupply,
+        },
+        [
+          {
+            address: tokenPriceA.address,
+            decimals: tokenPriceA.decimals,
+            price: tokenPriceA.price,
+            reserveAmountRaw: tokenAmountA,
+          },
+          {
+            address: tokenPriceB.address,
+            decimals: tokenPriceB.decimals,
+            price: tokenPriceB.price,
+            reserveAmountRaw: tokenAmountB,
+          },
+        ]
+      )
+    );
   }
+
+  await runInBatch(
+    tokenPriceSources.map(
+      (tokenPriceSource) => () => cache.setTokenPriceSource(tokenPriceSource)
+    )
+  );
 };
 
 const job: Job = {
