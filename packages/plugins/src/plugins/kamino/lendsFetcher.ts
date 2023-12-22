@@ -5,6 +5,7 @@ import {
   PortfolioElementType,
   TokenPrice,
   Yield,
+  aprToApy,
   getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
@@ -99,9 +100,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
       );
       suppliedLtvs.push(reserve.config.liquidationThresholdPct / 100);
-      // suppliedYields.push([
-      //   { apr: reserve.supplyApr, apy: aprToApy(reserve.supplyApr) },
-      // ]);
+      suppliedYields.push([
+        { apr: reserve.supplyApr, apy: aprToApy(reserve.supplyApr) },
+      ]);
     }
 
     for (const borrow of lendingAccount.borrows) {
@@ -126,9 +127,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
       );
       borrowedWeights.push(Number(reserve.config.borrowFactorPct) / 100);
-      // borrowedYields.push([
-      //   { apr: -reserve.borrowApr, apy: -aprToApy(reserve.borrowApr) },
-      // ]);
+      borrowedYields.push([
+        { apr: -reserve.borrowApr, apy: -aprToApy(reserve.borrowApr) },
+      ]);
     }
 
     if (suppliedAssets.length !== 0 || borrowedAssets.length !== 0) {
@@ -200,9 +201,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
       );
       suppliedLtvs.push(reserve.config.liquidationThresholdPct / 100);
-      // suppliedYields.push([
-      //   { apr: reserve.supplyApr, apy: aprToApy(reserve.supplyApr) },
-      // ]);
+      suppliedYields.push([
+        { apr: reserve.supplyApr, apy: aprToApy(reserve.supplyApr) },
+      ]);
     }
     for (const borrow of multiplyAccount.borrows) {
       if (
@@ -227,9 +228,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
       );
       borrowedWeights.push(Number(reserve.config.borrowFactorPct) / 100);
-      // borrowedYields.push([
-      //   { apr: -reserve.borrowApr, apy: -aprToApy(reserve.borrowApr) },
-      // ]);
+      borrowedYields.push([
+        { apr: -reserve.borrowApr, apy: -aprToApy(reserve.borrowApr) },
+      ]);
     }
 
     if (suppliedAssets.length !== 0 || borrowedAssets.length !== 0) {
@@ -301,9 +302,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
       );
       suppliedLtvs.push(reserve.config.liquidationThresholdPct / 100);
-      // suppliedYields.push([
-      //   { apr: reserve.supplyApr, apy: aprToApy(reserve.supplyApr) },
-      // ]);
+      suppliedYields.push([
+        { apr: reserve.supplyApr, apy: aprToApy(reserve.supplyApr) },
+      ]);
     }
     for (const borrow of leverageAccount.borrows) {
       if (
@@ -328,9 +329,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
       );
       borrowedWeights.push(Number(reserve.config.borrowFactorPct) / 100);
-      // borrowedYields.push([
-      //   { apr: -reserve.borrowApr, apy: -aprToApy(reserve.borrowApr) },
-      // ]);
+      borrowedYields.push([
+        { apr: -reserve.borrowApr, apy: -aprToApy(reserve.borrowApr) },
+      ]);
     }
 
     if (suppliedAssets.length !== 0 || borrowedAssets.length !== 0) {
