@@ -5,8 +5,8 @@ import { Cache } from '../../Cache';
 import { getDecimalsForToken } from '../misc/getDecimalsForToken';
 import { walletTokensPlatform } from '../../plugins/tokens/constants';
 import getSourceWeight from '../misc/getSourceWeight';
-import { tokensToRelyOnByNetwork } from '../misc/checkComputeAndStoreTokensPrices';
 import { minimumLiquidity } from '../misc/computeAndStoreLpPrice';
+import { defaultAcceptedPairs } from '../misc/getLpUnderlyingTokenSource';
 
 export default async function storeTokenPricesFromSqrt(
   cache: Cache,
@@ -20,11 +20,10 @@ export default async function storeTokenPricesFromSqrt(
   tempDecimalsX?: number,
   tempDecimalsY?: number
 ) {
-  const tokensToRelyOn = tokensToRelyOnByNetwork.get(networkId);
-
-  if (!tokensToRelyOn) return undefined;
-
-  if (!tokensToRelyOn.includes(mintX) && !tokensToRelyOn.includes(mintY))
+  if (
+    !defaultAcceptedPairs.includes(mintX) &&
+    !defaultAcceptedPairs.includes(mintY)
+  )
     return undefined;
 
   const tokensPrices = await cache.getTokenPrices([mintX, mintY], networkId);

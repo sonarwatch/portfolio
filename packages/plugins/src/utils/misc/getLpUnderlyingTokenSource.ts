@@ -36,7 +36,7 @@ type KnownPoolUnderlyingRaw = PoolUnderlyingRaw & {
   tokenPrice: TokenPrice;
 };
 
-const defaultAcceptedPairs = [
+export const defaultAcceptedPairs = [
   // Sei Addresses
   seiNativeAddress,
   'ibc/ED07A3391A112B175915CD8FAF43A2DA8E4790EDE12566649D0C2F97716B8518', // OSMO
