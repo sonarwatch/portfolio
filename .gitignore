@@ -3,6 +3,8 @@
 # env file
 .env
 
+.nx/*
+
 # docs
 /docs
 
