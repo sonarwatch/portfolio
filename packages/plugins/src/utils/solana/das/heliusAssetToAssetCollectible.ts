@@ -7,17 +7,21 @@ import { CollectionGroup, HeliusAsset } from './types';
 
 export function heliusAssetToAssetCollectible(
   asset: HeliusAsset
-): PortfolioAssetCollectible {
+): PortfolioAssetCollectible | null {
   // Tags
   const tags: string[] | undefined = [];
   if (asset.compression.compressed) tags.push('compressed');
   if (asset.spl20) tags.push('spl20');
   if (asset.inscription) tags.push('inscription');
 
+  const decimals = asset.token_info?.decimals;
+  const balance = asset.token_info?.balance;
+  if (decimals !== undefined && decimals !== 0) return null;
+
   // Amount
   let amount = 1;
-  if (asset.token_info && asset.token_info.decimals === 0) {
-    amount = asset.token_info.balance;
+  if (balance && balance !== 0) {
+    amount = balance;
     tags.push('sft');
   }
 

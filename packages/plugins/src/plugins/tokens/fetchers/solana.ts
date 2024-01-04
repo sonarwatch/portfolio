@@ -76,7 +76,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
     // If it's a NFT
     else {
-      nftAssets.push(heliusAssetToAssetCollectible(asset));
+      const nftAsset = heliusAssetToAssetCollectible(asset);
+      if (nftAsset) nftAssets.push(nftAsset);
     }
   }
   const elements: PortfolioElement[] = [];
