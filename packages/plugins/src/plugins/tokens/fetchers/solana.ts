@@ -1,103 +1,108 @@
 import {
   NetworkId,
+  PortfolioAssetCollectible,
   PortfolioAssetToken,
   PortfolioElement,
-  PortfolioElementMultiple,
   PortfolioElementType,
   PortfolioLiquidity,
   TokenPrice,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
-import { PublicKey } from '@solana/web3.js';
-import { Cache } from '../../../Cache';
+import BigNumber from 'bignumber.js';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
-import { walletTokensPlatform } from '../constants';
-import { getClientSolana } from '../../../utils/clients';
-import {
-  getTokenAccountsByOwner,
-  solanaToken2022Pid,
-} from '../../../utils/solana';
-import tokenPriceToAssetTokens from '../../../utils/misc/tokenPriceToAssetTokens';
-import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
+import { walletNftsPlatform, walletTokensPlatform } from '../constants';
+import { getRpcEndpoint } from '../../../utils/clients/constants';
+import { Cache } from '../../../Cache';
 import { getLpTag, parseLpTag } from '../helpers';
+import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
+import tokenPriceToLiquidity from '../../../utils/misc/tokenPriceToLiquidity';
+import { heliusAssetToAssetCollectible } from '../../../utils/solana/das/heliusAssetToAssetCollectible';
+import { getAssetsByOwnerDas } from '../../../utils/solana/das/getAssetsByOwnerDas';
+import { isHeliusFungibleAsset } from '../../../utils/solana/das/isHeliusFungibleAsset';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
-  const ownerPubKey = new PublicKey(owner);
+  const rpcEndpoint = getRpcEndpoint(NetworkId.solana);
+  const items = await getAssetsByOwnerDas(rpcEndpoint, owner);
 
-  const tokenRegularAccounts = await getTokenAccountsByOwner(
-    client,
-    ownerPubKey
-  );
-  const token2022Accounts = await getTokenAccountsByOwner(
-    client,
-    ownerPubKey,
-    solanaToken2022Pid
-  );
-  const tokenAccounts = [...token2022Accounts, ...tokenRegularAccounts];
-  const mints = [...new Set(tokenAccounts.map((ta) => ta.mint.toString()))];
+  const fungibleAddresses = items.reduce((addresses: string[], curr) => {
+    if (isHeliusFungibleAsset(curr)) addresses.push(curr.id);
+    return addresses;
+  }, []);
 
-  const tokenPricesArray = await cache.getTokenPrices(mints, NetworkId.solana);
+  const tokenPricesArray = await cache.getTokenPrices(
+    fungibleAddresses,
+    NetworkId.solana
+  );
   const tokenPrices: Map<string, TokenPrice> = new Map();
   tokenPricesArray.forEach((tokenPrice) => {
-    if (!tokenPrice) return;
-    tokenPrices.set(tokenPrice.address, tokenPrice);
+    if (tokenPrice) tokenPrices.set(tokenPrice.address, tokenPrice);
   });
 
-  const walletTokensAssets: PortfolioAssetToken[] = [];
+  const nftAssets: PortfolioAssetCollectible[] = [];
+  const tokenAssets: PortfolioAssetToken[] = [];
   const liquiditiesByTag: Record<string, PortfolioLiquidity[]> = {};
 
-  for (let i = 0; i < tokenAccounts.length; i++) {
-    const tokenAccount = tokenAccounts[i];
-    if (tokenAccount.amount.isZero()) continue;
+  for (let i = 0; i < items.length; i++) {
+    const asset = items[i];
+    const isFungible = isHeliusFungibleAsset(asset);
+    const tokenPrice = isFungible ? tokenPrices.get(asset.id) : undefined;
 
-    const address = tokenAccount.mint.toString();
-    const tokenPrice = tokenPrices.get(address);
-    if (!tokenPrice) continue;
+    const address = asset.id;
+    const amount = asset.token_info
+      ? BigNumber(asset.token_info.balance)
+          .div(10 ** asset.token_info.decimals)
+          .toNumber()
+      : 1;
 
-    const amount = tokenAccount.amount
-      .div(10 ** tokenPrice.decimals)
-      .toNumber();
-
-    if (tokenPrice.platformId !== walletTokensPlatform.id) {
-      const assets = tokenPriceToAssetTokens(
-        address,
+    // If it's an LP Token
+    if (tokenPrice && tokenPrice.platformId !== walletTokensPlatform.id) {
+      const liquidity = tokenPriceToLiquidity(
+        asset.id,
         amount,
         NetworkId.solana,
         tokenPrice
       );
-      const liquidity: PortfolioLiquidity = {
-        assets,
-        assetsValue: getUsdValueSum(assets.map((a) => a.value)),
-        rewardAssets: [],
-        rewardAssetsValue: 0,
-        value: getUsdValueSum(assets.map((a) => a.value)),
-        yields: [],
-      };
       const tag = getLpTag(tokenPrice.platformId, tokenPrice.elementName);
       if (!liquiditiesByTag[tag]) {
         liquiditiesByTag[tag] = [];
       }
       liquiditiesByTag[tag].push(liquidity);
-    } else {
-      walletTokensAssets.push(
+    }
+    // If it's a regular token
+    else if (tokenPrice && tokenPrice.platformId === walletTokensPlatform.id) {
+      tokenAssets.push(
         tokenPriceToAssetToken(address, amount, NetworkId.solana, tokenPrice)
       );
     }
+    // If it's a NFT
+    else {
+      nftAssets.push(heliusAssetToAssetCollectible(asset));
+    }
   }
   const elements: PortfolioElement[] = [];
-  if (walletTokensAssets.length > 0) {
-    const walletTokensElement: PortfolioElementMultiple = {
+  if (nftAssets.length !== 0) {
+    elements.push({
+      type: PortfolioElementType.multiple,
+      networkId: NetworkId.solana,
+      platformId: walletNftsPlatform.id,
+      label: 'Wallet',
+      value: null,
+      data: {
+        assets: nftAssets,
+      },
+    });
+  }
+  if (tokenAssets.length !== 0) {
+    elements.push({
       type: PortfolioElementType.multiple,
       networkId: NetworkId.solana,
       platformId: walletTokensPlatform.id,
       label: 'Wallet',
-      value: getUsdValueSum(walletTokensAssets.map((a) => a.value)),
+      value: getUsdValueSum(tokenAssets.map((a) => a.value)),
       data: {
-        assets: walletTokensAssets,
+        assets: tokenAssets,
       },
-    };
-    elements.push(walletTokensElement);
+    });
   }
   for (const [tag, liquidities] of Object.entries(liquiditiesByTag)) {
     const { platformId, elementName } = parseLpTag(tag);

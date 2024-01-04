@@ -1,50 +1,3 @@
-import { RpcEndpoint } from '@sonarwatch/portfolio-core';
-import axios, { AxiosResponse } from 'axios';
-import { getBasicAuthHeaders } from '../misc/getBasicAuthHeaders';
-
-export async function getAssetsByOwnerDas(
-  rpcEndpoint: RpcEndpoint,
-  owner: string
-) {
-  const httpHeaders = rpcEndpoint.basicAuth
-    ? getBasicAuthHeaders(
-        rpcEndpoint.basicAuth.username,
-        rpcEndpoint.basicAuth.password
-      )
-    : undefined;
-
-  return axios
-    .post<unknown, AxiosResponse<GetAssetsByOwnerOutput, unknown>, unknown>(
-      rpcEndpoint.url,
-      {
-        jsonrpc: '2.0',
-        id: Math.random().toString(),
-        method: 'getAssetsByOwner',
-        params: {
-          ownerAddress: owner,
-          page: 1,
-          limit: 1000,
-          sortBy: {
-            sortBy: 'created',
-            sortDirection: 'asc',
-          },
-          displayOptions: {
-            showFungible: false,
-            showNativeBalance: false,
-            showInscription: true,
-          },
-        },
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          ...httpHeaders,
-        },
-      }
-    )
-    .then((res) => res.data.result);
-}
-
 export type GetAssetsByOwnerOutput = {
   jsonrpc: string;
   result: HeliusAssetList;
@@ -71,8 +24,30 @@ export type HeliusAsset = {
   supply: Supply | null;
   mutable: boolean;
   burnt: boolean;
+  token_info?: TokenInfo;
   inscription: Inscription | null;
   spl20: Spl20 | null;
+};
+
+export type HeliusFungibleAsset = HeliusAsset & {
+  interface: 'FungibleToken' | 'FungibleAsset';
+  token_info: TokenInfo;
+};
+
+export type TokenInfo = {
+  balance: number;
+  supply: number;
+  decimals: number;
+  token_program: string;
+  associated_token_address: string;
+  symbol?: string;
+  price_info?: PriceInfo;
+};
+
+export type PriceInfo = {
+  price_per_token: number;
+  total_price: number;
+  currency: string;
 };
 
 export type Inscription = {
@@ -123,7 +98,8 @@ export type File = {
 };
 
 export type Links = {
-  external_url: string;
+  external_url?: string;
+  image?: string;
 };
 
 export type Metadata = {
