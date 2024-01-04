@@ -1,4 +1,5 @@
 import {
+  CollectibleCollection,
   NetworkId,
   PortfolioAssetCollectible,
   PortfolioAssetType,
@@ -11,24 +12,46 @@ export function heliusAssetToAssetCollectible(
   // Tags
   const tags: string[] | undefined = [];
   if (asset.compression.compressed) tags.push('compressed');
-  if (asset.spl20) tags.push('spl20');
   if (asset.inscription) tags.push('inscription');
+
+  let amount = 1;
+  let collection: CollectibleCollection | undefined;
 
   const decimals = asset.token_info?.decimals;
   const balance = asset.token_info?.balance;
   if (decimals !== undefined && decimals !== 0) return null;
 
   // Amount
-  let amount = 1;
   if (balance && balance !== 0) {
     amount = balance;
     tags.push('sft');
   }
 
+  if (asset.spl20) {
+    const { amt, op, p, tick } = asset.spl20;
+    if (p !== 'spl-20') return null;
+    if (op !== 'mint') return null;
+    if (amt === undefined) return null;
+    amount = parseInt(amt, 10);
+    collection = {
+      floorPrice: null,
+      id: `spl-20-${tick}`,
+      name: tick.toUpperCase(),
+    };
+    tags.push('spl20');
+  }
+
   // Collection
-  const collection = asset.grouping.find(
+  const collectionGroup = asset.grouping.find(
     (g) => g.group_key === 'collection'
   ) as CollectionGroup | undefined;
+  if (collectionGroup) {
+    collection = {
+      floorPrice: null,
+      id: collectionGroup.group_value,
+      name: collectionGroup.collection_metadata.name,
+    };
+  }
 
   return {
     type: PortfolioAssetType.collectible,
@@ -43,13 +66,7 @@ export function heliusAssetToAssetCollectible(
       dataUri: asset.content.json_uri,
       imageUri: asset.content.links?.image,
       attributes: asset.content.metadata.attributes,
-      collection: collection
-        ? {
-            id: collection?.group_value,
-            name: collection?.collection_metadata.name,
-            floorPrice: null,
-          }
-        : undefined,
+      collection,
     },
     networkId: NetworkId.solana,
     value: null,

@@ -115,11 +115,13 @@ export type PortfolioAssetCollectibleData = {
   imageUri?: string;
   dataUri?: string;
   attributes?: CollectibleAttribute[];
-  collection?: {
-    id: string;
-    floorPrice: UsdValue;
-    name?: string;
-  };
+  collection?: CollectibleCollection;
+};
+
+export type CollectibleCollection = {
+  id: string;
+  floorPrice: UsdValue;
+  name?: string;
 };
 
 export type CollectibleAttribute = {
