@@ -125,6 +125,21 @@ export type Grouping = {
   group_value: string;
 };
 
+export type CollectionGroup = {
+  group_key: 'collection';
+  group_value: string;
+  verified: boolean;
+  collection_metadata: CollectionMetadata;
+};
+
+export interface CollectionMetadata {
+  name: string;
+  symbol: string;
+  image: string;
+  description: string;
+  external_url: string;
+}
+
 export type Ownership = {
   frozen: boolean;
   delegated: boolean;

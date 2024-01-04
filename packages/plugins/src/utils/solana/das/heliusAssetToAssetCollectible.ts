@@ -3,26 +3,33 @@ import {
   PortfolioAssetCollectible,
   PortfolioAssetType,
 } from '@sonarwatch/portfolio-core';
-import { HeliusAsset } from './types';
+import { CollectionGroup, HeliusAsset } from './types';
 
 export function heliusAssetToAssetCollectible(
   asset: HeliusAsset
 ): PortfolioAssetCollectible {
-  let amount = 1;
-  if (asset.token_info && asset.token_info.decimals === 0) {
-    amount = asset.token_info.balance;
-  }
-
-  let tags: string[] | undefined = [];
+  // Tags
+  const tags: string[] | undefined = [];
   if (asset.compression.compressed) tags.push('compressed');
   if (asset.spl20) tags.push('spl20');
   if (asset.inscription) tags.push('inscription');
-  if (tags.length === 0) tags = undefined;
+
+  // Amount
+  let amount = 1;
+  if (asset.token_info && asset.token_info.decimals === 0) {
+    amount = asset.token_info.balance;
+    tags.push('sft');
+  }
+
+  // Collection
+  const collection = asset.grouping.find(
+    (g) => g.group_key === 'collection'
+  ) as CollectionGroup | undefined;
 
   return {
     type: PortfolioAssetType.collectible,
     attributes: {
-      tags,
+      tags: tags.length > 0 ? tags : undefined,
     },
     data: {
       address: asset.id,
@@ -31,6 +38,14 @@ export function heliusAssetToAssetCollectible(
       name: asset.content.metadata.name,
       dataUri: asset.content.json_uri,
       imageUri: asset.content.links?.image,
+      attributes: asset.content.metadata.attributes,
+      collection: collection
+        ? {
+            id: collection?.group_value,
+            name: collection?.collection_metadata.name,
+            floorPrice: null,
+          }
+        : undefined,
     },
     networkId: NetworkId.solana,
     value: null,
