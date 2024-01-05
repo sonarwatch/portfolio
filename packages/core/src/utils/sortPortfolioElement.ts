@@ -7,7 +7,7 @@ import {
   PortfolioElementType,
   PortfolioLiquidity,
 } from '../Portfolio';
-import { sortAssets } from './sortAssets';
+import { sortMultipleAssets } from './sortAssets';
 
 export function sortPortfolioElement(
   element: PortfolioElement
@@ -28,18 +28,18 @@ export function sortElementMultiple(
   element: PortfolioElementMultiple
 ): PortfolioElementMultiple {
   const sortedElement = element;
-  sortedElement.data.assets = sortAssets(sortedElement.data.assets);
+  sortedElement.data.assets = sortMultipleAssets(sortedElement.data.assets);
   return sortedElement;
 }
 
 export function sortElementBorrowLend(
   element: PortfolioElementBorrowLend
 ): PortfolioElementBorrowLend {
-  const sElement = element;
-  sElement.data.borrowedAssets = sortAssets(sElement.data.borrowedAssets);
-  sElement.data.suppliedAssets = sortAssets(sElement.data.suppliedAssets);
-  sElement.data.rewardAssets = sortAssets(sElement.data.rewardAssets);
-  return sElement;
+  const sE = element;
+  sE.data.borrowedAssets = sortMultipleAssets(sE.data.borrowedAssets);
+  sE.data.suppliedAssets = sortMultipleAssets(sE.data.suppliedAssets);
+  sE.data.rewardAssets = sortMultipleAssets(sE.data.rewardAssets);
+  return sE;
 }
 
 export function sortElementLiquidity(
@@ -58,10 +58,8 @@ export function sortElementLiquidity(
 export function sortPortfolioLiquidity(
   portfolioLiquidity: PortfolioLiquidity
 ): PortfolioLiquidity {
-  const sortedPortfolioLiquidity = portfolioLiquidity;
-  sortedPortfolioLiquidity.assets = sortAssets(sortedPortfolioLiquidity.assets);
-  sortedPortfolioLiquidity.rewardAssets = sortAssets(
-    sortedPortfolioLiquidity.rewardAssets
-  );
-  return sortedPortfolioLiquidity;
+  const sLiquidity = portfolioLiquidity;
+  sLiquidity.assets = sortMultipleAssets(sLiquidity.assets);
+  sLiquidity.rewardAssets = sortMultipleAssets(sLiquidity.rewardAssets);
+  return sLiquidity;
 }
