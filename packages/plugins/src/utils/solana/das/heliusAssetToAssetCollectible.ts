@@ -35,7 +35,7 @@ export function heliusAssetToAssetCollectible(
     amount = parseInt(amt, 10);
     collection = {
       floorPrice: null,
-      id: `spl-20-${tick}`,
+      id: `${tick}-spl-20`,
       name: tick.toUpperCase(),
     };
     tags.push('spl20');
