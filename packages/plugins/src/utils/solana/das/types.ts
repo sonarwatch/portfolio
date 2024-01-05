@@ -129,7 +129,7 @@ export type CollectionGroup = {
   group_key: 'collection';
   group_value: string;
   verified: boolean;
-  collection_metadata: CollectionMetadata;
+  collection_metadata?: CollectionMetadata;
 };
 
 export interface CollectionMetadata {

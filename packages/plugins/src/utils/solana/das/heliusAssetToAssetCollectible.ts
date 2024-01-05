@@ -49,7 +49,7 @@ export function heliusAssetToAssetCollectible(
     collection = {
       floorPrice: null,
       id: collectionGroup.group_value,
-      name: collectionGroup.collection_metadata.name,
+      name: collectionGroup.collection_metadata?.name || collection?.name,
     };
   }
 
