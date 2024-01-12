@@ -6,9 +6,9 @@ export const platform: Platform = {
   id: platformId,
   name: 'Parcl',
   image: 'https://sonar.watch/img/platforms/parcl.png',
-  // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
-  // website: 'https://myplatform.com',
-  // twitter: 'https://twitter.com/myplatform',
+  defiLlamaId: 'parent#parcl', // from https://defillama.com/docs/api
+  website: 'https://app.parcl.co/',
+  twitter: 'https://twitter.com/Parcl',
 };
 
 export const programId = new PublicKey(
