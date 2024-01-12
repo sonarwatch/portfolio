@@ -276,6 +276,11 @@ import {
   jobs as benqiJobs,
   fetchers as benqiFetchers,
 } from './plugins/benqi';
+import {
+  platforms as parclPlatforms,
+  jobs as parclJobs,
+  fetchers as parclFetchers,
+} from './plugins/parcl';
 
 export {
   walletTokensPlatform,
@@ -347,6 +352,7 @@ export const platforms: Platform[] = [
   ...instadappPlatforms,
   ...streamflowPlatforms,
   ...benqiPlatforms,
+  ...parclPlatforms,
 ];
 
 // JOBS //
@@ -402,6 +408,7 @@ export const jobs: Job[] = [
   ...instadappJobs,
   ...streamflowJobs,
   ...benqiJobs,
+  ...parclJobs,
 ];
 
 // FETCHERS //
@@ -459,5 +466,6 @@ export const fetchers: Fetcher[] = [
   ...meteoraFetchers,
   ...streamflowFetchers,
   ...benqiFetchers,
+  ...parclFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
