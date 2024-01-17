@@ -11,12 +11,6 @@ export const platform: Platform = {
   // twitter: 'https://twitter.com/myplatform',
 };
 
-export const SmartWalletProgramId = new PublicKey(
-  'GokivDYuQXPZCWRkwMhdH2h91KpDQXBEmpgBgs55bnpH'
-);
-export const GovernProgramId = new PublicKey(
-  'Govz1VyoyLD5BL6CSCxUJLVLsQHRwjfFj1prNsdNg5Jw'
-);
 export const LifinityLockerProgramId = new PublicKey(
   'LLoc8JX5dLAMVzbzTNKG6EFpkyJ9XCsVAGkqwQKUJoa'
 );

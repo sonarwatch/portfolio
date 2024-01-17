@@ -20,7 +20,3 @@ export const MangoProgram = new PublicKey(
 export const redeemProgramId = new PublicKey(
   'mv3ekLzLbnVPNxjSKvqBpU3ZeZXPQdEC3bp5MDEBG68'
 );
-
-export const otherProgram = new PublicKey(
-  'm3roABq4Ta3sGyFRLdY4LH1KN16zBtg586gJ3UxoBzb'
-);
