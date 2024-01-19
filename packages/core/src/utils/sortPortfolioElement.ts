@@ -7,7 +7,7 @@ import {
   PortfolioElementType,
   PortfolioLiquidity,
 } from '../Portfolio';
-import { sortMultipleAssets } from './sortAssets';
+import { sortAssetsWithYields, sortMultipleAssets } from './sortAssets';
 
 export function sortPortfolioElement(
   element: PortfolioElement
@@ -36,8 +36,24 @@ export function sortElementBorrowLend(
   element: PortfolioElementBorrowLend
 ): PortfolioElementBorrowLend {
   const sE = element;
-  sE.data.borrowedAssets = sortMultipleAssets(sE.data.borrowedAssets);
-  sE.data.suppliedAssets = sortMultipleAssets(sE.data.suppliedAssets);
+
+  // Borrows
+  const sortedBorrowedAssetsAndYields = sortAssetsWithYields(
+    sE.data.borrowedAssets,
+    sE.data.borrowedYields
+  );
+  sE.data.borrowedAssets = sortedBorrowedAssetsAndYields.sortedAssets;
+  sE.data.borrowedYields = sortedBorrowedAssetsAndYields.sortedYields;
+
+  // Supplies
+  const sortedSuppliedAssetsAndYields = sortAssetsWithYields(
+    sE.data.suppliedAssets,
+    sE.data.suppliedYields
+  );
+  sE.data.suppliedAssets = sortedSuppliedAssetsAndYields.sortedAssets;
+  sE.data.suppliedYields = sortedSuppliedAssetsAndYields.sortedYields;
+
+  // Rewards
   sE.data.rewardAssets = sortMultipleAssets(sE.data.rewardAssets);
   return sE;
 }
