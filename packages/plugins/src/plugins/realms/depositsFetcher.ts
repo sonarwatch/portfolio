@@ -5,13 +5,14 @@ import {
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
+import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, splGovProgramsKey } from './constants';
+import { vsrInfos, platformId, splGovProgramsKey } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
-import { voteAccountStruct } from './structs';
-import { voteAccountFilters } from './filters';
+import { voteAccountStruct, voterStruct } from './structs';
+import { voteAccountFilters, voterAccountFilters } from './filters';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
@@ -35,13 +36,44 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
   }
 
+  const vsrMints = [];
+  const vsrAmountsByMints: Map<string, BigNumber> = new Map();
+  for (const vsrInfo of vsrInfos) {
+    const voterAccounts = await getParsedProgramAccounts(
+      client,
+      voterStruct,
+      vsrInfo.programId,
+      voterAccountFilters(owner)
+    );
+    if (voterAccounts.length > 0) {
+      vsrMints.push(vsrInfo.mint);
+      const deposits = voterAccounts
+        .map((account) =>
+          account.deposits.map((deposit) => deposit.amountDepositedNative)
+        )
+        .flat();
+      const depositsAmount = deposits.reduce((sum: BigNumber, currValue) =>
+        sum.plus(currValue)
+      );
+      const oldValue = vsrAmountsByMints.get(vsrInfo.mint);
+      if (!oldValue) {
+        vsrAmountsByMints.set(vsrInfo.mint, depositsAmount);
+      } else {
+        vsrAmountsByMints.set(vsrInfo.mint, depositsAmount.plus(oldValue));
+      }
+    }
+  }
+
   const oldVoteAccounts = (await Promise.all(promises)).flat();
 
   if (oldVoteAccounts.length === 0) return [];
 
   const mints = oldVoteAccounts.map((acc) => acc.mint.toString());
 
-  const tokenPrices = await cache.getTokenPrices(mints, NetworkId.solana);
+  const tokenPrices = await cache.getTokenPrices(
+    [...mints, ...vsrMints],
+    NetworkId.solana
+  );
   if (!tokenPrices) return [];
 
   const tokenPriceByMint: Map<string, TokenPrice> = new Map();
@@ -64,6 +96,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
     assets.push(asset);
   }
+
+  vsrAmountsByMints.forEach((amount, mint) => {
+    const tokenPrice = tokenPriceByMint.get(mint);
+    if (tokenPrice) {
+      assets.push(
+        tokenPriceToAssetToken(
+          mint,
+          amount.dividedBy(10 ** tokenPrice.decimals).toNumber(),
+          NetworkId.solana,
+          tokenPrice
+        )
+      );
+    }
+  });
 
   if (assets.length === 0) return [];
 
