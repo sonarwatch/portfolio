@@ -15,4 +15,13 @@ export const cachePrefix = 'marinade';
 export const marinadeTicketProgramId = new PublicKey(
   'MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD'
 );
+export const claimProgram = new PublicKey(
+  'indiXdKbsC4QSLQQnn6ngZvkqfywn6KgEeQbkGSpk1V'
+);
+export const mndeMint = 'MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey';
 export const solFactor = new BigNumber(10 ** solanaNetwork.native.decimals);
+export const baseRewardsUrl =
+  'https://native-staking-referral.marinade.finance/v1/rewards/';
+export const season2Route = 'staker/season-2?pubkey=';
+export const stakerRoute = 'staker?pubkey=';
+export const referrerRoute = 'referrer?pubkey=';

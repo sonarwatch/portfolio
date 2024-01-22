@@ -23,3 +23,22 @@ export const ticketStruct = new BeetStruct<Ticket>(
   ],
   (args) => args as Ticket
 );
+
+export type ClaimRecord = {
+  buffer: Buffer;
+  treasuryAccount: PublicKey;
+  authority: PublicKey;
+  totalAmount: BigNumber;
+  nonClaimedAmount: BigNumber;
+};
+
+export const claimRecordStruct = new BeetStruct<ClaimRecord>(
+  [
+    ['buffer', blob(8)],
+    ['treasuryAccount', publicKey],
+    ['authority', publicKey],
+    ['totalAmount', u64],
+    ['nonClaimedAmount', u64],
+  ],
+  (args) => args as ClaimRecord
+);
