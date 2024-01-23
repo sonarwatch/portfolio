@@ -14,7 +14,7 @@ export const realmsPlatform: Platform = {
 
 export const splGovProgramsKey = 'splGovernancePrograms';
 
-export const vsrInfos: VSRInfos[] = [
+export const customVsrInfo: VSRInfos[] = [
   {
     programId: new PublicKey('VoteMBhDCqGLRgYpp9o7DGyq81KNmwjXQRAHStjtJsS'), // Marinade
     mint: 'MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey',
@@ -23,10 +23,6 @@ export const vsrInfos: VSRInfos[] = [
     programId: new PublicKey('4Q6WW2ouZ6V3iaNm56MTd5n2tnTm4C5fiH8miFHnAFHo'), // Mango
     mint: 'MangoCzJ36AjZyKwVj3VnYU4GTonjfVEnJmvvWaxLac',
   },
-  // {
-  //   programId: new PublicKey('vsr2nfGVNHmSY8uxoBGqq8AQbwz3JwaEaHqGbsTPXqQ'), // Dual Finance
-  //   mint: 'DUALa4FC2yREwZ59PHeu1un4wis36vHRv5hWVBmzykCJ',
-  // },
   {
     programId: new PublicKey('VotEn9AWwTFtJPJSMV5F9jsMY6QwWM5qn3XP9PATGW7'), // PsyFi
     mint: 'PsyFiqqjiv41G7o5SMRzDJCu4psptThNR2GtfeGHfSq',
@@ -36,5 +32,9 @@ export const vsrInfos: VSRInfos[] = [
     mint: '2j437Lt84XvysJiYbXTSJfAMy26Et9HiVGFvGFp8nYWH',
   },
 ];
+
+export const vsrProgram = new PublicKey(
+  'vsr2nfGVNHmSY8uxoBGqq8AQbwz3JwaEaHqGbsTPXqQ'
+);
 export const splGovernanceUrl =
   'https://app.realms.today/api/splGovernancePrograms';
