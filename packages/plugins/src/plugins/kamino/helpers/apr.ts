@@ -15,7 +15,7 @@ function getBorrowedAmount(liquidity: ReserveLiquidity): Decimal {
   return new Decimal(liquidity.borrowedAmountSf.dividedBy(2 ** 60).toString());
 }
 
-function getTotalSupply(liquidity: ReserveLiquidity): Decimal {
+export function getTotalSupply(liquidity: ReserveLiquidity): Decimal {
   return getLiquidityAvailableAmount(liquidity)
     .add(getBorrowedAmount(liquidity))
     .sub(getAccumulatedProtocolFees(liquidity))

@@ -11,11 +11,13 @@ import {
 export type ReserveDataEnhanced = ReserveData & {
   supplyApr: number;
   borrowApr: number;
+  exchangeRate: number;
 };
 
 export type ReserveEnhanced = Reserve & {
   supplyApr: number;
   borrowApr: number;
+  exchangeRate: number;
 };
 
 export type ReserveConfig = {

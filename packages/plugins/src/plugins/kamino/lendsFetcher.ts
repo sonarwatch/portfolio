@@ -95,6 +95,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const tokenPrice = tokenPriceById.get(mint);
       const amount = amountRaw
         .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
+        .dividedBy(reserve.exchangeRate)
         .toNumber();
       suppliedAssets.push(
         tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
@@ -196,6 +197,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const tokenPrice = tokenPriceById.get(mint);
       const amount = amountRaw
         .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
+        .dividedBy(reserve.exchangeRate)
         .toNumber();
       suppliedAssets.push(
         tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
@@ -297,6 +299,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const tokenPrice = tokenPriceById.get(mint);
       const amount = amountRaw
         .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
+        .dividedBy(reserve.exchangeRate)
         .toNumber();
       suppliedAssets.push(
         tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
