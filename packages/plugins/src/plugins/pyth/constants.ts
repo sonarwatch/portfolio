@@ -1,0 +1,17 @@
+import { PublicKey } from '@solana/web3.js';
+import { Platform } from '@sonarwatch/portfolio-core';
+
+export const platformId = 'pyth';
+export const platform: Platform = {
+  id: platformId,
+  name: 'Pyth',
+  image: 'https://sonar.watch/img/platforms/pyth.png',
+  // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
+  website: 'https://pyth.network/',
+  twitter: 'https://twitter.com/PythNetwork',
+};
+
+export const stakingProgramId = new PublicKey(
+  'pytS9TjG1qyAZypk7n8rw8gfW9sUaqqYyMhJQ4E7JCQ'
+);
+export const pythMint = 'HZ1JovNiVvGrGNiiYvEozEVgZ58xaU3RKwX8eACQBCt3';
