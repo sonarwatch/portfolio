@@ -11,7 +11,7 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { vsrInfos, platformId, splGovProgramsKey } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
-import { voteAccountStruct, voterStruct } from './structs';
+import { LockupKind, voteAccountStruct, voterStruct } from './structs';
 import { voteAccountFilters, voterAccountFilters } from './filters';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
@@ -49,16 +49,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       vsrMints.push(vsrInfo.mint);
       const deposits = voterAccounts
         .map((account) =>
-          account.deposits.map((deposit) => deposit.amountDepositedNative)
+          account.deposits.map((deposit) =>
+            deposit.lockup.kind === LockupKind.None
+              ? deposit.amountDepositedNative
+              : new BigNumber(0)
+          )
         )
         .flat();
       const depositsAmount = deposits.reduce((sum: BigNumber, currValue) =>
         sum.plus(currValue)
       );
       const oldValue = vsrAmountsByMints.get(vsrInfo.mint);
-      if (!oldValue) {
+      if (!oldValue && !depositsAmount.isZero()) {
         vsrAmountsByMints.set(vsrInfo.mint, depositsAmount);
-      } else {
+      } else if (oldValue) {
         vsrAmountsByMints.set(vsrInfo.mint, depositsAmount.plus(oldValue));
       }
     }
