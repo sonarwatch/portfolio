@@ -281,6 +281,11 @@ import {
   jobs as parclJobs,
   fetchers as parclFetchers,
 } from './plugins/parcl';
+import {
+  platforms as pythPlatforms,
+  jobs as pythJobs,
+  fetchers as pythFetchers,
+} from './plugins/pyth';
 
 export {
   walletTokensPlatform,
@@ -353,6 +358,7 @@ export const platforms: Platform[] = [
   ...streamflowPlatforms,
   ...benqiPlatforms,
   ...parclPlatforms,
+  ...pythPlatforms,
 ];
 
 // JOBS //
@@ -409,6 +415,7 @@ export const jobs: Job[] = [
   ...streamflowJobs,
   ...benqiJobs,
   ...parclJobs,
+  ...pythJobs,
 ];
 
 // FETCHERS //
@@ -467,5 +474,6 @@ export const fetchers: Fetcher[] = [
   ...streamflowFetchers,
   ...benqiFetchers,
   ...parclFetchers,
+  ...pythFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
