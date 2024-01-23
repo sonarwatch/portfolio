@@ -5,7 +5,6 @@ import {
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
-import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { vsrInfos, platformId, splGovProgramsKey } from './constants';
@@ -36,48 +35,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
   }
 
-  const vsrMints = [];
-  const vsrAmountsByMints: Map<string, BigNumber> = new Map();
-  for (const vsrInfo of vsrInfos) {
-    const voterAccounts = await getParsedProgramAccounts(
-      client,
-      voterStruct,
-      vsrInfo.programId,
-      voterAccountFilters(owner)
-    );
-    if (voterAccounts.length > 0) {
-      vsrMints.push(vsrInfo.mint);
-      const deposits = voterAccounts
-        .map((account) =>
-          account.deposits.map((deposit) =>
-            deposit.lockup.kind === LockupKind.None
-              ? deposit.amountDepositedNative
-              : new BigNumber(0)
-          )
-        )
-        .flat();
-      const depositsAmount = deposits.reduce((sum: BigNumber, currValue) =>
-        sum.plus(currValue)
-      );
-      const oldValue = vsrAmountsByMints.get(vsrInfo.mint);
-      if (!oldValue && !depositsAmount.isZero()) {
-        vsrAmountsByMints.set(vsrInfo.mint, depositsAmount);
-      } else if (oldValue) {
-        vsrAmountsByMints.set(vsrInfo.mint, depositsAmount.plus(oldValue));
-      }
-    }
-  }
-
   const oldVoteAccounts = (await Promise.all(promises)).flat();
 
-  if (oldVoteAccounts.length === 0) return [];
+  const mints = [
+    ...oldVoteAccounts.map((acc) => acc.mint.toString()),
+    ...vsrInfos.map((info) => info.mint),
+  ];
 
-  const mints = oldVoteAccounts.map((acc) => acc.mint.toString());
-
-  const tokenPrices = await cache.getTokenPrices(
-    [...mints, ...vsrMints],
-    NetworkId.solana
-  );
+  const tokenPrices = await cache.getTokenPrices(mints, NetworkId.solana);
   if (!tokenPrices) return [];
 
   const tokenPriceByMint: Map<string, TokenPrice> = new Map();
@@ -101,19 +66,49 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     assets.push(asset);
   }
 
-  vsrAmountsByMints.forEach((amount, mint) => {
+  for (const vsrInfo of vsrInfos) {
+    const voterAccounts = await getParsedProgramAccounts(
+      client,
+      voterStruct,
+      vsrInfo.programId,
+      voterAccountFilters(owner)
+    );
+    const { mint } = vsrInfo;
     const tokenPrice = tokenPriceByMint.get(mint);
-    if (tokenPrice) {
-      assets.push(
-        tokenPriceToAssetToken(
-          mint,
-          amount.dividedBy(10 ** tokenPrice.decimals).toNumber(),
-          NetworkId.solana,
-          tokenPrice
-        )
-      );
+    if (!tokenPrice) continue;
+
+    for (const account of voterAccounts) {
+      for (const deposit of account.deposits) {
+        if (!deposit.amountDepositedNative.isZero()) {
+          const asset = tokenPriceToAssetToken(
+            mint,
+            deposit.amountDepositedNative
+              .dividedBy(10 ** tokenPrice.decimals)
+              .toNumber(),
+            NetworkId.solana,
+            tokenPrice
+          );
+          let lockedUntil;
+          if (deposit.lockup.kind === LockupKind.Constant) {
+            lockedUntil = deposit.lockup.endTs
+              .minus(deposit.lockup.startTs)
+              .times(1000)
+              .plus(Date.now())
+              .toNumber();
+          } else if (
+            deposit.lockup.kind === LockupKind.Cliff ||
+            deposit.lockup.kind === LockupKind.Monthly ||
+            deposit.lockup.kind === LockupKind.Daily
+          ) {
+            lockedUntil = deposit.lockup.endTs.times(1000).toNumber();
+          }
+          assets.push(
+            lockedUntil ? { ...asset, attributes: { lockedUntil } } : asset
+          );
+        }
+      }
     }
-  });
+  }
 
   if (assets.length === 0) return [];
 
