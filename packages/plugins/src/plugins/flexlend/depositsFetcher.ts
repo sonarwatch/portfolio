@@ -5,6 +5,8 @@ import { platformId } from './constants';
 import { getDerivedAccount } from './helpers';
 import solendDepositsFetcher from '../solend/obligationsFetcher';
 import driftDepositsFetcher from '../drift/deposits';
+import kaminoLendDepositFetcher from '../kamino/lendsFetcher';
+import mangoDepositFetcher from '../mango/collateralFetcher';
 import { fetchers as marginfiDepositsFetchers } from '../marginfi/index';
 import { walletTokensPlatform } from '../tokens/constants';
 
@@ -16,6 +18,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       marginfiDepositsFetchers[0].executor(pda, cache),
       solendDepositsFetcher.executor(pda, cache),
       driftDepositsFetcher.executor(pda, cache),
+      kaminoLendDepositFetcher.executor(pda, cache),
+      mangoDepositFetcher.executor(pda, cache),
     ])
   ).flat();
 
