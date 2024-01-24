@@ -28,6 +28,7 @@ import { obligationStruct } from './structs';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import runInBatch from '../../utils/misc/runInBatch';
 import { AUTOMATION_PUBLIC_KEY } from '../flexlend/constants';
+import { getPythPricesDatasMap } from '../../utils/solana/pyth/helpers';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -154,6 +155,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const { liquidity, collateral } = reserve;
       const lMint = liquidity.mintPubkey;
       const lTokenPrice = tokenPrices.get(lMint);
+      let price: number | undefined;
+      if (!lTokenPrice) {
+        const pythOracle = new PublicKey(reserve.liquidity.pythOracle);
+        const pythAccount = await client.getAccountInfo(pythOracle);
+        const pythPriceMap = getPythPricesDatasMap([pythOracle], [pythAccount]);
+        const pythPrice = pythPriceMap.get(pythOracle.toString());
+        if (pythPrice) price = pythPrice.price;
+      }
 
       const decimals = liquidity.mintDecimals;
       const reserveBorrowAmount = new BigNumber(liquidity.borrowedAmountWads)
@@ -191,7 +200,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
               lMint,
               suppliedAmount,
               NetworkId.solana,
-              lTokenPrice
+              lTokenPrice,
+              price
             )
           );
         }
@@ -227,7 +237,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
               lMint,
               borrowedAmount,
               NetworkId.solana,
-              lTokenPrice
+              lTokenPrice,
+              price
             )
           );
         }
