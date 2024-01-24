@@ -7,6 +7,7 @@ import {
   aprToApy,
   getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
+import { PublicKey } from '@solana/web3.js';
 import { MarginfiProgram, platformId, prefix } from './constants';
 import { marginfiAccountStruct } from './structs/MarginfiAccount';
 import { getInterestRates, wrappedI80F48toBigNumber } from './helpers';
@@ -18,13 +19,14 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { FetcherExecutor } from '../../Fetcher';
 import { Cache } from '../../Cache';
 import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
+import { getPythPrice } from '../../utils/solana/pyth/helpers';
+import { OracleSetup } from './structs/Bank';
 
 const fetcherExecutor: FetcherExecutor = async (
   owner: string,
   cache: Cache
 ) => {
   const client = getClientSolana();
-
   const accounts = await getParsedProgramAccounts(
     client,
     marginfiAccountStruct,
@@ -75,7 +77,13 @@ const fetcherExecutor: FetcherExecutor = async (
 
       const { lendingApr, borrowingApr } = getInterestRates(bankInfo);
       const tokenPrice = tokenPriceById.get(bankInfo.mint.toString());
-      if (!tokenPrice) continue;
+      let price: number | undefined;
+      if (!tokenPrice && bankInfo.config.oracleSetup === OracleSetup.PythEma) {
+        const pythOracle = new PublicKey(bankInfo.config.oracleKeys[0]);
+        const pythAccount = await client.getAccountInfo(pythOracle);
+        const pythPrice = getPythPrice(pythOracle, pythAccount);
+        if (pythPrice) price = pythPrice.price;
+      }
 
       if (!balance.assetShares.value.isZero()) {
         suppliedLtvs.push(
@@ -92,7 +100,8 @@ const fetcherExecutor: FetcherExecutor = async (
             bankInfo.mint.toString(),
             suppliedQuantity,
             NetworkId.solana,
-            tokenPrice
+            tokenPrice,
+            price
           )
         );
         const bankLendingYields: Yield[] = [
@@ -121,7 +130,8 @@ const fetcherExecutor: FetcherExecutor = async (
             bankInfo.mint.toString(),
             borrowedQuantity,
             NetworkId.solana,
-            tokenPrice
+            tokenPrice,
+            price
           )
         );
         const bankBorrowedYields: Yield[] = [
