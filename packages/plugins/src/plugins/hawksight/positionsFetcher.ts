@@ -1,4 +1,10 @@
-import { NetworkId, PortfolioElement } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  PortfolioAsset,
+  PortfolioElement,
+  PortfolioElementType,
+  getUsdValueSum,
+} from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { FindNftsByOwnerOutput } from '@metaplex-foundation/js';
 import { Cache } from '../../Cache';
@@ -42,18 +48,38 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (portfolioElements.length === 0) return [];
 
   const elements: PortfolioElement[] = [];
+  const tokens: PortfolioAsset[] = [];
   for (const element of portfolioElements) {
-    const tmpElement = element;
-    tmpElement.name =
-      tmpElement.platformId === walletTokensPlatform.id
-        ? 'Tokens/Rewards'
-        : tmpElement.platformId.slice(0, 1).toUpperCase() +
-          tmpElement.platformId.slice(1);
-    tmpElement.platformId = platformId;
+    if (
+      element.platformId === walletTokensPlatform.id &&
+      element.type === PortfolioElementType.multiple
+    ) {
+      tokens.push(...element.data.assets);
+    }
+    element.name =
+      element.platformId.slice(0, 1).toUpperCase() +
+      element.platformId.slice(1);
+
+    if (
+      (element.name && element.name === 'Wallet-nfts') ||
+      element.platformId === 'wallet-tokens'
+    )
+      continue;
+
+    element.platformId = platformId;
     elements.push({
-      ...tmpElement,
+      ...element,
     });
   }
+  elements.push({
+    type: PortfolioElementType.multiple,
+    networkId: NetworkId.solana,
+    platformId,
+    label: 'Rewards',
+    value: getUsdValueSum(tokens.map((t) => t.value)),
+    data: { assets: tokens },
+  });
+
   return elements;
 };
 
