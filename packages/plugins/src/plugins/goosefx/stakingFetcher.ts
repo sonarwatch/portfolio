@@ -13,7 +13,7 @@ import { userMetadataStruct } from './structs';
 import { stakingAccountFilter } from './filters';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
-const sevenDays = 7 * 1000 * 60 * 60 * 24;
+export const sevenDays = 7 * 1000 * 60 * 60 * 24;
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
