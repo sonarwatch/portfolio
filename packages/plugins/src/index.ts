@@ -286,6 +286,11 @@ import {
   jobs as pythJobs,
   fetchers as pythFetchers,
 } from './plugins/pyth';
+import {
+  platforms as circuitPlatforms,
+  jobs as circuitJobs,
+  fetchers as circuitFetchers,
+} from './plugins/circuit';
 
 export {
   walletTokensPlatform,
@@ -359,6 +364,7 @@ export const platforms: Platform[] = [
   ...benqiPlatforms,
   ...parclPlatforms,
   ...pythPlatforms,
+  ...circuitPlatforms,
 ];
 
 // JOBS //
@@ -416,6 +422,7 @@ export const jobs: Job[] = [
   ...benqiJobs,
   ...parclJobs,
   ...pythJobs,
+  ...circuitJobs,
 ];
 
 // FETCHERS //
@@ -475,5 +482,6 @@ export const fetchers: Fetcher[] = [
   ...benqiFetchers,
   ...parclFetchers,
   ...pythFetchers,
+  ...circuitFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
