@@ -1,5 +1,5 @@
 import { Metaplex, Metadata, Nft, Sft } from '@metaplex-foundation/js';
-import { tensorProgram } from './constants';
+import { tensorPid } from './constants';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import { singleListingStruct } from './struct';
@@ -13,7 +13,7 @@ export default async function getTensorSingleListings(
   const singleListings = await getParsedProgramAccounts(
     connection,
     singleListingStruct,
-    tensorProgram,
+    tensorPid,
     singleListingFilter(owner)
   );
   if (singleListings.length === 0) return [];

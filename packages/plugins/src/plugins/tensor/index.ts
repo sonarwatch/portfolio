@@ -4,6 +4,7 @@ import { Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from '../../Fetcher';
 import { tensorPlatform } from './constants';
 import bidsFetcher from './bidsFetcher';
+import locksFetcher from './locksFetcher';
 
 export const platforms: Platform[] = [tensorPlatform];
-export const fetchers: Fetcher[] = [bidsFetcher];
+export const fetchers: Fetcher[] = [bidsFetcher, locksFetcher];

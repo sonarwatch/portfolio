@@ -1,5 +1,5 @@
 import { GetProgramAccountsFilter } from '@solana/web3.js';
-import { singleListingStruct } from './struct';
+import { orderStateLockStruct, singleListingStruct } from './struct';
 
 export const singleListingFilter = (
   owner: string
@@ -19,6 +19,16 @@ export const poolFilter = (owner: string): GetProgramAccountsFilter[] => [
     memcmp: {
       bytes: owner,
       offset: 71,
+    },
+  },
+];
+
+export const locksFilter = (owner: string): GetProgramAccountsFilter[] => [
+  { dataSize: 472 },
+  {
+    memcmp: {
+      bytes: owner,
+      offset: 47,
     },
   },
 ];

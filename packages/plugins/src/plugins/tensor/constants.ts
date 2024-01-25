@@ -11,6 +11,10 @@ export const tensorPlatform: Platform = {
 };
 export const cachePrefix = 'tensor';
 
-export const tensorProgram = new PublicKey(
+export const tensorPid = new PublicKey(
   'TSWAPaqyCSx2KABk68Shruf4rp7CxcNi8hAsbdwmHbN'
+);
+
+export const locksPid = new PublicKey(
+  'TLoCKic2wGJm7VhZKumih4Lc35fUhYqVMgA4j389Buk'
 );

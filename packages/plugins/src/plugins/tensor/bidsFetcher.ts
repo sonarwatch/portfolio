@@ -7,7 +7,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, tensorProgram } from './constants';
+import { platformId, tensorPid } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { poolFilter } from './filters';
@@ -21,7 +21,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const bidsAccounts = await getParsedProgramAccounts(
     client,
     poolStruct,
-    tensorProgram,
+    tensorPid,
     poolFilter(owner)
   );
 

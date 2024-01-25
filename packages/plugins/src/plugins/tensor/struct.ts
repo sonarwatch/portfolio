@@ -9,7 +9,7 @@ import {
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { blob, u64 } from '../../utils/solana';
+import { blob, i64, u64 } from '../../utils/solana';
 
 // https://github.com/tensor-hq/tensorswap-sdk/tree/main/src/tensorswap/idl
 
@@ -117,4 +117,75 @@ export const poolStruct = new BeetStruct<Pool>(
     ['padding', blob(121)],
   ],
   (args) => args as Pool
+);
+
+export enum OrderType {
+  Token,
+  NFT,
+}
+
+export type OrderStateLock = {
+  buffer: Buffer;
+  version: number;
+  bump: number[];
+  orderId: number[];
+  orderType: OrderType;
+  nonce: number;
+  maker: PublicKey;
+  price: BigNumber;
+  currency: PublicKey;
+  aprBps: BigNumber;
+  durationSec: BigNumber;
+  whitelist: PublicKey;
+  makerBroker: PublicKey;
+  margin: PublicKey;
+  expiry: BigNumber;
+  createdAt: BigNumber;
+  updatedAt: BigNumber;
+  nftsHeld: BigNumber;
+  vaultBalance: BigNumber;
+  lockedAt: BigNumber;
+  lockedUntil: BigNumber;
+  taker: PublicKey;
+  collateralReturned: boolean;
+  lastExercisedAt: BigNumber;
+  exerciseCount: BigNumber;
+  accumulatedProfit: BigNumber;
+  takerWithdrawnNfts: BigNumber;
+  takerWithdrawnFunds: BigNumber;
+  reserved: number[];
+};
+export const orderStateLockStruct = new BeetStruct<OrderStateLock>(
+  [
+    ['buffer', blob(8)],
+    ['version', u8],
+    ['bump', uniformFixedSizeArray(u8, 1)],
+    ['orderId', uniformFixedSizeArray(u8, 32)],
+    ['orderType', u8],
+    ['nonce', u32],
+    ['maker', publicKey],
+    ['price', u64],
+    ['currency', publicKey],
+    ['aprBps', u32],
+    ['durationSec', u32],
+    ['whitelist', publicKey],
+    ['makerBroker', publicKey],
+    ['margin', publicKey],
+    ['expiry', i64],
+    ['createdAt', i64],
+    ['updatedAt', i64],
+    ['nftsHeld', u32],
+    ['vaultBalance', u64],
+    ['lockedAt', i64],
+    ['lockedUntil', i64],
+    ['taker', publicKey],
+    ['collateralReturned', bool],
+    ['lastExercisedAt', i64],
+    ['exerciseCount', u32],
+    ['accumulatedProfit', u64],
+    ['takerWithdrawnNfts', u32],
+    ['takerWithdrawnFunds', u64],
+    ['reserved', uniformFixedSizeArray(u8, 128)],
+  ],
+  (args) => args as OrderStateLock
 );
