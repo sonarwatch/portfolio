@@ -95,6 +95,8 @@ const executor: JobExecutor = async (cache: Cache) => {
       position
     );
 
+    if (tokenAmountA.isZero() && tokenAmountB.isZero()) continue;
+
     const tokenAAmount = tokenAmountA
       .plus(strategy.tokenAAmounts)
       .div(10 ** strategy.tokenAMintDecimals.toNumber());

@@ -5,7 +5,7 @@ import { WhirlpoolStrategy } from '../structs/vaults';
 import { ParsedAccount } from '../../../utils/solana';
 import { getTokenAmountsFromLiquidity } from '../../../utils/clmm/tokenAmountFromLiquidity';
 
-const dexes = ['ORCA', 'RAYDIUM', 'CREMA'];
+const dexes = ['ORCA', 'RAYDIUM', 'METEORA'];
 
 export function dexToNumber(dex: string) {
   for (let i = 0; i < dexes.length; i += 1) {
@@ -13,7 +13,8 @@ export function dexToNumber(dex: string) {
       return i;
     }
   }
-  throw new Error(`Unknown DEX ${dex}`);
+  console.log(`Unknown DEX ${dex}`);
+  return -1;
 }
 
 export function getTokenAmountsFromInfos(
@@ -45,7 +46,8 @@ export function getTokenAmountsFromInfos(
       false
     );
   }
-  throw new Error(`Invalid dex ${strategy.strategyDex.toString()}`);
+  console.log('Unsupported number of DEX : ', strategy.strategyDex.toNumber());
+  return { tokenAmountA: new BigNumber(0), tokenAmountB: new BigNumber(0) };
 }
 
 const statusByNum = new Map([
