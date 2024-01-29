@@ -21,3 +21,15 @@ export const farmAccountFilter = (
     },
   },
 ];
+
+export const dlmmPositionAccountFilter = (
+  owner: string
+): GetProgramAccountsFilter[] => [
+  { dataSize: 7560 },
+  {
+    memcmp: {
+      offset: 40,
+      bytes: owner,
+    },
+  },
+];

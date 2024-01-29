@@ -2,6 +2,7 @@ import {
   BeetStruct,
   FixableBeetStruct,
   bool,
+  i32,
   u32,
   u8,
   uniformFixedSizeArray,
@@ -9,7 +10,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { PublicKey } from '@solana/web3.js';
-import { blob, u128, u64 } from '../../utils/solana';
+import { blob, i64, u128, u64 } from '../../utils/solana';
 
 export type VaultBumps = {
   vaultBump: number;
@@ -301,4 +302,73 @@ export const farmAccountStruct = new BeetStruct<FarmAccount>(
     ['nonce', u8],
   ],
   (args) => args as FarmAccount
+);
+
+export type UserRewardInfo = {
+  rewardPerTokenCompletes: BigNumber;
+  rewardPerTokenCompletes2: BigNumber;
+  rewardPendings: BigNumber;
+  rewardPendings2: BigNumber;
+};
+
+export const userRewardInfoStruct = new BeetStruct<UserRewardInfo>(
+  [
+    ['rewardPerTokenCompletes', u128],
+    ['rewardPerTokenCompletes2', u128],
+    ['rewardPendings', u64],
+    ['rewardPendings2', u64],
+  ],
+  (args) => args as UserRewardInfo
+);
+
+export type FeeInfo = {
+  feeXPerTokenComplete: BigNumber;
+  feeYPerTokenComplete: BigNumber;
+  feeXPending: BigNumber;
+  feeYPending: BigNumber;
+};
+
+export const feeInfoStruct = new BeetStruct<FeeInfo>(
+  [
+    ['feeXPerTokenComplete', u128],
+    ['feeYPerTokenComplete', u128],
+    ['feeXPending', u64],
+    ['feeYPending', u64],
+  ],
+  (args) => args as FeeInfo
+);
+
+export type DLMMPosition = {
+  buffer: Buffer;
+  lbPair: PublicKey;
+  owner: PublicKey;
+  liquidityShares: BigNumber[];
+  rewardInfos: UserRewardInfo[];
+  feeInfos: FeeInfo[];
+  lowerBinId: number;
+  upperBinId: number;
+  lastUpdatedAt: BigNumber;
+  totalClaimedFeeXAmount: BigNumber;
+  totalClaimedFeeYAmount: BigNumber;
+  totalClaimedRewards: BigNumber[];
+  reserved: number[];
+};
+
+export const dlmmPositionStruct = new BeetStruct<DLMMPosition>(
+  [
+    ['buffer', blob(8)],
+    ['lbPair', publicKey],
+    ['owner', publicKey],
+    ['liquidityShares', uniformFixedSizeArray(u64, 70)],
+    ['rewardInfos', uniformFixedSizeArray(userRewardInfoStruct, 70)],
+    ['feeInfos', uniformFixedSizeArray(feeInfoStruct, 70)],
+    ['lowerBinId', i32],
+    ['upperBinId', i32],
+    ['lastUpdatedAt', i64],
+    ['totalClaimedFeeXAmount', u64],
+    ['totalClaimedFeeYAmount', u64],
+    ['totalClaimedRewards', uniformFixedSizeArray(u64, 2)],
+    ['reserved', uniformFixedSizeArray(u8, 160)],
+  ],
+  (args) => args as DLMMPosition
 );
