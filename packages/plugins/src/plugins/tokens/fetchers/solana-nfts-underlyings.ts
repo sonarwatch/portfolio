@@ -16,6 +16,10 @@ import { getRaydiumCLMMPositions } from '../../raydium/getRaydiumCLMMPositions';
 import { getWhirlpoolPositions } from '../../orca/getWhirlpoolPositions';
 import { isARaydiumPosition } from '../../raydium/helpers';
 import { isAnOrcaPosition } from '../../orca/helpers';
+import {
+  getPositionFromVotingEscrowNFT,
+  isAVotingEscrowPosition,
+} from '../../realms/helpers';
 
 type Appraiser = (
   cache: Cache,
@@ -33,6 +37,7 @@ type Identifier = (nft: Metadata | Nft | Sft) => boolean;
 const appraiserByIdentifier: Map<Identifier, Appraiser> = new Map([
   [isARaydiumPosition, getRaydiumCLMMPositions],
   [isAnOrcaPosition, getWhirlpoolPositions],
+  [isAVotingEscrowPosition, getPositionFromVotingEscrowNFT],
 ]);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {

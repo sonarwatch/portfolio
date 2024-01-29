@@ -1,4 +1,4 @@
-import { voteAccountStruct, voterStruct } from './structs';
+import { voteAccountStruct, voterStruct } from './structs/realms';
 
 export const voteAccountFilters = (address: string) => [
   { dataSize: voteAccountStruct.byteSize },

@@ -36,5 +36,6 @@ export const customVsrInfo: VSRInfos[] = [
 export const vsrProgram = new PublicKey(
   'vsr2nfGVNHmSY8uxoBGqq8AQbwz3JwaEaHqGbsTPXqQ'
 );
+
 export const splGovernanceUrl =
   'https://app.realms.today/api/splGovernancePrograms';

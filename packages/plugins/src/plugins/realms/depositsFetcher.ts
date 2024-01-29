@@ -1,6 +1,7 @@
 import {
   NetworkId,
   PortfolioAsset,
+  PortfolioElement,
   TokenPrice,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
@@ -20,15 +21,14 @@ import {
   getParsedProgramAccounts,
 } from '../../utils/solana';
 import {
-  DepositEntry,
-  LockupKind,
   Registrar,
   registrarStruct,
   voteAccountStruct,
   voterStruct,
-} from './structs';
+} from './structs/realms';
 import { voteAccountFilters, voterAccountFilters } from './filters';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { getLockedUntil } from './helpers';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -51,7 +51,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
   }
 
-  const voterAccounts = await getParsedProgramAccounts(
+  const realmVoterAccounts = await getParsedProgramAccounts(
     client,
     voterStruct,
     vsrProgram,
@@ -59,7 +59,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
 
   const registrarAddress: Set<PublicKey> = new Set();
-  voterAccounts.forEach((account) => registrarAddress.add(account.registrar));
+  realmVoterAccounts.forEach((account) =>
+    registrarAddress.add(account.registrar)
+  );
   const registrars =
     registrarAddress.size > 0
       ? await getParsedMultipleAccountsInfo(
@@ -90,7 +92,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const tokenPriceByMint: Map<string, TokenPrice> = new Map();
   tokenPrices.forEach((tP) => (tP ? tokenPriceByMint.set(tP.address, tP) : []));
 
-  const assets: PortfolioAsset[] = [];
+  const realmsAssets: PortfolioAsset[] = [];
   for (const voteAccount of oldVoteAccounts) {
     if (voteAccount.amount.isZero()) continue;
     const tokenMint = voteAccount.mint.toString();
@@ -105,7 +107,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       NetworkId.solana,
       tokenPrice
     );
-    assets.push(asset);
+    realmsAssets.push(asset);
   }
 
   for (const vsrInfo of customVsrInfo) {
@@ -129,9 +131,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             NetworkId.solana,
             tokenPrice
           );
-          const lockedUntil = getLockedUntil(deposit);
+          const lockedUntil = getLockedUntil(
+            deposit.lockup.startTs,
+            deposit.lockup.endTs,
+            deposit.lockup.kind
+          );
 
-          assets.push(
+          realmsAssets.push(
             lockedUntil ? { ...asset, attributes: { lockedUntil } } : asset
           );
         }
@@ -139,7 +145,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
   }
 
-  for (const voterAccount of voterAccounts) {
+  for (const voterAccount of realmVoterAccounts) {
     const registrar = registrarById.get(voterAccount.registrar.toString());
     if (!registrar) continue;
 
@@ -154,29 +160,34 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           NetworkId.solana,
           tP
         );
-        const lockedUntil = getLockedUntil(deposit);
+        const lockedUntil = getLockedUntil(
+          deposit.lockup.startTs,
+          deposit.lockup.endTs,
+          deposit.lockup.kind
+        );
 
-        assets.push(
+        realmsAssets.push(
           lockedUntil ? { ...asset, attributes: { lockedUntil } } : asset
         );
       }
     }
   }
 
-  if (assets.length === 0) return [];
-
-  return [
-    {
+  const elements: PortfolioElement[] = [];
+  if (realmsAssets.length > 0) {
+    elements.push({
       networkId: NetworkId.solana,
       platformId,
       type: 'multiple',
       label: 'Deposit',
-      value: getUsdValueSum(assets.map((a) => a.value)),
+      value: getUsdValueSum(realmsAssets.map((a) => a.value)),
       data: {
-        assets,
+        assets: realmsAssets,
       },
-    },
-  ];
+    });
+  }
+
+  return elements;
 };
 
 const fetcher: Fetcher = {
@@ -186,21 +197,3 @@ const fetcher: Fetcher = {
 };
 
 export default fetcher;
-
-function getLockedUntil(deposit: DepositEntry): number | undefined {
-  let lockedUntil;
-  if (deposit.lockup.kind === LockupKind.Constant) {
-    lockedUntil = deposit.lockup.endTs
-      .minus(deposit.lockup.startTs)
-      .times(1000)
-      .plus(Date.now())
-      .toNumber();
-  } else if (
-    deposit.lockup.kind === LockupKind.Cliff ||
-    deposit.lockup.kind === LockupKind.Monthly ||
-    deposit.lockup.kind === LockupKind.Daily
-  ) {
-    lockedUntil = deposit.lockup.endTs.times(1000).toNumber();
-  }
-  return lockedUntil;
-}

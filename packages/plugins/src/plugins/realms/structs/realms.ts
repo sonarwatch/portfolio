@@ -9,7 +9,7 @@ import {
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { blob, i64, u64 } from '../../utils/solana';
+import { blob, i64, u64 } from '../../../utils/solana';
 
 export enum LockupKind {
   'None',
