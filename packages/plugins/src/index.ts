@@ -291,6 +291,11 @@ import {
   jobs as circuitJobs,
   fetchers as circuitFetchers,
 } from './plugins/circuit';
+import {
+  platforms as ariesPlatforms,
+  jobs as ariesJobs,
+  fetchers as ariesFetchers,
+} from './plugins/aries';
 
 export {
   walletTokensPlatform,
@@ -365,6 +370,7 @@ export const platforms: Platform[] = [
   ...parclPlatforms,
   ...pythPlatforms,
   ...circuitPlatforms,
+  ...ariesPlatforms,
 ];
 
 // JOBS //
@@ -423,6 +429,7 @@ export const jobs: Job[] = [
   ...parclJobs,
   ...pythJobs,
   ...circuitJobs,
+  ...ariesJobs,
 ];
 
 // FETCHERS //
@@ -483,5 +490,6 @@ export const fetchers: Fetcher[] = [
   ...parclFetchers,
   ...pythFetchers,
   ...circuitFetchers,
+  ...ariesFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
