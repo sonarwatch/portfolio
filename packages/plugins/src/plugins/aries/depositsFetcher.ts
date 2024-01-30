@@ -72,7 +72,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           suppliedAssets.push(
             tokenPriceToAssetToken(
               coin,
-              amount.dividedBy(tokenPrice.decimals).toNumber(),
+              amount.dividedBy(10 ** tokenPrice.decimals).toNumber(),
               NetworkId.aptos,
               tokenPrice
             )
@@ -82,8 +82,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
       for (const coin in profile.borrows) {
         if (profile.borrows[coin]) {
-          const deposit = profile.borrows[coin];
-          const amount = new BigNumber(deposit.collateral_coins);
+          const borrow = profile.borrows[coin];
+          const amount = new BigNumber(borrow.borrowed_coins);
           if (amount.isZero()) continue;
 
           const tokenPrice = tokenById.get(coin);
@@ -92,7 +92,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           borrowedAssets.push(
             tokenPriceToAssetToken(
               coin,
-              amount.dividedBy(tokenPrice.decimals).toNumber(),
+              amount.dividedBy(10 ** tokenPrice.decimals).toNumber(),
               NetworkId.aptos,
               tokenPrice
             )
@@ -102,8 +102,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
       if (suppliedAssets.length === 0 && borrowedAssets.length === 0) continue;
 
-      const { borrowedValue, healthRatio, suppliedValue, value } =
-        getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
+      const { borrowedValue, suppliedValue, value } = getElementLendingValues(
+        suppliedAssets,
+        borrowedAssets,
+        rewardAssets
+      );
 
       elements.push({
         type: PortfolioElementType.borrowlend,
@@ -120,7 +123,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           suppliedValue,
           suppliedYields,
           collateralRatio: null,
-          healthRatio,
+          healthRatio: new BigNumber(profile.riskFactor).toNumber(),
           rewardAssets,
           value,
         },

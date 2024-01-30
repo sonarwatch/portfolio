@@ -24,9 +24,9 @@ export type ProfileData = {
       };
       borrows: {
         [coin: string]: {
-          collateral_amount: string;
-          collateral_coins: string;
-          collateral_value: string;
+          borrowed_amount: string;
+          borrowed_coins: string;
+          borrowed_value: string;
         };
       };
       equity: string;
