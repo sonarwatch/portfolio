@@ -302,7 +302,7 @@ export * from './Fetcher';
 export * from './Job';
 export * from './utils/name-service';
 export * from './utils/blank';
-export * from './plugins/llama-protocols';
+export { getLlamaProtocolsJob } from './plugins/llama-protocols';
 
 // PLATFORMS //
 export const platforms: Platform[] = [
