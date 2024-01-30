@@ -31,5 +31,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-v3-markets`,
   executor,
+  label: 'normal',
 };
 export default job;

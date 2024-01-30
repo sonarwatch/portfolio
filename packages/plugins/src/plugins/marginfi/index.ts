@@ -10,6 +10,7 @@ export const jobs: Job[] = [
   {
     id: 'marginfi',
     executor: jobExecutor,
+    label: 'normal',
   },
 ];
 

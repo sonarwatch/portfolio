@@ -46,5 +46,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-whirlpools`,
   executor,
+  label: 'normal',
 };
 export default job;

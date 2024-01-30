@@ -29,5 +29,6 @@ export default function jobGenerator(networkId: NetworkIdType): Job {
   return {
     executor,
     id: `${walletTokensPlatform.id}-${networkId}`,
+    label: 'coingecko',
   };
 }

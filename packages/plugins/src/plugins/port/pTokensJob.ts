@@ -71,5 +71,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-pTokens`,
   executor,
+  label: 'normal',
 };
 export default job;

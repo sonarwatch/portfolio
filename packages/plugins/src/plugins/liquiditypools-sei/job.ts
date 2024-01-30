@@ -147,5 +147,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: pluginId,
   executor,
+  label: 'normal',
 };
 export default job;

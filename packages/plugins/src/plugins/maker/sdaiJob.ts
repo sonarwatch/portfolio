@@ -55,5 +55,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-sdai`,
   executor,
+  label: 'normal',
 };
 export default job;

@@ -33,5 +33,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-active-validators`,
   executor,
+  label: 'normal',
 };
 export default job;

@@ -175,5 +175,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-aptos-lp`,
   executor,
+  label: 'normal',
 };
 export default job;

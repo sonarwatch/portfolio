@@ -30,5 +30,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-aave-v3`,
   executor,
+  label: 'normal',
 };
 export default job;

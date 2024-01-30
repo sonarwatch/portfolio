@@ -51,6 +51,7 @@ function getTokenListsJob(networkId: NetworkIdType): Job {
   const job: Job = {
     id: `token-lists-${networkId}`,
     executor,
+    label: 'normal',
   };
   return job;
 }

@@ -199,6 +199,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: prefix,
   executor,
+  label: 'normal',
 };
 
 export default job;

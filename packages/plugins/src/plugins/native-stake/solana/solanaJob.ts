@@ -18,5 +18,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-solana-epoch`,
   executor,
+  label: 'normal',
 };
 export default job;

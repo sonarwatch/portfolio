@@ -20,6 +20,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-programs`,
   executor,
+  label: 'normal',
 };
 
 export default job;
