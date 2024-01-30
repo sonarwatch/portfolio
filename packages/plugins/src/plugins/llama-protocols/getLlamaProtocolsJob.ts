@@ -5,14 +5,14 @@ import {
 } from '@sonarwatch/portfolio-core';
 import axios from 'axios';
 import { Cache } from '../../Cache';
-import { JobExecutor } from '../../Job';
+import { Job } from '../../Job';
 import { llamaChainsToNetworkIds, shrinkLlamaProtocol } from './helpers';
 import { llamaProtocolsCacheKey, llamaProtocolsCachePrefix } from './constants';
 
 const llamaUrl = 'https://api.llama.fi/protocols';
 
-export function getLlamaProtocolsJob(platforms: Platform[]): JobExecutor {
-  return async (cache: Cache) => {
+export function getLlamaProtocolsJob(platforms: Platform[]): Job {
+  const executor = async (cache: Cache) => {
     const llamaProtocolsResponse = await axios.get(llamaUrl);
     const platformIdByLlamaId = new Map<string, string>();
     platforms.forEach((platform) => {
@@ -53,5 +53,10 @@ export function getLlamaProtocolsJob(platforms: Platform[]): JobExecutor {
     await cache.setItem(llamaProtocolsCacheKey, JSON.stringify(protocols), {
       prefix: llamaProtocolsCachePrefix,
     });
+  };
+  return {
+    id: 'llama-protocols',
+    executor,
+    label: 'coingecko',
   };
 }
