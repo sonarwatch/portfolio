@@ -13,8 +13,7 @@ export function dexToNumber(dex: string) {
       return i;
     }
   }
-  console.log(`Unknown DEX ${dex}`);
-  return -1;
+  throw new Error(`Unknown Kamino DEX: ${dex}`);
 }
 
 export function getTokenAmountsFromInfos(
