@@ -11,7 +11,6 @@ import {
 import BigNumber from 'bignumber.js';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { walletNftsPlatform, walletTokensPlatform } from '../constants';
-import { getRpcEndpoint } from '../../../utils/clients/constants';
 import { Cache } from '../../../Cache';
 import { getLpTag, parseLpTag } from '../helpers';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
@@ -19,10 +18,11 @@ import tokenPriceToLiquidity from '../../../utils/misc/tokenPriceToLiquidity';
 import { heliusAssetToAssetCollectible } from '../../../utils/solana/das/heliusAssetToAssetCollectible';
 import { getAssetsByOwnerDas } from '../../../utils/solana/das/getAssetsByOwnerDas';
 import { isHeliusFungibleAsset } from '../../../utils/solana/das/isHeliusFungibleAsset';
+import getSolanaDasEndpoint from '../../../utils/clients/getSolanaDasEndpoint';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const rpcEndpoint = getRpcEndpoint(NetworkId.solana);
-  const items = await getAssetsByOwnerDas(rpcEndpoint, owner);
+  const dasEndpoint = getSolanaDasEndpoint();
+  const items = await getAssetsByOwnerDas(dasEndpoint, owner);
 
   const fungibleAddresses = items.reduce((addresses: string[], curr) => {
     if (isHeliusFungibleAsset(curr)) addresses.push(curr.id);

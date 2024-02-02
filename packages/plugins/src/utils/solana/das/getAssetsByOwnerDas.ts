@@ -7,13 +7,13 @@ const limit = 1000;
 const maxPage = 10;
 
 export async function getAssetsByOwnerDas(
-  rpcEndpoint: RpcEndpoint,
+  dasEndpoint: RpcEndpoint,
   owner: string
 ) {
-  const httpHeaders = rpcEndpoint.basicAuth
+  const httpHeaders = dasEndpoint.basicAuth
     ? getBasicAuthHeaders(
-        rpcEndpoint.basicAuth.username,
-        rpcEndpoint.basicAuth.password
+        dasEndpoint.basicAuth.username,
+        dasEndpoint.basicAuth.password
       )
     : undefined;
 
@@ -26,7 +26,7 @@ export async function getAssetsByOwnerDas(
       AxiosResponse<GetAssetsByOwnerOutput, unknown>,
       unknown
     >(
-      rpcEndpoint.url,
+      dasEndpoint.url,
       {
         jsonrpc: '2.0',
         id: Math.random().toString(),
@@ -56,6 +56,7 @@ export async function getAssetsByOwnerDas(
         },
       }
     );
+    console.log('data', res.data)
     items.push(...res.data.result.items);
     if (res.data.result.total !== limit) break;
   }
