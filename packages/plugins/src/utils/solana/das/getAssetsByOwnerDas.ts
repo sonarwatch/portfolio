@@ -56,7 +56,6 @@ export async function getAssetsByOwnerDas(
         },
       }
     );
-    console.log('data', res.data)
     items.push(...res.data.result.items);
     if (res.data.result.total !== limit) break;
   }
