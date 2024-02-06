@@ -16,4 +16,26 @@ export type StakerResponse = {
   updatedAt: string;
 };
 
-export type Season2Response = StakerResponse;
+export type Season2Response = {
+  pubkey: string;
+  ratePerSecondPerSol: string;
+  updatedAt: string;
+  staker: {
+    mSOLBalance: string;
+    mSOLRewards: string;
+    nativeStakeBalance: string;
+    nativeStakeRewards: string;
+  };
+  validator: {
+    algoScoreBalance: string;
+    algoScoreRewards: string;
+  };
+  governor: {
+    vemndeDelStratVotesBalance: string;
+    vemndeDelStratVotesRewards: string;
+  };
+  redelegator: {
+    stakeAccountRedelegationBalance: string;
+    stakeAccountRedelegationRewards: string;
+  };
+};

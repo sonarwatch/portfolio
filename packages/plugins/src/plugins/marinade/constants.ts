@@ -22,6 +22,6 @@ export const mndeMint = 'MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey';
 export const solFactor = new BigNumber(10 ** solanaNetwork.native.decimals);
 export const baseRewardsUrl =
   'https://native-staking-referral.marinade.finance/v1/rewards/';
-export const season2Route = 'staker/season-2?pubkey=';
+export const season2Route = 'all/season-2?pubkey=';
 export const stakerRoute = 'staker?pubkey=';
 export const referrerRoute = 'referrer?pubkey=';

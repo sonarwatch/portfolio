@@ -1,6 +1,7 @@
 import {
   NetworkId,
   PortfolioAsset,
+  PortfolioElement,
   PortfolioElementType,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
@@ -30,7 +31,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (!mndeTokenPrice) return [];
   const season1Unlock = new Date(1704067200000); // January 1 2024
   const season2Unlock = new Date(1711843200000); // March 31 2024
-  const assets: PortfolioAsset[] = [];
   const client = getClientSolana();
   const claimRecords = await getParsedProgramAccounts(
     client,
@@ -39,8 +39,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     claimRecordFilters(owner)
   );
 
+  const getReferrerRewards: AxiosResponse<ReferreResponse> | null = await axios
+    .get(baseRewardsUrl + referrerRoute + owner)
+    .catch(() => null);
+
+  const season1Assets: PortfolioAsset[] = [];
+  const elements: PortfolioElement[] = [];
   if (claimRecords.length === 1 && !claimRecords[0].nonClaimedAmount.isZero()) {
-    assets.push({
+    season1Assets.push({
       ...tokenPriceToAssetToken(
         mndeMint,
         claimRecords[0].nonClaimedAmount.dividedBy(10 ** decimals).toNumber(),
@@ -49,67 +55,111 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       ),
       attributes: {
         lockedUntil: season1Unlock.getTime(),
-        tags: ['season 1'],
+        tags: ['Staking'],
       },
     });
   }
+  if (getReferrerRewards) {
+    const rewardAmount = new BigNumber(getReferrerRewards.data.rewards);
+    if (!rewardAmount.isZero()) {
+      season1Assets.push({
+        ...tokenPriceToAssetToken(
+          mndeMint,
+          rewardAmount.dividedBy(10 ** decimals).toNumber(),
+          NetworkId.solana,
+          mndeTokenPrice
+        ),
+        attributes: {
+          lockedUntil: season2Unlock.getTime(),
+          tags: ['Referrer'],
+        },
+      });
+    }
+  }
+  if (season1Assets.length > 0) {
+    elements.push({
+      type: PortfolioElementType.multiple,
+      label: 'Rewards',
+      networkId: NetworkId.solana,
+      platformId,
+      name: 'Season 1',
+      data: { assets: season1Assets },
+      value: getUsdValueSum(season1Assets.map((asset) => asset.value)),
+    });
+  }
+
+  const season2Assets: PortfolioAsset[] = [];
 
   const getSeason2Rewards: AxiosResponse<Season2Response> | null = await axios
     .get(baseRewardsUrl + season2Route + owner)
     .catch(() => null);
 
   if (getSeason2Rewards) {
-    const rewardAmount = new BigNumber(getSeason2Rewards.data.mSOLRewards);
-    if (!rewardAmount.isZero()) {
-      assets.push({
+    const stakingRewardAmount = new BigNumber(
+      getSeason2Rewards.data.staker.mSOLRewards
+    );
+    if (!stakingRewardAmount.isZero()) {
+      season2Assets.push({
         ...tokenPriceToAssetToken(
           mndeMint,
-          rewardAmount.dividedBy(10 ** decimals).toNumber(),
+          stakingRewardAmount.dividedBy(10 ** decimals).toNumber(),
           NetworkId.solana,
           mndeTokenPrice
         ),
         attributes: {
           lockedUntil: season2Unlock.getTime(),
-          tags: ['season 2'],
+          tags: ['Staking'],
         },
       });
     }
-  }
-
-  const getReferrerRewards: AxiosResponse<ReferreResponse> | null = await axios
-    .get(baseRewardsUrl + referrerRoute + owner)
-    .catch(() => null);
-
-  if (getReferrerRewards) {
-    const rewardAmount = new BigNumber(getReferrerRewards.data.rewards);
-    if (!rewardAmount.isZero()) {
-      assets.push({
+    const governorRewardAmount = new BigNumber(
+      getSeason2Rewards.data.governor.vemndeDelStratVotesRewards
+    );
+    if (!governorRewardAmount.isZero()) {
+      season2Assets.push({
         ...tokenPriceToAssetToken(
           mndeMint,
-          rewardAmount.dividedBy(10 ** decimals).toNumber(),
+          governorRewardAmount.dividedBy(10 ** decimals).toNumber(),
           NetworkId.solana,
           mndeTokenPrice
         ),
         attributes: {
           lockedUntil: season2Unlock.getTime(),
-          tags: ['referrer'],
+          tags: ['Governor'],
+        },
+      });
+    }
+    const validatorRewardAmount = new BigNumber(
+      getSeason2Rewards.data.validator.algoScoreRewards
+    );
+    if (!validatorRewardAmount.isZero()) {
+      season2Assets.push({
+        ...tokenPriceToAssetToken(
+          mndeMint,
+          validatorRewardAmount.dividedBy(10 ** decimals).toNumber(),
+          NetworkId.solana,
+          mndeTokenPrice
+        ),
+        attributes: {
+          lockedUntil: season2Unlock.getTime(),
+          tags: ['Validator'],
         },
       });
     }
   }
-
-  if (assets.length === 0) return [];
-
-  return [
-    {
+  if (season2Assets.length > 0) {
+    elements.push({
       type: PortfolioElementType.multiple,
       label: 'Rewards',
       networkId: NetworkId.solana,
       platformId,
-      data: { assets },
-      value: getUsdValueSum(assets.map((asset) => asset.value)),
-    },
-  ];
+      name: 'Season 2',
+      data: { assets: season2Assets },
+      value: getUsdValueSum(season2Assets.map((asset) => asset.value)),
+    });
+  }
+
+  return elements;
 };
 
 const fetcher: Fetcher = {
