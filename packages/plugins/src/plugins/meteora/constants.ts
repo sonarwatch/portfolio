@@ -24,3 +24,7 @@ export const poolsProgramId = new PublicKey(
 export const farmProgramId = new PublicKey(
   'FarmuwXPWXvefWUeqFAa5w6rifLkq5X6E8bimYvrhCB1'
 );
+
+export const dlmmProgramId = new PublicKey(
+  'LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo'
+);

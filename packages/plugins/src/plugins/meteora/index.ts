@@ -6,7 +6,8 @@ import { Job } from '../../Job';
 import { Fetcher } from '../../Fetcher';
 import { meteoraPlatform } from './constants';
 import farmsFetcher from './farmsFetcher';
+import dlmmPositionFetcher from './dlmmPositionsFetcher';
 
 export const platforms: Platform[] = [meteoraPlatform];
 export const jobs: Job[] = [vaultsJob, poolsJob, farmsJob];
-export const fetchers: Fetcher[] = [farmsFetcher];
+export const fetchers: Fetcher[] = [farmsFetcher, dlmmPositionFetcher];
