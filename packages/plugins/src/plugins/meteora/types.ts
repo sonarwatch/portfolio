@@ -56,8 +56,6 @@ export type PositionData = {
   positionBinData: PositionBinData[];
   upperBinId: number;
   lowerBinId: number;
-  rewardOne: BigNumber;
-  rewardTwo: BigNumber;
 };
 
 export type LbPosition = {

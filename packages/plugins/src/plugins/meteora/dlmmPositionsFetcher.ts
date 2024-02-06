@@ -21,7 +21,8 @@ import {
   BinArray,
   LbPair,
   binArrayStruct,
-  dlmmPositionStruct,
+  dlmmPositionV1Struct,
+  dlmmPositionV2Struct,
   lbPairStruct,
 } from './struct';
 import {
@@ -44,14 +45,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const positionsV1 = await getParsedProgramAccounts(
     client,
-    dlmmPositionStruct,
+    dlmmPositionV1Struct,
     dlmmProgramId,
     dlmmPositionAccountFilter(userPubKey.toString())
   );
 
   const positionsV2 = await getParsedProgramAccounts(
     client,
-    dlmmPositionStruct,
+    dlmmPositionV2Struct,
     dlmmProgramId,
     dlmmPositionV2AccountFilter(userPubKey.toString())
   );
@@ -119,7 +120,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   for (const tokenPrice of tokenPrices) {
     if (tokenPrice) tokenPriceById.set(tokenPrice.address, tokenPrice);
   }
-
   const clockAccInfo = await client.getAccountInfo(SYSVAR_CLOCK_PUBKEY);
 
   const reservePublicKeys = Array.from(lbPairById.values())
@@ -171,6 +171,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       upperBinArrayIndex,
       dlmmProgramId
     );
+
     const lowerBinArray = binArraysById.get(lowerBinArrayPubKey.toBase58());
     const upperBinArray = binArraysById.get(upperBinArrayPubKey.toBase58());
     const lbPairAcc = lbPairById.get(lbPair.toBase58());
@@ -199,27 +200,32 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
 
     const assets: PortfolioAsset[] = [];
-    if (
-      positionData &&
-      (!positionData.totalXAmount.isZero() ||
-        !positionData.totalYAmount.isZero())
-    ) {
-      assets.push(
-        tokenPriceToAssetToken(
-          tokenPriceX.address,
-          positionData.totalXAmount.toNumber(),
-          NetworkId.solana,
-          tokenPriceX
-        )
-      );
-      assets.push(
-        tokenPriceToAssetToken(
-          tokenPriceY.address,
-          positionData.totalYAmount.toNumber(),
-          NetworkId.solana,
-          tokenPriceY
-        )
-      );
+    if (positionData) {
+      if (!positionData.totalXAmount.isZero()) {
+        assets.push(
+          tokenPriceToAssetToken(
+            tokenPriceX.address,
+            positionData.totalXAmount
+              .dividedBy(10 ** tokenPriceX.decimals)
+              .toNumber(),
+            NetworkId.solana,
+            tokenPriceX
+          )
+        );
+      }
+      if (!positionData.totalYAmount.isZero()) {
+        assets.push(
+          tokenPriceToAssetToken(
+            tokenPriceY.address,
+            positionData.totalYAmount
+              .dividedBy(10 ** tokenPriceY.decimals)
+              .toNumber(),
+            NetworkId.solana,
+            tokenPriceY
+          )
+        );
+      }
+      if (assets.length === 0) continue;
       liquidities.push({
         assets,
         assetsValue: getUsdValueSum(assets.map((asset) => asset.value)),

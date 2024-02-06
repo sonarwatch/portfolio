@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import { PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
 import Decimal from 'decimal.js';
@@ -17,12 +18,10 @@ export const MAX_BIN_ARRAY_SIZE = new BN(70);
 export const SCALE_OFFSET = 64;
 export const BASIS_POINT_MAX = 10000;
 
-export function binIdToBinArrayIndex(binId: BigNumber): BigNumber {
+export function binIdToBinArrayIndex(binId: BigNumber): BN {
   const tempBinId = new BN(binId.toString());
   const { div: idx, mod } = tempBinId.divmod(MAX_BIN_ARRAY_SIZE);
-  const returnVal =
-    tempBinId.isNeg() && !mod.isZero() ? idx.sub(new BN(1)) : idx;
-  return new BigNumber(returnVal.toString());
+  return tempBinId.isNeg() && !mod.isZero() ? idx.sub(new BN(1)) : idx;
 }
 
 export function deriveBinArrayBitmapExtension(
@@ -37,15 +36,14 @@ export function deriveBinArrayBitmapExtension(
 
 export function deriveBinArray(
   lbPair: PublicKey,
-  index: BigNumber,
+  index: BN,
   programId: PublicKey
 ) {
-  const indexTemp = new BN(index.toString());
   let binArrayBytes: Uint8Array;
-  if (indexTemp.isNeg()) {
-    binArrayBytes = new Uint8Array(indexTemp.toTwos(64).toBuffer('le', 8));
+  if (index.isNeg()) {
+    binArrayBytes = new Uint8Array(index.toTwos(64).toBuffer('le', 8));
   } else {
-    binArrayBytes = new Uint8Array(indexTemp.toBuffer('le', 8));
+    binArrayBytes = new Uint8Array(index.toBuffer('le', 8));
   }
   return PublicKey.findProgramAddressSync(
     [Buffer.from('bin_array'), lbPair.toBytes(), binArrayBytes],
@@ -79,10 +77,7 @@ export async function processPosition(
   if (!bins.length) return null;
 
   /// assertion
-  if (
-    bins[0].binId !== lowerBinId ||
-    bins[bins.length - 1].binId !== upperBinId
-  )
+  if (bins[0].binId != lowerBinId || bins[bins.length - 1].binId != upperBinId)
     throw new Error('Bin ID mismatch');
 
   const positionData: PositionBinData[] = [];
@@ -106,9 +101,7 @@ export async function processPosition(
       : posShare.mul(bin.yAmount.toString()).div(binSupply).floor();
 
     totalXAmount = totalXAmount.add(positionXAmount);
-    console.log('bins.forEach ~ totalXAmount:', totalXAmount.toNumber());
     totalYAmount = totalYAmount.add(positionYAmount);
-    console.log('bins.forEach ~ totalYAmount:', totalYAmount.toNumber());
 
     positionData.push({
       binId: bin.binId,
@@ -123,24 +116,12 @@ export async function processPosition(
     });
   });
 
-  const { rewardOne, rewardTwo } = await getClaimableLMReward(
-    program,
-    version,
-    lbPair,
-    onChainTimestamp,
-    position,
-    lowerBinArray,
-    upperBinArray
-  );
-
   return {
     totalXAmount: new BigNumber(totalXAmount.toString()),
     totalYAmount: new BigNumber(totalYAmount.toString()),
     positionBinData: positionData,
     lowerBinId,
     upperBinId,
-    rewardOne,
-    rewardTwo,
   };
 }
 
@@ -236,7 +217,7 @@ export async function getClaimableLMReward(
       program
     );
 
-    const upperBinArrayIdx = lowerBinArrayIdx.plus(new BigNumber(1));
+    const upperBinArrayIdx = lowerBinArrayIdx.add(new BN(1));
     const [newupperBinArray] = deriveBinArray(
       position.lbPair,
       upperBinArrayIdx,
@@ -276,7 +257,7 @@ export async function getClaimableLMReward(
             ? binState.rewardPerTokenXStored
             : binState.rewardPerTokenYStored;
 
-        if (i === lbPair.activeId && !binState.liquiditySupply.isZero()) {
+        if (i == lbPair.activeId && !binState.liquiditySupply.isZero()) {
           const currentTime = new BigNumber(
             Math.min(
               onChainTimestamp,
@@ -383,7 +364,7 @@ export function mulDiv(
     .mul(new BN(y.toString()))
     .divmod(new BN(denominator.toString()));
 
-  if (rounding === Rounding.Up && !mod.isZero()) {
+  if (rounding == Rounding.Up && !mod.isZero()) {
     return new BigNumber(div.add(new BN(1)).toString());
   }
   return new BigNumber(div.toString());

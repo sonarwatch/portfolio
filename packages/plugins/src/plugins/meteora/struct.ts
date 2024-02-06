@@ -355,12 +355,31 @@ export type DLMMPosition = {
   reserved: number[];
 };
 
-export const dlmmPositionStruct = new BeetStruct<DLMMPosition>(
+export const dlmmPositionV1Struct = new BeetStruct<DLMMPosition>(
   [
     ['buffer', blob(8)],
     ['lbPair', publicKey],
     ['owner', publicKey],
     ['liquidityShares', uniformFixedSizeArray(u64, 70)],
+    ['rewardInfos', uniformFixedSizeArray(userRewardInfoStruct, 70)],
+    ['feeInfos', uniformFixedSizeArray(feeInfoStruct, 70)],
+    ['lowerBinId', i32],
+    ['upperBinId', i32],
+    ['lastUpdatedAt', i64],
+    ['totalClaimedFeeXAmount', u64],
+    ['totalClaimedFeeYAmount', u64],
+    ['totalClaimedRewards', uniformFixedSizeArray(u64, 2)],
+    ['reserved', uniformFixedSizeArray(u8, 160)],
+  ],
+  (args) => args as DLMMPosition
+);
+
+export const dlmmPositionV2Struct = new BeetStruct<DLMMPosition>(
+  [
+    ['buffer', blob(8)],
+    ['lbPair', publicKey],
+    ['owner', publicKey],
+    ['liquidityShares', uniformFixedSizeArray(u128, 70)],
     ['rewardInfos', uniformFixedSizeArray(userRewardInfoStruct, 70)],
     ['feeInfos', uniformFixedSizeArray(feeInfoStruct, 70)],
     ['lowerBinId', i32],
