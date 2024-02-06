@@ -110,7 +110,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
       elements.push({
         type: PortfolioElementType.borrowlend,
-        networkId: NetworkId.solana,
+        networkId: NetworkId.aptos,
         platformId,
         label: 'Lending',
         value,

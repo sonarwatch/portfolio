@@ -296,6 +296,11 @@ import {
   jobs as ariesJobs,
   fetchers as ariesFetchers,
 } from './plugins/aries';
+import {
+  platforms as flashPlatforms,
+  jobs as flashJobs,
+  fetchers as flashFetchers,
+} from './plugins/flash';
 
 export {
   walletTokensPlatform,
@@ -307,7 +312,7 @@ export * from './Fetcher';
 export * from './Job';
 export * from './utils/name-service';
 export * from './utils/blank';
-export * from './plugins/llama-protocols';
+export { getLlamaProtocolsJob } from './plugins/llama-protocols';
 
 // PLATFORMS //
 export const platforms: Platform[] = [
@@ -371,6 +376,7 @@ export const platforms: Platform[] = [
   ...pythPlatforms,
   ...circuitPlatforms,
   ...ariesPlatforms,
+  ...flashPlatforms,
 ];
 
 // JOBS //
@@ -430,6 +436,7 @@ export const jobs: Job[] = [
   ...pythJobs,
   ...circuitJobs,
   ...ariesJobs,
+  ...flashJobs,
 ];
 
 // FETCHERS //
@@ -491,5 +498,6 @@ export const fetchers: Fetcher[] = [
   ...pythFetchers,
   ...circuitFetchers,
   ...ariesFetchers,
+  ...flashFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);

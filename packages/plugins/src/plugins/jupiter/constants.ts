@@ -12,4 +12,13 @@ export const perpsProgramId = new PublicKey(
   'PERPHjGBqRHArX4DySjwM6UJHiR3sWAatqfdBS2qQJu'
 );
 
+export const merkleDistributorPid = new PublicKey(
+  'meRjbQXFNf5En86FXT2YPz1dQzLj4Yb3xK8u1MVgqpb'
+);
+
+export const jupMint = 'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN';
+export const jupDecimals = 6;
+
+export const merkleApi =
+  'https://worker.jup.ag/jup-claim-proof/JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN/';
 export const custodiesKey = 'custodies';

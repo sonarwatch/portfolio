@@ -65,3 +65,9 @@ type FundingRateState = {
   lastUpdate: string;
   hourlyFundingBps: string;
 };
+
+export type ClaimProofResponse = {
+  merkle_tree: string;
+  amount: string;
+  proof: number[][];
+};
