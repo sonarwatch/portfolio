@@ -13,6 +13,7 @@ import {
   PositionVersion,
 } from './types';
 import { Bin, BinArray, DLMMPosition, LbPair, binArrayStruct } from './struct';
+import { dlmmProgramId } from './constants';
 
 export const MAX_BIN_ARRAY_SIZE = new BN(70);
 export const SCALE_OFFSET = 64;
@@ -51,17 +52,16 @@ export function deriveBinArray(
   );
 }
 
-export async function processPosition(
+export function processPosition(
   program: PublicKey,
   version: PositionVersion,
   lbPair: LbPair,
-  onChainTimestamp: number,
   position: DLMMPosition,
   baseTokenDecimal: number,
   quoteTokenDecimal: number,
   lowerBinArray: BinArray,
   upperBinArray: BinArray
-): Promise<PositionData | null> {
+): PositionData | null {
   const { lowerBinId, upperBinId, liquidityShares: posShares } = position;
 
   const bins = getBinsBetweenLowerAndUpperBound(
@@ -376,4 +376,34 @@ export function getPriceOfBinByBinId(binStep: number, binId: number): string {
     .add(new Decimal(binStepNum))
     .pow(new Decimal(binId))
     .toString();
+}
+
+export function getTokensAmountsFromLiquidity(
+  position: DLMMPosition,
+  pool: LbPair,
+  lowerBinArray: BinArray,
+  upperBinArray: BinArray,
+  baseTokenDecimal: number,
+  quoteTokenDecimal: number
+): { tokenAmountA: BigNumber; tokenAmountB: BigNumber } {
+  const positionVersion = PositionVersion.V2;
+
+  const positionData = processPosition(
+    dlmmProgramId,
+    positionVersion,
+    pool,
+    position,
+    baseTokenDecimal,
+    quoteTokenDecimal,
+    lowerBinArray,
+    upperBinArray
+  );
+
+  if (!positionData)
+    return { tokenAmountA: new BigNumber(0), tokenAmountB: new BigNumber(0) };
+
+  return {
+    tokenAmountA: positionData.totalXAmount,
+    tokenAmountB: positionData.totalYAmount,
+  };
 }
