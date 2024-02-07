@@ -194,32 +194,31 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
 
     const assets: PortfolioAsset[] = [];
-    if (positionData) {
-      if (!positionData.totalXAmount.isZero()) {
-        assets.push(
-          tokenPriceToAssetToken(
-            tokenPriceX.address,
-            positionData.totalXAmount
-              .dividedBy(10 ** tokenPriceX.decimals)
-              .toNumber(),
-            NetworkId.solana,
-            tokenPriceX
-          )
-        );
-      }
-      if (!positionData.totalYAmount.isZero()) {
-        assets.push(
-          tokenPriceToAssetToken(
-            tokenPriceY.address,
-            positionData.totalYAmount
-              .dividedBy(10 ** tokenPriceY.decimals)
-              .toNumber(),
-            NetworkId.solana,
-            tokenPriceY
-          )
-        );
-      }
-      if (assets.length === 0) continue;
+    if (
+      positionData &&
+      (!positionData.totalXAmount.isZero() ||
+        !positionData.totalYAmount.isZero())
+    ) {
+      assets.push(
+        tokenPriceToAssetToken(
+          tokenPriceX.address,
+          positionData.totalXAmount
+            .dividedBy(10 ** tokenPriceX.decimals)
+            .toNumber(),
+          NetworkId.solana,
+          tokenPriceX
+        )
+      );
+      assets.push(
+        tokenPriceToAssetToken(
+          tokenPriceY.address,
+          positionData.totalYAmount
+            .dividedBy(10 ** tokenPriceY.decimals)
+            .toNumber(),
+          NetworkId.solana,
+          tokenPriceY
+        )
+      );
       liquidities.push({
         assets,
         assetsValue: getUsdValueSum(assets.map((asset) => asset.value)),
