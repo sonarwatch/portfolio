@@ -36,7 +36,7 @@ export const lockupStruct = new BeetStruct<Lockup>(
   (args) => args as Lockup
 );
 
-export type VoteAccount = {
+export type Vote = {
   version: number;
   realm: PublicKey;
   mint: PublicKey;
@@ -45,7 +45,7 @@ export type VoteAccount = {
   padding: Buffer;
 };
 
-export const voteAccountStruct = new BeetStruct<VoteAccount>(
+export const voteStruct = new BeetStruct<Vote>(
   [
     ['version', u8],
     ['realm', publicKey],
@@ -54,7 +54,7 @@ export const voteAccountStruct = new BeetStruct<VoteAccount>(
     ['amount', u64],
     ['padding', blob(177)],
   ],
-  (args) => args as VoteAccount
+  (args) => args as Vote
 );
 export type DepositEntry = {
   lockup: Lockup;
