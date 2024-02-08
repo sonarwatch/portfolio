@@ -26,7 +26,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     .catch(() => null);
 
   const jupTokenPrice = await cache.getTokenPrice(jupMint, NetworkId.solana);
-  if (claimProofRes) {
+  if (claimProofRes && claimProofRes.data) {
     const claimStatus = deriveClaimStatus(
       new PublicKey(owner),
       new PublicKey(claimProofRes.data.merkle_tree),
