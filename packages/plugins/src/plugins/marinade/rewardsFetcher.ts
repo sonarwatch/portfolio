@@ -11,7 +11,6 @@ import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
   baseRewardsUrl,
-  claimProgram,
   mndeMint,
   platformId,
   referrerRoute,
@@ -20,9 +19,9 @@ import {
 import { ReferreResponse, Season2Response } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getClientSolana } from '../../utils/clients';
-import { getParsedProgramAccounts } from '../../utils/solana';
 import { claimRecordStruct } from './structs';
-import { claimRecordFilters } from './filters';
+import { getClaimPda } from './helpers';
+import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 
 const decimals = 9;
 
@@ -32,11 +31,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const season1Unlock = new Date(1704067200000); // January 1 2024
   const season2Unlock = new Date(1711843200000); // March 31 2024
   const client = getClientSolana();
-  const claimRecords = await getParsedProgramAccounts(
+  const pda = getClaimPda(owner);
+  const claimRecord = await getParsedAccountInfo(
     client,
     claimRecordStruct,
-    claimProgram,
-    claimRecordFilters(owner)
+    pda
   );
 
   const getReferrerRewards: AxiosResponse<ReferreResponse> | null = await axios
@@ -45,11 +44,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const season1Assets: PortfolioAsset[] = [];
   const elements: PortfolioElement[] = [];
-  if (claimRecords.length === 1 && !claimRecords[0].nonClaimedAmount.isZero()) {
+  if (claimRecord && !claimRecord.nonClaimedAmount.isZero()) {
     season1Assets.push({
       ...tokenPriceToAssetToken(
         mndeMint,
-        claimRecords[0].nonClaimedAmount.dividedBy(10 ** decimals).toNumber(),
+        claimRecord.nonClaimedAmount.dividedBy(10 ** decimals).toNumber(),
         NetworkId.solana,
         mndeTokenPrice
       ),
