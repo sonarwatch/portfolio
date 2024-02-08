@@ -1,56 +1,48 @@
-import {
-  NetworkId,
-  PortfolioAsset,
-  PortfolioElementType,
-  getUsdValueSum,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId, PortfolioElementType } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, programId } from './constants';
+import { platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
-import { getParsedProgramAccounts, usdcSolanaMint } from '../../utils/solana';
+import { usdcSolanaMint } from '../../utils/solana';
 import { lpAccountStruct } from './structs';
-import { lpAccountFilter } from './filters';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { getLpAccountPda } from './helpers';
+import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 
 const thirtyDays = 30 * 1000 * 60 * 60 * 24;
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const lpAccounts = await getParsedProgramAccounts(
+  const lpAccount = await getParsedAccountInfo(
     client,
     lpAccountStruct,
-    programId,
-    lpAccountFilter(owner)
+    getLpAccountPda(owner)
   );
-  if (lpAccounts.length === 0) return [];
+
+  if (!lpAccount) return [];
+  if (lpAccount && lpAccount.liquidity.isZero()) return [];
 
   const usdcTokenPrice = await cache.getTokenPrice(
     usdcSolanaMint,
     NetworkId.solana
   );
 
-  const assets: PortfolioAsset[] = [];
-  for (const lpAccount of lpAccounts) {
-    const unlockStartedAt = new Date(
-      lpAccount.lastAddLiquidityTimestamp.times(1000).toNumber()
-    );
-    const unlockingAt = new Date(unlockStartedAt.getTime() + thirtyDays);
-    assets.push({
-      ...tokenPriceToAssetToken(
-        usdcSolanaMint,
-        lpAccount.liquidity.dividedBy(10 ** 6).toNumber(),
-        NetworkId.solana,
-        usdcTokenPrice
-      ),
-      attributes: {
-        lockedUntil: unlockingAt.getTime(),
-      },
-    });
-  }
-
-  if (assets.length === 0) return [];
+  const unlockStartedAt = new Date(
+    lpAccount.lastAddLiquidityTimestamp.times(1000).toNumber()
+  );
+  const unlockingAt = new Date(unlockStartedAt.getTime() + thirtyDays);
+  const asset = {
+    ...tokenPriceToAssetToken(
+      usdcSolanaMint,
+      lpAccount.liquidity.dividedBy(10 ** 6).toNumber(),
+      NetworkId.solana,
+      usdcTokenPrice
+    ),
+    attributes: {
+      lockedUntil: unlockingAt.getTime(),
+    },
+  };
 
   return [
     {
@@ -58,8 +50,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       label: 'Deposit',
       networkId: NetworkId.solana,
       platformId,
-      data: { assets },
-      value: getUsdValueSum(assets.map((asset) => asset.value)),
+      data: { assets: [asset] },
+      value: asset.value,
     },
   ];
 };
