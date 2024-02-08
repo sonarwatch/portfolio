@@ -28,3 +28,5 @@ export const governanceAccountFilter = () => [
     },
   },
 ];
+
+export const registratAccountFilter = () => [{ dataSize: 880 }];

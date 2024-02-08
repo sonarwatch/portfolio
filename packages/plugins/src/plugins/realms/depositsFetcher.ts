@@ -8,35 +8,46 @@ import {
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import {
-  customVsrInfo,
-  platformId,
-  splGovProgramsKey,
-  vsrProgram,
-} from './constants';
+import { platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import {
-  ParsedAccount,
   getParsedMultipleAccountsInfo,
   getParsedProgramAccounts,
 } from '../../utils/solana';
-import {
-  Registrar,
-  registrarStruct,
-  voteStruct,
-  voterStruct,
-} from './structs/realms';
-import { voteAccountFilters, voterAccountFilters } from './filters';
+import { voteStruct, voterStruct } from './structs/realms';
+import { voteAccountFilters } from './filters';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { getLockedUntil } from './helpers';
+import { getLockedUntil, getVoterPda } from './helpers';
+import { RealmData } from './types';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const splGovPrograms = await cache.getItem<string[]>(splGovProgramsKey, {
+  const realmData = await cache.getItem<RealmData>('data', {
     prefix: platformId,
     networkId: NetworkId.solana,
   });
+
+  if (!realmData) return [];
+
+  const splGovPrograms = realmData.govPrograms;
+  const registrarById: Map<string, string> = new Map();
+  const mintsSet: Set<string> = new Set();
+
+  const voterAccountsPubKeys: PublicKey[] = [];
+  realmData.registrars.forEach((registrarInfo) => {
+    voterAccountsPubKeys.push(
+      getVoterPda(owner, registrarInfo.pubkey, registrarInfo.vsr)
+    );
+    mintsSet.add(registrarInfo.mint);
+    registrarById.set(registrarInfo.pubkey, registrarInfo.mint);
+  });
+
+  const tempVoterAccounts = await getParsedMultipleAccountsInfo(
+    client,
+    voterStruct,
+    voterAccountsPubKeys
+  );
 
   const getAccountSplGovPromises = [];
   if (splGovPrograms) {
@@ -53,48 +64,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   }
   const splGovAccounts = (await Promise.all(getAccountSplGovPromises)).flat();
 
-  const getAccountsCustomVoterPromises = [];
-  for (const vsrInfo of customVsrInfo) {
-    getAccountsCustomVoterPromises.push(
-      getParsedProgramAccounts(
-        client,
-        voterStruct,
-        vsrInfo.programId,
-        voterAccountFilters(owner)
-      )
-    );
-  }
-  const customVoterAccounts = (
-    await Promise.all(getAccountsCustomVoterPromises)
-  ).flat();
+  const voterAccounts = tempVoterAccounts;
+  if (tempVoterAccounts.length === 0 && splGovAccounts.length === 0) return [];
 
-  const realmVoterAccounts = await getParsedProgramAccounts(
-    client,
-    voterStruct,
-    vsrProgram,
-    voterAccountFilters(owner)
-  );
-
-  const voterAccounts = [...realmVoterAccounts, ...customVoterAccounts];
-  if (voterAccounts.length === 0 && splGovAccounts.length === 0) return [];
-
-  const registrarAddresses: Set<PublicKey> = new Set();
-  voterAccounts.forEach((account) => registrarAddresses.add(account.registrar));
-  const registrars =
-    registrarAddresses.size > 0
-      ? await getParsedMultipleAccountsInfo(
-          client,
-          registrarStruct,
-          Array.from(registrarAddresses)
-        )
-      : [];
-  const registrarById: Map<string, ParsedAccount<Registrar>> = new Map();
-  const mintsSet: Set<string> = new Set();
-  for (const registrar of registrars) {
-    if (!registrar) continue;
-    mintsSet.add(registrar.realmGoverningTokenMint.toString());
-    registrarById.set(registrar.pubkey.toString(), registrar);
-  }
   splGovAccounts.forEach((account) => mintsSet.add(account.mint.toString()));
 
   const mints = Array.from(mintsSet);
@@ -124,10 +96,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   }
 
   for (const voterAccount of voterAccounts) {
+    if (!voterAccount) continue;
     const registrar = registrarById.get(voterAccount.registrar.toString());
     if (!registrar) continue;
 
-    const mint = registrar.realmGoverningTokenMint.toString();
+    const mint = registrar;
     const tP = tokenPriceByMint.get(mint);
     if (!tP) continue;
     for (const deposit of voterAccount.deposits) {

@@ -13,6 +13,7 @@ export const realmsPlatform: Platform = {
 };
 
 export const splGovProgramsKey = 'splGovernancePrograms';
+export const registrarKey = 'registrars';
 
 export const customVsrInfo: VSRInfos[] = [
   {

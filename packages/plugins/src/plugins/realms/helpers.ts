@@ -13,6 +13,7 @@ import {
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
+import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { getClientSolana } from '../../utils/clients';
 import { Attributes, NftVoterMetadata } from './types';
@@ -25,6 +26,21 @@ export const votingEscrowIdentifier = 'Voting Escrow Token Position';
 
 export function isAVotingEscrowPosition(nft: Metadata | Nft | Sft): boolean {
   return nft && nft.name === votingEscrowIdentifier;
+}
+
+export function getVoterPda(
+  owner: string,
+  registrar: string,
+  vsr: string
+): PublicKey {
+  return PublicKey.findProgramAddressSync(
+    [
+      new PublicKey(registrar).toBuffer(),
+      Buffer.from('voter', 'utf-8'),
+      new PublicKey(owner).toBuffer(),
+    ],
+    new PublicKey(vsr)
+  )[0];
 }
 
 export async function getPositionFromVotingEscrowNFT(

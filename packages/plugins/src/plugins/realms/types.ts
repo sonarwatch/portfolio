@@ -24,3 +24,14 @@ export type Attributes = Array<{
   value?: string;
   [key: string]: unknown;
 }>;
+
+export type RegistrarInfo = {
+  pubkey: string;
+  vsr: string;
+  mint: string;
+};
+
+export type RealmData = {
+  govPrograms: string[];
+  registrars: RegistrarInfo[];
+};
