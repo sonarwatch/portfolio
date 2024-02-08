@@ -6,7 +6,7 @@ import {
   TokenPrice,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
-import { PublicKey, SYSVAR_CLOCK_PUBKEY } from '@solana/web3.js';
+import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -120,7 +120,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   for (const tokenPrice of tokenPrices) {
     if (tokenPrice) tokenPriceById.set(tokenPrice.address, tokenPrice);
   }
-  const clockAccInfo = await client.getAccountInfo(SYSVAR_CLOCK_PUBKEY);
 
   const reservePublicKeys = Array.from(lbPairById.values())
     .map(({ reserveX, reserveY }) => [reserveX, reserveY])
@@ -146,10 +145,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         reserveY: reserveAccY.amount,
       });
   });
-
-  const onChainTimestamp = clockAccInfo
-    ? new BigNumber(clockAccInfo.data.readBigInt64LE(32).toString()).toNumber()
-    : 0;
 
   const liquidities: PortfolioLiquidity[] = [];
 
@@ -187,11 +182,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const positionVersion =
       idx < positionsV1.length ? PositionVersion.V1 : PositionVersion.V2;
 
-    const positionData = await processPosition(
+    const positionData = processPosition(
       dlmmProgramId,
       positionVersion,
       lbPairAcc,
-      onChainTimestamp,
       account,
       baseTokenDecimal,
       quoteTokenDecimal,
@@ -200,32 +194,31 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
 
     const assets: PortfolioAsset[] = [];
-    if (positionData) {
-      if (!positionData.totalXAmount.isZero()) {
-        assets.push(
-          tokenPriceToAssetToken(
-            tokenPriceX.address,
-            positionData.totalXAmount
-              .dividedBy(10 ** tokenPriceX.decimals)
-              .toNumber(),
-            NetworkId.solana,
-            tokenPriceX
-          )
-        );
-      }
-      if (!positionData.totalYAmount.isZero()) {
-        assets.push(
-          tokenPriceToAssetToken(
-            tokenPriceY.address,
-            positionData.totalYAmount
-              .dividedBy(10 ** tokenPriceY.decimals)
-              .toNumber(),
-            NetworkId.solana,
-            tokenPriceY
-          )
-        );
-      }
-      if (assets.length === 0) continue;
+    if (
+      positionData &&
+      (!positionData.totalXAmount.isZero() ||
+        !positionData.totalYAmount.isZero())
+    ) {
+      assets.push(
+        tokenPriceToAssetToken(
+          tokenPriceX.address,
+          positionData.totalXAmount
+            .dividedBy(10 ** tokenPriceX.decimals)
+            .toNumber(),
+          NetworkId.solana,
+          tokenPriceX
+        )
+      );
+      assets.push(
+        tokenPriceToAssetToken(
+          tokenPriceY.address,
+          positionData.totalYAmount
+            .dividedBy(10 ** tokenPriceY.decimals)
+            .toNumber(),
+          NetworkId.solana,
+          tokenPriceY
+        )
+      );
       liquidities.push({
         assets,
         assetsValue: getUsdValueSum(assets.map((asset) => asset.value)),

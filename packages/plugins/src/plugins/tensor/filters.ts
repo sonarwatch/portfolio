@@ -1,5 +1,5 @@
 import { GetProgramAccountsFilter } from '@solana/web3.js';
-import { orderStateLockStruct, singleListingStruct } from './struct';
+import { singleListingStruct } from './struct';
 
 export const singleListingFilter = (
   owner: string

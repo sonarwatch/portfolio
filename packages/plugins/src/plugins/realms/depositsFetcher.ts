@@ -23,7 +23,7 @@ import {
 import {
   Registrar,
   registrarStruct,
-  voteAccountStruct,
+  voteStruct,
   voterStruct,
 } from './structs/realms';
 import { voteAccountFilters, voterAccountFilters } from './filters';
@@ -33,23 +33,40 @@ import { getLockedUntil } from './helpers';
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const programs = await cache.getItem<string[]>(splGovProgramsKey, {
+  const splGovPrograms = await cache.getItem<string[]>(splGovProgramsKey, {
     prefix: platformId,
     networkId: NetworkId.solana,
   });
-  if (!programs) return [];
 
-  const promises = [];
-  for (const program of programs) {
-    promises.push(
+  const getAccountSplGovPromises = [];
+  if (splGovPrograms) {
+    for (const program of splGovPrograms) {
+      getAccountSplGovPromises.push(
+        getParsedProgramAccounts(
+          client,
+          voteStruct,
+          new PublicKey(program),
+          voteAccountFilters(owner)
+        )
+      );
+    }
+  }
+  const splGovAccounts = (await Promise.all(getAccountSplGovPromises)).flat();
+
+  const getAccountsCustomVoterPromises = [];
+  for (const vsrInfo of customVsrInfo) {
+    getAccountsCustomVoterPromises.push(
       getParsedProgramAccounts(
         client,
-        voteAccountStruct,
-        new PublicKey(program),
-        voteAccountFilters(owner)
+        voterStruct,
+        vsrInfo.programId,
+        voterAccountFilters(owner)
       )
     );
   }
+  const customVoterAccounts = (
+    await Promise.all(getAccountsCustomVoterPromises)
+  ).flat();
 
   const realmVoterAccounts = await getParsedProgramAccounts(
     client,
@@ -58,33 +75,29 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     voterAccountFilters(owner)
   );
 
-  const registrarAddress: Set<PublicKey> = new Set();
-  realmVoterAccounts.forEach((account) =>
-    registrarAddress.add(account.registrar)
-  );
+  const voterAccounts = [...realmVoterAccounts, ...customVoterAccounts];
+  if (voterAccounts.length === 0 && splGovAccounts.length === 0) return [];
+
+  const registrarAddresses: Set<PublicKey> = new Set();
+  voterAccounts.forEach((account) => registrarAddresses.add(account.registrar));
   const registrars =
-    registrarAddress.size > 0
+    registrarAddresses.size > 0
       ? await getParsedMultipleAccountsInfo(
           client,
           registrarStruct,
-          Array.from(registrarAddress)
+          Array.from(registrarAddresses)
         )
       : [];
   const registrarById: Map<string, ParsedAccount<Registrar>> = new Map();
-  const registrarMints: Set<string> = new Set();
+  const mintsSet: Set<string> = new Set();
   for (const registrar of registrars) {
     if (!registrar) continue;
-    registrarMints.add(registrar.realmGoverningTokenMint.toString());
+    mintsSet.add(registrar.realmGoverningTokenMint.toString());
     registrarById.set(registrar.pubkey.toString(), registrar);
   }
+  splGovAccounts.forEach((account) => mintsSet.add(account.mint.toString()));
 
-  const oldVoteAccounts = (await Promise.all(promises)).flat();
-
-  const mints = [
-    ...oldVoteAccounts.map((acc) => acc.mint.toString()),
-    ...customVsrInfo.map((info) => info.mint),
-    ...registrarMints,
-  ];
+  const mints = Array.from(mintsSet);
 
   const tokenPrices = await cache.getTokenPrices(mints, NetworkId.solana);
   if (!tokenPrices) return [];
@@ -93,7 +106,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   tokenPrices.forEach((tP) => (tP ? tokenPriceByMint.set(tP.address, tP) : []));
 
   const realmsAssets: PortfolioAsset[] = [];
-  for (const voteAccount of oldVoteAccounts) {
+  for (const voteAccount of splGovAccounts) {
     if (voteAccount.amount.isZero()) continue;
     const tokenMint = voteAccount.mint.toString();
     const tokenPrice = tokenPriceByMint.get(tokenMint);
@@ -110,42 +123,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     realmsAssets.push(asset);
   }
 
-  for (const vsrInfo of customVsrInfo) {
-    const customVoterAccounts = await getParsedProgramAccounts(
-      client,
-      voterStruct,
-      vsrInfo.programId,
-      voterAccountFilters(owner)
-    );
-    const { mint } = vsrInfo;
-    const tokenPrice = tokenPriceByMint.get(mint);
-    if (!tokenPrice) continue;
-    for (const account of customVoterAccounts) {
-      for (const deposit of account.deposits) {
-        if (!deposit.amountDepositedNative.isZero()) {
-          const asset = tokenPriceToAssetToken(
-            mint,
-            deposit.amountDepositedNative
-              .dividedBy(10 ** tokenPrice.decimals)
-              .toNumber(),
-            NetworkId.solana,
-            tokenPrice
-          );
-          const lockedUntil = getLockedUntil(
-            deposit.lockup.startTs,
-            deposit.lockup.endTs,
-            deposit.lockup.kind
-          );
-
-          realmsAssets.push(
-            lockedUntil ? { ...asset, attributes: { lockedUntil } } : asset
-          );
-        }
-      }
-    }
-  }
-
-  for (const voterAccount of realmVoterAccounts) {
+  for (const voterAccount of voterAccounts) {
     const registrar = registrarById.get(voterAccount.registrar.toString());
     if (!registrar) continue;
 

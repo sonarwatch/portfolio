@@ -1,7 +1,7 @@
-import { voteAccountStruct, voterStruct } from './structs/realms';
+import { voteStruct, voterStruct } from './structs/realms';
 
 export const voteAccountFilters = (address: string) => [
-  { dataSize: voteAccountStruct.byteSize },
+  { dataSize: voteStruct.byteSize },
   {
     memcmp: {
       offset: 65,
