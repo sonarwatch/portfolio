@@ -36,12 +36,6 @@ export type TransactionOptionsSetItem = {
 };
 
 const tokenPriceSourcePrefix = 'tokenpricesource';
-const tokenPricesLocalCacheTtl = 30 * 1000; // 30 sec
-
-type CachedTokenPrice = {
-  tp: TokenPrice;
-  ts: number;
-};
 
 export type CacheConfig =
   | CacheConfigOverlayHttp
@@ -108,7 +102,6 @@ export type CacheConfigParams = {
 export class Cache {
   readonly storage: Storage;
   readonly driver: Driver;
-  private tokenPricesCache: Map<string, CachedTokenPrice> = new Map();
 
   constructor(cacheConfig: CacheConfig) {
     this.driver = getDriverFromCacheConfig(cacheConfig);
@@ -150,39 +143,12 @@ export class Cache {
     return item === null ? undefined : (item as K);
   }
 
-  private getCachedTokenPrice(address: string, networkId: NetworkIdType) {
-    const cachedTokenPrice = this.tokenPricesCache.get(
-      getTokenPriceCacheKey(address, networkId)
-    );
-    if (!cachedTokenPrice) {
-      this.tokenPricesCache.delete(getTokenPriceCacheKey(address, networkId));
-      return undefined;
-    }
-    if (Date.now() > cachedTokenPrice.ts + tokenPricesLocalCacheTtl) {
-      this.tokenPricesCache.delete(getTokenPriceCacheKey(address, networkId));
-      return undefined;
-    }
-    return cachedTokenPrice.tp;
-  }
-
   async getTokenPrice(address: string, networkId: NetworkIdType) {
     const fAddress = formatTokenAddress(address, networkId);
-
-    // Check if in cache
-    const cTokenPrice = this.getCachedTokenPrice(fAddress, networkId);
-    if (cTokenPrice) return cTokenPrice;
 
     const sources = await this.getTokenPriceSources(fAddress, networkId);
     if (!sources) return undefined;
     const tokenPrice = tokenPriceFromSources(sources);
-
-    // Set in cache if tokenPrice is valide
-    if (tokenPrice) {
-      this.tokenPricesCache.set(getTokenPriceCacheKey(fAddress, networkId), {
-        tp: tokenPrice,
-        ts: Date.now(),
-      });
-    }
 
     return tokenPrice;
   }
@@ -190,32 +156,13 @@ export class Cache {
   async getTokenPrices(addresses: string[], networkId: NetworkIdType) {
     const fAddresses = addresses.map((a) => formatTokenAddress(a, networkId));
     const ffAddresses = [...new Set(fAddresses)];
-
     const tokenPriceByAddress: Map<string, TokenPrice | undefined> = new Map();
-    const notCachedAddresses: string[] = [];
-    ffAddresses.forEach((address) => {
-      const tokenPrice = this.getCachedTokenPrice(address, networkId);
-      if (tokenPrice) tokenPriceByAddress.set(address, tokenPrice);
-      else notCachedAddresses.push(address);
-    });
 
-    const notCachedSources = await this.getTokenPricesSources(
-      notCachedAddresses,
-      networkId
-    );
-    notCachedSources.forEach((sources, i) => {
-      const address = notCachedAddresses[i];
+    const mSources = await this.getTokenPricesSources(ffAddresses, networkId);
+    mSources.forEach((sources, i) => {
+      const address = ffAddresses[i];
       if (!sources) tokenPriceByAddress.set(address, undefined);
-      else {
-        const tokenPrice = tokenPriceFromSources(sources);
-        tokenPriceByAddress.set(address, tokenPriceFromSources(sources));
-        if (tokenPrice) {
-          this.tokenPricesCache.set(getTokenPriceCacheKey(address, networkId), {
-            tp: tokenPrice,
-            ts: Date.now(),
-          });
-        }
-      }
+      else tokenPriceByAddress.set(address, tokenPriceFromSources(sources));
     });
     return fAddresses.map((address) => tokenPriceByAddress.get(address));
   }
@@ -244,9 +191,13 @@ export class Cache {
     keys: string[],
     opts: TransactionOptions
   ): Promise<(K | undefined)[]> {
-    const fullKeys = keys.map((k) => getFullKey(k, opts));
-    const res = await this.storage.getItems(fullKeys);
-    return res.map((r) => r.value as K);
+    const result = runInBatch(
+      keys.map((key) => () => this.getItem<K>(key, opts)),
+      25
+    );
+    return (await result).map((r) =>
+      r.status === 'fulfilled' ? r.value : undefined
+    );
   }
 
   async getAllItems<K extends StorageValue>(
@@ -346,13 +297,6 @@ export class Cache {
   dispose() {
     return this.storage.dispose();
   }
-}
-
-function getTokenPriceCacheKey(
-  address: string,
-  networkId: NetworkIdType
-): string {
-  return `${address}-${networkId}`;
 }
 
 function getFullKey(key: string, opts: TransactionOptions): string {
