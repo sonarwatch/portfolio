@@ -157,6 +157,7 @@ export class Cache {
     const fAddresses = addresses.map((a) => formatTokenAddress(a, networkId));
     const ffAddresses = [...new Set(fAddresses)];
     const tokenPriceByAddress: Map<string, TokenPrice | undefined> = new Map();
+
     const mSources = await this.getTokenPricesSources(ffAddresses, networkId);
     mSources.forEach((sources, i) => {
       const address = ffAddresses[i];
@@ -190,9 +191,13 @@ export class Cache {
     keys: string[],
     opts: TransactionOptions
   ): Promise<(K | undefined)[]> {
-    const fullKeys = keys.map((k) => getFullKey(k, opts));
-    const res = await this.storage.getItems(fullKeys);
-    return res.map((r) => r.value as K);
+    const result = runInBatch(
+      keys.map((key) => () => this.getItem<K>(key, opts)),
+      25
+    );
+    return (await result).map((r) =>
+      r.status === 'fulfilled' ? r.value : undefined
+    );
   }
 
   async getAllItems<K extends StorageValue>(
