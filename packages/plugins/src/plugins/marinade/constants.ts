@@ -12,6 +12,7 @@ export const marinadePlatform: Platform = {
 };
 
 export const cachePrefix = 'marinade';
+export const season2RewardsPrefix = `${platformId}-s2Rewards`;
 export const marinadeTicketProgramId = new PublicKey(
   'MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD'
 );

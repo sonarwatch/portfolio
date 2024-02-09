@@ -14,6 +14,7 @@ import {
   mndeMint,
   platformId,
   referrerRoute,
+  season2RewardsPrefix,
   season2Route,
 } from './constants';
 import { ReferreResponse, Season2Response } from './types';
@@ -89,13 +90,28 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const season2Assets: PortfolioAsset[] = [];
 
-  const getSeason2Rewards: AxiosResponse<Season2Response> | null = await axios
-    .get(baseRewardsUrl + season2Route + owner)
-    .catch(() => null);
+  let season2Rewards = await cache.getItem<Season2Response>(owner, {
+    prefix: season2RewardsPrefix,
+    networkId: NetworkId.solana,
+  });
 
-  if (getSeason2Rewards) {
+  if (!season2Rewards) {
+    const getSeason2Rewards: AxiosResponse<Season2Response> | null = await axios
+      .get(baseRewardsUrl + season2Route + owner)
+      .catch(() => null);
+    if (getSeason2Rewards) {
+      season2Rewards = getSeason2Rewards.data;
+      await cache.setItem(owner, season2Rewards, {
+        prefix: season2RewardsPrefix,
+        networkId: NetworkId.solana,
+        ttl: 1000 * 60 * 60 * 5,
+      });
+    }
+  }
+
+  if (season2Rewards) {
     const stakingRewardAmount = new BigNumber(
-      getSeason2Rewards.data.staker.mSOLRewards
+      season2Rewards.staker.mSOLRewards
     );
     if (!stakingRewardAmount.isZero()) {
       season2Assets.push({
@@ -112,7 +128,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       });
     }
     const governorRewardAmount = new BigNumber(
-      getSeason2Rewards.data.governor.vemndeDelStratVotesRewards
+      season2Rewards.governor.vemndeDelStratVotesRewards
     );
     if (!governorRewardAmount.isZero()) {
       season2Assets.push({
@@ -129,7 +145,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       });
     }
     const validatorRewardAmount = new BigNumber(
-      getSeason2Rewards.data.validator.algoScoreRewards
+      season2Rewards.validator.algoScoreRewards
     );
     if (!validatorRewardAmount.isZero()) {
       season2Assets.push({
