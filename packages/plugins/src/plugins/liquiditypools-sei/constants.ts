@@ -6,13 +6,6 @@ import {
 } from './helpers';
 
 export const pluginId = 'liquidityPools-sei';
-export const fuzioPlatform: Platform = {
-  id: 'fuzio',
-  name: 'Fuzio',
-  image: 'https://sonar.watch/img/platforms/fuzio.png',
-  defiLlamaId: 'fuzio',
-  website: 'https://www.fuzio.network/',
-};
 export const seaswapPlatform: Platform = {
   id: 'seaswap',
   name: 'Seaswap',
@@ -39,11 +32,6 @@ export const liquidityPoolsInfos: LiquidityPoolsInfo[] = [
     platformId: seaswapPlatform.id,
     codes: [15],
     namesFilters: ['SeaSwap_Liquidity_Token'],
-    getter: getTokensInfosV2,
-  },
-  {
-    platformId: fuzioPlatform.id,
-    codes: [57],
     getter: getTokensInfosV2,
   },
 ];
