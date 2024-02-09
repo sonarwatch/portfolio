@@ -3,6 +3,7 @@ import {
   NetworkIdType,
   TokenPriceSource,
   networks,
+  solanaNativeWrappedAddress,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -46,7 +47,7 @@ export const tokensToRelyOnByNetwork: Map<NetworkIdType, string[]> = new Map([
     NetworkId.solana,
     [
       networks.solana.native.address,
-      'So11111111111111111111111111111111111111112', // WSOL
+      solanaNativeWrappedAddress, // WSOL
       'J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn', // jito SOL
       'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So', // mSOL
       '7dHbWXmci3dT8UFYWYZweBLXgycu7Y3iL6trKn1Y7ARj', // lido SOL
