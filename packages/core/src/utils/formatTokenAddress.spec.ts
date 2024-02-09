@@ -1,5 +1,9 @@
 import { NetworkId, NetworkIdType } from '../Network';
-import { suiNativeAddress } from '../constants';
+import {
+  solanaNativeAddress,
+  solanaNativeWrappedAddress,
+  suiNativeAddress,
+} from '../constants';
 import { formatTokenAddress } from './formatTokenAddress';
 
 describe('formatTokenAddress', () => {
@@ -20,5 +24,15 @@ describe('formatTokenAddress', () => {
     expect(formatTokenAddress(suiNativeAddress, networkId)).toBe(
       '0x0000000000000000000000000000000000000000000000000000000000000002-sui-SUI'
     );
+  });
+  it('should format Solana token address correctly', () => {
+    const networkId: NetworkIdType = NetworkId.solana;
+    const fTokenAddress = formatTokenAddress(solanaNativeAddress, networkId);
+    const fTokenAddress2 = formatTokenAddress(
+      solanaNativeWrappedAddress,
+      networkId
+    );
+    expect(solanaNativeAddress).toBe(fTokenAddress);
+    expect(solanaNativeWrappedAddress).toBe(fTokenAddress2);
   });
 });
