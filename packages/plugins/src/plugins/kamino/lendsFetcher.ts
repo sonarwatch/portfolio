@@ -24,7 +24,7 @@ import {
   getMultiplyPdas,
 } from './helpers/pdas';
 
-const zeroValue = '11111111111111111111111111111111';
+const zeroAdressValue = '11111111111111111111111111111111';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -83,7 +83,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const borrowedWeights: number[] = [];
     for (const deposit of lendingAccount.deposits) {
       if (
-        deposit.depositReserve.toString() === zeroValue ||
+        deposit.depositReserve.toString() === zeroAdressValue ||
         deposit.depositedAmount.isLessThanOrEqualTo(0)
       )
         continue;
@@ -109,7 +109,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     for (const borrow of lendingAccount.borrows) {
       if (
-        borrow.borrowReserve.toString() === zeroValue ||
+        borrow.borrowReserve.toString() === zeroAdressValue ||
         borrow.borrowedAmountSf.isLessThanOrEqualTo(0)
       )
         continue;
@@ -183,7 +183,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     for (const deposit of multiplyAccount.deposits) {
       if (
-        deposit.depositReserve.toString() === zeroValue ||
+        deposit.depositReserve.toString() === zeroAdressValue ||
         deposit.depositedAmount.isLessThanOrEqualTo(0)
       )
         continue;
@@ -208,7 +208,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
     for (const borrow of multiplyAccount.borrows) {
       if (
-        borrow.borrowReserve.toString() === zeroValue ||
+        borrow.borrowReserve.toString() === zeroAdressValue ||
         borrow.borrowedAmountSf.isLessThanOrEqualTo(0)
       )
         continue;
@@ -283,7 +283,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     for (const deposit of leverageAccount.deposits) {
       if (
-        deposit.depositReserve.toString() === zeroValue ||
+        deposit.depositReserve.toString() === zeroAdressValue ||
         deposit.depositedAmount.isLessThanOrEqualTo(0)
       )
         continue;
@@ -308,7 +308,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
     for (const borrow of leverageAccount.borrows) {
       if (
-        borrow.borrowReserve.toString() === zeroValue ||
+        borrow.borrowReserve.toString() === zeroAdressValue ||
         borrow.borrowedAmountSf.isLessThanOrEqualTo(0)
       )
         continue;
