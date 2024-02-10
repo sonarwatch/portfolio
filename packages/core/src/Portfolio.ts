@@ -326,5 +326,6 @@ export type FetchersResult = {
   owner: string;
   addressSystem: AddressSystemType;
   fetcherReports: FetcherReport[];
+  value: UsdValue;
   elements: PortfolioElement[];
 };
