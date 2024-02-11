@@ -301,6 +301,11 @@ import {
   jobs as flashJobs,
   fetchers as flashFetchers,
 } from './plugins/flash';
+import {
+  platforms as bonkrewardsPlatforms,
+  jobs as bonkrewardsJobs,
+  fetchers as bonkrewardsFetchers,
+} from './plugins/bonkrewards';
 
 export {
   walletTokensPlatform,
@@ -377,6 +382,7 @@ export const platforms: Platform[] = [
   ...circuitPlatforms,
   ...ariesPlatforms,
   ...flashPlatforms,
+  ...bonkrewardsPlatforms,
 ];
 
 // JOBS //
@@ -437,6 +443,7 @@ export const jobs: Job[] = [
   ...circuitJobs,
   ...ariesJobs,
   ...flashJobs,
+  ...bonkrewardsJobs,
 ];
 
 // FETCHERS //
@@ -499,5 +506,6 @@ export const fetchers: Fetcher[] = [
   ...circuitFetchers,
   ...ariesFetchers,
   ...flashFetchers,
+  ...bonkrewardsFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
