@@ -2,7 +2,7 @@ import { NetworkIdType } from './Network';
 import { deepClone } from './helpers';
 
 export const coingeckoSourceId = 'coingecko';
-export const tokenPriceSourceTtl = 2 * 60 * 60 * 1000; // 2 hours
+export const tokenPriceSourceTtl = 4 * 60 * 60 * 1000; // 4 hours
 const MAX_N_SOURCES = 10;
 
 export type TokenPriceUnderlying = {

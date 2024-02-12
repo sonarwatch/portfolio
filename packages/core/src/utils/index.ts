@@ -27,6 +27,7 @@ export * from './sortPortfolioElement';
 export * from './sortPortfolioElements';
 export * from './uniTokenInfoToTokenInfo';
 export * from './getAddressFromAsset';
+export * from './getAddressesFromAssets';
 export * from './getImageFromAsset';
 export * from './getImageFromAssets';
 export * from './getLabelFromAsset';

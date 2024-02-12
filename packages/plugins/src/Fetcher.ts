@@ -7,6 +7,7 @@ import {
   PortfolioElement,
   formatAddress,
   formatAddressByNetworkId,
+  getUsdValueSum,
   networks,
   sortPortfolioElement,
 } from '@sonarwatch/portfolio-core';
@@ -72,6 +73,7 @@ export async function runFetchers(
     owner: fOwner,
     addressSystem,
     fetcherReports: fReports,
+    value: getUsdValueSum(elements.map((e) => e.value)),
     elements,
   };
 }

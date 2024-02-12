@@ -171,7 +171,8 @@ export class Cache {
     address: string,
     networkId: NetworkIdType
   ) {
-    return this.getItem<TokenPriceSource[]>(address, {
+    const fAddress = formatTokenAddress(address, networkId);
+    return this.getItem<TokenPriceSource[]>(fAddress, {
       prefix: tokenPriceSourcePrefix,
       networkId,
     });
@@ -256,10 +257,11 @@ export class Cache {
   }
   async setTokenPriceSource(source: TokenPriceSource) {
     const fSource = formatTokenPriceSource(source);
-    let cSources = await this.getItem<TokenPriceSource[]>(fSource.address, {
-      prefix: tokenPriceSourcePrefix,
-      networkId: fSource.networkId,
-    });
+    let cSources = await this.getTokenPriceSources(
+      fSource.address,
+      fSource.networkId
+    );
+
     if (!cSources) cSources = [];
     const newSources = pushTokenPriceSource(cSources, fSource);
     if (!newSources) {

@@ -2,6 +2,8 @@ import {
   NetworkId,
   NetworkIdType,
   formatTokenAddress,
+  solanaNativeAddress,
+  solanaNativeWrappedAddress,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { getCosmWasmClient } from '@sei-js/core';
@@ -18,10 +20,7 @@ import { Cache } from '../../Cache';
 import { tokenListsDetailsPrefix } from '../../plugins/tokens/constants';
 import { Token } from '../../plugins/tokens/types';
 
-const solMints = [
-  '11111111111111111111111111111111',
-  'So11111111111111111111111111111111111111112',
-];
+const solMints = [solanaNativeAddress, solanaNativeWrappedAddress];
 
 /**
  * Return the decimals of a token on any network using RPC calls or TokenList.
