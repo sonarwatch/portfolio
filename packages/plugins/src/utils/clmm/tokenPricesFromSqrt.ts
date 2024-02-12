@@ -30,7 +30,6 @@ export default async function storeTokenPricesFromSqrt(
   const tokenPriceX = tokensPrices[0];
   const tokenPriceY = tokensPrices[1];
   if (!tokenPriceX && !tokenPriceY) return undefined;
-  if (tokenPriceX && tokenPriceY) return [tokenPriceX.price, tokenPriceY.price];
 
   const decimalsX =
     tempDecimalsX || (await getDecimalsForToken(cache, mintX, networkId));
@@ -39,17 +38,14 @@ export default async function storeTokenPricesFromSqrt(
   if (!decimalsX || !decimalsY) return undefined;
   const xToYPrice = sqrtPriceX64ToPrice(sqrtPrice, decimalsX, decimalsY);
 
-  if (tokenPriceX) {
+  if (tokenPriceX && defaultAcceptedPairs.includes(mintX)) {
     const price =
       tokenPriceX.price * new Decimal(1).dividedBy(xToYPrice).toNumber();
-    const weight = getSourceWeight(
-      reserveX
-        .multipliedBy(tokenPriceX.price)
-        .plus(reserveY.multipliedBy(price))
-    );
     const tvl = reserveX
       .multipliedBy(tokenPriceX.price)
-      .plus(reserveY.multipliedBy(price));
+      .times(2)
+      .dividedBy(10 ** decimalsX);
+    const weight = getSourceWeight(tvl);
     if (tvl.isLessThan(minimumLiquidity)) return undefined;
     const tokenPriceSource: TokenPriceSource = {
       id: source,
@@ -64,16 +60,13 @@ export default async function storeTokenPricesFromSqrt(
     await cache.setTokenPriceSource(tokenPriceSource);
     return [tokenPriceX.price, price];
   }
-  if (tokenPriceY) {
+  if (tokenPriceY && defaultAcceptedPairs.includes(mintY)) {
     const price = tokenPriceY.price * xToYPrice.toNumber();
-    const weight = getSourceWeight(
-      reserveY
-        .multipliedBy(tokenPriceY.price)
-        .plus(reserveX.multipliedBy(price))
-    );
-    const tvl = reserveX
-      .multipliedBy(price)
-      .plus(reserveY.multipliedBy(tokenPriceY.price));
+    const tvl = reserveY
+      .multipliedBy(tokenPriceY.price)
+      .times(2)
+      .dividedBy(10 ** decimalsY);
+    const weight = getSourceWeight(tvl);
     if (tvl.isLessThan(minimumLiquidity)) return undefined;
     const tokenPriceSource: TokenPriceSource = {
       id: source,
