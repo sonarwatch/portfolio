@@ -102,11 +102,19 @@ export type CacheConfigParams = {
 export class Cache {
   readonly storage: Storage;
   readonly driver: Driver;
+  private localDriver: Driver;
+  private localStorage: Storage;
 
   constructor(cacheConfig: CacheConfig) {
     this.driver = getDriverFromCacheConfig(cacheConfig);
     this.storage = createStorage({
       driver: this.driver,
+    });
+    this.localDriver = memoryDriver({
+      ttl: 30000,
+    });
+    this.localStorage = createStorage({
+      driver: this.localDriver,
     });
   }
 
@@ -139,7 +147,15 @@ export class Cache {
     opts: TransactionOptions
   ): Promise<K | undefined> {
     const fullKey = getFullKey(key, opts);
+    const localItem = await this.localStorage
+      .getItem<K>(fullKey)
+      .catch(() => null);
+    if (localItem !== null) return localItem;
+
     const item = await this.storage.getItem<K>(fullKey).catch(() => null);
+    if (item !== null) {
+      await this.localStorage.setItem(fullKey, item);
+    }
     return item === null ? undefined : (item as K);
   }
 
@@ -237,6 +253,7 @@ export class Cache {
       ttl,
     });
   }
+
   async setTokenPriceSource(source: TokenPriceSource) {
     const fSource = formatTokenPriceSource(source);
     let cSources = await this.getTokenPriceSources(
