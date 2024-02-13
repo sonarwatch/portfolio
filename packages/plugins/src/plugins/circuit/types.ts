@@ -45,3 +45,9 @@ type Vault = {
 export type VaultEnhanced = Vault & {
   publicKey: string;
 };
+
+export type VaultInfo = {
+  mint: string;
+  decimals: number;
+  name: string;
+};
