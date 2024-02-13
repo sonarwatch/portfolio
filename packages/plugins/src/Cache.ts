@@ -208,13 +208,9 @@ export class Cache {
     keys: string[],
     opts: TransactionOptions
   ): Promise<(K | undefined)[]> {
-    const result = runInBatch(
-      keys.map((key) => () => this.getItem<K>(key, opts)),
-      100
-    );
-    return (await result).map((r) =>
-      r.status === 'fulfilled' ? r.value : undefined
-    );
+    const fullKeys = keys.map((k) => getFullKey(k, opts));
+    const res = await this.storage.getItems(fullKeys);
+    return res.map((r) => r.value as K);
   }
 
   async getAllItems<K extends StorageValue>(
