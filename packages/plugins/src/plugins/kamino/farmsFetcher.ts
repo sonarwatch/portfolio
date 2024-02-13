@@ -42,6 +42,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const assets: PortfolioAsset[] = [];
     const farm = farmById.get(userState.farmState.toString());
     if (!farm) continue;
+    if (userState.activeStakeScaled.isZero()) continue;
 
     const { price, decimals } = farm;
     const amount = userState.activeStakeScaled
