@@ -18,7 +18,6 @@ import memoryDriver, {
   DRIVER_SW_MEMORY_NAME,
   MemoryDriver,
 } from './memoryDriver';
-import runInBatch from './utils/misc/runInBatch';
 
 export type TransactionOptions = {
   prefix: string;
@@ -102,11 +101,19 @@ export type CacheConfigParams = {
 export class Cache {
   readonly storage: Storage;
   readonly driver: Driver;
+  private localDriver: Driver;
+  private localStorage: Storage;
 
   constructor(cacheConfig: CacheConfig) {
     this.driver = getDriverFromCacheConfig(cacheConfig);
     this.storage = createStorage({
       driver: this.driver,
+    });
+    this.localDriver = memoryDriver({
+      ttl: 30000,
+    });
+    this.localStorage = createStorage({
+      driver: this.localDriver,
     });
   }
 
@@ -192,13 +199,9 @@ export class Cache {
     keys: string[],
     opts: TransactionOptions
   ): Promise<(K | undefined)[]> {
-    const result = runInBatch(
-      keys.map((key) => () => this.getItem<K>(key, opts)),
-      25
-    );
-    return (await result).map((r) =>
-      r.status === 'fulfilled' ? r.value : undefined
-    );
+    const fullKeys = keys.map((k) => getFullKey(k, opts));
+    const res = await this.storage.getItems(fullKeys);
+    return res.map((r) => r.value as K);
   }
 
   async getAllItems<K extends StorageValue>(
@@ -221,24 +224,6 @@ export class Cache {
     return itemsMap;
   }
 
-  async getAllTokenPrices(networkId: NetworkIdType) {
-    const addresses = await this.getTokenPriceAddresses(networkId);
-    const tokenPrices: Map<string, TokenPrice> = new Map();
-
-    const results = await runInBatch(
-      addresses.map((a) => () => this.getTokenPrice(a, networkId)),
-      20
-    );
-
-    for (let i = 0; i < results.length; i += 1) {
-      const result = results[i];
-      if (result.status === 'rejected') continue;
-      if (result.value !== undefined)
-        tokenPrices.set(addresses[i], result.value);
-    }
-    return tokenPrices;
-  }
-
   async setItem<K extends StorageValue>(
     key: string,
     value: K,
@@ -255,6 +240,7 @@ export class Cache {
       ttl,
     });
   }
+
   async setTokenPriceSource(source: TokenPriceSource) {
     const fSource = formatTokenPriceSource(source);
     let cSources = await this.getTokenPriceSources(
