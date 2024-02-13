@@ -42,6 +42,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       continue;
 
     const name = nameOfVauilts.get(depositAccount.vault.toString());
+    if (!name) continue;
     let amountLeft = depositAccount.netDeposits;
     if (!depositAccount.lastWithdrawRequest.value.isZero()) {
       amountLeft = depositAccount.netDeposits.minus(
