@@ -43,11 +43,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const name = nameOfVauilts.get(depositAccount.vault.toString());
     if (!name) continue;
-    let amountLeft = depositAccount.netDeposits;
+    let amountLeft = depositAccount.netDeposits.plus(
+      depositAccount.cumulativeProfitShareAmount
+    );
     if (!depositAccount.lastWithdrawRequest.value.isZero()) {
-      amountLeft = depositAccount.netDeposits.minus(
-        depositAccount.lastWithdrawRequest.value
-      );
+      amountLeft = amountLeft.minus(depositAccount.lastWithdrawRequest.value);
       assets.push({
         ...tokenPriceToAssetToken(
           usdcSolanaMint,
