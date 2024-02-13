@@ -33,8 +33,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
 
   const elements: PortfolioElement[] = [];
-  const assets: PortfolioAsset[] = [];
   for (const depositAccount of depositAccounts) {
+    const assets: PortfolioAsset[] = [];
     if (
       depositAccount.lastWithdrawRequest.value.isZero() &&
       depositAccount.netDeposits.isZero()
