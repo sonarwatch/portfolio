@@ -102,19 +102,11 @@ export type CacheConfigParams = {
 export class Cache {
   readonly storage: Storage;
   readonly driver: Driver;
-  private localDriver: Driver;
-  private localStorage: Storage;
 
   constructor(cacheConfig: CacheConfig) {
     this.driver = getDriverFromCacheConfig(cacheConfig);
     this.storage = createStorage({
       driver: this.driver,
-    });
-    this.localDriver = memoryDriver({
-      ttl: 30000,
-    });
-    this.localStorage = createStorage({
-      driver: this.localDriver,
     });
   }
 
