@@ -119,8 +119,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const leverage = sizeUsd.dividedBy(collateralUsd);
 
-    const custodyDetails = tokensDetailsById.get(collateralCustody.mint);
-    const custodyName = custodyDetails ? custodyDetails.symbol : '';
+    const targetDetails = tokensDetailsById.get(targetCustody.mint);
+    const targetName = targetDetails ? targetDetails.symbol : '';
 
     const collatAmount = collateralUsd
       .dividedBy(collateralCustodyPriceData.price)
@@ -188,7 +188,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       platformId,
       label: 'Leverage',
       value,
-      name: `${custodyName} ${side} ${leverage.decimalPlaces(2)}x`,
+      name: `${targetName} ${side} ${leverage.decimalPlaces(2)}x`,
       data: {
         borrowedAssets,
         borrowedValue,
@@ -209,7 +209,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-perpetual`,
+  id: `${platformId}-perpetuals`,
   networkId: NetworkId.solana,
   executor,
 };
