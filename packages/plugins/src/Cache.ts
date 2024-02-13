@@ -18,7 +18,6 @@ import memoryDriver, {
   DRIVER_SW_MEMORY_NAME,
   MemoryDriver,
 } from './memoryDriver';
-import runInBatch from './utils/misc/runInBatch';
 
 export type TransactionOptions = {
   prefix: string;
@@ -147,15 +146,7 @@ export class Cache {
     opts: TransactionOptions
   ): Promise<K | undefined> {
     const fullKey = getFullKey(key, opts);
-    const localItem = await this.localStorage
-      .getItem<K>(fullKey)
-      .catch(() => null);
-    if (localItem !== null) return localItem;
-
     const item = await this.storage.getItem<K>(fullKey).catch(() => null);
-    if (item !== null) {
-      await this.localStorage.setItem(fullKey, item);
-    }
     return item === null ? undefined : (item as K);
   }
 
