@@ -202,7 +202,7 @@ export class Cache {
   ): Promise<(K | undefined)[]> {
     const result = runInBatch(
       keys.map((key) => () => this.getItem<K>(key, opts)),
-      25
+      100
     );
     return (await result).map((r) =>
       r.status === 'fulfilled' ? r.value : undefined
@@ -227,24 +227,6 @@ export class Cache {
       if (item !== undefined) itemsMap.set(keys[i], item);
     }
     return itemsMap;
-  }
-
-  async getAllTokenPrices(networkId: NetworkIdType) {
-    const addresses = await this.getTokenPriceAddresses(networkId);
-    const tokenPrices: Map<string, TokenPrice> = new Map();
-
-    const results = await runInBatch(
-      addresses.map((a) => () => this.getTokenPrice(a, networkId)),
-      20
-    );
-
-    for (let i = 0; i < results.length; i += 1) {
-      const result = results[i];
-      if (result.status === 'rejected') continue;
-      if (result.value !== undefined)
-        tokenPrices.set(addresses[i], result.value);
-    }
-    return tokenPrices;
   }
 
   async setItem<K extends StorageValue>(
