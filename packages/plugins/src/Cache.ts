@@ -147,18 +147,8 @@ export class Cache {
     opts: TransactionOptions
   ): Promise<K | undefined> {
     const fullKey = getFullKey(key, opts);
-
-    const localItem = await this.localStorage
-      .getItem<K>(fullKey)
-      .catch(() => null);
-    if (localItem !== null) return localItem as K;
-
     const item = await this.storage.getItem<K>(fullKey).catch(() => null);
-    if (item !== null) {
-      await this.localStorage.setItem(fullKey, item);
-      return item as K;
-    }
-    return undefined;
+    return item === null ? undefined : (item as K);
   }
 
   async getTokenPrice(address: string, networkId: NetworkIdType) {
