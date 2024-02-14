@@ -110,56 +110,62 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   }
 
   if (season2Rewards) {
-    const stakingRewardAmount = new BigNumber(
-      season2Rewards.staker.mSOLRewards
-    );
-    if (!stakingRewardAmount.isZero()) {
-      season2Assets.push({
-        ...tokenPriceToAssetToken(
-          mndeMint,
-          stakingRewardAmount.dividedBy(10 ** decimals).toNumber(),
-          NetworkId.solana,
-          mndeTokenPrice
-        ),
-        attributes: {
-          lockedUntil: season2Unlock.getTime(),
-          tags: ['Staking'],
-        },
-      });
+    if (season2Rewards.staker.mSOLRewards) {
+      const stakingRewardAmount = new BigNumber(
+        season2Rewards.staker.mSOLRewards
+      );
+      if (!stakingRewardAmount.isZero()) {
+        season2Assets.push({
+          ...tokenPriceToAssetToken(
+            mndeMint,
+            stakingRewardAmount.dividedBy(10 ** decimals).toNumber(),
+            NetworkId.solana,
+            mndeTokenPrice
+          ),
+          attributes: {
+            lockedUntil: season2Unlock.getTime(),
+            tags: ['Staking'],
+          },
+        });
+      }
     }
-    const governorRewardAmount = new BigNumber(
-      season2Rewards.governor.vemndeDelStratVotesRewards
-    );
-    if (!governorRewardAmount.isZero()) {
-      season2Assets.push({
-        ...tokenPriceToAssetToken(
-          mndeMint,
-          governorRewardAmount.dividedBy(10 ** decimals).toNumber(),
-          NetworkId.solana,
-          mndeTokenPrice
-        ),
-        attributes: {
-          lockedUntil: season2Unlock.getTime(),
-          tags: ['Governor'],
-        },
-      });
+    if (season2Rewards.governor.vemndeDirectedStakeVotesRewards) {
+      const governorRewardAmount = new BigNumber(
+        season2Rewards.governor.vemndeDirectedStakeVotesRewards
+      );
+      if (!governorRewardAmount.isZero()) {
+        season2Assets.push({
+          ...tokenPriceToAssetToken(
+            mndeMint,
+            governorRewardAmount.dividedBy(10 ** decimals).toNumber(),
+            NetworkId.solana,
+            mndeTokenPrice
+          ),
+          attributes: {
+            lockedUntil: season2Unlock.getTime(),
+            tags: ['Governor'],
+          },
+        });
+      }
     }
-    const validatorRewardAmount = new BigNumber(
-      season2Rewards.validator.algoScoreRewards
-    );
-    if (!validatorRewardAmount.isZero()) {
-      season2Assets.push({
-        ...tokenPriceToAssetToken(
-          mndeMint,
-          validatorRewardAmount.dividedBy(10 ** decimals).toNumber(),
-          NetworkId.solana,
-          mndeTokenPrice
-        ),
-        attributes: {
-          lockedUntil: season2Unlock.getTime(),
-          tags: ['Validator'],
-        },
-      });
+    if (season2Rewards.validator.algoScoreRewards) {
+      const validatorRewardAmount = new BigNumber(
+        season2Rewards.validator.algoScoreRewards
+      );
+      if (!validatorRewardAmount.isZero()) {
+        season2Assets.push({
+          ...tokenPriceToAssetToken(
+            mndeMint,
+            validatorRewardAmount.dividedBy(10 ** decimals).toNumber(),
+            NetworkId.solana,
+            mndeTokenPrice
+          ),
+          attributes: {
+            lockedUntil: season2Unlock.getTime(),
+            tags: ['Validator'],
+          },
+        });
+      }
     }
   }
   if (season2Assets.length > 0) {
