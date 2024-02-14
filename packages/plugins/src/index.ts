@@ -294,17 +294,17 @@ import {
 import {
   platforms as ariesPlatforms,
   jobs as ariesJobs,
-  fetchers as ariesFetchers,
+  // fetchers as ariesFetchers,
 } from './plugins/aries';
 import {
   platforms as flashPlatforms,
   jobs as flashJobs,
-  fetchers as flashFetchers,
+  // fetchers as flashFetchers,
 } from './plugins/flash';
 import {
   platforms as bonkrewardsPlatforms,
   jobs as bonkrewardsJobs,
-  fetchers as bonkrewardsFetchers,
+  // fetchers as bonkrewardsFetchers,
 } from './plugins/bonkrewards';
 
 export {
@@ -504,8 +504,8 @@ export const fetchers: Fetcher[] = [
   ...parclFetchers,
   ...pythFetchers,
   ...circuitFetchers,
-  ...ariesFetchers,
-  ...flashFetchers,
-  ...bonkrewardsFetchers,
+  // ...ariesFetchers,
+  // ...flashFetchers,
+  // ...bonkrewardsFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
