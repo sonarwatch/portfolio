@@ -31,11 +31,8 @@ export type Season2Response = {
     algoScoreRewards: string;
   };
   governor: {
-    vemndeDelStratVotesBalance: string;
-    vemndeDelStratVotesRewards: string;
-  };
-  redelegator: {
-    stakeAccountRedelegationBalance: string;
-    stakeAccountRedelegationRewards: string;
+    vemndeDirectedStakeVotesBalance: string;
+    vemndeDirectedStakeVotesRewards: string;
+    latestSolPerDirectedVemnde: string;
   };
 };
