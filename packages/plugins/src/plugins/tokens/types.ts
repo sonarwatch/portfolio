@@ -35,7 +35,8 @@ export type Token = {
   logoURI: string;
   tags?: string[];
   extensions?: {
-    coingeckoId: string;
+    coingeckoId?: string;
+    index?: string;
   };
 };
 
