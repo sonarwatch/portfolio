@@ -79,8 +79,18 @@ describe('Cache', () => {
       sourceA.address,
       NetworkId.solana
     );
+    await sleep(500);
+    const tokenPrice2 = await cache.getTokenPrice(
+      sourceA.address,
+      NetworkId.solana
+    );
+
+    await cache.dispose();
     expect(tokenPrice).toBeDefined();
+    expect(tokenPrice2).toBeDefined();
+
     expect(tokenPrice?.price).toBe(1.5);
+    expect(tokenPrice2?.price).toBe(1.5);
   });
 
   it('should works with ttl', async () => {

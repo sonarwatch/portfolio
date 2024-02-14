@@ -101,19 +101,17 @@ export type CacheConfigParams = {
 export class Cache {
   readonly storage: Storage;
   readonly driver: Driver;
-  private localDriver: Driver;
-  private localStorage: Storage;
+  private tokenPriceStorage: Storage;
 
   constructor(cacheConfig: CacheConfig) {
     this.driver = getDriverFromCacheConfig(cacheConfig);
     this.storage = createStorage({
       driver: this.driver,
     });
-    this.localDriver = memoryDriver({
-      ttl: 30000,
-    });
-    this.localStorage = createStorage({
-      driver: this.localDriver,
+    this.tokenPriceStorage = createStorage({
+      driver: memoryDriver({
+        ttl: 10000,
+      }),
     });
   }
 
@@ -150,13 +148,31 @@ export class Cache {
     return item === null ? undefined : (item as K);
   }
 
-  async getTokenPrice(address: string, networkId: NetworkIdType) {
+  private async getTokenPriceLocal(address: string, networkId: NetworkIdType) {
     const fAddress = formatTokenAddress(address, networkId);
+    const fullkey = getFullKey(fAddress, {
+      prefix: networkId,
+    });
+    return this.tokenPriceStorage.getItem<TokenPrice>(fullkey);
+  }
 
+  private async setTokenPriceLocal(tokenPrice: TokenPrice) {
+    const fullkey = getFullKey(tokenPrice.address, {
+      prefix: tokenPrice.networkId,
+    });
+    return this.tokenPriceStorage.setItem(fullkey, tokenPrice);
+  }
+
+  async getTokenPrice(address: string, networkId: NetworkIdType) {
+    const local = await this.getTokenPriceLocal(address, networkId);
+    if (local) return local;
+
+    const fAddress = formatTokenAddress(address, networkId);
     const sources = await this.getTokenPriceSources(fAddress, networkId);
     if (!sources) return undefined;
     const tokenPrice = tokenPriceFromSources(sources);
 
+    if (tokenPrice) await this.setTokenPriceLocal(tokenPrice);
     return tokenPrice;
   }
 
@@ -282,7 +298,8 @@ export class Cache {
     });
   }
 
-  dispose() {
+  async dispose() {
+    await this.tokenPriceStorage.dispose();
     return this.storage.dispose();
   }
 }
