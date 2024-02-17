@@ -3,6 +3,7 @@ import { isAddress, networks } from '@sonarwatch/portfolio-core';
 import { fetchers, getCache } from '../src';
 import durationForHumans from '../src/utils/misc/durationForHumans';
 import { runFetcher } from '../src/Fetcher';
+import sleep from '../src/utils/misc/sleep';
 
 const argFetcherId = process.argv.at(2);
 if (!argFetcherId || argFetcherId === '') {
@@ -39,6 +40,8 @@ async function main(owner: string, fetcherId: string) {
   const fetcherResult = await runFetcher(fOwner, fetcher, cache);
   console.log(util.inspect(fetcherResult.elements, false, null, true));
   console.log(`Finished in: ${durationForHumans(fetcherResult.duration)}s`);
+  await cache.dispose();
+  await sleep(100);
   process.exit(0);
 }
 
