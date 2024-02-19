@@ -65,7 +65,7 @@
     "@metaplex-foundation/beet-solana": "^0.4.0",
     "@metaplex-foundation/js": "^0.19.4",
     "@metaplex-foundation/umi-serializers-encodings": "^0.8.9",
-    "@mysten/sui.js": "^0.37.1",
+    "@mysten/sui.js": "^0.38.0",
     "@onsol/tldparser": "^0.6.1",
     "@sei-js/core": "^3.0.1",
     "@sei-js/proto": "^3.0.1",
