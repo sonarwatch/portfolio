@@ -12,13 +12,7 @@ export async function getOwnerObject(
   query?: SuiObjectResponseQuery
 ) {
   const objects: SuiObjectData[] = [];
-  let cursor:
-    | string
-    | {
-        objectId: string;
-        atCheckpoint?: number | undefined;
-      }
-    | null = null;
+  let cursor: string | undefined | null = null;
 
   do {
     const { data, nextCursor }: PaginatedObjectsResponse =

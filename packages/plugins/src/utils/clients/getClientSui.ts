@@ -1,5 +1,5 @@
-import { JsonRpcClient, JsonRpcProvider } from '@mysten/sui.js';
 import { NetworkId } from '@sonarwatch/portfolio-core';
+import { SuiClient, SuiHTTPTransport } from '@mysten/sui.js/dist/cjs/client';
 import { getBasicAuthHeaders } from '../misc/getBasicAuthHeaders';
 import { getRpcEndpoint } from './constants';
 
@@ -11,7 +11,14 @@ export default function getClientSui() {
         rpcEndpoint.basicAuth.password
       )
     : undefined;
-  return new JsonRpcProvider(undefined, {
-    rpcClient: new JsonRpcClient(rpcEndpoint.url, httpHeaders),
+  return new SuiClient({
+    transport: new SuiHTTPTransport({
+      url: rpcEndpoint.url,
+      rpc: {
+        headers: {
+          ...httpHeaders,
+        },
+      },
+    }),
   });
 }
