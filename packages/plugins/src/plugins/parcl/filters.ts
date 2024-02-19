@@ -2,6 +2,7 @@ import { GetProgramAccountsFilter } from '@solana/web3.js';
 import {
   lpAccountStruct,
   lpPositionStruct,
+  marginAccountStruct,
   settlementRequestStruct,
 } from './structs';
 
@@ -40,5 +41,19 @@ export const settlementRequestFilter = (
   },
   {
     dataSize: settlementRequestStruct.byteSize,
+  },
+];
+
+export const marginAccountFilter = (
+  owner: string
+): GetProgramAccountsFilter[] => [
+  {
+    memcmp: {
+      offset: 828,
+      bytes: owner,
+    },
+  },
+  {
+    dataSize: marginAccountStruct.byteSize,
   },
 ];
