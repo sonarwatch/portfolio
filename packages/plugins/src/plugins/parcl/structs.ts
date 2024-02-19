@@ -34,3 +34,30 @@ export const lpAccountStruct = new BeetStruct<LpAccount>(
   ],
   (args) => args as LpAccount
 );
+
+export type LpPosition = {
+  buffer: Buffer;
+  id: BigNumber;
+  liquidity: BigNumber;
+  shares: BigNumber;
+  maturity: BigNumber;
+  exchange: PublicKey;
+  owner: PublicKey;
+  bump: number;
+  padding: number[];
+};
+
+export const lpPositionStruct = new BeetStruct<LpPosition>(
+  [
+    ['buffer', blob(8)],
+    ['id', u64],
+    ['liquidity', u64],
+    ['shares', u64],
+    ['maturity', u64],
+    ['exchange', publicKey],
+    ['owner', publicKey],
+    ['bump', u8],
+    ['padding', uniformFixedSizeArray(u8, 7)],
+  ],
+  (args) => args as LpPosition
+);

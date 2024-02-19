@@ -1,5 +1,5 @@
 import { GetProgramAccountsFilter } from '@solana/web3.js';
-import { lpAccountStruct } from './structs';
+import { lpAccountStruct, lpPositionStruct } from './structs';
 
 export const lpAccountFilter = (owner: string): GetProgramAccountsFilter[] => [
   {
@@ -10,5 +10,17 @@ export const lpAccountFilter = (owner: string): GetProgramAccountsFilter[] => [
   },
   {
     dataSize: lpAccountStruct.byteSize,
+  },
+];
+
+export const lpPositionFilter = (owner: string): GetProgramAccountsFilter[] => [
+  {
+    memcmp: {
+      offset: 72,
+      bytes: owner,
+    },
+  },
+  {
+    dataSize: lpPositionStruct.byteSize,
   },
 ];
