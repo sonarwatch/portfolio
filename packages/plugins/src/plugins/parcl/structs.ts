@@ -61,3 +61,30 @@ export const lpPositionStruct = new BeetStruct<LpPosition>(
   ],
   (args) => args as LpPosition
 );
+
+export type SettlementRequest = {
+  buffer: Buffer;
+  id: BigNumber;
+  maturity: BigNumber;
+  amount: BigNumber;
+  keeperTip: BigNumber;
+  exchange: PublicKey;
+  owner: PublicKey;
+  ownerTokenAccount: PublicKey;
+  bump: Buffer;
+};
+
+export const settlementRequestStruct = new BeetStruct<SettlementRequest>(
+  [
+    ['buffer', blob(8)],
+    ['id', u64],
+    ['maturity', u64],
+    ['amount', u64],
+    ['keeperTip', u64],
+    ['exchange', publicKey],
+    ['owner', publicKey],
+    ['ownerTokenAccount', publicKey],
+    ['bump', blob(8)],
+  ],
+  (args) => args as SettlementRequest
+);

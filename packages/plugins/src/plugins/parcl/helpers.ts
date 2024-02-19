@@ -36,3 +36,27 @@ export function getLpPositionsPdas(
   }
   return keys;
 }
+
+export function getSettlementRequestsPdas(
+  owner: string,
+  start: number,
+  end: number
+): PublicKey[] {
+  const keys: PublicKey[] = [];
+  for (let i = start; i < end; i++) {
+    keys.push(
+      PublicKey.findProgramAddressSync(
+        [
+          Buffer.from('settlement_request', 'utf-8'),
+          new PublicKey(
+            '82dGS7Jt4Km8ZgwZVRsJ2V6vPXEhVdgDaMP7cqPGG1TW'
+          ).toBuffer(),
+          new PublicKey(owner).toBuffer(),
+          new BN(i).toArrayLike(Buffer, 'le', 8),
+        ],
+        programId
+      )[0]
+    );
+  }
+  return keys;
+}

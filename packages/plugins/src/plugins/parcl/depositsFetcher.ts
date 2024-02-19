@@ -6,16 +6,22 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId } from './constants';
+import { platformId, programId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import {
   getParsedMultipleAccountsInfo,
+  getParsedProgramAccounts,
   usdcSolanaMint,
 } from '../../utils/solana';
-import { lpAccountStruct, lpPositionStruct } from './structs';
+import {
+  lpAccountStruct,
+  lpPositionStruct,
+  settlementRequestStruct,
+} from './structs';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getLpPositionsPdas, getOldLpAccountPda } from './helpers';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
+import { settlementRequestFilter } from './filters';
 
 const thirtyDays = 30 * 1000 * 60 * 60 * 24;
 
@@ -41,6 +47,30 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     lpPositions.push(...parsedAccount);
     id += 10;
   } while (parsedAccount[parsedAccount.length]);
+
+  // id = 0;
+  // const settlementRequests = [];
+  // let requestsParsedAccounts;
+  // do {
+  //   const accountPubKeys = getSettlementRequestsPdas(owner, id, id + 10);
+  //   requestsParsedAccounts = await getParsedMultipleAccountsInfo(
+  //     client,
+  //     settlementRequestStruct,
+  //     accountPubKeys
+  //   );
+  //   settlementRequests.push(...requestsParsedAccounts);
+  //   id += 10;
+  // } while (requestsParsedAccounts[requestsParsedAccounts.length]);
+  // console.log(
+  //   'constexecutor:FetcherExecutor= ~ settlementRequests:',
+  //   settlementRequests
+  // );
+  const settlementRequests = await getParsedProgramAccounts(
+    client,
+    settlementRequestStruct,
+    programId,
+    settlementRequestFilter(owner)
+  );
 
   const usdcTokenPrice = await cache.getTokenPrice(
     usdcSolanaMint,
@@ -77,10 +107,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   for (const lpPosition of lpPositions) {
     if (lpPosition && !lpPosition.liquidity.isZero()) {
-      const unlockStartedAt = new Date(
-        lpPosition.maturity.times(1000).toNumber()
-      );
-      const unlockingAt = new Date(unlockStartedAt.getTime() + thirtyDays);
+      const unlockingAt = new Date(lpPosition.maturity.times(1000).toNumber());
       const asset: PortfolioAsset = {
         ...tokenPriceToAssetToken(
           usdcSolanaMint,
@@ -101,6 +128,36 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         value: asset.value,
       });
     }
+  }
+
+  for (const settlementRequest of settlementRequests) {
+    if (!settlementRequest || settlementRequest.amount.isZero()) continue;
+
+    const unlockingAt = new Date(
+      settlementRequest.maturity.times(1000).toNumber()
+    );
+    if (unlockingAt.getTime() < Date.now()) continue;
+
+    const asset: PortfolioAsset = {
+      ...tokenPriceToAssetToken(
+        usdcSolanaMint,
+        settlementRequest.amount.dividedBy(10 ** 6).toNumber(),
+        NetworkId.solana,
+        usdcTokenPrice
+      ),
+      attributes: {
+        lockedUntil: unlockingAt.getTime(),
+      },
+    };
+    elements.push({
+      type: PortfolioElementType.multiple,
+      label: 'Deposit',
+      name: 'Pending Withdraw',
+      networkId: NetworkId.solana,
+      platformId,
+      data: { assets: [asset] },
+      value: asset.value,
+    });
   }
 
   return elements;
