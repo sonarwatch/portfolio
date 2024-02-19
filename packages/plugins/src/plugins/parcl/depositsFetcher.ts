@@ -3,6 +3,7 @@ import {
   PortfolioAsset,
   PortfolioElement,
   PortfolioElementType,
+  getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -77,6 +78,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     NetworkId.solana
   );
   const elements: PortfolioElement[] = [];
+  const assets: PortfolioAsset[] = [];
 
   if (oldLpAccount && !oldLpAccount.liquidity.isZero()) {
     const unlockStartedAt = new Date(
@@ -106,28 +108,21 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   }
 
   for (const lpPosition of lpPositions) {
-    if (lpPosition && !lpPosition.liquidity.isZero()) {
-      const unlockingAt = new Date(lpPosition.maturity.times(1000).toNumber());
-      const asset: PortfolioAsset = {
-        ...tokenPriceToAssetToken(
-          usdcSolanaMint,
-          lpPosition.liquidity.dividedBy(10 ** 6).toNumber(),
-          NetworkId.solana,
-          usdcTokenPrice
-        ),
-        attributes: {
-          lockedUntil: unlockingAt.getTime(),
-        },
-      };
-      elements.push({
-        type: PortfolioElementType.multiple,
-        label: 'Deposit',
-        networkId: NetworkId.solana,
-        platformId,
-        data: { assets: [asset] },
-        value: asset.value,
-      });
-    }
+    if (!lpPosition || lpPosition.liquidity.isZero()) continue;
+
+    const unlockingAt = new Date(lpPosition.maturity.times(1000).toNumber());
+    const asset: PortfolioAsset = {
+      ...tokenPriceToAssetToken(
+        usdcSolanaMint,
+        lpPosition.liquidity.dividedBy(10 ** 6).toNumber(),
+        NetworkId.solana,
+        usdcTokenPrice
+      ),
+      attributes: {
+        lockedUntil: unlockingAt.getTime(),
+      },
+    };
+    assets.push(asset);
   }
 
   for (const settlementRequest of settlementRequests) {
@@ -147,20 +142,25 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       ),
       attributes: {
         lockedUntil: unlockingAt.getTime(),
+        tags: ['Pending Withdraw'],
       },
     };
-    elements.push({
-      type: PortfolioElementType.multiple,
-      label: 'Deposit',
-      name: 'Pending Withdraw',
-      networkId: NetworkId.solana,
-      platformId,
-      data: { assets: [asset] },
-      value: asset.value,
-    });
+
+    assets.push(asset);
   }
 
-  return elements;
+  if (assets.length === 0) return [];
+
+  return [
+    {
+      type: PortfolioElementType.multiple,
+      label: 'Deposit',
+      networkId: NetworkId.solana,
+      platformId,
+      data: { assets },
+      value: getUsdValueSum(assets.map((asset) => asset.value)),
+    },
+  ];
 };
 
 const fetcher: Fetcher = {
