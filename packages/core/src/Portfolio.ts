@@ -26,6 +26,7 @@ export type PortfolioElementLabel =
   | 'Vesting'
   | 'Deposit'
   | 'Rewards'
+  | 'Margin'
   | 'Leverage';
 
 export type PortfolioAssetAttributes = {

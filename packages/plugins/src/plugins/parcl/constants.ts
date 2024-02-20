@@ -14,3 +14,6 @@ export const platform: Platform = {
 export const programId = new PublicKey(
   '3parcLrT7WnXAcyPfkCz49oofuuf2guUKkjuFkAhZW8Y'
 );
+
+export const usdcMint = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+export const usdcDecimals = 6;
