@@ -48,9 +48,6 @@ export function getSettlementRequestsPdas(
       PublicKey.findProgramAddressSync(
         [
           Buffer.from('settlement_request', 'utf-8'),
-          new PublicKey(
-            '82dGS7Jt4Km8ZgwZVRsJ2V6vPXEhVdgDaMP7cqPGG1TW'
-          ).toBuffer(),
           new PublicKey(owner).toBuffer(),
           new BN(i).toArrayLike(Buffer, 'le', 8),
         ],

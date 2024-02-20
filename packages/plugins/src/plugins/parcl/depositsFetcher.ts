@@ -7,11 +7,10 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, programId } from './constants';
+import { platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import {
   getParsedMultipleAccountsInfo,
-  getParsedProgramAccounts,
   usdcSolanaMint,
 } from '../../utils/solana';
 import {
@@ -20,9 +19,12 @@ import {
   settlementRequestStruct,
 } from './structs';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { getLpPositionsPdas, getOldLpAccountPda } from './helpers';
+import {
+  getLpPositionsPdas,
+  getOldLpAccountPda,
+  getSettlementRequestsPdas,
+} from './helpers';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
-import { settlementRequestFilter } from './filters';
 
 const thirtyDays = 30 * 1000 * 60 * 60 * 24;
 
@@ -49,29 +51,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     id += 10;
   } while (parsedAccount[parsedAccount.length]);
 
-  // id = 0;
-  // const settlementRequests = [];
-  // let requestsParsedAccounts;
-  // do {
-  //   const accountPubKeys = getSettlementRequestsPdas(owner, id, id + 10);
-  //   requestsParsedAccounts = await getParsedMultipleAccountsInfo(
-  //     client,
-  //     settlementRequestStruct,
-  //     accountPubKeys
-  //   );
-  //   settlementRequests.push(...requestsParsedAccounts);
-  //   id += 10;
-  // } while (requestsParsedAccounts[requestsParsedAccounts.length]);
-  // console.log(
-  //   'constexecutor:FetcherExecutor= ~ settlementRequests:',
-  //   settlementRequests
-  // );
-  const settlementRequests = await getParsedProgramAccounts(
-    client,
-    settlementRequestStruct,
-    programId,
-    settlementRequestFilter(owner)
-  );
+  id = 0;
+  const settlementRequests = [];
+  let requestsParsedAccounts;
+  do {
+    const accountPubKeys = getSettlementRequestsPdas(owner, id, id + 10);
+    requestsParsedAccounts = await getParsedMultipleAccountsInfo(
+      client,
+      settlementRequestStruct,
+      accountPubKeys
+    );
+    settlementRequests.push(...requestsParsedAccounts);
+    id += 10;
+  } while (requestsParsedAccounts[requestsParsedAccounts.length]);
 
   const usdcTokenPrice = await cache.getTokenPrice(
     usdcSolanaMint,
