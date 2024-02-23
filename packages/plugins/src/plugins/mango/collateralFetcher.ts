@@ -56,6 +56,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
 
   const elements: PortfolioElement[] = [];
+
+  // store mango accounts for points
+  await cache.setItem(
+    owner,
+    userAccounts.map((account) => account.pubkey.toString()),
+    { prefix: platformId, networkId: NetworkId.solana }
+  );
+
   for (let index = 0; index < userAccounts.length; index++) {
     const userAccount = userAccounts[index];
     const tokenPositions = userAccount.tokens;
