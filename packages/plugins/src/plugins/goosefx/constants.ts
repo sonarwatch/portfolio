@@ -2,7 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'goosefx';
-export const platform: Platform = {
+export const gooseFxPlatform: Platform = {
   id: platformId,
   name: 'GooseFX',
   image: 'https://sonar.watch/img/platforms/goosefx.png',
