@@ -6,6 +6,8 @@ export const platform: Platform = {
   id: platformId,
   name: 'Bonk Rewards',
   image: 'https://sonar.watch/img/platforms/bonk.png',
+  twitter: 'https://twitter.com/bonk_inu',
+  website: 'https://bonkrewards.com/',
   // defiLlamaId: 'nothing yet',
 };
 export const stakePid = new PublicKey(
