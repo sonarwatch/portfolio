@@ -6,6 +6,8 @@ export const platform: Platform = {
   id: platformId,
   name: 'Access Protocol',
   image: 'https://sonar.watch/img/platforms/accessprotocol.png',
+  twitter: 'https://twitter.com/AccessProtocol',
+  website: 'https://hub.accessprotocol.co',
   // defiLlamaId: 'nothing yet',
 };
 export const stakePid = new PublicKey(
