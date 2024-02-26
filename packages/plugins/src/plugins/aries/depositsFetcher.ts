@@ -123,7 +123,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           suppliedValue,
           suppliedYields,
           collateralRatio: null,
-          healthRatio: new BigNumber(profile.riskFactor).toNumber(),
+          healthRatio: 1 - new BigNumber(profile.riskFactor).toNumber(),
           rewardAssets,
           value,
         },

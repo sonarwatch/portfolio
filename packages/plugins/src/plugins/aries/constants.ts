@@ -5,7 +5,7 @@ export const platform: Platform = {
   id: platformId,
   name: 'Aries',
   image: 'https://sonar.watch/img/platforms/aries.png',
-  defiLlamaId: 'aries-markets', // from https://defillama.com/docs/api
+  defiLlamaId: 'aries-markets',
   website: 'https://app.ariesmarkets.xyz/',
   twitter: 'https://twitter.com/AriesMarkets',
 };
