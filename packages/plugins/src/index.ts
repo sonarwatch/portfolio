@@ -311,6 +311,11 @@ import {
   jobs as accessprotocolJobs,
   fetchers as accessprotocolFetchers,
 } from './plugins/accessprotocol';
+import {
+  platforms as aptinPlatforms,
+  jobs as aptinJobs,
+  fetchers as aptinFetchers,
+} from './plugins/aptin';
 
 export {
   walletTokensPlatform,
@@ -389,6 +394,7 @@ export const platforms: Platform[] = [
   ...flashPlatforms,
   ...bonkrewardsPlatforms,
   ...accessprotocolPlatforms,
+  ...aptinPlatforms,
 ];
 
 // JOBS //
@@ -451,6 +457,7 @@ export const jobs: Job[] = [
   ...flashJobs,
   ...bonkrewardsJobs,
   ...accessprotocolJobs,
+  ...aptinJobs,
 ];
 
 // FETCHERS //
@@ -515,5 +522,6 @@ export const fetchers: Fetcher[] = [
   ...flashFetchers,
   ...bonkrewardsFetchers,
   ...accessprotocolFetchers,
+  ...aptinFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
