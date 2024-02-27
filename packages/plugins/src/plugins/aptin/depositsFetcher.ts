@@ -102,7 +102,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         tokenPrices[address] || undefined
       )
     );
-    suppliedLtvs.push(ltv);
+    suppliedLtvs.push(supplyPosition.collateral ? ltv / 100 : 0);
     suppliedYields.push([]);
   }
 
