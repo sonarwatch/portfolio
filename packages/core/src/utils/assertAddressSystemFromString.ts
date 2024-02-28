@@ -5,10 +5,14 @@
  * @returns The validated address system.
  * @throws Error if the address system is not valid.
  */
-import { AddressSystem, AddressSystemType } from '../Address';
+import { AddressSystemType } from '../Address';
 import { AddressSystemIsNotValidError } from '../errors';
+import { getAddressSystemFromString } from './getAddressSystemFromString';
 
-export function assertAddressSystem(addressSystem: string): AddressSystemType {
-  if (addressSystem in AddressSystem) return addressSystem as AddressSystemType;
+export function assertAddressSystemFromString(
+  addressSystem: string
+): AddressSystemType {
+  const rAddressSystem = getAddressSystemFromString(addressSystem);
+  if (rAddressSystem) return rAddressSystem;
   throw new AddressSystemIsNotValidError(addressSystem);
 }

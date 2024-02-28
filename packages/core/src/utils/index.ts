@@ -1,5 +1,5 @@
 export * from './assertNetworkId';
-export * from './assertAddressSystem';
+export * from './assertAddressSystemFromString';
 export * from './networkIdIncluded';
 export * from './validAddress';
 export * from './validTokenAddress';
