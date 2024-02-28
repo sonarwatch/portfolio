@@ -80,7 +80,7 @@ export function getAddressSystem(address: string): AddressSystemType | null {
   return null;
 }
 
-export function assetAddressSystem(address: string): AddressSystemType {
+export function assertAddressSystem(address: string): AddressSystemType {
   const addressSystem = getAddressSystem(address);
   if (!addressSystem) throw new AddressIsNotValidError(address);
   return addressSystem;
