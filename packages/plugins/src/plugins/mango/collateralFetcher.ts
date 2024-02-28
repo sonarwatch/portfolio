@@ -11,7 +11,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { MangoProgram, banksPrefix, platformId } from './constants';
+import { mangoV4Pid, banksPrefix, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { mangoAccountStruct } from './struct';
 import { accountsFilter } from './filters';
@@ -26,7 +26,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const userAccounts = await getParsedProgramAccounts(
     client,
     mangoAccountStruct,
-    MangoProgram,
+    mangoV4Pid,
     accountsFilter(owner)
   );
   if (userAccounts.length === 0) return [];
