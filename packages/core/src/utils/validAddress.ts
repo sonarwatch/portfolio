@@ -3,7 +3,7 @@ import { isAddress as isAddressEthers } from '@ethersproject/address';
 import { isHexString } from '@ethersproject/bytes';
 import { base58 } from '@metaplex-foundation/umi-serializers-encodings';
 import { AddressSystem, AddressSystemType } from '../Address';
-import { AddressIsNotValidError } from '../errors/AddressIsNotValideError';
+import { AddressIsNotValidError } from '../errors/AddressIsNotValidError';
 
 export function isBitcoinAddress(address: string): boolean {
   return validate(address, Network.mainnet);

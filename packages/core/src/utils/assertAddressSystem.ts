@@ -6,8 +6,9 @@
  * @throws Error if the address system is not valid.
  */
 import { AddressSystem, AddressSystemType } from '../Address';
+import { AddressSystemIsNotValidError } from '../errors';
 
 export function assertAddressSystem(addressSystem: string): AddressSystemType {
   if (addressSystem in AddressSystem) return addressSystem as AddressSystemType;
-  throw new Error(`Address system is not valid: ${addressSystem}`);
+  throw new AddressSystemIsNotValidError(addressSystem);
 }

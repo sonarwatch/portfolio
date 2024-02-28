@@ -3,6 +3,7 @@ export * from './AdapterFetchTimedOutError';
 export * from './AdapterRefreshError';
 export * from './AdapterRefreshTimedOutError';
 export * from './PortfolioError';
-export * from './AddressIsNotValideError';
+export * from './AddressIsNotValidError';
+export * from './AddressSystemIsNotValidError';
 export * from './TokenAddressIsNotValideError';
 export * from './NameIsNotValidError';
