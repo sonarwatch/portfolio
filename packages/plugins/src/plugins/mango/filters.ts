@@ -21,6 +21,39 @@ export const accountsFilter = (owner: string): GetProgramAccountsFilter[] => [
   },
 ];
 
+export const boostAccountsFilter = (
+  owner: string
+): GetProgramAccountsFilter[] => [
+  {
+    memcmp: {
+      offset: 0,
+      bytes: 'ho5hwwEoHot',
+    },
+  },
+  {
+    memcmp: {
+      offset: 8,
+      bytes: 'AKeMSYiJekyKfwCc3CUfVNDVAiqk9FfbQVMY3G7RUZUf',
+    },
+  },
+  {
+    memcmp: {
+      offset: 40,
+      bytes: owner,
+    },
+  },
+];
+
+export const boostBanksFilters: GetProgramAccountsFilter[] = [
+  {
+    memcmp: {
+      offset: 0,
+      bytes: 'QnTef4UXSzF',
+    },
+  },
+  { dataSize: 3072 },
+];
+
 export const banksFilter: GetProgramAccountsFilter[] = [
   {
     memcmp: {

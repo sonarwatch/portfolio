@@ -12,6 +12,7 @@ export const mangoPlatform: Platform = {
 export const banksPrefix = `${platformId}-banks`;
 export const rootBankPrefix = `${platformId}-rootBank`;
 export const groupPrefix = `${platformId}-group`;
+export const boostBanksKey = 'boost-banks';
 
 export const mangoV4Pid = new PublicKey(
   '4MangoMjqJ2firMokCjjGgoK8d4MXcrgL7XJaL3w6fVg'
