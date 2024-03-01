@@ -190,6 +190,19 @@ export class Cache {
     return fAddresses.map((address) => tokenPriceByAddress.get(address));
   }
 
+  async getTokenPricesAsMap(
+    addresses: string[],
+    networkId: NetworkIdType
+  ): Promise<Map<string, TokenPrice>> {
+    const tokenPrices = await this.getTokenPrices(addresses, networkId);
+    const tokenPricesMap: Map<string, TokenPrice> = new Map();
+    tokenPrices.forEach((tp) => {
+      if (!tp) return;
+      tokenPricesMap.set(tp.address, tp);
+    });
+    return tokenPricesMap;
+  }
+
   private async getTokenPriceSources(
     address: string,
     networkId: NetworkIdType
