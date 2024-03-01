@@ -15,7 +15,6 @@ export const reservesKey = 'reserves';
 export const reserveParentId =
   '0xe6d4c6610b86ce7735ea754596d71d72d10c7980b5052fc3c8cdf8d09fea9b4b';
 
-export const indexFactor = 18;
 export const rateFactor = 27;
 
 export const poolsInfos = [
@@ -66,5 +65,17 @@ export const poolsInfos = [
       '0x7568d06a1b6ffc416a36c82791e3daf0e621cf19d4a2724fc6f74842661b6323',
     supplyBalanceParentId:
       '0xa668905b1ad445a3159b4d29b1181c4a62d864861b463dd9106cc0d97ffe8f7f',
+  },
+  {
+    id: 4,
+    name: 'cetus',
+    type: '0x06864a6f921804860930db6ddbe2e16acdf8504495ea7481637a1c8b9a8fe54b::cetus::CETUS',
+    pool: '0x71b9f6e822c48ce827bceadce82201d6a7559f7b0350ed1daa1dc2ba3ac41b56',
+    reserveData:
+      '0x66a807c06212537fe46aa6719a00e4fa1e85a932d0b53ce7c4b1041983645133',
+    borrowBalanceParentId:
+      '0x4c3da45ffff6432b4592a39cdb3ce12f4a28034cbcb804bb071facc81fdd923d',
+    supplyBalanceParentId:
+      '0x6adc72faf2a9a15a583c9fb04f457c6a5f0b456bc9b4832413a131dfd4faddae',
   },
 ];
