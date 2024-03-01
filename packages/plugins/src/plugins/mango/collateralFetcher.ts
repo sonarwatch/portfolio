@@ -15,9 +15,8 @@ import { mangoV4Pid, banksPrefix, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { mangoAccountStruct } from './struct';
 import { accountsFilter } from './filters';
-import { getParsedProgramAccounts } from '../../utils/solana';
+import { getParsedProgramAccounts, u8ArrayToString } from '../../utils/solana';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { decodeName } from './helpers';
 import runInBatch from '../../utils/misc/runInBatch';
 import { BankEnhanced } from './types';
 
@@ -161,7 +160,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         rewardAssets,
         value,
       },
-      name: decodeName(userAccount.name),
+      name: u8ArrayToString(userAccount.name),
     });
   }
   return elements;

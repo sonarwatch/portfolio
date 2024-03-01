@@ -5,5 +5,6 @@ export * from './getParsedProgramAccounts';
 export * from './getParsedMultipleAccountsInfo';
 export * from './getProgramAccountsSafe';
 export * from './getTokenAccountsByOwner';
+export * from './u8ArrayToString';
 export * from './structs';
 export * from './types';
