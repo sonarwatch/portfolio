@@ -154,11 +154,6 @@ export function isSpotPositionAvailable(position: SpotPosition): boolean {
   return position.scaledBalance.eq(ZERO) && position.openOrders === 0;
 }
 
-export function decodeName(bytes: number[]): string {
-  const buffer = Buffer.from(bytes);
-  return buffer.toString('utf8').trim();
-}
-
 export function getUserAccountPublicKey(
   programId: PublicKey,
   owner: PublicKey,

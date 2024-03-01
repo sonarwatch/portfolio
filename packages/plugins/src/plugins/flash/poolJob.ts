@@ -7,13 +7,13 @@ import getLpTokenSource from '../../utils/misc/getLpTokenSource';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 import { platformId, poolsPkeys } from './constants';
 import { pool1Struct, pool2Struct } from './structs';
-import { decodeName } from '../mango/helpers';
 import { fetchTokenSupplyAndDecimals } from '../../utils/solana/fetchTokenSupplyAndDecimals';
 import { CustodyInfo } from './types';
 import {
   TokenAccount,
   getParsedMultipleAccountsInfo,
   tokenAccountStruct,
+  u8ArrayToString,
 } from '../../utils/solana';
 import { custodiesKey } from '../jupiter/constants';
 
@@ -114,7 +114,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       NetworkId.solana,
       poolsPkeys[i].toString(),
       platformId,
-      decodeName(pool.name),
+      u8ArrayToString(pool.name),
       { address: mint, decimals, supply },
       assets
     );
