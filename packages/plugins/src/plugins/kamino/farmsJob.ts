@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId, TokenPrice } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSolana } from '../../utils/clients';
@@ -7,7 +7,6 @@ import { dataSizeFilter } from '../../utils/solana/filters';
 import { farmProgramId, farmsKey, platformId } from './constants';
 import { farmStateStruct } from './structs/vaults';
 import { FarmInfo } from './types';
-import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -19,10 +18,13 @@ const executor: JobExecutor = async (cache: Cache) => {
     dataSizeFilter(8336)
   );
 
-  const tokenPriceById = await getTokenPricesMap(
+  const tokenPrices = await cache.getTokenPrices(
     farms.map((farm) => farm.token.mint.toString()),
-    NetworkId.solana,
-    cache
+    NetworkId.solana
+  );
+  const tokenPriceById: Map<string, TokenPrice> = new Map();
+  tokenPrices.forEach((tP) =>
+    tP ? tokenPriceById.set(tP.address, tP) : undefined
   );
 
   const farmsInfo: FarmInfo[] = [];
