@@ -23,7 +23,7 @@ export function assertEvmAddress(address: string): void {
 }
 
 export function isMoveAddress(address: string): boolean {
-  return isHexString(address, 32);
+  return isHexString(address, 32) || isHexString(`0x${address}`, 32);
 }
 export function assertMoveAddress(address: string): void {
   if (!isMoveAddress(address))

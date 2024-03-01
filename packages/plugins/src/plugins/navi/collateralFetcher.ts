@@ -5,6 +5,7 @@ import {
   PortfolioElementType,
   Yield,
   apyToApr,
+  formatTokenAddress,
   getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
 import { getObjectFields } from '@mysten/sui.js';
@@ -12,16 +13,16 @@ import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
-  indexFactor,
   platformId,
-  poolsInfos,
   rateFactor,
   reservesKey,
   reservesPrefix,
 } from './constants';
 import { getClientSui } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { Balance, ReserveData } from './types';
+import { BalanceData, ReserveData } from './types';
+
+const amountFactor = new BigNumber(10 ** 36);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -38,44 +39,46 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
   if (!reservesData) return [];
 
-  const reserveById: Map<string, ReserveData> = new Map();
-  for (const reserve of reservesData) {
-    reserveById.set(reserve.id.id, reserve);
-  }
+  const tokenPrices = await cache.getTokenPricesAsMap(
+    reservesData.map((r) => r.value.fields.coin_type),
+    NetworkId.sui
+  );
 
-  for (const pool of poolsInfos) {
-    const reserve = reserveById.get(pool.reserveData);
-    if (!reserve) continue;
-    const reserveData = reserve.value.fields;
-
-    const borrowBalance = await client.getDynamicFieldObject({
-      parentId: pool.borrowBalanceParentId,
+  for (const rData of reservesData) {
+    const borrowBalancePromise = client.getDynamicFieldObject({
+      parentId:
+        rData.value.fields.borrow_balance.fields.user_state.fields.id.id,
       name: { type: 'address', value: owner },
     });
-
-    const supplyBalance = await client.getDynamicFieldObject({
-      parentId: pool.supplyBalanceParentId,
+    const supplyBalancePromise = client.getDynamicFieldObject({
+      parentId:
+        rData.value.fields.supply_balance.fields.user_state.fields.id.id,
       name: { type: 'address', value: owner },
     });
+    const [borrowBalance, supplyBalance] = await Promise.all([
+      borrowBalancePromise,
+      supplyBalancePromise,
+    ]);
 
-    const tokenPrice = await cache.getTokenPrice(pool.type, NetworkId.sui);
-    if (!tokenPrice) continue;
+    const tokenPrice = tokenPrices.get(
+      formatTokenAddress(rData.value.fields.coin_type, NetworkId.sui)
+    );
 
     if (!borrowBalance.error && borrowBalance.data) {
-      const borrowInfo = getObjectFields(borrowBalance.data) as Balance;
+      const borrowInfo = getObjectFields(borrowBalance.data) as BalanceData;
       if (borrowInfo.value) {
         borrowedAssets.push(
           tokenPriceToAssetToken(
-            tokenPrice.address,
+            rData.value.fields.coin_type,
             new BigNumber(borrowInfo.value)
-              .dividedBy(reserveData.current_borrow_index)
-              .multipliedBy(10 ** indexFactor)
+              .times(rData.value.fields.current_borrow_index)
+              .dividedBy(amountFactor)
               .toNumber(),
             NetworkId.sui,
             tokenPrice
           )
         );
-        const apy = new BigNumber(reserveData.current_borrow_rate)
+        const apy = new BigNumber(rData.value.fields.current_borrow_rate)
           .dividedBy(10 ** rateFactor)
           .toNumber();
         borrowedYields.push([
@@ -88,20 +91,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
 
     if (!supplyBalance.error && supplyBalance.data) {
-      const supplyInfo = getObjectFields(supplyBalance.data) as Balance;
+      const supplyInfo = getObjectFields(supplyBalance.data) as BalanceData;
       if (supplyInfo.value) {
         suppliedAssets.push(
           tokenPriceToAssetToken(
-            tokenPrice.address,
+            rData.value.fields.coin_type,
             new BigNumber(supplyInfo.value)
-              .dividedBy(reserveData.current_supply_index)
-              .multipliedBy(10 ** indexFactor)
+              .times(rData.value.fields.current_supply_index)
+              .dividedBy(amountFactor)
               .toNumber(),
             NetworkId.sui,
             tokenPrice
           )
         );
-        const apy = new BigNumber(reserveData.current_supply_rate)
+        const apy = new BigNumber(rData.value.fields.current_supply_rate)
           .dividedBy(10 ** rateFactor)
           .toNumber();
         suppliedYields.push([
