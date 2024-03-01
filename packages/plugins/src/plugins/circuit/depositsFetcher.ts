@@ -8,18 +8,14 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import {
-  circuitPid,
-  jitoSOLMint,
-  nameOfVauilts,
-  platformId,
-} from './constants';
+import { circuitPid, platformId, prefixVaults } from './constants';
 import { getClientSolana } from '../../utils/clients';
-import { getParsedProgramAccounts, usdcSolanaMint } from '../../utils/solana';
+import { getParsedProgramAccounts } from '../../utils/solana';
 import { vaultDepositorStruct } from './structs';
 import { vaultDepositorFilter } from './filters';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { sevenDays } from '../goosefx/stakingFetcher';
+import { VaultInfo } from './types';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -33,10 +29,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (depositAccounts.length === 0) return [];
 
+  const vaultsInfo = await cache.getItems<VaultInfo>(
+    depositAccounts.map((deposit) => deposit.vault.toString()),
+    { prefix: prefixVaults, networkId: NetworkId.solana }
+  );
+  const vaultById: Map<string, VaultInfo> = new Map();
+  for (const vaultInfo of vaultsInfo) {
+    if (vaultInfo) vaultById.set(vaultInfo.pubkey, vaultInfo);
+  }
+
   const tokenPrices = await cache.getTokenPrices(
-    [usdcSolanaMint, jitoSOLMint],
+    vaultsInfo.map((vault) => (vault ? vault.mint : [])).flat(),
     NetworkId.solana
   );
+
   const tokenPriceById: Map<string, TokenPrice> = new Map();
   tokenPrices.forEach((tp) =>
     tp ? tokenPriceById.set(tp.address, tp) : undefined
@@ -51,7 +57,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     )
       continue;
 
-    const vaultInfo = nameOfVauilts.get(depositAccount.vault.toString());
+    const vaultInfo = vaultById.get(depositAccount.vault.toString());
     if (!vaultInfo) continue;
 
     const { decimals, name, mint } = vaultInfo;
@@ -63,7 +69,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       amountLeft = amountLeft.minus(depositAccount.lastWithdrawRequest.value);
       assets.push({
         ...tokenPriceToAssetToken(
-          usdcSolanaMint,
+          mint,
           depositAccount.lastWithdrawRequest.value
             .dividedBy(10 ** decimals)
             .toNumber(),
@@ -80,7 +86,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
     assets.push(
       tokenPriceToAssetToken(
-        usdcSolanaMint,
+        mint,
         amountLeft.dividedBy(10 ** decimals).toNumber(),
         NetworkId.solana,
         tokenPrice

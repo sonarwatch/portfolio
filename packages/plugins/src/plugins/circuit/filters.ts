@@ -16,3 +16,7 @@ export const vaultDepositorFilter = (
     },
   },
 ];
+
+export const vaultFilter: GetProgramAccountsFilter[] = [
+  { dataSize: vaultStruct.byteSize },
+];
