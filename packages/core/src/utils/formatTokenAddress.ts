@@ -18,9 +18,10 @@ export function formatBitcoinTokenAddress(address: string) {
 
 export function formatMoveTokenAddress(address: string) {
   assertMoveTokenAddress(address);
-  const tAddress = isNativeAddressAliasSui(address)
+  let tAddress = isNativeAddressAliasSui(address)
     ? suiNetwork.native.address
     : address;
+  if (!address.startsWith('0x')) tAddress = `0x${tAddress}`;
   return tAddress
     .trim()
     .replaceAll('::', '__')
