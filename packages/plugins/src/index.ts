@@ -326,6 +326,11 @@ import {
   jobs as flowmaticJobs,
   fetchers as flowmaticFetchers,
 } from './plugins/flowmatic';
+import {
+  platforms as genesysgoPlatforms,
+  jobs as genesysgoJobs,
+  fetchers as genesysgoFetchers,
+} from './plugins/genesysgo';
 
 export {
   walletTokensPlatform,
@@ -407,6 +412,7 @@ export const platforms: Platform[] = [
   ...aptinPlatforms,
   ...bsktPlatforms,
   ...flowmaticPlatforms,
+  ...genesysgoPlatforms,
 ];
 
 // JOBS //
@@ -472,6 +478,7 @@ export const jobs: Job[] = [
   ...aptinJobs,
   ...bsktJobs,
   ...flowmaticJobs,
+  ...genesysgoJobs,
 ];
 
 // FETCHERS //
@@ -539,5 +546,6 @@ export const fetchers: Fetcher[] = [
   ...aptinFetchers,
   ...bsktFetchers,
   ...flowmaticFetchers,
+  ...genesysgoFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
