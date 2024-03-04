@@ -321,6 +321,11 @@ import {
   jobs as bsktJobs,
   fetchers as bsktFetchers,
 } from './plugins/bskt';
+import {
+  platforms as flowmaticPlatforms,
+  jobs as flowmaticJobs,
+  fetchers as flowmaticFetchers,
+} from './plugins/flowmatic';
 
 export {
   walletTokensPlatform,
@@ -401,6 +406,7 @@ export const platforms: Platform[] = [
   ...accessprotocolPlatforms,
   ...aptinPlatforms,
   ...bsktPlatforms,
+  ...flowmaticPlatforms,
 ];
 
 // JOBS //
@@ -465,6 +471,7 @@ export const jobs: Job[] = [
   ...accessprotocolJobs,
   ...aptinJobs,
   ...bsktJobs,
+  ...flowmaticJobs,
 ];
 
 // FETCHERS //
@@ -531,5 +538,6 @@ export const fetchers: Fetcher[] = [
   ...accessprotocolFetchers,
   ...aptinFetchers,
   ...bsktFetchers,
+  ...flowmaticFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
