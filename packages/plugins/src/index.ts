@@ -316,6 +316,11 @@ import {
   jobs as aptinJobs,
   fetchers as aptinFetchers,
 } from './plugins/aptin';
+import {
+  platforms as bsktPlatforms,
+  jobs as bsktJobs,
+  fetchers as bsktFetchers,
+} from './plugins/bskt';
 
 export {
   walletTokensPlatform,
@@ -395,6 +400,7 @@ export const platforms: Platform[] = [
   ...bonkrewardsPlatforms,
   ...accessprotocolPlatforms,
   ...aptinPlatforms,
+  ...bsktPlatforms,
 ];
 
 // JOBS //
@@ -458,6 +464,7 @@ export const jobs: Job[] = [
   ...bonkrewardsJobs,
   ...accessprotocolJobs,
   ...aptinJobs,
+  ...bsktJobs,
 ];
 
 // FETCHERS //
@@ -523,5 +530,6 @@ export const fetchers: Fetcher[] = [
   ...bonkrewardsFetchers,
   ...accessprotocolFetchers,
   ...aptinFetchers,
+  ...bsktFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
