@@ -562,3 +562,32 @@ export const pool2Struct = new BeetStruct<Pool>(
   ],
   (args) => args as Pool
 );
+
+export const pool3Struct = new BeetStruct<Pool>(
+  [
+    ['buffer', blob(8)],
+    ['nameLength', u32],
+    ['name', uniformFixedSizeArray(u8, 12)],
+    ['permissions', permissionsStruct],
+    ['inceptionTime', i64],
+    ['flpMint', publicKey],
+    ['oracleAuthority', publicKey],
+    ['flpTokenAccount', publicKey],
+    ['rewardCustody', publicKey],
+    ['custodiesLength', u32],
+    ['custodies', uniformFixedSizeArray(publicKey, 4)],
+    ['ratiosLength', u32],
+    ['ratios', uniformFixedSizeArray(tokenRatiosStruct, 4)],
+    ['marketsLength', u32],
+    ['markets', uniformFixedSizeArray(publicKey, 6)],
+    ['maxAumUsd', u128],
+    ['aumUsd', u128],
+    ['totalStaked', stakeStatsStruct],
+    ['stakingFeeShareBps', u64],
+    ['bump', u8],
+    ['flpMintBump', u8],
+    ['flpTokenAccountBump', u8],
+    ['vpVolumeFactor', u8],
+  ],
+  (args) => args as Pool
+);

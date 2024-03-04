@@ -6,7 +6,7 @@ import { getClientSolana } from '../../utils/clients';
 import getLpTokenSource from '../../utils/misc/getLpTokenSource';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 import { platformId, poolsPkeys } from './constants';
-import { pool1Struct, pool2Struct } from './structs';
+import { pool1Struct, pool2Struct, pool3Struct } from './structs';
 import { fetchTokenSupplyAndDecimals } from '../../utils/solana/fetchTokenSupplyAndDecimals';
 import { CustodyInfo } from './types';
 import {
@@ -22,11 +22,12 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   const pools = await getMultipleAccountsInfoSafe(client, poolsPkeys);
 
-  if (!pools[0] || !pools[1]) return;
+  if (!pools[0] || !pools[1] || !pools[2]) return;
 
   const poolsAccounts = [
     pool1Struct.deserialize(pools[0].data)[0],
     pool2Struct.deserialize(pools[1].data)[0],
+    pool3Struct.deserialize(pools[2].data)[0],
   ];
 
   const custodies = await cache.getItem<CustodyInfo[]>(custodiesKey, {
@@ -68,14 +69,14 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   for (let i = 0; i < poolsAccounts.length; i++) {
     const pool = poolsAccounts[i];
-    const mint = pool.flpMint.toString();
     const supAndDecimals = await fetchTokenSupplyAndDecimals(
-      new PublicKey(mint),
+      pool.flpMint,
       client
     );
+    const mint = pool.flpMint.toString();
     if (!supAndDecimals) continue;
-    const { supply, decimals } = supAndDecimals;
 
+    const { supply, decimals } = supAndDecimals;
     const custodiesAccounts = pool.custodies
       .map((custody) => {
         const account = custodyById.get(custody.toString());

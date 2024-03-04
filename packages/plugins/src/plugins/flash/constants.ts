@@ -18,6 +18,7 @@ export const flashPid = new PublicKey(
 export const poolsPkeys = [
   new PublicKey('HfF7GCcEc76xubFCHLLXRdYcgRzwjEPdfKWqzRS8Ncog'),
   new PublicKey('KwhpybQPe9xuZFmAfcjLHj3ukownWex1ratyascAC1X'),
+  new PublicKey('D6bfytnxoZBSzJM7fcixg5sgWJ2hj8SbwkPvb2r8XpbH'),
 ];
 
 export const marketsKey = 'markets';

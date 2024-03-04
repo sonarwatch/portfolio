@@ -56,6 +56,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       .plus(stakeAccount.stakeStats.pendingActivation)
       .dividedBy(10 ** flpTokenPrice.decimals);
 
+    if (amount.isZero()) continue;
+
     assets.push(
       tokenPriceToAssetToken(
         flpTokenPrice.address,
