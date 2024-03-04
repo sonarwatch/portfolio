@@ -4,7 +4,7 @@ import { Platform } from '@sonarwatch/portfolio-core';
 export const platformId = 'bskt';
 export const platform: Platform = {
   id: platformId,
-  name: 'Bskt',
+  name: 'BSKT',
   image: 'https://sonar.watch/img/platforms/bskt.png',
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
   website: 'https://claim.bskt.fi/',
