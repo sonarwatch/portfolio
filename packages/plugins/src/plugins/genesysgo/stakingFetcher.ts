@@ -27,6 +27,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const assets: PortfolioAsset[] = [];
   for (const userState of userStateAccounts) {
+    if (userState.activeStakeScaled.isZero()) continue;
     const amount = userState.activeStakeScaled
       .dividedBy(10 ** 18)
       .dividedBy(10 ** shadowDecimals)
@@ -41,6 +42,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       )
     );
   }
+
+  if (assets.length === 0) return [];
 
   return [
     {

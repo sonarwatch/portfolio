@@ -25,6 +25,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const tokenPrice = await cache.getTokenPrice(flowmaticMint, NetworkId.solana);
   const assets: PortfolioAsset[] = [];
   for (const stakeAccount of stakeAccounts) {
+    if (stakeAccount.depositAmount.isZero()) continue;
     const lockedUntil = new Date(
       stakeAccount.depositTimestamp
         .plus(stakeAccount.lockupDuration)
@@ -44,6 +45,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       },
     });
   }
+
+  if (assets.length === 0) return [];
   return [
     {
       type: PortfolioElementType.multiple,
