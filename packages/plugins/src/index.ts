@@ -331,6 +331,11 @@ import {
   jobs as genesysgoJobs,
   fetchers as genesysgoFetchers,
 } from './plugins/genesysgo';
+import {
+  platforms as auroryPlatforms,
+  jobs as auroryJobs,
+  fetchers as auroryFetchers,
+} from './plugins/aurory';
 
 export {
   walletTokensPlatform,
@@ -413,6 +418,7 @@ export const platforms: Platform[] = [
   ...bsktPlatforms,
   ...flowmaticPlatforms,
   ...genesysgoPlatforms,
+  ...auroryPlatforms,
 ];
 
 // JOBS //
@@ -479,6 +485,7 @@ export const jobs: Job[] = [
   ...bsktJobs,
   ...flowmaticJobs,
   ...genesysgoJobs,
+  ...auroryJobs,
 ];
 
 // FETCHERS //
@@ -547,5 +554,6 @@ export const fetchers: Fetcher[] = [
   ...bsktFetchers,
   ...flowmaticFetchers,
   ...genesysgoFetchers,
+  ...auroryFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
