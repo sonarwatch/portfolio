@@ -100,3 +100,9 @@ export type FarmInfo = {
   lockingStart: number;
   lockingDuration: number;
 };
+
+export type LendingMarketConfig = {
+  name: string;
+  multiplyPairs?: string[][];
+  leveragePairs?: string[][];
+};
