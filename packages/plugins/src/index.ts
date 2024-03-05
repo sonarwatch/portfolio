@@ -336,6 +336,11 @@ import {
   jobs as auroryJobs,
   fetchers as auroryFetchers,
 } from './plugins/aurory';
+import {
+  platforms as xStakingSolanaPlatforms,
+  jobs as xStakingSolanaJobs,
+  fetchers as xStakingSolanaFetchers,
+} from './plugins/x-staking-solana';
 
 export {
   walletTokensPlatform,
@@ -419,6 +424,7 @@ export const platforms: Platform[] = [
   ...flowmaticPlatforms,
   ...genesysgoPlatforms,
   ...auroryPlatforms,
+  ...xStakingSolanaPlatforms,
 ];
 
 // JOBS //
@@ -486,6 +492,7 @@ export const jobs: Job[] = [
   ...flowmaticJobs,
   ...genesysgoJobs,
   ...auroryJobs,
+  ...xStakingSolanaJobs,
 ];
 
 // FETCHERS //
@@ -555,5 +562,6 @@ export const fetchers: Fetcher[] = [
   ...flowmaticFetchers,
   ...genesysgoFetchers,
   ...auroryFetchers,
+  ...xStakingSolanaFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
