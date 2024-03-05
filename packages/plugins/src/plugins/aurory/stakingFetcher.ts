@@ -5,7 +5,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { auryMint, decimals, platformId } from './constants';
+import { decimals, auroryPlatformId, xAuryMint } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getStakingAccountAddress } from './helpers';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
@@ -25,10 +25,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (!stakingAccount) return [];
 
-  const tokenPrice = await cache.getTokenPrice(auryMint, NetworkId.solana);
+  const tokenPrice = await cache.getTokenPrice(xAuryMint, NetworkId.solana);
 
   const asset: PortfolioAsset = tokenPriceToAssetToken(
-    auryMint,
+    xAuryMint,
     stakingAccount.amount.dividedBy(10 ** decimals).toNumber(),
     NetworkId.solana,
     tokenPrice
@@ -38,7 +38,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       type: PortfolioElementType.multiple,
       label: 'Staked',
       networkId: NetworkId.solana,
-      platformId,
+      platformId: auroryPlatformId,
       data: { assets: [asset] },
       value: asset.value,
     },
@@ -46,7 +46,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-staking`,
+  id: `${auroryPlatformId}-staking`,
   networkId: NetworkId.solana,
   executor,
 };
