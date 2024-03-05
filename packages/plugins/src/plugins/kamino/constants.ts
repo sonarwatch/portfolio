@@ -20,7 +20,13 @@ export const farmProgramId = new PublicKey(
   'FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr'
 );
 export const farmsKey = 'farms';
-export const lendingMarket = '7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF';
+export const mainMarket = '7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF';
+
+export const lendingMarkets: Map<string, string> = new Map([
+  ['7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF', 'Main Market'],
+  ['DxXdAyU3kCjnyggvHmY5nAwg5cRbbmdyX3npfDMjjMek', 'JLP Market'],
+]);
+
 export const multiplyPairs = [
   [
     'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So',

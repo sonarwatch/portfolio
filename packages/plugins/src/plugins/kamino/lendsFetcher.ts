@@ -9,12 +9,16 @@ import {
   getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
-import { platformId, reservesKey } from './constants';
+import {
+  lendingMarkets,
+  marketsKey,
+  platformId,
+  reservesKey,
+} from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { Cache } from '../../Cache';
 import { getClientSolana } from '../../utils/clients';
 import { obligationStruct } from './structs/klend';
-import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { ReserveDataEnhanced } from './types';
 import { getParsedMultipleAccountsInfo } from '../../utils/solana';
@@ -30,11 +34,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
   const networkId = NetworkId.solana;
 
-  const lendingAccount = await getParsedAccountInfo(
-    client,
-    obligationStruct,
-    getLendingPda(owner)
-  );
+  const markets = await cache.getItem<string[]>(marketsKey, {
+    prefix: platformId,
+    networkId: NetworkId.solana,
+  });
+
+  const lendingAccounts = markets
+    ? await getParsedMultipleAccountsInfo(
+        client,
+        obligationStruct,
+        getLendingPda(owner, markets)
+      )
+    : undefined;
 
   const multiplyAccounts = await getParsedMultipleAccountsInfo(
     client,
@@ -48,7 +59,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     getLeveragePdas(owner)
   );
 
-  if (!lendingAccount && !multiplyAccounts && !leverageAccounts) return [];
+  if (!lendingAccounts && !multiplyAccounts && !leverageAccounts) return [];
 
   const reserves = await cache.getItem<Record<string, ReserveDataEnhanced>>(
     reservesKey,
@@ -73,96 +84,102 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   // KLend : https://app.kamino.finance/lending
   // *************
 
-  if (lendingAccount) {
-    const borrowedAssets: PortfolioAsset[] = [];
-    const borrowedYields: Yield[][] = [];
-    const suppliedAssets: PortfolioAsset[] = [];
-    const suppliedYields: Yield[][] = [];
-    const rewardAssets: PortfolioAsset[] = [];
-    const suppliedLtvs: number[] = [];
-    const borrowedWeights: number[] = [];
-    for (const deposit of lendingAccount.deposits) {
-      if (
-        deposit.depositReserve.toString() === zeroAdressValue ||
-        deposit.depositedAmount.isLessThanOrEqualTo(0)
-      )
-        continue;
-
-      const amountRaw = deposit.depositedAmount;
-      const reserve = reserves[deposit.depositReserve.toString()];
-      if (!reserve) continue;
-
-      const mint = reserve.liquidity.mintPubkey;
-      const tokenPrice = tokenPriceById.get(mint);
-      const amount = amountRaw
-        .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
-        .dividedBy(reserve.exchangeRate)
-        .toNumber();
-      suppliedAssets.push(
-        tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
+  if (lendingAccounts) {
+    for (const lendingAccount of lendingAccounts) {
+      if (!lendingAccount) continue;
+      const marketName = lendingMarkets.get(
+        lendingAccount.lendingMarket.toString()
       );
-      suppliedLtvs.push(reserve.config.liquidationThresholdPct / 100);
-      suppliedYields.push([
-        { apr: reserve.supplyApr, apy: aprToApy(reserve.supplyApr) },
-      ]);
-    }
+      const borrowedAssets: PortfolioAsset[] = [];
+      const borrowedYields: Yield[][] = [];
+      const suppliedAssets: PortfolioAsset[] = [];
+      const suppliedYields: Yield[][] = [];
+      const rewardAssets: PortfolioAsset[] = [];
+      const suppliedLtvs: number[] = [];
+      const borrowedWeights: number[] = [];
+      for (const deposit of lendingAccount.deposits) {
+        if (
+          deposit.depositReserve.toString() === zeroAdressValue ||
+          deposit.depositedAmount.isLessThanOrEqualTo(0)
+        )
+          continue;
 
-    for (const borrow of lendingAccount.borrows) {
-      if (
-        borrow.borrowReserve.toString() === zeroAdressValue ||
-        borrow.borrowedAmountSf.isLessThanOrEqualTo(0)
-      )
-        continue;
-      const amountRaw = borrow.borrowedAmountSf.dividedBy(
-        borrow.cumulativeBorrowRateBsf.value0
-      );
-      const reserve = reserves[borrow.borrowReserve.toString()];
-      if (!reserve) continue;
+        const amountRaw = deposit.depositedAmount;
+        const reserve = reserves[deposit.depositReserve.toString()];
+        if (!reserve) continue;
 
-      const mint = reserve.liquidity.mintPubkey;
-      const tokenPrice = tokenPriceById.get(mint);
-      const amount = amountRaw
-        .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
-        .toNumber();
-      borrowedAssets.push(
-        tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
-      );
-      borrowedWeights.push(Number(reserve.config.borrowFactorPct) / 100);
-      borrowedYields.push([
-        { apr: -reserve.borrowApr, apy: -aprToApy(reserve.borrowApr) },
-      ]);
-    }
-
-    if (suppliedAssets.length !== 0 || borrowedAssets.length !== 0) {
-      const { borrowedValue, suppliedValue, value, healthRatio } =
-        getElementLendingValues(
-          suppliedAssets,
-          borrowedAssets,
-          rewardAssets,
-          suppliedLtvs,
-          borrowedWeights
+        const mint = reserve.liquidity.mintPubkey;
+        const tokenPrice = tokenPriceById.get(mint);
+        const amount = amountRaw
+          .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
+          .dividedBy(reserve.exchangeRate)
+          .toNumber();
+        suppliedAssets.push(
+          tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
         );
+        suppliedLtvs.push(reserve.config.liquidationThresholdPct / 100);
+        suppliedYields.push([
+          { apr: reserve.supplyApr, apy: aprToApy(reserve.supplyApr) },
+        ]);
+      }
 
-      elements.push({
-        type: PortfolioElementType.borrowlend,
-        networkId,
-        platformId,
-        label: 'Lending',
-        value,
-        data: {
-          borrowedAssets,
-          borrowedValue,
-          borrowedYields,
-          suppliedAssets,
-          suppliedValue,
-          suppliedYields,
-          collateralRatio: null,
+      for (const borrow of lendingAccount.borrows) {
+        if (
+          borrow.borrowReserve.toString() === zeroAdressValue ||
+          borrow.borrowedAmountSf.isLessThanOrEqualTo(0)
+        )
+          continue;
+        const amountRaw = borrow.borrowedAmountSf.dividedBy(
+          borrow.cumulativeBorrowRateBsf.value0
+        );
+        const reserve = reserves[borrow.borrowReserve.toString()];
+        if (!reserve) continue;
 
-          healthRatio,
-          rewardAssets,
+        const mint = reserve.liquidity.mintPubkey;
+        const tokenPrice = tokenPriceById.get(mint);
+        const amount = amountRaw
+          .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
+          .toNumber();
+        borrowedAssets.push(
+          tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
+        );
+        borrowedWeights.push(Number(reserve.config.borrowFactorPct) / 100);
+        borrowedYields.push([
+          { apr: -reserve.borrowApr, apy: -aprToApy(reserve.borrowApr) },
+        ]);
+      }
+
+      if (suppliedAssets.length !== 0 || borrowedAssets.length !== 0) {
+        const { borrowedValue, suppliedValue, value, healthRatio } =
+          getElementLendingValues(
+            suppliedAssets,
+            borrowedAssets,
+            rewardAssets,
+            suppliedLtvs,
+            borrowedWeights
+          );
+
+        elements.push({
+          type: PortfolioElementType.borrowlend,
+          networkId,
+          platformId,
+          label: 'Lending',
+          name: marketName,
           value,
-        },
-      });
+          data: {
+            borrowedAssets,
+            borrowedValue,
+            borrowedYields,
+            suppliedAssets,
+            suppliedValue,
+            suppliedYields,
+            collateralRatio: null,
+            healthRatio,
+            rewardAssets,
+            value,
+          },
+        });
+      }
     }
   }
 
