@@ -9,6 +9,7 @@ import {
   tokenAccountStruct,
 } from '../../utils/solana';
 import { xStakingConfigs } from './constants';
+import { walletTokensPlatform } from '../tokens/constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -50,7 +51,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       decimals: config.xDecimals,
       id: config.vault,
       networkId: NetworkId.solana,
-      platformId: config.platformId,
+      platformId: walletTokensPlatform.id,
       price: xPrice.toNumber(),
       timestamp: Date.now(),
       weight: 1,
