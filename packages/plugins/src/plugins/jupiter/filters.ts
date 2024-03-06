@@ -11,3 +11,13 @@ export const perpetualsPositionsFilter = (
   },
   { dataSize: 216 },
 ];
+
+export const escrowFilter = (owner: string): GetProgramAccountsFilter[] => [
+  {
+    memcmp: {
+      offset: 40,
+      bytes: owner,
+    },
+  },
+  { dataSize: 322 },
+];

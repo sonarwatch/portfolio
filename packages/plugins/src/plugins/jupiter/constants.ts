@@ -12,6 +12,13 @@ export const perpsProgramId = new PublicKey(
   'PERPHjGBqRHArX4DySjwM6UJHiR3sWAatqfdBS2qQJu'
 );
 
+export const voteProgramId = new PublicKey(
+  'voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj'
+);
+export const lockerPubkey = new PublicKey(
+  'CVMdMd79no569tjc5Sq7kzz8isbfCcFyBS5TLGsrZ5dN'
+);
+
 export const merkleDistributorPid = new PublicKey(
   'meRjbQXFNf5En86FXT2YPz1dQzLj4Yb3xK8u1MVgqpb'
 );

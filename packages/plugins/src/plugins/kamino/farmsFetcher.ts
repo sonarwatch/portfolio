@@ -3,6 +3,7 @@ import {
   PortfolioAsset,
   PortfolioElementType,
   PortfolioLiquidity,
+  TokenPrice,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
@@ -13,7 +14,7 @@ import { getParsedProgramAccounts } from '../../utils/solana';
 import { userStateStruct } from './structs/vaults';
 import { userStateFilter } from './filters';
 import { FarmInfo } from './types';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -35,28 +36,45 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const farmById: Map<string, FarmInfo> = new Map();
   farmsInfo.forEach((farmInfo) => farmById.set(farmInfo.pubkey, farmInfo));
 
+  const mints: Set<string> = new Set();
+  farmsInfo.forEach((farm) => {
+    mints.add(farm.mint);
+    farm.rewardsMints.forEach((reward) => mints.add(reward));
+  });
+
+  const tokenPrices = await cache.getTokenPrices(
+    Array.from(mints),
+    NetworkId.solana
+  );
+  const tokenPriceById: Map<string, TokenPrice> = new Map();
+  tokenPrices.forEach((tP) =>
+    tP ? tokenPriceById.set(tP.address, tP) : undefined
+  );
+
   const liquidities: PortfolioLiquidity[] = [];
 
   for (const userState of userStates) {
     const rewardAssets: PortfolioAsset[] = [];
     const assets: PortfolioAsset[] = [];
-    const farm = farmById.get(userState.farmState.toString());
-    if (!farm) continue;
     if (userState.activeStakeScaled.isZero()) continue;
 
-    const { price, decimals } = farm;
+    const farm = farmById.get(userState.farmState.toString());
+    if (!farm) continue;
+
+    const tokenPrice = tokenPriceById.get(farm.mint);
+
+    const { decimals } = farm;
     const amount = userState.activeStakeScaled
       .dividedBy(10 ** 18)
       .dividedBy(10 ** decimals)
       .toNumber();
 
     assets.push(
-      tokenPriceToAssetToken(
+      ...tokenPriceToAssetTokens(
         farm.mint,
         amount,
         NetworkId.solana,
-        undefined,
-        price
+        tokenPrice
       )
     );
     // for (let i = 0; i < farm.rewardsMints.length; i++) {

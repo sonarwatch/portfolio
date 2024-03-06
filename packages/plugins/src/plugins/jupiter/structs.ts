@@ -305,3 +305,34 @@ export const claimStatusStruct = new BeetStruct<ClaimStatus>(
   ],
   (args) => args as ClaimStatus
 );
+
+export type Escrow = {
+  buffer: Buffer;
+  locker: PublicKey;
+  owner: PublicKey;
+  bump: number;
+  tokens: PublicKey;
+  amount: BigNumber;
+  escrowStartedAt: BigNumber;
+  escrowEndsAt: BigNumber;
+  voteDelegate: PublicKey;
+  isMaxLock: boolean;
+  buffers: BigNumber[];
+};
+
+export const escrowStruct = new BeetStruct<Escrow>(
+  [
+    ['buffer', blob(8)],
+    ['locker', publicKey],
+    ['owner', publicKey],
+    ['bump', u8],
+    ['tokens', publicKey],
+    ['amount', u64],
+    ['escrowStartedAt', i64],
+    ['escrowEndsAt', i64],
+    ['voteDelegate', publicKey],
+    ['isMaxLock', bool],
+    ['buffers', uniformFixedSizeArray(u128, 10)],
+  ],
+  (args) => args as Escrow
+);
