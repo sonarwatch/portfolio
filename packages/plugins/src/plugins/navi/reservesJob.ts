@@ -1,4 +1,3 @@
-import { getObjectFields } from '@mysten/sui.js';
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
@@ -10,6 +9,7 @@ import {
   reservesPrefix,
 } from './constants';
 import { ReserveData } from './types';
+import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
@@ -18,12 +18,12 @@ const executor: JobExecutor = async (cache: Cache) => {
   let error;
   let index = 0;
   do {
-    const reserve = await client.getDynamicFieldObject({
+    const reserve = await getDynamicFieldObject<ReserveData>(client, {
       parentId: reserveParentId,
       name: { type: 'u8', value: index },
     });
-    if (reserve.data) {
-      const reserveData = getObjectFields(reserve.data) as ReserveData;
+    if (reserve.data?.content?.fields) {
+      const reserveData = reserve.data.content.fields;
       if (reserveData.value) reservesDatas.push(reserveData);
     }
     index += 1;

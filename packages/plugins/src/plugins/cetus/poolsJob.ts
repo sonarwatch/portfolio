@@ -7,28 +7,23 @@ import { clmmPoolsPrefix, createPoolEvent, platformId } from './constants';
 import { getPoolFromObject } from './helpers';
 import storeTokenPricesFromSqrt from '../../utils/clmm/tokenPricesFromSqrt';
 import { ParsedJsonEvent } from './types';
-import getMultipleSuiObjectsSafe from '../../utils/sui/getMultipleObjectsSafe';
-import queryEventsSafe from '../../utils/sui/queryEventSafe';
+import { multiGetObjects } from '../../utils/sui/multiGetObjects';
+import { queryEvents } from '../../utils/sui/queryEvents';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
 
-  const eventsData = await queryEventsSafe(client, {
+  const eventsData = await queryEvents<ParsedJsonEvent>(client, {
     MoveEventType: createPoolEvent,
   });
 
   const poolsAddresses = eventsData
     .map((eventData) =>
-      eventData.parsedJson
-        ? (eventData.parsedJson as ParsedJsonEvent).pool_id
-        : []
+      eventData.parsedJson ? eventData.parsedJson.pool_id : []
     )
     .flat();
 
-  const poolsObjects = await getMultipleSuiObjectsSafe(client, poolsAddresses, {
-    showContent: true,
-    showType: true,
-  });
+  const poolsObjects = await multiGetObjects(client, poolsAddresses);
 
   const promises = [];
 

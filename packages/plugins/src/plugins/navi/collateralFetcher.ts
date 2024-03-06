@@ -8,7 +8,6 @@ import {
   formatTokenAddress,
   getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
-import { getObjectFields } from '@mysten/sui.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -21,6 +20,7 @@ import {
 import { getClientSui } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { BalanceData, ReserveData } from './types';
+import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
 
 const amountFactor = new BigNumber(10 ** 36);
 
@@ -45,12 +45,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
 
   for (const rData of reservesData) {
-    const borrowBalancePromise = client.getDynamicFieldObject({
+    const borrowBalancePromise = getDynamicFieldObject<BalanceData>(client, {
       parentId:
         rData.value.fields.borrow_balance.fields.user_state.fields.id.id,
       name: { type: 'address', value: owner },
     });
-    const supplyBalancePromise = client.getDynamicFieldObject({
+    const supplyBalancePromise = getDynamicFieldObject<BalanceData>(client, {
       parentId:
         rData.value.fields.supply_balance.fields.user_state.fields.id.id,
       name: { type: 'address', value: owner },
@@ -64,8 +64,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       formatTokenAddress(rData.value.fields.coin_type, NetworkId.sui)
     );
 
-    if (!borrowBalance.error && borrowBalance.data) {
-      const borrowInfo = getObjectFields(borrowBalance.data) as BalanceData;
+    if (!borrowBalance.error && borrowBalance.data?.content) {
+      const borrowInfo = borrowBalance.data.content?.fields;
       if (borrowInfo.value) {
         borrowedAssets.push(
           tokenPriceToAssetToken(
@@ -90,8 +90,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       }
     }
 
-    if (!supplyBalance.error && supplyBalance.data) {
-      const supplyInfo = getObjectFields(supplyBalance.data) as BalanceData;
+    if (!supplyBalance.error && supplyBalance.data?.content?.fields) {
+      const supplyInfo = supplyBalance.data.content.fields;
       if (supplyInfo.value) {
         suppliedAssets.push(
           tokenPriceToAssetToken(

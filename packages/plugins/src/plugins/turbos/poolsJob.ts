@@ -1,4 +1,3 @@
-import { getObjectFields, getObjectId } from '@mysten/sui.js';
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -7,23 +6,22 @@ import { clmmPoolsPrefix, platformId, poolTableId } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { parsePool } from './helper';
 import storeTokenPricesFromSqrt from '../../utils/clmm/tokenPricesFromSqrt';
-import getDynamicFieldsSafe from '../../utils/sui/getDynamicFieldsSafe';
-import getMultipleSuiObjectsSafe from '../../utils/sui/getMultipleObjectsSafe';
+import { getDynamicFields } from '../../utils/sui/getDynamicFields';
+import { multiGetObjects } from '../../utils/sui/multiGetObjects';
+import { PoolFields } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
-  const poolFactories = await getDynamicFieldsSafe(client, poolTableId);
-  const poolFactoryIds = poolFactories.map(getObjectId);
+  const poolFactories = await getDynamicFields(client, poolTableId);
+  const poolFactoryIds = poolFactories.map((p) => p.objectId);
   if (!poolFactoryIds.length) return;
 
-  const poolFactoryInfos = await getMultipleSuiObjectsSafe(
-    client,
-    poolFactoryIds,
-    { showContent: true }
-  );
+  const poolFactoryInfos = await multiGetObjects(client, poolFactoryIds, {
+    showContent: true,
+  });
 
   const poolIds = poolFactoryInfos.map((info) => {
-    const fields = getObjectFields(info) as {
+    const fields = info.data?.content?.fields as {
       value: {
         fields: {
           pool_id: string;
@@ -35,9 +33,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   });
 
   if (!poolIds.length) return;
-  const pools = await getMultipleSuiObjectsSafe(client, poolIds, {
-    showContent: true,
-  });
+  const pools = await multiGetObjects<PoolFields>(client, poolIds);
   const promises = [];
   for (const pool of pools) {
     const parsedPool = parsePool(pool);

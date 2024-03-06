@@ -6,7 +6,6 @@ import {
   Yield,
   getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
-import { getObjectFields } from '@mysten/sui.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -14,6 +13,7 @@ import { buckId, collaterals, platformId } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { CollateralFields } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -34,7 +34,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         value: owner,
       },
     };
-    const positionData = await client.getDynamicFieldObject(input);
+    const positionData = await getDynamicFieldObject<CollateralFields>(
+      client,
+      input
+    );
     if (!positionData.data) continue;
 
     const tokenPrice = await cache.getTokenPrice(
@@ -43,16 +46,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
     if (!tokenPrice) continue;
 
-    const collateralFields = getObjectFields(positionData) as CollateralFields;
-    if (
-      !collateralFields.value ||
-      !collateralFields.value.fields ||
-      !collateralFields.value.fields.value ||
-      !collateralFields.value.fields.value.fields
-    )
-      continue;
-
-    const collateralInfo = collateralFields.value.fields.value.fields;
+    const collateralInfo =
+      positionData.data.content?.fields.value.fields.value.fields;
+    if (!collateralInfo) continue;
     const suppliedQuantity = new BigNumber(collateralInfo.collateral_amount)
       .dividedBy(10 ** tokenPrice.decimals)
       .toNumber();

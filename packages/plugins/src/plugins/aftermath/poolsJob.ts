@@ -1,35 +1,35 @@
-import { getObjectFields, getObjectId } from '@mysten/sui.js';
 import BigNumber from 'bignumber.js';
-import { NetworkId, TokenPriceUnderlying } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  TokenPriceSource,
+  TokenPriceUnderlying,
+} from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSui } from '../../utils/clients';
 import { lpCoinsTable, platformId } from './constants';
 import { PoolInfo } from './types';
 import { minimumLiquidity } from '../../utils/misc/computeAndStoreLpPrice';
-import getMultipleSuiObjectsSafe from '../../utils/sui/getMultipleObjectsSafe';
-import getDynamicFieldsSafe from '../../utils/sui/getDynamicFieldsSafe';
 import { parseTypeString } from '../../utils/aptos';
 import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
 import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
 import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
+import { getDynamicFields } from '../../utils/sui/getDynamicFields';
+import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
   const networkId = NetworkId.sui;
-  const coinsTableFields = await getDynamicFieldsSafe(client, lpCoinsTable);
+  const coinsTableFields = await getDynamicFields(client, lpCoinsTable);
 
-  const poolFactoryIds = coinsTableFields.map(getObjectId);
+  const poolFactoryIds = coinsTableFields.map((f) => f.objectId);
   if (!poolFactoryIds.length) return;
 
-  const pObjects = await getMultipleSuiObjectsSafe(client, poolFactoryIds, {
-    showContent: true,
-  });
-
+  const pObjects = await multiGetObjects(client, poolFactoryIds);
   const poolsIds = pObjects
     .map((poolObject) => {
-      if (poolObject.data && poolObject.data.content) {
-        const fields = getObjectFields(poolObject) as {
+      if (poolObject.data?.content?.fields) {
+        const fields = poolObject.data?.content?.fields as {
           id: { id: string };
           name: string;
           value: string;
@@ -41,14 +41,14 @@ const executor: JobExecutor = async (cache: Cache) => {
     .flat();
   if (!poolsIds.length) return;
 
-  const poolsInfo = await getMultipleSuiObjectsSafe(client, poolsIds, {
-    showContent: true,
-  });
+  const poolsInfo = await multiGetObjects(client, poolsIds);
 
   const tokenPriceById = await getTokenPricesMap(
     poolsInfo
       .map((pool) =>
-        pool.data ? (getObjectFields(pool) as PoolInfo).type_names : []
+        pool.data?.content?.fields
+          ? (pool.data?.content?.fields as PoolInfo).type_names
+          : []
       )
       .flat()
       .map((type) => `0x${type}`),
@@ -57,8 +57,8 @@ const executor: JobExecutor = async (cache: Cache) => {
   );
 
   for (const pool of poolsInfo) {
-    if (!pool.data || !pool.data.content) continue;
-    const poolInfo = getObjectFields(pool) as PoolInfo;
+    if (!pool.data?.content?.fields) continue;
+    const poolInfo = pool.data?.content?.fields as PoolInfo;
 
     if (poolInfo.lp_supply.fields.value === '0') continue;
 
@@ -108,8 +108,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       if (totalLiquidity.isLessThan(minimumLiquidity)) continue;
 
       const price = totalLiquidity.dividedBy(poolSupply).toNumber();
-
-      await cache.setTokenPriceSource({
+      const tokenPriceSoure: TokenPriceSource = {
         id: platformId,
         weight: 1,
         address,
@@ -119,7 +118,8 @@ const executor: JobExecutor = async (cache: Cache) => {
         price,
         underlyings,
         timestamp: Date.now(),
-      });
+      };
+      await cache.setTokenPriceSource(tokenPriceSoure);
     } else {
       const tokenPriceA = tokenPriceById.get(`0x${poolInfo.type_names[0]}`);
       const tokenPriceB = tokenPriceById.get(`0x${poolInfo.type_names[1]}`);

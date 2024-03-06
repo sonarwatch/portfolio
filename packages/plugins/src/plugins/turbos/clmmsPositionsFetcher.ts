@@ -3,7 +3,6 @@ import {
   PortfolioElementType,
   PortfolioLiquidity,
 } from '@sonarwatch/portfolio-core';
-import { getObjectFields } from '@mysten/sui.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -18,11 +17,12 @@ import { NFTFields, Pool, PositionFields } from './types';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { bitsToNumber, formatForNative } from './helper';
+import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
+import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
-  const nftsPositionsRes = await client.getOwnedObjects({
-    owner,
+  const nftsPositionsRes = await getOwnedObjects(client, owner, {
     options: {
       showType: true,
       showContent: true,
@@ -31,18 +31,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     },
     filter: { Package: packageIdOriginal },
   });
-  if (!nftsPositionsRes.data) return [];
+  if (nftsPositionsRes.length === 0) return [];
 
   const clmmPoolsIds: string[] = [];
   const clmmPositionsIds: string[] = [];
   const nftPositionByPositionId: Map<string, NFTFields> = new Map();
-  for (let i = 0; i < nftsPositionsRes.data.length; i++) {
-    const nftData = nftsPositionsRes.data[i].data;
+  for (let i = 0; i < nftsPositionsRes.length; i++) {
+    const nftData = nftsPositionsRes[i].data;
     if (!nftData) continue;
 
     if (nftData.type !== clmmNftType) continue;
+    if (!nftData.content) continue;
 
-    const nftPositionFields = getObjectFields(nftData) as NFTFields;
+    const nftPositionFields = nftData.content.fields as NFTFields;
     clmmPoolsIds.push(nftPositionFields.pool_id);
     clmmPositionsIds.push(nftPositionFields.position_id);
     nftPositionByPositionId.set(
@@ -63,20 +64,22 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
   });
 
-  const clmmPositionsRes = await client.multiGetObjects({
-    ids: clmmPositionsIds,
-    options: {
+  const clmmPositionsRes = await multiGetObjects<PositionFields>(
+    client,
+    clmmPositionsIds,
+    {
       showType: true,
       showContent: true,
       showDisplay: true,
       showOwner: true,
-    },
-  });
+    }
+  );
 
   const assets: PortfolioLiquidity[] = [];
   let totalLiquidityValue = 0;
   for (let i = 0; i < clmmPositionsRes.length; i++) {
-    const clmmPosition = getObjectFields(clmmPositionsRes[i]) as PositionFields;
+    const clmmPosition = clmmPositionsRes[i].data?.content?.fields;
+    if (!clmmPosition) continue;
     const nftPosition = nftPositionByPositionId.get(clmmPosition.id.id);
     if (!nftPosition) continue;
 

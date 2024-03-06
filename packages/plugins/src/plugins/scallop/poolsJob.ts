@@ -1,11 +1,6 @@
-import {
-  CoinMetadata,
-  SUI_TYPE_ARG,
-  getObjectFields,
-  getObjectType,
-  normalizeStructTag,
-} from '@mysten/sui.js';
 import { NetworkId } from '@sonarwatch/portfolio-core';
+import { SUI_TYPE_ARG, normalizeStructTag } from '@mysten/sui.js/utils';
+import { CoinMetadata } from '@mysten/sui.js/client';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import {
@@ -16,6 +11,7 @@ import {
 } from './constants';
 import { AddressInfo, Coin, Pools } from './types';
 import { getClientSui } from '../../utils/clients';
+import { getObject } from '../../utils/sui/getObject';
 
 const SUI_TYPE = normalizeStructTag(SUI_TYPE_ARG);
 const client = getClientSui();
@@ -43,22 +39,16 @@ const executor: JobExecutor = async (cache: Cache) => {
         metadata: await client.getCoinMetadata({ coinType: SUI_TYPE }),
       };
     } else {
-      const object = await client.getObject({
-        id: detail.metaData,
-        options: {
-          showType: true,
-          showContent: true,
-        },
-      });
-      const objType = normalizeStructTag(getObjectType(object) ?? '');
-      const objFields = getObjectFields(object);
+      const object = await getObject<CoinMetadata>(client, detail.metaData);
+      const objType = normalizeStructTag(object.data?.type || '');
+      const objFields = object.data?.content?.fields;
       if (!objType || !objFields) return;
       coinTypes[coinName] = {
         coinType: objType.substring(
           objType.indexOf('<') + 1,
           objType.indexOf('>')
         ),
-        metadata: objFields as CoinMetadata,
+        metadata: objFields,
       };
     }
   }

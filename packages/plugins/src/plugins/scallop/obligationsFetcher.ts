@@ -9,12 +9,9 @@ import {
   formatMoveTokenAddress,
   getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
-import {
-  SuiObjectDataFilter,
-  getObjectFields,
-  normalizeStructTag,
-} from '@mysten/sui.js';
+import { normalizeStructTag } from '@mysten/sui.js/utils';
 import BigNumber from 'bignumber.js';
+import { SuiObjectDataFilter } from '@mysten/sui.js/client';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
@@ -32,11 +29,14 @@ import {
   Pools,
   UserObligations,
 } from './types';
-import { getOwnerObject, shortenAddress } from './helpers';
+import { shortenAddress } from './helpers';
 import { getClientSui } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import runInBatch from '../../utils/misc/runInBatch';
 import { CollateralAsset, DebtAsset } from './types/obligation';
+import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
+import { getObject } from '../../utils/sui/getObject';
+import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -61,7 +61,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   };
 
   const [ownedObligationKeys, marketData] = await Promise.all([
-    getOwnerObject(owner, { filter: filterOwnerObject }),
+    getOwnedObjects<ObligationKeyFields>(client, owner, {
+      filter: filterOwnerObject,
+    }),
     cache.getItem<MarketJobResult>(marketKey, {
       prefix,
       networkId: NetworkId.sui,
@@ -73,9 +75,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const debtsAndCollateralCalculationPromises = ownedObligationKeys.map(
     (obligationKey) => async () => {
-      const obligationKeyFields = getObjectFields(
-        obligationKey
-      ) as ObligationKeyFields;
+      const obligationKeyFields = obligationKey.data?.content?.fields;
       if (!obligationKeyFields) return;
       const obligationId = obligationKeyFields.ownership.fields.of;
       if (!userObligations[obligationId]) {
@@ -84,14 +84,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           debts: {},
         };
       }
-      const account = getObjectFields(
-        await client.getObject({
-          id: obligationId,
-          options: {
-            showContent: true,
-          },
-        })
-      ) as ObligationAccount;
+      const getObjectRes = await getObject<ObligationAccount>(
+        client,
+        obligationId
+      );
+      const account = getObjectRes.data?.content?.fields;
       if (!account) return;
 
       const accountCollateralsId =
@@ -109,8 +106,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
               userObligations[obligationId].collaterals[fields.name] =
                 BigNumber(0);
             }
-            const asset = getObjectFields(
-              await client.getDynamicFieldObject({
+
+            const rAsset = await getDynamicFieldObject<CollateralAsset>(
+              client,
+              {
                 parentId: accountCollateralsId,
                 name: {
                   type: '0x1::type_name::TypeName',
@@ -118,8 +117,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
                     name: fields.name,
                   },
                 },
-              })
-            ) as CollateralAsset | undefined;
+              }
+            );
+            const asset = rAsset.data?.content?.fields;
             if (!asset) return;
             userObligations[obligationId].collaterals[fields.name] =
               userObligations[obligationId].collaterals[fields.name].plus(
@@ -145,17 +145,16 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             if (!userObligations[obligationId].debts[fields.name]) {
               userObligations[obligationId].debts[fields.name] = BigNumber(0);
             }
-            const asset = getObjectFields(
-              await client.getDynamicFieldObject({
-                parentId: accountDebtsId,
-                name: {
-                  type: '0x1::type_name::TypeName',
-                  value: {
-                    name: fields.name,
-                  },
+            const rAsset = await getDynamicFieldObject<DebtAsset>(client, {
+              parentId: accountDebtsId,
+              name: {
+                type: '0x1::type_name::TypeName',
+                value: {
+                  name: fields.name,
                 },
-              })
-            ) as DebtAsset | undefined;
+              },
+            });
+            const asset = rAsset.data?.content?.fields;
             if (!asset) return;
             userObligations[obligationId].debts[fields.name] = userObligations[
               obligationId

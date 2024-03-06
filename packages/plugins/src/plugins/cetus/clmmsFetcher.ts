@@ -18,11 +18,11 @@ import { buildPosition, extractStructTagFromType } from './helpers';
 import { Pool, Position } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
+import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
-  const ownerRes = await client.getOwnedObjects({
-    owner,
+  const ownerRes = await getOwnedObjects(client, owner, {
     options: {
       showType: true,
       showContent: true,
@@ -31,11 +31,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     },
     filter: { Package: clmmPoolPackageId },
   });
-  if (!ownerRes.data || ownerRes.data.length === 0) return [];
+  if (ownerRes.length === 0) return [];
 
   const clmmPositions: Position[] = [];
-  for (let i = 0; i < ownerRes.data.length; i++) {
-    const clmmPositionRes = ownerRes.data[i];
+  for (let i = 0; i < ownerRes.length; i++) {
+    const clmmPositionRes = ownerRes[i];
     if (!clmmPositionRes.data || !clmmPositionRes.data.type) continue;
     const type = extractStructTagFromType(clmmPositionRes.data.type);
     if (type.full_address === clmmType) {

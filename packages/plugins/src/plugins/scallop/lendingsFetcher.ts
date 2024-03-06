@@ -9,14 +9,9 @@ import {
   formatMoveTokenAddress,
   getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
-import {
-  SuiObjectDataFilter,
-  getObjectFields,
-  getObjectType,
-  normalizeStructTag,
-  parseStructTag,
-} from '@mysten/sui.js';
+import { normalizeStructTag, parseStructTag } from '@mysten/sui.js/utils';
 import BigNumber from 'bignumber.js';
+import { SuiObjectDataFilter } from '@mysten/sui.js/client';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
@@ -31,7 +26,6 @@ import {
   spoolsPrefix,
   baseIndexRate,
 } from './constants';
-import { getOwnerObject } from './helpers';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import {
   MarketJobResult,
@@ -40,6 +34,8 @@ import {
   UserLending,
   UserStakeAccounts,
 } from './types';
+import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
+import { getClientSui } from '../../utils/clients';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elements: PortfolioElement[] = [];
@@ -59,6 +55,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const poolValues = Object.values(pools);
   if (poolValues.length === 0) return [];
 
+  const client = getClientSui();
   const filterOwnerObject: SuiObjectDataFilter = {
     MatchAny: [
       ...poolValues.map((value) => ({
@@ -71,7 +68,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   };
 
   const [allOwnedObjects, marketData, spoolData] = await Promise.all([
-    getOwnerObject(owner, { filter: filterOwnerObject }),
+    getOwnedObjects(client, owner, { filter: filterOwnerObject }),
     cache.getItem<MarketJobResult>(marketKey, {
       prefix,
       networkId: NetworkId.sui,
@@ -103,7 +100,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const lendingAssets: { [key: string]: UserLending } = {};
   const stakedAccount: UserStakeAccounts = {};
   for (const ownedMarketCoin of allOwnedObjects) {
-    const objType = getObjectType(ownedMarketCoin);
+    const objType = ownedMarketCoin.data?.type;
     if (!objType) continue;
 
     const parsed = parseStructTag(objType);
@@ -113,7 +110,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         objType.indexOf('>')
       )
     );
-    const fields = getObjectFields(ownedMarketCoin);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fields = ownedMarketCoin.data?.content?.fields as any;
     const coinName = poolValues
       .find((value) => value.coinType === coinType)
       ?.metadata?.symbol.toLowerCase();
