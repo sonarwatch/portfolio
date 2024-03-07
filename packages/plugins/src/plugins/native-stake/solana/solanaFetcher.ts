@@ -38,7 +38,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     solanaNetwork.native.address,
     NetworkId.solana
   );
-  if (!solTokenPrice) return [];
 
   const epochInfo = await cache.getItem<EpochInfo>(epochInfoCacheKey, {
     prefix: platformId,
@@ -46,9 +45,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
   const epoch = epochInfo?.epoch;
 
-  let marinadeNativeAmount = 0;
+  let marinadeSolAmount = 0;
+  let solAmount = 0;
   let nMarinadeAccounts = 0;
-  const nativeAssets: PortfolioAsset[] = [];
+  let nativeAssets: PortfolioAsset[] = [];
   for (let i = 0; i < stakeAccounts.length; i += 1) {
     const stakeAccount = stakeAccounts[i];
 
@@ -62,10 +62,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       stakeAccount.staker.toString()
     );
     if (isMarinade) {
-      marinadeNativeAmount += amount;
+      marinadeSolAmount += amount;
       nMarinadeAccounts += 1;
       continue;
-    }
+    } else solAmount += amount;
 
     // Status tags
     const { deactivationEpoch, activationEpoch } = stakeAccount;
@@ -91,12 +91,24 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         solanaNetwork.native.address,
         amount,
         NetworkId.solana,
+        solTokenPrice,
+        undefined,
+        {
+          tags,
+        }
+      ),
+    });
+  }
+
+  if (nativeAssets.length > 20) {
+    nativeAssets = [
+      tokenPriceToAssetToken(
+        solanaNetwork.native.address,
+        solAmount,
+        NetworkId.solana,
         solTokenPrice
       ),
-      attributes: {
-        tags,
-      },
-    });
+    ];
   }
 
   const elements: PortfolioElement[] = [];
@@ -119,13 +131,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       type: 'multiple',
       label: 'Staked',
       name: `Native (${nMarinadeAccounts} validators)`,
-      value: marinadeNativeAmount * solTokenPrice.price,
+      value: solTokenPrice ? marinadeSolAmount * solTokenPrice.price : null,
       data: {
         assets: [
           {
             ...tokenPriceToAssetToken(
               solanaNetwork.native.address,
-              marinadeNativeAmount,
+              marinadeSolAmount,
               NetworkId.solana,
               solTokenPrice
             ),
