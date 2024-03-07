@@ -183,9 +183,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       rewardTokenAddress,
       pendingRewardAmount,
       NetworkId.sui,
-      rewardTokenPrice
+      rewardTokenPrice,
+      undefined,
+      {
+        isClaimable: true,
+      }
     );
-    rewardAssets.push(rewardAssetToken);
+    rewardAssets.push({ ...rewardAssetToken });
   }
 
   for (const [assetName, assetValue] of Object.entries(lendingAssets)) {
