@@ -3,11 +3,11 @@ import {
   PortfolioAsset,
   PortfolioElement,
   PortfolioElementType,
-  TokenPrice,
   Yield,
   aprToApy,
   formatMoveTokenAddress,
   getElementLendingValues,
+  suiNetwork,
 } from '@sonarwatch/portfolio-core';
 import { normalizeStructTag, parseStructTag } from '@mysten/sui.js/utils';
 import BigNumber from 'bignumber.js';
@@ -162,22 +162,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const tokenAddresses = Object.values(lendingAssets).map(
     (value) => value.coinType
   );
-  const tokenPriceResult = await cache.getTokenPrices(
-    tokenAddresses,
+  const tokenPrices = await cache.getTokenPricesAsMap(
+    [...tokenAddresses, suiNetwork.native.address],
     NetworkId.sui
   );
-  const tokenPrices: Map<string, TokenPrice> = new Map();
-
-  tokenPriceResult.forEach((r) => {
-    if (!r) return;
-    tokenPrices.set(r.address, r);
-  });
 
   if (pendingReward.isGreaterThan(0)) {
     const pendingRewardAmount = pendingReward
-      .shiftedBy(-1 * (pools['sui']?.metadata?.decimals ?? 0))
+      .shiftedBy(-1 * suiNetwork.native.decimals)
       .toNumber();
-    const rewardTokenAddress = formatMoveTokenAddress(pools['sui'].coinType);
+    const rewardTokenAddress = formatMoveTokenAddress(
+      suiNetwork.native.address
+    );
     const rewardTokenPrice = tokenPrices.get(rewardTokenAddress);
     const rewardAssetToken = tokenPriceToAssetToken(
       rewardTokenAddress,
