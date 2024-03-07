@@ -15,7 +15,7 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const stakingAccountAddress = await getStakingAccountAddress(owner);
+  const stakingAccountAddress = getStakingAccountAddress(owner);
 
   const stakingAccount = await getParsedAccountInfo(
     client,
