@@ -75,6 +75,7 @@ export const lendingConfigs: Map<string, LendingMarketConfig> = new Map([
     },
   ],
   ['DxXdAyU3kCjnyggvHmY5nAwg5cRbbmdyX3npfDMjjMek', { name: 'JLP Market' }],
+  ['ByYiZxp8QrdN9qbdtaAiePN8AAr3qvTPppNJDpf5DVJ5', { name: 'Altcoins Market' }],
 ]);
 
 export const marketsKey = `markets`;
