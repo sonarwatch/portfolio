@@ -41,7 +41,7 @@ export function getElementLendingValues(
   suppliedLtvs?: number[],
   borrowedWeights?: number[]
 ) {
-  const rewardsValue: UsdValue = rewardAssets.reduce(
+  const rewardValue: UsdValue = rewardAssets.reduce(
     (acc: UsdValue, asset) =>
       acc !== null && asset.value !== null ? acc + asset.value : null,
     0
@@ -68,12 +68,12 @@ export function getElementLendingValues(
     suppliedValue !== null && borrowedValue !== null
       ? suppliedValue - borrowedValue
       : null;
-  if (rewardsValue !== null && value !== null) value += rewardsValue;
+  if (rewardValue !== null && value !== null) value += rewardValue;
 
   return {
     borrowedValue,
     suppliedValue,
-    rewardsValue,
+    rewardValue,
     healthRatio,
     value,
   };

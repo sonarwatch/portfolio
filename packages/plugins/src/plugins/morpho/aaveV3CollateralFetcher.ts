@@ -91,7 +91,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
   });
 
-  const { borrowedValue, suppliedValue, value, healthRatio } =
+  const { borrowedValue, suppliedValue, value, healthRatio, rewardValue } =
     getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
   if (borrowedValue === 0 && suppliedValue === 0) return [];
 
@@ -110,9 +110,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       suppliedValue,
       suppliedYields,
       collateralRatio: null,
-
       healthRatio,
       rewardAssets,
+      rewardValue,
       value,
     },
   };

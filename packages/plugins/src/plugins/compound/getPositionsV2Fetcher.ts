@@ -134,7 +134,7 @@ export default function getPositionsV2Fetcher(
 
     if (borrowedAssets.length === 0 && suppliedAssets.length === 0) return [];
 
-    const { borrowedValue, suppliedValue, value, healthRatio } =
+    const { borrowedValue, suppliedValue, value, healthRatio, rewardValue } =
       getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
     return [
       {
@@ -153,6 +153,7 @@ export default function getPositionsV2Fetcher(
           collateralRatio: null,
           healthRatio,
           rewardAssets,
+          rewardValue,
           value,
         },
       },
