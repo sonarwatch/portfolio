@@ -175,7 +175,7 @@ export default function getPositionsV3Fetcher(
         rewardAssets.length === 0
       )
         continue;
-      const { borrowedValue, suppliedValue, value, healthRatio } =
+      const { borrowedValue, suppliedValue, value, healthRatio, rewardValue } =
         getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
       elements.push({
         type: PortfolioElementType.borrowlend,
@@ -195,6 +195,7 @@ export default function getPositionsV3Fetcher(
 
           healthRatio,
           rewardAssets,
+          rewardValue,
           value,
         },
       });

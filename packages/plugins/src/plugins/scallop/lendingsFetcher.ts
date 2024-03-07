@@ -183,9 +183,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       rewardTokenAddress,
       pendingRewardAmount,
       NetworkId.sui,
-      rewardTokenPrice
+      rewardTokenPrice,
+      undefined,
+      {
+        isClaimable: true,
+      }
     );
-    rewardAssets.push(rewardAssetToken);
+    rewardAssets.push({ ...rewardAssetToken });
   }
 
   for (const [assetName, assetValue] of Object.entries(lendingAssets)) {
@@ -221,7 +225,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     rewardAssets.length === 0
   )
     return [];
-  const { borrowedValue, healthRatio, suppliedValue, value } =
+  const { borrowedValue, healthRatio, suppliedValue, value, rewardValue } =
     getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
   elements.push({
     type: PortfolioElementType.borrowlend,
@@ -237,9 +241,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       suppliedValue,
       suppliedYields,
       collateralRatio: null,
-
       healthRatio,
       rewardAssets,
+      rewardValue,
       value,
     },
   });

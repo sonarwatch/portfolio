@@ -1,5 +1,6 @@
 import {
   NetworkIdType,
+  PortfolioAssetAttributes,
   PortfolioAssetToken,
   PortfolioAssetType,
   TokenPrice,
@@ -13,7 +14,8 @@ export default function tokenPriceToAssetToken(
   amount: number,
   networkId: NetworkIdType,
   tokenPrice?: TokenPrice | TokenPriceUnderlying | null,
-  price?: number
+  price?: number,
+  attributes?: PortfolioAssetAttributes
 ): PortfolioAssetToken {
   const fPrice: UsdValue = tokenPrice?.price || price || null;
   return {
@@ -25,6 +27,6 @@ export default function tokenPriceToAssetToken(
       amount,
       price: fPrice,
     },
-    attributes: {},
+    attributes: attributes || {},
   };
 }

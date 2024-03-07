@@ -152,14 +152,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       }
 
       if (suppliedAssets.length !== 0 || borrowedAssets.length !== 0) {
-        const { borrowedValue, suppliedValue, value, healthRatio } =
-          getElementLendingValues(
-            suppliedAssets,
-            borrowedAssets,
-            rewardAssets,
-            suppliedLtvs,
-            borrowedWeights
-          );
+        const {
+          borrowedValue,
+          suppliedValue,
+          value,
+          healthRatio,
+          rewardValue,
+        } = getElementLendingValues(
+          suppliedAssets,
+          borrowedAssets,
+          rewardAssets,
+          suppliedLtvs,
+          borrowedWeights
+        );
 
         elements.push({
           type: PortfolioElementType.borrowlend,
@@ -178,6 +183,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             collateralRatio: null,
             healthRatio,
             rewardAssets,
+            rewardValue,
             value,
           },
         });
@@ -261,13 +267,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       }
 
       if (suppliedAssets.length !== 0 || borrowedAssets.length !== 0) {
-        const { borrowedValue, suppliedValue, value } = getElementLendingValues(
-          suppliedAssets,
-          borrowedAssets,
-          rewardAssets,
-          suppliedLtvs,
-          borrowedWeights
-        );
+        const { borrowedValue, suppliedValue, value, rewardValue } =
+          getElementLendingValues(
+            suppliedAssets,
+            borrowedAssets,
+            rewardAssets,
+            suppliedLtvs,
+            borrowedWeights
+          );
 
         elements.push({
           type: PortfolioElementType.borrowlend,
@@ -287,6 +294,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             collateralRatio: null,
 
             rewardAssets,
+            rewardValue,
             value,
           },
         });
@@ -361,13 +369,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
 
     if (suppliedAssets.length !== 0 || borrowedAssets.length !== 0) {
-      const { borrowedValue, suppliedValue, value } = getElementLendingValues(
-        suppliedAssets,
-        borrowedAssets,
-        rewardAssets,
-        suppliedLtvs,
-        borrowedWeights
-      );
+      const { borrowedValue, suppliedValue, value, rewardValue } =
+        getElementLendingValues(
+          suppliedAssets,
+          borrowedAssets,
+          rewardAssets,
+          suppliedLtvs,
+          borrowedWeights
+        );
 
       elements.push({
         type: PortfolioElementType.borrowlend,
@@ -387,6 +396,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
           healthRatio: null,
           rewardAssets,
+          rewardValue,
           value,
         },
       });
