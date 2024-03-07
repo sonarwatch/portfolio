@@ -21,6 +21,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     programId,
     stakeFilters(owner)
   );
+  if (stakeAccounts.length === 0) return [];
 
   const tokenPrice = await cache.getTokenPrice(flowmaticMint, NetworkId.solana);
   const assets: PortfolioAsset[] = [];

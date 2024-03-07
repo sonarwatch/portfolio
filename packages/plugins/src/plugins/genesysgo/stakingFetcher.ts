@@ -22,6 +22,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     programId,
     userStateFilter(owner)
   );
+  if (userStateAccounts.length === 0) return [];
 
   const tokenPrice = await cache.getTokenPrice(shadowMint, NetworkId.solana);
 
