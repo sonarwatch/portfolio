@@ -37,7 +37,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
 
   const amount = tokenAccountInfo?.amount;
-  if (!amount) return [];
+  if (!amount || amount.isZero()) return [];
 
   const tokenPrice = await cache.getTokenPrice(pythMint, NetworkId.solana);
   const asset = tokenPriceToAssetToken(
