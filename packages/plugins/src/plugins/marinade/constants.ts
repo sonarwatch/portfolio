@@ -20,9 +20,12 @@ export const claimProgram = new PublicKey(
   'indiXdKbsC4QSLQQnn6ngZvkqfywn6KgEeQbkGSpk1V'
 );
 export const mndeMint = 'MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey';
+export const mndeDecimals = 9;
 export const solFactor = new BigNumber(10 ** solanaNetwork.native.decimals);
 export const baseRewardsUrl =
   'https://native-staking-referral.marinade.finance/v1/rewards/';
 export const season2Route = 'all/season-2?pubkey=';
 export const stakerRoute = 'staker?pubkey=';
 export const referrerRoute = 'referrer?pubkey=';
+export const season1Unlock = new Date(1704067200000); // January 1 2024
+export const season2Unlock = new Date(1711843200000); // March 31 2024
