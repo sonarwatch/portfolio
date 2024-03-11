@@ -39,6 +39,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     0
   );
 
+  if (solRawBalance === 0) return [];
+
   const solTokenPrice = await cache.getTokenPrice(
     solanaNativeAddress,
     NetworkId.solana
