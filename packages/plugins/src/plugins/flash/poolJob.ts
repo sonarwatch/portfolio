@@ -1,21 +1,13 @@
-import { NetworkId, TokenPrice } from '@sonarwatch/portfolio-core';
-import { PublicKey } from '@solana/web3.js';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSolana } from '../../utils/clients';
-import getLpTokenSource from '../../utils/misc/getLpTokenSource';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 import { platformId, poolsPkeys } from './constants';
 import { pool1Struct, pool2Struct, pool3Struct } from './structs';
 import { fetchTokenSupplyAndDecimals } from '../../utils/solana/fetchTokenSupplyAndDecimals';
-import { CustodyInfo } from './types';
-import {
-  TokenAccount,
-  getParsedMultipleAccountsInfo,
-  tokenAccountStruct,
-  u8ArrayToString,
-} from '../../utils/solana';
-import { custodiesKey } from '../jupiter/constants';
+import { u8ArrayToString } from '../../utils/solana';
+import { walletTokensPlatform } from '../tokens/constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -30,43 +22,6 @@ const executor: JobExecutor = async (cache: Cache) => {
     pool3Struct.deserialize(pools[2].data)[0],
   ];
 
-  const custodies = await cache.getItem<CustodyInfo[]>(custodiesKey, {
-    prefix: platformId,
-    networkId: NetworkId.solana,
-  });
-  if (!custodies) return;
-
-  const custodyById: Map<string, CustodyInfo> = new Map();
-  for (const custody of custodies) {
-    custodyById.set(custody.pubkey, custody);
-  }
-
-  const underlyingsTokenAccountsKey = custodies.map(
-    (account) => new PublicKey(account.tokenAccount)
-  );
-  const underlyingsTokenAccounts = await getParsedMultipleAccountsInfo(
-    client,
-    tokenAccountStruct,
-    underlyingsTokenAccountsKey
-  );
-  const tokenAccountById: Map<string, TokenAccount> = new Map();
-  const mints: Set<string> = new Set();
-  for (const tokenAccount of underlyingsTokenAccounts) {
-    if (tokenAccount) {
-      tokenAccountById.set(tokenAccount.pubkey.toString(), tokenAccount);
-      mints.add(tokenAccount.mint.toString());
-    }
-  }
-
-  const tokenPrices = await cache.getTokenPrices(
-    Array.from(mints),
-    NetworkId.solana
-  );
-  const tokenPriceById: Map<string, TokenPrice> = new Map();
-  for (const tokenPrice of tokenPrices) {
-    if (tokenPrice) tokenPriceById.set(tokenPrice.address, tokenPrice);
-  }
-
   for (let i = 0; i < poolsAccounts.length; i++) {
     const pool = poolsAccounts[i];
     const supAndDecimals = await fetchTokenSupplyAndDecimals(
@@ -77,49 +32,8 @@ const executor: JobExecutor = async (cache: Cache) => {
     if (!supAndDecimals) continue;
 
     const { supply, decimals } = supAndDecimals;
-    const custodiesAccounts = pool.custodies
-      .map((custody) => {
-        const account = custodyById.get(custody.toString());
-        return account || [];
-      })
-      .flat();
-    const tokenAccountKeys = custodiesAccounts.map(
-      (account) => account.tokenAccount
-    );
 
-    const tokenAccounts = tokenAccountKeys
-      .map((key) => {
-        const tokenAccount = tokenAccountById.get(key);
-        return tokenAccount || [];
-      })
-      .flat();
-
-    if (tokenAccounts.length !== custodiesAccounts.length) continue;
-    const assets = [];
-    for (const tokenAccount of tokenAccounts) {
-      if (!tokenAccount) continue;
-      const tokenPrice = tokenPriceById.get(tokenAccount.mint.toString());
-      if (!tokenPrice) continue;
-      assets.push({
-        address: tokenAccount.mint.toString(),
-        decimals: tokenPrice.decimals,
-        price: tokenPrice.price,
-        reserveAmount: tokenAccount.amount
-          .dividedBy(10 ** tokenPrice.decimals)
-          .toNumber(),
-      });
-    }
-
-    // eslint-disable-next-line prefer-const
-    let source = getLpTokenSource(
-      NetworkId.solana,
-      poolsPkeys[i].toString(),
-      platformId,
-      u8ArrayToString(pool.name),
-      { address: mint, decimals, supply },
-      assets
-    );
-    source.price = pool.aumUsd
+    const price = pool.aumUsd
       .dividedBy(10 ** decimals)
       .dividedBy(supply)
       .toNumber();
@@ -129,12 +43,22 @@ const executor: JobExecutor = async (cache: Cache) => {
       networkId: NetworkId.solana,
     });
 
-    await cache.setTokenPriceSource(source);
+    await cache.setTokenPriceSource({
+      address: mint,
+      decimals,
+      id: poolsPkeys[i].toString(),
+      networkId: NetworkId.solana,
+      platformId: walletTokensPlatform.id,
+      price,
+      timestamp: Date.now(),
+      weight: 1,
+      elementName: u8ArrayToString(pool.name),
+    });
   }
 };
 
 const job: Job = {
-  id: `${platformId}-pool`,
+  id: `${platformId}-pools`,
   executor,
   label: 'normal',
 };
