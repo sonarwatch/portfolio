@@ -63,12 +63,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const marketSeed = mainMarket.slice(0, 16);
   const ownerSeed = owner.slice(0, 16);
   const obligationSeed = ownerSeed + marketSeed;
-  const flexlendObligAddress = await PublicKey.createWithSeed(
+  const oldFlexlendObligAddress = await PublicKey.createWithSeed(
     AUTOMATION_PUBLIC_KEY,
     obligationSeed,
     pid
   );
-  obligationAddresses.push(flexlendObligAddress);
+  const newFlexlendObligAddress = await PublicKey.createWithSeed(
+    new PublicKey(owner),
+    obligationSeed,
+    pid
+  );
+  obligationAddresses.push(
+    ...[oldFlexlendObligAddress, newFlexlendObligAddress]
+  );
 
   const obligations = await getParsedMultipleAccountsInfo(
     client,
