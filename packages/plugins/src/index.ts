@@ -1,7 +1,6 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from './Fetcher';
 import { Job } from './Job';
-import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 import orphanPlatorms from './orphanPlatorms';
 import {
   platforms as tokensPlatforms,
@@ -341,7 +340,9 @@ import {
   jobs as xStakingSolanaJobs,
   fetchers as xStakingSolanaFetchers,
 } from './plugins/x-staking-solana';
+import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
+export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 export {
   walletTokensPlatform,
   walletNftsPlatform,
