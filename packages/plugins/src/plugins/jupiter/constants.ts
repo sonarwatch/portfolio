@@ -1,6 +1,15 @@
 import { PublicKey } from '@solana/web3.js';
+import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'jupiter';
+export const jupiterPlatform: Platform = {
+  id: platformId,
+  name: 'Jupiter',
+  image: 'https://sonar.watch/img/platforms/jupiter.png',
+  defiLlamaId: 'jupiter',
+  website: 'https://jup.ag/',
+};
+
 export const jlpPool = new PublicKey(
   '5BUwFW4nRbftYTDMbgxykoFWqWHPzahFSNAaaaJtVKsq'
 );

@@ -13,7 +13,8 @@ import { limitOrderStruct } from './struct';
 import { getParsedProgramAccounts } from '../../../utils/solana';
 import { jupiterLimitsFilter } from './filters';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import { jupiterPlatform, limitProgramId } from './constants';
+import { limitProgramId } from './constants';
+import { jupiterPlatform } from '../../jupiter/constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();

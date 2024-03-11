@@ -10,10 +10,11 @@ import { platformId } from '../constants';
 import { getClientSolana } from '../../../utils/clients';
 import { getParsedProgramAccounts } from '../../../utils/solana';
 import { dcaStruct } from './struct';
-import { dcaProgramId, jupiterPlatform } from './constants';
+import { dcaProgramId } from './constants';
 import { jupiterDCAFilter } from './filters';
 import getTokenPricesMap from '../../../utils/misc/getTokensPricesMap';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
+import { jupiterPlatform } from '../../jupiter/constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();

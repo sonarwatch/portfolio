@@ -212,6 +212,7 @@ import {
   fetchers as fluxbeamFetchers,
 } from './plugins/fluxbeam';
 import {
+  platforms as jupiterPlatforms,
   jobs as jupiterJobs,
   fetchers as jupiterFetchers,
 } from './plugins/jupiter';
@@ -415,6 +416,7 @@ export const platforms: Platform[] = [
   ...benqiPlatforms,
   ...parclPlatforms,
   ...pythPlatforms,
+  ...jupiterPlatforms,
   ...circuitPlatforms,
   ...ariesPlatforms,
   ...flashPlatforms,
