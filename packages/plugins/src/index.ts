@@ -322,11 +322,6 @@ import {
   fetchers as bsktFetchers,
 } from './plugins/bskt';
 import {
-  platforms as flowmaticPlatforms,
-  jobs as flowmaticJobs,
-  fetchers as flowmaticFetchers,
-} from './plugins/flowmatic';
-import {
   platforms as genesysgoPlatforms,
   jobs as genesysgoJobs,
   fetchers as genesysgoFetchers,
@@ -341,6 +336,11 @@ import {
   jobs as xStakingSolanaJobs,
   fetchers as xStakingSolanaFetchers,
 } from './plugins/x-staking-solana';
+import {
+  platforms as splStakingPlatforms,
+  jobs as splStakingJobs,
+  fetchers as splStakingFetchers,
+} from './plugins/spl-staking';
 
 export {
   walletTokensPlatform,
@@ -421,10 +421,10 @@ export const platforms: Platform[] = [
   ...accessprotocolPlatforms,
   ...aptinPlatforms,
   ...bsktPlatforms,
-  ...flowmaticPlatforms,
   ...genesysgoPlatforms,
   ...auroryPlatforms,
   ...xStakingSolanaPlatforms,
+  ...splStakingPlatforms,
 ];
 
 // JOBS //
@@ -489,10 +489,10 @@ export const jobs: Job[] = [
   ...accessprotocolJobs,
   ...aptinJobs,
   ...bsktJobs,
-  ...flowmaticJobs,
   ...genesysgoJobs,
   ...auroryJobs,
   ...xStakingSolanaJobs,
+  ...splStakingJobs,
 ];
 
 // FETCHERS //
@@ -559,9 +559,9 @@ export const fetchers: Fetcher[] = [
   ...accessprotocolFetchers,
   ...aptinFetchers,
   ...bsktFetchers,
-  ...flowmaticFetchers,
   ...genesysgoFetchers,
   ...auroryFetchers,
   ...xStakingSolanaFetchers,
+  ...splStakingFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
