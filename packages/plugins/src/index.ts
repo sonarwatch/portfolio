@@ -1,7 +1,6 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from './Fetcher';
 import { Job } from './Job';
-import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 import orphanPlatorms from './orphanPlatorms';
 import {
   platforms as tokensPlatforms,
@@ -213,6 +212,7 @@ import {
   fetchers as fluxbeamFetchers,
 } from './plugins/fluxbeam';
 import {
+  platforms as jupiterPlatforms,
   jobs as jupiterJobs,
   fetchers as jupiterFetchers,
 } from './plugins/jupiter';
@@ -341,7 +341,9 @@ import {
   jobs as splStakingJobs,
   fetchers as splStakingFetchers,
 } from './plugins/spl-staking';
+import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
+export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 export {
   walletTokensPlatform,
   walletNftsPlatform,
@@ -414,6 +416,7 @@ export const platforms: Platform[] = [
   ...benqiPlatforms,
   ...parclPlatforms,
   ...pythPlatforms,
+  ...jupiterPlatforms,
   ...circuitPlatforms,
   ...ariesPlatforms,
   ...flashPlatforms,

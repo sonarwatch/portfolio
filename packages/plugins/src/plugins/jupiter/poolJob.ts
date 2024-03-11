@@ -12,11 +12,8 @@ import {
   getParsedMultipleAccountsInfo,
   tokenAccountStruct,
 } from '../../utils/solana';
-import { jlpPool, jlpToken } from './constants';
+import { jlpPool, jlpToken, platformId } from './constants';
 import { custodyStruct, perpetualPoolStruct } from './structs';
-import { jupiterPlatform } from '../orders/jupiter/constants';
-
-const platformId = jupiterPlatform.id;
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
