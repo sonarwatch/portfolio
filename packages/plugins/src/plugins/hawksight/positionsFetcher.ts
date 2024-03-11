@@ -71,14 +71,16 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       ...element,
     });
   }
-  elements.push({
-    type: PortfolioElementType.multiple,
-    networkId: NetworkId.solana,
-    platformId,
-    label: 'Rewards',
-    value: getUsdValueSum(tokens.map((t) => t.value)),
-    data: { assets: tokens },
-  });
+  const value = getUsdValueSum(tokens.map((t) => t.value));
+  if (value !== 0)
+    elements.push({
+      type: PortfolioElementType.multiple,
+      networkId: NetworkId.solana,
+      platformId,
+      label: 'Rewards',
+      value,
+      data: { assets: tokens },
+    });
 
   return elements;
 };
