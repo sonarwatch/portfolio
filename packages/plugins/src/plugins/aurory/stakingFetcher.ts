@@ -15,15 +15,13 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const stakingAccountAddress = getStakingAccountAddress(owner);
-
   const stakingAccount = await getParsedAccountInfo(
     client,
     UserStakingAccountStruct,
-    stakingAccountAddress
+    getStakingAccountAddress(owner)
   );
 
-  if (!stakingAccount) return [];
+  if (!stakingAccount || stakingAccount.amount.isZero()) return [];
 
   const tokenPrice = await cache.getTokenPrice(xAuryMint, NetworkId.solana);
 
