@@ -25,9 +25,14 @@ import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
-  const suilendObjects = await getOwnedObjects(client, owner, {
-    filter: { Package: packageId },
-  });
+  const suilendObjects = await getOwnedObjects<ObligationCapFields>(
+    client,
+    owner,
+    {
+      filter: { Package: packageId },
+    }
+  );
+  if (suilendObjects.length === 0) return [];
 
   const mints: Set<string> = new Set();
   const rewardsInfo = await cache.getItem<RewardInfo[]>(poolsKey, {
@@ -43,15 +48,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const obligationsId: string[] = [];
   for (const object of suilendObjects) {
-    const { data } = object;
-    if (!data || !data.content) continue;
-
-    const { type } = data.content;
+    const type = object.data?.content?.type;
     if (!type || !type.startsWith(obligationOwnerCapType)) continue;
 
-    const fields = data.content.fields as ObligationCapFields;
-
-    if (fields.obligation_id) obligationsId.push(fields.obligation_id);
+    const obligationId = object.data?.content?.fields.obligation_id;
+    if (obligationId) obligationsId.push(obligationId);
   }
 
   const obligationsObjects = await multiGetObjects<Obligation>(
@@ -182,7 +183,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     });
   }
 
-  if (suppliedAssets.length === 0 && borrowedAssets.length === 0) return [];
+  if (
+    suppliedAssets.length === 0 &&
+    borrowedAssets.length === 0 &&
+    rewardAssets.length === 0
+  )
+    return [];
 
   const { borrowedValue, suppliedValue, value, healthRatio, rewardValue } =
     getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
