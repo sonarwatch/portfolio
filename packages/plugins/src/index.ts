@@ -341,6 +341,12 @@ import {
   jobs as splStakingJobs,
   fetchers as splStakingFetchers,
 } from './plugins/spl-staking';
+import {
+  platforms as suilendPlatforms,
+  jobs as suilendJobs,
+  fetchers as suilendFetchers,
+} from './plugins/suilend';
+
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
 export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
@@ -428,6 +434,7 @@ export const platforms: Platform[] = [
   ...auroryPlatforms,
   ...xStakingSolanaPlatforms,
   ...splStakingPlatforms,
+  ...suilendPlatforms,
 ];
 
 // JOBS //
@@ -496,6 +503,7 @@ export const jobs: Job[] = [
   ...auroryJobs,
   ...xStakingSolanaJobs,
   ...splStakingJobs,
+  ...suilendJobs,
 ];
 
 // FETCHERS //
@@ -566,5 +574,6 @@ export const fetchers: Fetcher[] = [
   ...auroryFetchers,
   ...xStakingSolanaFetchers,
   ...splStakingFetchers,
+  ...suilendFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
