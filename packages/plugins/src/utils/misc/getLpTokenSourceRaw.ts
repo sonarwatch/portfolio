@@ -2,7 +2,7 @@ import { NetworkIdType, TokenPriceSource } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import getLpTokenSource from './getLpTokenSource';
 
-type PoolUnderlyingRaw = {
+export type PoolUnderlyingRaw = {
   address: string;
   reserveAmountRaw: BigNumber;
   price: number;
