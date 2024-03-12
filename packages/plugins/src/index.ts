@@ -352,8 +352,12 @@ import {
   jobs as kaiJobs,
   fetchers as kaiFetchers,
 } from './plugins/kai';
+import {
+  platforms as suilendPlatforms,
+  jobs as suilendJobs,
+  fetchers as suilendFetchers,
+} from './plugins/suilend';
 
-export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 export {
   walletTokensPlatform,
   walletNftsPlatform,
@@ -440,6 +444,7 @@ export const platforms: Platform[] = [
   ...splStakingPlatforms,
   ...abexPlatforms,
   ...kaiPlatforms,
+  ...suilendPlatforms,
 ];
 
 // JOBS //
@@ -510,6 +515,7 @@ export const jobs: Job[] = [
   ...splStakingJobs,
   ...abexJobs,
   ...kaiJobs,
+  ...suilendJobs,
 ];
 
 // FETCHERS //
@@ -582,5 +588,6 @@ export const fetchers: Fetcher[] = [
   ...splStakingFetchers,
   ...abexFetchers,
   ...kaiFetchers,
+  ...suilendFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);

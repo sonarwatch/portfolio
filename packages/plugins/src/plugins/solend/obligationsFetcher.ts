@@ -29,10 +29,12 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import runInBatch from '../../utils/misc/runInBatch';
 import { AUTOMATION_PUBLIC_KEY } from '../flexlend/constants';
 import { getPythPrice } from '../../utils/solana/pyth/helpers';
+import { getDerivedAccount } from '../flexlend/helpers';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
   const obligationAddresses = [];
+
   const markets = await cache.getAllItems<MarketInfo>({
     prefix: marketsPrefix,
     networkId: NetworkId.solana,
@@ -59,13 +61,16 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       obligationAddresses.push(obligationAddress);
     }
   }
+
   // Flexlend, only support the main pool on Solend
   const marketSeed = mainMarket.slice(0, 16);
+  const flexSeed = getDerivedAccount(owner).slice(0, 16);
   const ownerSeed = owner.slice(0, 16);
-  const obligationSeed = ownerSeed + marketSeed;
+  const oldObligationSeed = ownerSeed + marketSeed;
+  const obligationSeed = flexSeed + marketSeed;
   const oldFlexlendObligAddress = await PublicKey.createWithSeed(
     AUTOMATION_PUBLIC_KEY,
-    obligationSeed,
+    oldObligationSeed,
     pid
   );
   const newFlexlendObligAddress = await PublicKey.createWithSeed(
