@@ -1,6 +1,7 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from './Fetcher';
 import { Job } from './Job';
+import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 import orphanPlatorms from './orphanPlatorms';
 import {
   platforms as tokensPlatforms,
@@ -341,7 +342,16 @@ import {
   jobs as splStakingJobs,
   fetchers as splStakingFetchers,
 } from './plugins/spl-staking';
-import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
+import {
+  platforms as abexPlatforms,
+  jobs as abexJobs,
+  fetchers as abexFetchers,
+} from './plugins/abex';
+import {
+  platforms as kaiPlatforms,
+  jobs as kaiJobs,
+  fetchers as kaiFetchers,
+} from './plugins/kai';
 
 export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 export {
@@ -428,6 +438,8 @@ export const platforms: Platform[] = [
   ...auroryPlatforms,
   ...xStakingSolanaPlatforms,
   ...splStakingPlatforms,
+  ...abexPlatforms,
+  ...kaiPlatforms,
 ];
 
 // JOBS //
@@ -496,6 +508,8 @@ export const jobs: Job[] = [
   ...auroryJobs,
   ...xStakingSolanaJobs,
   ...splStakingJobs,
+  ...abexJobs,
+  ...kaiJobs,
 ];
 
 // FETCHERS //
@@ -566,5 +580,7 @@ export const fetchers: Fetcher[] = [
   ...auroryFetchers,
   ...xStakingSolanaFetchers,
   ...splStakingFetchers,
+  ...abexFetchers,
+  ...kaiFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
