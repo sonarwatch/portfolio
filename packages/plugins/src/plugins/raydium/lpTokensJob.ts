@@ -213,7 +213,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         const lpDecimals = lpMintAccount.decimals;
         const lpSupply =
           lpMint.toString() === 'CQurpF3WS3yEqFEt1Bu8s5zmZqznQG3EJkcYvsyg3sLc'
-            ? new BigNumber('3381427.37') // Temporary fix for SOL-WIF lp
+            ? new BigNumber('3381427.37').times(10 ** lpDecimals) // Temporary fix for SOL-WIF lp
             : lpMintAccount.supply;
         if (lpSupply.isZero()) continue;
 
