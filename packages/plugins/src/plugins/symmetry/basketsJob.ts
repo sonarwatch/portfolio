@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { basketProgramId, platformId, tokenListAddress } from './constants';
@@ -10,6 +10,7 @@ import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 import getLpTokenSourceRaw, {
   PoolUnderlyingRaw,
 } from '../../utils/misc/getLpTokenSourceRaw';
+import runInBatch from '../../utils/misc/runInBatch';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
@@ -32,6 +33,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     fundFilters
   );
 
+  const lpSources: TokenPriceSource[] = [];
   for (let i = 0; i < accounts.length; i++) {
     const account = accounts[i];
     if (account.supplyOutstanding.isZero()) continue;
@@ -62,8 +64,12 @@ const executor: JobExecutor = async (cache: Cache) => {
       },
       poolUnderlyingRaw
     );
-    await cache.setTokenPriceSource(lpSource);
+    lpSources.push(lpSource);
   }
+  await runInBatch(
+    lpSources.map((s) => () => cache.setTokenPriceSource(s)),
+    20
+  );
 };
 const job: Job = {
   id: `${platformId}-baskets`,
