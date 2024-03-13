@@ -1,3 +1,12 @@
+export type Credential = {
+  acc_reward_per_share: string;
+  id: {
+    id: string;
+  };
+  lock_until: string;
+  stake: string;
+};
+
 export type AlpMarket = {
   fun_mask: string;
   id: {

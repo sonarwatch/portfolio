@@ -3,7 +3,8 @@ import { Fetcher } from '../../Fetcher';
 import { Job } from '../../Job';
 import { platform } from './constants';
 import marketsJob from './marketsJob';
+import positionsFetcher from './positionsFetcher';
 
 export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [marketsJob];
-export const fetchers: Fetcher[] = [];
+export const fetchers: Fetcher[] = [positionsFetcher];
