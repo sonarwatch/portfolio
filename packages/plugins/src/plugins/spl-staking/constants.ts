@@ -14,7 +14,7 @@ export const poolsKey = 'pools';
 
 export const flowmaticPlatformId = 'flowmatic';
 export const flowmaticPlatform: Platform = {
-  id: platformId,
+  id: flowmaticPlatformId,
   name: 'Flowmatic',
   image: 'https://sonar.watch/img/platforms/flowmatic.png',
   website: 'https://www.flowmatic.xyz/',
@@ -23,7 +23,7 @@ export const flowmaticPlatform: Platform = {
 
 export const kishuPlatformId = 'kishu';
 export const kishuPlatform: Platform = {
-  id: platformId,
+  id: kishuPlatformId,
   name: 'Kishu',
   image: 'https://sonar.watch/img/platforms/kishu.png',
   website: 'https://staking.kishuthedog.com/',
@@ -32,7 +32,7 @@ export const kishuPlatform: Platform = {
 
 export const yakuPlatformId = 'yaku';
 export const yakuPlatform: Platform = {
-  id: platformId,
+  id: yakuPlatformId,
   name: 'Yaku',
   image: 'https://sonar.watch/img/platforms/yaku.png',
   website: 'https://staking.yaku.gg/',
@@ -41,7 +41,7 @@ export const yakuPlatform: Platform = {
 
 export const madbearsPlatformId = 'madbears';
 export const madbearsPlatform: Platform = {
-  id: platformId,
+  id: madbearsPlatformId,
   name: 'MadBears',
   image: 'https://sonar.watch/img/platforms/madbears.png',
   website: 'https://staking.madbears.club/',
