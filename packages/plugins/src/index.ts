@@ -367,6 +367,7 @@ export {
   walletTokensPlatform,
   walletNftsPlatform,
 } from './plugins/tokens/constants';
+export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
 export * from './Cache';
 export * from './Fetcher';
