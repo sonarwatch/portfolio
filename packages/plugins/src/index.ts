@@ -357,6 +357,11 @@ import {
   jobs as suilendJobs,
   fetchers as suilendFetchers,
 } from './plugins/suilend';
+import {
+  platforms as symmetryPlatforms,
+  jobs as symmetryJobs,
+  fetchers as symmetryFetchers,
+} from './plugins/symmetry';
 
 export {
   walletTokensPlatform,
@@ -445,6 +450,7 @@ export const platforms: Platform[] = [
   ...abexPlatforms,
   ...kaiPlatforms,
   ...suilendPlatforms,
+  ...symmetryPlatforms,
 ];
 
 // JOBS //
@@ -516,6 +522,7 @@ export const jobs: Job[] = [
   ...abexJobs,
   ...kaiJobs,
   ...suilendJobs,
+  ...symmetryJobs,
 ];
 
 // FETCHERS //
@@ -589,5 +596,6 @@ export const fetchers: Fetcher[] = [
   ...abexFetchers,
   ...kaiFetchers,
   ...suilendFetchers,
+  ...symmetryFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
