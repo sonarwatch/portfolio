@@ -1,5 +1,6 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
+import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSolana } from '../../utils/clients';
@@ -210,7 +211,10 @@ const executor: JobExecutor = async (cache: Cache) => {
         if (!lpMintAccount) continue;
 
         const lpDecimals = lpMintAccount.decimals;
-        const lpSupply = lpMintAccount.supply;
+        const lpSupply =
+          lpMint.toString() === 'CQurpF3WS3yEqFEt1Bu8s5zmZqznQG3EJkcYvsyg3sLc'
+            ? new BigNumber('3381427.37') // Temporary fix for SOL-WIF lp
+            : lpMintAccount.supply;
         if (lpSupply.isZero()) continue;
 
         tokenPriceSources.push(
