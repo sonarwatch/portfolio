@@ -45,7 +45,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-position`,
+  id: `${platformId}-positions`,
   networkId: NetworkId.ethereum,
   executor,
 };
