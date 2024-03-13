@@ -4,10 +4,4 @@ import { fundStruct } from './structs';
 export const fundFilters: GetProgramAccountsFilter[] = [
   { dataSize: fundStruct.byteSize },
   { memcmp: { offset: 112, bytes: '11111111' } },
-  {
-    memcmp: {
-      offset: 128,
-      bytes: '4Vry5hGDmbwGwhjgegHmoitjMHniSotpjBFkRuDYHcDG',
-    },
-  },
 ];
