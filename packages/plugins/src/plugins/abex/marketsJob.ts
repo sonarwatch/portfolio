@@ -3,15 +3,17 @@ import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import {
+  poolAccRewardPerShareKey,
   alpDecimals,
   alpSupplyObjectId,
   alpType,
   depositVaultRegistry,
   platformId,
+  poolObjectId,
 } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { getDynamicFields } from '../../utils/sui/getDynamicFields';
-import { AlpMarket, Market } from './types';
+import { AlpMarket, Market, Pool } from './types';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import getLpTokenSourceRaw, {
   PoolUnderlyingRaw,
@@ -22,6 +24,17 @@ import { walletTokensPlatform } from '../tokens/constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
+
+  // Pool
+  const poolObject = await getObject<Pool>(client, poolObjectId);
+  const accRewardPerShare =
+    poolObject.data?.content?.fields.acc_reward_per_share;
+  if (accRewardPerShare) {
+    await cache.setItem(poolAccRewardPerShareKey, accRewardPerShare, {
+      prefix: platformId,
+      networkId: NetworkId.sui,
+    });
+  }
 
   const lpObject = await getObject<AlpMarket>(client, alpSupplyObjectId);
   const lpSupply = lpObject.data?.content?.fields.lp_supply.fields.value;
