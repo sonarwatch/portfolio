@@ -72,7 +72,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     suiNativeAddress,
     claimmableAmount.dividedBy(10 ** suiNativeDecimals).toNumber(),
     NetworkId.sui,
-    suiPrice
+    suiPrice,
+    undefined,
+    {
+      isClaimable: true,
+    }
   );
 
   if (claimmableAmount.isZero() && alpAmount.isZero()) return [];
