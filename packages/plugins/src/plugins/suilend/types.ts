@@ -1,3 +1,4 @@
+import { BorrowLendRate } from '@sonarwatch/portfolio-core';
 import { ParsedData } from '../../utils/sui/types';
 
 export type ObligationCapFields = {
@@ -52,6 +53,11 @@ export type Reward = {
   cumulative_rewards_per_share: ParsedData<Value>;
   earned_rewards: ParsedData<Value>;
   pool_reward_id: string;
+};
+
+export type MarketsInfo = {
+  lendingMarkets: LendingMarket[];
+  rates: BorrowLendRate[];
 };
 
 export type LendingMarket = {
