@@ -92,8 +92,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const market = marketsByIndex.get(data.content.fields.lending_market_id);
     if (!market) continue;
-    const { reserves } = market;
 
+    const { reserves } = market;
     const {
       deposits,
       borrows,
@@ -103,10 +103,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     // Deposits
     for (const deposit of deposits) {
       const { fields } = deposit;
-      const reserveIndex = Number(fields.reserve_array_index);
-      if (reserveIndex > reserves.length) continue;
-
-      const reserve = reserves[reserveIndex];
+      const reserve = reserves.at(Number(fields.reserve_array_index));
+      if (!reserve) continue;
 
       const reserveBorrowAmount = new BigNumber(
         reserve.fields.borrowed_amount.fields.value
@@ -148,10 +146,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     // Borrows
     for (const borrow of borrows) {
       const { fields } = borrow;
-      const index = Number(fields.reserve_array_index);
-      if (index > reserves.length) continue;
+      const reserve = reserves.at(Number(fields.reserve_array_index));
+      if (!reserve) continue;
 
-      const reserve = reserves[index];
       const tokenPrice = tokenPriceById.get(
         formatTokenAddress(fields.coin_type.fields.name, NetworkId.sui)
       );
@@ -179,7 +176,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           price.toNumber()
         )
       );
-      const borrowWeight = BigNumber(
+      const borrowWeight = new BigNumber(
         reserve.fields.config.fields.element.fields.borrow_weight_bps
       ).dividedBy(10 ** 4);
       borrowedWeights.push(borrowWeight.toNumber());
@@ -191,6 +188,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const rewardAmountByMint: Map<string, BigNumber> = new Map();
     for (const userRewardManager of userRewardManagers) {
       const share = new BigNumber(userRewardManager.fields.share);
+
       for (const userReward of userRewardManager.fields.rewards) {
         const poolReward = poolRewardById.get(userReward.fields.pool_reward_id);
         if (!poolReward) continue;

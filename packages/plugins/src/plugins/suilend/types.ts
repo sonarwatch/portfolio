@@ -54,17 +54,6 @@ export type Reward = {
   pool_reward_id: string;
 };
 
-export type Registry = {
-  id: ID;
-  version: number;
-  lending_markets: ParsedData<LendingMarketInfo>[];
-};
-
-export type LendingMarketInfo = {
-  id: ID;
-  size: string;
-};
-
 export type LendingMarket = {
   id: ID;
   version: string;
