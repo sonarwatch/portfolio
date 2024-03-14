@@ -66,7 +66,7 @@ const executor: JobExecutor = async (cache: Cache) => {
             rate,
             {
               prefix: borrowLendRatesPrefix,
-              networkId: NetworkId.solana,
+              networkId: NetworkId.sui,
             }
           )
         );
