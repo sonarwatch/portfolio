@@ -46,7 +46,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   return [
     {
       type: PortfolioElementType.multiple,
-      label: 'Deposit',
+      label: 'Staked',
+      name: 'Vote',
       networkId: NetworkId.solana,
       platformId,
       data: { assets: [asset] },
