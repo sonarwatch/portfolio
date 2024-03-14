@@ -7,6 +7,20 @@ export type Credential = {
   stake: string;
 };
 
+export type Pool = {
+  acc_reward_per_share: string;
+  enabled: boolean;
+  end_time: string;
+  id: {
+    id: string;
+  };
+  last_updated_time: string;
+  lock_duration: string;
+  reward: string;
+  staked_amount: string;
+  start_time: string;
+};
+
 export type AlpMarket = {
   fun_mask: string;
   id: {

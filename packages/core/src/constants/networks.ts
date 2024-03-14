@@ -14,6 +14,7 @@ import {
   seiNativeAddress,
   solanaNativeAddress,
   suiNativeAddress,
+  suiNativeDecimals,
 } from './addresses';
 
 export const bitcoinNetwork: Network = {
@@ -144,7 +145,7 @@ export const suiNetwork: Network = {
   chainId: 1,
   native: {
     address: suiNativeAddress,
-    decimals: 9,
+    decimals: suiNativeDecimals,
     coingeckoId: 'sui',
   },
   nativeWrapped: null,
