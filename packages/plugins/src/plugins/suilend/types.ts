@@ -54,9 +54,21 @@ export type Reward = {
   pool_reward_id: string;
 };
 
+export type Registry = {
+  id: ID;
+  version: number;
+  lending_markets: ParsedData<LendingMarketInfo>[];
+};
+
+export type LendingMarketInfo = {
+  id: ID;
+  size: string;
+};
+
 export type LendingMarket = {
   id: ID;
   version: string;
+  fee_receiver: string;
   reserves: ParsedData<Reserve>[];
 };
 
@@ -66,12 +78,12 @@ export type Reserve = {
   attributed_borrow_value: ParsedData<Value>;
   available_amount: string;
   borrowed_amount: ParsedData<Value>;
-  borrows_pool_reward_manager: ParsedData<SPoolRewardManager>;
+  borrows_pool_reward_manager: ParsedData<PoolRewardManager>;
   coin_type: ParsedData<Name>;
   config: ParsedData<Config>;
   ctoken_supply: string;
   cumulative_borrow_rate: ParsedData<Value>;
-  deposits_pool_reward_manager: ParsedData<SPoolRewardManager>;
+  deposits_pool_reward_manager: ParsedData<PoolRewardManager>;
   interest_last_update_timestamp_s: string;
   lending_market_id: string;
   mint_decimals: number;
@@ -82,7 +94,7 @@ export type Reserve = {
   unclaimed_spread_fees: ParsedData<Value>;
 };
 
-export type SPoolRewardManager = {
+export type PoolRewardManager = {
   id: ID;
   last_update_time_ms: string;
   pool_rewards: ParsedData<PoolReward>[];
