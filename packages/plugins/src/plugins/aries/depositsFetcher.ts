@@ -1,4 +1,5 @@
 import {
+  BorrowLendRate,
   NetworkId,
   PortfolioAsset,
   PortfolioElement,
@@ -11,8 +12,8 @@ import axios, { AxiosResponse } from 'axios';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { apiUrl, platformId } from './constants';
-import { ProfileResponse } from './types';
+import { apiUrl, platformId, reservesKey } from './constants';
+import { ProfileResponse, ReserveEnhanced } from './types';
 import { getName } from './helpers';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
@@ -21,6 +22,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     .get(`${apiUrl}profile.find?input={"owner":"${owner}"}`)
     .catch(() => null);
   if (!profileRes || !profileRes.data) return [];
+
+  const reserves = await cache.getItem<ReserveEnhanced[]>(reservesKey, {
+    prefix: platformId,
+    networkId: NetworkId.aptos,
+  });
+  const ratesByCoin: Map<string, BorrowLendRate> = new Map();
+  if (reserves) {
+    reserves.forEach((reserveData) => {
+      ratesByCoin.set(reserveData.key, reserveData.rate);
+    });
+  }
 
   const { profiles } = profileRes.data.result.data;
 
@@ -77,6 +89,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
               tokenPrice
             )
           );
+
+          const rates = ratesByCoin.get(coin);
+          if (rates) suppliedYields.push([rates.depositYield]);
         }
       }
 
@@ -97,6 +112,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
               tokenPrice
             )
           );
+
+          const rates = ratesByCoin.get(coin);
+          if (rates) borrowedYields.push([rates.borrowYield]);
         }
       }
 
