@@ -81,7 +81,7 @@ const fetcherExecutor: FetcherExecutor = async (
       if (!tokenPrice && bankInfo.config.oracleSetup === OracleSetup.PythEma) {
         const pythOracle = new PublicKey(bankInfo.config.oracleKeys[0]);
         const pythAccount = await client.getAccountInfo(pythOracle);
-        const pythPrice = getPythPrice(pythOracle, pythAccount);
+        const pythPrice = getPythPrice(pythAccount);
         if (pythPrice) price = pythPrice.price;
       }
 

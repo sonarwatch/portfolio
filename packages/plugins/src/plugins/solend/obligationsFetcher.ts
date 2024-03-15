@@ -171,7 +171,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       if (!lTokenPrice) {
         const pythOracle = new PublicKey(reserve.liquidity.pythOracle);
         const pythAccount = await client.getAccountInfo(pythOracle);
-        const pythPrice = getPythPrice(pythOracle, pythAccount);
+        const pythPrice = getPythPrice(pythAccount);
         if (pythPrice) price = pythPrice.price;
       }
 

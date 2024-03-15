@@ -272,7 +272,6 @@ export function getPythPricesDatasMap(
 }
 
 export function getPythPrice(
-  pubkeys: PublicKey,
   account: AccountInfo<Buffer> | null
 ): PriceData | undefined {
   return account ? parsePriceData(account.data) : undefined;
