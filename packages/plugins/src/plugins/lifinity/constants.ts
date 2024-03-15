@@ -21,3 +21,5 @@ export const rewarder = new PublicKey(
 
 export const lfntyDecimals = 6;
 export const lfntyMint = 'LFNTYraetVioAPnGJht4yNg2aUZFXR776cMeN9VMjXp';
+export const xLfntyDecimals = 6;
+export const xLfntyMint = 'xLfNTYy76B8Tiix3hA51Jyvc1kMSFV4sPdR7szTZsRu';

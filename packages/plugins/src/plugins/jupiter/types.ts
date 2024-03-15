@@ -71,3 +71,17 @@ export type ClaimProofResponse = {
   amount: string;
   proof: number[][];
 };
+
+export type PriceResponse = {
+  data: Record<
+    string,
+    {
+      id: string;
+      mintSymbol: string;
+      vsToken: string;
+      vsTokenSymbol: string;
+      price: number;
+    }
+  >;
+  timeTaken: number;
+};
