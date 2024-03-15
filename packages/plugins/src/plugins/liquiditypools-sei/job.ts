@@ -72,7 +72,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 
       const underlyingSource = getLpUnderlyingTokenSource(
         lpContract,
-        platformId,
         NetworkId.sei,
         {
           address: poolInfo.mintX,

@@ -98,8 +98,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     const tokenPriceB = tokenPrices.get(pool.tokenBMint.toString());
 
     const underlyingsSource = getLpUnderlyingTokenSource(
-      platformId,
-      platformId,
+      pool.poolMint.toString(),
       NetworkId.solana,
       {
         address: pool.tokenAMint.toString(),

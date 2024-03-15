@@ -131,7 +131,6 @@ const executor: JobExecutor = async (cache: Cache) => {
       ).dividedBy(poolInfo.decimal_scalars[1]);
       const underlyingSource = getLpUnderlyingTokenSource(
         address,
-        platformId,
         networkId,
         {
           address: `0x${poolInfo.type_names[0]}`,

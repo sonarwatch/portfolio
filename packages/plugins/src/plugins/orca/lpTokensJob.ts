@@ -126,7 +126,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 
     const underlyingSource = getLpUnderlyingTokenSource(
       lpMint.toString(),
-      platformId,
       NetworkId.solana,
       {
         address: mintA,

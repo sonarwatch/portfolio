@@ -87,7 +87,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 
     const underlyingSource = getLpUnderlyingTokenSource(
       lpType,
-      platformId,
       NetworkId.aptos,
       {
         address: typeX,

@@ -59,7 +59,6 @@ export const defaultAcceptedPairs = [
 
 export default function getLpUnderlyingTokenSource(
   sourceId: string,
-  platformId: string,
   networkId: NetworkIdType,
   poolUnderlyingsA: PoolUnderlyingRaw,
   poolUnderlyingsB: PoolUnderlyingRaw,
