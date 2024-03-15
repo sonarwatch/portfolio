@@ -1,1 +1,1 @@
-export const publicBearerToken = 'v2MLnrwNSQ3tRd5PCKAGXzxupsZg6c';
+export const publicBearerToken = 'JcHeCsMXrBWPqnAvkN9gL7zftjK2QF';
