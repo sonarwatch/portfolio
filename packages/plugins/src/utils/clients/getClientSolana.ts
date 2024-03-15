@@ -2,8 +2,9 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Connection, FetchMiddleware } from '@solana/web3.js';
 import { getBasicAuthHeaders } from '../misc/getBasicAuthHeaders';
 import { getRpcEndpoint } from './constants';
+import { SolanaClient } from './types';
 
-export default function getClientSolana() {
+export default function getClientSolana(): SolanaClient {
   const rpcEndpoint = getRpcEndpoint(NetworkId.solana);
   const httpHeaders = rpcEndpoint.basicAuth
     ? getBasicAuthHeaders(
