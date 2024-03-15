@@ -273,7 +273,7 @@ export function getPythPricesDatasMap(
   return priceMap;
 }
 
-export async function getPythPrice(
+export async function getPythPrices(
   connection: SolanaClient,
   oracleAddresses: PublicKey[]
 ) {
