@@ -28,7 +28,7 @@ import { obligationStruct } from './structs';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import runInBatch from '../../utils/misc/runInBatch';
 import { AUTOMATION_PUBLIC_KEY } from '../flexlend/constants';
-import { getPythPrice } from '../../utils/solana/pyth/helpers';
+import { parsePriceData } from '../../utils/solana/pyth/helpers';
 import { getDerivedAccount } from '../flexlend/helpers';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
@@ -171,7 +171,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       if (!lTokenPrice) {
         const pythOracle = new PublicKey(reserve.liquidity.pythOracle);
         const pythAccount = await client.getAccountInfo(pythOracle);
-        const pythPrice = getPythPrice(pythAccount);
+        const pythPrice = pythAccount
+          ? parsePriceData(pythAccount.data)
+          : undefined;
         if (pythPrice) price = pythPrice.price;
       }
 

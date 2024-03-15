@@ -19,7 +19,7 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { FetcherExecutor } from '../../Fetcher';
 import { Cache } from '../../Cache';
 import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
-import { getPythPrice } from '../../utils/solana/pyth/helpers';
+import { parsePriceData } from '../../utils/solana/pyth/helpers';
 import { OracleSetup } from './structs/Bank';
 
 const fetcherExecutor: FetcherExecutor = async (
@@ -81,7 +81,7 @@ const fetcherExecutor: FetcherExecutor = async (
       if (!tokenPrice && bankInfo.config.oracleSetup === OracleSetup.PythEma) {
         const pythOracle = new PublicKey(bankInfo.config.oracleKeys[0]);
         const pythAccount = await client.getAccountInfo(pythOracle);
-        const pythPrice = getPythPrice(pythAccount);
+        const pythPrice = pythAccount ? parsePriceData(pythAccount.data) : null;
         if (pythPrice) price = pythPrice.price;
       }
 

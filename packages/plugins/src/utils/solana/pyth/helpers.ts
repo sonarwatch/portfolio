@@ -13,6 +13,8 @@ import {
   PriceType,
 } from './structs';
 import { readBigInt64LE, readBigUInt64LE } from './readBig';
+import { SolanaClient } from '../../clients/types';
+import { getMultipleAccountsInfoSafe } from '../getMultipleAccountsInfoSafe';
 
 export const Magic = 0xa1b2c3d4;
 export const Version2 = 2;
@@ -271,8 +273,16 @@ export function getPythPricesDatasMap(
   return priceMap;
 }
 
-export function getPythPrice(
-  account: AccountInfo<Buffer> | null
-): PriceData | undefined {
-  return account ? parsePriceData(account.data) : undefined;
+export async function getPythPrice(
+  connection: SolanaClient,
+  oracleAddresses: PublicKey[]
+) {
+  const oracleAccounts = await getMultipleAccountsInfoSafe(
+    connection,
+    oracleAddresses
+  );
+  return oracleAccounts.map((acc) => {
+    if (!acc) return null;
+    return parsePriceData(acc.data).price || null;
+  });
 }
