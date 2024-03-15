@@ -22,7 +22,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     LifinityLockerProgramId,
     escrowFilter(owner)
   );
-  if (accounts.length === 0 || accounts.length > 1) return [];
+  if (accounts.length !== 1) return [];
 
   const escrowAccount = accounts[0];
 
