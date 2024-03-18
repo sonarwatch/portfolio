@@ -13,6 +13,7 @@ import {
   polygonNativeWrappedAddress,
   seiNativeAddress,
   solanaNativeAddress,
+  solanaNativeDecimals,
   suiNativeAddress,
   suiNativeDecimals,
 } from './addresses';
@@ -109,7 +110,7 @@ export const solanaNetwork: Network = {
   chainId: 101,
   native: {
     address: solanaNativeAddress,
-    decimals: 9,
+    decimals: solanaNativeDecimals,
     coingeckoId: 'solana',
   },
   nativeWrapped: null,
