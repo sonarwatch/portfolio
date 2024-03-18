@@ -157,6 +157,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       type: PortfolioElementType.multiple,
       label: 'Vesting',
       networkId: NetworkId.solana,
+      name: 'Community Airdrop',
       platformId,
       data: { assets },
       value: getUsdValueSum(assets.map((asset) => asset.value)),
