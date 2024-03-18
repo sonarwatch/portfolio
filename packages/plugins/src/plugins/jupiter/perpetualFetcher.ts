@@ -14,12 +14,12 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { custodiesKey, perpsProgramId, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
-import { Side, positionStruct } from './structs';
 import { perpetualsPositionsFilter } from './filters';
 import { CustodyInfo } from './types';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 import { getPythPricesDatasMap } from '../../utils/solana/pyth/helpers';
 import { tokenListsDetailsPrefix } from '../tokens/constants';
+import { Side, positionStruct } from './structs/perpetuals';
 
 const usdFactor = new BigNumber(10 ** 6);
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {

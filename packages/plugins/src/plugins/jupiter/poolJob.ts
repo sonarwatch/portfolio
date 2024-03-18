@@ -13,7 +13,7 @@ import {
   tokenAccountStruct,
 } from '../../utils/solana';
 import { jlpPool, jlpToken, platformId } from './constants';
-import { custodyStruct, perpetualPoolStruct } from './structs';
+import { custodyStruct, perpetualPoolStruct } from './structs/perpetuals';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();

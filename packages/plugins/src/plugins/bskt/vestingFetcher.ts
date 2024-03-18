@@ -31,10 +31,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const bsktTokenPrice = await cache.getTokenPrice(bsktMint, NetworkId.solana);
 
   if (vestingAccounts.length === 0) {
-    const res: AxiosResponse<ClaimResponse> = await axios.get(
-      `https://claim.bskt.fi/api/getClaim?wallet=${owner}`
-    );
-    if (res.data.amount) {
+    const res: AxiosResponse<ClaimResponse> | null = await axios
+      .get(`https://claim.bskt.fi/api/getClaim?wallet=${owner}`)
+      .catch(() => null);
+    if (res && res.data.amount) {
       const assets: PortfolioAsset[] = [];
 
       const totalAmount = new BigNumber(res.data.amount);

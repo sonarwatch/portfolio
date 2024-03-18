@@ -10,7 +10,7 @@ import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { blob, i64, u128, u64 } from '../../utils/solana';
-import { OracleType, Side } from '../jupiter/structs';
+import { OracleType, Side } from '../jupiter/structs/perpetuals';
 
 export type OracleParams = {
   oracleAccount: PublicKey;
