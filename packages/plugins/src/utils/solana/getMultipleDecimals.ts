@@ -11,11 +11,11 @@ import { getParsedMultipleAccountsInfo } from './getParsedMultipleAccountsInfo';
 const solMints = [solanaNativeAddress, solanaNativeWrappedAddress];
 
 export async function getMultipleDecimals(
-  client: SolanaClient,
+  connection: SolanaClient,
   mints: PublicKey[]
 ): Promise<(number | null)[]> {
   const mintAccounts = await getParsedMultipleAccountsInfo(
-    client,
+    connection,
     mintAccountStruct,
     mints.filter((m) => solMints.includes(m.toString()))
   );

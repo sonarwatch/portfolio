@@ -11,13 +11,13 @@ import { mintAccountStruct } from './structs';
 const solMints = [solanaNativeAddress, solanaNativeWrappedAddress];
 
 export async function getDecimals(
-  client: SolanaClient,
+  connection: SolanaClient,
   mint: PublicKey
 ): Promise<number | null> {
   if (solMints.includes(mint.toString())) return solanaNativeDecimals;
 
   const mintAccount = await getParsedAccountInfo(
-    client,
+    connection,
     mintAccountStruct,
     mint
   );
