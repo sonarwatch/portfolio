@@ -1,6 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import axios, { AxiosResponse } from 'axios';
-import { PortfolioAsset } from '@sonarwatch/portfolio-core';
+import { PortfolioAsset, getUsdValueSum } from '@sonarwatch/portfolio-core';
 import { lockerPubkey, voteProgramId } from './constants';
 import { PriceResponse } from './types';
 
@@ -50,11 +50,13 @@ export function getMergedAssets(assets: PortfolioAsset[]) {
 
     const { address } = asset.data;
     const amountToAdd = asset.data.amount;
+    const valueToAdd = asset.value;
     const existingAsset = assetByMint.get(address);
     if (!existingAsset) {
       assetByMint.set(address, asset);
     } else {
       existingAsset.data.amount += amountToAdd;
+      existingAsset.value = getUsdValueSum([valueToAdd, existingAsset.value]);
       assetByMint.set(address, existingAsset);
     }
   }
