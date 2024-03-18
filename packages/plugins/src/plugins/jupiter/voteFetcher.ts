@@ -6,11 +6,11 @@ import {
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { jupMint, platformId } from './constants';
-import { escrowStruct } from './structs';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 import { getVotePda } from './helpers';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { escrowStruct } from './structs/vote';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();

@@ -21,6 +21,10 @@ export const perpsProgramId = new PublicKey(
   'PERPHjGBqRHArX4DySjwM6UJHiR3sWAatqfdBS2qQJu'
 );
 
+export const valueAverageProgramId = new PublicKey(
+  'JVAp1DSLnM4Qh8qM1QasQ8x56ccb9S3DhbyEckybTF9'
+);
+
 export const voteProgramId = new PublicKey(
   'voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj'
 );

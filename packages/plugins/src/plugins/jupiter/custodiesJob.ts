@@ -5,7 +5,7 @@ import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { dataStructSizeFilter } from '../../utils/solana/filters';
 import { custodiesKey, perpsProgramId, platformId } from './constants';
-import { Custody, custodyStruct } from './structs';
+import { Custody, custodyStruct } from './structs/perpetuals';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();

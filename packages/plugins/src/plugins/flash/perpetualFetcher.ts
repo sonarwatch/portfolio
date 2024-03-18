@@ -20,7 +20,7 @@ import { tokenListsDetailsPrefix } from '../tokens/constants';
 import { perpetualsPositionsFilter } from './filters';
 import { positionStruct } from './structs';
 import { MarketInfo } from './types';
-import { Side } from '../jupiter/structs';
+import { Side } from '../jupiter/structs/perpetuals';
 
 const usdFactor = new BigNumber(10 ** 6);
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {

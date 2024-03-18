@@ -12,11 +12,11 @@ import {
   platformId,
 } from './constants';
 import { getClientSolana } from '../../utils/clients';
-import { claimStatusStruct } from './structs';
 import { ClaimProofResponse } from './types';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 import { deriveClaimStatus } from './helpers';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { claimStatusStruct } from './structs/aidrop';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
