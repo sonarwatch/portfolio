@@ -25,7 +25,7 @@ export function getVotePda(owner: string): PublicKey {
   )[0];
 }
 
-export async function getPrices(mints: PublicKey[], vsMint: PublicKey) {
+export async function getJupiterPrices(mints: PublicKey[], vsMint: PublicKey) {
   const res = await axios.get<unknown, AxiosResponse<PriceResponse>>(
     'https://price.jup.ag/v4/price',
     {

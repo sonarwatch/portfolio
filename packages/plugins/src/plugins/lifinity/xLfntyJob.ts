@@ -3,21 +3,22 @@ import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { lfntyMint, platformId, xLfntyDecimals, xLfntyMint } from './constants';
-import { getPrices } from '../jupiter/helpers';
+import { getJupiterPrices } from '../jupiter/helpers';
 import { walletTokensPlatform } from '../tokens/constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
-  const prices = await getPrices(
-    [new PublicKey(xLfntyMint)],
-    new PublicKey(lfntyMint)
-  );
-  const price = prices.get(xLfntyMint);
-  if (!price) return;
   const lfntyTokenPrice = await cache.getTokenPrice(
     lfntyMint,
     NetworkId.solana
   );
   if (!lfntyTokenPrice) return;
+
+  const prices = await getJupiterPrices(
+    [new PublicKey(xLfntyMint)],
+    new PublicKey(lfntyMint)
+  );
+  const price = prices.get(xLfntyMint);
+  if (!price) return;
 
   const source: TokenPriceSource = {
     address: xLfntyMint,
