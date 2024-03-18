@@ -1,16 +1,16 @@
+/* eslint-disable no-labels */
 import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { basketProgramId, platformId, tokenListAddress } from './constants';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
-import { fundStruct, tokenListStruct } from './structs';
+import { OracleType, fundStruct, tokenListStruct } from './structs';
 import { fundFilters } from './filters';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 import getLpTokenSourceRaw, {
   PoolUnderlyingRaw,
 } from '../../utils/misc/getLpTokenSourceRaw';
-import runInBatch from '../../utils/misc/runInBatch';
 import { getPythTokenPriceSources } from '../../utils/solana/pyth/helpers';
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -22,19 +22,22 @@ const executor: JobExecutor = async (cache: Cache) => {
     tokenListAddress
   );
   if (!tokenListRes) return;
-  const tokenSettings = tokenListRes.list
-    .map((t) => t)
-    .slice(0, tokenListRes.numTokens.toNumber());
+  const tokenSettings = [...tokenListRes.list].slice(
+    0,
+    tokenListRes.numTokens.toNumber()
+  );
 
   // Add tokens prices from Pyth Oracles
-  const sources = await getPythTokenPriceSources(
+  const pythSources = await getPythTokenPriceSources(
     connection,
-    tokenSettings.map((ts) => ({
-      mint: ts.tokenMint,
-      oracle: ts.oracleAccount,
-    }))
+    tokenSettings
+      .filter((ts) => ts.oracleType === OracleType.Pyth)
+      .map((ts) => ({
+        mint: ts.tokenMint,
+        oracle: ts.oracleAccount,
+      }))
   );
-  await cache.setTokenPriceSources(sources);
+  await cache.setTokenPriceSources(pythSources);
 
   const tokenPrices = await cache.getTokenPrices(
     tokenSettings.map((ts) => ts.tokenMint.toString()),
@@ -48,7 +51,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   );
 
   const lpSources: TokenPriceSource[] = [];
-  for (let i = 0; i < accounts.length; i++) {
+  mainLoop: for (let i = 0; i < accounts.length; i++) {
     const account = accounts[i];
     if (account.supplyOutstanding.isZero()) continue;
 
@@ -56,12 +59,14 @@ const executor: JobExecutor = async (cache: Cache) => {
     for (let j = 0; j < account.numOfTokens.toNumber(); j++) {
       const tokenIndex = account.currentCompToken[j].toNumber();
       const tokenPrice = tokenPrices[tokenIndex];
-      if (!tokenPrice) continue;
+      if (!tokenPrice) continue mainLoop;
+      const reserveAmountRaw = account.currentCompAmount[j];
+      if (reserveAmountRaw.isZero()) continue;
       poolUnderlyingRaw.push({
         address: tokenPrice.address,
         decimals: tokenPrice.decimals,
         price: tokenPrice.price,
-        reserveAmountRaw: account.currentCompAmount[j],
+        reserveAmountRaw,
       });
     }
     if (poolUnderlyingRaw.length === 0) continue;
@@ -80,10 +85,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     );
     lpSources.push(lpSource);
   }
-  await runInBatch(
-    lpSources.map((s) => () => cache.setTokenPriceSource(s)),
-    20
-  );
+  await cache.setTokenPriceSources(lpSources);
 };
 const job: Job = {
   id: `${platformId}-baskets`,

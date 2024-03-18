@@ -114,12 +114,17 @@ export const fundStruct = new BeetStruct<Fund>(
   (args) => args as Fund
 );
 
+export enum OracleType {
+  Pyth,
+  CustomSwitchboard,
+}
+
 export type TokenSettings = {
   tokenMint: PublicKey;
   decimals: number;
   coingeckoId: number[];
   pdaTokenAccount: PublicKey;
-  oracleType: number;
+  oracleType: OracleType;
   oracleAccount: PublicKey;
   oracleIndex: number;
   oracleConfidencePct: number;
@@ -163,7 +168,7 @@ export const tokenListStruct = new FixableBeetStruct<TokenList>(
   [
     ['buffer', blob(8)],
     ['numTokens', u64],
-    ['list', uniformFixedSizeArray(tokenSettingsStruct, 20)],
+    ['list', uniformFixedSizeArray(tokenSettingsStruct, 200)],
   ],
   (args) => args as TokenList
 );
