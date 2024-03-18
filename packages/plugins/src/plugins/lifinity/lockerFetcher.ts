@@ -22,7 +22,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     LifinityLockerProgramId,
     escrowFilter(owner)
   );
-  if (accounts.length === 0 || accounts.length > 1) return [];
+  if (accounts.length !== 1) return [];
 
   const escrowAccount = accounts[0];
 
@@ -36,21 +36,23 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
 
   const yearsLocked = duration.dividedBy(60 * 60 * 24 * 365).decimalPlaces(0);
-  const yearsText = yearsLocked.isEqualTo(1)
-    ? `Locked (${yearsLocked} year)`
-    : `Locked (${yearsLocked} years)`;
-  const name = escrowEndsAt.isZero() ? yearsText : undefined;
+  let name = 'Locked';
+  if (escrowEndsAt.isZero()) {
+    name += ` (${yearsLocked.toString()} year${
+      yearsLocked.isGreaterThan(1) ? 's' : ''
+    })`;
+  }
 
   const asset = tokenPriceToAssetToken(
     lfntyMint,
     amount.dividedBy(10 ** lfntyDecimals).toNumber(),
     NetworkId.solana,
-    lfntyTokenPrice
+    lfntyTokenPrice,
+    undefined,
+    {
+      lockedUntil: escrowEndsAt.times(1000).toNumber() || undefined,
+    }
   );
-
-  if (escrowEndsAt.isGreaterThan(0)) {
-    asset.attributes.lockedUntil = escrowEndsAt.times(1000).toNumber();
-  }
 
   return [
     {

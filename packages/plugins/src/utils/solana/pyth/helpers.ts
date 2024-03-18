@@ -1,4 +1,5 @@
 import { PublicKey, AccountInfo } from '@solana/web3.js';
+import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
 import {
   AccountType,
   Base,
@@ -13,6 +14,11 @@ import {
   PriceType,
 } from './structs';
 import { readBigInt64LE, readBigUInt64LE } from './readBig';
+import { SolanaClient } from '../../clients/types';
+import { getMultipleAccountsInfoSafe } from '../getMultipleAccountsInfoSafe';
+import { mintAccountStruct } from '../structs';
+import { getParsedMultipleAccountsInfo } from '../getParsedMultipleAccountsInfo';
+import { walletTokensPlatform } from '../../../plugins/tokens/constants';
 
 export const Magic = 0xa1b2c3d4;
 export const Version2 = 2;
@@ -271,9 +277,57 @@ export function getPythPricesDatasMap(
   return priceMap;
 }
 
-export function getPythPrice(
-  pubkeys: PublicKey,
-  account: AccountInfo<Buffer> | null
-): PriceData | undefined {
-  return account ? parsePriceData(account.data) : undefined;
+export async function getPythPrices(
+  connection: SolanaClient,
+  oracleAddresses: PublicKey[]
+) {
+  const oracleAccounts = await getMultipleAccountsInfoSafe(
+    connection,
+    oracleAddresses
+  );
+  return oracleAccounts.map((acc) => {
+    if (!acc) return null;
+    return (
+      parsePriceData(acc.data).price || parsePriceData(acc.data).previousPrice
+    );
+  });
+}
+
+export async function getPythTokenPriceSources(
+  connection: SolanaClient,
+  params: {
+    mint: PublicKey;
+    oracle: PublicKey;
+    platformId?: string;
+  }[]
+): Promise<(TokenPriceSource | null)[]> {
+  const prices = await getPythPrices(
+    connection,
+    params.map((p) => p.oracle)
+  );
+  const mintAccounts = await getParsedMultipleAccountsInfo(
+    connection,
+    mintAccountStruct,
+    params.map((p) => p.mint)
+  );
+  return prices.map((price, i): TokenPriceSource | null => {
+    if (price === null) return null;
+    const decimals = mintAccounts.at(i)?.decimals;
+    if (!decimals) return null;
+    const cparams = params.at(i);
+    if (!cparams) return null;
+    const address = cparams.mint.toString();
+    const oracle = cparams.oracle.toString();
+    const platformId = cparams.platformId || walletTokensPlatform.id;
+    return {
+      address,
+      id: oracle,
+      decimals,
+      networkId: NetworkId.solana,
+      platformId,
+      price,
+      timestamp: Date.now(),
+      weight: 1,
+    };
+  });
 }

@@ -11,6 +11,7 @@ import getLpTokenSourceRaw, {
   PoolUnderlyingRaw,
 } from '../../utils/misc/getLpTokenSourceRaw';
 import runInBatch from '../../utils/misc/runInBatch';
+import { getPythTokenPriceSources } from '../../utils/solana/pyth/helpers';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
@@ -21,11 +22,24 @@ const executor: JobExecutor = async (cache: Cache) => {
     tokenListAddress
   );
   if (!tokenListRes) return;
-  const tokenList = tokenListRes.list
-    .map((t) => t.tokenMint.toString())
+  const tokenSettings = tokenListRes.list
+    .map((t) => t)
     .slice(0, tokenListRes.numTokens.toNumber());
-  const tokenPrices = await cache.getTokenPrices(tokenList, NetworkId.solana);
 
+  // Add tokens prices from Pyth Oracles
+  const sources = await getPythTokenPriceSources(
+    connection,
+    tokenSettings.map((ts) => ({
+      mint: ts.tokenMint,
+      oracle: ts.oracleAccount,
+    }))
+  );
+  await cache.setTokenPriceSources(sources);
+
+  const tokenPrices = await cache.getTokenPrices(
+    tokenSettings.map((ts) => ts.tokenMint.toString()),
+    NetworkId.solana
+  );
   const accounts = await getParsedProgramAccounts(
     connection,
     fundStruct,

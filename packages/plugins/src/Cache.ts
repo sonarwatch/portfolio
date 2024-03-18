@@ -18,6 +18,7 @@ import memoryDriver, {
   DRIVER_SW_MEMORY_NAME,
   MemoryDriver,
 } from './memoryDriver';
+import runInBatch from './utils/misc/runInBatch';
 
 export type TransactionOptions = {
   prefix: string;
@@ -291,6 +292,14 @@ export class Cache {
       networkId: fSource.networkId,
       ttl: tokenPriceSourceTtl,
     });
+  }
+
+  async setTokenPriceSources(sources: (TokenPriceSource | null)[]) {
+    const fSources = sources.filter((s) => s !== null) as TokenPriceSource[];
+    await runInBatch(
+      fSources.map((source) => () => this.setTokenPriceSource(source)),
+      15
+    );
   }
 
   async removeItem(key: string, opts: TransactionOptions) {
