@@ -56,6 +56,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         rewardAssetsValue: 0,
         value: getUsdValueSum(assets.map((a) => a.value)),
         yields: [],
+        name: tokenPrice.liquidityName,
       };
       const tag = getLpTag(tokenPrice.platformId, tokenPrice.elementName);
       if (!liquiditiesByTag[tag]) {

@@ -25,6 +25,7 @@ export default function tokenPriceToLiquidity(
     rewardAssetsValue: 0,
     value: getUsdValueSum(assets.map((a) => a.value)),
     yields: [],
+    name: tokenPrice.liquidityName,
   };
   return liquidity;
 }
