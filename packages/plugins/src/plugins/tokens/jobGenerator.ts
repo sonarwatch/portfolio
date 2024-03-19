@@ -21,10 +21,7 @@ export default function jobGenerator(networkId: NetworkIdType): Job {
 
     const tokensData = await getTokensData(tokenListResponse.data);
     const sources = await getCoingeckoSources(networkId, tokensData);
-    for (let i = 0; i < sources.length; i += 1) {
-      const source = sources[i];
-      await cache.setTokenPriceSource(source);
-    }
+    await cache.setTokenPriceSources(sources);
   };
   return {
     executor,
