@@ -153,7 +153,6 @@ const executor: JobExecutor = async (cache: Cache) => {
         networkId,
         address,
         platformId,
-        '',
         {
           address,
           decimals: poolInfo.lp_decimals,
@@ -172,7 +171,8 @@ const executor: JobExecutor = async (cache: Cache) => {
             price: tokenPriceB.price,
             reserveAmountRaw: reserveAmountRawB,
           },
-        ]
+        ],
+        ''
       );
 
       await cache.setTokenPriceSource(lpSource);

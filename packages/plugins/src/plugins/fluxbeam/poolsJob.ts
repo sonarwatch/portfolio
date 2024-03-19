@@ -122,7 +122,6 @@ const executor: JobExecutor = async (cache: Cache) => {
       NetworkId.solana,
       platformId,
       platformId,
-      'Pools',
       {
         address: pool.poolMint.toString(),
         decimals: poolMint.decimals,
@@ -141,7 +140,8 @@ const executor: JobExecutor = async (cache: Cache) => {
           price: tokenPriceB.price,
           reserveAmountRaw: tokenAccountB.amount,
         },
-      ]
+      ],
+      'Pools'
     );
     await cache.setTokenPriceSource(lpSource);
   }

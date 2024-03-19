@@ -221,7 +221,6 @@ const executor: JobExecutor = async (cache: Cache) => {
             NetworkId.solana,
             lpMint.toString(),
             platformId,
-            amm.ammName,
             {
               address: lpMint.toString(),
               decimals: lpDecimals,
@@ -240,7 +239,8 @@ const executor: JobExecutor = async (cache: Cache) => {
                 price: tokenPriceB.price,
                 reserveAmountRaw: tokenAmountB,
               },
-            ]
+            ],
+            amm.ammName
           )
         );
       }

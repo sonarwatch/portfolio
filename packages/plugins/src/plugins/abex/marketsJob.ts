@@ -89,13 +89,13 @@ const executor: JobExecutor = async (cache: Cache) => {
     NetworkId.sui,
     platformId,
     platformId,
-    'Vaults',
     {
       address: alpType,
       decimals: alpDecimals,
       supplyRaw: new BigNumber(lpSupply),
     },
-    lpUnderlyings
+    lpUnderlyings,
+    'Vaults'
   );
   await cache.setTokenPriceSource({
     id: 'alp',

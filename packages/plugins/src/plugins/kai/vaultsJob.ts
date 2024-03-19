@@ -38,7 +38,6 @@ const executor: JobExecutor = async (cache: Cache) => {
       NetworkId.sui,
       platformId,
       platformId,
-      'Vaults',
       {
         address: vaultInfo.lpType,
         decimals: vaultInfo.decimals,
@@ -53,7 +52,8 @@ const executor: JobExecutor = async (cache: Cache) => {
           reserveAmountRaw: amount,
           price: tokenPrice.price,
         },
-      ]
+      ],
+      'Vaults'
     );
     await cache.setTokenPriceSource(lpSource);
   }

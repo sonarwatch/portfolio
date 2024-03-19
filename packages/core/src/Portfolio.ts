@@ -211,6 +211,7 @@ export type PortfolioLiquidity = {
   rewardAssetsValue: UsdValue;
   value: UsdValue;
   yields: Yield[];
+  name?: string;
 };
 
 /**

@@ -8,6 +8,7 @@ import { getClientSolana } from '../../utils/clients';
 import { OracleType, fundStruct, tokenListStruct } from './structs';
 import { fundFilters } from './filters';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
+import { getSymbol } from './helpers';
 import getLpTokenSourceRaw, {
   PoolUnderlyingRaw,
 } from '../../utils/misc/getLpTokenSourceRaw';
@@ -75,13 +76,14 @@ const executor: JobExecutor = async (cache: Cache) => {
       NetworkId.solana,
       platformId,
       platformId,
-      'Basket',
       {
         address: account.fundToken.toString(),
         decimals: 6,
         supplyRaw: account.supplyOutstanding,
       },
-      poolUnderlyingRaw
+      poolUnderlyingRaw,
+      'Basket',
+      getSymbol(account)
     );
     lpSources.push(lpSource);
   }

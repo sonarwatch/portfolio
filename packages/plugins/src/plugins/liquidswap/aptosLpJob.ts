@@ -140,7 +140,6 @@ const executor: JobExecutor = async (cache: Cache) => {
       NetworkId.aptos,
       lpType,
       platformId,
-      undefined,
       {
         address: lpType,
         decimals: lpDecimals,
@@ -159,7 +158,8 @@ const executor: JobExecutor = async (cache: Cache) => {
           price: tokenPriceY.price,
           reserveAmountRaw: reserveAmountRawY,
         },
-      ]
+      ],
+      undefined
     );
     sources.push(lpSource);
   }

@@ -93,7 +93,6 @@ const executor: JobExecutor = async (cache: Cache) => {
         NetworkId.sei,
         lpContract,
         platformId,
-        '',
         {
           address: lpContract,
           decimals: lpTokenInfo.decimals,
@@ -112,7 +111,8 @@ const executor: JobExecutor = async (cache: Cache) => {
             price: tokenPriceY.price,
             reserveAmountRaw: reserveAmountRawY,
           },
-        ]
+        ],
+        ''
       );
       await cache.setTokenPriceSource(lpSource);
 

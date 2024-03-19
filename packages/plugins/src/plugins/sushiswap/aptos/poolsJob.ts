@@ -61,7 +61,6 @@ const executor: JobExecutor = async (cache: Cache) => {
       NetworkId.aptos,
       platformId,
       platformId,
-      undefined,
       {
         address: lpType,
         decimals: lpDecimals,
@@ -80,7 +79,8 @@ const executor: JobExecutor = async (cache: Cache) => {
           price: tokenPriceY.price,
           reserveAmountRaw: new BigNumber(tokenPairData.balance_y.value),
         },
-      ]
+      ],
+      undefined
     );
     await cache.setTokenPriceSource(source);
   }

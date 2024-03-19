@@ -17,9 +17,10 @@ export default function getLpTokenSource(
   networkId: NetworkIdType,
   sourceId: string,
   platformId: string,
-  elementName: string | undefined,
   lpDetails: LpDetails,
-  poolUnderlyings: PoolUnderlying[]
+  poolUnderlyings: PoolUnderlying[],
+  elementName?: string,
+  liquidityName?: string
 ): TokenPriceSource {
   const price =
     poolUnderlyings.reduce((acc, u) => acc + u.reserveAmount * u.price, 0) /
@@ -30,6 +31,7 @@ export default function getLpTokenSource(
     platformId,
     id: sourceId,
     elementName,
+    liquidityName,
     weight: 1,
     address: lpDetails.address,
     price,

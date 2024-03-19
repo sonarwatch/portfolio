@@ -139,9 +139,9 @@ const executor: JobExecutor = async (cache: Cache) => {
       NetworkId.solana,
       pool.pubkey.toString(),
       platformId,
-      'V1 (Deprecated)',
       lpDetailsRaw,
-      poolUnderlyings
+      poolUnderlyings,
+      'V1 (Deprecated)'
     );
     sourcesPromises.push(cache.setTokenPriceSource(source));
   }

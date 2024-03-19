@@ -19,15 +19,15 @@ export default function getLpTokenSourceRaw(
   networkId: NetworkIdType,
   sourceId: string,
   platformId: string,
-  elementName: string | undefined,
   lpDetailsRaw: LpDetailsRaw,
-  poolUnderlyingsRaw: PoolUnderlyingRaw[]
+  poolUnderlyingsRaw: PoolUnderlyingRaw[],
+  elementName?: string,
+  liquidityName?: string
 ): TokenPriceSource {
   return getLpTokenSource(
     networkId,
     sourceId,
     platformId,
-    elementName,
     {
       ...lpDetailsRaw,
       supply: lpDetailsRaw.supplyRaw
@@ -37,6 +37,8 @@ export default function getLpTokenSourceRaw(
     poolUnderlyingsRaw.map((u) => ({
       ...u,
       reserveAmount: u.reserveAmountRaw.div(10 ** u.decimals).toNumber(),
-    }))
+    })),
+    elementName,
+    liquidityName
   );
 }

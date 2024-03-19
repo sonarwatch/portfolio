@@ -148,7 +148,6 @@ const executor: JobExecutor = async (cache: Cache) => {
       NetworkId.solana,
       lpMint.toString(),
       platformId,
-      'Aquafarms (deprecated)',
       { address: lpMint.toString(), decimals: lpDecimals, supplyRaw: lpSupply },
       [
         {
@@ -163,7 +162,8 @@ const executor: JobExecutor = async (cache: Cache) => {
           price: tokenPriceB.price,
           reserveAmountRaw: pcAmountWei,
         },
-      ]
+      ],
+      'Aquafarms (deprecated)'
     );
 
     await cache.setTokenPriceSource(lpSource);

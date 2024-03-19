@@ -145,7 +145,6 @@ const executor: JobExecutor = async (cache: Cache) => {
       NetworkId.solana,
       lpMint,
       platformId,
-      undefined,
       {
         address: lpMint,
         decimals: lpMintAccount.decimals,
@@ -164,7 +163,8 @@ const executor: JobExecutor = async (cache: Cache) => {
           price: bTokenPrice.price,
           reserveAmountRaw: tAccountB.amount,
         },
-      ]
+      ],
+      undefined
     );
     await cache.setTokenPriceSource(lpSource);
   }
