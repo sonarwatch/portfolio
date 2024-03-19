@@ -232,6 +232,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       price,
       underlyings,
       timestamp: Date.now(),
+      liquidityName: pool.symbol,
     });
   }
 };
