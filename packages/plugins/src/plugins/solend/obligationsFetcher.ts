@@ -41,10 +41,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (markets.length === 0) return [];
   const marketsByAddress: Map<string, MarketInfo> = new Map();
   markets.forEach((market) => {
-    marketsByAddress.set(market.address.toString(), market);
+    if (market) marketsByAddress.set(market.address.toString(), market);
   });
 
   for (const marketInfo of markets) {
+    if (!marketInfo) continue;
     const seeds = [
       getObligationSeed(marketInfo.address, 0),
       getObligationSeed(marketInfo.address, 1),
@@ -60,7 +61,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       obligationAddresses.push(obligationAddress);
     }
   }
-
   // Flexlend, only support the main pool on Solend
   const marketSeed = mainMarket.slice(0, 16);
   const ownerSeed = owner.slice(0, 16);
@@ -75,6 +75,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     obligationSeed,
     pid
   );
+
   obligationAddresses.push(
     ...[oldFlexlendObligAddress, newFlexlendObligAddress]
   );
