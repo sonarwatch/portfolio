@@ -20,7 +20,7 @@ This repository powers SonarWatch website by fetching all DeFi assets for a wall
 - Native stake accounts
 - many other to come!
 
-# How does it works ?
+# How does it works?
 
 Anyone can contribute to this repository to help us cover more protocols and create a better coverage for the user.
 
