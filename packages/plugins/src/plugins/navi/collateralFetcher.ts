@@ -67,26 +67,27 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (!borrowBalance.error && borrowBalance.data?.content) {
       const borrowInfo = borrowBalance.data.content?.fields;
       if (borrowInfo.value) {
-        borrowedAssets.push(
-          tokenPriceToAssetToken(
-            rData.value.fields.coin_type,
-            new BigNumber(borrowInfo.value)
-              .times(rData.value.fields.current_borrow_index)
-              .dividedBy(amountFactor)
-              .toNumber(),
-            NetworkId.sui,
-            tokenPrice
-          )
+        const borrowAsset = tokenPriceToAssetToken(
+          rData.value.fields.coin_type,
+          new BigNumber(borrowInfo.value)
+            .times(rData.value.fields.current_borrow_index)
+            .dividedBy(amountFactor)
+            .toNumber(),
+          NetworkId.sui,
+          tokenPrice
         );
-        const apy = new BigNumber(rData.value.fields.current_borrow_rate)
-          .dividedBy(10 ** rateFactor)
-          .toNumber();
-        borrowedYields.push([
-          {
-            apr: -apyToApr(apy),
-            apy: -apy,
-          },
-        ]);
+        if (borrowAsset.value === null || borrowAsset.value > 0.002) {
+          borrowedAssets.push(borrowAsset);
+          const apy = new BigNumber(rData.value.fields.current_borrow_rate)
+            .dividedBy(10 ** rateFactor)
+            .toNumber();
+          borrowedYields.push([
+            {
+              apr: -apyToApr(apy),
+              apy: -apy,
+            },
+          ]);
+        }
       }
     }
 
