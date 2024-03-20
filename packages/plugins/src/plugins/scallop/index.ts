@@ -7,7 +7,7 @@ import marketJob from './marketJob';
 import spoolsMarketJob from './spoolsMarketJob';
 
 import lendingsFetcher from './lendingsFetcher';
-import veScasFetcher from './veScasFetcher';
+import veScaFetcher from './veScaFetcher';
 import obligationsFetcher from './obligationsFetcher';
 import { scallopPlatform } from './constants';
 
@@ -15,6 +15,6 @@ export const jobs: Job[] = [addressJob, poolsJob, marketJob, spoolsMarketJob];
 export const fetchers: Fetcher[] = [
   lendingsFetcher,
   obligationsFetcher,
-  veScasFetcher,
+  veScaFetcher,
 ];
 export const platforms: Platform[] = [scallopPlatform];
