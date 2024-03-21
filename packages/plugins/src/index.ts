@@ -362,6 +362,11 @@ import {
   jobs as symmetryJobs,
   fetchers as symmetryFetchers,
 } from './plugins/symmetry';
+import {
+  platforms as staratlasPlatforms,
+  jobs as staratlasJobs,
+  fetchers as staratlasFetchers,
+} from './plugins/staratlas';
 
 export {
   walletTokensPlatform,
@@ -452,6 +457,7 @@ export const platforms: Platform[] = [
   ...kaiPlatforms,
   ...suilendPlatforms,
   ...symmetryPlatforms,
+  ...staratlasPlatforms,
 ];
 
 // JOBS //
@@ -524,6 +530,7 @@ export const jobs: Job[] = [
   ...kaiJobs,
   ...suilendJobs,
   ...symmetryJobs,
+  ...staratlasJobs,
 ];
 
 // FETCHERS //
@@ -598,5 +605,6 @@ export const fetchers: Fetcher[] = [
   ...kaiFetchers,
   ...suilendFetchers,
   ...symmetryFetchers,
+  ...staratlasFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
