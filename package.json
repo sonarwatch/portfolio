@@ -53,6 +53,7 @@
   "dependencies": {
     "@aave/contract-helpers": "^1.18.3",
     "@aave/math-utils": "^1.18.3",
+    "@aptos-labs/ts-sdk": "^1.10.0",
     "@bonfida/spl-name-service": "^1.0.10",
     "@cosmjs/cosmwasm-stargate": "^0.31.1",
     "@ethersproject/address": "^5.7.0",
@@ -70,7 +71,6 @@
     "@sei-js/core": "^3.0.1",
     "@sei-js/proto": "^3.0.1",
     "@solana/web3.js": "^1.89.1",
-    "aptos": "^1.13.1",
     "axios": "^1.4.0",
     "bignumber.js": "^9.1.1",
     "bitcoin-address-validation": "^2.2.1",

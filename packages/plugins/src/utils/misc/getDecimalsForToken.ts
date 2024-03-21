@@ -49,9 +49,11 @@ export async function getDecimalsForToken(
     case 'aptos': {
       const client = getClientAptos();
       const viewRes = (await client.view({
-        function: coinDecimals,
-        type_arguments: [address],
-        arguments: [],
+        payload: {
+          function: coinDecimals,
+          typeArguments: [address as `${string}::${string}::${string}`],
+          functionArguments: [],
+        },
       })) as number[];
       if (viewRes.length !== 1) return undefined;
       return viewRes[0];

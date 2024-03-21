@@ -1,4 +1,4 @@
-import { AptosClient } from 'aptos';
+import { AptosClient } from '../clients/types';
 import { getTableItem } from './getTableItem';
 
 const MAX = 20;

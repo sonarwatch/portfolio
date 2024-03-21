@@ -30,7 +30,7 @@ export function getUrlEndpoints(): Record<NetworkIdType, string> {
     polygon: process.env['PORTFOLIO_POLYGON_RPC'] || 'https://1rpc.io/matic',
     aptos:
       process.env['PORTFOLIO_APTOS_RPC'] ||
-      'https://fullnode.mainnet.aptoslabs.com',
+      'https://api.mainnet.aptoslabs.com/v1',
     sui: process.env['PORTFOLIO_SUI_RPC'] || 'https://sui-rpc.publicnode.com',
   };
 }

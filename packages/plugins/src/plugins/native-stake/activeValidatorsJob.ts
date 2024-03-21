@@ -7,19 +7,21 @@ import { ValidatorSet } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientAptos();
-  const resources = (await client.getAccountResource(
-    '0x1',
-    '0x1::stake::ValidatorSet'
-  )) as ValidatorSet;
+  const resources = (await client.getAccountResource({
+    accountAddress: '0x1',
+    resourceType: '0x1::stake::ValidatorSet',
+  })) as ValidatorSet;
   const activeValidators = resources.data.active_validators;
   const validatorsWithStake: string[] = [];
   for (let i = 0; i < activeValidators.length; i++) {
     const validator = activeValidators[i];
     const hasStake = await client
       .view({
-        function: '0x1::delegation_pool::operator_commission_percentage',
-        type_arguments: [],
-        arguments: [validator.addr],
+        payload: {
+          function: '0x1::delegation_pool::operator_commission_percentage',
+          typeArguments: [],
+          functionArguments: [validator.addr],
+        },
       })
       .catch(() => {});
     if (hasStake) validatorsWithStake.push(validator.addr);

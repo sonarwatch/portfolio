@@ -32,8 +32,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
   if (!poolPositions) return [];
   if (
-    poolPositions.data.supply_coins.length === 0 &&
-    poolPositions.data.borrow_coins.length === 0
+    poolPositions.supply_coins.length === 0 &&
+    poolPositions.borrow_coins.length === 0
   )
     return [];
 
@@ -44,22 +44,22 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (!configStores) return [];
 
   const supplyPositions =
-    poolPositions.data.supply_coins.length === 0
+    poolPositions.supply_coins.length === 0
       ? []
       : await getTableItemsByKeys<SupplyPosition>(
           client,
-          poolPositions.data.supply_position.handle,
-          poolPositions.data.supply_coins,
+          poolPositions.supply_position.handle,
+          poolPositions.supply_coins,
           '0x1::string::String',
           '0x3c1d4a86594d681ff7e5d5a233965daeabdc6a15fe5672ceeda5260038857183::pool::SupplyPosition'
         );
   const borrowPositions =
-    poolPositions.data.borrow_coins.length === 0
+    poolPositions.borrow_coins.length === 0
       ? []
       : await getTableItemsByKeys<BorrowPosition>(
           client,
-          poolPositions.data.borrow_position.handle,
-          poolPositions.data.borrow_coins,
+          poolPositions.borrow_position.handle,
+          poolPositions.borrow_coins,
           '0x1::string::String',
           '0x3c1d4a86594d681ff7e5d5a233965daeabdc6a15fe5672ceeda5260038857183::pool::BorrowPosition'
         );
@@ -73,7 +73,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   // Token prices
   const tokenPricesRes = await cache.getTokenPrices(
-    [...poolPositions.data.supply_coins, ...poolPositions.data.borrow_coins],
+    [...poolPositions.supply_coins, ...poolPositions.borrow_coins],
     NetworkId.aptos
   );
   const tokenPrices: Record<string, TokenPrice> = {};
@@ -87,7 +87,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (!supplyPosition) continue;
     if (supplyPosition.amount === '0') continue;
 
-    const coinType = poolPositions.data.supply_coins[i];
+    const coinType = poolPositions.supply_coins[i];
     const address = formatTokenAddress(coinType, NetworkId.aptos);
     const { decimals, ltv } = configStores[coinType];
     const amount = new BigNumber(supplyPosition.amount)
@@ -111,7 +111,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (!borrowPosition) continue;
     if (borrowPosition.amount === '0') continue;
 
-    const coinType = poolPositions.data.borrow_coins[i];
+    const coinType = poolPositions.borrow_coins[i];
     const address = formatTokenAddress(coinType, NetworkId.aptos);
     const { decimals } = configStores[coinType];
     const amount = new BigNumber(borrowPosition.amount)

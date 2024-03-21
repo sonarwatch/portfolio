@@ -74,6 +74,14 @@ export const tokensToRelyOnByNetwork: Map<NetworkIdType, string[]> = new Map([
   ],
 ]);
 
+/**
+ * @deprecated
+ * This function has been deprecated. Use the getLpUnderlyingTokenSource instead.
+ * This list is used to avoid calulating low liquidity tokens with others low liquidity tokens.
+ * To prevent wrong prices (with very low precision) to be calculated, we setup a list of tokens to rely on.
+ * These tokens have very low chance of having price manipulation.
+ * Therefore, they can be safely used to compute other tokens prices.
+ */
 export default async function checkComputeAndStoreTokensPrices(
   cache: Cache,
   source: string,

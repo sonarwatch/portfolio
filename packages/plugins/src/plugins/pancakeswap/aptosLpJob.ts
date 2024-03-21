@@ -1,5 +1,9 @@
 import BigNumber from 'bignumber.js';
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  TokenPriceSource,
+  formatTokenAddress,
+} from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { lpCoinInfoTypePrefix, platformId, programAddress } from './constants';
@@ -9,13 +13,11 @@ import {
   CoinInfoData,
   MoveResource,
   getAccountResources,
-  getNestedType,
   parseTypeString,
 } from '../../utils/aptos';
-import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
 import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
-import { getDecimalsForToken } from '../../utils/misc/getDecimalsForToken';
 import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
+import { getDecimals } from '../../utils/aptos/getDecimals';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientAptos();
@@ -27,21 +29,22 @@ const executor: JobExecutor = async (cache: Cache) => {
     resourcesByType.set(resource.type, resource);
   });
 
-  const tokenPriceById = await getTokenPricesMap(
+  const tokenPriceById = await cache.getTokenPricesAsMap(
     resources
       .map((ressource) => {
         const { keys } = parseTypeString(ressource.type);
         return keys ? keys.map((key) => key.type) : [];
       })
       .flat(),
-    NetworkId.aptos,
-    cache
+    NetworkId.aptos
   );
+  const lpSources: TokenPriceSource[] = [];
   for (let i = 0; i < resources.length; i++) {
     const resource = resources[i];
     if (!resource.type.startsWith(lpCoinInfoTypePrefix)) continue;
 
-    const lpType = getNestedType(resource.type);
+    const lpType = parseTypeString(resource.type).keys?.at(0)?.type;
+    if (!lpType) continue;
     const lpInfoData = resource.data as CoinInfoData;
     const lpSupplyString = lpInfoData.supply?.vec[0]?.integer.vec[0]?.value;
     if (!lpSupplyString) continue;
@@ -50,7 +53,10 @@ const executor: JobExecutor = async (cache: Cache) => {
     const lpSupply = new BigNumber(lpSupplyString);
     if (lpSupply.isZero()) continue;
 
-    const tokenPairId = getNestedType(lpType);
+    const tokenPairId = parseTypeString(lpType)
+      .keys?.map((t) => t.type)
+      .join(', ');
+    if (!tokenPairId) continue;
 
     // TODO : get ride of those by using parseTypeString() instead of getNestedType()
     if (
@@ -59,9 +65,8 @@ const executor: JobExecutor = async (cache: Cache) => {
       tokenPairId.includes('lp_coin::LP')
     )
       continue;
-    const splits = tokenPairId.split(', ');
-    const typeX = splits.at(0);
-    const typeY = splits.at(1);
+    const typeX = parseTypeString(lpType).keys?.at(0)?.type;
+    const typeY = parseTypeString(lpType).keys?.at(1)?.type;
     const tokenPairResource = resourcesByType.get(
       `${programAddress}::swap::TokenPairMetadata<${tokenPairId}>`
     ) as MoveResource<TokenPairMetadataData> | undefined;
@@ -80,15 +85,14 @@ const executor: JobExecutor = async (cache: Cache) => {
       continue;
 
     const [tokenPriceX, tokenPriceY] = [
-      tokenPriceById.get(typeX),
-      tokenPriceById.get(typeY),
+      tokenPriceById.get(formatTokenAddress(typeX, NetworkId.aptos)),
+      tokenPriceById.get(formatTokenAddress(typeY, NetworkId.aptos)),
     ];
 
     const [decimalsX, decimalsY] = await Promise.all([
-      getDecimalsForToken(cache, typeX, NetworkId.aptos),
-      getDecimalsForToken(cache, typeY, NetworkId.aptos),
+      getDecimals(client, typeX),
+      getDecimals(client, typeY),
     ]);
-
     const [reserveAmountRawX, reserveAmountRawY] = [
       new BigNumber(tokenPairData.balance_x.value),
       new BigNumber(tokenPairData.balance_y.value),
@@ -112,7 +116,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         tokenPrice: tokenPriceY,
       }
     );
-    if (underlyingSource) await cache.setTokenPriceSource(underlyingSource);
+    if (underlyingSource) lpSources.push(underlyingSource);
 
     if (!tokenPriceX || !tokenPriceY) continue;
     const lpSource = getLpTokenSourceRaw(
@@ -140,9 +144,9 @@ const executor: JobExecutor = async (cache: Cache) => {
       ],
       ''
     );
-
-    await cache.setTokenPriceSource(lpSource);
+    lpSources.push(lpSource);
   }
+  await cache.setTokenPriceSources(lpSources);
 };
 
 const job: Job = {

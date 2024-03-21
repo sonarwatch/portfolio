@@ -1,4 +1,4 @@
-import { AptosClient } from 'aptos';
+import { AptosClient } from '../clients/types';
 import { coinInfo } from './constants';
 import { getAccountResource } from './getAccountResource';
 import { getCoinAddressFromCoinType } from './getCoinAddressFromCoinType';

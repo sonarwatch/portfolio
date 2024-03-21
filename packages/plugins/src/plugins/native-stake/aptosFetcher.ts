@@ -34,9 +34,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   for (let i = 0; i < activeValidators.length; i++) {
     const validatorAddress = activeValidators[i];
     const stakedValuesInValidator = (await client.view({
-      function: '0x1::delegation_pool::get_stake',
-      type_arguments: [],
-      arguments: [validatorAddress, owner],
+      payload: {
+        function: '0x1::delegation_pool::get_stake',
+        typeArguments: [],
+        functionArguments: [validatorAddress, owner],
+      },
     })) as string[];
 
     const amount = stakedValuesInValidator

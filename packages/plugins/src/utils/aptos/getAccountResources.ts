@@ -1,11 +1,13 @@
-import { AptosClient } from 'aptos';
+import { AptosClient } from '../clients/types';
 
 export async function getAccountResources(
   client: AptosClient,
   accountAddress: string
 ) {
   const resources = await client
-    .getAccountResources(accountAddress)
+    .getAccountResources({
+      accountAddress,
+    })
     .catch((e) => {
       if (!e.status || e.status !== 404) throw e;
     });

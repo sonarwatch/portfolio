@@ -1,6 +1,6 @@
-import { AptosClient } from 'aptos';
+import { TableItemRequest } from '@aptos-labs/ts-sdk';
+import { AptosClient } from '../clients/types';
 import { getTableItem } from './getTableItem';
-import { TableItemRequest } from './types';
 
 const MAX = 20;
 
