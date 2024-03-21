@@ -134,7 +134,7 @@ export default async function checkComputeAndStoreTokensPrices(
   }
 
   if (!tokenPriceX || !tokenPriceY) {
-    let decimalsTokenX;
+    let decimalsTokenX: number | null;
     if (tokenX.decimal) {
       decimalsTokenX = tokenX.decimal;
     } else if (tokenPriceX) {
@@ -152,8 +152,7 @@ export default async function checkComputeAndStoreTokensPrices(
       decimalsTokenY = await getDecimalsForToken(cache, tokenY.mint, networkId);
     }
 
-    if (decimalsTokenX === undefined || decimalsTokenY === undefined)
-      return undefined;
+    if (decimalsTokenX === null || decimalsTokenY === null) return undefined;
 
     const tokenXReserve = tokenX.rawReserve.dividedBy(10 ** decimalsTokenX);
     const tokenYReserve = tokenY.rawReserve.dividedBy(10 ** decimalsTokenY);
