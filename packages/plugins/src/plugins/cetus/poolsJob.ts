@@ -26,7 +26,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   const poolsObjects = await multiGetObjects(client, poolsAddresses);
 
   const promises = [];
-
+  const cacheItems = [];
   for (const poolObject of poolsObjects) {
     const poolId = poolObject.data?.objectId;
     if (!poolId) continue;
@@ -46,15 +46,16 @@ const executor: JobExecutor = async (cache: Cache) => {
         pool.coinTypeB
       )
     );
-
-    promises.push(
-      cache.setItem(poolId, pool, {
-        prefix: clmmPoolsPrefix,
-        networkId: NetworkId.sui,
-      })
-    );
+    cacheItems.push({
+      key: poolId,
+      value: pool,
+    });
   }
-  await Promise.allSettled(promises);
+  await cache.setItems(cacheItems, {
+    prefix: clmmPoolsPrefix,
+    networkId: NetworkId.sui,
+  });
+  await await Promise.all(promises);
 };
 
 const job: Job = {

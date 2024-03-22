@@ -271,6 +271,19 @@ export class Cache {
     });
   }
 
+  async setItems<K extends StorageValue>(
+    items: {
+      key: string;
+      value: K;
+    }[],
+    opts: TransactionOptions & TransactionOptionsSetItem
+  ) {
+    await runInBatch(
+      items.map((item) => () => this.setItem(item.key, item.value, opts)),
+      15
+    );
+  }
+
   async setTokenPriceSource(source: TokenPriceSource) {
     const fSource = formatTokenPriceSource(source);
     let cSources = await this.getTokenPriceSources(
