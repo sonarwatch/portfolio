@@ -2,6 +2,10 @@ import { NetworkIdType, TokenPrice } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import runInBatch from './runInBatch';
 
+/**
+ * @deprecated
+ * This function has been deprecated. Use the cache.getTokenPricesAsMap() instead.
+ */
 export default async function getTokenPricesMap(
   tokensAddresses: string[],
   networkId: NetworkIdType,
