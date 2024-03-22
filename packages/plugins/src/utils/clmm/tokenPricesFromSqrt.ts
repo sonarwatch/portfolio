@@ -26,9 +26,10 @@ export default async function storeTokenPricesFromSqrt(
   )
     return undefined;
 
-  const tokensPrices = await cache.getTokenPrices([mintX, mintY], networkId);
-  const tokenPriceX = tokensPrices[0];
-  const tokenPriceY = tokensPrices[1];
+  const [tokenPriceX, tokenPriceY] = await cache.getTokenPrices(
+    [mintX, mintY],
+    networkId
+  );
   if (!tokenPriceX && !tokenPriceY) return undefined;
 
   const decimalsX =
