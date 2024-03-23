@@ -27,7 +27,7 @@ export const jobs: Job[] = [
   // Ethereum
   getPoolsJob(NetworkId.ethereum, platformId, 'V2', theGraphUrlEthV2),
   // BNB
-  getPoolsJob(NetworkId.bnb, platformId, 'V1', factoryV2Bnb),
+  // getPoolsJob(NetworkId.bnb, platformId, 'V1', factoryV2Bnb),
 ];
 export const fetchers: Fetcher[] = [
   // V3 (all EVMs)
