@@ -23,7 +23,8 @@ export async function getProgramAccountsSafe(
     ...config,
     dataSlice: { offset: 0, length: 0 },
   });
-  if (accountsRes.length > maxAccounts) throw new Error('Too much accounts to get');
+  if (accountsRes.length > maxAccounts)
+    throw new Error(`Too much accounts to get (${accountsRes.length})`);
 
   return connection.getProgramAccounts(programId, config);
 }
