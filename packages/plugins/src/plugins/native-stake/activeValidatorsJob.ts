@@ -4,14 +4,17 @@ import { Job, JobExecutor } from '../../Job';
 import { getClientAptos } from '../../utils/clients';
 import { platformId, validatorsKey, validatorsPrefix } from './constants';
 import { ValidatorSet } from './types';
+import { getAccountResource } from '../../utils/aptos';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientAptos();
-  const resources = (await client.getAccountResource({
-    accountAddress: '0x1',
-    resourceType: '0x1::stake::ValidatorSet',
-  })) as ValidatorSet;
-  const activeValidators = resources.data.active_validators;
+  const resource = await getAccountResource<ValidatorSet>(
+    client,
+    '0x1',
+    '0x1::stake::ValidatorSet'
+  );
+  const activeValidators = resource?.active_validators;
+  if (!activeValidators) return;
   const validatorsWithStake: string[] = [];
   for (let i = 0; i < activeValidators.length; i++) {
     const validator = activeValidators[i];
