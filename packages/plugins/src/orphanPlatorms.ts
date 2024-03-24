@@ -64,5 +64,13 @@ const otphanPlatforms: Platform[] = [
     image: 'https://sonar.watch/img/platforms/stakewise.png',
     website: 'https://stakewise.io/',
   },
+  {
+    id: 'cloneprotocol',
+    defiLlamaId: 'clone-protocol', // from https://defillama.com/docs/api
+    name: 'Clone Protocol',
+    image: 'https://sonar.watch/img/platforms/cloneprotocol.webp',
+    website: 'https://clone.so/',
+    twitter: 'https://twitter.com/CloneProtocol',
+  },
 ];
 export default otphanPlatforms;
