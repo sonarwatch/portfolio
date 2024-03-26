@@ -9,6 +9,7 @@ import { Cache } from '../../Cache';
 import { Job } from '../../Job';
 import sleep from '../../utils/misc/sleep';
 import { walletTokensPlatform } from './constants';
+import shuffleArray from '../../utils/misc/shuffleArray';
 
 export default function jobGenerator(networkId: NetworkIdType): Job {
   const network = networks[networkId];
@@ -18,10 +19,16 @@ export default function jobGenerator(networkId: NetworkIdType): Job {
       .get(network.tokenListUrl)
       .catch(() => null);
     if (!tokenListResponse) return;
+    const tokensData = getTokensData(tokenListResponse.data);
+    shuffleArray(tokensData);
 
-    const tokensData = await getTokensData(tokenListResponse.data);
-    const sources = await getCoingeckoSources(networkId, tokensData);
-    await cache.setTokenPriceSources(sources);
+    const setSourcesPromises: Promise<void>[] = [];
+    while (tokensData.length !== 0) {
+      const currTokensDate = tokensData.splice(0, 100);
+      const sources = await getCoingeckoSources(networkId, currTokensDate);
+      setSourcesPromises.push(cache.setTokenPriceSources(sources));
+    }
+    await Promise.all(setSourcesPromises);
   };
   return {
     executor,
