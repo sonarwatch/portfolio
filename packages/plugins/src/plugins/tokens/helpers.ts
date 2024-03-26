@@ -101,9 +101,7 @@ async function getPricesFromCoingeckoIds(
   return priceByCoingeckoId;
 }
 
-export async function getTokensData(
-  tokenList: UniTokenList
-): Promise<TokenData[]> {
+export function getTokensData(tokenList: UniTokenList): TokenData[] {
   const tokensData = tokenList.tokens.reduce((cTokensData: TokenData[], ti) => {
     if (!ti.extensions) return cTokensData;
     const { coingeckoId } = ti.extensions;
