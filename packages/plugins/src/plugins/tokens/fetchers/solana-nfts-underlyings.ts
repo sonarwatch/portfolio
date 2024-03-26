@@ -13,7 +13,7 @@ import {
 } from '../../realms/helpers';
 import getSolanaDasEndpoint from '../../../utils/clients/getSolanaDasEndpoint';
 import { getAssetsByOwnerDas } from '../../../utils/solana/das/getAssetsByOwnerDas';
-import { HeliusAsset } from '../../../utils/solana/das/types';
+import { DisplayOptions, HeliusAsset } from '../../../utils/solana/das/types';
 
 type Appraiser = (
   cache: Cache,
@@ -36,7 +36,13 @@ const appraiserByIdentifier: Map<Identifier, Appraiser> = new Map([
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const dasEndpoint = getSolanaDasEndpoint();
-  const items = await getAssetsByOwnerDas(dasEndpoint, owner);
+  const displayOptions: DisplayOptions = {
+    showCollectionMetadata: true,
+    showFungible: false,
+    showInscription: false,
+    showNativeBalance: false,
+  };
+  const items = await getAssetsByOwnerDas(dasEndpoint, owner, displayOptions);
 
   const nftsByIndentifier: Map<Identifier, HeliusAsset[]> = new Map();
   for (let n = 0; n < items.length; n++) {
