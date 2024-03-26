@@ -4,7 +4,6 @@ import {
   BorrowLendRate,
   apyToApr,
   borrowLendRatesPrefix,
-  TokenPrice,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import {
@@ -27,25 +26,35 @@ const executor: JobExecutor = async (cache: Cache) => {
   );
 
   const promises = [];
+  const reservesInfosResponses = [];
+  const mints: Set<string> = new Set();
+
   for (let i = 0; i < reservesAddressesByMarket.length; i += 1) {
     const reservesAddresses = reservesAddressesByMarket[i];
-    const poolName = markets[i].name;
     const reservesInfoRes: void | AxiosResponse<ApiResponse<ReserveInfo>> =
       await axios
         .get(`${reserveEndpoint}${reservesAddresses.join(',')}`)
         .catch(() => {
           //
         });
+    reservesInfosResponses.push(reservesInfoRes);
     if (!reservesInfoRes) continue;
-    const mints = reservesInfoRes.data.results.map(
-      (res) => res.reserve.liquidity.mintPubkey
-    );
-    const tokensPrices = await cache.getTokenPrices(mints, NetworkId.solana);
 
-    const tokenPriceById: Map<string, TokenPrice> = new Map();
-    tokensPrices.forEach((tokenPrice) =>
-      tokenPrice ? tokenPriceById.set(tokenPrice.address, tokenPrice) : []
-    );
+    reservesInfoRes.data.results.forEach((res) => {
+      mints.add(res.reserve.liquidity.mintPubkey);
+    });
+  }
+
+  const tokenPriceById = await cache.getTokenPricesAsMap(
+    Array.from(mints),
+    NetworkId.solana
+  );
+
+  for (let i = 0; i < reservesAddressesByMarket.length; i += 1) {
+    const reservesAddresses = reservesAddressesByMarket[i];
+    const poolName = markets[i].name;
+    const reservesInfoRes = reservesInfosResponses[i];
+    if (!reservesInfoRes) continue;
 
     for (let j = 0; j < reservesInfoRes.data.results.length; j += 1) {
       const reserveInfo = reservesInfoRes.data.results[j];
@@ -62,7 +71,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       const { liquidity, collateral } = reserve;
       const { mintPubkey } = liquidity;
       const decimals = liquidity.mintDecimals;
-      const cTokenExchangeRate = new BigNumber(reserve.cTokenExchangeRate);
+      const cTokenExchangeRate = new BigNumber(reserveInfo.cTokenExchangeRate);
       const tokenAddress = reserveInfo.reserve.collateral.mintPubkey;
 
       const borrowApy = +reserveInfo.rates.borrowInterest / 100;
