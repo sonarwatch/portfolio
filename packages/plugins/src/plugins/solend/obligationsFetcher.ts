@@ -1,51 +1,35 @@
-import {
-  NetworkId,
-  PortfolioAsset,
-  PortfolioElement,
-  PortfolioElementType,
-  TokenPrice,
-  Yield,
-  apyToApr,
-  getElementLendingValues,
-} from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
-import { PublicKey } from '@solana/web3.js';
+import { NetworkId, PortfolioElement } from '@sonarwatch/portfolio-core';
+import { AccountInfo, PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import {
-  mainMarket,
-  marketsPrefix,
-  pid,
-  platformId,
-  reservesPrefix,
-  wadsDecimal,
-} from './constants';
-import { getObligationSeed, parseDataflat } from './helpers';
+import { marketsKey, pid, platformId, reservesPrefix } from './constants';
+import { getElementsFromObligations, getObligationSeed } from './helpers';
 import { MarketInfo, ReserveInfo, ReserveInfoExtended } from './types';
-import { getParsedMultipleAccountsInfo } from '../../utils/solana';
+import {
+  ParsedAccount,
+  getParsedMultipleAccountsInfo,
+} from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
-import { obligationStruct } from './structs';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import runInBatch from '../../utils/misc/runInBatch';
-import { AUTOMATION_PUBLIC_KEY } from '../flexlend/constants';
-import { parsePriceData } from '../../utils/solana/pyth/helpers';
+import { Obligation, obligationStruct } from './structs';
+import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
-  const obligationAddresses = [];
+  const obligationAddresses: PublicKey[] = [];
 
-  const markets = await cache.getAllItems<MarketInfo>({
-    prefix: marketsPrefix,
+  const markets = await cache.getItem<MarketInfo[]>(marketsKey, {
+    prefix: platformId,
     networkId: NetworkId.solana,
   });
-  if (markets.length === 0) return [];
+  if (!markets) return [];
+
   const marketsByAddress: Map<string, MarketInfo> = new Map();
   markets.forEach((market) => {
     if (market) marketsByAddress.set(market.address.toString(), market);
   });
 
-  for (const marketInfo of markets) {
-    if (!marketInfo) continue;
+  marketsByAddress.forEach(async (marketInfo) => {
+    if (!marketInfo) return;
     const seeds = [
       getObligationSeed(marketInfo.address, 0),
       getObligationSeed(marketInfo.address, 1),
@@ -60,44 +44,31 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       );
       obligationAddresses.push(obligationAddress);
     }
-  }
-  // Flexlend, only support the main pool on Solend
-  const marketSeed = mainMarket.slice(0, 16);
-  const ownerSeed = owner.slice(0, 16);
-  const obligationSeed = ownerSeed + marketSeed;
-  const oldFlexlendObligAddress = await PublicKey.createWithSeed(
-    AUTOMATION_PUBLIC_KEY,
-    obligationSeed,
-    pid
-  );
-  const newFlexlendObligAddress = await PublicKey.createWithSeed(
-    new PublicKey(owner),
-    obligationSeed,
-    pid
-  );
+  });
 
-  obligationAddresses.push(
-    ...[oldFlexlendObligAddress, newFlexlendObligAddress]
-  );
-
-  const obligations = await getParsedMultipleAccountsInfo(
+  const obligationsRaw = await getParsedMultipleAccountsInfo(
     client,
     obligationStruct,
     obligationAddresses
   );
-  if (obligations.length === 0) return [];
+  if (obligationsRaw.length === 0) return [];
 
+  const obligations: ParsedAccount<Obligation>[] = [];
   const reserveAddresses: Set<string> = new Set();
-  obligations.forEach((obligation) => {
+  obligationsRaw.forEach((obligation) => {
     if (!obligation) return;
 
     const market = marketsByAddress.get(obligation.lendingMarket.toString());
     if (!market) return;
 
+    obligations.push(obligation);
     market.reserves.forEach((reserve) => {
       reserveAddresses.add(reserve.address);
     });
   });
+
+  if (obligations.length === 0) return [];
+
   const reservesInfos = await cache.getItems<ReserveInfoExtended>(
     Array.from(reserveAddresses),
     {
@@ -108,187 +79,37 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (!reservesInfos) return [];
 
   const reserveByAddress: Map<string, ReserveInfo> = new Map();
-  reservesInfos.forEach((reserve) => {
-    if (!reserve) return;
-
-    reserveByAddress.set(reserve.pubkey, reserve);
-  });
-
-  const tokensAddresses: Set<string> = new Set();
+  const mints: Set<string> = new Set();
+  const pythAddresses: PublicKey[] = [];
   reservesInfos.forEach((reserveInfo) => {
     if (!reserveInfo) return;
 
-    tokensAddresses.add(reserveInfo.reserve.liquidity.mintPubkey);
+    mints.add(reserveInfo.reserve.liquidity.mintPubkey);
+    reserveByAddress.set(reserveInfo.pubkey, reserveInfo);
+    pythAddresses.push(new PublicKey(reserveInfo.reserve.liquidity.pythOracle));
   });
 
-  const tokenPriceResults = await runInBatch(
-    [...tokensAddresses].map(
-      (mint) => () => cache.getTokenPrice(mint, NetworkId.solana)
-    )
+  const tokenPriceByAddress = await cache.getTokenPricesAsMap(
+    Array.from(mints),
+    NetworkId.solana
   );
-  const tokenPrices: Map<string, TokenPrice> = new Map();
-  tokenPriceResults.forEach((r) => {
-    if (r.status === 'rejected') return;
-    if (!r.value) return;
-    tokenPrices.set(r.value.address, r.value);
-  });
 
-  const elements: PortfolioElement[] = [];
-  for (let i = 0; i < obligations.length; i += 1) {
-    const obligation = obligations[i];
-    if (!obligation) continue;
+  const pythAccounts = await getMultipleAccountsInfoSafe(client, pythAddresses);
+  const pythAccByAddress: Map<string, AccountInfo<Buffer>> = new Map();
+  for (let i = 0; i < pythAddresses.length; i++) {
+    const account = pythAccounts[i];
+    if (account === null) continue;
 
-    const market = marketsByAddress.get(obligation.lendingMarket.toString());
-    if (!market) continue;
-
-    const { depositsMap, borrowsMap } = parseDataflat(
-      obligation.dataFlat,
-      obligation.depositsLen,
-      obligation.borrowsLen
-    );
-    if (depositsMap.size === 0 && borrowsMap.size === 0) continue;
-
-    const borrowedAssets: PortfolioAsset[] = [];
-    const borrowedYields: Yield[][] = [];
-    const suppliedAssets: PortfolioAsset[] = [];
-    const suppliedYields: Yield[][] = [];
-    const rewardAssets: PortfolioAsset[] = [];
-    const suppliedLtvs: number[] = [];
-    const borrowedWeights: number[] = [];
-
-    for (let j = 0; j < market.reserves.length; j += 1) {
-      const { address: reserveAddress } = market.reserves[j];
-      const reserveInfo = reserveByAddress.get(reserveAddress);
-      if (!reserveInfo) continue;
-
-      const { reserve } = reserveInfo;
-      const { liquidity, collateral } = reserve;
-      const lMint = liquidity.mintPubkey;
-      const lTokenPrice = tokenPrices.get(lMint);
-      let price: number | undefined;
-      if (!lTokenPrice) {
-        const pythOracle = new PublicKey(reserve.liquidity.pythOracle);
-        const pythAccount = await client.getAccountInfo(pythOracle);
-        const pythPrice = pythAccount
-          ? parsePriceData(pythAccount.data)
-          : undefined;
-        if (pythPrice) price = pythPrice.price;
-      }
-
-      const decimals = liquidity.mintDecimals;
-      const reserveBorrowAmount = new BigNumber(liquidity.borrowedAmountWads)
-        .dividedBy(10 ** (wadsDecimal + decimals))
-        .toNumber();
-      const reserveAvailableAmount = new BigNumber(liquidity.availableAmount)
-        .dividedBy(10 ** decimals)
-        .toNumber();
-      const collateralSupply = new BigNumber(collateral.mintTotalSupply)
-        .dividedBy(10 ** decimals)
-        .toNumber();
-      const reserveDepositAmount = reserveBorrowAmount + reserveAvailableAmount;
-
-      // Deposit
-      const deposit = depositsMap.get(reserveAddress);
-      if (deposit) {
-        if (!deposit.depositedAmount.isZero()) {
-          const suppliedAmount = deposit.depositedAmount
-            .div(10 ** decimals)
-            .times(reserveDepositAmount / collateralSupply)
-            .toNumber();
-
-          suppliedLtvs.push(reserve.config.liquidationThreshold / 100);
-
-          const apy = +reserveInfo.rates.supplyInterest / 100;
-          const cSuppliedYields: Yield[] = [
-            {
-              apr: apyToApr(apy),
-              apy,
-            },
-          ];
-          suppliedYields.push(cSuppliedYields);
-          suppliedAssets.push(
-            tokenPriceToAssetToken(
-              lMint,
-              suppliedAmount,
-              NetworkId.solana,
-              lTokenPrice,
-              price
-            )
-          );
-        }
-      }
-
-      // Borrow
-      const borrow = borrowsMap.get(reserveAddress);
-      if (borrow) {
-        if (!borrow.borrowedAmountWads.isZero()) {
-          const borrowedAmount = borrow.borrowedAmountWads
-            .times(new BigNumber(liquidity.cumulativeBorrowRateWads))
-            .div(borrow.cumulativeBorrowRateWads)
-            .dividedBy(new BigNumber(10 ** (wadsDecimal + decimals)))
-            .toNumber();
-
-          borrowedWeights.push(
-            new BigNumber(reserve.config.addedBorrowWeightBPS)
-              .dividedBy(10 ** 4)
-              .plus(1)
-              .toNumber()
-          );
-
-          const apy = +reserveInfo.rates.borrowInterest / 100;
-          const cBorrowedYields: Yield[] = [
-            {
-              apr: -apyToApr(apy),
-              apy: -apy,
-            },
-          ];
-          borrowedYields.push(cBorrowedYields);
-          borrowedAssets.push(
-            tokenPriceToAssetToken(
-              lMint,
-              borrowedAmount,
-              NetworkId.solana,
-              lTokenPrice,
-              price
-            )
-          );
-        }
-      }
-    }
-    if (suppliedAssets.length === 0 && borrowedAssets.length === 0) continue;
-
-    const { borrowedValue, suppliedValue, value, healthRatio, rewardValue } =
-      getElementLendingValues(
-        suppliedAssets,
-        borrowedAssets,
-        rewardAssets,
-        suppliedLtvs,
-        borrowedWeights
-      );
-
-    elements.push({
-      type: PortfolioElementType.borrowlend,
-      networkId: NetworkId.solana,
-      platformId,
-      label: 'Lending',
-      value,
-      name: market.name,
-      data: {
-        borrowedAssets,
-        borrowedValue,
-        borrowedYields,
-        suppliedAssets,
-        suppliedValue,
-        suppliedYields,
-        collateralRatio: null,
-
-        healthRatio,
-        rewardAssets,
-        rewardValue,
-        value,
-      },
-    });
+    pythAccByAddress.set(pythAddresses[i].toString(), account);
   }
+
+  const elements: PortfolioElement[] = getElementsFromObligations(
+    obligations,
+    reserveByAddress,
+    marketsByAddress,
+    tokenPriceByAddress,
+    pythAccByAddress
+  );
 
   return elements;
 };
