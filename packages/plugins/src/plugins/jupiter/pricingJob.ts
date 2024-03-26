@@ -15,6 +15,7 @@ import { getClientSolana } from '../../utils/clients';
 const mints = [
   'HUBsveNpjo5pWqNkH57QzxjQASdTVXcSK7bVKTSZtcSX', // SolanaHub staked SOL
   'xLfNTYy76B8Tiix3hA51Jyvc1kMSFV4sPdR7szTZsRu', // xLifinity
+  'BANXbTpN8U2cU41FjPxe2Ti37PiT5cCxLUKDQZuJeMMR', // Banx
 ];
 const vsToken = solanaNativeWrappedAddress;
 
