@@ -5,7 +5,6 @@ import {
   PortfolioLiquidity,
   TokenPrice,
 } from '@sonarwatch/portfolio-core';
-import { FindNftsByOwnerOutput } from '@metaplex-foundation/js';
 import { PublicKey } from '@solana/web3.js';
 import { platformId, whirlpoolPrefix, whirlpoolProgram } from './constants';
 import { getClientSolana } from '../../utils/clients';
@@ -18,20 +17,17 @@ import { Whirlpool, positionStruct } from './structs/whirlpool';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import runInBatch from '../../utils/misc/runInBatch';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
+import { HeliusAsset } from '../../utils/solana/das/types';
 
 export async function getWhirlpoolPositions(
   cache: Cache,
-  nfts: FindNftsByOwnerOutput,
-  additionalAccounts?: string[]
+  nfts: HeliusAsset[]
 ): Promise<PortfolioElement[]> {
   const client = getClientSolana();
   const positionsProgramAddress: PublicKey[] = [];
 
   nfts.forEach((nft) => {
-    const address =
-      nft.model === 'metadata'
-        ? new PublicKey(nft.mintAddress.toString())
-        : new PublicKey(nft.mint.address.toString());
+    const address = new PublicKey(nft.id);
 
     const positionSeed = [Buffer.from('position'), address.toBuffer()];
 
@@ -41,21 +37,6 @@ export async function getWhirlpoolPositions(
     );
     positionsProgramAddress.push(programAddress);
   });
-
-  if (additionalAccounts) {
-    for (const account of additionalAccounts) {
-      const positionSeed = [
-        Buffer.from('position'),
-        new PublicKey(account).toBuffer(),
-      ];
-
-      const [programAddress] = PublicKey.findProgramAddressSync(
-        positionSeed,
-        whirlpoolProgram
-      );
-      positionsProgramAddress.push(programAddress);
-    }
-  }
   if (positionsProgramAddress.length === 0) return [];
 
   const positionsInfo = await getParsedMultipleAccountsInfo(
