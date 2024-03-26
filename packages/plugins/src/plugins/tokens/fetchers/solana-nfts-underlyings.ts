@@ -1,16 +1,7 @@
 import { NetworkId, PortfolioElement } from '@sonarwatch/portfolio-core';
-import { PublicKey } from '@solana/web3.js';
 
-import {
-  FindNftsByOwnerOutput,
-  Metadata,
-  Metaplex,
-  Nft,
-  Sft,
-} from '@metaplex-foundation/js';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { walletTokensPlatform } from '../constants';
-import { getClientSolana } from '../../../utils/clients';
 import { Cache } from '../../../Cache';
 import { getRaydiumCLMMPositions } from '../../raydium/getRaydiumCLMMPositions';
 import { getWhirlpoolPositions } from '../../orca/getWhirlpoolPositions';
@@ -20,13 +11,16 @@ import {
   getPositionFromVotingEscrowNFT,
   isAVotingEscrowPosition,
 } from '../../realms/helpers';
+import getSolanaDasEndpoint from '../../../utils/clients/getSolanaDasEndpoint';
+import { getAssetsByOwnerDas } from '../../../utils/solana/das/getAssetsByOwnerDas';
+import { DisplayOptions, HeliusAsset } from '../../../utils/solana/das/types';
 
 type Appraiser = (
   cache: Cache,
-  nfts: FindNftsByOwnerOutput
+  nfts: HeliusAsset[]
 ) => Promise<PortfolioElement[]>;
 
-type Identifier = (nft: Metadata | Nft | Sft) => boolean;
+type Identifier = (nft: HeliusAsset) => boolean;
 
 // Add here any pair of [Identifier,Appraiser] =
 // Identifier : a string to filter the asset concerned
@@ -41,17 +35,18 @@ const appraiserByIdentifier: Map<Identifier, Appraiser> = new Map([
 ]);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
-  const ownerPubKey = new PublicKey(owner);
-  const metaplex = new Metaplex(client);
+  const dasEndpoint = getSolanaDasEndpoint();
+  const displayOptions: DisplayOptions = {
+    showCollectionMetadata: true,
+    showFungible: false,
+    showInscription: false,
+    showNativeBalance: false,
+  };
+  const items = await getAssetsByOwnerDas(dasEndpoint, owner, displayOptions);
 
-  const outputs = await metaplex.nfts().findAllByOwner({
-    owner: ownerPubKey,
-  });
-
-  const nftsByIndentifier: Map<Identifier, FindNftsByOwnerOutput> = new Map();
-  for (let n = 0; n < outputs.length; n++) {
-    const nft = outputs[n];
+  const nftsByIndentifier: Map<Identifier, HeliusAsset[]> = new Map();
+  for (let n = 0; n < items.length; n++) {
+    const nft = items[n];
     for (const identifier of appraiserByIdentifier.keys()) {
       if (identifier(nft)) {
         if (!nftsByIndentifier.get(identifier)) {

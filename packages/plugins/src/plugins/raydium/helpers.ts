@@ -3,13 +3,13 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-bitwise */
-import { Metadata, Nft, Sft } from '@metaplex-foundation/js';
 import BigNumber from 'bignumber.js';
 import BN from 'bn.js';
 import { positionsIdentifier } from './constants';
+import { HeliusAsset } from '../../utils/solana/das/types';
 
-export function isARaydiumPosition(nft: Metadata | Nft | Sft): boolean {
-  return nft && nft.name === positionsIdentifier;
+export function isARaydiumPosition(nft: HeliusAsset): boolean {
+  return nft && nft.content.metadata.name === positionsIdentifier;
 }
 
 const ZERO = new BN(0);

@@ -1,11 +1,4 @@
-import {
-  FindNftsByOwnerOutput,
-  Metadata,
-  Metaplex,
-  Nft,
-  Sft,
-  isMetadata,
-} from '@metaplex-foundation/js';
+import { isMetadata } from '@metaplex-foundation/js';
 import {
   NetworkId,
   PortfolioAsset,
@@ -15,17 +8,17 @@ import {
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
-import { getClientSolana } from '../../utils/clients';
 import { Attributes, NftVoterMetadata } from './types';
 import { LockupKind } from './structs/realms';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { platformId } from './constants';
 import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
+import { HeliusAsset } from '../../utils/solana/das/types';
 
 export const votingEscrowIdentifier = 'Voting Escrow Token Position';
 
-export function isAVotingEscrowPosition(nft: Metadata | Nft | Sft): boolean {
-  return nft && nft.name === votingEscrowIdentifier;
+export function isAVotingEscrowPosition(nft: HeliusAsset): boolean {
+  return nft && nft.content.metadata.name === votingEscrowIdentifier;
 }
 
 export function getVoterPda(
@@ -45,18 +38,16 @@ export function getVoterPda(
 
 export async function getPositionFromVotingEscrowNFT(
   cache: Cache,
-  nfts: FindNftsByOwnerOutput
+  nfts: HeliusAsset[]
 ): Promise<PortfolioElement[]> {
-  const client = getClientSolana();
-  const metaplex = new Metaplex(client);
   const assets: PortfolioAsset[] = [];
   const amountByMint: Map<string, BigNumber> = new Map();
   for (const nft of nfts) {
     if (isMetadata(nft)) {
-      const metadata = await metaplex.nfts().load({ metadata: nft });
-      if (!metadata.json) continue;
+      const { metadata } = nft.content;
+      if (!metadata.attributes) continue;
 
-      const { attributes } = metadata.json;
+      const { attributes } = metadata;
       const votersValues = getNftValues(attributes);
       if (votersValues && !votersValues.amountDepositedNative.isZero()) {
         const existingAmount = amountByMint.get(votersValues.votingMint);

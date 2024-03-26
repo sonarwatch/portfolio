@@ -3,11 +3,11 @@ import BigNumber from 'bignumber.js';
 import BN from 'bn.js';
 import Decimal from 'decimal.js';
 
-import { Metadata, Nft, Sft } from '@metaplex-foundation/js';
 import { positionsIdentifier } from './constants';
+import { HeliusAsset } from '../../utils/solana/das/types';
 
-export function isAnOrcaPosition(nft: Metadata | Nft | Sft): boolean {
-  return nft && nft.name === positionsIdentifier;
+export function isAnOrcaPosition(nft: HeliusAsset): boolean {
+  return nft && nft.content.metadata.name === positionsIdentifier;
 }
 
 export function signedShiftRight(n0: BN, shiftBy: number, bitWidth: number) {
