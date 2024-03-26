@@ -213,6 +213,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const share = new BigNumber(userRewardManager.fields.share);
 
       for (const userReward of userRewardManager.fields.rewards) {
+        if (!userReward) continue;
         const poolReward = poolRewardById.get(userReward.fields.pool_reward_id);
         if (!poolReward) continue;
 
