@@ -1,3 +1,11 @@
+export type DisplayOptions = {
+  showNativeBalance?: boolean;
+  showFungible?: boolean;
+  showInscription?: boolean;
+  showUnverifiedCollections?: boolean;
+  showCollectionMetadata?: boolean;
+  showGrandTotal?: boolean;
+};
 export type GetAssetsByOwnerOutput = {
   jsonrpc: string;
   result: HeliusAssetList;

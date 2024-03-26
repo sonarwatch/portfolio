@@ -22,7 +22,9 @@ import getSolanaDasEndpoint from '../../../utils/clients/getSolanaDasEndpoint';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const dasEndpoint = getSolanaDasEndpoint();
-  const items = await getAssetsByOwnerDas(dasEndpoint, owner);
+  const items = await getAssetsByOwnerDas(dasEndpoint, owner, {
+    showNativeBalance: false,
+  });
 
   const fungibleAddresses = items.reduce((addresses: string[], curr) => {
     if (isHeliusFungibleAsset(curr)) addresses.push(curr.id);

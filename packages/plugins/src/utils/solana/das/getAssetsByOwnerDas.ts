@@ -1,14 +1,16 @@
 import { RpcEndpoint } from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
-import { GetAssetsByOwnerOutput, HeliusAsset } from './types';
+import { DisplayOptions, GetAssetsByOwnerOutput, HeliusAsset } from './types';
 import { getBasicAuthHeaders } from '../../misc/getBasicAuthHeaders';
+import { getDisplayOptions } from './getDisplayOptions';
 
 const limit = 1000;
 const maxPage = 10;
 
 export async function getAssetsByOwnerDas(
   dasEndpoint: RpcEndpoint,
-  owner: string
+  owner: string,
+  displayOptions?: DisplayOptions
 ) {
   const httpHeaders = dasEndpoint.basicAuth
     ? getBasicAuthHeaders(
@@ -39,14 +41,7 @@ export async function getAssetsByOwnerDas(
             sortBy: 'id',
             sortDirection: 'asc',
           },
-          displayOptions: {
-            showNativeBalance: false,
-            showFungible: true,
-            showInscription: true,
-            showUnverifiedCollections: true,
-            showCollectionMetadata: true,
-            showGrandTotal: true,
-          },
+          displayOptions: getDisplayOptions(displayOptions),
         },
       },
       {
