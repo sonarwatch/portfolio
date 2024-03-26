@@ -4,6 +4,8 @@ import {
   marketsPrefix as prefix,
   platformId,
   marketsEndpoint,
+  marketsKey,
+  solendPlatform,
 } from './constants';
 import { MarketInfo } from './types';
 import { upperFirst } from './helpers';
@@ -15,7 +17,12 @@ const executor: JobExecutor = async (cache: Cache) => {
     marketsEndpoint
   );
   const marketsInfo = marketsInfoRes.data;
+  const marketsEnhanced: MarketInfo[] = [];
   for (const marketInfo of marketsInfo) {
+    marketsEnhanced.push({
+      ...marketInfo,
+      name: upperFirst(marketInfo.name),
+    });
     await cache.setItem(
       marketInfo.address,
       {
@@ -28,6 +35,10 @@ const executor: JobExecutor = async (cache: Cache) => {
       }
     );
   }
+  await cache.setItem(marketsKey, marketsEnhanced, {
+    prefix: solendPlatform.id,
+    networkId: NetworkId.solana,
+  });
 };
 
 const job: Job = {
