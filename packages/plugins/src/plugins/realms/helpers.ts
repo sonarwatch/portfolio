@@ -12,7 +12,7 @@ import { Cache } from '../../Cache';
 import { HeliumNftVoterMetadata } from './types';
 import { LockupKind } from './structs/realms';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { platformId } from './constants';
+import { heliumPlatformId } from './constants';
 
 export const nftIdentifier = 'Voting Escrow Token Position';
 
@@ -87,7 +87,7 @@ export async function getHeliumElementsFromNFTs(
   return [
     {
       networkId: NetworkId.solana,
-      platformId,
+      platformId: heliumPlatformId,
       type: 'multiple',
       label: 'Deposit',
       value: getUsdValueSum(assets.map((a) => a.value)),
