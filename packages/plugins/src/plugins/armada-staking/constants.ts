@@ -1,12 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
-export const platformId = 'spl-staking';
-export const splStakingPlatform: Platform = {
-  id: platformId,
-  name: 'SPL Staking',
-  image: 'https://sonar.watch/img/platforms/splStaking.png',
-};
+export const platformId = 'armada-staking-program';
 export const stakePid = new PublicKey(
   'STAKEGztX7S1MUHxcQHieZhELCntb9Ys9BgUbeEtMu1'
 );

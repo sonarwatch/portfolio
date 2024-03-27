@@ -5,7 +5,6 @@ import {
   flowmaticPlatform,
   kishuPlatform,
   madbearsPlatform,
-  splStakingPlatform,
   yakuPlatform,
 } from './constants';
 import poolsJob from './poolsJob';
@@ -16,7 +15,6 @@ export const platforms: Platform[] = [
   yakuPlatform,
   madbearsPlatform,
   kishuPlatform,
-  splStakingPlatform,
 ];
 export const jobs: Job[] = [poolsJob];
 export const fetchers: Fetcher[] = [stakingFetcher];

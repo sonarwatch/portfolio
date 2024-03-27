@@ -52,7 +52,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const tokenPrice = tokenPricesById.get(mint);
     if (!tokenPrice) continue;
 
-    const platform = platformByMint.get(mint) || platformId;
+    const platform = platformByMint.get(mint);
+    if (!platform) continue;
 
     const lockedUntil = new Date(
       stakeAccount.depositTimestamp
