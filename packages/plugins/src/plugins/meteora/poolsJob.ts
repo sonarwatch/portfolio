@@ -19,6 +19,7 @@ import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
 import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
+import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -117,7 +118,10 @@ const executor: JobExecutor = async (cache: Cache) => {
   const mintsAccounts = await getParsedMultipleAccountsInfo(
     client,
     mintAccountStruct,
-    Array.from(lpMints)
+    [
+      ...Array.from(lpMints),
+      ...Array.from(tokensMint).map((tM) => new PublicKey(tM)),
+    ]
   );
   const mintsAccountByAddress: Map<string, MintAccount> = new Map();
   mintsAccounts.forEach((mintAccount) => {
@@ -131,7 +135,10 @@ const executor: JobExecutor = async (cache: Cache) => {
     const bTokenMint = poolAccount.tokenBMint.toString();
     const aTokenPrice = tokenPriceById.get(aTokenMint);
     const bTokenPrice = tokenPriceById.get(bTokenMint);
-    if (!bTokenPrice || !aTokenPrice) continue;
+
+    const aMintAccount = mintsAccountByAddress.get(aTokenMint);
+    const bMintAccount = mintsAccountByAddress.get(bTokenMint);
+
     const tAccountA = tokenAccountsMap.get(poolAccount.aVaultLp.toString());
     const tAccountB = tokenAccountsMap.get(poolAccount.bVaultLp.toString());
     if (!tAccountA || !tAccountB) continue;
@@ -140,6 +147,29 @@ const executor: JobExecutor = async (cache: Cache) => {
     const lpMint = poolAccount.lpMint.toString();
     const lpMintAccount = mintsAccountByAddress.get(lpMint);
     if (!lpMintAccount) continue;
+
+    if (aMintAccount && bMintAccount) {
+      const underlyingSource = getLpUnderlyingTokenSource(
+        lpMint.toString(),
+        NetworkId.solana,
+        {
+          address: aTokenMint,
+          decimals: aMintAccount.decimals,
+          reserveAmountRaw: tAccountA.amount,
+          tokenPrice: aTokenPrice,
+        },
+        {
+          address: bTokenMint,
+          decimals: bMintAccount.decimals,
+          reserveAmountRaw: tAccountB.amount,
+          tokenPrice: bTokenPrice,
+        }
+      );
+      if (underlyingSource) {
+        await cache.setTokenPriceSource(underlyingSource);
+      }
+    }
+    if (!bTokenPrice || !aTokenPrice) continue;
 
     const lpSource = getLpTokenSourceRaw(
       NetworkId.solana,
