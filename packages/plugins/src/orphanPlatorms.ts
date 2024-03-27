@@ -66,11 +66,19 @@ const otphanPlatforms: Platform[] = [
   },
   {
     id: 'cloneprotocol',
-    defiLlamaId: 'clone-protocol', // from https://defillama.com/docs/api
+    defiLlamaId: 'clone-protocol',
     name: 'Clone Protocol',
     image: 'https://sonar.watch/img/platforms/cloneprotocol.webp',
     website: 'https://clone.so/',
     twitter: 'https://twitter.com/CloneProtocol',
+  },
+  {
+    id: 'sanctum',
+    defiLlamaId: 'parent#sanctum', // from https://defillama.com/docs/api
+    name: 'Sanctum',
+    image: 'https://sonar.watch/img/platforms/sanctum.webp',
+    website: 'https://www.sanctum.so/',
+    twitter: 'https://twitter.com/sanctumso',
   },
 ];
 export default otphanPlatforms;
