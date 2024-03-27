@@ -6,8 +6,9 @@ export const jupiterPlatform: Platform = {
   id: platformId,
   name: 'Jupiter',
   image: 'https://sonar.watch/img/platforms/jupiter.png',
-  defiLlamaId: 'jupiter',
+  defiLlamaId: 'parent#jupiter',
   website: 'https://jup.ag/',
+  twitter: 'https://twitter.com/JupiterExchange',
 };
 
 export const jlpPool = new PublicKey(
