@@ -196,7 +196,7 @@ import {
   platforms as realmsPlatforms,
   jobs as realmsJobs,
   fetchers as realmsFetchers,
-} from './plugins/realms';
+} from './plugins/daos';
 import {
   platforms as maplePlatforms,
   jobs as mapleJobs,
@@ -341,7 +341,7 @@ import {
   platforms as splStakingPlatforms,
   jobs as splStakingJobs,
   fetchers as splStakingFetchers,
-} from './plugins/spl-staking';
+} from './plugins/armada-staking';
 import {
   platforms as abexPlatforms,
   jobs as abexJobs,

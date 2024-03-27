@@ -14,7 +14,7 @@ import { isAnOrcaPosition } from '../../orca/helpers';
 import {
   getHeliumElementsFromNFTs,
   isAnHeliumNFTVote,
-} from '../../realms/helpers';
+} from '../../daos/helpers';
 import getSolanaDasEndpoint from '../../../utils/clients/getSolanaDasEndpoint';
 import { getAssetsByOwnerDas } from '../../../utils/solana/das/getAssetsByOwnerDas';
 import { DisplayOptions } from '../../../utils/solana/das/types';
