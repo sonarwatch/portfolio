@@ -1,4 +1,8 @@
-import { NetworkId, PortfolioElement } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  PortfolioAssetCollectible,
+  PortfolioElement,
+} from '@sonarwatch/portfolio-core';
 
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { walletTokensPlatform } from '../constants';
@@ -8,19 +12,20 @@ import { getWhirlpoolPositions } from '../../orca/getWhirlpoolPositions';
 import { isARaydiumPosition } from '../../raydium/helpers';
 import { isAnOrcaPosition } from '../../orca/helpers';
 import {
-  getPositionFromVotingEscrowNFT,
-  isAVotingEscrowPosition,
+  getHeliumElementsFromNFTs,
+  isAnHeliumNFTVote,
 } from '../../realms/helpers';
 import getSolanaDasEndpoint from '../../../utils/clients/getSolanaDasEndpoint';
 import { getAssetsByOwnerDas } from '../../../utils/solana/das/getAssetsByOwnerDas';
-import { DisplayOptions, HeliusAsset } from '../../../utils/solana/das/types';
+import { DisplayOptions } from '../../../utils/solana/das/types';
+import { heliusAssetToAssetCollectible } from '../../../utils/solana/das/heliusAssetToAssetCollectible';
 
 type Appraiser = (
   cache: Cache,
-  nfts: HeliusAsset[]
+  nfts: PortfolioAssetCollectible[]
 ) => Promise<PortfolioElement[]>;
 
-type Identifier = (nft: HeliusAsset) => boolean;
+type Identifier = (nft: PortfolioAssetCollectible) => boolean;
 
 // Add here any pair of [Identifier,Appraiser] =
 // Identifier : a string to filter the asset concerned
@@ -31,22 +36,28 @@ type Identifier = (nft: HeliusAsset) => boolean;
 const appraiserByIdentifier: Map<Identifier, Appraiser> = new Map([
   [isARaydiumPosition, getRaydiumCLMMPositions],
   [isAnOrcaPosition, getWhirlpoolPositions],
-  [isAVotingEscrowPosition, getPositionFromVotingEscrowNFT],
+  [isAnHeliumNFTVote, getHeliumElementsFromNFTs],
 ]);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const dasEndpoint = getSolanaDasEndpoint();
   const displayOptions: DisplayOptions = {
     showCollectionMetadata: true,
-    showFungible: false,
+    showUnverifiedCollections: true,
     showInscription: false,
     showNativeBalance: false,
+    showGrandTotal: false,
+    showFungible: true,
   };
-  const items = await getAssetsByOwnerDas(dasEndpoint, owner, displayOptions);
+  const assets = await getAssetsByOwnerDas(dasEndpoint, owner, displayOptions);
 
-  const nftsByIndentifier: Map<Identifier, HeliusAsset[]> = new Map();
-  for (let n = 0; n < items.length; n++) {
-    const nft = items[n];
+  const nftsByIndentifier: Map<Identifier, PortfolioAssetCollectible[]> =
+    new Map();
+  for (let n = 0; n < assets.length; n++) {
+    const nft = heliusAssetToAssetCollectible(assets[n]);
+    if (!nft) continue;
+    if (nft.attributes.tags?.includes('compressed')) continue;
+
     for (const identifier of appraiserByIdentifier.keys()) {
       if (identifier(nft)) {
         if (!nftsByIndentifier.get(identifier)) {
