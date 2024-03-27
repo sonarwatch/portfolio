@@ -28,7 +28,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (market) marketsByAddress.set(market.address.toString(), market);
   });
 
-  marketsByAddress.forEach(async (marketInfo) => {
+  await marketsByAddress.forEach(async (marketInfo) => {
     if (!marketInfo) return;
     const seeds = [
       getObligationSeed(marketInfo.address, 0),
@@ -66,7 +66,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       reserveAddresses.add(reserve.address);
     });
   });
-
   if (obligations.length === 0) return [];
 
   const reservesInfos = await cache.getItems<ReserveInfoExtended>(
