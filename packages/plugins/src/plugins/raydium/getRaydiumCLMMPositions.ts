@@ -1,5 +1,6 @@
 import {
   NetworkId,
+  PortfolioAssetCollectible,
   PortfolioElement,
   PortfolioElementLiquidity,
   PortfolioElementType,
@@ -13,17 +14,16 @@ import { getClientSolana } from '../../utils/clients';
 import { PoolState, personalPositionStateStruct } from './structs/clmms';
 import { Cache } from '../../Cache';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
-import { HeliusAsset } from '../../utils/solana/das/types';
 
 export async function getRaydiumCLMMPositions(
   cache: Cache,
-  nfts: HeliusAsset[]
+  nfts: PortfolioAssetCollectible[]
 ): Promise<PortfolioElement[]> {
   const client = getClientSolana();
 
   const positionsProgramAddress: PublicKey[] = [];
   nfts.forEach((nft) => {
-    const address = new PublicKey(nft.id);
+    const address = new PublicKey(nft.data.address);
 
     const positionSeed = [Buffer.from('position'), address.toBuffer()];
 
@@ -115,6 +115,8 @@ export async function getRaydiumCLMMPositions(
     });
     totalLiquidityValue += value;
   }
+
+  if (assets.length === 0) return [];
 
   const elements: PortfolioElementLiquidity[] = [];
   elements.push({

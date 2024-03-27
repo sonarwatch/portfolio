@@ -5,11 +5,11 @@
 /* eslint-disable no-bitwise */
 import BigNumber from 'bignumber.js';
 import BN from 'bn.js';
+import { PortfolioAssetCollectible } from '@sonarwatch/portfolio-core';
 import { positionsIdentifier } from './constants';
-import { HeliusAsset } from '../../utils/solana/das/types';
 
-export function isARaydiumPosition(nft: HeliusAsset): boolean {
-  return nft && nft.content.metadata.name === positionsIdentifier;
+export function isARaydiumPosition(nft: PortfolioAssetCollectible): boolean {
+  return nft.data.name === positionsIdentifier;
 }
 
 const ZERO = new BN(0);

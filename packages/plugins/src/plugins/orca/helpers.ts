@@ -3,11 +3,11 @@ import BigNumber from 'bignumber.js';
 import BN from 'bn.js';
 import Decimal from 'decimal.js';
 
+import { PortfolioAssetCollectible } from '@sonarwatch/portfolio-core';
 import { positionsIdentifier } from './constants';
-import { HeliusAsset } from '../../utils/solana/das/types';
 
-export function isAnOrcaPosition(nft: HeliusAsset): boolean {
-  return nft && nft.content.metadata.name === positionsIdentifier;
+export function isAnOrcaPosition(nft: PortfolioAssetCollectible): boolean {
+  return nft.data.name === positionsIdentifier;
 }
 
 export function signedShiftRight(n0: BN, shiftBy: number, bitWidth: number) {
