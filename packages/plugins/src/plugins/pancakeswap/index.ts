@@ -3,7 +3,7 @@ import { Job } from '../../Job';
 import { Fetcher } from '../../Fetcher';
 import aptosJob from './aptosLpJob';
 import {
-  factoryV2Bnb,
+  // factoryV2Bnb,
   masterChefV2Bnb,
   masterChefV2Ethereum,
   networksConfigs,
