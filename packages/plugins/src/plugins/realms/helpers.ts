@@ -1,24 +1,23 @@
-import { isMetadata } from '@metaplex-foundation/js';
 import {
+  CollectibleAttribute,
   NetworkId,
   PortfolioAsset,
+  PortfolioAssetCollectible,
   PortfolioElement,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
-import { Attributes, NftVoterMetadata } from './types';
+import { HeliumNftVoterMetadata } from './types';
 import { LockupKind } from './structs/realms';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { platformId } from './constants';
-import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
-import { HeliusAsset } from '../../utils/solana/das/types';
 
-export const votingEscrowIdentifier = 'Voting Escrow Token Position';
+export const nftIdentifier = 'Voting Escrow Token Position';
 
-export function isAVotingEscrowPosition(nft: HeliusAsset): boolean {
-  return nft && nft.content.metadata.name === votingEscrowIdentifier;
+export function isAnHeliumNFTVote(nft: PortfolioAssetCollectible): boolean {
+  return nft.data.name === nftIdentifier;
 }
 
 export function getVoterPda(
@@ -36,41 +35,37 @@ export function getVoterPda(
   )[0];
 }
 
-export async function getPositionFromVotingEscrowNFT(
+export async function getHeliumElementsFromNFTs(
   cache: Cache,
-  nfts: HeliusAsset[]
+  nfts: PortfolioAssetCollectible[]
 ): Promise<PortfolioElement[]> {
   const assets: PortfolioAsset[] = [];
   const amountByMint: Map<string, BigNumber> = new Map();
   for (const nft of nfts) {
-    if (isMetadata(nft)) {
-      const { metadata } = nft.content;
-      if (!metadata.attributes) continue;
+    const { attributes } = nft.data;
+    if (!attributes) continue;
 
-      const { attributes } = metadata;
-      const votersValues = getNftValues(attributes);
-      if (votersValues && !votersValues.amountDepositedNative.isZero()) {
-        const existingAmount = amountByMint.get(votersValues.votingMint);
-        if (existingAmount) {
-          amountByMint.set(
-            votersValues.votingMint,
-            existingAmount.plus(votersValues.amountDepositedNative)
-          );
-        } else {
-          amountByMint.set(
-            votersValues.votingMint,
-            votersValues.amountDepositedNative
-          );
-        }
+    const votersValues = getNftValues(attributes);
+    if (votersValues && !votersValues.amountDepositedNative.isZero()) {
+      const existingAmount = amountByMint.get(votersValues.votingMint);
+      if (existingAmount) {
+        amountByMint.set(
+          votersValues.votingMint,
+          existingAmount.plus(votersValues.amountDepositedNative)
+        );
+      } else {
+        amountByMint.set(
+          votersValues.votingMint,
+          votersValues.amountDepositedNative
+        );
       }
     }
   }
 
   const mints = Array.from(amountByMint.keys());
-  const tokenPriceById = await getTokenPricesMap(
+  const tokenPriceById = await cache.getTokenPricesAsMap(
     mints,
-    NetworkId.solana,
-    cache
+    NetworkId.solana
   );
 
   for (const mint of mints) {
@@ -122,20 +117,20 @@ export function getLockedUntil(
 }
 
 function getNftValues(
-  items: Attributes | undefined
-): undefined | NftVoterMetadata {
+  items: CollectibleAttribute[] | undefined
+): undefined | HeliumNftVoterMetadata {
   if (!items || items.length < 10) return undefined;
 
-  const registrar = items[0].value;
-  const amountDepositedNative = items[1].value;
-  const amountDeposited = items[2].value;
-  const votingMintConfigIdx = items[3].value;
-  const votingMint = items[4].value;
-  const startTs = items[5].value;
-  const endTs = items[6].value;
-  const kind = items[7].value;
-  const genesisEnd = items[8].value;
-  const numActiveVotes = items[9].value;
+  const registrar = items[0].value as string;
+  const amountDepositedNative = items[1].value as string;
+  const amountDeposited = items[2].value as string;
+  const votingMintConfigIdx = items[3].value as number;
+  const votingMint = items[4].value as string;
+  const startTs = items[5].value as string;
+  const endTs = items[6].value as string;
+  const kind = items[7].value as string;
+  const genesisEnd = items[8].value as string;
+  const numActiveVotes = items[9].value as number;
 
   if (
     registrar !== undefined &&
@@ -153,14 +148,14 @@ function getNftValues(
       registrar,
       amountDeposited: new BigNumber(amountDeposited),
       amountDepositedNative: new BigNumber(amountDepositedNative),
-      votingMintConfigIdx: Number(votingMintConfigIdx),
+      votingMintConfigIdx,
       votingMint,
       startTs: new BigNumber(startTs),
       endTs: new BigNumber(endTs),
       kind,
       genesisEnd,
       numActiveVotes: Number(numActiveVotes),
-    };
+    } as HeliumNftVoterMetadata;
   }
   return undefined;
 }

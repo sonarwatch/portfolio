@@ -6,7 +6,7 @@ export type VSRInfos = {
   mint: string;
 };
 
-export type NftVoterMetadata = {
+export type HeliumNftVoterMetadata = {
   registrar: string;
   amountDepositedNative: BigNumber;
   amountDeposited: BigNumber;
