@@ -5,11 +5,11 @@ import {
   PublicKey,
 } from '@solana/web3.js';
 
-export async function getProgramAccountsSafe(
+export async function getProgramAccounts(
   connection: Connection,
-  maxAccounts: number,
   programId: PublicKey,
-  filters: GetProgramAccountsFilter[] | undefined = undefined
+  filters?: GetProgramAccountsFilter[],
+  maxAccounts = 0
 ) {
   const config: GetProgramAccountsConfig = {
     commitment: 'confirmed',
@@ -17,7 +17,7 @@ export async function getProgramAccountsSafe(
     filters,
   };
 
-  if (maxAccounts < 0) return connection.getProgramAccounts(programId, config);
+  if (maxAccounts <= 0) return connection.getProgramAccounts(programId, config);
 
   const accountsRes = await connection.getProgramAccounts(programId, {
     ...config,

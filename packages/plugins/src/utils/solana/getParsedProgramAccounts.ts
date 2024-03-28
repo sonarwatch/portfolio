@@ -1,5 +1,9 @@
-import { Connection, GetProgramAccountsFilter, PublicKey } from '@solana/web3.js';
-import { getProgramAccountsSafe } from './getProgramAccountsSafe';
+import {
+  Connection,
+  GetProgramAccountsFilter,
+  PublicKey,
+} from '@solana/web3.js';
+import { getProgramAccounts } from './getProgramAccounts';
 import { GlobalBeetStruct, ParsedAccount } from './types';
 
 export async function getParsedProgramAccounts<T>(
@@ -9,11 +13,11 @@ export async function getParsedProgramAccounts<T>(
   filters: GetProgramAccountsFilter[] | undefined = undefined,
   maxAccounts = -1
 ) {
-  const accountsRes = await getProgramAccountsSafe(
+  const accountsRes = await getProgramAccounts(
     connection,
-    maxAccounts,
     programId,
-    filters
+    filters,
+    maxAccounts
   );
   return accountsRes.map(
     (accountRes) =>

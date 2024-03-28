@@ -3,7 +3,7 @@ export * from './beets/numbers';
 export * from './constants';
 export * from './getParsedProgramAccounts';
 export * from './getParsedMultipleAccountsInfo';
-export * from './getProgramAccountsSafe';
+export * from './getProgramAccounts';
 export * from './getTokenAccountsByOwner';
 export * from './u8ArrayToString';
 export * from './structs';
