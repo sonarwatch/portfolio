@@ -367,6 +367,11 @@ import {
   jobs as staratlasJobs,
   fetchers as staratlasFetchers,
 } from './plugins/staratlas';
+import {
+  platforms as tulipPlatforms,
+  jobs as tulipJobs,
+  fetchers as tulipFetchers,
+} from './plugins/tulip';
 
 export {
   walletTokensPlatform,
@@ -458,6 +463,7 @@ export const platforms: Platform[] = [
   ...suilendPlatforms,
   ...symmetryPlatforms,
   ...staratlasPlatforms,
+  ...tulipPlatforms,
 ];
 
 // JOBS //
@@ -531,6 +537,7 @@ export const jobs: Job[] = [
   ...suilendJobs,
   ...symmetryJobs,
   ...staratlasJobs,
+  ...tulipJobs,
 ];
 
 // FETCHERS //
@@ -606,5 +613,6 @@ export const fetchers: Fetcher[] = [
   ...suilendFetchers,
   ...symmetryFetchers,
   ...staratlasFetchers,
+  ...tulipFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
