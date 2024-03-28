@@ -8,6 +8,7 @@ export const flexlendPlatform: Platform = {
   image: 'https://sonar.watch/img/platforms/flexlend.png',
   defiLlamaId: 'flexlend',
   website: 'https://flexlend.fi/',
+  twitter: 'https://twitter.com/flexlend',
 };
 
 export const flexProgramId = new PublicKey(

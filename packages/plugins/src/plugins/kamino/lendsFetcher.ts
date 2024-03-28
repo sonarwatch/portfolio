@@ -39,26 +39,30 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     networkId: NetworkId.solana,
   });
 
-  const lendingAccounts = markets
-    ? await getParsedMultipleAccountsInfo(
-        client,
-        obligationStruct,
-        getLendingPda(owner, markets)
-      )
-    : undefined;
+  const [lendingPdas, multiplyPdas] = markets
+    ? [getLendingPda(owner, markets), getMultiplyPdas(owner, markets)]
+    : [[], []];
 
-  const multiplyAccounts = markets
-    ? await getParsedMultipleAccountsInfo(
-        client,
-        obligationStruct,
-        getMultiplyPdas(owner, markets)
-      )
-    : undefined;
+  const leveragePdas = getLeveragePdas(owner);
 
-  const leverageAccounts = await getParsedMultipleAccountsInfo(
+  const obligations = await getParsedMultipleAccountsInfo(
     client,
     obligationStruct,
-    getLeveragePdas(owner)
+    [...lendingPdas, ...multiplyPdas, ...leveragePdas]
+  );
+
+  if (!obligations.some((obli) => obli !== null)) return [];
+
+  const lendingAccounts = obligations.slice(0, lendingPdas.length);
+
+  const multiplyAccounts = obligations.slice(
+    lendingPdas.length,
+    lendingPdas.length + multiplyPdas.length
+  );
+
+  const leverageAccounts = obligations.slice(
+    lendingPdas.length + multiplyPdas.length,
+    obligations.length
   );
 
   if (!lendingAccounts && !multiplyAccounts && !leverageAccounts) return [];

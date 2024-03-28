@@ -4,10 +4,10 @@ import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import {
-  customVsrInfo,
+  realmsCustomVsrInfo,
   platformId,
   splGovernanceUrl,
-  vsrProgram,
+  realmsVsrProgram,
 } from './constants';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
@@ -25,17 +25,17 @@ const executor: JobExecutor = async (cache: Cache) => {
   const allRegistrars = await getParsedProgramAccounts(
     client,
     registrarStruct,
-    vsrProgram,
+    realmsVsrProgram,
     registratAccountFilter()
   );
   allRegistrars.forEach((account) =>
     registrars.push({
-      vsr: vsrProgram.toString(),
+      vsr: realmsVsrProgram.toString(),
       pubkey: account.pubkey.toString(),
       mint: account.realmGoverningTokenMint.toString(),
     })
   );
-  for (const vsrInfo of customVsrInfo) {
+  for (const vsrInfo of realmsCustomVsrInfo) {
     const customRegistrars = await getParsedProgramAccounts(
       client,
       registrarStruct,

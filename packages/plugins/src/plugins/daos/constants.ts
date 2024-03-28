@@ -12,10 +12,19 @@ export const realmsPlatform: Platform = {
   website: 'https://app.realms.today/',
 };
 
+export const heliumPlatformId = 'helium';
+
+export const heliumPlatform: Platform = {
+  id: heliumPlatformId,
+  name: 'Helium',
+  image: 'https://sonar.watch/img/platforms/helium.png',
+  website: 'https://heliumvote.com/',
+};
+
 export const splGovProgramsKey = 'splGovernancePrograms';
 export const registrarKey = 'registrars';
 
-export const customVsrInfo: VSRInfos[] = [
+export const realmsCustomVsrInfo: VSRInfos[] = [
   {
     programId: new PublicKey('VoteMBhDCqGLRgYpp9o7DGyq81KNmwjXQRAHStjtJsS'), // Marinade
     mint: 'MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey',
@@ -34,7 +43,7 @@ export const customVsrInfo: VSRInfos[] = [
   },
 ];
 
-export const vsrProgram = new PublicKey(
+export const realmsVsrProgram = new PublicKey(
   'vsr2nfGVNHmSY8uxoBGqq8AQbwz3JwaEaHqGbsTPXqQ'
 );
 

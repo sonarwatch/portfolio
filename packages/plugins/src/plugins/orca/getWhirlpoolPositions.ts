@@ -1,5 +1,6 @@
 import {
   NetworkId,
+  PortfolioAssetCollectible,
   PortfolioElement,
   PortfolioElementType,
   PortfolioLiquidity,
@@ -17,17 +18,16 @@ import { Whirlpool, positionStruct } from './structs/whirlpool';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import runInBatch from '../../utils/misc/runInBatch';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
-import { HeliusAsset } from '../../utils/solana/das/types';
 
 export async function getWhirlpoolPositions(
   cache: Cache,
-  nfts: HeliusAsset[]
+  nfts: PortfolioAssetCollectible[]
 ): Promise<PortfolioElement[]> {
   const client = getClientSolana();
   const positionsProgramAddress: PublicKey[] = [];
 
   nfts.forEach((nft) => {
-    const address = new PublicKey(nft.id);
+    const address = new PublicKey(nft.data.address);
 
     const positionSeed = [Buffer.from('position'), address.toBuffer()];
 
