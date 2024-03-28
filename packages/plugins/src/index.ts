@@ -372,6 +372,11 @@ import {
   jobs as tulipJobs,
   fetchers as tulipFetchers,
 } from './plugins/tulip';
+import {
+  platforms as phoenixPlatforms,
+  jobs as phoenixJobs,
+  fetchers as phoenixFetchers,
+} from './plugins/phoenix';
 
 export {
   walletTokensPlatform,
@@ -464,6 +469,7 @@ export const platforms: Platform[] = [
   ...symmetryPlatforms,
   ...staratlasPlatforms,
   ...tulipPlatforms,
+  ...phoenixPlatforms,
 ];
 
 // JOBS //
@@ -538,6 +544,7 @@ export const jobs: Job[] = [
   ...symmetryJobs,
   ...staratlasJobs,
   ...tulipJobs,
+  ...phoenixJobs,
 ];
 
 // FETCHERS //
@@ -614,5 +621,6 @@ export const fetchers: Fetcher[] = [
   ...symmetryFetchers,
   ...staratlasFetchers,
   ...tulipFetchers,
+  ...phoenixFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
