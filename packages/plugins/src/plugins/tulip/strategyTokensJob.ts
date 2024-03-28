@@ -1,4 +1,4 @@
-import { NetworkId, UniTokenInfo } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
@@ -11,7 +11,6 @@ import {
 } from '../../utils/solana';
 import { platformId, tulipV2ProgramId, vaultsKey } from './constants';
 import { multiDepositOptimizerV1Struct } from './structs';
-import { tokenListsDetailsPrefix } from '../tokens/constants';
 import getLpTokenSource from '../../utils/misc/getLpTokenSource';
 import { strategyVaultsFilters } from './filters';
 
@@ -61,15 +60,6 @@ const executor: JobExecutor = async (cache: Cache) => {
     mA ? mintAccountById.set(mA.pubkey.toString(), mA) : undefined
   );
 
-  const tokensDetails = await cache.getItems<UniTokenInfo>(Array.from(mints), {
-    prefix: tokenListsDetailsPrefix,
-    networkId: NetworkId.solana,
-  });
-  const tokensDetailsById: Map<string, UniTokenInfo> = new Map();
-  tokensDetails.forEach((tD) =>
-    tD ? tokensDetailsById.set(tD.address, tD) : undefined
-  );
-
   for (let i = 0; i < strategyVaults.length; i += 1) {
     const strategyVault = strategyVaults[i];
 
@@ -88,8 +78,6 @@ const executor: JobExecutor = async (cache: Cache) => {
     const { supply, decimals } = mintAccount;
     if (supply.isZero()) continue;
 
-    const tokenDetails = tokensDetailsById.get(mint);
-
     const lpTokenSource = getLpTokenSource(
       NetworkId.solana,
       lpMint,
@@ -104,8 +92,7 @@ const executor: JobExecutor = async (cache: Cache) => {
           ...tokenPrice,
           reserveAmount: stakedAmount.toNumber(),
         },
-      ],
-      tokenDetails ? `ts${tokenDetails.symbol}` : undefined
+      ]
     );
     promises.push(cache.setTokenPriceSource(lpTokenSource));
   }
