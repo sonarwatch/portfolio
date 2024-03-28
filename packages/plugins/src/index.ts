@@ -367,6 +367,11 @@ import {
   jobs as staratlasJobs,
   fetchers as staratlasFetchers,
 } from './plugins/staratlas';
+import {
+  platforms as phoenixPlatforms,
+  jobs as phoenixJobs,
+  fetchers as phoenixFetchers,
+} from './plugins/phoenix';
 
 export {
   walletTokensPlatform,
@@ -458,6 +463,7 @@ export const platforms: Platform[] = [
   ...suilendPlatforms,
   ...symmetryPlatforms,
   ...staratlasPlatforms,
+  ...phoenixPlatforms,
 ];
 
 // JOBS //
@@ -531,6 +537,7 @@ export const jobs: Job[] = [
   ...suilendJobs,
   ...symmetryJobs,
   ...staratlasJobs,
+  ...phoenixJobs,
 ];
 
 // FETCHERS //
@@ -606,5 +613,6 @@ export const fetchers: Fetcher[] = [
   ...suilendFetchers,
   ...symmetryFetchers,
   ...staratlasFetchers,
+  ...phoenixFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
