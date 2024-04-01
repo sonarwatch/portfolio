@@ -6,12 +6,14 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, stakingProgramId, uxpDecimal, uxpMint } from './constants';
+import { platformId, stakingProgramId, uxpFactor, uxpMint } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { stakingAccountStruct } from './structs';
 import { stakingAccountFilters } from './filters';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+
+const networkId = NetworkId.solana;
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -22,30 +24,29 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     stakingAccountFilters(owner)
   );
   if (stakingAccounts.length === 0) return [];
-  const networkId = NetworkId.solana;
 
   const tokenPrice = await cache.getTokenPrice(uxpMint, networkId);
 
   const assets: PortfolioAsset[] = [];
   stakingAccounts.forEach((stakingAccount) => {
-    const stakedAmount = stakingAccount.stakedAmount.div(10 ** uxpDecimal);
-    const rewardAmount = stakingAccount.rewardAmount.div(10 ** uxpDecimal);
-
-    const totalAmount = stakedAmount.plus(rewardAmount);
+    const amount = stakingAccount.stakedAmount
+      .plus(stakingAccount.rewardAmount)
+      .div(uxpFactor);
+    if (!amount.isZero()) return;
 
     const lockedUntil = stakingAccount.stakeEndTs.times(1000).toNumber();
-    if (!totalAmount.isZero())
-      assets.push({
-        ...tokenPriceToAssetToken(
-          uxpMint,
-          totalAmount.toNumber(),
-          networkId,
-          tokenPrice
-        ),
-        attributes: {
+    assets.push({
+      ...tokenPriceToAssetToken(
+        uxpMint,
+        amount.toNumber(),
+        networkId,
+        tokenPrice,
+        tokenPrice?.price,
+        {
           lockedUntil,
-        },
-      });
+        }
+      ),
+    });
   });
   if (assets.length === 0) return [];
 
