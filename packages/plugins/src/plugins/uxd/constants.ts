@@ -1,5 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
+import BigNumber from 'bignumber.js';
 
 export const platformId = 'uxd';
 export const platform: Platform = {
@@ -17,3 +18,4 @@ export const stakingProgramId = new PublicKey(
 
 export const uxpMint = 'UXPhBoR3qG4UCiGNJfV7MqhHyFqKN68g45GoYvAeL2M';
 export const uxpDecimal = 9;
+export const uxpFactor = new BigNumber(10 ** uxpDecimal);
