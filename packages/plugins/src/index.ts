@@ -377,6 +377,11 @@ import {
   jobs as phoenixJobs,
   fetchers as phoenixFetchers,
 } from './plugins/phoenix';
+import {
+  platforms as uxdPlatforms,
+  jobs as uxdJobs,
+  fetchers as uxdFetchers,
+} from './plugins/uxd';
 
 export {
   walletTokensPlatform,
@@ -470,6 +475,7 @@ export const platforms: Platform[] = [
   ...staratlasPlatforms,
   ...tulipPlatforms,
   ...phoenixPlatforms,
+  ...uxdPlatforms,
 ];
 
 // JOBS //
@@ -545,6 +551,7 @@ export const jobs: Job[] = [
   ...staratlasJobs,
   ...tulipJobs,
   ...phoenixJobs,
+  ...uxdJobs,
 ];
 
 // FETCHERS //
@@ -622,5 +629,6 @@ export const fetchers: Fetcher[] = [
   ...staratlasFetchers,
   ...tulipFetchers,
   ...phoenixFetchers,
+  ...uxdFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
