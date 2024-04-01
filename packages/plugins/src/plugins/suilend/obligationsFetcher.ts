@@ -225,7 +225,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           .minus(userReward.fields.cumulative_rewards_per_share.fields.value)
           .times(share)
           .dividedBy(10 ** wadsDecimal);
-        if (cumulativeAmount.isZero()) continue;
+        if (cumulativeAmount.isLessThanOrEqualTo(0)) continue;
 
         const previousCumAmount = rewardAmountByMint.get(rewardMint);
         if (previousCumAmount) {
