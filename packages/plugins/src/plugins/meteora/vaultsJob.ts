@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
 import { platformId, vaultsProgramId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
@@ -7,7 +7,6 @@ import { fetchTokenSupplyAndDecimals } from '../../utils/solana/fetchTokenSupply
 import { vaultsFilters } from './filters';
 import { Job, JobExecutor } from '../../Job';
 import { Cache } from '../../Cache';
-import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -18,16 +17,16 @@ const executor: JobExecutor = async (cache: Cache) => {
     vaultsFilters
   );
 
-  const tokensById = await getTokenPricesMap(
+  const tokenPrices = await cache.getTokenPricesAsMap(
     vaultAccounts.map((vault) => vault.token_mint.toString()),
-    NetworkId.solana,
-    cache
+    NetworkId.solana
   );
 
+  const lpSources: TokenPriceSource[] = [];
   for (let i = 0; i < vaultAccounts.length; i += 1) {
     const vault = vaultAccounts[i];
     if (vault.total_amount.isZero()) continue;
-    const vaultTokenPrice = tokensById.get(vault.token_mint.toString());
+    const vaultTokenPrice = tokenPrices.get(vault.token_mint.toString());
     if (!vaultTokenPrice) continue;
 
     const lpSupplyRes = await fetchTokenSupplyAndDecimals(
@@ -43,7 +42,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       .toNumber();
     const vaultValue = vaultAmount * vaultTokenPrice.price;
     const price = vaultValue / lpSupply;
-    await cache.setTokenPriceSource({
+    const lpSource: TokenPriceSource = {
       id: platformId,
       weight: 1,
       address: vault.lp_mint.toString(),
@@ -62,8 +61,10 @@ const executor: JobExecutor = async (cache: Cache) => {
         },
       ],
       timestamp: Date.now(),
-    });
+    };
+    lpSources.push(lpSource);
   }
+  await cache.setTokenPriceSources(lpSources);
 };
 
 const job: Job = {
