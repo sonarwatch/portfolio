@@ -4,20 +4,9 @@ import {
   PortfolioElementType,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
-import axios, { AxiosResponse } from 'axios';
-import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import {
-  baseRewardsUrl,
-  mndeDecimals,
-  mndeMint,
-  platformId,
-  referrerRoute,
-  season1Unlock,
-  season2Unlock,
-} from './constants';
-import { ReferreResponse } from './types';
+import { mndeDecimals, mndeMint, platformId, season1Unlock } from './constants';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getClientSolana } from '../../utils/clients';
 import { claimRecordStruct } from './structs';
@@ -29,16 +18,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const promises = [
     cache.getTokenPrice(mndeMint, NetworkId.solana),
     getParsedAccountInfo(client, claimRecordStruct, getClaimPda(owner)),
-    axios
-      .get<unknown, AxiosResponse<ReferreResponse>>(
-        baseRewardsUrl + referrerRoute + owner
-      )
-      .catch(() => null),
+    // axios
+    //   .get<unknown, AxiosResponse<ReferreResponse>>(
+    //     baseRewardsUrl + referrerRoute + owner
+    //   )
+    //   .catch(() => null),
   ] as const;
 
-  const [mndeTokenPrice, claimRecord, getReferrerRewards] = await Promise.all(
-    promises
-  );
+  const [mndeTokenPrice, claimRecord] = await Promise.all(promises);
 
   const assets: PortfolioAsset[] = [];
   if (claimRecord && !claimRecord.nonClaimedAmount.isZero()) {
@@ -57,24 +44,24 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     });
   }
 
-  if (getReferrerRewards) {
-    const rewardAmount = new BigNumber(getReferrerRewards.data.rewards);
-    if (!rewardAmount.isZero()) {
-      assets.push({
-        ...tokenPriceToAssetToken(
-          mndeMint,
-          rewardAmount.dividedBy(10 ** mndeDecimals).toNumber(),
-          NetworkId.solana,
-          mndeTokenPrice,
-          undefined,
-          {
-            lockedUntil: season2Unlock.getTime(),
-            tags: ['Referrer'],
-          }
-        ),
-      });
-    }
-  }
+  // if (getReferrerRewards) {
+  //   const rewardAmount = new BigNumber(getReferrerRewards.data.rewards);
+  //   if (!rewardAmount.isZero()) {
+  //     assets.push({
+  //       ...tokenPriceToAssetToken(
+  //         mndeMint,
+  //         rewardAmount.dividedBy(10 ** mndeDecimals).toNumber(),
+  //         NetworkId.solana,
+  //         mndeTokenPrice,
+  //         undefined,
+  //         {
+  //           lockedUntil: season2Unlock.getTime(),
+  //           tags: ['Referrer'],
+  //         }
+  //       ),
+  //     });
+  //   }
+  // }
 
   if (assets.length === 0) return [];
   return [
