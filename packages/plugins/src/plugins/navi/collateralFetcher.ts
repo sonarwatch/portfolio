@@ -32,6 +32,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const suppliedAssets: PortfolioAsset[] = [];
   const suppliedYields: Yield[][] = [];
   const rewardAssets: PortfolioAsset[] = [];
+  const suppliedLtvs: number[] = [];
 
   const reservesData = await cache.getItem<ReserveData[]>(reservesKey, {
     prefix: reservesPrefix,
@@ -114,6 +115,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             apy,
           },
         ]);
+        suppliedLtvs.push(
+          new BigNumber(rData.value.fields.liquidation_factors.fields.threshold)
+            .div(10 ** 27)
+            .toNumber()
+        );
       }
     }
   }
@@ -121,7 +127,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (suppliedAssets.length === 0 && borrowedAssets.length === 0) return [];
 
   const { borrowedValue, suppliedValue, value, healthRatio, rewardValue } =
-    getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
+    getElementLendingValues(
+      suppliedAssets,
+      borrowedAssets,
+      rewardAssets,
+      suppliedLtvs
+    );
   const element: PortfolioElement = {
     type: PortfolioElementType.borrowlend,
     networkId: NetworkId.sui,
