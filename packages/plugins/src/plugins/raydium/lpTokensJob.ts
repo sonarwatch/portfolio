@@ -1,6 +1,5 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
-import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSolana } from '../../utils/clients';
@@ -20,7 +19,6 @@ import { CLOBOrderStruct } from '../orders/clobs-solana/structs';
 import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
 import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
 import { orderStructByProgramId } from '../orders/clobs-solana/constants';
-import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
 
 const ammsDetails = [
   {
@@ -136,10 +134,9 @@ const executor: JobExecutor = async (cache: Cache) => {
         );
       }
 
-      const tokenPrices = await getTokenPricesMap(
+      const tokenPrices = await cache.getTokenPricesAsMap(
         [...mints],
-        NetworkId.solana,
-        cache
+        NetworkId.solana
       );
 
       for (let i = 0; i < ammsAccounts.length; i += 1) {
@@ -212,10 +209,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         if (!lpMintAccount) continue;
 
         const lpDecimals = lpMintAccount.decimals;
-        const lpSupply =
-          lpMint.toString() === 'CQurpF3WS3yEqFEt1Bu8s5zmZqznQG3EJkcYvsyg3sLc'
-            ? new BigNumber('3381427.37').times(10 ** lpDecimals) // Temporary fix for SOL-WIF lp
-            : lpMintAccount.supply;
+        const lpSupply = amm.lpAmount;
         if (lpSupply.isZero()) continue;
 
         tokenPriceSources.push(
