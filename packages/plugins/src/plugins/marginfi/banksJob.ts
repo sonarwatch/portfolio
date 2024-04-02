@@ -11,9 +11,9 @@ import { getInterestRates, wrappedI80F48toBigNumber } from './helpers';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import { Cache } from '../../Cache';
-import { JobExecutor } from '../../Job';
+import { Job, JobExecutor } from '../../Job';
 
-const jobExecutor: JobExecutor = async (cache: Cache) => {
+const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
 
   const banksRawData = await getParsedProgramAccounts(
@@ -80,4 +80,10 @@ const jobExecutor: JobExecutor = async (cache: Cache) => {
     });
   }
 };
-export default jobExecutor;
+
+const job: Job = {
+  id: `${platformId}-banks`,
+  executor,
+  label: 'normal',
+};
+export default job;

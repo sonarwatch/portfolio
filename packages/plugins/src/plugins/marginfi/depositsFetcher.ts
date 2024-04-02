@@ -16,16 +16,13 @@ import { BankInfo } from './types';
 import { ParsedAccount, getParsedProgramAccounts } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { FetcherExecutor } from '../../Fetcher';
+import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { Cache } from '../../Cache';
 import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
 import { parsePriceData } from '../../utils/solana/pyth/helpers';
 import { OracleSetup } from './structs/Bank';
 
-const fetcherExecutor: FetcherExecutor = async (
-  owner: string,
-  cache: Cache
-) => {
+const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
   const accounts = await getParsedProgramAccounts(
     client,
@@ -180,4 +177,11 @@ const fetcherExecutor: FetcherExecutor = async (
 
   return elements;
 };
-export default fetcherExecutor;
+
+const fetcher: Fetcher = {
+  id: `${platformId}-deposits`,
+  networkId: NetworkId.solana,
+  executor,
+};
+
+export default fetcher;
