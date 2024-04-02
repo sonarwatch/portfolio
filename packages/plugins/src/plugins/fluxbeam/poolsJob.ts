@@ -105,12 +105,14 @@ const executor: JobExecutor = async (cache: Cache) => {
         decimals: mintAccountA.decimals,
         reserveAmountRaw: tokenAccountA.amount,
         tokenPrice: tokenPriceA,
+        weight: 0.5,
       },
       {
         address: pool.tokenBMint.toString(),
         decimals: mintAccountB.decimals,
         reserveAmountRaw: tokenAccountB.amount,
         tokenPrice: tokenPriceB,
+        weight: 0.5,
       }
     );
     if (underlyingsSource) {

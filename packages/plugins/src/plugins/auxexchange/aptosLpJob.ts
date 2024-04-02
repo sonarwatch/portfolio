@@ -95,12 +95,14 @@ const executor: JobExecutor = async (cache: Cache) => {
         decimals: decimalsX,
         reserveAmountRaw: reserveAmountRawX,
         tokenPrice: tokenPriceX,
+        weight: 0.5,
       },
       {
         address: typeY,
         decimals: decimalsY,
         reserveAmountRaw: reserveAmountRawY,
         tokenPrice: tokenPriceY,
+        weight: 0.5,
       }
     );
     if (underlyingSource) lpSources.push(underlyingSource);

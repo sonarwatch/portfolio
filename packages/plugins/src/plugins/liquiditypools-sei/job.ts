@@ -78,12 +78,14 @@ const executor: JobExecutor = async (cache: Cache) => {
           decimals: decimalsX,
           reserveAmountRaw: reserveAmountRawX,
           tokenPrice: tokenPriceX,
+          weight: 0.5,
         },
         {
           address: poolInfo.mintY,
           decimals: decimalsY,
           reserveAmountRaw: reserveAmountRawY,
           tokenPrice: tokenPriceY,
+          weight: 0.5,
         }
       );
       if (underlyingSource) await cache.setTokenPriceSource(underlyingSource);

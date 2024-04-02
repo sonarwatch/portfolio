@@ -1,4 +1,8 @@
-import { NetworkIdType, TokenPriceSource } from '@sonarwatch/portfolio-core';
+import {
+  NetworkIdType,
+  TokenPriceSource,
+  formatTokenAddress,
+} from '@sonarwatch/portfolio-core';
 
 type PoolUnderlying = {
   address: string;
@@ -33,12 +37,12 @@ export default function getLpTokenSource(
     elementName,
     liquidityName,
     weight: 1,
-    address: lpDetails.address,
+    address: formatTokenAddress(lpDetails.address, networkId),
     price,
     decimals: lpDetails.decimals,
     underlyings: poolUnderlyings.map((u) => ({
       networkId,
-      address: u.address,
+      address: formatTokenAddress(u.address, networkId),
       price: u.price,
       amountPerLp: u.reserveAmount / lpDetails.supply,
       decimals: u.decimals,

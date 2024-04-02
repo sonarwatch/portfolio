@@ -132,12 +132,14 @@ const executor: JobExecutor = async (cache: Cache) => {
         decimals: decimalsA,
         reserveAmountRaw: coinAmountWei,
         tokenPrice: tokenPriceA,
+        weight: 0.5,
       },
       {
         address: mintB,
         decimals: decimalsB,
         reserveAmountRaw: pcAmountWei,
         tokenPrice: tokenPriceB,
+        weight: 0.5,
       }
     );
     if (underlyingSource) await cache.setTokenPriceSource(underlyingSource);

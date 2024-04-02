@@ -4,7 +4,7 @@ import getLpTokenSource from './getLpTokenSource';
 
 export type PoolUnderlyingRaw = {
   address: string;
-  reserveAmountRaw: BigNumber;
+  reserveAmountRaw: BigNumber | string;
   price: number;
   decimals: number;
 };
@@ -12,7 +12,7 @@ export type PoolUnderlyingRaw = {
 type LpDetailsRaw = {
   address: string;
   decimals: number;
-  supplyRaw: BigNumber;
+  supplyRaw: BigNumber | string;
 };
 
 export default function getLpTokenSourceRaw(
@@ -30,13 +30,15 @@ export default function getLpTokenSourceRaw(
     platformId,
     {
       ...lpDetailsRaw,
-      supply: lpDetailsRaw.supplyRaw
+      supply: new BigNumber(lpDetailsRaw.supplyRaw)
         .div(10 ** lpDetailsRaw.decimals)
         .toNumber(),
     },
     poolUnderlyingsRaw.map((u) => ({
       ...u,
-      reserveAmount: u.reserveAmountRaw.div(10 ** u.decimals).toNumber(),
+      reserveAmount: new BigNumber(u.reserveAmountRaw)
+        .div(10 ** u.decimals)
+        .toNumber(),
     })),
     elementName,
     liquidityName

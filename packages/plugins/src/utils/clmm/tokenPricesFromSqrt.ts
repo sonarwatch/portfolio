@@ -1,4 +1,8 @@
-import { NetworkIdType, TokenPriceSource } from '@sonarwatch/portfolio-core';
+import {
+  NetworkIdType,
+  TokenPriceSource,
+  formatTokenAddress,
+} from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import Decimal from 'decimal.js';
 import { Cache } from '../../Cache';
@@ -20,11 +24,16 @@ export default async function storeTokenPricesFromSqrt(
   tempDecimalsX?: number,
   tempDecimalsY?: number
 ) {
-  if (
-    !defaultAcceptedPairs.includes(mintX) &&
-    !defaultAcceptedPairs.includes(mintY)
-  )
-    return undefined;
+  const isAcceptedX =
+    defaultAcceptedPairs
+      .get(networkId)
+      ?.includes(formatTokenAddress(mintX, networkId)) ?? false;
+  const isAcceptedY =
+    defaultAcceptedPairs
+      .get(networkId)
+      ?.includes(formatTokenAddress(mintY, networkId)) ?? false;
+  if (!isAcceptedX && !isAcceptedY) return undefined;
+  if (isAcceptedX && isAcceptedY) return undefined;
 
   const [tokenPriceX, tokenPriceY] = await cache.getTokenPrices(
     [mintX, mintY],
@@ -39,7 +48,7 @@ export default async function storeTokenPricesFromSqrt(
   if (!decimalsX || !decimalsY) return undefined;
   const xToYPrice = sqrtPriceX64ToPrice(sqrtPrice, decimalsX, decimalsY);
 
-  if (tokenPriceX && defaultAcceptedPairs.includes(mintX)) {
+  if (tokenPriceX && isAcceptedX) {
     const price =
       tokenPriceX.price * new Decimal(1).dividedBy(xToYPrice).toNumber();
     const tvl = reserveX
@@ -61,7 +70,7 @@ export default async function storeTokenPricesFromSqrt(
     await cache.setTokenPriceSource(tokenPriceSource);
     return [tokenPriceX.price, price];
   }
-  if (tokenPriceY && defaultAcceptedPairs.includes(mintY)) {
+  if (tokenPriceY && isAcceptedY) {
     const price = tokenPriceY.price * xToYPrice.toNumber();
     const tvl = reserveY
       .multipliedBy(tokenPriceY.price)

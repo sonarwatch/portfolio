@@ -125,12 +125,14 @@ const executor: JobExecutor = async (cache: Cache) => {
           decimals: aMintAccount.decimals,
           reserveAmountRaw: tAccountA.amount,
           tokenPrice: aTokenPrice,
+          weight: 0.5,
         },
         {
           address: bTokenMint,
           decimals: bMintAccount.decimals,
           reserveAmountRaw: tAccountB.amount,
           tokenPrice: bTokenPrice,
+          weight: 0.5,
         }
       );
       if (underlyingSource) lpSources.push(underlyingSource);
