@@ -1,5 +1,5 @@
 import { Platform } from '@sonarwatch/portfolio-core';
-import { InputViewRequestData } from '@aptos-labs/ts-sdk';
+import { InputViewFunctionData } from '@aptos-labs/ts-sdk';
 import { coinInfo } from '../../utils/aptos';
 
 export const platformId = 'thala';
@@ -39,7 +39,7 @@ export const lpWeightedCoinInfoTypePrefix = `${coinInfo}<${lpWeightedTypeTokenPr
 
 export const stabilityDepositPayload = (
   owner: string
-): InputViewRequestData => ({
+): InputViewFunctionData => ({
   function: liquidityDeposit,
   typeArguments: [cryptoType],
   functionArguments: [owner],
@@ -47,7 +47,7 @@ export const stabilityDepositPayload = (
 
 export const stabilityClaimablePayload = (
   owner: string
-): InputViewRequestData => ({
+): InputViewFunctionData => ({
   function: liquidityClaimable,
   typeArguments: [],
   functionArguments: [owner],
