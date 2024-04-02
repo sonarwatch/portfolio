@@ -1,25 +1,22 @@
 import BigNumber from 'bignumber.js';
-import {
-  NetworkId,
-  TokenPriceSource,
-  TokenPriceUnderlying,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId, formatTokenAddress } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSui } from '../../utils/clients';
 import { lpCoinsTable, platformId } from './constants';
 import { PoolInfo } from './types';
-import { minimumLiquidity } from '../../utils/misc/computeAndStoreLpPrice';
 import { parseTypeString } from '../../utils/aptos';
-import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
 import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
-import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
+import getLpTokenSourceRaw, {
+  PoolUnderlyingRaw,
+} from '../../utils/misc/getLpTokenSourceRaw';
 import { getDynamicFields } from '../../utils/sui/getDynamicFields';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 
+const networkId = NetworkId.sui;
+
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
-  const networkId = NetworkId.sui;
   const coinsTableFields = await getDynamicFields(client, lpCoinsTable);
 
   const poolFactoryIds = coinsTableFields.map((f) => f.objectId);
@@ -41,143 +38,86 @@ const executor: JobExecutor = async (cache: Cache) => {
     .flat();
   if (!poolsIds.length) return;
 
-  const poolsInfo = await multiGetObjects(client, poolsIds);
+  const poolsInfo = await multiGetObjects<PoolInfo>(client, poolsIds);
 
-  const tokenPriceById = await getTokenPricesMap(
+  const tokenPriceById = await cache.getTokenPricesAsMap(
     poolsInfo
-      .map((pool) =>
-        pool.data?.content?.fields
-          ? (pool.data?.content?.fields as PoolInfo).type_names
-          : []
-      )
-      .flat()
-      .map((type) => `0x${type}`),
-    networkId,
-    cache
+      .map((pool) => pool.data?.content?.fields?.type_names || [])
+      .flat(),
+    networkId
   );
 
+  const sources = [];
   for (const pool of poolsInfo) {
     if (!pool.data?.content?.fields) continue;
-    const poolInfo = pool.data?.content?.fields as PoolInfo;
-
+    const poolInfo = pool.data?.content?.fields;
     if (poolInfo.lp_supply.fields.value === '0') continue;
 
     const moveType = parseTypeString(poolInfo.lp_supply.type);
     if (!moveType.keys) continue;
-
-    const address = moveType.keys[0].type;
-    if (poolInfo.normalized_balances.length > 2) {
-      const totalTokens = poolInfo.normalized_balances.length;
-      const mints = poolInfo.type_names.map((type) => `0x${type}`);
-      const rawTokensPrices = await cache.getTokenPrices(mints, NetworkId.sui);
-      if (!rawTokensPrices) continue;
-
-      const tokensPrices = rawTokensPrices.filter(
-        (tokenPrice) => tokenPrice !== undefined
+    const lpAddress = moveType.keys[0].type;
+    const poolUnderlyingsRaw: PoolUnderlyingRaw[] = [];
+    poolInfo.normalized_balances.forEach((nBalance, i) => {
+      const caddress = formatTokenAddress(
+        `0x${poolInfo.type_names[i]}`,
+        networkId
       );
-      if (tokensPrices.length === 0) continue;
-
-      const tokenPriceRef = tokensPrices[0]?.price;
-      if (!tokenPriceRef) continue;
-
-      const decimals = poolInfo.lp_decimals;
-      const poolSupply = new BigNumber(
-        poolInfo.lp_supply.fields.value
-      ).dividedBy(10 ** decimals);
-
-      let totalLiquidity = new BigNumber(0);
-      const underlyings: TokenPriceUnderlying[] = [];
-      for (let i = 0; i < totalTokens; i++) {
-        const coinDecimal = poolInfo.coin_decimals[i];
-        const reserveAmount = new BigNumber(poolInfo.normalized_balances[i])
-          .dividedBy(10 ** coinDecimal)
-          .dividedBy(poolInfo.decimal_scalars[i]);
-        const tokenLiquidity = reserveAmount.multipliedBy(tokenPriceRef);
-        const amountPerLp = reserveAmount.dividedBy(poolSupply).toNumber();
-
-        totalLiquidity = totalLiquidity.plus(tokenLiquidity);
-        underlyings.push({
-          address: mints[i],
-          amountPerLp,
-          decimals: coinDecimal,
-          networkId,
-          price: tokenPriceRef,
-        });
-      }
-
-      if (totalLiquidity.isLessThan(minimumLiquidity)) continue;
-
-      const price = totalLiquidity.dividedBy(poolSupply).toNumber();
-      const tokenPriceSoure: TokenPriceSource = {
-        id: platformId,
-        weight: 1,
-        address,
-        networkId,
-        platformId,
-        decimals,
-        price,
-        underlyings,
-        timestamp: Date.now(),
-      };
-      await cache.setTokenPriceSource(tokenPriceSoure);
-    } else {
-      const tokenPriceA = tokenPriceById.get(`0x${poolInfo.type_names[0]}`);
-      const tokenPriceB = tokenPriceById.get(`0x${poolInfo.type_names[1]}`);
-      const reserveAmountRawA = new BigNumber(
-        poolInfo.normalized_balances[0]
-      ).dividedBy(poolInfo.decimal_scalars[0]);
-      const reserveAmountRawB = new BigNumber(
-        poolInfo.normalized_balances[1]
-      ).dividedBy(poolInfo.decimal_scalars[1]);
+      const tokenPrice = tokenPriceById.get(caddress);
+      if (!tokenPrice) return;
+      poolUnderlyingsRaw.push({
+        address: caddress,
+        decimals: poolInfo.coin_decimals[i],
+        reserveAmountRaw: new BigNumber(
+          poolInfo.normalized_balances[i]
+        ).dividedBy(poolInfo.decimal_scalars[i]),
+        price: tokenPrice.price,
+      });
+    });
+    if (poolUnderlyingsRaw.length !== poolInfo.normalized_balances.length)
+      continue;
+    const lpSource = getLpTokenSourceRaw(
+      networkId,
+      platformId,
+      platformId,
+      {
+        address: lpAddress,
+        decimals: poolInfo.lp_decimals,
+        supplyRaw: poolInfo.lp_supply.fields.value,
+      },
+      poolUnderlyingsRaw
+    );
+    sources.push(lpSource);
+    if (poolInfo.normalized_balances.length === 2) {
       const underlyingSource = getLpUnderlyingTokenSource(
-        address,
+        lpAddress,
         networkId,
         {
           address: `0x${poolInfo.type_names[0]}`,
           decimals: poolInfo.coin_decimals[0],
-          reserveAmountRaw: reserveAmountRawA,
-          tokenPrice: tokenPriceA,
+          reserveAmountRaw: new BigNumber(
+            poolInfo.normalized_balances[0]
+          ).dividedBy(poolInfo.decimal_scalars[0]),
+          tokenPrice: tokenPriceById.get(
+            formatTokenAddress(`0x${poolInfo.type_names[0]}`, networkId)
+          ),
+          weight: new BigNumber(poolInfo.weights[0]).div(10 ** 18).toNumber(),
         },
         {
           address: `0x${poolInfo.type_names[1]}`,
           decimals: poolInfo.coin_decimals[1],
-          reserveAmountRaw: reserveAmountRawB,
-          tokenPrice: tokenPriceB,
+          reserveAmountRaw: new BigNumber(
+            poolInfo.normalized_balances[1]
+          ).dividedBy(poolInfo.decimal_scalars[1]),
+          tokenPrice: tokenPriceById.get(
+            formatTokenAddress(`0x${poolInfo.type_names[1]}`, networkId)
+          ),
+          weight: new BigNumber(poolInfo.weights[1]).div(10 ** 18).toNumber(),
         }
       );
-      if (underlyingSource) await cache.setTokenPriceSource(underlyingSource);
-
-      if (!tokenPriceA || !tokenPriceB) continue;
-
-      const lpSource = getLpTokenSourceRaw(
-        networkId,
-        address,
-        platformId,
-        {
-          address,
-          decimals: poolInfo.lp_decimals,
-          supplyRaw: new BigNumber(poolInfo.lp_supply.fields.value),
-        },
-        [
-          {
-            address: tokenPriceA.address,
-            decimals: tokenPriceA.decimals,
-            price: tokenPriceA.price,
-            reserveAmountRaw: reserveAmountRawA,
-          },
-          {
-            address: tokenPriceB.address,
-            decimals: tokenPriceB.decimals,
-            price: tokenPriceB.price,
-            reserveAmountRaw: reserveAmountRawB,
-          },
-        ],
-        ''
-      );
-
-      await cache.setTokenPriceSource(lpSource);
+      if (underlyingSource) sources.push(underlyingSource);
     }
   }
+  await cache.setTokenPriceSources(sources);
 };
 
 const job: Job = {
