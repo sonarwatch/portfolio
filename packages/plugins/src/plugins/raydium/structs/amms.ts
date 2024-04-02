@@ -60,7 +60,9 @@ export type AmmInfoV4 = {
   poolWithdrawQueue: PublicKey;
   poolTempLpTokenAccount: PublicKey;
   ammOwner: PublicKey;
-  pnlOwner: PublicKey;
+  lpAmount: BigNumber;
+  clientOrderId: BigNumber;
+  padding: BigNumber[];
 };
 
 export const ammInfoV4Struct = new BeetStruct<AmmInfoV4>(
@@ -116,7 +118,9 @@ export const ammInfoV4Struct = new BeetStruct<AmmInfoV4>(
     ['poolWithdrawQueue', publicKey],
     ['poolTempLpTokenAccount', publicKey],
     ['ammOwner', publicKey],
-    ['pnlOwner', publicKey],
+    ['lpAmount', u64],
+    ['clientOrderId', u64],
+    ['padding', uniformFixedSizeArray(u64, 2)],
   ],
   (args) => args as AmmInfoV4
 );
@@ -176,8 +180,9 @@ export type AmmInfoV5 = {
   serumMarket: PublicKey;
   serumProgramId: PublicKey;
   ammTargetOrders: PublicKey;
-  ammOwner: PublicKey;
   padding: BigNumber[];
+  lpAmount: BigNumber;
+  padding2: BigNumber[];
 };
 
 export const ammInfoV5Struct = new BeetStruct<AmmInfoV5>(
@@ -237,8 +242,9 @@ export const ammInfoV5Struct = new BeetStruct<AmmInfoV5>(
     ['serumMarket', publicKey],
     ['serumProgramId', publicKey],
     ['ammTargetOrders', publicKey],
-    ['ammOwner', publicKey],
-    ['padding', uniformFixedSizeArray(u64, 64)],
+    ['padding', uniformFixedSizeArray(u64, 5)],
+    ['lpAmount', u64],
+    ['padding2', uniformFixedSizeArray(u64, 62)],
   ],
   (args) => args as AmmInfoV5
 );
