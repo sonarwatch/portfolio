@@ -39,7 +39,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
       const totalAmount = new BigNumber(res.data.amount);
       const amountPerUnlock = new BigNumber(totalAmount).dividedBy(30);
-      const daysSinceLaunch = new BigNumber(Date.now())
+
+      const daysSinceLaunch = new BigNumber(endDate.getTime())
         .minus(startDate.getTime())
         .dividedBy(oneDay)
         .decimalPlaces(0, BigNumber.ROUND_DOWN);
@@ -91,55 +92,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const assets: PortfolioAsset[] = [];
   for (const vesting of vestingAccounts) {
     if (vesting.totalAmount.isEqualTo(vesting.amountClaimed)) continue;
-    const lastClaimedTm = vesting.lastClaimedAt.times(1000).toNumber();
-    const amountPerUnlock = vesting.totalAmount.dividedBy(30);
 
-    const daysSinceClaim = new BigNumber(
-      (Date.now() - vesting.lastClaimedAt.times(1000).toNumber()) / oneDay
-    )
-      .decimalPlaces(0, BigNumber.ROUND_DOWN)
-      .toNumber();
-
-    const amountAvailable = amountPerUnlock.times(daysSinceClaim);
-    const unlockedSince = new Date(lastClaimedTm + daysSinceClaim * oneDay);
-
-    if (!amountAvailable.isZero() && unlockedSince < endDate) {
+    const amountLeft = vesting.totalAmount.minus(vesting.amountClaimed);
+    if (!amountLeft.isZero()) {
       assets.push({
         ...tokenPriceToAssetToken(
           bsktMint,
-          amountAvailable.dividedBy(10 ** bsktDecimals).toNumber(),
-          NetworkId.solana,
-          bsktTokenPrice
-        ),
-        attributes: {
-          lockedUntil: unlockedSince.getTime(),
-        },
-      });
-    }
-
-    const nextUnlock = new Date(lastClaimedTm + (daysSinceClaim + 1) * oneDay);
-    if (nextUnlock < endDate) {
-      assets.push({
-        ...tokenPriceToAssetToken(
-          bsktMint,
-          amountPerUnlock.dividedBy(10 ** bsktDecimals).toNumber(),
-          NetworkId.solana,
-          bsktTokenPrice
-        ),
-        attributes: {
-          lockedUntil: nextUnlock.getTime(),
-        },
-      });
-    }
-
-    const amountLockedLeft = vesting.totalAmount
-      .minus(vesting.amountClaimed)
-      .minus(amountAvailable);
-    if (!amountLockedLeft.isZero()) {
-      assets.push({
-        ...tokenPriceToAssetToken(
-          bsktMint,
-          amountLockedLeft.dividedBy(10 ** bsktDecimals).toNumber(),
+          amountLeft.dividedBy(10 ** bsktDecimals).toNumber(),
           NetworkId.solana,
           bsktTokenPrice
         ),
