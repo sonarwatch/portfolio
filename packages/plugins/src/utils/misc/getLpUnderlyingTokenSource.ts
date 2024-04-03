@@ -54,7 +54,7 @@ export const defaultAcceptedPairs = new Map<NetworkIdType, string[]>([
       solanaNativeAddress,
       solanaNativeWrappedAddress,
       'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', // USDC
-      'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB', // USDT]
+      'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB', // USDT
     ].map((a) => formatTokenAddress(a, NetworkId.solana)),
   ],
   [
