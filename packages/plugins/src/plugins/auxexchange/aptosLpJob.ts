@@ -16,7 +16,7 @@ import { getClientAptos } from '../../utils/clients';
 import { lpCoinInfoTypePrefix, platformId, programAddress } from './constants';
 import { getDecimalsForToken } from '../../utils/misc/getDecimalsForToken';
 import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
-import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
+import getLpTokenSourceRawOld from '../../utils/misc/getLpTokenSourceRawOld';
 
 type PoolReserves = {
   x_reserve: { value: string };
@@ -108,7 +108,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     if (underlyingSource) lpSources.push(underlyingSource);
 
     if (!tokenPriceX || !tokenPriceY) continue;
-    const lpSource = getLpTokenSourceRaw(
+    const lpSource = getLpTokenSourceRawOld(
       NetworkId.aptos,
       lpType,
       platformId,

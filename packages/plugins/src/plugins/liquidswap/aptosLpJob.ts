@@ -19,7 +19,7 @@ import {
   programAddress,
   resourceAddress,
 } from './constants';
-import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
+import getLpTokenSourceRawOld from '../../utils/misc/getLpTokenSourceRawOld';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientAptos();
@@ -96,7 +96,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     ];
 
     if (!tokenPriceX || !tokenPriceY) continue;
-    const lpSource = getLpTokenSourceRaw(
+    const lpSource = getLpTokenSourceRawOld(
       NetworkId.aptos,
       lpType,
       platformId,

@@ -17,7 +17,7 @@ import runInBatch from '../../utils/misc/runInBatch';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 import { CLOBOrderStruct } from '../orders/clobs-solana/structs';
 import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
-import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
+import getLpTokenSourceRawOld from '../../utils/misc/getLpTokenSourceRawOld';
 import { orderStructByProgramId } from '../orders/clobs-solana/constants';
 
 const ammsDetails = [
@@ -213,7 +213,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         if (lpSupply.isZero()) continue;
 
         tokenPriceSources.push(
-          getLpTokenSourceRaw(
+          getLpTokenSourceRawOld(
             NetworkId.solana,
             lpMint.toString(),
             platformId,

@@ -9,9 +9,9 @@ import { OracleType, fundStruct, tokenListStruct } from './structs';
 import { fundFilters } from './filters';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 import { getSymbol } from './helpers';
-import getLpTokenSourceRaw, {
+import getLpTokenSourceRawOld, {
   PoolUnderlyingRaw,
-} from '../../utils/misc/getLpTokenSourceRaw';
+} from '../../utils/misc/getLpTokenSourceRawOld';
 import { getPythTokenPriceSources } from '../../utils/solana/pyth/helpers';
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -72,7 +72,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     }
     if (poolUnderlyingRaw.length === 0) continue;
 
-    const lpSource = getLpTokenSourceRaw(
+    const lpSource = getLpTokenSourceRawOld(
       NetworkId.solana,
       platformId,
       platformId,

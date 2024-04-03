@@ -14,7 +14,7 @@ import { PoolState, poolStateStruct } from './struct';
 import { constantPoolsFilters, stablePoolsFilters } from './filters';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
+import getLpTokenSourceRawOld from '../../utils/misc/getLpTokenSourceRawOld';
 import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -139,7 +139,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     }
     if (!bTokenPrice || !aTokenPrice) continue;
 
-    const lpSource = getLpTokenSourceRaw(
+    const lpSource = getLpTokenSourceRawOld(
       NetworkId.solana,
       lpMint,
       platformId,

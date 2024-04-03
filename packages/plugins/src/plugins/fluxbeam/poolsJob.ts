@@ -14,7 +14,7 @@ import {
   tokenAccountStruct,
 } from '../../utils/solana';
 import { poolStruct } from './structs';
-import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
+import getLpTokenSourceRawOld from '../../utils/misc/getLpTokenSourceRawOld';
 import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -120,7 +120,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     }
 
     if (!tokenPriceA || !tokenPriceB) continue;
-    const lpSource = getLpTokenSourceRaw(
+    const lpSource = getLpTokenSourceRawOld(
       NetworkId.solana,
       platformId,
       platformId,

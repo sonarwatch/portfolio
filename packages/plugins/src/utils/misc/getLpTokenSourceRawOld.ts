@@ -15,7 +15,11 @@ type LpDetailsRaw = {
   supplyRaw: BigNumber | string;
 };
 
-export default function getLpTokenSourceRaw(
+/**
+ * @deprecated
+ * This function has been deprecated. Use the new getLpTokenSourceRaw instead.
+ */
+export default function getLpTokenSourceRawOld(
   networkId: NetworkIdType,
   sourceId: string,
   platformId: string,

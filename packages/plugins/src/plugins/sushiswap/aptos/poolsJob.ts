@@ -12,7 +12,7 @@ import {
 } from '../../../utils/aptos';
 import { platformId } from '../constants';
 import { TokenPairMetadataData } from './types';
-import getLpTokenSourceRaw from '../../../utils/misc/getLpTokenSourceRaw';
+import getLpTokenSourceRawOld from '../../../utils/misc/getLpTokenSourceRawOld';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientAptos();
@@ -57,7 +57,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     );
     if (!tokenPriceX || !tokenPriceY) continue;
 
-    const source = getLpTokenSourceRaw(
+    const source = getLpTokenSourceRawOld(
       NetworkId.aptos,
       platformId,
       platformId,

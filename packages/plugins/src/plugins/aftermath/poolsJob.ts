@@ -7,9 +7,9 @@ import { lpCoinsTable, platformId } from './constants';
 import { PoolInfo } from './types';
 import { parseTypeString } from '../../utils/aptos';
 import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
-import getLpTokenSourceRaw, {
+import getLpTokenSourceRawOld, {
   PoolUnderlyingRaw,
-} from '../../utils/misc/getLpTokenSourceRaw';
+} from '../../utils/misc/getLpTokenSourceRawOld';
 import { getDynamicFields } from '../../utils/sui/getDynamicFields';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 
@@ -75,7 +75,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     });
     if (poolUnderlyingsRaw.length !== poolInfo.normalized_balances.length)
       continue;
-    const lpSource = getLpTokenSourceRaw(
+    const lpSource = getLpTokenSourceRawOld(
       networkId,
       platformId,
       platformId,

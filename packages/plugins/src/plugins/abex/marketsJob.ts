@@ -15,9 +15,9 @@ import { getClientSui } from '../../utils/clients';
 import { getDynamicFields } from '../../utils/sui/getDynamicFields';
 import { AlpMarket, Market, Pool } from './types';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
-import getLpTokenSourceRaw, {
+import getLpTokenSourceRawOld, {
   PoolUnderlyingRaw,
-} from '../../utils/misc/getLpTokenSourceRaw';
+} from '../../utils/misc/getLpTokenSourceRawOld';
 import { parseTypeString } from '../../utils/aptos';
 import { getObject } from '../../utils/sui/getObject';
 import { walletTokensPlatform } from '../tokens/constants';
@@ -85,7 +85,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     });
   }
 
-  const lpSource = getLpTokenSourceRaw(
+  const lpSource = getLpTokenSourceRawOld(
     NetworkId.sui,
     platformId,
     platformId,
