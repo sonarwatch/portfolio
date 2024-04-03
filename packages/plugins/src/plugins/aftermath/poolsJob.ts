@@ -6,12 +6,12 @@ import { getClientSui } from '../../utils/clients';
 import { lpCoinsTable, platformId } from './constants';
 import { PoolInfo } from './types';
 import { parseTypeString } from '../../utils/aptos';
-import getLpUnderlyingTokenSourceOld from '../../utils/misc/getLpUnderlyingTokenSourceOld';
-import getLpTokenSourceRawOld, {
-  PoolUnderlyingRaw,
-} from '../../utils/misc/getLpTokenSourceRawOld';
 import { getDynamicFields } from '../../utils/sui/getDynamicFields';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
+import {
+  PoolUnderlyingRaw,
+  getLpTokenSourceRaw,
+} from '../../utils/misc/getLpTokenSourceRaw';
 
 const networkId = NetworkId.sui;
 
@@ -70,52 +70,25 @@ const executor: JobExecutor = async (cache: Cache) => {
         reserveAmountRaw: new BigNumber(
           poolInfo.normalized_balances[i]
         ).dividedBy(poolInfo.decimal_scalars[i]),
-        price: tokenPrice.price,
+        tokenPrice,
+        weight: new BigNumber(poolInfo.weights[i]).div(10 ** 18).toNumber(),
       });
     });
     if (poolUnderlyingsRaw.length !== poolInfo.normalized_balances.length)
       continue;
-    const lpSource = getLpTokenSourceRawOld(
+    const lpSources = getLpTokenSourceRaw({
       networkId,
       platformId,
-      platformId,
-      {
+      lpDetails: {
         address: lpAddress,
         decimals: poolInfo.lp_decimals,
         supplyRaw: poolInfo.lp_supply.fields.value,
       },
-      poolUnderlyingsRaw
-    );
-    sources.push(lpSource);
-    if (poolInfo.normalized_balances.length === 2) {
-      const underlyingSource = getLpUnderlyingTokenSourceOld(
-        lpAddress,
-        networkId,
-        {
-          address: `0x${poolInfo.type_names[0]}`,
-          decimals: poolInfo.coin_decimals[0],
-          reserveAmountRaw: new BigNumber(
-            poolInfo.normalized_balances[0]
-          ).dividedBy(poolInfo.decimal_scalars[0]),
-          tokenPrice: tokenPriceById.get(
-            formatTokenAddress(`0x${poolInfo.type_names[0]}`, networkId)
-          ),
-          weight: new BigNumber(poolInfo.weights[0]).div(10 ** 18).toNumber(),
-        },
-        {
-          address: `0x${poolInfo.type_names[1]}`,
-          decimals: poolInfo.coin_decimals[1],
-          reserveAmountRaw: new BigNumber(
-            poolInfo.normalized_balances[1]
-          ).dividedBy(poolInfo.decimal_scalars[1]),
-          tokenPrice: tokenPriceById.get(
-            formatTokenAddress(`0x${poolInfo.type_names[1]}`, networkId)
-          ),
-          weight: new BigNumber(poolInfo.weights[1]).div(10 ** 18).toNumber(),
-        }
-      );
-      if (underlyingSource) sources.push(underlyingSource);
-    }
+      sourceId: lpAddress,
+      poolUnderlyingsRaw,
+      priceUnderlyings: true,
+    });
+    sources.push(...lpSources);
   }
   await cache.setTokenPriceSources(sources);
 };
