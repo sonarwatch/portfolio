@@ -1,6 +1,6 @@
 import { NetworkIdType, TokenPriceSource } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
-import getLpTokenSource from './getLpTokenSource';
+import getLpTokenSourceOld from './getLpTokenSourceOld';
 
 export type PoolUnderlyingRaw = {
   address: string;
@@ -24,7 +24,7 @@ export default function getLpTokenSourceRaw(
   elementName?: string,
   liquidityName?: string
 ): TokenPriceSource {
-  return getLpTokenSource(
+  return getLpTokenSourceOld(
     networkId,
     sourceId,
     platformId,

@@ -17,7 +17,11 @@ type LpDetails = {
   supply: number;
 };
 
-export default function getLpTokenSource(
+/**
+ * @deprecated
+ * This function has been deprecated. Use the new getLpTokenSource instead.
+ */
+export default function getLpTokenSourceOld(
   networkId: NetworkIdType,
   sourceId: string,
   platformId: string,

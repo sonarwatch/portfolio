@@ -11,7 +11,7 @@ import {
 } from '../../utils/solana';
 import { platformId, tulipV2ProgramId, vaultsKey } from './constants';
 import { multiDepositOptimizerV1Struct } from './structs';
-import getLpTokenSource from '../../utils/misc/getLpTokenSource';
+import getLpTokenSourceOld from '../../utils/misc/getLpTokenSourceOld';
 import { strategyVaultsFilters } from './filters';
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -78,7 +78,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     const { supply, decimals } = mintAccount;
     if (supply.isZero()) continue;
 
-    const lpTokenSource = getLpTokenSource(
+    const lpTokenSource = getLpTokenSourceOld(
       NetworkId.solana,
       lpMint,
       platformId,
