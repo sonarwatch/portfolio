@@ -10,7 +10,7 @@ import { getDecimalsForToken } from '../misc/getDecimalsForToken';
 import { walletTokensPlatform } from '../../plugins/tokens/constants';
 import getSourceWeight from '../misc/getSourceWeight';
 import { minimumLiquidity } from '../misc/computeAndStoreLpPrice';
-import { defaultAcceptedPairs } from '../misc/getLpUnderlyingTokenSourceOld';
+import { defaultAcceptedPairs } from '../misc/getLpUnderlyingTokenSource';
 
 export default async function storeTokenPricesFromSqrt(
   cache: Cache,

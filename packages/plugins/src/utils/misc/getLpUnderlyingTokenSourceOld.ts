@@ -1,19 +1,14 @@
 import {
-  NetworkId,
   NetworkIdType,
   TokenPrice,
   TokenPriceSource,
-  aptosNativeAddress,
   coingeckoSourceId,
   formatTokenAddress,
-  seiNativeAddress,
-  solanaNativeAddress,
-  solanaNativeWrappedAddress,
-  suiNativeAddress,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import getSourceWeight from './getSourceWeight';
 import { walletTokensPlatform } from '../../plugins/tokens/constants';
+import { defaultAcceptedPairs } from './getLpUnderlyingTokenSource';
 
 export type PoolData = {
   id: string;
@@ -38,43 +33,6 @@ type PoolUnderlyingRaw = {
 type KnownPoolUnderlyingRaw = PoolUnderlyingRaw & {
   tokenPrice: TokenPrice;
 };
-
-export const defaultAcceptedPairs = new Map<NetworkIdType, string[]>([
-  [
-    NetworkId.sei,
-    [
-      seiNativeAddress,
-      'ibc/ED07A3391A112B175915CD8FAF43A2DA8E4790EDE12566649D0C2F97716B8518', // OSMO
-      'factory/sei189adguawugk3e55zn63z8r9ll29xrjwca636ra7v7gxuzn98sxyqwzt47l/Hq4tuDzhRBnxw3tFA5n6M52NVMVcC19XggbyDiJKCD6H', // USDCet
-    ].map((a) => formatTokenAddress(a, NetworkId.sei)),
-  ],
-  [
-    NetworkId.solana,
-    [
-      solanaNativeAddress,
-      solanaNativeWrappedAddress,
-      'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', // USDC
-      'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB', // USDT
-    ].map((a) => formatTokenAddress(a, NetworkId.solana)),
-  ],
-  [
-    NetworkId.aptos,
-    [
-      aptosNativeAddress,
-      '0x5e156f1207d0ebfa19a9eeff00d62a282278fb8719f4fab3a586a0a2c0fffbea::coin::T', // USDCet
-      '0x6f986d146e4a90b828d8c12c14b6f4e003fdff11a8eecceceb63744363eaac01::mod_coin::MOD', // MOD (Move Dollar)
-    ].map((a) => formatTokenAddress(a, NetworkId.aptos)),
-  ],
-  [
-    NetworkId.sui,
-    [
-      suiNativeAddress,
-      '0x2::sui::SUI',
-      '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN', // USDCet
-      '0x6864a6f921804860930db6ddbe2e16acdf8504495ea7481637a1c8b9a8fe54b::cetus::CETUS', // CETUS
-    ].map((a) => formatTokenAddress(a, NetworkId.sui)),
-  ],
-]);
 
 /**
  * @deprecated

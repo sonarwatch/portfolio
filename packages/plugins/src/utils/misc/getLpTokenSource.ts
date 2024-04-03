@@ -3,24 +3,18 @@ import {
   TokenPriceSource,
   formatTokenAddress,
 } from '@sonarwatch/portfolio-core';
+import {
+  PoolUnderlying,
+  getLpUnderlyingTokenSource,
+} from './getLpUnderlyingTokenSource';
 
-type PoolUnderlying = {
-  address: string;
-  reserveAmount: number;
-  decimals: number;
-  weight: number;
-  price?: number;
-};
-
-type LpDetails = {
+export type LpDetails = {
   address: string;
   decimals: number;
   supply: number;
 };
 
-export function getLpUnderlyingTokenSource2() {}
-
-export default function getLpTokenSource2(params: {
+export type GetLpTokenSourceParams = {
   networkId: NetworkIdType;
   sourceId: string;
   platformId: string;
@@ -28,7 +22,12 @@ export default function getLpTokenSource2(params: {
   poolUnderlyings: PoolUnderlying[];
   elementName?: string;
   liquidityName?: string;
-}): TokenPriceSource[] {
+  priceUnderlyings?: boolean;
+};
+
+export function getLpTokenSource(
+  params: GetLpTokenSourceParams
+): TokenPriceSource[] {
   const {
     poolUnderlyings,
     liquidityName,
@@ -37,17 +36,26 @@ export default function getLpTokenSource2(params: {
     platformId,
     sourceId,
     networkId,
+    priceUnderlyings,
   } = params;
-
   const sources: TokenPriceSource[] = [];
 
-  // LP Source
-  if (poolUnderlyings.some((u) => u.price === undefined || u.price === 0))
-    return sources;
+  // Price underlyings
+  if (priceUnderlyings) {
+    const uSources = getLpUnderlyingTokenSource({
+      networkId,
+      sourceId: lpDetails.address,
+      poolUnderlyings,
+    });
+    sources.push(...uSources);
+  }
 
+  if (poolUnderlyings.some((u) => !u.tokenPrice)) return sources;
+  // Price LP
   const price =
     poolUnderlyings.reduce(
-      (acc, u) => acc + u.reserveAmount * (u.price as number),
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      (acc, u) => acc + u.reserveAmount * u.tokenPrice!.price,
       0
     ) / lpDetails.supply;
   const lpSource: TokenPriceSource = {
@@ -63,7 +71,8 @@ export default function getLpTokenSource2(params: {
     underlyings: poolUnderlyings.map((u) => ({
       networkId,
       address: formatTokenAddress(u.address, networkId),
-      price: u.price as number,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      price: u.tokenPrice!.price,
       amountPerLp: u.reserveAmount / lpDetails.supply,
       decimals: u.decimals,
     })),

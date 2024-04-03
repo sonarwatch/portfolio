@@ -2,6 +2,9 @@ import { NetworkIdType, TokenPriceSource } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import getLpTokenSourceOld from './getLpTokenSourceOld';
 
+/**
+ * @deprecated
+ */
 export type PoolUnderlyingRaw = {
   address: string;
   reserveAmountRaw: BigNumber | string;
@@ -9,6 +12,9 @@ export type PoolUnderlyingRaw = {
   decimals: number;
 };
 
+/**
+ * @deprecated
+ */
 type LpDetailsRaw = {
   address: string;
   decimals: number;
