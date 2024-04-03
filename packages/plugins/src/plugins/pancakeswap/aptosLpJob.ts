@@ -15,7 +15,7 @@ import {
   getAccountResources,
   parseTypeString,
 } from '../../utils/aptos';
-import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
+import getLpUnderlyingTokenSourceOld from '../../utils/misc/getLpUnderlyingTokenSourceOld';
 import getLpTokenSourceRawOld from '../../utils/misc/getLpTokenSourceRawOld';
 import { getDecimals } from '../../utils/aptos/getDecimals';
 
@@ -100,7 +100,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
     if (!decimalsX || !decimalsY) continue;
 
-    const underlyingSource = getLpUnderlyingTokenSource(
+    const underlyingSource = getLpUnderlyingTokenSourceOld(
       lpType,
       NetworkId.aptos,
       {

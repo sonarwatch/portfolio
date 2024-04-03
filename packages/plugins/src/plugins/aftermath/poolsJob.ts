@@ -6,7 +6,7 @@ import { getClientSui } from '../../utils/clients';
 import { lpCoinsTable, platformId } from './constants';
 import { PoolInfo } from './types';
 import { parseTypeString } from '../../utils/aptos';
-import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
+import getLpUnderlyingTokenSourceOld from '../../utils/misc/getLpUnderlyingTokenSourceOld';
 import getLpTokenSourceRawOld, {
   PoolUnderlyingRaw,
 } from '../../utils/misc/getLpTokenSourceRawOld';
@@ -88,7 +88,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     );
     sources.push(lpSource);
     if (poolInfo.normalized_balances.length === 2) {
-      const underlyingSource = getLpUnderlyingTokenSource(
+      const underlyingSource = getLpUnderlyingTokenSourceOld(
         lpAddress,
         networkId,
         {

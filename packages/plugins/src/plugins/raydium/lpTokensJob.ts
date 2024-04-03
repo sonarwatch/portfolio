@@ -16,7 +16,7 @@ import { LiquidityPoolStatus } from './types';
 import runInBatch from '../../utils/misc/runInBatch';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 import { CLOBOrderStruct } from '../orders/clobs-solana/structs';
-import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
+import getLpUnderlyingTokenSourceOld from '../../utils/misc/getLpUnderlyingTokenSourceOld';
 import getLpTokenSourceRawOld from '../../utils/misc/getLpTokenSourceRawOld';
 import { orderStructByProgramId } from '../orders/clobs-solana/constants';
 
@@ -181,7 +181,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
         const lpMint = amm.lpMintAddress;
 
-        const underlyingSource = getLpUnderlyingTokenSource(
+        const underlyingSource = getLpUnderlyingTokenSourceOld(
           lpMint.toString(),
           NetworkId.solana,
           {

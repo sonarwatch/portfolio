@@ -76,7 +76,11 @@ export const defaultAcceptedPairs = new Map<NetworkIdType, string[]>([
   ],
 ]);
 
-export default function getLpUnderlyingTokenSource(
+/**
+ * @deprecated
+ * This function has been deprecated. Use the new getLpUnderlyingTokenSource instead.
+ */
+export default function getLpUnderlyingTokenSourceOld(
   sourceId: string,
   networkId: NetworkIdType,
   poolUnderlyingsA: PoolUnderlyingRaw,

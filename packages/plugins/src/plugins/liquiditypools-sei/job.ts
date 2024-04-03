@@ -13,7 +13,7 @@ import {
 } from '../../utils/sei';
 import isAContract from '../../utils/sei/isAContract';
 import { getDecimalsForToken } from '../../utils/misc/getDecimalsForToken';
-import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
+import getLpUnderlyingTokenSourceOld from '../../utils/misc/getLpUnderlyingTokenSourceOld';
 import getLpTokenSourceRawOld from '../../utils/misc/getLpTokenSourceRawOld';
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -70,7 +70,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
       if (!decimalsX || !decimalsY) continue;
 
-      const underlyingSource = getLpUnderlyingTokenSource(
+      const underlyingSource = getLpUnderlyingTokenSourceOld(
         lpContract,
         NetworkId.sei,
         {
