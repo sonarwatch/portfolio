@@ -15,7 +15,7 @@ import { BanxResponse } from './types';
 const banxFactor = new BigNumber(10 ** banxDecimals);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  // Account fetch was taking up to 1 min so better to use their API.
+  // Account fetch was taking up to 1 min so better to use their API for now.
 
   // const client = getClientSolana();
 
@@ -41,24 +41,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     .catch(() => null);
   if (!banxRes) return [];
 
-  const amounts = [
-    new BigNumber(banxRes.data.data.banxTokenStake.tokensStaked).dividedBy(
-      banxFactor
-    ),
-  ];
+  const amount = new BigNumber(
+    banxRes.data.data.banxTokenStake.tokensStaked
+  ).dividedBy(banxFactor);
+  if (amount.isZero()) return [];
 
   const tokenPrice = await cache.getTokenPrice(banxMint, NetworkId.solana);
-  const assets: PortfolioAsset[] = [];
-  amounts.forEach((amount) =>
-    assets.push(
-      tokenPriceToAssetToken(
-        banxMint,
-        amount.toNumber(),
-        NetworkId.solana,
-        tokenPrice
-      )
-    )
-  );
+  const assets: PortfolioAsset[] = [
+    tokenPriceToAssetToken(
+      banxMint,
+      amount.toNumber(),
+      NetworkId.solana,
+      tokenPrice
+    ),
+  ];
 
   return [
     {
