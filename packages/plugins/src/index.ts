@@ -382,6 +382,16 @@ import {
   jobs as uxdJobs,
   fetchers as uxdFetchers,
 } from './plugins/uxd';
+import {
+  platforms as wormholePlatforms,
+  jobs as wormholeJobs,
+  fetchers as wormholeFetchers,
+} from './plugins/wormhole';
+import {
+  platforms as banxPlatforms,
+  jobs as banxJobs,
+  fetchers as banxFetchers,
+} from './plugins/banx';
 
 export {
   walletTokensPlatform,
@@ -476,6 +486,8 @@ export const platforms: Platform[] = [
   ...tulipPlatforms,
   ...phoenixPlatforms,
   ...uxdPlatforms,
+  ...wormholePlatforms,
+  ...banxPlatforms,
 ];
 
 // JOBS //
@@ -552,6 +564,8 @@ export const jobs: Job[] = [
   ...tulipJobs,
   ...phoenixJobs,
   ...uxdJobs,
+  ...wormholeJobs,
+  ...banxJobs,
 ];
 
 // FETCHERS //
@@ -630,5 +644,7 @@ export const fetchers: Fetcher[] = [
   ...tulipFetchers,
   ...phoenixFetchers,
   ...uxdFetchers,
+  ...wormholeFetchers,
+  ...banxFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
