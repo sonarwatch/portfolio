@@ -5,9 +5,8 @@ export const platform: Platform = {
   id: platformId,
   name: 'Wormhole',
   image: 'https://sonar.watch/img/platforms/wormhole.png',
-  // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
-  // website: 'https://myplatform.com',
-  // twitter: 'https://twitter.com/myplatform',
+  website: 'https://airdrop.wormhole.com/',
+  twitter: 'https://twitter.com/wormhole',
 };
 
 export const apiUrl = 'https://prod-flat-files-min.wormhole.com/';

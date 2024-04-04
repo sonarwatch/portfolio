@@ -6,9 +6,9 @@ export const platform: Platform = {
   id: platformId,
   name: 'Banx',
   image: 'https://sonar.watch/img/platforms/banx.png',
-  // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
-  // website: 'https://myplatform.com',
-  // twitter: 'https://twitter.com/myplatform',
+  defiLlamaId: 'banx', // from https://defillama.com/docs/api
+  website: 'https://banx.gg/',
+  twitter: 'https://twitter.com/banx_gg',
 };
 
 export const banxPid = new PublicKey(
