@@ -12,9 +12,9 @@ import {
   tokenAccountStruct,
 } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
-import getLpTokenSourceRaw, {
+import getLpTokenSourceRawOld, {
   PoolUnderlyingRaw,
-} from '../../utils/misc/getLpTokenSourceRaw';
+} from '../../utils/misc/getLpTokenSourceRawOld';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
@@ -66,7 +66,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     });
     if (poolUnderlyingsRaw.length !== pool.reserveAccounts.length) continue;
 
-    const lpSource = getLpTokenSourceRaw(
+    const lpSource = getLpTokenSourceRawOld(
       NetworkId.solana,
       pool.address,
       platformId,

@@ -13,8 +13,8 @@ import {
 } from '../../utils/sei';
 import isAContract from '../../utils/sei/isAContract';
 import { getDecimalsForToken } from '../../utils/misc/getDecimalsForToken';
-import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
-import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
+import getLpUnderlyingTokenSourceOld from '../../utils/misc/getLpUnderlyingTokenSourceOld';
+import getLpTokenSourceRawOld from '../../utils/misc/getLpTokenSourceRawOld';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const cosmWasmClient = await getCosmWasmClient(getUrlEndpoint(NetworkId.sei));
@@ -70,7 +70,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
       if (!decimalsX || !decimalsY) continue;
 
-      const underlyingSource = getLpUnderlyingTokenSource(
+      const underlyingSource = getLpUnderlyingTokenSourceOld(
         lpContract,
         NetworkId.sei,
         {
@@ -91,7 +91,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       if (underlyingSource) await cache.setTokenPriceSource(underlyingSource);
 
       if (!tokenPriceX || !tokenPriceY) continue;
-      const lpSource = getLpTokenSourceRaw(
+      const lpSource = getLpTokenSourceRawOld(
         NetworkId.sei,
         lpContract,
         platformId,

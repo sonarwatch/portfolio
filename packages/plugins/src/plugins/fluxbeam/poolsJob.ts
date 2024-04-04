@@ -14,8 +14,8 @@ import {
   tokenAccountStruct,
 } from '../../utils/solana';
 import { poolStruct } from './structs';
-import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
-import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
+import getLpTokenSourceRawOld from '../../utils/misc/getLpTokenSourceRawOld';
+import getLpUnderlyingTokenSourceOld from '../../utils/misc/getLpUnderlyingTokenSourceOld';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
@@ -97,7 +97,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     const tokenPriceA = tokenPrices.get(pool.tokenAMint.toString());
     const tokenPriceB = tokenPrices.get(pool.tokenBMint.toString());
 
-    const underlyingsSource = getLpUnderlyingTokenSource(
+    const underlyingsSource = getLpUnderlyingTokenSourceOld(
       pool.poolMint.toString(),
       NetworkId.solana,
       {
@@ -120,7 +120,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     }
 
     if (!tokenPriceA || !tokenPriceB) continue;
-    const lpSource = getLpTokenSourceRaw(
+    const lpSource = getLpTokenSourceRawOld(
       NetworkId.solana,
       platformId,
       platformId,

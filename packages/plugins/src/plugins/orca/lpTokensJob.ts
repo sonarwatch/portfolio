@@ -17,9 +17,9 @@ import { Cache } from '../../Cache';
 import runInBatch from '../../utils/misc/runInBatch';
 import { minimumLiquidity } from '../../utils/misc/computeAndStoreLpPrice';
 import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
-import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
+import getLpUnderlyingTokenSourceOld from '../../utils/misc/getLpUnderlyingTokenSourceOld';
 import { getDecimalsForToken } from '../../utils/misc/getDecimalsForToken';
-import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
+import getLpTokenSourceRawOld from '../../utils/misc/getLpTokenSourceRawOld';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -124,7 +124,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     const coinAmountWei = new BigNumber(poolCoinTokenAccount.amount.toString());
     const pcAmountWei = new BigNumber(poolPcTokenAccount.amount.toString());
 
-    const underlyingSource = getLpUnderlyingTokenSource(
+    const underlyingSource = getLpUnderlyingTokenSourceOld(
       lpMint.toString(),
       NetworkId.solana,
       {
@@ -146,7 +146,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
     if (!tokenPriceA || !tokenPriceB) continue;
 
-    const lpSource = getLpTokenSourceRaw(
+    const lpSource = getLpTokenSourceRawOld(
       NetworkId.solana,
       lpMint.toString(),
       platformId,

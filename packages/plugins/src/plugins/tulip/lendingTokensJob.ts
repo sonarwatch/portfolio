@@ -12,7 +12,7 @@ import {
 import { platformId, tulipLendingProgramId } from './constants';
 import { lendingReserveStruct } from './structs';
 import { wadsDecimal } from '../solend/constants';
-import getLpTokenSource from '../../utils/misc/getLpTokenSource';
+import getLpTokenSourceOld from '../../utils/misc/getLpTokenSourceOld';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -93,7 +93,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     const { supply, decimals } = mintAccount;
     if (supply.isZero()) continue;
 
-    const lpTokenSource = getLpTokenSource(
+    const lpTokenSource = getLpTokenSourceOld(
       NetworkId.solana,
       lpMint,
       platformId,

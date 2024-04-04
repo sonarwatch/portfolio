@@ -15,8 +15,8 @@ import {
   getAccountResources,
   parseTypeString,
 } from '../../utils/aptos';
-import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
-import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
+import getLpUnderlyingTokenSourceOld from '../../utils/misc/getLpUnderlyingTokenSourceOld';
+import getLpTokenSourceRawOld from '../../utils/misc/getLpTokenSourceRawOld';
 import { getDecimals } from '../../utils/aptos/getDecimals';
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -100,7 +100,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
     if (!decimalsX || !decimalsY) continue;
 
-    const underlyingSource = getLpUnderlyingTokenSource(
+    const underlyingSource = getLpUnderlyingTokenSourceOld(
       lpType,
       NetworkId.aptos,
       {
@@ -121,7 +121,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     if (underlyingSource) lpSources.push(underlyingSource);
 
     if (!tokenPriceX || !tokenPriceY) continue;
-    const lpSource = getLpTokenSourceRaw(
+    const lpSource = getLpTokenSourceRawOld(
       NetworkId.aptos,
       lpType,
       platformId,

@@ -6,7 +6,7 @@ import { platformId, vaultsInfo } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { Vault } from './types';
-import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
+import getLpTokenSourceRawOld from '../../utils/misc/getLpTokenSourceRawOld';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
@@ -34,7 +34,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     object.data?.content?.fields.strategies.fields.contents.forEach((c) => {
       amount = amount.plus(c.fields.value.fields.borrowed);
     });
-    const lpSource = getLpTokenSourceRaw(
+    const lpSource = getLpTokenSourceRawOld(
       NetworkId.sui,
       platformId,
       platformId,

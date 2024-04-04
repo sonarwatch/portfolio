@@ -1,12 +1,18 @@
-import { NetworkIdType, TokenPriceSource } from '@sonarwatch/portfolio-core';
+import {
+  NetworkIdType,
+  TokenPrice,
+  TokenPriceSource,
+} from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
-import getLpTokenSource from './getLpTokenSource';
+import { LpDetails, getLpTokenSource } from './getLpTokenSource';
+import { PoolUnderlying } from './getLpUnderlyingTokenSource';
 
 export type PoolUnderlyingRaw = {
   address: string;
   reserveAmountRaw: BigNumber | string;
-  price: number;
   decimals: number;
+  weight: number;
+  tokenPrice?: TokenPrice;
 };
 
 type LpDetailsRaw = {
@@ -15,32 +21,44 @@ type LpDetailsRaw = {
   supplyRaw: BigNumber | string;
 };
 
-export default function getLpTokenSourceRaw(
-  networkId: NetworkIdType,
-  sourceId: string,
-  platformId: string,
-  lpDetailsRaw: LpDetailsRaw,
-  poolUnderlyingsRaw: PoolUnderlyingRaw[],
-  elementName?: string,
-  liquidityName?: string
-): TokenPriceSource {
-  return getLpTokenSource(
-    networkId,
-    sourceId,
-    platformId,
-    {
-      ...lpDetailsRaw,
-      supply: new BigNumber(lpDetailsRaw.supplyRaw)
-        .div(10 ** lpDetailsRaw.decimals)
+export type GetLpTokenSourceRawParams = {
+  networkId: NetworkIdType;
+  sourceId: string;
+  platformId: string;
+  lpDetails: LpDetailsRaw;
+  poolUnderlyingsRaw: PoolUnderlyingRaw[];
+  elementName?: string;
+  liquidityName?: string;
+  priceUnderlyings?: boolean;
+};
+
+export function getLpTokenSourceRaw(
+  params: GetLpTokenSourceRawParams
+): TokenPriceSource[] {
+  const { lpDetails, poolUnderlyingsRaw } = params;
+  const fLpDetails: LpDetails = {
+    ...lpDetails,
+    supply: new BigNumber(lpDetails.supplyRaw)
+      .div(10 ** lpDetails.decimals)
+      .toNumber(),
+  };
+  const fPoolUnderlyingsRaw: PoolUnderlying[] = poolUnderlyingsRaw.map(
+    (pu) => ({
+      ...pu,
+      reserveAmount: new BigNumber(pu.reserveAmountRaw)
+        .div(10 ** pu.decimals)
         .toNumber(),
-    },
-    poolUnderlyingsRaw.map((u) => ({
-      ...u,
-      reserveAmount: new BigNumber(u.reserveAmountRaw)
-        .div(10 ** u.decimals)
-        .toNumber(),
-    })),
-    elementName,
-    liquidityName
+    })
   );
+
+  return getLpTokenSource({
+    lpDetails: fLpDetails,
+    networkId: params.networkId,
+    platformId: params.platformId,
+    sourceId: params.sourceId,
+    poolUnderlyings: fPoolUnderlyingsRaw,
+    elementName: params.elementName,
+    liquidityName: params.elementName,
+    priceUnderlyings: params.priceUnderlyings,
+  });
 }

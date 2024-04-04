@@ -16,8 +16,8 @@ import { LiquidityPoolStatus } from './types';
 import runInBatch from '../../utils/misc/runInBatch';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 import { CLOBOrderStruct } from '../orders/clobs-solana/structs';
-import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
-import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
+import getLpUnderlyingTokenSourceOld from '../../utils/misc/getLpUnderlyingTokenSourceOld';
+import getLpTokenSourceRawOld from '../../utils/misc/getLpTokenSourceRawOld';
 import { orderStructByProgramId } from '../orders/clobs-solana/constants';
 
 const ammsDetails = [
@@ -181,7 +181,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
         const lpMint = amm.lpMintAddress;
 
-        const underlyingSource = getLpUnderlyingTokenSource(
+        const underlyingSource = getLpUnderlyingTokenSourceOld(
           lpMint.toString(),
           NetworkId.solana,
           {
@@ -213,7 +213,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         if (lpSupply.isZero()) continue;
 
         tokenPriceSources.push(
-          getLpTokenSourceRaw(
+          getLpTokenSourceRawOld(
             NetworkId.solana,
             lpMint.toString(),
             platformId,

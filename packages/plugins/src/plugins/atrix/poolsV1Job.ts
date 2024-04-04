@@ -16,7 +16,7 @@ import {
 import { atrixV1, platformId } from './constants';
 import { poolStruct } from './structs';
 import { fetchTokenSupplyAndDecimals } from '../../utils/solana/fetchTokenSupplyAndDecimals';
-import getLpTokenSource from '../../utils/misc/getLpTokenSource';
+import getLpTokenSourceOld from '../../utils/misc/getLpTokenSourceOld';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -135,7 +135,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       supply,
     };
 
-    const source = getLpTokenSource(
+    const source = getLpTokenSourceOld(
       NetworkId.solana,
       pool.pubkey.toString(),
       platformId,
