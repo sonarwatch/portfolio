@@ -56,6 +56,10 @@ export type PositionData = {
   positionBinData: PositionBinData[];
   upperBinId: number;
   lowerBinId: number;
+  feeX: BigNumber;
+  feeY: BigNumber;
+  rewardOne: BigNumber;
+  rewardTwo: BigNumber;
 };
 
 export type LbPosition = {
@@ -82,6 +86,11 @@ export type TokenReserve = {
 export type LMRewards = {
   rewardOne: BigNumber;
   rewardTwo: BigNumber;
+};
+
+export type SwapFee = {
+  feeX: BigNumber;
+  feeY: BigNumber;
 };
 
 export interface BinLiquidity {

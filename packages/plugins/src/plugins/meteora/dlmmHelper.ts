@@ -3,16 +3,15 @@ import { PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
 import Decimal from 'decimal.js';
 import BigNumber from 'bignumber.js';
-import { getParsedMultipleAccountsInfo } from '../../utils/solana';
-import { getClientSolana } from '../../utils/clients';
 import {
   BinLiquidity,
   LMRewards,
   PositionBinData,
   PositionData,
   PositionVersion,
+  SwapFee,
 } from './types';
-import { Bin, BinArray, DLMMPosition, LbPair, binArrayStruct } from './struct';
+import { Bin, BinArray, DLMMPosition, LbPair } from './struct';
 import { dlmmProgramId } from './constants';
 
 export const MAX_BIN_ARRAY_SIZE = new BN(70);
@@ -116,12 +115,34 @@ export function processPosition(
     });
   });
 
+  // Not getting the right results
+  // const { feeX, feeY } = getClaimableSwapFee(
+  //   program,
+  //   version,
+  //   position,
+  //   lowerBinArray,
+  //   upperBinArray
+  // );
+  // const { rewardOne, rewardTwo } = getClaimableLMReward(
+  //   program,
+  //   version,
+  //   lbPair,
+  //   new Date(Date.now()).getTime(),
+  //   position,
+  //   lowerBinArray,
+  //   upperBinArray
+  // );
+
   return {
     totalXAmount: new BigNumber(totalXAmount.toString()),
     totalYAmount: new BigNumber(totalYAmount.toString()),
     positionBinData: positionData,
     lowerBinId,
     upperBinId,
+    feeX: new BigNumber(0),
+    feeY: new BigNumber(0),
+    rewardOne: new BigNumber(0),
+    rewardTwo: new BigNumber(0),
   };
 }
 
@@ -191,62 +212,38 @@ export function getBinsBetweenLowerAndUpperBound(
   return bins;
 }
 
-export async function getClaimableLMReward(
+export function getClaimableLMReward(
   program: PublicKey,
   positionVersion: PositionVersion,
   lbPair: LbPair,
   onChainTimestamp: number,
   position: DLMMPosition,
-  lowerBinArray?: BinArray,
-  upperBinArray?: BinArray
-): Promise<LMRewards> {
-  const client = getClientSolana();
-  let lowerBinArrayIdx = binIdToBinArrayIndex(
+  lowerBinArray: BinArray,
+  upperBinArray: BinArray
+): LMRewards {
+  const lowerBinArrayIdx = binIdToBinArrayIndex(
     new BigNumber(position.lowerBinId)
   );
 
   const rewards = [new BigNumber(0), new BigNumber(0)];
 
-  let tempLowerBinArray: BinArray | undefined | null = lowerBinArray;
-  let tempUpperBinArray: BinArray | undefined | null = upperBinArray;
-  if (!lowerBinArray || !upperBinArray) {
-    lowerBinArrayIdx = binIdToBinArrayIndex(new BigNumber(position.lowerBinId));
-    const [newlowerBinArray] = deriveBinArray(
-      position.lbPair,
-      lowerBinArrayIdx,
-      program
-    );
-
-    const upperBinArrayIdx = lowerBinArrayIdx.add(new BN(1));
-    const [newupperBinArray] = deriveBinArray(
-      position.lbPair,
-      upperBinArrayIdx,
-      program
-    );
-
-    [tempLowerBinArray, tempUpperBinArray] =
-      await getParsedMultipleAccountsInfo(client, binArrayStruct, [
-        newlowerBinArray,
-        newupperBinArray,
-      ]);
-  }
-
-  if (!tempLowerBinArray || !tempUpperBinArray)
-    throw new Error('BinArray not found');
+  if (!lowerBinArray || !upperBinArray) throw new Error('BinArray not found');
 
   for (let i = position.lowerBinId; i <= position.upperBinId; i++) {
     const binArrayIdx = binIdToBinArrayIndex(new BigNumber(i));
     const binArray = binArrayIdx.eq(lowerBinArrayIdx)
-      ? tempLowerBinArray
-      : tempUpperBinArray;
+      ? lowerBinArray
+      : upperBinArray;
     const binState = getBinFromBinArray(i, binArray);
     const binIdxInPosition = i - position.lowerBinId;
 
     const positionRewardInfo = position.rewardInfos[binIdxInPosition];
     const liquidityShare =
       positionVersion === PositionVersion.V1
-        ? position.liquidityShares[binIdxInPosition]
-        : position.liquidityShares[binIdxInPosition].shiftedBy(64);
+        ? new BN(position.liquidityShares[binIdxInPosition].toString())
+        : new BN(position.liquidityShares[binIdxInPosition].toString()).shrn(
+            64
+          );
 
     for (let j = 0; j < 2; j++) {
       const pairRewardInfo = lbPair.rewardInfos[j];
@@ -284,7 +281,7 @@ export async function getClaimableLMReward(
             : positionRewardInfo.rewardPerTokenCompletesY
         );
         const newReward = mulShr(
-          delta,
+          new BN(delta.toString()),
           liquidityShare,
           SCALE_OFFSET,
           Rounding.Down
@@ -304,6 +301,71 @@ export async function getClaimableLMReward(
     rewardOne: rewards[0],
     rewardTwo: rewards[1],
   };
+}
+
+export function getClaimableSwapFee(
+  program: PublicKey,
+  positionVersion: PositionVersion,
+  position: DLMMPosition,
+  lowerBinArray: BinArray,
+  upperBinArray: BinArray
+): SwapFee {
+  const lowerBinArrayIdx = binIdToBinArrayIndex(
+    new BigNumber(position.lowerBinId)
+  );
+
+  let feeX = new BigNumber(0);
+  let feeY = new BigNumber(0);
+
+  if (!lowerBinArray || !upperBinArray) throw new Error('BinArray not found');
+
+  for (let i = position.lowerBinId; i <= position.upperBinId; i++) {
+    const binArrayIdx = binIdToBinArrayIndex(new BigNumber(i));
+    const binArray = binArrayIdx.eq(lowerBinArrayIdx)
+      ? lowerBinArray
+      : upperBinArray;
+    const binState = getBinFromBinArray(i, binArray);
+    const binIdxInPosition = i - position.lowerBinId;
+
+    const feeInfos = position.feeInfos[binIdxInPosition];
+    const liquidityShare =
+      positionVersion === PositionVersion.V1
+        ? new BN(position.liquidityShares[binIdxInPosition].toString())
+        : new BN(position.liquidityShares[binIdxInPosition].toString()).shrn(
+            64
+          );
+
+    if (liquidityShare.isZero()) continue;
+
+    const feeXPerToken = binState.feeAmountXPerTokenStored.minus(
+      feeInfos.feeXPerTokenComplete
+    );
+    if (!feeXPerToken.isZero()) {
+      const newFeeX = mulShr(
+        liquidityShare,
+        new BN(feeXPerToken.toString()),
+        SCALE_OFFSET,
+        Rounding.Down
+      );
+      feeX = feeX.plus(newFeeX).plus(feeInfos.feeXPending);
+    }
+
+    const feeYPerToken = binState.feeAmountXPerTokenStored.minus(
+      feeInfos.feeXPerTokenComplete
+    );
+    if (!feeYPerToken.isZero()) {
+      const newFeeY = mulShr(
+        liquidityShare,
+        new BN(feeYPerToken.toString()),
+        SCALE_OFFSET,
+        Rounding.Down
+      );
+
+      feeY = feeY.plus(newFeeY).plus(feeInfos.feeYPending);
+    }
+  }
+
+  return { feeX, feeY };
 }
 
 export function getBinFromBinArray(binId: number, binArray: BinArray): Bin {
@@ -334,40 +396,23 @@ export enum Rounding {
   Down,
 }
 
-export function mulShr(
-  x: BigNumber,
-  y: BigNumber,
-  offset: number,
-  rounding: Rounding
-) {
-  const denominator = new BigNumber(1).shiftedBy(-offset);
+export function mulShr(x: BN, y: BN, offset: number, rounding: Rounding) {
+  const denominator = new BN(1).shln(offset);
   return mulDiv(x, y, denominator, rounding);
 }
 
-export function shlDiv(
-  x: BigNumber,
-  y: BigNumber,
-  offset: number,
-  rounding: Rounding
-) {
-  const scale = new BigNumber(1).shiftedBy(-offset);
+export function shlDiv(x: BN, y: BN, offset: number, rounding: Rounding) {
+  const scale = new BN(1).shln(-offset);
   return mulDiv(x, scale, y, rounding);
 }
 
-export function mulDiv(
-  x: BigNumber,
-  y: BigNumber,
-  denominator: BigNumber,
-  rounding: Rounding
-) {
-  const { div, mod } = new BN(x.toString())
-    .mul(new BN(y.toString()))
-    .divmod(new BN(denominator.toString()));
+export function mulDiv(x: BN, y: BN, denominator: BN, rounding: Rounding) {
+  const { div: resultat, mod: reste } = x.mul(y).divmod(denominator);
 
-  if (rounding == Rounding.Up && !mod.isZero()) {
-    return new BigNumber(div.add(new BN(1)).toString());
+  if (rounding == Rounding.Up && !reste.isZero()) {
+    return new BigNumber(resultat.add(new BN(1)).toString());
   }
-  return new BigNumber(div.toString());
+  return new BigNumber(resultat.toString());
 }
 
 export function getPriceOfBinByBinId(binStep: number, binId: number): string {
