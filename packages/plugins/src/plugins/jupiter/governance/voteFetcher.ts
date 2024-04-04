@@ -3,14 +3,15 @@ import {
   PortfolioAsset,
   PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
-import { Cache } from '../../Cache';
-import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { jupMint, platformId } from './constants';
-import { getClientSolana } from '../../utils/clients';
-import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
-import { getVotePda } from './helpers';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { escrowStruct } from './structs/vote';
+import { Cache } from '../../../Cache';
+import { Fetcher, FetcherExecutor } from '../../../Fetcher';
+import { getClientSolana } from '../../../utils/clients';
+import { getParsedAccountInfo } from '../../../utils/solana/getParsedAccountInfo';
+import { getVotePda } from '../helpers';
+import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
+import { escrowStruct } from '../launchpad/structs';
+import { jupMint } from '../launchpad/constants';
+import { jupGovernancePlatformId } from './constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -49,7 +50,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       label: 'Staked',
       name: 'Vote',
       networkId: NetworkId.solana,
-      platformId,
+      platformId: jupGovernancePlatformId,
       data: { assets: [asset] },
       value: asset.value,
     },
@@ -57,7 +58,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-vote`,
+  id: `${jupGovernancePlatformId}-vote`,
   networkId: NetworkId.solana,
   executor,
 };

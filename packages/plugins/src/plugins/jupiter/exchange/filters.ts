@@ -1,9 +1,7 @@
 import { GetProgramAccountsFilter } from '@solana/web3.js';
-import { dcaStruct } from './struct';
+import { dcaStruct } from './structs';
 
-export const jupiterLimitsFilter = (
-  owner: string
-): GetProgramAccountsFilter[] => [
+export const limitFilters = (owner: string): GetProgramAccountsFilter[] => [
   {
     memcmp: {
       offset: 0,
@@ -24,7 +22,7 @@ export const jupiterLimitsFilter = (
   },
 ];
 
-export const jupiterDCAFilter = (owner: string): GetProgramAccountsFilter[] => [
+export const DCAFilters = (owner: string): GetProgramAccountsFilter[] => [
   {
     memcmp: {
       offset: 8,
@@ -32,4 +30,16 @@ export const jupiterDCAFilter = (owner: string): GetProgramAccountsFilter[] => [
     },
   },
   { dataSize: dcaStruct.byteSize },
+];
+
+export const valueAverageFilters = (
+  owner: string
+): GetProgramAccountsFilter[] => [
+  {
+    memcmp: {
+      offset: 18,
+      bytes: owner,
+    },
+  },
+  { dataSize: 339 },
 ];

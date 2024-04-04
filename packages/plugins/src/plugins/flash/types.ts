@@ -1,4 +1,4 @@
-import { OracleType } from '../jupiter/structs/perpetuals';
+import { OracleType } from '../jupiter/exchange/structs';
 import { Custody, FeesMode } from './structs';
 
 export type MarketInfo = {

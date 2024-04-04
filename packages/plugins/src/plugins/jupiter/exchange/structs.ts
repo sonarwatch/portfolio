@@ -6,10 +6,159 @@ import {
   u8,
   uniformFixedSizeArray,
 } from '@metaplex-foundation/beet';
-import { PublicKey } from '@solana/web3.js';
-import BigNumber from 'bignumber.js';
 import { publicKey } from '@metaplex-foundation/beet-solana';
+import BigNumber from 'bignumber.js';
+import { PublicKey } from '@solana/web3.js';
 import { blob, i64, u128, u64 } from '../../../utils/solana';
+
+export type LimitOrder = {
+  buffer: Buffer;
+  maker: PublicKey;
+  inputMint: PublicKey;
+  outputMint: PublicKey;
+  waiting: boolean;
+  oriMakingAmount: BigNumber;
+  oriTakingAmount: BigNumber;
+  makingAmount: BigNumber;
+  takingAmount: BigNumber;
+  makerInputAccount: PublicKey;
+  makerOutputAccount: PublicKey;
+  reserve: PublicKey;
+  uid: BigNumber;
+  expiredAt: BigNumber;
+  referral: PublicKey;
+};
+
+export const limitOrderStruct = new BeetStruct<LimitOrder>(
+  [
+    ['buffer', blob(8)],
+    ['maker', publicKey],
+    ['inputMint', publicKey],
+    ['outputMint', publicKey],
+    ['waiting', bool],
+    ['oriMakingAmount', u64],
+    ['oriTakingAmount', u64],
+    ['makingAmount', u64],
+    ['takingAmount', u64],
+    ['makerInputAccount', publicKey],
+    ['makerOutputAccount', publicKey],
+    ['reserve', publicKey],
+    ['uid', u64],
+    ['expiredAt', i64],
+    ['referral', publicKey],
+  ],
+  (args) => args as LimitOrder
+);
+
+export type DCA = {
+  buffer: Buffer;
+  user: PublicKey;
+  inputMint: PublicKey;
+  outputMint: PublicKey;
+  idx: BigNumber;
+  nextCycleAt: BigNumber;
+  inDeposited: BigNumber;
+  inWithdrawn: BigNumber;
+  outWithdrawn: BigNumber;
+  inUsed: BigNumber;
+  outReceived: BigNumber;
+  inAmountPerCycle: BigNumber;
+  cycleFrequency: BigNumber;
+  nextCycleAmountLeft: BigNumber;
+  inAccount: PublicKey;
+  outAccount: PublicKey;
+  minOutAmount: BigNumber;
+  maxOutAmount: BigNumber;
+  keeperInBalanceBeforeBorrow: BigNumber;
+  dcaOutBalanceBeforeSwap: BigNumber;
+  createdAt: BigNumber;
+  bump: number;
+};
+
+export const dcaStruct = new BeetStruct<DCA>(
+  [
+    ['buffer', blob(8)],
+    ['user', publicKey],
+    ['inputMint', publicKey],
+    ['outputMint', publicKey],
+    ['idx', u64],
+    ['nextCycleAt', i64],
+    ['inDeposited', u64],
+    ['inWithdrawn', u64],
+    ['outWithdrawn', u64],
+    ['inUsed', u64],
+    ['outReceived', u64],
+    ['inAmountPerCycle', u64],
+    ['cycleFrequency', i64],
+    ['nextCycleAmountLeft', u64],
+    ['inAccount', publicKey],
+    ['outAccount', publicKey],
+    ['minOutAmount', u64],
+    ['maxOutAmount', u64],
+    ['keeperInBalanceBeforeBorrow', u64],
+    ['dcaOutBalanceBeforeSwap', u64],
+    ['createdAt', i64],
+    ['bump', u8],
+  ],
+  (args) => args as DCA
+);
+
+export type ValueAverage = {
+  buffer: Buffer;
+  isStale: boolean;
+  idx: BigNumber;
+  bump: number;
+  user: PublicKey;
+  inputMint: PublicKey;
+  outputMint: PublicKey;
+  incrementUsdcValue: BigNumber;
+  orderInterval: BigNumber;
+  inputVault: PublicKey;
+  outputVault: PublicKey;
+  autoWithdraw: boolean;
+  feeDataAccount: PublicKey;
+  referralFeeAccount: PublicKey;
+  createdAt: BigNumber;
+  inDeposited: BigNumber;
+  inLeft: BigNumber;
+  inUsed: BigNumber;
+  inWithdrawn: BigNumber;
+  outReceived: BigNumber;
+  outWithdrawn: BigNumber;
+  supposedUsdcValue: BigNumber;
+  nextOrderAt: BigNumber;
+  outBalanceBeforeSwap: BigNumber;
+};
+
+export const valueAverageStruct = new BeetStruct<ValueAverage>(
+  [
+    ['buffer', blob(8)],
+    ['isStale', bool],
+    ['idx', u64],
+    ['bump', u8],
+    ['user', publicKey],
+    ['inputMint', publicKey],
+    ['outputMint', publicKey],
+    ['incrementUsdcValue', u64],
+    ['orderInterval', i64],
+    ['inputVault', publicKey],
+    ['outputVault', publicKey],
+    ['autoWithdraw', bool],
+    ['feeDataAccount', publicKey],
+    ['referralFeeAccount', publicKey],
+    ['createdAt', i64],
+    ['inDeposited', u64],
+    ['inLeft', u64],
+    ['inUsed', u64],
+    ['inWithdrawn', u64],
+    ['outReceived', u64],
+    ['outWithdrawn', u64],
+    ['supposedUsdcValue', u64],
+    ['nextOrderAt', i64],
+    ['outBalanceBeforeSwap', u64],
+  ],
+  (args) => args as ValueAverage
+);
 
 export type Limit = {
   maxAumUsd: BigNumber;

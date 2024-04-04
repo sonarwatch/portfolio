@@ -9,17 +9,17 @@ import {
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
-import { Cache } from '../../Cache';
-import { Fetcher, FetcherExecutor } from '../../Fetcher';
+import { Cache } from '../../../Cache';
+import { Fetcher, FetcherExecutor } from '../../../Fetcher';
+import { getClientSolana } from '../../../utils/clients';
+import { getParsedProgramAccounts } from '../../../utils/solana';
+import { perpetualsPositionsFilter } from '../filters';
+import { CustodyInfo } from '../types';
+import { getMultipleAccountsInfoSafe } from '../../../utils/solana/getMultipleAccountsInfoSafe';
+import { getPythPricesDatasMap } from '../../../utils/solana/pyth/helpers';
+import { tokenListsDetailsPrefix } from '../../tokens/constants';
 import { custodiesKey, perpsProgramId, platformId } from './constants';
-import { getClientSolana } from '../../utils/clients';
-import { getParsedProgramAccounts } from '../../utils/solana';
-import { perpetualsPositionsFilter } from './filters';
-import { CustodyInfo } from './types';
-import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
-import { getPythPricesDatasMap } from '../../utils/solana/pyth/helpers';
-import { tokenListsDetailsPrefix } from '../tokens/constants';
-import { Side, positionStruct } from './structs/perpetuals';
+import { Side, positionStruct } from './structs';
 
 const usdFactor = new BigNumber(10 ** 6);
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {

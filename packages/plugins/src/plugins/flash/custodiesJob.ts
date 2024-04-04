@@ -7,8 +7,8 @@ import { marketsKey, flashPid, platformId } from './constants';
 import { Custody, custodyStruct, marketStruct } from './structs';
 import { marketsFilter } from './filters';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
-import { custodiesKey } from '../jupiter/constants';
 import { CustodyEnhanced } from './types';
+import { custodiesKey } from '../jupiter/exchange/constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();

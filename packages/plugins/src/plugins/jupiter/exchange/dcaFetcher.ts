@@ -6,15 +6,12 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
-import { platformId } from '../constants';
 import { getClientSolana } from '../../../utils/clients';
 import { getParsedProgramAccounts } from '../../../utils/solana';
-import { dcaStruct } from './struct';
-import { dcaProgramId } from './constants';
-import { jupiterDCAFilter } from './filters';
-import getTokenPricesMap from '../../../utils/misc/getTokensPricesMap';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import { jupiterPlatform } from '../../jupiter/constants';
+import { jupiterPlatform, platformId, dcaProgramId } from './constants';
+import { dcaStruct } from './structs';
+import { DCAFilters } from './filters';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -23,7 +20,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     client,
     dcaStruct,
     dcaProgramId,
-    jupiterDCAFilter(owner)
+    DCAFilters(owner)
   );
 
   if (accounts.length === 0) return [];
@@ -42,10 +39,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
   }
 
-  const tokenPriceById = await getTokenPricesMap(
+  const tokenPriceById = await cache.getTokenPricesAsMap(
     Array.from(amountByToken.keys()),
-    NetworkId.solana,
-    cache
+    NetworkId.solana
   );
 
   const assets: PortfolioAsset[] = [];
@@ -76,7 +72,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-jupiter-dca`,
+  id: `${platformId}-dca`,
   networkId: NetworkId.solana,
   executor,
 };

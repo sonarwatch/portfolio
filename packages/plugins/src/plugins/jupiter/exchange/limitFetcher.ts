@@ -2,19 +2,16 @@ import {
   NetworkId,
   PortfolioAsset,
   PortfolioElementMultiple,
-  TokenPrice,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
-import { platformId } from '../constants';
 import { getClientSolana } from '../../../utils/clients';
-import { limitOrderStruct } from './struct';
 import { getParsedProgramAccounts } from '../../../utils/solana';
-import { jupiterLimitsFilter } from './filters';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import { limitProgramId } from './constants';
-import { jupiterPlatform } from '../../jupiter/constants';
+import { platformId, limitProgramId } from './constants';
+import { limitOrderStruct } from './structs';
+import { limitFilters } from './filters';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -23,24 +20,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     client,
     limitOrderStruct,
     limitProgramId,
-    jupiterLimitsFilter(owner)
+    limitFilters(owner)
   );
   if (limitOrdersAccounts.length === 0) return [];
 
-  const tokensMints: Set<string> = new Set();
-  for (let i = 0; i < limitOrdersAccounts.length; i += 1) {
-    tokensMints.add(limitOrdersAccounts[i].inputMint.toString());
-  }
-  const tokenPriceResults = await cache.getTokenPrices(
-    Array.from(tokensMints),
-    NetworkId.solana
+  const mints: Set<string> = new Set();
+  limitOrdersAccounts.forEach((account) =>
+    mints.add(account.inputMint.toString())
   );
 
-  const tokenPriceById: Map<string, TokenPrice> = new Map();
-  tokenPriceResults.forEach((tP) => {
-    if (!tP) return;
-    tokenPriceById.set(tP.address, tP);
-  });
+  const tokenPriceById = await cache.getTokenPricesAsMap(
+    Array.from(mints),
+    NetworkId.solana
+  );
 
   const rawAmountByMint: Map<string, BigNumber> = new Map();
   for (let i = 0; i < limitOrdersAccounts.length; i += 1) {
@@ -76,10 +68,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const element: PortfolioElementMultiple = {
     type: 'multiple',
     networkId: NetworkId.solana,
-    platformId: jupiterPlatform.id,
+    platformId,
     value,
     label: 'Deposit',
-    name: 'Limit Orders',
+    name: `Limit Orders (${limitOrdersAccounts.length})`,
     data: { assets },
   };
 
@@ -87,7 +79,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-jupiter-limit`,
+  id: `${platformId}-limit`,
   networkId: NetworkId.solana,
   executor,
 };

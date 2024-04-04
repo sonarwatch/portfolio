@@ -39,3 +39,26 @@ export const escrowStruct = new BeetStruct<Escrow>(
   ],
   (args) => args as Escrow
 );
+
+export type ClaimStatus = {
+  buffer: Buffer;
+  claimant: PublicKey;
+  lockedAmount: BigNumber;
+  lockedAmountWithdrawn: BigNumber;
+  unlockedAmount: BigNumber;
+  closable: Buffer;
+  admin: PublicKey;
+};
+
+export const claimStatusStruct = new BeetStruct<ClaimStatus>(
+  [
+    ['buffer', blob(8)],
+    ['claimant', publicKey],
+    ['lockedAmount', u64],
+    ['lockedAmountWithdrawn', u64],
+    ['unlockedAmount', u64],
+    ['closable', blob(1)],
+    ['admin', publicKey],
+  ],
+  (args) => args as ClaimStatus
+);

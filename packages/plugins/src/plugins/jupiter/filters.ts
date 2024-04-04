@@ -21,15 +21,3 @@ export const escrowFilter = (owner: string): GetProgramAccountsFilter[] => [
   },
   { dataSize: 322 },
 ];
-
-export const valueAverageFilter = (
-  owner: string
-): GetProgramAccountsFilter[] => [
-  {
-    memcmp: {
-      offset: 18,
-      bytes: owner,
-    },
-  },
-  { dataSize: 339 },
-];

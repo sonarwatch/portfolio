@@ -5,15 +5,15 @@ import {
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
-import { Cache } from '../../Cache';
-import { Job, JobExecutor } from '../../Job';
-import { getClientSolana } from '../../utils/clients';
+import { Cache } from '../../../Cache';
+import { Job, JobExecutor } from '../../../Job';
+import { getClientSolana } from '../../../utils/clients';
 import {
   getParsedMultipleAccountsInfo,
   tokenAccountStruct,
-} from '../../utils/solana';
+} from '../../../utils/solana';
+import { custodyStruct, perpetualPoolStruct } from './structs';
 import { jlpPool, jlpToken, platformId } from './constants';
-import { custodyStruct, perpetualPoolStruct } from './structs/perpetuals';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();

@@ -6,7 +6,7 @@ import {
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { platformId } from './constants';
+import { platformId } from './exchange/constants';
 import { getJupiterPrices } from './helpers';
 import { walletTokensPlatform } from '../tokens/constants';
 import { getMultipleDecimalsAsMap } from '../../utils/solana/getMultipleDecimalsAsMap';

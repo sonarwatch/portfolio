@@ -1,8 +1,8 @@
 import { PublicKey } from '@solana/web3.js';
 import axios, { AxiosResponse } from 'axios';
 import { PortfolioAsset, getUsdValueSum } from '@sonarwatch/portfolio-core';
-import { lockerPubkey, voteProgramId } from './constants';
 import { PriceResponse } from './types';
+import { lockerPubkey, voteProgramId } from './launchpad/constants';
 
 export function deriveClaimStatus(
   claimant: PublicKey,
