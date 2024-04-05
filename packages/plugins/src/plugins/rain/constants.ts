@@ -6,9 +6,9 @@ export const platform: Platform = {
   id: platformId,
   name: 'Rain',
   image: 'https://sonar.watch/img/platforms/rain.png',
-  // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
-  // website: 'https://myplatform.com',
-  // twitter: 'https://twitter.com/myplatform',
+  defiLlamaId: 'rain.fi', // from https://defillama.com/docs/api
+  website: 'https://rain.fi/',
+  twitter: 'https://twitter.com/RainFi_',
 };
 
 export const programId = new PublicKey(
@@ -16,3 +16,4 @@ export const programId = new PublicKey(
 );
 
 export const rainApi = 'https://api-v2.rain.fi';
+export const collectionsKey = 'collections';

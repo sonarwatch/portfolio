@@ -80,7 +80,7 @@ export const poolLiquidationStruct = new BeetStruct<PoolLiquidation>(
 );
 
 export type PoolCollection = {
-  collection: BigNumber;
+  collection: number;
   collectionLtv: number;
   exposure: number;
   amountUsed: BigNumber;

@@ -76,7 +76,7 @@ export type Loan = {
   interest: BigNumber;
   amount: BigNumber;
   duration: BigNumber;
-  collection: BigNumber;
+  collection: number;
   liquidation: number;
   marketplace: Marketplace;
   sale: Sale;
@@ -126,4 +126,37 @@ export const loanStruct = new BeetStruct<Loan>(
     ['padding2', u8],
   ],
   (args) => args as Loan
+);
+
+export type Asset = {
+  buffer: Buffer;
+  discriminator: BigNumber;
+  borrower: PublicKey;
+  nft: PublicKey;
+  currencyIn: PublicKey;
+  currencyOut: PublicKey;
+  pythInFeed: PublicKey;
+  pythOutFeed: PublicKey;
+  amount: BigNumber;
+  decimals: number;
+  createdAt: BigNumber;
+  padding: BigNumber[];
+};
+
+export const assetStruct = new BeetStruct<Asset>(
+  [
+    ['buffer', blob(8)],
+    ['discriminator', u64],
+    ['borrower', publicKey],
+    ['nft', publicKey],
+    ['currencyIn', publicKey],
+    ['currencyOut', publicKey],
+    ['pythInFeed', publicKey],
+    ['pythOutFeed', publicKey],
+    ['amount', u64],
+    ['decimals', u8],
+    ['createdAt', u64],
+    ['padding', uniformFixedSizeArray(u64, 32)],
+  ],
+  (args) => args as Asset
 );

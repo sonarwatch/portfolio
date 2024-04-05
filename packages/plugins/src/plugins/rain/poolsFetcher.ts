@@ -13,7 +13,6 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { poolStruct } from './structs/pool';
-import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getPoolPda } from './helpers';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
@@ -27,10 +26,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const poolAccount = await getParsedAccountInfo(client, poolStruct, pda);
 
-  const tokenPriceById = await getTokenPricesMap(
+  const tokenPriceById = await cache.getTokenPricesAsMap(
     [USDC_MINT.toString(), WRAPPED_SOL_MINT.toString()],
-    NetworkId.solana,
-    cache
+    NetworkId.solana
   );
   if (!poolAccount || poolAccount.totalAmount.isZero()) return [];
 
@@ -54,7 +52,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (suppliedAssets.length === 0 && borrowedAssets.length === 0) return [];
 
-  const { borrowedValue, collateralRatio, suppliedValue, value } =
+  const { borrowedValue, healthRatio, rewardValue, suppliedValue, value } =
     getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
 
   return [
@@ -71,7 +69,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         suppliedAssets,
         suppliedValue,
         suppliedYields,
-        collateralRatio,
+        collateralRatio: null,
+        healthRatio,
+        rewardValue,
         rewardAssets,
         value,
       },

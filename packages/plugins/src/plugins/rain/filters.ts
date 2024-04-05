@@ -1,5 +1,5 @@
 import { GetProgramAccountsFilter } from '@solana/web3.js';
-import { loanStruct } from './structs/loan';
+import { assetStruct } from './structs/loan';
 
 export const poolFilter = (owner: string): GetProgramAccountsFilter[] => [
   {
@@ -36,5 +36,17 @@ export const loanLenderFilter = (owner: string): GetProgramAccountsFilter[] => [
   },
   {
     dataSize: 1080,
+  },
+];
+
+export const assetFilters = (owner: string): GetProgramAccountsFilter[] => [
+  {
+    memcmp: {
+      offset: 16,
+      bytes: owner,
+    },
+  },
+  {
+    dataSize: assetStruct.byteSize,
   },
 ];

@@ -6,82 +6,112 @@ import {
   Yield,
   getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
-import { USDC_MINT } from '@bonfida/spl-name-service';
-import { WRAPPED_SOL_MINT } from '@metaplex-foundation/js';
+import { PublicKey } from '@solana/web3.js';
+import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, programId } from './constants';
+import { platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
-import { getParsedProgramAccounts } from '../../utils/solana';
-import { LoanStatus, loanStruct } from './structs/loan';
-import { loanBorrowerFilter } from './filters';
-import { Collection } from './types';
-import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
+import {
+  ParsedAccount,
+  getParsedMultipleAccountsInfo,
+} from '../../utils/solana';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { Pool, poolStruct } from './structs/pool';
+import { daysBetweenDates, getLoans } from './helpers';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const loans = await getParsedProgramAccounts(
-    client,
-    loanStruct,
-    programId,
-    loanBorrowerFilter(owner)
-  );
+  // const loans = await getParsedProgramAccounts(
+  //   client,
+  //   loanStruct,
+  //   programId,
+  //   loanBorrowerFilter(owner)
+  // );
+
+  // if (loans.length === 0) return [];
+
+  const loans = await getLoans(owner);
   if (loans.length === 0) return [];
 
-  const tokenPriceById = await getTokenPricesMap(
-    [USDC_MINT.toString(), WRAPPED_SOL_MINT.toString()],
-    NetworkId.solana,
-    cache
+  const mints: Set<string> = new Set();
+  const pools: Set<string> = new Set();
+  loans.forEach((loan) => {
+    pools.add(loan.pool.toString());
+    mints.add(loan.currency.toString());
+    mints.add(loan.mint.toString());
+  });
+
+  const tokenPriceById = await cache.getTokenPricesAsMap(
+    Array.from(mints),
+    NetworkId.solana
   );
 
-  const usdcTokenPrice = tokenPriceById.get(USDC_MINT.toString());
-
-  const collections = await cache.getItems<Collection>(
-    loans.map((loan) => loan.collection.toString()),
-    { prefix: platformId, networkId: NetworkId.solana }
+  const poolsAccounts = await getParsedMultipleAccountsInfo(
+    client,
+    poolStruct,
+    Array.from(pools).map((pool) => new PublicKey(pool))
   );
-  const collectionById: Map<string, Collection> = new Map();
-  collections.forEach((collection) =>
-    collection
-      ? collectionById.set(collection.collectionId.toString(), collection)
-      : undefined
+  const poolById: Map<string, ParsedAccount<Pool>> = new Map();
+  poolsAccounts.forEach((account) =>
+    account ? poolById.set(account.pubkey.toString(), account) : undefined
   );
   const elements: PortfolioElement[] = [];
 
   for (const loan of loans) {
-    console.log('constexecutor:FetcherExecutor= ~ loan:', loan);
-    if (loan.amount.isZero()) continue;
-    if (loan.status !== LoanStatus.Ongoing) continue;
+    if (new BigNumber(loan.amount).isZero()) continue;
+    if (loan.status !== 'Ongoing') continue;
+    if (!loan.isDefi) continue;
 
-    const collection = collectionById.get(loan.collection.toString());
-    if (!collection) continue;
+    const collateraMint = loan.mint.toString();
+    const borrowMint = loan.currency.toString();
 
-    console.log('constexecutor:FetcherExecutor= ~ collection:', collection);
+    const collatTokenPrice = tokenPriceById.get(collateraMint);
+    const borrowTokenPrice = tokenPriceById.get(borrowMint);
+    if (!collatTokenPrice || !borrowTokenPrice) continue;
 
     const borrowedAssets: PortfolioAsset[] = [];
     const borrowedYields: Yield[][] = [];
     const suppliedAssets: PortfolioAsset[] = [];
     const suppliedYields: Yield[][] = [];
     const rewardAssets: PortfolioAsset[] = [];
-    if (loan.isDefi) {
-      const amountBorrowed = loan.amount;
+
+    const amountBorrowed = new BigNumber(loan.amount).dividedBy(
+      10 ** borrowTokenPrice.decimals
+    );
+    const daysRemaining = daysBetweenDates(
+      new Date(),
+      new Date(loan.expiredAt)
+    );
+    if (!amountBorrowed.isZero())
       borrowedAssets.push(
         tokenPriceToAssetToken(
-          USDC_MINT.toString(),
-          amountBorrowed.dividedBy(10 ** 6).toNumber(),
+          borrowTokenPrice.address,
+          amountBorrowed.toNumber(),
           NetworkId.solana,
-          usdcTokenPrice
+          borrowTokenPrice,
+          undefined,
+          { tags: [`Refund in ${daysRemaining} days`] }
         )
       );
-    } else {
-      console.log('Its not DeFi');
-    }
+
+    const amountDeposited = new BigNumber(loan.collateralAmount).dividedBy(
+      10 ** collatTokenPrice.decimals
+    );
+    if (!amountDeposited.isZero())
+      suppliedAssets.push(
+        tokenPriceToAssetToken(
+          collatTokenPrice.address,
+          amountDeposited.toNumber(),
+          NetworkId.solana,
+          collatTokenPrice
+        )
+      );
 
     if (suppliedAssets.length === 0 && borrowedAssets.length === 0) continue;
 
-    const { borrowedValue, collateralRatio, suppliedValue, value } =
+    const { borrowedValue, healthRatio, suppliedValue, value, rewardValue } =
       getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
 
     elements.push({
@@ -97,8 +127,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         suppliedAssets,
         suppliedValue,
         suppliedYields,
-        collateralRatio,
         rewardAssets,
+        healthRatio,
+        collateralRatio: null,
+        rewardValue,
         value,
       },
     });
