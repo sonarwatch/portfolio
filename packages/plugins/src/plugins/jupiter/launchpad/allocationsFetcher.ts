@@ -28,9 +28,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const claimsProof: (AxiosResponse<ClaimProofResponse> | null)[] =
     await Promise.all(
-      airdropsInfo.map((info) =>
-        axios.get(`${merkleApi}/${info.mint}/${owner}`).catch(() => null)
-      )
+      airdropsInfo.map((info) => {
+        if (info.claimUntilTs < Date.now())
+          return axios
+            .get(`${merkleApi}/${info.mint}/${owner}`)
+            .catch(() => null);
+        return null;
+      })
     );
 
   const eligibleAirdrops: AirdropInfo[] = [];
@@ -69,8 +73,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (claimStatus) continue;
 
     const proof = proofs[j];
-    const { claimUntilTs, decimals, mint } = eligibleAirdrops[j];
-    if (claimUntilTs < Date.now()) continue;
+    const { decimals, mint } = eligibleAirdrops[j];
 
     const tokenPrice = tokenPriceById.get(mint);
 
