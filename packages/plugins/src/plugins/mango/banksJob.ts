@@ -6,7 +6,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { Job, JobExecutor } from '../../Job';
 import { Cache } from '../../Cache';
-import { MangoProgram, banksPrefix, platformId } from './constants';
+import { mangoV4Pid, banksPrefix, platformId } from './constants';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { bankStruct } from './struct';
 import { banksFilter } from './filters';
@@ -19,7 +19,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   const banksAccount = await getParsedProgramAccounts(
     client,
     bankStruct,
-    MangoProgram,
+    mangoV4Pid,
     banksFilter
   );
   if (!banksAccount) return;
@@ -80,5 +80,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-banks`,
   executor,
+  label: 'normal',
 };
 export default job;

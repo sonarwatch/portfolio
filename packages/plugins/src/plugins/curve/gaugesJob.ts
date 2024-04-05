@@ -29,5 +29,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-gauges`,
   executor,
+  label: 'normal',
 };
 export default job;

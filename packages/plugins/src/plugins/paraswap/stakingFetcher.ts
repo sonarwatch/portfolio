@@ -62,14 +62,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     res.status === 'failure' ? BigInt(0) : res.result
   );
   const unlockingBalances = [];
+  const unlockingTs = [];
   const statuses = [];
   for (let n = 0; n < unlockingBalancesRes.length; n++) {
     const res = unlockingBalancesRes[n];
     if (res.status === 'success') {
       unlockingBalances.push(res.result[0]);
+      unlockingTs.push(res.result[1]);
       statuses.push(res.result[2]);
     } else {
-      unlockingBalances.push(BigInt(0));
       statuses.push(undefined);
     }
   }
@@ -89,27 +90,27 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const unlockingAssets: PortfolioAssetToken[] = [];
 
   for (let j = 0; j < unlockingBalances.length; j++) {
-    const unlockingAmount = new BigNumber(
-      unlockingBalances[j].toString()
-    ).dividedBy(10 ** pspTokenPrice.decimals);
     const status = statuses[j];
-
     if (
       status &&
       status === WithdrawStatus.UNLOCKING &&
-      unlockingAmount.isGreaterThan(0)
+      unlockingBalances[j] > BigInt(0)
     ) {
-      // TODO : Unlocking date can be found here, not supported by our Data Structure for now.
-      // const unlockEpoch = Number(unlockingAmountRes.result?.[1]);
-      // const dateToDisplay = new Date(unlockEpoch * 1000).toLocaleDateString();
-      unlockingAssets.push(
-        tokenPriceToAssetToken(
+      const unlockingAmount = new BigNumber(
+        unlockingBalances[j].toString()
+      ).dividedBy(10 ** pspTokenPrice.decimals);
+
+      unlockingAssets.push({
+        ...tokenPriceToAssetToken(
           pspTokenPrice.address,
           unlockingAmount.toNumber(),
           NetworkId.ethereum,
           pspTokenPrice
-        )
-      );
+        ),
+        attributes: {
+          lockedUntil: Number(unlockingTs[j]),
+        },
+      });
     }
   }
 

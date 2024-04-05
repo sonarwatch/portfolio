@@ -10,15 +10,12 @@ export type ValidatorInfo = {
 };
 
 export type ValidatorSet = {
-  type: string;
-  data: {
-    active_validators: ValidatorInfo[];
-    consensus_scheme: string;
-    pending_active: string[];
-    pending_inactive: string[];
-    total_joining_power: string;
-    total_voting_power: string;
-  };
+  active_validators: ValidatorInfo[];
+  consensus_scheme: string;
+  pending_active: string[];
+  pending_inactive: string[];
+  total_joining_power: string;
+  total_voting_power: string;
 };
 
 export type DelegationResponse = {

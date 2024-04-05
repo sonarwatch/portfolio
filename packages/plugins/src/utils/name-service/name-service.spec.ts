@@ -1,3 +1,4 @@
+import { solanaNativeAddress } from '@sonarwatch/portfolio-core';
 import { nameService as ensNameService } from './services/ens';
 import { nameService as aptosNameService } from './services/aptos';
 import { nameService as allDomainsNameService } from './services/allDomains';
@@ -59,9 +60,7 @@ describe('name-service', () => {
     );
     expect(names.length).toBeGreaterThan(1);
 
-    const names2 = await aptosNameService.getNames(
-      '11111111111111111111111111111111'
-    );
+    const names2 = await aptosNameService.getNames(solanaNativeAddress);
     expect(names2.length).toBe(0);
   });
 });

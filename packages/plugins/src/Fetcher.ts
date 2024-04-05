@@ -7,7 +7,9 @@ import {
   PortfolioElement,
   formatAddress,
   formatAddressByNetworkId,
+  getUsdValueSum,
   networks,
+  sortPortfolioElement,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from './Cache';
 import promiseTimeout from './utils/misc/promiseTimeout';
@@ -71,6 +73,7 @@ export async function runFetchers(
     owner: fOwner,
     addressSystem,
     fetcherReports: fReports,
+    value: getUsdValueSum(elements.map((e) => e.value)),
     elements,
   };
 }
@@ -102,7 +105,7 @@ export async function runFetcher(
       fetcherId: fetcher.id,
       networdkId: fetcher.networkId,
       duration: Date.now() - startDate,
-      elements,
+      elements: elements.map((e) => sortPortfolioElement(e)),
     })
   );
   return promiseTimeout(

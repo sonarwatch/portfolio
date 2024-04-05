@@ -22,5 +22,6 @@ export default function getVaultsJob(
   return {
     executor,
     id: `${platformId}-${networkId}-vaults`,
+    label: 'normal',
   };
 }

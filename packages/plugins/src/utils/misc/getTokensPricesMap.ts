@@ -1,17 +1,30 @@
 import { NetworkIdType, TokenPrice } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
+import runInBatch from './runInBatch';
 
+/**
+ * @deprecated
+ * This function has been deprecated. Use the cache.getTokenPricesAsMap() instead.
+ */
 export default async function getTokenPricesMap(
   tokensAddresses: string[],
   networkId: NetworkIdType,
   cache: Cache
 ): Promise<Map<string, TokenPrice>> {
-  const mints: Set<string> = new Set();
-  tokensAddresses.forEach((mint) => mints.add(mint));
-  const tokensPrices = await cache.getTokenPrices(Array.from(mints), networkId);
+  const tokensGroups = [];
+  for (let i = 0; i < tokensAddresses.length; i += 10) {
+    tokensGroups.push(tokensAddresses.slice(i, i + 10));
+  }
   const tokenPriceById: Map<string, TokenPrice> = new Map();
-  tokensPrices.forEach((tP) =>
-    tP ? tokenPriceById.set(tP.address, tP) : undefined
+  const res = await runInBatch(
+    tokensGroups.map((group) => () => cache.getTokenPrices(group, networkId))
   );
+  res.forEach((r) => {
+    if (r.status === 'rejected') return;
+    if (!r.value) return;
+    r.value.forEach((tokenPrice) => {
+      if (tokenPrice) tokenPriceById.set(tokenPrice.address, tokenPrice);
+    });
+  });
   return tokenPriceById;
 }

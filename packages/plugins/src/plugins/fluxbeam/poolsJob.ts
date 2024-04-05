@@ -14,8 +14,8 @@ import {
   tokenAccountStruct,
 } from '../../utils/solana';
 import { poolStruct } from './structs';
-import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
-import getLpUnderlyingTokenSource from '../../utils/misc/getLpUnderlyingTokenSource';
+import getLpTokenSourceRawOld from '../../utils/misc/getLpTokenSourceRawOld';
+import getLpUnderlyingTokenSourceOld from '../../utils/misc/getLpUnderlyingTokenSourceOld';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
@@ -97,21 +97,22 @@ const executor: JobExecutor = async (cache: Cache) => {
     const tokenPriceA = tokenPrices.get(pool.tokenAMint.toString());
     const tokenPriceB = tokenPrices.get(pool.tokenBMint.toString());
 
-    const underlyingsSource = getLpUnderlyingTokenSource(
-      platformId,
-      platformId,
+    const underlyingsSource = getLpUnderlyingTokenSourceOld(
+      pool.poolMint.toString(),
       NetworkId.solana,
       {
         address: pool.tokenAMint.toString(),
         decimals: mintAccountA.decimals,
         reserveAmountRaw: tokenAccountA.amount,
         tokenPrice: tokenPriceA,
+        weight: 0.5,
       },
       {
         address: pool.tokenBMint.toString(),
         decimals: mintAccountB.decimals,
         reserveAmountRaw: tokenAccountB.amount,
         tokenPrice: tokenPriceB,
+        weight: 0.5,
       }
     );
     if (underlyingsSource) {
@@ -119,11 +120,10 @@ const executor: JobExecutor = async (cache: Cache) => {
     }
 
     if (!tokenPriceA || !tokenPriceB) continue;
-    const lpSource = getLpTokenSourceRaw(
+    const lpSource = getLpTokenSourceRawOld(
       NetworkId.solana,
       platformId,
       platformId,
-      'Pools',
       {
         address: pool.poolMint.toString(),
         decimals: poolMint.decimals,
@@ -142,7 +142,8 @@ const executor: JobExecutor = async (cache: Cache) => {
           price: tokenPriceB.price,
           reserveAmountRaw: tokenAccountB.amount,
         },
-      ]
+      ],
+      'Pools'
     );
     await cache.setTokenPriceSource(lpSource);
   }
@@ -150,5 +151,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-pools`,
   executor,
+  label: 'normal',
 };
 export default job;

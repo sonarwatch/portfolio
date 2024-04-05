@@ -12,7 +12,7 @@ import {
 } from '../../../utils/aptos';
 import { platformId } from '../constants';
 import { TokenPairMetadataData } from './types';
-import getLpTokenSourceRaw from '../../../utils/misc/getLpTokenSourceRaw';
+import getLpTokenSourceRawOld from '../../../utils/misc/getLpTokenSourceRawOld';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientAptos();
@@ -57,11 +57,10 @@ const executor: JobExecutor = async (cache: Cache) => {
     );
     if (!tokenPriceX || !tokenPriceY) continue;
 
-    const source = getLpTokenSourceRaw(
+    const source = getLpTokenSourceRawOld(
       NetworkId.aptos,
       platformId,
       platformId,
-      'pools',
       {
         address: lpType,
         decimals: lpDecimals,
@@ -80,7 +79,8 @@ const executor: JobExecutor = async (cache: Cache) => {
           price: tokenPriceY.price,
           reserveAmountRaw: new BigNumber(tokenPairData.balance_y.value),
         },
-      ]
+      ],
+      undefined
     );
     await cache.setTokenPriceSource(source);
   }
@@ -89,5 +89,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-aptos-pools`,
   executor,
+  label: 'normal',
 };
 export default job;

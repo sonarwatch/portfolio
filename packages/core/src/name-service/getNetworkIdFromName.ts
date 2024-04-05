@@ -12,9 +12,7 @@ export function getAddressSystemFromName(
   return null;
 }
 
-export function getAddressSystemFromNameOrFail(
-  name: string
-): AddressSystemType {
+export function assertAddressSystemFromName(name: string): AddressSystemType {
   const addressSystem = getAddressSystemFromName(name);
   if (!addressSystem) throw new NameIsNotValidError(name);
   return addressSystem;

@@ -5,15 +5,14 @@ import {
   PortfolioElementLiquidity,
   PortfolioElementMultiple,
   PortfolioElementType,
+  PortfolioLiquidity,
 } from '../Portfolio';
-import { sortAssets } from './sortAssets';
+import { sortAssetsWithYields, sortMultipleAssets } from './sortAssets';
 
 export function sortPortfolioElement(
   element: PortfolioElement
 ): PortfolioElement {
   switch (element.type) {
-    case PortfolioElementType.single:
-      return element;
     case PortfolioElementType.multiple:
       return sortElementMultiple(element);
     case PortfolioElementType.borrowlend:
@@ -29,23 +28,54 @@ export function sortElementMultiple(
   element: PortfolioElementMultiple
 ): PortfolioElementMultiple {
   const sortedElement = element;
-  sortedElement.data.assets = sortAssets(sortedElement.data.assets);
+  sortedElement.data.assets = sortMultipleAssets(sortedElement.data.assets);
   return sortedElement;
 }
 
 export function sortElementBorrowLend(
   element: PortfolioElementBorrowLend
 ): PortfolioElementBorrowLend {
-  const sortedElement = element;
-  return sortedElement;
+  const sE = element;
+
+  // Borrows
+  const sortedBorrowedAssetsAndYields = sortAssetsWithYields(
+    sE.data.borrowedAssets,
+    sE.data.borrowedYields
+  );
+  sE.data.borrowedAssets = sortedBorrowedAssetsAndYields.sortedAssets;
+  sE.data.borrowedYields = sortedBorrowedAssetsAndYields.sortedYields;
+
+  // Supplies
+  const sortedSuppliedAssetsAndYields = sortAssetsWithYields(
+    sE.data.suppliedAssets,
+    sE.data.suppliedYields
+  );
+  sE.data.suppliedAssets = sortedSuppliedAssetsAndYields.sortedAssets;
+  sE.data.suppliedYields = sortedSuppliedAssetsAndYields.sortedYields;
+
+  // Rewards
+  sE.data.rewardAssets = sortMultipleAssets(sE.data.rewardAssets);
+  return sE;
 }
 
 export function sortElementLiquidity(
   element: PortfolioElementLiquidity
 ): PortfolioElementLiquidity {
   const sortedElement = element;
+  sortedElement.data.liquidities = sortedElement.data.liquidities.map((l) =>
+    sortPortfolioLiquidity(l)
+  );
   sortedElement.data.liquidities.sort((a, b) =>
     compareUsdValue(a.value, b.value)
   );
   return sortedElement;
+}
+
+export function sortPortfolioLiquidity(
+  portfolioLiquidity: PortfolioLiquidity
+): PortfolioLiquidity {
+  const sLiquidity = portfolioLiquidity;
+  sLiquidity.assets = sortMultipleAssets(sLiquidity.assets);
+  sLiquidity.rewardAssets = sortMultipleAssets(sLiquidity.rewardAssets);
+  return sLiquidity;
 }

@@ -1,8 +1,6 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from '../../Fetcher';
 import { Job } from '../../Job';
-import jupiterFetcher from './jupiter/limitFetcher';
-import { jupiterPlatform } from './jupiter/constants';
 import { openbookPlatform, serumPlatform } from './clobs-solana/constants';
 // import { NetworkId } from '@sonarwatch/portfolio-core';
 // import openbookFetcher from './clobs-solana/openbookFetcher';
@@ -12,11 +10,7 @@ import { openbookPlatform, serumPlatform } from './clobs-solana/constants';
 // import getSerumFetcherExecutor from './clobs-solana/serumFetcherExecutorGenerator';
 // import { serumPlatform } from '../../platforms';
 
-export const platforms: Platform[] = [
-  jupiterPlatform,
-  openbookPlatform,
-  serumPlatform,
-];
+export const platforms: Platform[] = [openbookPlatform, serumPlatform];
 export const jobs: Job[] = [
   // {
   //   id: `${platformId}-markets-openbookV1`,
@@ -36,7 +30,6 @@ export const jobs: Job[] = [
   // },
 ];
 export const fetchers: Fetcher[] = [
-  jupiterFetcher,
   // openbookFetcher,
   // {
   //   id: `${platformId}-${serumPlatform.id}V3`,

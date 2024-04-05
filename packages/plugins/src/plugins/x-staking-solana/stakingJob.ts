@@ -1,0 +1,67 @@
+import { PublicKey } from '@solana/web3.js';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { Cache } from '../../Cache';
+import { Job, JobExecutor } from '../../Job';
+import { getClientSolana } from '../../utils/clients';
+import {
+  getParsedMultipleAccountsInfo,
+  mintAccountStruct,
+  tokenAccountStruct,
+} from '../../utils/solana';
+import { xStakingConfigs } from './constants';
+import { walletTokensPlatform } from '../tokens/constants';
+
+const executor: JobExecutor = async (cache: Cache) => {
+  const client = getClientSolana();
+
+  const vaultsAccounts = await getParsedMultipleAccountsInfo(
+    client,
+    tokenAccountStruct,
+    xStakingConfigs.map((conf) => new PublicKey(conf.vault))
+  );
+
+  const tokensInfos = await getParsedMultipleAccountsInfo(
+    client,
+    mintAccountStruct,
+    xStakingConfigs.map((conf) => new PublicKey(conf.xMint))
+  );
+
+  const tokensPricesMap = await cache.getTokenPricesAsMap(
+    xStakingConfigs.map((conf) => conf.mint),
+    NetworkId.solana
+  );
+
+  for (let i = 0; i < xStakingConfigs.length; i++) {
+    const config = xStakingConfigs[i];
+    const tokenPrice = tokensPricesMap.get(config.mint);
+    const [tokenInfo, vaultAccount] = [tokensInfos[i], vaultsAccounts[i]];
+
+    if (!tokenInfo || !vaultAccount || !tokenPrice) continue;
+
+    const xSupply = tokenInfo.supply.dividedBy(10 ** tokenInfo.decimals);
+
+    const vaultTokenAmount = vaultAccount.amount.dividedBy(
+      10 ** config.decimals
+    );
+
+    const xPrice = vaultTokenAmount.dividedBy(xSupply).times(tokenPrice.price);
+
+    await cache.setTokenPriceSource({
+      address: config.xMint,
+      decimals: config.xDecimals,
+      id: config.vault,
+      networkId: NetworkId.solana,
+      platformId: walletTokensPlatform.id,
+      price: xPrice.toNumber(),
+      timestamp: Date.now(),
+      weight: 1,
+    });
+  }
+};
+
+const job: Job = {
+  id: `x-staking-solana`,
+  executor,
+  label: 'normal',
+};
+export default job;

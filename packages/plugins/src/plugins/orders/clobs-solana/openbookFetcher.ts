@@ -8,7 +8,7 @@ import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
-import { pluginId } from '../constants';
+import { platformId } from '../constants';
 import { getClientSolana } from '../../../utils/clients';
 import { getParsedProgramAccounts } from '../../../utils/solana';
 import { openOrdersV2Struct } from '../../raydium/structs/openOrders';
@@ -111,7 +111,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${pluginId}-${openbookPlatform.id}`,
+  id: `${platformId}-${openbookPlatform.id}`,
   networkId: NetworkId.solana,
   executor,
 };

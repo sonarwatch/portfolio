@@ -44,6 +44,7 @@ import {
 import {
   platforms as meteoraPlatforms,
   jobs as meteoraJobs,
+  fetchers as meteoraFetchers,
 } from './plugins/meteora';
 import {
   platforms as cetusPlatforms,
@@ -195,7 +196,7 @@ import {
   platforms as realmsPlatforms,
   jobs as realmsJobs,
   fetchers as realmsFetchers,
-} from './plugins/realms';
+} from './plugins/daos';
 import {
   platforms as maplePlatforms,
   jobs as mapleJobs,
@@ -212,6 +213,7 @@ import {
   fetchers as fluxbeamFetchers,
 } from './plugins/fluxbeam';
 import {
+  platforms as jupiterPlatforms,
   jobs as jupiterJobs,
   fetchers as jupiterFetchers,
 } from './plugins/jupiter';
@@ -255,18 +257,159 @@ import {
   jobs as rainJobs,
   fetchers as rainFetchers,
 } from './plugins/rain';
+import {
+  platforms as lifinityPlatforms,
+  jobs as lifinityJobs,
+  fetchers as lifinityFetchers,
+} from './plugins/lifinity';
+import {
+  platforms as portPlatforms,
+  jobs as portJobs,
+  fetchers as portFetchers,
+} from './plugins/port';
+import {
+  platforms as instadappPlatforms,
+  jobs as instadappJobs,
+  fetchers as instadappFetchers,
+} from './plugins/instadapp';
+import {
+  platforms as streamflowPlatforms,
+  jobs as streamflowJobs,
+  fetchers as streamflowFetchers,
+} from './plugins/streamflow';
+import {
+  platforms as benqiPlatforms,
+  jobs as benqiJobs,
+  fetchers as benqiFetchers,
+} from './plugins/benqi';
+import {
+  platforms as parclPlatforms,
+  jobs as parclJobs,
+  fetchers as parclFetchers,
+} from './plugins/parcl';
+import {
+  platforms as pythPlatforms,
+  jobs as pythJobs,
+  fetchers as pythFetchers,
+} from './plugins/pyth';
+import {
+  platforms as circuitPlatforms,
+  jobs as circuitJobs,
+  fetchers as circuitFetchers,
+} from './plugins/circuit';
+import {
+  platforms as ariesPlatforms,
+  jobs as ariesJobs,
+  fetchers as ariesFetchers,
+} from './plugins/aries';
+import {
+  platforms as flashPlatforms,
+  jobs as flashJobs,
+  fetchers as flashFetchers,
+} from './plugins/flash';
+import {
+  platforms as bonkrewardsPlatforms,
+  jobs as bonkrewardsJobs,
+  fetchers as bonkrewardsFetchers,
+} from './plugins/bonkrewards';
+import {
+  platforms as accessprotocolPlatforms,
+  jobs as accessprotocolJobs,
+  fetchers as accessprotocolFetchers,
+} from './plugins/accessprotocol';
+import {
+  platforms as aptinPlatforms,
+  jobs as aptinJobs,
+  fetchers as aptinFetchers,
+} from './plugins/aptin';
+import {
+  platforms as bsktPlatforms,
+  jobs as bsktJobs,
+  fetchers as bsktFetchers,
+} from './plugins/bskt';
+import {
+  platforms as genesysgoPlatforms,
+  jobs as genesysgoJobs,
+  fetchers as genesysgoFetchers,
+} from './plugins/genesysgo';
+import {
+  platforms as auroryPlatforms,
+  jobs as auroryJobs,
+  fetchers as auroryFetchers,
+} from './plugins/aurory';
+import {
+  platforms as xStakingSolanaPlatforms,
+  jobs as xStakingSolanaJobs,
+  fetchers as xStakingSolanaFetchers,
+} from './plugins/x-staking-solana';
+import {
+  platforms as splStakingPlatforms,
+  jobs as splStakingJobs,
+  fetchers as splStakingFetchers,
+} from './plugins/armada-staking';
+import {
+  platforms as abexPlatforms,
+  jobs as abexJobs,
+  fetchers as abexFetchers,
+} from './plugins/abex';
+import {
+  platforms as kaiPlatforms,
+  jobs as kaiJobs,
+  fetchers as kaiFetchers,
+} from './plugins/kai';
+import {
+  platforms as suilendPlatforms,
+  jobs as suilendJobs,
+  fetchers as suilendFetchers,
+} from './plugins/suilend';
+import {
+  platforms as symmetryPlatforms,
+  jobs as symmetryJobs,
+  fetchers as symmetryFetchers,
+} from './plugins/symmetry';
+import {
+  platforms as staratlasPlatforms,
+  jobs as staratlasJobs,
+  fetchers as staratlasFetchers,
+} from './plugins/staratlas';
+import {
+  platforms as tulipPlatforms,
+  jobs as tulipJobs,
+  fetchers as tulipFetchers,
+} from './plugins/tulip';
+import {
+  platforms as phoenixPlatforms,
+  jobs as phoenixJobs,
+  fetchers as phoenixFetchers,
+} from './plugins/phoenix';
+import {
+  platforms as uxdPlatforms,
+  jobs as uxdJobs,
+  fetchers as uxdFetchers,
+} from './plugins/uxd';
+import {
+  platforms as wormholePlatforms,
+  jobs as wormholeJobs,
+  fetchers as wormholeFetchers,
+} from './plugins/wormhole';
+import {
+  platforms as banxPlatforms,
+  jobs as banxJobs,
+  fetchers as banxFetchers,
+} from './plugins/banx';
 
 export {
   walletTokensPlatform,
   walletNftsPlatform,
 } from './plugins/tokens/constants';
+export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
 export * from './Cache';
 export * from './Fetcher';
 export * from './Job';
 export * from './utils/name-service';
 export * from './utils/blank';
-export * from './plugins/llama-protocols';
+export { getLlamaProtocolsJob } from './plugins/llama-protocols';
 
 // PLATFORMS //
 export const platforms: Platform[] = [
@@ -322,6 +465,35 @@ export const platforms: Platform[] = [
   ...zeroOnePlatforms,
   ...gooseFXPlatforms,
   ...rainPlatforms,
+  ...lifinityPlatforms,
+  ...portPlatforms,
+  ...instadappPlatforms,
+  ...streamflowPlatforms,
+  ...benqiPlatforms,
+  ...parclPlatforms,
+  ...pythPlatforms,
+  ...jupiterPlatforms,
+  ...circuitPlatforms,
+  ...ariesPlatforms,
+  ...flashPlatforms,
+  ...bonkrewardsPlatforms,
+  ...accessprotocolPlatforms,
+  ...aptinPlatforms,
+  ...bsktPlatforms,
+  ...genesysgoPlatforms,
+  ...auroryPlatforms,
+  ...xStakingSolanaPlatforms,
+  ...splStakingPlatforms,
+  ...abexPlatforms,
+  ...kaiPlatforms,
+  ...suilendPlatforms,
+  ...symmetryPlatforms,
+  ...staratlasPlatforms,
+  ...tulipPlatforms,
+  ...phoenixPlatforms,
+  ...uxdPlatforms,
+  ...wormholePlatforms,
+  ...banxPlatforms,
 ];
 
 // JOBS //
@@ -373,6 +545,34 @@ export const jobs: Job[] = [
   ...zeroOneJobs,
   ...gooseFXJobs,
   ...rainJobs,
+  ...lifinityJobs,
+  ...portJobs,
+  ...instadappJobs,
+  ...streamflowJobs,
+  ...benqiJobs,
+  ...parclJobs,
+  ...pythJobs,
+  ...circuitJobs,
+  ...ariesJobs,
+  ...flashJobs,
+  ...bonkrewardsJobs,
+  ...accessprotocolJobs,
+  ...aptinJobs,
+  ...bsktJobs,
+  ...genesysgoJobs,
+  ...auroryJobs,
+  ...xStakingSolanaJobs,
+  ...splStakingJobs,
+  ...abexJobs,
+  ...kaiJobs,
+  ...suilendJobs,
+  ...symmetryJobs,
+  ...staratlasJobs,
+  ...tulipJobs,
+  ...phoenixJobs,
+  ...uxdJobs,
+  ...wormholeJobs,
+  ...banxJobs,
 ];
 
 // FETCHERS //
@@ -425,5 +625,34 @@ export const fetchers: Fetcher[] = [
   ...zeroOneFetchers,
   ...gooseFXFetchers,
   ...rainFetchers,
+  ...lifinityFetchers,
+  ...portFetchers,
+  ...instadappFetchers,
+  ...meteoraFetchers,
+  ...streamflowFetchers,
+  ...benqiFetchers,
+  ...parclFetchers,
+  ...pythFetchers,
+  ...circuitFetchers,
+  ...ariesFetchers,
+  ...flashFetchers,
+  ...bonkrewardsFetchers,
+  ...accessprotocolFetchers,
+  ...aptinFetchers,
+  ...bsktFetchers,
+  ...genesysgoFetchers,
+  ...auroryFetchers,
+  ...xStakingSolanaFetchers,
+  ...splStakingFetchers,
+  ...abexFetchers,
+  ...kaiFetchers,
+  ...suilendFetchers,
+  ...symmetryFetchers,
+  ...staratlasFetchers,
+  ...tulipFetchers,
+  ...phoenixFetchers,
+  ...uxdFetchers,
+  ...wormholeFetchers,
+  ...banxFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);

@@ -22,9 +22,12 @@ const executor: JobExecutor = async (cache: Cache) => {
         params: {
           include_platform: 'true',
         },
-        timeout: 5000,
+        timeout: 8000,
       })
-      .catch(() => null);
+      .catch(async () => {
+        await sleep(300000);
+        return null;
+      });
   await sleep(60000);
   if (!coingeckoCoinsListRes || !coingeckoCoinsListRes.data) return;
 
@@ -49,5 +52,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: 'top-tokens',
   executor,
+  label: 'coingecko',
 };
 export default job;

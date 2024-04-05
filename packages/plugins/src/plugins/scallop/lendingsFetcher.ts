@@ -3,20 +3,15 @@ import {
   PortfolioAsset,
   PortfolioElement,
   PortfolioElementType,
-  TokenPrice,
   Yield,
   aprToApy,
   formatMoveTokenAddress,
   getElementLendingValues,
+  suiNetwork,
 } from '@sonarwatch/portfolio-core';
-import {
-  SuiObjectDataFilter,
-  getObjectFields,
-  getObjectType,
-  normalizeStructTag,
-  parseStructTag,
-} from '@mysten/sui.js';
+import { normalizeStructTag, parseStructTag } from '@mysten/sui.js/utils';
 import BigNumber from 'bignumber.js';
+import { SuiObjectDataFilter } from '@mysten/sui.js/client';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
@@ -31,7 +26,6 @@ import {
   spoolsPrefix,
   baseIndexRate,
 } from './constants';
-import { getOwnerObject } from './helpers';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import {
   MarketJobResult,
@@ -40,6 +34,8 @@ import {
   UserLending,
   UserStakeAccounts,
 } from './types';
+import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
+import { getClientSui } from '../../utils/clients';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elements: PortfolioElement[] = [];
@@ -59,6 +55,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const poolValues = Object.values(pools);
   if (poolValues.length === 0) return [];
 
+  const client = getClientSui();
   const filterOwnerObject: SuiObjectDataFilter = {
     MatchAny: [
       ...poolValues.map((value) => ({
@@ -71,7 +68,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   };
 
   const [allOwnedObjects, marketData, spoolData] = await Promise.all([
-    getOwnerObject(owner, { filter: filterOwnerObject }),
+    getOwnedObjects(client, owner, { filter: filterOwnerObject }),
     cache.getItem<MarketJobResult>(marketKey, {
       prefix,
       networkId: NetworkId.sui,
@@ -103,7 +100,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const lendingAssets: { [key: string]: UserLending } = {};
   const stakedAccount: UserStakeAccounts = {};
   for (const ownedMarketCoin of allOwnedObjects) {
-    const objType = getObjectType(ownedMarketCoin);
+    const objType = ownedMarketCoin.data?.type;
     if (!objType) continue;
 
     const parsed = parseStructTag(objType);
@@ -113,7 +110,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         objType.indexOf('>')
       )
     );
-    const fields = getObjectFields(ownedMarketCoin);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fields = ownedMarketCoin.data?.content?.fields as any;
     const coinName = poolValues
       .find((value) => value.coinType === coinType)
       ?.metadata?.symbol.toLowerCase();
@@ -164,30 +162,30 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const tokenAddresses = Object.values(lendingAssets).map(
     (value) => value.coinType
   );
-  const tokenPriceResult = await cache.getTokenPrices(
-    tokenAddresses,
+  const tokenPrices = await cache.getTokenPricesAsMap(
+    [...tokenAddresses, suiNetwork.native.address],
     NetworkId.sui
   );
-  const tokenPrices: Map<string, TokenPrice> = new Map();
-
-  tokenPriceResult.forEach((r) => {
-    if (!r) return;
-    tokenPrices.set(r.address, r);
-  });
 
   if (pendingReward.isGreaterThan(0)) {
     const pendingRewardAmount = pendingReward
-      .shiftedBy(-1 * (pools['sui']?.metadata?.decimals ?? 0))
+      .shiftedBy(-1 * suiNetwork.native.decimals)
       .toNumber();
-    const rewardTokenAddress = formatMoveTokenAddress(pools['sui'].coinType);
+    const rewardTokenAddress = formatMoveTokenAddress(
+      suiNetwork.native.address
+    );
     const rewardTokenPrice = tokenPrices.get(rewardTokenAddress);
     const rewardAssetToken = tokenPriceToAssetToken(
       rewardTokenAddress,
       pendingRewardAmount,
       NetworkId.sui,
-      rewardTokenPrice
+      rewardTokenPrice,
+      undefined,
+      {
+        isClaimable: true,
+      }
     );
-    rewardAssets.push(rewardAssetToken);
+    rewardAssets.push({ ...rewardAssetToken });
   }
 
   for (const [assetName, assetValue] of Object.entries(lendingAssets)) {
@@ -223,7 +221,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     rewardAssets.length === 0
   )
     return [];
-  const { borrowedValue, collateralRatio, suppliedValue, value } =
+  const { borrowedValue, healthRatio, suppliedValue, value, rewardValue } =
     getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
   elements.push({
     type: PortfolioElementType.borrowlend,
@@ -238,8 +236,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       suppliedAssets,
       suppliedValue,
       suppliedYields,
-      collateralRatio,
+      collateralRatio: null,
+      healthRatio,
       rewardAssets,
+      rewardValue,
       value,
     },
   });

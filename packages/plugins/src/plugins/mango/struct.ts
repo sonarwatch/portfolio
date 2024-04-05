@@ -366,6 +366,104 @@ export const mangoAccountStruct = new FixableBeetStruct<MangoAccount>(
   (args) => args as MangoAccount
 );
 
+export type TokenConditionalSwap = {
+  id: BigNumber;
+  maxBuy: BigNumber;
+  maxSell: BigNumber;
+  bought: BigNumber;
+  sold: BigNumber;
+  expiryTimestamp: BigNumber;
+  priceLowerLimit: BigNumber;
+  priceUpperLimit: BigNumber;
+  pricePremiumRate: BigNumber;
+  takerFeeRate: BigNumber;
+  makerFeeRate: BigNumber;
+  buyTokenIndex: number;
+  sellTokenIndex: number;
+  isConfigured: number;
+  allowCreatingDeposits: number;
+  allowCreatingBorrows: number;
+  displayPriceStyle: number;
+  intention: number;
+  tcsType: number;
+  padding: number[];
+  startTimestamp: BigNumber;
+  durationSeconds: BigNumber;
+  reserved: number[];
+};
+
+export const tokenConditionalSwap = new FixableBeetStruct<TokenConditionalSwap>(
+  [
+    ['id', u64],
+    ['maxBuy', u64],
+    ['maxSell', u64],
+    ['bought', u64],
+    ['sold', u64],
+    ['expiryTimestamp', u64],
+    ['priceLowerLimit', f64],
+    ['priceUpperLimit', f64],
+    ['pricePremiumRate', f64],
+    ['takerFeeRate', f32],
+    ['makerFeeRate', f32],
+    ['buyTokenIndex', u16],
+    ['sellTokenIndex', u16],
+    ['isConfigured', u8],
+    ['allowCreatingDeposits', u8],
+    ['allowCreatingBorrows', u8],
+    ['displayPriceStyle', u8],
+    ['intention', u8],
+    ['tcsType', u8],
+    ['padding', uniformFixedSizeArray(u8, 6)],
+    ['startTimestamp', u64],
+    ['durationSeconds', u64],
+    ['reserved', uniformFixedSizeArray(u8, 88)],
+  ],
+  (args) => args as TokenConditionalSwap
+);
+
+export type BoostAccount = MangoAccount & {
+  padding8: number;
+  tokenConditionalSwaps: TokenConditionalSwap[];
+  reservedDynamic: number[];
+};
+
+export const boostAccountStruct = new FixableBeetStruct<BoostAccount>(
+  [
+    ['buffer', blob(8)],
+    ['group', publicKey],
+    ['owner', publicKey],
+    ['name', uniformFixedSizeArray(u8, 32)],
+    ['delegate', publicKey],
+    ['accountNum', u32],
+    ['beingLiquidated', u8],
+    ['inHealthRegion', u8],
+    ['bump', u8],
+    ['padding', uniformFixedSizeArray(u8, 1)],
+    ['netDeposits', i64],
+    ['perpSpotTransfers', i64],
+    ['healthRegionBeginInitHealth', i64],
+    ['frozenUntil', u64],
+    ['buybackFeesAccruedCurrent', u64],
+    ['buybackFeesAccruedPrevious', u64],
+    ['buybackFeesExpiryTimestamp', u64],
+    ['reserved', uniformFixedSizeArray(u8, 208)],
+    ['headerVersion', u8],
+    ['padding3', uniformFixedSizeArray(u8, 7)],
+    ['padding4', u32],
+    ['tokens', array(tokenPositionStruct)],
+    ['padding5', u32],
+    ['serum3', array(serum3OrdersStruct)],
+    ['padding6', u32],
+    ['perps', array(perpPositionStruct)],
+    ['padding7', u32],
+    ['perpOpenOrders', array(perpOpenOrderStruct)],
+    ['padding8', u32],
+    ['tokenConditionalSwaps', array(tokenConditionalSwap)],
+    ['reservedDynamic', uniformFixedSizeArray(u8, 64)],
+  ],
+  (args) => args as BoostAccount
+);
+
 export type PerpAccount = {
   basePosition: BigNumber;
   quotePosition: BigNumber;

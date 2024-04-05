@@ -20,7 +20,6 @@ import {
   userAccountStruct,
 } from './struct';
 import {
-  decodeName,
   getSignedTokenAmount,
   getTokenAmount,
   getUserAccountsPublicKeys,
@@ -28,7 +27,10 @@ import {
   isSpotPositionAvailable,
 } from './helpers';
 import { SpotMarketEnhanced } from './types';
-import { getParsedMultipleAccountsInfo } from '../../utils/solana';
+import {
+  getParsedMultipleAccountsInfo,
+  u8ArrayToString,
+} from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
@@ -215,7 +217,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
     if (suppliedAssets.length === 0 && borrowedAssets.length === 0) continue;
 
-    const { borrowedValue, collateralRatio, suppliedValue, value } =
+    const { borrowedValue, suppliedValue, value, healthRatio, rewardValue } =
       getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
     elements.push({
       type: PortfolioElementType.borrowlend,
@@ -230,11 +232,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         suppliedAssets,
         suppliedValue,
         suppliedYields,
-        collateralRatio,
+        collateralRatio: null,
+
         rewardAssets,
+        rewardValue,
+        healthRatio,
         value,
       },
-      name: decodeName(userAccount.name),
+      name: u8ArrayToString(userAccount.name),
     });
   }
 

@@ -1,11 +1,6 @@
-import {
-  SuiObjectResponse,
-  getObjectFields,
-  getObjectId,
-  getObjectType,
-} from '@mysten/sui.js';
 import { Bits, Pool, PoolFields, Types } from './types';
 import { asIntN } from '../cetus/helpers';
+import { ObjectResponse } from '../../utils/sui/types';
 
 export function parsePoolType(type: string, length: 2): [string, string];
 export function parsePoolType(type: string, length: 3): Types;
@@ -19,10 +14,11 @@ export function parsePoolType(type: string, length?: number): string[] {
 
   return types;
 }
-export function parsePool(pool: SuiObjectResponse): Pool {
-  const fields = getObjectFields(pool) as PoolFields;
-  const objectId = getObjectId(pool);
-  const type = getObjectType(pool)!;
+export function parsePool(pool: ObjectResponse<PoolFields>): Pool {
+  if (!pool.data?.content) throw new Error('turbos parsePool error');
+  const fields = pool.data?.content?.fields;
+  const objectId = pool.data?.objectId;
+  const type = pool.data?.type;
   return {
     ...fields,
     objectId,

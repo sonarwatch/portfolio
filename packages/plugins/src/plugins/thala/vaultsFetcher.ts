@@ -72,7 +72,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         borrowedTokenPrice
       )
     );
-    const { borrowedValue, collateralRatio, suppliedValue, value } =
+    const { borrowedValue, suppliedValue, value, healthRatio, rewardValue } =
       getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
 
     elements.push({
@@ -88,8 +88,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         suppliedAssets,
         suppliedValue,
         suppliedYields,
-        collateralRatio,
+        collateralRatio: null,
+
+        healthRatio,
         rewardAssets,
+        rewardValue,
         value,
       },
     });
@@ -100,8 +103,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const stableBorrowedYields: Yield[] = [
       {
-        apr: apyToApr(borrowedAssetRate),
-        apy: borrowedAssetRate,
+        apr: -apyToApr(borrowedAssetRate),
+        apy: -borrowedAssetRate,
       },
     ];
     borrowedYields.push(stableBorrowedYields);

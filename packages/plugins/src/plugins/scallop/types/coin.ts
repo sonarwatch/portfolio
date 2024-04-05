@@ -1,4 +1,4 @@
-import { CoinMetadata } from '@mysten/sui.js';
+import { CoinMetadata } from '@mysten/sui.js/client';
 
 export const COIN_NAMES = [
   'eth',

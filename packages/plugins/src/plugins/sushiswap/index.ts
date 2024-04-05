@@ -24,7 +24,7 @@ export const fetchers: Fetcher[] = [
   getPositionsV2Fetcher(NetworkId.ethereum, platform.id, 'v2'),
   getPositionsV2Fetcher(NetworkId.polygon, platform.id, 'v2'),
   getPositionsV2Fetcher(NetworkId.avalanche, platform.id, 'v2'),
-  getPositionsV2Fetcher(NetworkId.bnb, platform.id, 'v2'),
+  // getPositionsV2Fetcher(NetworkId.bnb, platform.id, 'v2'),
   // getUniV3PositionsFetcher(
   //   {
   //     networkId: NetworkId.ethereum,

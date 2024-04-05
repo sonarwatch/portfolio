@@ -1,10 +1,11 @@
 import { Connection, PublicKey } from '@solana/web3.js';
+import {
+  solanaNativeAddress,
+  solanaNativeWrappedAddress,
+} from '@sonarwatch/portfolio-core';
 import sleep from '../misc/sleep';
 
-const solMints = [
-  '11111111111111111111111111111111',
-  'So11111111111111111111111111111111111111112',
-];
+const solMints = [solanaNativeAddress, solanaNativeWrappedAddress];
 
 export async function fetchTokenSupplyAndDecimals(
   mint: PublicKey,

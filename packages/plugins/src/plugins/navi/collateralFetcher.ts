@@ -5,23 +5,24 @@ import {
   PortfolioElementType,
   Yield,
   apyToApr,
+  formatTokenAddress,
   getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
-import { getObjectFields } from '@mysten/sui.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
-  indexFactor,
   platformId,
-  poolsInfos,
   rateFactor,
   reservesKey,
   reservesPrefix,
 } from './constants';
 import { getClientSui } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { Balance, ReserveData } from './types';
+import { BalanceData, ReserveData } from './types';
+import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
+
+const amountFactor = new BigNumber(10 ** 36);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -31,6 +32,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const suppliedAssets: PortfolioAsset[] = [];
   const suppliedYields: Yield[][] = [];
   const rewardAssets: PortfolioAsset[] = [];
+  const suppliedLtvs: number[] = [];
 
   const reservesData = await cache.getItem<ReserveData[]>(reservesKey, {
     prefix: reservesPrefix,
@@ -38,70 +40,73 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
   if (!reservesData) return [];
 
-  const reserveById: Map<string, ReserveData> = new Map();
-  for (const reserve of reservesData) {
-    reserveById.set(reserve.id.id, reserve);
-  }
+  const tokenPrices = await cache.getTokenPricesAsMap(
+    reservesData.map((r) => r.value.fields.coin_type),
+    NetworkId.sui
+  );
 
-  for (const pool of poolsInfos) {
-    const reserve = reserveById.get(pool.reserveData);
-    if (!reserve) continue;
-    const reserveData = reserve.value.fields;
-
-    const borrowBalance = await client.getDynamicFieldObject({
-      parentId: pool.borrowBalanceParentId,
+  for (const rData of reservesData) {
+    const borrowBalancePromise = getDynamicFieldObject<BalanceData>(client, {
+      parentId:
+        rData.value.fields.borrow_balance.fields.user_state.fields.id.id,
       name: { type: 'address', value: owner },
     });
-
-    const supplyBalance = await client.getDynamicFieldObject({
-      parentId: pool.supplyBalanceParentId,
+    const supplyBalancePromise = getDynamicFieldObject<BalanceData>(client, {
+      parentId:
+        rData.value.fields.supply_balance.fields.user_state.fields.id.id,
       name: { type: 'address', value: owner },
     });
+    const [borrowBalance, supplyBalance] = await Promise.all([
+      borrowBalancePromise,
+      supplyBalancePromise,
+    ]);
 
-    const tokenPrice = await cache.getTokenPrice(pool.type, NetworkId.sui);
-    if (!tokenPrice) continue;
+    const tokenPrice = tokenPrices.get(
+      formatTokenAddress(rData.value.fields.coin_type, NetworkId.sui)
+    );
 
-    if (!borrowBalance.error && borrowBalance.data) {
-      const borrowInfo = getObjectFields(borrowBalance.data) as Balance;
+    if (!borrowBalance.error && borrowBalance.data?.content) {
+      const borrowInfo = borrowBalance.data.content?.fields;
       if (borrowInfo.value) {
-        borrowedAssets.push(
-          tokenPriceToAssetToken(
-            tokenPrice.address,
-            new BigNumber(borrowInfo.value)
-              .dividedBy(reserveData.current_borrow_index)
-              .multipliedBy(10 ** indexFactor)
-              .toNumber(),
-            NetworkId.sui,
-            tokenPrice
-          )
+        const borrowAsset = tokenPriceToAssetToken(
+          rData.value.fields.coin_type,
+          new BigNumber(borrowInfo.value)
+            .times(rData.value.fields.current_borrow_index)
+            .dividedBy(amountFactor)
+            .toNumber(),
+          NetworkId.sui,
+          tokenPrice
         );
-        const apy = new BigNumber(reserveData.current_borrow_rate)
-          .dividedBy(10 ** rateFactor)
-          .toNumber();
-        borrowedYields.push([
-          {
-            apr: apyToApr(apy),
-            apy,
-          },
-        ]);
+        if (borrowAsset.value === null || borrowAsset.value > 0.002) {
+          borrowedAssets.push(borrowAsset);
+          const apy = new BigNumber(rData.value.fields.current_borrow_rate)
+            .dividedBy(10 ** rateFactor)
+            .toNumber();
+          borrowedYields.push([
+            {
+              apr: -apyToApr(apy),
+              apy: -apy,
+            },
+          ]);
+        }
       }
     }
 
-    if (!supplyBalance.error && supplyBalance.data) {
-      const supplyInfo = getObjectFields(supplyBalance.data) as Balance;
+    if (!supplyBalance.error && supplyBalance.data?.content?.fields) {
+      const supplyInfo = supplyBalance.data.content.fields;
       if (supplyInfo.value) {
         suppliedAssets.push(
           tokenPriceToAssetToken(
-            tokenPrice.address,
+            rData.value.fields.coin_type,
             new BigNumber(supplyInfo.value)
-              .dividedBy(reserveData.current_supply_index)
-              .multipliedBy(10 ** indexFactor)
+              .times(rData.value.fields.current_supply_index)
+              .dividedBy(amountFactor)
               .toNumber(),
             NetworkId.sui,
             tokenPrice
           )
         );
-        const apy = new BigNumber(reserveData.current_supply_rate)
+        const apy = new BigNumber(rData.value.fields.current_supply_rate)
           .dividedBy(10 ** rateFactor)
           .toNumber();
         suppliedYields.push([
@@ -110,14 +115,24 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             apy,
           },
         ]);
+        suppliedLtvs.push(
+          new BigNumber(rData.value.fields.liquidation_factors.fields.threshold)
+            .div(10 ** 27)
+            .toNumber()
+        );
       }
     }
   }
 
   if (suppliedAssets.length === 0 && borrowedAssets.length === 0) return [];
 
-  const { borrowedValue, collateralRatio, suppliedValue, value } =
-    getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
+  const { borrowedValue, suppliedValue, value, healthRatio, rewardValue } =
+    getElementLendingValues(
+      suppliedAssets,
+      borrowedAssets,
+      rewardAssets,
+      suppliedLtvs
+    );
   const element: PortfolioElement = {
     type: PortfolioElementType.borrowlend,
     networkId: NetworkId.sui,
@@ -131,8 +146,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       suppliedAssets,
       suppliedValue,
       suppliedYields,
-      collateralRatio,
+      collateralRatio: null,
+      healthRatio,
       rewardAssets,
+      rewardValue,
       value,
     },
   };

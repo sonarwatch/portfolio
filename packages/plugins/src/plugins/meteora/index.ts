@@ -1,10 +1,14 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 import vaultsJob from './vaultsJob';
 import poolsJob from './poolsJob';
+import multiTokenPoolsJob from './multiTokenPoolsJob';
+import farmsJob from './farmsJob';
 import { Job } from '../../Job';
 import { Fetcher } from '../../Fetcher';
 import { meteoraPlatform } from './constants';
+import farmsFetcher from './farmsFetcher';
+import dlmmPositionFetcher from './dlmmPositionsFetcher';
 
 export const platforms: Platform[] = [meteoraPlatform];
-export const jobs: Job[] = [vaultsJob, poolsJob];
-export const fetchers: Fetcher[] = [];
+export const jobs: Job[] = [vaultsJob, poolsJob, farmsJob, multiTokenPoolsJob];
+export const fetchers: Fetcher[] = [farmsFetcher, dlmmPositionFetcher];

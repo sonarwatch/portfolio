@@ -1,21 +1,9 @@
 /* eslint-disable no-param-reassign */
 
-import {
-  ObjectContentFields,
-  ObjectType,
-  SuiObjectResponse,
-  getMoveObjectType,
-  getObjectDeletedResponse,
-  getObjectDisplay,
-  getObjectFields,
-  getObjectId,
-  getObjectNotExistsResponse,
-  getObjectOwner,
-  normalizeSuiObjectId,
-} from '@mysten/sui.js';
 import Decimal from 'decimal.js';
 import BigNumber from 'bignumber.js';
 import { suiNetwork } from '@sonarwatch/portfolio-core';
+import { normalizeSuiObjectId } from '@mysten/sui.js/utils';
 import {
   ClmmPositionStatus,
   NFT,
@@ -25,6 +13,9 @@ import {
   SuiAddressType,
   SuiStructTag,
 } from './types';
+import { ObjectResponse } from '../../utils/sui/types';
+import { getObjectDeletedResponse } from '../../utils/sui/getObjectDeletedResponse';
+import { getObjectNotExistsResponse } from '../../utils/sui/getObjectNotExistsResponse';
 
 export function fromX64(num: BigNumber): Decimal {
   return new Decimal(num.toString()).mul(Decimal.pow(2, -64));
@@ -142,13 +133,17 @@ export function asIntN(int: bigint, bits = 32) {
   return Number(BigInt.asIntN(bits, BigInt(int)));
 }
 
-export function getPoolFromObject(object: SuiObjectResponse): Pool {
-  const type = getMoveObjectType(object) as ObjectType;
+export function getPoolFromObject(object: ObjectResponse<unknown>): Pool {
+  if (!object.data || !object.data.content?.fields)
+    throw Error('getPoolFromObject object.data is missing');
+  const type = object.data?.type;
   const formatType = extractStructTagFromType(type);
-  const fields = getObjectFields(object) as ObjectContentFields;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const fields = object.data.content.fields as any;
   const rewarders: Rewarder[] = [];
 
-  fields['rewarder_manager'].fields.rewarders.forEach((item: any) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  fields.rewarder_manager.fields.rewarders.forEach((item: any) => {
     const { emissions_per_second: emissionsPerSecond } =
       item.fields.emissions_per_second;
     const emissionSeconds = fromX64(new BigNumber(emissionsPerSecond));
@@ -171,7 +166,7 @@ export function getPoolFromObject(object: SuiObjectResponse): Pool {
     fields['tick_spacing']
   );
   return {
-    poolAddress: getObjectId(object),
+    poolAddress: object.data.objectId,
     poolType: type,
     coinTypeA: formatType.type_arguments[0],
     coinTypeB: formatType.type_arguments[1],
@@ -204,7 +199,7 @@ export function getPoolFromObject(object: SuiObjectResponse): Pool {
   };
 }
 
-export function buildPosition(objects: SuiObjectResponse): Position {
+export function buildPosition(objects: ObjectResponse<unknown>): Position {
   let nft: NFT = {
     creator: '',
     description: '',
@@ -239,10 +234,12 @@ export function buildPosition(objects: SuiObjectResponse): Position {
     position_status: ClmmPositionStatus.Exists,
   };
 
-  let fields = getObjectFields(objects) as ObjectContentFields;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let fields = objects.data?.content?.fields as any;
   if (fields) {
-    const type = getMoveObjectType(objects) as ObjectType;
-    const ownerWarp = getObjectOwner(objects) as {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const { type } = objects.data!;
+    const ownerWarp = objects.data?.owner as {
       AddressOwner: string;
     };
 
@@ -295,8 +292,8 @@ export function buildPosition(objects: SuiObjectResponse): Position {
   return position;
 }
 
-export function buildNFT(objects: SuiObjectResponse): NFT {
-  const fields = getObjectDisplay(objects).data;
+export function buildNFT(objects: ObjectResponse<unknown>): NFT {
+  const fields = objects.data?.display?.data;
   const nft: NFT = {
     creator: '',
     description: '',

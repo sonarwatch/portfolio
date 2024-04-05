@@ -8,8 +8,10 @@ import {
   TokenPriceSource,
   formatTokenAddress,
   formatTokenPriceSource,
+  publicBearerToken,
   pushTokenPriceSource,
   tokenPriceFromSources,
+  tokenPriceSourceTtl,
 } from '@sonarwatch/portfolio-core';
 import overlayDriver from './overlayDriver';
 import memoryDriver, {
@@ -23,13 +25,17 @@ export type TransactionOptions = {
   networkId?: NetworkIdType;
 };
 
-const tokenPriceSourcePrefix = 'tokenpricesource';
-const tokenPricesCacheTtl = 30 * 1000; // 30 sec
-
-type CachedTokenPrice = {
-  tp: TokenPrice;
-  ts: number;
+/**
+ * Represents the options for setting an item in the cache.
+ */
+export type TransactionOptionsSetItem = {
+  /**
+   * The time-to-live (TTL) value in milliseconds for the cached item.
+   */
+  ttl?: number;
 };
+
+const tokenPriceSourcePrefix = 'tokenpricesource';
 
 export type CacheConfig =
   | CacheConfigOverlayHttp
@@ -43,7 +49,7 @@ export type CacheConfigOverlayHttp = {
   params: CacheConfigOverlayHttpParams;
 };
 export type CacheConfigOverlayHttpParams = {
-  bases: string[];
+  configs: { base: string; headers: Record<string, string> }[];
 };
 
 export type CacheConfigMemory = {
@@ -71,6 +77,7 @@ export type CacheConfigRedisParams = {
   url: string;
   tls: boolean;
   db: number;
+  ttl?: number;
 };
 
 export type CacheConfigFilesystem = {
@@ -95,12 +102,17 @@ export type CacheConfigParams = {
 export class Cache {
   readonly storage: Storage;
   readonly driver: Driver;
-  private tokenPricesCache: Map<string, CachedTokenPrice> = new Map();
+  private tokenPriceStorage: Storage;
 
   constructor(cacheConfig: CacheConfig) {
     this.driver = getDriverFromCacheConfig(cacheConfig);
     this.storage = createStorage({
       driver: this.driver,
+    });
+    this.tokenPriceStorage = createStorage({
+      driver: memoryDriver({
+        ttl: 10000,
+      }),
     });
   }
 
@@ -137,81 +149,67 @@ export class Cache {
     return item === null ? undefined : (item as K);
   }
 
-  private getCachedTokenPrice(address: string, networkId: NetworkIdType) {
-    const cachedTokenPrice = this.tokenPricesCache.get(
-      getTokenPriceCacheKey(address, networkId)
-    );
-    if (!cachedTokenPrice) {
-      this.tokenPricesCache.delete(getTokenPriceCacheKey(address, networkId));
-      return undefined;
-    }
-    if (Date.now() > cachedTokenPrice.ts + tokenPricesCacheTtl) {
-      this.tokenPricesCache.delete(getTokenPriceCacheKey(address, networkId));
-      return undefined;
-    }
-    return cachedTokenPrice.tp;
+  private async getTokenPriceLocal(address: string, networkId: NetworkIdType) {
+    const fAddress = formatTokenAddress(address, networkId);
+    const fullkey = getFullKey(fAddress, {
+      prefix: networkId,
+    });
+    return this.tokenPriceStorage.getItem<TokenPrice>(fullkey);
+  }
+
+  private async setTokenPriceLocal(tokenPrice: TokenPrice) {
+    const fullkey = getFullKey(tokenPrice.address, {
+      prefix: tokenPrice.networkId,
+    });
+    return this.tokenPriceStorage.setItem(fullkey, tokenPrice);
   }
 
   async getTokenPrice(address: string, networkId: NetworkIdType) {
+    const local = await this.getTokenPriceLocal(address, networkId);
+    if (local) return local;
+
     const fAddress = formatTokenAddress(address, networkId);
-
-    // Check if in cache
-    const cTokenPrice = this.getCachedTokenPrice(fAddress, networkId);
-    if (cTokenPrice) return cTokenPrice;
-
     const sources = await this.getTokenPriceSources(fAddress, networkId);
     if (!sources) return undefined;
     const tokenPrice = tokenPriceFromSources(sources);
 
-    // Set in cache if tokenPrice is valide
-    if (tokenPrice) {
-      this.tokenPricesCache.set(getTokenPriceCacheKey(fAddress, networkId), {
-        tp: tokenPrice,
-        ts: Date.now(),
-      });
-    }
-
+    if (tokenPrice) await this.setTokenPriceLocal(tokenPrice);
     return tokenPrice;
   }
 
   async getTokenPrices(addresses: string[], networkId: NetworkIdType) {
     const fAddresses = addresses.map((a) => formatTokenAddress(a, networkId));
     const ffAddresses = [...new Set(fAddresses)];
-
     const tokenPriceByAddress: Map<string, TokenPrice | undefined> = new Map();
-    const notCachedAddresses: string[] = [];
-    ffAddresses.forEach((address) => {
-      const tokenPrice = this.getCachedTokenPrice(address, networkId);
-      if (tokenPrice) tokenPriceByAddress.set(address, tokenPrice);
-      else notCachedAddresses.push(address);
-    });
 
-    const notCachedSources = await this.getTokenPricesSources(
-      notCachedAddresses,
-      networkId
-    );
-    notCachedSources.forEach((sources, i) => {
-      const address = notCachedAddresses[i];
+    const mSources = await this.getTokenPricesSources(ffAddresses, networkId);
+    mSources.forEach((sources, i) => {
+      const address = ffAddresses[i];
       if (!sources) tokenPriceByAddress.set(address, undefined);
-      else {
-        const tokenPrice = tokenPriceFromSources(sources);
-        tokenPriceByAddress.set(address, tokenPriceFromSources(sources));
-        if (tokenPrice) {
-          this.tokenPricesCache.set(getTokenPriceCacheKey(address, networkId), {
-            tp: tokenPrice,
-            ts: Date.now(),
-          });
-        }
-      }
+      else tokenPriceByAddress.set(address, tokenPriceFromSources(sources));
     });
     return fAddresses.map((address) => tokenPriceByAddress.get(address));
+  }
+
+  async getTokenPricesAsMap(
+    addresses: string[],
+    networkId: NetworkIdType
+  ): Promise<Map<string, TokenPrice>> {
+    const tokenPrices = await this.getTokenPrices(addresses, networkId);
+    const tokenPricesMap: Map<string, TokenPrice> = new Map();
+    tokenPrices.forEach((tp) => {
+      if (!tp) return;
+      tokenPricesMap.set(tp.address, tp);
+    });
+    return tokenPricesMap;
   }
 
   private async getTokenPriceSources(
     address: string,
     networkId: NetworkIdType
   ) {
-    return this.getItem<TokenPriceSource[]>(address, {
+    const fAddress = formatTokenAddress(address, networkId);
+    return this.getItem<TokenPriceSource[]>(fAddress, {
       prefix: tokenPriceSourcePrefix,
       networkId,
     });
@@ -256,39 +254,43 @@ export class Cache {
     return itemsMap;
   }
 
-  async getAllTokenPrices(networkId: NetworkIdType) {
-    const addresses = await this.getTokenPriceAddresses(networkId);
-    const tokenPrices: Map<string, TokenPrice> = new Map();
-
-    const results = await runInBatch(
-      addresses.map((a) => () => this.getTokenPrice(a, networkId)),
-      20
-    );
-
-    for (let i = 0; i < results.length; i += 1) {
-      const result = results[i];
-      if (result.status === 'rejected') continue;
-      if (result.value !== undefined)
-        tokenPrices.set(addresses[i], result.value);
-    }
-    return tokenPrices;
-  }
-
   async setItem<K extends StorageValue>(
     key: string,
     value: K,
-    opts: TransactionOptions
+    opts: TransactionOptions & TransactionOptionsSetItem
   ) {
     const fullKey = getFullKey(key, opts);
-    return this.storage.setItem(fullKey, value);
+
+    // ttl
+    let { ttl } = opts;
+    if (this.driver.name === 'redis' && ttl) {
+      ttl = Math.round(ttl / 1000);
+    }
+    return this.storage.setItem(fullKey, value, {
+      ttl,
+    });
+  }
+
+  async setItems<K extends StorageValue>(
+    items: {
+      key: string;
+      value: K;
+    }[],
+    opts: TransactionOptions & TransactionOptionsSetItem
+  ) {
+    await runInBatch(
+      items.map((item) => () => this.setItem(item.key, item.value, opts)),
+      15
+    );
   }
 
   async setTokenPriceSource(source: TokenPriceSource) {
     const fSource = formatTokenPriceSource(source);
-    let cSources = await this.getItem<TokenPriceSource[]>(fSource.address, {
-      prefix: tokenPriceSourcePrefix,
-      networkId: fSource.networkId,
-    });
+    let cSources = await this.getTokenPriceSources(
+      fSource.address,
+      fSource.networkId
+    );
+
     if (!cSources) cSources = [];
     const newSources = pushTokenPriceSource(cSources, fSource);
     if (!newSources) {
@@ -301,7 +303,16 @@ export class Cache {
     await this.setItem(fSource.address, newSources, {
       prefix: tokenPriceSourcePrefix,
       networkId: fSource.networkId,
+      ttl: tokenPriceSourceTtl,
     });
+  }
+
+  async setTokenPriceSources(sources: (TokenPriceSource | null)[]) {
+    const fSources = sources.filter((s) => s !== null) as TokenPriceSource[];
+    await runInBatch(
+      fSources.map((source) => () => this.setTokenPriceSource(source)),
+      15
+    );
   }
 
   async removeItem(key: string, opts: TransactionOptions) {
@@ -322,16 +333,10 @@ export class Cache {
     });
   }
 
-  dispose() {
+  async dispose() {
+    await this.tokenPriceStorage.dispose();
     return this.storage.dispose();
   }
-}
-
-function getTokenPriceCacheKey(
-  address: string,
-  networkId: NetworkIdType
-): string {
-  return `${address}-${networkId}`;
 }
 
 function getFullKey(key: string, opts: TransactionOptions): string {
@@ -351,7 +356,9 @@ function getDriverFromCacheConfig(cacheConfig: CacheConfig) {
   switch (cacheConfig.type) {
     case 'overlayHttp':
       return overlayDriver({
-        layers: cacheConfig.params.bases.map((base) => httpDriver({ base })),
+        layers: cacheConfig.params.configs.map((c) =>
+          httpDriver({ base: c.base, headers: c.headers })
+        ),
       }) as Driver;
     case 'memory':
       return memoryDriver({
@@ -366,6 +373,7 @@ function getDriverFromCacheConfig(cacheConfig: CacheConfig) {
         url: cacheConfig.params.url,
         tls: cacheConfig.params.tls ? {} : undefined,
         db: cacheConfig.params.db,
+        ttl: cacheConfig.params.ttl,
       }) as Driver;
     case 'http':
       return httpDriver({
@@ -383,10 +391,17 @@ export function getCacheConfig(): CacheConfig {
       return {
         type: 'overlayHttp',
         params: {
-          bases: (
+          configs: (
             process.env['CACHE_CONFIG_OVERLAY_HTTP_BASES'] ||
-            'http://localhost:3000/,https://portfolio-api.sonar.watch/v1/portfolio/cache/'
-          ).split(','),
+            'http://localhost:3000/,https://portfolio-api-public.sonar.watch/v1/portfolio/cache/'
+          )
+            .split(',')
+            .map((base) => ({
+              base,
+              headers: {
+                Authorization: `Bearer ${publicBearerToken}`,
+              },
+            })),
         },
       };
     case 'memory':
@@ -408,6 +423,9 @@ export function getCacheConfig(): CacheConfig {
           url: process.env['CACHE_CONFIG_REDIS_URL'] || '127.0.0.1:6379',
           tls: process.env['CACHE_CONFIG_REDIS_TLS'] === 'true',
           db: parseInt(process.env['CACHE_CONFIG_REDIS_DB'] || '0', 10),
+          ttl: process.env['CACHE_CONFIG_REDIS_TTL']
+            ? parseInt(process.env['CACHE_CONFIG_REDIS_TTL'], 10)
+            : undefined,
         },
       };
     case 'http':
@@ -415,20 +433,19 @@ export function getCacheConfig(): CacheConfig {
         type: 'http',
         params: {
           base:
-            process.env['CACHE_CONFIG_HTTP_BASE'] || 'http://localhost:3000/',
-          headers: process.env['CACHE_CONFIG_HTTP_BEARER']
-            ? {
-                Authorization: `Bearer ${process.env['CACHE_CONFIG_HTTP_BEARER']}`,
-              }
-            : undefined,
+            process.env['CACHE_CONFIG_HTTP_BASE'] ||
+            'https://portfolio-api-public.sonar.watch/v1/portfolio/cache',
+          headers: {
+            Authorization: `Bearer ${
+              process.env['CACHE_CONFIG_HTTP_BEARER'] || publicBearerToken
+            }`,
+          },
         },
       };
     default:
       return {
-        type: 'filesystem',
-        params: {
-          base: process.env['CACHE_CONFIG_FILESYSTEM_BASE'] || './cache',
-        },
+        type: 'memory',
+        params: {},
       };
   }
 }

@@ -5,7 +5,7 @@ export const platform: Platform = {
   id: platformId,
   name: 'Sushiswap',
   image: 'https://sonar.watch/img/platforms/sushiswap.png',
-  defiLlamaId: 'sushi', // from https://defillama.com/docs/api
+  defiLlamaId: 'sushiswap', // from https://defillama.com/docs/api
   website: 'https://www.sushi.com/',
   twitter: 'https://twitter.com/SushiSwap',
 };

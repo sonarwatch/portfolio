@@ -65,11 +65,20 @@ const otphanPlatforms: Platform[] = [
     website: 'https://stakewise.io/',
   },
   {
-    id: 'instadapp',
-    defiLlamaId: 'instadapp',
-    name: 'Instadapp',
-    image: 'https://sonar.watch/img/platforms/instadapp.png',
-    website: 'https://instadapp.io/',
+    id: 'cloneprotocol',
+    defiLlamaId: 'clone-protocol',
+    name: 'Clone Protocol',
+    image: 'https://sonar.watch/img/platforms/cloneprotocol.webp',
+    website: 'https://clone.so/',
+    twitter: 'https://twitter.com/CloneProtocol',
+  },
+  {
+    id: 'sanctum',
+    defiLlamaId: 'parent#sanctum', // from https://defillama.com/docs/api
+    name: 'Sanctum',
+    image: 'https://sonar.watch/img/platforms/sanctum.webp',
+    website: 'https://www.sanctum.so/',
+    twitter: 'https://twitter.com/sanctumso',
   },
 ];
 export default otphanPlatforms;

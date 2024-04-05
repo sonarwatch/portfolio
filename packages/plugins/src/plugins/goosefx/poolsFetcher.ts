@@ -24,6 +24,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     liquidityAccountFilter(owner)
   );
 
+  if (accounts.length === 0) return [];
+
   const tokenPriceById = await getTokenPricesMap(
     accounts.map((account) => account.mint.toString()),
     NetworkId.solana,

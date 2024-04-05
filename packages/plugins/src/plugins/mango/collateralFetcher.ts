@@ -11,13 +11,12 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { MangoProgram, banksPrefix, platformId } from './constants';
+import { mangoV4Pid, banksPrefix, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { mangoAccountStruct } from './struct';
 import { accountsFilter } from './filters';
-import { getParsedProgramAccounts } from '../../utils/solana';
+import { getParsedProgramAccounts, u8ArrayToString } from '../../utils/solana';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { decodeName } from './helpers';
 import runInBatch from '../../utils/misc/runInBatch';
 import { BankEnhanced } from './types';
 
@@ -26,7 +25,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const userAccounts = await getParsedProgramAccounts(
     client,
     mangoAccountStruct,
-    MangoProgram,
+    mangoV4Pid,
     accountsFilter(owner)
   );
   if (userAccounts.length === 0) return [];
@@ -56,6 +55,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
 
   const elements: PortfolioElement[] = [];
+
+  // store mango accounts for points
+  await cache.setItem(
+    owner,
+    userAccounts.map((account) => account.pubkey.toString()),
+    { prefix: platformId, networkId: NetworkId.solana }
+  );
+
   for (let index = 0; index < userAccounts.length; index++) {
     const userAccount = userAccounts[index];
     const tokenPositions = userAccount.tokens;
@@ -123,8 +130,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         if (apr)
           borrowedYields.push([
             {
-              apr,
-              apy: aprToApy(apr),
+              apr: -apr,
+              apy: -aprToApy(apr),
             },
           ]);
       }
@@ -132,7 +139,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     if (suppliedAssets.length === 0 && borrowedAssets.length === 0) continue;
 
-    const { borrowedValue, collateralRatio, suppliedValue, value } =
+    const { borrowedValue, suppliedValue, value, healthRatio, rewardValue } =
       getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
     elements.push({
       type: PortfolioElementType.borrowlend,
@@ -147,11 +154,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         suppliedAssets,
         suppliedValue,
         suppliedYields,
-        collateralRatio,
+        collateralRatio: null,
+
+        healthRatio,
         rewardAssets,
+        rewardValue,
         value,
       },
-      name: decodeName(userAccount.name),
+      name: u8ArrayToString(userAccount.name),
     });
   }
   return elements;

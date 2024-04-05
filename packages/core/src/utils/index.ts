@@ -1,5 +1,5 @@
 export * from './assertNetworkId';
-export * from './assertAddressSystem';
+export * from './assertAddressSystemFromString';
 export * from './networkIdIncluded';
 export * from './validAddress';
 export * from './validTokenAddress';
@@ -27,7 +27,10 @@ export * from './sortPortfolioElement';
 export * from './sortPortfolioElements';
 export * from './uniTokenInfoToTokenInfo';
 export * from './getAddressFromAsset';
+export * from './getAddressesFromAssets';
 export * from './getImageFromAsset';
 export * from './getImageFromAssets';
 export * from './getLabelFromAsset';
 export * from './getLabelFromAssets';
+export * from './healthFactorToHealthRatio';
+export * from './healthRatioToHealthFactor';

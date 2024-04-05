@@ -9,6 +9,8 @@ export function getBDecimal(networkId: EvmNetworkIdType): number | undefined {
       break;
     case 'ethereum':
       return 6;
+    case 'avalanche':
+      return 6;
     default:
       console.log('Unsupported NetworkId');
       return undefined;

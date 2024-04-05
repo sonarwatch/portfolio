@@ -11,11 +11,13 @@ import {
 export type ReserveDataEnhanced = ReserveData & {
   supplyApr: number;
   borrowApr: number;
+  exchangeRate: number;
 };
 
 export type ReserveEnhanced = Reserve & {
   supplyApr: number;
   borrowApr: number;
+  exchangeRate: number;
 };
 
 export type ReserveConfig = {
@@ -87,4 +89,20 @@ export type ReserveData = {
   config: ReserveConfig;
   configPadding: string[];
   padding: string[];
+};
+
+export type FarmInfo = {
+  pubkey: string;
+  mint: string;
+  decimals: number;
+  price: number;
+  rewardsMints: string[];
+  lockingStart: number;
+  lockingDuration: number;
+};
+
+export type LendingMarketConfig = {
+  name: string;
+  multiplyPairs?: string[][];
+  leveragePairs?: string[][];
 };

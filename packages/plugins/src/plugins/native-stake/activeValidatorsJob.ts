@@ -4,22 +4,27 @@ import { Job, JobExecutor } from '../../Job';
 import { getClientAptos } from '../../utils/clients';
 import { platformId, validatorsKey, validatorsPrefix } from './constants';
 import { ValidatorSet } from './types';
+import { getAccountResource } from '../../utils/aptos';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientAptos();
-  const resources = (await client.getAccountResource(
+  const resource = await getAccountResource<ValidatorSet>(
+    client,
     '0x1',
     '0x1::stake::ValidatorSet'
-  )) as ValidatorSet;
-  const activeValidators = resources.data.active_validators;
+  );
+  const activeValidators = resource?.active_validators;
+  if (!activeValidators) return;
   const validatorsWithStake: string[] = [];
   for (let i = 0; i < activeValidators.length; i++) {
     const validator = activeValidators[i];
     const hasStake = await client
       .view({
-        function: '0x1::delegation_pool::operator_commission_percentage',
-        type_arguments: [],
-        arguments: [validator.addr],
+        payload: {
+          function: '0x1::delegation_pool::operator_commission_percentage',
+          typeArguments: [],
+          functionArguments: [validator.addr],
+        },
       })
       .catch(() => {});
     if (hasStake) validatorsWithStake.push(validator.addr);
@@ -33,5 +38,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-active-validators`,
   executor,
+  label: 'normal',
 };
 export default job;

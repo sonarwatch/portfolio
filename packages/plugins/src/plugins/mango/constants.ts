@@ -12,8 +12,9 @@ export const mangoPlatform: Platform = {
 export const banksPrefix = `${platformId}-banks`;
 export const rootBankPrefix = `${platformId}-rootBank`;
 export const groupPrefix = `${platformId}-group`;
+export const boostBanksKey = 'boost-banks';
 
-export const MangoProgram = new PublicKey(
+export const mangoV4Pid = new PublicKey(
   '4MangoMjqJ2firMokCjjGgoK8d4MXcrgL7XJaL3w6fVg'
 );
 
@@ -21,6 +22,6 @@ export const redeemProgramId = new PublicKey(
   'mv3ekLzLbnVPNxjSKvqBpU3ZeZXPQdEC3bp5MDEBG68'
 );
 
-export const otherProgram = new PublicKey(
-  'm3roABq4Ta3sGyFRLdY4LH1KN16zBtg586gJ3UxoBzb'
+export const boostProgramId = new PublicKey(
+  'zF2vSz6V9g1YHGmfrzsY497NJzbRr84QUrPry4bLQ25'
 );

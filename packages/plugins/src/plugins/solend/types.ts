@@ -40,6 +40,7 @@ export interface ReserveInfo {
   reserve: ReserveData;
   rates: RatesInfo;
   rewards: RewardInfo[];
+  cTokenExchangeRate: string;
 }
 
 export type ReserveInfoExtended = ReserveInfo & {
@@ -85,7 +86,6 @@ export interface ReserveData {
     borrowedAmountWads: string;
     addedBorrowWeightBPS: string;
   };
-  cTokenExchangeRate: string;
 }
 
 export interface RatesInfo {

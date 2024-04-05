@@ -1,11 +1,11 @@
 import {
   NetworkId,
+  PortfolioAssetCollectible,
   PortfolioElement,
   PortfolioElementLiquidity,
   PortfolioElementType,
   PortfolioLiquidity,
 } from '@sonarwatch/portfolio-core';
-import { FindNftsByOwnerOutput } from '@metaplex-foundation/js';
 import { PublicKey } from '@solana/web3.js';
 import { platformId, poolStatesPrefix, raydiumProgram } from './constants';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
@@ -17,16 +17,13 @@ import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLi
 
 export async function getRaydiumCLMMPositions(
   cache: Cache,
-  nfts: FindNftsByOwnerOutput
+  nfts: PortfolioAssetCollectible[]
 ): Promise<PortfolioElement[]> {
   const client = getClientSolana();
 
   const positionsProgramAddress: PublicKey[] = [];
   nfts.forEach((nft) => {
-    const address =
-      nft.model === 'metadata'
-        ? new PublicKey(nft.mintAddress.toString())
-        : new PublicKey(nft.mint.address.toString());
+    const address = new PublicKey(nft.data.address);
 
     const positionSeed = [Buffer.from('position'), address.toBuffer()];
 
@@ -118,6 +115,8 @@ export async function getRaydiumCLMMPositions(
     });
     totalLiquidityValue += value;
   }
+
+  if (assets.length === 0) return [];
 
   const elements: PortfolioElementLiquidity[] = [];
   elements.push({

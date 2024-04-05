@@ -1,6 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
 import { NetworkId, TokenPrice } from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSolana } from '../../utils/clients';
@@ -16,8 +15,8 @@ import {
 } from '../orders/clobs-solana/structs';
 import { atrixV1, platformId } from './constants';
 import { poolStruct } from './structs';
-import getLpTokenSourceRaw from '../../utils/misc/getLpTokenSourceRaw';
 import { fetchTokenSupplyAndDecimals } from '../../utils/solana/fetchTokenSupplyAndDecimals';
+import getLpTokenSourceOld from '../../utils/misc/getLpTokenSourceOld';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -38,8 +37,12 @@ const executor: JobExecutor = async (cache: Cache) => {
       pool.poolPcAccount.toString() === '11111111111111111111111111111111'
     )
       return;
-    tokensAddresses.add(pool.pcMint.toString());
-    tokensAddresses.add(pool.coinMint.toString());
+    if (
+      pool.pubkey.toString() === 'BumkG6W1Jvmd3nUM16VWEncfJuL9mYyveE5RgvHubqnw'
+    ) {
+      tokensAddresses.add(pool.pcMint.toString());
+      tokensAddresses.add(pool.coinMint.toString());
+    }
     tokensAccountsAddresses.push(...[pool.poolCoinAccount, pool.poolPcAccount]);
     ordersAccountsAddresses.push(pool.openOrders);
   });
@@ -108,13 +111,19 @@ const executor: JobExecutor = async (cache: Cache) => {
     const poolUnderlyings = [
       {
         address: pool.coinMint.toString(),
-        reserveAmountRaw: coinAccount.amount.plus(baseTokenTotal),
+        reserveAmount: coinAccount.amount
+          .plus(baseTokenTotal)
+          .dividedBy(10 ** coinTokenPrice.decimals)
+          .toNumber(),
         price: coinTokenPrice.price,
         decimals: coinTokenPrice.decimals,
       },
       {
         address: pool.pcMint.toString(),
-        reserveAmountRaw: pcAccount.amount.plus(quoteTokenTotal),
+        reserveAmount: pcAccount.amount
+          .plus(quoteTokenTotal)
+          .dividedBy(10 ** pcTokenPrice.decimals)
+          .toNumber(),
         price: pcTokenPrice.price,
         decimals: pcTokenPrice.decimals,
       },
@@ -123,16 +132,16 @@ const executor: JobExecutor = async (cache: Cache) => {
     const lpDetailsRaw = {
       address: pool.lpMint.toString(),
       decimals,
-      supplyRaw: new BigNumber(supply),
+      supply,
     };
 
-    const source = getLpTokenSourceRaw(
+    const source = getLpTokenSourceOld(
       NetworkId.solana,
       pool.pubkey.toString(),
       platformId,
-      'V1 (Deprecated)',
       lpDetailsRaw,
-      poolUnderlyings
+      poolUnderlyings,
+      'V1 (Deprecated)'
     );
     sourcesPromises.push(cache.setTokenPriceSource(source));
   }
@@ -143,5 +152,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-pools-v1`,
   executor,
+  label: 'normal',
 };
 export default job;

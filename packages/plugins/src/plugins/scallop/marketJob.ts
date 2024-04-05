@@ -1,5 +1,4 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import { getObjectFields } from '@mysten/sui.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
@@ -25,6 +24,8 @@ import type {
   Pools,
 } from './types';
 import runInBatch from '../../utils/misc/runInBatch';
+import { getObject } from '../../utils/sui/getObject';
+import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
@@ -45,13 +46,9 @@ const executor: JobExecutor = async (cache: Cache) => {
   const marketId: string = (addressData.mainnet.core as Core).market;
 
   // get market data
-  const marketObject = await client.getObject({
-    id: marketId,
-    options: {
-      showContent: true,
-    },
-  });
-  const marketData = getObjectFields(marketObject) as MarketData;
+  const marketObject = await getObject<MarketData>(client, marketId);
+  const marketData = marketObject.data?.content?.fields;
+  if (!marketData) return;
 
   // get balance sheet
   const balanceSheets: BalanceSheet = {};
@@ -59,8 +56,8 @@ const executor: JobExecutor = async (cache: Cache) => {
     marketData.vault.fields.balance_sheets.fields.table.fields.id.id;
   const balanceSheetPromises = Object.keys(pools).map(
     (coinName) => async () => {
-      balanceSheets[coinName] = getObjectFields(
-        await client.getDynamicFieldObject({
+      balanceSheets[coinName] = (
+        await getDynamicFieldObject(client, {
           parentId: balanceSheetParentId,
           name: {
             type: '0x1::type_name::TypeName',
@@ -69,7 +66,7 @@ const executor: JobExecutor = async (cache: Cache) => {
             },
           },
         })
-      );
+      ).data?.content?.fields;
     }
   );
 
@@ -81,8 +78,8 @@ const executor: JobExecutor = async (cache: Cache) => {
     marketData.borrow_dynamics.fields.table.fields.id.id;
   const borrowIndexesPromises = Object.keys(pools).map(
     (coinName) => async () => {
-      borrowIndexes[coinName] = getObjectFields(
-        await client.getDynamicFieldObject({
+      borrowIndexes[coinName] = (
+        await getDynamicFieldObject(client, {
           parentId: borrowIndexesParentId,
           name: {
             type: '0x1::type_name::TypeName',
@@ -91,7 +88,7 @@ const executor: JobExecutor = async (cache: Cache) => {
             },
           },
         })
-      );
+      ).data?.content?.fields;
     }
   );
 
@@ -102,8 +99,8 @@ const executor: JobExecutor = async (cache: Cache) => {
   const interestModelsParentId =
     marketData.interest_models.fields.table.fields.id.id;
   for (const coinName of Object.keys(pools)) {
-    interestModels[coinName] = getObjectFields(
-      await client.getDynamicFieldObject({
+    interestModels[coinName] = (
+      await getDynamicFieldObject(client, {
         parentId: interestModelsParentId,
         name: {
           type: '0x1::type_name::TypeName',
@@ -112,7 +109,7 @@ const executor: JobExecutor = async (cache: Cache) => {
           },
         },
       })
-    );
+    ).data?.content?.fields;
   }
 
   const market: MarketJobResult = {};
@@ -199,6 +196,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: prefix,
   executor,
+  label: 'normal',
 };
 
 export default job;

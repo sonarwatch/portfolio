@@ -1,4 +1,3 @@
-import { getObjectFields, getObjectId } from '@mysten/sui.js';
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -7,23 +6,22 @@ import { clmmPoolsPrefix, platformId, poolTableId } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { parsePool } from './helper';
 import storeTokenPricesFromSqrt from '../../utils/clmm/tokenPricesFromSqrt';
-import getDynamicFieldsSafe from '../../utils/sui/getDynamicFieldsSafe';
-import getMultipleSuiObjectsSafe from '../../utils/sui/getMultipleObjectsSafe';
+import { getDynamicFields } from '../../utils/sui/getDynamicFields';
+import { multiGetObjects } from '../../utils/sui/multiGetObjects';
+import { PoolFields } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
-  const poolFactories = await getDynamicFieldsSafe(client, poolTableId);
-  const poolFactoryIds = poolFactories.map(getObjectId);
+  const poolFactories = await getDynamicFields(client, poolTableId);
+  const poolFactoryIds = poolFactories.map((p) => p.objectId);
   if (!poolFactoryIds.length) return;
 
-  const poolFactoryInfos = await getMultipleSuiObjectsSafe(
-    client,
-    poolFactoryIds,
-    { showContent: true }
-  );
+  const poolFactoryInfos = await multiGetObjects(client, poolFactoryIds, {
+    showContent: true,
+  });
 
   const poolIds = poolFactoryInfos.map((info) => {
-    const fields = getObjectFields(info) as {
+    const fields = info.data?.content?.fields as {
       value: {
         fields: {
           pool_id: string;
@@ -35,10 +33,8 @@ const executor: JobExecutor = async (cache: Cache) => {
   });
 
   if (!poolIds.length) return;
-  const pools = await getMultipleSuiObjectsSafe(client, poolIds, {
-    showContent: true,
-  });
-
+  const pools = await multiGetObjects<PoolFields>(client, poolIds);
+  const promises = [];
   for (const pool of pools) {
     const parsedPool = parsePool(pool);
     const { types } = parsedPool;
@@ -47,31 +43,32 @@ const executor: JobExecutor = async (cache: Cache) => {
       !types[0].includes('fee') &&
       !types[1].includes('fee')
     ) {
-      await storeTokenPricesFromSqrt(
-        cache,
-        NetworkId.sui,
-        parsedPool.id.id,
-        new BigNumber(parsedPool.coin_a),
-        new BigNumber(parsedPool.coin_b),
-        new BigNumber(parsedPool.sqrt_price),
-        types[0],
-        types[1]
+      promises.push(
+        storeTokenPricesFromSqrt(
+          cache,
+          NetworkId.sui,
+          parsedPool.id.id,
+          new BigNumber(parsedPool.coin_a),
+          new BigNumber(parsedPool.coin_b),
+          new BigNumber(parsedPool.sqrt_price),
+          types[0],
+          types[1]
+        )
+      );
+      promises.push(
+        cache.setItem(parsedPool.objectId, parsedPool, {
+          prefix: clmmPoolsPrefix,
+          networkId: NetworkId.sui,
+        })
       );
     }
   }
-
-  const promises = pools.map((pool) => {
-    const parsedPool = parsePool(pool);
-    return cache.setItem(parsedPool.objectId, parsedPool, {
-      prefix: clmmPoolsPrefix,
-      networkId: NetworkId.sui,
-    });
-  });
   await Promise.allSettled(promises);
 };
 
 const job: Job = {
   id: `${platformId}-pools`,
   executor,
+  label: 'normal',
 };
 export default job;

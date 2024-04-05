@@ -18,6 +18,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     whirlpoolProgram,
     whirlpoolFilters
   );
+
   for (let id = 0; id < whirlpoolsInfo.length; id++) {
     const whirlpoolInfo = whirlpoolsInfo[id];
     if (whirlpoolInfo.liquidity.isZero()) continue;
@@ -45,5 +46,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-whirlpools`,
   executor,
+  label: 'normal',
 };
 export default job;

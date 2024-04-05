@@ -1,4 +1,5 @@
 import { Platform } from '@sonarwatch/portfolio-core';
+import { InputViewFunctionData } from '@aptos-labs/ts-sdk';
 import { coinInfo } from '../../utils/aptos';
 
 export const platformId = 'thala';
@@ -36,14 +37,18 @@ export const lpWeightedTypePrefix = `${programAddressLP}::weighted_pool::Weighte
 export const lpStableCoinInfoTypePrefix = `${coinInfo}<${lpStableTypeTokenPrefix}`;
 export const lpWeightedCoinInfoTypePrefix = `${coinInfo}<${lpWeightedTypeTokenPrefix}`;
 
-export const stabilityDepositPayload = (owner: string) => ({
+export const stabilityDepositPayload = (
+  owner: string
+): InputViewFunctionData => ({
   function: liquidityDeposit,
-  type_arguments: [cryptoType],
-  arguments: [owner],
+  typeArguments: [cryptoType],
+  functionArguments: [owner],
 });
 
-export const stabilityClaimablePayload = (owner: string) => ({
+export const stabilityClaimablePayload = (
+  owner: string
+): InputViewFunctionData => ({
   function: liquidityClaimable,
-  type_arguments: [],
-  arguments: [owner],
+  typeArguments: [],
+  functionArguments: [owner],
 });

@@ -105,7 +105,7 @@ export const lastUpdateStruct = new BeetStruct<LastUpdate>(
   (args) => args as LastUpdate
 );
 
-export type ReserveAccount = {
+export type Reserve = {
   version: number;
   lastUpdate: LastUpdate;
   lendingMarket: PublicKey;
@@ -115,7 +115,7 @@ export type ReserveAccount = {
   padding: Buffer;
 };
 
-export const reserveAccountStruct = new BeetStruct<ReserveAccount>(
+export const reserveStruct = new BeetStruct<Reserve>(
   [
     ['version', u8],
     ['lastUpdate', lastUpdateStruct],
@@ -125,7 +125,7 @@ export const reserveAccountStruct = new BeetStruct<ReserveAccount>(
     ['config', reserveConfigStruct],
     ['padding', blob(248)],
   ],
-  (args) => args as ReserveAccount
+  (args) => args as Reserve
 );
 
 export type Obligation = {

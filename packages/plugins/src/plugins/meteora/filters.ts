@@ -1,9 +1,6 @@
 import { GetProgramAccountsFilter } from '@solana/web3.js';
-import { vaultStruct } from './struct';
 
-export const vaultsFilters: GetProgramAccountsFilter[] = [
-  { dataSize: vaultStruct.byteSize },
-];
+export const vaultsFilters: GetProgramAccountsFilter[] = [{ dataSize: 10240 }];
 
 export const constantPoolsFilters: GetProgramAccountsFilter[] = [
   { dataSize: 944 },
@@ -11,4 +8,40 @@ export const constantPoolsFilters: GetProgramAccountsFilter[] = [
 
 export const stablePoolsFilters: GetProgramAccountsFilter[] = [
   { dataSize: 1387 },
+];
+
+export const farmAccountFilter = (
+  owner: string
+): GetProgramAccountsFilter[] => [
+  { dataSize: 200 },
+  {
+    memcmp: {
+      offset: 40,
+      bytes: owner,
+    },
+  },
+];
+
+export const dlmmPositionAccountFilter = (
+  owner: string
+): GetProgramAccountsFilter[] => [
+  { dataSize: 7560 },
+  {
+    memcmp: {
+      offset: 40,
+      bytes: owner,
+    },
+  },
+];
+
+export const dlmmPositionV2AccountFilter = (
+  owner: string
+): GetProgramAccountsFilter[] => [
+  { dataSize: 8120 },
+  {
+    memcmp: {
+      offset: 40,
+      bytes: owner,
+    },
+  },
 ];

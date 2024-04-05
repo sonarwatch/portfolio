@@ -11,6 +11,12 @@ import { blob, i64, u128, u64 } from '../../../utils/solana';
 
 // https://github.com/mrgnlabs/mrgn-ts/blob/ea61c4b40a35554549289f559ea0cb66767923df/packages/marginfi-client-v2/src/idl/marginfi.json
 
+export enum OracleSetup {
+  None,
+  PythEma,
+  SwitchboardV2,
+}
+
 export enum BankOperationalState {
   Paused,
   Operational,
@@ -56,7 +62,7 @@ export type BankConfig = {
   depositLimit: BigNumber;
   interestRateConfig: InterestRateConfig;
   operationalState: BankOperationalState;
-  oracleSetup: number;
+  oracleSetup: OracleSetup;
   oracleKeys: PublicKey[];
   ignore1: number[];
   borrowLimit: BigNumber;

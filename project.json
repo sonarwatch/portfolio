@@ -2,6 +2,12 @@
   "name": "portfolio",
   "$schema": "node_modules/nx/schemas/project-schema.json",
   "targets": {
+    "docs": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "typedoc"
+      }
+    },
     "local-registry": {
       "executor": "@nx/js:verdaccio",
       "options": {

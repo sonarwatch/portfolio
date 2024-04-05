@@ -1,28 +1,31 @@
-import { NetworkId, PortfolioElement } from '@sonarwatch/portfolio-core';
-import { PublicKey } from '@solana/web3.js';
-
 import {
-  FindNftsByOwnerOutput,
-  Metadata,
-  Metaplex,
-  Nft,
-  Sft,
-} from '@metaplex-foundation/js';
+  NetworkId,
+  PortfolioAssetCollectible,
+  PortfolioElement,
+} from '@sonarwatch/portfolio-core';
+
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { walletTokensPlatform } from '../constants';
-import { getClientSolana } from '../../../utils/clients';
 import { Cache } from '../../../Cache';
 import { getRaydiumCLMMPositions } from '../../raydium/getRaydiumCLMMPositions';
 import { getWhirlpoolPositions } from '../../orca/getWhirlpoolPositions';
 import { isARaydiumPosition } from '../../raydium/helpers';
 import { isAnOrcaPosition } from '../../orca/helpers';
+import {
+  getHeliumElementsFromNFTs,
+  isAnHeliumNFTVote,
+} from '../../daos/helpers';
+import getSolanaDasEndpoint from '../../../utils/clients/getSolanaDasEndpoint';
+import { getAssetsByOwnerDas } from '../../../utils/solana/das/getAssetsByOwnerDas';
+import { DisplayOptions } from '../../../utils/solana/das/types';
+import { heliusAssetToAssetCollectible } from '../../../utils/solana/das/heliusAssetToAssetCollectible';
 
 type Appraiser = (
   cache: Cache,
-  nfts: FindNftsByOwnerOutput
+  nfts: PortfolioAssetCollectible[]
 ) => Promise<PortfolioElement[]>;
 
-type Identifier = (nft: Metadata | Nft | Sft) => boolean;
+type Identifier = (nft: PortfolioAssetCollectible) => boolean;
 
 // Add here any pair of [Identifier,Appraiser] =
 // Identifier : a string to filter the asset concerned
@@ -33,20 +36,28 @@ type Identifier = (nft: Metadata | Nft | Sft) => boolean;
 const appraiserByIdentifier: Map<Identifier, Appraiser> = new Map([
   [isARaydiumPosition, getRaydiumCLMMPositions],
   [isAnOrcaPosition, getWhirlpoolPositions],
+  [isAnHeliumNFTVote, getHeliumElementsFromNFTs],
 ]);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
-  const ownerPubKey = new PublicKey(owner);
-  const metaplex = new Metaplex(client);
+  const dasEndpoint = getSolanaDasEndpoint();
+  const displayOptions: DisplayOptions = {
+    showCollectionMetadata: true,
+    showUnverifiedCollections: true,
+    showInscription: false,
+    showNativeBalance: false,
+    showGrandTotal: false,
+    showFungible: true,
+  };
+  const assets = await getAssetsByOwnerDas(dasEndpoint, owner, displayOptions);
 
-  const outputs = await metaplex.nfts().findAllByOwner({
-    owner: ownerPubKey,
-  });
+  const nftsByIndentifier: Map<Identifier, PortfolioAssetCollectible[]> =
+    new Map();
+  for (let n = 0; n < assets.length; n++) {
+    const nft = heliusAssetToAssetCollectible(assets[n]);
+    if (!nft) continue;
+    if (nft.attributes.tags?.includes('compressed')) continue;
 
-  const nftsByIndentifier: Map<Identifier, FindNftsByOwnerOutput> = new Map();
-  for (let n = 0; n < outputs.length; n++) {
-    const nft = outputs[n];
     for (const identifier of appraiserByIdentifier.keys()) {
       if (identifier(nft)) {
         if (!nftsByIndentifier.get(identifier)) {

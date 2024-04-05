@@ -25,6 +25,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     networkId: NetworkId.sei,
   });
   if (!platformsContracts) return [];
+
+  const tokenPriceById = await cache.getTokenPricesAsMap(
+    platformsContracts
+      .map((platformContracts) => platformContracts.contracts)
+      .flat(),
+    NetworkId.sei
+  );
   platformsContracts.forEach((platform) => {
     if (platform) {
       contractsByPlatform.set(platform.id, platform.contracts);
@@ -40,7 +47,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const liquidities: PortfolioLiquidity[] = [];
 
     for (const contract of contracts) {
-      const tokenPrice = await cache.getTokenPrice(contract, NetworkId.sei);
+      const tokenPrice = tokenPriceById.get(contract);
       if (!tokenPrice) continue;
 
       const balance = (await cosmWasmClient.queryContractSmart(
@@ -76,7 +83,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       type: PortfolioElementType.liquidity,
       networkId: NetworkId.sei,
       platformId: platform,
-      name: 'Liquidities',
       label: 'LiquidityPool',
       value: getUsdValueSum(liquidities.map((a) => a.value)),
       data: {

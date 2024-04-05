@@ -3,6 +3,7 @@ import {
   NetworkIdType,
   TokenPriceSource,
   networks,
+  solanaNativeWrappedAddress,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -24,6 +25,8 @@ export type PartialTokenUnderlying = {
 };
 
 /**
+ * @deprecated
+ * This function has been deprecated. Use the getLpUnderlyingTokenSource instead.
  * This list is used to avoid calulating low liquidity tokens with others low liquidity tokens.
  * To prevent wrong prices (with very low precision) to be calculated, we setup a list of tokens to rely on.
  * These tokens have very low chance of having price manipulation.
@@ -44,7 +47,7 @@ export const tokensToRelyOnByNetwork: Map<NetworkIdType, string[]> = new Map([
     NetworkId.solana,
     [
       networks.solana.native.address,
-      'So11111111111111111111111111111111111111112', // WSOL
+      solanaNativeWrappedAddress, // WSOL
       'J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn', // jito SOL
       'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So', // mSOL
       '7dHbWXmci3dT8UFYWYZweBLXgycu7Y3iL6trKn1Y7ARj', // lido SOL
@@ -71,6 +74,14 @@ export const tokensToRelyOnByNetwork: Map<NetworkIdType, string[]> = new Map([
   ],
 ]);
 
+/**
+ * @deprecated
+ * This function has been deprecated. Use the getLpUnderlyingTokenSource instead.
+ * This list is used to avoid calulating low liquidity tokens with others low liquidity tokens.
+ * To prevent wrong prices (with very low precision) to be calculated, we setup a list of tokens to rely on.
+ * These tokens have very low chance of having price manipulation.
+ * Therefore, they can be safely used to compute other tokens prices.
+ */
 export default async function checkComputeAndStoreTokensPrices(
   cache: Cache,
   source: string,
@@ -123,7 +134,7 @@ export default async function checkComputeAndStoreTokensPrices(
   }
 
   if (!tokenPriceX || !tokenPriceY) {
-    let decimalsTokenX;
+    let decimalsTokenX: number | null;
     if (tokenX.decimal) {
       decimalsTokenX = tokenX.decimal;
     } else if (tokenPriceX) {
@@ -141,8 +152,7 @@ export default async function checkComputeAndStoreTokensPrices(
       decimalsTokenY = await getDecimalsForToken(cache, tokenY.mint, networkId);
     }
 
-    if (decimalsTokenX === undefined || decimalsTokenY === undefined)
-      return undefined;
+    if (decimalsTokenX === null || decimalsTokenY === null) return undefined;
 
     const tokenXReserve = tokenX.rawReserve.dividedBy(10 ** decimalsTokenX);
     const tokenYReserve = tokenY.rawReserve.dividedBy(10 ** decimalsTokenY);

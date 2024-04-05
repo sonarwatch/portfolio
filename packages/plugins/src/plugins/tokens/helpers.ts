@@ -3,6 +3,7 @@ import {
   NetworkIdType,
   TokenPriceSource,
   UniTokenList,
+  UniTokenListVersion,
 } from '@sonarwatch/portfolio-core';
 import { nIdsToFetch, walletTokensPlatform } from './constants';
 import { CoingeckoSimpleRes, TokenData } from './types';
@@ -10,7 +11,25 @@ import shuffleArray from '../../utils/misc/shuffleArray';
 import sleep from '../../utils/misc/sleep';
 import { coingeckoCoinsPriceUrl } from '../../utils/coingecko/constants';
 
-const tagSeparator = '<|>';
+export function compareVersion(
+  versionA: UniTokenListVersion,
+  versionB: UniTokenListVersion
+) {
+  if (versionA.major > versionB.major) return 1;
+  if (versionA.major < versionB.major) return -1;
+  if (versionA.minor > versionB.minor) return 1;
+  if (versionA.minor < versionB.minor) return -1;
+  if (versionA.patch > versionB.patch) return 1;
+  if (versionA.patch < versionB.patch) return -1;
+  return 0;
+}
+
+export function isLatestVersion(
+  newVersion: UniTokenListVersion,
+  oldVersion: UniTokenListVersion
+) {
+  return compareVersion(newVersion, oldVersion) === 1;
+}
 
 export async function getCoingeckoSources(
   networkId: NetworkIdType,
@@ -56,6 +75,7 @@ async function getPricesFromCoingeckoIds(
 
   const priceByCoingeckoId = new Map<string, number>();
   while (idsToFetch.length !== 0) {
+    await sleep(10000);
     const currIdsToFetch = idsToFetch.splice(0, nIdsToFetch);
     const coingeckoSimpleRes: AxiosResponse<CoingeckoSimpleRes> | null =
       await axios
@@ -66,7 +86,10 @@ async function getPricesFromCoingeckoIds(
           },
         })
         .catch(() => null);
-    if (!coingeckoSimpleRes) continue;
+    if (!coingeckoSimpleRes) {
+      await sleep(60000);
+      continue;
+    }
 
     for (let i = 0; i < currIdsToFetch.length; i += 1) {
       const id = currIdsToFetch[i];
@@ -74,14 +97,11 @@ async function getPricesFromCoingeckoIds(
       if (!usd) continue;
       priceByCoingeckoId.set(id, usd);
     }
-    await sleep(10000);
   }
   return priceByCoingeckoId;
 }
 
-export async function getTokensData(
-  tokenList: UniTokenList
-): Promise<TokenData[]> {
+export function getTokensData(tokenList: UniTokenList): TokenData[] {
   const tokensData = tokenList.tokens.reduce((cTokensData: TokenData[], ti) => {
     if (!ti.extensions) return cTokensData;
     const { coingeckoId } = ti.extensions;
@@ -99,15 +119,17 @@ export async function getTokensData(
   return tokensData;
 }
 
-export function getTag(platformId: string, elementName?: string) {
-  return `${platformId}${elementName ? `${tagSeparator}${elementName}` : ''}`;
+export const lpTagSeparator = '<|>';
+
+export function getLpTag(platformId: string, elementName?: string) {
+  return `${platformId}${elementName ? `${lpTagSeparator}${elementName}` : ''}`;
 }
 
-export function parseTag(tag: string): {
+export function parseLpTag(tag: string): {
   platformId: string;
   elementName?: string;
 } {
-  const split = tag.split(tagSeparator, 2);
+  const split = tag.split(lpTagSeparator, 2);
   if (split.length < 1) throw new Error(`Tag is not valid: ${tag}`);
   return {
     platformId: split[0],

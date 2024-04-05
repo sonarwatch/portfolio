@@ -1,20 +1,19 @@
-import { ObjectContentFields } from '@mysten/sui.js';
 import BigNumber from 'bignumber.js';
 import { BasicField, IdField, WitTable } from './basic';
 
 export type BalanceSheet = {
-  // [k in CoinNames]?: ObjectContentFields;
-  [k in string]?: ObjectContentFields;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [k in string]?: any;
 };
 
 export type BorrowIndexes = {
-  // [k in CoinNames]?: ObjectContentFields;
-  [k in string]?: ObjectContentFields;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [k in string]?: any;
 };
 
 export type InterestModel = {
-  // [k in CoinNames]?: ObjectContentFields;
-  [k in string]?: ObjectContentFields;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [k in string]?: any;
 };
 
 export type InterestModelData = {

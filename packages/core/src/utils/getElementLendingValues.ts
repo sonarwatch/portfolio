@@ -1,24 +1,47 @@
 import { PortfolioAsset } from '../Portfolio';
 import { UsdValue } from '../UsdValue';
 
-function getCollateralRatio(suppliedValue: UsdValue, borrowedValue: UsdValue) {
-  let collateralRatio: number | null = null;
-  if (borrowedValue === 0) {
-    collateralRatio = -1;
-  } else if (suppliedValue && borrowedValue) {
-    collateralRatio = suppliedValue / borrowedValue;
-  }
-  return collateralRatio;
+function getHealthRatio(
+  suppliedAssets: PortfolioAsset[],
+  borrowedAssets: PortfolioAsset[],
+  suppliedLtvs?: number[],
+  borrowedWeights?: number[]
+): number | null {
+  if (!suppliedLtvs) return null;
+  if (suppliedLtvs && suppliedLtvs.length !== suppliedAssets.length)
+    throw new Error('suppliedLtvs length doesnt match suppliedAssets');
+  if (borrowedAssets.length === 0) return 1;
+
+  const fBorrowedWeights =
+    borrowedWeights || new Array<number>(borrowedAssets.length).fill(1);
+  if (fBorrowedWeights.length !== borrowedAssets.length)
+    throw new Error('borrowedWeights length doesnt match borrowedAssets');
+
+  const suppliesWeightedValue: number = suppliedAssets.reduce(
+    (acc: number, asset, index) =>
+      acc !== null && asset.value !== null
+        ? acc + asset.value * suppliedLtvs[index]
+        : 0,
+    0
+  );
+  const borrowsWeightedValue: number = borrowedAssets.reduce(
+    (acc: number, asset, index) =>
+      acc !== null && asset.value !== null
+        ? acc + asset.value * fBorrowedWeights[index]
+        : 0,
+    0
+  );
+  return (suppliesWeightedValue - borrowsWeightedValue) / suppliesWeightedValue;
 }
 
 export function getElementLendingValues(
   suppliedAssets: PortfolioAsset[],
   borrowedAssets: PortfolioAsset[],
   rewardAssets: PortfolioAsset[],
-  suppliedLTVs?: number[],
+  suppliedLtvs?: number[],
   borrowedWeights?: number[]
 ) {
-  const rewardsValue: UsdValue = rewardAssets.reduce(
+  const rewardValue: UsdValue = rewardAssets.reduce(
     (acc: UsdValue, asset) =>
       acc !== null && asset.value !== null ? acc + asset.value : null,
     0
@@ -33,40 +56,24 @@ export function getElementLendingValues(
       acc !== null && asset.value !== null ? acc + asset.value : null,
     0
   );
-  const collateralRatio = getCollateralRatio(suppliedValue, borrowedValue);
-
-  let healthRatio = -1;
-  if (borrowedWeights && suppliedLTVs) {
-    const suppliesWeightedValue: number = suppliedAssets.reduce(
-      (acc: number, asset, index) =>
-        acc !== null && asset.value !== null
-          ? acc + asset.value * suppliedLTVs[index]
-          : 0,
-      0
-    );
-    const borrowsWeightedValue: number = borrowedAssets.reduce(
-      (acc: number, asset, index) =>
-        acc !== null && asset.value !== null
-          ? acc + asset.value * borrowedWeights[index]
-          : 0,
-      0
-    );
-    healthRatio =
-      (suppliesWeightedValue - borrowsWeightedValue) / suppliesWeightedValue;
-  }
+  const healthRatio = getHealthRatio(
+    suppliedAssets,
+    borrowedAssets,
+    suppliedLtvs,
+    borrowedWeights
+  );
 
   // Total value
   let value =
     suppliedValue !== null && borrowedValue !== null
       ? suppliedValue - borrowedValue
       : null;
-  if (rewardsValue !== null && value !== null) value += rewardsValue;
+  if (rewardValue !== null && value !== null) value += rewardValue;
 
   return {
     borrowedValue,
     suppliedValue,
-    rewardsValue,
-    collateralRatio,
+    rewardValue,
     healthRatio,
     value,
   };

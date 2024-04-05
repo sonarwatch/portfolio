@@ -1,120 +1,150 @@
 import {
+  NetworkId,
   NetworkIdType,
   TokenPrice,
   TokenPriceSource,
   aptosNativeAddress,
   coingeckoSourceId,
+  formatTokenAddress,
   seiNativeAddress,
   solanaNativeAddress,
   solanaNativeWrappedAddress,
   suiNativeAddress,
 } from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
-import getSourceWeight from './getSourceWeight';
 import { walletTokensPlatform } from '../../plugins/tokens/constants';
+import getSourceWeight from './getSourceWeight';
 
-export type PoolData = {
-  id: string;
-  supply: BigNumber;
-  lpDecimals: number;
-  reserveTokenX: BigNumber;
-  reserveTokenY: BigNumber;
-  mintTokenX: string;
-  decimalX?: number;
-  mintTokenY: string;
-  decimalY?: number;
-};
+export const defaultAcceptedPairs = new Map<NetworkIdType, string[]>([
+  [
+    NetworkId.sei,
+    [
+      seiNativeAddress,
+      'ibc/ED07A3391A112B175915CD8FAF43A2DA8E4790EDE12566649D0C2F97716B8518', // OSMO
+      'factory/sei189adguawugk3e55zn63z8r9ll29xrjwca636ra7v7gxuzn98sxyqwzt47l/Hq4tuDzhRBnxw3tFA5n6M52NVMVcC19XggbyDiJKCD6H', // USDCet
+    ].map((a) => formatTokenAddress(a, NetworkId.sei)),
+  ],
+  [
+    NetworkId.solana,
+    [
+      solanaNativeAddress,
+      solanaNativeWrappedAddress,
+      'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', // USDC
+      'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB', // USDT
+    ].map((a) => formatTokenAddress(a, NetworkId.solana)),
+  ],
+  [
+    NetworkId.aptos,
+    [
+      aptosNativeAddress,
+      '0x5e156f1207d0ebfa19a9eeff00d62a282278fb8719f4fab3a586a0a2c0fffbea::coin::T', // USDCet
+      '0x6f986d146e4a90b828d8c12c14b6f4e003fdff11a8eecceceb63744363eaac01::mod_coin::MOD', // MOD (Move Dollar)
+    ].map((a) => formatTokenAddress(a, NetworkId.aptos)),
+  ],
+  [
+    NetworkId.sui,
+    [
+      suiNativeAddress,
+      '0x2::sui::SUI',
+      '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN', // USDCet
+      '0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN', // USDCet
+    ].map((a) => formatTokenAddress(a, NetworkId.sui)),
+  ],
+]);
 
-type PoolUnderlyingRaw = {
+export type PoolUnderlying = {
   address: string;
-  reserveAmountRaw: BigNumber;
+  reserveAmount: number;
   decimals: number;
-  tokenPrice: TokenPrice | undefined;
+  weight: number;
+  tokenPrice?: TokenPrice;
 };
 
-type KnownPoolUnderlyingRaw = PoolUnderlyingRaw & {
-  tokenPrice: TokenPrice;
+type KnownPoolUnderlying = PoolUnderlying & {
+  price: number;
 };
 
-const defaultAcceptedPairs = [
-  // Sei Addresses
-  seiNativeAddress,
-  'ibc/ED07A3391A112B175915CD8FAF43A2DA8E4790EDE12566649D0C2F97716B8518', // OSMO
-  'factory/sei189adguawugk3e55zn63z8r9ll29xrjwca636ra7v7gxuzn98sxyqwzt47l/Hq4tuDzhRBnxw3tFA5n6M52NVMVcC19XggbyDiJKCD6H', // USDCet
-  // Solana Addresses
-  solanaNativeAddress,
-  solanaNativeWrappedAddress,
-  'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', // USDC
-  'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB', // USDT
-  // Aptos Addresses
-  aptosNativeAddress,
-  '0x5e156f1207d0ebfa19a9eeff00d62a282278fb8719f4fab3a586a0a2c0fffbea::coin::T', // USDCet
-  '0x6f986d146e4a90b828d8c12c14b6f4e003fdff11a8eecceceb63744363eaac01::mod_coin::MOD', // MOD (Move Dollar)
-  // Sui addresses
-  suiNativeAddress,
-  '0x2::sui::SUI',
-  '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN', // USDCet
-  '0x6864a6f921804860930db6ddbe2e16acdf8504495ea7481637a1c8b9a8fe54b::cetus::CETUS', // CETUS
-];
+export type GetLpUnderlyingTokenSourceParams = {
+  networkId: NetworkIdType;
+  sourceId: string;
+  poolUnderlyings: PoolUnderlying[];
+  platformId?: string;
+  acceptedPairs?: string[];
+  minReserveValue?: number;
+};
 
-export default function getLpUnderlyingTokenSource(
-  sourceId: string,
-  platformId: string,
-  networkId: NetworkIdType,
-  poolUnderlyingsA: PoolUnderlyingRaw,
-  poolUnderlyingsB: PoolUnderlyingRaw,
-  minTvl = 5000,
-  acceptedPairs = defaultAcceptedPairs
-): TokenPriceSource | null {
-  if (!poolUnderlyingsA.tokenPrice && !poolUnderlyingsB.tokenPrice) return null;
-  if (poolUnderlyingsA.tokenPrice?.price === 0) return null;
-  if (poolUnderlyingsB.tokenPrice?.price === 0) return null;
+export function getLpUnderlyingTokenSource(
+  params: GetLpUnderlyingTokenSourceParams
+) {
+  let { platformId, acceptedPairs, minReserveValue } = params;
+  const { networkId, poolUnderlyings, sourceId } = params;
+  if (!platformId) platformId = walletTokensPlatform.id;
+  if (!acceptedPairs) acceptedPairs = defaultAcceptedPairs.get(networkId);
+  if (acceptedPairs === undefined) return [];
+  if (acceptedPairs.length === 0) return [];
+  if (!minReserveValue) minReserveValue = 2500;
 
-  const isAcceptedTokenA = acceptedPairs.includes(poolUnderlyingsA.address);
-  const isAcceptedTokenB = acceptedPairs.includes(poolUnderlyingsB.address);
-  if (isAcceptedTokenA && isAcceptedTokenB) return null;
+  const totalWeight = poolUnderlyings.reduce(
+    (partialSum, p) => partialSum + p.weight,
+    0
+  );
+  if (totalWeight > 1.02) throw new Error('Weights greater than 1');
+  if (totalWeight < 0.98) throw new Error('Weights are less than 1');
 
-  let knownUnderlaying: KnownPoolUnderlyingRaw | undefined;
-  let unknownUnderlaying: PoolUnderlyingRaw | undefined;
-  if (poolUnderlyingsA.tokenPrice && isAcceptedTokenA) {
-    knownUnderlaying = poolUnderlyingsA as KnownPoolUnderlyingRaw;
-    unknownUnderlaying = poolUnderlyingsB as KnownPoolUnderlyingRaw;
-  } else if (poolUnderlyingsB.tokenPrice && isAcceptedTokenB) {
-    knownUnderlaying = poolUnderlyingsB as KnownPoolUnderlyingRaw;
-    unknownUnderlaying = poolUnderlyingsA as KnownPoolUnderlyingRaw;
-  }
-  if (!knownUnderlaying || !unknownUnderlaying) return null;
-  if (
-    unknownUnderlaying.tokenPrice &&
-    unknownUnderlaying.tokenPrice.sources.some(
-      (source) => source.id === coingeckoSourceId
+  let knownUnderlaying: KnownPoolUnderlying | undefined;
+  const fAddresses = poolUnderlyings.map((u) =>
+    formatTokenAddress(u.address, networkId)
+  );
+
+  let knownReserveValue: number | undefined;
+  for (let i = 0; i < poolUnderlyings.length; i++) {
+    const u = poolUnderlyings[i];
+    if (!u.tokenPrice) continue;
+    if (!acceptedPairs.includes(fAddresses[i])) continue;
+    const reserveValue = u.tokenPrice.price * u.reserveAmount;
+    if (
+      knownUnderlaying &&
+      knownReserveValue &&
+      knownReserveValue > reserveValue
     )
-  ) {
-    return null;
+      continue;
+
+    knownUnderlaying = u as KnownPoolUnderlying;
+    knownReserveValue = reserveValue;
+  }
+  if (!knownUnderlaying || !knownReserveValue) return [];
+  if (knownReserveValue < minReserveValue) return [];
+
+  const knownUnderlayingAddress = formatTokenAddress(
+    knownUnderlaying.address,
+    networkId
+  );
+  const sources: TokenPriceSource[] = [];
+  for (let i = 0; i < poolUnderlyings.length; i++) {
+    const u = poolUnderlyings[i];
+    if (knownUnderlayingAddress === fAddresses[i]) continue;
+    if (acceptedPairs.includes(fAddresses[i])) continue;
+    if (
+      u.tokenPrice &&
+      u.tokenPrice.sources.some((s) => s.id === coingeckoSourceId)
+    )
+      continue;
+
+    const price =
+      ((u.weight / knownUnderlaying.weight) * knownReserveValue) /
+      u.reserveAmount;
+
+    const source: TokenPriceSource = {
+      id: sourceId,
+      networkId,
+      platformId: walletTokensPlatform.id,
+      address: fAddresses[i],
+      decimals: u.decimals,
+      price,
+      weight: getSourceWeight(knownReserveValue),
+      timestamp: Date.now(),
+    };
+    sources.push(source);
   }
 
-  const knownReserveAmount = knownUnderlaying.reserveAmountRaw
-    .div(10 ** knownUnderlaying.decimals)
-    .toNumber();
-  const knownReserveValue =
-    knownReserveAmount * knownUnderlaying.tokenPrice.price;
-  const poolTvl = knownReserveValue * 2;
-  if (minTvl > poolTvl) return null;
-
-  const unknownReserveAmount = unknownUnderlaying.reserveAmountRaw
-    .div(10 ** unknownUnderlaying.decimals)
-    .toNumber();
-  const price = knownReserveValue / unknownReserveAmount;
-
-  const source: TokenPriceSource = {
-    id: sourceId,
-    networkId,
-    platformId: walletTokensPlatform.id,
-    address: unknownUnderlaying.address,
-    decimals: unknownUnderlaying.decimals,
-    price,
-    weight: getSourceWeight(poolTvl),
-    timestamp: Date.now(),
-  };
-  return source;
+  return sources;
 }

@@ -1,10 +1,5 @@
-import {
-  NetworkId,
-  TokenPrice,
-  TokenPriceUnderlying,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
-import BigNumber from 'bignumber.js';
 import { platformId, poolsProgramId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import {
@@ -15,13 +10,12 @@ import {
   mintAccountStruct,
   tokenAccountStruct,
 } from '../../utils/solana';
-import { pools } from './pools';
-import { fetchTokenSupplyAndDecimals } from '../../utils/solana/fetchTokenSupplyAndDecimals';
 import { PoolState, poolStateStruct } from './struct';
-import runInBatch from '../../utils/misc/runInBatch';
 import { constantPoolsFilters, stablePoolsFilters } from './filters';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
+import getLpTokenSourceRawOld from '../../utils/misc/getLpTokenSourceRawOld';
+import getLpUnderlyingTokenSourceOld from '../../utils/misc/getLpUnderlyingTokenSourceOld';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -59,28 +53,20 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   // Store all tokens, lpmint, lpVaults
   const vaultsLpAddresses: Set<PublicKey> = new Set();
-  const tokensMint: Set<PublicKey> = new Set();
+  const tokensMint: Set<string> = new Set();
   const lpMints: Set<PublicKey> = new Set();
   poolsAccounts.forEach((poolAccount) => {
     vaultsLpAddresses.add(poolAccount.aVaultLp);
     vaultsLpAddresses.add(poolAccount.bVaultLp);
-    tokensMint.add(poolAccount.tokenAMint);
-    tokensMint.add(poolAccount.tokenBMint);
+    tokensMint.add(poolAccount.tokenAMint.toString());
+    tokensMint.add(poolAccount.tokenBMint.toString());
     lpMints.add(poolAccount.lpMint);
   });
 
-  // Get all token prices
-  const tokenPriceResults = await runInBatch(
-    [...tokensMint].map(
-      (mint) => () => cache.getTokenPrice(mint.toString(), NetworkId.solana)
-    )
+  const tokenPrices = await cache.getTokenPricesAsMap(
+    [...Array.from(tokensMint)],
+    NetworkId.solana
   );
-  const tokenPrices: Map<string, TokenPrice> = new Map();
-  tokenPriceResults.forEach((r) => {
-    if (r.status === 'rejected') return;
-    if (!r.value) return;
-    tokenPrices.set(r.value.address, r.value);
-  });
 
   // Get all vaults token accounts
   const tokensAccounts = await getParsedMultipleAccountsInfo(
@@ -89,183 +75,103 @@ const executor: JobExecutor = async (cache: Cache) => {
     Array.from(vaultsLpAddresses)
   );
   if (!tokensAccounts) return;
-  const tokenAccountByAddress: Map<PublicKey, TokenAccount> = new Map();
+  const tokenAccountsMap: Map<string, TokenAccount> = new Map();
   tokensAccounts.forEach((tokenAccount) => {
     if (!tokenAccount) return;
-    tokenAccountByAddress.set(
-      tokenAccount.pubkey,
-      tokenAccount as TokenAccount
-    );
+    tokenAccountsMap.set(tokenAccount.pubkey.toString(), tokenAccount);
   });
 
   // Get all mints account
   const mintsAccounts = await getParsedMultipleAccountsInfo(
     client,
     mintAccountStruct,
-    Array.from(lpMints)
+    [
+      ...Array.from(lpMints),
+      ...Array.from(tokensMint).map((tM) => new PublicKey(tM)),
+    ]
   );
-  const mintsAccountByAddress: Map<PublicKey, MintAccount> = new Map();
+  const mintsAccountByAddress: Map<string, MintAccount> = new Map();
   mintsAccounts.forEach((mintAccount) => {
     if (!mintAccount) return;
-    mintsAccountByAddress.set(mintAccount.pubkey, mintAccount as MintAccount);
+    mintsAccountByAddress.set(mintAccount.pubkey.toString(), mintAccount);
   });
 
+  const lpSources: TokenPriceSource[] = [];
   for (let id = 0; id < poolsAccounts.length; id++) {
     const poolAccount = poolsAccounts[id];
+    const aTokenMint = poolAccount.tokenAMint.toString();
+    const bTokenMint = poolAccount.tokenBMint.toString();
+    const aTokenPrice = tokenPrices.get(aTokenMint);
+    const bTokenPrice = tokenPrices.get(bTokenMint);
 
-    const ATokenPrice = tokenPrices.get(poolAccount.tokenAMint.toString());
-    const BTokenPrice = tokenPrices.get(poolAccount.tokenBMint.toString());
-    if (!BTokenPrice || !ATokenPrice) continue;
+    const aMintAccount = mintsAccountByAddress.get(aTokenMint);
+    const bMintAccount = mintsAccountByAddress.get(bTokenMint);
 
-    const tokenAccountA = tokenAccountByAddress.get(poolAccount.aVaultLp);
-    const tokenAccountB = tokenAccountByAddress.get(poolAccount.bVaultLp);
-    if (!tokenAccountA || !tokenAccountB) continue;
-    if (
-      tokenAccountA.amount.isLessThanOrEqualTo(0) ||
-      tokenAccountB.amount.isLessThanOrEqualTo(0)
-    )
-      continue;
+    const tAccountA = tokenAccountsMap.get(poolAccount.aVaultLp.toString());
+    const tAccountB = tokenAccountsMap.get(poolAccount.bVaultLp.toString());
+    if (!tAccountA || !tAccountB) continue;
+    if (tAccountA.amount.isZero() || tAccountB.amount.isZero()) continue;
 
-    const tokenAmountA = tokenAccountA.amount.dividedBy(
-      10 ** ATokenPrice.decimals
-    );
-    const tokenAmountB = tokenAccountB.amount.dividedBy(
-      10 ** BTokenPrice.decimals
-    );
-
-    const totalValueTokenA = tokenAmountA.multipliedBy(ATokenPrice.price);
-    const totalValueTokenB = tokenAmountB.multipliedBy(BTokenPrice.price);
-
-    const { lpMint } = poolAccount;
+    const lpMint = poolAccount.lpMint.toString();
     const lpMintAccount = mintsAccountByAddress.get(lpMint);
     if (!lpMintAccount) continue;
 
-    const lpDecimals = lpMintAccount.decimals;
-    const lpSupply = lpMintAccount.supply.dividedBy(10 ** lpDecimals);
-
-    const tvl = totalValueTokenA.plus(totalValueTokenB);
-    const price = tvl.dividedBy(lpSupply).toNumber();
-
-    const underlyings: TokenPriceUnderlying[] = [];
-    underlyings.push({
-      networkId: NetworkId.solana,
-      address: ATokenPrice.address,
-      decimals: ATokenPrice.decimals,
-      price: ATokenPrice.price,
-      amountPerLp: tokenAmountA.dividedBy(lpSupply).toNumber(),
-    });
-    underlyings.push({
-      networkId: NetworkId.solana,
-      address: BTokenPrice.address,
-      decimals: BTokenPrice.decimals,
-      price: BTokenPrice.price,
-      amountPerLp: tokenAmountB.dividedBy(lpSupply).toNumber(),
-    });
-    await cache.setTokenPriceSource({
-      id: platformId,
-      weight: 1,
-      address: lpMint.toString(),
-      networkId: NetworkId.solana,
-      platformId,
-      decimals: lpDecimals,
-      price,
-      underlyings,
-      timestamp: Date.now(),
-    });
-  }
-
-  // Get all multi-tokens pools
-  const meteoraPools = pools;
-  const reserverAddresses: Set<PublicKey> = new Set();
-  meteoraPools.forEach((pool) => {
-    pool.reserveAccounts.forEach((reserve) => {
-      reserverAddresses.add(new PublicKey(reserve));
-    });
-  });
-  meteoraPools.map((pool) =>
-    pool.reserveAccounts.map((reserve) => new PublicKey(reserve))
-  );
-  const reserveAccounts = await getParsedMultipleAccountsInfo(
-    client,
-    tokenAccountStruct,
-    Array.from(reserverAddresses)
-  );
-  if (!reserveAccounts) return;
-
-  const reservesAccountByAddress: Map<string, TokenAccount> = new Map();
-  reserveAccounts.forEach((reserve) => {
-    if (!reserve) return;
-    reservesAccountByAddress.set(
-      reserve.pubkey.toString(),
-      reserve as TokenAccount
-    );
-  });
-
-  for (let id = 0; id < meteoraPools.length; id++) {
-    const pool = meteoraPools[id];
-    const { address } = pool;
-    const underlyings = [];
-    let supplyValue = 0;
-    let checkedTokensPrices = 0;
-    for (let index = 0; index < pool.reserveAccounts.length; index++) {
-      const reserveAccount = reservesAccountByAddress.get(
-        pool.reserveAccounts[index]
+    if (aMintAccount && bMintAccount) {
+      const underlyingSource = getLpUnderlyingTokenSourceOld(
+        lpMint.toString(),
+        NetworkId.solana,
+        {
+          address: aTokenMint,
+          decimals: aMintAccount.decimals,
+          reserveAmountRaw: tAccountA.amount,
+          tokenPrice: aTokenPrice,
+          weight: 0.5,
+        },
+        {
+          address: bTokenMint,
+          decimals: bMintAccount.decimals,
+          reserveAmountRaw: tAccountB.amount,
+          tokenPrice: bTokenPrice,
+          weight: 0.5,
+        }
       );
-      if (!reserveAccount) continue;
-
-      const reserveTokenPrice = await cache.getTokenPrice(
-        reserveAccount.mint.toString(),
-        NetworkId.solana
-      );
-      if (!reserveTokenPrice) continue;
-      checkedTokensPrices += 1;
-
-      const reserveAmount = new BigNumber(reserveAccount.amount.toString())
-        .div(10 ** reserveTokenPrice.decimals)
-        .toNumber();
-      const reserveValue = reserveAmount * reserveTokenPrice.price;
-
-      const underlying = {
-        networkId: NetworkId.solana,
-        address: reserveTokenPrice.address,
-        decimals: reserveTokenPrice.decimals,
-        price: reserveTokenPrice.price,
-        amountPerLp: reserveAmount / reserveValue,
-      };
-      underlyings.push(underlying);
-      supplyValue += reserveValue;
+      if (underlyingSource) lpSources.push(underlyingSource);
     }
+    if (!bTokenPrice || !aTokenPrice) continue;
 
-    // don't push the LP if one tokenPrice was not found.
-    if (checkedTokensPrices < pool.reserveAccounts.length) continue;
-
-    const tokenSupplyAndDecimalsRes = await fetchTokenSupplyAndDecimals(
-      new PublicKey(address),
-      client,
-      0
-    );
-    if (!tokenSupplyAndDecimalsRes) continue;
-    const { supply, decimals } = tokenSupplyAndDecimalsRes;
-
-    if (supplyValue <= 0) continue;
-    const price = supplyValue / supply;
-
-    await cache.setTokenPriceSource({
-      id: platformId,
-      weight: 1,
-      address,
-      networkId: NetworkId.solana,
+    const lpSource = getLpTokenSourceRawOld(
+      NetworkId.solana,
+      lpMint,
       platformId,
-      decimals,
-      price,
-      underlyings,
-      timestamp: Date.now(),
-    });
+      {
+        address: lpMint,
+        decimals: lpMintAccount.decimals,
+        supplyRaw: lpMintAccount.supply,
+      },
+      [
+        {
+          address: aTokenPrice.address,
+          decimals: aTokenPrice.decimals,
+          price: aTokenPrice.price,
+          reserveAmountRaw: tAccountA.amount,
+        },
+        {
+          address: bTokenPrice.address,
+          decimals: bTokenPrice.decimals,
+          price: bTokenPrice.price,
+          reserveAmountRaw: tAccountB.amount,
+        },
+      ],
+      undefined
+    );
+    lpSources.push(lpSource);
   }
+  await cache.setTokenPriceSources(lpSources);
 };
 
 const job: Job = {
   id: `${platformId}-pools`,
   executor,
+  label: 'normal',
 };
 export default job;

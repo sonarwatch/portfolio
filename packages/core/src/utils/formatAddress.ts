@@ -17,7 +17,9 @@ export function formatBitcoinAddress(address: string) {
 
 export function formatMoveAddress(address: string) {
   assertMoveAddress(address);
-  return address.toLocaleLowerCase();
+  let fAddress = address.toLocaleLowerCase();
+  if (!fAddress.startsWith('0x')) fAddress = `0x${fAddress}`;
+  return fAddress;
 }
 
 export function formatEvmAddress(address: string) {

@@ -4,12 +4,6 @@ import { Bank } from './struct';
 const FRACTIONS = 48;
 const MULTIPLIER_NUMBER = 2 ** FRACTIONS;
 
-export function decodeName(bytes: number[]): string {
-  return new TextDecoder('utf-8')
-    .decode(new Uint8Array(bytes))
-    .split('\x00')[0];
-}
-
 export function getBorrowRateWithoutUpkeepRate(bank: Bank): BigNumber {
   const totalBorrows = bank.indexedBorrows.multipliedBy(bank.borrowIndex);
   const totalDeposits = bank.indexedDeposits.multipliedBy(bank.depositIndex);

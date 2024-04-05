@@ -36,6 +36,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const value = amount * tokenPrice.price;
     const asset: PortfolioAssetToken = {
       type: 'token',
+      attributes: {},
       data: {
         address: tokenPrice.address,
         amount,

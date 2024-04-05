@@ -1,5 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
-import { PublicKey } from '@solana/web3.js';
+import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
 import { platformId, vaultsProgramId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
@@ -18,17 +17,20 @@ const executor: JobExecutor = async (cache: Cache) => {
     vaultsFilters
   );
 
+  const tokenPrices = await cache.getTokenPricesAsMap(
+    vaultAccounts.map((vault) => vault.token_mint.toString()),
+    NetworkId.solana
+  );
+
+  const lpSources: TokenPriceSource[] = [];
   for (let i = 0; i < vaultAccounts.length; i += 1) {
     const vault = vaultAccounts[i];
     if (vault.total_amount.isZero()) continue;
-    const vaultTokenPrice = await cache.getTokenPrice(
-      vault.token_mint.toString(),
-      NetworkId.solana
-    );
+    const vaultTokenPrice = tokenPrices.get(vault.token_mint.toString());
     if (!vaultTokenPrice) continue;
 
     const lpSupplyRes = await fetchTokenSupplyAndDecimals(
-      new PublicKey(vault.lp_mint.toString()),
+      vault.lp_mint,
       client,
       0
     );
@@ -40,12 +42,13 @@ const executor: JobExecutor = async (cache: Cache) => {
       .toNumber();
     const vaultValue = vaultAmount * vaultTokenPrice.price;
     const price = vaultValue / lpSupply;
-    await cache.setTokenPriceSource({
+    const lpSource: TokenPriceSource = {
       id: platformId,
       weight: 1,
       address: vault.lp_mint.toString(),
       networkId: NetworkId.solana,
       platformId,
+      elementName: 'Vault',
       decimals: lpDecimals,
       price,
       underlyings: [
@@ -54,16 +57,19 @@ const executor: JobExecutor = async (cache: Cache) => {
           address: vaultTokenPrice.address,
           decimals: vaultTokenPrice.decimals,
           price: vaultTokenPrice.price,
-          amountPerLp: vaultAmount / vaultValue,
+          amountPerLp: price / vaultTokenPrice.price,
         },
       ],
       timestamp: Date.now(),
-    });
+    };
+    lpSources.push(lpSource);
   }
+  await cache.setTokenPriceSources(lpSources);
 };
 
 const job: Job = {
-  id: `${platformId}-lp-tokens`,
+  id: `${platformId}-vaults`,
   executor,
+  label: 'normal',
 };
 export default job;

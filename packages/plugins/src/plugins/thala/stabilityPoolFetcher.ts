@@ -7,6 +7,7 @@ import {
   aprToApy,
   aptosNetwork,
 } from '@sonarwatch/portfolio-core';
+import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
@@ -32,8 +33,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const depositAmountString = stabilityPoolDepositView.at(0);
   if (!depositAmountString) return [];
 
-  const depositAmount: number =
-    +depositAmountString / 10 ** aptosNetwork.native.decimals;
+  const depositAmount = new BigNumber(depositAmountString.toString())
+    .div(10 ** aptosNetwork.native.decimals)
+    .toNumber();
   if (depositAmount === 0) return [];
 
   const depositTokenPrice = await cache.getTokenPrice(

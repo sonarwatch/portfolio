@@ -381,3 +381,197 @@ export const protocolPositionStateStruct =
     ],
     (args) => args as ProtocolPositionState
   );
+
+export type UserState = {
+  buffer: Buffer;
+  userId: BigNumber;
+  farmState: PublicKey;
+  owner: PublicKey;
+  legacyStake: BigNumber;
+  rewardsTallyScaled: BigNumber[];
+  rewardsIssuedUnclaimed: BigNumber[];
+  lastClaimTs: BigNumber[];
+  activeStakeScaled: BigNumber;
+  pendingDepositStakeScaled: BigNumber;
+  pendingDepositStakeTs: BigNumber;
+  pendingWithdrawalUnstakeScaled: BigNumber;
+  pendingWithdrawalUnstakeTs: BigNumber;
+  bump: BigNumber;
+  delegatee: PublicKey;
+  lastStakeTs: BigNumber;
+  padding: BigNumber[];
+};
+
+export const userStateStruct = new BeetStruct<UserState>(
+  [
+    ['buffer', blob(8)],
+    ['userId', u64],
+    ['farmState', publicKey],
+    ['owner', publicKey],
+    ['legacyStake', u64],
+    ['rewardsTallyScaled', uniformFixedSizeArray(u128, 10)],
+    ['rewardsIssuedUnclaimed', uniformFixedSizeArray(u64, 10)],
+    ['lastClaimTs', uniformFixedSizeArray(u64, 10)],
+    ['activeStakeScaled', u128],
+    ['pendingDepositStakeScaled', u128],
+    ['pendingDepositStakeTs', u64],
+    ['pendingWithdrawalUnstakeScaled', u128],
+    ['pendingWithdrawalUnstakeTs', u64],
+    ['bump', u64],
+    ['delegatee', publicKey],
+    ['lastStakeTs', u64],
+    ['padding', uniformFixedSizeArray(u64, 50)],
+  ],
+  (args) => args as UserState
+);
+
+export type TokenInfo = {
+  mint: PublicKey;
+  decimals: BigNumber;
+  padding: BigNumber[];
+};
+
+export const tokenInfoStruct = new BeetStruct<TokenInfo>(
+  [
+    ['mint', publicKey],
+    ['decimals', u64],
+    ['padding', uniformFixedSizeArray(u64, 10)],
+  ],
+  (args) => args as TokenInfo
+);
+
+export type RewardPerTimeUnitPoint = {
+  tsStart: BigNumber;
+  rewardPerTimeUnit: BigNumber;
+};
+
+export const rewardPerTimeUnitPointStruct = new BeetStruct(
+  [
+    ['tsStart', u64],
+    ['rewardPerTimeUnit', u64],
+  ],
+  (args) => args as RewardPerTimeUnitPoint
+);
+
+export type RewardScheduleCurve = {
+  points: RewardPerTimeUnitPoint[];
+};
+
+export const rewardScheduleCurveStruct = new BeetStruct<RewardScheduleCurve>(
+  [['points', uniformFixedSizeArray(rewardPerTimeUnitPointStruct, 20)]],
+  (args) => args as RewardScheduleCurve
+);
+
+export type RewardInfo = {
+  token: TokenInfo;
+  rewardsVault: PublicKey;
+  rewardsAvailable: BigNumber;
+  rewardScheduleCurve: RewardScheduleCurve;
+  minClaimDurationSeconds: BigNumber;
+  lastIssuanceTs: BigNumber;
+  rewardsIssuedUnclaimed: BigNumber;
+  rewardsIssuedCumulative: BigNumber;
+  rewardPerShareScaled: BigNumber;
+  placeholder0: BigNumber;
+  rewardType: number;
+  rewardsPerSecondDecimals: number;
+  padding0: number[];
+  padding1: BigNumber[];
+};
+
+export const rewardInfoStruct = new BeetStruct<RewardInfo>(
+  [
+    ['token', tokenInfoStruct],
+    ['rewardsVault', publicKey],
+    ['rewardsAvailable', u64],
+    ['rewardScheduleCurve', rewardScheduleCurveStruct],
+    ['minClaimDurationSeconds', u64],
+    ['lastIssuanceTs', u64],
+    ['rewardsIssuedUnclaimed', u64],
+    ['rewardsIssuedCumulative', u64],
+    ['rewardPerShareScaled', u128],
+    ['placeholder0', u64],
+    ['rewardType', u8],
+    ['rewardsPerSecondDecimals', u8],
+    ['padding0', uniformFixedSizeArray(u8, 6)],
+    ['padding1', uniformFixedSizeArray(u64, 20)],
+  ],
+  (args) => args as RewardInfo
+);
+
+export type FarmState = {
+  buffer: Buffer;
+  farmAdmin: PublicKey;
+  globalConfig: PublicKey;
+  token: TokenInfo;
+  rewardInfos: RewardInfo[];
+  numRewardTokens: BigNumber;
+  numUsers: BigNumber;
+  totalStakedAmount: BigNumber;
+  farmVault: PublicKey;
+  farmVaultsAuthority: PublicKey;
+  farmVaultsAuthorityBump: BigNumber;
+  delegateAuthority: PublicKey;
+  timeUnit: number;
+  padding0: number[];
+  withdrawAuthority: PublicKey;
+  depositWarmupPeriod: BigNumber;
+  withdrawalCooldownPeriod: BigNumber;
+  totalActiveStakeScaled: BigNumber;
+  totalPendingStakeScaled: BigNumber;
+  totalPendingAmount: BigNumber;
+  slashedAmountCurrent: BigNumber;
+  slashedAmountCumulative: BigNumber;
+  slashedAmountSpillAddress: PublicKey;
+  lockingMode: BigNumber;
+  lockingStartTimestamp: BigNumber;
+  lockingDuration: BigNumber;
+  lockingEarlyWithdrawalPenaltyBps: BigNumber;
+  depositCapAmount: BigNumber;
+  scopePrices: PublicKey;
+  scopeOraclePriceId: BigNumber;
+  scopeOracleMaxAge: BigNumber;
+  pendingFarmAdmin: PublicKey;
+  strategyId: PublicKey;
+  padding: BigNumber[];
+};
+
+export const farmStateStruct = new BeetStruct<FarmState>(
+  [
+    ['buffer', blob(8)],
+    ['farmAdmin', publicKey],
+    ['globalConfig', publicKey],
+    ['token', tokenInfoStruct],
+    ['rewardInfos', uniformFixedSizeArray(rewardInfoStruct, 10)],
+    ['numRewardTokens', u64],
+    ['numUsers', u64],
+    ['totalStakedAmount', u64],
+    ['farmVault', publicKey],
+    ['farmVaultsAuthority', publicKey],
+    ['farmVaultsAuthorityBump', u64],
+    ['delegateAuthority', publicKey],
+    ['timeUnit', u8],
+    ['padding0', uniformFixedSizeArray(u8, 7)],
+    ['withdrawAuthority', publicKey],
+    ['depositWarmupPeriod', u32],
+    ['withdrawalCooldownPeriod', u32],
+    ['totalActiveStakeScaled', u128],
+    ['totalPendingStakeScaled', u128],
+    ['totalPendingAmount', u64],
+    ['slashedAmountCurrent', u64],
+    ['slashedAmountCumulative', u64],
+    ['slashedAmountSpillAddress', publicKey],
+    ['lockingMode', u64],
+    ['lockingStartTimestamp', u64],
+    ['lockingDuration', u64],
+    ['lockingEarlyWithdrawalPenaltyBps', u64],
+    ['depositCapAmount', u64],
+    ['scopePrices', publicKey],
+    ['scopeOraclePriceId', u64],
+    ['scopeOracleMaxAge', u64],
+    ['pendingFarmAdmin', publicKey],
+    ['strategyId', publicKey],
+    ['padding', uniformFixedSizeArray(u64, 86)],
+  ],
+  (args) => args as FarmState
+);

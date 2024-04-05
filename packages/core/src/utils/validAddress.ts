@@ -3,7 +3,7 @@ import { isAddress as isAddressEthers } from '@ethersproject/address';
 import { isHexString } from '@ethersproject/bytes';
 import { base58 } from '@metaplex-foundation/umi-serializers-encodings';
 import { AddressSystem, AddressSystemType } from '../Address';
-import { AddressIsNotValidError } from '../errors/AddressIsNotValideError';
+import { AddressIsNotValidError } from '../errors/AddressIsNotValidError';
 
 export function isBitcoinAddress(address: string): boolean {
   return validate(address, Network.mainnet);
@@ -23,7 +23,7 @@ export function assertEvmAddress(address: string): void {
 }
 
 export function isMoveAddress(address: string): boolean {
-  return isHexString(address, 32);
+  return isHexString(address, 32) || isHexString(`0x${address}`, 32);
 }
 export function assertMoveAddress(address: string): void {
   if (!isMoveAddress(address))
@@ -80,7 +80,7 @@ export function getAddressSystem(address: string): AddressSystemType | null {
   return null;
 }
 
-export function getAddressSystemOrFail(address: string): AddressSystemType {
+export function assertAddressSystem(address: string): AddressSystemType {
   const addressSystem = getAddressSystem(address);
   if (!addressSystem) throw new AddressIsNotValidError(address);
   return addressSystem;

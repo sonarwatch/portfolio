@@ -35,58 +35,7 @@ export type Token = {
   logoURI: string;
   tags?: string[];
   extensions?: {
-    coingeckoId: string;
-  };
-};
-
-export type SuiNFTMetadata = {
-  attributes?: {
-    type: string;
-    fields: {
-      map: {
-        type: string;
-        fields: {
-          contents: Attribute[];
-        };
-      };
-    };
-  };
-  id: {
-    id: string;
-  };
-  name: string;
-  description?: string;
-  url?: string;
-  image_url?: string;
-  index?: string;
-};
-
-export type Attribute = {
-  [key: number]: {
-    type: string;
-    fields: {
-      key: string;
-      value: string;
-    };
-  };
-};
-
-export type DisplayInfo = {
-  description: string;
-  image_url: string;
-  link: string;
-  name: string;
-};
-
-export type KioskContent = {
-  dataType: string;
-  type: string;
-  hasPublicTransfer: boolean;
-  fields: {
-    id: {
-      id: string;
-    };
-    kiosk: string;
-    owner: string;
+    coingeckoId?: string;
+    index?: string;
   };
 };

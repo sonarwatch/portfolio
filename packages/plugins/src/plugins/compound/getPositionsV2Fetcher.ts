@@ -4,6 +4,7 @@ import {
   PortfolioElementType,
   TokenPrice,
   Yield,
+  apyToApr,
   getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
@@ -98,6 +99,11 @@ export default function getPositionsV2Fetcher(
             )
           )
         );
+        const supplyApy =
+          market.supplyApyFromBlock || market.supplyApyFromTimestamp;
+        if (supplyApy) {
+          suppliedYields.push([{ apr: apyToApr(supplyApy), apy: supplyApy }]);
+        }
       }
 
       const bDecimals = getBDecimal(networkId);
@@ -118,12 +124,17 @@ export default function getPositionsV2Fetcher(
             )
           )
         );
+        const borrowApy =
+          market.borrowApyFromBlock || market.borrowApyFromTimestamp;
+        if (borrowApy) {
+          borrowedYields.push([{ apr: -apyToApr(borrowApy), apy: -borrowApy }]);
+        }
       }
     }
 
     if (borrowedAssets.length === 0 && suppliedAssets.length === 0) return [];
 
-    const { borrowedValue, collateralRatio, suppliedValue, value } =
+    const { borrowedValue, suppliedValue, value, healthRatio, rewardValue } =
       getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
     return [
       {
@@ -139,8 +150,10 @@ export default function getPositionsV2Fetcher(
           suppliedAssets,
           suppliedValue,
           suppliedYields,
-          collateralRatio,
+          collateralRatio: null,
+          healthRatio,
           rewardAssets,
+          rewardValue,
           value,
         },
       },

@@ -1,9 +1,9 @@
 import { NetworkIdType } from './Network';
 import { deepClone } from './helpers';
 
-const SOURCE_TTL = 60 * 60 * 1000;
-const MAX_N_SOURCES = 10;
 export const coingeckoSourceId = 'coingecko';
+export const tokenPriceSourceTtl = 4 * 60 * 60 * 1000; // 4 hours
+const MAX_N_SOURCES = 10;
 
 export type TokenPriceUnderlying = {
   networkId: NetworkIdType;
@@ -22,6 +22,7 @@ export type TokenPriceSource = {
   decimals: number;
   price: number;
   elementName?: string;
+  liquidityName?: string;
   underlyings?: TokenPriceUnderlying[];
   timestamp: number; // in ms
 };
@@ -33,6 +34,7 @@ export type TokenPrice = {
   decimals: number;
   price: number;
   elementName?: string;
+  liquidityName?: string;
   underlyings?: TokenPriceUnderlying[];
   sources: TokenPriceSource[];
   timestamp: number; // in ms
@@ -70,6 +72,7 @@ export function tokenPriceFromSources(
     price,
     underlyings: latestSource.underlyings,
     elementName: latestSource.elementName,
+    liquidityName: latestSource.liquidityName,
     timestamp: Date.now(),
     sources: updatedSources,
   };
@@ -98,7 +101,7 @@ export function updateTokenPriceSources(
   let newSources = deepClone(sources);
 
   // Remove too old sources
-  const tsThreshold = Date.now() - SOURCE_TTL;
+  const tsThreshold = Date.now() - tokenPriceSourceTtl;
   newSources = newSources.filter((source) => source.timestamp > tsThreshold);
   if (newSources.length === 0) return undefined;
 

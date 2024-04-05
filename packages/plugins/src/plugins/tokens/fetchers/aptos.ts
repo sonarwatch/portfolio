@@ -67,6 +67,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         rewardAssetsValue: 0,
         value: getUsdValueSum(assets.map((a) => a.value)),
         yields: [],
+        name: tokenPrice.liquidityName,
       };
       if (!liquiditiesByPlatformId[tokenPrice.platformId]) {
         liquiditiesByPlatformId[tokenPrice.platformId] = [];

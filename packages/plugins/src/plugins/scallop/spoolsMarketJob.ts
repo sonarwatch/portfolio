@@ -1,5 +1,4 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import { getObjectFields } from '@mysten/sui.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
@@ -12,6 +11,7 @@ import {
 } from './constants';
 import { AddressInfo, SpoolCoin, SpoolJobResult } from './types';
 import { getClientSui } from '../../utils/clients';
+import { getObject } from '../../utils/sui/getObject';
 
 const client = getClientSui();
 
@@ -35,23 +35,16 @@ const executor: JobExecutor = async (cache: Cache) => {
     const { id: poolId, rewardPoolId } = detail;
 
     const [stakeObjectResponse, rewardObjectResponse] = await Promise.all([
-      client.getObject({
-        id: poolId,
-        options: {
-          showContent: true,
-        },
-      }),
-      client.getObject({
-        id: rewardPoolId,
-        options: {
-          showContent: true,
-        },
-      }),
+      getObject(client, poolId),
+      getObject(client, rewardPoolId),
     ]);
 
     if (stakeObjectResponse.data && rewardObjectResponse.data) {
-      const stakeFields = getObjectFields(stakeObjectResponse);
-      const rewardFields = getObjectFields(rewardObjectResponse);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const stakeFields = stakeObjectResponse.data.content?.fields as any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const rewardFields = rewardObjectResponse.data.content?.fields as any;
+
       if (!stakeFields || !rewardFields) continue;
       const staked = stakeFields['stakes'];
       const lastUpdate = stakeFields['last_update'];
@@ -107,5 +100,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: prefix,
   executor,
+  label: 'normal',
 };
 export default job;

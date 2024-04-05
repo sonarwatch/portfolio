@@ -11,17 +11,14 @@ import {
   getClientSolana,
   getClientSui,
 } from '../clients';
-import { coinDecimals } from '../aptos';
 import { getUrlEndpoint } from '../clients/constants';
 import { TokenInfo, tokenInfoQueryMsg } from '../sei';
 import { Cache } from '../../Cache';
 import { tokenListsDetailsPrefix } from '../../plugins/tokens/constants';
 import { Token } from '../../plugins/tokens/types';
-
-const solMints = [
-  '11111111111111111111111111111111',
-  'So11111111111111111111111111111111111111112',
-];
+import { getDecimals as getDecimalsAptos } from '../aptos/getDecimals';
+import { getDecimals as getDecimalsSolana } from '../solana/getDecimals';
+import { getDecimals as getDecimalsSui } from '../sui/getDecimals';
 
 /**
  * Return the decimals of a token on any network using RPC calls or TokenList.
@@ -36,7 +33,7 @@ export async function getDecimalsForToken(
   cache: Cache,
   address: string,
   networkId: NetworkIdType
-): Promise<number | undefined> {
+): Promise<number | null> {
   const tokenDetails = await cache.getItem<Token>(
     formatTokenAddress(address, networkId),
     {
@@ -49,21 +46,11 @@ export async function getDecimalsForToken(
   switch (networkId) {
     case 'aptos': {
       const client = getClientAptos();
-      const viewRes = (await client.view({
-        function: coinDecimals,
-        type_arguments: [address],
-        arguments: [],
-      })) as number[];
-      if (viewRes.length !== 1) return undefined;
-      return viewRes[0];
+      return getDecimalsAptos(client, address);
     }
     case 'solana': {
       const client = getClientSolana();
-      if (solMints.includes(address)) {
-        return 9;
-      }
-      const res = await client.getTokenSupply(new PublicKey(address));
-      return res.value.decimals ? res.value.decimals : undefined;
+      return getDecimalsSolana(client, new PublicKey(address));
     }
     case 'sei': {
       if (address.startsWith('factory')) {
@@ -76,7 +63,7 @@ export async function getDecimalsForToken(
       }
       if (address.startsWith('ibc')) {
         // No solution yet for IBC tokens
-        return undefined;
+        return null;
       }
       if (address.startsWith('sei')) {
         const client = await getCosmWasmClient(getUrlEndpoint(NetworkId.sei));
@@ -84,15 +71,13 @@ export async function getDecimalsForToken(
           address,
           tokenInfoQueryMsg
         )) as TokenInfo;
-        return tokenInfo.decimals || undefined;
+        return tokenInfo.decimals || null;
       }
-      return undefined;
+      return null;
     }
     case 'sui': {
       const client = getClientSui();
-      const coinMetadata = await client.getCoinMetadata({ coinType: address });
-      if (coinMetadata) return coinMetadata.decimals;
-      return undefined;
+      return getDecimalsSui(client, address);
     }
     default:
       throw new Error('getDecimalsForToken : Network not supported');
