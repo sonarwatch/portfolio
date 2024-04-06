@@ -1,6 +1,6 @@
 {
   "name": "@sonarwatch/portfolio-plugins",
-  "version": "0.11.164",
+  "version": "0.11.165",
   "type": "commonjs",
   "generators": "./generators.json"
 }
