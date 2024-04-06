@@ -12,3 +12,13 @@ export const ammV5Filter: GetProgramAccountsFilter[] = [
 export const poolsStateFilter: GetProgramAccountsFilter[] = [
   { dataSize: 1544 },
 ];
+
+export const stakingFilters = (owner: string): GetProgramAccountsFilter[] => [
+  {
+    memcmp: {
+      offset: 40,
+      bytes: owner,
+    },
+  },
+  { dataSize: 232 },
+];

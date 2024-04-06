@@ -9,6 +9,11 @@ export const raydiumPlatform: Platform = {
   defiLlamaId: 'raydium',
   website: 'https://raydium.io/',
 };
+
+export const AMM_PROGRAM_ID_V3 = new PublicKey(
+  'EhhTKczWMGQt46ynNeRX1WfeagwwJd7ufHvCDjRxjo5Q'
+);
+
 export const AMM_PROGRAM_ID_V4 = new PublicKey(
   '675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8'
 );
@@ -24,3 +29,6 @@ export const raydiumProgram = new PublicKey(
 export const poolStatesPrefix = `${platformId}-poolSates`;
 
 export const positionsIdentifier = 'Raydium Concentrated Liquidity';
+
+export const rayMint = '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R';
+export const rayDecimals = 6;

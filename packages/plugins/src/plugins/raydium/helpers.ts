@@ -6,7 +6,8 @@
 import BigNumber from 'bignumber.js';
 import BN from 'bn.js';
 import { PortfolioAssetCollectible } from '@sonarwatch/portfolio-core';
-import { positionsIdentifier } from './constants';
+import { PublicKey } from '@solana/web3.js';
+import { AMM_PROGRAM_ID_V3, positionsIdentifier } from './constants';
 
 export function isARaydiumPosition(nft: PortfolioAssetCollectible): boolean {
   return nft.data.name === positionsIdentifier;
@@ -225,4 +226,15 @@ export function getRaydiumTokenAmountsFromLiquidity(
       ).toString()
     ),
   };
+}
+
+export function getStakePubKey(owner: string) {
+  return PublicKey.findProgramAddressSync(
+    [
+      new PublicKey('4EwbZo8BZXP5313z5A2H11MRBP15M5n6YxfmkjXESKAW').toBuffer(),
+      new PublicKey(owner).toBuffer(),
+      Buffer.from('staker_info_v2_associated_seed', 'utf-8'),
+    ],
+    AMM_PROGRAM_ID_V3
+  )[0];
 }
