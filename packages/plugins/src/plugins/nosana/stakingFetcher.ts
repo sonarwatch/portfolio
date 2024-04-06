@@ -2,14 +2,14 @@ import { NetworkId, PortfolioElementType } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, rayDecimals, rayMint } from './constants';
+import { nosDecimals, nosMint, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
-import { stakeStruct } from './structs/staking';
+import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { stakeStruct } from './structs';
 import { getStakePubKey } from './helpers';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
-const rayFactor = new BigNumber(10 ** rayDecimals);
+const nosFactor = new BigNumber(10 ** nosDecimals);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -19,15 +19,23 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     stakeStruct,
     getStakePubKey(owner)
   );
+  if (!stakeAccount || stakeAccount.amount.isZero()) return [];
 
-  if (!stakeAccount || stakeAccount.depositBalance.isZero()) return [];
+  const lockedUntil = stakeAccount.timeUnstake.isZero()
+    ? undefined
+    : stakeAccount.timeUnstake
+        .plus(stakeAccount.duration)
+        .times(1000)
+        .toNumber();
 
-  const tokenPrice = await cache.getTokenPrice(rayMint, NetworkId.solana);
+  const tokenPrice = await cache.getTokenPrice(nosMint, NetworkId.solana);
   const asset = tokenPriceToAssetToken(
-    rayMint,
-    stakeAccount.depositBalance.dividedBy(rayFactor).toNumber(),
+    nosMint,
+    stakeAccount.amount.dividedBy(nosFactor).toNumber(),
     NetworkId.solana,
-    tokenPrice
+    tokenPrice,
+    undefined,
+    { lockedUntil }
   );
 
   return [

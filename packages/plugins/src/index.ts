@@ -397,6 +397,11 @@ import {
   jobs as banxJobs,
   fetchers as banxFetchers,
 } from './plugins/banx';
+import {
+  platforms as nosanaPlatforms,
+  jobs as nosanaJobs,
+  fetchers as nosanaFetchers,
+} from './plugins/nosana';
 
 export {
   walletTokensPlatform,
@@ -494,6 +499,7 @@ export const platforms: Platform[] = [
   ...uxdPlatforms,
   ...wormholePlatforms,
   ...banxPlatforms,
+  ...nosanaPlatforms,
 ];
 
 // JOBS //
@@ -573,6 +579,7 @@ export const jobs: Job[] = [
   ...uxdJobs,
   ...wormholeJobs,
   ...banxJobs,
+  ...nosanaJobs,
 ];
 
 // FETCHERS //
@@ -654,5 +661,6 @@ export const fetchers: Fetcher[] = [
   ...uxdFetchers,
   ...wormholeFetchers,
   ...banxFetchers,
+  ...nosanaFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
