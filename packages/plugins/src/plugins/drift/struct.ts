@@ -1,7 +1,9 @@
 import {
   BeetStruct,
   bool,
+  i16,
   i32,
+  i8,
   u16,
   u32,
   u8,
@@ -10,7 +12,7 @@ import {
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { blob, i64, u128, u64 } from '../../utils/solana';
+import { blob, i128, i64, u128, u64 } from '../../utils/solana';
 
 export enum OrderTriggerCondition {
   Above,
@@ -82,6 +84,19 @@ export enum OracleSource {
   Pyth1K,
   Pyth1M,
   PythStableCoin,
+}
+
+export enum ContractType {
+  Perpetual,
+  Future,
+}
+
+export enum ContractTier {
+  A,
+  B,
+  C,
+  Speculative,
+  Isolated,
 }
 
 export type Order = {
@@ -495,4 +510,294 @@ export const insuranceFundStakeStruct = new BeetStruct<InsuranceFundStake>(
     ['padding', uniformFixedSizeArray(u8, 14)],
   ],
   (args) => args as InsuranceFundStake
+);
+
+export type AMM = {
+  oracle: PublicKey;
+  historicalOracleData: HistoricalOracleData;
+  baseAssetAmountPerLp: BigNumber;
+  quoteAssetAmountPerLp: BigNumber;
+  feePool: PoolBalance;
+  baseAssetReserve: BigNumber;
+  quoteAssetReserve: BigNumber;
+  concentrationCoef: BigNumber;
+  minBaseAssetReserve: BigNumber;
+  maxBaseAssetReserve: BigNumber;
+  sqrtK: BigNumber;
+  pegMultiplier: BigNumber;
+  terminalQuoteAssetReserve: BigNumber;
+  baseAssetAmountLong: BigNumber;
+  baseAssetAmountShort: BigNumber;
+  baseAssetAmountWithAmm: BigNumber;
+  baseAssetAmountWithUnsettledLp: BigNumber;
+  maxOpenInterest: BigNumber;
+  quoteAssetAmount: BigNumber;
+  quoteEntryAmountLong: BigNumber;
+  quoteEntryAmountShort: BigNumber;
+  quoteBreakEvenAmountLong: BigNumber;
+  quoteBreakEvenAmountShort: BigNumber;
+  userLpShares: BigNumber;
+  lastFundingRate: BigNumber;
+  lastFundingRateLong: BigNumber;
+  lastFundingRateShort: BigNumber;
+  last24hAvgFundingRate: BigNumber;
+  totalFee: BigNumber;
+  totalMmFee: BigNumber;
+  totalExchangeFee: BigNumber;
+  totalFeeMinusDistributions: BigNumber;
+  totalFeeWithdrawn: BigNumber;
+  totalLiquidationFee: BigNumber;
+  cumulativeFundingRateLong: BigNumber;
+  cumulativeFundingRateShort: BigNumber;
+  totalSocialLoss: BigNumber;
+  askBaseAssetReserve: BigNumber;
+  askQuoteAssetReserve: BigNumber;
+  bidBaseAssetReserve: BigNumber;
+  bidQuoteAssetReserve: BigNumber;
+  lastOracleNormalisedPrice: BigNumber;
+  lastOracleReservePriceSpreadPct: BigNumber;
+  lastBidPriceTwap: BigNumber;
+  lastAskPriceTwap: BigNumber;
+  lastMarkPriceTwap: BigNumber;
+  lastMarkPriceTwap5min: BigNumber;
+  lastUpdateSlot: BigNumber;
+  lastOracleConfPct: BigNumber;
+  netRevenueSinceLastFunding: BigNumber;
+  lastFundingRateTs: BigNumber;
+  fundingPeriod: BigNumber;
+  orderStepSize: BigNumber;
+  orderTickSize: BigNumber;
+  minOrderSize: BigNumber;
+  maxPositionSize: BigNumber;
+  volume24h: BigNumber;
+  longIntensityVolume: BigNumber;
+  shortIntensityVolume: BigNumber;
+  lastTradeTs: BigNumber;
+  markStd: BigNumber;
+  oracleStd: BigNumber;
+  lastMarkPriceTwapTs: BigNumber;
+  baseSpread: number;
+  maxSpread: number;
+  longSpread: number;
+  shortSpread: number;
+  longIntensityCount: number;
+  shortIntensityCount: number;
+  maxFillReserveFraction: number;
+  maxSlippageRatio: number;
+  curveUpdateIntensity: number;
+  ammJitIntensity: number;
+  oracleSource: OracleSource;
+  lastOracleValid: boolean;
+  targetBaseAssetAmountPerLp: number;
+  perLpBase: number;
+  padding1: number;
+  padding2: number;
+  totalFeeEarnedPerLp: BigNumber;
+  netUnsettledFundingPnl: BigNumber;
+  quoteAssetAmountWithUnsettledLp: BigNumber;
+  referencePriceOffset: number;
+  padding: number[];
+};
+
+export const ammStruct = new BeetStruct<AMM>(
+  [
+    ['oracle', publicKey],
+    ['historicalOracleData', historicalOracleDataStruct],
+    ['baseAssetAmountPerLp', i128],
+    ['quoteAssetAmountPerLp', i128],
+    ['feePool', poolBalanceStruct],
+    ['baseAssetReserve', u128],
+    ['quoteAssetReserve', u128],
+    ['concentrationCoef', u128],
+    ['minBaseAssetReserve', u128],
+    ['maxBaseAssetReserve', u128],
+    ['sqrtK', u128],
+    ['pegMultiplier', u128],
+    ['terminalQuoteAssetReserve', u128],
+    ['baseAssetAmountLong', i128],
+    ['baseAssetAmountShort', i128],
+    ['baseAssetAmountWithAmm', i128],
+    ['baseAssetAmountWithUnsettledLp', i128],
+    ['maxOpenInterest', u128],
+    ['quoteAssetAmount', i128],
+    ['quoteEntryAmountLong', i128],
+    ['quoteEntryAmountShort', i128],
+    ['quoteBreakEvenAmountLong', i128],
+    ['quoteBreakEvenAmountShort', i128],
+    ['userLpShares', u128],
+    ['lastFundingRate', i64],
+    ['lastFundingRateLong', i64],
+    ['lastFundingRateShort', i64],
+    ['last24hAvgFundingRate', i64],
+    ['totalFee', i128],
+    ['totalMmFee', i128],
+    ['totalExchangeFee', u128],
+    ['totalFeeMinusDistributions', i128],
+    ['totalFeeWithdrawn', u128],
+    ['totalLiquidationFee', u128],
+    ['cumulativeFundingRateLong', i128],
+    ['cumulativeFundingRateShort', i128],
+    ['totalSocialLoss', u128],
+    ['askBaseAssetReserve', u128],
+    ['askQuoteAssetReserve', u128],
+    ['bidBaseAssetReserve', u128],
+    ['bidQuoteAssetReserve', u128],
+    ['lastOracleNormalisedPrice', i64],
+    ['lastOracleReservePriceSpreadPct', i64],
+    ['lastBidPriceTwap', u64],
+    ['lastAskPriceTwap', u64],
+    ['lastMarkPriceTwap', u64],
+    ['lastMarkPriceTwap5min', u64],
+    ['lastUpdateSlot', u64],
+    ['lastOracleConfPct', u64],
+    ['netRevenueSinceLastFunding', i64],
+    ['lastFundingRateTs', i64],
+    ['fundingPeriod', i64],
+    ['orderStepSize', u64],
+    ['orderTickSize', u64],
+    ['minOrderSize', u64],
+    ['maxPositionSize', u64],
+    ['volume24h', u64],
+    ['longIntensityVolume', u64],
+    ['shortIntensityVolume', u64],
+    ['lastTradeTs', i64],
+    ['markStd', u64],
+    ['oracleStd', u64],
+    ['lastMarkPriceTwapTs', i64],
+    ['baseSpread', u32],
+    ['maxSpread', u32],
+    ['longSpread', u32],
+    ['shortSpread', u32],
+    ['longIntensityCount', u32],
+    ['shortIntensityCount', u32],
+    ['maxFillReserveFraction', u16],
+    ['maxSlippageRatio', u16],
+    ['curveUpdateIntensity', u8],
+    ['ammJitIntensity', u8],
+    ['oracleSource', u8],
+    ['lastOracleValid', bool],
+    ['targetBaseAssetAmountPerLp', i32],
+    ['perLpBase', i8],
+    ['padding1', u8],
+    ['padding2', u16],
+    ['totalFeeEarnedPerLp', u64],
+    ['netUnsettledFundingPnl', i64],
+    ['quoteAssetAmountWithUnsettledLp', i64],
+    ['referencePriceOffset', i32],
+    ['padding', uniformFixedSizeArray(u8, 12)],
+  ],
+  (args) => args as AMM
+);
+
+export type InsuranceClaim = {
+  revenueWithdrawSinceLastSettle: BigNumber;
+  maxRevenueWithdrawPerPeriod: BigNumber;
+  quoteMaxInsurance: BigNumber;
+  quoteSettledInsurance: BigNumber;
+  lastRevenueWithdrawTs: BigNumber;
+};
+
+export const insuranceClaimStruct = new BeetStruct<InsuranceClaim>(
+  [
+    ['revenueWithdrawSinceLastSettle', i64],
+    ['maxRevenueWithdrawPerPeriod', u64],
+    ['quoteMaxInsurance', u64],
+    ['quoteSettledInsurance', u64],
+    ['lastRevenueWithdrawTs', i64],
+  ],
+  (args) => args as InsuranceClaim
+);
+
+export type PerpMarket = {
+  buffer: Buffer;
+  pubkey: PublicKey;
+  amm: AMM;
+  pnlPool: PoolBalance;
+  name: number[];
+  insuranceClaim: InsuranceClaim;
+  unrealizedPnlMaxImbalance: BigNumber;
+  expiryTs: BigNumber;
+  expiryPrice: BigNumber;
+  nextFillRecordId: BigNumber;
+  nextFundingRateRecordId: BigNumber;
+  nextCurveRecordId: BigNumber;
+  imfFactor: number;
+  unrealizedPnlImfFactor: number;
+  liquidatorFee: number;
+  ifLiquidationFee: number;
+  marginRatioInitial: number;
+  marginRatioMaintenance: number;
+  unrealizedPnlInitialAssetWeight: number;
+  unrealizedPnlMaintenanceAssetWeight: number;
+  numberOfUsersWithBase: number;
+  numberOfUsers: number;
+  marketIndex: number;
+  status: MarketStatus;
+  contractType: ContractType;
+  contractTier: ContractTier;
+  pausedOperations: number;
+  quoteSpotMarketIndex: number;
+  feeAdjustment: number;
+  padding: number[];
+};
+
+export const perpMarketStruct = new BeetStruct<PerpMarket>(
+  [
+    ['buffer', blob(8)],
+    ['pubkey', publicKey],
+    ['amm', ammStruct],
+    ['pnlPool', poolBalanceStruct],
+    ['name', uniformFixedSizeArray(u8, 32)],
+    ['insuranceClaim', insuranceClaimStruct],
+    ['unrealizedPnlMaxImbalance', u64],
+    ['expiryTs', i64],
+    ['expiryPrice', i64],
+    ['nextFillRecordId', u64],
+    ['nextFundingRateRecordId', u64],
+    ['nextCurveRecordId', u64],
+    ['imfFactor', u32],
+    ['unrealizedPnlImfFactor', u32],
+    ['liquidatorFee', u32],
+    ['ifLiquidationFee', u32],
+    ['marginRatioInitial', u32],
+    ['marginRatioMaintenance', u32],
+    ['unrealizedPnlInitialAssetWeight', u32],
+    ['unrealizedPnlMaintenanceAssetWeight', u32],
+    ['numberOfUsersWithBase', u32],
+    ['numberOfUsers', u32],
+    ['marketIndex', u16],
+    ['status', u8],
+    ['contractType', u8],
+    ['contractTier', u8],
+    ['pausedOperations', u8],
+    ['quoteSpotMarketIndex', u16],
+    ['feeAdjustment', i16],
+    ['padding', uniformFixedSizeArray(u8, 46)],
+  ],
+  (args) => args as PerpMarket
+);
+
+export type PreLaunchOracle = {
+  buffer: Buffer;
+  price: BigNumber;
+  maxPrice: BigNumber;
+  confidence: BigNumber;
+  lastUpdateSlot: BigNumber;
+  ammLastUpdateSlot: BigNumber;
+  perpMarketIndex: number;
+  padding: number[];
+};
+
+export const preLaunchOracleStruct = new BeetStruct<PreLaunchOracle>(
+  [
+    ['buffer', blob(8)],
+    ['price', i64],
+    ['maxPrice', i64],
+    ['confidence', u64],
+    ['lastUpdateSlot', u64],
+    ['ammLastUpdateSlot', u64],
+    ['perpMarketIndex', u16],
+    ['padding', uniformFixedSizeArray(u8, 70)],
+  ],
+  (args) => args as PreLaunchOracle
 );

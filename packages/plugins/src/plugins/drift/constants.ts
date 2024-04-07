@@ -14,3 +14,5 @@ export const prefixSpotMarkets = `${platformId}-spotMarkets`;
 export const driftProgram = new PublicKey(
   'dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH'
 );
+
+export const preMarketPriceKey = 'premarketPrice';

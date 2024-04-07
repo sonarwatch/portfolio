@@ -4,3 +4,8 @@ export type SpotMarketEnhanced = SpotMarket & {
   depositApr: number;
   borrowApr: number;
 };
+
+export type PreMarketPrice = {
+  id: string;
+  price: number;
+};
