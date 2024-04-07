@@ -8,7 +8,8 @@ import reservesJob from './reservesJob';
 import marketsJob from './marketsJob';
 import lendsFetcher from './lendsFetcher';
 import farmsFetcher from './farmsFetcher';
+import airdropFetcher from './airdropFetcher';
 
 export const platforms: Platform[] = [kaminoPlatform];
 export const jobs: Job[] = [poolsJob, reservesJob, farmsJob, marketsJob];
-export const fetchers: Fetcher[] = [lendsFetcher, farmsFetcher];
+export const fetchers: Fetcher[] = [lendsFetcher, farmsFetcher, airdropFetcher];
