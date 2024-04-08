@@ -16,7 +16,6 @@ import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import { claimStatusStruct } from './structs';
 import {
   merkleApi,
-  merkleDistributorPid,
   airdropsInfo,
   jupLaunchpadPlatformId,
   AirdropInfo,
@@ -49,9 +48,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     proofs.push(proof.data);
     claimsPubkeys.push(
       deriveClaimStatus(
-        new PublicKey(owner),
-        new PublicKey(proof.data.merkle_tree),
-        airdropsInfo[i].ownMerkleDistributor || merkleDistributorPid
+        owner,
+        proof.data.merkle_tree,
+        airdropsInfo[i].distributorProgram
       )
     );
   }
