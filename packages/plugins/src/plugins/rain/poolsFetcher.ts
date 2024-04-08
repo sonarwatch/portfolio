@@ -5,8 +5,6 @@ import {
   Yield,
   getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
-import { USDC_MINT } from '@bonfida/spl-name-service';
-import { WRAPPED_SOL_MINT } from '@metaplex-foundation/js';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -25,14 +23,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const pda = getPoolPda(new PublicKey(owner));
 
   const poolAccount = await getParsedAccountInfo(client, poolStruct, pda);
-
-  const tokenPriceById = await cache.getTokenPricesAsMap(
-    [USDC_MINT.toString(), WRAPPED_SOL_MINT.toString()],
-    NetworkId.solana
-  );
   if (!poolAccount || poolAccount.totalAmount.isZero()) return [];
 
-  const usdcTokenPrice = tokenPriceById.get(USDC_MINT.toString());
+  const tokenPrice = await cache.getTokenPrice(
+    poolAccount.currency.toString(),
+    NetworkId.solana
+  );
+  if (!tokenPrice) return [];
 
   const borrowedAssets: PortfolioAsset[] = [];
   const borrowedYields: Yield[][] = [];
@@ -40,13 +37,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const suppliedYields: Yield[][] = [];
   const rewardAssets: PortfolioAsset[] = [];
 
-  const amount = poolAccount.totalAmount.dividedBy(10 ** 6).toNumber();
+  const amount = poolAccount.totalAmount
+    .dividedBy(10 ** tokenPrice.decimals)
+    .toNumber();
   suppliedAssets.push(
     tokenPriceToAssetToken(
-      USDC_MINT.toString(),
+      tokenPrice.address,
       amount,
       NetworkId.solana,
-      usdcTokenPrice
+      tokenPrice
     )
   );
 
