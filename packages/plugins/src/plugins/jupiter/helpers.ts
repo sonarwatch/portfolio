@@ -8,11 +8,11 @@ export function deriveClaimStatus(
   claimant: PublicKey,
   distributor: PublicKey,
   programId: PublicKey
-) {
+): PublicKey {
   return PublicKey.findProgramAddressSync(
     [Buffer.from('ClaimStatus'), claimant.toBytes(), distributor.toBytes()],
     programId
-  );
+  )[0];
 }
 
 export function getVotePda(owner: string): PublicKey {

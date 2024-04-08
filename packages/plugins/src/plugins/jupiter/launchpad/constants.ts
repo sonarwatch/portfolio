@@ -28,6 +28,7 @@ export type AirdropInfo = {
   mint: string;
   decimals: number;
   claimUntilTs: number; // in milliseconds
+  ownMerkleDistributor?: PublicKey;
 };
 export const airdropsInfo: AirdropInfo[] = [
   {
@@ -44,5 +45,8 @@ export const airdropsInfo: AirdropInfo[] = [
     mint: 'TNSRxcUxoT9xBG3de7PiJyTDYu7kskLqcpddxnEJAS6',
     decimals: 9,
     claimUntilTs: 1728086400000,
+    ownMerkleDistributor: new PublicKey(
+      'DiSLRwcSFvtwvMWSs7ubBMvYRaYNYupa76ZSuYLe6D7j'
+    ),
   },
 ];

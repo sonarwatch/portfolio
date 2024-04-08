@@ -40,12 +40,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const eligibleAirdrops: AirdropInfo[] = [];
   const proofs: ClaimProofResponse[] = [];
+  const claimsPubkeys: PublicKey[] = [];
   for (let i = 0; i < claimsProof.length; i++) {
     const proof = claimsProof[i];
     if (!proof || !proof.data) continue;
 
     eligibleAirdrops.push(airdropsInfo[i]);
     proofs.push(proof.data);
+    claimsPubkeys.push(
+      deriveClaimStatus(
+        new PublicKey(owner),
+        new PublicKey(proof.data.merkle_tree),
+        airdropsInfo[i].ownMerkleDistributor || merkleDistributorPid
+      )
+    );
   }
 
   if (proofs.length === 0) return [];
@@ -53,14 +61,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const claimStatusAccounts = await getParsedMultipleAccountsInfo(
     client,
     claimStatusStruct,
-    proofs.map(
-      (proof) =>
-        deriveClaimStatus(
-          new PublicKey(owner),
-          new PublicKey(proof.merkle_tree),
-          merkleDistributorPid
-        )[0]
-    )
+    claimsPubkeys
   );
 
   const tokenPriceById = await cache.getTokenPricesAsMap(
