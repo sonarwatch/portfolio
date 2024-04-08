@@ -77,6 +77,8 @@ export type PortfolioAssetCommon = {
 export type PortfolioAssetGenericData = {
   name?: string;
   amount: number;
+  price: UsdValue;
+  imageUri?: string;
 };
 
 /**

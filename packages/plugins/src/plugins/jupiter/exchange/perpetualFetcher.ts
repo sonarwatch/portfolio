@@ -163,14 +163,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       networkId: NetworkId.solana,
       value: pnl,
       attributes: {},
-      data: { name: 'PNL ($)', amount: pnl },
+      data: { name: 'PNL ($)', amount: pnl, price: null },
     });
     rewardAssets.push({
       type: 'generic',
       networkId: NetworkId.solana,
       value: fees,
       attributes: {},
-      data: { name: 'Fees O/C ($)', amount: fees },
+      data: { name: 'Fees O/C ($)', amount: fees, price: null },
     });
 
     if (suppliedAssets.length === 0 && borrowedAssets.length === 0) continue;
