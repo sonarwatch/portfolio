@@ -11,7 +11,7 @@ export function getImageFromAsset(
     case PortfolioAssetType.token:
       return tokenInfo?.logoURI;
     case PortfolioAssetType.generic:
-      return null;
+      return asset.data.imageUri;
     default:
       return null;
   }
