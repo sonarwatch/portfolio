@@ -30,7 +30,9 @@ export async function getAllocationsBySeason(
   season: 1 | 2
 ): Promise<Allocation[] | undefined> {
   const res: AxiosResponse<Allocation[]> | null = await axios
-    .get(`${allocationApiUrl}${owner}/allocations?source=Season${season}`)
+    .get(`${allocationApiUrl}${owner}/allocations?source=Season${season}`, {
+      timeout: 1000,
+    })
     .catch(() => null);
   return res ? res.data : undefined;
 }

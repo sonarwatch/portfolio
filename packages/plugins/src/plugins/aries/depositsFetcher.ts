@@ -19,7 +19,7 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const profileRes: AxiosResponse<ProfileResponse> | null = await axios
-    .get(`${apiUrl}profile.find?input={"owner":"${owner}"}`)
+    .get(`${apiUrl}profile.find?input={"owner":"${owner}"}`, { timeout: 1000 })
     .catch(() => null);
   if (!profileRes || !profileRes.data) return [];
 

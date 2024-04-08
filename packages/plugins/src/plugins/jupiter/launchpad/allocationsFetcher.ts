@@ -31,7 +31,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       airdropsInfo.map((info) => {
         if (info.claimUntilTs < Date.now())
           return axios
-            .get(`${merkleApi}/${info.mint}/${owner}`)
+            .get(`${merkleApi}/${info.mint}/${owner}`, { timeout: 1000 })
             .catch(() => null);
         return null;
       })

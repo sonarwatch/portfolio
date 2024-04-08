@@ -37,7 +37,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   // if (amounts.length === 0) return [];
 
   const banxRes: AxiosResponse<BanxResponse> | null = await axios
-    .get(banxApiUrl + owner)
+    .get(banxApiUrl + owner, { timeout: 1000 })
     .catch(() => null);
   if (!banxRes) return [];
 

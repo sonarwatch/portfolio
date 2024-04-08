@@ -32,7 +32,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (vestingAccounts.length === 0) {
     const res: AxiosResponse<ClaimResponse> | null = await axios
-      .get(`https://claim.bskt.fi/api/getClaim?wallet=${owner}`)
+      .get(`https://claim.bskt.fi/api/getClaim?wallet=${owner}`, {
+        timeout: 1000,
+      })
       .catch(() => null);
     if (res && res.data.amount) {
       const assets: PortfolioAsset[] = [];

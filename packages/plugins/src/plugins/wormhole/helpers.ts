@@ -22,7 +22,7 @@ export async function getAllocation(
   if (!extension) return 0;
 
   const allocationsRes: AxiosResponse<AllocationResponse> | null = await axios
-    .get(`${apiUrl}${owner}${extension}.json`)
+    .get(`${apiUrl}${owner}${extension}.json`, { timeout: 1000 })
     .catch(() => null);
 
   return allocationsRes ? allocationsRes.data.amount : 0;

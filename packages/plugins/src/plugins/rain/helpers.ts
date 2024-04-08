@@ -36,7 +36,7 @@ export function getPoolPda(owner: PublicKey): PublicKey {
 
 export async function getLoans(owner: string) {
   const getLoansRes: AxiosResponse<LoansResponse> | null = await axios
-    .get(`${rainApi}/loans/user?pubkey=${owner}`)
+    .get(`${rainApi}/loans/user?pubkey=${owner}`, { timeout: 1000 })
     .catch(() => null);
   if (!getLoansRes || getLoansRes.data.ongoingCount === 0) return [];
   return getLoansRes.data.loans;
