@@ -40,4 +40,9 @@ export const airdropsInfo: AirdropInfo[] = [
     decimals: 6,
     claimUntilTs: 1713445200000,
   },
+  {
+    mint: 'TNSRxcUxoT9xBG3de7PiJyTDYu7kskLqcpddxnEJAS6',
+    decimals: 9,
+    claimUntilTs: 1728086400000,
+  },
 ];
