@@ -29,10 +29,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const claimsProof: (AxiosResponse<ClaimProofResponse> | null)[] =
     await Promise.all(
       airdropsInfo.map((info) => {
-        if (info.claimUntilTs < Date.now())
+        if (info.claimUntilTs > Date.now()) {
           return axios
             .get(`${merkleApi}/${info.mint}/${owner}`, { timeout: 1000 })
             .catch(() => null);
+        }
         return null;
       })
     );
@@ -41,7 +42,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const proofs: ClaimProofResponse[] = [];
   for (let i = 0; i < claimsProof.length; i++) {
     const proof = claimsProof[i];
-    if (!proof) continue;
+    if (!proof || !proof.data) continue;
 
     eligibleAirdrops.push(airdropsInfo[i]);
     proofs.push(proof.data);
