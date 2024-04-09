@@ -16,7 +16,6 @@ import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import { claimStatusStruct } from './structs';
 import {
   merkleApi,
-  merkleDistributorPid,
   airdropsInfo,
   jupLaunchpadPlatformId,
   AirdropInfo,
@@ -29,22 +28,31 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const claimsProof: (AxiosResponse<ClaimProofResponse> | null)[] =
     await Promise.all(
       airdropsInfo.map((info) => {
-        if (info.claimUntilTs < Date.now())
+        if (info.claimUntilTs > Date.now()) {
           return axios
             .get(`${merkleApi}/${info.mint}/${owner}`, { timeout: 1000 })
             .catch(() => null);
+        }
         return null;
       })
     );
 
   const eligibleAirdrops: AirdropInfo[] = [];
   const proofs: ClaimProofResponse[] = [];
+  const claimsPubkeys: PublicKey[] = [];
   for (let i = 0; i < claimsProof.length; i++) {
     const proof = claimsProof[i];
-    if (!proof) continue;
+    if (!proof || !proof.data) continue;
 
     eligibleAirdrops.push(airdropsInfo[i]);
     proofs.push(proof.data);
+    claimsPubkeys.push(
+      deriveClaimStatus(
+        owner,
+        proof.data.merkle_tree,
+        airdropsInfo[i].distributorProgram
+      )
+    );
   }
 
   if (proofs.length === 0) return [];
@@ -52,14 +60,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const claimStatusAccounts = await getParsedMultipleAccountsInfo(
     client,
     claimStatusStruct,
-    proofs.map(
-      (proof) =>
-        deriveClaimStatus(
-          new PublicKey(owner),
-          new PublicKey(proof.merkle_tree),
-          merkleDistributorPid
-        )[0]
-    )
+    claimsPubkeys
   );
 
   const tokenPriceById = await cache.getTokenPricesAsMap(

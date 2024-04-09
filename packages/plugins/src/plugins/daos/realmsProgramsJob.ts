@@ -12,7 +12,7 @@ import {
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import { registrarStruct } from './structs/realms';
-import { registratAccountFilter } from './filters';
+import { registrarFilters } from './filters';
 import { RealmData, RegistrarInfo } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -26,7 +26,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     client,
     registrarStruct,
     realmsVsrProgram,
-    registratAccountFilter()
+    registrarFilters()
   );
   allRegistrars.forEach((account) =>
     registrars.push({
@@ -40,7 +40,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       client,
       registrarStruct,
       new PublicKey(vsrInfo.programId),
-      registratAccountFilter()
+      registrarFilters()
     );
     customRegistrars.forEach((registrar) =>
       registrars.push({

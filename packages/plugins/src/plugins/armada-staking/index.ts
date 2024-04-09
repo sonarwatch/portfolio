@@ -6,6 +6,10 @@ import {
   kishuPlatform,
   madbearsPlatform,
   yakuPlatform,
+  armadaPlatform,
+  garyPlatform,
+  geckoPlatform,
+  orePlatform,
 } from './constants';
 import poolsJob from './poolsJob';
 import stakingFetcher from './stakingFetcher';
@@ -15,6 +19,10 @@ export const platforms: Platform[] = [
   yakuPlatform,
   madbearsPlatform,
   kishuPlatform,
+  armadaPlatform,
+  garyPlatform,
+  geckoPlatform,
+  orePlatform,
 ];
 export const jobs: Job[] = [poolsJob];
 export const fetchers: Fetcher[] = [stakingFetcher];

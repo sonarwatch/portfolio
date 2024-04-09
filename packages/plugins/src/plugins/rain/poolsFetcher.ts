@@ -5,7 +5,6 @@ import {
   Yield,
   getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
-import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId } from './constants';
@@ -20,9 +19,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   // Trying to get https://solscan.io/account/4g5zooignaoVrS6NdUWEcNLxZmJGN9UJBAGtrUiBwieF
 
-  const pda = getPoolPda(new PublicKey(owner));
-
-  const poolAccount = await getParsedAccountInfo(client, poolStruct, pda);
+  const poolAccount = await getParsedAccountInfo(
+    client,
+    poolStruct,
+    getPoolPda(owner)
+  );
   if (!poolAccount || poolAccount.totalAmount.isZero()) return [];
 
   const tokenPrice = await cache.getTokenPrice(

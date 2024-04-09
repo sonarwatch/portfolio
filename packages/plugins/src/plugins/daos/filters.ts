@@ -1,6 +1,6 @@
 import { voteStruct, voterStruct } from './structs/realms';
 
-export const voteAccountFilters = (address: string) => [
+export const voteFilters = (address: string) => [
   { dataSize: voteStruct.byteSize },
   {
     memcmp: {
@@ -10,7 +10,7 @@ export const voteAccountFilters = (address: string) => [
   },
 ];
 
-export const voterAccountFilters = (address: string) => [
+export const voterFilters = (address: string) => [
   { dataSize: voterStruct.byteSize },
   {
     memcmp: {
@@ -20,7 +20,7 @@ export const voterAccountFilters = (address: string) => [
   },
 ];
 
-export const governanceAccountFilter = () => [
+export const governanceFilters = () => [
   {
     memcmp: {
       offset: 0,
@@ -29,4 +29,4 @@ export const governanceAccountFilter = () => [
   },
 ];
 
-export const registratAccountFilter = () => [{ dataSize: 880 }];
+export const registrarFilters = () => [{ dataSize: 880 }];

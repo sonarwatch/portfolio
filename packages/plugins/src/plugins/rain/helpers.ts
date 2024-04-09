@@ -27,9 +27,9 @@ export async function getCollections(): Promise<Collection[]> {
   return getCollectionsRes.data.collections;
 }
 
-export function getPoolPda(owner: PublicKey): PublicKey {
+export function getPoolPda(owner: string): PublicKey {
   return PublicKey.findProgramAddressSync(
-    [Buffer.from('poolv2', 'utf-8'), owner.toBuffer()],
+    [Buffer.from('poolv2', 'utf-8'), new PublicKey(owner).toBuffer()],
     programId
   )[0];
 }
