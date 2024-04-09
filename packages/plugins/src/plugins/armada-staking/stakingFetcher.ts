@@ -27,7 +27,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const mintByPool: Map<string, string> = new Map();
   pools.forEach((pool) => mintByPool.set(pool.pubkey, pool.mint));
 
-  const mints = Array.from(mintByPool.values());
+  const mints = pools.map((pool) => pool.mint);
 
   const tokenPricesById = await cache.getTokenPricesAsMap(
     mints,
