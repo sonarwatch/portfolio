@@ -15,14 +15,13 @@ import {
   getParsedProgramAccounts,
 } from '../../utils/solana';
 import { voteStruct, voterStruct } from './structs/realms';
-import { voteAccountFilters } from './filters';
+import { voteFilters } from './filters';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getLockedUntil, getVoterPda } from './helpers';
 import { RealmData } from './types';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
-
   const realmData = await cache.getItem<RealmData>('data', {
     prefix: platformId,
     networkId: NetworkId.solana,
@@ -57,7 +56,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           client,
           voteStruct,
           new PublicKey(program),
-          voteAccountFilters(owner)
+          voteFilters(owner)
         )
       );
     }
