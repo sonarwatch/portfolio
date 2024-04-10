@@ -4,14 +4,15 @@ import {
   aprToApy,
   borrowLendRatesPrefix,
 } from '@sonarwatch/portfolio-core';
-import { MarginfiProgram, platformId, prefix } from './constants';
+import { MarginfiProgram, platformId, banksKey } from './constants';
 import { bankStruct } from './structs/Bank';
 import { banksFilters } from './filters';
-import { getInterestRates, wrappedI80F48toBigNumber } from './helpers';
+import { computeInterestRates, wrappedI80F48toBigNumber } from './helpers';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
+import { BankInfo } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
@@ -23,35 +24,49 @@ const executor: JobExecutor = async (cache: Cache) => {
     banksFilters()
   );
 
+  const banks: BankInfo[] = [];
+  const rateItems = [];
   for (let index = 0; index < banksRawData.length; index += 1) {
     const bank = banksRawData[index];
-    await cache.setItem(
-      bank.pubkey.toString(),
-      {
-        ...bank,
-        dividedAssetShareValue: wrappedI80F48toBigNumber(
-          bank.assetShareValue
-        ).div(10 ** bank.mintDecimals),
-        dividedLiabilityShareValue: wrappedI80F48toBigNumber(
-          bank.liabilityShareValue
-        ).div(10 ** bank.mintDecimals),
-      },
-      {
-        prefix,
-        networkId: NetworkId.solana,
-      }
-    );
+    const { lendingApr, borrowingApr } = computeInterestRates(bank);
 
-    const { lendingApr, borrowingApr } = getInterestRates(bank);
+    banks.push({
+      ...bank,
+      dividedAssetShareValue: wrappedI80F48toBigNumber(bank.assetShareValue)
+        .div(10 ** bank.mintDecimals)
+        .toString(),
+      dividedLiabilityShareValue: wrappedI80F48toBigNumber(
+        bank.liabilityShareValue
+      )
+        .div(10 ** bank.mintDecimals)
+        .toString(),
+      suppliedLtv: wrappedI80F48toBigNumber(bank.config.assetWeightMaint)
+        .decimalPlaces(2)
+        .toNumber(),
+      suppliedYields: [
+        {
+          apy: aprToApy(lendingApr),
+          apr: lendingApr,
+        },
+      ],
+      borrowedWeight: wrappedI80F48toBigNumber(bank.config.liabilityWeightMaint)
+        .decimalPlaces(2)
+        .toNumber(),
+      borrowedYields: [
+        {
+          apy: -aprToApy(borrowingApr),
+          apr: -borrowingApr,
+        },
+      ],
+    });
+
     const depositedAmount = wrappedI80F48toBigNumber(bank.liabilityShareValue)
       .times(wrappedI80F48toBigNumber(bank.totalLiabilityShares))
       .toNumber();
-
     const borrowedAmount = wrappedI80F48toBigNumber(bank.assetShareValue)
       .times(wrappedI80F48toBigNumber(bank.totalAssetShares))
       .toNumber();
-
-    if (borrowedAmount <= 10 && depositedAmount <= 10) continue;
+    if (borrowedAmount <= 1 && depositedAmount <= 1) continue;
 
     const tokenAddress = bank.mint.toString();
 
@@ -74,11 +89,19 @@ const executor: JobExecutor = async (cache: Cache) => {
       poolName,
     };
 
-    await cache.setItem(`${bank.pubkey.toString()}-${tokenAddress}`, rate, {
-      prefix: borrowLendRatesPrefix,
-      networkId: NetworkId.solana,
+    rateItems.push({
+      key: `${bank.pubkey.toString()}-${tokenAddress}`,
+      value: rate,
     });
   }
+  await cache.setItem(banksKey, banks, {
+    prefix: platformId,
+    networkId: NetworkId.solana,
+  });
+  await cache.setItems(rateItems, {
+    prefix: borrowLendRatesPrefix,
+    networkId: NetworkId.solana,
+  });
 };
 
 const job: Job = {
