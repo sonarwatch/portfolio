@@ -234,6 +234,10 @@ export class Cache {
     return res.map((r) => r.value as K);
   }
 
+  /**
+   * @deprecated
+   * This function has been deprecated. Use the getItems.
+   */
   async getAllItems<K extends StorageValue>(
     opts: TransactionOptions
   ): Promise<K[]> {
@@ -241,6 +245,10 @@ export class Cache {
     return Array.from(itemsMap.values());
   }
 
+  /**
+   * @deprecated
+   * This function has been deprecated. Use the getItems.
+   */
   async getAllItemsAsMap<K extends StorageValue>(
     opts: TransactionOptions
   ): Promise<Map<string, K>> {
