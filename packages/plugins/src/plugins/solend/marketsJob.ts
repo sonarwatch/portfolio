@@ -5,7 +5,6 @@ import {
   platformId,
   marketsEndpoint,
   marketsKey,
-  solendPlatform,
 } from './constants';
 import { MarketInfo } from './types';
 import { upperFirst } from './helpers';
@@ -36,7 +35,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     );
   }
   await cache.setItem(marketsKey, marketsEnhanced, {
-    prefix: solendPlatform.id,
+    prefix: platformId,
     networkId: NetworkId.solana,
   });
 };
