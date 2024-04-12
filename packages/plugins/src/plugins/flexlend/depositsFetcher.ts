@@ -7,7 +7,6 @@ import { getDerivedAccount } from './helpers';
 import driftDepositsFetcher from '../drift/deposits';
 import kaminoLendDepositFetcher from '../kamino/lendsFetcher';
 import mangoDepositFetcher from '../mango/collateralFetcher';
-import { fetchers as marginfiDepositsFetchers } from '../marginfi/index';
 import { walletTokensPlatform } from '../tokens/constants';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 import { getClientSolana } from '../../utils/clients';
@@ -17,6 +16,11 @@ import { mainMarket, marketsPrefix, reservesPrefix } from '../solend/constants';
 import { MarketInfo, ReserveInfo, ReserveInfoExtended } from '../solend/types';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 import { getElementsFromObligations } from '../solend/helpers';
+import { marginfiAccountStruct } from '../marginfi/structs/MarginfiAccount';
+import { ParsedAccount } from '../../utils/solana';
+import { BankInfo } from '../marginfi/types';
+import { banksKey, marginfiPlatform } from '../marginfi/constants';
+import { getElementFromAccount } from '../marginfi/helpers';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -29,32 +33,42 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
   if (!userAccount) return [];
 
+  const isSolendActivated =
+    userAccount.solend_obligation.toString() !==
+    '11111111111111111111111111111111';
+
+  const isMarginFiActivated =
+    userAccount.mfi_account.toString() !== '11111111111111111111111111111111';
+
   const portfolioElements: PortfolioElement[] = [];
   const [
-    marginElements,
+    marginfiAccount,
     driftElements,
     kaminoElements,
     mangoElements,
     solendObligation,
   ] = await Promise.all([
-    marginfiDepositsFetchers[0].executor(pda, cache),
+    isMarginFiActivated
+      ? getParsedAccountInfo(
+          client,
+          marginfiAccountStruct,
+          userAccount.mfi_account
+        )
+      : undefined,
     driftDepositsFetcher.executor(pda, cache),
     kaminoLendDepositFetcher.executor(pda, cache),
     mangoDepositFetcher.executor(pda, cache),
-    getParsedAccountInfo(
-      client,
-      obligationStruct,
-      userAccount.solend_obligation
-    ),
+    isSolendActivated
+      ? getParsedAccountInfo(
+          client,
+          obligationStruct,
+          userAccount.solend_obligation
+        )
+      : undefined,
   ]);
 
   portfolioElements.push(
-    ...[
-      ...marginElements,
-      ...driftElements,
-      ...kaminoElements,
-      ...mangoElements,
-    ]
+    ...[...driftElements, ...kaminoElements, ...mangoElements]
   );
 
   if (solendObligation) {
@@ -111,6 +125,37 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         );
         portfolioElements.push(...solendElements);
       }
+    }
+  }
+
+  if (marginfiAccount) {
+    const banksInfo = await cache.getItem<ParsedAccount<BankInfo>[]>(banksKey, {
+      prefix: marginfiPlatform.id,
+      networkId: NetworkId.solana,
+    });
+    if (banksInfo) {
+      const banksInfoByAddress: Map<string, BankInfo> = new Map();
+      const tokensAddresses: Set<string> = new Set();
+      banksInfo.forEach((bankInfo) => {
+        if (!bankInfo) return;
+        banksInfoByAddress.set(
+          bankInfo.pubkey.toString(),
+          bankInfo as BankInfo
+        );
+        tokensAddresses.add(bankInfo.mint.toString());
+      });
+
+      const tokenPriceById = await cache.getTokenPricesAsMap(
+        Array.from(tokensAddresses),
+        NetworkId.solana
+      );
+
+      const element = getElementFromAccount(
+        marginfiAccount,
+        banksInfoByAddress,
+        tokenPriceById
+      );
+      if (element) portfolioElements.push(element);
     }
   }
 

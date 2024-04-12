@@ -1,6 +1,19 @@
 import BigNumber from 'bignumber.js';
 import Decimal from 'decimal.js';
+import {
+  NetworkId,
+  PortfolioAsset,
+  PortfolioElement,
+  PortfolioElementType,
+  TokenPrice,
+  Yield,
+  getElementLendingValues,
+} from '@sonarwatch/portfolio-core';
 import { Bank } from './structs/Bank';
+import { MarginfiAccount } from './structs/MarginfiAccount';
+import { BankInfo } from './types';
+import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { platformId } from './constants';
 
 export function wrappedI80F48toBigNumber(
   { value }: { value: BigNumber },
@@ -82,4 +95,96 @@ export function computeInterestRates(bank: Bank): {
   const borrowingApr = borrowingRate.toNumber();
 
   return { lendingApr, borrowingApr };
+}
+
+export function getElementFromAccount(
+  marginfiAccount: MarginfiAccount,
+  banksInfoByAddress: Map<string, BankInfo>,
+  tokenPriceById: Map<string, TokenPrice>
+): PortfolioElement | null {
+  const { balances } = marginfiAccount.lendingAccount;
+  if (!balances || balances.length === 0) return null;
+
+  const borrowedAssets: PortfolioAsset[] = [];
+  const borrowedYields: Yield[][] = [];
+  const suppliedAssets: PortfolioAsset[] = [];
+  const suppliedYields: Yield[][] = [];
+  const rewardAssets: PortfolioAsset[] = [];
+  const suppliedLtvs: number[] = [];
+  const borrowedWeights: number[] = [];
+
+  for (let index = 0; index < balances.length; index += 1) {
+    const balance = balances[index];
+    if (balance.bankPk.toString() === '11111111111111111111111111111111')
+      continue;
+    const bankInfo = banksInfoByAddress.get(balance.bankPk.toString());
+    if (!bankInfo) continue;
+
+    const tokenPrice = tokenPriceById.get(bankInfo.mint.toString());
+    if (!balance.assetShares.value.isZero()) {
+      suppliedLtvs.push(bankInfo.suppliedLtv);
+      const suppliedAmount = wrappedI80F48toBigNumber(balance.assetShares)
+        .times(bankInfo.dividedAssetShareValue)
+        .toNumber();
+
+      suppliedAssets.push(
+        tokenPriceToAssetToken(
+          bankInfo.mint.toString(),
+          suppliedAmount,
+          NetworkId.solana,
+          tokenPrice
+        )
+      );
+      suppliedYields.push(bankInfo.suppliedYields);
+    }
+
+    if (!balance.liabilityShares.value.isZero()) {
+      borrowedWeights.push(bankInfo.borrowedWeight);
+      const borrowedAmount = wrappedI80F48toBigNumber(balance.liabilityShares)
+        .times(bankInfo.dividedLiabilityShareValue)
+        .toNumber();
+
+      borrowedAssets.push(
+        tokenPriceToAssetToken(
+          bankInfo.mint.toString(),
+          borrowedAmount,
+          NetworkId.solana,
+          tokenPrice
+        )
+      );
+      borrowedYields.push(bankInfo.borrowedYields);
+    }
+  }
+
+  if (suppliedAssets.length === 0 && borrowedAssets.length === 0) return null;
+
+  const { borrowedValue, healthRatio, suppliedValue, value, rewardValue } =
+    getElementLendingValues(
+      suppliedAssets,
+      borrowedAssets,
+      rewardAssets,
+      suppliedLtvs,
+      borrowedWeights
+    );
+
+  return {
+    type: PortfolioElementType.borrowlend,
+    networkId: NetworkId.solana,
+    platformId,
+    label: 'Lending',
+    value,
+    data: {
+      borrowedAssets,
+      borrowedValue,
+      borrowedYields,
+      suppliedAssets,
+      suppliedValue,
+      suppliedYields,
+      collateralRatio: null,
+      healthRatio,
+      rewardAssets,
+      rewardValue,
+      value,
+    },
+  };
 }
