@@ -9,7 +9,7 @@ export const mangoPlatform: Platform = {
   defiLlamaId: 'parent#mango-markets',
   website: 'https://mango.markets/',
 };
-export const banksPrefix = `${platformId}-banks`;
+export const banksKey = `banks`;
 export const rootBankPrefix = `${platformId}-rootBank`;
 export const groupPrefix = `${platformId}-group`;
 export const boostBanksKey = 'boost-banks';

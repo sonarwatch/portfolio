@@ -1,7 +1,11 @@
-import BigNumber from 'bignumber.js';
+import { Yield } from '@sonarwatch/portfolio-core';
 import { Bank } from './structs/Bank';
 
 export type BankInfo = Bank & {
-  dividedAssetShareValue: BigNumber;
-  dividedLiabilityShareValue: BigNumber;
+  dividedAssetShareValue: string;
+  dividedLiabilityShareValue: string;
+  suppliedYields: Yield[];
+  borrowedYields: Yield[];
+  suppliedLtv: number;
+  borrowedWeight: number;
 };

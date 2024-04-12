@@ -1,5 +1,6 @@
 import { GetProgramAccountsFilter } from '@solana/web3.js';
 import { MarginfiAccountAddress } from './constants';
+import { bankStruct } from './structs/Bank';
 
 export const accountsFilter = (owner: string): GetProgramAccountsFilter[] => [
   {
@@ -34,5 +35,8 @@ export const banksFilters = (): GetProgramAccountsFilter[] => [
       bytes: MarginfiAccountAddress,
       offset: 41,
     },
+  },
+  {
+    dataSize: bankStruct.byteSize,
   },
 ];

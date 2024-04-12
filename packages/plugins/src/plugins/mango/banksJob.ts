@@ -4,9 +4,10 @@ import {
   aprToApy,
   borrowLendRatesPrefix,
 } from '@sonarwatch/portfolio-core';
+import { BankEnhanced } from './types';
 import { Job, JobExecutor } from '../../Job';
 import { Cache } from '../../Cache';
-import { mangoV4Pid, banksPrefix, platformId } from './constants';
+import { mangoV4Pid, platformId, banksKey } from './constants';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { bankStruct } from './struct';
 import { banksFilter } from './filters';
@@ -23,20 +24,18 @@ const executor: JobExecutor = async (cache: Cache) => {
     banksFilter
   );
   if (!banksAccount) return;
+  const banks: BankEnhanced[] = [];
+  const rateItems = [];
   for (let index = 0; index < banksAccount.length; index++) {
     const bank = banksAccount[index];
     if (!bank) continue;
     const depositApr = getDepositRate(bank);
     const borrowApr = getBorrowRate(bank);
-    await cache.setItem(
-      bank.tokenIndex.toString(),
-      {
-        ...bank,
-        depositApr,
-        borrowApr,
-      },
-      { prefix: banksPrefix, networkId: NetworkId.solana }
-    );
+    banks.push({
+      ...bank,
+      depositApr,
+      borrowApr,
+    });
 
     const tokenAddress = bank.mint.toString();
     const res = await fetchTokenSupplyAndDecimals(bank.mint, client);
@@ -69,12 +68,19 @@ const executor: JobExecutor = async (cache: Cache) => {
       platformId,
       poolName: 'Main',
     };
-
-    await cache.setItem(`${bank.vault.toString()}-${tokenAddress}`, rate, {
-      prefix: borrowLendRatesPrefix,
-      networkId: NetworkId.solana,
+    rateItems.push({
+      key: `${bank.vault.toString()}-${tokenAddress}`,
+      value: rate,
     });
   }
+  await cache.setItem(banksKey, banks, {
+    prefix: platformId,
+    networkId: NetworkId.solana,
+  });
+  await cache.setItems(rateItems, {
+    prefix: borrowLendRatesPrefix,
+    networkId: NetworkId.solana,
+  });
 };
 
 const job: Job = {

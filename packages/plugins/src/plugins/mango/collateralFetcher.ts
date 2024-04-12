@@ -11,7 +11,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { mangoV4Pid, banksPrefix, platformId } from './constants';
+import { mangoV4Pid, platformId, banksKey } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { mangoAccountStruct } from './struct';
 import { accountsFilter } from './filters';
@@ -30,14 +30,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
   if (userAccounts.length === 0) return [];
 
-  const banks = await cache.getAllItems<BankEnhanced>({
-    prefix: banksPrefix,
+  const banks = await cache.getItem<BankEnhanced[]>(banksKey, {
+    prefix: platformId,
     networkId: NetworkId.solana,
   });
+  if (!banks) return [];
+
   const tokensMints: Set<string> = new Set();
   const bankByIndex: Map<number, BankEnhanced> = new Map();
   banks.forEach((bank) => {
-    if (!bank) return;
     bankByIndex.set(bank.tokenIndex, bank);
     tokensMints.add(bank.mint.toString());
   });

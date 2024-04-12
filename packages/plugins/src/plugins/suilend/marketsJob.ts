@@ -56,7 +56,7 @@ const executor: JobExecutor = async (cache: Cache) => {
           tokenAddress: reserve.fields.coin_type.fields.name,
           utilizationRatio: utilization.toNumber(),
           depositYield: { apr: depositApr, apy: aprToApy(depositApr) },
-          borrowYield: { apr: borrowApr, apy: aprToApy(borrowApr) },
+          borrowYield: { apr: -borrowApr, apy: -aprToApy(borrowApr) },
         };
         rates.push(rate);
 
