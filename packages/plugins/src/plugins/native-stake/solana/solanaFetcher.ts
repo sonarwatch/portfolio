@@ -21,6 +21,7 @@ import {
   marinadeManagerAddresses,
   stakeProgramId,
 } from './constants';
+import { jitoPlatform } from '../../jito/constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -48,11 +49,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   let marinadeSolAmount = 0;
   let solAmount = 0;
   let nMarinadeAccounts = 0;
+  let mevRewards = 0;
   let nativeAssets: PortfolioAsset[] = [];
   for (let i = 0; i < stakeAccounts.length; i += 1) {
     const stakeAccount = stakeAccounts[i];
 
-    const amount = new BigNumber(stakeAccount.lamports)
+    mevRewards += new BigNumber(stakeAccount.lamports)
+      .minus(stakeAccount.rentExemptReserve)
+      .minus(stakeAccount.stake)
+      .dividedBy(10 ** 9)
+      .toNumber();
+
+    const amount = new BigNumber(stakeAccount.stake)
       .minus(stakeAccount.rentExemptReserve)
       .dividedBy(new BigNumber(10 ** 9))
       .toNumber();
@@ -142,6 +150,29 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
               solTokenPrice
             ),
             attributes: {},
+          },
+        ],
+      },
+    });
+  }
+  if (mevRewards > 0) {
+    elements.push({
+      networkId: NetworkId.solana,
+      platformId: jitoPlatform.id,
+      type: 'multiple',
+      label: 'Rewards',
+      name: `MEV Rewards`,
+      value: solTokenPrice ? mevRewards * solTokenPrice.price : null,
+      data: {
+        assets: [
+          {
+            ...tokenPriceToAssetToken(
+              solanaNetwork.native.address,
+              mevRewards,
+              NetworkId.solana,
+              solTokenPrice
+            ),
+            attributes: { isClaimable: true },
           },
         ],
       },
