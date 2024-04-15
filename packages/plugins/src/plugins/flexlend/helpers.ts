@@ -7,3 +7,10 @@ export function getDerivedAccount(owner: string): string {
     flexProgramId
   )[0].toString();
 }
+
+export function isLiftEmpty(authoritySeed: number[]) {
+  return (
+    authoritySeed.toString() ===
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0].toString()
+  );
+}
