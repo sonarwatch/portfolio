@@ -46,4 +46,10 @@ export const airdropsInfo: AirdropInfo[] = [
     claimUntilTs: 1728086400000,
     distributorProgram: 'DiSLRwcSFvtwvMWSs7ubBMvYRaYNYupa76ZSuYLe6D7j',
   },
+  {
+    mint: 'SHARKSYJjqaNyxVfrpnBN9pjgkhwDhatnMyicWPnr1s',
+    decimals: 6,
+    claimUntilTs: 1714435200000,
+    distributorProgram: 'DiSLRwcSFvtwvMWSs7ubBMvYRaYNYupa76ZSuYLe6D7j',
+  },
 ];
