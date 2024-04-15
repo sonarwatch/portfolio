@@ -14,3 +14,4 @@ export const merkleTree = 'HS8EQ8QkQSBJggY8r255AKdWbtYRtyNMoRt4LjNkkWm1';
 export const merkleDistributor = 'mERKcfxMC5SqJn4Ld4BUris3WKZZ1ojjWJ3A3J5CKxv';
 export const jtoMint = 'jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL';
 export const jtoDecimals = 9;
+export const airdropUrl = 'https://airdrop.jito.network/status/';

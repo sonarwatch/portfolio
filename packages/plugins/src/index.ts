@@ -402,6 +402,11 @@ import {
   jobs as nosanaJobs,
   fetchers as nosanaFetchers,
 } from './plugins/nosana';
+import {
+  platforms as jitoPlatforms,
+  jobs as jitoJobs,
+  fetchers as jitoFetchers,
+} from './plugins/jito';
 
 export {
   walletTokensPlatform,
@@ -500,6 +505,7 @@ export const platforms: Platform[] = [
   ...wormholePlatforms,
   ...banxPlatforms,
   ...nosanaPlatforms,
+  ...jitoPlatforms,
 ];
 
 // JOBS //
@@ -580,6 +586,7 @@ export const jobs: Job[] = [
   ...wormholeJobs,
   ...banxJobs,
   ...nosanaJobs,
+  ...jitoJobs,
 ];
 
 // FETCHERS //
@@ -662,5 +669,6 @@ export const fetchers: Fetcher[] = [
   ...wormholeFetchers,
   ...banxFetchers,
   ...nosanaFetchers,
+  ...jitoFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);

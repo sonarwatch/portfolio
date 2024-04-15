@@ -1,12 +1,11 @@
-export type AirdropResponses = {
-  tokens_total: number;
+export type ClaimStatus = {
   status: string;
-  amount_locked_withdrawn: null;
-  amount_locked_withdrawable: null;
   total_unlocked_staker: number;
-  total_unlocked_searcher: number;
-  total_unlocked_validator: number;
   total_locked_staker: number;
+  total_unlocked_searcher: number;
   total_locked_searcher: number;
+  total_unlocked_validator: number;
   total_locked_validator: number;
+  amount_locked_withdrawable: number;
+  amount_locked_withdrawn: number;
 };
