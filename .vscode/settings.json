@@ -1,5 +1,5 @@
 {
   "eslint.validate": ["json"],
-  "typescript.preferences.importModuleSpecifier": "project-relative",
+  "typescript.preferences.importModuleSpecifier": "relative",
   "typescript.tsdk": "node_modules\\typescript\\lib"
 }
