@@ -31,9 +31,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
   if (!pools) return [];
 
-  const poolById: Map<number, Pool> = new Map();
-  pools.forEach((pool, index) => poolById.set(index, pool));
-
   const tokenPriceById = await cache.getTokenPricesAsMap(
     [...pools.map((pool) => pool.assetInfo.onassetMint), usdcSolanaMint],
     NetworkId.solana
@@ -50,7 +47,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       borrowedOnasset,
       poolIndex,
     } = borrow;
-    const pool = poolById.get(poolIndex);
+    const pool = pools.at(poolIndex);
     if (!pool) continue;
 
     const tokenPrice = tokenPriceById.get(pool.assetInfo.onassetMint);
@@ -95,7 +92,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       platformId,
       label: 'Lending',
       value,
-      // name: ,
       data: {
         borrowedAssets,
         borrowedValue,
@@ -133,7 +129,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   for (const position of positions) {
     const amount = position.committedCollateralLiquidity;
 
-    const pool = poolById.get(position.poolIndex);
+    const pool = pools.at(position.poolIndex);
     if (!pool) continue;
 
     const tokenPrice = tokenPriceById.get(pool.assetInfo.onassetMint);
