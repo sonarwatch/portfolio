@@ -412,6 +412,11 @@ import {
   jobs as magicedenJobs,
   fetchers as magicedenFetchers,
 } from './plugins/magiceden';
+import {
+  platforms as flowxPlatforms,
+  jobs as flowxJobs,
+  fetchers as flowxFetchers,
+} from './plugins/flowx';
 
 export {
   walletTokensPlatform,
@@ -512,6 +517,7 @@ export const platforms: Platform[] = [
   ...nosanaPlatforms,
   ...jitoPlatforms,
   ...magicedenPlatforms,
+  ...flowxPlatforms,
 ];
 
 // JOBS //
@@ -594,6 +600,7 @@ export const jobs: Job[] = [
   ...nosanaJobs,
   ...jitoJobs,
   ...magicedenJobs,
+  ...flowxJobs,
 ];
 
 // FETCHERS //
@@ -678,5 +685,6 @@ export const fetchers: Fetcher[] = [
   ...nosanaFetchers,
   ...jitoFetchers,
   ...magicedenFetchers,
+  ...flowxFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
