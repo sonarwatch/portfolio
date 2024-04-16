@@ -1,3 +1,4 @@
 export type Allocation = {
-  allocation: string;
+  amount: number;
+  merkle_tree: string;
 };

@@ -7,8 +7,8 @@ import {
   airdropApi,
   allocationPrefix,
   distributorProgram,
-  merkleTree,
   platformId,
+  prclDecimals,
   prclMint,
 } from './constants';
 import { Allocation } from './types';
@@ -22,30 +22,44 @@ const oneDayInMs = 24 * 60 * 60 * 1000;
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
-  const cachedAllocation = await cache.getItem<number>(owner, {
+  const cachedAllocation = await cache.getItem<Allocation>(owner, {
     prefix: allocationPrefix,
     networkId: NetworkId.solana,
   });
 
-  let amount: BigNumber | undefined;
+  let amount: number | undefined;
+  let merkleTree: string | undefined;
   if (cachedAllocation) {
-    amount = new BigNumber(cachedAllocation);
+    amount = cachedAllocation.amount;
+    merkleTree = cachedAllocation.merkle_tree;
   } else {
     const allocation: AxiosResponse<Allocation> | null = await axios
-      .get(airdropApi + owner)
+      .get(airdropApi + owner, {
+        headers: {
+          origin: 'https://app.parcl.co',
+          referer: 'https://app.parcl.co',
+        },
+      })
       .catch(() => null);
 
     if (allocation) {
-      amount = new BigNumber(allocation.data.allocation);
+      merkleTree = allocation.data.merkle_tree;
+      amount = new BigNumber(allocation.data.amount)
+        .dividedBy(10 ** prclDecimals)
+        .toNumber();
 
-      await cache.setItem(owner, amount.toNumber(), {
-        prefix: allocationPrefix,
-        networkId: NetworkId.solana,
-        ttl: oneDayInMs,
-      });
+      await cache.setItem<Allocation>(
+        owner,
+        { amount, merkle_tree: merkleTree },
+        {
+          prefix: allocationPrefix,
+          networkId: NetworkId.solana,
+          ttl: oneDayInMs,
+        }
+      );
     }
   }
-  if (!amount || amount.isZero()) return [];
+  if (!amount || !merkleTree) return [];
 
   const claimStatusPubkey = deriveClaimStatus(
     owner,
@@ -53,16 +67,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     distributorProgram
   );
 
-  const [claimStatusAccounts, tokenPrice] = await Promise.all([
-    getParsedAccountInfo(client, claimStatusStruct, claimStatusPubkey),
-    cache.getTokenPrice(prclMint, NetworkId.solana),
-  ]);
-
+  const claimStatusAccounts = await getParsedAccountInfo(
+    client,
+    claimStatusStruct,
+    claimStatusPubkey
+  );
   if (claimStatusAccounts) return [];
+
+  const tokenPrice = await cache.getTokenPrice(prclMint, NetworkId.solana);
 
   const asset = tokenPriceToAssetToken(
     prclMint,
-    amount.toNumber(),
+    amount,
     NetworkId.solana,
     tokenPrice,
     undefined,
