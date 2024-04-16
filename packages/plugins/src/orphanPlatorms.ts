@@ -37,13 +37,6 @@ const otphanPlatforms: Platform[] = [
     website: 'https://www.coinbase.com/price/coinbase-wrapped-staked-eth',
   },
   {
-    id: 'jito',
-    defiLlamaId: 'jito',
-    name: 'Jito',
-    image: 'https://sonar.watch/img/platforms/jito.png',
-    website: 'https://jito.network/',
-  },
-  {
     id: 'blaze',
     defiLlamaId: 'blazestake',
     name: 'Blaze Staked SOL',

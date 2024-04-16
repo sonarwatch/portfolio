@@ -1,60 +1,80 @@
-import { NetworkId, PortfolioElementType } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  PortfolioAsset,
+  PortfolioElementType,
+  getUsdValueSum,
+} from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
+import axios from 'axios';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import {
-  jtoDecimals,
-  jtoMint,
-  merkleDistributor,
-  merkleTree,
-  platformId,
-} from './constants';
-import { getClientSolana } from '../../utils/clients';
-import { deriveClaimStatus } from '../jupiter/helpers';
-import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
-import { claimStatusStruct } from './structs';
+import { airdropUrl, jtoDecimals, jtoMint, platformId } from './constants';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { ClaimStatus } from './types';
 
 const jtoFactor = new BigNumber(10 ** jtoDecimals);
 const endOfVesting = 1733529600000; // December 07 2024
 const endOfClaim = 1749254400000; // June 07 2025
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (Date.now() > endOfClaim) return [];
-  const client = getClientSolana();
 
-  const claimStatus = await getParsedAccountInfo(
-    client,
-    claimStatusStruct,
-    deriveClaimStatus(owner, merkleTree, merkleDistributor)
-  );
-  if (!claimStatus) return [];
-  if (claimStatus.lockedAmount.isZero()) return [];
+  const [res, tokenPrice] = await Promise.all([
+    axios.get(airdropUrl + owner, { timeout: 1000 }).catch(() => null),
+    cache.getTokenPrice(jtoMint, NetworkId.solana),
+  ]);
 
-  const tokenPrice = await cache.getTokenPrice(jtoMint, NetworkId.solana);
-  const amountleft = claimStatus.lockedAmount
-    .minus(claimStatus.lockedAmountWithdrawn)
-    .dividedBy(jtoFactor);
+  if (!res) return [];
 
-  const asset = tokenPriceToAssetToken(
-    jtoMint,
-    amountleft.toNumber(),
-    NetworkId.solana,
-    tokenPrice,
-    undefined,
-    { lockedUntil: endOfVesting }
-  );
+  const claimStatus = res.data as ClaimStatus;
+
+  const avaibleToClaim = new BigNumber(
+    claimStatus.amount_locked_withdrawable
+  ).dividedBy(jtoFactor);
+
+  const vestedAmountLeft = new BigNumber(claimStatus.total_locked_searcher)
+    .plus(claimStatus.total_locked_staker)
+    .plus(claimStatus.total_locked_validator)
+    .minus(claimStatus.amount_locked_withdrawn)
+    .dividedBy(jtoFactor)
+    .minus(avaibleToClaim);
+
+  const assets: PortfolioAsset[] = [];
+  if (!vestedAmountLeft.isZero())
+    assets.push(
+      tokenPriceToAssetToken(
+        jtoMint,
+        vestedAmountLeft.toNumber(),
+        NetworkId.solana,
+        tokenPrice,
+        undefined,
+        { lockedUntil: endOfVesting }
+      )
+    );
+
+  if (!avaibleToClaim.isZero())
+    assets.push(
+      tokenPriceToAssetToken(
+        jtoMint,
+        avaibleToClaim.toNumber(),
+        NetworkId.solana,
+        tokenPrice,
+        undefined,
+        { isClaimable: true }
+      )
+    );
+  if (assets.length === 0) return [];
 
   return [
     {
       type: PortfolioElementType.multiple,
-      label: 'Vesting',
+      label: 'Rewards',
       networkId: NetworkId.solana,
       platformId,
       name: 'Airdrop',
       data: {
-        assets: [asset],
+        assets,
       },
-      value: asset.value,
+      value: getUsdValueSum(assets.map((asset) => asset.value)),
     },
   ];
 };
