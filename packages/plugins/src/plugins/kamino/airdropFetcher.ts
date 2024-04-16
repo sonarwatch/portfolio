@@ -14,15 +14,16 @@ const oneDayInMs = 24 * 60 * 60 * 1000;
 const kmnkoPreMarketPriceKey = `${preMarketPriceKey}-KMNO`;
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const premarketPrice = await cache.getItem<number>(kmnkoPreMarketPriceKey, {
-    prefix: driftPlatform.id,
-    networkId: NetworkId.solana,
-  });
-
-  const cachedAllocation = await cache.getItem<number>(owner, {
-    prefix: allocationPrefix,
-    networkId: NetworkId.solana,
-  });
+  const [premarketPrice, cachedAllocation] = await Promise.all([
+    cache.getItem<number>(kmnkoPreMarketPriceKey, {
+      prefix: driftPlatform.id,
+      networkId: NetworkId.solana,
+    }),
+    cache.getItem<number>(owner, {
+      prefix: allocationPrefix,
+      networkId: NetworkId.solana,
+    }),
+  ]);
 
   let amount: BigNumber | undefined;
   if (cachedAllocation) {
