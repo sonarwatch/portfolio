@@ -19,8 +19,10 @@ import { claimStatusStruct } from '../jupiter/launchpad/structs';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 const oneDayInMs = 24 * 60 * 60 * 1000;
-
+const endOfClaim = 1735603200000;
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
+  if (Date.now() > endOfClaim) return [];
+
   const client = getClientSolana();
   const cachedAllocation = await cache.getItem<Allocation>(owner, {
     prefix: allocationPrefix,
