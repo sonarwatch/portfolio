@@ -407,6 +407,11 @@ import {
   jobs as jitoJobs,
   fetchers as jitoFetchers,
 } from './plugins/jito';
+import {
+  platforms as magicedenPlatforms,
+  jobs as magicedenJobs,
+  fetchers as magicedenFetchers,
+} from './plugins/magiceden';
 
 export {
   walletTokensPlatform,
@@ -506,6 +511,7 @@ export const platforms: Platform[] = [
   ...banxPlatforms,
   ...nosanaPlatforms,
   ...jitoPlatforms,
+  ...magicedenPlatforms,
 ];
 
 // JOBS //
@@ -587,6 +593,7 @@ export const jobs: Job[] = [
   ...banxJobs,
   ...nosanaJobs,
   ...jitoJobs,
+  ...magicedenJobs,
 ];
 
 // FETCHERS //
@@ -670,5 +677,6 @@ export const fetchers: Fetcher[] = [
   ...banxFetchers,
   ...nosanaFetchers,
   ...jitoFetchers,
+  ...magicedenFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
