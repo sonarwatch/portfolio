@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.11.184](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.183...plugins-0.11.184) (2024-04-17)
+
+
+### Reverts
+
+* Revert "fix flashtrade" ([4055eb1](https://github.com/sonarwatch/portfolio/commit/4055eb1e72e64c96adf536bbd81c377c41018535))
+
+
+
 ## [0.11.183](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.182...plugins-0.11.183) (2024-04-16)
 
 
