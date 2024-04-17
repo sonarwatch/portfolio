@@ -379,7 +379,7 @@ export function getUniV3PositionsFetcher(
 
   return {
     executor,
-    id: `${platformId}-${networkId}-positions-${version.toLocaleLowerCase()}`,
+    id: `${platformId}-${networkId}-positions-${version.toLowerCase()}`,
     networkId,
   };
 }
