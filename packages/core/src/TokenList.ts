@@ -4,6 +4,7 @@ import { NetworkIdType } from './Network';
 
 export type UniTokenInfoExtensionValue =
   | string
+  | Array<string>
   | number
   | boolean
   | null
@@ -17,7 +18,17 @@ export interface UniTokenInfo {
   readonly symbol: string;
   readonly logoURI?: string;
   readonly tags?: string[];
-  readonly extensions?: Record<string, UniTokenInfoExtensionValue>;
+  readonly extensions?: {
+    readonly [key: string]:
+      | {
+          [key: string]:
+            | {
+                [key: string]: UniTokenInfoExtensionValue;
+              }
+            | UniTokenInfoExtensionValue;
+        }
+      | UniTokenInfoExtensionValue;
+  };
 }
 export type UniTokenListVersion = {
   major: number;
