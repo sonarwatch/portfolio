@@ -1,4 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
+import BigNumber from 'bignumber.js';
 
 export const solanaTokenPid = new PublicKey(
   'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
@@ -11,3 +12,5 @@ export const associatedTokenProgramId = new PublicKey(
 );
 
 export const usdcSolanaMint = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+export const usdcSolanaDecimals = 6;
+export const usdcSolanaFactor = new BigNumber(10 ** 6);
