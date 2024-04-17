@@ -16,7 +16,8 @@ import {
 import { flpStakeStruct } from './structs';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getPdas } from './helpers';
-import { PoolInfo } from './types';
+import { CustodyInfo, PoolInfo } from './types';
+import { custodiesKey } from '../jupiter/exchange/constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -34,8 +35,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
   if (!poolsInfo) return [];
 
-  const flpMintById: Map<string, string> = new Map();
-  poolsInfo.map((pool) => flpMintById.set(pool.pkey, pool.flpMint));
+  const custodiesInfo = await cache.getItem<CustodyInfo[]>(custodiesKey, {
+    prefix: platformId,
+    networkId: NetworkId.solana,
+  });
+  if (!custodiesInfo) return [];
+
+  const custodiesByPool: Map<string, CustodyInfo> = new Map();
+  custodiesInfo.forEach((custody) =>
+    custodiesByPool.set(custody.pool, custody)
+  );
+
+  const poolInfoById: Map<string, PoolInfo> = new Map();
+  poolsInfo.map((pool) => poolInfoById.set(pool.pkey, pool));
 
   const tokenPriceById = await cache.getTokenPricesAsMap(
     [...poolsInfo.map((info) => info.flpMint), usdcSolanaMint],
@@ -49,10 +61,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const stakeAccount = stakeAccounts[j];
     if (!stakeAccount) continue;
 
-    const flpMint = flpMintById.get(stakeAccount.pool.toString());
-    if (!flpMint) continue;
+    const poolInfo = poolInfoById.get(stakeAccount.pool.toString());
+    if (!poolInfo) continue;
 
-    const flpTokenPrice = tokenPriceById.get(flpMint);
+    const flpTokenPrice = tokenPriceById.get(poolInfo.flpMint);
     if (!flpTokenPrice) continue;
 
     const flpFacotr = 10 ** flpTokenPrice.decimals;
@@ -103,7 +115,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
 
     if (!stakeAccount.unclaimedRewards.isZero()) {
-      const unclaimedAmount = stakeAccount.unclaimedRewards
+      const watermark = stakeAccount.stakeStats.activeAmount
+        .multipliedBy(poolInfo.rewardPerLp)
+        .dividedBy(flpFacotr);
+      const unclaimedAmount = watermark
+        .minus(stakeAccount.rewardSnapshot)
+        .plus(stakeAccount.unclaimedRewards)
         .times(stakeAccount.feeShareBps)
         .dividedBy(10 ** 10);
       assets.push({

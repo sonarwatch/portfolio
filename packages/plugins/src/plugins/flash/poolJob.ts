@@ -6,9 +6,10 @@ import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccou
 import { platformId, poolsKey, poolsPkeys } from './constants';
 import { pool1Struct, pool2Struct, pool3Struct } from './structs';
 import { fetchTokenSupplyAndDecimals } from '../../utils/solana/fetchTokenSupplyAndDecimals';
-import { u8ArrayToString } from '../../utils/solana';
+import { u8ArrayToString, usdcSolanaMint } from '../../utils/solana';
 import { walletTokensPlatform } from '../tokens/constants';
-import { PoolInfo } from './types';
+import { CustodyInfo, PoolInfo } from './types';
+import { custodiesKey } from '../jupiter/exchange/constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -23,13 +24,32 @@ const executor: JobExecutor = async (cache: Cache) => {
     pool3Struct.deserialize(pools[2].data)[0],
   ];
 
+  const custodiesInfo = await cache.getItem<CustodyInfo[]>(custodiesKey, {
+    prefix: platformId,
+    networkId: NetworkId.solana,
+  });
+  if (!custodiesInfo) return;
+
+  const custodiesByPool: Map<string, CustodyInfo> = new Map();
+  custodiesInfo.forEach((custody) =>
+    custodiesByPool.set(custody.pubkey, custody)
+  );
+
   const poolsInfo: PoolInfo[] = [];
   for (let i = 0; i < poolsAccounts.length; i++) {
     const pool = poolsAccounts[i];
+    const { custodies } = pool;
+    let rewardPerLp: number | undefined;
+    custodies.forEach((custodyPkey) => {
+      const custody = custodiesByPool.get(custodyPkey.toString());
+      if (custody?.mint === usdcSolanaMint)
+        rewardPerLp = Number(custody.feesStats.rewardPerLpStaked);
+    });
     const supAndDecimals = await fetchTokenSupplyAndDecimals(
       pool.flpMint,
       client
     );
+
     const mint = pool.flpMint.toString();
     if (!supAndDecimals) continue;
 
@@ -39,16 +59,6 @@ const executor: JobExecutor = async (cache: Cache) => {
       .dividedBy(10 ** decimals)
       .dividedBy(supply)
       .toNumber();
-
-    // await cache.setItem(poolsPkeys[i].toString(), [pool.flpMint.toString()], {
-    //   prefix: platformId,
-    //   networkId: NetworkId.solana,
-    // });
-
-    poolsInfo.push({
-      flpMint: pool.flpMint.toString(),
-      pkey: poolsPkeys[i].toString(),
-    });
 
     await cache.setTokenPriceSource({
       address: mint,
@@ -60,6 +70,14 @@ const executor: JobExecutor = async (cache: Cache) => {
       timestamp: Date.now(),
       weight: 1,
       elementName: u8ArrayToString(pool.name),
+    });
+
+    if (!rewardPerLp) continue;
+
+    poolsInfo.push({
+      flpMint: pool.flpMint.toString(),
+      pkey: poolsPkeys[i].toString(),
+      rewardPerLp,
     });
   }
 

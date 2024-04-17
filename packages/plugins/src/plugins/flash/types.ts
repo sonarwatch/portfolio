@@ -108,4 +108,4 @@ export type CustodyInfo = {
   tokenAccountBump: string;
 };
 
-export type PoolInfo = { pkey: string; flpMint: string };
+export type PoolInfo = { pkey: string; flpMint: string; rewardPerLp: number };
