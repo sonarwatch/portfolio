@@ -7,7 +7,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId } from './constants';
+import { platformId, poolsKey } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import {
   getParsedMultipleAccountsInfo,
@@ -16,6 +16,7 @@ import {
 import { flpStakeStruct } from './structs';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getPdas } from './helpers';
+import { PoolInfo } from './types';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -27,28 +28,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
   if (!stakeAccounts.some((account) => account !== null)) return [];
 
-  const pools = stakeAccounts.map((stakeAccount) =>
-    stakeAccount ? stakeAccount.pool.toString() : ''
-  );
-  const flpMints = await cache.getItems<string[]>(pools, {
+  const poolsInfo = await cache.getItem<PoolInfo[]>(poolsKey, {
     prefix: platformId,
     networkId: NetworkId.solana,
   });
-  if (!flpMints) return [];
+  if (!poolsInfo) return [];
 
   const flpMintById: Map<string, string> = new Map();
-  for (let i = 0; i < flpMints.length; i++) {
-    const flpMint = flpMints[i];
-    const stakeAccount = stakeAccounts[i];
-    if (flpMint && stakeAccount)
-      flpMintById.set(stakeAccount.pubkey.toString(), flpMint[0]);
-  }
+  poolsInfo.map((pool) => flpMintById.set(pool.pkey, pool.flpMint));
 
-  const tokenPrices = await cache.getTokenPrices(
-    [...Array.from(flpMintById.values()), usdcSolanaMint],
+  const tokenPriceById = await cache.getTokenPricesAsMap(
+    [...poolsInfo.map((info) => info.flpMint), usdcSolanaMint],
     NetworkId.solana
   );
-  const usdcTokenPrice = tokenPrices[tokenPrices.length - 1];
+  const usdcTokenPrice = tokenPriceById.get(usdcSolanaMint);
 
   const elements: PortfolioElement[] = [];
   for (let j = 0; j < stakeAccounts.length; j++) {
@@ -56,17 +49,55 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const stakeAccount = stakeAccounts[j];
     if (!stakeAccount) continue;
 
-    const flpTokenPrice = tokenPrices[j];
-    if (!stakeAccount.stakeStats.activeAmount.isZero() && flpTokenPrice) {
-      const amount = stakeAccount.stakeStats.activeAmount
-        .plus(stakeAccount.stakeStats.pendingActivation)
-        .dividedBy(10 ** flpTokenPrice.decimals);
+    const flpMint = flpMintById.get(stakeAccount.pool.toString());
+    if (!flpMint) continue;
+
+    const flpTokenPrice = tokenPriceById.get(flpMint);
+    if (!flpTokenPrice) continue;
+
+    const flpFacotr = 10 ** flpTokenPrice.decimals;
+    if (!stakeAccount.stakeStats.activeAmount.isZero()) {
+      const amount = stakeAccount.stakeStats.activeAmount.dividedBy(flpFacotr);
       assets.push(
         tokenPriceToAssetToken(
           flpTokenPrice.address,
           amount.toNumber(),
           NetworkId.solana,
           flpTokenPrice
+        )
+      );
+    }
+
+    if (!stakeAccount.stakeStats.pendingActivation.isZero()) {
+      const amount =
+        stakeAccount.stakeStats.pendingActivation.dividedBy(flpFacotr);
+      assets.push(
+        tokenPriceToAssetToken(
+          flpTokenPrice.address,
+          amount.toNumber(),
+          NetworkId.solana,
+          flpTokenPrice,
+          undefined,
+          {
+            tags: ['Activation Pending'],
+          }
+        )
+      );
+    }
+
+    if (!stakeAccount.stakeStats.pendingDeactivation.isZero()) {
+      const amount =
+        stakeAccount.stakeStats.pendingDeactivation.dividedBy(flpFacotr);
+      assets.push(
+        tokenPriceToAssetToken(
+          flpTokenPrice.address,
+          amount.toNumber(),
+          NetworkId.solana,
+          flpTokenPrice,
+          undefined,
+          {
+            tags: ['Deactivation Pending'],
+          }
         )
       );
     }
