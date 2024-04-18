@@ -13,6 +13,7 @@ import {
   fetchers as nativeStakeFetchers,
   jobs as nativeStakeJobs,
 } from './plugins/native-stake';
+import { jobs as switchboardJobs } from './plugins/switchboard';
 import {
   platforms as marinadePlatforms,
   fetchers as marinadeFetchers,
@@ -601,6 +602,7 @@ export const jobs: Job[] = [
   ...jitoJobs,
   ...magicedenJobs,
   ...cloneJobs,
+  ...switchboardJobs,
 ];
 
 // FETCHERS //
