@@ -11,7 +11,7 @@ import { getVotePda } from '../helpers';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import { escrowStruct } from '../launchpad/structs';
 import { jupMint } from '../launchpad/constants';
-import { jupGovernancePlatformId } from './constants';
+import { platformId } from './constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -50,7 +50,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       label: 'Staked',
       name: 'Vote',
       networkId: NetworkId.solana,
-      platformId: jupGovernancePlatformId,
+      platformId: platformId,
       data: { assets: [asset] },
       value: asset.value,
     },
@@ -58,7 +58,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${jupGovernancePlatformId}-vote`,
+  id: `${platformId}-vote`,
   networkId: NetworkId.solana,
   executor,
 };

@@ -1,12 +1,12 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 import {
-  auroryPlatformId,
+  platformId as auroryPlatformId,
   auryMint,
   decimals,
   vaultPubkey,
   xAuryMint,
 } from '../aurory/constants';
-import { hawksightPlatform } from '../hawksight/constants';
+import { platformId as hawksightPlatformId } from '../hawksight/constants';
 
 export const whalesMarketPlatformId = 'whalesmarket';
 export const whalesMarketPlatform: Platform = {
@@ -75,7 +75,7 @@ export const xStakingConfigs: StakingConfig[] = [
     vault: '2eFeetCpZJprr67F2dToT52BbSkdeqKZT6hmVdVG14eU',
     xMint: 'xHWKW3Yyji9xe6FnTmDqu3rBApt3Ysu5ysywUA85Len',
     xDecimals: 6,
-    platformId: hawksightPlatform.id,
+    platformId: hawksightPlatformId,
   },
 ];
 

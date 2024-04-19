@@ -5,7 +5,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { decimals, auroryPlatformId, xAuryMint } from './constants';
+import { decimals, platformId, xAuryMint } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getStakingAccountAddress } from './helpers';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
@@ -36,7 +36,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       type: PortfolioElementType.multiple,
       label: 'Staked',
       networkId: NetworkId.solana,
-      platformId: auroryPlatformId,
+      platformId,
       data: { assets: [asset] },
       value: asset.value,
     },
@@ -44,7 +44,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${auroryPlatformId}-staking`,
+  id: `${platformId}-staking`,
   networkId: NetworkId.solana,
   executor,
 };

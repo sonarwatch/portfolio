@@ -14,12 +14,7 @@ import { ClaimProofResponse } from '../types';
 import { deriveClaimStatus } from '../helpers';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import { claimStatusStruct } from './structs';
-import {
-  merkleApi,
-  airdropsInfo,
-  jupLaunchpadPlatformId,
-  AirdropInfo,
-} from './constants';
+import { merkleApi, airdropsInfo, platformId, AirdropInfo } from './constants';
 import { getParsedMultipleAccountsInfo } from '../../../utils/solana';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
@@ -100,7 +95,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       type: PortfolioElementType.multiple,
       label: 'Rewards',
       networkId: NetworkId.solana,
-      platformId: jupLaunchpadPlatformId,
+      platformId: platformId,
       name: 'Allocation',
       data: {
         assets,
@@ -111,7 +106,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${jupLaunchpadPlatformId}-allocation`,
+  id: `${platformId}-allocation`,
   networkId: NetworkId.solana,
   executor,
 };

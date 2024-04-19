@@ -2,11 +2,7 @@ import { Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from '../../Fetcher';
 import { Job } from '../../Job';
 
-import {
-  platformId,
-  uniswapNetworksConfigs,
-  uniswapPlatform,
-} from './constants';
+import { platformId, uniswapNetworksConfigs, platform } from './constants';
 import { getUniV3PositionsFetcher } from './getUniV3PositionsFetcher';
 
 export const jobs: Job[] = [];
@@ -15,4 +11,4 @@ export const fetchers: Fetcher[] = [
     getUniV3PositionsFetcher(config, platformId, 'V3')
   ),
 ];
-export const platforms: Platform[] = [uniswapPlatform];
+export const platforms: Platform[] = [platform];

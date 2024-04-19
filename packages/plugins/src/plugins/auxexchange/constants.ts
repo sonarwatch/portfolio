@@ -2,7 +2,7 @@ import { Platform } from '@sonarwatch/portfolio-core';
 import { coinInfo } from '../../utils/aptos';
 
 export const platformId = 'auxexchange';
-export const auxExchangePlatform: Platform = {
+export const platform: Platform = {
   id: platformId,
   name: 'Aux Exchange',
   image: 'https://sonar.watch/img/platforms/auxexchange.png',

@@ -3,7 +3,7 @@ import { StgConfig } from './types';
 
 export const platformId = 'stargate';
 
-export const stargatePlatform: Platform = {
+export const platform: Platform = {
   id: platformId,
   name: 'Stargate',
   image: 'https://sonar.watch/img/platforms/stargate.png',

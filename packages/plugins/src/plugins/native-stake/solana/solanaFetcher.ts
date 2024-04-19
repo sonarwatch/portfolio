@@ -15,13 +15,13 @@ import { getParsedProgramAccounts } from '../../../utils/solana';
 import { stakeAccountsFilter } from './filters';
 import { stakeAccountStruct } from './structs';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import { marinadePlatform } from '../../marinade/constants';
+import { platformId as marinadePlatformId } from '../../marinade/constants';
+import { platformId as jitoPlatformId } from '../../jito/constants';
 import {
   epochInfoCacheKey,
   marinadeManagerAddresses,
   stakeProgramId,
 } from './constants';
-import { jitoPlatform } from '../../jito/constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -135,7 +135,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (nMarinadeAccounts !== 0) {
     elements.push({
       networkId: NetworkId.solana,
-      platformId: marinadePlatform.id,
+      platformId: marinadePlatformId,
       type: 'multiple',
       label: 'Staked',
       name: `Native (${nMarinadeAccounts} validators)`,
@@ -158,7 +158,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (mevRewards > 0) {
     elements.push({
       networkId: NetworkId.solana,
-      platformId: jitoPlatform.id,
+      platformId: jitoPlatformId,
       type: 'multiple',
       label: 'Rewards',
       name: `MEV Rewards`,

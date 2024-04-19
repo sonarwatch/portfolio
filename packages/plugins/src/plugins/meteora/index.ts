@@ -5,10 +5,10 @@ import multiTokenPoolsJob from './multiTokenPoolsJob';
 import farmsJob from './farmsJob';
 import { Job } from '../../Job';
 import { Fetcher } from '../../Fetcher';
-import { meteoraPlatform } from './constants';
+import { platform } from './constants';
 import farmsFetcher from './farmsFetcher';
 import dlmmPositionFetcher from './dlmmPositionsFetcher';
 
-export const platforms: Platform[] = [meteoraPlatform];
+export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [vaultsJob, poolsJob, farmsJob, multiTokenPoolsJob];
 export const fetchers: Fetcher[] = [farmsFetcher, dlmmPositionFetcher];

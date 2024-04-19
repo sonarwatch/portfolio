@@ -7,7 +7,7 @@ import {
 import { LendingConfig } from './types';
 
 export const platformId = 'aave';
-export const aavePlatform: Platform = {
+export const platform: Platform = {
   id: platformId,
   name: 'AAVE',
   image: 'https://sonar.watch/img/platforms/aave.png',

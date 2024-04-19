@@ -1,8 +1,14 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 
-const PROTOCOL_OBJECT_ID =
-  '0xefe8b36d5b2e43728cc323298626b83177803521d195cfb11e15b910e892fddf';
 export const platformId = 'scallop';
+export const platform: Platform = {
+  id: platformId,
+  name: 'Scallop',
+  image: `https://sonar.watch/img/platforms/${platformId}.png`,
+  defiLlamaId: 'parent#scallop',
+  website: 'https://app.scallop.io/',
+};
+
 export const addressPrefix = `${platformId}-address`;
 export const marketPrefix = `${platformId}-market`;
 export const poolsPrefix = `${platformId}-pools`;
@@ -16,17 +22,10 @@ export const poolsKey = 'scallop-pools-key';
 export const spoolsKey = 'scallop-spoolsmarket-key';
 
 export const spoolAccountPackageId = `0xe87f1b2d498106a2c61421cec75b7b5c5e348512b0dc263949a0e7a3c256571a::spool_account::SpoolAccount`;
+const PROTOCOL_OBJECT_ID =
+  '0xefe8b36d5b2e43728cc323298626b83177803521d195cfb11e15b910e892fddf';
 export const marketCoinPackageId = `${PROTOCOL_OBJECT_ID}::reserve::MarketCoin`;
 export const obligationKeyPackageId = `${PROTOCOL_OBJECT_ID}::obligation::ObligationKey`;
-
-export const scallopPlatform: Platform = {
-  id: platformId,
-  name: 'Scallop',
-  image: `https://sonar.watch/img/platforms/${platformId}.png`,
-  defiLlamaId: 'parent#scallop',
-  website: 'https://app.scallop.io/',
-};
-
 export const baseIndexRate = 1_000_000_000;
 export const scaAddress =
   '0x7016aae72cfc67f2fadf55769c0a7dd54291a583b63051a5ed71081cce836ac6::sca::SCA';

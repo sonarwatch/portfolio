@@ -3,7 +3,7 @@ import { Platform } from '@sonarwatch/portfolio-core';
 import { LendingMarketConfig } from './types';
 
 export const platformId = 'kamino';
-export const kaminoPlatform: Platform = {
+export const platform: Platform = {
   id: platformId,
   name: 'Kamino',
   image: `https://sonar.watch/img/platforms/${platformId}.png`,

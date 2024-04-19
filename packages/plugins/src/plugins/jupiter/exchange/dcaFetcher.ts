@@ -9,7 +9,7 @@ import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSolana } from '../../../utils/clients';
 import { getParsedProgramAccounts } from '../../../utils/solana';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import { jupiterPlatform, platformId, dcaProgramId } from './constants';
+import { platform, platformId, dcaProgramId } from './constants';
 import { dcaStruct } from './structs';
 import { DCAFilters } from './filters';
 
@@ -62,7 +62,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     {
       type: 'multiple',
       networkId: NetworkId.solana,
-      platformId: jupiterPlatform.id,
+      platformId: platform.id,
       value: getUsdValueSum(assets.map((asset) => asset.value)),
       label: 'Deposit',
       name: `DCA Orders (${accounts.length})`,

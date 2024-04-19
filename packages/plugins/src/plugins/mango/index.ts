@@ -6,8 +6,8 @@ import boostBanksJob from './boostBanksJob';
 import groupsJob from './groupsJob';
 import collateralFetcher from './collateralFetcher';
 import boostFetcher from './boostFetcher';
-import { mangoPlatform } from './constants';
+import { platform } from './constants';
 
-export const platforms: Platform[] = [mangoPlatform];
+export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [banksJob, groupsJob, boostBanksJob];
 export const fetchers: Fetcher[] = [collateralFetcher, boostFetcher];

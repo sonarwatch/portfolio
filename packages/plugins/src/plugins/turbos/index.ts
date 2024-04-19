@@ -3,8 +3,8 @@ import { Fetcher } from '../../Fetcher';
 import { Job } from '../../Job';
 import poolsJob from './poolsJob';
 import clmmPositionFetcher from './clmmsPositionsFetcher';
-import { turbosPlatform } from './constants';
+import { platform } from './constants';
 
-export const platforms: Platform[] = [turbosPlatform];
+export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [poolsJob];
 export const fetchers: Fetcher[] = [clmmPositionFetcher];

@@ -6,8 +6,8 @@ import lpTokenJob from './lpTokensJob';
 import stakingAprJob from './stakingAprJob';
 import fetcherVaults from './vaultsFetcher';
 import fetcherStab from './stabilityPoolFetcher';
-import { thalaPlatform } from './constants';
+import { platform } from './constants';
 
-export const platforms: Platform[] = [thalaPlatform];
+export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [vaultRateJob, lpTokenJob, stakingAprJob];
 export const fetchers: Fetcher[] = [fetcherVaults, fetcherStab];

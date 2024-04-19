@@ -1,7 +1,7 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'maker';
-export const makerPlatform: Platform = {
+export const platform: Platform = {
   id: platformId,
   name: 'Maker DAO',
   image: 'https://sonar.watch/img/platforms/maker.png',

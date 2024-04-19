@@ -3,8 +3,8 @@ import { Job } from '../../Job';
 import { Fetcher } from '../../Fetcher';
 import reserveJob from './reservesJob';
 import collateralFetcher from './collateralFetcher';
-import { naviPlatform } from './constants';
+import { platform } from './constants';
 
 export const jobs: Job[] = [reserveJob];
 export const fetchers: Fetcher[] = [collateralFetcher];
-export const platforms: Platform[] = [naviPlatform];
+export const platforms: Platform[] = [platform];

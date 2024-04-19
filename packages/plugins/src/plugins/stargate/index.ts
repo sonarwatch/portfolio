@@ -4,7 +4,7 @@ import { Job } from '../../Job';
 import { getPoolsPositionsFetcher } from './gePoolPositionsFetcher';
 import poolsJob from './poolsJob';
 import farmsJob from './farmsJob';
-import { stargatePlatform, stargateNetworksConfigs } from './constants';
+import { platform, stargateNetworksConfigs } from './constants';
 import { getFarmsPositionsFetcher } from './getFarmPositionsFetcher';
 import { getVoteTokensFetcher } from './getVoteTokensFetcher';
 
@@ -18,4 +18,4 @@ export const fetchers: Fetcher[] = [
     ])
     .flat(),
 ];
-export const platforms: Platform[] = [stargatePlatform];
+export const platforms: Platform[] = [platform];

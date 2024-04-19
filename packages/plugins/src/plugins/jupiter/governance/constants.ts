@@ -1,8 +1,8 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 
-export const jupGovernancePlatformId = 'jupiter-governance';
-export const jupGovernancePlatform: Platform = {
-  id: jupGovernancePlatformId,
+export const platformId = 'jupiter-governance';
+export const platform: Platform = {
+  id: platformId,
   name: 'Jupiter Governance',
   image: 'https://sonar.watch/img/platforms/jupiter.png',
   website: 'https://vote.jup.ag/',

@@ -3,7 +3,7 @@ import { ContractInfo } from './types';
 
 export const platformId = 'paraswap';
 
-export const paraswapPlatform: Platform = {
+export const platform: Platform = {
   id: platformId,
   name: 'Paraswap',
   defiLlamaId: 'paraswap',
