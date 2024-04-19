@@ -3,7 +3,7 @@ import { Platform } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 
 export const platformId = 'uxd';
-export const platform: Platform = {
+export const uxdPlatform: Platform = {
   id: platformId,
   name: 'UXD',
   image: 'https://sonar.watch/img/platforms/uxd.webp',

@@ -5,25 +5,35 @@ import {
   avalancheTheGraphV2,
   bnbTheGraphV2,
   ethereumTheGraphV2,
-  platform,
+  sushiswapPlatform,
   polygonTheGraphV2,
 } from './constants';
 import getPoolsJob from '../uniswap-v2/getPoolsJob';
 import getPositionsV2Fetcher from '../uniswap-v2/getPositionsV2Fetcher';
 import aptosPoolsJob from './aptos/poolsJob';
 
-export const platforms: Platform[] = [platform];
+export const platforms: Platform[] = [sushiswapPlatform];
 export const jobs: Job[] = [
   aptosPoolsJob,
-  getPoolsJob(NetworkId.ethereum, platform.id, 'v2', ethereumTheGraphV2),
-  getPoolsJob(NetworkId.polygon, platform.id, 'v2', polygonTheGraphV2),
-  getPoolsJob(NetworkId.avalanche, platform.id, 'v2', avalancheTheGraphV2),
-  getPoolsJob(NetworkId.bnb, platform.id, 'v2', bnbTheGraphV2),
+  getPoolsJob(
+    NetworkId.ethereum,
+    sushiswapPlatform.id,
+    'v2',
+    ethereumTheGraphV2
+  ),
+  getPoolsJob(NetworkId.polygon, sushiswapPlatform.id, 'v2', polygonTheGraphV2),
+  getPoolsJob(
+    NetworkId.avalanche,
+    sushiswapPlatform.id,
+    'v2',
+    avalancheTheGraphV2
+  ),
+  getPoolsJob(NetworkId.bnb, sushiswapPlatform.id, 'v2', bnbTheGraphV2),
 ];
 export const fetchers: Fetcher[] = [
-  getPositionsV2Fetcher(NetworkId.ethereum, platform.id, 'v2'),
-  getPositionsV2Fetcher(NetworkId.polygon, platform.id, 'v2'),
-  getPositionsV2Fetcher(NetworkId.avalanche, platform.id, 'v2'),
+  getPositionsV2Fetcher(NetworkId.ethereum, sushiswapPlatform.id, 'v2'),
+  getPositionsV2Fetcher(NetworkId.polygon, sushiswapPlatform.id, 'v2'),
+  getPositionsV2Fetcher(NetworkId.avalanche, sushiswapPlatform.id, 'v2'),
   // getPositionsV2Fetcher(NetworkId.bnb, platform.id, 'v2'),
   // getUniV3PositionsFetcher(
   //   {

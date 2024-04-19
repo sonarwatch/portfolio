@@ -2,7 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'streamflow';
-export const platform: Platform = {
+export const streamflowPlatform: Platform = {
   id: platformId,
   name: 'Streamflow',
   image: 'https://sonar.watch/img/platforms/streamflow.png',

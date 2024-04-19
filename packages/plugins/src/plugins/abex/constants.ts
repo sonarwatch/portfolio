@@ -1,7 +1,7 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'abex';
-export const platform: Platform = {
+export const abexPlatform: Platform = {
   id: platformId,
   name: 'ABEx Finance',
   image: 'https://sonar.watch/img/platforms/abex.webp',

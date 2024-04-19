@@ -1,7 +1,7 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'sushiswap';
-export const platform: Platform = {
+export const sushiswapPlatform: Platform = {
   id: platformId,
   name: 'Sushiswap',
   image: 'https://sonar.watch/img/platforms/sushiswap.png',

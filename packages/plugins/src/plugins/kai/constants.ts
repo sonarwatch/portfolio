@@ -1,7 +1,7 @@
 import { Platform, suiNetwork } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'kai';
-export const platform: Platform = {
+export const kaiPlatform: Platform = {
   id: platformId,
   name: 'Kai Finance',
   image: 'https://sonar.watch/img/platforms/kai.webp',

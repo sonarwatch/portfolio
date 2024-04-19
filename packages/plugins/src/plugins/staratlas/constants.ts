@@ -2,7 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'staratlas';
-export const platform: Platform = {
+export const staratlasPlatform: Platform = {
   id: platformId,
   name: 'Star Atlas',
   image: 'https://sonar.watch/img/platforms/staratlas.webp',

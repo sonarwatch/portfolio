@@ -1,7 +1,7 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'benqi';
-export const platform: Platform = {
+export const banqPlatform: Platform = {
   id: platformId,
   name: 'Benqi',
   image: 'https://sonar.watch/img/platforms/benqi.png',

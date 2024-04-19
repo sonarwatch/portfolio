@@ -1,7 +1,7 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'fluxbeam';
-export const platform: Platform = {
+export const fluxbeamPlatform: Platform = {
   id: platformId,
   name: 'Flux Beam',
   image: 'https://sonar.watch/img/platforms/fluxbeam.png',
