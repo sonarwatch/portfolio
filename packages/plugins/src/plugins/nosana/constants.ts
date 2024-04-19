@@ -2,7 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'nosana';
-export const nosanaPlatform: Platform = {
+export const platform: Platform = {
   id: platformId,
   name: 'Nosana',
   image: 'https://sonar.watch/img/platforms/nosana.png',

@@ -2,7 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'lifinity';
-export const lifinityPlatform: Platform = {
+export const platform: Platform = {
   id: platformId,
   name: 'Lifinity',
   image: 'https://sonar.watch/img/platforms/lifinity.png',

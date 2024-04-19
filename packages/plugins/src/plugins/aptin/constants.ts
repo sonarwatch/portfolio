@@ -1,7 +1,7 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'aptin';
-export const aptinPlatform: Platform = {
+export const platform: Platform = {
   id: platformId,
   name: 'Aptin',
   image: 'https://sonar.watch/img/platforms/aptin.png',

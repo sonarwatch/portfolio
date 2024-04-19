@@ -10,13 +10,13 @@ export const kaminoPlatform: Platform = {
   website: 'https://kamino.finance/',
   defiLlamaId: 'parent#kamino-finance',
 };
-export const allocationApiUrl =
-  'https://api.hubbleprotocol.io/v2/airdrop/users/';
-export const allocationPrefix = `${platformId}/allocation`;
-
 export const programId = new PublicKey(
   '6LtLpnUFNByNXLyCoK9wA2MykKAmQNZKBdY8s47dehDc'
 );
+
+export const allocationApiUrl =
+  'https://api.hubbleprotocol.io/v2/airdrop/users/';
+export const allocationPrefix = `${platformId}/allocation`;
 
 export const klendProgramId = new PublicKey(
   'KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD'
@@ -29,7 +29,7 @@ export const mainMarket = '7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF';
 
 export const lendingConfigs: Map<string, LendingMarketConfig> = new Map([
   [
-    mainMarket,
+    '7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF',
     {
       name: 'Main Market',
       multiplyPairs: [

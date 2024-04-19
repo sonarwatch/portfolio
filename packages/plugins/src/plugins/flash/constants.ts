@@ -2,7 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'flash';
-export const flashPlatform: Platform = {
+export const platform: Platform = {
   id: platformId,
   name: 'FlashTrade',
   image: 'https://sonar.watch/img/platforms/flash.png',

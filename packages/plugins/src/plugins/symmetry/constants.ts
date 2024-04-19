@@ -2,7 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'symmetry';
-export const symmetryPlatform: Platform = {
+export const platform: Platform = {
   id: platformId,
   name: 'Symmetry',
   image: 'https://sonar.watch/img/platforms/symmetry.webp',
