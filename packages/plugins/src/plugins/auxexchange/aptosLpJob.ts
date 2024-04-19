@@ -13,7 +13,7 @@ import {
   parseTypeString,
 } from '../../utils/aptos';
 import { getClientAptos } from '../../utils/clients';
-import { lpCoinInfoTypePrefix, platformId, programAddress } from './constants';
+import { lpCoinInfoTypePrefix, platformId, packageId } from './constants';
 import { getDecimalsForToken } from '../../utils/misc/getDecimalsForToken';
 import getLpUnderlyingTokenSourceOld from '../../utils/misc/getLpUnderlyingTokenSourceOld';
 import getLpTokenSourceRawOld from '../../utils/misc/getLpTokenSourceRawOld';
@@ -25,7 +25,7 @@ type PoolReserves = {
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientAptos();
-  const resources = await getAccountResources(client, programAddress);
+  const resources = await getAccountResources(client, packageId);
   if (!resources) return;
 
   const resourcesByType: Map<string, MoveResource<unknown>> = new Map();
@@ -66,7 +66,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     if (!typeX || !typeY || !poolId) continue;
 
     const poolResource = resourcesByType.get(
-      `${programAddress}::amm::Pool<${poolId}>`
+      `${packageId}::amm::Pool<${poolId}>`
     ) as MoveResource<PoolReserves> | undefined;
 
     if (!poolResource) throw new Error(`Failed to get poolResource: ${lpType}`);
