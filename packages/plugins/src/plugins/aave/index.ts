@@ -4,9 +4,9 @@ import { Fetcher } from '../../Fetcher';
 import lendingPoolsJob from './lendingPoolsJob';
 import getLendingFetcherExecutor from './getLendingFetcherExecutor';
 import stakingFetcher from './stakingFetcher';
-import { aavePlatform, platformId } from './constants';
+import { platformId, platform } from './constants';
 
-export const platforms: Platform[] = [aavePlatform];
+export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [lendingPoolsJob];
 export const fetchers: Fetcher[] = [
   {
