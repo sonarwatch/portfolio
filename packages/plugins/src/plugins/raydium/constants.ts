@@ -2,7 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'raydium';
-export const raydiumPlatform: Platform = {
+export const platform: Platform = {
   id: platformId,
   name: 'Raydium',
   image: 'https://sonar.watch/img/platforms/raydium.png',

@@ -7,7 +7,7 @@ import {
   masterChefV2Bnb,
   masterChefV2Ethereum,
   networksConfigs,
-  pancakeswapPlatform,
+  platform,
   platformId,
   stakersBnb,
   stakersEthereum,
@@ -20,7 +20,7 @@ import stakerCakeFetcher from './stakerCakeFetcher';
 import { getUniV3PositionsFetcher } from '../uniswap/getUniV3PositionsFetcher';
 import getFarmsV2Fetcher from './getFarmsV2Fetcher';
 
-export const platforms: Platform[] = [pancakeswapPlatform];
+export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [
   // Aptos
   aptosJob,

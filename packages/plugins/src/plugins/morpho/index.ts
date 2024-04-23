@@ -4,9 +4,9 @@ import { Job } from '../../Job';
 import aaveV3CollateralFetcher from './aaveV3CollateralFetcher';
 import aaveV3SupplyOnlyFetcher from './aaveV3SupplyOnlyFetcher';
 import aaveV3Job from './aaveV3Job';
-import { morphoPlatform } from './constants';
+import { platform } from './constants';
 
-export const platforms: Platform[] = [morphoPlatform];
+export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [aaveV3Job];
 export const fetchers: Fetcher[] = [
   aaveV3CollateralFetcher,

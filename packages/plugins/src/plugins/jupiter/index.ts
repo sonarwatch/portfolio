@@ -8,18 +8,18 @@ import dcaFetcher from './exchange/dcaFetcher';
 import custodiesJob from './exchange/custodiesJob';
 
 import allocationFetcher from './launchpad/allocationsFetcher';
-import { jupLaunchpadPlatform } from './launchpad/constants';
+import { platform as launchpadPlatform } from './launchpad/constants';
 
 import voteFetcher from './governance/voteFetcher';
-import { jupGovernancePlatform } from './governance/constants';
+import { platform as governancePlatform } from './governance/constants';
 
 import pricingJob from './pricingJob';
-import { jupiterPlatform } from './exchange/constants';
+import { platform as exchangePlatform } from './exchange/constants';
 
 export const platforms: Platform[] = [
-  jupiterPlatform,
-  jupGovernancePlatform,
-  jupLaunchpadPlatform,
+  launchpadPlatform,
+  governancePlatform,
+  exchangePlatform,
 ];
 export const jobs: Job[] = [custodiesJob, pricingJob];
 export const fetchers: Fetcher[] = [

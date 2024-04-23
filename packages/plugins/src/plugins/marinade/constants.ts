@@ -3,7 +3,7 @@ import { Platform, solanaNetwork } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 
 export const platformId = 'marinade';
-export const marinadePlatform: Platform = {
+export const platform: Platform = {
   id: platformId,
   name: 'Marinade',
   image: 'https://sonar.watch/img/platforms/marinade.png',

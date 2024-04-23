@@ -2,7 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'accessprotocol';
-export const accessPlatform: Platform = {
+export const platform: Platform = {
   id: platformId,
   name: 'Access Protocol',
   image: 'https://sonar.watch/img/platforms/accessprotocol.png',

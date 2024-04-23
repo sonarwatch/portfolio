@@ -2,7 +2,7 @@ import { NetworkId, Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from '../../Fetcher';
 import { Job } from '../../Job';
 import getMarketsV2Job from '../compound/getMarketsV2Job';
-import { comptrollerVenus, platformId, venusPlatform } from './constants';
+import { comptrollerVenus, platformId, platform } from './constants';
 import getPositionsV2Fetcher from '../compound/getPositionsV2Fetcher';
 
 export const jobs: Job[] = [
@@ -11,4 +11,4 @@ export const jobs: Job[] = [
 export const fetchers: Fetcher[] = [
   getPositionsV2Fetcher(NetworkId.bnb, platformId),
 ];
-export const platforms: Platform[] = [venusPlatform];
+export const platforms: Platform[] = [platform];

@@ -1,7 +1,7 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'cetus';
-export const cetusPlatform: Platform = {
+export const platform: Platform = {
   id: platformId,
   name: 'Cetus',
   image: 'https://sonar.watch/img/platforms/cetus.png',

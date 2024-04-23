@@ -1,9 +1,9 @@
 import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
-export const jupLaunchpadPlatformId = 'jupiter-launchpad';
-export const jupLaunchpadPlatform: Platform = {
-  id: jupLaunchpadPlatformId,
+export const platformId = 'jupiter-launchpad';
+export const platform: Platform = {
+  id: platformId,
   name: 'Jupiter Launchpad',
   image: 'https://sonar.watch/img/platforms/jupiter.png',
   website: 'https://lfg.jup.ag/',

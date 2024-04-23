@@ -2,7 +2,7 @@ import { Platform } from '@sonarwatch/portfolio-core';
 import { coinInfo } from '../../utils/aptos';
 
 export const platformId = 'liquidswap';
-export const liquidswapPlatform: Platform = {
+export const platform: Platform = {
   id: platformId,
   name: 'Liquidswap',
   image: 'https://sonar.watch/img/platforms/liquidswap.png',

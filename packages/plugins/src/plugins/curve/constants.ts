@@ -5,7 +5,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'curve';
-export const curvePlatform: Platform = {
+export const platform: Platform = {
   id: platformId,
   name: 'Curve Finance',
   image: 'https://sonar.watch/img/platforms/curve.png',

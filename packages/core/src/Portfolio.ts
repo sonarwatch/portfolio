@@ -158,6 +158,36 @@ export type ProxyInfo = {
 };
 
 /**
+ * Represents a smart contract
+ */
+export type Contract = {
+  id: ContractId; // address_networkId
+  name: string;
+};
+
+export type ContractId = string;
+
+/**
+ * Represents the different configurations of a service
+ */
+export type ServiceConfig = {
+  networkId: NetworkIdType;
+  integratedOn: number;
+  contracts?: Contract[];
+  link?: string;
+};
+
+/**
+ * Represents a service from a platform
+ */
+export type Service = {
+  id: string;
+  name: string;
+  platformId: string;
+  config: ServiceConfig[];
+};
+
+/**
  * Represents the common properties of a portfolio element.
  */
 export type PortfolioElementCommon = {
@@ -169,6 +199,7 @@ export type PortfolioElementCommon = {
   name?: string;
   tags?: string[];
   proxyInfo?: ProxyInfo;
+  service?: Service;
 };
 
 /**

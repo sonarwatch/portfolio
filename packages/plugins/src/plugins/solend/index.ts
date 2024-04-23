@@ -4,8 +4,8 @@ import { Fetcher } from '../../Fetcher';
 import reservesJob from './reservesJob';
 import marketsJob from './marketsJob';
 import obligationFetcher from './obligationsFetcher';
-import { solendPlatform } from './constants';
+import { platform } from './constants';
 
-export const platforms: Platform[] = [solendPlatform];
+export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [marketsJob, reservesJob];
 export const fetchers: Fetcher[] = [obligationFetcher];

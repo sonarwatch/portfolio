@@ -1,7 +1,7 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'balancer';
-export const balancerPlatform: Platform = {
+export const platform: Platform = {
   id: platformId,
   name: 'Balancer',
   image: 'https://sonar.watch/img/platforms/balancer.png',

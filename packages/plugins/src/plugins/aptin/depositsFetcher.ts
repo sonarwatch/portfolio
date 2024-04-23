@@ -11,7 +11,13 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { configStoresKey, platformId, poolPositionsType } from './constants';
+import {
+  borrowPositionType,
+  configStoresKey,
+  platformId,
+  poolPositionsType,
+  supplyPositionType,
+} from './constants';
 import {
   BorrowPosition,
   ConfigStores,
@@ -51,7 +57,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           poolPositions.supply_position.handle,
           poolPositions.supply_coins,
           '0x1::string::String',
-          '0x3c1d4a86594d681ff7e5d5a233965daeabdc6a15fe5672ceeda5260038857183::pool::SupplyPosition'
+          supplyPositionType
         );
   const borrowPositions =
     poolPositions.borrow_coins.length === 0
@@ -61,7 +67,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           poolPositions.borrow_position.handle,
           poolPositions.borrow_coins,
           '0x1::string::String',
-          '0x3c1d4a86594d681ff7e5d5a233965daeabdc6a15fe5672ceeda5260038857183::pool::BorrowPosition'
+          borrowPositionType
         );
 
   const borrowedAssets: PortfolioAsset[] = [];

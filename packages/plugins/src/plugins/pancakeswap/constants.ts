@@ -4,7 +4,7 @@ import { StakerInfo } from './types';
 import { UniswapNetworkConfig } from '../uniswap/types';
 
 export const platformId = 'pancakeswap';
-export const pancakeswapPlatform: Platform = {
+export const platform: Platform = {
   id: platformId,
   name: 'PancakeSwap',
   image: 'https://sonar.watch/img/platforms/pancakeswap.png',
