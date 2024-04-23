@@ -19,7 +19,7 @@ function spaceAndUpper(text: string) {
 }
 
 export function lowerFirstLetter(string: string): string {
-  return string.charAt(0).toLocaleLowerCase() + string.slice(1);
+  return string.charAt(0).toLowerCase() + string.slice(1);
 }
 
 export function idToPascalCase(id: string) {

@@ -2,7 +2,7 @@ import { NetworkId, Platform } from '@sonarwatch/portfolio-core';
 import { UniswapNetworkConfig } from './types';
 
 export const platformId = 'uniswap';
-export const uniswapPlatform: Platform = {
+export const platform: Platform = {
   id: platformId,
   name: 'Uniswap',
   image: 'https://sonar.watch/img/platforms/uniswap.png',

@@ -1,10 +1,9 @@
 import { Platform } from '@sonarwatch/portfolio-core';
-import upperCaseFirstLetter from '../../utils/misc/upperCaseFirstLetter';
 
 export const platformId = 'venus';
-export const venusPlatform: Platform = {
+export const platform: Platform = {
   id: platformId,
-  name: upperCaseFirstLetter(platformId),
+  name: 'Venus',
   image: 'https://sonar.watch/img/platforms/venus.png',
   defiLlamaId: 'venus-core-pool',
   website: 'https://app.venus.io/',

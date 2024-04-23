@@ -44,7 +44,7 @@ export const imageExtensions = [
   '.webp',
 ];
 function stringEndsWithImageExtension(string: string) {
-  const fString = string.toLocaleLowerCase();
+  const fString = string.toLowerCase();
   return imageExtensions.some((imageExtension) =>
     fString.endsWith(imageExtension)
   );

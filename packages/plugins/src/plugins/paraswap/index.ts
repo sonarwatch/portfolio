@@ -4,8 +4,8 @@ import { Job } from '../../Job';
 import stakingFetcher from './stakingFetcher';
 import poolsFetcher from './poolsFetcher';
 import bptInfoJob from './bptInfoJob';
-import { paraswapPlatform } from './constants';
+import { platform } from './constants';
 
 export const jobs: Job[] = [bptInfoJob];
 export const fetchers: Fetcher[] = [stakingFetcher, poolsFetcher];
-export const platforms: Platform[] = [paraswapPlatform];
+export const platforms: Platform[] = [platform];

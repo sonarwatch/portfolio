@@ -1,6 +1,7 @@
 import { solanaNativeAddress } from '@sonarwatch/portfolio-core';
 import { nameService as ensNameService } from './services/ens';
 import { nameService as aptosNameService } from './services/aptos';
+import { nameService as suiNameService } from './services/sui';
 import { nameService as allDomainsNameService } from './services/allDomains';
 import { getOwner } from './getOwner';
 
@@ -42,6 +43,30 @@ describe('name-service', () => {
 
     const names2 = await aptosNameService.getNames(
       '0xrand0mfca2b46efb0c9b63e9c92ee31a28b9f22ca52a36967151416706f2ca138c6'
+    );
+    expect(names2.length).toBe(0);
+  });
+
+  it('should getOwner for sui', async () => {
+    const owner = await suiNameService.getOwner('pizza.sui');
+    expect(owner).toBe(
+      '0xcebd22818382953cee22614c0a644e737ea4e8b562911e6745c113b5bcc67934'
+    );
+
+    const owner2 = await suiNameService.getOwner(
+      'random-92ba7fb-9b35-46bc-ae5d-56b9c63672f3.sui'
+    );
+    expect(owner2).toBe(null);
+  });
+
+  it('should getNames for sui', async () => {
+    const names = await suiNameService.getNames(
+      '0x3e04ea76cee7d2db4f41c2972ac8d929606d89f7293320f0886abb41a578190c'
+    );
+    expect(names.some((name) => name === 'bee.sui')).toBe(true);
+
+    const names2 = await suiNameService.getNames(
+      '0xf821d3483fc7725ebafaa5a3d12373d49901bdfce1484f219daa7066a30df77d'
     );
     expect(names2.length).toBe(0);
   });

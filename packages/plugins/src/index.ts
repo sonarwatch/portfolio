@@ -13,6 +13,7 @@ import {
   fetchers as nativeStakeFetchers,
   jobs as nativeStakeJobs,
 } from './plugins/native-stake';
+import { jobs as switchboardJobs } from './plugins/switchboard';
 import {
   platforms as marinadePlatforms,
   fetchers as marinadeFetchers,
@@ -413,6 +414,11 @@ import {
   fetchers as magicedenFetchers,
 } from './plugins/magiceden';
 import {
+  platforms as clonePlatforms,
+  jobs as cloneJobs,
+  fetchers as cloneFetchers,
+} from './plugins/clone';
+import {
   platforms as flowxPlatforms,
   jobs as flowxJobs,
   fetchers as flowxFetchers,
@@ -518,6 +524,7 @@ export const platforms: Platform[] = [
   ...jitoPlatforms,
   ...magicedenPlatforms,
   ...flowxPlatforms,
+  ...clonePlatforms,
 ];
 
 // JOBS //
@@ -600,6 +607,8 @@ export const jobs: Job[] = [
   ...nosanaJobs,
   ...jitoJobs,
   ...magicedenJobs,
+  ...cloneJobs,
+  ...switchboardJobs,
   ...flowxJobs,
 ];
 
@@ -685,6 +694,7 @@ export const fetchers: Fetcher[] = [
   ...nosanaFetchers,
   ...jitoFetchers,
   ...magicedenFetchers,
+  ...cloneFetchers,
   ...flowxFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);

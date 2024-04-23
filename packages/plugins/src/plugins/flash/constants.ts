@@ -22,3 +22,4 @@ export const poolsPkeys = [
 ];
 
 export const marketsKey = 'markets';
+export const poolsKey = 'pools';

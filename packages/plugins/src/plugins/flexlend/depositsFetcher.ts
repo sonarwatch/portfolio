@@ -19,7 +19,7 @@ import { getElementsFromObligations } from '../solend/helpers';
 import { marginfiAccountStruct } from '../marginfi/structs/MarginfiAccount';
 import { ParsedAccount } from '../../utils/solana';
 import { BankInfo } from '../marginfi/types';
-import { banksKey, marginfiPlatform } from '../marginfi/constants';
+import { banksKey, platform } from '../marginfi/constants';
 import { getElementFromAccount } from '../marginfi/helpers';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
@@ -130,7 +130,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (marginfiAccount) {
     const banksInfo = await cache.getItem<ParsedAccount<BankInfo>[]>(banksKey, {
-      prefix: marginfiPlatform.id,
+      prefix: platform.id,
       networkId: NetworkId.solana,
     });
     if (banksInfo) {

@@ -1,5 +1,6 @@
-import { getCache, jobs } from '../src';
+import { getCache, getLlamaProtocolsJob, jobs, platforms } from '../src';
 
+const allJobs = [...jobs, getLlamaProtocolsJob(platforms)];
 const jobId = process.argv.at(2);
 if (!jobId || jobId === '') {
   console.error('Fetcher ID is missing');
@@ -7,7 +8,7 @@ if (!jobId || jobId === '') {
 }
 
 async function runJob() {
-  const job = jobs.find((f) => f.id === jobId);
+  const job = allJobs.find((f) => f.id === jobId);
   if (!job) {
     console.error(`Job cannot be found: ${jobId}`);
     process.exit(1);

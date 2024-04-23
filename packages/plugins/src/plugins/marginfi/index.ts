@@ -3,8 +3,8 @@ import banksJob from './banksJob';
 import depositsFetcher from './depositsFetcher';
 import { Job } from '../../Job';
 import { Fetcher } from '../../Fetcher';
-import { marginfiPlatform } from './constants';
+import { platform } from './constants';
 
-export const platforms: Platform[] = [marginfiPlatform];
+export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [banksJob];
 export const fetchers: Fetcher[] = [depositsFetcher];

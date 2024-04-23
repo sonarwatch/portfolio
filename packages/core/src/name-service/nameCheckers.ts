@@ -38,6 +38,14 @@ export const aptosNameChecker: NameChecker = {
     return name.endsWith('.apt');
   },
 };
+// ## Sui
+export const suiNameChecker: NameChecker = {
+  addressSystem: AddressSystem.move,
+  networkId: NetworkId.sui,
+  checker(name) {
+    return name.endsWith('.sui');
+  },
+};
 // ## AllDomains
 export const allDomainsNameChecker: NameChecker = {
   addressSystem: AddressSystem.solana,
@@ -54,6 +62,7 @@ export const nameCheckers: NameChecker[] = [
   glowNameChecker,
   avalancheNameChecker,
   aptosNameChecker,
+  suiNameChecker,
   // Please leave allDomains at the end.
   allDomainsNameChecker,
 ];

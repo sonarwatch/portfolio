@@ -22,6 +22,7 @@ export function shrinkLlamaProtocol(
       ? `https://twitter.com/${protocol.twitter}`
       : undefined,
     networkIds: llamaChainsToNetworkIds(protocol.chains),
+    categories: [protocol.category],
   };
 }
 

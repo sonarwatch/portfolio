@@ -6,8 +6,11 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { allocationPrefix, kaminoPlatform, platformId } from './constants';
-import { driftPlatform, preMarketPriceKey } from '../drift/constants';
+import { allocationPrefix, platform, platformId } from './constants';
+import {
+  platformId as driftPlatformId,
+  preMarketPriceKey,
+} from '../drift/constants';
 import { getAllocationsBySeason } from './helpers/common';
 
 const oneDayInMs = 24 * 60 * 60 * 1000;
@@ -16,7 +19,7 @@ const kmnkoPreMarketPriceKey = `${preMarketPriceKey}-KMNO`;
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const [premarketPrice, cachedAllocation] = await Promise.all([
     cache.getItem<number>(kmnkoPreMarketPriceKey, {
-      prefix: driftPlatform.id,
+      prefix: driftPlatformId,
       networkId: NetworkId.solana,
     }),
     cache.getItem<number>(owner, {
@@ -52,7 +55,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       name: 'KMNO',
       amount: amount.toNumber(),
       price: premarketPrice || null,
-      imageUri: kaminoPlatform.image,
+      imageUri: platform.image,
     },
     attributes: { isClaimable: false },
   };

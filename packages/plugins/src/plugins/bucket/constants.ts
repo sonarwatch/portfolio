@@ -1,7 +1,7 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'bucket';
-export const bucketPlatform: Platform = {
+export const platform: Platform = {
   id: platformId,
   name: 'Bucket',
   image: 'https://sonar.watch/img/platforms/bucket.png',

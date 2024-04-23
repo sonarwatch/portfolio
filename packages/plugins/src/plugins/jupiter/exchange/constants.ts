@@ -3,7 +3,7 @@ import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'jupiter-exchange';
-export const jupiterPlatform: Platform = {
+export const platform: Platform = {
   id: platformId,
   name: 'Jupiter Exchange',
   image: 'https://sonar.watch/img/platforms/jupiter.png',

@@ -16,6 +16,8 @@ const mints = [
   'HUBsveNpjo5pWqNkH57QzxjQASdTVXcSK7bVKTSZtcSX', // SolanaHub staked SOL
   'xLfNTYy76B8Tiix3hA51Jyvc1kMSFV4sPdR7szTZsRu', // xLifinity
   'BANXbTpN8U2cU41FjPxe2Ti37PiT5cCxLUKDQZuJeMMR', // Banx
+  '4LLbsb5ReP3yEtYzmXewyGjcir5uXtKFURtaEUVC2AHs', // Parcl
+  'SHARKSYJjqaNyxVfrpnBN9pjgkhwDhatnMyicWPnr1s', // Shark
 ];
 const vsToken = solanaNativeWrappedAddress;
 

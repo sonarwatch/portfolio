@@ -17,14 +17,14 @@ export function formatBitcoinAddress(address: string) {
 
 export function formatMoveAddress(address: string) {
   assertMoveAddress(address);
-  let fAddress = address.toLocaleLowerCase();
+  let fAddress = address.toLowerCase();
   if (!fAddress.startsWith('0x')) fAddress = `0x${fAddress}`;
   return fAddress;
 }
 
 export function formatEvmAddress(address: string) {
   assertEvmAddress(address);
-  return getAddress(address.toLocaleLowerCase());
+  return getAddress(address.toLowerCase());
 }
 
 export function formatSolanaAddress(address: string) {
@@ -34,7 +34,7 @@ export function formatSolanaAddress(address: string) {
 
 export function formatSeiAddress(address: string) {
   assertSeiAddress(address);
-  return address.toLocaleLowerCase();
+  return address.toLowerCase();
 }
 
 const formatters: Record<AddressSystemType, (address: string) => string> = {

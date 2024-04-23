@@ -32,7 +32,7 @@ export function formatMoveTokenAddress(address: string) {
 
 export function formatEvmTokenAddress(address: string) {
   assertEvmTokenAddress(address);
-  return getAddress(address.toLocaleLowerCase());
+  return getAddress(address.toLowerCase());
 }
 
 export function formatSolanaTokenAddress(address: string) {

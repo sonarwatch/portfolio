@@ -1,6 +1,6 @@
 import {
   platformId,
-  programAdressThala,
+  packageId,
   vaultCollateralParamsFilter,
 } from './constants';
 import { getClientAptos } from '../../utils/clients';
@@ -12,7 +12,7 @@ import { Job, JobExecutor } from '../../Job';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientAptos();
-  const vaultsRate = await getAccountResources(connection, programAdressThala);
+  const vaultsRate = await getAccountResources(connection, packageId);
   if (!vaultsRate) return;
 
   vaultsRate.forEach((resource) => {

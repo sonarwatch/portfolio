@@ -2,6 +2,44 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.11.186](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.185...plugins-0.11.186) (2024-04-23)
+
+
+
+## [0.11.185](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.184...plugins-0.11.185) (2024-04-23)
+
+
+### Reverts
+
+* Revert "improve namings" ([155a7ff](https://github.com/sonarwatch/portfolio/commit/155a7ffdddd158964f27f8ed52ec82c357c5034e))
+
+
+
+## [0.11.184](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.183...plugins-0.11.184) (2024-04-17)
+
+
+### Reverts
+
+* Revert "fix flashtrade" ([4055eb1](https://github.com/sonarwatch/portfolio/commit/4055eb1e72e64c96adf536bbd81c377c41018535))
+
+
+
+## [0.11.183](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.182...plugins-0.11.183) (2024-04-16)
+
+
+
+## [0.11.182](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.181...plugins-0.11.182) (2024-04-16)
+
+
+
+## [0.11.181](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.180...plugins-0.11.181) (2024-04-16)
+
+
+
+## [0.11.180](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.179...plugins-0.11.180) (2024-04-16)
+
+
+
 ## [0.11.179](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.178...plugins-0.11.179) (2024-04-15)
 
 

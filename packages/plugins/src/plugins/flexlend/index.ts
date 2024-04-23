@@ -3,8 +3,8 @@ import { Fetcher } from '../../Fetcher';
 import { Job } from '../../Job';
 import depositsFetcher from './depositsFetcher';
 import liftFetcher from './liftFetcher';
-import { flexlendPlatform } from './constants';
+import { platform } from './constants';
 
-export const platforms: Platform[] = [flexlendPlatform];
+export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [];
 export const fetchers: Fetcher[] = [depositsFetcher, liftFetcher];

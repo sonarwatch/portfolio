@@ -1,7 +1,7 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'jito';
-export const jitoPlatform: Platform = {
+export const platform: Platform = {
   id: platformId,
   name: 'Jito',
   image: 'https://sonar.watch/img/platforms/jito.png',
