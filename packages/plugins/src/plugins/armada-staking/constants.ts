@@ -30,27 +30,27 @@ export const kishuPlatformId = 'kishu';
 export const kishuPlatform: Platform = {
   id: kishuPlatformId,
   name: 'Kishu',
-  image: 'https://sonar.watch/img/platforms/kishu.png',
+  image: 'https://sonar.watch/img/platforms/kishu.webp',
   website: 'https://staking.kishuthedog.com/',
-  twitter: 'https://twitter.com/FlowmaticXYZ',
+  twitter: 'https://twitter.com/kishuthedog',
 };
 
 export const yakuPlatformId = 'yaku';
 export const yakuPlatform: Platform = {
   id: yakuPlatformId,
   name: 'Yaku',
-  image: 'https://sonar.watch/img/platforms/yaku.png',
+  image: 'https://sonar.watch/img/platforms/yaku.webp',
   website: 'https://staking.yaku.gg/',
-  twitter: 'https://twitter.com/FlowmaticXYZ',
+  twitter: 'https://twitter.com/YakuCorp',
 };
 
 export const madbearsPlatformId = 'madbears';
 export const madbearsPlatform: Platform = {
   id: madbearsPlatformId,
   name: 'MadBears',
-  image: 'https://sonar.watch/img/platforms/madbears.png',
+  image: 'https://sonar.watch/img/platforms/madbears.webp',
   website: 'https://staking.madbears.club/',
-  twitter: 'https://twitter.com/FlowmaticXYZ',
+  twitter: 'https://twitter.com/madbearsclub',
 };
 
 export const orePlatformId = 'ore-refinery';

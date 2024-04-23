@@ -13,12 +13,12 @@ export const realmsPlatform: Platform = {
 };
 
 export const heliumPlatformId = 'helium';
-
 export const heliumPlatform: Platform = {
   id: heliumPlatformId,
   name: 'Helium',
-  image: 'https://sonar.watch/img/platforms/helium.png',
+  image: 'https://sonar.watch/img/platforms/helium.webp',
   website: 'https://heliumvote.com/',
+  twitter: 'https://twitter.com/helium',
 };
 
 export const splGovProgramsKey = 'splGovernancePrograms';
