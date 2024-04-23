@@ -14,7 +14,6 @@ export function assertBitcoinAddress(address: string): void {
 }
 
 export function isEvmAddress(address: string): boolean {
-  if (!address.startsWith('0x')) return false;
   return isAddressEthers(address.toLowerCase());
 }
 export function assertEvmAddress(address: string): void {
