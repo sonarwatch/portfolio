@@ -9,8 +9,9 @@ import { platformId, pairsOwner } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { getDynamicFields } from '../../utils/sui/getDynamicFields';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
-import { extract } from './helpers';
 import { getLpTokenSourceRaw } from '../../utils/misc/getLpTokenSourceRaw';
+import { PairObject, PairObjectFields } from './types';
+import { parseTypeString } from '../../utils/aptos';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
@@ -24,45 +25,27 @@ const executor: JobExecutor = async (cache: Cache) => {
     showContent: true,
   })
     .then((pis) => pis.map((pairInfo) => {
-      const fields = pairInfo.data?.content?.fields as {
-        value: {
-          fields: {
-            coinType: string | null;
-            lp_supply: {
-              type: string;
-              fields: {
-                value: string;
-              };
-            };
-            reserve_x: {
-              type: string;
-              coinType: string | null;
-              fields: {
-                value: string;
-                balance: string;
-              };
-            };
-            reserve_y: {
-              type: string;
-              coinType: string | null;
-              fields: {
-                value: string;
-                balance: string;
-              };
-            };
-          };
-        };
-      };
+      const fields = pairInfo.data?.content?.fields as PairObject;
 
       return fields.value.fields;
     }))
     .then((pis) => pis.map((pairInfo) => {
-      // eslint-disable-next-line no-param-reassign
-      pairInfo.reserve_x.coinType = extract(pairInfo.reserve_x.type, /<(.+)>$/);
-      // eslint-disable-next-line no-param-reassign
-      pairInfo.reserve_y.coinType = extract(pairInfo.reserve_y.type, /<(.+)>$/);
-      // eslint-disable-next-line no-param-reassign
-      pairInfo.coinType = extract(pairInfo.lp_supply.type, /y<(.+)>$/);
+      const enhancedPairInfo: PairObjectFields = pairInfo;
+
+      const { keys: coinTypeX } = parseTypeString(pairInfo.reserve_x.type);
+      if (coinTypeX) {
+        enhancedPairInfo.reserve_x.coinType = coinTypeX[0].type;
+      }
+
+      const { keys: coinTypeY } = parseTypeString(pairInfo.reserve_y.type);
+      if (coinTypeY) {
+        enhancedPairInfo.reserve_y.coinType = coinTypeY[0].type;
+      }
+
+      const { keys: coinType } = parseTypeString(pairInfo.lp_supply.type);
+      if (coinType) {
+        enhancedPairInfo.coinType = coinType[0].type;
+      }
 
       return pairInfo;
     }));
