@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.11.185](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.184...plugins-0.11.185) (2024-04-23)
+
+
+### Reverts
+
+* Revert "improve namings" ([155a7ff](https://github.com/sonarwatch/portfolio/commit/155a7ffdddd158964f27f8ed52ec82c357c5034e))
+
+
+
 ## [0.11.184](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.183...plugins-0.11.184) (2024-04-17)
 
 
