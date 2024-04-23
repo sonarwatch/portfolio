@@ -48,6 +48,10 @@ export function getLlamaProtocolsJob(platforms: Platform[]): Job {
         protocols[platformId2].networkIds = [
           ...new Set(protocols[platformId2].networkIds),
         ];
+        protocols[platformId2].categories.push(llamaProtocol.category);
+        protocols[platformId2].categories = [
+          ...new Set(protocols[platformId2].categories),
+        ];
       }
     }
     await cache.setItem(llamaProtocolsCacheKey, JSON.stringify(protocols), {

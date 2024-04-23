@@ -57,4 +57,5 @@ export type LlamaProtocol = {
   deadUrl?: boolean;
   rugged?: boolean;
   networkIds: NetworkIdType[];
+  categories: string[];
 };
