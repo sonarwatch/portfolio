@@ -9,8 +9,14 @@ export type StakingPosition = {
       amount: string;
       flx_pending: string;
       sui_pending: string;
+      last_settled_epoch: string;
     };
   };
+};
+
+export type UnstakingPositionObject = {
+  balance: string;
+  unlocked_at_epoch: string;
 };
 
 export type PositionObject = {
