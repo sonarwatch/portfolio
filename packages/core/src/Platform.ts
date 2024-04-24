@@ -10,5 +10,6 @@ export type Platform = {
   discord?: string;
   twitter?: string;
   website?: string;
+  referral?: string;
   medium?: string;
 };
