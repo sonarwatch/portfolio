@@ -27,7 +27,12 @@ export function getLlamaProtocolsJob(platforms: Platform[]): Job {
       const llamaProtocol = llamaProtocols[i];
       const platformId = platformIdByLlamaId.get(llamaProtocol.slug);
       if (platformId) {
-        protocols[platformId] = shrinkLlamaProtocol(llamaProtocol);
+        protocols[platformId] = {
+          ...shrinkLlamaProtocol(llamaProtocol),
+          tvl: 0,
+        };
+        protocols[platformId].tvl += llamaProtocol.tvl;
+        protocols[platformId].tvl += llamaProtocol.chainTvls?.['staking'] || 0;
         continue;
       }
 
@@ -37,17 +42,24 @@ export function getLlamaProtocolsJob(platforms: Platform[]): Job {
         if (!protocols[platformId2]) {
           protocols[platformId2] = {
             ...shrinkLlamaProtocol(llamaProtocol),
-            networkIds: [],
             tvl: 0,
+            networkIds: [],
           };
         }
+
+        // tvl
         protocols[platformId2].tvl += llamaProtocol.tvl;
+        protocols[platformId2].tvl += llamaProtocol.chainTvls?.['staking'] || 0;
+
+        // networkIds
         protocols[platformId2].networkIds.push(
           ...llamaChainsToNetworkIds(llamaProtocol.chains)
         );
         protocols[platformId2].networkIds = [
           ...new Set(protocols[platformId2].networkIds),
         ];
+
+        // categories
         protocols[platformId2].categories.push(llamaProtocol.category);
         protocols[platformId2].categories = [
           ...new Set(protocols[platformId2].categories),
