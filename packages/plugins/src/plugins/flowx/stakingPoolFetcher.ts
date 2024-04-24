@@ -1,5 +1,5 @@
 import {
-  formatMoveTokenAddress, getUsdValueSum,
+  formatMoveTokenAddress, formatTokenAddress, getUsdValueSum,
   NetworkId,
   PortfolioElement, PortfolioElementType, PortfolioLiquidity
 } from '@sonarwatch/portfolio-core';
@@ -8,7 +8,7 @@ import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { flowxPackage, platformId, poolsKey, poolsPrefix } from './constants';
 import { getClientSui } from '../../utils/clients';
-import { Pool, Pools, PositionObject } from './types';
+import { Pool, PositionObject } from './types';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
 import { getLpTag, parseLpTag } from '../tokens/helpers';
@@ -27,22 +27,36 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
   }).then((positions) => positions.filter((pos) => Number(pos.data?.content?.fields.amount) > 0));
 
-  const pools: Pools | undefined = await cache.getItem(poolsKey, {
+  const pools = await cache.getItem<Pool[]>(poolsKey, {
     prefix: poolsPrefix,
     networkId: NetworkId.sui,
   });
 
+  if (!pools) return elements;
+
   const liquiditiesByTag: Record<string, PortfolioLiquidity[]> = {};
 
+  // get tokenPrices
+  const coinTypes = new Set<string>();
+  activePositions.forEach((position) => {
+    if (!position.data || !position.data.content || !position.data.content.fields.pool_idx) return;
+    const pool: Pool = pools[Number(position.data.content.fields.pool_idx)];
+    const token = formatMoveTokenAddress(pool.lpToken);
+    if (!coinTypes.has(token)) coinTypes.add(token);
+  });
+  const tokenPrices = await cache.getTokenPricesAsMap([...coinTypes], NetworkId.sui);
+
   for (const position of activePositions) {
-    if (!position.data || !position.data.content || !position.data.content.fields.pool_idx || !pools) continue;
-    const pool: Pool = pools[position.data.content.fields.pool_idx];
+    if (!position.data || !position.data.content || !position.data.content.fields.pool_idx) continue;
+    const pool: Pool = pools[Number(position.data.content.fields.pool_idx)];
+    if (!pool) continue;
 
     const coinType = pool.lpToken;
-    const tokenPrice = await cache.getTokenPrice(formatMoveTokenAddress(coinType), NetworkId.sui);
+    const tokenPrice = tokenPrices.get(formatTokenAddress(coinType, NetworkId.sui));
     if (!tokenPrice) continue;
 
     const amount = new BigNumber(position.data?.content.fields?.amount).dividedBy(10 ** tokenPrice.decimals).toNumber();
+    if (amount === 0) continue;
 
     const assets = tokenPriceToAssetTokens(
       coinType,
@@ -85,7 +99,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-pool`,
+  id: `${platformId}-staking-pool`,
   networkId: NetworkId.sui,
   executor,
 };

@@ -17,6 +17,7 @@ export const flowxPackage = '0x943535499ac300765aa930072470e0b515cfd7eebcaa5c437
 export const flowxFactory = '0xba153169476e8c3114962261d1edc70de5ad9781b83cc617ecc8c1923191cae0';
 export const pairsOwner = '0xd15e209f5a250d6055c264975fee57ec09bf9d6acdda3b5f866f76023d1563e6';
 export const poolsOwner = '0x5c38d069b2f208b0894078465a31b5beb425104894f3237195c90666a82753a2';
+export const stakingParentObject = '0xa3d00f45134cc1949ab98c523c3114c1ae83a8d36f2f73478f713272ca14990f';
 
 export const poolsPrefix = `${platformId}-pools`;
 export const poolsKey = `pools`;

@@ -2,20 +2,20 @@ import {
   NetworkId, PortfolioAsset,
   PortfolioElementType
 } from '@sonarwatch/portfolio-core';
+import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, xflxMint } from './constants';
+import { platformId, stakingParentObject, xflxMint } from './constants';
 import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
 import { getClientSui } from '../../utils/clients';
 import { StakingPosition } from './types';
-import BigNumber from 'bignumber.js';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
   const stakingPosition = await getDynamicFieldObject<StakingPosition>(client, {
-    parentId: "0xa3d00f45134cc1949ab98c523c3114c1ae83a8d36f2f73478f713272ca14990f",
+    parentId: stakingParentObject,
     name: { type: 'address', value: owner },
   });
 
@@ -26,8 +26,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (amount.isZero()) return [];
 
   const xflxTokenPrice = await cache.getTokenPrice(xflxMint, NetworkId.sui);
-
-  if (!xflxTokenPrice) return [];
 
   const asset: PortfolioAsset = tokenPriceToAssetToken(
     xflxMint,
@@ -40,7 +38,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     {
       type: PortfolioElementType.multiple,
       label: 'Staked',
-      name: 'xFLX',
       networkId: NetworkId.sui,
       platformId,
       data: { assets: [asset] },

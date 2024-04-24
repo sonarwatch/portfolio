@@ -25,10 +25,10 @@ export type PositionObject = {
 
 export type PairObject = {
   value: {
+    type: string;
     fields: PairObjectFields;
   };
 };
-
 
 export type PairObjectFields = {
   coinType: string | null;
@@ -59,14 +59,17 @@ export type PairObjectFields = {
 export type PoolObject = {
   name: string;
   value: {
-    fields: {
-      lp_custodian: {
-        type: string;
-      };
-      reward_token_custodian: {
-        type: string;
-      };
-    };
+    type: string;
+    fields: PoolObjectFields;
+  };
+};
+
+export type PoolObjectFields = {
+  lp_custodian: {
+    type: string;
+  };
+  reward_token_custodian: {
+    type: string;
   };
 };
 
@@ -74,8 +77,4 @@ export type Pool = {
   lpToken: string;
   rewardToken: string;
 }
-
-export type Pools = {
-  [T in string]: Pool;
-};
 

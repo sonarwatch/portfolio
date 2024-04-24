@@ -5,7 +5,7 @@ import { platformId, poolsKey, poolsOwner, poolsPrefix } from './constants';
 import { getDynamicFields } from '../../utils/sui/getDynamicFields';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { getClientSui } from '../../utils/clients';
-import { Pool, PoolObject, Pools } from './types';
+import { Pool, PoolObject } from './types';
 import { parseTypeString } from '../../utils/aptos';
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -14,21 +14,23 @@ const executor: JobExecutor = async (cache: Cache) => {
   const [poolsIds] = await Promise.all([getDynamicFields(client, poolsOwner)
     .then((pools) => pools.map((p) => p.objectId))]);
 
-  const poolsObjects = await multiGetObjects(client, poolsIds, {
+  const poolsObjects = await multiGetObjects<PoolObject>(client, poolsIds, {
     showContent: true,
-  })
-    .then((poolInfoObjects) => poolInfoObjects.map((poolInfoObject) => poolInfoObject.data?.content?.fields as PoolObject));
+  });
 
-  const pools: Pools = {};
+  const pools: Pool[] = [];
   for (const poolObject of poolsObjects) {
-    const poolId = poolObject.name;
+    const poolObjectFields = poolObject.data?.content?.fields.value.fields;
+    if (!poolObjectFields) continue;
+
+    const poolId = poolObject.data?.content?.fields.name;
     if (!poolId) continue;
 
-    const { keys: coinTypeLpToken } = parseTypeString(poolObject.value.fields.lp_custodian.type);
-    const { keys: coinTypeRewardToken } = parseTypeString(poolObject.value.fields.reward_token_custodian.type);
+    const { keys: coinTypeLpToken } = parseTypeString(poolObjectFields.lp_custodian.type);
+    const { keys: coinTypeRewardToken } = parseTypeString(poolObjectFields.reward_token_custodian.type);
 
     if (coinTypeLpToken && coinTypeRewardToken) {
-      pools[poolId] = {
+      pools[Number(poolId)] = {
         lpToken: coinTypeLpToken[0].type,
         rewardToken: coinTypeRewardToken[0].type,
       } as Pool;
@@ -42,7 +44,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 };
 
 const job: Job = {
-  id: `${platformId}-pools`,
+  id: `${platformId}-staking-pool`,
   executor,
   label: 'normal',
 };
