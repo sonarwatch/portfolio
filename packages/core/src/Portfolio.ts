@@ -163,6 +163,8 @@ export type ProxyInfo = {
 export type Contract = {
   id: ContractId; // address_networkId
   name: string;
+  address: string;
+  network: NetworkIdType;
 };
 
 export type ContractId = string;
