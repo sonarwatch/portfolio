@@ -15,7 +15,6 @@ import { getClientSui } from '../../utils/clients';
 import { Pool, PositionObject } from './types';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
-import { getLpTag, parseLpTag } from '../tokens/helpers';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elements: PortfolioElement[] = [];
@@ -32,18 +31,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   }).then((positions) =>
     positions.filter((pos) => Number(pos.data?.content?.fields.amount) > 0)
   );
+  if (activePositions.length === 0) return [];
 
   const pools = await cache.getItem<Pool[]>(poolsKey, {
     prefix: poolsPrefix,
     networkId: NetworkId.sui,
   });
-
   if (!pools) return elements;
 
-  const liquiditiesByTag: Record<string, PortfolioLiquidity[]> = {};
-
-  // get tokenPrices
-  const coinTypes = new Set<string>();
+  const mints = new Set<string>();
   activePositions.forEach((position) => {
     if (
       !position.data ||
@@ -53,13 +49,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       return;
     const pool: Pool = pools[Number(position.data.content.fields.pool_idx)];
     const token = formatMoveTokenAddress(pool.lpToken);
-    if (!coinTypes.has(token)) coinTypes.add(token);
+    mints.add(token);
   });
   const tokenPrices = await cache.getTokenPricesAsMap(
-    [...coinTypes],
+    [...mints],
     NetworkId.sui
   );
 
+  const liquidities: PortfolioLiquidity[] = [];
   for (const position of activePositions) {
     if (
       !position.data ||
@@ -70,7 +67,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const pool: Pool = pools[Number(position.data.content.fields.pool_idx)];
     if (!pool) continue;
 
-    console.log(position.data.content.fields);
     const coinType = pool.lpToken;
     const tokenPrice = tokenPrices.get(
       formatTokenAddress(coinType, NetworkId.sui)
@@ -97,29 +93,23 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       yields: [],
       name: tokenPrice.liquidityName,
     };
-    const tag = getLpTag(tokenPrice.platformId, tokenPrice.elementName);
-    if (!liquiditiesByTag[tag]) {
-      liquiditiesByTag[tag] = [];
-    }
-    liquiditiesByTag[tag].push(liquidity);
+    liquidities.push(liquidity);
   }
 
-  for (const [tag, liquidities] of Object.entries(liquiditiesByTag)) {
-    const { elementName } = parseLpTag(tag);
-    elements.push({
+  if (liquidities.length === 0) return [];
+
+  return [
+    {
       type: PortfolioElementType.liquidity,
       networkId: NetworkId.sui,
       platformId,
-      name: elementName,
       label: 'Farming',
       value: getUsdValueSum(liquidities.map((a) => a.value)),
       data: {
         liquidities,
       },
-    });
-  }
-
-  return elements;
+    },
+  ];
 };
 
 const fetcher: Fetcher = {
