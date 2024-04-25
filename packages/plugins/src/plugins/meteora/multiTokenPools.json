@@ -135,5 +135,15 @@
       "FznWTeu44sR9WvqVtekzGQn82z7BxErkcpDDDSmvncYY",
       "Ez1dYUW8FGhrJGHe4e84JTmyZYFwpjwM7GuhSaBth5Xh"
     ]
+  },
+  {
+    "symbol": "aUSDC-4Pool",
+    "address": "5ZDQYA8LN5tooABpPFCrDwx5wcaTgXMragLwFim27mar",
+    "reserveAccounts": [
+      "66guLcMF3qXkrMyLqDfuNKcHc7B6B36id9ZDDww4hiMv",
+      "8KX8TLQHfq9UyqNvzUrUCLiECNBdMspMmU8mghdM2SAM",
+      "2vhaJumb3hbRLUSDDy3Qk8KGGfzqThdwo8ai4tAvztGh",
+      "CC3FtDKTueNP1pmgtNWvKHZwbznyigSaiGhKsQYAfufD"
+    ]
   }
 ]
