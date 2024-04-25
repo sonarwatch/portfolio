@@ -4,7 +4,7 @@ export const platformId = '<%= id %>';
 export const platform: Platform = {
   id: platformId,
   name: '<%= spacedPascalCaseId %>',
-  image: 'https://sonar.watch/img/platforms/<%= id %>.png',
+  image: 'https://sonar.watch/img/platforms/<%= id %>.webp',
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
   // website: 'https://myplatform.com',
   // twitter: 'https://twitter.com/myplatform',
