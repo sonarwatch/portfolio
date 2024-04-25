@@ -82,5 +82,4 @@ export type PoolObjectFields = {
 export type Pool = {
   lpToken: string;
   rewardToken: string;
-}
-
+};

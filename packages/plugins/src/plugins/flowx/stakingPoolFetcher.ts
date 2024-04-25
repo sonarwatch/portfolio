@@ -1,12 +1,16 @@
 import {
-  formatMoveTokenAddress, formatTokenAddress, getUsdValueSum,
+  formatMoveTokenAddress,
+  formatTokenAddress,
+  getUsdValueSum,
   NetworkId,
-  PortfolioElement, PortfolioElementType, PortfolioLiquidity
+  PortfolioElement,
+  PortfolioElementType,
+  PortfolioLiquidity,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { flowxPackage, platformId, poolsKey, poolsPrefix } from './constants';
+import { packageId, platformId, poolsKey, poolsPrefix } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { Pool, PositionObject } from './types';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
@@ -19,13 +23,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
   const activePositions = await getOwnedObjects<PositionObject>(client, owner, {
-    "filter": {
-      "StructType": `${flowxPackage}::position::Position`
+    filter: {
+      StructType: `${packageId}::position::Position`,
     },
-    "options": {
-      "showContent": true
-    }
-  }).then((positions) => positions.filter((pos) => Number(pos.data?.content?.fields.amount) > 0));
+    options: {
+      showContent: true,
+    },
+  }).then((positions) =>
+    positions.filter((pos) => Number(pos.data?.content?.fields.amount) > 0)
+  );
 
   const pools = await cache.getItem<Pool[]>(poolsKey, {
     prefix: poolsPrefix,
@@ -39,23 +45,41 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   // get tokenPrices
   const coinTypes = new Set<string>();
   activePositions.forEach((position) => {
-    if (!position.data || !position.data.content || !position.data.content.fields.pool_idx) return;
+    if (
+      !position.data ||
+      !position.data.content ||
+      !position.data.content.fields.pool_idx
+    )
+      return;
     const pool: Pool = pools[Number(position.data.content.fields.pool_idx)];
     const token = formatMoveTokenAddress(pool.lpToken);
     if (!coinTypes.has(token)) coinTypes.add(token);
   });
-  const tokenPrices = await cache.getTokenPricesAsMap([...coinTypes], NetworkId.sui);
+  const tokenPrices = await cache.getTokenPricesAsMap(
+    [...coinTypes],
+    NetworkId.sui
+  );
 
   for (const position of activePositions) {
-    if (!position.data || !position.data.content || !position.data.content.fields.pool_idx) continue;
+    if (
+      !position.data ||
+      !position.data.content ||
+      !position.data.content.fields.pool_idx
+    )
+      continue;
     const pool: Pool = pools[Number(position.data.content.fields.pool_idx)];
     if (!pool) continue;
 
+    console.log(position.data.content.fields);
     const coinType = pool.lpToken;
-    const tokenPrice = tokenPrices.get(formatTokenAddress(coinType, NetworkId.sui));
+    const tokenPrice = tokenPrices.get(
+      formatTokenAddress(coinType, NetworkId.sui)
+    );
     if (!tokenPrice) continue;
 
-    const amount = new BigNumber(position.data?.content.fields?.amount).dividedBy(10 ** tokenPrice.decimals).toNumber();
+    const amount = new BigNumber(position.data?.content.fields?.amount)
+      .dividedBy(10 ** tokenPrice.decimals)
+      .toNumber();
     if (amount === 0) continue;
 
     const assets = tokenPriceToAssetTokens(
@@ -87,7 +111,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       networkId: NetworkId.sui,
       platformId,
       name: elementName,
-      label: 'LiquidityPool',
+      label: 'Farming',
       value: getUsdValueSum(liquidities.map((a) => a.value)),
       data: {
         liquidities,

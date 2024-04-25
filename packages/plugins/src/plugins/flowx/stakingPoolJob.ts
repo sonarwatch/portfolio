@@ -11,8 +11,11 @@ import { parseTypeString } from '../../utils/aptos';
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
 
-  const [poolsIds] = await Promise.all([getDynamicFields(client, poolsOwner)
-    .then((pools) => pools.map((p) => p.objectId))]);
+  const [poolsIds] = await Promise.all([
+    getDynamicFields(client, poolsOwner).then((pools) =>
+      pools.map((p) => p.objectId)
+    ),
+  ]);
 
   const poolsObjects = await multiGetObjects<PoolObject>(client, poolsIds, {
     showContent: true,
@@ -26,8 +29,12 @@ const executor: JobExecutor = async (cache: Cache) => {
     const poolId = poolObject.data?.content?.fields.name;
     if (!poolId) continue;
 
-    const { keys: coinTypeLpToken } = parseTypeString(poolObjectFields.lp_custodian.type);
-    const { keys: coinTypeRewardToken } = parseTypeString(poolObjectFields.reward_token_custodian.type);
+    const { keys: coinTypeLpToken } = parseTypeString(
+      poolObjectFields.lp_custodian.type
+    );
+    const { keys: coinTypeRewardToken } = parseTypeString(
+      poolObjectFields.reward_token_custodian.type
+    );
 
     if (coinTypeLpToken && coinTypeRewardToken) {
       pools[Number(poolId)] = {
@@ -39,7 +46,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   await cache.setItem(poolsKey, pools, {
     prefix: poolsPrefix,
-    networkId: NetworkId.sui
+    networkId: NetworkId.sui,
   });
 };
 
