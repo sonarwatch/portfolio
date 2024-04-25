@@ -79,7 +79,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         NetworkId.sui,
         suiTokenPrice,
         undefined,
-        { isClaimable: true, tags: ['rewards'] }
+        { isClaimable: true }
       )
     );
 
@@ -94,7 +94,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         NetworkId.sui,
         flxTokenPrice,
         undefined,
-        { isClaimable: true, tags: ['rewards'] }
+        { isClaimable: true }
       )
     );
 
