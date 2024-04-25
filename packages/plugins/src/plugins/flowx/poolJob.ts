@@ -1,7 +1,7 @@
 import {
   formatTokenAddress,
   NetworkId,
-  TokenPriceSource
+  TokenPriceSource,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
@@ -15,13 +15,14 @@ import { parseTypeString } from '../../utils/aptos';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
-  const pairIds = await getDynamicFields(client, pairsOwner)
-    .then((pairs) => pairs.map((p) => p.objectId));
+  const pairIds = await getDynamicFields(client, pairsOwner).then((pairs) =>
+    pairs.map((p) => p.objectId)
+  );
   if (!pairIds.length) return;
 
   const lpSources: TokenPriceSource[] = [];
 
-  const pairObjects= await multiGetObjects<PairObject>(client, pairIds, {
+  const pairObjects = await multiGetObjects<PairObject>(client, pairIds, {
     showContent: true,
   });
 
@@ -30,14 +31,19 @@ const executor: JobExecutor = async (cache: Cache) => {
       return null;
     }
 
-    const enhancedPairInfo: PairObjectFields = pairInfo.data?.content?.fields.value.fields;
+    const enhancedPairInfo: PairObjectFields =
+      pairInfo.data?.content?.fields.value.fields;
 
-    const { keys: coinTypeX } = parseTypeString(enhancedPairInfo.reserve_x.type);
+    const { keys: coinTypeX } = parseTypeString(
+      enhancedPairInfo.reserve_x.type
+    );
     if (coinTypeX) {
       enhancedPairInfo.reserve_x.coinType = coinTypeX[0].type;
     }
 
-    const { keys: coinTypeY } = parseTypeString(enhancedPairInfo.reserve_y.type);
+    const { keys: coinTypeY } = parseTypeString(
+      enhancedPairInfo.reserve_y.type
+    );
     if (coinTypeY) {
       enhancedPairInfo.reserve_y.coinType = coinTypeY[0].type;
     }
@@ -54,27 +60,42 @@ const executor: JobExecutor = async (cache: Cache) => {
   const coinTypes = new Set<string>();
   pairInfos.forEach((pairInfo) => {
     if (pairInfo) {
-      if (pairInfo.reserve_x.coinType && !coinTypes.has(pairInfo.reserve_x.coinType)) coinTypes.add(pairInfo.reserve_x.coinType);
-      if (pairInfo.reserve_y.coinType && !coinTypes.has(pairInfo.reserve_y.coinType)) coinTypes.add(pairInfo.reserve_y.coinType);
+      if (
+        pairInfo.reserve_x.coinType &&
+        !coinTypes.has(pairInfo.reserve_x.coinType)
+      )
+        coinTypes.add(pairInfo.reserve_x.coinType);
+      if (
+        pairInfo.reserve_y.coinType &&
+        !coinTypes.has(pairInfo.reserve_y.coinType)
+      )
+        coinTypes.add(pairInfo.reserve_y.coinType);
     }
   });
 
   // get tokenPrices
-  const tokenPrices = await cache.getTokenPricesAsMap([...coinTypes], NetworkId.sui);
+  const tokenPrices = await cache.getTokenPricesAsMap(
+    [...coinTypes],
+    NetworkId.sui
+  );
 
   pairInfos.forEach((pairInfo) => {
-
-    if (!pairInfo
-      || !pairInfo.reserve_x.coinType
-      || !pairInfo.reserve_y.coinType
-      || !pairInfo.coinType)
+    if (
+      !pairInfo ||
+      !pairInfo.reserve_x.coinType ||
+      !pairInfo.reserve_y.coinType ||
+      !pairInfo.coinType
+    )
       return;
 
-    const tokenPriceX = tokenPrices.get(formatTokenAddress(pairInfo.reserve_x.coinType, NetworkId.sui));
-    const tokenPriceY = tokenPrices.get(formatTokenAddress(pairInfo.reserve_y.coinType, NetworkId.sui));
+    const tokenPriceX = tokenPrices.get(
+      formatTokenAddress(pairInfo.reserve_x.coinType, NetworkId.sui)
+    );
+    const tokenPriceY = tokenPrices.get(
+      formatTokenAddress(pairInfo.reserve_y.coinType, NetworkId.sui)
+    );
 
-    if (!tokenPriceX || !tokenPriceY)
-      return;
+    if (!tokenPriceX || !tokenPriceY) return;
 
     const newLpSources = getLpTokenSourceRaw({
       networkId: NetworkId.sui,
@@ -83,25 +104,31 @@ const executor: JobExecutor = async (cache: Cache) => {
       lpDetails: {
         address: pairInfo.coinType,
         decimals: 8,
-        supplyRaw: pairInfo.lp_supply.fields.value
+        supplyRaw: pairInfo.lp_supply.fields.value,
       },
       poolUnderlyingsRaw: [
         {
-          address: formatTokenAddress(pairInfo.reserve_x.coinType, NetworkId.sui),
+          address: formatTokenAddress(
+            pairInfo.reserve_x.coinType,
+            NetworkId.sui
+          ),
           decimals: tokenPriceX.decimals,
           reserveAmountRaw: pairInfo.reserve_x.fields.balance,
           weight: 0.1,
-          tokenPrice: tokenPriceX
+          tokenPrice: tokenPriceX,
         },
         {
-          address: formatTokenAddress(pairInfo.reserve_y.coinType, NetworkId.sui),
+          address: formatTokenAddress(
+            pairInfo.reserve_y.coinType,
+            NetworkId.sui
+          ),
           decimals: tokenPriceY.decimals,
           reserveAmountRaw: pairInfo.reserve_y.fields.balance,
           weight: 0.1,
-          tokenPrice: tokenPriceY
-        }
-      ]
-    })
+          tokenPrice: tokenPriceY,
+        },
+      ],
+    });
 
     lpSources.push(...newLpSources);
   });
