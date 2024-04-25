@@ -61,10 +61,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (
       !position.data ||
       !position.data.content ||
-      !position.data.content.fields.pool_idx
+      !position.data.content.fields.pool_idx ||
+      position.data.content.fields?.amount === '0'
     )
       continue;
-    const pool: Pool = pools[Number(position.data.content.fields.pool_idx)];
+    const pool = pools.at(Number(position.data.content.fields.pool_idx));
     if (!pool) continue;
 
     const coinType = pool.lpToken;
