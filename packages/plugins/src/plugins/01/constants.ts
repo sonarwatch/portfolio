@@ -22,7 +22,6 @@ export const programId = new PublicKey(
 );
 
 export const contract: Contract = {
-  id: `${platform}_lending`,
   address: programId.toString(),
   name: 'Lending',
   network: NetworkId.solana,
