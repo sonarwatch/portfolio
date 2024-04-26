@@ -161,13 +161,10 @@ export type ProxyInfo = {
  * Represents a smart contract
  */
 export type Contract = {
-  id: ContractId; // address_networkId
   name: string;
   address: string;
   network: NetworkIdType;
 };
-
-export type ContractId = string;
 
 /**
  * Represents the different configurations of a service
