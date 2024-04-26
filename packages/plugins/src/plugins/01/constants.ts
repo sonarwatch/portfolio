@@ -1,4 +1,11 @@
-import { Platform } from '@sonarwatch/portfolio-core';
+import { PublicKey } from '@solana/web3.js';
+import {
+  Contract,
+  NetworkId,
+  Platform,
+  Service,
+  ServiceConfig,
+} from '@sonarwatch/portfolio-core';
 
 export const platformId = '01';
 export const platform: Platform = {
@@ -6,8 +13,32 @@ export const platform: Platform = {
   name: '01',
   image: 'https://sonar.watch/img/platforms/01.png',
   defiLlamaId: '01', // from https://defillama.com/docs/api
-  website: 'https://01.xyz/dashboard/',
+  website: 'https://01.xyz/',
   // twitter: 'https://twitter.com/myplatform',
+};
+
+export const programId = new PublicKey(
+  'Zo1ggzTUKMY5bYnDvT5mtVeZxzf2FaLTbKkmvGUhUQk'
+);
+
+export const contract: Contract = {
+  id: `${platform}_lending`,
+  address: programId.toString(),
+  name: 'Lending',
+  network: NetworkId.solana,
+};
+
+export const config: ServiceConfig = {
+  integratedOn: 1700784000000,
+  networkId: NetworkId.solana,
+  contracts: [contract],
+};
+
+export const service: Service = {
+  id: `${platformId}_lending`,
+  platformId,
+  name: 'Lending',
+  configs: [config],
 };
 
 export const mints = [

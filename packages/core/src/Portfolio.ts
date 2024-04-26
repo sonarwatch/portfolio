@@ -186,7 +186,7 @@ export type Service = {
   id: string;
   name: string;
   platformId: string;
-  config: ServiceConfig[];
+  configs: ServiceConfig[];
 };
 
 /**
