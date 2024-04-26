@@ -8,13 +8,13 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { apiUrl, platformId, reservesKey } from './constants';
+import { reserveApiUrl, platformId, reservesKey } from './constants';
 import { ReserveEnhanced, ReserveResponse } from './types';
 import { getBorrowApr, getDepositApr } from './helpers';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const reservesRes: AxiosResponse<ReserveResponse> | null = await axios
-    .get(`${apiUrl}reserve.current`)
+    .get(reserveApiUrl)
     .catch(() => null);
 
   if (!reservesRes) return;
