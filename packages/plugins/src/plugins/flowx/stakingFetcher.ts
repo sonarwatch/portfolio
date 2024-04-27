@@ -2,17 +2,19 @@ import {
   getUsdValueSum,
   NetworkId,
   PortfolioAsset,
-  PortfolioElement,
   PortfolioElementType,
+  suiNativeAddress,
+  suiNativeDecimals,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
+  flxDecimals,
   flxMint,
+  lpDecimals,
   platformId,
   stakingParentObject,
-  suiMint,
   unstackStruct,
   xflxMint,
 } from './constants';
@@ -23,16 +25,7 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const elements: PortfolioElement[] = [];
   const client = getClientSui();
-
-  const tokenPricesById = await cache.getTokenPricesAsMap(
-    [xflxMint, flxMint, suiMint],
-    NetworkId.sui
-  );
-  const xflxTokenPrice = tokenPricesById.get(xflxMint);
-  const flxTokenPrice = tokenPricesById.get(flxMint);
-  const suiTokenPrice = tokenPricesById.get(suiMint);
 
   const [stakingPosition, unstakingPositions] = await Promise.all([
     getDynamicFieldObject<StakingPosition>(client, {
@@ -48,6 +41,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       },
     }),
   ]);
+  if (
+    unstakingPositions.length === 0 &&
+    stakingPosition.data?.content?.fields.value.fields.amount === '0'
+  )
+    return [];
+
+  // Token Prices
+  const [xflxTokenPrice, flxTokenPrice, suiTokenPrice] =
+    await cache.getTokenPrices(
+      [xflxMint, flxMint, suiNativeAddress],
+      NetworkId.sui
+    );
 
   const assets: PortfolioAsset[] = [];
   if (
@@ -57,7 +62,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   ) {
     const amount = new BigNumber(
       stakingPosition.data.content.fields.value.fields.amount
-    ).dividedBy(10 ** 8);
+    ).dividedBy(10 ** lpDecimals);
 
     assets.push(
       tokenPriceToAssetToken(
@@ -70,11 +75,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     assets.push(
       tokenPriceToAssetToken(
-        suiMint,
+        suiNativeAddress,
         new BigNumber(
           stakingPosition.data.content.fields.value.fields.sui_pending
         )
-          .dividedBy(10 ** (suiTokenPrice?.decimals ?? 9))
+          .dividedBy(10 ** suiNativeDecimals)
           .toNumber(),
         NetworkId.sui,
         suiTokenPrice,
@@ -89,7 +94,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         new BigNumber(
           stakingPosition.data.content.fields.value.fields.flx_pending
         )
-          .dividedBy(10 ** (flxTokenPrice?.decimals ?? 8))
+          .dividedBy(10 ** flxDecimals)
           .toNumber(),
         NetworkId.sui,
         flxTokenPrice,
@@ -97,15 +102,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         { isClaimable: true }
       )
     );
-
-    elements.push();
   }
 
   unstakingPositions.forEach((unstakingPosition) => {
     const fields = unstakingPosition.data?.content?.fields;
 
     if (fields && fields.balance !== '0') {
-      const amount = new BigNumber(fields.balance).dividedBy(10 ** 8);
+      const amount = new BigNumber(fields.balance).dividedBy(10 ** lpDecimals);
 
       const unlockingAt = Number(fields.unlocked_at_epoch);
 

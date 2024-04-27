@@ -59,10 +59,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const liquidities: PortfolioLiquidity[] = [];
   for (const position of activePositions) {
     if (
-      !position.data ||
-      !position.data.content ||
-      !position.data.content.fields.pool_idx ||
-      position.data.content.fields?.amount === '0'
+      !position.data?.content?.fields.pool_idx ||
+      position.data?.content?.fields?.amount === '0'
     )
       continue;
     const pool = pools.at(Number(position.data.content.fields.pool_idx));
