@@ -83,12 +83,15 @@ export function getLpUnderlyingTokenSource(
   if (acceptedPairs.length === 0) return [];
   if (!minReserveValue) minReserveValue = 2500;
 
+  // Verify underlyings weights
   const totalWeight = poolUnderlyings.reduce(
     (partialSum, p) => partialSum + p.weight,
     0
   );
-  if (totalWeight > 1.02) throw new Error('Weights greater than 1');
-  if (totalWeight < 0.98) throw new Error('Weights are less than 1');
+  if (totalWeight > 1.01)
+    throw new Error(`Weights are greater than 1: ${totalWeight}`);
+  if (totalWeight < 0.99)
+    throw new Error(`Weights are smaller than 1: ${totalWeight}`);
 
   let knownUnderlaying: KnownPoolUnderlying | undefined;
   const fAddresses = poolUnderlyings.map((u) =>
