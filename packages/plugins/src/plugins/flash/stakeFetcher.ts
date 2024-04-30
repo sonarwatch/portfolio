@@ -114,15 +114,16 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       );
     }
 
-    if (!stakeAccount.unclaimedRewards.isZero()) {
-      const watermark = stakeAccount.stakeStats.activeAmount
-        .multipliedBy(poolInfo.rewardPerLp)
-        .dividedBy(flpFacotr);
-      const unclaimedAmount = watermark
-        .minus(stakeAccount.rewardSnapshot)
-        .plus(stakeAccount.unclaimedRewards)
-        .times(stakeAccount.feeShareBps)
-        .dividedBy(10 ** 10);
+    const watermark = stakeAccount.stakeStats.activeAmount
+      .multipliedBy(poolInfo.rewardPerLp)
+      .dividedBy(flpFacotr);
+    const unclaimedAmount = watermark
+      .minus(stakeAccount.rewardSnapshot)
+      .plus(stakeAccount.unclaimedRewards)
+      .times(stakeAccount.feeShareBps)
+      .dividedBy(10 ** 10);
+
+    if (!unclaimedAmount.isZero())
       assets.push({
         ...tokenPriceToAssetToken(
           usdcSolanaMint,
@@ -132,7 +133,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         ),
         attributes: { isClaimable: true },
       });
-    }
 
     if (assets.length !== 0)
       elements.push({
