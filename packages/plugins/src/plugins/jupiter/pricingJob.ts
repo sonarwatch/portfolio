@@ -13,11 +13,11 @@ import { getMultipleDecimalsAsMap } from '../../utils/solana/getMultipleDecimals
 import { getClientSolana } from '../../utils/clients';
 
 const mints = [
-  'HUBsveNpjo5pWqNkH57QzxjQASdTVXcSK7bVKTSZtcSX', // SolanaHub staked SOL
   'xLfNTYy76B8Tiix3hA51Jyvc1kMSFV4sPdR7szTZsRu', // xLifinity
   'BANXbTpN8U2cU41FjPxe2Ti37PiT5cCxLUKDQZuJeMMR', // Banx
   '4LLbsb5ReP3yEtYzmXewyGjcir5uXtKFURtaEUVC2AHs', // Parcl
   'SHARKSYJjqaNyxVfrpnBN9pjgkhwDhatnMyicWPnr1s', // Shark
+  'KMNo3nJsBXfcpJTVhZcXLW7RmTwTt4GVFE7suUBo9sS', // Kamino
   'DdFPRnccQqLD4zCHrBqdY95D6hvw6PLWp9DEXj1fLCL9', // Wrapped USDC (Allbridge from Ethereum)
   'eqKJTf1Do4MDPyKisMYqVaUFpkEFAs3riGF3ceDH2Ca', // Wrapped USDC (Allbridge from Polygon)
   '8Yv9Jz4z7BUHP68dz8E8m3tMe6NKgpMUKn8KVqrPA6Fr', // Wrapped USDC (Allbridge from Avalanche)
@@ -33,6 +33,25 @@ const mints = [
   '5RpUwQ8wtdPCZHhu6MERp2RGrpobsbZ6MH5dDHkUjs2', // BUSD Token (Wormhole from BSC)
   'FCqfQSujuPxy6V42UvafBhsysWtEq1vhjfMN1PUbgaxA', // USD Coin (Wormhole from BSC)
   '8qJSyQprMC57TWKaYEmetUR3UUiTP2M3hXdcvFhkZdmv', // Tether USD (Wormhole from BSC)
+  // Sanctum / LSTs
+  'HUBsveNpjo5pWqNkH57QzxjQASdTVXcSK7bVKTSZtcSX',
+  'pWrSoLAhue6jUxUkbWgmEy5rD9VJzkFmvfTDV5KgNuu',
+  'st8QujHLPsX3d6HG9uQg9kJ91jFxUgruwsb1hyYXSNd',
+  'strng7mqqc1MBJJV6vMzYbEqnwVGvKKGKedeCvtktWA',
+  'suPer8CPwxoJPQ7zksGMwFvjBQhjAHwUMmPV4FVatBw',
+  'vSoLxydx6akxyMD9XEcPvGYNGq6Nn66oqVb3UkGkei7',
+  'Zippybh3S5xYYam2nvL6hVJKz1got6ShgV4DyD1XQYF',
+  'CgnTSoL3DgY9SFHxcLj6CgCgKKoTBr6tp4CPAEWy25DE',
+  'GRJQtWwdJmp5LLpy8JWjPgn5FnLyqSJGNhn5ZnCTFUwM',
+  'edge86g9cVz87xcpKpy3J77vbp4wYd9idEV562CCntt',
+  'he1iusmfkpAdwvxLNGV8Y1iSbj4rUy6yMhEA3fotn9A',
+  'pathdXw4He1Xk3eX84pDdDZnGKEme3GivBamGCVPZ5a',
+  '7Q2afV64in6N6SeZsAAB81TJzwDoD6zpqmHkzi9Dcavn',
+  'jupSoLaHXQiZZTSfEWMTRRgpnyFm8f6sZdosWBjx93v',
+  'LnTRntk2kTfWEY6cVB8K9649pgJbt6dJLS1Ns1GZCWg',
+  'phaseZSfPxTDBpiVb96H4XFSD8xHeHxZre5HerehBJG',
+  'picobAEvs6w7QEknPce34wAE4gknZA9v5tTonnmHYdX',
+  'pumpkinsEq8xENVZE6QgTS93EN4r9iKvNxNALS1ooyp',
 ];
 const vsToken = solanaNativeWrappedAddress;
 
