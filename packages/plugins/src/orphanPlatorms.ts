@@ -58,14 +58,6 @@ const otphanPlatforms: Platform[] = [
     website: 'https://stakewise.io/',
   },
   {
-    id: 'cloneprotocol',
-    defiLlamaId: 'clone-protocol',
-    name: 'Clone Protocol',
-    image: 'https://sonar.watch/img/platforms/cloneprotocol.webp',
-    website: 'https://clone.so/',
-    twitter: 'https://twitter.com/CloneProtocol',
-  },
-  {
     id: 'sanctum',
     defiLlamaId: 'parent#sanctum', // from https://defillama.com/docs/api
     name: 'Sanctum',
