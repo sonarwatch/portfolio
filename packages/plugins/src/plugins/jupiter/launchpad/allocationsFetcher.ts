@@ -95,7 +95,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       type: PortfolioElementType.multiple,
       label: 'Rewards',
       networkId: NetworkId.solana,
-      platformId: platformId,
+      platformId,
       name: 'Allocation',
       data: {
         assets,
