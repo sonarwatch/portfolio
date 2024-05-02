@@ -109,6 +109,7 @@ import {
 import {
   platforms as aftermathPlatforms,
   jobs as aftermathJobs,
+  fetchers as aftermathFetchers,
 } from './plugins/aftermath';
 import {
   platforms as liquidswapPlatforms,
@@ -630,6 +631,7 @@ export const fetchers: Fetcher[] = [
   ...turbosFetchers,
   ...stakingAptosFetchers,
   ...pancakeswapFetchers,
+  ...aftermathFetchers,
   ...aaveFetchers,
   ...ordersFetchers,
   ...morphoFetchers,
