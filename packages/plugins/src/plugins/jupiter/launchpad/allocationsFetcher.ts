@@ -93,7 +93,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   return [
     {
       type: PortfolioElementType.multiple,
-      label: 'Rewards',
+      label: 'Airdrop',
       networkId: NetworkId.solana,
       platformId,
       name: 'Allocation',

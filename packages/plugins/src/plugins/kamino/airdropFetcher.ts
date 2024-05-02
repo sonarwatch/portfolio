@@ -56,7 +56,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       platformId,
       name: 'Season 1 Airdrop',
       networkId: NetworkId.solana,
-      label: 'Rewards',
+      label: 'Airdrop',
       data: { assets: [asset] },
       value: asset.value,
     },
