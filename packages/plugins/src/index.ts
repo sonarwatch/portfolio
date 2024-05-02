@@ -418,6 +418,11 @@ import {
   jobs as cloneJobs,
   fetchers as cloneFetchers,
 } from './plugins/clone';
+import {
+  platforms as sandglassPlatforms,
+  jobs as sandglassJobs,
+  fetchers as sandglassFetchers,
+} from './plugins/sandglass';
 
 export {
   walletTokensPlatform,
@@ -519,6 +524,7 @@ export const platforms: Platform[] = [
   ...jitoPlatforms,
   ...magicedenPlatforms,
   ...clonePlatforms,
+  ...sandglassPlatforms,
 ];
 
 // JOBS //
@@ -603,6 +609,7 @@ export const jobs: Job[] = [
   ...magicedenJobs,
   ...cloneJobs,
   ...switchboardJobs,
+  ...sandglassJobs,
 ];
 
 // FETCHERS //
@@ -688,5 +695,6 @@ export const fetchers: Fetcher[] = [
   ...jitoFetchers,
   ...magicedenFetchers,
   ...cloneFetchers,
+  ...sandglassFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
