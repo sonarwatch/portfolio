@@ -16,3 +16,6 @@ export const driftProgram = new PublicKey(
 );
 
 export const preMarketPriceKey = 'premarketPrice';
+
+export const airdropUrl = 'https://airdrop.drift.trade/eligibility/';
+export const driftDecimals = 6;
