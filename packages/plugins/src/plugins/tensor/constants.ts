@@ -18,3 +18,5 @@ export const tensorPid = new PublicKey(
 export const locksPid = new PublicKey(
   'TLoCKic2wGJm7VhZKumih4Lc35fUhYqVMgA4j389Buk'
 );
+export const tnsrMint = 'TNSRxcUxoT9xBG3de7PiJyTDYu7kskLqcpddxnEJAS6';
+export const tnsrDecimals = 9;
