@@ -13,6 +13,7 @@ import { marketsInfoKey, platformId, programId } from './constants';
 import { marketStruct } from './structs';
 import { marketAccountFilters } from './filters';
 import { MarketInfo } from './types';
+import { walletTokensPlatform } from '../tokens/constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -76,7 +77,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         decimals: ptDecimals,
         id: market.pubkey.toString(),
         networkId: NetworkId.solana,
-        platformId,
+        platformId: walletTokensPlatform.id,
         price: ptPrice.times(baseTokenPrice.price).toNumber(),
         timestamp: Date.now(),
         weight: 1,
@@ -88,7 +89,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         decimals: ytDecimals,
         id: market.pubkey.toString(),
         networkId: NetworkId.solana,
-        platformId,
+        platformId: walletTokensPlatform.id,
         price: ytPrice.times(baseTokenPrice.price).toNumber(),
         timestamp: Date.now(),
         weight: 1,
