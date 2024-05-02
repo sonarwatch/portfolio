@@ -26,6 +26,7 @@ export type PortfolioElementLabel =
   | 'Vesting'
   | 'Deposit'
   | 'Rewards'
+  | 'Airdrop'
   | 'Margin'
   | 'Leverage';
 
