@@ -10,8 +10,6 @@ import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { airdropUrl, driftDecimals, platform, platformId } from './constants';
 import { AirdropResponse } from './types';
-import { deriveClaimStatus } from '../jupiter/helpers';
-import { getClientSolana } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 const driftFactor = new BigNumber(10 ** driftDecimals);
