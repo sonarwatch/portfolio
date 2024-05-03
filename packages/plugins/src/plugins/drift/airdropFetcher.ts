@@ -60,7 +60,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           imageUri: platform.image,
         },
         attributes: {
-          lockedUntil: 0,
+          lockedUntil: -1,
         },
         networkId: NetworkId.solana,
         value: null,

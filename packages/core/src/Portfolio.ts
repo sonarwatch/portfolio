@@ -34,6 +34,7 @@ export type PortfolioAssetAttributes = {
   /**
    * Represents the date (in ms) when the asset will be unlocked.
    * If current date is greater than this value, the asset is unlocked.
+   * If set to -1, it means it's locked for an unknown or indeterminate period
    */
   lockedUntil?: number;
   /**
