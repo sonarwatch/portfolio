@@ -424,6 +424,11 @@ import {
   jobs as sandglassJobs,
   fetchers as sandglassFetchers,
 } from './plugins/sandglass';
+import {
+  platforms as kriyaPlatforms,
+  jobs as kriyaJobs,
+  fetchers as kriyaFetchers,
+} from './plugins/kriya';
 
 export {
   walletTokensPlatform,
@@ -526,6 +531,7 @@ export const platforms: Platform[] = [
   ...magicedenPlatforms,
   ...clonePlatforms,
   ...sandglassPlatforms,
+  ...kriyaPlatforms,
 ];
 
 // JOBS //
@@ -611,6 +617,7 @@ export const jobs: Job[] = [
   ...cloneJobs,
   ...switchboardJobs,
   ...sandglassJobs,
+  ...kriyaJobs,
 ];
 
 // FETCHERS //
@@ -698,5 +705,6 @@ export const fetchers: Fetcher[] = [
   ...magicedenFetchers,
   ...cloneFetchers,
   ...sandglassFetchers,
+  ...kriyaFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
