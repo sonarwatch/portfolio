@@ -10,3 +10,4 @@ import airdropFetcher from './airdropFetcher';
 export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [spotMarketsJob, premarketJob];
 export const fetchers: Fetcher[] = [spotPositionsFetcher, airdropFetcher];
+export { airdropFetcher } from './helpersAirdrop';

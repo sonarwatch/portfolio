@@ -1,5 +1,6 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from './Fetcher';
+import { AirdropFetcher } from './AirdropFetcher';
 import { Job } from './Job';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 import orphanPlatorms from './orphanPlatorms';
@@ -89,6 +90,7 @@ import {
   platforms as driftPlatforms,
   jobs as driftJobs,
   fetchers as driftFetchers,
+  airdropFetcher as driftAirdropFetcher,
 } from './plugins/drift';
 import {
   platforms as mangoPlatforms,
@@ -288,6 +290,7 @@ import {
   platforms as parclPlatforms,
   jobs as parclJobs,
   fetchers as parclFetchers,
+  airdropFetcher as parclAirdropFetcher,
 } from './plugins/parcl';
 import {
   platforms as pythPlatforms,
@@ -433,6 +436,7 @@ export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSys
 
 export * from './Cache';
 export * from './Fetcher';
+export * from './AirdropFetcher';
 export * from './Job';
 export * from './utils/name-service';
 export * from './utils/blank';
@@ -700,3 +704,8 @@ export const fetchers: Fetcher[] = [
   ...sandglassFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
+
+export const airdropFetchers: AirdropFetcher[] = [
+  driftAirdropFetcher,
+  parclAirdropFetcher,
+];

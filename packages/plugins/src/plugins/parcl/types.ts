@@ -1,4 +1,10 @@
 export type Allocation = {
   amount: number;
-  merkle_tree: string;
+  merkleTree?: string;
+};
+
+export type ApiAirdropResponse = {
+  amount?: number;
+  merkle_tree?: string;
+  error?: string;
 };
