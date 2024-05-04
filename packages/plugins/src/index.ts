@@ -432,6 +432,11 @@ import {
   jobs as kriyaJobs,
   fetchers as kriyaFetchers,
 } from './plugins/kriya';
+import {
+  platforms as haedalPlatforms,
+  jobs as haedalJobs,
+  fetchers as haedalFetchers,
+} from './plugins/haedal';
 
 export {
   walletTokensPlatform,
@@ -536,6 +541,7 @@ export const platforms: Platform[] = [
   ...clonePlatforms,
   ...sandglassPlatforms,
   ...kriyaPlatforms,
+  ...haedalPlatforms,
 ];
 
 // JOBS //
@@ -622,6 +628,7 @@ export const jobs: Job[] = [
   ...switchboardJobs,
   ...sandglassJobs,
   ...kriyaJobs,
+  ...haedalJobs,
 ];
 
 // FETCHERS //
@@ -710,6 +717,7 @@ export const fetchers: Fetcher[] = [
   ...cloneFetchers,
   ...sandglassFetchers,
   ...kriyaFetchers,
+  ...haedalFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
