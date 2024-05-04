@@ -725,3 +725,5 @@ export const airdropFetchers: AirdropFetcher[] = [
   driftAirdropFetcher,
   parclAirdropFetcher,
 ];
+export const airdropFetchersByAddressSystem =
+  getFetchersByAddressSystem(airdropFetchers);
