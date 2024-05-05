@@ -437,6 +437,11 @@ import {
   jobs as haedalJobs,
   fetchers as haedalFetchers,
 } from './plugins/haedal';
+import {
+  platforms as typusPlatforms,
+  jobs as typusJobs,
+  fetchers as typusFetchers,
+} from './plugins/typus';
 
 export {
   walletTokensPlatform,
@@ -542,6 +547,7 @@ export const platforms: Platform[] = [
   ...sandglassPlatforms,
   ...kriyaPlatforms,
   ...haedalPlatforms,
+  ...typusPlatforms,
 ];
 
 // JOBS //
@@ -629,6 +635,7 @@ export const jobs: Job[] = [
   ...sandglassJobs,
   ...kriyaJobs,
   ...haedalJobs,
+  ...typusJobs,
 ];
 
 // FETCHERS //
@@ -718,6 +725,7 @@ export const fetchers: Fetcher[] = [
   ...sandglassFetchers,
   ...kriyaFetchers,
   ...haedalFetchers,
+  ...typusFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
