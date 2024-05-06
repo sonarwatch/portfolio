@@ -23,6 +23,7 @@ import { getClientSui } from '../../utils/clients';
 import { StakingPosition, UnstakingPositionObject } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
+import { getUnlockingAt } from './helpers';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -110,7 +111,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (fields && fields.balance !== '0') {
       const amount = new BigNumber(fields.balance).dividedBy(10 ** lpDecimals);
 
-      const unlockingAt = Number(fields.unlocked_at_epoch);
+      const unlockingAt = getUnlockingAt(fields.unlocked_at_epoch);
 
       const asset: PortfolioAsset = {
         ...tokenPriceToAssetToken(
