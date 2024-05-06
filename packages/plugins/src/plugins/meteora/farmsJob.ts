@@ -6,6 +6,7 @@ import { getParsedProgramAccounts } from '../../utils/solana';
 import { dataSizeFilter } from '../../utils/solana/filters';
 import { farmProgramId, farmsKey, platformId } from './constants';
 import { farmStruct } from './struct';
+import { formatFarm } from './helpers';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -17,7 +18,8 @@ const executor: JobExecutor = async (cache: Cache) => {
     dataSizeFilter(502)
   );
 
-  await cache.setItem(farmsKey, farms, {
+  const fFarms = farms.map((f) => formatFarm(f));
+  await cache.setItem(farmsKey, fFarms, {
     prefix: platformId,
     networkId: NetworkId.solana,
   });

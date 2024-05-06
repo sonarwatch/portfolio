@@ -2,12 +2,15 @@ import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'parcl';
+export const platformImage = 'https://sonar.watch/img/platforms/parcl.png';
+export const platformWebsite = 'https://app.parcl.co/';
+export const platformName = 'Parcl';
 export const platform: Platform = {
   id: platformId,
-  name: 'Parcl',
-  image: 'https://sonar.watch/img/platforms/parcl.png',
+  name: platformName,
+  image: platformImage,
   defiLlamaId: 'parent#parcl', // from https://defillama.com/docs/api
-  website: 'https://app.parcl.co/',
+  website: platformWebsite,
   twitter: 'https://twitter.com/Parcl',
 };
 

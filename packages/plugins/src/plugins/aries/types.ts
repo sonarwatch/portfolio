@@ -1,43 +1,68 @@
 import { BorrowLendRate } from '@sonarwatch/portfolio-core';
 
-export type ProfileResponse = {
-  result: {
-    data: ProfileData;
+export type ProfilesSummary = {
+  profile_signers: {
+    data: [
+      {
+        key: string;
+        value: {
+          account: string;
+        };
+      }
+    ];
   };
 };
 
-export type ProfileData = {
-  profiles: {
-    [accountName: string]: {
-      id: string;
-      meta: {
-        module: string;
-        owner: string;
-        version: number;
-        timestamp: string;
-      };
-      profileAddress: string;
-      deposits: {
-        [coin: string]: {
-          collateral_amount: string;
-          collateral_coins: string;
-          collateral_value: string;
-        };
-      };
-      borrows: {
-        [coin: string]: {
-          borrowed_amount: string;
-          borrowed_coins: string;
-          borrowed_value: string;
-        };
-      };
-      equity: string;
-      collateralValue: string;
-      loanValue: string;
-      riskFactor: string;
-    };
+export type Profile = {
+  borrow_farms: ProfileSub;
+  borrowed_reserves: ProfileSub;
+  deposit_farms: ProfileSub;
+  deposited_reserves: ProfileSub;
+};
+
+export type ProfileVec = {
+  account_address: string;
+  module_name: string;
+  struct_name: string;
+};
+
+export type ProfileSub = {
+  head: {
+    vec: ProfileVec[];
   };
-  total_equity: string;
+  inner: {
+    inner: {
+      handle: string;
+    };
+    length: string;
+  };
+  tail: {
+    vec: ProfileVec[];
+  };
+};
+
+export type ProfileDepositItem = {
+  next: {
+    vec: [ProfileVec] | [];
+  };
+  prev: {
+    vec: [ProfileVec] | [];
+  };
+  val: {
+    collateral_amount: string;
+  };
+};
+
+export type ProfileBorrowItem = {
+  next: {
+    vec: [ProfileVec] | [];
+  };
+  prev: {
+    vec: [ProfileVec] | [];
+  };
+  val: {
+    borrowed_share: { val: string };
+  };
 };
 
 export type ReserveResponse = {

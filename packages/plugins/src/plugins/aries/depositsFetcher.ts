@@ -1,150 +1,185 @@
 import {
-  BorrowLendRate,
   NetworkId,
   PortfolioAsset,
   PortfolioElement,
   PortfolioElementType,
-  TokenPrice,
   Yield,
+  formatMoveTokenAddress,
   getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
-import axios, { AxiosResponse } from 'axios';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { apiUrl, platformId, reservesKey } from './constants';
-import { ProfileResponse, ReserveEnhanced } from './types';
-import { getName } from './helpers';
+import {
+  platformId,
+  profileType,
+  profilesSummaryType,
+  reservesKey,
+  wadsDecimal,
+} from './constants';
+import { ProfilesSummary, ReserveEnhanced, Profile } from './types';
+import { getName, getProfileAmounts } from './helpers';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { getAccountResource } from '../../utils/aptos';
+import { getClientAptos } from '../../utils/clients';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const profileRes: AxiosResponse<ProfileResponse> | null = await axios
-    .get(`${apiUrl}profile.find?input={"owner":"${owner}"}`, { timeout: 1000 })
-    .catch(() => null);
-  if (!profileRes || !profileRes.data) return [];
+  const client = getClientAptos();
 
+  // Get deposit and borrow amounts for each profile
+  const profilesSummary = await getAccountResource<ProfilesSummary>(
+    client,
+    owner,
+    profilesSummaryType
+  );
+  if (!profilesSummary) return [];
+  const profilesAddresses = profilesSummary.profile_signers.data.map(
+    (d) => d.value.account
+  );
+  if (profilesAddresses.length === 0) return [];
+  const profiless = await Promise.all(
+    profilesAddresses.map((pAddress) =>
+      getAccountResource<Profile>(client, pAddress, profileType)
+    )
+  );
+  const amountss = await Promise.all(
+    profiless.map((p) => getProfileAmounts(p, client))
+  );
+
+  // Get TokenPrices
+  const tokenAddresses: string[] = [];
+  amountss.forEach((amounts) => {
+    amounts.deposits.forEach((deposit) => {
+      tokenAddresses.push(deposit.address);
+    });
+    amounts.borrows.forEach((borrow) => {
+      tokenAddresses.push(borrow.address);
+    });
+  });
+  const tokenPrices = await cache.getTokenPricesAsMap(
+    tokenAddresses,
+    NetworkId.aptos
+  );
+
+  // Get Reserves
   const reserves = await cache.getItem<ReserveEnhanced[]>(reservesKey, {
     prefix: platformId,
     networkId: NetworkId.aptos,
   });
-  const ratesByCoin: Map<string, BorrowLendRate> = new Map();
-  if (reserves) {
-    reserves.forEach((reserveData) => {
-      ratesByCoin.set(reserveData.key, reserveData.rate);
-    });
-  }
-
-  const { profiles } = profileRes.data.result.data;
-
-  const mintsSet: Set<string> = new Set();
-  for (const accountName in profiles) {
-    if (profiles[accountName]) {
-      for (const coin in profiles[accountName].deposits) {
-        if (profiles[accountName].deposits[coin]) {
-          mintsSet.add(coin);
-        }
-      }
-      for (const coin in profiles[accountName].borrows) {
-        if (profiles[accountName].borrows[coin]) {
-          mintsSet.add(coin);
-        }
-      }
-    }
-  }
-  const mints = Array.from(mintsSet);
-  const tokenPrices = await cache.getTokenPrices(mints, NetworkId.aptos);
-  const tokenById: Map<string, TokenPrice> = new Map();
-  tokenPrices.forEach((tokenPrice, index) => {
-    if (tokenPrice) {
-      tokenById.set(mints[index], tokenPrice);
-    }
+  if (!reserves) return [];
+  const reservesByAddress: Map<string, ReserveEnhanced> = new Map();
+  reserves.forEach((reserveData) => {
+    reservesByAddress.set(reserveData.key, reserveData);
   });
+
   const elements: PortfolioElement[] = [];
+  for (let i = 0; i < profiless.length; i++) {
+    const profile = profiless[i];
+    if (!profile) continue;
+    const amounts = amountss[i];
+    const profileKey = profilesSummary.profile_signers.data.at(i)?.key;
+    const name = profileKey ? getName(profileKey) : undefined;
 
-  for (const accountName in profiles) {
-    if (profiles[accountName]) {
-      const borrowedAssets: PortfolioAsset[] = [];
-      const borrowedYields: Yield[][] = [];
-      const suppliedAssets: PortfolioAsset[] = [];
-      const suppliedYields: Yield[][] = [];
-      const rewardAssets: PortfolioAsset[] = [];
+    const borrowedAssets: PortfolioAsset[] = [];
+    const borrowedYields: Yield[][] = [];
+    const suppliedAssets: PortfolioAsset[] = [];
+    const suppliedYields: Yield[][] = [];
+    const rewardAssets: PortfolioAsset[] = [];
+    const suppliedLtvs: number[] = [];
+    const borrowedWeights: number[] = [];
 
-      const profile = profiles[accountName];
-      const name = getName(accountName);
-
-      for (const coin in profile.deposits) {
-        if (profile.deposits[coin]) {
-          const deposit = profile.deposits[coin];
-          const amount = new BigNumber(deposit.collateral_coins);
-          if (amount.isZero()) continue;
-
-          const tokenPrice = tokenById.get(coin);
-          if (!tokenPrice) continue;
-
-          suppliedAssets.push(
-            tokenPriceToAssetToken(
-              coin,
-              amount.dividedBy(10 ** tokenPrice.decimals).toNumber(),
-              NetworkId.aptos,
-              tokenPrice
+    for (let j = 0; j < amounts.deposits.length; j++) {
+      const deposit = amounts.deposits[j];
+      const { address, amount: amountStr } = deposit;
+      const tokenPrice = tokenPrices.get(formatMoveTokenAddress(address));
+      if (!tokenPrice) continue;
+      const reserve = reservesByAddress.get(address);
+      if (!reserve) continue;
+      suppliedAssets.push(
+        tokenPriceToAssetToken(
+          address,
+          new BigNumber(amountStr)
+            .dividedBy(10 ** tokenPrice.decimals)
+            .times(
+              new BigNumber(reserve.value.total_borrowed)
+                .plus(reserve.value.total_cash_available)
+                .minus(reserve.value.reserve_amount)
+                .div(reserve.value.total_lp_supply)
             )
-          );
-
-          const rates = ratesByCoin.get(coin);
-          if (rates) suppliedYields.push([rates.depositYield]);
-        }
-      }
-
-      for (const coin in profile.borrows) {
-        if (profile.borrows[coin]) {
-          const borrow = profile.borrows[coin];
-          const amount = new BigNumber(borrow.borrowed_coins);
-          if (amount.isZero()) continue;
-
-          const tokenPrice = tokenById.get(coin);
-          if (!tokenPrice) continue;
-
-          borrowedAssets.push(
-            tokenPriceToAssetToken(
-              coin,
-              amount.dividedBy(10 ** tokenPrice.decimals).toNumber(),
-              NetworkId.aptos,
-              tokenPrice
-            )
-          );
-
-          const rates = ratesByCoin.get(coin);
-          if (rates) borrowedYields.push([rates.borrowYield]);
-        }
-      }
-
-      if (suppliedAssets.length === 0 && borrowedAssets.length === 0) continue;
-
-      const { borrowedValue, suppliedValue, value, rewardValue } =
-        getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
-
-      elements.push({
-        type: PortfolioElementType.borrowlend,
-        networkId: NetworkId.aptos,
-        platformId,
-        label: 'Lending',
-        value,
-        name,
-        data: {
-          borrowedAssets,
-          borrowedValue,
-          borrowedYields,
-          suppliedAssets,
-          suppliedValue,
-          suppliedYields,
-          collateralRatio: null,
-          healthRatio: 1 - new BigNumber(profile.riskFactor).toNumber(),
-          rewardAssets,
-          rewardValue,
-          value,
-        },
-      });
+            .toNumber(),
+          NetworkId.aptos,
+          tokenPrice
+        )
+      );
+      suppliedLtvs.push(
+        Number(reserve.value.reserve_config.liquidation_threshold) / 100
+      );
+      suppliedYields.push([reserve.rate.depositYield]);
     }
+
+    for (let j = 0; j < amounts.borrows.length; j++) {
+      const borrow = amounts.borrows[j];
+      const { address, amount: amountStr } = borrow;
+      const tokenPrice = tokenPrices.get(formatMoveTokenAddress(address));
+      if (!tokenPrice) continue;
+      const reserve = reservesByAddress.get(address);
+      if (!reserve) continue;
+      borrowedAssets.push(
+        tokenPriceToAssetToken(
+          address,
+          new BigNumber(amountStr)
+            .times(
+              new BigNumber(reserve.value.total_borrowed).div(
+                reserve.value.total_borrowed_share
+              )
+            )
+            .dividedBy(10 ** (wadsDecimal + tokenPrice.decimals))
+            .toNumber(),
+          NetworkId.aptos,
+          tokenPrice
+        )
+      );
+      borrowedYields.push([reserve.rate.borrowYield]);
+      borrowedWeights.push(
+        Number(reserve.value.reserve_config.borrow_factor) / 100
+      );
+    }
+
+    if (
+      borrowedAssets.length === 0 &&
+      suppliedAssets.length === 0 &&
+      rewardAssets.length === 0
+    )
+      continue;
+    const { borrowedValue, suppliedValue, value, rewardValue, healthRatio } =
+      getElementLendingValues(
+        suppliedAssets,
+        borrowedAssets,
+        rewardAssets,
+        suppliedLtvs,
+        borrowedWeights
+      );
+    elements.push({
+      type: PortfolioElementType.borrowlend,
+      networkId: NetworkId.aptos,
+      platformId,
+      label: 'Lending',
+      value,
+      name,
+      data: {
+        borrowedAssets,
+        borrowedValue,
+        borrowedYields,
+        suppliedAssets,
+        suppliedValue,
+        suppliedYields,
+        collateralRatio: null,
+        healthRatio,
+        rewardAssets,
+        rewardValue,
+        value,
+      },
+    });
   }
   return elements;
 };

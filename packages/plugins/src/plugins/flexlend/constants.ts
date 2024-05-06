@@ -4,11 +4,11 @@ import { Platform } from '@sonarwatch/portfolio-core';
 export const platformId = 'flexlend';
 export const platform: Platform = {
   id: platformId,
-  name: 'FlexLend',
-  image: 'https://sonar.watch/img/platforms/flexlend.png',
+  name: 'LuLo',
+  image: 'https://sonar.watch/img/platforms/lulo.webp',
   defiLlamaId: 'flexlend',
-  website: 'https://flexlend.fi/',
-  twitter: 'https://twitter.com/flexlend',
+  website: 'https://www.lulo.fi',
+  twitter: 'https://twitter.com/uselulo',
 };
 
 export const flexProgramId = new PublicKey(

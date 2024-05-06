@@ -5,7 +5,9 @@ import { platform } from './constants';
 import spotMarketsJob from './spotMarketsJob';
 import spotPositionsFetcher from './deposits';
 import premarketJob from './premarketJob';
+import airdropFetcher from './airdropFetcher';
 
 export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [spotMarketsJob, premarketJob];
-export const fetchers: Fetcher[] = [spotPositionsFetcher];
+export const fetchers: Fetcher[] = [spotPositionsFetcher, airdropFetcher];
+export { airdropFetcher } from './helpersAirdrop';

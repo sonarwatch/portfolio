@@ -4,70 +4,61 @@ import {
   PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
+import axios, { AxiosResponse } from 'axios';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { allocationPrefix, platform, platformId } from './constants';
 import {
-  platformId as driftPlatformId,
-  preMarketPriceKey,
-} from '../drift/constants';
-import { getAllocationsBySeason } from './helpers/common';
+  distributorApi,
+  distributorProgram,
+  kmnoDecimals,
+  kmnoMint,
+  platformId,
+} from './constants';
+import { deriveClaimStatus } from '../jupiter/helpers';
+import { ClaimProofResponse } from '../jupiter/types';
+import { getClientSolana } from '../../utils/clients';
+import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
-const oneDayInMs = 24 * 60 * 60 * 1000;
-const kmnkoPreMarketPriceKey = `${preMarketPriceKey}-KMNO`;
-
+const kmnoFactor = new BigNumber(10 ** kmnoDecimals);
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const [premarketPrice, cachedAllocation] = await Promise.all([
-    cache.getItem<number>(kmnkoPreMarketPriceKey, {
-      prefix: driftPlatformId,
-      networkId: NetworkId.solana,
-    }),
-    cache.getItem<number>(owner, {
-      prefix: allocationPrefix,
-      networkId: NetworkId.solana,
-    }),
-  ]);
+  const allocation: AxiosResponse<ClaimProofResponse> | null = await axios
+    .get(distributorApi + owner)
+    .catch(() => null);
+  if (!allocation) return [];
 
-  let amount: BigNumber | undefined;
-  if (cachedAllocation) {
-    amount = new BigNumber(cachedAllocation);
-  } else {
-    const allocations = await getAllocationsBySeason(owner, 1);
-    if (allocations) {
-      amount = allocations
-        .map((alloc) => new BigNumber(alloc.quantity))
-        .reduce((alloc, sum) => sum.plus(alloc), new BigNumber(0));
+  const pda = deriveClaimStatus(
+    owner,
+    allocation.data.merkle_tree,
+    distributorProgram
+  );
 
-      await cache.setItem(owner, amount.toNumber(), {
-        prefix: allocationPrefix,
-        networkId: NetworkId.solana,
-        ttl: oneDayInMs,
-      });
-    }
-  }
-  if (!amount || amount.isZero()) return [];
+  const client = getClientSolana();
+  const claimStatus = await client.getAccountInfo(pda);
+  if (claimStatus) return [];
 
-  const asset: PortfolioAsset = {
-    networkId: NetworkId.solana,
-    type: 'generic',
-    value: !premarketPrice ? null : amount.times(premarketPrice).toNumber(),
-    data: {
-      name: 'KMNO',
-      amount: amount.toNumber(),
-      price: premarketPrice || null,
-      imageUri: platform.image,
-    },
-    attributes: { isClaimable: false },
-  };
+  const kmnoTokenPrice = await cache.getTokenPrice(kmnoMint, NetworkId.solana);
+
+  const amount = BigNumber(allocation.data.amount)
+    .dividedBy(kmnoFactor)
+    .toNumber();
+  const asset: PortfolioAsset = tokenPriceToAssetToken(
+    kmnoMint,
+    amount,
+    NetworkId.solana,
+    kmnoTokenPrice,
+    undefined,
+    { isClaimable: true }
+  );
+
   return [
     {
-      value: asset.value,
       type: PortfolioElementType.multiple,
       platformId,
-      name: 'Season 1 Allocation',
+      name: 'Season 1 Airdrop',
       networkId: NetworkId.solana,
-      label: 'Rewards',
+      label: 'Airdrop',
       data: { assets: [asset] },
+      value: asset.value,
     },
   ];
 };

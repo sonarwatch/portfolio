@@ -1,5 +1,6 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from './Fetcher';
+import { AirdropFetcher } from './AirdropFetcher';
 import { Job } from './Job';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 import orphanPlatorms from './orphanPlatorms';
@@ -89,6 +90,7 @@ import {
   platforms as driftPlatforms,
   jobs as driftJobs,
   fetchers as driftFetchers,
+  airdropFetcher as driftAirdropFetcher,
 } from './plugins/drift';
 import {
   platforms as mangoPlatforms,
@@ -109,6 +111,7 @@ import {
 import {
   platforms as aftermathPlatforms,
   jobs as aftermathJobs,
+  fetchers as aftermathFetchers,
 } from './plugins/aftermath';
 import {
   platforms as liquidswapPlatforms,
@@ -287,6 +290,7 @@ import {
   platforms as parclPlatforms,
   jobs as parclJobs,
   fetchers as parclFetchers,
+  airdropFetcher as parclAirdropFetcher,
 } from './plugins/parcl';
 import {
   platforms as pythPlatforms,
@@ -419,6 +423,21 @@ import {
   fetchers as cloneFetchers,
 } from './plugins/clone';
 import {
+  platforms as sandglassPlatforms,
+  jobs as sandglassJobs,
+  fetchers as sandglassFetchers,
+} from './plugins/sandglass';
+import {
+  platforms as kriyaPlatforms,
+  jobs as kriyaJobs,
+  fetchers as kriyaFetchers,
+} from './plugins/kriya';
+import {
+  platforms as haedalPlatforms,
+  jobs as haedalJobs,
+  fetchers as haedalFetchers,
+} from './plugins/haedal';
+import {
   platforms as flowxPlatforms,
   jobs as flowxJobs,
   fetchers as flowxFetchers,
@@ -432,6 +451,7 @@ export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSys
 
 export * from './Cache';
 export * from './Fetcher';
+export * from './AirdropFetcher';
 export * from './Job';
 export * from './utils/name-service';
 export * from './utils/blank';
@@ -525,6 +545,9 @@ export const platforms: Platform[] = [
   ...magicedenPlatforms,
   ...flowxPlatforms,
   ...clonePlatforms,
+  ...sandglassPlatforms,
+  ...kriyaPlatforms,
+  ...haedalPlatforms,
 ];
 
 // JOBS //
@@ -609,6 +632,9 @@ export const jobs: Job[] = [
   ...magicedenJobs,
   ...cloneJobs,
   ...switchboardJobs,
+  ...sandglassJobs,
+  ...kriyaJobs,
+  ...haedalJobs,
   ...flowxJobs,
 ];
 
@@ -630,6 +656,7 @@ export const fetchers: Fetcher[] = [
   ...turbosFetchers,
   ...stakingAptosFetchers,
   ...pancakeswapFetchers,
+  ...aftermathFetchers,
   ...aaveFetchers,
   ...ordersFetchers,
   ...morphoFetchers,
@@ -695,6 +722,16 @@ export const fetchers: Fetcher[] = [
   ...jitoFetchers,
   ...magicedenFetchers,
   ...cloneFetchers,
+  ...sandglassFetchers,
+  ...kriyaFetchers,
+  ...haedalFetchers,
   ...flowxFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
+
+export const airdropFetchers: AirdropFetcher[] = [
+  driftAirdropFetcher,
+  parclAirdropFetcher,
+];
+export const airdropFetchersByAddressSystem =
+  getFetchersByAddressSystem(airdropFetchers);

@@ -28,3 +28,22 @@ export type PoolInfo = {
   type_names: string[];
   weights: string[];
 };
+
+export type StakingPosition = {
+  afterburner_vault_id: string;
+  balance: string;
+  base_rewards_accumulated: string[];
+  base_rewards_debt: string[];
+  id: ID;
+  last_reward_timestamp_ms: string;
+  lock_duration_ms: string;
+  lock_multiplier: string;
+  lock_start_timestamp_ms: string;
+  multiplier_rewards_accumulated: string[];
+  multiplier_rewards_debt: string[];
+  multiplier_staked_amount: string;
+};
+
+export type ID = {
+  id: string;
+};

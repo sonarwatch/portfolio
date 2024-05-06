@@ -2,10 +2,9 @@ import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { LbPair } from './struct';
 
-export type Farm = {
+export type FormattedFarm = {
   pubkey: string;
   authority: string;
-  paused: boolean;
   stakingMint: string;
   stakingVault: string;
   rewardAMint: string;
@@ -19,12 +18,10 @@ export type Farm = {
   rewardBRate: string;
   rewardAPerTokenStored: string;
   rewardBPerTokenStored: string;
-  userStakeCount: number;
-  funders: string[];
   rewardARateU128: string;
   rewardBRateU128: string;
-  poolBump: number;
   totalStaked: string;
+  paused: boolean;
 };
 
 export enum PositionVersion {

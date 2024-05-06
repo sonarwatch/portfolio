@@ -4,6 +4,7 @@ export * from './name-service';
 export * from './utils';
 export * from './llama';
 export * from './Address';
+export * from './Airdrop';
 export * from './UsdValue';
 export * from './Client';
 export * from './Network';

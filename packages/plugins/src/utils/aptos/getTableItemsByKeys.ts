@@ -6,7 +6,7 @@ const MAX = 20;
 export async function getTableItemsByKeys<T>(
   client: AptosClient,
   handle: string,
-  keys: string[],
+  keys: (object | string)[],
   keyType: string,
   valueType: string
 ) {
@@ -29,7 +29,7 @@ export async function getTableItemsByKeys<T>(
 async function iGetTableItemsByKeys<T>(
   client: AptosClient,
   handle: string,
-  keys: string[],
+  keys: (object | string)[],
   keyType: string,
   valueType: string
 ) {

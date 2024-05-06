@@ -26,6 +26,7 @@ export type PortfolioElementLabel =
   | 'Vesting'
   | 'Deposit'
   | 'Rewards'
+  | 'Airdrop'
   | 'Margin'
   | 'Leverage';
 
@@ -33,6 +34,7 @@ export type PortfolioAssetAttributes = {
   /**
    * Represents the date (in ms) when the asset will be unlocked.
    * If current date is greater than this value, the asset is unlocked.
+   * If set to -1, it means it's locked for an unknown or indeterminate period
    */
   lockedUntil?: number;
   /**
@@ -161,11 +163,10 @@ export type ProxyInfo = {
  * Represents a smart contract
  */
 export type Contract = {
-  id: ContractId; // address_networkId
   name: string;
+  address: string;
+  network: NetworkIdType;
 };
-
-export type ContractId = string;
 
 /**
  * Represents the different configurations of a service
@@ -184,7 +185,7 @@ export type Service = {
   id: string;
   name: string;
   platformId: string;
-  config: ServiceConfig[];
+  configs: ServiceConfig[];
 };
 
 /**

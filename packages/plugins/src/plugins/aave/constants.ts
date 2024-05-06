@@ -14,6 +14,7 @@ export const platform: Platform = {
   defiLlamaId: 'parent#aave',
   website: 'https://aave.com/',
 };
+
 export const aaveAddress = '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9';
 export const aaveDecimals = 18;
 export const stkAaveAddress = '0x4da27a545c0c5b758a6ba100e3a049001de870f5';

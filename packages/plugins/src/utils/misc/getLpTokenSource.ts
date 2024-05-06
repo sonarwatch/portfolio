@@ -40,6 +40,16 @@ export function getLpTokenSource(
   } = params;
   const sources: TokenPriceSource[] = [];
 
+  // Verify underlyings weights
+  const totalWeight = poolUnderlyings.reduce(
+    (partialSum, p) => partialSum + p.weight,
+    0
+  );
+  if (totalWeight > 1.01)
+    throw new Error(`Weights are greater than 1: ${totalWeight}`);
+  if (totalWeight < 0.99)
+    throw new Error(`Weights are smaller than 1: ${totalWeight}`);
+
   // Price underlyings
   if (priceUnderlyings) {
     const uSources = getLpUnderlyingTokenSource({

@@ -10,12 +10,19 @@ export const platform: Platform = {
   website: 'https://kamino.finance/',
   defiLlamaId: 'parent#kamino-finance',
 };
+
+export const kmnoMint = 'KMNo3nJsBXfcpJTVhZcXLW7RmTwTt4GVFE7suUBo9sS';
+export const kmnoDecimals = 6;
 export const programId = new PublicKey(
   '6LtLpnUFNByNXLyCoK9wA2MykKAmQNZKBdY8s47dehDc'
 );
 
 export const allocationApiUrl =
   'https://api.hubbleprotocol.io/v2/airdrop/users/';
+
+export const distributorApi = 'https://api.kamino.finance/distributor/user/';
+
+export const distributorProgram = 'KdisqEcXbXKaTrBFqeDLhMmBvymLTwj9GmhDcdJyGat';
 export const allocationPrefix = `${platformId}/allocation`;
 
 export const klendProgramId = new PublicKey(

@@ -11,41 +11,47 @@ import { farmsKey, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedMultipleAccountsInfo } from '../../utils/solana';
 import { farmAccountStruct } from './struct';
-import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
 import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
-import { Farm } from './types';
+import { FormattedFarm } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getStakingAccounts } from './helpers';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const farmsInfo = await cache.getItem<Farm[]>(farmsKey, {
+  const farms = await cache.getItem<FormattedFarm[]>(farmsKey, {
     prefix: platformId,
     networkId: NetworkId.solana,
   });
-  if (!farmsInfo) return [];
+  if (!farms) return [];
 
-  const farmById: Map<string, Farm> = new Map();
+  const farmsById: Map<string, FormattedFarm> = new Map();
   const farmsMint: string[] = [];
-  farmsInfo.forEach((farm) => {
-    farmById.set(farm.pubkey, farm);
+  farms.forEach((farm) => {
+    farmsById.set(farm.pubkey, farm);
     farmsMint.push(farm.pubkey);
   });
 
   const farmingAccountsAddresses = getStakingAccounts(owner, farmsMint);
-
   const farmingAccounts = await getParsedMultipleAccountsInfo(
     client,
     farmAccountStruct,
     farmingAccountsAddresses
   );
 
-  const tokenPriceById = await getTokenPricesMap(
-    farmsInfo.map((f) => [f.stakingMint, f.rewardAMint, f.rewardBMint]).flat(),
-    NetworkId.solana,
-    cache
+  const neededMints = farmingAccounts
+    .map((fA, i) => {
+      if (!fA) return [];
+      const farm = farms.at(i);
+      if (!farm) return [];
+      return [farm.stakingMint, farm.rewardAMint, farm.rewardBMint];
+    })
+    .flat();
+  const tokenPrices = await cache.getTokenPricesAsMap(
+    neededMints,
+    NetworkId.solana
   );
+
   const liquidities: PortfolioLiquidity[] = [];
   for (const farmingAccount of farmingAccounts) {
     if (!farmingAccount) continue;
@@ -54,15 +60,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const assets: PortfolioAsset[] = [];
     const { balanceStaked, rewardAPerTokenPending, rewardBPerTokenPending } =
       farmingAccount;
-    const farmInfo = farmById.get(farmingAccount.pool.toString());
+    const farmInfo = farmsById.get(farmingAccount.pool.toString());
     if (!farmInfo) continue;
 
     const { stakingMint, rewardAMint, rewardBMint } = farmInfo;
 
     const [poolTokenPrice, rewardATokenPrice, rewardBTokenPrice] = [
-      tokenPriceById.get(stakingMint),
-      tokenPriceById.get(rewardAMint),
-      tokenPriceById.get(rewardBMint),
+      tokenPrices.get(stakingMint),
+      tokenPrices.get(rewardAMint),
+      tokenPrices.get(rewardBMint),
     ];
 
     if (!poolTokenPrice) continue;
@@ -101,10 +107,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         )
       );
     }
+
     const assetsValue = getUsdValueSum(assets.map((a) => a.value));
     const rewardAssetsValue = getUsdValueSum(rewardAssets.map((r) => r.value));
     const value = getUsdValueSum([assetsValue, rewardAssetsValue]);
-
     if (value === 0) continue;
 
     const liquidity: PortfolioLiquidity = {
