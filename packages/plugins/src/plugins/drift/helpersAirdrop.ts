@@ -20,7 +20,7 @@ export async function fetchAirdropAmount(owner: string) {
         Origin: 'https://drift.foundation',
         Referer: 'https://drift.foundation/',
       },
-      timeout: 1000,
+      timeout: 4000,
       validateStatus(status) {
         return status === 404 || status === 200;
       },
