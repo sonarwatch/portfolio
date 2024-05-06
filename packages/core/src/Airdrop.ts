@@ -71,10 +71,6 @@ export type Airdrop = {
    * A name for the airdrop. Should not container the emitter name. (e.g. 'Season #1')
    */
   name?: string;
-  /**
-   * A short name for the airdrop. (e.g. 'Jupiter S1')
-   */
-  shortName: string;
 
   /**
    * The airdrop claim link.

@@ -83,7 +83,6 @@ export const airdropStatics = {
   claimStart: 1,
   claimEnd: 1735603200000,
   name: undefined,
-  shortName: 'Parcl S1',
 };
 export async function fetchAirdrop(
   owner: string,

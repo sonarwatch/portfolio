@@ -37,7 +37,6 @@ const airdropStatics = {
   image: platformImage,
   label: 'DRIFT',
   name: undefined,
-  shortName: 'Drift S1',
   emitterName: platformName,
   emitterLink: platformWebsite,
   claimStart: undefined,
