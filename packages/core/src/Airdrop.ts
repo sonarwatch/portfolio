@@ -9,11 +9,11 @@ export enum AirdropClaimStatus {
 }
 
 export enum AirdropUserStatus {
-  claimable = 'claimable',
-  claimableLater = 'claimableLater',
-  claimed = 'claimed',
-  claimMissed = 'claimMissed',
-  nonEligible = 'nonEligible',
+  claimable = '0_claimable',
+  claimableLater = '1_claimableLater',
+  claimed = '2_claimed',
+  claimMissed = '3_claimMissed',
+  nonEligible = '4_nonEligible',
 }
 
 export function isAirdropEligible(airdrop: Airdrop): boolean {
