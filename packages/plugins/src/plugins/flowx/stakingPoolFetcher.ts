@@ -3,7 +3,6 @@ import {
   formatTokenAddress,
   getUsdValueSum,
   NetworkId,
-  PortfolioElement,
   PortfolioElementType,
   PortfolioLiquidity,
 } from '@sonarwatch/portfolio-core';
@@ -17,16 +16,11 @@ import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const elements: PortfolioElement[] = [];
-
   const client = getClientSui();
 
   const activePositions = await getOwnedObjects<PositionObject>(client, owner, {
     filter: {
       StructType: `${packageId}::position::Position`,
-    },
-    options: {
-      showContent: true,
     },
   }).then((positions) =>
     positions.filter((pos) => Number(pos.data?.content?.fields.amount) > 0)
@@ -37,16 +31,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     prefix: poolsPrefix,
     networkId: NetworkId.sui,
   });
-  if (!pools) return elements;
+  if (!pools) return [];
 
   const mints = new Set<string>();
   activePositions.forEach((position) => {
-    if (
-      !position.data ||
-      !position.data.content ||
-      !position.data.content.fields.pool_idx
-    )
-      return;
+    if (!position.data?.content?.fields.pool_idx) return;
     const pool: Pool = pools[Number(position.data.content.fields.pool_idx)];
     const token = formatMoveTokenAddress(pool.lpToken);
     mints.add(token);
@@ -59,10 +48,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const liquidities: PortfolioLiquidity[] = [];
   for (const position of activePositions) {
     if (
-      !position.data ||
-      !position.data.content ||
-      !position.data.content.fields.pool_idx ||
-      position.data.content.fields?.amount === '0'
+      !position.data?.content?.fields.pool_idx ||
+      position.data?.content?.fields?.amount === '0'
     )
       continue;
     const pool = pools.at(Number(position.data.content.fields.pool_idx));
