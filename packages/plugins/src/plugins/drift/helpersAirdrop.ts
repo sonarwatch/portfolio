@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import axios, { AxiosResponse } from 'axios';
-import { NetworkId, getAirdropStatus } from '@sonarwatch/portfolio-core';
+import { NetworkId, getAirdropClaimStatus } from '@sonarwatch/portfolio-core';
 import {
   airdropUrl,
   driftDecimals,
@@ -37,21 +37,25 @@ const airdropStatics = {
   image: platformImage,
   label: 'DRIFT',
   name: undefined,
+  shortName: 'Drift S1',
   organizerName: platformName,
   organizerLink: platformWebsite,
   claimStart: undefined,
   claimEnd: undefined,
 };
 const fetchAirdropExecutor: AirdropFetcherExecutor = async (owner: string) => {
-  const amount = await fetchAirdropAmount(owner);
+  let amount = await fetchAirdropAmount(owner);
+  if (amount === 0) amount = -1;
+
+  const claimStatus = getAirdropClaimStatus(
+    airdropStatics.claimStart,
+    airdropStatics.claimEnd
+  );
   return {
     ...airdropStatics,
     amount,
-    ...getAirdropStatus(
-      airdropStatics.claimStart,
-      airdropStatics.claimEnd,
-      amount
-    ),
+    claimStatus,
+    isClaimed: false,
     price: null,
   };
 };

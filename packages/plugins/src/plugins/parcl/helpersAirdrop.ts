@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import {
   Airdrop,
   NetworkId,
-  getAirdropStatus,
+  getAirdropClaimStatus,
 } from '@sonarwatch/portfolio-core';
 import {
   airdropApi,
@@ -83,6 +83,7 @@ export const airdropStatics = {
   claimStart: 0,
   claimEnd: 1735603200000,
   name: undefined,
+  shortName: 'Parcl S1',
 };
 export async function fetchAirdrop(
   owner: string,
@@ -91,10 +92,16 @@ export async function fetchAirdrop(
 ): Promise<Airdrop> {
   const prclTokenPrice = await cache.getTokenPrice(prclMint, NetworkId.solana);
   const allocation = await fetchAllocation(owner, cache);
+  const claimStatus = getAirdropClaimStatus(
+    airdropStatics.claimStart,
+    airdropStatics.claimEnd
+  );
   if (allocation.amount === 0 || !allocation.merkleTree)
     return {
       ...airdropStatics,
-      ...getAirdropStatus(airdropStatics.claimStart, airdropStatics.claimEnd),
+      claimStatus,
+      isClaimed: false,
+      amount: -1,
       price: prclTokenPrice?.price || null,
     };
 
@@ -112,12 +119,8 @@ export async function fetchAirdrop(
 
   return {
     ...airdropStatics,
-    ...getAirdropStatus(
-      airdropStatics.claimStart,
-      airdropStatics.claimEnd,
-      allocation.amount,
-      isClaimed
-    ),
+    claimStatus,
+    isClaimed,
     amount: allocation.amount,
     price: prclTokenPrice?.price || null,
   };

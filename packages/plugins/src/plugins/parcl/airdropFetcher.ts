@@ -1,7 +1,7 @@
 import {
-  AirdropUserStatus,
   NetworkId,
   PortfolioElementType,
+  isAirdropEligible,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -15,11 +15,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const client = getClientSolana();
   const airdrop = await fetchAirdrop(owner, client, cache);
-  if (
-    airdrop.userStatus !== AirdropUserStatus.claimable &&
-    airdrop.userStatus !== AirdropUserStatus.claimableLater
-  )
-    return [];
+  if (!isAirdropEligible(airdrop) || airdrop.isClaimed) return [];
   if (!airdrop.amount) return [];
 
   const asset = tokenPriceToAssetToken(
