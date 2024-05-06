@@ -38,8 +38,8 @@ const airdropStatics = {
   label: 'DRIFT',
   name: undefined,
   shortName: 'Drift S1',
-  emmiterName: platformName,
-  emmiterLink: platformWebsite,
+  emitterName: platformName,
+  emitterLink: platformWebsite,
   claimStart: undefined,
   claimEnd: undefined,
 };
