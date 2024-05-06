@@ -16,10 +16,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       pools.map((p) => p.objectId)
     ),
   ]);
-
-  const poolsObjects = await multiGetObjects<PoolObject>(client, poolsIds, {
-    showContent: true,
-  });
+  const poolsObjects = await multiGetObjects<PoolObject>(client, poolsIds);
 
   const pools: Pool[] = [];
   for (const poolObject of poolsObjects) {
@@ -35,13 +32,12 @@ const executor: JobExecutor = async (cache: Cache) => {
     const { keys: coinTypeRewardToken } = parseTypeString(
       poolObjectFields.reward_token_custodian.type
     );
+    if (!coinTypeLpToken || !coinTypeRewardToken) continue;
 
-    if (coinTypeLpToken && coinTypeRewardToken) {
-      pools[Number(poolId)] = {
-        lpToken: coinTypeLpToken[0].type,
-        rewardToken: coinTypeRewardToken[0].type,
-      } as Pool;
-    }
+    pools[Number(poolId)] = {
+      lpToken: coinTypeLpToken[0].type,
+      rewardToken: coinTypeRewardToken[0].type,
+    } as Pool;
   }
 
   await cache.setItem(poolsKey, pools, {

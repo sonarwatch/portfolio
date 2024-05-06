@@ -5,7 +5,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { platformId, pairsOwner } from './constants';
+import { platformId, pairsOwner, lpDecimals } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { getDynamicFields } from '../../utils/sui/getDynamicFields';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
@@ -18,7 +18,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   const pairIds = await getDynamicFields(client, pairsOwner).then((pairs) =>
     pairs.map((p) => p.objectId)
   );
-  if (!pairIds.length) return;
+  if (pairIds.length === 0) return;
 
   const lpSources: TokenPriceSource[] = [];
 
@@ -101,9 +101,10 @@ const executor: JobExecutor = async (cache: Cache) => {
       networkId: NetworkId.sui,
       sourceId: pairInfo.coinType,
       platformId,
+      priceUnderlyings: true,
       lpDetails: {
         address: pairInfo.coinType,
-        decimals: 8,
+        decimals: lpDecimals,
         supplyRaw: pairInfo.lp_supply.fields.value,
       },
       poolUnderlyingsRaw: [
@@ -114,7 +115,7 @@ const executor: JobExecutor = async (cache: Cache) => {
           ),
           decimals: tokenPriceX.decimals,
           reserveAmountRaw: pairInfo.reserve_x.fields.balance,
-          weight: 0.1,
+          weight: 0.5,
           tokenPrice: tokenPriceX,
         },
         {
@@ -124,7 +125,7 @@ const executor: JobExecutor = async (cache: Cache) => {
           ),
           decimals: tokenPriceY.decimals,
           reserveAmountRaw: pairInfo.reserve_y.fields.balance,
-          weight: 0.1,
+          weight: 0.5,
           tokenPrice: tokenPriceY,
         },
       ],
