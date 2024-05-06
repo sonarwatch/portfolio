@@ -80,7 +80,7 @@ export const airdropStatics = {
   label: 'PRCL',
   emitterLink: platformWebsite,
   emitterName: platformName,
-  claimStart: 0,
+  claimStart: 1,
   claimEnd: 1735603200000,
   name: undefined,
   shortName: 'Parcl S1',
