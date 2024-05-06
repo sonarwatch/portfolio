@@ -60,15 +60,15 @@ export type Airdrop = {
    */
   image: string;
   /**
-   * The airdrop organizer name. (e.g. Jupiter)
+   * The airdrop emmiter name. (e.g. Jupiter)
    */
-  organizerName: string;
+  emmiterName: string;
   /**
-   * The airdrop organizer link.
+   * The airdrop emmiter link.
    */
-  organizerLink: string;
+  emmiterLink: string;
   /**
-   * A name for the airdrop. Should not container the organizer name. (e.g. 'Season #1')
+   * A name for the airdrop. Should not container the emmiter name. (e.g. 'Season #1')
    */
   name?: string;
   /**
