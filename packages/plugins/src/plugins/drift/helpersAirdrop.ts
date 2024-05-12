@@ -26,9 +26,11 @@ export async function fetchAirdropAmount(owner: string) {
       },
     }
   );
-  return new BigNumber(res.data.start_amount || 0)
-    .dividedBy(driftFactor)
-    .toNumber();
+
+  const availableAmount =
+    Date.now() > res.data.end_ts ? res.data.end_amount : res.data.start_amount;
+
+  return new BigNumber(availableAmount || 0).dividedBy(driftFactor).toNumber();
 }
 
 const airdropStatics = {
