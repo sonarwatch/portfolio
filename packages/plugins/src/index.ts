@@ -437,6 +437,11 @@ import {
   jobs as haedalJobs,
   fetchers as haedalFetchers,
 } from './plugins/haedal';
+import {
+  platforms as flowxPlatforms,
+  jobs as flowxJobs,
+  fetchers as flowxFetchers,
+} from './plugins/flowx';
 
 export {
   walletTokensPlatform,
@@ -538,6 +543,7 @@ export const platforms: Platform[] = [
   ...nosanaPlatforms,
   ...jitoPlatforms,
   ...magicedenPlatforms,
+  ...flowxPlatforms,
   ...clonePlatforms,
   ...sandglassPlatforms,
   ...kriyaPlatforms,
@@ -629,6 +635,7 @@ export const jobs: Job[] = [
   ...sandglassJobs,
   ...kriyaJobs,
   ...haedalJobs,
+  ...flowxJobs,
 ];
 
 // FETCHERS //
@@ -718,6 +725,7 @@ export const fetchers: Fetcher[] = [
   ...sandglassFetchers,
   ...kriyaFetchers,
   ...haedalFetchers,
+  ...flowxFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
