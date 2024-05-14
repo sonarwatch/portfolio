@@ -7,7 +7,7 @@ import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { driftMint, platform, platformId } from './constants';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { fetchAirdropAmount } from './helpersAirdrop';
+import { claimStart, fetchAirdropAmount } from './helpersAirdrop';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   // const client = getClientSolana();
@@ -38,7 +38,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           imageUri: platform.image,
         },
         attributes: {
-          lockedUntil: -1,
+          lockedUntil: claimStart,
         },
         networkId: NetworkId.solana,
         value: null,

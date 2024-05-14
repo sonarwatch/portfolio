@@ -12,6 +12,7 @@ import { AirdropResponse } from './types';
 import { AirdropFetcher, AirdropFetcherExecutor } from '../../AirdropFetcher';
 
 const driftFactor = new BigNumber(10 ** driftDecimals);
+export const claimStart = 1715860800000;
 export async function fetchAirdropAmount(owner: string) {
   const res: AxiosResponse<AirdropResponse> = await axios.get(
     airdropUrl + owner,
@@ -41,7 +42,7 @@ const airdropStatics = {
   name: undefined,
   organizerName: platformName,
   organizerLink: platformWebsite,
-  claimStart: undefined,
+  claimStart,
   claimEnd: undefined,
 };
 const fetchAirdropExecutor: AirdropFetcherExecutor = async (owner: string) => {
