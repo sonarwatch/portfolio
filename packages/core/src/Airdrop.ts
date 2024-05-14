@@ -9,11 +9,11 @@ export enum AirdropClaimStatus {
 }
 
 export enum AirdropUserStatus {
-  claimable = 'claimable',
-  claimableLater = 'claimableLater',
-  claimed = 'claimed',
-  claimMissed = 'claimMissed',
-  nonEligible = 'nonEligible',
+  claimable = '0_claimable',
+  claimableLater = '1_claimableLater',
+  claimed = '2_claimed',
+  claimMissed = '3_claimMissed',
+  nonEligible = '4_nonEligible',
 }
 
 export function isAirdropEligible(airdrop: Airdrop): boolean {
@@ -60,21 +60,17 @@ export type Airdrop = {
    */
   image: string;
   /**
-   * The airdrop organizer name. (e.g. Jupiter)
+   * The airdrop emitter name. (e.g. Jupiter)
    */
-  organizerName: string;
+  emitterName: string;
   /**
-   * The airdrop organizer link.
+   * The airdrop emitter link.
    */
-  organizerLink: string;
+  emitterLink: string;
   /**
-   * A name for the airdrop. Should not container the organizer name. (e.g. 'Season #1')
+   * A name for the airdrop. Should not container the emitter name. (e.g. 'Season #1')
    */
   name?: string;
-  /**
-   * A short name for the airdrop. (e.g. 'Jupiter S1')
-   */
-  shortName: string;
 
   /**
    * The airdrop claim link.

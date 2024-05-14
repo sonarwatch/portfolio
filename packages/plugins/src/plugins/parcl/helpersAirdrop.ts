@@ -78,12 +78,11 @@ export const airdropStatics = {
   claimLink: 'https://claims.parcllimited.com/',
   image: platformImage,
   label: 'PRCL',
-  organizerLink: platformWebsite,
-  organizerName: platformName,
-  claimStart: 0,
+  emitterLink: platformWebsite,
+  emitterName: platformName,
+  claimStart: 1,
   claimEnd: 1735603200000,
   name: undefined,
-  shortName: 'Parcl S1',
 };
 export async function fetchAirdrop(
   owner: string,
