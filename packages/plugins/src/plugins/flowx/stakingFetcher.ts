@@ -74,35 +74,37 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       )
     );
 
-    assets.push(
-      tokenPriceToAssetToken(
-        suiNativeAddress,
-        new BigNumber(
-          stakingPosition.data.content.fields.value.fields.sui_pending
+    if (stakingPosition.data.content.fields.value.fields.sui_pending !== '0')
+      assets.push(
+        tokenPriceToAssetToken(
+          suiNativeAddress,
+          new BigNumber(
+            stakingPosition.data.content.fields.value.fields.sui_pending
+          )
+            .dividedBy(10 ** suiNativeDecimals)
+            .toNumber(),
+          NetworkId.sui,
+          suiTokenPrice,
+          undefined,
+          { isClaimable: true }
         )
-          .dividedBy(10 ** suiNativeDecimals)
-          .toNumber(),
-        NetworkId.sui,
-        suiTokenPrice,
-        undefined,
-        { isClaimable: true }
-      )
-    );
+      );
 
-    assets.push(
-      tokenPriceToAssetToken(
-        flxMint,
-        new BigNumber(
-          stakingPosition.data.content.fields.value.fields.flx_pending
+    if (stakingPosition.data.content.fields.value.fields.flx_pending !== '0')
+      assets.push(
+        tokenPriceToAssetToken(
+          flxMint,
+          new BigNumber(
+            stakingPosition.data.content.fields.value.fields.flx_pending
+          )
+            .dividedBy(10 ** flxDecimals)
+            .toNumber(),
+          NetworkId.sui,
+          flxTokenPrice,
+          undefined,
+          { isClaimable: true }
         )
-          .dividedBy(10 ** flxDecimals)
-          .toNumber(),
-        NetworkId.sui,
-        flxTokenPrice,
-        undefined,
-        { isClaimable: true }
-      )
-    );
+      );
   }
 
   unstakingPositions.forEach((unstakingPosition) => {
