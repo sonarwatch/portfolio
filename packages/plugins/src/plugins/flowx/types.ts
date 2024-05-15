@@ -83,3 +83,36 @@ export type Pool = {
   lpToken: string;
   rewardToken: string;
 };
+
+export type PositionV3Object = {
+  coin_type_x: {
+    fields: {
+      name: string;
+    }
+  };
+  coin_type_y: {
+    fields: {
+      name: string;
+    }
+  };
+  pool_id: string;
+  liquidity: string;
+  tick_lower_index: {
+    fields: {
+      bits: string
+    }
+  };
+  tick_upper_index: {
+    fields: {
+      bits: string
+    }
+  };
+};
+
+export type PoolV3 = {
+  tick_index: {
+    fields: {
+      bits: string
+    }
+  };
+}
