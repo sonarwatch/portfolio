@@ -22,3 +22,8 @@ export type AirdropResponse = {
   claimed_amount: number;
   error: string;
 };
+
+export type AirdropInfo = {
+  merkle: string;
+  amount: number;
+};
