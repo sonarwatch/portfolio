@@ -23,4 +23,4 @@ export const preMarketPriceKey = 'premarketPrice';
 export const airdropUrl = 'https://airdrop.drift.trade/eligibility/';
 export const distributorPid = 'E7HtfkEMhmn9uwL7EFNydcXBWy5WCYN1vFmKKjipEH1x';
 export const driftDecimals = 6;
-export const driftMint = undefined;
+export const driftMint = 'DriFtupJYLTosbwoN8koMbEYSx54aFAVLddWsbksjwg7';
