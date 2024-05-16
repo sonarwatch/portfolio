@@ -33,3 +33,6 @@ export const unstackStruct =
 
 export const poolsPrefix = `${platformId}-pools`;
 export const poolsKey = 'pools';
+
+export const packageIdV3 =
+  '0x25929e7f29e0a30eb4e692952ba1b5b65a3a4d65ab5f2a32e1ba3edcb587f26d';
