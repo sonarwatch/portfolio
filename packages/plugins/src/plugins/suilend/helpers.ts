@@ -13,8 +13,10 @@ export function getPoolsRewardsAsMap(
     for (const reserve of reserves) {
       const poolsRewards =
         reserve.fields.deposits_pool_reward_manager.fields.pool_rewards;
-      for (const poolReward of poolsRewards)
+      for (const poolReward of poolsRewards) {
+        if (!poolReward) continue;
         rewardMintByPoolId.set(poolReward.fields.id.id, poolReward.fields);
+      }
     }
   }
   return rewardMintByPoolId;
