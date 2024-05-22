@@ -1,8 +1,7 @@
 import {
   formatMoveTokenAddress,
   getUsdValueSum,
-  NetworkId, PortfolioAssetToken,
-  PortfolioLiquidity, TokenPrice
+  NetworkId, PortfolioAsset, PortfolioLiquidity, TokenPrice
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -11,7 +10,7 @@ import {
   platformId,
   stackedSavingsParentIds,
   suiIncentiveUserType,
-  vaultsKey,
+  dataKey,
   vaultsPrefix
 } from './constants';
 import { getClientSui } from '../../utils/clients';
@@ -24,7 +23,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
   const [data, coinsBalances, stackedSavings] = await Promise.all([
-    cache.getItem<{vaults: Vault[]}>(vaultsKey, {
+    cache.getItem<{vaults: Vault[]}>(dataKey, {
       prefix: vaultsPrefix,
       networkId: NetworkId.sui,
     }),
@@ -47,7 +46,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (!vault) return;
     vaultsMap.set(formatMoveTokenAddress(vault.baseToken), vault);
   });
-  let assets: PortfolioAssetToken[] = [];
 
   const coinsTypes: string[] = [];
   const balances = [];
@@ -96,50 +94,48 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     })
   }
 
-  const tokensPrices = await cache.getTokenPrices(coinsTypes, NetworkId.sui);
-  const tokenPricesMap: Map<string, TokenPrice> = new Map();
-  tokensPrices.forEach((tp) => {
-    if (!tp) return;
-    tokenPricesMap.set(formatMoveTokenAddress(tp.address), tp);
-  });
+  const tokenPrices: Map<string, TokenPrice> = await cache.getTokenPricesAsMap(coinsTypes, NetworkId.sui)
+
+  const liquidities: PortfolioLiquidity[] = [];
 
   for (let i = 0; i < balances.length; i++) {
     const coinBalance = balances[i];
 
-    const tokenPrice = tokenPricesMap.get(formatMoveTokenAddress(coinBalance.type));
+    const tokenPrice = tokenPrices.get(formatMoveTokenAddress(coinBalance.type));
     if (!tokenPrice) continue;
 
     const vault = vaultsMap.get(formatMoveTokenAddress(coinBalance.type));
     if (!vault) continue;
 
-    assets = [...assets, ...tokenPriceToAssetTokens(
+    const assets: PortfolioAsset[] = [];
+
+    assets.push(...tokenPriceToAssetTokens(
       coinBalance.type,
       Number(coinBalance.amountRaw) / (10 ** tokenPrice.decimals) * vault.baseTokenPerIbToken,
       NetworkId.sui,
       tokenPrice
-    )];
-  }
+    ));
 
-  const value = getUsdValueSum(assets.map((asset) => asset.value));
+    const assetsValue = getUsdValueSum(assets.map((a) => a.value));
+    const value = assetsValue;
 
-  const liquidities: PortfolioLiquidity[] = [
-    {
+    liquidities.push({
+      value,
       assets,
-      assetsValue: value,
+      assetsValue,
       rewardAssets: [],
       rewardAssetsValue: null,
-      value,
       yields: [],
-    }
-  ];
+    });
+  }
 
-  if (assets.length === 0) return [];
+  if (liquidities.length === 0) return [];
 
   return [
     {
       type: 'liquidity',
       data: { liquidities },
-      label: 'Deposit',
+      label: 'Staked',
       networkId: NetworkId.sui,
       platformId,
       value: getUsdValueSum(liquidities.map((liq) => liq.value)),

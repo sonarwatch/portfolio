@@ -23,4 +23,5 @@ export const stackedSavingsParentIds = [
 export const dataUrl = `https://app.mole.fi/api/SuiMainnet/data.json`
 
 export const vaultsPrefix = `${platformId}`;
-export const vaultsKey = 'data';
+export const dataKey = 'data';
+export const positionsKey = 'positions';
