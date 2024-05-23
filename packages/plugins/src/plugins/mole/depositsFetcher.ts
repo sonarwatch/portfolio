@@ -137,7 +137,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const assetsValue = getUsdValueSum(assets.map((a) => a.value));
     const value = assetsValue;
 
-    const l: PortfolioLiquidity = {
+    const liquidity: PortfolioLiquidity = {
       value,
       assets,
       assetsValue,
@@ -146,8 +146,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       yields: [],
     };
 
-    if (coinBalance.stacked) stackedLiquidities.push(l);
-    else depositedLiquidities.push(l);
+    if (coinBalance.stacked) stackedLiquidities.push(liquidity);
+    else depositedLiquidities.push(liquidity);
   }
 
   const elements: PortfolioElement[] = [];
@@ -159,7 +159,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       label: 'Deposit',
       networkId: NetworkId.sui,
       platformId,
-      value: getUsdValueSum(depositedLiquidities.map((liq) => liq.value)),
+      value: getUsdValueSum(depositedLiquidities.map((l) => l.value)),
     });
   }
 
@@ -170,7 +170,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       label: 'Staked',
       networkId: NetworkId.sui,
       platformId,
-      value: getUsdValueSum(stackedLiquidities.map((liq) => liq.value)),
+      value: getUsdValueSum(stackedLiquidities.map((l) => l.value)),
     });
   }
 
