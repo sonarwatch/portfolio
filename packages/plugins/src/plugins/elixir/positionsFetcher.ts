@@ -3,6 +3,7 @@ import {
   getUsdValueSum,
   NetworkId,
   PortfolioAsset,
+  PortfolioElement,
   PortfolioLiquidity,
   TokenPrice,
 } from '@sonarwatch/portfolio-core';
@@ -83,7 +84,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     NetworkId.sui
   );
 
-  const liquidities: PortfolioLiquidity[] = [];
+  const elements: PortfolioElement[] = [];
 
   activeShares.forEach((a) => {
     const assets: PortfolioAsset[] = [];
@@ -126,29 +127,29 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       if (v.address === a.vault) name = v.vaultDisplayName;
     });
 
-    liquidities.push({
-      value,
-      assets,
-      assetsValue,
-      rewardAssets: [],
-      rewardAssetsValue: null,
-      yields: [],
-      name,
-    });
-  });
+    const liquidities: PortfolioLiquidity[] = [
+      {
+        value,
+        assets,
+        assetsValue,
+        rewardAssets: [],
+        rewardAssetsValue: null,
+        yields: [],
+        name,
+      },
+    ];
 
-  if (liquidities.length === 0) return [];
-
-  return [
-    {
+    elements.push({
       type: 'liquidity',
       data: { liquidities },
       label: 'LiquidityPool',
       networkId: NetworkId.sui,
       platformId,
       value: getUsdValueSum(liquidities.map((liq) => liq.value)),
-    },
-  ];
+    });
+  });
+
+  return elements;
 };
 
 const fetcher: Fetcher = {
