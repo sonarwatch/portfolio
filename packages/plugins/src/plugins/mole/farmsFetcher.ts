@@ -1,8 +1,9 @@
 import { TransactionBlock } from '@mysten/sui.js/transactions';
 import {
+  formatMoveTokenAddress,
   getUsdValueSum,
   NetworkId, PortfolioAsset,
-  PortfolioElement, PortfolioElementType, PortfolioLiquidity
+  PortfolioElement, PortfolioElementType, PortfolioLiquidity, TokenPrice
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -35,6 +36,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (!data || !data.farms || !data.vaults || !data.others || ! positions)
     return [];
+
+  const coinsTypes: string[] = data.vaults.map(v => formatMoveTokenAddress(v.baseToken));
+  const tokenPrices: Map<string, TokenPrice> = await cache.getTokenPricesAsMap(coinsTypes, NetworkId.sui)
+
 
   const myPositions = positions.filter(position => position.owner === owner);
 
@@ -104,7 +109,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       ...tokenPriceToAssetTokens(
         farm.symbol1Address,
         borrowingInterest.isReverse ? equityValue.toNumber() : 0,
-        NetworkId.sui
+        NetworkId.sui,
+        tokenPrices.get(formatMoveTokenAddress(farm.symbol1Address)),
       )
     );
 
@@ -112,7 +118,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       ...tokenPriceToAssetTokens(
         farm.symbol2Address,
         borrowingInterest.isReverse ? 0 : equityValue.toNumber(),
-        NetworkId.sui
+        NetworkId.sui,
+        tokenPrices.get(formatMoveTokenAddress(farm.symbol2Address)),
       )
     );
 

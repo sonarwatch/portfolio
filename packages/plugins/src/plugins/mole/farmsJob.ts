@@ -1,47 +1,25 @@
-import axios from 'axios';
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import {
-  dataUrl,
   platformId, dataKey, vaultsPrefix, positionsKey
 } from './constants';
 import {
   MoleData,
-  PositionInfo,
-  VaultInfo
+  PositionInfo, VaultInfo
 } from './types';
 import { getClientSui } from '../../utils/clients';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { getDynamicFieldObjects } from '../../utils/sui/getDynamicFieldObjects';
 
 const executor: JobExecutor = async (cache: Cache) => {
-  if (!process.env['MOLE_API_KEY'])
-    throw Error('MOLE_API_KEY is not defined');
-
-  const res = await axios.get<MoleData>(dataUrl, {
-    timeout: 30000,
-    headers: {
-      key: process.env['MOLE_API_KEY']
-    }
-  }).catch(err => {
-    throw Error(`MOLE_API ERR: ${err}`);
-  })
-
-  if (!res) {
-    throw Error(`MOLE_API NO RESPONSE`);
-  }
-
-  const {data} = res
-
-  if (!data || !data.vaults) {
-    throw Error(`MOLE_API MISSING DATA`);
-  }
-  
-  await cache.setItem(dataKey, data, {
+  const data = await cache.getItem<MoleData>(dataKey, {
     prefix: vaultsPrefix,
     networkId: NetworkId.sui,
   });
+
+  if (!data || !data.farms || !data.vaults || !data.others)
+    return;
 
   const client = getClientSui();
 
@@ -69,8 +47,8 @@ const executor: JobExecutor = async (cache: Cache) => {
 };
 
 const job: Job = {
-  id: `${platformId}-vaults`,
+  id: `${platformId}-farms`,
   executor,
-  label: 'normal',
+  label: 'realtime',
 };
 export default job;
