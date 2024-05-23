@@ -2,6 +2,7 @@ import { BCS, getSuiMoveConfig } from '@mysten/bcs';
 
 const bcs = new BCS(getSuiMoveConfig());
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const serializeReturnValue = (e: any) => {
   let t = e[0];
 
