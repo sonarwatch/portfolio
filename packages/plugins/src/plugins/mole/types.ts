@@ -9,9 +9,9 @@ export type UserInfo = {
   value: {
     fields: {
       amount: number;
-    }
+    };
     type: string;
-  }
+  };
 };
 
 export type MoleData = {
@@ -19,7 +19,7 @@ export type MoleData = {
   farms: Farm[];
   others: {
     globalStorage: string;
-  }
+  };
 };
 
 export type Farm = {
@@ -46,11 +46,11 @@ export type VaultInfo = {
         fields: {
           id: {
             id: string;
-          }
-        }
+          };
+        };
       };
-    }
-  }
+    };
+  };
 };
 
 export type PositionInfo = {
@@ -72,4 +72,4 @@ export type PositionSummary = {
   id: string;
   owner: string;
   worker: string;
-}
+};

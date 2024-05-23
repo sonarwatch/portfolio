@@ -2,17 +2,17 @@ import { TransactionBlock } from '@mysten/sui.js/transactions';
 import {
   formatMoveTokenAddress,
   getUsdValueSum,
-  NetworkId, PortfolioAsset,
-  PortfolioElement, PortfolioElementType, PortfolioLiquidity, TokenPrice
+  NetworkId,
+  PortfolioAsset,
+  PortfolioElement,
+  PortfolioElementType,
+  PortfolioLiquidity,
+  TokenPrice,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import {
-  platformId,
-  dataKey,
-  vaultsPrefix, positionsKey
-} from './constants';
+import { platformId, dataKey, vaultsPrefix, positionsKey } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { BorrowingInterest, Farm, MoleData, PositionSummary } from './types';
 import { serializeReturnValue } from './helpers';
@@ -34,107 +34,132 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }),
   ]);
 
-  if (!data || !data.farms || !data.vaults || !data.others || ! positions)
+  if (!data || !data.farms || !data.vaults || !data.others || !positions)
     return [];
 
-  const coinsTypes: string[] = data.vaults.map(v => formatMoveTokenAddress(v.baseToken));
-  const tokenPrices: Map<string, TokenPrice> = await cache.getTokenPricesAsMap(coinsTypes, NetworkId.sui)
+  const coinsTypes: string[] = data.vaults.map((v) =>
+    formatMoveTokenAddress(v.baseToken)
+  );
+  const tokenPrices: Map<string, TokenPrice> = await cache.getTokenPricesAsMap(
+    coinsTypes,
+    NetworkId.sui
+  );
 
+  const myPositions = positions.filter((position) => position.owner === owner);
 
-  const myPositions = positions.filter(position => position.owner === owner);
-
-  if (myPositions.length === 0)
-    return [];
+  if (myPositions.length === 0) return [];
 
   const liquidities: PortfolioLiquidity[] = [];
 
-  await Promise.all(myPositions.map(async position => {
-    const positionId = position.id;
-    const positionWorker = position.worker;
+  await Promise.all(
+    myPositions.map(async (position) => {
+      const positionId = position.id;
+      const positionWorker = position.worker;
 
-    let farm: Farm | undefined;
-    let borrowingInterest: BorrowingInterest | undefined;
+      let farm: Farm | undefined;
+      let borrowingInterest: BorrowingInterest | undefined;
 
-    data.farms.forEach(f => {
-      f.borrowingInterests.forEach((b) => {
-        if (b.address === positionWorker) {
-          farm = f;
-          borrowingInterest = b;
-        }
-      })
-    });
+      data.farms.forEach((f) => {
+        f.borrowingInterests.forEach((b) => {
+          if (b.address === positionWorker) {
+            farm = f;
+            borrowingInterest = b;
+          }
+        });
+      });
 
-    if (!farm || !borrowingInterest) {
-      return;
-    }
+      if (!farm || !borrowingInterest) {
+        return;
+      }
 
-    const packageObjectId = borrowingInterest.upgradeAddr;
-    const module = 'cetus_clmm_worker';
-    const func = borrowingInterest.isReverse ? 'position_info_reverse' : 'position_info';
+      const packageObjectId = borrowingInterest.upgradeAddr;
+      const module = 'cetus_clmm_worker';
+      const func = borrowingInterest.isReverse
+        ? 'position_info_reverse'
+        : 'position_info';
 
-    const tx = new TransactionBlock();
+      const tx = new TransactionBlock();
 
-    tx.moveCall({
-      target: `${packageObjectId}::${module}::${func}`,
-      arguments: [
-        tx.object(borrowingInterest.workerInfo),
-        tx.object(data.others.globalStorage),
-        tx.object(borrowingInterest.pool),
-        tx.pure(positionId)
-      ],
-      typeArguments: [
-        borrowingInterest.isReverse ? farm.symbol1Address : farm.symbol2Address, // baseCoinType
-        borrowingInterest.isReverse ? farm.symbol2Address : farm.symbol1Address, // farmingCoinType
-        farm.lpAddress,
-      ]
-    });
+      tx.moveCall({
+        target: `${packageObjectId}::${module}::${func}`,
+        arguments: [
+          tx.object(borrowingInterest.workerInfo),
+          tx.object(data.others.globalStorage),
+          tx.object(borrowingInterest.pool),
+          tx.pure(positionId),
+        ],
+        typeArguments: [
+          borrowingInterest.isReverse
+            ? farm.symbol1Address
+            : farm.symbol2Address, // baseCoinType
+          borrowingInterest.isReverse
+            ? farm.symbol2Address
+            : farm.symbol1Address, // farmingCoinType
+          farm.lpAddress,
+        ],
+      });
 
-    const dir = await client.devInspectTransactionBlock({
-      sender: '0x7ca96e9760a722923f94e692faa26806b311565dbbfb707ed4f9fc1e336f2c73',
-      transactionBlock: tx
-    });
+      const dir = await client.devInspectTransactionBlock({
+        sender:
+          '0x7ca96e9760a722923f94e692faa26806b311565dbbfb707ed4f9fc1e336f2c73',
+        transactionBlock: tx,
+      });
 
-    if (!dir.results || !dir.results[0].returnValues)
-      return;
+      if (!dir.results || !dir.results[0].returnValues) return;
 
-    const health = new BigNumber(serializeReturnValue(dir.results[0].returnValues[0])).dividedBy(10 ** (borrowingInterest.isReverse ? farm.symbol1Decimals : farm.symbol2Decimals));
-    const debtValue = new BigNumber(serializeReturnValue(dir.results[0].returnValues[1])).dividedBy(10 ** (borrowingInterest.isReverse ? farm.symbol1Decimals : farm.symbol2Decimals));
-    const equityValue = health.minus(debtValue);
-    // const leverage = health.dividedBy(equityValue);
-    // const debtRatio = debtValue.dividedBy(health);
+      const health = new BigNumber(
+        serializeReturnValue(dir.results[0].returnValues[0])
+      ).dividedBy(
+        10 **
+          (borrowingInterest.isReverse
+            ? farm.symbol1Decimals
+            : farm.symbol2Decimals)
+      );
+      const debtValue = new BigNumber(
+        serializeReturnValue(dir.results[0].returnValues[1])
+      ).dividedBy(
+        10 **
+          (borrowingInterest.isReverse
+            ? farm.symbol1Decimals
+            : farm.symbol2Decimals)
+      );
+      const equityValue = health.minus(debtValue);
+      // const leverage = health.dividedBy(equityValue);
+      // const debtRatio = debtValue.dividedBy(health);
 
-    const assets: PortfolioAsset[] = [];
+      const assets: PortfolioAsset[] = [];
 
-    assets.push(
-      ...tokenPriceToAssetTokens(
-        farm.symbol1Address,
-        borrowingInterest.isReverse ? equityValue.toNumber() : 0,
-        NetworkId.sui,
-        tokenPrices.get(formatMoveTokenAddress(farm.symbol1Address)),
-      )
-    );
+      assets.push(
+        ...tokenPriceToAssetTokens(
+          farm.symbol1Address,
+          borrowingInterest.isReverse ? equityValue.toNumber() : 0,
+          NetworkId.sui,
+          tokenPrices.get(formatMoveTokenAddress(farm.symbol1Address))
+        )
+      );
 
-    assets.push(
-      ...tokenPriceToAssetTokens(
-        farm.symbol2Address,
-        borrowingInterest.isReverse ? 0 : equityValue.toNumber(),
-        NetworkId.sui,
-        tokenPrices.get(formatMoveTokenAddress(farm.symbol2Address)),
-      )
-    );
+      assets.push(
+        ...tokenPriceToAssetTokens(
+          farm.symbol2Address,
+          borrowingInterest.isReverse ? 0 : equityValue.toNumber(),
+          NetworkId.sui,
+          tokenPrices.get(formatMoveTokenAddress(farm.symbol2Address))
+        )
+      );
 
-    const assetsValue = getUsdValueSum(assets.map((a) => a.value));
-    const value = assetsValue;
+      const assetsValue = getUsdValueSum(assets.map((a) => a.value));
+      const value = assetsValue;
 
-    liquidities.push({
-      value,
-      assets,
-      assetsValue,
-      rewardAssets: [],
-      rewardAssetsValue: null,
-      yields: [],
-    });
-  }));
+      liquidities.push({
+        value,
+        assets,
+        assetsValue,
+        rewardAssets: [],
+        rewardAssetsValue: null,
+        yields: [],
+      });
+    })
+  );
 
   if (liquidities.length === 0) return [];
 

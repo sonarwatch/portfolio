@@ -1,7 +1,10 @@
 import {
   formatMoveTokenAddress,
   getUsdValueSum,
-  NetworkId, PortfolioAsset, PortfolioLiquidity, TokenPrice
+  NetworkId,
+  PortfolioAsset,
+  PortfolioLiquidity,
+  TokenPrice,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -11,7 +14,7 @@ import {
   stackedSavingsParentIds,
   suiIncentiveUserType,
   dataKey,
-  vaultsPrefix
+  vaultsPrefix,
 } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { parseTypeString } from '../../utils/aptos';
@@ -23,19 +26,23 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
   const [data, coinsBalances, stackedSavings] = await Promise.all([
-    cache.getItem<{vaults: Vault[]}>(dataKey, {
+    cache.getItem<{ vaults: Vault[] }>(dataKey, {
       prefix: vaultsPrefix,
       networkId: NetworkId.sui,
     }),
     client.getAllBalances({ owner }),
-    Promise.all(stackedSavingsParentIds.map((stackedSavingsParentId) => getDynamicFieldObject<UserInfo>(client, {
-      parentId: stackedSavingsParentId,
-      name: {
-        type: suiIncentiveUserType,
-        value: { address: owner, is_object: false },
-      },
-    })))
-  ])
+    Promise.all(
+      stackedSavingsParentIds.map((stackedSavingsParentId) =>
+        getDynamicFieldObject<UserInfo>(client, {
+          parentId: stackedSavingsParentId,
+          name: {
+            type: suiIncentiveUserType,
+            value: { address: owner, is_object: false },
+          },
+        })
+      )
+    ),
+  ]);
 
   if (!data || !data.vaults) {
     return [];
@@ -67,20 +74,24 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     balances.push({
       type: parsedType[0].type,
       amountRaw,
-    })
+    });
   }
 
   for (let i = 0; i < stackedSavings.length; i++) {
     const stackedSaving = stackedSavings[i];
     if (!stackedSaving.data?.content?.fields) continue;
-    const amountRaw = Number(stackedSaving.data.content.fields.value.fields.amount);
+    const amountRaw = Number(
+      stackedSaving.data.content.fields.value.fields.amount
+    );
     if (amountRaw === 0) continue;
 
     if (!stackedSaving.data?.content?.type.includes(magicCoin)) continue;
 
     const parsedTypeString = parseTypeString(stackedSaving.data?.content?.type);
     if (!parsedTypeString.keys) continue;
-    const { keys: parsedSubType } = parseTypeString(parsedTypeString.keys[1].type);
+    const { keys: parsedSubType } = parseTypeString(
+      parsedTypeString.keys[1].type
+    );
     if (!parsedSubType) continue;
     const { keys: parsedSubSubType } = parseTypeString(parsedSubType[0].type);
     if (!parsedSubSubType) continue;
@@ -91,17 +102,22 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     balances.push({
       type: parsedSubSubType[0].type,
       amountRaw,
-    })
+    });
   }
 
-  const tokenPrices: Map<string, TokenPrice> = await cache.getTokenPricesAsMap(coinsTypes, NetworkId.sui)
+  const tokenPrices: Map<string, TokenPrice> = await cache.getTokenPricesAsMap(
+    coinsTypes,
+    NetworkId.sui
+  );
 
   const liquidities: PortfolioLiquidity[] = [];
 
   for (let i = 0; i < balances.length; i++) {
     const coinBalance = balances[i];
 
-    const tokenPrice = tokenPrices.get(formatMoveTokenAddress(coinBalance.type));
+    const tokenPrice = tokenPrices.get(
+      formatMoveTokenAddress(coinBalance.type)
+    );
     if (!tokenPrice) continue;
 
     const vault = vaultsMap.get(formatMoveTokenAddress(coinBalance.type));
@@ -109,12 +125,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const assets: PortfolioAsset[] = [];
 
-    assets.push(...tokenPriceToAssetTokens(
-      coinBalance.type,
-      Number(coinBalance.amountRaw) / (10 ** tokenPrice.decimals) * vault.baseTokenPerIbToken,
-      NetworkId.sui,
-      tokenPrice
-    ));
+    assets.push(
+      ...tokenPriceToAssetTokens(
+        coinBalance.type,
+        (Number(coinBalance.amountRaw) / 10 ** tokenPrice.decimals) *
+          vault.baseTokenPerIbToken,
+        NetworkId.sui,
+        tokenPrice
+      )
+    );
 
     const assetsValue = getUsdValueSum(assets.map((a) => a.value));
     const value = assetsValue;
