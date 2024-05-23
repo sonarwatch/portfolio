@@ -442,6 +442,11 @@ import {
   jobs as flowxJobs,
   fetchers as flowxFetchers,
 } from './plugins/flowx';
+import {
+  platforms as elixirPlatforms,
+  jobs as elixirJobs,
+  fetchers as elixirFetchers,
+} from './plugins/elixir';
 
 export {
   walletTokensPlatform,
@@ -548,6 +553,7 @@ export const platforms: Platform[] = [
   ...sandglassPlatforms,
   ...kriyaPlatforms,
   ...haedalPlatforms,
+  ...elixirPlatforms,
 ];
 
 // JOBS //
@@ -636,6 +642,7 @@ export const jobs: Job[] = [
   ...kriyaJobs,
   ...haedalJobs,
   ...flowxJobs,
+  ...elixirJobs,
 ];
 
 // FETCHERS //
@@ -726,6 +733,7 @@ export const fetchers: Fetcher[] = [
   ...kriyaFetchers,
   ...haedalFetchers,
   ...flowxFetchers,
+  ...elixirFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
