@@ -3,6 +3,7 @@ import {
   getUsdValueSum,
   NetworkId,
   PortfolioAsset,
+  PortfolioElement,
   PortfolioLiquidity,
   TokenPrice,
 } from '@sonarwatch/portfolio-core';
@@ -55,7 +56,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
 
   const coinsTypes: string[] = [];
-  const balances: { type: string; amountRaw: number }[] = [];
+  const balances: { type: string; amountRaw: number; stacked?: boolean }[] = [];
 
   for (let i = 0; i < coinsBalances.length; i++) {
     const coinBalance = coinsBalances[i];
@@ -102,6 +103,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     balances.push({
       type: parsedSubSubType[0].type,
       amountRaw,
+      stacked: true,
     });
   }
 
@@ -110,7 +112,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     NetworkId.sui
   );
 
-  const liquidities: PortfolioLiquidity[] = [];
+  const depositedLiquidities: PortfolioLiquidity[] = [];
+  const stackedLiquidities: PortfolioLiquidity[] = [];
 
   for (let i = 0; i < balances.length; i++) {
     const coinBalance = balances[i];
@@ -134,28 +137,44 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const assetsValue = getUsdValueSum(assets.map((a) => a.value));
     const value = assetsValue;
 
-    liquidities.push({
+    const l: PortfolioLiquidity = {
       value,
       assets,
       assetsValue,
       rewardAssets: [],
       rewardAssetsValue: null,
       yields: [],
+    };
+
+    if (coinBalance.stacked) stackedLiquidities.push(l);
+    else depositedLiquidities.push(l);
+  }
+
+  const elements: PortfolioElement[] = [];
+
+  if (depositedLiquidities.length > 0) {
+    elements.push({
+      type: 'liquidity',
+      data: { liquidities: depositedLiquidities },
+      label: 'Deposit',
+      networkId: NetworkId.sui,
+      platformId,
+      value: getUsdValueSum(depositedLiquidities.map((liq) => liq.value)),
     });
   }
 
-  if (liquidities.length === 0) return [];
-
-  return [
-    {
+  if (stackedLiquidities.length > 0) {
+    elements.push({
       type: 'liquidity',
-      data: { liquidities },
+      data: { liquidities: stackedLiquidities },
       label: 'Staked',
       networkId: NetworkId.sui,
       platformId,
-      value: getUsdValueSum(liquidities.map((liq) => liq.value)),
-    },
-  ];
+      value: getUsdValueSum(stackedLiquidities.map((liq) => liq.value)),
+    });
+  }
+
+  return elements;
 };
 
 const fetcher: Fetcher = {
