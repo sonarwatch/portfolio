@@ -55,7 +55,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
 
   const coinsTypes: string[] = [];
-  const balances = [];
+  const balances: { type: string; amountRaw: number }[] = [];
 
   for (let i = 0; i < coinsBalances.length; i++) {
     const coinBalance = coinsBalances[i];
@@ -123,16 +123,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const vault = vaultsMap.get(formatMoveTokenAddress(coinBalance.type));
     if (!vault) continue;
 
-    const assets: PortfolioAsset[] = [];
-
-    assets.push(
-      ...tokenPriceToAssetTokens(
-        coinBalance.type,
-        (Number(coinBalance.amountRaw) / 10 ** tokenPrice.decimals) *
-          vault.baseTokenPerIbToken,
-        NetworkId.sui,
-        tokenPrice
-      )
+    const assets: PortfolioAsset[] = tokenPriceToAssetTokens(
+      coinBalance.type,
+      (Number(coinBalance.amountRaw) / 10 ** tokenPrice.decimals) *
+        vault.baseTokenPerIbToken,
+      NetworkId.sui,
+      tokenPrice
     );
 
     const assetsValue = getUsdValueSum(assets.map((a) => a.value));
