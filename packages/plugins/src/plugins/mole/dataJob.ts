@@ -6,13 +6,14 @@ import { dataUrl, platformId, dataKey, vaultsPrefix } from './constants';
 import { MoleData } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {
-  if (!process.env['MOLE_API_KEY']) throw Error('MOLE_API_KEY is not defined');
+  if (!process.env['PORTFOLIO_MOLE_API_KEY'])
+    throw Error('PORTFOLIO_MOLE_API_KEY is not defined');
 
   const res = await axios
     .get<MoleData>(dataUrl, {
       timeout: 30000,
       headers: {
-        key: process.env['MOLE_API_KEY'],
+        key: process.env['PORTFOLIO_MOLE_API_KEY'],
       },
     })
     .catch((err) => {
