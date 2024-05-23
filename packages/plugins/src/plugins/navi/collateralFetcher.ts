@@ -46,7 +46,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       reservesData.map((r) => r.value.fields.coin_type),
       NetworkId.sui
     ),
-    getAvailableRewards(client, owner),
+    getAvailableRewards(client, owner)
   ]);
 
   for (const rData of reservesData) {
@@ -62,7 +62,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     });
     const [borrowBalance, supplyBalance] = await Promise.all([
       borrowBalancePromise,
-      supplyBalancePromise,
+      supplyBalancePromise
     ]);
 
     const tokenPrice = tokenPrices.get(
@@ -135,26 +135,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       );
 
       if (tokenPrice) {
-        rewardAssets.push(
-          tokenPriceToAssetToken(
-            coinType,
-            new BigNumber(amount)
-              .dividedBy(10 ** tokenPrice.decimals)
-              .toNumber(),
-            NetworkId.sui,
-            tokenPrice
-          )
-        );
+        rewardAssets.push(tokenPriceToAssetToken(
+          coinType,
+          new BigNumber(amount).dividedBy(10 ** tokenPrice.decimals).toNumber(),
+          NetworkId.sui,
+          tokenPrice
+        ));
       }
-    });
+    })
   }
 
-  if (
-    suppliedAssets.length === 0 &&
-    borrowedAssets.length === 0 &&
-    rewardAssets.length === 0
-  )
-    return [];
+  if (suppliedAssets.length === 0 && borrowedAssets.length === 0 && rewardAssets.length === 0) return [];
 
   const { borrowedValue, suppliedValue, value, healthRatio, rewardValue } =
     getElementLendingValues(

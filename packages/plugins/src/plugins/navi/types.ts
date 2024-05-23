@@ -74,4 +74,4 @@ export type BalanceData = {
 export type Pool = {
   available: string;
   funds: string;
-};
+}
