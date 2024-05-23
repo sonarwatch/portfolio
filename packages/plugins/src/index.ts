@@ -443,6 +443,11 @@ import {
   fetchers as flowxFetchers,
 } from './plugins/flowx';
 import {
+  jobs as moleJobs,
+  fetchers as moleFetchers,
+  platforms as molePlatforms,
+} from './plugins/mole';
+import {
   platforms as elixirPlatforms,
   jobs as elixirJobs,
   fetchers as elixirFetchers,
@@ -553,6 +558,7 @@ export const platforms: Platform[] = [
   ...sandglassPlatforms,
   ...kriyaPlatforms,
   ...haedalPlatforms,
+  ...molePlatforms,
   ...elixirPlatforms,
 ];
 
@@ -642,6 +648,7 @@ export const jobs: Job[] = [
   ...kriyaJobs,
   ...haedalJobs,
   ...flowxJobs,
+  ...moleJobs,
   ...elixirJobs,
 ];
 
@@ -733,6 +740,7 @@ export const fetchers: Fetcher[] = [
   ...kriyaFetchers,
   ...haedalFetchers,
   ...flowxFetchers,
+  ...moleFetchers,
   ...elixirFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
