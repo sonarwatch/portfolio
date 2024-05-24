@@ -34,7 +34,7 @@ bcs.registerStructType("IncentivePoolInfoByPhase", {
   pools: "vector<IncentivePoolInfo>"
 });
 
-function getTransactionBlock(owner: string, arg3: number, arg4: number) {
+function getTransactionBlock(owner: string, optionType: number) {
   const tx = new TransactionBlock();
 
   tx.moveCall({
@@ -43,8 +43,8 @@ function getTransactionBlock(owner: string, arg3: number, arg4: number) {
       tx.object(suiClockAddress),
       tx.object(incentiveObjectId),
       tx.object(incentiveStorageObjectId),
-      tx.pure(arg3),
-      tx.pure(arg4),
+      tx.pure(0),
+      tx.pure(optionType),
       tx.pure(owner)
     ],
   });
@@ -77,8 +77,8 @@ export async function getAvailableRewards(client: SuiClient, owner: string): Pro
   const rewards: Map<string, number> = new Map();
 
   const [supplyRewardPoolsData, borrowRewardPoolsData] = await Promise.all([
-    getRewardPoolsData(client, getTransactionBlock(owner, 0, 1), owner),
-    getRewardPoolsData(client, getTransactionBlock(owner, 0, 3), owner),
+    getRewardPoolsData(client, getTransactionBlock(owner, 1), owner),
+    getRewardPoolsData(client, getTransactionBlock(owner, 3), owner),
   ]);
 
   const browseRewardPoolData = (e: { pools: Pool[]; }) => {
