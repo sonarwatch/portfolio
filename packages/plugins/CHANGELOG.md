@@ -2,6 +2,35 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.11.214](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.213...plugins-0.11.214) (2024-05-24)
+
+
+
+## [0.11.213](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.212...plugins-0.11.213) (2024-05-24)
+
+
+
+## [0.11.212](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.211...plugins-0.11.212) (2024-05-23)
+
+
+### Reverts
+
+* Revert "linting" ([cc27848](https://github.com/sonarwatch/portfolio/commit/cc27848b5a5e965d54457cd9dce7359a62c5e48d))
+
+
+
+## [0.11.211](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.210...plugins-0.11.211) (2024-05-23)
+
+
+
+## [0.11.210](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.209...plugins-0.11.210) (2024-05-23)
+
+
+
+## [0.11.209](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.208...plugins-0.11.209) (2024-05-23)
+
+
+
 ## [0.11.208](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.207...plugins-0.11.208) (2024-05-23)
 
 

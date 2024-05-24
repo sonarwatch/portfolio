@@ -1,13 +1,13 @@
 import { TransactionBlock } from '@mysten/sui.js/transactions';
 import {
   formatMoveTokenAddress,
-  getUsdValueSum,
+  getElementLendingValues,
   NetworkId,
   PortfolioAsset,
   PortfolioElement,
   PortfolioElementType,
-  PortfolioLiquidity,
   TokenPrice,
+  Yield,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -16,7 +16,7 @@ import { platformId, dataKey, vaultsPrefix, positionsKey } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { BorrowingInterest, Farm, MoleData, PositionSummary } from './types';
 import { serializeReturnValue } from './helpers';
-import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
+import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -48,8 +48,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const myPositions = positions.filter((position) => position.owner === owner);
 
   if (myPositions.length === 0) return [];
-
-  const liquidities: PortfolioLiquidity[] = [];
 
   await Promise.all(
     myPositions.map(async (position) => {
@@ -107,6 +105,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
       if (!dir.results || !dir.results[0].returnValues) return;
 
+      const borrowedAssets: PortfolioAsset[] = [];
+      const borrowedYields: Yield[][] = [];
+      const suppliedAssets: PortfolioAsset[] = [];
+      const suppliedYields: Yield[][] = [];
+      const rewardAssets: PortfolioAsset[] = [];
+
       const health = new BigNumber(
         serializeReturnValue(dir.results[0].returnValues[0])
       ).dividedBy(
@@ -123,56 +127,72 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             ? farm.symbol1Decimals
             : farm.symbol2Decimals)
       );
-      const equityValue = health.minus(debtValue);
+      // const equityValue = health.minus(debtValue);
       // const leverage = health.dividedBy(equityValue);
       // const debtRatio = debtValue.dividedBy(health);
 
-      const assets: PortfolioAsset[] = [];
+      if (borrowingInterest.isReverse) {
+        suppliedAssets.push(
+          tokenPriceToAssetToken(
+            farm.symbol1Address,
+            health.toNumber(),
+            NetworkId.sui,
+            tokenPrices.get(formatMoveTokenAddress(farm.symbol1Address))
+          )
+        );
+        borrowedAssets.push(
+          tokenPriceToAssetToken(
+            farm.symbol1Address,
+            debtValue.toNumber(),
+            NetworkId.sui,
+            tokenPrices.get(formatMoveTokenAddress(farm.symbol1Address))
+          )
+        );
+      } else {
+        suppliedAssets.push(
+          tokenPriceToAssetToken(
+            farm.symbol2Address,
+            health.toNumber(),
+            NetworkId.sui,
+            tokenPrices.get(formatMoveTokenAddress(farm.symbol2Address))
+          )
+        );
+        borrowedAssets.push(
+          tokenPriceToAssetToken(
+            farm.symbol2Address,
+            debtValue.toNumber(),
+            NetworkId.sui,
+            tokenPrices.get(formatMoveTokenAddress(farm.symbol2Address))
+          )
+        );
+      }
 
-      assets.push(
-        ...tokenPriceToAssetTokens(
-          farm.symbol1Address,
-          borrowingInterest.isReverse ? equityValue.toNumber() : 0,
-          NetworkId.sui,
-          tokenPrices.get(formatMoveTokenAddress(farm.symbol1Address))
-        )
-      );
+      const { borrowedValue, suppliedValue, value, rewardValue } =
+        getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
 
-      assets.push(
-        ...tokenPriceToAssetTokens(
-          farm.symbol2Address,
-          borrowingInterest.isReverse ? 0 : equityValue.toNumber(),
-          NetworkId.sui,
-          tokenPrices.get(formatMoveTokenAddress(farm.symbol2Address))
-        )
-      );
-
-      const assetsValue = getUsdValueSum(assets.map((a) => a.value));
-      const value = assetsValue;
-
-      liquidities.push({
+      elements.push({
+        type: PortfolioElementType.borrowlend,
+        networkId: NetworkId.sui,
+        platformId,
+        label: 'Farming',
+        name: `${farm.sourceName} #${positionId}`,
         value,
-        assets,
-        assetsValue,
-        rewardAssets: [],
-        rewardAssetsValue: null,
-        yields: [],
+        data: {
+          borrowedAssets,
+          borrowedValue,
+          borrowedYields,
+          suppliedAssets,
+          suppliedValue,
+          suppliedYields,
+          collateralRatio: null,
+          healthRatio: debtValue.dividedBy(health).toNumber(),
+          rewardAssets,
+          rewardValue,
+          value,
+        },
       });
     })
   );
-
-  if (liquidities.length === 0) return [];
-
-  elements.push({
-    networkId: NetworkId.sui,
-    platformId,
-    type: PortfolioElementType.liquidity,
-    label: 'Leverage',
-    value: getUsdValueSum(liquidities.map((l) => l.value)),
-    data: {
-      liquidities,
-    },
-  });
 
   return elements;
 };
