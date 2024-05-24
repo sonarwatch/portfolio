@@ -34,7 +34,7 @@ bcs.registerStructType("IncentivePoolInfoByPhase", {
   pools: "vector<IncentivePoolInfo>"
 });
 
-function getSupplyRewardsTransactionBlock(owner: string) {
+function getTransactionBlock(owner: string, arg3: number, arg4: number) {
   const tx = new TransactionBlock();
 
   tx.moveCall({
@@ -43,27 +43,8 @@ function getSupplyRewardsTransactionBlock(owner: string) {
       tx.object(suiClockAddress),
       tx.object(incentiveObjectId),
       tx.object(incentiveStorageObjectId),
-      tx.pure(0),
-      tx.pure(1),
-      tx.pure(owner)
-    ],
-  });
-
-  return tx;
-}
-
-function getBorrowRewardsTransactionBlock(owner: string) {
-
-  const tx = new TransactionBlock();
-
-  tx.moveCall({
-    target: incentiveFunction,
-    arguments: [
-      tx.object(suiClockAddress),
-      tx.object(incentiveObjectId),
-      tx.object(incentiveStorageObjectId),
-      tx.pure(1),
-      tx.pure(3),
+      tx.pure(arg3),
+      tx.pure(arg4),
       tx.pure(owner)
     ],
   });
@@ -72,30 +53,33 @@ function getBorrowRewardsTransactionBlock(owner: string) {
 }
 
 async function getRewardPoolsData(client: SuiClient, tx: TransactionBlock, owner: string): Promise<{phase: string, pools: Pool[]}[]> {
-  const rewardsPoolsInfos = await client.devInspectTransactionBlock({
-    transactionBlock: tx,
-    sender: owner
-  });
+  try {
+    const rewardsPoolsInfos = await client.devInspectTransactionBlock({
+      transactionBlock: tx,
+      sender: owner
+    })
 
-  if (rewardsPoolsInfos.results && rewardsPoolsInfos.results[0].returnValues) {
-    const o = rewardsPoolsInfos.results[0].returnValues;
+    if (rewardsPoolsInfos.results && rewardsPoolsInfos.results[0].returnValues) {
+      const o = rewardsPoolsInfos.results[0].returnValues;
 
-    return o.map(e => bcs.de('vector<IncentivePoolInfoByPhase>', Uint8Array.from(e[0])))
-      .flat()
-      .sort((e,n) => Number(n.phase) - Number(e.phase))
+      return o.map(e => bcs.de('vector<IncentivePoolInfoByPhase>', Uint8Array.from(e[0])))
+        .flat()
+        .sort((e,n) => Number(n.phase) - Number(e.phase))
+    }
+  } catch (err) {
+    console.log(err)
   }
 
   return [];
 }
 
 export async function getAvailableRewards(client: SuiClient, owner: string): Promise<Map<string, number>> {
+  const rewards: Map<string, number> = new Map();
 
   const [supplyRewardPoolsData, borrowRewardPoolsData] = await Promise.all([
-    getRewardPoolsData(client, getSupplyRewardsTransactionBlock(owner), owner),
-    getRewardPoolsData(client, getBorrowRewardsTransactionBlock(owner), owner),
+    getRewardPoolsData(client, getTransactionBlock(owner, 0, 1), owner),
+    getRewardPoolsData(client, getTransactionBlock(owner, 0, 3), owner),
   ]);
-
-  const rewards: Map<string, number> = new Map();
 
   const browseRewardPoolData = (e: { pools: Pool[]; }) => {
     e.pools.forEach((pool) => {
