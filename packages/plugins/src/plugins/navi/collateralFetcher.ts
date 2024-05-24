@@ -21,6 +21,7 @@ import { getClientSui } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { BalanceData, ReserveData } from './types';
 import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
+import { getAvailableRewards } from './getAvailableRewards';
 
 const amountFactor = new BigNumber(10 ** 36);
 
@@ -40,10 +41,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
   if (!reservesData) return [];
 
-  const tokenPrices = await cache.getTokenPricesAsMap(
-    reservesData.map((r) => r.value.fields.coin_type),
-    NetworkId.sui
-  );
+  const [tokenPrices, rewards] = await Promise.all([
+    cache.getTokenPricesAsMap(
+      reservesData.map((r) => r.value.fields.coin_type),
+      NetworkId.sui
+    ),
+    getAvailableRewards(client, owner)
+  ]);
 
   for (const rData of reservesData) {
     const borrowBalancePromise = getDynamicFieldObject<BalanceData>(client, {
@@ -58,7 +62,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     });
     const [borrowBalance, supplyBalance] = await Promise.all([
       borrowBalancePromise,
-      supplyBalancePromise,
+      supplyBalancePromise
     ]);
 
     const tokenPrice = tokenPrices.get(
@@ -124,7 +128,24 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
   }
 
-  if (suppliedAssets.length === 0 && borrowedAssets.length === 0) return [];
+  if (rewards.size > 0) {
+    rewards.forEach((amount, coinType) => {
+      const tokenPrice = tokenPrices.get(
+        formatTokenAddress(coinType, NetworkId.sui)
+      );
+
+      if (tokenPrice) {
+        rewardAssets.push(tokenPriceToAssetToken(
+          coinType,
+          new BigNumber(amount).dividedBy(10 ** tokenPrice.decimals).toNumber(),
+          NetworkId.sui,
+          tokenPrice
+        ));
+      }
+    })
+  }
+
+  if (suppliedAssets.length === 0 && borrowedAssets.length === 0 && rewardAssets.length === 0) return [];
 
   const { borrowedValue, suppliedValue, value, healthRatio, rewardValue } =
     getElementLendingValues(
