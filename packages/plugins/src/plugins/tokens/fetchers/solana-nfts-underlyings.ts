@@ -8,9 +8,11 @@ import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { walletTokensPlatform } from '../constants';
 import { Cache } from '../../../Cache';
 import { getRaydiumCLMMPositions } from '../../raydium/getRaydiumCLMMPositions';
-import { getWhirlpoolPositions } from '../../orca/getWhirlpoolPositions';
+import { getOrcaAppraiser } from '../../orca/getWhirlpoolPositions';
 import { isARaydiumPosition } from '../../raydium/helpers';
 import { isAnOrcaPosition } from '../../orca/helpers';
+import { isClmmPosition as isCropperPosition } from '../../cropper/helpers';
+
 import {
   getHeliumElementsFromNFTs,
   isAnHeliumNFTVote,
@@ -19,11 +21,15 @@ import getSolanaDasEndpoint from '../../../utils/clients/getSolanaDasEndpoint';
 import { getAssetsByOwnerDas } from '../../../utils/solana/das/getAssetsByOwnerDas';
 import { DisplayOptions } from '../../../utils/solana/das/types';
 import { heliusAssetToAssetCollectible } from '../../../utils/solana/das/heliusAssetToAssetCollectible';
-
-type Appraiser = (
-  cache: Cache,
-  nfts: PortfolioAssetCollectible[]
-) => Promise<PortfolioElement[]>;
+import { Appraiser } from '../types';
+import {
+  whirlpoolProgram,
+  platformId as orcaPlatformId,
+} from '../../orca/constants';
+import {
+  clmmPid,
+  platformId as cropperPlatformId,
+} from '../../cropper/constants';
 
 type Identifier = (nft: PortfolioAssetCollectible) => boolean;
 
@@ -35,7 +41,8 @@ type Identifier = (nft: PortfolioAssetCollectible) => boolean;
 
 const appraiserByIdentifier: Map<Identifier, Appraiser> = new Map([
   [isARaydiumPosition, getRaydiumCLMMPositions],
-  [isAnOrcaPosition, getWhirlpoolPositions],
+  [isAnOrcaPosition, getOrcaAppraiser(orcaPlatformId, whirlpoolProgram)],
+  [isCropperPosition, getOrcaAppraiser(cropperPlatformId, clmmPid)],
   [isAnHeliumNFTVote, getHeliumElementsFromNFTs],
 ]);
 

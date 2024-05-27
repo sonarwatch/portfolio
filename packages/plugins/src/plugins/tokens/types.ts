@@ -1,3 +1,9 @@
+import {
+  PortfolioAssetCollectible,
+  PortfolioElement,
+} from '@sonarwatch/portfolio-core';
+import { Cache } from '../../Cache';
+
 export type TokenData = {
   address: string;
   decimals: number;
@@ -39,3 +45,8 @@ export type Token = {
     index?: string;
   };
 };
+
+export type Appraiser = (
+  cache: Cache,
+  nfts: PortfolioAssetCollectible[]
+) => Promise<PortfolioElement[]>;

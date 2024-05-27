@@ -23,12 +23,6 @@ export const positionRewardInfoStruct = new BeetStruct<PositionRewardInfo>(
   (args) => args as PositionRewardInfo
 );
 
-export type PositionWhirlpool = Position & {
-  tickCurrentIndex?: number;
-  tokenMintA?: PublicKey;
-  tokenMintB?: PublicKey;
-};
-
 export type Position = {
   padding: Buffer;
   whirlpool: PublicKey;

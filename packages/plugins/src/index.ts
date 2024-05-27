@@ -452,6 +452,11 @@ import {
   fetchers as bonfidaFetchers,
   platforms as bonfidaPlatforms,
 } from './plugins/bonfida';
+import {
+  jobs as cropperJobs,
+  fetchers as cropperFetchers,
+  platforms as cropperPlatforms,
+} from './plugins/cropper';
 
 export {
   walletTokensPlatform,
@@ -560,6 +565,7 @@ export const platforms: Platform[] = [
   ...haedalPlatforms,
   ...molePlatforms,
   ...bonfidaPlatforms,
+  ...cropperPlatforms,
 ];
 
 // JOBS //
@@ -650,6 +656,7 @@ export const jobs: Job[] = [
   ...flowxJobs,
   ...moleJobs,
   ...bonfidaJobs,
+  ...cropperJobs,
 ];
 
 // FETCHERS //
@@ -742,6 +749,7 @@ export const fetchers: Fetcher[] = [
   ...flowxFetchers,
   ...moleFetchers,
   ...bonfidaFetchers,
+  ...cropperFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
