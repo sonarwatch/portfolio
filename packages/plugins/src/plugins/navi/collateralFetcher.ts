@@ -130,21 +130,23 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (rewards.size > 0) {
     rewards.forEach((amount, coinType) => {
-      const tokenPrice = tokenPrices.get(
-        formatTokenAddress(coinType, NetworkId.sui)
-      );
-
-      if (tokenPrice) {
-        rewardAssets.push(
-          tokenPriceToAssetToken(
-            coinType,
-            new BigNumber(amount)
-              .dividedBy(10 ** tokenPrice.decimals)
-              .toNumber(),
-            NetworkId.sui,
-            tokenPrice
-          )
+      if (amount > 0) {
+        const tokenPrice = tokenPrices.get(
+          formatTokenAddress(coinType, NetworkId.sui)
         );
+
+        if (tokenPrice) {
+          rewardAssets.push(
+            tokenPriceToAssetToken(
+              coinType,
+              new BigNumber(amount)
+                .dividedBy(10 ** tokenPrice.decimals)
+                .toNumber(),
+              NetworkId.sui,
+              tokenPrice
+            )
+          );
+        }
       }
     });
   }
