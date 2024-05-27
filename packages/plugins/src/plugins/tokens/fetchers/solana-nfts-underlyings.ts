@@ -21,7 +21,7 @@ import getSolanaDasEndpoint from '../../../utils/clients/getSolanaDasEndpoint';
 import { getAssetsByOwnerDas } from '../../../utils/solana/das/getAssetsByOwnerDas';
 import { DisplayOptions } from '../../../utils/solana/das/types';
 import { heliusAssetToAssetCollectible } from '../../../utils/solana/das/heliusAssetToAssetCollectible';
-import { Appraiser } from '../types';
+import { Appraiser as NftFetcher } from '../types';
 import {
   whirlpoolProgram,
   platformId as orcaPlatformId,
@@ -31,7 +31,7 @@ import {
   platformId as cropperPlatformId,
 } from '../../cropper/constants';
 
-type Identifier = (nft: PortfolioAssetCollectible) => boolean;
+type NftChecker = (nft: PortfolioAssetCollectible) => boolean;
 
 // Add here any pair of [Identifier,Appraiser] =
 // Identifier : a string to filter the asset concerned
@@ -39,11 +39,35 @@ type Identifier = (nft: PortfolioAssetCollectible) => boolean;
 //
 // Don't add anything else.
 
-const appraiserByIdentifier: Map<Identifier, Appraiser> = new Map([
-  [isARaydiumPosition, getRaydiumCLMMPositions],
-  [isAnOrcaPosition, getOrcaAppraiser(orcaPlatformId, whirlpoolProgram)],
-  [isCropperPosition, getOrcaAppraiser(cropperPlatformId, clmmPid)],
-  [isAnHeliumNFTVote, getHeliumElementsFromNFTs],
+const nftsUnderlyingsMap: Map<
+  string,
+  { checker: NftChecker; fetcher: NftFetcher }
+> = new Map([
+  [
+    'raydium',
+    { checker: isARaydiumPosition, fetcher: getRaydiumCLMMPositions },
+  ],
+  [
+    'orca',
+    {
+      checker: isAnOrcaPosition,
+      fetcher: getOrcaAppraiser(orcaPlatformId, whirlpoolProgram),
+    },
+  ],
+  [
+    'cropper',
+    {
+      checker: isCropperPosition,
+      fetcher: getOrcaAppraiser(cropperPlatformId, clmmPid),
+    },
+  ],
+  [
+    'helium',
+    {
+      checker: isAnHeliumNFTVote,
+      fetcher: getHeliumElementsFromNFTs,
+    },
+  ],
 ]);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
@@ -58,28 +82,26 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   };
   const assets = await getAssetsByOwnerDas(dasEndpoint, owner, displayOptions);
 
-  const nftsByIndentifier: Map<Identifier, PortfolioAssetCollectible[]> =
-    new Map();
-  for (let n = 0; n < assets.length; n++) {
+  const nftsByIndentifier: Map<string, PortfolioAssetCollectible[]> = new Map();
+  for (let n = 0; n < assets.length; n += 1) {
     const nft = heliusAssetToAssetCollectible(assets[n]);
     if (!nft) continue;
     if (nft.attributes.tags?.includes('compressed')) continue;
 
-    for (const identifier of appraiserByIdentifier.keys()) {
-      if (identifier(nft)) {
-        if (!nftsByIndentifier.get(identifier)) {
-          nftsByIndentifier.set(identifier, [nft]);
-        } else {
-          nftsByIndentifier.get(identifier)?.push(nft);
-        }
+    for (const [key, { checker }] of nftsUnderlyingsMap.entries()) {
+      if (!checker(nft)) continue;
+      if (!nftsByIndentifier.get(key)) {
+        nftsByIndentifier.set(key, []);
       }
+      nftsByIndentifier.get(key)?.push(nft);
+      break;
     }
   }
 
   const appraisersResults: Promise<PortfolioElement[]>[] = [];
-  for (const [identifier, appraiser] of appraiserByIdentifier) {
-    const nfts = nftsByIndentifier.get(identifier);
-    if (nfts) appraisersResults.push(appraiser(cache, nfts));
+  for (const [key, { fetcher }] of nftsUnderlyingsMap) {
+    const nfts = nftsByIndentifier.get(key);
+    if (nfts) appraisersResults.push(fetcher(cache, nfts));
   }
 
   const result = await Promise.allSettled(appraisersResults);
