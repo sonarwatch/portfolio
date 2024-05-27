@@ -379,5 +379,5 @@ export type FetchersResult = {
   fetcherReports: FetcherReport[];
   value: UsdValue;
   elements: PortfolioElement[];
-  tokenInfos?: Partial<Record<NetworkIdType, Record<string, TokenInfo>>>;
+  tokenInfo?: Partial<Record<NetworkIdType, Record<string, TokenInfo>>>;
 };
