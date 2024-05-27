@@ -447,6 +447,11 @@ import {
   fetchers as moleFetchers,
   platforms as molePlatforms,
 } from './plugins/mole';
+import {
+  jobs as bonfidaJobs,
+  fetchers as bonfidaFetchers,
+  platforms as bonfidaPlatforms,
+} from './plugins/bonfida';
 
 export {
   walletTokensPlatform,
@@ -554,6 +559,7 @@ export const platforms: Platform[] = [
   ...kriyaPlatforms,
   ...haedalPlatforms,
   ...molePlatforms,
+  ...bonfidaPlatforms,
 ];
 
 // JOBS //
@@ -643,6 +649,7 @@ export const jobs: Job[] = [
   ...haedalJobs,
   ...flowxJobs,
   ...moleJobs,
+  ...bonfidaJobs,
 ];
 
 // FETCHERS //
@@ -734,6 +741,7 @@ export const fetchers: Fetcher[] = [
   ...haedalFetchers,
   ...flowxFetchers,
   ...moleFetchers,
+  ...bonfidaFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
