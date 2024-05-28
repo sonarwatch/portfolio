@@ -457,6 +457,11 @@ import {
   fetchers as cropperFetchers,
   platforms as cropperPlatforms,
 } from './plugins/cropper';
+import {
+  jobs as hedgehogJobs,
+  fetchers as hedgehogFetchers,
+  platforms as hedgehogPlatforms,
+} from './plugins/hedgehog';
 
 export {
   walletTokensPlatform,
@@ -566,6 +571,7 @@ export const platforms: Platform[] = [
   ...molePlatforms,
   ...bonfidaPlatforms,
   ...cropperPlatforms,
+  ...hedgehogPlatforms,
 ];
 
 // JOBS //
@@ -657,6 +663,7 @@ export const jobs: Job[] = [
   ...moleJobs,
   ...bonfidaJobs,
   ...cropperJobs,
+  ...hedgehogJobs,
 ];
 
 // FETCHERS //
@@ -750,6 +757,7 @@ export const fetchers: Fetcher[] = [
   ...moleFetchers,
   ...bonfidaFetchers,
   ...cropperFetchers,
+  ...hedgehogFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
