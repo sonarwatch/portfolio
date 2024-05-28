@@ -13,7 +13,6 @@ import {
   tokenAccountStruct,
 } from '../../utils/solana';
 import { TokenSwap, swapStruct, tokenSwapStruct } from './structs';
-import { getLpTokenSourceRaw } from '../../utils/misc/getLpTokenSourceRaw';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -86,54 +85,48 @@ const executor: JobExecutor = async (cache: Cache) => {
     if (tokenAccountB.amount.isZero()) continue;
 
     const tokenPrice = tokenPrices.get(acc.tokenPool.toString());
+    if (!tokenPrice) continue;
 
-    const sourceA = getLpTokenSourceRaw({
-      priceUnderlyings: false,
+    const totalAmount = tokenAccountA.amount.plus(tokenAccountB.amount);
+    const priceA = totalAmount
+      .plus(tokenAccountA.amount)
+      .div(totalAmount)
+      .minus(1)
+      .times(tokenPrice?.price)
+      .toNumber();
+    const priceB = totalAmount
+      .plus(tokenAccountB.amount)
+      .div(totalAmount)
+      .minus(1)
+      .times(tokenPrice?.price)
+      .toNumber();
+
+    const sourceA: TokenPriceSource = {
+      address: mintA.pubkey.toString(),
+      decimals: mintA.decimals,
+      id: platformId,
+      networkId: NetworkId.solana,
+      platformId,
+      timestamp: Date.now(),
       elementName: 'Hedgehog AMM',
       liquidityName: 'Bet - YES',
+      weight: 1,
+      price: priceA,
+    };
+    const sourceB: TokenPriceSource = {
+      address: mintB.pubkey.toString(),
+      decimals: mintB.decimals,
+      id: platformId,
       networkId: NetworkId.solana,
       platformId,
-      sourceId: platformId,
-      lpDetails: {
-        address: mintA.pubkey.toString(),
-        decimals: mintA.decimals,
-        supplyRaw: mintA.supply,
-      },
-      poolUnderlyingsRaw: [
-        {
-          address: tokenAccountA.mint.toString(),
-          decimals: poolMint.decimals,
-          reserveAmountRaw: tokenAccountA.amount,
-          weight: 1,
-          tokenPrice,
-        },
-      ],
-    });
-    const sourceB = getLpTokenSourceRaw({
-      priceUnderlyings: false,
+      timestamp: Date.now(),
       elementName: 'Hedgehog AMM',
-      liquidityName: 'Bet - NO',
-      networkId: NetworkId.solana,
-      platformId,
-      sourceId: platformId,
-      lpDetails: {
-        address: mintB.pubkey.toString(),
-        decimals: mintB.decimals,
-        supplyRaw: mintB.supply,
-      },
-      poolUnderlyingsRaw: [
-        {
-          address: tokenAccountB.mint.toString(),
-          decimals: poolMint.decimals,
-          reserveAmountRaw: tokenAccountB.amount,
-          weight: 1,
-          tokenPrice,
-        },
-      ],
-    });
-    sources.push(...sourceA, ...sourceB);
+      liquidityName: 'Bet - YES',
+      weight: 1,
+      price: priceB,
+    };
+    sources.push(sourceA, sourceB);
   }
-  console.log('sources:', sources);
   await cache.setTokenPriceSources(sources);
 };
 const job: Job = {
