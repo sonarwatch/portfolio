@@ -22,17 +22,17 @@ import { Whirlpool, positionStruct } from './structs/whirlpool';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import runInBatch from '../../utils/misc/runInBatch';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
-import { Appraiser } from '../tokens/types';
+import { NftFetcher } from '../tokens/types';
 
-export const getWhirlpoolPositions = getOrcaAppraiser(
+export const getWhirlpoolPositions = getOrcaNftFetcher(
   orcaPlatformId,
   whirlpoolProgram
 );
 
-export function getOrcaAppraiser(
+export function getOrcaNftFetcher(
   platformId: string,
   programId: PublicKey
-): Appraiser {
+): NftFetcher {
   return async (
     cache: Cache,
     nfts: PortfolioAssetCollectible[]

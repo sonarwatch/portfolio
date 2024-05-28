@@ -8,7 +8,7 @@ import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { walletTokensPlatform } from '../constants';
 import { Cache } from '../../../Cache';
 import { getRaydiumCLMMPositions } from '../../raydium/getRaydiumCLMMPositions';
-import { getOrcaAppraiser } from '../../orca/getWhirlpoolPositions';
+import { getOrcaNftFetcher } from '../../orca/getWhirlpoolPositions';
 import { isARaydiumPosition } from '../../raydium/helpers';
 import { isAnOrcaPosition } from '../../orca/helpers';
 import { isClmmPosition as isCropperPosition } from '../../cropper/helpers';
@@ -21,7 +21,7 @@ import getSolanaDasEndpoint from '../../../utils/clients/getSolanaDasEndpoint';
 import { getAssetsByOwnerDas } from '../../../utils/solana/das/getAssetsByOwnerDas';
 import { DisplayOptions } from '../../../utils/solana/das/types';
 import { heliusAssetToAssetCollectible } from '../../../utils/solana/das/heliusAssetToAssetCollectible';
-import { Appraiser as NftFetcher } from '../types';
+import { NftFetcher } from '../types';
 import {
   whirlpoolProgram,
   platformId as orcaPlatformId,
@@ -32,12 +32,6 @@ import {
 } from '../../cropper/constants';
 
 type NftChecker = (nft: PortfolioAssetCollectible) => boolean;
-
-// Add here any pair of [Identifier,Appraiser] =
-// Identifier : a string to filter the asset concerned
-// Appraiser : the function to apply to those asset to get their underlying value
-//
-// Don't add anything else.
 
 const nftsUnderlyingsMap: Map<
   string,
@@ -51,14 +45,14 @@ const nftsUnderlyingsMap: Map<
     'orca',
     {
       checker: isAnOrcaPosition,
-      fetcher: getOrcaAppraiser(orcaPlatformId, whirlpoolProgram),
+      fetcher: getOrcaNftFetcher(orcaPlatformId, whirlpoolProgram),
     },
   ],
   [
     'cropper',
     {
       checker: isCropperPosition,
-      fetcher: getOrcaAppraiser(cropperPlatformId, clmmPid),
+      fetcher: getOrcaNftFetcher(cropperPlatformId, clmmPid),
     },
   ],
   [
@@ -98,13 +92,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
   }
 
-  const appraisersResults: Promise<PortfolioElement[]>[] = [];
+  const results: Promise<PortfolioElement[]>[] = [];
   for (const [key, { fetcher }] of nftsUnderlyingsMap) {
     const nfts = nftsByIndentifier.get(key);
-    if (nfts) appraisersResults.push(fetcher(cache, nfts));
+    if (nfts) results.push(fetcher(cache, nfts));
   }
-
-  const result = await Promise.allSettled(appraisersResults);
+  const result = await Promise.allSettled(results);
 
   const elements = result
     .map((res) => (res.status === 'rejected' ? [] : res.value))
