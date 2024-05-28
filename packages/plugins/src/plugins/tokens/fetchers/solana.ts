@@ -24,6 +24,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const dasEndpoint = getSolanaDasEndpoint();
   const items = await getAssetsByOwnerDas(dasEndpoint, owner, {
     showNativeBalance: false,
+    showGrandTotal: false,
+    showInscription: false,
   });
 
   const fungibleAddresses = items.reduce((addresses: string[], curr) => {
