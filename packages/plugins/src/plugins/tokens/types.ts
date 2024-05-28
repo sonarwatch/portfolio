@@ -46,7 +46,7 @@ export type Token = {
   };
 };
 
-export type Appraiser = (
+export type NftFetcher = (
   cache: Cache,
   nfts: PortfolioAssetCollectible[]
 ) => Promise<PortfolioElement[]>;
