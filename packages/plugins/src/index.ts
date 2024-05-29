@@ -448,6 +448,26 @@ import {
   platforms as molePlatforms,
 } from './plugins/mole';
 import {
+  jobs as bonfidaJobs,
+  fetchers as bonfidaFetchers,
+  platforms as bonfidaPlatforms,
+} from './plugins/bonfida';
+import {
+  jobs as cropperJobs,
+  fetchers as cropperFetchers,
+  platforms as cropperPlatforms,
+} from './plugins/cropper';
+import {
+  jobs as hedgehogJobs,
+  fetchers as hedgehogFetchers,
+  platforms as hedgehogPlatforms,
+} from './plugins/hedgehog';
+import {
+  jobs as whalesmarketJobs,
+  fetchers as whalesmarketFetchers,
+  platforms as whalesmarketPlatforms,
+} from './plugins/whalesmarket';
+import {
   platforms as elixirPlatforms,
   jobs as elixirJobs,
   fetchers as elixirFetchers,
@@ -559,6 +579,10 @@ export const platforms: Platform[] = [
   ...kriyaPlatforms,
   ...haedalPlatforms,
   ...molePlatforms,
+  ...bonfidaPlatforms,
+  ...cropperPlatforms,
+  ...hedgehogPlatforms,
+  ...whalesmarketPlatforms,
   ...elixirPlatforms,
 ];
 
@@ -649,6 +673,10 @@ export const jobs: Job[] = [
   ...haedalJobs,
   ...flowxJobs,
   ...moleJobs,
+  ...bonfidaJobs,
+  ...cropperJobs,
+  ...hedgehogJobs,
+  ...whalesmarketJobs,
   ...elixirJobs,
 ];
 
@@ -741,6 +769,10 @@ export const fetchers: Fetcher[] = [
   ...haedalFetchers,
   ...flowxFetchers,
   ...moleFetchers,
+  ...bonfidaFetchers,
+  ...cropperFetchers,
+  ...hedgehogFetchers,
+  ...whalesmarketFetchers,
   ...elixirFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);

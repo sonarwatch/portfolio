@@ -24,6 +24,7 @@ export const merkleApi = 'https://worker.jup.ag/jup-claim-proof';
 export type AirdropInfo = {
   mint: string;
   decimals: number;
+  claimStarts?: number;
   claimUntilTs: number; // in milliseconds
   distributorProgram: string;
 };
@@ -50,6 +51,13 @@ export const airdropsInfo: AirdropInfo[] = [
     mint: 'SHARKSYJjqaNyxVfrpnBN9pjgkhwDhatnMyicWPnr1s',
     decimals: 6,
     claimUntilTs: 1714435200000,
+    distributorProgram: 'DiSLRwcSFvtwvMWSs7ubBMvYRaYNYupa76ZSuYLe6D7j',
+  },
+  {
+    mint: 'UPTx1d24aBWuRgwxVnFmX4gNraj3QGFzL3QqBgxtWQG',
+    decimals: 9,
+    claimUntilTs: 1719878400000,
+    claimStarts: 1717077600000,
     distributorProgram: 'DiSLRwcSFvtwvMWSs7ubBMvYRaYNYupa76ZSuYLe6D7j',
   },
 ];

@@ -93,7 +93,7 @@ export function getLpUnderlyingTokenSource(
   if (totalWeight < 0.99)
     throw new Error(`Weights are smaller than 1: ${totalWeight}`);
 
-  let knownUnderlaying: KnownPoolUnderlying | undefined;
+  let knownUnderlying: KnownPoolUnderlying | undefined;
   const fAddresses = poolUnderlyings.map((u) =>
     formatTokenAddress(u.address, networkId)
   );
@@ -105,20 +105,20 @@ export function getLpUnderlyingTokenSource(
     if (!acceptedPairs.includes(fAddresses[i])) continue;
     const reserveValue = u.tokenPrice.price * u.reserveAmount;
     if (
-      knownUnderlaying &&
+      knownUnderlying &&
       knownReserveValue &&
       knownReserveValue > reserveValue
     )
       continue;
 
-    knownUnderlaying = u as KnownPoolUnderlying;
+    knownUnderlying = u as KnownPoolUnderlying;
     knownReserveValue = reserveValue;
   }
-  if (!knownUnderlaying || !knownReserveValue) return [];
+  if (!knownUnderlying || !knownReserveValue) return [];
   if (knownReserveValue < minReserveValue) return [];
 
   const knownUnderlayingAddress = formatTokenAddress(
-    knownUnderlaying.address,
+    knownUnderlying.address,
     networkId
   );
   const sources: TokenPriceSource[] = [];
@@ -133,7 +133,7 @@ export function getLpUnderlyingTokenSource(
       continue;
 
     const price =
-      ((u.weight / knownUnderlaying.weight) * knownReserveValue) /
+      ((u.weight / knownUnderlying.weight) * knownReserveValue) /
       u.reserveAmount;
 
     const source: TokenPriceSource = {

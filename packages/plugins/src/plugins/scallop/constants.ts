@@ -30,3 +30,8 @@ export const baseIndexRate = 1_000_000_000;
 export const scaAddress =
   '0x7016aae72cfc67f2fadf55769c0a7dd54291a583b63051a5ed71081cce836ac6::sca::SCA';
 export const scaDecimals = 9;
+
+export const tableId =
+  '0xbfbbbdf1fe9b70cdd1ebd1444ca273000177f81a405935f6007b7727d2ff90c2';
+export const airdropUrl =
+  'https://airdrop.apis.scallop.io/cny-campaign/claim-signature/';
