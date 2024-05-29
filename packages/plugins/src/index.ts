@@ -462,6 +462,11 @@ import {
   fetchers as hedgehogFetchers,
   platforms as hedgehogPlatforms,
 } from './plugins/hedgehog';
+import {
+  jobs as whalesmarketJobs,
+  fetchers as whalesmarketFetchers,
+  platforms as whalesmarketPlatforms,
+} from './plugins/whalesmarket';
 
 export {
   walletTokensPlatform,
@@ -572,6 +577,7 @@ export const platforms: Platform[] = [
   ...bonfidaPlatforms,
   ...cropperPlatforms,
   ...hedgehogPlatforms,
+  ...whalesmarketPlatforms,
 ];
 
 // JOBS //
@@ -664,6 +670,7 @@ export const jobs: Job[] = [
   ...bonfidaJobs,
   ...cropperJobs,
   ...hedgehogJobs,
+  ...whalesmarketJobs,
 ];
 
 // FETCHERS //
@@ -758,6 +765,7 @@ export const fetchers: Fetcher[] = [
   ...bonfidaFetchers,
   ...cropperFetchers,
   ...hedgehogFetchers,
+  ...whalesmarketFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
