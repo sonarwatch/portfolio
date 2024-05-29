@@ -88,9 +88,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const { tokenAmountA, tokenAmountB } = getTokenAmountsFromLiquidity(
       new BigNumber(clmmPosition.liquidity),
-      bitsToNumber(pool.tick_current_index),
-      bitsToNumber(clmmPosition.tick_lower_index),
-      bitsToNumber(clmmPosition.tick_upper_index),
+      bitsToNumber(pool.tick_current_index.fields.bits),
+      bitsToNumber(clmmPosition.tick_lower_index.fields.bits),
+      bitsToNumber(clmmPosition.tick_upper_index.fields.bits),
       false
     );
 

@@ -1,4 +1,4 @@
-import { Bits, Pool, PoolFields, Types } from './types';
+import { Pool, PoolFields, Types } from './types';
 import { asIntN } from '../cetus/helpers';
 import { ObjectResponse } from '../../utils/sui/types';
 
@@ -34,6 +34,6 @@ export function formatForNative(coin: string): string {
     : coin;
 }
 
-export function bitsToNumber(bits: Bits) {
-  return asIntN(BigInt(bits.fields.bits));
+export function bitsToNumber(bits: number) {
+  return asIntN(BigInt(bits));
 }
