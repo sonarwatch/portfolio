@@ -34,3 +34,12 @@ export type PositionField = {
   name: string;
   value: string;
 };
+
+export type VaultTvl = {
+  USDC: {
+    amount_wei: number;
+    price_usd: number;
+  };
+  pool_apy: number;
+  product_id: string;
+};

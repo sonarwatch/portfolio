@@ -1,4 +1,5 @@
 import {
+  apyToApr,
   formatMoveTokenAddress,
   getUsdValueSum,
   NetworkId,
@@ -6,26 +7,43 @@ import {
   PortfolioElement,
   PortfolioLiquidity,
   TokenPrice,
+  Yield,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, vaults, vaultsKey, vaultsPrefix } from './constants';
-import { PositionField, Vault } from './types';
+import {
+  platformId,
+  vaults,
+  vaultsKey,
+  vaultsPrefix,
+  vaultsTvlKey,
+} from './constants';
+import { PositionField, Vault, VaultTvl } from './types';
 import { getClientSui } from '../../utils/clients';
 import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
 import { ObjectResponse } from '../../utils/sui/types';
 import { parseTypeString } from '../../utils/aptos';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import {
+  formatAndCleanBigInt,
+  convertDecimalStringToScaledBigInt,
+} from './helpers';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
-  const vaultObjects = await cache.getItem<ObjectResponse<Vault>[]>(vaultsKey, {
-    prefix: vaultsPrefix,
-    networkId: NetworkId.sui,
-  });
+  const [vaultObjects, vaultTvls] = await Promise.all([
+    cache.getItem<ObjectResponse<Vault>[]>(vaultsKey, {
+      prefix: vaultsPrefix,
+      networkId: NetworkId.sui,
+    }),
+    cache.getItem<VaultTvl[]>(vaultsTvlKey, {
+      prefix: vaultsPrefix,
+      networkId: NetworkId.sui,
+    }),
+  ]);
 
-  if (!vaultObjects) return [];
+  if (!vaultObjects || !vaultTvls) return [];
 
   const activeShares = await Promise.all(
     vaultObjects.map(async (v) => {
@@ -63,6 +81,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
       return {
         vault: v.data?.content?.fields.id.id,
+        total_shares: v.data?.content?.fields.total_shares,
         shares: userSharesFields.data?.content?.fields.value,
         pending: userPendingWithdrawalsFields.data?.content?.fields.value,
         coinType: coinType[0].type,
@@ -95,17 +114,41 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     if (!tokenPrice) return;
 
-    if (a.shares)
-      assets.push(
-        tokenPriceToAssetToken(
-          formatMoveTokenAddress(a.coinType),
-          Number(a.shares) / 10 ** tokenPrice.decimals,
-          NetworkId.sui,
-          tokenPrice
-        )
-      );
+    const yields: Yield[] = [];
 
-    if (a.pending)
+    if (a.shares) {
+      let tvl: VaultTvl | undefined;
+      vaultTvls.forEach((t) => {
+        if (t.product_id === a.vault) {
+          tvl = t;
+        }
+      });
+
+      if (tvl) {
+        const userActiveAmounts = formatAndCleanBigInt(
+          (convertDecimalStringToScaledBigInt(a.shares, 6) *
+            BigInt(tvl.USDC.amount_wei)) /
+            BigInt(a.total_shares),
+          18
+        );
+
+        assets.push(
+          tokenPriceToAssetToken(
+            formatMoveTokenAddress(a.coinType),
+            Number(userActiveAmounts) / 10 ** tokenPrice.decimals,
+            NetworkId.sui,
+            tokenPrice
+          )
+        );
+
+        yields.push({
+          apr: apyToApr(Number(tvl.pool_apy)),
+          apy: Number(tvl.pool_apy),
+        });
+      }
+    }
+
+    if (a.pending) {
       assets.push(
         tokenPriceToAssetToken(
           formatMoveTokenAddress(a.coinType),
@@ -118,6 +161,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           }
         )
       );
+      yields.push({
+        apr: 0,
+        apy: 0,
+      });
+    }
 
     const assetsValue = getUsdValueSum(assets.map((as) => as.value));
     const value = assetsValue;
@@ -134,7 +182,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         assetsValue,
         rewardAssets: [],
         rewardAssetsValue: null,
-        yields: [],
+        yields,
         name,
       },
     ];

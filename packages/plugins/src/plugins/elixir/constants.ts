@@ -10,6 +10,7 @@ export const platform: Platform = {
   twitter: 'https://x.com/elixir',
 };
 
+// extracted from Elixir code
 export const vaults = [
   {
     address:
@@ -95,3 +96,4 @@ export const vaults = [
 
 export const vaultsPrefix = platformId;
 export const vaultsKey = 'vaults';
+export const vaultsTvlKey = 'vaultstvl';
