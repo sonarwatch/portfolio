@@ -3,8 +3,9 @@ export const solanaNativeAddress = '11111111111111111111111111111111';
 export const aptosNativeAddress = '0x1::aptos_coin::AptosCoin';
 export const suiNativeAddress =
   '0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI';
-export const suiClockAddress =
-  '0x06';
+export const suiClockAddress = '0x06';
+export const usdcOnSuiAddress =
+  '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN';
 export const solanaNativeDecimals = 9;
 export const suiNativeDecimals = 9;
 export const seiNativeAddress = 'usei';

@@ -467,6 +467,11 @@ import {
   fetchers as whalesmarketFetchers,
   platforms as whalesmarketPlatforms,
 } from './plugins/whalesmarket';
+import {
+  jobs as bluefinJobs,
+  fetchers as bluefinFetchers,
+  platforms as bluefinPlatforms,
+} from './plugins/bluefin';
 
 export {
   walletTokensPlatform,
@@ -578,6 +583,7 @@ export const platforms: Platform[] = [
   ...cropperPlatforms,
   ...hedgehogPlatforms,
   ...whalesmarketPlatforms,
+  ...bluefinPlatforms,
 ];
 
 // JOBS //
@@ -671,6 +677,7 @@ export const jobs: Job[] = [
   ...cropperJobs,
   ...hedgehogJobs,
   ...whalesmarketJobs,
+  ...bluefinJobs,
 ];
 
 // FETCHERS //
@@ -766,6 +773,7 @@ export const fetchers: Fetcher[] = [
   ...cropperFetchers,
   ...hedgehogFetchers,
   ...whalesmarketFetchers,
+  ...bluefinFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
