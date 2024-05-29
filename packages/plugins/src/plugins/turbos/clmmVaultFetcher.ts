@@ -218,6 +218,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     totalLiquidityValue += value;
   }
 
+  if (assets.length === 0) return [];
+
   return [
     {
       type: PortfolioElementType.liquidity,
