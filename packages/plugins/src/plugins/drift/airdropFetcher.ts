@@ -11,7 +11,10 @@ import { claimStart, fetchAirdropInfo } from './helpersAirdrop';
 import { deriveClaimStatus } from '../jupiter/helpers';
 import { getClientSolana } from '../../utils/clients';
 
+const claimEnds = 1723831200000;
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
+  if (Date.now() > claimEnds) return [];
+
   const { amount, merkle } = await fetchAirdropInfo(owner);
   if (amount === 0) return [];
 

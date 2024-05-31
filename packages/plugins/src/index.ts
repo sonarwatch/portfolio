@@ -468,6 +468,11 @@ import {
   platforms as whalesmarketPlatforms,
 } from './plugins/whalesmarket';
 import {
+  jobs as metadaoJobs,
+  fetchers as metadaoFetchers,
+  platforms as metadaoPlatforms,
+} from './plugins/metadao';
+import {
   jobs as bluefinJobs,
   fetchers as bluefinFetchers,
   platforms as bluefinPlatforms,
@@ -583,6 +588,7 @@ export const platforms: Platform[] = [
   ...cropperPlatforms,
   ...hedgehogPlatforms,
   ...whalesmarketPlatforms,
+  ...metadaoPlatforms,
   ...bluefinPlatforms,
 ];
 
@@ -677,6 +683,7 @@ export const jobs: Job[] = [
   ...cropperJobs,
   ...hedgehogJobs,
   ...whalesmarketJobs,
+  ...metadaoJobs,
   ...bluefinJobs,
 ];
 
@@ -773,6 +780,7 @@ export const fetchers: Fetcher[] = [
   ...cropperFetchers,
   ...hedgehogFetchers,
   ...whalesmarketFetchers,
+  ...metadaoFetchers,
   ...bluefinFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);

@@ -40,6 +40,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
   );
 
+  if (vaultNftPositionObjects.length === 0) return [];
+
   const vaultsStrat: Set<string> = new Set();
   const vaultsInfoByStrat: Map<string, string[]> = new Map();
   vaultNftPositionObjects.forEach((pos) => {
@@ -88,6 +90,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     prefix: clmmPoolsPrefix,
     networkId: NetworkId.sui,
   });
+  if (pools.length === 0) return [];
+
   const poolsById: Map<string, Pool> = new Map();
   pools.forEach((pool) => {
     if (pool) {
@@ -110,6 +114,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   }
 
   const vaultsInfoObj = (await Promise.all(promises)).flat();
+  if (vaultsInfoObj.length === 0) return [];
 
   const vaultInfoById: Map<string, VaultInfo> = new Map();
   const coins: Set<string> = new Set();
@@ -217,6 +222,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     });
     totalLiquidityValue += value;
   }
+
+  if (assets.length === 0) return [];
 
   return [
     {
