@@ -139,12 +139,17 @@ const executor: JobExecutor = async (cache: Cache) => {
     const usdReserveAccount = tokenAccountById.get(
       quoteVault.underlyingTokenAccount.toString()
     );
-    const [usdTokenPrice, baseUnderlyingTokenPrice, baseUnderlyingTokenDetail] =
-      [
-        underlyingTokenPriceById.get(quoteVault.underlyingTokenMint.toString()),
-        underlyingTokenPriceById.get(baseVault.underlyingTokenMint.toString()),
-        tokensDetailsById.get(baseVault.underlyingTokenMint.toString()),
-      ];
+    const [
+      usdTokenPrice,
+      baseUnderlyingTokenPrice,
+      usdUnderlyingTokenDetail,
+      baseUnderlyingTokenDetail,
+    ] = [
+      underlyingTokenPriceById.get(quoteVault.underlyingTokenMint.toString()),
+      underlyingTokenPriceById.get(baseVault.underlyingTokenMint.toString()),
+      tokensDetailsById.get(quoteVault.underlyingTokenMint.toString()),
+      tokensDetailsById.get(baseVault.underlyingTokenMint.toString()),
+    ];
 
     // Price the pUSD and fUSD of this proposal
     if (
@@ -176,6 +181,8 @@ const executor: JobExecutor = async (cache: Cache) => {
         )
         .dividedBy(2);
 
+      const symbol = usdUnderlyingTokenDetail?.symbol;
+
       const fUSDSource: TokenPriceSource = {
         address: fUSDMint,
         decimals: fUSDMintAccount.decimals,
@@ -194,7 +201,7 @@ const executor: JobExecutor = async (cache: Cache) => {
             networkId: NetworkId.solana,
           },
         ],
-        liquidityName: `fUSD`,
+        liquidityName: symbol ? `f${symbol}` : 'fUSD',
         elementName,
       };
 
@@ -216,7 +223,7 @@ const executor: JobExecutor = async (cache: Cache) => {
             networkId: NetworkId.solana,
           },
         ],
-        liquidityName: `pUSD`,
+        liquidityName: symbol ? `p${symbol}` : 'pUSD',
         elementName,
       };
       // If the Proposal has passed, fUSD will not be redeemable (price = 0)
