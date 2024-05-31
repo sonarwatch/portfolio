@@ -1,19 +1,21 @@
 import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
-export const platformId = 'metadao';
+export const platformId = 'futarchy';
 export const platform: Platform = {
   id: platformId,
-  name: 'Metadao',
+  name: 'Futarchy',
   image: 'https://sonar.watch/img/platforms/metadao.webp',
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
   website: 'https://futarchy.metadao.fi/',
   twitter: 'https://x.com/MetaDAOProject',
 };
 
-export const vaultPid = new PublicKey(
-  'VAU1T7S5UuEHmMvXtXMVmpEoQtZ2ya7eRb7gcN47wDp'
+export const daoPid = new PublicKey(
+  'autoQP9RmUNkzzKRXsMkWicDVZ3h29vvyMDcAYjCxxg'
 );
-export const ammPid = new PublicKey(
-  'AMM5G2nxuKUwCLRYTW7qqEwuoqCtNSjtbipwEmm2g8bH'
-);
+
+export const daoNameById: Map<string, string> = new Map([
+  ['CNMZgxYsQpygk8CLN9Su1igwXX2kHtcawaNAGuBPv3G9', 'MetaDAO '],
+  ['5vVCYQHPd8o3pGejYWzKZtnUSdLjXzDZcjZQxiFumXXx', 'Drift '],
+]);

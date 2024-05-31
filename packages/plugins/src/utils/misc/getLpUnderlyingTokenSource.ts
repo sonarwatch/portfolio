@@ -71,13 +71,16 @@ export type GetLpUnderlyingTokenSourceParams = {
   platformId?: string;
   acceptedPairs?: string[];
   minReserveValue?: number;
+  liquidityName?: string;
+  elementName?: string;
 };
 
 export function getLpUnderlyingTokenSource(
   params: GetLpUnderlyingTokenSourceParams
 ) {
   let { platformId, acceptedPairs, minReserveValue } = params;
-  const { networkId, poolUnderlyings, sourceId } = params;
+  const { networkId, poolUnderlyings, sourceId, liquidityName, elementName } =
+    params;
   if (!platformId) platformId = walletTokensPlatform.id;
   if (!acceptedPairs) acceptedPairs = defaultAcceptedPairs.get(networkId);
   if (acceptedPairs === undefined) return [];
@@ -146,6 +149,8 @@ export function getLpUnderlyingTokenSource(
       price,
       weight: getSourceWeight(knownReserveValue),
       timestamp: Date.now(),
+      liquidityName,
+      elementName,
     };
     sources.push(source);
   }
