@@ -150,14 +150,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const assetsValue = getUsdValueSum(assets.map((a) => a.value));
       const value = assetsValue;
 
-      liquidities.push({
-        value,
-        assets,
-        assetsValue,
-        rewardAssets: [],
-        rewardAssetsValue: null,
-        yields: [],
-      });
+      if (assetsValue && assetsValue > 0)
+        liquidities.push({
+          value,
+          assets,
+          assetsValue,
+          rewardAssets: [],
+          rewardAssetsValue: null,
+          yields: [],
+        });
     })
   );
 
