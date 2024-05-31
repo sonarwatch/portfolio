@@ -13,4 +13,7 @@ export const platform: Platform = {
 export const aquaVault =
   '0x10d48e112b92c8af207c1850225284a7ca46bac1d935c4af4cf87ce29b121694';
 
+export const bankObjectId =
+  '0x39c65abefaee0a18ffa0e059a0074fcc9910216fa1a3550aa32c2e0ec1c03043';
+
 export const poolKey = 'pool';

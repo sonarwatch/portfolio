@@ -9,7 +9,7 @@ export type Vault = {
   };
 };
 
-export type BankAccount = {
+export type VaultAccount = {
   id: {
     id: string;
   };
@@ -23,13 +23,27 @@ export type BankAccount = {
   };
 };
 
-export type PoolAccount = {
-  owner: string;
-  amount_locked: string;
-  pending_withdrawal: string;
+export type Bank = {
+  accounts: {
+    fields: {
+      id: {
+        id: string;
+      };
+    };
+    type: string;
+  };
 };
 
-export type Pool = {
+export type BankAccount = {
+  id: {
+    id: string;
+  };
   name: string;
-  users: PoolAccount[];
+  value: {
+    fields: {
+      balance: string;
+      owner: string;
+    };
+    type: string;
+  };
 };
