@@ -246,7 +246,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       ];
 
       const [quoteSource, lpMintAccount] = [
-        usdSourceById.get(amm.quoteMint.toString()),
+        usdSourceById.get(quoteMint),
         mintAccountById.get(lpMint),
       ];
 
@@ -310,7 +310,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         platformId,
         poolUnderlyings: [
           {
-            address: baseMint,
+            address: baseUnderlyingTokenPrice.address,
             decimals: amm.baseMintDecimals,
             reserveAmount: amm.baseAmount
               .dividedBy(10 ** amm.baseMintDecimals)
@@ -319,7 +319,7 @@ const executor: JobExecutor = async (cache: Cache) => {
             tokenPrice: baseTokenPrice,
           },
           {
-            address: quoteMint,
+            address: usdTokenPrice ? usdTokenPrice.address : quoteMint,
             decimals: amm.quoteMintDecimals,
             reserveAmount: amm.quoteAmount
               .dividedBy(10 ** amm.quoteMintDecimals)
