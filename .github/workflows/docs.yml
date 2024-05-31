@@ -34,7 +34,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm ci
+      - run: npm ci --include=optional
       - run: npx nx docs
       - name: Setup Pages
         uses: actions/configure-pages@v4
