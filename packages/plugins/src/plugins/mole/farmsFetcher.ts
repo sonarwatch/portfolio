@@ -170,27 +170,32 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const { borrowedValue, suppliedValue, value, rewardValue } =
         getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
 
-      elements.push({
-        type: PortfolioElementType.borrowlend,
-        networkId: NetworkId.sui,
-        platformId,
-        label: 'Farming',
-        name: `${farm.sourceName} #${positionId}`,
-        value,
-        data: {
-          borrowedAssets,
-          borrowedValue,
-          borrowedYields,
-          suppliedAssets,
-          suppliedValue,
-          suppliedYields,
-          collateralRatio: null,
-          healthRatio: debtValue.dividedBy(health).toNumber(),
-          rewardAssets,
-          rewardValue,
+      if (
+        borrowedValue &&
+        suppliedValue &&
+        (borrowedValue > 0 || suppliedValue > 0)
+      )
+        elements.push({
+          type: PortfolioElementType.borrowlend,
+          networkId: NetworkId.sui,
+          platformId,
+          label: 'Farming',
+          name: `${farm.sourceName} #${positionId}`,
           value,
-        },
-      });
+          data: {
+            borrowedAssets,
+            borrowedValue,
+            borrowedYields,
+            suppliedAssets,
+            suppliedValue,
+            suppliedYields,
+            collateralRatio: null,
+            healthRatio: debtValue.dividedBy(health).toNumber(),
+            rewardAssets,
+            rewardValue,
+            value,
+          },
+        });
     })
   );
 
