@@ -60,3 +60,11 @@ export function formatTokenAddress(address: string, networkId: NetworkIdType) {
   const formatter = formatters[network.addressSystem];
   return formatter(address);
 }
+
+export function formatTokenAddressFromAddressSystem(
+  address: string,
+  addressSystem: AddressSystemType
+) {
+  const formatter = formatters[addressSystem];
+  return formatter(address);
+}

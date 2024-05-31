@@ -98,3 +98,158 @@ export type PositionTick = {
   feeGrowthOutsideB: BigNumber;
   rewardGrowthsOutside: [BigNumber, BigNumber, BigNumber];
 };
+
+export type VaultPositionNFT = {
+  coin_a_type_name: CoinTypeName;
+  coin_b_type_name: CoinTypeName;
+  description: string;
+  id: ID;
+  index: string;
+  name: string;
+  strategy_id: string;
+  url: string;
+};
+
+export type CoinTypeName = {
+  fields: Fields;
+  type: string;
+};
+
+export type Fields = {
+  name: string;
+};
+
+export type ID = {
+  id: string;
+};
+
+export type VaultStrategy = {
+  accounts: Accounts;
+  base_tick_step_minimum: number;
+  clmm_pool_id: string;
+  coin_a_type_name: TypeName;
+  coin_b_type_name: TypeName;
+  default_base_rebalance_percentage: number;
+  default_limit_rebalance_percentage: number;
+  effective_tick_lower: EffectiveTick;
+  effective_tick_upper: EffectiveTick;
+  fee_type_name: TypeName;
+  id: ID;
+  image_url: string;
+  limit_tick_step_minimum: number;
+  management_fee_rate: string;
+  performance_fee_rate: string;
+  protocol_fees: Accounts;
+  rewarders: any[];
+  status: number;
+  tick_spacing: number;
+  total_share: string;
+  vault_index: string;
+  vaults: Vaults;
+};
+
+export type Accounts = {
+  fields: AccountsFields;
+  type: string;
+};
+
+export type AccountsFields = {
+  id: ID;
+  size: string;
+};
+
+export type TypeName = {
+  fields: CoinATypeNameFields;
+  type: string;
+};
+
+export type CoinATypeNameFields = {
+  name: string;
+};
+
+export type EffectiveTick = {
+  fields: EffectiveTickLowerFields;
+  type: string;
+};
+
+export type EffectiveTickLowerFields = {
+  bits: number;
+};
+
+export type Vaults = {
+  fields: VaultsFields;
+  type: string;
+};
+
+export type VaultsFields = {
+  head: string;
+  id: ID;
+  size: string;
+  tail: string;
+};
+
+export type VaultInfo = {
+  id: ID;
+  name: string;
+  value: UsersInfo;
+};
+
+export type UsersInfo = {
+  fields: UsersInfoPagination;
+  type: string;
+};
+
+export type UsersInfoPagination = {
+  next: null;
+  prev: string;
+  value: UserInfo;
+};
+
+export type UserInfo = {
+  fields: UserPositionFields;
+  type: string;
+};
+
+export type UserPositionFields = {
+  base_clmm_position_id: string;
+  base_last_tick_index: Index;
+  base_liquidity: string;
+  base_lower_index: Index;
+  base_rebalance_threshold: number;
+  base_tick_step: number;
+  base_upper_index: Index;
+  coin_a_type_name: CoinTypeName;
+  coin_b_type_name: CoinTypeName;
+  limit_clmm_position_id: string;
+  limit_last_tick_index: Index;
+  limit_liquidity: string;
+  limit_lower_index: Index;
+  limit_rebalance_threshold: number;
+  limit_tick_step: number;
+  limit_upper_index: Index;
+  management_fee_rate: null;
+  performance_fee_rate: null;
+  rewards: Rewards;
+  share: string;
+  sqrt_price: string;
+  strategy_id: string;
+  vault_id: string;
+};
+
+export type Index = {
+  fields: BaseLastTickIndexFields;
+  type: string;
+};
+
+export type BaseLastTickIndexFields = {
+  bits: number;
+};
+
+export type Rewards = {
+  fields: RewardsFields;
+  type: string;
+};
+
+export type RewardsFields = {
+  contents: any[];
+};

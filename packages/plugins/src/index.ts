@@ -447,6 +447,31 @@ import {
   fetchers as moleFetchers,
   platforms as molePlatforms,
 } from './plugins/mole';
+import {
+  jobs as bonfidaJobs,
+  fetchers as bonfidaFetchers,
+  platforms as bonfidaPlatforms,
+} from './plugins/bonfida';
+import {
+  jobs as cropperJobs,
+  fetchers as cropperFetchers,
+  platforms as cropperPlatforms,
+} from './plugins/cropper';
+import {
+  jobs as hedgehogJobs,
+  fetchers as hedgehogFetchers,
+  platforms as hedgehogPlatforms,
+} from './plugins/hedgehog';
+import {
+  jobs as whalesmarketJobs,
+  fetchers as whalesmarketFetchers,
+  platforms as whalesmarketPlatforms,
+} from './plugins/whalesmarket';
+import {
+  jobs as metadaoJobs,
+  fetchers as metadaoFetchers,
+  platforms as metadaoPlatforms,
+} from './plugins/metadao';
 
 export {
   walletTokensPlatform,
@@ -554,6 +579,11 @@ export const platforms: Platform[] = [
   ...kriyaPlatforms,
   ...haedalPlatforms,
   ...molePlatforms,
+  ...bonfidaPlatforms,
+  ...cropperPlatforms,
+  ...hedgehogPlatforms,
+  ...whalesmarketPlatforms,
+  ...metadaoPlatforms,
 ];
 
 // JOBS //
@@ -643,6 +673,11 @@ export const jobs: Job[] = [
   ...haedalJobs,
   ...flowxJobs,
   ...moleJobs,
+  ...bonfidaJobs,
+  ...cropperJobs,
+  ...hedgehogJobs,
+  ...whalesmarketJobs,
+  ...metadaoJobs,
 ];
 
 // FETCHERS //
@@ -734,6 +769,11 @@ export const fetchers: Fetcher[] = [
   ...haedalFetchers,
   ...flowxFetchers,
   ...moleFetchers,
+  ...bonfidaFetchers,
+  ...cropperFetchers,
+  ...hedgehogFetchers,
+  ...whalesmarketFetchers,
+  ...metadaoFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 

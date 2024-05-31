@@ -26,6 +26,10 @@ export const raydiumProgram = new PublicKey(
   'CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK'
 );
 
+export const cpmmProgramId = new PublicKey(
+  'CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C'
+);
+
 export const poolStatesPrefix = `${platformId}-poolSates`;
 
 export const positionsIdentifier = 'Raydium Concentrated Liquidity';

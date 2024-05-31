@@ -9,8 +9,12 @@ export const ammV5Filter: GetProgramAccountsFilter[] = [
   { dataSize: ammInfoV5Struct.byteSize },
 ];
 
-export const poolsStateFilter: GetProgramAccountsFilter[] = [
+export const clmmPoolsStateFilter: GetProgramAccountsFilter[] = [
   { dataSize: 1544 },
+];
+
+export const cpmmPoolsStateFilter: GetProgramAccountsFilter[] = [
+  { dataSize: 637 },
 ];
 
 export const stakingFilters = (owner: string): GetProgramAccountsFilter[] => [

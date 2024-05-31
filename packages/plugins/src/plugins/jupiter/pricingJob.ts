@@ -33,6 +33,7 @@ const mints = [
   '5RpUwQ8wtdPCZHhu6MERp2RGrpobsbZ6MH5dDHkUjs2', // BUSD Token (Wormhole from BSC)
   'FCqfQSujuPxy6V42UvafBhsysWtEq1vhjfMN1PUbgaxA', // USD Coin (Wormhole from BSC)
   '8qJSyQprMC57TWKaYEmetUR3UUiTP2M3hXdcvFhkZdmv', // Tether USD (Wormhole from BSC)
+  'UPTx1d24aBWuRgwxVnFmX4gNraj3QGFzL3QqBgxtWQG', // UPT
   // Sanctum / LSTs
   'HUBsveNpjo5pWqNkH57QzxjQASdTVXcSK7bVKTSZtcSX',
   'pWrSoLAhue6jUxUkbWgmEy5rD9VJzkFmvfTDV5KgNuu',

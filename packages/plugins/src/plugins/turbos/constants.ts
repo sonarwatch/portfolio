@@ -17,3 +17,6 @@ export const packageIdOriginal =
   '0x91bfbc386a41afcfd9b2533058d7e915a1d3829089cc268ff4333d54d6339ca1';
 
 export const clmmNftType = `${packageIdOriginal}::position_nft::TurbosPositionNFT`;
+
+export const vaultPackageId =
+  '0x0a0d6e83196f523bb0623187d789ce602d1f63b3e7baa02b580df7ff0ccd17e0';

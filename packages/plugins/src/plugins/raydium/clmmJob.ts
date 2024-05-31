@@ -7,7 +7,7 @@ import { Job, JobExecutor } from '../../Job';
 import { Cache } from '../../Cache';
 import storeTokenPricesFromSqrt from '../../utils/clmm/tokenPricesFromSqrt';
 import { poolStateStruct } from './structs/clmms';
-import { poolsStateFilter } from './filters';
+import { clmmPoolsStateFilter } from './filters';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -16,7 +16,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     client,
     poolStateStruct,
     raydiumProgram,
-    poolsStateFilter
+    clmmPoolsStateFilter
   );
 
   const promises = [];

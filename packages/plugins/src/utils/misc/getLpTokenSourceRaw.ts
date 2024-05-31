@@ -58,7 +58,7 @@ export function getLpTokenSourceRaw(
     sourceId: params.sourceId,
     poolUnderlyings: fPoolUnderlyingsRaw,
     elementName: params.elementName,
-    liquidityName: params.elementName,
+    liquidityName: params.liquidityName,
     priceUnderlyings: params.priceUnderlyings,
   });
 }

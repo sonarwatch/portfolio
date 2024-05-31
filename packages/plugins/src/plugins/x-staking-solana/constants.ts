@@ -7,16 +7,7 @@ import {
   xAuryMint,
 } from '../aurory/constants';
 import { platformId as hawksightPlatformId } from '../hawksight/constants';
-
-export const whalesMarketPlatformId = 'whalesmarket';
-export const whalesMarketPlatform: Platform = {
-  id: whalesMarketPlatformId,
-  name: 'Whales Market',
-  image: 'https://sonar.watch/img/platforms/whalesmarket.png',
-  // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
-  website: 'https://app.whales.market/',
-  twitter: 'https://twitter.com/WhalesMarket',
-};
+import { platformId as whalesMarketPlatformId } from '../whalesmarket/constants';
 
 export const stepFinancePlatformId = 'stepfinance';
 export const stepFinancePlatform: Platform = {

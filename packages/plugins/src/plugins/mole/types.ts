@@ -23,6 +23,7 @@ export type MoleData = {
 };
 
 export type Farm = {
+  sourceName: string;
   symbol1Address: string;
   symbol1Decimals: number;
   symbol2Address: string;

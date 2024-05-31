@@ -20,3 +20,36 @@ export type UserStakeAccounts = {
 export type Pools = {
   [T in string]: CoinTypeMetadata;
 };
+
+export type ClaimStatus = {
+  name: string;
+  value: number;
+  id: ID;
+};
+
+export type TreasuryInfo = {
+  claim_enabled: boolean;
+  claim_record: ClaimRecord;
+  id: ID;
+  msg_author_pubkey: number[];
+  treasury: string;
+};
+
+export type ClaimRecord = {
+  fields: Fields;
+  type: string;
+};
+
+export type Fields = {
+  id: ID;
+  size: string;
+};
+
+export type ID = {
+  id: string;
+};
+
+export type ApiResponse = {
+  signature: { [key: string]: number };
+  data: string;
+};
