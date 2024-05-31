@@ -471,7 +471,7 @@ import {
   jobs as metadaoJobs,
   fetchers as metadaoFetchers,
   platforms as metadaoPlatforms,
-} from './plugins/metadao';
+} from './plugins/futarchy';
 
 export {
   walletTokensPlatform,
