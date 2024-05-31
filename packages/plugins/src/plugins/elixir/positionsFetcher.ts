@@ -175,26 +175,28 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       if (v.address === a.vault) name = v.vaultDisplayName;
     });
 
-    const liquidities: PortfolioLiquidity[] = [
-      {
-        value,
-        assets,
-        assetsValue,
-        rewardAssets: [],
-        rewardAssetsValue: null,
-        yields,
-        name,
-      },
-    ];
+    if (value && value > 0) {
+      const liquidities: PortfolioLiquidity[] = [
+        {
+          value,
+          assets,
+          assetsValue,
+          rewardAssets: [],
+          rewardAssetsValue: null,
+          yields,
+          name,
+        },
+      ];
 
-    elements.push({
-      type: 'liquidity',
-      data: { liquidities },
-      label: 'LiquidityPool',
-      networkId: NetworkId.sui,
-      platformId,
-      value: getUsdValueSum(liquidities.map((liq) => liq.value)),
-    });
+      elements.push({
+        type: 'liquidity',
+        data: { liquidities },
+        label: 'LiquidityPool',
+        networkId: NetworkId.sui,
+        platformId,
+        value: getUsdValueSum(liquidities.map((liq) => liq.value)),
+      });
+    }
   });
 
   return elements;
