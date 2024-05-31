@@ -135,7 +135,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         if (Number(userActiveAmounts) > 0) {
           assets.push(
             tokenPriceToAssetToken(
-              formatMoveTokenAddress(a.coinType),
+              a.coinType,
               Number(userActiveAmounts) / 10 ** tokenPrice.decimals,
               NetworkId.sui,
               tokenPrice
@@ -150,34 +150,28 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       }
     }
 
-    if (a.pending) {
-      if (Number(a.pending) > 0) {
-        assets.push(
-          tokenPriceToAssetToken(
-            formatMoveTokenAddress(a.coinType),
-            Number(a.pending) / 10 ** tokenPrice.decimals,
-            NetworkId.sui,
-            tokenPrice,
-            undefined,
-            {
-              isClaimable: true,
-            }
-          )
-        );
-        yields.push({
-          apr: 0,
-          apy: 0,
-        });
-      }
+    const pendingAmount = a.pending
+      ? Number(a.pending) / 10 ** tokenPrice.decimals
+      : undefined;
+    if (pendingAmount) {
+      assets.push(
+        tokenPriceToAssetToken(
+          a.coinType,
+          pendingAmount,
+          NetworkId.sui,
+          tokenPrice,
+          undefined,
+          {}
+        )
+      );
+      yields.push({
+        apr: 0,
+        apy: 0,
+      });
     }
 
     const assetsValue = getUsdValueSum(assets.map((as) => as.value));
     const value = assetsValue;
-
-    let name;
-    vaults.forEach((v) => {
-      if (v.address === a.vault) name = v.vaultDisplayName;
-    });
 
     if (assets.length > 0) {
       const liquidities: PortfolioLiquidity[] = [
@@ -188,7 +182,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           rewardAssets: [],
           rewardAssetsValue: null,
           yields,
-          name,
+          name: vaults.find((v) => v.address === a.vault)?.vaultName,
         },
       ];
 
