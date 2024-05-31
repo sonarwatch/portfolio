@@ -171,9 +171,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
 
       if (
-        borrowedValue &&
-        suppliedValue &&
-        (borrowedValue > 0 || suppliedValue > 0)
+        (borrowedValue && borrowedValue > 0) ||
+        (suppliedValue && suppliedValue > 0)
       )
         elements.push({
           type: PortfolioElementType.borrowlend,
