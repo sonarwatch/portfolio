@@ -30,9 +30,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup node
-        uses: actions/checkout@v4
-      - run: npm ci
+      - name: Use Node.js v20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci --include=optional
       - run: npx nx docs
       - name: Setup Pages
         uses: actions/configure-pages@v4

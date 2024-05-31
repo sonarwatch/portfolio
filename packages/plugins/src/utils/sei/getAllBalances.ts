@@ -1,7 +1,7 @@
 import {
   QueryAllBalancesRequest,
   QueryAllBalancesResponse,
-} from '@sei-js/proto/types/codegen/cosmos/bank/v1beta1/query';
+} from '@sei-js/proto/dist/types/codegen/cosmos/bank/v1beta1/query';
 import Long from 'long';
 
 const maxBalances = 1500;

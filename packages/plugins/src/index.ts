@@ -468,10 +468,15 @@ import {
   platforms as whalesmarketPlatforms,
 } from './plugins/whalesmarket';
 import {
-  jobs as metadaoJobs,
-  fetchers as metadaoFetchers,
-  platforms as metadaoPlatforms,
+  jobs as futarchyJobs,
+  fetchers as futarchyFetchers,
+  platforms as futarchyPlatforms,
 } from './plugins/futarchy';
+import {
+  platforms as elixirPlatforms,
+  jobs as elixirJobs,
+  fetchers as elixirFetchers,
+} from './plugins/elixir';
 
 export {
   walletTokensPlatform,
@@ -583,7 +588,8 @@ export const platforms: Platform[] = [
   ...cropperPlatforms,
   ...hedgehogPlatforms,
   ...whalesmarketPlatforms,
-  ...metadaoPlatforms,
+  ...futarchyPlatforms,
+  ...elixirPlatforms,
 ];
 
 // JOBS //
@@ -677,7 +683,8 @@ export const jobs: Job[] = [
   ...cropperJobs,
   ...hedgehogJobs,
   ...whalesmarketJobs,
-  ...metadaoJobs,
+  ...futarchyJobs,
+  ...elixirJobs,
 ];
 
 // FETCHERS //
@@ -773,7 +780,8 @@ export const fetchers: Fetcher[] = [
   ...cropperFetchers,
   ...hedgehogFetchers,
   ...whalesmarketFetchers,
-  ...metadaoFetchers,
+  ...futarchyFetchers,
+  ...elixirFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
