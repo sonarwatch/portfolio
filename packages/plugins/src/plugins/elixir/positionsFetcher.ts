@@ -132,39 +132,43 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           18
         );
 
-        assets.push(
-          tokenPriceToAssetToken(
-            formatMoveTokenAddress(a.coinType),
-            Number(userActiveAmounts) / 10 ** tokenPrice.decimals,
-            NetworkId.sui,
-            tokenPrice
-          )
-        );
+        if (Number(userActiveAmounts) > 0) {
+          assets.push(
+            tokenPriceToAssetToken(
+              formatMoveTokenAddress(a.coinType),
+              Number(userActiveAmounts) / 10 ** tokenPrice.decimals,
+              NetworkId.sui,
+              tokenPrice
+            )
+          );
 
-        yields.push({
-          apr: apyToApr(Number(tvl.pool_apy)),
-          apy: Number(tvl.pool_apy),
-        });
+          yields.push({
+            apr: apyToApr(Number(tvl.pool_apy)),
+            apy: Number(tvl.pool_apy),
+          });
+        }
       }
     }
 
     if (a.pending) {
-      assets.push(
-        tokenPriceToAssetToken(
-          formatMoveTokenAddress(a.coinType),
-          Number(a.pending) / 10 ** tokenPrice.decimals,
-          NetworkId.sui,
-          tokenPrice,
-          undefined,
-          {
-            isClaimable: true,
-          }
-        )
-      );
-      yields.push({
-        apr: 0,
-        apy: 0,
-      });
+      if (Number(a.pending) > 0) {
+        assets.push(
+          tokenPriceToAssetToken(
+            formatMoveTokenAddress(a.coinType),
+            Number(a.pending) / 10 ** tokenPrice.decimals,
+            NetworkId.sui,
+            tokenPrice,
+            undefined,
+            {
+              isClaimable: true,
+            }
+          )
+        );
+        yields.push({
+          apr: 0,
+          apy: 0,
+        });
+      }
     }
 
     const assetsValue = getUsdValueSum(assets.map((as) => as.value));
@@ -175,7 +179,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       if (v.address === a.vault) name = v.vaultDisplayName;
     });
 
-    if (value && value > 0) {
+    if (assets.length > 0) {
       const liquidities: PortfolioLiquidity[] = [
         {
           value,
