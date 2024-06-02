@@ -9,10 +9,11 @@ import { OracleType, fundStruct, tokenListStruct } from './structs';
 import { fundFilters } from './filters';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 import { getSymbol } from './helpers';
-import getLpTokenSourceRawOld, {
-  PoolUnderlyingRaw,
-} from '../../utils/misc/getLpTokenSourceRawOld';
 import { getPythTokenPriceSources } from '../../utils/solana/pyth/helpers';
+import {
+  PoolUnderlyingRaw,
+  getLpTokenSourceRaw,
+} from '../../utils/misc/getLpTokenSourceRaw';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
@@ -35,7 +36,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       .filter((ts) => ts.oracleType === OracleType.Pyth)
       .map((ts) => ({
         mint: ts.tokenMint,
-        oracle: ts.oracleAccount,
+        feed: ts.oracleAccount,
       }))
   );
   await cache.setTokenPriceSources(pythSources);
@@ -66,26 +67,26 @@ const executor: JobExecutor = async (cache: Cache) => {
       poolUnderlyingRaw.push({
         address: tokenPrice.address,
         decimals: tokenPrice.decimals,
-        price: tokenPrice.price,
+        tokenPrice,
         reserveAmountRaw,
       });
     }
     if (poolUnderlyingRaw.length === 0) continue;
 
-    const lpSource = getLpTokenSourceRawOld(
-      NetworkId.solana,
+    const lpSource = getLpTokenSourceRaw({
       platformId,
-      platformId,
-      {
+      networkId: NetworkId.solana,
+      lpDetails: {
         address: account.fundToken.toString(),
         decimals: 6,
         supplyRaw: account.supplyOutstanding,
       },
-      poolUnderlyingRaw,
-      'Basket',
-      getSymbol(account)
-    );
-    lpSources.push(lpSource);
+      poolUnderlyingsRaw: poolUnderlyingRaw,
+      sourceId: platformId,
+      elementName: 'Basket',
+      liquidityName: getSymbol(account),
+    });
+    lpSources.push(...lpSource);
   }
   await cache.setTokenPriceSources(lpSources);
 };

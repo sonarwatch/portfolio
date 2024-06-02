@@ -41,10 +41,11 @@ export function getLpTokenSource(
   const sources: TokenPriceSource[] = [];
 
   // Verify underlyings weights
-  const totalWeight = poolUnderlyings.reduce(
-    (partialSum, p) => partialSum + p.weight,
+  let totalWeight = poolUnderlyings.reduce(
+    (partialSum, p) => partialSum + (p.weight || 0),
     0
   );
+  if (totalWeight === 0) totalWeight = 1;
   if (totalWeight > 1.01)
     throw new Error(`Weights are greater than 1: ${totalWeight}`);
   if (totalWeight < 0.99)

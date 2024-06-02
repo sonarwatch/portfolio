@@ -55,7 +55,7 @@ export type PoolUnderlying = {
   address: string;
   reserveAmount: number;
   decimals: number;
-  weight: number;
+  weight?: number;
   tokenPrice?: TokenPrice;
 };
 
@@ -84,10 +84,11 @@ export function getLpUnderlyingTokenSource(
   if (!minReserveValue) minReserveValue = 2500;
 
   // Verify underlyings weights
-  const totalWeight = poolUnderlyings.reduce(
-    (partialSum, p) => partialSum + p.weight,
+  let totalWeight = poolUnderlyings.reduce(
+    (partialSum, p) => partialSum + (p.weight || 0),
     0
   );
+  if (totalWeight === 0) totalWeight = 1;
   if (totalWeight > 1.01)
     throw new Error(`Weights are greater than 1: ${totalWeight}`);
   if (totalWeight < 0.99)
@@ -132,9 +133,10 @@ export function getLpUnderlyingTokenSource(
     )
       continue;
 
-    const price =
-      ((u.weight / knownUnderlying.weight) * knownReserveValue) /
-      u.reserveAmount;
+    let weightFactor = 1;
+    if (u.weight && knownUnderlying.weight)
+      weightFactor = u.weight / knownUnderlying.weight;
+    const price = (weightFactor * knownReserveValue) / u.reserveAmount;
 
     const source: TokenPriceSource = {
       id: sourceId,

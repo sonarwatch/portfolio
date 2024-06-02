@@ -11,7 +11,7 @@ export type PoolUnderlyingRaw = {
   address: string;
   reserveAmountRaw: BigNumber | string;
   decimals: number;
-  weight: number;
+  weight?: number;
   tokenPrice?: TokenPrice;
 };
 
