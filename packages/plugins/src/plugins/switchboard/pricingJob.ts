@@ -35,7 +35,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     const source: TokenPriceSource = {
       address: feedToFetch.mintAddress,
       decimals,
-      id: `switchboard-feed-${feedToFetch.feedAddress.toString()}`,
+      id: `${platformId}-feed-${feedToFetch.feedAddress.toString()}`,
       networkId: NetworkId.solana,
       platformId: walletTokensPlatform.id,
       weight: 0.5,
