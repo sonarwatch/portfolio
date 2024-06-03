@@ -14,7 +14,7 @@
   },
   "private": true,
   "devDependencies": {
-    "@jscutlery/semver": "^3.0.0",
+    "@jscutlery/semver": "3.4.1",
     "@nx/devkit": "16.8.1",
     "@nx/esbuild": "16.8.1",
     "@nx/eslint-plugin": "16.8.1",

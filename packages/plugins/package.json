@@ -4,7 +4,7 @@
   "type": "commonjs",
   "generators": "./generators.json",
   "peerDependencies": {
-    "@sonarwatch/portfolio-core": "0.12.1"
+    "@sonarwatch/portfolio-core": "0.12.2"
   },
   "dependencies": {
     "@aave/contract-helpers": "^1.18.3",
