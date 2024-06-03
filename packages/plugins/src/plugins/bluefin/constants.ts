@@ -17,3 +17,6 @@ export const bankObjectId =
   '0x39c65abefaee0a18ffa0e059a0074fcc9910216fa1a3550aa32c2e0ec1c03043';
 
 export const poolKey = 'pool';
+export const perpetualsKey = 'perpetuals';
+
+export const metaUrl = 'https://dapi.api.sui-prod.bluefin.io/meta';
