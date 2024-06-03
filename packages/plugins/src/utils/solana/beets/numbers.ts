@@ -67,6 +67,18 @@ export const f64: FixedSizeBeet<BigNumber> = unsignedSplittedFloatLargeBeet(
   'f64'
 );
 
+export const fp64: FixedSizeBeet<BigNumber> = {
+  write(buf: Buffer, offset: number, value: BigNumber) {
+    buf.writeDoubleLE(value.toNumber(), offset);
+  },
+  read(buf: Buffer, offset: number): BigNumber {
+    const subarray = buf.subarray(offset, offset + 8);
+    return new BigNumber(subarray.readDoubleLE());
+  },
+  byteSize: 8,
+  description: 'fp64',
+};
+
 export const u64: FixedSizeBeet<BigNumber> = unsignedLargeBeet(8, 'u64');
 export const u128: FixedSizeBeet<BigNumber> = unsignedLargeBeet(16, 'u128');
 export const u256: FixedSizeBeet<BigNumber> = unsignedLargeBeet(32, 'u256');
