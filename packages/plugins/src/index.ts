@@ -477,6 +477,11 @@ import {
   jobs as elixirJobs,
   fetchers as elixirFetchers,
 } from './plugins/elixir';
+import {
+  platforms as moonwalkPlatforms,
+  jobs as moonwalkJobs,
+  fetchers as moonwalkFetchers,
+} from './plugins/moonwalk';
 
 export {
   walletTokensPlatform,
@@ -590,6 +595,7 @@ export const platforms: Platform[] = [
   ...whalesmarketPlatforms,
   ...futarchyPlatforms,
   ...elixirPlatforms,
+  ...moonwalkPlatforms,
 ];
 
 // JOBS //
@@ -685,6 +691,7 @@ export const jobs: Job[] = [
   ...whalesmarketJobs,
   ...futarchyJobs,
   ...elixirJobs,
+  ...moonwalkJobs,
 ];
 
 // FETCHERS //
@@ -782,6 +789,7 @@ export const fetchers: Fetcher[] = [
   ...whalesmarketFetchers,
   ...futarchyFetchers,
   ...elixirFetchers,
+  ...moonwalkFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
