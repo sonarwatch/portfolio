@@ -1,6 +1,6 @@
 {
   "name": "@sonarwatch/portfolio-core",
-  "version": "0.12.2",
+  "version": "0.12.3",
   "type": "commonjs",
   "dependencies": {
     "@ethersproject/address": "^5.7.0",
