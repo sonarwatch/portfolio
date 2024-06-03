@@ -33,7 +33,6 @@
     "dsa-connect": "^0.6.47",
     "graphql": "^16.8.1",
     "graphql-request": "^6.1.0",
-    "listhen": "^1.5.5",
     "long": "^5.2.3",
     "osmojs": "^16.5.1",
     "reflect-metadata": "^0.1.13",

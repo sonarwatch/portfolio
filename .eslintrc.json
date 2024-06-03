@@ -78,7 +78,11 @@
         "@nx/dependency-checks": [
           "error",
           {
-            "ignoredDependencies": ["web3-v1", "@nx/devkit"]
+            "ignoredFiles": [
+              "packages/plugins/scripts/*.ts",
+              "packages/plugins/src/generators/**/*.ts"
+            ],
+            "ignoredDependencies": ["web3-v1"]
           }
         ]
       }
