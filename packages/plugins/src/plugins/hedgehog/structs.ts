@@ -109,6 +109,7 @@ export type Market = {
   quoteToken: PublicKey;
   marketCollateral: PublicKey;
   feeAccount: PublicKey;
+  resolver: PublicKey;
   nonce: number;
   expiryTs: BigNumber;
   creationTs: BigNumber;
@@ -132,6 +133,7 @@ export const marketStruct = new BeetStruct<Market>(
     ['quoteToken', publicKey],
     ['marketCollateral', publicKey],
     ['feeAccount', publicKey],
+    ['resolver', publicKey],
     ['nonce', u8],
     ['expiryTs', u64],
     ['creationTs', u64],
