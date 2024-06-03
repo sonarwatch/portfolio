@@ -78,7 +78,7 @@
         "@nx/dependency-checks": [
           "error",
           {
-            "ignoredDependencies": ["web3-v1"]
+            "ignoredDependencies": ["web3-v1", "@nx/devkit"]
           }
         ]
       }
