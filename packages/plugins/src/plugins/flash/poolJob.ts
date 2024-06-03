@@ -2,11 +2,14 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSolana } from '../../utils/clients';
-import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 import { platformId, poolsKey, poolsPkeys } from './constants';
-import { pool1Struct, pool2Struct, pool3Struct } from './structs';
+import { flpStruct } from './structs';
 import { fetchTokenSupplyAndDecimals } from '../../utils/solana/fetchTokenSupplyAndDecimals';
-import { u8ArrayToString, usdcSolanaMint } from '../../utils/solana';
+import {
+  getParsedMultipleAccountsInfo,
+  u8ArrayToString,
+  usdcSolanaMint,
+} from '../../utils/solana';
 import { walletTokensPlatform } from '../tokens/constants';
 import { CustodyInfo, PoolInfo } from './types';
 import { custodiesKey } from '../jupiter/exchange/constants';
@@ -14,15 +17,11 @@ import { custodiesKey } from '../jupiter/exchange/constants';
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
 
-  const pools = await getMultipleAccountsInfoSafe(client, poolsPkeys);
-
-  if (!pools[0] || !pools[1] || !pools[2]) return;
-
-  const poolsAccounts = [
-    pool1Struct.deserialize(pools[0].data)[0],
-    pool2Struct.deserialize(pools[1].data)[0],
-    pool3Struct.deserialize(pools[2].data)[0],
-  ];
+  const poolsAccounts = await getParsedMultipleAccountsInfo(
+    client,
+    flpStruct,
+    poolsPkeys
+  );
 
   const custodiesInfo = await cache.getItem<CustodyInfo[]>(custodiesKey, {
     prefix: platformId,
@@ -38,6 +37,8 @@ const executor: JobExecutor = async (cache: Cache) => {
   const poolsInfo: PoolInfo[] = [];
   for (let i = 0; i < poolsAccounts.length; i++) {
     const pool = poolsAccounts[i];
+    if (!pool) continue;
+
     const { custodies } = pool;
     let rewardPerLp: number | undefined;
     custodies.forEach((custodyPkey) => {
