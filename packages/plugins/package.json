@@ -18,7 +18,6 @@
     "@ethersproject/units": "^5.7.0",
     "@metaplex-foundation/beet": "^0.7.1",
     "@metaplex-foundation/beet-solana": "^0.4.0",
-    "@metaplex-foundation/js": "^0.19.4",
     "@mysten/bcs": "^0.11.1",
     "@mysten/sui.js": "^0.50.1",
     "@onsol/tldparser": "^0.6.1",
