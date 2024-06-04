@@ -1,5 +1,5 @@
-import { TransactionBlock } from '@mysten/sui.js/dist/cjs/builder';
 import { BcsReader } from '@mysten/bcs';
+import { TransactionBlock } from '@mysten/sui.js/transactions';
 import { SuiClient } from '../../utils/clients/types';
 import { DepositShare } from './types';
 import {
