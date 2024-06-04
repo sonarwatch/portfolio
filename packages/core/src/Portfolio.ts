@@ -205,23 +205,6 @@ export type PortfolioElementCommon = {
 };
 
 /**
- * @deprecated
- * Represents the data of a single portfolio element.
- */
-export type PortfolioElementSingleData = {
-  asset: PortfolioAsset;
-};
-
-/**
- * @deprecated
- * Represents a single portfolio element.
- */
-export type PortfolioElementSingle = PortfolioElementCommon & {
-  type: 'single';
-  data: PortfolioElementSingleData;
-};
-
-/**
  * Represents the data of a multiple portfolio element.
  */
 export type PortfolioElementMultipleData = {
@@ -343,7 +326,6 @@ export type PortfolioElementBorrowLend = PortfolioElementCommon & {
  * Represents a portfolio element.
  */
 export type PortfolioElement =
-  | PortfolioElementSingle
   | PortfolioElementMultiple
   | PortfolioElementLiquidity
   | PortfolioElementBorrowLend;
