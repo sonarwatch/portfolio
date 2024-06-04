@@ -1,5 +1,4 @@
 import {
-  apyToApr,
   formatMoveTokenAddress,
   getUsdValueSum,
   NetworkId,
@@ -8,6 +7,7 @@ import {
   PortfolioLiquidity,
   TokenPrice,
   Yield,
+  yieldFromApy,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -141,11 +141,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
               tokenPrice
             )
           );
-
-          yields.push({
-            apr: apyToApr(Number(tvl.pool_apy)),
-            apy: Number(tvl.pool_apy),
-          });
+          yields.push(yieldFromApy(Number(tvl.pool_apy) / 100));
         }
       }
     }
