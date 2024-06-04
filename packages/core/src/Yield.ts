@@ -19,12 +19,20 @@ export function apyToApr(apy: number, compoundFrequency = 365): number {
 }
 
 /**
- * Represents the yield information including APR and APY.
+ * Represents a yield information with APR and APY (as fraction).
  * If negative, it means that it costs money to hold the asset.
  */
 export type Yield = {
-  apr: number; // APR (Annual Percentage Rate)
-  apy: number; // APY (Annual Percentage Yield)
+  /**
+   * APR (Annual Percentage Rate) as fraction.
+   * 0.25 means 25% APR
+   */
+  apr: number;
+  /**
+   * APY (Annual Percentage Yield) as fraction.
+   * 0.28 means 28% APY
+   */
+  apy: number;
 };
 
 /**
@@ -32,7 +40,7 @@ export type Yield = {
  * @param apr The Annual Percentage Rate.
  * @returns The Yield object with the calculated APY.
  */
-export const createYieldFromApr = (apr: number): Yield => ({
+export const yieldFromApr = (apr: number): Yield => ({
   apr,
   apy: aprToApy(apr),
 });
@@ -42,7 +50,7 @@ export const createYieldFromApr = (apr: number): Yield => ({
  * @param apy The Annual Percentage Yield.
  * @returns The Yield object with the calculated APR.
  */
-export const createYieldFromApy = (apy: number): Yield => ({
+export const yieldFromApy = (apy: number): Yield => ({
   apr: apyToApr(apy),
   apy,
 });

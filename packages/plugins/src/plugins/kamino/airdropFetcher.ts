@@ -54,7 +54,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     {
       type: PortfolioElementType.multiple,
       platformId,
-      name: 'Season 1 Airdrop',
+      name: 'Season 1',
       networkId: NetworkId.solana,
       label: 'Airdrop',
       data: { assets: [asset] },

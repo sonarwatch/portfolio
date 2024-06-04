@@ -74,7 +74,18 @@
     {
       "files": "*.json",
       "parser": "jsonc-eslint-parser",
-      "rules": {}
+      "rules": {
+        "@nx/dependency-checks": [
+          "error",
+          {
+            "ignoredFiles": [
+              "packages/plugins/scripts/*.ts",
+              "packages/plugins/src/generators/**/*.ts"
+            ],
+            "ignoredDependencies": ["web3-v1"]
+          }
+        ]
+      }
     }
   ]
 }

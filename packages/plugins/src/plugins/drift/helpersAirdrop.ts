@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import axios, { AxiosResponse } from 'axios';
-import { NetworkId, getAirdropStatus } from '@sonarwatch/portfolio-core';
+import { NetworkId, getAirdropClaimStatus } from '@sonarwatch/portfolio-core';
 import {
   airdropUrl,
   driftDecimals,
@@ -8,12 +8,13 @@ import {
   platformName,
   platformWebsite,
 } from './constants';
-import { AirdropResponse } from './types';
+import { AirdropInfo, AirdropResponse } from './types';
 import { AirdropFetcher, AirdropFetcherExecutor } from '../../AirdropFetcher';
 
 const driftFactor = new BigNumber(10 ** driftDecimals);
 export const claimStart = 1715860800000;
-export async function fetchAirdropAmount(owner: string) {
+
+export async function fetchAirdropInfo(owner: string): Promise<AirdropInfo> {
   const res: AxiosResponse<AirdropResponse> = await axios.get(
     airdropUrl + owner,
     {
@@ -21,7 +22,7 @@ export async function fetchAirdropAmount(owner: string) {
         Origin: 'https://drift.foundation',
         Referer: 'https://drift.foundation/',
       },
-      timeout: 1000,
+      timeout: 4000,
       validateStatus(status) {
         return status === 404 || status === 200;
       },
@@ -29,9 +30,16 @@ export async function fetchAirdropAmount(owner: string) {
   );
 
   const availableAmount =
-    Date.now() > res.data.end_ts ? res.data.end_amount : res.data.start_amount;
+    Date.now() > res.data.end_ts * 1000
+      ? res.data.end_amount
+      : res.data.start_amount;
 
-  return new BigNumber(availableAmount || 0).dividedBy(driftFactor).toNumber();
+  return {
+    amount: new BigNumber(availableAmount || 0)
+      .dividedBy(driftFactor)
+      .toNumber(),
+    merkle: res.data.merkle_tree,
+  };
 }
 
 const airdropStatics = {
@@ -40,21 +48,24 @@ const airdropStatics = {
   image: platformImage,
   label: 'DRIFT',
   name: undefined,
-  organizerName: platformName,
-  organizerLink: platformWebsite,
+  emitterName: platformName,
+  emitterLink: platformWebsite,
   claimStart,
   claimEnd: undefined,
 };
 const fetchAirdropExecutor: AirdropFetcherExecutor = async (owner: string) => {
-  const amount = await fetchAirdropAmount(owner);
+  let { amount } = await fetchAirdropInfo(owner);
+  if (amount === 0) amount = -1;
+
+  const claimStatus = getAirdropClaimStatus(
+    airdropStatics.claimStart,
+    airdropStatics.claimEnd
+  );
   return {
     ...airdropStatics,
     amount,
-    ...getAirdropStatus(
-      airdropStatics.claimStart,
-      airdropStatics.claimEnd,
-      amount
-    ),
+    claimStatus,
+    isClaimed: false,
     price: null,
   };
 };

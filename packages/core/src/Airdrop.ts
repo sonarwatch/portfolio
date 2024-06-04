@@ -3,17 +3,21 @@ import { NetworkIdType } from './Network';
 import { UsdValue } from './UsdValue';
 
 export enum AirdropClaimStatus {
-  notYetOpen = 'notYetOpen',
-  open = 'open',
-  closed = 'closed',
+  notYetOpen = '0_notYetOpen',
+  open = '1_open',
+  closed = '2_closed',
 }
 
 export enum AirdropUserStatus {
-  claimable = 'claimable',
-  claimableLater = 'claimableLater',
-  claimed = 'claimed',
-  claimMissed = 'claimMissed',
-  nonEligible = 'nonEligible',
+  claimable = '0_claimable',
+  claimableLater = '1_claimableLater',
+  claimed = '2_claimed',
+  claimMissed = '3_claimMissed',
+  nonEligible = '4_nonEligible',
+}
+
+export function isAirdropEligible(airdrop: Airdrop): boolean {
+  return airdrop.amount > 0;
 }
 
 export function getAirdropClaimStatus(
@@ -30,11 +34,10 @@ export function getAirdropClaimStatus(
 
 export function getAirdropUserStatus(
   claimStatus: AirdropClaimStatus,
-  amount?: number,
-  isClaimed?: boolean
+  amount: number,
+  isClaimed: boolean
 ): AirdropUserStatus {
-  if (amount === undefined || amount === 0)
-    return AirdropUserStatus.nonEligible;
+  if (amount <= 0) return AirdropUserStatus.nonEligible;
 
   if (claimStatus === AirdropClaimStatus.notYetOpen)
     return AirdropUserStatus.claimableLater;
@@ -47,36 +50,62 @@ export function getAirdropUserStatus(
   return AirdropUserStatus.claimable;
 }
 
-export function getAirdropStatus(
-  claimStart?: number,
-  claimEnd?: number,
-  amount?: number,
-  isClaimed?: boolean
-): {
-  userStatus: AirdropUserStatus;
-  claimStatus: AirdropClaimStatus;
-} {
-  const claimStatus = getAirdropClaimStatus(claimStart, claimEnd);
-  return {
-    claimStatus,
-    userStatus: getAirdropUserStatus(claimStatus, amount, isClaimed),
-  };
-}
-
 export type Airdrop = {
-  id: string; // e.g. 'tensor_season1',
-  claimStatus: AirdropClaimStatus;
-  claimLink: string; // e.g. 'https://www.tensor.trade/claim'
-  claimStart?: number; // as ms
-  claimEnd?: number; // as ms
+  /**
+   * The airdrop id. (e.g. 'jupiter_season1')
+   */
+  id: string;
+  /**
+   * The airdrop image.
+   */
   image: string;
-  organizerLink: string; // e.g. 'https://www.tensor.trade/'
-  organizerName: string; // e.g. 'Tensor'
-  name?: string; // e.g. 'Season 1'
-  label: string; // e.g. 'TSR'
+  /**
+   * The airdrop emitter name. (e.g. Jupiter)
+   */
+  emitterName: string;
+  /**
+   * The airdrop emitter link.
+   */
+  emitterLink: string;
+  /**
+   * A name for the airdrop. Should not container the emitter name. (e.g. 'Season #1')
+   */
+  name?: string;
+
+  /**
+   * The airdrop claim link.
+   */
+  claimLink: string;
+  /**
+   * The airdrop claim start date (as ms).
+   */
+  claimStart?: number;
+  /**
+   * The airdrop claim end date (as ms).
+   */
+  claimEnd?: number;
+  /**
+   * The airdrop claim status.
+   */
+  claimStatus: AirdropClaimStatus;
+
+  /**
+   * Indicates whether airdrop has already been claimed by the user.
+   */
+  isClaimed: boolean;
+  /**
+   * The airdropped item amount.
+   * If set to -1 means non eligible.
+   */
+  amount: number;
+  /**
+   * The airdropped item label.
+   */
+  label: string;
+  /**
+   * The airdropped item price.
+   */
   price: UsdValue;
-  userStatus: AirdropUserStatus;
-  amount?: number;
 };
 
 /**

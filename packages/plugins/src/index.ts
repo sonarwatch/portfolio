@@ -438,10 +438,55 @@ import {
   fetchers as haedalFetchers,
 } from './plugins/haedal';
 import {
+  platforms as flowxPlatforms,
+  jobs as flowxJobs,
+  fetchers as flowxFetchers,
+} from './plugins/flowx';
+import {
   platforms as typusPlatforms,
   jobs as typusJobs,
   fetchers as typusFetchers,
 } from './plugins/typus';
+import {
+  jobs as moleJobs,
+  fetchers as moleFetchers,
+  platforms as molePlatforms,
+} from './plugins/mole';
+import {
+  jobs as bonfidaJobs,
+  fetchers as bonfidaFetchers,
+  platforms as bonfidaPlatforms,
+} from './plugins/bonfida';
+import {
+  jobs as cropperJobs,
+  fetchers as cropperFetchers,
+  platforms as cropperPlatforms,
+} from './plugins/cropper';
+import {
+  jobs as hedgehogJobs,
+  fetchers as hedgehogFetchers,
+  platforms as hedgehogPlatforms,
+} from './plugins/hedgehog';
+import {
+  jobs as whalesmarketJobs,
+  fetchers as whalesmarketFetchers,
+  platforms as whalesmarketPlatforms,
+} from './plugins/whalesmarket';
+import {
+  jobs as futarchyJobs,
+  fetchers as futarchyFetchers,
+  platforms as futarchyPlatforms,
+} from './plugins/futarchy';
+import {
+  platforms as elixirPlatforms,
+  jobs as elixirJobs,
+  fetchers as elixirFetchers,
+} from './plugins/elixir';
+import {
+  platforms as moonwalkPlatforms,
+  jobs as moonwalkJobs,
+  fetchers as moonwalkFetchers,
+} from './plugins/moonwalk';
 
 export {
   walletTokensPlatform,
@@ -543,11 +588,20 @@ export const platforms: Platform[] = [
   ...nosanaPlatforms,
   ...jitoPlatforms,
   ...magicedenPlatforms,
+  ...flowxPlatforms,
   ...clonePlatforms,
   ...sandglassPlatforms,
   ...kriyaPlatforms,
   ...haedalPlatforms,
   ...typusPlatforms,
+  ...molePlatforms,
+  ...bonfidaPlatforms,
+  ...cropperPlatforms,
+  ...hedgehogPlatforms,
+  ...whalesmarketPlatforms,
+  ...futarchyPlatforms,
+  ...elixirPlatforms,
+  ...moonwalkPlatforms,
 ];
 
 // JOBS //
@@ -636,6 +690,15 @@ export const jobs: Job[] = [
   ...kriyaJobs,
   ...haedalJobs,
   ...typusJobs,
+  ...flowxJobs,
+  ...moleJobs,
+  ...bonfidaJobs,
+  ...cropperJobs,
+  ...hedgehogJobs,
+  ...whalesmarketJobs,
+  ...futarchyJobs,
+  ...elixirJobs,
+  ...moonwalkJobs,
 ];
 
 // FETCHERS //
@@ -726,6 +789,15 @@ export const fetchers: Fetcher[] = [
   ...kriyaFetchers,
   ...haedalFetchers,
   ...typusFetchers,
+  ...flowxFetchers,
+  ...moleFetchers,
+  ...bonfidaFetchers,
+  ...cropperFetchers,
+  ...hedgehogFetchers,
+  ...whalesmarketFetchers,
+  ...futarchyFetchers,
+  ...elixirFetchers,
+  ...moonwalkFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 

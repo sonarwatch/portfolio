@@ -2,6 +2,7 @@ import { UsdValue } from './UsdValue';
 import { NetworkIdType } from './Network';
 import { Yield } from './Yield';
 import { AddressSystemType } from './Address';
+import { TokenInfo } from './TokenList';
 
 /**
  * Represents the type of a portfolio asset.
@@ -378,4 +379,5 @@ export type FetchersResult = {
   fetcherReports: FetcherReport[];
   value: UsdValue;
   elements: PortfolioElement[];
+  tokenInfo?: Partial<Record<NetworkIdType, Record<string, TokenInfo>>>;
 };

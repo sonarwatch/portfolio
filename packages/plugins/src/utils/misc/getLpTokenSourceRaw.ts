@@ -11,7 +11,7 @@ export type PoolUnderlyingRaw = {
   address: string;
   reserveAmountRaw: BigNumber | string;
   decimals: number;
-  weight: number;
+  weight?: number;
   tokenPrice?: TokenPrice;
 };
 
@@ -58,7 +58,7 @@ export function getLpTokenSourceRaw(
     sourceId: params.sourceId,
     poolUnderlyings: fPoolUnderlyingsRaw,
     elementName: params.elementName,
-    liquidityName: params.elementName,
+    liquidityName: params.liquidityName,
     priceUnderlyings: params.priceUnderlyings,
   });
 }

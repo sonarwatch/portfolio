@@ -2,6 +2,215 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.12.11](https://github.com/sonarwatch/portfolio/compare/plugins-0.12.10...plugins-0.12.11) (2024-06-04)
+
+
+
+## [0.12.10](https://github.com/sonarwatch/portfolio/compare/plugins-0.12.9...plugins-0.12.10) (2024-06-03)
+
+
+
+## [0.12.9](https://github.com/sonarwatch/portfolio/compare/plugins-0.12.8...plugins-0.12.9) (2024-06-03)
+
+
+
+## [0.12.8](https://github.com/sonarwatch/portfolio/compare/plugins-0.12.7...plugins-0.12.8) (2024-06-03)
+
+
+
+## [0.12.7](https://github.com/sonarwatch/portfolio/compare/plugins-0.12.6...plugins-0.12.7) (2024-06-03)
+
+
+
+## [0.12.6](https://github.com/sonarwatch/portfolio/compare/plugins-0.12.5...plugins-0.12.6) (2024-06-03)
+
+
+
+## [0.12.5](https://github.com/sonarwatch/portfolio/compare/plugins-0.12.4...plugins-0.12.5) (2024-06-03)
+
+
+
+## [0.12.4](https://github.com/sonarwatch/portfolio/compare/plugins-0.12.3...plugins-0.12.4) (2024-06-03)
+
+
+
+## [0.12.3](https://github.com/sonarwatch/portfolio/compare/plugins-0.12.2...plugins-0.12.3) (2024-06-03)
+
+
+
+## [0.12.2](https://github.com/sonarwatch/portfolio/compare/plugins-0.12.1...plugins-0.12.2) (2024-06-03)
+
+
+
+## [0.12.1](https://github.com/sonarwatch/portfolio/compare/plugins-0.12.0...plugins-0.12.1) (2024-06-03)
+
+
+
+# [0.12.0](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.236...plugins-0.12.0) (2024-06-03)
+
+
+
+## [0.11.236](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.235...plugins-0.11.236) (2024-06-03)
+
+
+
+## [0.11.235](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.234...plugins-0.11.235) (2024-06-03)
+
+
+
+## [0.11.234](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.233...plugins-0.11.234) (2024-06-02)
+
+
+
+## [0.11.233](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.232...plugins-0.11.233) (2024-05-31)
+
+
+
+## [0.11.232](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.231...plugins-0.11.232) (2024-05-31)
+
+
+
+## [0.11.231](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.230...plugins-0.11.231) (2024-05-31)
+
+
+
+## [0.11.230](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.229...plugins-0.11.230) (2024-05-31)
+
+
+
+## [0.11.229](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.228...plugins-0.11.229) (2024-05-30)
+
+
+
+## [0.11.228](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.227...plugins-0.11.228) (2024-05-30)
+
+
+
+## [0.11.227](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.226...plugins-0.11.227) (2024-05-30)
+
+
+
+## [0.11.226](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.225...plugins-0.11.226) (2024-05-30)
+
+
+
+## [0.11.225](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.224...plugins-0.11.225) (2024-05-29)
+
+
+
+## [0.11.224](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.223...plugins-0.11.224) (2024-05-29)
+
+
+
+## [0.11.223](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.222...plugins-0.11.223) (2024-05-29)
+
+
+
+## [0.11.222](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.221...plugins-0.11.222) (2024-05-28)
+
+
+
+## [0.11.221](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.220...plugins-0.11.221) (2024-05-28)
+
+
+
+## [0.11.220](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.219...plugins-0.11.220) (2024-05-27)
+
+
+
+## [0.11.219](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.218...plugins-0.11.219) (2024-05-27)
+
+
+
+## [0.11.218](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.217...plugins-0.11.218) (2024-05-27)
+
+
+
+## [0.11.217](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.216...plugins-0.11.217) (2024-05-27)
+
+
+
+## [0.11.216](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.215...plugins-0.11.216) (2024-05-24)
+
+
+
+## [0.11.215](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.214...plugins-0.11.215) (2024-05-24)
+
+
+
+## [0.11.214](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.213...plugins-0.11.214) (2024-05-24)
+
+
+
+## [0.11.213](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.212...plugins-0.11.213) (2024-05-24)
+
+
+
+## [0.11.212](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.211...plugins-0.11.212) (2024-05-23)
+
+
+### Reverts
+
+* Revert "linting" ([cc27848](https://github.com/sonarwatch/portfolio/commit/cc27848b5a5e965d54457cd9dce7359a62c5e48d))
+
+
+
+## [0.11.211](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.210...plugins-0.11.211) (2024-05-23)
+
+
+
+## [0.11.210](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.209...plugins-0.11.210) (2024-05-23)
+
+
+
+## [0.11.209](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.208...plugins-0.11.209) (2024-05-23)
+
+
+
+## [0.11.208](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.207...plugins-0.11.208) (2024-05-23)
+
+
+
+## [0.11.207](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.206...plugins-0.11.207) (2024-05-22)
+
+
+
+## [0.11.206](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.205...plugins-0.11.206) (2024-05-16)
+
+
+
+## [0.11.205](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.204...plugins-0.11.205) (2024-05-16)
+
+
+
+## [0.11.204](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.203...plugins-0.11.204) (2024-05-14)
+
+
+
+## [0.11.203](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.202...plugins-0.11.203) (2024-05-14)
+
+
+
+## [0.11.202](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.201...plugins-0.11.202) (2024-05-06)
+
+
+
+## [0.11.201](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.200...plugins-0.11.201) (2024-05-06)
+
+
+
+## [0.11.200](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.199...plugins-0.11.200) (2024-05-06)
+
+
+
+## [0.11.199](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.198...plugins-0.11.199) (2024-05-06)
+
+
+
+## [0.11.198](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.197...plugins-0.11.198) (2024-05-06)
+
+
+
 ## [0.11.197](https://github.com/sonarwatch/portfolio/compare/plugins-0.11.196...plugins-0.11.197) (2024-05-04)
 
 

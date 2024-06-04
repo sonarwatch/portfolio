@@ -5,18 +5,23 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { driftMint, platform, platformId } from './constants';
+import { distributorPid, driftMint, platform, platformId } from './constants';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { claimStart, fetchAirdropAmount } from './helpersAirdrop';
+import { claimStart, fetchAirdropInfo } from './helpersAirdrop';
+import { deriveClaimStatus } from '../jupiter/helpers';
+import { getClientSolana } from '../../utils/clients';
 
+const claimEnds = 1723831200000;
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  // const client = getClientSolana();
-  // const claimStatus = deriveClaimStatus(owner, res.data.merkle_tree, '');
-  // const account = await client.getAccountInfo(claimStatus);
-  // if (account) return [];
+  if (Date.now() > claimEnds) return [];
 
-  const amount = await fetchAirdropAmount(owner);
+  const { amount, merkle } = await fetchAirdropInfo(owner);
   if (amount === 0) return [];
+
+  const client = getClientSolana();
+  const claimStatus = deriveClaimStatus(owner, merkle, distributorPid);
+  const account = await client.getAccountInfo(claimStatus);
+  if (account) return [];
 
   const tokenPrice = driftMint
     ? await cache.getTokenPrice(driftMint, NetworkId.solana)

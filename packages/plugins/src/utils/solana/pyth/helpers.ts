@@ -16,9 +16,8 @@ import {
 import { readBigInt64LE, readBigUInt64LE } from './readBig';
 import { SolanaClient } from '../../clients/types';
 import { getMultipleAccountsInfoSafe } from '../getMultipleAccountsInfoSafe';
-import { mintAccountStruct } from '../structs';
-import { getParsedMultipleAccountsInfo } from '../getParsedMultipleAccountsInfo';
 import { walletTokensPlatform } from '../../../plugins/tokens/constants';
+import { getMultipleDecimalsAsMap } from '../getMultipleDecimalsAsMap';
 
 export const Magic = 0xa1b2c3d4;
 export const Version2 = 2;
@@ -279,52 +278,53 @@ export function getPythPricesDatasMap(
 
 export async function getPythPrices(
   connection: SolanaClient,
-  oracleAddresses: PublicKey[]
-) {
-  const oracleAccounts = await getMultipleAccountsInfoSafe(
-    connection,
-    oracleAddresses
-  );
-  return oracleAccounts.map((acc) => {
+  feedAddresses: PublicKey[]
+): Promise<(number | null)[]> {
+  const accounts = await getMultipleAccountsInfoSafe(connection, feedAddresses);
+  return accounts.map((acc) => {
     if (!acc) return null;
     return (
       parsePriceData(acc.data).price || parsePriceData(acc.data).previousPrice
     );
   });
 }
+export async function getPythPrice(
+  connection: SolanaClient,
+  feedAddress: PublicKey
+): Promise<number | null> {
+  return (await getPythPrices(connection, [feedAddress]))[0];
+}
 
 export async function getPythTokenPriceSources(
   connection: SolanaClient,
   params: {
     mint: PublicKey;
-    oracle: PublicKey;
+    feed: PublicKey;
     platformId?: string;
   }[]
 ): Promise<(TokenPriceSource | null)[]> {
   const prices = await getPythPrices(
     connection,
-    params.map((p) => p.oracle)
+    params.map((p) => p.feed)
   );
-  const mintAccounts = await getParsedMultipleAccountsInfo(
+  const decimalsMap = await getMultipleDecimalsAsMap(
     connection,
-    mintAccountStruct,
     params.map((p) => p.mint)
   );
-  return prices.map((price, i): TokenPriceSource | null => {
-    if (price === null) return null;
-    const decimals = mintAccounts.at(i)?.decimals;
+
+  return params.map((param, i): TokenPriceSource | null => {
+    const price = prices.at(i);
+    if (price === null || price === undefined) return null;
+    const address = param.mint.toString();
+    const decimals = decimalsMap.get(address);
     if (!decimals) return null;
-    const cparams = params.at(i);
-    if (!cparams) return null;
-    const address = cparams.mint.toString();
-    const oracle = cparams.oracle.toString();
-    const platformId = cparams.platformId || walletTokensPlatform.id;
+
     return {
       address,
-      id: oracle,
+      id: `pyth-feed-${param.feed.toString()}`,
       decimals,
       networkId: NetworkId.solana,
-      platformId,
+      platformId: param.platformId || walletTokensPlatform.id,
       price,
       timestamp: Date.now(),
       weight: 1,

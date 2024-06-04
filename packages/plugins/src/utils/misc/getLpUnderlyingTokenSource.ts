@@ -55,7 +55,7 @@ export type PoolUnderlying = {
   address: string;
   reserveAmount: number;
   decimals: number;
-  weight: number;
+  weight?: number;
   tokenPrice?: TokenPrice;
 };
 
@@ -70,13 +70,16 @@ export type GetLpUnderlyingTokenSourceParams = {
   platformId?: string;
   acceptedPairs?: string[];
   minReserveValue?: number;
+  liquidityName?: string;
+  elementName?: string;
 };
 
 export function getLpUnderlyingTokenSource(
   params: GetLpUnderlyingTokenSourceParams
 ) {
   let { platformId, acceptedPairs, minReserveValue } = params;
-  const { networkId, poolUnderlyings, sourceId } = params;
+  const { networkId, poolUnderlyings, sourceId, liquidityName, elementName } =
+    params;
   if (!platformId) platformId = walletTokensPlatform.id;
   if (!acceptedPairs) acceptedPairs = defaultAcceptedPairs.get(networkId);
   if (acceptedPairs === undefined) return [];
@@ -84,16 +87,17 @@ export function getLpUnderlyingTokenSource(
   if (!minReserveValue) minReserveValue = 2500;
 
   // Verify underlyings weights
-  const totalWeight = poolUnderlyings.reduce(
-    (partialSum, p) => partialSum + p.weight,
+  let totalWeight = poolUnderlyings.reduce(
+    (partialSum, p) => partialSum + (p.weight || 0),
     0
   );
+  if (totalWeight === 0) totalWeight = 1;
   if (totalWeight > 1.01)
     throw new Error(`Weights are greater than 1: ${totalWeight}`);
   if (totalWeight < 0.99)
     throw new Error(`Weights are smaller than 1: ${totalWeight}`);
 
-  let knownUnderlaying: KnownPoolUnderlying | undefined;
+  let knownUnderlying: KnownPoolUnderlying | undefined;
   const fAddresses = poolUnderlyings.map((u) =>
     formatTokenAddress(u.address, networkId)
   );
@@ -105,20 +109,20 @@ export function getLpUnderlyingTokenSource(
     if (!acceptedPairs.includes(fAddresses[i])) continue;
     const reserveValue = u.tokenPrice.price * u.reserveAmount;
     if (
-      knownUnderlaying &&
+      knownUnderlying &&
       knownReserveValue &&
       knownReserveValue > reserveValue
     )
       continue;
 
-    knownUnderlaying = u as KnownPoolUnderlying;
+    knownUnderlying = u as KnownPoolUnderlying;
     knownReserveValue = reserveValue;
   }
-  if (!knownUnderlaying || !knownReserveValue) return [];
+  if (!knownUnderlying || !knownReserveValue) return [];
   if (knownReserveValue < minReserveValue) return [];
 
   const knownUnderlayingAddress = formatTokenAddress(
-    knownUnderlaying.address,
+    knownUnderlying.address,
     networkId
   );
   const sources: TokenPriceSource[] = [];
@@ -132,9 +136,10 @@ export function getLpUnderlyingTokenSource(
     )
       continue;
 
-    const price =
-      ((u.weight / knownUnderlaying.weight) * knownReserveValue) /
-      u.reserveAmount;
+    let weightFactor = 1;
+    if (u.weight && knownUnderlying.weight)
+      weightFactor = u.weight / knownUnderlying.weight;
+    const price = (weightFactor * knownReserveValue) / u.reserveAmount;
 
     const source: TokenPriceSource = {
       id: sourceId,
@@ -145,6 +150,8 @@ export function getLpUnderlyingTokenSource(
       price,
       weight: getSourceWeight(knownReserveValue),
       timestamp: Date.now(),
+      liquidityName,
+      elementName,
     };
     sources.push(source);
   }

@@ -69,7 +69,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (claimStatus) continue;
 
     const proof = proofs[j];
-    const { decimals, mint } = eligibleAirdrops[j];
+    const { decimals, mint, claimStarts } = eligibleAirdrops[j];
 
     const tokenPrice = tokenPriceById.get(mint);
 
@@ -82,7 +82,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       NetworkId.solana,
       tokenPrice,
       undefined,
-      { isClaimable: true }
+      { lockedUntil: claimStarts }
     );
 
     assets.push(asset);

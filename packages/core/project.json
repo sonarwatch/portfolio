@@ -22,7 +22,10 @@
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/core/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/core/**/*.ts",
+          "packages/core/package.json"
+        ]
       }
     },
     "test": {
@@ -44,7 +47,8 @@
       "dependsOn": ["build"],
       "options": {
         "postTargets": ["core:npm"],
-        "allowEmptyRelease": true
+        "allowEmptyRelease": true,
+        "trackDeps": true
       }
     },
     "npm": {

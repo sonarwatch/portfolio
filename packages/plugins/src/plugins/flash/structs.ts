@@ -1,10 +1,10 @@
 import {
   BeetStruct,
+  FixableBeetStruct,
+  array,
   bool,
   i32,
-  u32,
   u8,
-  uniformFixedSizeArray,
 } from '@metaplex-foundation/beet';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
@@ -479,9 +479,8 @@ export const tokenRatiosStruct = new BeetStruct<TokenRatios>(
   (args) => args as TokenRatios
 );
 
-export type Pool = {
+export type PoolBis = {
   buffer: Buffer;
-  nameLength: number;
   name: number[];
   permissions: Permissions;
   inceptionTime: BigNumber;
@@ -489,11 +488,8 @@ export type Pool = {
   oracleAuthority: PublicKey;
   flpTokenAccount: PublicKey;
   rewardCustody: PublicKey;
-  custodiesLength: number;
   custodies: PublicKey[];
-  ratiosLength: number;
   ratios: TokenRatios[];
-  marketsLength: number;
   markets: PublicKey[];
   maxAumUsd: BigNumber;
   aumUsd: BigNumber;
@@ -505,23 +501,19 @@ export type Pool = {
   vpVolumeFactor: number;
 };
 
-export const pool1Struct = new BeetStruct<Pool>(
+export const flpStruct = new FixableBeetStruct<PoolBis>(
   [
     ['buffer', blob(8)],
-    ['nameLength', u32],
-    ['name', uniformFixedSizeArray(u8, 8)],
+    ['name', array(u8)],
     ['permissions', permissionsStruct],
     ['inceptionTime', i64],
     ['flpMint', publicKey],
     ['oracleAuthority', publicKey],
     ['flpTokenAccount', publicKey],
     ['rewardCustody', publicKey],
-    ['custodiesLength', u32],
-    ['custodies', uniformFixedSizeArray(publicKey, 4)],
-    ['ratiosLength', u32],
-    ['ratios', uniformFixedSizeArray(tokenRatiosStruct, 4)],
-    ['marketsLength', u32],
-    ['markets', uniformFixedSizeArray(publicKey, 6)],
+    ['custodies', array(publicKey)],
+    ['ratios', array(tokenRatiosStruct)],
+    ['markets', array(publicKey)],
     ['maxAumUsd', u128],
     ['aumUsd', u128],
     ['totalStaked', stakeStatsStruct],
@@ -531,63 +523,5 @@ export const pool1Struct = new BeetStruct<Pool>(
     ['flpTokenAccountBump', u8],
     ['vpVolumeFactor', u8],
   ],
-  (args) => args as Pool
-);
-
-export const pool2Struct = new BeetStruct<Pool>(
-  [
-    ['buffer', blob(8)],
-    ['nameLength', u32],
-    ['name', uniformFixedSizeArray(u8, 9)],
-    ['permissions', permissionsStruct],
-    ['inceptionTime', i64],
-    ['flpMint', publicKey],
-    ['oracleAuthority', publicKey],
-    ['flpTokenAccount', publicKey],
-    ['rewardCustody', publicKey],
-    ['custodiesLength', u32],
-    ['custodies', uniformFixedSizeArray(publicKey, 6)],
-    ['ratiosLength', u32],
-    ['ratios', uniformFixedSizeArray(tokenRatiosStruct, 6)],
-    ['marketsLength', u32],
-    ['markets', uniformFixedSizeArray(publicKey, 10)],
-    ['maxAumUsd', u128],
-    ['aumUsd', u128],
-    ['totalStaked', stakeStatsStruct],
-    ['stakingFeeShareBps', u64],
-    ['bump', u8],
-    ['flpMintBump', u8],
-    ['flpTokenAccountBump', u8],
-    ['vpVolumeFactor', u8],
-  ],
-  (args) => args as Pool
-);
-
-export const pool3Struct = new BeetStruct<Pool>(
-  [
-    ['buffer', blob(8)],
-    ['nameLength', u32],
-    ['name', uniformFixedSizeArray(u8, 12)],
-    ['permissions', permissionsStruct],
-    ['inceptionTime', i64],
-    ['flpMint', publicKey],
-    ['oracleAuthority', publicKey],
-    ['flpTokenAccount', publicKey],
-    ['rewardCustody', publicKey],
-    ['custodiesLength', u32],
-    ['custodies', uniformFixedSizeArray(publicKey, 5)],
-    ['ratiosLength', u32],
-    ['ratios', uniformFixedSizeArray(tokenRatiosStruct, 5)],
-    ['marketsLength', u32],
-    ['markets', uniformFixedSizeArray(publicKey, 8)],
-    ['maxAumUsd', u128],
-    ['aumUsd', u128],
-    ['totalStaked', stakeStatsStruct],
-    ['stakingFeeShareBps', u64],
-    ['bump', u8],
-    ['flpMintBump', u8],
-    ['flpTokenAccountBump', u8],
-    ['vpVolumeFactor', u8],
-  ],
-  (args) => args as Pool
+  (args) => args as PoolBis
 );
