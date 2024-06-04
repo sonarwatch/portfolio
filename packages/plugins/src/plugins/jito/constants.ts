@@ -6,7 +6,7 @@ export const platform: Platform = {
   name: 'Jito',
   image: 'https://sonar.watch/img/platforms/jito.png',
   defiLlamaId: 'jito',
-  website: 'https://jito.network/',
+  website: 'https://jito.network/harvest',
   twitter: 'https://twitter.com/jito_sol',
 };
 
