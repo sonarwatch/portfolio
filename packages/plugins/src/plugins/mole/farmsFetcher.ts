@@ -167,34 +167,37 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         );
       }
 
+      if (
+        borrowedAssets.length === 0 &&
+        suppliedAssets.length === 0 &&
+        rewardAssets.length === 0
+      )
+        return;
+
       const { borrowedValue, suppliedValue, value, rewardValue } =
         getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
 
-      if (
-        (borrowedValue && borrowedValue > 0) ||
-        (suppliedValue && suppliedValue > 0)
-      )
-        elements.push({
-          type: PortfolioElementType.borrowlend,
-          networkId: NetworkId.sui,
-          platformId,
-          label: 'Farming',
-          name: `${farm.sourceName} #${positionId}`,
+      elements.push({
+        type: PortfolioElementType.borrowlend,
+        networkId: NetworkId.sui,
+        platformId,
+        label: 'Farming',
+        name: `${farm.sourceName} #${positionId}`,
+        value,
+        data: {
+          borrowedAssets,
+          borrowedValue,
+          borrowedYields,
+          suppliedAssets,
+          suppliedValue,
+          suppliedYields,
+          collateralRatio: null,
+          healthRatio: debtValue.dividedBy(health).toNumber(),
+          rewardAssets,
+          rewardValue,
           value,
-          data: {
-            borrowedAssets,
-            borrowedValue,
-            borrowedYields,
-            suppliedAssets,
-            suppliedValue,
-            suppliedYields,
-            collateralRatio: null,
-            healthRatio: debtValue.dividedBy(health).toNumber(),
-            rewardAssets,
-            rewardValue,
-            value,
-          },
-        });
+        },
+      });
     })
   );
 
