@@ -3,7 +3,7 @@ import {
   u8,
   uniformFixedSizeArray,
 } from '@metaplex-foundation/beet';
-import { PublicKey } from '@metaplex-foundation/js';
+import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { blob, u64 } from '../../../utils/solana';
