@@ -7,6 +7,7 @@ import {
 import { formatReservesAndIncentives } from '@aave/math-utils';
 import {
   BorrowLendRate,
+  TokenPriceSource,
   aprToApy,
   borrowLendRatesPrefix,
   formatTokenAddress,
@@ -147,7 +148,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       const underlyingAssetPrice = underlyingAssetPrices[j];
       if (!underlyingAssetPrice) continue;
 
-      await cache.setTokenPriceSource({
+      const source: TokenPriceSource = {
         id: platformId,
         weight: 1,
         address: aTokenAddress,
@@ -166,7 +167,8 @@ const executor: JobExecutor = async (cache: Cache) => {
         ],
         elementName,
         timestamp: Date.now(),
-      });
+      };
+      await cache.setTokenPriceSource(source);
     }
   }
 };

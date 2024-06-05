@@ -7,8 +7,8 @@
     "@sonarwatch/portfolio-core": "^0.12.0"
   },
   "dependencies": {
-    "@aave/contract-helpers": "^1.18.3",
-    "@aave/math-utils": "^1.18.3",
+    "@aave/contract-helpers": "^1.28.2",
+    "@aave/math-utils": "^1.28.2",
     "@aptos-labs/ts-sdk": "^1.11.0",
     "@bonfida/spl-name-service": "^1.0.10",
     "@cosmjs/cosmwasm-stargate": "^0.31.1",
