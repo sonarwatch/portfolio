@@ -159,7 +159,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     if (assets.length > 0)
       elements.push({
-        networkId: NetworkId.solana,
+        networkId: NetworkId.sui,
         label: 'Deposit',
         platformId,
         name: vault.metadata,
