@@ -82,7 +82,7 @@
               "packages/plugins/scripts/*.ts",
               "packages/plugins/src/generators/**/*.ts"
             ],
-            "ignoredDependencies": ["web3-v1"]
+            "ignoredDependencies": ["web3-v1", "ethers"]
           }
         ]
       }

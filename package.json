@@ -56,6 +56,7 @@
     "@aptos-labs/ts-sdk": "^1.11.0",
     "@bonfida/spl-name-service": "^1.0.10",
     "@cosmjs/cosmwasm-stargate": "^0.31.1",
+    "ethers": "^5.7.2",
     "@ethersproject/address": "^5.7.0",
     "@ethersproject/bignumber": "^5.7.0",
     "@ethersproject/bytes": "^5.7.0",
