@@ -7,7 +7,7 @@ import {
   u32,
   u8,
 } from '@metaplex-foundation/beet';
-import { PublicKey } from '@metaplex-foundation/js';
+import { PublicKey } from '@solana/web3.js';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import BigNumber from 'bignumber.js';
 import { blob, u128, u64 } from '../../utils/solana';

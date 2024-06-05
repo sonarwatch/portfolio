@@ -167,6 +167,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         );
       }
 
+      if (
+        borrowedAssets.length === 0 &&
+        suppliedAssets.length === 0 &&
+        rewardAssets.length === 0
+      )
+        return;
+
       const { borrowedValue, suppliedValue, value, rewardValue } =
         getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
 
