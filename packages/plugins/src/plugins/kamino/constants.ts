@@ -56,6 +56,10 @@ export const lendingConfigs: Map<string, LendingMarketConfig> = new Map([
           'jupSoLaHXQiZZTSfEWMTRRgpnyFm8f6sZdosWBjx93v',
           'So11111111111111111111111111111111111111112',
         ],
+        [
+          'he1iusmfkpAdwvxLNGV8Y1iSbj4rUy6yMhEA3fotn9A',
+          'So11111111111111111111111111111111111111112',
+        ],
       ],
       leveragePairs: [
         [
