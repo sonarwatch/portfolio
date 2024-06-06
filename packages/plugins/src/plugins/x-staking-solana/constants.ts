@@ -21,7 +21,7 @@ export const stepFinancePlatform: Platform = {
 export const allbridgePlatformId = 'allbridge';
 export const allbridgePlatform: Platform = {
   id: allbridgePlatformId,
-  name: 'Step Finance',
+  name: 'Allbridge',
   image: 'https://sonar.watch/img/platforms/allbridge.png',
   website: 'https://stake.allbridge.io/?chain=SOL',
   twitter: 'https://twitter.com/Allbridge_io',
