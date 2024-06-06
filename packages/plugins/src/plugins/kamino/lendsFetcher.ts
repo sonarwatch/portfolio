@@ -250,9 +250,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         )
           continue;
 
-        const amountRaw = borrow.borrowedAmountSf.dividedBy(
-          borrow.cumulativeBorrowRateBsf.value0
-        );
+        const amountRaw = borrow.borrowedAmountSf.dividedBy(2 ** 60);
         const reserve = reserves[borrow.borrowReserve.toString()];
         if (!reserve) continue;
 
@@ -271,14 +269,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       }
 
       if (suppliedAssets.length !== 0 || borrowedAssets.length !== 0) {
-        const { borrowedValue, suppliedValue, value, rewardValue } =
-          getElementLendingValues(
-            suppliedAssets,
-            borrowedAssets,
-            rewardAssets,
-            suppliedLtvs,
-            borrowedWeights
-          );
+        const {
+          borrowedValue,
+          suppliedValue,
+          value,
+          rewardValue,
+          healthRatio,
+        } = getElementLendingValues(
+          suppliedAssets,
+          borrowedAssets,
+          rewardAssets,
+          suppliedLtvs,
+          borrowedWeights
+        );
 
         elements.push({
           type: PortfolioElementType.borrowlend,
@@ -294,7 +297,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             suppliedAssets,
             suppliedValue,
             suppliedYields,
-            healthRatio: null,
+            healthRatio: healthRatio ? 1 + healthRatio : healthRatio,
             collateralRatio: null,
 
             rewardAssets,

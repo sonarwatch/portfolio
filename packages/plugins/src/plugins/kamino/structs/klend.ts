@@ -16,7 +16,6 @@ export type BigFractionBytes = {
   value1: BigNumber;
   value2: BigNumber;
   value3: BigNumber;
-  value: BigNumber[];
   padding: BigNumber;
   padding1: BigNumber;
 };
