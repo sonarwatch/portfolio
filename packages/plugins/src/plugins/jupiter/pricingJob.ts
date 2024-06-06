@@ -53,6 +53,9 @@ const mints = [
   'phaseZSfPxTDBpiVb96H4XFSD8xHeHxZre5HerehBJG',
   'picobAEvs6w7QEknPce34wAE4gknZA9v5tTonnmHYdX',
   'pumpkinsEq8xENVZE6QgTS93EN4r9iKvNxNALS1ooyp',
+  'WensoLXxZJnev2YvihHFchn1dVVFnFLYvgomXWvvwRu',
+  'HausGKcq9G9zM3azwNmgZyzUvYeeqR8h8663PmZpxuDj',
+  'Fi5GayacZzUrfaCRCJtBz2vSYkGF56xjgCceZx5SbXwq',
 ];
 const vsToken = solanaNativeWrappedAddress;
 
