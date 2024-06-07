@@ -74,10 +74,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         NetworkId.sui,
         tokenPrice
       ),
-      attributes: { isClaimable: false },
     });
-
-  // TODO handle 'available to claim'
 
   if (assets.length > 0)
     elements.push({
