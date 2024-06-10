@@ -1,7 +1,9 @@
 import {
-  getElementLendingValues,
+  getUsdValueSum,
   NetworkId,
   PortfolioAsset,
+  PortfolioAssetGeneric,
+  PortfolioAssetType,
   PortfolioElement,
   PortfolioElementType,
   Yield,
@@ -124,15 +126,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         )
       );
 
-    if (!pnl.isZero())
-      rewardAssets.push(
-        tokenPriceToAssetToken(
-          tokenPrice.address,
-          pnl.toNumber(),
-          NetworkId.sui,
-          tokenPrice
-        )
-      );
+    const pnlAsset: PortfolioAssetGeneric = {
+      type: PortfolioAssetType.generic,
+      networkId: NetworkId.solana,
+      value: pnl.toNumber(),
+      attributes: {},
+      data: {
+        amount: pnl.toNumber(),
+        price: 1,
+        name: 'PnL',
+      },
+    };
+    rewardAssets.push(pnlAsset);
 
     if (
       suppliedAssets.length === 0 &&
@@ -141,8 +146,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     )
       return;
 
-    const { borrowedValue, suppliedValue, healthRatio, rewardValue } =
-      getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
     const value = positionSizeUsd.plus(pnl).toNumber();
     const side = position.data?.content?.fields?.value?.fields.isPosPositive
       ? 'Long'
@@ -157,15 +160,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       name: `${perp.name} ${side} ${leverage.decimalPlaces(2)}x`,
       data: {
         borrowedAssets,
-        borrowedValue,
+        borrowedValue: getUsdValueSum(borrowedAssets.map((a) => a.value)),
         borrowedYields,
         suppliedAssets,
-        suppliedValue,
+        suppliedValue: getUsdValueSum(suppliedAssets.map((a) => a.value)),
         suppliedYields,
         collateralRatio: null,
         rewardAssets,
-        rewardValue,
-        healthRatio,
+        rewardValue: getUsdValueSum(rewardAssets.map((a) => a.value)),
+        healthRatio: null,
         value,
       },
     });
