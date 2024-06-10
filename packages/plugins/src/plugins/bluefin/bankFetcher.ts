@@ -5,7 +5,6 @@ import {
   PortfolioAsset,
   PortfolioElement,
   PortfolioElementType,
-  usdcOnSuiAddress,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -16,6 +15,7 @@ import { getObject } from '../../utils/sui/getObject';
 import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
 import { Bank, BankAccount } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { usdcSuiType } from '../../utils/sui/constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elements: PortfolioElement[] = [];
@@ -24,10 +24,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const [bank, tokenPrice] = await Promise.all([
     getObject<Bank>(client, bankObjectId),
-    cache.getTokenPrice(
-      formatMoveTokenAddress(usdcOnSuiAddress),
-      NetworkId.sui
-    ),
+    cache.getTokenPrice(formatMoveTokenAddress(usdcSuiType), NetworkId.sui),
   ]);
 
   if (!bank.data?.content?.fields.accounts.fields.id.id || !tokenPrice)
@@ -51,7 +48,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   )
     assets.push(
       tokenPriceToAssetToken(
-        usdcOnSuiAddress,
+        usdcSuiType,
         new BigNumber(account.data?.content?.fields.value.fields.balance)
           .dividedBy(10 ** 9)
           .toNumber(),
