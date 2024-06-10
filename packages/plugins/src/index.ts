@@ -487,6 +487,11 @@ import {
   jobs as moonwalkJobs,
   fetchers as moonwalkFetchers,
 } from './plugins/moonwalk';
+import {
+  jobs as bluefinJobs,
+  fetchers as bluefinFetchers,
+  platforms as bluefinPlatforms,
+} from './plugins/bluefin';
 
 export {
   walletTokensPlatform,
@@ -602,6 +607,7 @@ export const platforms: Platform[] = [
   ...futarchyPlatforms,
   ...elixirPlatforms,
   ...moonwalkPlatforms,
+  ...bluefinPlatforms,
 ];
 
 // JOBS //
@@ -699,6 +705,7 @@ export const jobs: Job[] = [
   ...futarchyJobs,
   ...elixirJobs,
   ...moonwalkJobs,
+  ...bluefinJobs,
 ];
 
 // FETCHERS //
@@ -798,6 +805,7 @@ export const fetchers: Fetcher[] = [
   ...futarchyFetchers,
   ...elixirFetchers,
   ...moonwalkFetchers,
+  ...bluefinFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
