@@ -4,7 +4,6 @@ import {
   PortfolioAsset,
   PortfolioElement,
   PortfolioElementType,
-  usdcOnSuiAddress,
   Yield,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
@@ -17,6 +16,7 @@ import { PerpetualV2, UserPosition } from './types';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { ObjectResponse } from '../../utils/sui/types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { usdcSuiType } from '../../utils/sui/constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -29,7 +29,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       networkId: NetworkId.sui,
     }
   );
-  const tokenPrice = await cache.getTokenPrice(usdcOnSuiAddress, NetworkId.sui);
+  const tokenPrice = await cache.getTokenPrice(usdcSuiType, NetworkId.sui);
 
   if (!perpetuals || !tokenPrice) return elements;
 
