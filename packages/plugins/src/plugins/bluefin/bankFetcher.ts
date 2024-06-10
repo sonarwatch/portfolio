@@ -3,7 +3,6 @@ import {
   getUsdValueSum,
   NetworkId,
   PortfolioAsset,
-  PortfolioElement,
   PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
@@ -18,8 +17,6 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { usdcSuiType } from '../../utils/sui/constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const elements: PortfolioElement[] = [];
-
   const client = getClientSui();
 
   const [bank, tokenPrice] = await Promise.all([
@@ -57,17 +54,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       )
     );
 
-  if (assets.length > 0)
-    elements.push({
+  if (assets.length === 0) return [];
+  return [
+    {
       type: PortfolioElementType.multiple,
       label: 'Deposit',
       networkId: NetworkId.sui,
       platformId,
       data: { assets },
       value: getUsdValueSum(assets.map((asset) => asset.value)),
-    });
-
-  return elements;
+    },
+  ];
 };
 
 const fetcher: Fetcher = {
