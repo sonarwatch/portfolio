@@ -5,7 +5,6 @@ import {
   PortfolioAsset,
   PortfolioElement,
   PortfolioElementType,
-  usdcOnSuiAddress,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -15,6 +14,7 @@ import { Vault, VaultAccount } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
 import { getClientSui } from '../../utils/clients';
+import { usdcSuiType } from '../../utils/sui/constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elements: PortfolioElement[] = [];
@@ -26,10 +26,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       prefix: platformId,
       networkId: NetworkId.sui,
     }),
-    cache.getTokenPrice(
-      formatMoveTokenAddress(usdcOnSuiAddress),
-      NetworkId.sui
-    ),
+    cache.getTokenPrice(formatMoveTokenAddress(usdcSuiType), NetworkId.sui),
   ]);
 
   if (!vault || !tokenPrice) return elements;
@@ -49,7 +46,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (vaultAccount.data?.content?.fields.value.fields.amount_locked !== '0')
     assets.push(
       tokenPriceToAssetToken(
-        usdcOnSuiAddress,
+        usdcSuiType,
         new BigNumber(
           vaultAccount.data?.content?.fields.value.fields.amount_locked
         )
@@ -65,7 +62,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   )
     assets.push({
       ...tokenPriceToAssetToken(
-        usdcOnSuiAddress,
+        usdcSuiType,
         new BigNumber(
           vaultAccount.data?.content?.fields.value.fields.pending_withdrawal
         )
