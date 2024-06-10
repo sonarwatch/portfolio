@@ -18,6 +18,7 @@ import { PerpetualV2, UserPosition } from './types';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { usdcSuiType } from '../../utils/sui/constants';
+import { usdcLogoUri } from '../../utils/misc/constants';
 
 const perpsTtl = 20000;
 const perps: Map<string, PerpetualV2> = new Map();
@@ -135,6 +136,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         amount: pnl.toNumber(),
         price: 1,
         name: 'PnL',
+        imageUri: usdcLogoUri,
       },
     };
     rewardAssets.push(pnlAsset);
