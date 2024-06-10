@@ -13,13 +13,6 @@ import { IdlItem } from '@solanafm/explorer-kit-idls';
 import { getProgramAccounts } from './getProgramAccounts';
 import { ParsedAccount } from './types';
 
-const parseAccount = (eventParser: Parser, accountData: string) => {
-  if (eventParser && checkIfAccountParser(eventParser)) {
-    return eventParser.parseAccount(accountData);
-  }
-  return null;
-};
-
 export async function getAutoParsedProgramAccounts<T>(
   connection: Connection,
   idlItem: IdlItem,
@@ -29,6 +22,8 @@ export async function getAutoParsedProgramAccounts<T>(
   const parser = new SolanaFMParser(idlItem, idlItem.programId.toString());
   const eventParser = parser.createParser(ParserType.ACCOUNT);
 
+  if (!eventParser || !checkIfAccountParser(eventParser)) return [];
+
   const accountsRes = await getProgramAccounts(
     connection,
     new PublicKey(idlItem.programId),
@@ -36,8 +31,7 @@ export async function getAutoParsedProgramAccounts<T>(
     maxAccounts
   );
   return accountsRes.map((accountRes) => {
-    const parsedAccount = parseAccount(
-      eventParser,
+    const parsedAccount = eventParser.parseAccount(
       accountRes.account.data.toString('base64')
     );
 
