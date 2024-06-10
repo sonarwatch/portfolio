@@ -83,6 +83,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const borrowedAssets: PortfolioAsset[] = [];
     const suppliedAssets: PortfolioAsset[] = [];
+    const suppliedLtvs: number[] = [];
 
     const mintAsset: PortfolioAssetGeneric | undefined =
       acc.mint && acc.mint !== '11111111111111111111111111111111'
@@ -129,7 +130,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       }
     } else {
       // BORROWER
-      if (mintAsset) suppliedAssets.push(mintAsset);
+      if (mintAsset) {
+        suppliedAssets.push(mintAsset);
+        if (acc.loanTerms.principal !== '0') {
+          suppliedLtvs.push(
+            new BigNumber(acc.loanTerms.principal)
+              .dividedBy(10 ** solanaNativeDecimals)
+              .multipliedBy(100)
+              .dividedBy(collection.floor)
+              .toNumber()
+          );
+        }
+      }
+
+      borrowedAssets.push(solAsset);
 
       if (acc.status.waitingForLender) {
         name = `Borrow Offer on ${collection.name}`;
@@ -142,7 +156,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     if (suppliedAssets.length > 0) {
       const { borrowedValue, suppliedValue, value, healthRatio, rewardValue } =
-        getElementLendingValues(suppliedAssets, borrowedAssets, []);
+        getElementLendingValues(
+          suppliedAssets,
+          borrowedAssets,
+          [],
+          suppliedLtvs
+        );
 
       elements.push({
         networkId: NetworkId.solana,
@@ -160,8 +179,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           suppliedYields: [],
           collateralRatio: null,
           rewardAssets: [],
-          rewardValue: 0,
-          healthRatio: null,
+          rewardValue,
+          healthRatio,
           value,
         },
       });
