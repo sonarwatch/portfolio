@@ -2,10 +2,8 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import axios from 'axios';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { perpetualsKey, metaUrl, platformId } from './constants';
-import { PerpetualMeta, PerpetualV2 } from './types';
-import { multiGetObjects } from '../../utils/sui/multiGetObjects';
-import { getClientSui } from '../../utils/clients';
+import { metaUrl, platformId, perpetualIdsKey } from './constants';
+import { PerpetualMeta } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const res = await axios
@@ -20,13 +18,8 @@ const executor: JobExecutor = async (cache: Cache) => {
     throw Error(`BLUEFIN_API NO RESPONSE`);
   }
 
-  const client = getClientSui();
-  const perpetuals = await multiGetObjects<PerpetualV2>(
-    client,
-    res.data.map((m) => m.perpetualAddress.id)
-  );
-
-  await cache.setItem(perpetualsKey, perpetuals, {
+  const perpIds = res.data.map((m) => m.perpetualAddress.id);
+  await cache.setItem(perpetualIdsKey, perpIds, {
     prefix: platformId,
     networkId: NetworkId.sui,
   });
@@ -35,7 +28,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-perps`,
   executor,
-  label: 'normal',
+  label: 'realtime',
 };
 
 export default job;

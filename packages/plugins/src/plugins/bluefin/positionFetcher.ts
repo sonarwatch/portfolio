@@ -9,55 +9,51 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { perpetualsKey, platformId } from './constants';
+import { perpetualIdsKey, platformId } from './constants';
 import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
 import { getClientSui } from '../../utils/clients';
 import { PerpetualV2, UserPosition } from './types';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
-import { ObjectResponse } from '../../utils/sui/types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { usdcSuiType } from '../../utils/sui/constants';
+
+const perpsTtl = 20000;
+const perps: Map<string, PerpetualV2> = new Map();
+let lastPerpsUpdate = 0;
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
-  let perpetuals = await cache.getItem<ObjectResponse<PerpetualV2>[]>(
-    perpetualsKey,
-    {
+  // Refresh perps map
+  if (lastPerpsUpdate < Date.now() - perpsTtl) {
+    const perpIds = await cache.getItem<string[]>(perpetualIdsKey, {
       prefix: platformId,
       networkId: NetworkId.sui,
+    });
+    if (perpIds) {
+      const perpetualsRes = await multiGetObjects<PerpetualV2>(client, perpIds);
+      perpetualsRes.forEach((p) => {
+        if (p.data?.objectId && p.data?.content?.fields)
+          perps.set(p.data.objectId, p.data?.content?.fields);
+      });
     }
-  );
-  const tokenPrice = await cache.getTokenPrice(usdcSuiType, NetworkId.sui);
-
-  if (!perpetuals || !tokenPrice) return [];
+    lastPerpsUpdate = Date.now();
+  }
 
   const positions = await Promise.all(
-    perpetuals.map(
-      (perp) =>
-        perp.data?.content?.fields.positions.fields.id.id &&
-        getDynamicFieldObject<UserPosition>(client, {
-          parentId: perp.data?.content?.fields.positions.fields.id.id,
-          name: {
-            type: 'address',
-            value: owner,
-          },
-        })
+    Array.from(perps.values()).map((perp) =>
+      getDynamicFieldObject<UserPosition>(client, {
+        parentId: perp.positions.fields.id.id,
+        name: {
+          type: 'address',
+          value: owner,
+        },
+      })
     )
   );
 
-  // force refresh of Perpetuals to get fresh priceOracle
-  perpetuals = await multiGetObjects<PerpetualV2>(
-    client,
-    positions
-      .map((p) => p && p.data?.content?.fields?.value?.fields.perpID)
-      .filter((p): p is string => p !== undefined)
-  );
-  const perpetualsAsMap: Map<string, PerpetualV2> = new Map();
-  perpetuals.forEach((p) => {
-    if (p && p.data?.objectId && p.data?.content?.fields)
-      perpetualsAsMap.set(p.data.objectId, p.data?.content?.fields);
-  });
+  const tokenPrice = await cache.getTokenPrice(usdcSuiType, NetworkId.sui);
+  if (!tokenPrice) return [];
 
   const elements: PortfolioElement[] = [];
   positions.forEach((position) => {
@@ -65,7 +61,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (!position || !position.data?.content?.fields?.value?.fields.qPos)
       return;
 
-    const perp = perpetualsAsMap.get(
+    const perp = perps.get(
       position.data?.content?.fields?.value?.fields.perpID
     );
     if (!perp) return;
