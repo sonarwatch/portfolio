@@ -1,12 +1,12 @@
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 
-export const solanaTokenPid = new PublicKey(
-  'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-);
-export const solanaToken2022Pid = new PublicKey(
-  'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb'
-);
+export const solanaTokenPid = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+export const solanaTokenPidPk = new PublicKey(solanaTokenPid);
+
+export const solanaToken2022Pid = 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+export const solanaToken2022PidPk = new PublicKey(solanaToken2022Pid);
+
 export const associatedTokenProgramId = new PublicKey(
   'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
 );
