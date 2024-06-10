@@ -3,7 +3,6 @@ import {
   getUsdValueSum,
   NetworkId,
   PortfolioAsset,
-  PortfolioElement,
   PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
