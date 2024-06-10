@@ -20,7 +20,6 @@ import { usdcSuiType } from '../../utils/sui/constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
-  const elements: PortfolioElement[] = [];
 
   let perpetuals = await cache.getItem<ObjectResponse<PerpetualV2>[]>(
     perpetualsKey,
@@ -31,7 +30,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
   const tokenPrice = await cache.getTokenPrice(usdcSuiType, NetworkId.sui);
 
-  if (!perpetuals || !tokenPrice) return elements;
+  if (!perpetuals || !tokenPrice) return [];
 
   const positions = await Promise.all(
     perpetuals.map(
@@ -60,6 +59,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       perpetualsAsMap.set(p.data.objectId, p.data?.content?.fields);
   });
 
+  const elements: PortfolioElement[] = [];
   positions.forEach((position) => {
     if (position && position.error) return;
     if (!position || !position.data?.content?.fields?.value?.fields.qPos)
@@ -138,44 +138,41 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         )
       );
 
+    if (
+      suppliedAssets.length === 0 &&
+      borrowedAssets.length === 0 &&
+      rewardAssets.length === 0
+    )
+      return;
+
     const { borrowedValue, suppliedValue, healthRatio, rewardValue } =
       getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
-
     const value = positionSizeUsd.plus(pnl).toNumber();
     const side = position.data?.content?.fields?.value?.fields.isPosPositive
       ? 'Long'
       : 'Short';
 
-    /* console.log('margin', margin.toNumber());
-    console.log('positionSize (SEI)', qPos.toNumber());
-    console.log('positionSize (USD)', positionSizeUsd.toNumber());
-    console.log('avgEntryPrice', avgEntryPrice.toNumber(), oraclePrice);
-    console.log('side', side);
-    console.log('leverage', leverage.toNumber());
-    console.log('pnl', pnl.toNumber()); */
-
-    if (suppliedAssets.length > 0 || borrowedAssets.length > 0)
-      elements.push({
-        type: PortfolioElementType.borrowlend,
-        networkId: NetworkId.sui,
-        platformId,
-        label: 'Leverage',
+    elements.push({
+      type: PortfolioElementType.borrowlend,
+      networkId: NetworkId.sui,
+      platformId,
+      label: 'Leverage',
+      value,
+      name: `${perp.name} ${side} ${leverage.decimalPlaces(2)}x`,
+      data: {
+        borrowedAssets,
+        borrowedValue,
+        borrowedYields,
+        suppliedAssets,
+        suppliedValue,
+        suppliedYields,
+        collateralRatio: null,
+        rewardAssets,
+        rewardValue,
+        healthRatio,
         value,
-        name: `${perp.name} ${side} ${leverage.decimalPlaces(2)}x`,
-        data: {
-          borrowedAssets,
-          borrowedValue,
-          borrowedYields,
-          suppliedAssets,
-          suppliedValue,
-          suppliedYields,
-          collateralRatio: null,
-          rewardAssets,
-          rewardValue,
-          healthRatio,
-          value,
-        },
-      });
+      },
+    });
   });
 
   return elements;
