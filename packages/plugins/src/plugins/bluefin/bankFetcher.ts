@@ -60,6 +60,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       type: PortfolioElementType.multiple,
       label: 'Deposit',
       networkId: NetworkId.sui,
+      name: 'Free Collateral',
       platformId,
       data: { assets },
       value: getUsdValueSum(assets.map((asset) => asset.value)),
