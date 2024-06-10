@@ -492,6 +492,11 @@ import {
   jobs as citrusJobs,
   fetchers as citrusFetchers,
 } from './plugins/citrus';
+import {
+  platforms as sharkyPlatforms,
+  jobs as sharkyJobs,
+  fetchers as sharkyFetchers,
+} from './plugins/sharky';
 
 export {
   walletTokensPlatform,
@@ -608,6 +613,7 @@ export const platforms: Platform[] = [
   ...elixirPlatforms,
   ...moonwalkPlatforms,
   ...citrusPlatforms,
+  ...sharkyPlatforms,
 ];
 
 // JOBS //
@@ -706,6 +712,7 @@ export const jobs: Job[] = [
   ...elixirJobs,
   ...moonwalkJobs,
   ...citrusJobs,
+  ...sharkyJobs,
 ];
 
 // FETCHERS //
@@ -806,6 +813,7 @@ export const fetchers: Fetcher[] = [
   ...elixirFetchers,
   ...moonwalkFetchers,
   ...citrusFetchers,
+  ...sharkyFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 

@@ -1,62 +1,76 @@
 import {
+  getElementLendingValues,
   NetworkId,
+  PortfolioAsset,
+  PortfolioAssetGeneric,
+  PortfolioElement,
   PortfolioElementType,
   solanaNativeAddress,
   solanaNativeDecimals,
-  PortfolioAsset,
-  PortfolioElement,
-  getElementLendingValues,
-  PortfolioAssetGeneric,
 } from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import {
   cachePrefix,
-  citrusIdlItem,
   collectionsCacheKey,
   loanDataSize,
   platformId,
+  sharkyIdlItem,
 } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
-import { Collection, Loan } from './types';
 import {
   getAutoParsedProgramAccounts,
   ParsedAccount,
 } from '../../utils/solana';
+import { Collection, Loan } from './types';
+import BigNumber from 'bignumber.js';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
 
-  const [accountsLender, accountsBorrower] = await Promise.all([
-    getAutoParsedProgramAccounts<Loan>(connection, citrusIdlItem, [
-      {
-        dataSize: loanDataSize,
-      },
-      {
-        memcmp: {
-          bytes: owner,
-          offset: 9,
+  const [accountsTakenLender, accountsTakenBorrower, accountsOfferLender] =
+    await Promise.all([
+      getAutoParsedProgramAccounts<Loan>(connection, sharkyIdlItem, [
+        {
+          dataSize: loanDataSize,
         },
-      },
-    ]),
-    getAutoParsedProgramAccounts<Loan>(connection, citrusIdlItem, [
-      {
-        dataSize: loanDataSize,
-      },
-      {
-        memcmp: {
-          bytes: owner,
-          offset: 41,
+        {
+          memcmp: {
+            bytes: owner,
+            offset: 115,
+          },
         },
-      },
-    ]),
-  ]);
+      ]),
+      getAutoParsedProgramAccounts<Loan>(connection, sharkyIdlItem, [
+        {
+          dataSize: loanDataSize,
+        },
+        {
+          memcmp: {
+            bytes: owner,
+            offset: 147,
+          },
+        },
+      ]),
+      getAutoParsedProgramAccounts<Loan>(connection, sharkyIdlItem, [
+        {
+          dataSize: loanDataSize,
+        },
+        {
+          memcmp: {
+            bytes: owner,
+            offset: 83,
+          },
+        },
+      ]),
+    ]);
 
-  const accounts = [...accountsLender, ...accountsBorrower].filter(
-    (acc) => !acc.status.repaid // hide past loans
-  );
+  const accounts = [
+    ...accountsTakenLender,
+    ...accountsTakenBorrower,
+    ...accountsOfferLender,
+  ];
 
   if (accounts.length === 0) return [];
 
@@ -72,42 +86,40 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const collectionsMap: Map<string, ParsedAccount<Collection>> = new Map();
   collections.forEach((cc) => {
     if (!cc) return;
-    collectionsMap.set(cc.id, cc);
+    collectionsMap.set(cc.orderBook, cc);
   });
 
   const elements: PortfolioElement[] = [];
 
   accounts.forEach((acc) => {
-    const collection = collectionsMap.get(acc.collectionConfig);
+    const collection = collectionsMap.get(acc.orderBook);
     if (!collection) return;
 
     const borrowedAssets: PortfolioAsset[] = [];
     const suppliedAssets: PortfolioAsset[] = [];
 
-    const mintAsset: PortfolioAssetGeneric | undefined =
-      acc.mint && acc.mint !== '11111111111111111111111111111111'
-        ? {
-            type: 'generic',
-            networkId: NetworkId.solana,
-            value: new BigNumber(collection.floor)
+    const mintAsset: PortfolioAssetGeneric | undefined = acc.loanState.taken
+      ?.taken.nftCollateralMint
+      ? {
+          type: 'generic',
+          networkId: NetworkId.solana,
+          value: new BigNumber(collection.floor)
+            .multipliedBy(solTokenPrice.price)
+            .toNumber(),
+          attributes: {},
+          data: {
+            amount: 1,
+            name: collection.name,
+            price: new BigNumber(collection.floor)
               .multipliedBy(solTokenPrice.price)
               .toNumber(),
-            attributes: {},
-            data: {
-              amount: 1,
-              name: collection.name,
-              price: new BigNumber(collection.floor)
-                .multipliedBy(solTokenPrice.price)
-                .toNumber(),
-            },
-          }
-        : undefined;
+          },
+        }
+      : undefined;
 
     const solAsset = tokenPriceToAssetToken(
       solanaNativeAddress,
-      new BigNumber(
-        acc.ltvTerms ? acc.ltvTerms.maxOffer : acc.loanTerms.principal
-      )
+      new BigNumber(acc.principalLamports)
         .dividedBy(10 ** solanaNativeDecimals)
         .toNumber(),
       NetworkId.solana,
@@ -115,32 +127,24 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
 
     let name;
-    if (acc.lender === owner.toString()) {
+
+    if (acc.loanState.offer) {
       // LENDER
       suppliedAssets.push(solAsset);
-      if (mintAsset) borrowedAssets.push(mintAsset);
-
-      if (acc.status.waitingForBorrower) {
-        name = `Lend Offer on ${collection.name}`;
-      } else if (acc.status.active || acc.status.onSale) {
+      name = `Lend Offer on ${collection.name}`;
+    } else if (acc.loanState.taken) {
+      if (acc.loanState.taken.taken.lenderNoteMint === owner.toString()) {
+        // LENDER
+        suppliedAssets.push(solAsset);
+        if (mintAsset) borrowedAssets.push(mintAsset);
         name = `Active Loan on ${collection.name}`;
-      } else if (acc.status.defaulted) {
-        name = `Defaulted Loan on ${collection.name}`;
-      }
-    } else {
-      // BORROWER
-      if (mintAsset) {
-        suppliedAssets.push(mintAsset);
-      }
-
-      borrowedAssets.push(solAsset);
-
-      if (acc.status.waitingForLender) {
-        name = `Borrow Offer on ${collection.name}`;
-      } else if (acc.status.active || acc.status.onSale) {
+      } else {
+        // BORROWER
+        if (mintAsset) {
+          suppliedAssets.push(mintAsset);
+        }
+        borrowedAssets.push(solAsset);
         name = `Active Loan on ${collection.name}`;
-      } else if (acc.status.defaulted) {
-        name = `Expired Loan on ${collection.name}`;
       }
     }
 
