@@ -52,8 +52,8 @@ export type LtvTerms = {
   maxOffer: string;
 };
 
-export type CollectionConfig = {
-  collectionKey: string;
-  creators: string[];
+export type Collection = {
   id: string;
+  name: string;
+  floor: number;
 };

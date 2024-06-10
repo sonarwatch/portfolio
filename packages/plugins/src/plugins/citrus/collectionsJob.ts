@@ -3,29 +3,27 @@ import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import {
   cachePrefix,
-  citrusIdlItem,
-  collectionDataSize,
+  collectionsApiUrl,
   collectionsCacheKey,
   platformId,
 } from './constants';
-import { CollectionConfig } from './types';
-import { getClientSolana } from '../../utils/clients';
-import { getAutoParsedProgramAccounts } from '../../utils/solana';
+import { Collection } from './types';
+import axios from 'axios';
 
 const executor: JobExecutor = async (cache: Cache) => {
-  const connection = getClientSolana();
+  const res = await axios
+    .get<Collection>(collectionsApiUrl, {
+      timeout: 5000,
+    })
+    .catch((err) => {
+      throw Error(`CITRUS_API ERR: ${err}`);
+    });
 
-  const accounts = await getAutoParsedProgramAccounts<CollectionConfig>(
-    connection,
-    citrusIdlItem,
-    [
-      {
-        dataSize: collectionDataSize,
-      },
-    ]
-  );
+  if (!res) {
+    throw Error(`CITRUS_API NO RESPONSE`);
+  }
 
-  await cache.setItem(collectionsCacheKey, accounts, {
+  await cache.setItem(collectionsCacheKey, res.data, {
     prefix: cachePrefix,
     networkId: NetworkId.solana,
   });

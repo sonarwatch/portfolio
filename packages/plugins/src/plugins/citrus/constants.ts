@@ -15,11 +15,13 @@ export const platform: Platform = {
 export const collectionsCacheKey = `${platformId}-collections`;
 export const cachePrefix = `${platformId}`;
 
+export const collectionsApiUrl =
+  'https://citrus.famousfoxes.com/citrus/allCollections';
+
 export const citrusProgram = new PublicKey(
   'JCFRaPv7852ESRwJJGRy2mysUMydXZgVVhrMLmExvmVp'
 );
 
-export const collectionDataSize = 808;
 export const loanDataSize = 464;
 
 export const citrusIdlItem = {
