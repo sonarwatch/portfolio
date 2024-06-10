@@ -53,4 +53,5 @@ export type Collection = {
   orderBook: string;
   name: string;
   floor: number;
+  tensor_id: string;
 };

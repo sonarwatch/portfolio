@@ -1,4 +1,5 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
+import axios from 'axios';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import {
@@ -8,7 +9,6 @@ import {
   platformId,
 } from './constants';
 import { Collection } from './types';
-import axios from 'axios';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const res = await axios

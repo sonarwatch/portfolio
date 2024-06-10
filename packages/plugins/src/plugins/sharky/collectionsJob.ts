@@ -1,9 +1,9 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
+import axios from 'axios';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { cachePrefix, collectionsCacheKey, platformId } from './constants';
 import { Collection } from './types';
-import axios from 'axios';
 import { collectionNames } from './collectionNames';
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -23,6 +23,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         orderBook: c.orderBookPubKey,
         name: c.collectionName,
         floor: floorPrices.data.floorPrices[c.collectionName]?.floorPriceSol,
+        tensor_id: floorPrices.data.floorPrices[c.collectionName]?.tensor?.slug,
       });
   });
 
