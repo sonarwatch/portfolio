@@ -17,8 +17,6 @@ import { getClientSui } from '../../utils/clients';
 import { usdcSuiType } from '../../utils/sui/constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const elements: PortfolioElement[] = [];
-
   const client = getClientSui();
 
   const [vault, tokenPrice] = await Promise.all([
@@ -29,7 +27,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     cache.getTokenPrice(formatMoveTokenAddress(usdcSuiType), NetworkId.sui),
   ]);
 
-  if (!vault || !tokenPrice) return elements;
+  if (!vault || !tokenPrice) return [];
 
   const vaultAccount = await getDynamicFieldObject<VaultAccount>(client, {
     parentId: vault.users.fields.id.id,
@@ -39,7 +37,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     },
   });
 
-  if (!vaultAccount.data?.content?.fields) return elements;
+  if (!vaultAccount.data?.content?.fields) return [];
 
   const assets: PortfolioAsset[] = [];
 
@@ -73,8 +71,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       ),
     });
 
-  if (assets.length > 0)
-    elements.push({
+  if (assets.length === 0) return [];
+
+  return [
+    {
       type: PortfolioElementType.multiple,
       label: 'LiquidityPool',
       networkId: NetworkId.sui,
@@ -82,9 +82,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       data: { assets },
       value: getUsdValueSum(assets.map((asset) => asset.value)),
       name: vault.name,
-    });
-
-  return elements;
+    },
+  ];
 };
 
 const fetcher: Fetcher = {
