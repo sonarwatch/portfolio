@@ -487,6 +487,11 @@ import {
   jobs as moonwalkJobs,
   fetchers as moonwalkFetchers,
 } from './plugins/moonwalk';
+import {
+  platforms as citrusPlatforms,
+  jobs as citrusJobs,
+  fetchers as citrusFetchers,
+} from './plugins/citrus';
 
 export {
   walletTokensPlatform,
@@ -602,6 +607,7 @@ export const platforms: Platform[] = [
   ...futarchyPlatforms,
   ...elixirPlatforms,
   ...moonwalkPlatforms,
+  ...citrusPlatforms,
 ];
 
 // JOBS //
@@ -699,6 +705,7 @@ export const jobs: Job[] = [
   ...futarchyJobs,
   ...elixirJobs,
   ...moonwalkJobs,
+  ...citrusJobs,
 ];
 
 // FETCHERS //
@@ -798,6 +805,7 @@ export const fetchers: Fetcher[] = [
   ...futarchyFetchers,
   ...elixirFetchers,
   ...moonwalkFetchers,
+  ...citrusFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
