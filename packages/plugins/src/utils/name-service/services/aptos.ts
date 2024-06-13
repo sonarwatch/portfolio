@@ -1,22 +1,21 @@
 import { aptosNameChecker } from '@sonarwatch/portfolio-core';
 import { NameService } from '../types';
+import { getClientAptos } from '../../clients';
 
 async function getOwner(name: string): Promise<string | null> {
-  const response = await fetch(
-    `https://www.aptosnames.com/api/mainnet/v1/address/${name}`
-  );
-  const { address } = await response.json();
-  if (!address) return null;
-  return address;
+  const res = await getClientAptos().getName({ name });
+  if (!res?.owner_address) return null;
+
+  return res.owner_address;
 }
 
 async function getNames(address: string): Promise<string[]> {
-  const response = await fetch(
-    `https://www.aptosnames.com/api/mainnet/v1/primary-name/${address}`
-  );
-  const { name } = await response.json();
-  if (!name) return [];
-  return [`${name}.apt`];
+  const res = await getClientAptos().getAccountNames({
+    accountAddress: address,
+  });
+
+  if (res.length === 0) return [];
+  return res.map((el) => (el.domain ? `${el.domain}.apt` : [])).flat();
 }
 
 export const nameService: NameService = {
