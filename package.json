@@ -53,7 +53,7 @@
   "dependencies": {
     "@aave/contract-helpers": "^1.28.2",
     "@aave/math-utils": "^1.28.2",
-    "@aptos-labs/ts-sdk": "^1.11.0",
+    "@aptos-labs/ts-sdk": "^1.19.0",
     "@bonfida/spl-name-service": "^1.0.10",
     "@cosmjs/cosmwasm-stargate": "^0.31.1",
     "@ethersproject/address": "^5.7.0",
