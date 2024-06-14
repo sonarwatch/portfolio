@@ -6,7 +6,7 @@ import {
   PortfolioAsset,
   PortfolioElement,
   getElementLendingValues,
-  PortfolioAssetGeneric,
+  PortfolioAssetCollectible,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -25,9 +25,13 @@ import {
   ParsedAccount,
 } from '../../utils/solana';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { getAssetBatchSafeDasAsMap } from '../../utils/solana/das/getAssetBatchDas';
+import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
+import { heliusAssetToAssetCollectible } from '../../utils/solana/das/heliusAssetToAssetCollectible';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
+  const dasUrl = getSolanaDasEndpoint();
 
   const [accountsLender, accountsBorrower] = await Promise.all([
     getAutoParsedProgramAccounts<Loan>(connection, citrusIdlItem, [
@@ -60,12 +64,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (accounts.length === 0) return [];
 
-  const [solTokenPrice, collections] = await Promise.all([
+  const [solTokenPrice, collections, heliusAssets] = await Promise.all([
     cache.getTokenPrice(solanaNativeAddress, NetworkId.solana),
     cache.getItem<ParsedAccount<Collection>[]>(collectionsCacheKey, {
       prefix: cachePrefix,
       networkId: NetworkId.solana,
     }),
+    getAssetBatchSafeDasAsMap(
+      dasUrl,
+      accounts
+        .map((acc) => acc.mint)
+        .filter(
+          (mint) => mint && mint !== '11111111111111111111111111111111'
+        ) as string[]
+    ),
   ]);
   if (!solTokenPrice || !collections) return [];
 
@@ -84,24 +96,30 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const borrowedAssets: PortfolioAsset[] = [];
     const suppliedAssets: PortfolioAsset[] = [];
 
-    const mintAsset: PortfolioAssetGeneric | undefined =
-      acc.mint && acc.mint !== '11111111111111111111111111111111'
-        ? {
-            type: 'generic',
-            networkId: NetworkId.solana,
-            value: new BigNumber(collection.floor)
+    let mintAsset: PortfolioAssetCollectible | null = null;
+    if (acc.mint && acc.mint !== '11111111111111111111111111111111') {
+      const heliusAsset = heliusAssets.get(acc.mint);
+
+      if (heliusAsset) {
+        mintAsset = heliusAssetToAssetCollectible(heliusAsset);
+        if (mintAsset) {
+          mintAsset.value = new BigNumber(collection.floor)
+            .multipliedBy(solTokenPrice.price)
+            .toNumber();
+          mintAsset.data.price = new BigNumber(collection.floor)
+            .multipliedBy(solTokenPrice.price)
+            .toNumber();
+          if (mintAsset.data.collection) {
+            mintAsset.data.collection.name = collection.name;
+            mintAsset.data.collection.floorPrice = new BigNumber(
+              collection.floor
+            )
               .multipliedBy(solTokenPrice.price)
-              .toNumber(),
-            attributes: {},
-            data: {
-              amount: 1,
-              name: collection.name,
-              price: new BigNumber(collection.floor)
-                .multipliedBy(solTokenPrice.price)
-                .toNumber(),
-            },
+              .toNumber();
           }
-        : undefined;
+        }
+      }
+    }
 
     const solAsset = tokenPriceToAssetToken(
       solanaNativeAddress,

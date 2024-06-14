@@ -2,7 +2,7 @@ import {
   getElementLendingValues,
   NetworkId,
   PortfolioAsset,
-  PortfolioAssetGeneric,
+  PortfolioAssetCollectible,
   PortfolioElement,
   PortfolioElementType,
   solanaNativeAddress,
@@ -25,11 +25,15 @@ import {
 } from '../../utils/solana';
 import { Collection, Loan } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { getAssetBatchSafeDasAsMap } from '../../utils/solana/das/getAssetBatchDas';
+import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
+import { heliusAssetToAssetCollectible } from '../../utils/solana/das/heliusAssetToAssetCollectible';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
+  const dasUrl = getSolanaDasEndpoint();
   const connection = getClientSolana();
 
-  const [accountsTakenLender, accountsTakenBorrower, accountsOfferLender] =
+  const accounts = (
     await Promise.all([
       getAutoParsedProgramAccounts<Loan>(connection, sharkyIdlItem, [
         {
@@ -64,22 +68,23 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           },
         },
       ]),
-    ]);
-
-  const accounts = [
-    ...accountsTakenLender,
-    ...accountsTakenBorrower,
-    ...accountsOfferLender,
-  ];
+    ])
+  ).flat();
 
   if (accounts.length === 0) return [];
 
-  const [solTokenPrice, collections] = await Promise.all([
+  const [solTokenPrice, collections, heliusAssets] = await Promise.all([
     cache.getTokenPrice(solanaNativeAddress, NetworkId.solana),
     cache.getItem<ParsedAccount<Collection>[]>(collectionsCacheKey, {
       prefix: cachePrefix,
       networkId: NetworkId.solana,
     }),
+    getAssetBatchSafeDasAsMap(
+      dasUrl,
+      accounts
+        .map((acc) => acc.loanState.taken?.taken.nftCollateralMint)
+        .filter((mint) => mint) as string[]
+    ),
   ]);
   if (!solTokenPrice || !collections) return [];
 
@@ -98,24 +103,32 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const borrowedAssets: PortfolioAsset[] = [];
     const suppliedAssets: PortfolioAsset[] = [];
 
-    const mintAsset: PortfolioAssetGeneric | undefined = acc.loanState.taken
-      ?.taken.nftCollateralMint
-      ? {
-          type: 'generic',
-          networkId: NetworkId.solana,
-          value: new BigNumber(collection.floor)
+    let mintAsset: PortfolioAssetCollectible | null = null;
+    if (acc.loanState.taken?.taken.nftCollateralMint) {
+      const heliusAsset = heliusAssets.get(
+        acc.loanState.taken.taken.nftCollateralMint
+      );
+
+      if (heliusAsset) {
+        mintAsset = heliusAssetToAssetCollectible(heliusAsset);
+        if (mintAsset) {
+          mintAsset.value = new BigNumber(collection.floor)
             .multipliedBy(solTokenPrice.price)
-            .toNumber(),
-          attributes: {},
-          data: {
-            amount: 1,
-            name: collection.name,
-            price: new BigNumber(collection.floor)
+            .toNumber();
+          mintAsset.data.price = new BigNumber(collection.floor)
+            .multipliedBy(solTokenPrice.price)
+            .toNumber();
+          if (mintAsset.data.collection) {
+            mintAsset.data.collection.name = collection.name;
+            mintAsset.data.collection.floorPrice = new BigNumber(
+              collection.floor
+            )
               .multipliedBy(solTokenPrice.price)
-              .toNumber(),
-          },
+              .toNumber();
+          }
         }
-      : undefined;
+      }
+    }
 
     const solAsset = tokenPriceToAssetToken(
       solanaNativeAddress,
