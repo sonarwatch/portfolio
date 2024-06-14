@@ -3,7 +3,7 @@ import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSolana } from '../../utils/clients';
 import { platformId, poolsKey, poolsPkeys } from './constants';
-import { flpStruct } from './structs';
+import { flPoolStruct } from './structs';
 import { fetchTokenSupplyAndDecimals } from '../../utils/solana/fetchTokenSupplyAndDecimals';
 import {
   getParsedMultipleAccountsInfo,
@@ -19,7 +19,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   const poolsAccounts = await getParsedMultipleAccountsInfo(
     client,
-    flpStruct,
+    flPoolStruct,
     poolsPkeys
   );
 
