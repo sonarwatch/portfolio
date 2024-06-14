@@ -479,7 +479,7 @@ export const tokenRatiosStruct = new BeetStruct<TokenRatios>(
   (args) => args as TokenRatios
 );
 
-export type PoolBis = {
+export type FLPool = {
   buffer: Buffer;
   name: number[];
   permissions: Permissions;
@@ -501,7 +501,7 @@ export type PoolBis = {
   vpVolumeFactor: number;
 };
 
-export const flpStruct = new FixableBeetStruct<PoolBis>(
+export const flPoolStruct = new FixableBeetStruct<FLPool>(
   [
     ['buffer', blob(8)],
     ['name', array(u8)],
@@ -523,5 +523,5 @@ export const flpStruct = new FixableBeetStruct<PoolBis>(
     ['flpTokenAccountBump', u8],
     ['vpVolumeFactor', u8],
   ],
-  (args) => args as PoolBis
+  (args) => args as FLPool
 );

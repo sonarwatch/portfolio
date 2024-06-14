@@ -94,7 +94,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const oraclePrice = new BigNumber(perp.priceOracle).dividedBy(10 ** 9);
 
-    const positionSizeUsd = qPos.multipliedBy(oraclePrice);
+    const collatUsd = margin.dividedBy(10 ** 9);
 
     const avgEntryPrice = qPos.isGreaterThan(0)
       ? oiOpen.dividedBy(qPos).dividedBy(10 ** 9)
@@ -107,21 +107,21 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       pnl = qPos.multipliedBy(avgEntryPrice.minus(oraclePrice));
     }
 
-    if (positionSizeUsd.isPositive())
+    if (collatUsd.isPositive())
       suppliedAssets.push(
         tokenPriceToAssetToken(
           tokenPrice.address,
-          positionSizeUsd.toNumber(),
+          collatUsd.toNumber(),
           NetworkId.sui,
           tokenPrice
         )
       );
 
-    if (positionSizeUsd.times(leverage).isPositive())
+    if (collatUsd.times(leverage).isPositive())
       borrowedAssets.push(
         tokenPriceToAssetToken(
           tokenPrice.address,
-          positionSizeUsd.times(leverage).toNumber(),
+          collatUsd.times(leverage).toNumber(),
           NetworkId.sui,
           tokenPrice
         )
