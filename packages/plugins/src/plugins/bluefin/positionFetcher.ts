@@ -148,7 +148,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     )
       return;
 
-    const value = positionSizeUsd.plus(pnl).toNumber();
+    const value = margin
+      .dividedBy(10 ** 9)
+      .plus(pnl)
+      .toNumber();
+
+    if (value === 0) return;
+
     const side = position.data?.content?.fields?.value?.fields.isPosPositive
       ? 'Long'
       : 'Short';
