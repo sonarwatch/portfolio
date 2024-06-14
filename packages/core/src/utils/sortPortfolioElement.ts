@@ -2,6 +2,7 @@ import { compareUsdValue } from './compareUsdValue';
 import {
   PortfolioElement,
   PortfolioElementBorrowLend,
+  PortfolioElementLeverage,
   PortfolioElementLiquidity,
   PortfolioElementMultiple,
   PortfolioElementType,
@@ -19,6 +20,8 @@ export function sortPortfolioElement(
       return sortElementBorrowLend(element);
     case PortfolioElementType.liquidity:
       return sortElementLiquidity(element);
+    case PortfolioElementType.leverage:
+      return sortElementLeverage(element);
     default:
       return element;
   }
@@ -78,4 +81,17 @@ export function sortPortfolioLiquidity(
   sLiquidity.assets = sortMultipleAssets(sLiquidity.assets);
   sLiquidity.rewardAssets = sortMultipleAssets(sLiquidity.rewardAssets);
   return sLiquidity;
+}
+
+export function sortElementLeverage(
+  element: PortfolioElementLeverage
+): PortfolioElementLeverage {
+  const sortedElement: PortfolioElementLeverage = { ...element };
+  sortedElement.data.collateralAssets = sortMultipleAssets(
+    element.data.collateralAssets
+  );
+  sortedElement.data.positions.sort((a, b) =>
+    compareUsdValue(a.value, b.value)
+  );
+  return sortedElement;
 }
