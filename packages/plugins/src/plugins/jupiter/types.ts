@@ -1,8 +1,8 @@
-export type CustodyInfo = Custody & {
+export type CustodyInfo = ParsedCustody & {
   pubkey: string;
 };
 
-type Custody = {
+type ParsedCustody = {
   buffer: Buffer;
   pool: string;
   mint: string;
@@ -17,6 +17,33 @@ type Custody = {
   fundingRateState: FundingRateState;
   bump: number;
   tokenAccountBump: number;
+};
+
+export type PerpetualPoolInfo = ParsedPerpetualPool & {
+  pubkey: string;
+};
+type ParsedPerpetualPool = {
+  buffer: Buffer;
+  name: number;
+  custodies: string[];
+  aumUsd: string;
+  fees: ParsedFees;
+  maxRequestExecutionSec: string;
+  bump: number;
+  lpTokenBump: number;
+  inceptionTime: string;
+};
+
+type ParsedFees = {
+  increasePositionBps: string;
+  decreasePositionBps: string;
+  addRemoveLiquidityBps: string;
+  swapBps: string;
+  taxBps: string;
+  stableSwapBps: string;
+  stableSwapTaxBps: string;
+  liquidationRewardBps: string;
+  protocolShareBps: string;
 };
 
 enum OracleType {

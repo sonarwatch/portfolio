@@ -248,8 +248,8 @@ export type PortfolioElementLiquidity = PortfolioElementCommon & {
 };
 
 export enum LeverageSide {
-  long,
-  short,
+  long = 'long',
+  short = 'short',
 }
 
 export type LeveragePosition = {
@@ -261,6 +261,7 @@ export type LeveragePosition = {
   collateralValue: UsdValue;
   value: UsdValue;
   liquidationPrice: UsdValue;
+  pnlValue: UsdValue;
   leverage?: number;
   side: LeverageSide;
 };
@@ -272,7 +273,9 @@ export type PortfolioElementLeverageData = {
   value: UsdValue;
   leverage?: number;
   collateralAssets: PortfolioAsset[];
+  collateralValue: UsdValue;
   positions: LeveragePosition[];
+  positionsValue: UsdValue;
 };
 
 /**

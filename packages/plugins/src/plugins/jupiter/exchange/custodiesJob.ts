@@ -2,28 +2,49 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../../Cache';
 import { Job, JobExecutor } from '../../../Job';
 import { getClientSolana } from '../../../utils/clients';
-import { getParsedProgramAccounts } from '../../../utils/solana';
+import {
+  getParsedMultipleAccountsInfo,
+  getParsedProgramAccounts,
+} from '../../../utils/solana';
 import { dataStructSizeFilter } from '../../../utils/solana/filters';
-import { custodiesKey, perpsProgramId, platformId } from './constants';
-import { Custody, custodyStruct } from './structs';
+import {
+  custodiesKey,
+  perpPoolsKey,
+  perpsProgramId,
+  platformId,
+} from './constants';
+import { Custody, custodyStruct, perpetualPoolStruct } from './structs';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
 
-  const custodiesAccounts = await getParsedProgramAccounts(
+  const custodiesAccs = await getParsedProgramAccounts(
     client,
     custodyStruct,
     perpsProgramId,
     dataStructSizeFilter(custodyStruct)
   );
-  if (custodiesAccounts.length === 0) return;
-
-  const accounts = custodiesAccounts.map((acc) => ({
+  if (custodiesAccs.length === 0) return;
+  const custodyAccsInfo = custodiesAccs.map((acc) => ({
     pubkey: acc.pubkey.toString(),
     ...(acc as Custody),
   }));
 
-  await cache.setItem(custodiesKey, accounts, {
+  const pools = (
+    await getParsedMultipleAccountsInfo(
+      client,
+      perpetualPoolStruct,
+      custodiesAccs.map((acc) => acc.pool)
+    )
+  )
+    .map((acc) => (acc === null ? [] : [acc]))
+    .flat(1);
+
+  await cache.setItem(custodiesKey, custodyAccsInfo, {
+    prefix: platformId,
+    networkId: NetworkId.solana,
+  });
+  await cache.setItem(perpPoolsKey, pools, {
     prefix: platformId,
     networkId: NetworkId.solana,
   });

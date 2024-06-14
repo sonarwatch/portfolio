@@ -1,4 +1,4 @@
-import { PublicKey, AccountInfo } from '@solana/web3.js';
+import { PublicKey } from '@solana/web3.js';
 import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
 import {
   AccountType,
@@ -262,17 +262,16 @@ export const parsePermissionData = (data: Buffer): PermissionData => {
   };
 };
 
-export function getPythPricesDatasMap(
-  pubkeys: PublicKey[],
-  accounts: (AccountInfo<Buffer> | null)[]
-): Map<string, PriceData> {
-  const pricesDatas = accounts.map((account) =>
-    account ? parsePriceData(account.data) : undefined
-  );
-  const priceMap: Map<string, PriceData> = new Map();
-  pricesDatas.forEach((prices, index) =>
-    prices ? priceMap.set(pubkeys[index].toString(), prices) : undefined
-  );
+export async function getPythPricesAsMap(
+  connection: SolanaClient,
+  feedAddresses: PublicKey[]
+): Promise<Map<string, number>> {
+  const prices = await getPythPrices(connection, feedAddresses);
+  const priceMap: Map<string, number> = new Map();
+  feedAddresses.forEach((feedAddress, i) => {
+    const price = prices[i];
+    if (price) priceMap.set(feedAddress.toString(), price);
+  });
   return priceMap;
 }
 
