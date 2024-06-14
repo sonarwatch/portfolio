@@ -56,10 +56,10 @@ export type PortfolioAssetAttributes = {
  * Represents the type of a portfolio element.
  */
 export const PortfolioElementType = {
-  single: 'single',
   multiple: 'multiple',
   liquidity: 'liquidity',
   borrowlend: 'borrowlend',
+  leverage: 'leverage',
 } as const;
 export type PortfolioElementTypeType =
   (typeof PortfolioElementType)[keyof typeof PortfolioElementType];
@@ -247,6 +247,42 @@ export type PortfolioElementLiquidity = PortfolioElementCommon & {
   data: PortfolioElementLiquidityData;
 };
 
+export enum LeverageSide {
+  long,
+  short,
+}
+
+export type LeveragePosition = {
+  name?: string;
+  imageUri?: string;
+  address?: string;
+  size?: number;
+  sizeValue: UsdValue;
+  collateralValue: UsdValue;
+  value: UsdValue;
+  liquidationPrice: UsdValue;
+  leverage?: number;
+  side: LeverageSide;
+};
+
+/**
+ * Represents the data of a leverage portfolio element.
+ */
+export type PortfolioElementLeverageData = {
+  value: UsdValue;
+  leverage?: number;
+  collateralAssets: PortfolioAsset[];
+  positions: LeveragePosition[];
+};
+
+/**
+ * Represents a leverage portfolio element.
+ */
+export type PortfolioElementLeverage = PortfolioElementCommon & {
+  type: 'leverage';
+  data: PortfolioElementLeverageData;
+};
+
 /**
  * Represents the data of a borrow lend portfolio element.
  */
@@ -328,6 +364,7 @@ export type PortfolioElementBorrowLend = PortfolioElementCommon & {
 export type PortfolioElement =
   | PortfolioElementMultiple
   | PortfolioElementLiquidity
+  | PortfolioElementLeverage
   | PortfolioElementBorrowLend;
 
 /**

@@ -17,6 +17,8 @@ export function getAssetsFromElement(
       ];
     case PortfolioElementType.borrowlend:
       return [...element.data.suppliedAssets];
+    case PortfolioElementType.leverage:
+      return [...element.data.collateralAssets];
     default:
       return [];
   }
