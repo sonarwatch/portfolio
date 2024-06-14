@@ -1,3 +1,6 @@
+import { array, FixableBeetStruct, u8 } from '@metaplex-foundation/beet';
+import { blob } from '../../utils/solana';
+
 export type Loan = {
   version: number;
   principalLamports: string;
@@ -49,9 +52,32 @@ export type LoanTermsSpec = {
   };
 };
 
+export type OrderBook = {
+  orderBookType: {
+    nftList: {
+      listAccount: string;
+    };
+  };
+};
+
 export type Collection = {
   orderBook: string;
   name: string;
   floor: number;
   tensor_id: string;
 };
+
+export type NftList = {
+  buffer: Buffer;
+  version: number;
+  collectionName: number[];
+};
+
+export const nftListStruct = new FixableBeetStruct<NftList>(
+  [
+    ['buffer', blob(8)],
+    ['version', u8],
+    ['collectionName', array(u8)],
+  ],
+  (args) => args as NftList
+);

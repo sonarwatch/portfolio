@@ -8,6 +8,7 @@ import {
   solanaNativeAddress,
   solanaNativeDecimals,
 } from '@sonarwatch/portfolio-core';
+import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import {
   cachePrefix,
@@ -23,7 +24,6 @@ import {
   ParsedAccount,
 } from '../../utils/solana';
 import { Collection, Loan } from './types';
-import BigNumber from 'bignumber.js';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
