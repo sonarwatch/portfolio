@@ -488,6 +488,11 @@ import {
   fetchers as moonwalkFetchers,
 } from './plugins/moonwalk';
 import {
+  jobs as bluefinJobs,
+  fetchers as bluefinFetchers,
+  platforms as bluefinPlatforms,
+} from './plugins/bluefin';
+import {
   platforms as citrusPlatforms,
   jobs as citrusJobs,
   fetchers as citrusFetchers,
@@ -612,6 +617,7 @@ export const platforms: Platform[] = [
   ...futarchyPlatforms,
   ...elixirPlatforms,
   ...moonwalkPlatforms,
+  ...bluefinPlatforms,
   ...citrusPlatforms,
   ...sharkyPlatforms,
 ];
@@ -711,6 +717,7 @@ export const jobs: Job[] = [
   ...futarchyJobs,
   ...elixirJobs,
   ...moonwalkJobs,
+  ...bluefinJobs,
   ...citrusJobs,
   ...sharkyJobs,
 ];
@@ -812,6 +819,7 @@ export const fetchers: Fetcher[] = [
   ...futarchyFetchers,
   ...elixirFetchers,
   ...moonwalkFetchers,
+  ...bluefinFetchers,
   ...citrusFetchers,
   ...sharkyFetchers,
 ];
