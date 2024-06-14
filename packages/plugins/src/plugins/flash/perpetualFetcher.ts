@@ -14,8 +14,7 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { marketsKey, flashPid, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
-import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
-import { getPythPricesDatasMap } from '../../utils/solana/pyth/helpers';
+import { getPythPricesAsMap } from '../../utils/solana/pyth/helpers';
 import { tokenListsDetailsPrefix } from '../tokens/constants';
 import { perpetualsPositionsFilter } from './filters';
 import { positionStruct } from './structs';
@@ -56,14 +55,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     MarketById.set(market.pubkey, market);
   });
 
-  const oracleAccounts = await getMultipleAccountsInfoSafe(
-    client,
-    oraclesPubkeys
-  );
-  const pythPricesByAccount = getPythPricesDatasMap(
-    oraclesPubkeys,
-    oracleAccounts
-  );
+  const pythPricesByAccount = await getPythPricesAsMap(client, oraclesPubkeys);
 
   const tokensDetailsById: Map<string, UniTokenInfo> = new Map();
   const tokensDetails = await cache.getItems<UniTokenInfo>(
@@ -102,20 +94,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       10 ** oraclePrice.exponent
     );
 
-    const targetPriceData = pythPricesByAccount.get(
+    const targetPrice = pythPricesByAccount.get(
       targetCustody.oracle.oracleAccount
     );
-    const collateralCustodyPriceData = pythPricesByAccount.get(
+    const collateralCustodyPrice = pythPricesByAccount.get(
       collateralCustody.oracle.oracleAccount
     );
-    if (
-      !targetPriceData ||
-      !targetPriceData.price ||
-      !collateralCustodyPriceData ||
-      !collateralCustodyPriceData.price
-    )
-      continue;
-    const currentPrice = new BigNumber(targetPriceData.price);
+    if (!targetPrice || !collateralCustodyPrice) continue;
+    const currentPrice = new BigNumber(targetPrice);
 
     const leverage = sizeUsd.dividedBy(collateralUsd);
 
@@ -123,7 +109,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const targetName = targetDetails ? targetDetails.symbol : '';
 
     const collatAmount = collateralUsd
-      .dividedBy(collateralCustodyPriceData.price)
+      .dividedBy(collateralCustodyPrice)
       .dividedBy(usdFactor);
     const collatValue = collateralUsd.dividedBy(usdFactor).toNumber();
 
@@ -145,7 +131,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       data: {
         amount: collatAmount.toNumber(),
         address: collateralCustody.mint,
-        price: collateralCustodyPriceData.price,
+        price: collateralCustodyPrice,
       },
     });
     borrowedAssets.push({
@@ -156,7 +142,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       data: {
         amount: targetAmount.toNumber(),
         address: targetCustody.mint,
-        price: targetPriceData.price,
+        price: targetPrice,
       },
     });
     rewardAssets.push({
