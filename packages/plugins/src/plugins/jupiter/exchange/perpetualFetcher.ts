@@ -133,8 +133,9 @@ const executor: FetcherExecutor = async (
       ? new BigNumber(currentPrice).minus(entryPrice)
       : entryPrice.minus(currentPrice);
     const priceVar = priceDelta.dividedBy(entryPrice);
-    const pnlValue = priceVar.times(collateralValue).times(leverage);
-    const value = collateralValue.plus(pnlValue).minus(fees);
+    const rawPnlValue = priceVar.times(collateralValue).times(leverage);
+    const netPnlValue = rawPnlValue.minus(fees);
+    const value = collateralValue.plus(netPnlValue);
 
     positions.push({
       address: custody.mint,
@@ -144,7 +145,7 @@ const executor: FetcherExecutor = async (
       collateralValue: collateralValue.toNumber(),
       size: size.toNumber(),
       sizeValue: sizeValue.toNumber(),
-      pnlValue: pnlValue.toNumber(),
+      pnlValue: rawPnlValue.toNumber(),
       value: value.toNumber(),
     });
   }
