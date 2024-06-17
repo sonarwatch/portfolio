@@ -12,3 +12,6 @@ export const platform: Platform = {
 };
 
 export const pid = new PublicKey('stPdYNaJNsV3ytS9Xtx4GXXXRcVqVS6x66ZFa26K39S');
+export const whalesApi = 'https://api-v2.whales.market/v2/tokens/';
+export const tokensKey = 'tokens';
+export const lastCountKey = 'lastCount';

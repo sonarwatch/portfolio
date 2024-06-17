@@ -1,87 +1,209 @@
 import {
   NetworkId,
+  PortfolioAsset,
   PortfolioElement,
   PortfolioElementType,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
+import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { pid, platformId } from './constants';
+import { pid, platformId, tokensKey } from './constants';
 import { getClientSolana } from '../../utils/clients';
-import { getParsedProgramAccounts } from '../../utils/solana';
-import { OfferStatus, OfferType, offerStruct } from './structs';
-import { offerFilter } from './filters';
+import {
+  getParsedMultipleAccountsInfo,
+  getParsedProgramAccounts,
+} from '../../utils/solana';
+import {
+  Offer,
+  OfferStatus,
+  OfferType,
+  TokenConfig,
+  offerStruct,
+  orderStruct,
+  tokenConfigStruct,
+} from './structs';
+import { offerFilter, buyOrderFilter, sellOrderFilter } from './filters';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { Category, Token } from './types';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const offers = await getParsedProgramAccounts(
+  const [offers, buyOrders, sellOrders, tokensInfo] = await Promise.all([
+    getParsedProgramAccounts(client, offerStruct, pid, offerFilter(owner)),
+    getParsedProgramAccounts(client, orderStruct, pid, buyOrderFilter(owner)),
+    getParsedProgramAccounts(client, orderStruct, pid, sellOrderFilter(owner)),
+    cache.getItem<Token[]>(tokensKey, {
+      prefix: platformId,
+      networkId: NetworkId.solana,
+    }),
+  ]);
+
+  const orders = [...sellOrders, ...buyOrders];
+
+  if (offers.length === 0 && orders.length === 0) return [];
+  if (!tokensInfo) return [];
+
+  const sideOffers = await getParsedMultipleAccountsInfo(
     client,
     offerStruct,
-    pid,
-    offerFilter(owner)
+    orders.map((order) => order.offer)
   );
-
+  const offerById: Map<string, Offer> = new Map();
   const mints: Set<string> = new Set();
-  offers.forEach((offer) => mints.add(offer.exToken.toString()));
+  const tokenConfigs: Set<string> = new Set();
+  sideOffers.forEach((sideOffer) => {
+    if (sideOffer) {
+      offerById.set(sideOffer.pubkey.toString(), sideOffer);
+      mints.add(sideOffer.exToken.toString());
+      tokenConfigs.add(sideOffer.tokenConfig.toString());
+    }
+  });
+  offers.forEach((offer) => {
+    tokenConfigs.add(offer.tokenConfig.toString());
+    mints.add(offer.exToken.toString());
+  });
+
+  const tokensInfoById: Map<string, Token> = new Map();
+  tokensInfo.forEach((token) => {
+    if (token.token_id) tokensInfoById.set(token.token_id, token);
+  });
+
+  const tokenConfigsAccounts = await getParsedMultipleAccountsInfo(
+    client,
+    tokenConfigStruct,
+    Array.from(tokenConfigs).map((str) => new PublicKey(str))
+  );
+  if (tokenConfigsAccounts.length === 0) return [];
+
+  const tokenConfigById: Map<string, TokenConfig> = new Map();
+  tokenConfigsAccounts.forEach((tA) => {
+    if (tA) tokenConfigById.set(tA.pubkey.toString(), tA);
+  });
+
   const tokenPriceById = await cache.getTokenPricesAsMap(
     Array.from(mints),
     NetworkId.solana
   );
 
-  const buyOfferAssets = [];
-  const sellOfferAssets = [];
+  const assetsById: Map<number, PortfolioAsset[]> = new Map();
   for (const offer of offers) {
-    if (offer.status === OfferStatus.Closed || offer.collateral.isZero())
-      continue;
+    const tokenConfig = tokenConfigById.get(offer.tokenConfig.toString());
+    if (!tokenConfig) continue;
+
+    const { id } = tokenConfig;
+
+    const tokenInfo = tokensInfoById.get(id.toString());
+    if (!tokenInfo) continue;
+
+    const isEnded = tokenInfo.status === 'ended';
+    if (isEnded && offer.status === OfferStatus.Closed) continue;
 
     const mint = offer.exToken.toString();
     const tokenPrice = tokenPriceById.get(mint);
     if (!tokenPrice) continue;
 
-    const amount = offer.collateral
+    const collateral = offer.collateral
       .dividedBy(10 ** tokenPrice.decimals)
       .toNumber();
 
-    const asset = tokenPriceToAssetToken(
+    const fill = `${offer.filledAmount
+      .dividedBy(offer.totalAmount)
+      .times(100)
+      .toString()}% Filled`;
+
+    const collatAsset = tokenPriceToAssetToken(
       mint,
-      amount,
+      collateral,
       NetworkId.solana,
-      tokenPrice
+      tokenPrice,
+      undefined,
+      {
+        tags: [`${OfferType[offer.offerType]} Offer`, fill],
+        isClaimable: isEnded ? true : undefined,
+      }
     );
 
-    if (offer.offerType === OfferType.Sell) {
-      sellOfferAssets.push(asset);
+    const existingAssets = assetsById.get(id);
+    if (!existingAssets) {
+      assetsById.set(id, [collatAsset]);
     } else {
-      buyOfferAssets.push(asset);
+      existingAssets.push(collatAsset);
+      assetsById.set(id, existingAssets);
     }
   }
 
-  if (sellOfferAssets.length === 0 && buyOfferAssets.length === 0) return [];
+  for (const order of orders) {
+    const offer = offerById.get(order.offer.toString());
+    if (!offer) continue;
+    if (offer.authority.toString() === owner) continue;
 
-  const elements: PortfolioElement[] = [];
-  if (sellOfferAssets.length > 0) {
-    elements.push({
-      type: PortfolioElementType.multiple,
-      label: 'Deposit',
-      name: 'Sell offers',
-      networkId: NetworkId.solana,
-      platformId,
-      data: { assets: sellOfferAssets },
-      value: getUsdValueSum(sellOfferAssets.map((asset) => asset.value)),
-    });
+    const tokenConfig = tokenConfigById.get(offer.tokenConfig.toString());
+    if (!tokenConfig) continue;
+
+    const { id } = tokenConfig;
+
+    const tokenInfo = tokensInfoById.get(id.toString());
+    if (!tokenInfo) continue;
+
+    const isEnded = tokenInfo.status === 'ended';
+    if (isEnded && offer.status === OfferStatus.Closed) continue;
+
+    const mint = offer.exToken.toString();
+    const tokenPrice = tokenPriceById.get(mint);
+    if (!tokenPrice) continue;
+
+    const collateral = offer.collateral.dividedBy(10 ** tokenPrice.decimals);
+
+    const amountToCollatAmount = collateral.dividedBy(offer.totalAmount);
+    const amount = order.amount.times(amountToCollatAmount).toNumber();
+
+    const side = offer.offerType === OfferType.Buy ? 'Sell Order' : 'Buy Order';
+
+    const collatAsset = tokenPriceToAssetToken(
+      mint,
+      amount,
+      NetworkId.solana,
+      tokenPrice,
+      undefined,
+      {
+        tags: [side],
+      }
+    );
+
+    const existingAssets = assetsById.get(id);
+    if (!existingAssets) {
+      assetsById.set(id, [collatAsset]);
+    } else {
+      existingAssets.push(collatAsset);
+      assetsById.set(id, existingAssets);
+    }
   }
 
-  if (buyOfferAssets.length > 0) {
+  if (assetsById.size === 0) return [];
+
+  const elements: PortfolioElement[] = [];
+  for (const id of assetsById.keys()) {
+    const info = tokensInfoById.get(id.toString());
+    const assets = assetsById.get(id);
+
+    if (!assets || !info) continue;
+    let type;
+    if (info.category === Category.PointMarket) {
+      type = 'Points';
+    } else if (info.category === Category.PreMarket) {
+      type = 'Pre-market';
+    }
+
     elements.push({
       type: PortfolioElementType.multiple,
       label: 'Deposit',
-      name: 'Buy offers',
+      name: `${type} : ${info.symbol} (${info.status})`,
       networkId: NetworkId.solana,
       platformId,
-      data: { assets: buyOfferAssets },
-      value: getUsdValueSum(buyOfferAssets.map((asset) => asset.value)),
+      data: { assets },
+      value: getUsdValueSum(assets.map((asset) => asset.value)),
     });
   }
   return elements;

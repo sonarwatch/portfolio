@@ -1,8 +1,8 @@
-import { BeetStruct, bool, u8 } from '@metaplex-foundation/beet';
+import { BeetStruct, bool, u16, u8 } from '@metaplex-foundation/beet';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
-import { blob, u64 } from '../../utils/solana';
+import { blob, i64, u64 } from '../../utils/solana';
 
 export enum OfferStatus {
   Open,
@@ -60,6 +60,7 @@ export const offerStruct = new BeetStruct<Offer>(
 );
 
 export type Order = {
+  buffer: Buffer;
   version: number;
   id: BigNumber;
   config: PublicKey;
@@ -74,6 +75,7 @@ export type Order = {
 
 export const orderStruct = new BeetStruct<Order>(
   [
+    ['buffer', blob(8)],
     ['version', u8],
     ['id', u64],
     ['config', publicKey],
@@ -109,4 +111,56 @@ export const exTokenStruct = new BeetStruct<ExToken>(
     ['vaultTokenBump', u8],
   ],
   (args) => args as ExToken
+);
+
+export enum TokenCategory {
+  Point,
+  PreMarket,
+}
+
+export enum TokenStatus {
+  Active,
+  Settle,
+  Inactive,
+}
+
+export type TokenConfig = {
+  buffer: Buffer;
+  version: number;
+  id: number;
+  bump: number;
+  settleTime: BigNumber;
+  settleDuration: BigNumber;
+  pledgeRate: BigNumber;
+  status: TokenStatus;
+  token: PublicKey;
+  config: PublicKey;
+  vaultToken: PublicKey;
+  vaultTokenBump: number;
+  settleRate: BigNumber;
+  category: TokenCategory;
+  feeRefund: BigNumber;
+  feeSettle: BigNumber;
+};
+
+export const tokenConfigStruct = new BeetStruct<TokenConfig>(
+  [
+    ['buffer', blob(8)],
+    ['version', u8],
+    ['id', u16],
+    ['bump', u8],
+    ['settleTime', i64],
+    ['settleDuration', i64],
+    ['pledgeRate', u64],
+    ['status', u8],
+    ['token', publicKey],
+    ['config', publicKey],
+    ['vaultToken', publicKey],
+    ['vaultTokenBump', u8],
+    ['settleRate', u64],
+    ['category', u8],
+    ['feeRefund', u64],
+    ['feeSettle', u64],
+  ],
+  (args) => args as TokenConfig
 );
