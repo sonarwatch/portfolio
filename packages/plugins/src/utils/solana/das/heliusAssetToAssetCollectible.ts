@@ -7,12 +7,18 @@ import {
 import { CollectionGroup, HeliusAsset } from './types';
 
 export function heliusAssetToAssetCollectible(
-  asset: HeliusAsset
+  asset: HeliusAsset,
+  overrideProps?: {
+    tags?: string[];
+    collection?: { floorPrice?: number; name?: string };
+  }
 ): PortfolioAssetCollectible | null {
   // Tags
   const tags: string[] | undefined = [];
   if (asset.compression.compressed) tags.push('compressed');
   if (asset.inscription) tags.push('inscription');
+
+  if (overrideProps?.tags?.length) tags.push(...overrideProps.tags);
 
   let amount = 1;
   let collection: CollectibleCollection | undefined;
@@ -52,6 +58,9 @@ export function heliusAssetToAssetCollectible(
       name: collectionGroup.collection_metadata?.name || collection?.name,
     };
   }
+
+  if (collection && overrideProps?.collection)
+    Object.assign(collection, overrideProps.collection);
 
   return {
     type: PortfolioAssetType.collectible,

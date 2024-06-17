@@ -1,4 +1,5 @@
 import {
+  collectibleFreezedTag,
   getElementLendingValues,
   NetworkId,
   PortfolioAsset,
@@ -110,23 +111,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       );
 
       if (heliusAsset) {
-        mintAsset = heliusAssetToAssetCollectible(heliusAsset);
-        if (mintAsset) {
-          mintAsset.value = new BigNumber(collection.floor)
-            .multipliedBy(solTokenPrice.price)
-            .toNumber();
-          mintAsset.data.price = new BigNumber(collection.floor)
-            .multipliedBy(solTokenPrice.price)
-            .toNumber();
-          if (mintAsset.data.collection) {
-            mintAsset.data.collection.name = collection.name;
-            mintAsset.data.collection.floorPrice = new BigNumber(
-              collection.floor
-            )
+        mintAsset = heliusAssetToAssetCollectible(heliusAsset, {
+          tags: [collectibleFreezedTag],
+          collection: {
+            name: collection.name,
+            floorPrice: new BigNumber(collection.floor)
               .multipliedBy(solTokenPrice.price)
-              .toNumber();
-          }
-        }
+              .toNumber(),
+          },
+        });
       }
     }
 

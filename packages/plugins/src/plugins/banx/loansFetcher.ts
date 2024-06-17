@@ -1,4 +1,5 @@
 import {
+  collectibleFreezedTag,
   getElementLendingValues,
   NetworkId,
   PortfolioAsset,
@@ -7,7 +8,6 @@ import {
   PortfolioElementType,
   solanaNativeAddress,
 } from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -24,12 +24,11 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import {
   banxIdlItem,
   bondTradeTransactionV3DataSize,
-  cachePrefix,
-  collectionsCacheKey,
   platformId,
 } from './constants';
-import { BondTradeTransactionV3, Collection, FraktBond } from './types';
+import { BondTradeTransactionV3, FraktBond } from './types';
 import { getAutoParsedMultipleAccountsInfo } from '../../utils/solana/getAutoParsedMultipleAccountsInfo';
+import { calculateLoanRepayValue } from './calculateLoanRepayValue';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
@@ -94,35 +93,40 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     ])
   )
     .flat()
-    .filter((acc) => acc.redeemedAt === '0');
+    .filter(
+      (acc) =>
+        acc.bondTradeTransactionState.perpetualActive ||
+        acc.bondTradeTransactionState.perpetualRefinancedActive ||
+        acc.bondTradeTransactionState.active
+    );
 
   if (accounts.length === 0) return [];
 
-  const [tokenPrices, collections, fraktBonds] = await Promise.all([
+  const [tokenPrices, /* collections, */ fraktBonds] = await Promise.all([
     cache.getTokenPricesAsMap(
       [usdcSolanaMint, solanaNativeAddress],
       NetworkId.solana
     ),
-    cache.getItem<ParsedAccount<Collection>[]>(collectionsCacheKey, {
+    /* cache.getItem<ParsedAccount<Collection>[]>(collectionsCacheKey, {
       prefix: cachePrefix,
       networkId: NetworkId.solana,
-    }),
+    }), */
     getAutoParsedMultipleAccountsInfo<FraktBond>(
       connection,
       banxIdlItem,
       accounts.map((acc) => new PublicKey(acc.fbondTokenMint))
     ),
   ]);
-  if (!tokenPrices || !collections) return [];
+  if (!tokenPrices) return [];
 
   const solTokenPrice = tokenPrices.get(solanaNativeAddress);
   if (!solTokenPrice) return [];
 
-  const collectionsMap: Map<string, ParsedAccount<Collection>> = new Map();
+  /* const collectionsMap: Map<string, ParsedAccount<Collection>> = new Map();
   collections.forEach((cc) => {
     if (!cc) return;
     collectionsMap.set(cc.marketPubkey, cc);
-  });
+  }); */
 
   const fraktBondsMap: Map<string, ParsedAccount<FraktBond>> = new Map();
   fraktBonds.forEach((fraktBond) => {
@@ -140,9 +144,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   accounts.forEach((acc) => {
     const fraktBond = fraktBondsMap.get(acc.fbondTokenMint);
     if (!fraktBond) return;
-    const collection = collectionsMap.get('TODO'); // TODO find collection
-    // en allant chercher fraktMarket dans l'account hadoMarket ?
-    // if (!collection) return;
+    /*
+    const collection = collectionsMap.get('???');
+    if (!collection) return;
+     */
 
     const tokenPrice = acc.lendingToken.usdc
       ? tokenPrices.get(usdcSolanaMint)
@@ -158,29 +163,23 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const heliusAsset = heliusAssets.get(fraktBond.fbondTokenMint);
 
       if (heliusAsset) {
-        mintAsset = heliusAssetToAssetCollectible(heliusAsset);
-        if (mintAsset && collection) {
-          mintAsset.value = new BigNumber(collection.collectionFloor)
-            .multipliedBy(solTokenPrice.price)
-            .toNumber();
-          mintAsset.data.price = new BigNumber(collection.collectionFloor)
-            .multipliedBy(solTokenPrice.price)
-            .toNumber();
-          if (mintAsset.data.collection) {
-            mintAsset.data.collection.name = collection.collectionName;
-            mintAsset.data.collection.floorPrice = new BigNumber(
-              collection.collectionFloor
-            )
-              .multipliedBy(solTokenPrice.price)
-              .toNumber();
-          }
-        }
+        mintAsset = heliusAssetToAssetCollectible(heliusAsset, {
+          tags: [collectibleFreezedTag],
+          /* collection: collection
+            ? {
+                name: collection.collectionName,
+                floorPrice: new BigNumber(collection.collectionFloor)
+                  .multipliedBy(solTokenPrice.price)
+                  .toNumber(),
+              }
+            : undefined, */
+        });
       }
     }
 
     const solAsset = tokenPriceToAssetToken(
       tokenPrice.address,
-      new BigNumber(acc.borrowerOriginalLent) // TODO value avec accrued interest
+      calculateLoanRepayValue(acc)
         .dividedBy(10 ** tokenPrice.decimals)
         .toNumber(),
       NetworkId.solana,

@@ -7,6 +7,7 @@ import {
   PortfolioElement,
   getElementLendingValues,
   PortfolioAssetCollectible,
+  collectibleFreezedTag,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -103,23 +104,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const heliusAsset = heliusAssets.get(acc.mint);
 
       if (heliusAsset) {
-        mintAsset = heliusAssetToAssetCollectible(heliusAsset);
-        if (mintAsset) {
-          mintAsset.value = new BigNumber(collection.floor)
-            .multipliedBy(solTokenPrice.price)
-            .toNumber();
-          mintAsset.data.price = new BigNumber(collection.floor)
-            .multipliedBy(solTokenPrice.price)
-            .toNumber();
-          if (mintAsset.data.collection) {
-            mintAsset.data.collection.name = collection.name;
-            mintAsset.data.collection.floorPrice = new BigNumber(
-              collection.floor
-            )
+        mintAsset = heliusAssetToAssetCollectible(heliusAsset, {
+          tags: [collectibleFreezedTag],
+          collection: {
+            name: collection.name,
+            floorPrice: new BigNumber(collection.floor)
               .multipliedBy(solTokenPrice.price)
-              .toNumber();
-          }
-        }
+              .toNumber(),
+          },
+        });
       }
     }
 

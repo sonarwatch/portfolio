@@ -95,17 +95,17 @@ export type BondOfferV2 = {
 };
 
 export type PairState = {
-  PairState?: string;
-  OnMarketVirtual?: string;
-  OnMarketTokenized?: string;
-  Frozen?: string;
-  Closed?: string;
-  PerpetualOnMarket?: string;
-  PerpetualClosed?: string;
-  PerpetualBondingCurveOnMarket?: string;
-  PerpetualMigrated?: string;
-  PerpetualBondingCurveClosed?: string;
-  PerpetualListing?: string;
+  pairState?: string;
+  onMarketVirtual?: string;
+  onMarketTokenized?: string;
+  frozen?: string;
+  closed?: string;
+  perpetualOnMarket?: string;
+  perpetualClosed?: string;
+  perpetualBondingCurveOnMarket?: string;
+  perpetualMigrated?: string;
+  perpetualBondingCurveClosed?: string;
+  perpetualListing?: string;
 };
 
 export type BondOfferBondingCurve = {
@@ -130,12 +130,12 @@ export type BondOfferValidation = {
 };
 
 export type BondFeatures = {
-  None?: string;
-  Autocompound?: string;
-  ReceiveNftOnLiquidation?: string;
-  AutoreceiveSol?: string;
-  AutoCompoundAndReceiveNft?: string;
-  AutoReceiveAndReceiveNft?: string;
+  none?: string;
+  autocompound?: string;
+  receiveNftOnLiquidation?: string;
+  autoreceiveSol?: string;
+  autoCompoundAndReceiveNft?: string;
+  autoReceiveAndReceiveNft?: string;
 };
 
 export type BondTradeTransactionV3 = {
@@ -173,76 +173,76 @@ export type BondTradeTransactionV3 = {
 };
 
 export type BondTradeTransactionV2State = {
-  NotActive?: string;
-  Active?: string;
-  PerpetualActive?: string;
-  PerpetualRepaid?: string;
-  PerpetualLiquidatedByAuction?: string;
-  PerpetualLiquidatedByClaim?: string;
-  PerpetualManualTerminating?: string;
-  PerpetualPartialRepaid?: string;
-  PerpetualRefinanceRepaid?: string;
-  PerpetualRefinancedActive?: string;
-  Migrated?: string;
-  PerpetualBorrowerListing?: string;
-  PerpetualLenderListing?: string;
+  notActive?: string;
+  active?: string;
+  perpetualActive?: string;
+  perpetualRepaid?: string;
+  perpetualLiquidatedByAuction?: string;
+  perpetualLiquidatedByClaim?: string;
+  perpetualManualTerminating?: string;
+  perpetualPartialRepaid?: string;
+  perpetualRefinanceRepaid?: string;
+  perpetualRefinancedActive?: string;
+  migrated?: string;
+  perpetualBorrowerListing?: string;
+  perpetualLenderListing?: string;
 };
 
 export type BondTradeTransactionV2Type = {
-  None?: string;
-  Autocompound?: string;
-  ReceiveNftOnLiquidation?: string;
-  AutoreceiveSol?: string;
-  AutoCompoundAndReceiveNft?: string;
-  AutoReceiveAndReceiveNft?: string;
+  none?: string;
+  autocompound?: string;
+  receiveNftOnLiquidation?: string;
+  autoreceiveSol?: string;
+  autoCompoundAndReceiveNft?: string;
+  autoReceiveAndReceiveNft?: string;
 };
 
 export type RedeemResult = {
-  None?: string;
-  DirectBorrow?: string;
-  Reborrow?: string;
-  InstantRefinanced?: string;
-  RefinancedByAuction?: string;
-  PartialRepay?: string;
-  DirectRepaid?: string;
-  Claimed?: string;
-  DirectBorrowAndDirectRepaid?: string;
-  DirectBorrowAndReborrowRepaid?: string;
-  DirectBorrowAndInstantRefinancedRepaid?: string;
-  DirectBorrowAndRefinancedByAuctionRepaid?: string;
-  DirectBorrowAndPartialRepaid?: string;
-  DirectBorrowAndClaimed?: string;
-  ReborrowAndDirectRepaid?: string;
-  ReborrowAndReborrowRepaid?: string;
-  ReborrowAndInstantRefinancedRepaid?: string;
-  ReborrowAndRefinancedByAuctionRepaid?: string;
-  ReborrowAndPartialRepaid?: string;
-  ReborrowAndClaimed?: string;
-  InstantRefinancedAndDirectRepaid?: string;
-  InstantRefinancedAndReborrowRepaid?: string;
-  InstantRefinancedAndInstantRefinancedRepaid?: string;
-  InstantRefinancedAndRefinancedByAuctionRepaid?: string;
-  InstantRefinancedAndPartialRepaid?: string;
-  InstantRefinancedAndClaimed?: string;
-  RefinancedByAuctionAndDirectRepaid?: string;
-  RefinancedByAuctionAndReborrowRepaid?: string;
-  RefinancedByAuctionAndInstantRefinancedRepaid?: string;
-  RefinancedByAuctionAndRefinancedByAuctionRepaid?: string;
-  RefinancedByAuctionAndPartialRepaid?: string;
-  RefinancedByAuctionAndClaimed?: string;
-  PartialRepaidAndDirectRepaid?: string;
-  PartialRepaidAndReborrowRepaid?: string;
-  PartialRepaidAndInstantRefinancedRepaid?: string;
-  PartialRepaidAndRefinancedByAuctionRepaid?: string;
-  PartialRepaidAndPartialRepaid?: string;
-  PartialRepaidAndClaimed?: string;
+  none?: string;
+  directBorrow?: string;
+  reborrow?: string;
+  instantRefinanced?: string;
+  refinancedByAuction?: string;
+  partialRepay?: string;
+  directRepaid?: string;
+  claimed?: string;
+  directBorrowAndDirectRepaid?: string;
+  directBorrowAndReborrowRepaid?: string;
+  directBorrowAndInstantRefinancedRepaid?: string;
+  directBorrowAndRefinancedByAuctionRepaid?: string;
+  directBorrowAndPartialRepaid?: string;
+  directBorrowAndClaimed?: string;
+  reborrowAndDirectRepaid?: string;
+  reborrowAndReborrowRepaid?: string;
+  reborrowAndInstantRefinancedRepaid?: string;
+  reborrowAndRefinancedByAuctionRepaid?: string;
+  reborrowAndPartialRepaid?: string;
+  reborrowAndClaimed?: string;
+  instantRefinancedAndDirectRepaid?: string;
+  instantRefinancedAndReborrowRepaid?: string;
+  instantRefinancedAndInstantRefinancedRepaid?: string;
+  instantRefinancedAndRefinancedByAuctionRepaid?: string;
+  instantRefinancedAndPartialRepaid?: string;
+  instantRefinancedAndClaimed?: string;
+  refinancedByAuctionAndDirectRepaid?: string;
+  refinancedByAuctionAndReborrowRepaid?: string;
+  refinancedByAuctionAndInstantRefinancedRepaid?: string;
+  refinancedByAuctionAndRefinancedByAuctionRepaid?: string;
+  refinancedByAuctionAndPartialRepaid?: string;
+  refinancedByAuctionAndClaimed?: string;
+  partialRepaidAndDirectRepaid?: string;
+  partialRepaidAndReborrowRepaid?: string;
+  partialRepaidAndInstantRefinancedRepaid?: string;
+  partialRepaidAndRefinancedByAuctionRepaid?: string;
+  partialRepaidAndPartialRepaid?: string;
+  partialRepaidAndClaimed?: string;
 };
 
 export type RepayDestination = {
-  None?: string;
-  Offer?: string;
-  Wallet?: string;
-  Vault?: string;
+  none?: string;
+  offer?: string;
+  wallet?: string;
+  vault?: string;
 };
 
 export type LendingTokenType = {
@@ -273,13 +273,13 @@ export type FraktBond = {
 };
 
 export type FraktBondState = {
-  Initialized?: string;
-  Active?: string;
-  Repaid?: string;
-  Liquidating?: string;
-  Liquidated?: string;
-  PerpetualActive?: string;
-  PerpetualRepaid?: string;
-  PerpetualLiquidatedByAuction?: string;
-  PerpetualLiquidatedByClaim?: string;
+  initialized?: string;
+  active?: string;
+  repaid?: string;
+  liquidating?: string;
+  liquidated?: string;
+  perpetualActive?: string;
+  perpetualRepaid?: string;
+  perpetualLiquidatedByAuction?: string;
+  perpetualLiquidatedByClaim?: string;
 };
