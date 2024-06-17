@@ -53,14 +53,14 @@ export function heliusAssetToAssetCollectible(
   ) as CollectionGroup | undefined;
   if (collectionGroup) {
     collection = {
-      floorPrice: null,
+      floorPrice: overrideProps?.collection?.floorPrice ?? null,
       id: collectionGroup.group_value,
-      name: collectionGroup.collection_metadata?.name || collection?.name,
+      name:
+        collectionGroup.collection_metadata?.name ||
+        collection?.name ||
+        overrideProps?.collection?.name,
     };
   }
-
-  if (collection && overrideProps?.collection)
-    Object.assign(collection, overrideProps.collection);
 
   return {
     type: PortfolioAssetType.collectible,
@@ -70,7 +70,7 @@ export function heliusAssetToAssetCollectible(
     data: {
       address: asset.id,
       amount,
-      price: null,
+      price: overrideProps?.collection?.floorPrice ?? null,
       name: asset.content.metadata.name,
       dataUri: asset.content.json_uri,
       imageUri: asset.content.links?.image,
@@ -78,6 +78,6 @@ export function heliusAssetToAssetCollectible(
       collection,
     },
     networkId: NetworkId.solana,
-    value: null,
+    value: overrideProps?.collection?.floorPrice ?? null,
   };
 }

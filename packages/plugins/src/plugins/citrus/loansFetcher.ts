@@ -104,13 +104,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const heliusAsset = heliusAssets.get(acc.mint);
 
       if (heliusAsset) {
+        const assetValue = new BigNumber(collection.floor)
+          .multipliedBy(solTokenPrice.price)
+          .toNumber();
         mintAsset = heliusAssetToAssetCollectible(heliusAsset, {
           tags: [collectibleFreezedTag],
           collection: {
             name: collection.name,
-            floorPrice: new BigNumber(collection.floor)
-              .multipliedBy(solTokenPrice.price)
-              .toNumber(),
+            floorPrice: assetValue,
           },
         });
       }
