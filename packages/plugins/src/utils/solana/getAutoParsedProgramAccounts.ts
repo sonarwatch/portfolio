@@ -5,7 +5,6 @@ import {
 } from '@solana/web3.js';
 import {
   checkIfAccountParser,
-  Parser,
   ParserType,
   SolanaFMParser,
 } from '@solanafm/explorer-kit';
@@ -30,15 +29,21 @@ export async function getAutoParsedProgramAccounts<T>(
     filters,
     maxAccounts
   );
-  return accountsRes.map((accountRes) => {
-    const parsedAccount = eventParser.parseAccount(
-      accountRes.account.data.toString('base64')
-    );
+  return accountsRes
+    .map((accountRes) => {
+      try {
+        const parsedAccount = eventParser.parseAccount(
+          accountRes.account.data.toString('base64')
+        );
 
-    return {
-      pubkey: accountRes.pubkey,
-      lamports: accountRes.account.lamports,
-      ...parsedAccount?.data,
-    } as ParsedAccount<T>;
-  });
+        return {
+          pubkey: accountRes.pubkey,
+          lamports: accountRes.account.lamports,
+          ...parsedAccount?.data,
+        } as ParsedAccount<T>;
+      } catch (err) {
+        return null;
+      }
+    })
+    .filter((acc): acc is ParsedAccount<T> => acc !== null);
 }

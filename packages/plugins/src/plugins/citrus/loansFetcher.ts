@@ -33,32 +33,34 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
   const dasUrl = getSolanaDasEndpoint();
 
-  const [accountsLender, accountsBorrower] = await Promise.all([
-    getAutoParsedProgramAccounts<Loan>(connection, citrusIdlItem, [
-      {
-        dataSize: loanDataSize,
-      },
-      {
-        memcmp: {
-          bytes: owner,
-          offset: 9,
+  const allAccounts = (
+    await Promise.all([
+      getAutoParsedProgramAccounts<Loan>(connection, citrusIdlItem, [
+        {
+          dataSize: loanDataSize,
         },
-      },
-    ]),
-    getAutoParsedProgramAccounts<Loan>(connection, citrusIdlItem, [
-      {
-        dataSize: loanDataSize,
-      },
-      {
-        memcmp: {
-          bytes: owner,
-          offset: 41,
+        {
+          memcmp: {
+            bytes: owner,
+            offset: 9,
+          },
         },
-      },
-    ]),
-  ]);
+      ]),
+      getAutoParsedProgramAccounts<Loan>(connection, citrusIdlItem, [
+        {
+          dataSize: loanDataSize,
+        },
+        {
+          memcmp: {
+            bytes: owner,
+            offset: 41,
+          },
+        },
+      ]),
+    ])
+  ).flat();
 
-  const accounts = [...accountsLender, ...accountsBorrower].filter(
+  const accounts = allAccounts.filter(
     (acc) => !acc.status.repaid // hide past loans
   );
 
