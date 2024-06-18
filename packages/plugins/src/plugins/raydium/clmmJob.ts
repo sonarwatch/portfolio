@@ -16,6 +16,7 @@ import { PoolState, poolStateStruct } from './structs/clmms';
 import { clmmPoolsStateFilter } from './filters';
 import { defaultAcceptedPairs } from '../../utils/misc/getLpUnderlyingTokenSource';
 import { minimumReserveValue } from '../../utils/misc/constants';
+import getSourceWeight from '../../utils/misc/getSourceWeight';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -138,7 +139,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         platformId,
         price: unknownPrice,
         timestamp: Date.now(),
-        weight: 1,
+        weight: getSourceWeight(refLiquidity.times(2)),
       });
 
       promises.push(
