@@ -1,7 +1,7 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
-import { CitrusIDL } from './idl';
 import { IdlItem } from '@solanafm/explorer-kit-idls';
+import { CitrusIDL } from './idl';
 
 export const platformId = 'citrus';
 export const platform: Platform = {
@@ -23,6 +23,7 @@ export const citrusProgram = new PublicKey(
 );
 
 export const loanDataSize = 464;
+export const collectionRefreshInterval = 3600000;
 
 export const citrusIdlItem = {
   programId: citrusProgram.toString(),

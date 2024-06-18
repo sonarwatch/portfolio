@@ -14,8 +14,8 @@ import { Cache } from '../../Cache';
 import {
   cachePrefix,
   citrusIdlItem,
+  collectionRefreshInterval,
   collectionsCacheKey,
-  loanDataSize,
   platformId,
 } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -29,35 +29,20 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getAssetBatchDasAsMap } from '../../utils/solana/das/getAssetBatchDas';
 import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
 import { heliusAssetToAssetCollectible } from '../../utils/solana/das/heliusAssetToAssetCollectible';
+import { getLoanFilters } from './filters';
+
+const collections: Map<string, Collection> = new Map();
+let collectionLastUpdate = 0;
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
   const dasUrl = getSolanaDasEndpoint();
 
+  const [filterA, filterB] = getLoanFilters(owner);
   const allAccounts = (
     await Promise.all([
-      getAutoParsedProgramAccounts<Loan>(connection, citrusIdlItem, [
-        {
-          dataSize: loanDataSize,
-        },
-        {
-          memcmp: {
-            bytes: owner,
-            offset: 9,
-          },
-        },
-      ]),
-      getAutoParsedProgramAccounts<Loan>(connection, citrusIdlItem, [
-        {
-          dataSize: loanDataSize,
-        },
-        {
-          memcmp: {
-            bytes: owner,
-            offset: 41,
-          },
-        },
-      ]),
+      getAutoParsedProgramAccounts<Loan>(connection, citrusIdlItem, filterA),
+      getAutoParsedProgramAccounts<Loan>(connection, citrusIdlItem, filterB),
     ])
   ).flat();
 
@@ -67,12 +52,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (accounts.length === 0) return [];
 
-  const [solTokenPrice, collections, heliusAssets] = await Promise.all([
+  const [solTokenPrice, heliusAssets] = await Promise.all([
     cache.getTokenPrice(solanaNativeAddress, NetworkId.solana),
-    cache.getItem<ParsedAccount<Collection>[]>(collectionsCacheKey, {
-      prefix: cachePrefix,
-      networkId: NetworkId.solana,
-    }),
     getAssetBatchDasAsMap(
       dasUrl,
       accounts
@@ -82,18 +63,28 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         ) as string[]
     ),
   ]);
-  if (!solTokenPrice || !collections) return [];
+  if (!solTokenPrice) return [];
 
-  const collectionsMap: Map<string, ParsedAccount<Collection>> = new Map();
-  collections.forEach((cc) => {
-    if (!cc) return;
-    collectionsMap.set(cc.id, cc);
-  });
+  if (collectionLastUpdate + collectionRefreshInterval < Date.now()) {
+    const collectionsArr = await cache.getItem<ParsedAccount<Collection>[]>(
+      collectionsCacheKey,
+      {
+        prefix: cachePrefix,
+        networkId: NetworkId.solana,
+      }
+    );
+    if (collectionsArr) {
+      collectionsArr.forEach((cc) => {
+        collections.set(cc.id, cc);
+      });
+    }
+    collectionLastUpdate = Date.now();
+  }
 
   const elements: PortfolioElement[] = [];
 
   accounts.forEach((acc) => {
-    const collection = collectionsMap.get(acc.collectionConfig);
+    const collection = collections.get(acc.collectionConfig);
     if (!collection) return;
 
     const borrowedAssets: PortfolioAsset[] = [];
