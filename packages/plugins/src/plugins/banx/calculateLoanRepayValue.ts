@@ -41,7 +41,7 @@ const calculateCurrentInterestSolPure = ({
 export const calculateLoanRepayValue = (
   acc: ParsedAccount<BondTradeTransactionV3>
 ): BigNumber => {
-  const loanValue = Number(acc.borrowerOriginalLent);
+  const loanValue = Number(acc.solAmount);
 
   const calculatedInterest = calculateCurrentInterestSolPure({
     loanValue,

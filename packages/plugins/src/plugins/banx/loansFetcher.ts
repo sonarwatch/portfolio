@@ -24,11 +24,19 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import {
   banxIdlItem,
   bondTradeTransactionV3DataSize,
+  cachePrefix,
+  collectionsCacheKey,
   platformId,
 } from './constants';
-import { BondTradeTransactionV3, FraktBond } from './types';
+import {
+  BondOfferV2,
+  BondTradeTransactionV3,
+  Collection,
+  FraktBond,
+} from './types';
 import { getAutoParsedMultipleAccountsInfo } from '../../utils/solana/getAutoParsedMultipleAccountsInfo';
 import { calculateLoanRepayValue } from './calculateLoanRepayValue';
+import BigNumber from 'bignumber.js';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
@@ -102,52 +110,65 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (accounts.length === 0) return [];
 
-  const [tokenPrices, /* collections, */ fraktBonds] = await Promise.all([
-    cache.getTokenPricesAsMap(
-      [usdcSolanaMint, solanaNativeAddress],
-      NetworkId.solana
-    ),
-    /* cache.getItem<ParsedAccount<Collection>[]>(collectionsCacheKey, {
-      prefix: cachePrefix,
-      networkId: NetworkId.solana,
-    }), */
-    getAutoParsedMultipleAccountsInfo<FraktBond>(
-      connection,
-      banxIdlItem,
-      accounts.map((acc) => new PublicKey(acc.fbondTokenMint))
-    ),
-  ]);
-  if (!tokenPrices) return [];
+  const [tokenPrices, collections, fbondTokenMints, bondOffers] =
+    await Promise.all([
+      cache.getTokenPricesAsMap(
+        [usdcSolanaMint, solanaNativeAddress],
+        NetworkId.solana
+      ),
+      cache.getItem<ParsedAccount<Collection>[]>(collectionsCacheKey, {
+        prefix: cachePrefix,
+        networkId: NetworkId.solana,
+      }),
+      getAutoParsedMultipleAccountsInfo<FraktBond>(
+        connection,
+        banxIdlItem,
+        accounts.map((acc) => new PublicKey(acc.fbondTokenMint))
+      ),
+      getAutoParsedMultipleAccountsInfo<BondOfferV2>(
+        connection,
+        banxIdlItem,
+        accounts.map((acc) => new PublicKey(acc.bondOffer))
+      ),
+    ]);
+
+  if (!tokenPrices || !collections) return [];
 
   const solTokenPrice = tokenPrices.get(solanaNativeAddress);
   if (!solTokenPrice) return [];
 
-  /* const collectionsMap: Map<string, ParsedAccount<Collection>> = new Map();
+  const collectionsMap: Map<string, ParsedAccount<Collection>> = new Map();
   collections.forEach((cc) => {
     if (!cc) return;
     collectionsMap.set(cc.marketPubkey, cc);
-  }); */
+  });
 
-  const fraktBondsMap: Map<string, ParsedAccount<FraktBond>> = new Map();
-  fraktBonds.forEach((fraktBond) => {
-    if (!fraktBond) return;
-    fraktBondsMap.set(fraktBond.pubkey.toString(), fraktBond);
+  const fbondTokenMintsMap: Map<string, ParsedAccount<FraktBond>> = new Map();
+  fbondTokenMints.forEach((fbondTokenMint) => {
+    if (!fbondTokenMint) return;
+    fbondTokenMintsMap.set(fbondTokenMint.pubkey.toString(), fbondTokenMint);
+  });
+
+  const bondOffersMap: Map<string, ParsedAccount<BondOfferV2>> = new Map();
+  bondOffers.forEach((bondOffer) => {
+    if (!bondOffer) return;
+    bondOffersMap.set(bondOffer.pubkey.toString(), bondOffer);
   });
 
   const heliusAssets = await getAssetBatchSafeDasAsMap(
     dasUrl,
-    fraktBonds.map((acc) => acc && acc.fbondTokenMint) as string[]
+    fbondTokenMints.map((acc) => acc && acc.fbondTokenMint) as string[]
   );
 
   const elements: PortfolioElement[] = [];
 
   accounts.forEach((acc) => {
-    const fraktBond = fraktBondsMap.get(acc.fbondTokenMint);
-    if (!fraktBond) return;
-    /*
-    const collection = collectionsMap.get('???');
+    const fbondTokenMint = fbondTokenMintsMap.get(acc.fbondTokenMint);
+    const bondOffer = bondOffersMap.get(acc.bondOffer);
+
+    if (!fbondTokenMint || !bondOffer || !bondOffer.hadoMarket) return;
+    const collection = collectionsMap.get(bondOffer.hadoMarket);
     if (!collection) return;
-     */
 
     const tokenPrice = acc.lendingToken.usdc
       ? tokenPrices.get(usdcSolanaMint)
@@ -160,19 +181,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     let mintAsset: PortfolioAssetCollectible | null = null;
     if (acc.fbondTokenMint) {
-      const heliusAsset = heliusAssets.get(fraktBond.fbondTokenMint);
+      const heliusAsset = heliusAssets.get(fbondTokenMint.fbondTokenMint);
 
       if (heliusAsset) {
         mintAsset = heliusAssetToAssetCollectible(heliusAsset, {
           tags: [collectibleFreezedTag],
-          /* collection: collection
+          collection: collection
             ? {
                 name: collection.collectionName,
                 floorPrice: new BigNumber(collection.collectionFloor)
+                  .dividedBy(10 ** tokenPrice.decimals)
                   .multipliedBy(solTokenPrice.price)
                   .toNumber(),
               }
-            : undefined, */
+            : undefined,
         });
       }
     }
