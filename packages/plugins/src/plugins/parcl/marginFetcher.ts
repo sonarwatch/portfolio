@@ -15,15 +15,17 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
-  const accounts = await getParsedProgramAccounts(
-    client,
-    marginAccountStruct,
-    programId,
-    marginAccountFilter(owner)
-  );
+  const [accounts, usdcTokenPrice] = await Promise.all([
+    getParsedProgramAccounts(
+      client,
+      marginAccountStruct,
+      programId,
+      marginAccountFilter(owner)
+    ),
+    cache.getTokenPrice(usdcMint, NetworkId.solana),
+  ]);
   if (accounts.length === 0) return [];
 
-  const usdcTokenPrice = await cache.getTokenPrice(usdcMint, NetworkId.solana);
   const assets: PortfolioAsset[] = [];
   for (const account of accounts) {
     if (account.margin.isZero()) continue;
