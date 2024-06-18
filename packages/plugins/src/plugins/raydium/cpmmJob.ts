@@ -2,6 +2,7 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { cpmmProgramId, platformId } from './constants';
 import {
+  ParsedAccount,
   getParsedMultipleAccountsInfo,
   tokenAccountStruct,
 } from '../../utils/solana';
@@ -9,7 +10,7 @@ import { getClientSolana } from '../../utils/clients';
 import { Job, JobExecutor } from '../../Job';
 import { Cache } from '../../Cache';
 import { cpmmPoolsStateFilter } from './filters';
-import { poolStateStruct } from './structs/cpmm';
+import { PoolState, poolStateStruct } from './structs/cpmm';
 import { getLpTokenSourceRaw } from '../../utils/misc/getLpTokenSourceRaw';
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -22,20 +23,20 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   const step = 100;
   const tokenPriceSources = [];
-  let clmmPoolsInfo;
+  let cpmmPoolsInfo: (ParsedAccount<PoolState> | null)[];
   let tokenAccounts;
   let tokenPriceById;
   for (let offset = 0; offset < allPoolsPubkeys.length; offset += step) {
     const tokenAccountsPkeys: PublicKey[] = [];
     const mints: Set<string> = new Set();
 
-    clmmPoolsInfo = await getParsedMultipleAccountsInfo(
+    cpmmPoolsInfo = await getParsedMultipleAccountsInfo(
       client,
       poolStateStruct,
       allPoolsPubkeys.slice(offset, offset + step).map((res) => res.pubkey)
     );
 
-    clmmPoolsInfo.forEach((pI) => {
+    cpmmPoolsInfo.forEach((pI) => {
       if (!pI) return;
       mints.add(pI.token0Mint.toString());
       mints.add(pI.token1Mint.toString());
@@ -57,8 +58,8 @@ const executor: JobExecutor = async (cache: Cache) => {
       tokenAccountsMap.set(tA.pubkey.toString(), tA);
     });
 
-    for (let id = 0; id < clmmPoolsInfo.length; id++) {
-      const poolState = clmmPoolsInfo[id];
+    for (let id = 0; id < cpmmPoolsInfo.length; id++) {
+      const poolState = cpmmPoolsInfo[id];
       if (!poolState) continue;
 
       const mintA = poolState.token0Mint.toString();

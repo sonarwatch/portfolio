@@ -1,52 +1,158 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
+import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
+import { PublicKey } from '@solana/web3.js';
+import Decimal from 'decimal.js';
 import { platformId, poolStatesPrefix, raydiumProgram } from './constants';
-import { getParsedProgramAccounts } from '../../utils/solana';
+import {
+  ParsedAccount,
+  TokenAccount,
+  getParsedMultipleAccountsInfo,
+  tokenAccountStruct,
+} from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import { Job, JobExecutor } from '../../Job';
 import { Cache } from '../../Cache';
-import storeTokenPricesFromSqrt from '../../utils/clmm/tokenPricesFromSqrt';
-import { poolStateStruct } from './structs/clmms';
+import { sqrtPriceX64ToPrice } from '../../utils/clmm/tokenPricesFromSqrt';
+import { PoolState, poolStateStruct } from './structs/clmms';
 import { clmmPoolsStateFilter } from './filters';
+import { defaultAcceptedPairs } from '../../utils/misc/getLpUnderlyingTokenSource';
+import { minimumReserveValue } from '../../utils/misc/constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
 
-  const clmmPoolsInfo = await getParsedProgramAccounts(
-    client,
-    poolStateStruct,
-    raydiumProgram,
-    clmmPoolsStateFilter
-  );
+  const allPoolsPubkeys = await client.getProgramAccounts(raydiumProgram, {
+    filters: clmmPoolsStateFilter,
+    dataSlice: { offset: 0, length: 0 },
+  });
 
+  const acceptedPairs = defaultAcceptedPairs.get(NetworkId.solana);
+  if (!acceptedPairs) return;
+
+  const step = 100;
+  const tokenPriceSources: TokenPriceSource[] = [];
   const promises = [];
-  for (let id = 0; id < clmmPoolsInfo.length; id++) {
-    const poolState = clmmPoolsInfo[id];
-    if (poolState.liquidity.isZero()) continue;
+  let clmmPoolsInfo: (ParsedAccount<PoolState> | null)[];
+  let tokenAccounts;
+  let tokenPriceById;
+  for (let offset = 0; offset < allPoolsPubkeys.length; offset += step) {
+    const tokenAccountsPkeys: PublicKey[] = [];
+    const mints: Set<string> = new Set();
 
-    const reserve0 = await client.getBalance(poolState.tokenVault0);
-    const reserve1 = await client.getBalance(poolState.tokenVault1);
-    promises.push(
-      storeTokenPricesFromSqrt(
-        cache,
-        NetworkId.solana,
-        poolState.pubkey.toString(),
-        new BigNumber(reserve0),
-        new BigNumber(reserve1),
+    clmmPoolsInfo = await getParsedMultipleAccountsInfo(
+      client,
+      poolStateStruct,
+      allPoolsPubkeys.slice(offset, offset + step).map((res) => res.pubkey)
+    );
+
+    clmmPoolsInfo.forEach((pI) => {
+      if (!pI) return;
+      mints.add(pI.tokenMint0.toString());
+      mints.add(pI.tokenMint1.toString());
+      tokenAccountsPkeys.push(pI.tokenVault0, pI.tokenVault1);
+    });
+
+    [tokenAccounts, tokenPriceById] = await Promise.all([
+      getParsedMultipleAccountsInfo(
+        client,
+        tokenAccountStruct,
+        tokenAccountsPkeys
+      ),
+      cache.getTokenPricesAsMap(Array.from(mints), NetworkId.solana),
+    ]);
+
+    const tokenAccountsMap: Map<string, TokenAccount> = new Map();
+    tokenAccounts.forEach((tA) => {
+      if (!tA) return;
+      tokenAccountsMap.set(tA.pubkey.toString(), tA);
+    });
+
+    let mintA;
+    let mintB;
+    let unknownPrice;
+    let decimalA;
+    let decimalB;
+    let poolState;
+    let refLiquidity;
+    let priceAToB;
+    let refTokenPrice;
+    let refTokenAccount;
+    for (let id = 0; id < clmmPoolsInfo.length; id++) {
+      poolState = clmmPoolsInfo[id];
+      if (!poolState || poolState.liquidity.isZero()) continue;
+
+      mintA = poolState.tokenMint0.toString();
+      mintB = poolState.tokenMint1.toString();
+      decimalA = poolState.mintDecimals0;
+      decimalB = poolState.mintDecimals1;
+
+      let refMint;
+      let unkMint: string;
+      let refTokenVault: string;
+      let aToB: boolean;
+      let refDecimal;
+      let unkDecimal: number;
+      if (acceptedPairs.includes(mintA)) {
+        refMint = mintA;
+        unkMint = mintB;
+        refTokenVault = poolState.tokenVault0.toString();
+        aToB = true;
+        refDecimal = decimalA;
+        unkDecimal = decimalB;
+      } else if (acceptedPairs.includes(mintB)) {
+        refMint = mintB;
+        unkMint = mintA;
+        refTokenVault = poolState.tokenVault1.toString();
+        aToB = false;
+        refDecimal = decimalB;
+        unkDecimal = decimalA;
+      } else {
+        continue;
+      }
+
+      refTokenPrice = tokenPriceById.get(refMint);
+      if (!refTokenPrice) continue;
+
+      refTokenAccount = tokenAccountsMap.get(refTokenVault);
+      if (!refTokenAccount) continue;
+
+      refLiquidity = refTokenAccount.amount
+        .times(refTokenPrice.price)
+        .dividedBy(10 ** refDecimal);
+      if (refLiquidity.isLessThan(minimumReserveValue)) continue;
+
+      priceAToB = sqrtPriceX64ToPrice(
         poolState.sqrtPriceX64,
-        poolState.tokenMint0.toString(),
-        poolState.tokenMint1.toString()
-      )
-    );
+        decimalA,
+        decimalB
+      );
 
-    promises.push(
-      cache.setItem(poolState.pubkey.toString(), poolState, {
-        prefix: poolStatesPrefix,
+      unknownPrice = aToB
+        ? new Decimal(refTokenPrice.price).dividedBy(priceAToB).toNumber()
+        : new Decimal(refTokenPrice.price).times(priceAToB).toNumber();
+
+      tokenPriceSources.push({
+        address: unkMint,
+        decimals: unkDecimal,
+        id: platformId,
         networkId: NetworkId.solana,
-      })
-    );
+        platformId,
+        price: unknownPrice,
+        timestamp: Date.now(),
+        weight: 1,
+      });
+
+      promises.push(
+        cache.setItem(poolState.pubkey.toString(), poolState, {
+          prefix: poolStatesPrefix,
+          networkId: NetworkId.solana,
+        })
+      );
+    }
+    await Promise.all([
+      ...promises,
+      cache.setTokenPriceSources(tokenPriceSources),
+    ]);
   }
-  await Promise.all(promises);
 };
 
 const job: Job = {

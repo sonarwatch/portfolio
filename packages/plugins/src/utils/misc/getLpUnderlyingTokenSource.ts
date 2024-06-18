@@ -14,6 +14,7 @@ import {
 import { walletTokensPlatform } from '../../plugins/tokens/constants';
 import getSourceWeight from './getSourceWeight';
 import { usdcSuiType } from '../sui/constants';
+import { minimumReserveValue } from './constants';
 
 export const defaultAcceptedPairs = new Map<NetworkIdType, string[]>([
   [
@@ -85,7 +86,7 @@ export function getLpUnderlyingTokenSource(
   if (!acceptedPairs) acceptedPairs = defaultAcceptedPairs.get(networkId);
   if (acceptedPairs === undefined) return [];
   if (acceptedPairs.length === 0) return [];
-  if (!minReserveValue) minReserveValue = 2500;
+  if (!minReserveValue) minReserveValue = minimumReserveValue;
 
   // Verify underlyings weights
   let totalWeight = poolUnderlyings.reduce(
