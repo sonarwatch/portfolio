@@ -13,6 +13,7 @@ import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import {
   cachePrefix,
+  collectionRefreshInterval,
   collectionsCacheKey,
   platformId,
   sharkyIdlItem,
@@ -26,6 +27,9 @@ import { getAssetBatchDasAsMap } from '../../utils/solana/das/getAssetBatchDas';
 import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
 import { heliusAssetToAssetCollectible } from '../../utils/solana/das/heliusAssetToAssetCollectible';
 import { getLoanFilters } from './filters';
+
+const collections: Map<string, Collection> = new Map();
+let collectionLastUpdate = 0;
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const dasUrl = getSolanaDasEndpoint();
@@ -41,12 +45,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   ).flat();
   if (accounts.length === 0) return [];
 
-  const [solTokenPrice, collections, heliusAssets] = await Promise.all([
+  const [solTokenPrice, heliusAssets] = await Promise.all([
     cache.getTokenPrice(solanaNativeAddress, NetworkId.solana),
-    cache.getItem<Collection[]>(collectionsCacheKey, {
-      prefix: cachePrefix,
-      networkId: NetworkId.solana,
-    }),
     getAssetBatchDasAsMap(
       dasUrl,
       accounts
@@ -56,16 +56,25 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   ]);
   if (!solTokenPrice || !collections) return [];
 
-  const collectionsMap: Map<string, Collection> = new Map();
-  collections.forEach((cc) => {
-    if (!cc) return;
-    collectionsMap.set(cc.orderBook, cc);
-  });
+  if (collectionLastUpdate + collectionRefreshInterval < Date.now()) {
+    const collectionsArr = await cache.getItem<Collection[]>(
+      collectionsCacheKey,
+      {
+        prefix: cachePrefix,
+        networkId: NetworkId.solana,
+      }
+    );
+    if (collectionsArr) {
+      collectionsArr.forEach((cc) => {
+        collections.set(cc.orderBook, cc);
+      });
+    }
+    collectionLastUpdate = Date.now();
+  }
 
   const elements: PortfolioElement[] = [];
-
   accounts.forEach((acc) => {
-    const collection = collectionsMap.get(acc.orderBook);
+    const collection = collections.get(acc.orderBook);
     if (!collection) return;
 
     const borrowedAssets: PortfolioAsset[] = [];
