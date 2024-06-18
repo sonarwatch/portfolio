@@ -36,10 +36,12 @@ export async function getAutoParsedMultipleAccountsInfo<T>(
     const parsedAccount = eventParser.parseAccount(
       accountInfo.data.toString('base64')
     );
+    if (parsedAccount === null) return null;
 
     return {
       pubkey: publicKeys[i],
-      ...parsedAccount?.data,
-    } as ParsedAccount<T>;
+      lamports: accountInfo.lamports,
+      ...(parsedAccount.data as T),
+    };
   });
 }
