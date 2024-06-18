@@ -26,7 +26,7 @@ import {
 } from '../../utils/solana';
 import { Collection, Loan } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { getAssetBatchSafeDasAsMap } from '../../utils/solana/das/getAssetBatchDas';
+import { getAssetBatchDasAsMap } from '../../utils/solana/das/getAssetBatchDas';
 import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
 import { heliusAssetToAssetCollectible } from '../../utils/solana/das/heliusAssetToAssetCollectible';
 
@@ -80,7 +80,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       prefix: cachePrefix,
       networkId: NetworkId.solana,
     }),
-    getAssetBatchSafeDasAsMap(
+    getAssetBatchDasAsMap(
       dasUrl,
       accounts
         .map((acc) => acc.loanState.taken?.taken.nftCollateralMint)

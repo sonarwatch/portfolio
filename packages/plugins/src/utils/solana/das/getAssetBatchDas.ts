@@ -5,18 +5,18 @@ import { getBasicAuthHeaders } from '../../misc/getBasicAuthHeaders';
 
 const MAX_MINTS = 1000;
 
-export async function getAssetBatchSafeDas(
+export async function getAssetBatchDas(
   dasEndpoint: RpcEndpoint,
   publicKeys: string[]
 ) {
   if (publicKeys.length <= MAX_MINTS) {
-    return getAssetBatchDas(dasEndpoint, publicKeys);
+    return getAssetBatchDasUnsafe(dasEndpoint, publicKeys);
   }
   const assetsInfo = [];
   const publicKeysToFetch = [...publicKeys];
   while (publicKeysToFetch.length !== 0) {
     const currPublicKeysToFetch = publicKeysToFetch.splice(0, MAX_MINTS);
-    const accountsInfoRes = await getAssetBatchDas(
+    const accountsInfoRes = await getAssetBatchDasUnsafe(
       dasEndpoint,
       currPublicKeysToFetch
     );
@@ -25,11 +25,11 @@ export async function getAssetBatchSafeDas(
   return assetsInfo;
 }
 
-export async function getAssetBatchSafeDasAsMap(
+export async function getAssetBatchDasAsMap(
   dasEndpoint: RpcEndpoint,
   publicKeys: string[]
 ) {
-  const assets = await getAssetBatchSafeDas(dasEndpoint, publicKeys);
+  const assets = await getAssetBatchDas(dasEndpoint, publicKeys);
 
   const assetsMap: Map<string, HeliusAsset> = new Map();
   assets.forEach((asset) => {
@@ -40,7 +40,7 @@ export async function getAssetBatchSafeDasAsMap(
   return assetsMap;
 }
 
-async function getAssetBatchDas(
+async function getAssetBatchDasUnsafe(
   dasEndpoint: RpcEndpoint,
   publicKeys: string[]
 ) {

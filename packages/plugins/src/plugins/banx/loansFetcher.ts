@@ -18,7 +18,7 @@ import {
   ParsedAccount,
   usdcSolanaMint,
 } from '../../utils/solana';
-import { getAssetBatchSafeDasAsMap } from '../../utils/solana/das/getAssetBatchDas';
+import { getAssetBatchDasAsMap } from '../../utils/solana/das/getAssetBatchDas';
 import { heliusAssetToAssetCollectible } from '../../utils/solana/das/heliusAssetToAssetCollectible';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import {
@@ -155,7 +155,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     bondOffersMap.set(bondOffer.pubkey.toString(), bondOffer);
   });
 
-  const heliusAssets = await getAssetBatchSafeDasAsMap(
+  const heliusAssets = await getAssetBatchDasAsMap(
     dasUrl,
     fbondTokenMints.map((acc) => acc && acc.fbondTokenMint) as string[]
   );
