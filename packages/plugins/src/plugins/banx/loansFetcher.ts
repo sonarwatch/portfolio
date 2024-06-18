@@ -25,7 +25,6 @@ import { heliusAssetToAssetCollectible } from '../../utils/solana/das/heliusAsse
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import {
   banxIdlItem,
-  bondTradeTransactionV3DataSize,
   cachePrefix,
   collectionsCacheKey,
   platformId,
@@ -37,66 +36,23 @@ import {
   FraktBond,
 } from './types';
 import { calculateLoanRepayValue } from './calculateLoanRepayValue';
+import { loanFiltersA, loanFiltersB } from './filters';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
   const dasUrl = getSolanaDasEndpoint();
-
-  /*
-  let offset = 141;
-  for (let i = 0; i < 50; i++) {
-    offset += 1;
-    const accs = await getAutoParsedProgramAccounts<BondOfferV2>(
-      connection,
-      banxIdlItem,
-      [
-        {
-          dataSize: bondTradeTransactionV3DataSize,
-        },
-        {
-          memcmp: {
-            bytes: 'CUDaeRmYpJAxnvYcSK8LtZ27TXaQdwV6dWbsUdDVANuL', // owner,
-            offset,
-          },
-        },
-      ]
-    );
-    console.log(offset, accs.length);
-    if (accs.length > 0) break;
-  }
-  */
 
   const accounts = (
     await Promise.all([
       getAutoParsedProgramAccounts<BondTradeTransactionV3>(
         connection,
         banxIdlItem,
-        [
-          {
-            dataSize: bondTradeTransactionV3DataSize,
-          },
-          {
-            memcmp: {
-              bytes: owner,
-              offset: 41,
-            },
-          },
-        ]
+        loanFiltersA(owner)
       ),
       getAutoParsedProgramAccounts<BondTradeTransactionV3>(
         connection,
         banxIdlItem,
-        [
-          {
-            dataSize: bondTradeTransactionV3DataSize,
-          },
-          {
-            memcmp: {
-              bytes: owner,
-              offset: 147,
-            },
-          },
-        ]
+        loanFiltersB(owner)
       ),
     ])
   )
