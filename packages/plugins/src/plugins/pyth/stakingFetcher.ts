@@ -16,12 +16,15 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const stakingAccounts = await getParsedProgramAccounts(
-    client,
-    positionDataStruct,
-    stakingProgramId,
-    positionsDataFilter(owner)
-  );
+  const [stakingAccounts, tokenPrice] = await Promise.all([
+    getParsedProgramAccounts(
+      client,
+      positionDataStruct,
+      stakingProgramId,
+      positionsDataFilter(owner)
+    ),
+    cache.getTokenPrice(pythMint, NetworkId.solana),
+  ]);
 
   if (stakingAccounts.length !== 1) return [];
 
@@ -39,7 +42,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const amount = tokenAccountInfo?.amount;
   if (!amount || amount.isZero()) return [];
 
-  const tokenPrice = await cache.getTokenPrice(pythMint, NetworkId.solana);
   const asset = tokenPriceToAssetToken(
     pythMint,
     amount.dividedBy(10 ** 6).toNumber(),
