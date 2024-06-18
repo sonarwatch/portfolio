@@ -133,7 +133,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       tokenPriceSources.push({
         address: unkMint,
         decimals: unkDecimal,
-        id: platformId,
+        id: poolState.pubkey.toString(),
         networkId: NetworkId.solana,
         platformId,
         price: unknownPrice,
