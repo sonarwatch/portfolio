@@ -10,16 +10,11 @@ export const limitFilters = (owner: string): GetProgramAccountsFilter[] => [
   },
   {
     memcmp: {
-      offset: 104,
-      bytes: '2',
-    },
-  },
-  {
-    memcmp: {
       offset: 8,
       bytes: owner,
     },
   },
+  { dataSize: 315 },
 ];
 
 export const DCAFilters = (owner: string): GetProgramAccountsFilter[] => [

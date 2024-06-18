@@ -26,6 +26,7 @@ export type LimitOrder = {
   reserve: PublicKey;
   uid: BigNumber;
   expiredAt: BigNumber;
+  base: PublicKey;
   referral: PublicKey;
 };
 
@@ -45,6 +46,7 @@ export const limitOrderStruct = new BeetStruct<LimitOrder>(
     ['reserve', publicKey],
     ['uid', u64],
     ['expiredAt', i64],
+    ['base', publicKey],
     ['referral', publicKey],
   ],
   (args) => args as LimitOrder
