@@ -19,10 +19,7 @@ import {
 } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
-import {
-  getAutoParsedProgramAccounts,
-  ParsedAccount,
-} from '../../utils/solana';
+import { getAutoParsedProgramAccounts } from '../../utils/solana';
 import { Collection, Loan } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getAssetBatchDasAsMap } from '../../utils/solana/das/getAssetBatchDas';
@@ -46,7 +43,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const [solTokenPrice, collections, heliusAssets] = await Promise.all([
     cache.getTokenPrice(solanaNativeAddress, NetworkId.solana),
-    cache.getItem<ParsedAccount<Collection>[]>(collectionsCacheKey, {
+    cache.getItem<Collection[]>(collectionsCacheKey, {
       prefix: cachePrefix,
       networkId: NetworkId.solana,
     }),
@@ -59,7 +56,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   ]);
   if (!solTokenPrice || !collections) return [];
 
-  const collectionsMap: Map<string, ParsedAccount<Collection>> = new Map();
+  const collectionsMap: Map<string, Collection> = new Map();
   collections.forEach((cc) => {
     if (!cc) return;
     collectionsMap.set(cc.orderBook, cc);
