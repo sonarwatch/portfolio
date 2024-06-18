@@ -8,7 +8,7 @@ import { CollectionGroup, HeliusAsset } from './types';
 
 export function heliusAssetToAssetCollectible(
   asset: HeliusAsset,
-  overrideProps?: {
+  props?: {
     tags?: string[];
     collection?: { floorPrice?: number; name?: string };
   }
@@ -18,7 +18,7 @@ export function heliusAssetToAssetCollectible(
   if (asset.compression.compressed) tags.push('compressed');
   if (asset.inscription) tags.push('inscription');
 
-  if (overrideProps?.tags?.length) tags.push(...overrideProps.tags);
+  if (props?.tags?.length) tags.push(...props.tags);
 
   let amount = 1;
   let collection: CollectibleCollection | undefined;
@@ -53,12 +53,12 @@ export function heliusAssetToAssetCollectible(
   ) as CollectionGroup | undefined;
   if (collectionGroup) {
     collection = {
-      floorPrice: overrideProps?.collection?.floorPrice ?? null,
+      floorPrice: props?.collection?.floorPrice ?? null,
       id: collectionGroup.group_value,
       name:
         collectionGroup.collection_metadata?.name ||
         collection?.name ||
-        overrideProps?.collection?.name,
+        props?.collection?.name,
     };
   }
 
@@ -70,7 +70,7 @@ export function heliusAssetToAssetCollectible(
     data: {
       address: asset.id,
       amount,
-      price: overrideProps?.collection?.floorPrice ?? null,
+      price: props?.collection?.floorPrice ?? null,
       name: asset.content.metadata.name,
       dataUri: asset.content.json_uri,
       imageUri: asset.content.links?.image,
@@ -78,6 +78,6 @@ export function heliusAssetToAssetCollectible(
       collection,
     },
     networkId: NetworkId.solana,
-    value: overrideProps?.collection?.floorPrice ?? null,
+    value: props?.collection?.floorPrice ?? null,
   };
 }
