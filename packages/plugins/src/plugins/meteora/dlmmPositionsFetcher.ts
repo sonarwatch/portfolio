@@ -3,7 +3,6 @@ import {
   PortfolioAsset,
   PortfolioElementType,
   PortfolioLiquidity,
-  TokenPrice,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
@@ -43,22 +42,21 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const userPubKey = new PublicKey(owner);
 
-  const positionsV1 = await getParsedProgramAccounts(
-    client,
-    dlmmPositionV1Struct,
-    dlmmProgramId,
-    dlmmPositionAccountFilter(userPubKey.toString())
-  );
-
-  const positionsV2 = await getParsedProgramAccounts(
-    client,
-    dlmmPositionV2Struct,
-    dlmmProgramId,
-    dlmmPositionV2AccountFilter(userPubKey.toString())
-  );
-
+  const [positionsV1, positionsV2] = await Promise.all([
+    getParsedProgramAccounts(
+      client,
+      dlmmPositionV1Struct,
+      dlmmProgramId,
+      dlmmPositionAccountFilter(userPubKey.toString())
+    ),
+    getParsedProgramAccounts(
+      client,
+      dlmmPositionV2Struct,
+      dlmmProgramId,
+      dlmmPositionV2AccountFilter(userPubKey.toString())
+    ),
+  ]);
   const positions = [...positionsV1, ...positionsV2];
-
   if (positions.length === 0) return [];
 
   const binArrayPubkeySet = new Set<string>();
@@ -110,26 +108,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       lbPairById.set(lbPairKeys[i - binArrayKeys.length].toBase58(), lbPairAcc);
     }
   }
-
-  const tokenPrices = await cache.getTokenPrices(
-    Array.from(mints),
-    NetworkId.solana
-  );
-
-  const tokenPriceById: Map<string, TokenPrice> = new Map();
-  for (const tokenPrice of tokenPrices) {
-    if (tokenPrice) tokenPriceById.set(tokenPrice.address, tokenPrice);
-  }
-
   const reservePublicKeys = Array.from(lbPairById.values())
     .map(({ reserveX, reserveY }) => [reserveX, reserveY])
     .flat();
 
-  const reserveAccountsInfo = await getParsedMultipleAccountsInfo(
-    client,
-    tokenAccountStruct,
-    reservePublicKeys
-  );
+  const [tokenPriceById, reserveAccountsInfo] = await Promise.all([
+    cache.getTokenPricesAsMap(Array.from(mints), NetworkId.solana),
+    getParsedMultipleAccountsInfo(
+      client,
+      tokenAccountStruct,
+      reservePublicKeys
+    ),
+  ]);
 
   const lbPairReserveMap = new Map<
     string,
