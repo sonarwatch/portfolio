@@ -31,19 +31,15 @@ export async function getAutoParsedProgramAccounts<T>(
   );
   return accountsRes
     .map((accountRes) => {
-      try {
-        const parsedAccount = eventParser.parseAccount(
-          accountRes.account.data.toString('base64')
-        );
-
-        return {
-          pubkey: accountRes.pubkey,
-          lamports: accountRes.account.lamports,
-          ...parsedAccount?.data,
-        } as ParsedAccount<T>;
-      } catch (err) {
-        return null;
-      }
+      const parsedAccount = eventParser.parseAccount(
+        accountRes.account.data.toString('base64')
+      );
+      if (!parsedAccount) return null;
+      return {
+        pubkey: accountRes.pubkey,
+        lamports: accountRes.account.lamports,
+        ...(parsedAccount.data as T),
+      };
     })
     .filter((acc): acc is ParsedAccount<T> => acc !== null);
 }
