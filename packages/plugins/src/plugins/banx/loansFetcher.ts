@@ -26,6 +26,7 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import {
   banxIdlItem,
   cachePrefix,
+  collectionRefreshInterval,
   collectionsCacheKey,
   platformId,
 } from './constants';
@@ -37,6 +38,9 @@ import {
 } from './types';
 import { calculateLoanRepayValue } from './calculateLoanRepayValue';
 import { loanFiltersA, loanFiltersB } from './filters';
+
+const collections: Map<string, Collection> = new Map();
+let collectionLastUpdate = 0;
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
@@ -66,38 +70,41 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (accounts.length === 0) return [];
 
-  const [tokenPrices, collections, fbondTokenMints, bondOffers] =
-    await Promise.all([
-      cache.getTokenPricesAsMap(
-        [usdcSolanaMint, solanaNativeAddress],
-        NetworkId.solana
-      ),
-      cache.getItem<ParsedAccount<Collection>[]>(collectionsCacheKey, {
+  const [tokenPrices, fbondTokenMints, bondOffers] = await Promise.all([
+    cache.getTokenPricesAsMap(
+      [usdcSolanaMint, solanaNativeAddress],
+      NetworkId.solana
+    ),
+    getAutoParsedMultipleAccountsInfo<FraktBond>(
+      connection,
+      banxIdlItem,
+      accounts.map((acc) => new PublicKey(acc.fbondTokenMint))
+    ),
+    getAutoParsedMultipleAccountsInfo<BondOfferV2>(
+      connection,
+      banxIdlItem,
+      accounts.map((acc) => new PublicKey(acc.bondOffer))
+    ),
+  ]);
+
+  if (collectionLastUpdate + collectionRefreshInterval < Date.now()) {
+    const collectionsArr = await cache.getItem<ParsedAccount<Collection>[]>(
+      collectionsCacheKey,
+      {
         prefix: cachePrefix,
         networkId: NetworkId.solana,
-      }),
-      getAutoParsedMultipleAccountsInfo<FraktBond>(
-        connection,
-        banxIdlItem,
-        accounts.map((acc) => new PublicKey(acc.fbondTokenMint))
-      ),
-      getAutoParsedMultipleAccountsInfo<BondOfferV2>(
-        connection,
-        banxIdlItem,
-        accounts.map((acc) => new PublicKey(acc.bondOffer))
-      ),
-    ]);
-
-  if (!tokenPrices || !collections) return [];
+      }
+    );
+    if (collectionsArr) {
+      collectionsArr.forEach((cc) => {
+        collections.set(cc.marketPubkey, cc);
+      });
+    }
+    collectionLastUpdate = Date.now();
+  }
 
   const solTokenPrice = tokenPrices.get(solanaNativeAddress);
   if (!solTokenPrice) return [];
-
-  const collectionsMap: Map<string, ParsedAccount<Collection>> = new Map();
-  collections.forEach((cc) => {
-    if (!cc) return;
-    collectionsMap.set(cc.marketPubkey, cc);
-  });
 
   const fbondTokenMintsMap: Map<string, ParsedAccount<FraktBond>> = new Map();
   fbondTokenMints.forEach((fbondTokenMint) => {
@@ -123,7 +130,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const bondOffer = bondOffersMap.get(acc.bondOffer);
 
     if (!fbondTokenMint || !bondOffer || !bondOffer.hadoMarket) return;
-    const collection = collectionsMap.get(bondOffer.hadoMarket);
+    const collection = collections.get(bondOffer.hadoMarket);
     if (!collection) return;
 
     const tokenPrice = acc.lendingToken.usdc

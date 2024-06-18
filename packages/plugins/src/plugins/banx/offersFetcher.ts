@@ -20,10 +20,14 @@ import {
   banxIdlItem,
   bondOfferDataSize,
   cachePrefix,
+  collectionRefreshInterval,
   collectionsCacheKey,
   platformId,
 } from './constants';
 import { BondOfferV2, Collection } from './types';
+
+const collections: Map<string, Collection> = new Map();
+let collectionLastUpdate = 0;
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
@@ -41,31 +45,32 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       },
     ])
   ).filter((acc) => acc.buyOrdersQuantity !== '0');
-
   if (accounts.length === 0) return [];
 
-  const [tokenPrices, collections] = await Promise.all([
-    cache.getTokenPricesAsMap(
-      [usdcSolanaMint, solanaNativeAddress],
-      NetworkId.solana
-    ),
-    cache.getItem<ParsedAccount<Collection>[]>(collectionsCacheKey, {
-      prefix: cachePrefix,
-      networkId: NetworkId.solana,
-    }),
-  ]);
-  if (!tokenPrices || !collections) return [];
+  const tokenPrices = await cache.getTokenPricesAsMap(
+    [usdcSolanaMint, solanaNativeAddress],
+    NetworkId.solana
+  );
 
-  const collectionsMap: Map<string, ParsedAccount<Collection>> = new Map();
-  collections.forEach((cc) => {
-    if (!cc) return;
-    collectionsMap.set(cc.marketPubkey, cc);
-  });
+  if (collectionLastUpdate + collectionRefreshInterval < Date.now()) {
+    const collectionsArr = await cache.getItem<ParsedAccount<Collection>[]>(
+      collectionsCacheKey,
+      {
+        prefix: cachePrefix,
+        networkId: NetworkId.solana,
+      }
+    );
+    if (collectionsArr) {
+      collectionsArr.forEach((cc) => {
+        collections.set(cc.marketPubkey, cc);
+      });
+    }
+    collectionLastUpdate = Date.now();
+  }
 
   const elements: PortfolioElement[] = [];
-
   accounts.forEach((acc) => {
-    const collection = collectionsMap.get(acc.hadoMarket);
+    const collection = collections.get(acc.hadoMarket);
     if (!collection) return;
 
     const borrowedAssets: PortfolioAsset[] = [];
