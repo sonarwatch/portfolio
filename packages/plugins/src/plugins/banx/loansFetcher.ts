@@ -9,6 +9,7 @@ import {
   solanaNativeAddress,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
+import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
@@ -36,7 +37,6 @@ import {
 } from './types';
 import { getAutoParsedMultipleAccountsInfo } from '../../utils/solana/getAutoParsedMultipleAccountsInfo';
 import { calculateLoanRepayValue } from './calculateLoanRepayValue';
-import BigNumber from 'bignumber.js';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
