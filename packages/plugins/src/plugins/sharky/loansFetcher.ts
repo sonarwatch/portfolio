@@ -54,7 +54,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         .filter((mint) => mint) as string[]
     ),
   ]);
-  if (!solTokenPrice || !collections) return [];
+  if (!solTokenPrice) return [];
 
   if (collectionLastUpdate + collectionRefreshInterval < Date.now()) {
     const collectionsArr = await cache.getItem<Collection[]>(
