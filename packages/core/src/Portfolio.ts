@@ -335,9 +335,6 @@ export type PortfolioElementBorrowLendData = {
   /**
    * @deprecated
    * The collateral ratio of the portfolio element.
-   * -1 means infinity/no borrow.
-   * null means unknown.
-   * 1.5 means 150%.
    */
   collateralRatio: null;
 
