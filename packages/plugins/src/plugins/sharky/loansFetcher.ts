@@ -14,7 +14,6 @@ import { Cache } from '../../Cache';
 import {
   cachePrefix,
   collectionsCacheKey,
-  loanDataSize,
   platformId,
   sharkyIdlItem,
 } from './constants';
@@ -29,49 +28,20 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getAssetBatchDasAsMap } from '../../utils/solana/das/getAssetBatchDas';
 import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
 import { heliusAssetToAssetCollectible } from '../../utils/solana/das/heliusAssetToAssetCollectible';
+import { getLoanFilters } from './filters';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const dasUrl = getSolanaDasEndpoint();
   const connection = getClientSolana();
 
+  const [filterA, filterB, filterC] = getLoanFilters(owner);
   const accounts = (
     await Promise.all([
-      getAutoParsedProgramAccounts<Loan>(connection, sharkyIdlItem, [
-        {
-          dataSize: loanDataSize,
-        },
-        {
-          memcmp: {
-            bytes: owner,
-            offset: 115,
-          },
-        },
-      ]),
-      getAutoParsedProgramAccounts<Loan>(connection, sharkyIdlItem, [
-        {
-          dataSize: loanDataSize,
-        },
-        {
-          memcmp: {
-            bytes: owner,
-            offset: 147,
-          },
-        },
-      ]),
-      getAutoParsedProgramAccounts<Loan>(connection, sharkyIdlItem, [
-        {
-          dataSize: loanDataSize,
-        },
-        {
-          memcmp: {
-            bytes: owner,
-            offset: 83,
-          },
-        },
-      ]),
+      getAutoParsedProgramAccounts<Loan>(connection, sharkyIdlItem, filterA),
+      getAutoParsedProgramAccounts<Loan>(connection, sharkyIdlItem, filterB),
+      getAutoParsedProgramAccounts<Loan>(connection, sharkyIdlItem, filterC),
     ])
   ).flat();
-
   if (accounts.length === 0) return [];
 
   const [solTokenPrice, collections, heliusAssets] = await Promise.all([
@@ -156,32 +126,30 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       }
     }
 
-    if (suppliedAssets.length > 0) {
-      const { borrowedValue, suppliedValue, healthRatio, rewardValue } =
-        getElementLendingValues(suppliedAssets, borrowedAssets, []);
-
-      elements.push({
-        networkId: NetworkId.solana,
-        label: 'Lending',
-        platformId,
-        type: PortfolioElementType.borrowlend,
+    if (suppliedAssets.length === 0) return;
+    const { borrowedValue, suppliedValue, healthRatio, rewardValue } =
+      getElementLendingValues(suppliedAssets, borrowedAssets, []);
+    elements.push({
+      networkId: NetworkId.solana,
+      label: 'Lending',
+      platformId,
+      type: PortfolioElementType.borrowlend,
+      value: suppliedValue,
+      name,
+      data: {
+        borrowedAssets,
+        borrowedValue,
+        borrowedYields: [],
+        suppliedAssets,
+        suppliedValue,
+        suppliedYields: [],
+        collateralRatio: null,
+        rewardAssets: [],
+        rewardValue,
+        healthRatio,
         value: suppliedValue,
-        name,
-        data: {
-          borrowedAssets,
-          borrowedValue,
-          borrowedYields: [],
-          suppliedAssets,
-          suppliedValue,
-          suppliedYields: [],
-          collateralRatio: null,
-          rewardAssets: [],
-          rewardValue,
-          healthRatio,
-          value: suppliedValue,
-        },
-      });
-    }
+      },
+    });
   });
 
   return elements;
