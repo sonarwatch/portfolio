@@ -16,6 +16,7 @@ import { getClientSolana } from '../../utils/clients';
 import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
 import {
   getAutoParsedProgramAccounts,
+  getAutoParsedMultipleAccountsInfo,
   ParsedAccount,
   usdcSolanaMint,
 } from '../../utils/solana';
@@ -35,7 +36,6 @@ import {
   Collection,
   FraktBond,
 } from './types';
-import { getAutoParsedMultipleAccountsInfo } from '../../utils/solana/getAutoParsedMultipleAccountsInfo';
 import { calculateLoanRepayValue } from './calculateLoanRepayValue';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
