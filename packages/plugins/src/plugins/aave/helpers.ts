@@ -330,7 +330,6 @@ export function getElementLendingData(
     borrowedAssets,
     borrowedValue,
     borrowedYields,
-    collateralRatio: null,
     healthRatio,
     suppliedAssets,
     suppliedValue,

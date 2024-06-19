@@ -180,7 +180,6 @@ export function getElementFromAccount(
       suppliedAssets,
       suppliedValue,
       suppliedYields,
-      collateralRatio: null,
       healthRatio,
       rewardAssets,
       rewardValue,

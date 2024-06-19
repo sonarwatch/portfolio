@@ -150,7 +150,6 @@ export default function getPositionsV2Fetcher(
           suppliedAssets,
           suppliedValue,
           suppliedYields,
-          collateralRatio: null,
           healthRatio,
           rewardAssets,
           rewardValue,

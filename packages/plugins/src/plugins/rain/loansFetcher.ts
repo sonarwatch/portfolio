@@ -129,7 +129,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         suppliedYields,
         rewardAssets,
         healthRatio,
-        collateralRatio: null,
         rewardValue,
         value,
       },

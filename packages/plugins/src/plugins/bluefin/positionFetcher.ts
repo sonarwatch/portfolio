@@ -173,7 +173,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         suppliedAssets,
         suppliedValue: getUsdValueSum(suppliedAssets.map((a) => a.value)),
         suppliedYields,
-        collateralRatio: null,
         rewardAssets,
         rewardValue: getUsdValueSum(rewardAssets.map((a) => a.value)),
         healthRatio: null,

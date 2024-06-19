@@ -336,18 +336,19 @@ export type PortfolioElementBorrowLendData = {
   borrowedYields: Yield[][];
 
   /**
-   * @deprecated
-   * The collateral ratio of the portfolio element.
-   */
-  collateralRatio: null;
-
-  /**
    * The health ratio of the portfolio element.
    * 1 means full health or no borrow.
    * 0 or below means can be liquidated.
    * null means unknown.
    */
   healthRatio: number | null;
+
+  /**
+   * Represents the date (in ms) when the loan will expire.
+   * If current date is greater than this value, the loan is expired.
+   * undefined means the loan has no expiration.
+   */
+  expireOn?: number;
 };
 
 /**

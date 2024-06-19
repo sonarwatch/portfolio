@@ -218,8 +218,6 @@ export function getElementsFromObligations(
         suppliedAssets,
         suppliedValue,
         suppliedYields,
-        collateralRatio: null,
-
         healthRatio,
         rewardAssets,
         rewardValue,
