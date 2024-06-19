@@ -17,6 +17,7 @@ import { clmmPoolsStateFilter } from './filters';
 import { defaultAcceptedPairs } from '../../utils/misc/getLpUnderlyingTokenSource';
 import { minimumReserveValue } from '../../utils/misc/constants';
 import getSourceWeight from '../../utils/misc/getSourceWeight';
+import { walletTokensPlatform } from '../tokens/constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -134,9 +135,9 @@ const executor: JobExecutor = async (cache: Cache) => {
       tokenPriceSources.push({
         address: unkMint,
         decimals: unkDecimal,
-        id: poolState.pubkey.toString(),
+        id: platformId,
         networkId: NetworkId.solana,
-        platformId,
+        platformId: walletTokensPlatform.id,
         price: unknownPrice,
         timestamp: Date.now(),
         weight: getSourceWeight(refLiquidity.times(2)),
