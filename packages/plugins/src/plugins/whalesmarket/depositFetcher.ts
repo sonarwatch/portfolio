@@ -120,7 +120,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       tokenPrice,
       undefined,
       {
-        tags: [`${OfferType[offer.offerType]} Offer`, fill],
+        tags: isEnded
+          ? undefined
+          : [`${OfferType[offer.offerType]} Offer`, fill],
         isClaimable: isEnded ? true : undefined,
       }
     );
