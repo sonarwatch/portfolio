@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.12.31](https://github.com/sonarwatch/portfolio/compare/plugins-0.12.30...plugins-0.12.31) (2024-06-19)
+
+
+### Reverts
+
+* Revert "fix getAutoParsedProgramAccounts" ([451cbb2](https://github.com/sonarwatch/portfolio/commit/451cbb297fb99a3a6e1ed4801fd91c211fb6e833))
+
+
+
 ## [0.12.30](https://github.com/sonarwatch/portfolio/compare/plugins-0.12.29...plugins-0.12.30) (2024-06-19)
 
 
