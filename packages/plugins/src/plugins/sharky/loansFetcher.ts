@@ -121,14 +121,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         // LENDER
         suppliedAssets.push(solAsset);
         if (mintAsset) borrowedAssets.push(mintAsset);
-        name = `Active Loan on ${collection.name}`;
+        name = `Active Loan`;
       } else {
         // BORROWER
         if (mintAsset) {
           suppliedAssets.push(mintAsset);
         }
         borrowedAssets.push(solAsset);
-        name = `Active Loan on ${collection.name}`;
+        name = `Active Loan`;
       }
     }
 
@@ -153,6 +153,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         rewardValue,
         healthRatio,
         value: suppliedValue,
+        expireOn: acc.loanState.taken
+          ? Number(acc.loanState.taken.taken.terms.time.start) +
+            Number(acc.loanState.taken.taken.terms.time.duration)
+          : undefined,
       },
     });
   });

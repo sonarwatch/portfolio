@@ -128,9 +128,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       if (acc.status.waitingForBorrower) {
         name = `Lend Offer on ${collection.name}`;
       } else if (acc.status.active || acc.status.onSale) {
-        name = `Active Loan on ${collection.name}`;
+        name = `Active Loan`;
       } else if (acc.status.defaulted) {
-        name = `Defaulted Loan on ${collection.name}`;
+        name = `Defaulted Loan`;
       }
     } else {
       // BORROWER
@@ -141,11 +141,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       borrowedAssets.push(solAsset);
 
       if (acc.status.waitingForLender) {
-        name = `Borrow Offer on ${collection.name}`;
+        name = `Borrow Offer`;
       } else if (acc.status.active || acc.status.onSale) {
-        name = `Active Loan on ${collection.name}`;
+        name = `Active Loan`;
       } else if (acc.status.defaulted) {
-        name = `Expired Loan on ${collection.name}`;
+        name = `Expired Loan`;
       }
     }
 
@@ -171,6 +171,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           rewardValue,
           healthRatio,
           value: suppliedValue,
+          expireOn:
+            acc.status.active || acc.status.onSale
+              ? Number(acc.startTime) + Number(acc.loanTerms.duration)
+              : undefined,
         },
       });
     }
