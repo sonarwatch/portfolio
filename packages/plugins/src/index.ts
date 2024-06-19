@@ -492,6 +492,16 @@ import {
   fetchers as bluefinFetchers,
   platforms as bluefinPlatforms,
 } from './plugins/bluefin';
+import {
+  platforms as citrusPlatforms,
+  jobs as citrusJobs,
+  fetchers as citrusFetchers,
+} from './plugins/citrus';
+import {
+  platforms as sharkyPlatforms,
+  jobs as sharkyJobs,
+  fetchers as sharkyFetchers,
+} from './plugins/sharky';
 
 export {
   walletTokensPlatform,
@@ -608,6 +618,8 @@ export const platforms: Platform[] = [
   ...elixirPlatforms,
   ...moonwalkPlatforms,
   ...bluefinPlatforms,
+  ...citrusPlatforms,
+  ...sharkyPlatforms,
 ];
 
 // JOBS //
@@ -706,6 +718,8 @@ export const jobs: Job[] = [
   ...elixirJobs,
   ...moonwalkJobs,
   ...bluefinJobs,
+  ...citrusJobs,
+  ...sharkyJobs,
 ];
 
 // FETCHERS //
@@ -806,6 +820,8 @@ export const fetchers: Fetcher[] = [
   ...elixirFetchers,
   ...moonwalkFetchers,
   ...bluefinFetchers,
+  ...citrusFetchers,
+  ...sharkyFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 

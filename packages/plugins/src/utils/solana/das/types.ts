@@ -11,6 +11,11 @@ export type GetAssetsByOwnerOutput = {
   result: HeliusAssetList;
   id: string;
 };
+export type GetAssetBatchOutput = {
+  jsonrpc: string;
+  result: HeliusAsset[];
+  id: string;
+};
 
 export type HeliusAssetList = {
   total: number;

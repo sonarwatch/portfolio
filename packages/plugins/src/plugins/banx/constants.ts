@@ -1,5 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
+import { IdlItem } from '@solanafm/explorer-kit-idls';
+import { BanxIDL } from './idl';
 
 export const platformId = 'banx';
 export const platform: Platform = {
@@ -17,3 +19,19 @@ export const banxPid = new PublicKey(
 export const banxMint = 'BANXbTpN8U2cU41FjPxe2Ti37PiT5cCxLUKDQZuJeMMR';
 export const banxDecimals = 9;
 export const banxApiUrl = 'https://api.banx.gg/tokenStake/v2?walletPubkey=';
+
+export const banxApiCollectionsUrl =
+  'https://api.banx.gg/bonds/preview?isPrivate=false&getAll=true';
+
+export const collectionsCacheKey = `${platformId}-collections`;
+export const cachePrefix = `${platformId}`;
+
+export const bondOfferDataSize = 208;
+export const bondTradeTransactionV3DataSize = 336;
+export const collectionRefreshInterval = 3600000;
+
+export const banxIdlItem = {
+  programId: banxPid.toString(),
+  idl: BanxIDL,
+  idlType: 'anchor',
+} as IdlItem;
