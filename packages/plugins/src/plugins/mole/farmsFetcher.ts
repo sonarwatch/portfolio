@@ -191,7 +191,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           suppliedAssets,
           suppliedValue,
           suppliedYields,
-          collateralRatio: null,
           healthRatio: debtValue.dividedBy(health).toNumber(),
           rewardAssets,
           rewardValue,
