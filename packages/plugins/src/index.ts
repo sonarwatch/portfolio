@@ -502,6 +502,11 @@ import {
   jobs as sharkyJobs,
   fetchers as sharkyFetchers,
 } from './plugins/sharky';
+import {
+  platforms as allbridgePlatforms,
+  jobs as allbridgeJobs,
+  fetchers as allbridgeFetchers,
+} from './plugins/allbridge';
 
 export {
   walletTokensPlatform,
@@ -620,6 +625,7 @@ export const platforms: Platform[] = [
   ...bluefinPlatforms,
   ...citrusPlatforms,
   ...sharkyPlatforms,
+  ...allbridgePlatforms,
 ];
 
 // JOBS //
@@ -720,6 +726,7 @@ export const jobs: Job[] = [
   ...bluefinJobs,
   ...citrusJobs,
   ...sharkyJobs,
+  ...allbridgeJobs,
 ];
 
 // FETCHERS //
@@ -822,6 +829,7 @@ export const fetchers: Fetcher[] = [
   ...bluefinFetchers,
   ...citrusFetchers,
   ...sharkyFetchers,
+  ...allbridgeFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
