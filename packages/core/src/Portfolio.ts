@@ -342,6 +342,13 @@ export type PortfolioElementBorrowLendData = {
    * null means unknown.
    */
   healthRatio: number | null;
+
+  /**
+   * Represents the date (in ms) when the loan will expire.
+   * If current date is greater than this value, the loan is expired.
+   * undefined means the loan has no expiration.
+   */
+  expireOn?: number;
 };
 
 /**
