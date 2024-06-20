@@ -196,13 +196,13 @@ export function getElementsFromObligations(
     if (suppliedAssets.length === 0 && borrowedAssets.length === 0) continue;
 
     const { borrowedValue, suppliedValue, value, healthRatio, rewardValue } =
-      getElementLendingValues(
+      getElementLendingValues({
         suppliedAssets,
         borrowedAssets,
         rewardAssets,
         suppliedLtvs,
-        borrowedWeights
-      );
+        borrowedWeights,
+      });
 
     elements.push({
       type: PortfolioElementType.borrowlend,

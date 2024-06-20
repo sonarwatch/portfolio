@@ -134,7 +134,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     if (suppliedAssets.length === 0) return;
     const { borrowedValue, suppliedValue, healthRatio, rewardValue } =
-      getElementLendingValues(suppliedAssets, borrowedAssets, []);
+      getElementLendingValues({
+        suppliedAssets,
+        borrowedAssets,
+        rewardAssets: [],
+      });
     elements.push({
       networkId: NetworkId.solana,
       label: 'Lending',

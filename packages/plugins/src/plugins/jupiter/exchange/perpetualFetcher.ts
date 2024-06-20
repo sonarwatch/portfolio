@@ -1,5 +1,5 @@
 import {
-  LeveragePosition,
+  LevPosition,
   LeverageSide,
   NetworkId,
   PortfolioElementLeverage,
@@ -82,7 +82,7 @@ const executor: FetcherExecutor = async (
     tD ? tokensDetailsById.set(tD.address, tD) : undefined
   );
 
-  const positions: LeveragePosition[] = [];
+  const levPositions: LevPosition[] = [];
   for (const position of positionAccounts) {
     const {
       collateralUsd,
@@ -137,7 +137,7 @@ const executor: FetcherExecutor = async (
     const netPnlValue = rawPnlValue.minus(fees);
     const value = collateralValue.plus(netPnlValue);
 
-    positions.push({
+    levPositions.push({
       address: custody.mint,
       side: isLong ? LeverageSide.long : LeverageSide.short,
       leverage: leverage.toNumber(),
@@ -150,17 +150,17 @@ const executor: FetcherExecutor = async (
     });
   }
 
-  if (positions.length === 0) return [];
-  const value = getUsdValueSum(positions.map((a) => a.value));
+  if (levPositions.length === 0) return [];
+  const value = getUsdValueSum(levPositions.map((a) => a.value));
   return [
     {
       type: PortfolioElementType.leverage,
       data: {
-        positions,
-        positionsValue: value,
+        levPositions,
+        levValue: value,
         value,
-        collateralAssets: [],
-        collateralValue: 0,
+        rewardAssets: [],
+        rewardValue: 0,
       },
       label: 'Leverage',
       networkId: NetworkId.solana,

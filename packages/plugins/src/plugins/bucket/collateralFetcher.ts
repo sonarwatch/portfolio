@@ -71,7 +71,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
 
     const { borrowedValue, healthRatio, suppliedValue, value, rewardValue } =
-      getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
+      getElementLendingValues({ suppliedAssets, borrowedAssets, rewardAssets });
 
     const element: PortfolioElement = {
       type: PortfolioElementType.borrowlend,

@@ -4,7 +4,7 @@ import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId } from './constants';
 import { getDerivedAccount } from './helpers';
-import driftDepositsFetcher from '../drift/deposits';
+import driftDepositsFetcher from '../drift/depositsFetcher';
 import kaminoLendDepositFetcher from '../kamino/lendsFetcher';
 import mangoDepositFetcher from '../mango/collateralFetcher';
 import { walletTokensPlatform } from '../tokens/constants';
