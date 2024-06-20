@@ -209,8 +209,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         );
         borrowedYields.push([
           {
-            apr: spotMarket.borrowApr,
-            apy: aprToApy(spotMarket.borrowApr),
+            apr: -spotMarket.borrowApr,
+            apy: -aprToApy(spotMarket.borrowApr),
           },
         ]);
       }

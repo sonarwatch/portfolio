@@ -26,11 +26,13 @@ export type Yield = {
   /**
    * APR (Annual Percentage Rate) as fraction.
    * 0.25 means 25% APR
+   * -0.25 means -25% APR
    */
   apr: number;
   /**
    * APY (Annual Percentage Yield) as fraction.
    * 0.28 means 28% APY
+   * -0.28 means -28% APR
    */
   apy: number;
 };
