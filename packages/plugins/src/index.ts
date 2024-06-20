@@ -502,6 +502,11 @@ import {
   jobs as sharkyJobs,
   fetchers as sharkyFetchers,
 } from './plugins/sharky';
+import {
+  platforms as sanctumPlatforms,
+  jobs as sanctumJobs,
+  fetchers as sanctumFetchers,
+} from './plugins/sanctum';
 
 export {
   walletTokensPlatform,
@@ -620,6 +625,7 @@ export const platforms: Platform[] = [
   ...bluefinPlatforms,
   ...citrusPlatforms,
   ...sharkyPlatforms,
+  ...sanctumPlatforms,
 ];
 
 // JOBS //
@@ -720,6 +726,7 @@ export const jobs: Job[] = [
   ...bluefinJobs,
   ...citrusJobs,
   ...sharkyJobs,
+  ...sanctumJobs,
 ];
 
 // FETCHERS //
@@ -822,6 +829,7 @@ export const fetchers: Fetcher[] = [
   ...bluefinFetchers,
   ...citrusFetchers,
   ...sharkyFetchers,
+  ...sanctumFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
