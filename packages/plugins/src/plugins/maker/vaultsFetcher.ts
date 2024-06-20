@@ -176,7 +176,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     )
       continue;
     const { borrowedValue, suppliedValue, value, healthRatio, rewardValue } =
-      getElementLendingValues(suppliedAssets, borrowedAssets, rewardAssets);
+      getElementLendingValues({ suppliedAssets, borrowedAssets, rewardAssets });
     elements.push({
       type: PortfolioElementType.borrowlend,
       networkId: NetworkId.ethereum,

@@ -310,6 +310,20 @@ export type PortfolioElementBorrowLendData = {
   rewardAssets: PortfolioAsset[];
 
   /**
+   * The leveraged part of the portfolio element.
+   */
+  leveraged?: {
+    /**
+     * The leveraged positions.
+     */
+    positions: LevPosition[];
+    /**
+     * The leveraged value.
+     */
+    value: UsdValue;
+  };
+
+  /**
    * The value of the assets supplied in USD.
    */
   suppliedValue: UsdValue;

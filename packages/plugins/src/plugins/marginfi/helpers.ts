@@ -159,13 +159,13 @@ export function getElementFromAccount(
   if (suppliedAssets.length === 0 && borrowedAssets.length === 0) return null;
 
   const { borrowedValue, healthRatio, suppliedValue, value, rewardValue } =
-    getElementLendingValues(
+    getElementLendingValues({
       suppliedAssets,
       borrowedAssets,
       rewardAssets,
       suppliedLtvs,
-      borrowedWeights
-    );
+      borrowedWeights,
+    });
 
   return {
     type: PortfolioElementType.borrowlend,

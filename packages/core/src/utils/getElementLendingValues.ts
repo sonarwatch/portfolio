@@ -1,5 +1,6 @@
-import { PortfolioAsset } from '../Portfolio';
+import { LevPosition, PortfolioAsset } from '../Portfolio';
 import { UsdValue } from '../UsdValue';
+import { getUsdValueSumStrict } from './getUsdValueSumStrict';
 
 function getHealthRatio(
   suppliedAssets: PortfolioAsset[],
@@ -34,13 +35,27 @@ function getHealthRatio(
   return (suppliesWeightedValue - borrowsWeightedValue) / suppliesWeightedValue;
 }
 
-export function getElementLendingValues(
-  suppliedAssets: PortfolioAsset[],
-  borrowedAssets: PortfolioAsset[],
-  rewardAssets: PortfolioAsset[],
-  suppliedLtvs?: number[],
-  borrowedWeights?: number[]
-) {
+export function getElementLendingValues(params: {
+  suppliedAssets: PortfolioAsset[];
+  borrowedAssets: PortfolioAsset[];
+  rewardAssets: PortfolioAsset[];
+  suppliedLtvs?: number[];
+  borrowedWeights?: number[];
+  levPositions?: LevPosition[];
+}) {
+  const {
+    suppliedAssets,
+    borrowedAssets,
+    rewardAssets,
+    suppliedLtvs,
+    borrowedWeights,
+    levPositions,
+  } = params;
+
+  const levValue: UsdValue = getUsdValueSumStrict(
+    levPositions?.map((p) => p.value) || []
+  );
+
   const rewardValue: UsdValue = rewardAssets.reduce(
     (acc: UsdValue, asset) =>
       acc !== null && asset.value !== null ? acc + asset.value : null,
@@ -69,12 +84,14 @@ export function getElementLendingValues(
       ? suppliedValue - borrowedValue
       : null;
   if (rewardValue !== null && value !== null) value += rewardValue;
+  if (levValue !== null && value !== null) value += levValue;
 
   return {
     borrowedValue,
     suppliedValue,
     rewardValue,
     healthRatio,
+    levValue,
     value,
   };
 }
