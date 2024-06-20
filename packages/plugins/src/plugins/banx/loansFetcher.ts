@@ -153,7 +153,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             ? {
                 name: collection.collectionName,
                 floorPrice: new BigNumber(collection.collectionFloor)
-                  .dividedBy(10 ** tokenPrice.decimals)
+                  .dividedBy(10 ** 9)
                   .multipliedBy(solTokenPrice.price)
                   .toNumber(),
               }

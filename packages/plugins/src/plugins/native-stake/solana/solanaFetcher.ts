@@ -60,9 +60,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       .dividedBy(10 ** 9)
       .toNumber();
 
-    const amount = new BigNumber(stakeAccount.stake)
+    const amount = new BigNumber(stakeAccount.lamports)
       .minus(stakeAccount.rentExemptReserve)
-      .dividedBy(new BigNumber(10 ** 9))
+      .dividedBy(10 ** 9)
       .toNumber();
     if (amount <= 0) continue;
 
@@ -87,7 +87,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     } else if (epoch && activationEpoch.isGreaterThanOrEqualTo(epoch)) {
       tags.push('Activating');
     } else if (epoch && deactivationEpoch.isLessThan(epoch)) {
-      tags.push('Unstaked');
+      tags.push('Inactive');
     } else if (epoch && deactivationEpoch.isEqualTo(epoch)) {
       tags.push('Unstaking');
     } else {
