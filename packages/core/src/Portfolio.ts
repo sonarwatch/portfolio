@@ -252,7 +252,7 @@ export enum LeverageSide {
   short = 'short',
 }
 
-export type LeveragePosition = {
+export type LevPosition = {
   name?: string;
   imageUri?: string;
   address?: string;
@@ -270,12 +270,11 @@ export type LeveragePosition = {
  * Represents the data of a leverage portfolio element.
  */
 export type PortfolioElementLeverageData = {
+  levPositions: LevPosition[];
+  levValue: UsdValue;
+  rewardAssets: PortfolioAsset[];
+  rewardValue: UsdValue;
   value: UsdValue;
-  leverage?: number;
-  collateralAssets: PortfolioAsset[];
-  collateralValue: UsdValue;
-  positions: LeveragePosition[];
-  positionsValue: UsdValue;
 };
 
 /**
