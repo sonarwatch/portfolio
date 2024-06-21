@@ -8,6 +8,7 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { stakeStruct } from './structs';
 import { getStakePubKey } from './helpers';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
+import { tokenAccountStruct } from '../../utils/solana';
 
 const nosFactor = new BigNumber(10 ** nosDecimals);
 
@@ -21,6 +22,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
   if (!stakeAccount || stakeAccount.amount.isZero()) return [];
 
+  const [vaultAccount, tokenPrice] = await Promise.all([
+    getParsedAccountInfo(client, tokenAccountStruct, stakeAccount.vault),
+    cache.getTokenPrice(nosMint, NetworkId.solana),
+  ]);
+  if (!vaultAccount || vaultAccount.amount.isZero()) return [];
+
   const lockedUntil = stakeAccount.timeUnstake.isZero()
     ? undefined
     : stakeAccount.timeUnstake
@@ -28,10 +35,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         .times(1000)
         .toNumber();
 
-  const tokenPrice = await cache.getTokenPrice(nosMint, NetworkId.solana);
   const asset = tokenPriceToAssetToken(
     nosMint,
-    stakeAccount.amount.dividedBy(nosFactor).toNumber(),
+    vaultAccount.amount.dividedBy(nosFactor).toNumber(),
     NetworkId.solana,
     tokenPrice,
     undefined,
