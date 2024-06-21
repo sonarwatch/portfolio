@@ -36,7 +36,7 @@ import {
   Collection,
   FraktBond,
 } from './types';
-import { calculateLoanRepayValue } from './calculateLoanRepayValue';
+import { calculateLoanRepayValue, calculateDebtValue } from './helpers';
 import { loanFiltersA, loanFiltersB } from './filters';
 
 const collections: Map<string, Collection> = new Map();
@@ -64,6 +64,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     .filter(
       (acc) =>
         acc.bondTradeTransactionState.perpetualActive ||
+        acc.bondTradeTransactionState.perpetualPartialRepaid ||
         acc.bondTradeTransactionState.perpetualRefinancedActive ||
         acc.bondTradeTransactionState.active
     );
@@ -130,6 +131,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const bondOffer = bondOffersMap.get(acc.bondOffer);
 
     if (!fbondTokenMint || !bondOffer || !bondOffer.hadoMarket) return;
+
+    if (
+      !fbondTokenMint.fraktBondState.perpetualActive &&
+      !fbondTokenMint.fraktBondState.active
+    )
+      return;
+
     const collection = collections.get(bondOffer.hadoMarket);
     if (!collection) return;
 
@@ -162,24 +170,33 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       }
     }
 
-    const solAsset = tokenPriceToAssetToken(
-      tokenPrice.address,
-      calculateLoanRepayValue(acc)
-        .dividedBy(10 ** tokenPrice.decimals)
-        .toNumber(),
-      NetworkId.solana,
-      tokenPrice
-    );
-
     const name = `Active Loan`;
     if (acc.user === owner.toString()) {
       // LENDER
-      suppliedAssets.push(solAsset);
+      suppliedAssets.push(
+        tokenPriceToAssetToken(
+          tokenPrice.address,
+          calculateLoanRepayValue(acc)
+            .dividedBy(10 ** tokenPrice.decimals)
+            .toNumber(),
+          NetworkId.solana,
+          tokenPrice
+        )
+      );
       if (mintAsset) borrowedAssets.push(mintAsset);
     } else {
       // BORROWER
       if (mintAsset) suppliedAssets.push(mintAsset);
-      borrowedAssets.push(solAsset);
+      borrowedAssets.push(
+        tokenPriceToAssetToken(
+          tokenPrice.address,
+          calculateDebtValue(acc)
+            .dividedBy(10 ** tokenPrice.decimals)
+            .toNumber(),
+          NetworkId.solana,
+          tokenPrice
+        )
+      );
     }
 
     if (suppliedAssets.length > 0) {

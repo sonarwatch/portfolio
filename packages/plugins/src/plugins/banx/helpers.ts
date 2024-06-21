@@ -52,3 +52,39 @@ export const calculateLoanRepayValue = (
 
   return new BigNumber(loanValue).plus(calculatedInterest);
 };
+
+const getInterestRepaid = (acc: ParsedAccount<BondTradeTransactionV3>) => {
+  const currentLoanValue = Number(acc.solAmount) + Number(acc.feeAmount);
+  return new BigNumber(
+    acc.redeemedAt !== '0'
+      ? calculateCurrentInterestSolPure({
+          loanValue: currentLoanValue,
+          startTime: acc.soldAt,
+          currentTime: Number(acc.redeemedAt),
+          rateBasePoints: acc.amountOfBonds,
+        })
+      : 0
+  );
+};
+
+export const calculateDebtValue = (
+  acc: ParsedAccount<BondTradeTransactionV3>
+): BigNumber => {
+  const loanValue = Number(acc.solAmount);
+
+  const calculatedInterest = calculateCurrentInterestSolPure({
+    loanValue,
+    startTime: Number(acc.soldAt),
+    currentTime: Date.now() / 1000,
+    rateBasePoints: Number(acc.amountOfBonds) + BONDS.PROTOCOL_REPAY_FEE,
+  });
+
+  const repaid = getInterestRepaid(acc);
+
+  const principal = new BigNumber(acc.solAmount);
+
+  return principal
+    .minus(repaid.toNumber())
+    .plus(calculatedInterest)
+    .plus(Number(acc.feeAmount));
+};
