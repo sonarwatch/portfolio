@@ -5,6 +5,8 @@ import {
   PortfolioElementType,
   Yield,
   getElementLendingValues,
+  collectibleFreezedTag,
+  solanaNativeAddress,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
@@ -19,34 +21,34 @@ import {
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { Pool, poolStruct } from './structs/pool';
 import { daysBetweenDates, getLoans } from './helpers';
+import { getAssetBatchDasAsMap } from '../../utils/solana/das/getAssetBatchDas';
+import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
+import { heliusAssetToAssetCollectible } from '../../utils/solana/das/heliusAssetToAssetCollectible';
+import { getCollections } from './getCollections';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
-
-  // const loans = await getParsedProgramAccounts(
-  //   client,
-  //   loanStruct,
-  //   programId,
-  //   loanBorrowerFilter(owner)
-  // );
-
-  // if (loans.length === 0) return [];
+  const dasUrl = getSolanaDasEndpoint();
 
   const loans = await getLoans(owner);
   if (loans.length === 0) return [];
 
-  const mints: Set<string> = new Set();
+  const tokenMints: Set<string> = new Set();
+  const nftMints: Set<string> = new Set();
   const pools: Set<string> = new Set();
+  tokenMints.add(solanaNativeAddress);
   loans.forEach((loan) => {
     pools.add(loan.pool.toString());
-    mints.add(loan.currency.toString());
-    mints.add(loan.mint.toString());
+    tokenMints.add(loan.currency.toString());
+    if (loan.isDefi) tokenMints.add(loan.mint.toString());
+    else nftMints.add(loan.mint.toString());
   });
 
-  const tokenPriceById = await cache.getTokenPricesAsMap(
-    Array.from(mints),
-    NetworkId.solana
-  );
+  const [tokenPriceById, heliusAssets, collections] = await Promise.all([
+    cache.getTokenPricesAsMap(Array.from(tokenMints), NetworkId.solana),
+    getAssetBatchDasAsMap(dasUrl, Array.from(nftMints)),
+    getCollections(cache),
+  ]);
 
   const poolsAccounts = await getParsedMultipleAccountsInfo(
     client,
@@ -61,15 +63,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   for (const loan of loans) {
     if (new BigNumber(loan.amount).isZero()) continue;
-    if (loan.status !== 'Ongoing') continue;
-    if (!loan.isDefi) continue;
 
-    const collateraMint = loan.mint.toString();
+    const collateralMint = loan.mint.toString();
     const borrowMint = loan.currency.toString();
-
-    const collatTokenPrice = tokenPriceById.get(collateraMint);
-    const borrowTokenPrice = tokenPriceById.get(borrowMint);
-    if (!collatTokenPrice || !borrowTokenPrice) continue;
 
     const borrowedAssets: PortfolioAsset[] = [];
     const borrowedYields: Yield[][] = [];
@@ -77,12 +73,63 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const suppliedYields: Yield[][] = [];
     const rewardAssets: PortfolioAsset[] = [];
 
-    const amountBorrowed = new BigNumber(loan.amount).dividedBy(
-      10 ** borrowTokenPrice.decimals
-    );
     const daysRemaining = daysBetweenDates(
       new Date(),
       new Date(loan.expiredAt)
+    );
+
+    const borrowTokenPrice = tokenPriceById.get(borrowMint);
+    if (!borrowTokenPrice) continue;
+
+    if (loan.isDefi) {
+      // mint is a token
+      const collatTokenPrice = tokenPriceById.get(collateralMint);
+
+      if (!collatTokenPrice) continue;
+
+      const amountDeposited = new BigNumber(loan.collateralAmount).dividedBy(
+        10 ** collatTokenPrice.decimals
+      );
+      if (!amountDeposited.isZero())
+        suppliedAssets.push(
+          tokenPriceToAssetToken(
+            collatTokenPrice.address,
+            amountDeposited.toNumber(),
+            NetworkId.solana,
+            collatTokenPrice
+          )
+        );
+    } else {
+      // mint is a nft
+      const heliusAsset = heliusAssets.get(loan.mint);
+
+      if (heliusAsset && collections) {
+        const collection = collections.find(
+          (c) => c.collectionId === loan.collectionId
+        );
+
+        const solTokenPrice = tokenPriceById.get(solanaNativeAddress);
+
+        const assetValue =
+          collection && solTokenPrice
+            ? new BigNumber(collection.floorPrice)
+                .dividedBy(10 ** solTokenPrice.decimals)
+                .multipliedBy(solTokenPrice.price)
+                .toNumber()
+            : undefined;
+        const asset = heliusAssetToAssetCollectible(heliusAsset, {
+          tags: [collectibleFreezedTag],
+          collection: {
+            name: collection?.name,
+            floorPrice: assetValue,
+          },
+        });
+        if (asset) suppliedAssets.push(asset);
+      }
+    }
+
+    const amountBorrowed = new BigNumber(loan.amount).dividedBy(
+      10 ** borrowTokenPrice.decimals
     );
     if (!amountBorrowed.isZero())
       borrowedAssets.push(
@@ -93,19 +140,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           borrowTokenPrice,
           undefined,
           { tags: [`Refund in ${daysRemaining} days`] }
-        )
-      );
-
-    const amountDeposited = new BigNumber(loan.collateralAmount).dividedBy(
-      10 ** collatTokenPrice.decimals
-    );
-    if (!amountDeposited.isZero())
-      suppliedAssets.push(
-        tokenPriceToAssetToken(
-          collatTokenPrice.address,
-          amountDeposited.toNumber(),
-          NetworkId.solana,
-          collatTokenPrice
         )
       );
 

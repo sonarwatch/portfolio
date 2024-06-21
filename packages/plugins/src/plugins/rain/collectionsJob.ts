@@ -7,9 +7,9 @@ import { getCollections } from './helpers';
 const executor: JobExecutor = async (cache: Cache) => {
   const collections = await getCollections();
   const promises = [];
-  for (const collecion of collections) {
+  for (const collection of collections) {
     promises.push(
-      cache.setItem(collecion.collectionId.toString(), collecion, {
+      cache.setItem(collection.collectionId.toString(), collection, {
         prefix: platformId,
         networkId: NetworkId.solana,
       })
