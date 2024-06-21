@@ -507,6 +507,11 @@ import {
   jobs as sanctumJobs,
   fetchers as sanctumFetchers,
 } from './plugins/sanctum';
+import {
+  platforms as allbridgePlatforms,
+  jobs as allbridgeJobs,
+  fetchers as allbridgeFetchers,
+} from './plugins/allbridge';
 
 export {
   walletTokensPlatform,
@@ -626,6 +631,7 @@ export const platforms: Platform[] = [
   ...citrusPlatforms,
   ...sharkyPlatforms,
   ...sanctumPlatforms,
+  ...allbridgePlatforms,
 ];
 
 // JOBS //
@@ -727,6 +733,7 @@ export const jobs: Job[] = [
   ...citrusJobs,
   ...sharkyJobs,
   ...sanctumJobs,
+  ...allbridgeJobs,
 ];
 
 // FETCHERS //
@@ -830,6 +837,7 @@ export const fetchers: Fetcher[] = [
   ...citrusFetchers,
   ...sharkyFetchers,
   ...sanctumFetchers,
+  ...allbridgeFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
