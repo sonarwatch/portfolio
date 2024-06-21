@@ -11,7 +11,7 @@ let poolInfo: Pools | undefined;
 let poolInfoLastUpdate = 0;
 
 export const getPoolInfo = async (cache: Cache) => {
-  if (poolInfo || poolInfoLastUpdate + poolInfoRefreshInterval < Date.now()) {
+  if (!poolInfo || poolInfoLastUpdate + poolInfoRefreshInterval < Date.now()) {
     poolInfo = await cache.getItem<Pools>(poolsCacheKey, {
       prefix: cachePrefix,
       networkId: NetworkId.solana,
