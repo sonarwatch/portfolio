@@ -14,3 +14,6 @@ export const usdcMint = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 export const programId = new PublicKey(
   'ZETAxsqBRek56DhiGXrn75yj2NHU3aYUnxvHXpkf3aD'
 );
+export const graphqlApi = 'https://api-gql.zeta.markets/graphql';
+export const zexMint = 'ZEXy1pqteRu3n13kdyh4LwPQknkFk3GzmMYMuNadWPo';
+export const zexDecimals = 6;

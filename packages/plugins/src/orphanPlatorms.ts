@@ -57,13 +57,5 @@ const otphanPlatforms: Platform[] = [
     image: 'https://sonar.watch/img/platforms/stakewise.png',
     website: 'https://stakewise.io/',
   },
-  {
-    id: 'sanctum',
-    defiLlamaId: 'parent#sanctum', // from https://defillama.com/docs/api
-    name: 'Sanctum',
-    image: 'https://sonar.watch/img/platforms/sanctum.webp',
-    website: 'https://www.sanctum.so/',
-    twitter: 'https://twitter.com/sanctumso',
-  },
 ];
 export default otphanPlatforms;
