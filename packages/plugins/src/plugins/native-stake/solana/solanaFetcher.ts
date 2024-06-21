@@ -94,6 +94,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       tags.push('Active');
     }
 
+    const lockedUntil =
+      stakeAccount.lockup.unixTimestamp.times(1000).toNumber() || undefined;
+
     nativeAssets.push({
       ...tokenPriceToAssetToken(
         solanaNetwork.native.address,
@@ -103,6 +106,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         undefined,
         {
           tags,
+          lockedUntil,
         }
       ),
     });
