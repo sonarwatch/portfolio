@@ -1,6 +1,6 @@
 import {
   collectibleFreezedTag,
-  getElementLendingValues,
+  getElementNFTLendingValues,
   NetworkId,
   PortfolioAsset,
   PortfolioAssetCollectible,
@@ -200,11 +200,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
 
     if (suppliedAssets.length > 0) {
-      const { borrowedValue, suppliedValue, healthRatio, rewardValue } =
-        getElementLendingValues({
+      const { borrowedValue, suppliedValue, value } =
+        getElementNFTLendingValues({
           suppliedAssets,
           borrowedAssets,
-          rewardAssets: [],
+          lender: acc.user === owner.toString(),
         });
 
       elements.push({
@@ -212,7 +212,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         label: 'Lending',
         platformId,
         type: PortfolioElementType.borrowlend,
-        value: suppliedValue,
+        value,
         name,
         data: {
           borrowedAssets,
@@ -222,9 +222,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           suppliedValue,
           suppliedYields: [],
           rewardAssets: [],
-          rewardValue,
-          healthRatio,
-          value: suppliedValue,
+          rewardValue: null,
+          healthRatio: null,
+          value,
         },
       });
     }

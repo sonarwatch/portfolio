@@ -1,6 +1,6 @@
 import {
   collectibleFreezedTag,
-  getElementLendingValues,
+  getElementNFTLendingValues,
   NetworkId,
   PortfolioAsset,
   PortfolioAssetCollectible,
@@ -133,18 +133,23 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
 
     if (suppliedAssets.length === 0) return;
-    const { borrowedValue, suppliedValue, healthRatio, rewardValue } =
-      getElementLendingValues({
-        suppliedAssets,
-        borrowedAssets,
-        rewardAssets: [],
-      });
+
+    const { borrowedValue, suppliedValue, value } = getElementNFTLendingValues({
+      suppliedAssets,
+      borrowedAssets,
+      lender:
+        acc.loanState.offer !== undefined ||
+        (acc.loanState.taken
+          ? acc.loanState.taken.taken.lenderNoteMint === owner.toString()
+          : false),
+    });
+
     elements.push({
       networkId: NetworkId.solana,
       label: 'Lending',
       platformId,
       type: PortfolioElementType.borrowlend,
-      value: suppliedValue,
+      value,
       name,
       data: {
         borrowedAssets,
@@ -154,9 +159,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         suppliedValue,
         suppliedYields: [],
         rewardAssets: [],
-        rewardValue,
-        healthRatio,
-        value: suppliedValue,
+        rewardValue: null,
+        healthRatio: null,
+        value,
         expireOn: acc.loanState.taken
           ? Number(acc.loanState.taken.taken.terms.time.start) +
             Number(acc.loanState.taken.taken.terms.time.duration)

@@ -5,9 +5,9 @@ import {
   solanaNativeDecimals,
   PortfolioAsset,
   PortfolioElement,
-  getElementLendingValues,
   PortfolioAssetCollectible,
   collectibleFreezedTag,
+  getElementNFTLendingValues,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -150,11 +150,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
 
     if (suppliedAssets.length > 0) {
-      const { borrowedValue, suppliedValue, healthRatio, rewardValue } =
-        getElementLendingValues({
+      const { borrowedValue, suppliedValue, value } =
+        getElementNFTLendingValues({
           suppliedAssets,
           borrowedAssets,
-          rewardAssets: [],
+          lender: acc.lender === owner.toString(),
         });
 
       elements.push({
@@ -162,7 +162,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         label: 'Lending',
         platformId,
         type: PortfolioElementType.borrowlend,
-        value: suppliedValue,
+        value,
         name,
         data: {
           borrowedAssets,
@@ -172,9 +172,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           suppliedValue,
           suppliedYields: [],
           rewardAssets: [],
-          rewardValue,
-          healthRatio,
-          value: suppliedValue,
+          rewardValue: null,
+          healthRatio: null,
+          value,
           expireOn:
             acc.status.active || acc.status.onSale
               ? Number(acc.startTime) + Number(acc.loanTerms.duration)
