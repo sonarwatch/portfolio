@@ -150,10 +150,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
 
     if (suppliedAssets.length > 0) {
-      const { borrowedValue, suppliedValue, value } =
+      const { borrowedValue, suppliedValue, rewardValue, value } =
         getElementNFTLendingValues({
           suppliedAssets,
           borrowedAssets,
+          rewardAssets: [],
           lender: acc.lender === owner.toString(),
         });
 
@@ -172,7 +173,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           suppliedValue,
           suppliedYields: [],
           rewardAssets: [],
-          rewardValue: null,
+          rewardValue,
           healthRatio: null,
           value,
           expireOn:

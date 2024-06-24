@@ -130,7 +130,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const fbondTokenMint = fbondTokenMintsMap.get(acc.fbondTokenMint);
     const bondOffer = bondOffersMap.get(acc.bondOffer);
 
-    if (!fbondTokenMint || !bondOffer || !bondOffer.hadoMarket) return;
+    if (!fbondTokenMint) return;
 
     if (
       !fbondTokenMint.fraktBondState.perpetualActive &&
@@ -138,8 +138,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     )
       return;
 
-    const collection = collections.get(bondOffer.hadoMarket);
-    if (!collection) return;
+    const collection =
+      bondOffer && bondOffer.hadoMarket
+        ? collections.get(bondOffer.hadoMarket)
+        : undefined;
 
     const tokenPrice = acc.lendingToken.usdc
       ? tokenPrices.get(usdcSolanaMint)
@@ -200,10 +202,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
 
     if (suppliedAssets.length > 0) {
-      const { borrowedValue, suppliedValue, value } =
+      const { borrowedValue, suppliedValue, rewardValue, value } =
         getElementNFTLendingValues({
           suppliedAssets,
           borrowedAssets,
+          rewardAssets: [],
           lender: acc.user === owner.toString(),
         });
 
@@ -222,7 +225,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           suppliedValue,
           suppliedYields: [],
           rewardAssets: [],
-          rewardValue: null,
+          rewardValue,
           healthRatio: null,
           value,
         },

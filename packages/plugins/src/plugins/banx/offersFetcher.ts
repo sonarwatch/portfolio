@@ -45,6 +45,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       },
     ])
   ).filter((acc) => acc.buyOrdersQuantity !== '0');
+
   if (accounts.length === 0) return [];
 
   const tokenPrices = await cache.getTokenPricesAsMap(

@@ -134,15 +134,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     if (suppliedAssets.length === 0) return;
 
-    const { borrowedValue, suppliedValue, value } = getElementNFTLendingValues({
-      suppliedAssets,
-      borrowedAssets,
-      lender:
-        acc.loanState.offer !== undefined ||
-        (acc.loanState.taken
-          ? acc.loanState.taken.taken.lenderNoteMint === owner.toString()
-          : false),
-    });
+    const { borrowedValue, suppliedValue, rewardValue, value } =
+      getElementNFTLendingValues({
+        suppliedAssets,
+        borrowedAssets,
+        rewardAssets: [],
+        lender:
+          acc.loanState.offer !== undefined ||
+          (acc.loanState.taken
+            ? acc.loanState.taken.taken.lenderNoteMint === owner.toString()
+            : false),
+      });
 
     elements.push({
       networkId: NetworkId.solana,
@@ -159,7 +161,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         suppliedValue,
         suppliedYields: [],
         rewardAssets: [],
-        rewardValue: null,
+        rewardValue,
         healthRatio: null,
         value,
         expireOn: acc.loanState.taken
