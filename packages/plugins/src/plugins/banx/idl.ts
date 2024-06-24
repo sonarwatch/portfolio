@@ -58,7 +58,7 @@ export const BanxIDL = {
             type: 'u64',
           },
           {
-            name: 'placeholderOne',
+            name: 'amountOfHadesTokensHarvested',
             type: 'u64',
           },
           {
@@ -166,8 +166,20 @@ export const BanxIDL = {
             type: 'u64',
           },
           {
-            name: 'placeholderOne',
-            type: 'publicKey',
+            name: 'hadesPerWeek',
+            type: 'u64',
+          },
+          {
+            name: 'placeholderTwo',
+            type: 'u64',
+          },
+          {
+            name: 'placeholderThree',
+            type: 'u64',
+          },
+          {
+            name: 'placeholderFour',
+            type: 'u64',
           },
         ],
       },
@@ -367,230 +379,48 @@ export const BanxIDL = {
       },
     },
     {
-      name: 'hadespinLeaderboardEntry',
+      name: 'proposal',
       type: {
         kind: 'struct',
         fields: [
           {
-            name: 'user',
-            type: 'publicKey',
+            name: 'state',
+            type: {
+              defined: 'ProposalState',
+            },
           },
           {
-            name: 'totalSolDeposited',
-            type: 'u64',
-          },
-          {
-            name: 'totalSolInNftDeposited',
-            type: 'u64',
-          },
-          {
-            name: 'totalNftDeposited',
-            type: 'u64',
-          },
-          {
-            name: 'totalFeePayed',
-            type: 'u64',
-          },
-          {
-            name: 'totalSolWon',
-            type: 'u64',
-          },
-          {
-            name: 'lastTransactedAt',
-            type: 'u64',
-          },
-          {
-            name: 'placeholderOne',
-            type: 'publicKey',
-          },
-          {
-            name: 'placeholderTwo',
-            type: 'publicKey',
-          },
-        ],
-      },
-    },
-    {
-      name: 'hadespinLeaderboardWeekEntry',
-      type: {
-        kind: 'struct',
-        fields: [
-          {
-            name: 'user',
-            type: 'publicKey',
+            name: 'name',
+            type: {
+              array: ['u8', 32],
+            },
           },
           {
             name: 'week',
             type: 'u64',
           },
           {
-            name: 'totalSolDeposited',
+            name: 'duration',
             type: 'u64',
           },
           {
-            name: 'totalSolInNftDeposited',
+            name: 'pointsQuorum',
             type: 'u64',
           },
           {
-            name: 'totalNftDeposited',
-            type: 'u64',
-          },
-          {
-            name: 'totalFeePayed',
-            type: 'u64',
-          },
-          {
-            name: 'totalSolWon',
-            type: 'u64',
-          },
-          {
-            name: 'lastTransactedAt',
-            type: 'u64',
-          },
-          {
-            name: 'placeholderOne',
+            name: 'creator',
             type: 'publicKey',
-          },
-          {
-            name: 'placeholderTwo',
-            type: 'publicKey',
-          },
-        ],
-      },
-    },
-    {
-      name: 'hadespinRakeback',
-      type: {
-        kind: 'struct',
-        fields: [
-          {
-            name: 'user',
-            type: 'publicKey',
-          },
-          {
-            name: 'hadesToClaimAmount',
-            type: 'u64',
-          },
-          {
-            name: 'claimTimestamp',
-            type: 'u64',
-          },
-          {
-            name: 'claimedAt',
-            type: 'u64',
-          },
-          {
-            name: 'claimed',
-            type: 'bool',
-          },
-          {
-            name: 'lastTransactedAt',
-            type: 'u64',
-          },
-          {
-            name: 'placeholderOne',
-            type: 'publicKey',
-          },
-        ],
-      },
-    },
-    {
-      name: 'roundSetting',
-      type: {
-        kind: 'struct',
-        fields: [
-          {
-            name: 'completedRounds',
-            type: 'u64',
-          },
-          {
-            name: 'totalSolDeposited',
-            type: 'u64',
-          },
-          {
-            name: 'totalFeeCollected',
-            type: 'u64',
-          },
-          {
-            name: 'totalParticipants',
-            type: 'u64',
-          },
-          {
-            name: 'roundDuration',
-            type: 'u64',
-          },
-          {
-            name: 'minSolToDeposit',
-            type: 'u64',
-          },
-          {
-            name: 'feePercent',
-            type: 'u64',
-          },
-          {
-            name: 'canInitializeNextRound',
-            type: 'bool',
-          },
-          {
-            name: 'lastRoundEndsAt',
-            type: 'u64',
-          },
-          {
-            name: 'lastTransactedAt',
-            type: 'u64',
-          },
-          {
-            name: 'rakebackHadesForSol',
-            type: 'u64',
-          },
-          {
-            name: 'contractBid',
-            type: 'u64',
-          },
-          {
-            name: 'placeholdeOne',
-            type: 'u64',
-          },
-          {
-            name: 'placeholdeTwo',
-            type: 'u64',
-          },
-        ],
-      },
-    },
-    {
-      name: 'round',
-      type: {
-        kind: 'struct',
-        fields: [
-          {
-            name: 'roundState',
-            type: {
-              defined: 'RoundState',
-            },
-          },
-          {
-            name: 'roundValue',
-            type: 'u64',
-          },
-          {
-            name: 'startedAt',
-            type: 'u64',
-          },
-          {
-            name: 'solAmount',
-            type: 'u64',
-          },
-          {
-            name: 'feeAmount',
-            type: 'u64',
           },
           {
             name: 'participants',
             type: 'u64',
           },
           {
-            name: 'roundEndsAt',
+            name: 'pointsTotal',
+            type: 'u64',
+          },
+          {
+            name: 'initializedAt',
             type: 'u64',
           },
           {
@@ -598,100 +428,98 @@ export const BanxIDL = {
             type: 'u64',
           },
           {
-            name: 'winner',
+            name: 'placeholder1',
+            type: 'u64',
+          },
+          {
+            name: 'placeholder2',
+            type: 'u64',
+          },
+          {
+            name: 'placeholder3',
+            type: 'publicKey',
+          },
+        ],
+      },
+    },
+    {
+      name: 'proposalVariant',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'proposal',
             type: 'publicKey',
           },
           {
-            name: 'roundNumber',
+            name: 'name',
+            type: {
+              array: ['u8', 32],
+            },
+          },
+          {
+            name: 'state',
+            type: {
+              defined: 'ProposalState',
+            },
+          },
+          {
+            name: 'participants',
             type: 'u64',
           },
           {
-            name: 'solInNftAmount',
+            name: 'pointsTotal',
             type: 'u64',
           },
           {
-            name: 'contractBid',
+            name: 'lastTransactedAt',
             type: 'u64',
           },
           {
-            name: 'placeholderOne',
+            name: 'placeholder1',
             type: 'u64',
           },
           {
-            name: 'placeholderTwo',
-            type: 'u64',
-          },
-          {
-            name: 'placeholderThree',
+            name: 'placeholder2',
             type: 'u64',
           },
         ],
       },
     },
     {
-      name: 'userRound',
+      name: 'proposalVote',
       type: {
         kind: 'struct',
         fields: [
           {
-            name: 'round',
+            name: 'state',
+            type: {
+              defined: 'ProposalState',
+            },
+          },
+          {
+            name: 'proposalVariant',
             type: 'publicKey',
           },
           {
-            name: 'solDeposited',
-            type: 'u64',
-          },
-          {
-            name: 'startSolPosition',
-            type: 'u64',
+            name: 'adventureSubscription',
+            type: 'publicKey',
           },
           {
             name: 'user',
             type: 'publicKey',
           },
           {
+            name: 'points',
+            type: 'u64',
+          },
+          {
             name: 'lastTransactedAt',
             type: 'u64',
           },
           {
-            name: 'depositedAt',
-            type: 'u64',
-          },
-          {
-            name: 'nftMint',
+            name: 'placeholder',
             type: 'publicKey',
-          },
-          {
-            name: 'jackpotSolAmount',
-            type: 'u64',
-          },
-          {
-            name: 'jackpotClaimedAt',
-            type: 'u64',
-          },
-          {
-            name: 'jackpotClaimed',
-            type: 'bool',
-          },
-          {
-            name: 'placeholderOne',
-            type: 'u64',
-          },
-          {
-            name: 'placeholderTwo',
-            type: 'u32',
-          },
-          {
-            name: 'placeholderThree',
-            type: 'bool',
-          },
-          {
-            name: 'placeholderFour',
-            type: 'bool',
-          },
-          {
-            name: 'placeholderFive',
-            type: 'bool',
           },
         ],
       },
@@ -791,52 +619,6 @@ export const BanxIDL = {
       },
     },
     {
-      name: 'banxSolStakingOffer',
-      type: {
-        kind: 'struct',
-        fields: [
-          {
-            name: 'user',
-            type: 'publicKey',
-          },
-          {
-            name: 'banxSolStakingOfferState',
-            type: {
-              defined: 'BanxSolStakingOfferState',
-            },
-          },
-          {
-            name: 'lastClaimedAt',
-            type: 'u64',
-          },
-          {
-            name: 'totalClaimedAmount',
-            type: 'u64',
-          },
-          {
-            name: 'totalInterestRewards',
-            type: 'u64',
-          },
-          {
-            name: 'createdAt',
-            type: 'u64',
-          },
-          {
-            name: 'totalLent',
-            type: 'u64',
-          },
-          {
-            name: 'currentInOffer',
-            type: 'u64',
-          },
-          {
-            name: 'placeholderOne',
-            type: 'publicKey',
-          },
-        ],
-      },
-    },
-    {
       name: 'bondOfferV2',
       type: {
         kind: 'struct',
@@ -906,6 +688,112 @@ export const BanxIDL = {
             type: {
               defined: 'BondOfferValidation',
             },
+          },
+        ],
+      },
+    },
+    {
+      name: 'bondOfferV3',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'hadoMarket',
+            type: 'publicKey',
+          },
+          {
+            name: 'pairState',
+            type: {
+              defined: 'PairState',
+            },
+          },
+          {
+            name: 'bondingCurve',
+            type: {
+              defined: 'BondOfferBondingCurve',
+            },
+          },
+          {
+            name: 'baseSpotPrice',
+            type: 'u64',
+          },
+          {
+            name: 'mathCounter',
+            type: 'i64',
+          },
+          {
+            name: 'currentSpotPrice',
+            type: 'u64',
+          },
+          {
+            name: 'concentrationIndex',
+            type: 'u64',
+          },
+          {
+            name: 'bidCap',
+            type: 'u64',
+          },
+          {
+            name: 'bidSettlement',
+            type: 'i64',
+          },
+          {
+            name: 'edgeSettlement',
+            type: 'u64',
+          },
+          {
+            name: 'fundsSolOrTokenBalance',
+            type: 'u64',
+          },
+          {
+            name: 'buyOrdersQuantity',
+            type: 'u64',
+          },
+          {
+            name: 'lastTransactedAt',
+            type: 'u64',
+          },
+          {
+            name: 'assetReceiver',
+            type: 'publicKey',
+          },
+          {
+            name: 'validation',
+            type: {
+              defined: 'BondOfferValidation',
+            },
+          },
+          {
+            name: 'fundsInCurrentEpoch',
+            type: 'u64',
+          },
+          {
+            name: 'fundsInNextEpoch',
+            type: 'u64',
+          },
+          {
+            name: 'lastCalculatedSlot',
+            type: 'u64',
+          },
+          {
+            name: 'lastCalculatedTimestamp',
+            type: 'u64',
+          },
+          {
+            name: 'rewardsToHarvest',
+            type: 'u64',
+          },
+          {
+            name: 'rewardsToHarvested',
+            type: 'u64',
+          },
+          {
+            name: 'placeholderOne',
+            type: 'u64',
+          },
+          {
+            name: 'placeholderTwo',
+            type: 'publicKey',
           },
         ],
       },
@@ -1415,6 +1303,46 @@ export const BanxIDL = {
   ],
   types: [
     {
+      name: 'SaveProposalParams',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'name',
+            type: {
+              array: ['u8', 32],
+            },
+          },
+          {
+            name: 'week',
+            type: 'u64',
+          },
+          {
+            name: 'duration',
+            type: 'u64',
+          },
+          {
+            name: 'pointsQuorum',
+            type: 'u64',
+          },
+        ],
+      },
+    },
+    {
+      name: 'SaveVariantParams',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'name',
+            type: {
+              array: ['u8', 32],
+            },
+          },
+        ],
+      },
+    },
+    {
       name: 'InitializeHadoMarketParams',
       type: {
         kind: 'struct',
@@ -1510,7 +1438,7 @@ export const BanxIDL = {
             type: 'u64',
           },
           {
-            name: 'durationFilter',
+            name: 'collateralsPerToken',
             type: 'u64',
           },
           {
@@ -1606,6 +1534,23 @@ export const BanxIDL = {
                 array: ['u8', 32],
               },
             },
+          },
+        ],
+      },
+    },
+    {
+      name: 'ProposalErrorCode',
+      type: {
+        kind: 'enum',
+        variants: [
+          {
+            name: 'InvalidWeek',
+          },
+          {
+            name: 'InvalidPreviousVariant',
+          },
+          {
+            name: 'ProposalIsNotActive',
           },
         ],
       },
@@ -1722,21 +1667,15 @@ export const BanxIDL = {
       },
     },
     {
-      name: 'RoundState',
+      name: 'ProposalState',
       type: {
         kind: 'enum',
         variants: [
           {
-            name: 'Uninitialized',
+            name: 'None',
           },
           {
             name: 'Initialized',
-          },
-          {
-            name: 'Open',
-          },
-          {
-            name: 'Drawn',
           },
         ],
       },
@@ -1757,6 +1696,9 @@ export const BanxIDL = {
           },
           {
             name: 'CollectionId',
+          },
+          {
+            name: 'SplMint',
           },
         ],
       },
@@ -1827,23 +1769,6 @@ export const BanxIDL = {
       },
     },
     {
-      name: 'BanxSolStakingOfferState',
-      type: {
-        kind: 'enum',
-        variants: [
-          {
-            name: 'Uninitialized',
-          },
-          {
-            name: 'Initialized',
-          },
-          {
-            name: 'Closed',
-          },
-        ],
-      },
-    },
-    {
       name: 'BondFeatures',
       type: {
         kind: 'enum',
@@ -1866,6 +1791,9 @@ export const BanxIDL = {
           {
             name: 'AutoReceiveAndReceiveNft',
           },
+          {
+            name: 'AutoReceiveAndReceiveSpl',
+          },
         ],
       },
     },
@@ -1875,7 +1803,7 @@ export const BanxIDL = {
         kind: 'enum',
         variants: [
           {
-            name: 'PairState',
+            name: 'Initializing',
           },
           {
             name: 'OnMarketVirtual',
@@ -2005,6 +1933,9 @@ export const BanxIDL = {
           },
           {
             name: 'AutoReceiveAndReceiveNft',
+          },
+          {
+            name: 'AutoReceiveAndReceiveSpl',
           },
         ],
       },
