@@ -104,6 +104,8 @@ export type Collection = {
   updatedAt: string;
   deletedAt: string;
   version: number;
+  mintIn: string;
+  isDefi: boolean;
 };
 
 export type LoansResponse = {

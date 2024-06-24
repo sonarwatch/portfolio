@@ -3,26 +3,18 @@ import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { collectionsKey, platformId } from './constants';
 import { getCollections } from './helpers';
+import { pick } from '../../utils/misc/pick';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const collections = await getCollections();
-  const promises = [];
-  for (const collection of collections) {
-    promises.push(
-      cache.setItem(collection.collectionId.toString(), collection, {
-        prefix: platformId,
-        networkId: NetworkId.solana,
-      })
-    );
-  }
-  promises.push(
-    cache.setItem(collectionsKey, collections, {
-      prefix: platformId,
-      networkId: NetworkId.solana,
-    })
-  );
+  const filteredCollections = collections
+    .filter((c) => !c.isDefi)
+    .map((c) => pick(c, ['collectionId', 'name', 'floorPrice']));
 
-  await Promise.all(promises);
+  await cache.setItem(collectionsKey, filteredCollections, {
+    prefix: platformId,
+    networkId: NetworkId.solana,
+  });
 };
 
 const job: Job = {
