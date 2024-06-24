@@ -37,10 +37,20 @@ import {
 } from './types';
 import { calculateLoanRepayValue, calculateDebtValue } from './helpers';
 import { loanFiltersA, loanFiltersB } from './filters';
-import { GlobalCache } from '../../utils/misc/GlobalCache';
+import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import { arrayToMap } from '../../utils/misc/arrayToMap';
 
-const collectionsGlobal = new GlobalCache<ParsedAccount<Collection>[]>();
+const collectionsMemo = new MemoizedCache<
+  Collection[],
+  Map<string, Collection>
+>(
+  collectionsCacheKey,
+  {
+    prefix: cachePrefix,
+    networkId: NetworkId.solana,
+  },
+  (arr) => arrayToMap(arr || [], 'marketPubkey')
+);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
@@ -71,7 +81,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (accounts.length === 0) return [];
 
-  const [tokenPrices, fbondTokenMints, bondOffers, collectionsArr] =
+  const [tokenPrices, fbondTokenMints, bondOffers, collections] =
     await Promise.all([
       cache.getTokenPricesAsMap(
         [usdcSolanaMint, solanaNativeAddress],
@@ -87,18 +97,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         banxIdlItem,
         accounts.map((acc) => new PublicKey(acc.bondOffer))
       ),
-      collectionsGlobal.getItem(cache, collectionsCacheKey, {
-        prefix: cachePrefix,
-        networkId: NetworkId.solana,
-      }),
+      collectionsMemo.getItem(cache),
     ]);
 
-  if (!collectionsArr) return [];
-
-  const collections: Map<string, Collection> = arrayToMap(
-    collectionsArr,
-    'marketPubkey'
-  );
+  if (!collections) return [];
 
   const solTokenPrice = tokenPrices.get(solanaNativeAddress);
   if (!solTokenPrice) return [];

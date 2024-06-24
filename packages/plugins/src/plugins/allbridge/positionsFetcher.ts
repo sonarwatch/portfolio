@@ -23,17 +23,17 @@ import {
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { Pools, UserDeposit } from './types';
 import { getEarned, getUserDepositPublicKeys } from './helpers';
-import { GlobalCache } from '../../utils/misc/GlobalCache';
+import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 
-const poolInfoGlobal = new GlobalCache<Pools>();
+const poolInfoMemo = new MemoizedCache<Pools>(poolsCacheKey, {
+  prefix: cachePrefix,
+  networkId: NetworkId.solana,
+});
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
 
-  const poolInfo = await poolInfoGlobal.getItem(cache, poolsCacheKey, {
-    prefix: cachePrefix,
-    networkId: NetworkId.solana,
-  });
+  const poolInfo = await poolInfoMemo.getItem(cache);
 
   if (!poolInfo) return [];
 

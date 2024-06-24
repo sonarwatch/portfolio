@@ -26,10 +26,20 @@ import { getAssetBatchDasAsMap } from '../../utils/solana/das/getAssetBatchDas';
 import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
 import { heliusAssetToAssetCollectible } from '../../utils/solana/das/heliusAssetToAssetCollectible';
 import { getLoanFilters } from './filters';
-import { GlobalCache } from '../../utils/misc/GlobalCache';
+import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import { arrayToMap } from '../../utils/misc/arrayToMap';
 
-const collectionsGlobal = new GlobalCache<Collection[]>();
+const collectionsMemo = new MemoizedCache<
+  Collection[],
+  Map<string, Collection>
+>(
+  collectionsCacheKey,
+  {
+    prefix: cachePrefix,
+    networkId: NetworkId.solana,
+  },
+  (arr) => arrayToMap(arr || [], 'id')
+);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
@@ -49,7 +59,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (accounts.length === 0) return [];
 
-  const [solTokenPrice, heliusAssets, collectionsArr] = await Promise.all([
+  const [solTokenPrice, heliusAssets, collections] = await Promise.all([
     cache.getTokenPrice(solanaNativeAddress, NetworkId.solana),
     getAssetBatchDasAsMap(
       dasUrl,
@@ -59,14 +69,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           (mint) => mint && mint !== '11111111111111111111111111111111'
         ) as string[]
     ),
-    collectionsGlobal.getItem(cache, collectionsCacheKey, {
-      prefix: cachePrefix,
-      networkId: NetworkId.solana,
-    }),
+    collectionsMemo.getItem(cache),
   ]);
-  if (!solTokenPrice || !collectionsArr) return [];
-
-  const collections: Map<string, Collection> = arrayToMap(collectionsArr, 'id');
+  if (!solTokenPrice || !collections) return [];
 
   const elements: PortfolioElement[] = [];
 

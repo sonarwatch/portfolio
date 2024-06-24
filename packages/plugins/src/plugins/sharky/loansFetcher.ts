@@ -29,10 +29,20 @@ import { getAssetBatchDasAsMap } from '../../utils/solana/das/getAssetBatchDas';
 import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
 import { heliusAssetToAssetCollectible } from '../../utils/solana/das/heliusAssetToAssetCollectible';
 import { getLoanFilters } from './filters';
-import { GlobalCache } from '../../utils/misc/GlobalCache';
+import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import { arrayToMap } from '../../utils/misc/arrayToMap';
 
-const collectionsGlobal = new GlobalCache<ParsedAccount<Collection>[]>();
+const collectionsMemo = new MemoizedCache<
+  ParsedAccount<Collection>[],
+  Map<string, Collection>
+>(
+  collectionsCacheKey,
+  {
+    prefix: cachePrefix,
+    networkId: NetworkId.solana,
+  },
+  (arr) => arrayToMap(arr || [], 'orderBook')
+);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const dasUrl = getSolanaDasEndpoint();
@@ -48,7 +58,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   ).flat();
   if (accounts.length === 0) return [];
 
-  const [solTokenPrice, heliusAssets, collectionsArr] = await Promise.all([
+  const [solTokenPrice, heliusAssets, collections] = await Promise.all([
     cache.getTokenPrice(solanaNativeAddress, NetworkId.solana),
     getAssetBatchDasAsMap(
       dasUrl,
@@ -56,17 +66,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         .map((acc) => acc.loanState.taken?.taken.nftCollateralMint)
         .filter((mint) => mint) as string[]
     ),
-    collectionsGlobal.getItem(cache, collectionsCacheKey, {
-      prefix: cachePrefix,
-      networkId: NetworkId.solana,
-    }),
+    collectionsMemo.getItem(cache),
   ]);
-  if (!solTokenPrice || !collectionsArr) return [];
 
-  const collections: Map<string, Collection> = arrayToMap(
-    collectionsArr,
-    'orderBook'
-  );
+  if (!solTokenPrice || !collections) return [];
 
   const elements: PortfolioElement[] = [];
   accounts.forEach((acc) => {

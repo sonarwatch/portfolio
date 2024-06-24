@@ -25,9 +25,12 @@ import { getAssetBatchDasAsMap } from '../../utils/solana/das/getAssetBatchDas';
 import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
 import { heliusAssetToAssetCollectible } from '../../utils/solana/das/heliusAssetToAssetCollectible';
 import { Collection } from './types';
-import { GlobalCache } from '../../utils/misc/GlobalCache';
+import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 
-const collectionGlobal = new GlobalCache<Collection[]>();
+const collectionMemo = new MemoizedCache<Collection[]>(collectionsKey, {
+  prefix: platformId,
+  networkId: NetworkId.solana,
+});
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -51,10 +54,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     await Promise.all([
       cache.getTokenPricesAsMap(Array.from(tokenMints), NetworkId.solana),
       getAssetBatchDasAsMap(dasUrl, Array.from(nftMints)),
-      collectionGlobal.getItem(cache, collectionsKey, {
-        prefix: platformId,
-        networkId: NetworkId.solana,
-      }),
+      collectionMemo.getItem(cache),
       getParsedMultipleAccountsInfo(
         client,
         poolStruct,

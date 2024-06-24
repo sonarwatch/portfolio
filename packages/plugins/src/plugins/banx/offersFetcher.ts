@@ -12,7 +12,6 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
 import {
   getAutoParsedProgramAccounts,
-  ParsedAccount,
   usdcSolanaMint,
 } from '../../utils/solana';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
@@ -24,10 +23,20 @@ import {
   platformId,
 } from './constants';
 import { BondOfferV2, Collection } from './types';
-import { GlobalCache } from '../../utils/misc/GlobalCache';
+import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import { arrayToMap } from '../../utils/misc/arrayToMap';
 
-const collectionsGlobal = new GlobalCache<ParsedAccount<Collection>[]>();
+const collectionsMemo = new MemoizedCache<
+  Collection[],
+  Map<string, Collection>
+>(
+  collectionsCacheKey,
+  {
+    prefix: cachePrefix,
+    networkId: NetworkId.solana,
+  },
+  (arr) => arrayToMap(arr || [], 'marketPubkey')
+);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
@@ -47,23 +56,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   ).filter((acc) => acc.buyOrdersQuantity !== '0');
   if (accounts.length === 0) return [];
 
-  const [tokenPrices, collectionsArr] = await Promise.all([
+  const [tokenPrices, collections] = await Promise.all([
     cache.getTokenPricesAsMap(
       [usdcSolanaMint, solanaNativeAddress],
       NetworkId.solana
     ),
-    collectionsGlobal.getItem(cache, collectionsCacheKey, {
-      prefix: cachePrefix,
-      networkId: NetworkId.solana,
-    }),
+    collectionsMemo.getItem(cache),
   ]);
-
-  if (!collectionsArr) return [];
-
-  const collections: Map<string, Collection> = arrayToMap(
-    collectionsArr,
-    'marketPubkey'
-  );
 
   const elements: PortfolioElement[] = [];
   accounts.forEach((acc) => {
