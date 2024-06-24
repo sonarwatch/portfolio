@@ -7,8 +7,8 @@ export const platformId = 'sharky';
 export const platform: Platform = {
   id: platformId,
   name: 'Sharky',
-  image: 'https://sonar.watch/img/platforms/sharki.webp',
-  website: 'https://sharki.fi/',
+  image: 'https://sonar.watch/img/platforms/sharky.webp',
+  website: 'https://sharky.fi/',
   twitter: 'https://twitter.com/SharkyFi',
   defiLlamaId: 'sharky', // from https://defillama.com/docs/api
 };
