@@ -9,25 +9,33 @@ import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSolana } from '../../../utils/clients';
 import { getParsedProgramAccounts } from '../../../utils/solana';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import { platformId, limitProgramId } from './constants';
-import { limitOrderStruct } from './structs';
+import { platformId, limitProgramId, limitV2ProgramId } from './constants';
+import { limitOrderStruct, limitOrderV2Struct } from './structs';
 import { limitFilters } from './filters';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const limitOrdersAccounts = await getParsedProgramAccounts(
-    client,
-    limitOrderStruct,
-    limitProgramId,
-    limitFilters(owner)
-  );
-  if (limitOrdersAccounts.length === 0) return [];
+  const allAccounts = (
+    await Promise.all([
+      getParsedProgramAccounts(
+        client,
+        limitOrderStruct,
+        limitProgramId,
+        limitFilters(owner)
+      ),
+      getParsedProgramAccounts(
+        client,
+        limitOrderV2Struct,
+        limitV2ProgramId,
+        limitFilters(owner)
+      ),
+    ])
+  ).flat();
+  if (allAccounts.length === 0) return [];
 
   const mints: Set<string> = new Set();
-  limitOrdersAccounts.forEach((account) =>
-    mints.add(account.inputMint.toString())
-  );
+  allAccounts.forEach((account) => mints.add(account.inputMint.toString()));
 
   const tokenPriceById = await cache.getTokenPricesAsMap(
     Array.from(mints),
@@ -35,8 +43,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
 
   const rawAmountByMint: Map<string, BigNumber> = new Map();
-  for (let i = 0; i < limitOrdersAccounts.length; i += 1) {
-    const limOrder = limitOrdersAccounts[i];
+  for (let i = 0; i < allAccounts.length; i += 1) {
+    const limOrder = allAccounts[i];
     const mint = limOrder.inputMint.toString();
 
     const amountLeftInOrder = limOrder.makingAmount;
@@ -71,7 +79,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     platformId,
     value,
     label: 'Deposit',
-    name: `Limit Orders (${limitOrdersAccounts.length})`,
+    name: `Limit Orders (${allAccounts.length})`,
     data: { assets },
   };
 
