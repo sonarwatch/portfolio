@@ -12,7 +12,6 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
 import {
   getAutoParsedProgramAccounts,
-  ParsedAccount,
   usdcSolanaMint,
 } from '../../utils/solana';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
@@ -20,14 +19,24 @@ import {
   banxIdlItem,
   bondOfferDataSize,
   cachePrefix,
-  collectionRefreshInterval,
   collectionsCacheKey,
   platformId,
 } from './constants';
 import { BondOfferV2, Collection } from './types';
+import { MemoizedCache } from '../../utils/misc/MemoizedCache';
+import { arrayToMap } from '../../utils/misc/arrayToMap';
 
-const collections: Map<string, Collection> = new Map();
-let collectionLastUpdate = 0;
+const collectionsMemo = new MemoizedCache<
+  Collection[],
+  Map<string, Collection>
+>(
+  collectionsCacheKey,
+  {
+    prefix: cachePrefix,
+    networkId: NetworkId.solana,
+  },
+  (arr) => arrayToMap(arr || [], 'marketPubkey')
+);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
@@ -47,26 +56,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   ).filter((acc) => acc.buyOrdersQuantity !== '0');
   if (accounts.length === 0) return [];
 
-  const tokenPrices = await cache.getTokenPricesAsMap(
-    [usdcSolanaMint, solanaNativeAddress],
-    NetworkId.solana
-  );
-
-  if (collectionLastUpdate + collectionRefreshInterval < Date.now()) {
-    const collectionsArr = await cache.getItem<ParsedAccount<Collection>[]>(
-      collectionsCacheKey,
-      {
-        prefix: cachePrefix,
-        networkId: NetworkId.solana,
-      }
-    );
-    if (collectionsArr) {
-      collectionsArr.forEach((cc) => {
-        collections.set(cc.marketPubkey, cc);
-      });
-    }
-    collectionLastUpdate = Date.now();
-  }
+  const [tokenPrices, collections] = await Promise.all([
+    cache.getTokenPricesAsMap(
+      [usdcSolanaMint, solanaNativeAddress],
+      NetworkId.solana
+    ),
+    collectionsMemo.getItem(cache),
+  ]);
 
   const elements: PortfolioElement[] = [];
   accounts.forEach((acc) => {

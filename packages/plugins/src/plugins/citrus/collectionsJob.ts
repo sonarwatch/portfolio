@@ -12,7 +12,7 @@ import { Collection } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const res = await axios
-    .get<Collection>(collectionsApiUrl, {
+    .get<Collection[]>(collectionsApiUrl, {
       timeout: 5000,
     })
     .catch((err) => {
