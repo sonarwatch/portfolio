@@ -13,23 +13,26 @@ import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import {
   cachePrefix,
-  collectionRefreshInterval,
   collectionsCacheKey,
   platformId,
   sharkyIdlItem,
 } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
-import { getAutoParsedProgramAccounts } from '../../utils/solana';
+import {
+  getAutoParsedProgramAccounts,
+  ParsedAccount,
+} from '../../utils/solana';
 import { Collection, Loan } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getAssetBatchDasAsMap } from '../../utils/solana/das/getAssetBatchDas';
 import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
 import { heliusAssetToAssetCollectible } from '../../utils/solana/das/heliusAssetToAssetCollectible';
 import { getLoanFilters } from './filters';
+import { GlobalCache } from '../../utils/misc/GlobalCache';
+import { arrayToMap } from '../../utils/misc/arrayToMap';
 
-const collections: Map<string, Collection> = new Map();
-let collectionLastUpdate = 0;
+const collectionsGlobal = new GlobalCache<ParsedAccount<Collection>[]>();
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const dasUrl = getSolanaDasEndpoint();
@@ -45,7 +48,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   ).flat();
   if (accounts.length === 0) return [];
 
-  const [solTokenPrice, heliusAssets] = await Promise.all([
+  const [solTokenPrice, heliusAssets, collectionsArr] = await Promise.all([
     cache.getTokenPrice(solanaNativeAddress, NetworkId.solana),
     getAssetBatchDasAsMap(
       dasUrl,
@@ -53,24 +56,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         .map((acc) => acc.loanState.taken?.taken.nftCollateralMint)
         .filter((mint) => mint) as string[]
     ),
+    collectionsGlobal.getItem(cache, collectionsCacheKey, {
+      prefix: cachePrefix,
+      networkId: NetworkId.solana,
+    }),
   ]);
-  if (!solTokenPrice) return [];
+  if (!solTokenPrice || !collectionsArr) return [];
 
-  if (collectionLastUpdate + collectionRefreshInterval < Date.now()) {
-    const collectionsArr = await cache.getItem<Collection[]>(
-      collectionsCacheKey,
-      {
-        prefix: cachePrefix,
-        networkId: NetworkId.solana,
-      }
-    );
-    if (collectionsArr) {
-      collectionsArr.forEach((cc) => {
-        collections.set(cc.orderBook, cc);
-      });
-    }
-    collectionLastUpdate = Date.now();
-  }
+  const collections: Map<string, Collection> = arrayToMap(
+    collectionsArr,
+    'orderBook'
+  );
 
   const elements: PortfolioElement[] = [];
   accounts.forEach((acc) => {

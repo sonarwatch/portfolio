@@ -12,7 +12,7 @@ import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId } from './constants';
+import { collectionsKey, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import {
   ParsedAccount,
@@ -24,7 +24,10 @@ import { daysBetweenDates, getLoans } from './helpers';
 import { getAssetBatchDasAsMap } from '../../utils/solana/das/getAssetBatchDas';
 import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
 import { heliusAssetToAssetCollectible } from '../../utils/solana/das/heliusAssetToAssetCollectible';
-import { getCollections } from './getCollections';
+import { Collection } from './types';
+import { GlobalCache } from '../../utils/misc/GlobalCache';
+
+const collectionGlobal = new GlobalCache<Collection[]>();
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -44,17 +47,21 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     else nftMints.add(loan.mint.toString());
   });
 
-  const [tokenPriceById, heliusAssets, collections] = await Promise.all([
-    cache.getTokenPricesAsMap(Array.from(tokenMints), NetworkId.solana),
-    getAssetBatchDasAsMap(dasUrl, Array.from(nftMints)),
-    getCollections(cache),
-  ]);
+  const [tokenPriceById, heliusAssets, collections, poolsAccounts] =
+    await Promise.all([
+      cache.getTokenPricesAsMap(Array.from(tokenMints), NetworkId.solana),
+      getAssetBatchDasAsMap(dasUrl, Array.from(nftMints)),
+      collectionGlobal.getItem(cache, collectionsKey, {
+        prefix: platformId,
+        networkId: NetworkId.solana,
+      }),
+      getParsedMultipleAccountsInfo(
+        client,
+        poolStruct,
+        Array.from(pools).map((pool) => new PublicKey(pool))
+      ),
+    ]);
 
-  const poolsAccounts = await getParsedMultipleAccountsInfo(
-    client,
-    poolStruct,
-    Array.from(pools).map((pool) => new PublicKey(pool))
-  );
   const poolById: Map<string, ParsedAccount<Pool>> = new Map();
   poolsAccounts.forEach((account) =>
     account ? poolById.set(account.pubkey.toString(), account) : undefined

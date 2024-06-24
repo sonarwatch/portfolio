@@ -20,14 +20,14 @@ import {
   banxIdlItem,
   bondOfferDataSize,
   cachePrefix,
-  collectionRefreshInterval,
   collectionsCacheKey,
   platformId,
 } from './constants';
 import { BondOfferV2, Collection } from './types';
+import { GlobalCache } from '../../utils/misc/GlobalCache';
+import { arrayToMap } from '../../utils/misc/arrayToMap';
 
-const collections: Map<string, Collection> = new Map();
-let collectionLastUpdate = 0;
+const collectionsGlobal = new GlobalCache<ParsedAccount<Collection>[]>();
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
@@ -47,26 +47,23 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   ).filter((acc) => acc.buyOrdersQuantity !== '0');
   if (accounts.length === 0) return [];
 
-  const tokenPrices = await cache.getTokenPricesAsMap(
-    [usdcSolanaMint, solanaNativeAddress],
-    NetworkId.solana
-  );
+  const [tokenPrices, collectionsArr] = await Promise.all([
+    cache.getTokenPricesAsMap(
+      [usdcSolanaMint, solanaNativeAddress],
+      NetworkId.solana
+    ),
+    collectionsGlobal.getItem(cache, collectionsCacheKey, {
+      prefix: cachePrefix,
+      networkId: NetworkId.solana,
+    }),
+  ]);
 
-  if (collectionLastUpdate + collectionRefreshInterval < Date.now()) {
-    const collectionsArr = await cache.getItem<ParsedAccount<Collection>[]>(
-      collectionsCacheKey,
-      {
-        prefix: cachePrefix,
-        networkId: NetworkId.solana,
-      }
-    );
-    if (collectionsArr) {
-      collectionsArr.forEach((cc) => {
-        collections.set(cc.marketPubkey, cc);
-      });
-    }
-    collectionLastUpdate = Date.now();
-  }
+  if (!collectionsArr) return [];
+
+  const collections: Map<string, Collection> = arrayToMap(
+    collectionsArr,
+    'marketPubkey'
+  );
 
   const elements: PortfolioElement[] = [];
   accounts.forEach((acc) => {

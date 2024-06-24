@@ -17,4 +17,3 @@ export const programId = new PublicKey(
 
 export const rainApi = 'https://api-v2.rain.fi';
 export const collectionsKey = 'collections';
-export const skipCacheRefreshInterval = 3600000;

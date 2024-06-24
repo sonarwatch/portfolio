@@ -28,7 +28,6 @@ export const cachePrefix = `${platformId}`;
 
 export const bondOfferDataSize = 208;
 export const bondTradeTransactionV3DataSize = 336;
-export const collectionRefreshInterval = 3600000;
 
 export const banxIdlItem = {
   programId: banxPid.toString(),
