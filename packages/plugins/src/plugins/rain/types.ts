@@ -108,6 +108,11 @@ export type Collection = {
   isDefi: boolean;
 };
 
+export type PickedCollection = Pick<
+  Collection,
+  'collectionId' | 'name' | 'floorPrice'
+>;
+
 export type LoansResponse = {
   user: string;
   platform: string;

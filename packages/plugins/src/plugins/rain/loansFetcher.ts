@@ -24,10 +24,10 @@ import { daysBetweenDates, getLoans } from './helpers';
 import { getAssetBatchDasAsMap } from '../../utils/solana/das/getAssetBatchDas';
 import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
 import { heliusAssetToAssetCollectible } from '../../utils/solana/das/heliusAssetToAssetCollectible';
-import { Collection } from './types';
+import { PickedCollection } from './types';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 
-const collectionMemo = new MemoizedCache<Collection[]>(collectionsKey, {
+const collectionMemo = new MemoizedCache<PickedCollection[]>(collectionsKey, {
   prefix: platformId,
   networkId: NetworkId.solana,
 });
