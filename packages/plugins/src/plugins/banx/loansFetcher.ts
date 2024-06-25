@@ -1,6 +1,6 @@
 import {
   collectibleFreezedTag,
-  getElementLendingValues,
+  getElementNFTLendingValues,
   NetworkId,
   PortfolioAsset,
   PortfolioAssetCollectible,
@@ -128,7 +128,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const fbondTokenMint = fbondTokenMintsMap.get(acc.fbondTokenMint);
     const bondOffer = bondOffersMap.get(acc.bondOffer);
 
-    if (!fbondTokenMint || !bondOffer || !bondOffer.hadoMarket) return;
+    if (!fbondTokenMint) return;
 
     if (
       !fbondTokenMint.fraktBondState.perpetualActive &&
@@ -136,8 +136,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     )
       return;
 
-    const collection = collections.get(bondOffer.hadoMarket);
-    if (!collection) return;
+    const collection =
+      bondOffer && bondOffer.hadoMarket
+        ? collections.get(bondOffer.hadoMarket)
+        : undefined;
 
     const tokenPrice = acc.lendingToken.usdc
       ? tokenPrices.get(usdcSolanaMint)
@@ -198,11 +200,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
 
     if (suppliedAssets.length > 0) {
-      const { borrowedValue, suppliedValue, healthRatio, rewardValue } =
-        getElementLendingValues({
+      const { borrowedValue, suppliedValue, rewardValue, value } =
+        getElementNFTLendingValues({
           suppliedAssets,
           borrowedAssets,
           rewardAssets: [],
+          lender: acc.user === owner.toString(),
         });
 
       elements.push({
@@ -210,7 +213,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         label: 'Lending',
         platformId,
         type: PortfolioElementType.borrowlend,
-        value: suppliedValue,
+        value,
         name,
         data: {
           borrowedAssets,
@@ -221,8 +224,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           suppliedYields: [],
           rewardAssets: [],
           rewardValue,
-          healthRatio,
-          value: suppliedValue,
+          healthRatio: null,
+          value,
         },
       });
     }
