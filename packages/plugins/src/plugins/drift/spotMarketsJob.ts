@@ -5,7 +5,12 @@ import {
   borrowLendRatesPrefix,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
-import { driftProgram, platformId, prefixSpotMarkets } from './constants';
+import {
+  driftProgram,
+  oracleToMintKey,
+  platformId,
+  prefixSpotMarkets,
+} from './constants';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { spotMarketStruct } from './struct';
 import { marketFilter } from './filters';
@@ -29,6 +34,18 @@ const executor: JobExecutor = async (cache: Cache) => {
     marketFilter
   );
   if (!spotMarketsAccount) return;
+
+  // Oracle to mint
+  const oracleToMint: [string, string][] = [];
+  for (let i = 0; i < spotMarketsAccount.length; i++) {
+    const acc = spotMarketsAccount[i];
+    oracleToMint.push([acc.oracle.toString(), acc.mint.toString()]);
+  }
+  await cache.setItem(oracleToMintKey, oracleToMint, {
+    prefix: platformId,
+    networkId: NetworkId.solana,
+  });
+
   for (let index = 0; index < spotMarketsAccount.length; index++) {
     const spotMarketAccount = spotMarketsAccount[index];
     const depositApr = calculateDepositRate(spotMarketAccount).toNumber();

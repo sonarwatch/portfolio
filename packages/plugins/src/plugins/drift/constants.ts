@@ -20,6 +20,7 @@ export const driftProgram = new PublicKey(
 
 export const preMarketPriceKey = 'premarketPrice';
 export const perpMarketsIndexesKey = 'perp-markets-indexes';
+export const oracleToMintKey = 'oracle-to-mint';
 
 export const airdropUrl = 'https://airdrop.drift.trade/eligibility/';
 export const distributorPid = 'E7HtfkEMhmn9uwL7EFNydcXBWy5WCYN1vFmKKjipEH1x';
