@@ -38,7 +38,6 @@ const executor: FetcherExecutor = async (
     perpsProgramId,
     perpetualsPositionsFilter(owner)
   );
-  console.log('positionAccounts:', positionAccounts);
   if (
     positionAccounts.length === 0 ||
     positionAccounts.every((perp) => perp.sizeUsd.isLessThanOrEqualTo(0))
