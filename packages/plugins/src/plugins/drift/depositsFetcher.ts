@@ -51,6 +51,7 @@ import { PRICE_PRECISION_BIG_NUMBER } from './perpHelpers/constants';
 import { PositionDirection } from './perpHelpers/types';
 import { getOraclePrice } from './perpHelpers/getOraclePrice';
 import { getPerpMarket } from './perpHelpers/getPerpMarket';
+import { getMintFromOracle } from './perpHelpers/getMintFromOracle';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -195,22 +196,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           ? LeverageSide.long
           : LeverageSide.short;
 
-      // console.log('market:', market.pubkey);
-      // // console.log('entryPrice', calculateEntryPrice(perpPosition));
-      // console.log('perpPosition:', perpPosition.baseAssetAmount.toString());
-      // console.log('pnl:', pnl.toString());
-      // console.log('baseAssetValue:', baseAssetValue.toString());
-      // console.log(
-      //   'quoteEntryAmount:',
-      //   perpPosition.quoteEntryAmount.toString()
-      // );
-      // console.log('-----');
+      const mint = await getMintFromOracle(market.amm.oracle.toString(), cache);
       const asset: PortfolioAssetGeneric = {
         type: PortfolioAssetType.generic,
         networkId: NetworkId.solana,
         value: pnl,
         data: {
           name: u8ArrayToString(market.name),
+          address: mint || undefined,
         },
         attributes: {
           tags: [side],
