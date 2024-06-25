@@ -104,7 +104,14 @@ export type Collection = {
   updatedAt: string;
   deletedAt: string;
   version: number;
+  mintIn: string;
+  isDefi: boolean;
 };
+
+export type PickedCollection = Pick<
+  Collection,
+  'collectionId' | 'name' | 'floorPrice'
+>;
 
 export type LoansResponse = {
   user: string;

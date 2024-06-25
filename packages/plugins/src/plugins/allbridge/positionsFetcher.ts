@@ -7,7 +7,13 @@ import {
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
-import { allbridgeIdlItem, platformId, SYSTEM_PRECISION } from './constants';
+import {
+  allbridgeIdlItem,
+  cachePrefix,
+  platformId,
+  poolsCacheKey,
+  SYSTEM_PRECISION,
+} from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
 import {
@@ -15,14 +21,19 @@ import {
   ParsedAccount,
 } from '../../utils/solana';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { UserDeposit } from './types';
+import { Pools, UserDeposit } from './types';
 import { getEarned, getUserDepositPublicKeys } from './helpers';
-import { getPoolInfo } from './getPoolInfo';
+import { MemoizedCache } from '../../utils/misc/MemoizedCache';
+
+const poolInfoMemo = new MemoizedCache<Pools>(poolsCacheKey, {
+  prefix: cachePrefix,
+  networkId: NetworkId.solana,
+});
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
 
-  const poolInfo = await getPoolInfo(cache);
+  const poolInfo = await poolInfoMemo.getItem(cache);
 
   if (!poolInfo) return [];
 

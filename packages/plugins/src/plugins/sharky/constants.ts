@@ -21,7 +21,6 @@ export const sharkyProgram = new PublicKey(
 
 export const loanDataSize = 338;
 export const orderBookDataSize = 10240;
-export const collectionRefreshInterval = 3600000;
 
 export const sharkyIdlItem = {
   programId: sharkyProgram.toString(),

@@ -2,6 +2,7 @@ import {
   BeetStruct,
   FixableBeetStruct,
   bool,
+  u16,
   u32,
   u8,
   uniformFixedSizeArray,
@@ -50,6 +51,51 @@ export const limitOrderStruct = new BeetStruct<LimitOrder>(
     ['referral', publicKey],
   ],
   (args) => args as LimitOrder
+);
+
+export type LimitOrderV2 = {
+  buffer: Buffer;
+  maker: PublicKey;
+  inputMint: PublicKey;
+  outputMint: PublicKey;
+  inputTokenProgram: PublicKey;
+  outputTokenProgram: PublicKey;
+  uniqueId: boolean;
+  oriMakingAmount: BigNumber;
+  oriTakingAmount: BigNumber;
+  makingAmount: BigNumber;
+  takingAmount: BigNumber;
+  borrowMakingAmount: BigNumber;
+  expiredAt: BigNumber;
+  feeBps: number;
+  feeAccount: PublicKey;
+  createdAt: BigNumber;
+  updatedAt: BigNumber;
+  bump: number;
+};
+
+export const limitOrderV2Struct = new BeetStruct<LimitOrderV2>(
+  [
+    ['buffer', blob(8)],
+    ['maker', publicKey],
+    ['inputMint', publicKey],
+    ['outputMint', publicKey],
+    ['inputTokenProgram', publicKey],
+    ['outputTokenProgram', publicKey],
+    ['uniqueId', u64],
+    ['oriMakingAmount', u64],
+    ['oriTakingAmount', u64],
+    ['makingAmount', u64],
+    ['takingAmount', u64],
+    ['borrowMakingAmount', u64],
+    ['expiredAt', i64],
+    ['feeBps', u16],
+    ['feeAccount', publicKey],
+    ['createdAt', i64],
+    ['updatedAt', i64],
+    ['bump', u8],
+  ],
+  (args) => args as LimitOrderV2
 );
 
 export type DCA = {
