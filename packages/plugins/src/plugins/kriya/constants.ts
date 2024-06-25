@@ -6,7 +6,7 @@ export const platform: Platform = {
   id: platformId,
   name: 'Kriya',
   image: 'https://sonar.watch/img/platforms/kriya.webp',
-  defiLlamaId: 'kriya', // from https://defillama.com/docs/api
+  defiLlamaId: 'kriya-swap', // from https://defillama.com/docs/api
   website: 'https://www.app.kriya.finance/',
   twitter: 'https://twitter.com/KriyaDEX',
 };

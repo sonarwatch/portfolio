@@ -8,7 +8,7 @@ export const platform: Platform = {
   image: 'https://sonar.watch/img/platforms/cropper.webp',
   website: 'https://cropper.finance/',
   twitter: 'https://twitter.com/CropperFinance',
-  defiLlamaId: 'cropper', // from https://defillama.com/docs/api
+  defiLlamaId: 'cropper-clmm', // from https://defillama.com/docs/api
 };
 
 export const clmmPid = new PublicKey(
