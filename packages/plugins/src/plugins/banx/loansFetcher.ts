@@ -1,6 +1,6 @@
 import {
   collectibleFreezedTag,
-  getElementLendingValues,
+  getElementNFTLendingValues,
   NetworkId,
   PortfolioAsset,
   PortfolioAssetCollectible,
@@ -26,7 +26,6 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import {
   banxIdlItem,
   cachePrefix,
-  collectionRefreshInterval,
   collectionsCacheKey,
   platformId,
 } from './constants';
@@ -38,9 +37,20 @@ import {
 } from './types';
 import { calculateLoanRepayValue, calculateDebtValue } from './helpers';
 import { loanFiltersA, loanFiltersB } from './filters';
+import { MemoizedCache } from '../../utils/misc/MemoizedCache';
+import { arrayToMap } from '../../utils/misc/arrayToMap';
 
-const collections: Map<string, Collection> = new Map();
-let collectionLastUpdate = 0;
+const collectionsMemo = new MemoizedCache<
+  Collection[],
+  Map<string, Collection>
+>(
+  collectionsCacheKey,
+  {
+    prefix: cachePrefix,
+    networkId: NetworkId.solana,
+  },
+  (arr) => arrayToMap(arr || [], 'marketPubkey')
+);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
@@ -71,38 +81,26 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (accounts.length === 0) return [];
 
-  const [tokenPrices, fbondTokenMints, bondOffers] = await Promise.all([
-    cache.getTokenPricesAsMap(
-      [usdcSolanaMint, solanaNativeAddress],
-      NetworkId.solana
-    ),
-    getAutoParsedMultipleAccountsInfo<FraktBond>(
-      connection,
-      banxIdlItem,
-      accounts.map((acc) => new PublicKey(acc.fbondTokenMint))
-    ),
-    getAutoParsedMultipleAccountsInfo<BondOfferV2>(
-      connection,
-      banxIdlItem,
-      accounts.map((acc) => new PublicKey(acc.bondOffer))
-    ),
-  ]);
+  const [tokenPrices, fbondTokenMints, bondOffers, collections] =
+    await Promise.all([
+      cache.getTokenPricesAsMap(
+        [usdcSolanaMint, solanaNativeAddress],
+        NetworkId.solana
+      ),
+      getAutoParsedMultipleAccountsInfo<FraktBond>(
+        connection,
+        banxIdlItem,
+        accounts.map((acc) => new PublicKey(acc.fbondTokenMint))
+      ),
+      getAutoParsedMultipleAccountsInfo<BondOfferV2>(
+        connection,
+        banxIdlItem,
+        accounts.map((acc) => new PublicKey(acc.bondOffer))
+      ),
+      collectionsMemo.getItem(cache),
+    ]);
 
-  if (collectionLastUpdate + collectionRefreshInterval < Date.now()) {
-    const collectionsArr = await cache.getItem<ParsedAccount<Collection>[]>(
-      collectionsCacheKey,
-      {
-        prefix: cachePrefix,
-        networkId: NetworkId.solana,
-      }
-    );
-    if (collectionsArr) {
-      collectionsArr.forEach((cc) => {
-        collections.set(cc.marketPubkey, cc);
-      });
-    }
-    collectionLastUpdate = Date.now();
-  }
+  if (!collections) return [];
 
   const solTokenPrice = tokenPrices.get(solanaNativeAddress);
   if (!solTokenPrice) return [];
@@ -130,7 +128,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const fbondTokenMint = fbondTokenMintsMap.get(acc.fbondTokenMint);
     const bondOffer = bondOffersMap.get(acc.bondOffer);
 
-    if (!fbondTokenMint || !bondOffer || !bondOffer.hadoMarket) return;
+    if (!fbondTokenMint) return;
 
     if (
       !fbondTokenMint.fraktBondState.perpetualActive &&
@@ -138,8 +136,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     )
       return;
 
-    const collection = collections.get(bondOffer.hadoMarket);
-    if (!collection) return;
+    const collection =
+      bondOffer && bondOffer.hadoMarket
+        ? collections.get(bondOffer.hadoMarket)
+        : undefined;
 
     const tokenPrice = acc.lendingToken.usdc
       ? tokenPrices.get(usdcSolanaMint)
@@ -200,11 +200,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
 
     if (suppliedAssets.length > 0) {
-      const { borrowedValue, suppliedValue, healthRatio, rewardValue } =
-        getElementLendingValues({
+      const { borrowedValue, suppliedValue, rewardValue, value } =
+        getElementNFTLendingValues({
           suppliedAssets,
           borrowedAssets,
           rewardAssets: [],
+          lender: acc.user === owner.toString(),
         });
 
       elements.push({
@@ -212,7 +213,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         label: 'Lending',
         platformId,
         type: PortfolioElementType.borrowlend,
-        value: suppliedValue,
+        value,
         name,
         data: {
           borrowedAssets,
@@ -223,8 +224,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           suppliedYields: [],
           rewardAssets: [],
           rewardValue,
-          healthRatio,
-          value: suppliedValue,
+          healthRatio: null,
+          value,
         },
       });
     }

@@ -6,6 +6,7 @@ export * from './validTokenAddress';
 export * from './formatAddress';
 export * from './formatTokenAddress';
 export * from './getElementLendingValues';
+export * from './getElementNFTLendingValues';
 export * from './compareName';
 export * from './compareUsdValue';
 export * from './formatTokenPrice';

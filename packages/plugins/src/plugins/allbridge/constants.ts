@@ -17,7 +17,6 @@ export const apiPoolInfoUrl = `https://core.api.allbridgecoreapi.net/token-info`
 
 export const poolsCacheKey = `${platformId}-pools`;
 export const cachePrefix = `${platformId}`;
-export const poolInfoRefreshInterval = 3600000;
 
 export const allbridgeProgram = new PublicKey(
   'BrdgN2RPzEMWF96ZbnnJaUtQDQx7VRXYaHHbYCBvceWB'

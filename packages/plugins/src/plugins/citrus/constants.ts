@@ -23,7 +23,6 @@ export const citrusProgram = new PublicKey(
 );
 
 export const loanDataSize = 464;
-export const collectionRefreshInterval = 3600000;
 
 export const citrusIdlItem = {
   programId: citrusProgram.toString(),

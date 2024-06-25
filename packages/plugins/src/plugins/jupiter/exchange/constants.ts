@@ -21,6 +21,9 @@ export const valueAverageProgramId = new PublicKey(
 export const limitProgramId = new PublicKey(
   'jupoNjAxXgZ4rjzxzPMP4oxduvQsQtZzyknqvzYNrNu'
 );
+export const limitV2ProgramId = new PublicKey(
+  'j1o2qRpjcyUwEvwtcfhEQefh773ZgjxcVRry7LDqg5X'
+);
 export const dcaProgramId = new PublicKey(
   'DCA265Vj8a9CEuX1eb1LWRnDT7uK6q1xMipnNyatn23M'
 );

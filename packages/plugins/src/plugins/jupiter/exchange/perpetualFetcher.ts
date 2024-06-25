@@ -84,14 +84,8 @@ const executor: FetcherExecutor = async (
 
   const levPositions: LevPosition[] = [];
   for (const position of positionAccounts) {
-    const {
-      collateralUsd,
-      sizeUsd,
-      price,
-      side,
-      cumulativeInterestSnapshot,
-      lockedAmount,
-    } = position;
+    const { collateralUsd, sizeUsd, price, side, cumulativeInterestSnapshot } =
+      position;
     if (sizeUsd.isLessThanOrEqualTo(0)) continue;
     if (side === Side.None) continue;
 
@@ -108,8 +102,8 @@ const executor: FetcherExecutor = async (
     const currentPrice = pythPricesByAccount.get(custody.oracle.oracleAccount);
     if (!currentPrice) continue;
 
-    const size = lockedAmount.div(10 ** custody.decimals);
     const sizeValue = sizeUsd.dividedBy(usdFactor);
+    const size = sizeValue.div(entryPrice);
     const leverage = sizeUsd.dividedBy(collateralUsd);
     const collateralValue = collateralUsd.dividedBy(usdFactor);
     const { increasePositionBps, decreasePositionBps } = perpPool.fees;

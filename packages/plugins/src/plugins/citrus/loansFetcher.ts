@@ -5,34 +5,41 @@ import {
   solanaNativeDecimals,
   PortfolioAsset,
   PortfolioElement,
-  getElementLendingValues,
   PortfolioAssetCollectible,
   collectibleFreezedTag,
+  getElementNFTLendingValues,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import {
   cachePrefix,
   citrusIdlItem,
-  collectionRefreshInterval,
   collectionsCacheKey,
   platformId,
 } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
 import { Collection, Loan } from './types';
-import {
-  getAutoParsedProgramAccounts,
-  ParsedAccount,
-} from '../../utils/solana';
+import { getAutoParsedProgramAccounts } from '../../utils/solana';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getAssetBatchDasAsMap } from '../../utils/solana/das/getAssetBatchDas';
 import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
 import { heliusAssetToAssetCollectible } from '../../utils/solana/das/heliusAssetToAssetCollectible';
 import { getLoanFilters } from './filters';
+import { MemoizedCache } from '../../utils/misc/MemoizedCache';
+import { arrayToMap } from '../../utils/misc/arrayToMap';
 
-const collections: Map<string, Collection> = new Map();
-let collectionLastUpdate = 0;
+const collectionsMemo = new MemoizedCache<
+  Collection[],
+  Map<string, Collection>
+>(
+  collectionsCacheKey,
+  {
+    prefix: cachePrefix,
+    networkId: NetworkId.solana,
+  },
+  (arr) => arrayToMap(arr || [], 'id')
+);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
@@ -52,7 +59,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (accounts.length === 0) return [];
 
-  const [solTokenPrice, heliusAssets] = await Promise.all([
+  const [solTokenPrice, heliusAssets, collections] = await Promise.all([
     cache.getTokenPrice(solanaNativeAddress, NetworkId.solana),
     getAssetBatchDasAsMap(
       dasUrl,
@@ -62,24 +69,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           (mint) => mint && mint !== '11111111111111111111111111111111'
         ) as string[]
     ),
+    collectionsMemo.getItem(cache),
   ]);
-  if (!solTokenPrice) return [];
-
-  if (collectionLastUpdate + collectionRefreshInterval < Date.now()) {
-    const collectionsArr = await cache.getItem<ParsedAccount<Collection>[]>(
-      collectionsCacheKey,
-      {
-        prefix: cachePrefix,
-        networkId: NetworkId.solana,
-      }
-    );
-    if (collectionsArr) {
-      collectionsArr.forEach((cc) => {
-        collections.set(cc.id, cc);
-      });
-    }
-    collectionLastUpdate = Date.now();
-  }
+  if (!solTokenPrice || !collections) return [];
 
   const elements: PortfolioElement[] = [];
 
@@ -150,11 +142,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
 
     if (suppliedAssets.length > 0) {
-      const { borrowedValue, suppliedValue, healthRatio, rewardValue } =
-        getElementLendingValues({
+      const { borrowedValue, suppliedValue, rewardValue, value } =
+        getElementNFTLendingValues({
           suppliedAssets,
           borrowedAssets,
           rewardAssets: [],
+          lender: acc.lender === owner.toString(),
         });
 
       elements.push({
@@ -162,7 +155,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         label: 'Lending',
         platformId,
         type: PortfolioElementType.borrowlend,
-        value: suppliedValue,
+        value,
         name,
         data: {
           borrowedAssets,
@@ -173,8 +166,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           suppliedYields: [],
           rewardAssets: [],
           rewardValue,
-          healthRatio,
-          value: suppliedValue,
+          healthRatio: null,
+          value,
           expireOn:
             acc.status.active || acc.status.onSale
               ? Number(acc.startTime) + Number(acc.loanTerms.duration)
