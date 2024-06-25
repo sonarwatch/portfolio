@@ -7,12 +7,17 @@ import {
   u16,
   u32,
   u8,
+  i64 as i64Bn,
+  u64 as u64Bn,
+  i128 as i128Bn,
+  u128 as u128Bn,
   uniformFixedSizeArray,
 } from '@metaplex-foundation/beet';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { blob, i128, i64, u128, u64 } from '../../utils/solana';
+import BN from 'bn.js';
+import { blob, i64, u128, u64 } from '../../utils/solana';
 
 export enum OrderTriggerCondition {
   Above,
@@ -84,6 +89,11 @@ export enum OracleSource {
   Pyth1K,
   Pyth1M,
   PythStableCoin,
+  Prelaunch,
+  PythPull,
+  Pyth1KPull,
+  Pyth1MPull,
+  PythStableCoinPull,
 }
 
 export enum ContractType {
@@ -157,18 +167,18 @@ export const orderStruct = new BeetStruct<Order>(
 );
 
 export type PerpPosition = {
-  lastCumulativeFundingRate: BigNumber;
-  baseAssetAmount: BigNumber;
-  quoteAssetAmount: BigNumber;
-  quoteBreakEvenAmount: BigNumber;
-  quoteEntryAmount: BigNumber;
-  openBids: BigNumber;
-  openAsks: BigNumber;
-  settledPnl: BigNumber;
-  lpShares: BigNumber;
-  lastBaseAssetAmountPerLp: BigNumber;
-  lastQuoteAssetAmountPerLp: BigNumber;
-  remainderBaseAssetAmount: BigNumber;
+  lastCumulativeFundingRate: BN;
+  baseAssetAmount: BN;
+  quoteAssetAmount: BN;
+  quoteBreakEvenAmount: BN;
+  quoteEntryAmount: BN;
+  openBids: BN;
+  openAsks: BN;
+  settledPnl: BN;
+  lpShares: BN;
+  lastBaseAssetAmountPerLp: BN;
+  lastQuoteAssetAmountPerLp: BN;
+  remainderBaseAssetAmount: BN;
   marketIndex: number;
   openOrders: number;
   padding: number[];
@@ -176,17 +186,17 @@ export type PerpPosition = {
 
 export const perpPositionStruct = new BeetStruct<PerpPosition>(
   [
-    ['lastCumulativeFundingRate', i64],
-    ['baseAssetAmount', i64],
-    ['quoteAssetAmount', i64],
-    ['quoteBreakEvenAmount', i64],
-    ['quoteEntryAmount', i64],
-    ['openBids', i64],
-    ['openAsks', i64],
-    ['settledPnl', i64],
-    ['lpShares', u64],
-    ['lastBaseAssetAmountPerLp', i64],
-    ['lastQuoteAssetAmountPerLp', i64],
+    ['lastCumulativeFundingRate', i64Bn],
+    ['baseAssetAmount', i64Bn],
+    ['quoteAssetAmount', i64Bn],
+    ['quoteBreakEvenAmount', i64Bn],
+    ['quoteEntryAmount', i64Bn],
+    ['openBids', i64Bn],
+    ['openAsks', i64Bn],
+    ['settledPnl', i64Bn],
+    ['lpShares', u64Bn],
+    ['lastBaseAssetAmountPerLp', i64Bn],
+    ['lastQuoteAssetAmountPerLp', i64Bn],
     ['remainderBaseAssetAmount', i32],
     ['marketIndex', u16],
     ['openOrders', u8],
@@ -515,67 +525,67 @@ export const insuranceFundStakeStruct = new BeetStruct<InsuranceFundStake>(
 export type AMM = {
   oracle: PublicKey;
   historicalOracleData: HistoricalOracleData;
-  baseAssetAmountPerLp: BigNumber;
-  quoteAssetAmountPerLp: BigNumber;
+  baseAssetAmountPerLp: BN;
+  quoteAssetAmountPerLp: BN;
   feePool: PoolBalance;
-  baseAssetReserve: BigNumber;
-  quoteAssetReserve: BigNumber;
-  concentrationCoef: BigNumber;
-  minBaseAssetReserve: BigNumber;
-  maxBaseAssetReserve: BigNumber;
-  sqrtK: BigNumber;
-  pegMultiplier: BigNumber;
-  terminalQuoteAssetReserve: BigNumber;
-  baseAssetAmountLong: BigNumber;
-  baseAssetAmountShort: BigNumber;
-  baseAssetAmountWithAmm: BigNumber;
-  baseAssetAmountWithUnsettledLp: BigNumber;
-  maxOpenInterest: BigNumber;
-  quoteAssetAmount: BigNumber;
-  quoteEntryAmountLong: BigNumber;
-  quoteEntryAmountShort: BigNumber;
-  quoteBreakEvenAmountLong: BigNumber;
-  quoteBreakEvenAmountShort: BigNumber;
-  userLpShares: BigNumber;
-  lastFundingRate: BigNumber;
-  lastFundingRateLong: BigNumber;
-  lastFundingRateShort: BigNumber;
-  last24hAvgFundingRate: BigNumber;
-  totalFee: BigNumber;
-  totalMmFee: BigNumber;
-  totalExchangeFee: BigNumber;
-  totalFeeMinusDistributions: BigNumber;
-  totalFeeWithdrawn: BigNumber;
-  totalLiquidationFee: BigNumber;
-  cumulativeFundingRateLong: BigNumber;
-  cumulativeFundingRateShort: BigNumber;
-  totalSocialLoss: BigNumber;
-  askBaseAssetReserve: BigNumber;
-  askQuoteAssetReserve: BigNumber;
-  bidBaseAssetReserve: BigNumber;
-  bidQuoteAssetReserve: BigNumber;
-  lastOracleNormalisedPrice: BigNumber;
-  lastOracleReservePriceSpreadPct: BigNumber;
-  lastBidPriceTwap: BigNumber;
-  lastAskPriceTwap: BigNumber;
-  lastMarkPriceTwap: BigNumber;
-  lastMarkPriceTwap5min: BigNumber;
-  lastUpdateSlot: BigNumber;
-  lastOracleConfPct: BigNumber;
-  netRevenueSinceLastFunding: BigNumber;
-  lastFundingRateTs: BigNumber;
-  fundingPeriod: BigNumber;
-  orderStepSize: BigNumber;
-  orderTickSize: BigNumber;
-  minOrderSize: BigNumber;
-  maxPositionSize: BigNumber;
-  volume24h: BigNumber;
-  longIntensityVolume: BigNumber;
-  shortIntensityVolume: BigNumber;
-  lastTradeTs: BigNumber;
-  markStd: BigNumber;
-  oracleStd: BigNumber;
-  lastMarkPriceTwapTs: BigNumber;
+  baseAssetReserve: BN;
+  quoteAssetReserve: BN;
+  concentrationCoef: BN;
+  minBaseAssetReserve: BN;
+  maxBaseAssetReserve: BN;
+  sqrtK: BN;
+  pegMultiplier: BN;
+  terminalQuoteAssetReserve: BN;
+  baseAssetAmountLong: BN;
+  baseAssetAmountShort: BN;
+  baseAssetAmountWithAmm: BN;
+  baseAssetAmountWithUnsettledLp: BN;
+  maxOpenInterest: BN;
+  quoteAssetAmount: BN;
+  quoteEntryAmountLong: BN;
+  quoteEntryAmountShort: BN;
+  quoteBreakEvenAmountLong: BN;
+  quoteBreakEvenAmountShort: BN;
+  userLpShares: BN;
+  lastFundingRate: BN;
+  lastFundingRateLong: BN;
+  lastFundingRateShort: BN;
+  last24HAvgFundingRate: BN;
+  totalFee: BN;
+  totalMmFee: BN;
+  totalExchangeFee: BN;
+  totalFeeMinusDistributions: BN;
+  totalFeeWithdrawn: BN;
+  totalLiquidationFee: BN;
+  cumulativeFundingRateLong: BN;
+  cumulativeFundingRateShort: BN;
+  totalSocialLoss: BN;
+  askBaseAssetReserve: BN;
+  askQuoteAssetReserve: BN;
+  bidBaseAssetReserve: BN;
+  bidQuoteAssetReserve: BN;
+  lastOracleNormalisedPrice: BN;
+  lastOracleReservePriceSpreadPct: BN;
+  lastBidPriceTwap: BN;
+  lastAskPriceTwap: BN;
+  lastMarkPriceTwap: BN;
+  lastMarkPriceTwap5Min: BN;
+  lastUpdateSlot: BN;
+  lastOracleConfPct: BN;
+  netRevenueSinceLastFunding: BN;
+  lastFundingRateTs: BN;
+  fundingPeriod: BN;
+  orderStepSize: BN;
+  orderTickSize: BN;
+  minOrderSize: BN;
+  maxPositionSize: BN;
+  volume24H: BN;
+  longIntensityVolume: BN;
+  shortIntensityVolume: BN;
+  lastTradeTs: BN;
+  markStd: BN;
+  oracleStd: BN;
+  lastMarkPriceTwapTs: BN;
   baseSpread: number;
   maxSpread: number;
   longSpread: number;
@@ -592,9 +602,9 @@ export type AMM = {
   perLpBase: number;
   padding1: number;
   padding2: number;
-  totalFeeEarnedPerLp: BigNumber;
-  netUnsettledFundingPnl: BigNumber;
-  quoteAssetAmountWithUnsettledLp: BigNumber;
+  totalFeeEarnedPerLp: BN;
+  netUnsettledFundingPnl: BN;
+  quoteAssetAmountWithUnsettledLp: BN;
   referencePriceOffset: number;
   padding: number[];
 };
@@ -603,67 +613,67 @@ export const ammStruct = new BeetStruct<AMM>(
   [
     ['oracle', publicKey],
     ['historicalOracleData', historicalOracleDataStruct],
-    ['baseAssetAmountPerLp', i128],
-    ['quoteAssetAmountPerLp', i128],
+    ['baseAssetAmountPerLp', i128Bn],
+    ['quoteAssetAmountPerLp', i128Bn],
     ['feePool', poolBalanceStruct],
-    ['baseAssetReserve', u128],
-    ['quoteAssetReserve', u128],
-    ['concentrationCoef', u128],
-    ['minBaseAssetReserve', u128],
-    ['maxBaseAssetReserve', u128],
-    ['sqrtK', u128],
-    ['pegMultiplier', u128],
-    ['terminalQuoteAssetReserve', u128],
-    ['baseAssetAmountLong', i128],
-    ['baseAssetAmountShort', i128],
-    ['baseAssetAmountWithAmm', i128],
-    ['baseAssetAmountWithUnsettledLp', i128],
-    ['maxOpenInterest', u128],
-    ['quoteAssetAmount', i128],
-    ['quoteEntryAmountLong', i128],
-    ['quoteEntryAmountShort', i128],
-    ['quoteBreakEvenAmountLong', i128],
-    ['quoteBreakEvenAmountShort', i128],
-    ['userLpShares', u128],
-    ['lastFundingRate', i64],
-    ['lastFundingRateLong', i64],
-    ['lastFundingRateShort', i64],
-    ['last24hAvgFundingRate', i64],
-    ['totalFee', i128],
-    ['totalMmFee', i128],
-    ['totalExchangeFee', u128],
-    ['totalFeeMinusDistributions', i128],
-    ['totalFeeWithdrawn', u128],
-    ['totalLiquidationFee', u128],
-    ['cumulativeFundingRateLong', i128],
-    ['cumulativeFundingRateShort', i128],
-    ['totalSocialLoss', u128],
-    ['askBaseAssetReserve', u128],
-    ['askQuoteAssetReserve', u128],
-    ['bidBaseAssetReserve', u128],
-    ['bidQuoteAssetReserve', u128],
-    ['lastOracleNormalisedPrice', i64],
-    ['lastOracleReservePriceSpreadPct', i64],
-    ['lastBidPriceTwap', u64],
-    ['lastAskPriceTwap', u64],
-    ['lastMarkPriceTwap', u64],
-    ['lastMarkPriceTwap5min', u64],
-    ['lastUpdateSlot', u64],
-    ['lastOracleConfPct', u64],
-    ['netRevenueSinceLastFunding', i64],
-    ['lastFundingRateTs', i64],
-    ['fundingPeriod', i64],
-    ['orderStepSize', u64],
-    ['orderTickSize', u64],
-    ['minOrderSize', u64],
-    ['maxPositionSize', u64],
-    ['volume24h', u64],
-    ['longIntensityVolume', u64],
-    ['shortIntensityVolume', u64],
-    ['lastTradeTs', i64],
-    ['markStd', u64],
-    ['oracleStd', u64],
-    ['lastMarkPriceTwapTs', i64],
+    ['baseAssetReserve', u128Bn],
+    ['quoteAssetReserve', u128Bn],
+    ['concentrationCoef', u128Bn],
+    ['minBaseAssetReserve', u128Bn],
+    ['maxBaseAssetReserve', u128Bn],
+    ['sqrtK', u128Bn],
+    ['pegMultiplier', u128Bn],
+    ['terminalQuoteAssetReserve', u128Bn],
+    ['baseAssetAmountLong', i128Bn],
+    ['baseAssetAmountShort', i128Bn],
+    ['baseAssetAmountWithAmm', i128Bn],
+    ['baseAssetAmountWithUnsettledLp', i128Bn],
+    ['maxOpenInterest', u128Bn],
+    ['quoteAssetAmount', i128Bn],
+    ['quoteEntryAmountLong', i128Bn],
+    ['quoteEntryAmountShort', i128Bn],
+    ['quoteBreakEvenAmountLong', i128Bn],
+    ['quoteBreakEvenAmountShort', i128Bn],
+    ['userLpShares', u128Bn],
+    ['lastFundingRate', i64Bn],
+    ['lastFundingRateLong', i64Bn],
+    ['lastFundingRateShort', i64Bn],
+    ['last24HAvgFundingRate', i64Bn],
+    ['totalFee', i128Bn],
+    ['totalMmFee', i128Bn],
+    ['totalExchangeFee', u128Bn],
+    ['totalFeeMinusDistributions', i128Bn],
+    ['totalFeeWithdrawn', u128Bn],
+    ['totalLiquidationFee', u128Bn],
+    ['cumulativeFundingRateLong', i128Bn],
+    ['cumulativeFundingRateShort', i128Bn],
+    ['totalSocialLoss', u128Bn],
+    ['askBaseAssetReserve', u128Bn],
+    ['askQuoteAssetReserve', u128Bn],
+    ['bidBaseAssetReserve', u128Bn],
+    ['bidQuoteAssetReserve', u128Bn],
+    ['lastOracleNormalisedPrice', i64Bn],
+    ['lastOracleReservePriceSpreadPct', i64Bn],
+    ['lastBidPriceTwap', u64Bn],
+    ['lastAskPriceTwap', u64Bn],
+    ['lastMarkPriceTwap', u64Bn],
+    ['lastMarkPriceTwap5Min', u64Bn],
+    ['lastUpdateSlot', u64Bn],
+    ['lastOracleConfPct', u64Bn],
+    ['netRevenueSinceLastFunding', i64Bn],
+    ['lastFundingRateTs', i64Bn],
+    ['fundingPeriod', i64Bn],
+    ['orderStepSize', u64Bn],
+    ['orderTickSize', u64Bn],
+    ['minOrderSize', u64Bn],
+    ['maxPositionSize', u64Bn],
+    ['volume24H', u64Bn],
+    ['longIntensityVolume', u64Bn],
+    ['shortIntensityVolume', u64Bn],
+    ['lastTradeTs', i64Bn],
+    ['markStd', u64Bn],
+    ['oracleStd', u64Bn],
+    ['lastMarkPriceTwapTs', i64Bn],
     ['baseSpread', u32],
     ['maxSpread', u32],
     ['longSpread', u32],
@@ -680,9 +690,9 @@ export const ammStruct = new BeetStruct<AMM>(
     ['perLpBase', i8],
     ['padding1', u8],
     ['padding2', u16],
-    ['totalFeeEarnedPerLp', u64],
-    ['netUnsettledFundingPnl', i64],
-    ['quoteAssetAmountWithUnsettledLp', i64],
+    ['totalFeeEarnedPerLp', u64Bn],
+    ['netUnsettledFundingPnl', i64Bn],
+    ['quoteAssetAmountWithUnsettledLp', i64Bn],
     ['referencePriceOffset', i32],
     ['padding', uniformFixedSizeArray(u8, 12)],
   ],

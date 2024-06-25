@@ -16,7 +16,11 @@ export function getAssetsFromElement(
         ...element.data.liquidities.map((l) => l.rewardAssets).flat(1),
       ];
     case PortfolioElementType.borrowlend:
-      return [...element.data.suppliedAssets];
+      return [
+        ...element.data.suppliedAssets,
+        ...element.data.rewardAssets,
+        ...(element.data.unsettled?.assets || []),
+      ];
     case PortfolioElementType.leverage:
       return [];
     default:

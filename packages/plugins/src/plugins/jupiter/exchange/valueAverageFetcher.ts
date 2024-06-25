@@ -1,6 +1,7 @@
 import {
   NetworkId,
   PortfolioAsset,
+  PortfolioAssetToken,
   PortfolioElement,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
@@ -36,7 +37,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     NetworkId.solana
   );
 
-  const allAssets: PortfolioAsset[] = [];
+  const allAssets: PortfolioAssetToken[] = [];
   const elements: PortfolioElement[] = [];
   for (const valueAverageOrder of valueAverageAccounts) {
     const accountAssets: PortfolioAsset[] = [];

@@ -27,3 +27,5 @@ export type AirdropInfo = {
   merkle: string;
   amount: number;
 };
+
+export type PerpMarketIndexes = Array<[number, string]>;

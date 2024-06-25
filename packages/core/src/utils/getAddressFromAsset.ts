@@ -7,7 +7,7 @@ export function getAddressFromAsset(asset: PortfolioAsset): string | null {
     case 'collectible':
       return asset.data.address;
     case 'generic':
-      return null;
+      return asset.data.address || null;
     default:
       return null;
   }

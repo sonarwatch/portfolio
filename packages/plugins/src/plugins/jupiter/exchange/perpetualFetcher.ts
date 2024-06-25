@@ -156,11 +156,8 @@ const executor: FetcherExecutor = async (
     {
       type: PortfolioElementType.leverage,
       data: {
-        levPositions,
-        levValue: value,
+        positions: levPositions,
         value,
-        rewardAssets: [],
-        rewardValue: 0,
       },
       label: 'Leverage',
       networkId: NetworkId.solana,

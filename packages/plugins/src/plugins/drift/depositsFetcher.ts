@@ -1,6 +1,9 @@
 import {
+  LeverageSide,
   NetworkId,
   PortfolioAsset,
+  PortfolioAssetGeneric,
+  PortfolioAssetType,
   PortfolioElement,
   PortfolioElementType,
   TokenPrice,
@@ -13,9 +16,15 @@ import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { driftProgram, platformId, prefixSpotMarkets } from './constants';
+import {
+  driftProgram,
+  perpMarketsIndexesKey,
+  platformId,
+  prefixSpotMarkets,
+} from './constants';
 import {
   SpotBalanceType,
+  UserAccount,
   insuranceFundStakeStruct,
   userAccountStruct,
 } from './struct';
@@ -26,13 +35,22 @@ import {
   getUserInsuranceFundStakeAccountPublicKey,
   isSpotPositionAvailable,
 } from './helpers';
-import { SpotMarketEnhanced } from './types';
+import { PerpMarketIndexes, SpotMarketEnhanced } from './types';
 import {
+  ParsedAccount,
   getParsedMultipleAccountsInfo,
   u8ArrayToString,
 } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import {
+  calculatePositionPNL,
+  positionCurrentDirection,
+} from './perpHelpers/position';
+import { PRICE_PRECISION_BIG_NUMBER } from './perpHelpers/constants';
+import { PositionDirection } from './perpHelpers/types';
+import { getOraclePrice } from './perpHelpers/getOraclePrice';
+import { getPerpMarket } from './perpHelpers/getPerpMarket';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -106,7 +124,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   }
 
   let id = 0;
-  const userAccounts = [];
+  const userAccounts: (ParsedAccount<UserAccount> | null)[] = [];
   let parsedAccount;
   do {
     const accountPubKeys = getUserAccountsPublicKeys(
@@ -126,6 +144,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (!userAccounts) return elements;
 
+  const perpMarketIndexesArr = await cache.getItem<PerpMarketIndexes>(
+    perpMarketsIndexesKey,
+    {
+      prefix: platformId,
+      networkId: NetworkId.solana,
+    }
+  );
+  const perpMarketAddressByIndex: Map<number, string> = new Map();
+  perpMarketIndexesArr?.forEach(([index, address]) => {
+    perpMarketAddressByIndex.set(index, address);
+  });
+
   // One user can have multiple sub-account
   for (const userAccount of userAccounts) {
     if (!userAccount) continue;
@@ -136,6 +166,58 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const rewardAssets: PortfolioAsset[] = [];
 
     const marketIndexRef = 0;
+
+    const unsettledAssets: PortfolioAssetGeneric[] = [];
+    for (const perpPosition of userAccount.perpPositions) {
+      if (perpPosition.baseAssetAmount.isZero()) continue;
+      const perpMarketAddress = perpMarketAddressByIndex.get(
+        perpPosition.marketIndex
+      );
+      if (!perpMarketAddress) continue;
+
+      const market = await getPerpMarket(perpMarketAddress, client);
+      if (!market) continue;
+
+      const oraclePriceData = await getOraclePrice(
+        market.amm.oracle.toString(),
+        market.amm.oracleSource,
+        client
+      );
+
+      const pnl = new BigNumber(
+        calculatePositionPNL(market, perpPosition, oraclePriceData).toString()
+      )
+        .div(PRICE_PRECISION_BIG_NUMBER)
+        .toNumber();
+
+      const side =
+        positionCurrentDirection(perpPosition) === PositionDirection.LONG
+          ? LeverageSide.long
+          : LeverageSide.short;
+
+      // console.log('market:', market.pubkey);
+      // // console.log('entryPrice', calculateEntryPrice(perpPosition));
+      // console.log('perpPosition:', perpPosition.baseAssetAmount.toString());
+      // console.log('pnl:', pnl.toString());
+      // console.log('baseAssetValue:', baseAssetValue.toString());
+      // console.log(
+      //   'quoteEntryAmount:',
+      //   perpPosition.quoteEntryAmount.toString()
+      // );
+      // console.log('-----');
+      const asset: PortfolioAssetGeneric = {
+        type: PortfolioAssetType.generic,
+        networkId: NetworkId.solana,
+        value: pnl,
+        data: {
+          name: u8ArrayToString(market.name),
+        },
+        attributes: {
+          tags: [side],
+        },
+      };
+      unsettledAssets.push(asset);
+    }
 
     // Each account has up to 8 SpotPositions
     for (const spotPosition of userAccount.spotPositions) {
@@ -217,8 +299,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
     if (suppliedAssets.length === 0 && borrowedAssets.length === 0) continue;
 
-    const { borrowedValue, suppliedValue, value, healthRatio, rewardValue } =
-      getElementLendingValues({ suppliedAssets, borrowedAssets, rewardAssets });
+    const {
+      borrowedValue,
+      suppliedValue,
+      value,
+      healthRatio,
+      rewardValue,
+      unsettledValue,
+    } = getElementLendingValues({
+      suppliedAssets,
+      borrowedAssets,
+      rewardAssets,
+      unsettledAssets,
+    });
 
     elements.push({
       type: PortfolioElementType.borrowlend,
@@ -236,6 +329,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         rewardAssets,
         rewardValue,
         healthRatio,
+        unsettled: {
+          assets: unsettledAssets,
+          value: unsettledValue,
+        },
         value,
       },
       name: u8ArrayToString(userAccount.name),

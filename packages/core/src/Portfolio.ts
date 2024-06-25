@@ -79,9 +79,10 @@ export type PortfolioAssetCommon = {
  */
 export type PortfolioAssetGenericData = {
   name?: string;
-  amount: number;
-  price: UsdValue;
+  amount?: number;
+  price?: UsdValue;
   imageUri?: string;
+  address?: string;
 };
 
 /**
@@ -270,10 +271,7 @@ export type LevPosition = {
  * Represents the data of a leverage portfolio element.
  */
 export type PortfolioElementLeverageData = {
-  levPositions: LevPosition[];
-  levValue: UsdValue;
-  rewardAssets: PortfolioAsset[];
-  rewardValue: UsdValue;
+  positions: LevPosition[];
   value: UsdValue;
 };
 
@@ -310,15 +308,15 @@ export type PortfolioElementBorrowLendData = {
   rewardAssets: PortfolioAsset[];
 
   /**
-   * The leveraged part of the portfolio element.
+   * The unsettled part of the portfolio element.
    */
-  leveraged?: {
+  unsettled?: {
     /**
-     * The leveraged positions.
+     * The unsettled assets.
      */
-    positions: LevPosition[];
+    assets: PortfolioAssetGeneric[];
     /**
-     * The leveraged value.
+     * The unsettled value.
      */
     value: UsdValue;
   };

@@ -1,6 +1,9 @@
 import { PublicKey } from '@solana/web3.js';
 import axios, { AxiosResponse } from 'axios';
-import { PortfolioAsset, getUsdValueSum } from '@sonarwatch/portfolio-core';
+import {
+  PortfolioAssetToken,
+  getUsdValueSum,
+} from '@sonarwatch/portfolio-core';
 import { PriceResponse } from './types';
 import { lockerPubkey, voteProgramId } from './launchpad/constants';
 
@@ -47,8 +50,8 @@ export async function getJupiterPrices(mints: PublicKey[], vsMint: PublicKey) {
   return prices;
 }
 
-export function getMergedAssets(assets: PortfolioAsset[]) {
-  const assetByMint: Map<string, PortfolioAsset> = new Map();
+export function getMergedAssets(assets: PortfolioAssetToken[]) {
+  const assetByMint: Map<string, PortfolioAssetToken> = new Map();
   for (const asset of assets) {
     if (asset.type !== 'token') continue;
 

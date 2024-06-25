@@ -87,10 +87,7 @@ export function sortElementLeverage(
   element: PortfolioElementLeverage
 ): PortfolioElementLeverage {
   const sortedElement: PortfolioElementLeverage = { ...element };
-  sortedElement.data.rewardAssets = sortMultipleAssets(
-    element.data.rewardAssets
-  );
-  sortedElement.data.levPositions.sort((a, b) =>
+  sortedElement.data.positions.sort((a, b) =>
     compareUsdValue(a.value, b.value)
   );
   return sortedElement;

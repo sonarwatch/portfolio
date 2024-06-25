@@ -1,4 +1,4 @@
-import { LevPosition, PortfolioAsset } from '../Portfolio';
+import { PortfolioAsset } from '../Portfolio';
 import { UsdValue } from '../UsdValue';
 import { getUsdValueSumStrict } from './getUsdValueSumStrict';
 
@@ -41,7 +41,7 @@ export function getElementLendingValues(params: {
   rewardAssets: PortfolioAsset[];
   suppliedLtvs?: number[];
   borrowedWeights?: number[];
-  levPositions?: LevPosition[];
+  unsettledAssets?: PortfolioAsset[];
 }) {
   const {
     suppliedAssets,
@@ -49,11 +49,11 @@ export function getElementLendingValues(params: {
     rewardAssets,
     suppliedLtvs,
     borrowedWeights,
-    levPositions,
+    unsettledAssets,
   } = params;
 
-  const levValue: UsdValue = getUsdValueSumStrict(
-    levPositions?.map((p) => p.value) || []
+  const unsettledValue: UsdValue = getUsdValueSumStrict(
+    unsettledAssets?.map((p) => p.value) || []
   );
 
   const rewardValue: UsdValue = rewardAssets.reduce(
@@ -84,14 +84,14 @@ export function getElementLendingValues(params: {
       ? suppliedValue - borrowedValue
       : null;
   if (rewardValue !== null && value !== null) value += rewardValue;
-  if (levValue !== null && value !== null) value += levValue;
+  if (unsettledValue !== null && value !== null) value += unsettledValue;
 
   return {
     borrowedValue,
     suppliedValue,
     rewardValue,
     healthRatio,
-    levValue,
+    unsettledValue,
     value,
   };
 }

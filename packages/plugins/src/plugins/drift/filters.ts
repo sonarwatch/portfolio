@@ -1,5 +1,5 @@
 import { GetProgramAccountsFilter } from '@solana/web3.js';
-import { spotMarketStruct } from './struct';
+import { perpMarketStruct, spotMarketStruct } from './struct';
 
 export const accountsFilter = (owner: string): GetProgramAccountsFilter[] => [
   {
@@ -18,4 +18,8 @@ export const accountsFilter = (owner: string): GetProgramAccountsFilter[] => [
 
 export const marketFilter: GetProgramAccountsFilter[] = [
   { dataSize: spotMarketStruct.byteSize },
+];
+
+export const perpMarketsFilters: GetProgramAccountsFilter[] = [
+  { dataSize: perpMarketStruct.byteSize },
 ];
