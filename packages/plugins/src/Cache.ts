@@ -19,6 +19,7 @@ import memoryDriver, {
   MemoryDriver,
 } from './memoryDriver';
 import runInBatch from './utils/misc/runInBatch';
+import { arrayToMap } from './utils/misc/arrayToMap';
 
 export type TransactionOptions = {
   prefix: string;
@@ -196,12 +197,7 @@ export class Cache {
     networkId: NetworkIdType
   ): Promise<Map<string, TokenPrice>> {
     const tokenPrices = await this.getTokenPrices(addresses, networkId);
-    const tokenPricesMap: Map<string, TokenPrice> = new Map();
-    tokenPrices.forEach((tp) => {
-      if (!tp) return;
-      tokenPricesMap.set(tp.address, tp);
-    });
-    return tokenPricesMap;
+    return arrayToMap(tokenPrices as TokenPrice[], 'address');
   }
 
   private async getTokenPriceSources(
