@@ -139,10 +139,10 @@ export function processPosition(
     positionBinData: positionData,
     lowerBinId,
     upperBinId,
-    feeX: new BigNumber(feeX),
-    feeY: new BigNumber(feeY),
-    rewardOne: new BigNumber(rewardOne),
-    rewardTwo: new BigNumber(rewardTwo),
+    feeX,
+    feeY,
+    rewardOne,
+    rewardTwo,
   };
 }
 
@@ -369,7 +369,7 @@ export function getClaimableSwapFee(
 export function getBinFromBinArray(binId: number, binArray: BinArray): Bin {
   const [lowerBinId, upperBinId] = getBinArrayLowerUpperBinId(binArray.index);
 
-  let index = 0;
+  let index;
   if (binId > 0) {
     index = binId - lowerBinId.toNumber();
   } else {
