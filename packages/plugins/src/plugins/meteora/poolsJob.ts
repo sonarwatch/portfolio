@@ -40,15 +40,12 @@ const executor: JobExecutor = async (cache: Cache) => {
   ];
 
   const poolsAccounts = poolsAcountsUnfiltered.filter((poolAccount) => {
-    if (poolAccount.enabled === false) return false;
-    if (
+    if (!poolAccount.enabled) return false;
+    return !(
       poolAccount.tokenAMint.toString() ===
         '11111111111111111111111111111111' ||
       poolAccount.tokenBMint.toString() === '11111111111111111111111111111111'
-    )
-      return false;
-
-    return true;
+    );
   });
 
   // Store all tokens, lpmint, lpVaults
