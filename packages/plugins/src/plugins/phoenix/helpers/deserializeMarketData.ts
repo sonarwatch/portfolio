@@ -1,13 +1,12 @@
-import { BeetArgsStruct, bignum } from '@metaplex-foundation/beet';
+import { BeetArgsStruct } from '@metaplex-foundation/beet';
 import BN from 'bn.js';
-import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
 import {
   OrderId,
-  TraderState,
   orderIdBeet,
   publicKeyBeet,
   restingOrderBeet,
+  TraderState,
   traderStateBeet,
 } from '../structs/misc';
 import {
@@ -15,6 +14,7 @@ import {
   partialMarketHeaderStruct,
 } from '../structs/marketHeader';
 import { Market } from '../types';
+import { toBN } from '../../../utils/misc/toBN';
 
 function getNodeIndices<Key, Value>(
   data: Buffer,
@@ -46,13 +46,6 @@ function getUiOrderSequenceNumber(orderId: OrderId): BN {
   return twosComplement.isNeg()
     ? twosComplement.neg().sub(new BN(1))
     : twosComplement;
-}
-
-function toBN(n: number | bignum | BigNumber) {
-  if (typeof n === 'number') {
-    return new BN(n);
-  }
-  return new BN(n.toString());
 }
 
 function sign(n: BN) {
@@ -136,8 +129,7 @@ function deserializeRedBlackTreeNodes<Key, Value>(
   // If there's an infinite loop here, that means that the state is corrupted
   while (freeListHead < bumpIndex) {
     // We need to subtract 1 because the node allocator is 1-indexed
-    const next = freeListPointers[freeListHead - 1];
-    [indexToRemove, freeListHead] = next;
+    [indexToRemove, freeListHead] = freeListPointers[freeListHead - 1];
     freeNodes.add(indexToRemove);
     counter += 1;
     if (counter > bumpIndex) {
