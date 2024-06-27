@@ -271,7 +271,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         rewardAssetsValue: getUsdValueSum(
           rewardAssets.map((asset) => asset.value)
         ),
-        value: getUsdValueSum(assets.map((asset) => asset.value)),
+        value: getUsdValueSum(
+          [...assets, ...rewardAssets].map((asset) => asset.value)
+        ),
         yields: [],
       });
     }
