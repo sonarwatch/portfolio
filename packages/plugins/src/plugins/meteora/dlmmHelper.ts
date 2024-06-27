@@ -13,13 +13,14 @@ import {
 } from './types';
 import { Bin, BinArray, DLMMPosition, LbPair } from './struct';
 import { dlmmProgramId } from './constants';
+import { toBN } from '../../utils/misc/toBN';
 
 export const MAX_BIN_ARRAY_SIZE = new BN(70);
 export const SCALE_OFFSET = 64;
 export const BASIS_POINT_MAX = 10000;
 
 export function binIdToBinArrayIndex(binId: BigNumber): BN {
-  const tempBinId = new BN(binId.toString());
+  const tempBinId = toBN(binId);
   const { div: idx, mod } = tempBinId.divmod(MAX_BIN_ARRAY_SIZE);
   return tempBinId.isNeg() && !mod.isZero() ? idx.sub(new BN(1)) : idx;
 }
@@ -115,23 +116,22 @@ export function processPosition(
     });
   });
 
-  // Not getting the right results
-  // const { feeX, feeY } = getClaimableSwapFee(
-  //   program,
-  //   version,
-  //   position,
-  //   lowerBinArray,
-  //   upperBinArray
-  // );
-  // const { rewardOne, rewardTwo } = getClaimableLMReward(
-  //   program,
-  //   version,
-  //   lbPair,
-  //   new Date(Date.now()).getTime(),
-  //   position,
-  //   lowerBinArray,
-  //   upperBinArray
-  // );
+  const { feeX, feeY } = getClaimableSwapFee(
+    program,
+    version,
+    position,
+    lowerBinArray,
+    upperBinArray
+  );
+  const { rewardOne, rewardTwo } = getClaimableLMReward(
+    program,
+    version,
+    lbPair,
+    new Date(Date.now()).getTime(),
+    position,
+    lowerBinArray,
+    upperBinArray
+  );
 
   return {
     totalXAmount: new BigNumber(totalXAmount.toString()),
@@ -139,10 +139,10 @@ export function processPosition(
     positionBinData: positionData,
     lowerBinId,
     upperBinId,
-    feeX: new BigNumber(0),
-    feeY: new BigNumber(0),
-    rewardOne: new BigNumber(0),
-    rewardTwo: new BigNumber(0),
+    feeX,
+    feeY,
+    rewardOne,
+    rewardTwo,
   };
 }
 
@@ -238,12 +238,11 @@ export function getClaimableLMReward(
     const binIdxInPosition = i - position.lowerBinId;
 
     const positionRewardInfo = position.rewardInfos[binIdxInPosition];
+
     const liquidityShare =
       positionVersion === PositionVersion.V1
-        ? new BN(position.liquidityShares[binIdxInPosition].toString())
-        : new BN(position.liquidityShares[binIdxInPosition].toString()).shrn(
-            64
-          );
+        ? toBN(position.liquidityShares[binIdxInPosition])
+        : toBN(position.liquidityShares[binIdxInPosition]).shrn(64);
 
     for (let j = 0; j < 2; j++) {
       const pairRewardInfo = lbPair.rewardInfos[j];
@@ -281,7 +280,7 @@ export function getClaimableLMReward(
             : positionRewardInfo.rewardPerTokenCompletesY
         );
         const newReward = mulShr(
-          new BN(delta.toString()),
+          toBN(delta),
           liquidityShare,
           SCALE_OFFSET,
           Rounding.Down
@@ -328,12 +327,11 @@ export function getClaimableSwapFee(
     const binIdxInPosition = i - position.lowerBinId;
 
     const feeInfos = position.feeInfos[binIdxInPosition];
+
     const liquidityShare =
       positionVersion === PositionVersion.V1
-        ? new BN(position.liquidityShares[binIdxInPosition].toString())
-        : new BN(position.liquidityShares[binIdxInPosition].toString()).shrn(
-            64
-          );
+        ? toBN(position.liquidityShares[binIdxInPosition])
+        : toBN(position.liquidityShares[binIdxInPosition]).shrn(64);
 
     if (liquidityShare.isZero()) continue;
 
@@ -343,20 +341,20 @@ export function getClaimableSwapFee(
     if (!feeXPerToken.isZero()) {
       const newFeeX = mulShr(
         liquidityShare,
-        new BN(feeXPerToken.toString()),
+        toBN(feeXPerToken),
         SCALE_OFFSET,
         Rounding.Down
       );
       feeX = feeX.plus(newFeeX).plus(feeInfos.feeXPending);
     }
 
-    const feeYPerToken = binState.feeAmountXPerTokenStored.minus(
-      feeInfos.feeXPerTokenComplete
+    const feeYPerToken = binState.feeAmountYPerTokenStored.minus(
+      feeInfos.feeYPerTokenComplete
     );
     if (!feeYPerToken.isZero()) {
       const newFeeY = mulShr(
         liquidityShare,
-        new BN(feeYPerToken.toString()),
+        toBN(feeYPerToken),
         SCALE_OFFSET,
         Rounding.Down
       );
@@ -371,7 +369,7 @@ export function getClaimableSwapFee(
 export function getBinFromBinArray(binId: number, binArray: BinArray): Bin {
   const [lowerBinId, upperBinId] = getBinArrayLowerUpperBinId(binArray.index);
 
-  let index = 0;
+  let index;
   if (binId > 0) {
     index = binId - lowerBinId.toNumber();
   } else {

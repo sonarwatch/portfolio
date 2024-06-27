@@ -1,9 +1,9 @@
 import {
+  getUsdValueSum,
   NetworkId,
   PortfolioAsset,
   PortfolioElementType,
   PortfolioLiquidity,
-  getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
@@ -18,10 +18,10 @@ import {
 } from '../../utils/solana';
 import {
   BinArray,
-  LbPair,
   binArrayStruct,
   dlmmPositionV1Struct,
   dlmmPositionV2Struct,
+  LbPair,
   lbPairStruct,
 } from './struct';
 import {
@@ -105,6 +105,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const lbPairAcc = lbPairStruct.deserialize(rawAccount.data)[0];
       mints.add(lbPairAcc.tokenXMint.toString());
       mints.add(lbPairAcc.tokenYMint.toString());
+      if (lbPairAcc.rewardInfos[0].mint)
+        mints.add(lbPairAcc.rewardInfos[0].mint.toString());
+      if (lbPairAcc.rewardInfos[1].mint)
+        mints.add(lbPairAcc.rewardInfos[1].mint.toString());
       lbPairById.set(lbPairKeys[i - binArrayKeys.length].toBase58(), lbPairAcc);
     }
   }
@@ -139,8 +143,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const liquidities: PortfolioLiquidity[] = [];
 
   for (let idx = 0; idx < positions.length; idx++) {
-    const position = positions[idx];
-    const account = position;
+    const account = positions[idx];
 
     const { upperBinId, lowerBinId, lbPair } = account;
     const lowerBinArrayIndex = binIdToBinArrayIndex(new BigNumber(lowerBinId));
@@ -164,6 +167,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const tokenPriceX = tokenPriceById.get(lbPairAcc.tokenXMint.toString());
     const tokenPriceY = tokenPriceById.get(lbPairAcc.tokenYMint.toString());
+    const tokenPriceRewardX = lbPairAcc.rewardInfos[0].mint
+      ? tokenPriceById.get(lbPairAcc.rewardInfos[0].mint.toString())
+      : undefined;
+    const tokenPriceRewardY = lbPairAcc.rewardInfos[1].mint
+      ? tokenPriceById.get(lbPairAcc.rewardInfos[1].mint.toString())
+      : undefined;
     if (!tokenPriceX || !tokenPriceY) continue;
 
     const baseTokenDecimal = tokenPriceX.decimals;
@@ -184,6 +193,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
 
     const assets: PortfolioAsset[] = [];
+    const rewardAssets: PortfolioAsset[] = [];
     if (
       positionData &&
       (!positionData.totalXAmount.isZero() ||
@@ -199,6 +209,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           tokenPriceX
         )
       );
+
       assets.push(
         tokenPriceToAssetToken(
           tokenPriceY.address,
@@ -209,12 +220,60 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           tokenPriceY
         )
       );
+
+      if (positionData.feeX.isGreaterThan(0))
+        rewardAssets.push(
+          tokenPriceToAssetToken(
+            tokenPriceX.address,
+            positionData.feeX.dividedBy(10 ** tokenPriceX.decimals).toNumber(),
+            NetworkId.solana,
+            tokenPriceX
+          )
+        );
+
+      if (positionData.feeY.isGreaterThan(0))
+        rewardAssets.push(
+          tokenPriceToAssetToken(
+            tokenPriceY.address,
+            positionData.feeY.dividedBy(10 ** tokenPriceY.decimals).toNumber(),
+            NetworkId.solana,
+            tokenPriceY
+          )
+        );
+
+      if (positionData.rewardOne.isGreaterThan(0) && tokenPriceRewardX)
+        rewardAssets.push(
+          tokenPriceToAssetToken(
+            tokenPriceRewardX.address,
+            positionData.rewardOne
+              .dividedBy(10 ** tokenPriceRewardX.decimals)
+              .toNumber(),
+            NetworkId.solana,
+            tokenPriceRewardX
+          )
+        );
+
+      if (positionData.rewardTwo.isGreaterThan(0) && tokenPriceRewardY)
+        rewardAssets.push(
+          tokenPriceToAssetToken(
+            tokenPriceRewardY.address,
+            positionData.rewardTwo
+              .dividedBy(10 ** tokenPriceRewardY.decimals)
+              .toNumber(),
+            NetworkId.solana,
+            tokenPriceRewardY
+          )
+        );
       liquidities.push({
         assets,
         assetsValue: getUsdValueSum(assets.map((asset) => asset.value)),
-        rewardAssets: [],
-        rewardAssetsValue: null,
-        value: getUsdValueSum(assets.map((asset) => asset.value)),
+        rewardAssets,
+        rewardAssetsValue: getUsdValueSum(
+          rewardAssets.map((asset) => asset.value)
+        ),
+        value: getUsdValueSum(
+          [...assets, ...rewardAssets].map((asset) => asset.value)
+        ),
         yields: [],
       });
     }
