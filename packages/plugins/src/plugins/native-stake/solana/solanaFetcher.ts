@@ -66,9 +66,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const stakeAccount = stakeAccounts[i];
     const validator = validators.get(stakeAccount.voter.toString());
 
-    // TODO
-    console.log(validator);
-
     mevRewards += new BigNumber(stakeAccount.lamports)
       .minus(stakeAccount.rentExemptReserve)
       .minus(stakeAccount.stake)
@@ -124,10 +121,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           lockedUntil,
         }
       ),
+      // TODO name: validator?.name,
+      // TODO imageUri: validator?.iconUrl,
     });
   }
 
-  if (nativeAssets.length > 20) {
+  if (nativeAssets.length > 30) {
     nativeAssets = [
       tokenPriceToAssetToken(
         solanaNetwork.native.address,

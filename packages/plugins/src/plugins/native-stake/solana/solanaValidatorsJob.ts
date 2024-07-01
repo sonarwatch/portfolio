@@ -1,12 +1,13 @@
 import { getProgramIdl } from '@solanafm/explorer-kit-idls';
 import { NetworkId } from '@sonarwatch/portfolio-core';
+import { VoteAccountInfo } from '@solana/web3.js';
 import { Cache } from '../../../Cache';
 import { Job, JobExecutor } from '../../../Job';
 import { getClientSolana } from '../../../utils/clients';
 import { platformId, validatorsKey } from '../constants';
 import { getAutoParsedProgramAccounts } from '../../../utils/solana';
 import { configProgramId } from './constants';
-import { ValidatorConfig, ConfigAccount, Validator } from './types';
+import { ConfigAccount, Validator, ValidatorConfig } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -15,10 +16,12 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   if (!SFMIdlItem) return;
 
-  const [voters, configs] = await Promise.all([
+  const [{ current, delinquent }, configs] = await Promise.all([
     client.getVoteAccounts(),
     getAutoParsedProgramAccounts<ConfigAccount>(client, SFMIdlItem),
   ]);
+
+  const voters: VoteAccountInfo[] = [...current, ...delinquent];
 
   const configsByVoter = new Map<string, ValidatorConfig>();
   configs.forEach((c) => {
@@ -38,7 +41,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   });
 
   const validators: Validator[] = [];
-  voters.current.forEach((voteAcc) => {
+  voters.forEach((voteAcc) => {
     const config = configsByVoter.get(voteAcc.nodePubkey.toString());
 
     validators.push({
