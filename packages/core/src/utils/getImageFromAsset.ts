@@ -7,11 +7,11 @@ export function getImageFromAsset(
 ): string | undefined | null {
   switch (asset.type) {
     case PortfolioAssetType.collectible:
-      return asset.data.imageUri;
+      return asset.imageUri || asset.data.imageUri;
     case PortfolioAssetType.token:
-      return tokenInfo?.logoURI;
+      return asset.imageUri || tokenInfo?.logoURI;
     case PortfolioAssetType.generic:
-      return asset.data.imageUri;
+      return asset.imageUri || asset.data.imageUri;
     default:
       return null;
   }
