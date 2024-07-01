@@ -121,8 +121,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           lockedUntil,
         }
       ),
-      // TODO name: validator?.name,
-      // TODO imageUri: validator?.iconUrl,
+      name: validator?.name,
+      imageUri: validator?.iconUrl,
     });
   }
 
