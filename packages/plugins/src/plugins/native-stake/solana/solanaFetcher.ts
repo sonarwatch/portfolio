@@ -122,7 +122,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         }
       ),
       name: validator?.name,
-      imageUri: validator?.iconUrl,
+      imageUri: validator?.imageUri,
     });
   }
 
