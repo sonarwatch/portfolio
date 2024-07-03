@@ -2,9 +2,18 @@ import { NetworkId, PortfolioAsset } from '@sonarwatch/portfolio-core';
 import request, { gql } from 'graphql-request';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { graphqlApi, platformId, zexMint } from './constants';
+import {
+  distributorPid,
+  distributors,
+  graphqlApi,
+  platformId,
+  zexMint,
+} from './constants';
 import { GQLResponse } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { findClaimStatusesKeys } from '../jito/helper';
+import { getClientSolana } from '../../utils/clients';
+import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 
 const query = gql`
   query GetAirdropFinalFrontend($authority: String!) {
@@ -43,6 +52,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const amount = res.getAirdropFinalFrontend.total_allocation;
 
   if (amount === 0) return [];
+
+  const claimStatuses = findClaimStatusesKeys(
+    owner,
+    distributors,
+    distributorPid
+  );
+
+  const client = getClientSolana();
+  const claimStatusesAccount = await getMultipleAccountsInfoSafe(
+    client,
+    claimStatuses
+  );
+
+  if (claimStatusesAccount.some((account) => account)) return [];
 
   const tokenPrice = await cache.getTokenPrice(zexMint, networkId);
   const asset: PortfolioAsset = tokenPrice
