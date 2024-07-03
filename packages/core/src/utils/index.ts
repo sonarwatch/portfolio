@@ -31,6 +31,7 @@ export * from './getAddressFromAsset';
 export * from './getAddressesFromAssets';
 export * from './getImageFromAsset';
 export * from './getImageFromAssets';
+export * from './getSymbolFromAsset';
 export * from './getLabelFromAsset';
 export * from './getLabelFromAssets';
 export * from './healthFactorToHealthRatio';

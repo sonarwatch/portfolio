@@ -2,6 +2,7 @@ import {
   getUsdValueSum,
   NetworkId,
   PortfolioAsset,
+  PortfolioElement,
   PortfolioElementType,
   PortfolioLiquidity,
 } from '@sonarwatch/portfolio-core';
@@ -140,7 +141,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       });
   });
 
-  const liquidities: PortfolioLiquidity[] = [];
+  const elements: PortfolioElement[] = [];
 
   for (let idx = 0; idx < positions.length; idx++) {
     const account = positions[idx];
@@ -264,35 +265,36 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             tokenPriceRewardY
           )
         );
-      liquidities.push({
-        assets,
-        assetsValue: getUsdValueSum(assets.map((asset) => asset.value)),
-        rewardAssets,
-        rewardAssetsValue: getUsdValueSum(
-          rewardAssets.map((asset) => asset.value)
-        ),
-        value: getUsdValueSum(
-          [...assets, ...rewardAssets].map((asset) => asset.value)
-        ),
-        yields: [],
+
+      const liquidities: PortfolioLiquidity[] = [
+        {
+          assets,
+          assetsValue: getUsdValueSum(assets.map((asset) => asset.value)),
+          rewardAssets,
+          rewardAssetsValue: getUsdValueSum(
+            rewardAssets.map((asset) => asset.value)
+          ),
+          value: getUsdValueSum(
+            [...assets, ...rewardAssets].map((asset) => asset.value)
+          ),
+          yields: [],
+        },
+      ];
+      elements.push({
+        type: PortfolioElementType.liquidity,
+        label: 'LiquidityPool',
+        networkId: NetworkId.solana,
+        platformId,
+        value: getUsdValueSum(liquidities.map((a) => a.value)),
+        name: 'DLMM',
+        data: {
+          liquidities,
+        },
       });
     }
   }
 
-  if (liquidities.length === 0) return [];
-  return [
-    {
-      type: PortfolioElementType.liquidity,
-      label: 'LiquidityPool',
-      networkId: NetworkId.solana,
-      platformId,
-      value: getUsdValueSum(liquidities.map((a) => a.value)),
-      name: 'DLMM',
-      data: {
-        liquidities,
-      },
-    },
-  ];
+  return elements;
 };
 
 const fetcher: Fetcher = {

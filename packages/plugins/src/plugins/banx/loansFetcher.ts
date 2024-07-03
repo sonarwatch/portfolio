@@ -76,6 +76,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         acc.bondTradeTransactionState.perpetualActive ||
         acc.bondTradeTransactionState.perpetualPartialRepaid ||
         acc.bondTradeTransactionState.perpetualRefinancedActive ||
+        acc.bondTradeTransactionState.perpetualManualTerminating ||
         acc.bondTradeTransactionState.active
     );
 

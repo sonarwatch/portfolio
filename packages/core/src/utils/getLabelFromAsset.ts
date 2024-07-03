@@ -9,9 +9,9 @@ export function getLabelFromAsset(
     case PortfolioAssetType.collectible:
       return asset.data.name;
     case PortfolioAssetType.token:
-      return tokenInfo?.symbol || 'UNK';
+      return asset.name || tokenInfo?.symbol || 'UNK';
     case PortfolioAssetType.generic:
-      return asset.data.name;
+      return asset.name || asset.data.name;
     default:
       return undefined;
   }

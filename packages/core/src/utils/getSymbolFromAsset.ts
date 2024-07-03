@@ -1,18 +1,18 @@
 import { PortfolioAsset, PortfolioAssetType } from '../Portfolio';
 import { TokenInfo } from '../TokenList';
 
-export function getImageFromAsset(
+export function getSymbolFromAsset(
   asset: PortfolioAsset,
   tokenInfo?: TokenInfo
-): string | undefined | null {
+): string | undefined {
   switch (asset.type) {
     case PortfolioAssetType.collectible:
-      return asset.imageUri || asset.data.imageUri;
+      return asset.data.name;
     case PortfolioAssetType.token:
-      return asset.imageUri || tokenInfo?.logoURI;
+      return tokenInfo?.symbol || 'UNK';
     case PortfolioAssetType.generic:
-      return asset.imageUri || asset.data.imageUri;
+      return asset.name || asset.data.name;
     default:
-      return null;
+      return undefined;
   }
 }

@@ -71,7 +71,10 @@ export function heliusAssetToAssetCollectible(
       address: asset.id,
       amount,
       price: props?.collection?.floorPrice ?? null,
-      name: asset.content.metadata.name,
+      name:
+        asset.content.metadata.name ||
+        collection?.name ||
+        props?.collection?.name,
       dataUri: asset.content.json_uri,
       imageUri: asset.content.links?.image,
       attributes: asset.content.metadata.attributes,

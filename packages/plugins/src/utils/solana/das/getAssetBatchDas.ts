@@ -9,11 +9,12 @@ export async function getAssetBatchDas(
   dasEndpoint: RpcEndpoint,
   publicKeys: string[]
 ) {
+  const uniquePublicKeys = Array.from(new Set(publicKeys));
   if (publicKeys.length <= MAX_MINTS) {
-    return getAssetBatchDasUnsafe(dasEndpoint, publicKeys);
+    return getAssetBatchDasUnsafe(dasEndpoint, uniquePublicKeys);
   }
   const assetsInfo = [];
-  const publicKeysToFetch = [...publicKeys];
+  const publicKeysToFetch = [...uniquePublicKeys];
   while (publicKeysToFetch.length !== 0) {
     const currPublicKeysToFetch = publicKeysToFetch.splice(0, MAX_MINTS);
     const accountsInfoRes = await getAssetBatchDasUnsafe(
