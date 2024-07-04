@@ -5,10 +5,14 @@ import {
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
-import { platformId, programId, usdcDecimals, usdcMint } from './constants';
+import { platformId, programId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
-import { getParsedProgramAccounts } from '../../utils/solana';
+import {
+  getParsedProgramAccounts,
+  usdcSolanaDecimals,
+  usdcSolanaMint,
+} from '../../utils/solana';
 import { marginAccountStruct } from './structs';
 import { marginAccountFilter } from './filters';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
@@ -22,7 +26,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       programId,
       marginAccountFilter(owner)
     ),
-    cache.getTokenPrice(usdcMint, NetworkId.solana),
+    cache.getTokenPrice(usdcSolanaMint, NetworkId.solana),
   ]);
   if (accounts.length === 0) return [];
 
@@ -31,8 +35,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (account.margin.isZero()) continue;
     assets.push({
       ...tokenPriceToAssetToken(
-        usdcMint,
-        account.margin.dividedBy(10 ** usdcDecimals).toNumber(),
+        usdcSolanaMint,
+        account.margin.dividedBy(10 ** usdcSolanaDecimals).toNumber(),
         NetworkId.solana,
         usdcTokenPrice
       ),

@@ -15,6 +15,7 @@ import { walletTokensPlatform } from '../../plugins/tokens/constants';
 import getSourceWeight from './getSourceWeight';
 import { usdcSuiType } from '../sui/constants';
 import { minimumReserveValue } from './constants';
+import { usdcSolanaMint } from '../solana';
 
 export const defaultAcceptedPairs = new Map<NetworkIdType, string[]>([
   [
@@ -30,7 +31,7 @@ export const defaultAcceptedPairs = new Map<NetworkIdType, string[]>([
     [
       solanaNativeAddress,
       solanaNativeWrappedAddress,
-      'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', // USDC
+      usdcSolanaMint, // USDC
       'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB', // USDT
     ].map((a) => formatTokenAddress(a, NetworkId.solana)),
   ],

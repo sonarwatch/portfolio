@@ -10,7 +10,6 @@ export const platform: Platform = {
   website: 'https://www.zeta.markets/',
 };
 
-export const usdcMint = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 export const programId = new PublicKey(
   'ZETAxsqBRek56DhiGXrn75yj2NHU3aYUnxvHXpkf3aD'
 );

@@ -16,7 +16,7 @@ import {
   rootBankPrefix,
 } from './constants';
 import { getClientSolana } from '../../utils/clients';
-import { getParsedProgramAccounts } from '../../utils/solana';
+import { getParsedProgramAccounts, usdcSolanaMint } from '../../utils/solana';
 import { redeemFilter } from './filters';
 import { RootBank, TokenInfo, mangoAccountV3Struct } from './struct';
 import runInBatch from '../../utils/misc/runInBatch';
@@ -38,7 +38,7 @@ const mints = [
   'KgV1GvrHQmRBY8sHQQeUKwTm2r2h8t4C8qt12Cw1HVE',
   '11111111111111111111111111111111',
   '7i5KKsX2weiTkry7jA4ZwSuXGhs5eJBEjY8vVxR4pfRx',
-  'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+  usdcSolanaMint,
 ];
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {

@@ -7,17 +7,23 @@ import {
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, programId, usdcMint } from './constants';
+import { platformId, programId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getCrossMarginAccounts } from './helpers';
-import { getParsedMultipleAccountsInfo } from '../../utils/solana';
+import {
+  getParsedMultipleAccountsInfo,
+  usdcSolanaMint,
+} from '../../utils/solana';
 import { crossMarginAccountStruct } from './structs';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const usdcTokenPrice = await cache.getTokenPrice(usdcMint, NetworkId.solana);
+  const usdcTokenPrice = await cache.getTokenPrice(
+    usdcSolanaMint,
+    NetworkId.solana
+  );
   if (!usdcTokenPrice) return [];
 
   let id = 0;
@@ -46,7 +52,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (!account) continue;
     if (account.balance.isZero()) continue;
     const asset: PortfolioAsset = tokenPriceToAssetToken(
-      usdcMint,
+      usdcSolanaMint,
       account.balance.dividedBy(10 ** usdcTokenPrice.decimals).toNumber(),
       NetworkId.solana,
       usdcTokenPrice
