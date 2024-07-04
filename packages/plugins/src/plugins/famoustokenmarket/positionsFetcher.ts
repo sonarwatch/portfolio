@@ -16,6 +16,7 @@ import { getAssetBatchDasAsMap } from '../../utils/solana/das/getAssetBatchDas';
 import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { heliusAssetToAssetCollectible } from '../../utils/solana/das/heliusAssetToAssetCollectible';
+import { heliusAssetToAssetToken } from '../../utils/solana/das/heliusAssetToAssetToken';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const dasUrl = getSolanaDasEndpoint();
@@ -66,10 +67,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         ),
         attributes: {},
       });
-    } else if (heliusAsset?.content.metadata) {
+    } else if (heliusAsset) {
       // NFT
-      const mintAsset = heliusAssetToAssetCollectible(heliusAsset);
-      if (mintAsset) assets.push(mintAsset);
+      const assetCollectible = heliusAssetToAssetCollectible(heliusAsset);
+      if (assetCollectible) assets.push(assetCollectible);
+      else {
+        // Unknown token
+        const assetToken = heliusAssetToAssetToken(
+          heliusAsset,
+          new BigNumber(acc.count).toNumber()
+        );
+        if (assetToken) assets.push(assetToken);
+      }
     }
   });
 
