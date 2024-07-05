@@ -12,11 +12,8 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
 import { getAutoParsedProgramAccounts } from '../../utils/solana';
 import { Order } from './types';
-import { getAssetBatchDasAsMap } from '../../utils/solana/das/getAssetBatchDas';
 import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { heliusAssetToAssetCollectible } from '../../utils/solana/das/heliusAssetToAssetCollectible';
-import { heliusAssetToAssetToken } from '../../utils/solana/das/heliusAssetToAssetToken';
+import { mintsToAssets } from '../../utils/solana/mintsToAssets';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const dasUrl = getSolanaDasEndpoint();
@@ -37,50 +34,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (accounts.length === 0) return [];
 
-  const [heliusAssets, tokenPrices] = await Promise.all([
-    getAssetBatchDasAsMap(
-      dasUrl,
-      accounts.map((acc) => acc.mint)
-    ),
-    cache.getTokenPricesAsMap(
-      accounts.map((acc) => acc.mint),
-      NetworkId.solana
-    ),
-  ]);
+  const assetsByMint = await mintsToAssets(
+    dasUrl,
+    cache,
+    accounts.map((acc) => acc.mint),
+    accounts.map((acc) => new BigNumber(acc.count).toNumber())
+  );
 
   const elements: PortfolioElement[] = [];
-  const assets: PortfolioAsset[] = [];
-
-  accounts.forEach((acc) => {
-    const heliusAsset = heliusAssets.get(acc.mint);
-    const tokenPrice = tokenPrices.get(acc.mint);
-    if (!heliusAsset && !tokenPrice) return;
-
-    if (tokenPrice) {
-      // TOKEN
-      assets.push({
-        ...tokenPriceToAssetToken(
-          tokenPrice.address,
-          new BigNumber(acc.count).toNumber(),
-          NetworkId.solana,
-          tokenPrice
-        ),
-        attributes: {},
-      });
-    } else if (heliusAsset) {
-      // NFT
-      const assetCollectible = heliusAssetToAssetCollectible(heliusAsset);
-      if (assetCollectible) assets.push(assetCollectible);
-      else {
-        // Unknown token
-        const assetToken = heliusAssetToAssetToken(
-          heliusAsset,
-          new BigNumber(acc.count).toNumber()
-        );
-        if (assetToken) assets.push(assetToken);
-      }
-    }
-  });
+  const assets: PortfolioAsset[] = [...assetsByMint.values()];
 
   if (assets.length === 0) return [];
 
