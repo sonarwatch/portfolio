@@ -170,7 +170,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           value,
           expireOn:
             acc.status.active || acc.status.onSale
-              ? Number(acc.startTime) + Number(acc.loanTerms.duration)
+              ? (Number(acc.startTime) + Number(acc.loanTerms.duration)) * 1000
               : undefined,
         },
       });
