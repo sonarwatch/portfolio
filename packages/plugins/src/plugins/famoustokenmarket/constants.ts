@@ -8,7 +8,7 @@ export const platformId = 'famoustokenmarket';
 export const platform: Platform = {
   id: platformId,
   name: 'Famous Token Market',
-  image: 'https://sonar.watch/img/platforms/foo.webp',
+  image: 'https://sonar.watch/img/platforms/famoustokenmarket.webp',
   website: 'https://famousfoxes.com/tokenmarket',
   twitter: 'https://twitter.com/famousfoxfed',
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
