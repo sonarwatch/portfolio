@@ -6,6 +6,7 @@ import {
   Service,
   ServiceConfig,
 } from '@sonarwatch/portfolio-core';
+import { usdcSolanaMint } from '../../utils/solana';
 
 export const platformId = '01';
 export const platform: Platform = {
@@ -41,7 +42,7 @@ export const service: Service = {
 };
 
 export const mints = [
-  'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+  usdcSolanaMint,
   'So11111111111111111111111111111111111111112',
   '9n4nbM75f5Ui33ZbPYXn59EwSgE8CGsHtAeTH5YFeJ9E',
   'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',

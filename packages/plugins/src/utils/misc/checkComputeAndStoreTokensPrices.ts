@@ -10,6 +10,7 @@ import { Cache } from '../../Cache';
 import getSourceWeight from './getSourceWeight';
 import { getDecimalsForToken } from './getDecimalsForToken';
 import { walletTokensPlatform } from '../../plugins/tokens/constants';
+import { usdcSolanaMint } from '../solana';
 
 export type TokenInfo = {
   mint: string;
@@ -51,7 +52,7 @@ export const tokensToRelyOnByNetwork: Map<NetworkIdType, string[]> = new Map([
       'J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn', // jito SOL
       'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So', // mSOL
       '7dHbWXmci3dT8UFYWYZweBLXgycu7Y3iL6trKn1Y7ARj', // lido SOL
-      'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', // USDC
+      usdcSolanaMint, // USDC
       'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB', // USDT
     ],
   ],

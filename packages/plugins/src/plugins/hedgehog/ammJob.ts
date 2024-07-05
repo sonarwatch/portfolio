@@ -1,7 +1,7 @@
 import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { ammPid, platformId, usdcDecimals, usdcMint } from './constants';
+import { ammPid, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import {
   MintAccount,
@@ -11,6 +11,8 @@ import {
   getParsedProgramAccounts,
   mintAccountStruct,
   tokenAccountStruct,
+  usdcSolanaMint,
+  usdcSolanaDecimals,
 } from '../../utils/solana';
 import {
   Market,
@@ -24,7 +26,10 @@ import {
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
 
-  const usdcTokenPrice = await cache.getTokenPrice(usdcMint, NetworkId.solana);
+  const usdcTokenPrice = await cache.getTokenPrice(
+    usdcSolanaMint,
+    NetworkId.solana
+  );
   if (!usdcTokenPrice) return;
 
   const accounts = await getParsedProgramAccounts(client, swapStruct, ammPid, [
@@ -148,9 +153,9 @@ const executor: JobExecutor = async (cache: Cache) => {
       price: shareA * usdcTokenPrice.price,
       underlyings: [
         {
-          address: usdcMint,
+          address: usdcSolanaMint,
           amountPerLp: shareA,
-          decimals: usdcDecimals,
+          decimals: usdcSolanaDecimals,
           networkId: NetworkId.solana,
           price: usdcTokenPrice.price,
         },
@@ -174,9 +179,9 @@ const executor: JobExecutor = async (cache: Cache) => {
       price: shareB * usdcTokenPrice.price,
       underlyings: [
         {
-          address: usdcMint,
+          address: usdcSolanaMint,
           amountPerLp: shareB,
-          decimals: usdcDecimals,
+          decimals: usdcSolanaDecimals,
           networkId: NetworkId.solana,
           price: usdcTokenPrice.price,
         },
