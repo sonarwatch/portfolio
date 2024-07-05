@@ -7,7 +7,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
-import { famousTokenMarketIdlItem, platformId } from './constants';
+import { tokenMarketIdlItem, platformId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
 import { getAutoParsedProgramAccounts } from '../../utils/solana';
@@ -21,7 +21,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const accounts = await getAutoParsedProgramAccounts<Order>(
     connection,
-    famousTokenMarketIdlItem,
+    tokenMarketIdlItem,
     [
       {
         memcmp: {
@@ -62,7 +62,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-positions`,
+  id: `${platformId}-tokenmarket`,
   networkId: NetworkId.solana,
   executor,
 };

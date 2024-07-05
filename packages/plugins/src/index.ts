@@ -516,7 +516,7 @@ import {
   platforms as famoustokenmarketPlatforms,
   jobs as famoustokenmarketJobs,
   fetchers as famoustokenmarketFetchers,
-} from './plugins/famoustokenmarket';
+} from './plugins/famousfoxfederation';
 
 export {
   walletTokensPlatform,

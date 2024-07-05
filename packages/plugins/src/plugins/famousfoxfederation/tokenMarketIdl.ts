@@ -1,4 +1,4 @@
-export const FamousTokenMarketIDL = {
+export const tokenMarketIdl = {
   version: '0.1.0',
   name: 'wlmarket',
   instructions: [
