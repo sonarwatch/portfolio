@@ -114,3 +114,20 @@ export const crossMarginAccountStruct =
     ],
     (args) => args as CrossMarginAccount
   );
+
+export type ClaimStatus = {
+  buffer: Buffer;
+  claimant: PublicKey;
+  claimedAt: BigNumber;
+  claimedAmount: BigNumber;
+};
+
+export const claimStatusStruct = new BeetStruct<ClaimStatus>(
+  [
+    ['buffer', blob(8)],
+    ['claimant', publicKey],
+    ['claimedAt', u64],
+    ['claimedAmount', u64],
+  ],
+  (args) => args as ClaimStatus
+);

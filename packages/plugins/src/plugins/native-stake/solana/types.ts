@@ -1,17 +1,13 @@
-export type ConfigAccount = {
-  lamports: number;
-  configKeys: {
-    keysTuple: [string, boolean][];
-  };
-  info: string;
+export type ValidatorsApiResponse = ValidatorApiResponse[];
+
+export type ValidatorApiResponse = {
+  vote_identity: string;
+  name: string;
+  image: string;
 };
 
-export type ValidatorConfig = {
+export type Validator = {
   voter: string;
   name?: string;
-  iconUrl?: string;
-};
-
-export type Validator = ValidatorConfig & {
-  commission?: number;
+  imageUri?: string;
 };
