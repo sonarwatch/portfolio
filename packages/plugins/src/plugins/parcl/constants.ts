@@ -18,8 +18,6 @@ export const programId = new PublicKey(
   '3parcLrT7WnXAcyPfkCz49oofuuf2guUKkjuFkAhZW8Y'
 );
 
-export const usdcMint = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
-export const usdcDecimals = 6;
 export const airdropApi = 'https://gnome-api-mainnet.fly.dev/user/';
 export const allocationPrefix = `${platformId}/allocation`;
 export const prclMint = '4LLbsb5ReP3yEtYzmXewyGjcir5uXtKFURtaEUVC2AHs';

@@ -512,6 +512,11 @@ import {
   jobs as allbridgeJobs,
   fetchers as allbridgeFetchers,
 } from './plugins/allbridge';
+import {
+  platforms as nxfinancePlatforms,
+  jobs as nxfinanceJobs,
+  fetchers as nxfinanceFetchers,
+} from './plugins/nxfinance';
 
 export {
   walletTokensPlatform,
@@ -632,6 +637,7 @@ export const platforms: Platform[] = [
   ...sharkyPlatforms,
   ...sanctumPlatforms,
   ...allbridgePlatforms,
+  ...nxfinancePlatforms,
 ];
 
 // JOBS //
@@ -734,6 +740,7 @@ export const jobs: Job[] = [
   ...sharkyJobs,
   ...sanctumJobs,
   ...allbridgeJobs,
+  ...nxfinanceJobs,
 ];
 
 // FETCHERS //
@@ -838,6 +845,7 @@ export const fetchers: Fetcher[] = [
   ...sharkyFetchers,
   ...sanctumFetchers,
   ...allbridgeFetchers,
+  ...nxfinanceFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
