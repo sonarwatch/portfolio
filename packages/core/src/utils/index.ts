@@ -15,6 +15,7 @@ export * from './formatTokenPriceSource';
 export * from './formatUniTokenInfo';
 export * from './getNetworkById';
 export * from './getNetworkByLlamaId';
+export * from './getNetworkIdFromString';
 export * from './getAddressSystemFromString';
 export * from './getAddressSystemFromNetworkId';
 export * from './getAssetsFromElement';
