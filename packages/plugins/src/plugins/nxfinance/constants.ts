@@ -19,6 +19,8 @@ export const leverageFiProgramID = new PublicKey(
   'EHBN9YKtMmrZhj8JZqyBQRGqyyeHw5xUB1Q5eAHszuMt'
 );
 
+export const jlpMint = '27G8MtK7VtTcCHkpASjSDdkWWYfoqT6ggEuKidVJidD4';
+
 export const nxfinanceLeverageIdlItem = {
   programId: leverageFiProgramID.toString(),
   idl: NxfinanceLeverageIDL,

@@ -21,3 +21,21 @@ export type LoanDetail = {
   loanToken: string;
   loanValue: string;
 };
+
+export type MarginPool = {
+  leveragefi: string;
+  vault: string;
+  feeDestination: string;
+  poolAuthority: string;
+  tokenMint: string;
+  tokenPriceOracle: string;
+  borrowedTokens: string;
+  depositTokens: string;
+  depositNotes: string;
+  loanNotes: string;
+  depositInterest: string;
+  loanInterest: string;
+  protocolFee: string;
+  accruedUntil: string;
+  utilizationFlag: string;
+};
