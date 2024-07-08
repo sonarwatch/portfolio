@@ -9,14 +9,14 @@ export const pluginId = 'liquidityPools-sei';
 export const seaswapPlatform: Platform = {
   id: 'seaswap',
   name: 'Seaswap',
-  image: 'https://sonar.watch/img/platforms/seaswap.png',
+  image: 'https://sonar.watch/img/platforms/seaswap.webp',
   defiLlamaId: 'seaswap',
   website: 'https://seaswap.io/',
 };
 export const astroportPlatform: Platform = {
   id: 'astroport',
   name: 'Astroport',
-  image: 'https://sonar.watch/img/platforms/astroport.png',
+  image: 'https://sonar.watch/img/platforms/astroport.webp',
   website: 'https://astroport.fi',
   twitter: 'https://twitter.com/astroport_fi',
   defiLlamaId: 'astroport',

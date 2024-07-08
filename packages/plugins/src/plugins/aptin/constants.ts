@@ -4,7 +4,7 @@ export const platformId = 'aptin';
 export const platform: Platform = {
   id: platformId,
   name: 'Aptin',
-  image: 'https://sonar.watch/img/platforms/aptin.png',
+  image: 'https://sonar.watch/img/platforms/aptin.webp',
   defiLlamaId: 'aptin-finance-v2', // from https://defillama.com/docs/api
   website: 'https://app.aptin.io/',
   twitter: 'https://twitter.com/aptinlabs',

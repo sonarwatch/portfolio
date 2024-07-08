@@ -2,7 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'parcl';
-export const platformImage = 'https://sonar.watch/img/platforms/parcl.png';
+export const platformImage = 'https://sonar.watch/img/platforms/parcl.webp';
 export const platformWebsite = 'https://app.parcl.co/';
 export const platformName = 'Parcl';
 export const platform: Platform = {

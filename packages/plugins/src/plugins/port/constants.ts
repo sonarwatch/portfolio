@@ -5,7 +5,7 @@ export const platformId = 'port';
 export const platform: Platform = {
   id: platformId,
   name: 'Port',
-  image: 'https://sonar.watch/img/platforms/port.png',
+  image: 'https://sonar.watch/img/platforms/port.webp',
   defiLlamaId: 'port-finance', // from https://defillama.com/docs/api
   website: 'https://mainnet.port.finance/lending',
   // twitter: 'https://twitter.com/myplatform',

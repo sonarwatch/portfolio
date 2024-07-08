@@ -4,7 +4,7 @@ export const platformId = 'lido';
 export const platform: Platform = {
   id: platformId,
   name: 'Lido',
-  image: 'https://sonar.watch/img/platforms/lido.png',
+  image: 'https://sonar.watch/img/platforms/lido.webp',
   defiLlamaId: 'lido',
   website: 'https://lido.fi/',
 };

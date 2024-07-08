@@ -12,7 +12,7 @@ export const platformId = '01';
 export const platform: Platform = {
   id: platformId,
   name: '01',
-  image: 'https://sonar.watch/img/platforms/01.png',
+  image: 'https://sonar.watch/img/platforms/01.webp',
   defiLlamaId: '01', // from https://defillama.com/docs/api
   website: 'https://01.xyz/',
   // twitter: 'https://twitter.com/myplatform',

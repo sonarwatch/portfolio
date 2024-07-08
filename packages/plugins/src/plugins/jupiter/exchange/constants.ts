@@ -6,7 +6,7 @@ export const platformId = 'jupiter-exchange';
 export const platform: Platform = {
   id: platformId,
   name: 'Jupiter Exchange',
-  image: 'https://sonar.watch/img/platforms/jupiter.png',
+  image: 'https://sonar.watch/img/platforms/jupiter.webp',
   defiLlamaId: 'parent#jupiter',
   website: 'https://jup.ag/',
   twitter: 'https://twitter.com/JupiterExchange',

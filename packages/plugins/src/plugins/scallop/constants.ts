@@ -4,7 +4,7 @@ export const platformId = 'scallop';
 export const platform: Platform = {
   id: platformId,
   name: 'Scallop',
-  image: `https://sonar.watch/img/platforms/${platformId}.png`,
+  image: `https://sonar.watch/img/platforms/${platformId}.webp`,
   defiLlamaId: 'parent#scallop',
   website: 'https://app.scallop.io/',
 };

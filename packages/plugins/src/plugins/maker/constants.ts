@@ -4,7 +4,7 @@ export const platformId = 'maker';
 export const platform: Platform = {
   id: platformId,
   name: 'Maker DAO',
-  image: 'https://sonar.watch/img/platforms/maker.png',
+  image: 'https://sonar.watch/img/platforms/maker.webp',
   defiLlamaId: 'makerdao',
   website: 'https://makerdao.com/',
 };

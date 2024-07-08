@@ -5,7 +5,7 @@ export const platformId = 'jupiter-launchpad';
 export const platform: Platform = {
   id: platformId,
   name: 'Jupiter Launchpad',
-  image: 'https://sonar.watch/img/platforms/jupiter.png',
+  image: 'https://sonar.watch/img/platforms/jupiter.webp',
   website: 'https://lfg.jup.ag/',
   twitter: 'https://twitter.com/JupiterExchange',
 };

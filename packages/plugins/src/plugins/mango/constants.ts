@@ -5,7 +5,7 @@ export const platformId = 'mango';
 export const platform: Platform = {
   id: platformId,
   name: 'Mango',
-  image: 'https://sonar.watch/img/platforms/mango.png',
+  image: 'https://sonar.watch/img/platforms/mango.webp',
   defiLlamaId: 'parent#mango-markets',
   website: 'https://mango.markets/',
 };

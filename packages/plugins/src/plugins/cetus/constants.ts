@@ -4,7 +4,7 @@ export const platformId = 'cetus';
 export const platform: Platform = {
   id: platformId,
   name: 'Cetus',
-  image: 'https://sonar.watch/img/platforms/cetus.png',
+  image: 'https://sonar.watch/img/platforms/cetus.webp',
   defiLlamaId: 'cetus',
   website: 'https://www.cetus.zone/',
 };

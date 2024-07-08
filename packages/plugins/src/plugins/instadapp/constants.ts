@@ -4,7 +4,7 @@ export const platformId = 'instadapp';
 export const platform: Platform = {
   id: platformId,
   name: 'Instadapp',
-  image: 'https://sonar.watch/img/platforms/instadapp.png',
+  image: 'https://sonar.watch/img/platforms/instadapp.webp',
   defiLlamaId: 'instadapp',
   website: 'https://instadapp.io/',
   twitter: 'https://twitter.com/instadapp',

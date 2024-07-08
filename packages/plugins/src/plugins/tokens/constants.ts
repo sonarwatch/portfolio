@@ -3,12 +3,12 @@ import { Platform } from '@sonarwatch/portfolio-core';
 export const walletTokensPlatform: Platform = {
   id: 'wallet-tokens',
   name: 'Tokens',
-  image: 'https://sonar.watch/img/platforms/wallet-tokens.png',
+  image: 'https://sonar.watch/img/platforms/wallet-tokens.webp',
 };
 export const walletNftsPlatform: Platform = {
   id: 'wallet-nfts',
   name: 'NFTs',
-  image: 'https://sonar.watch/img/platforms/wallet-nfts.png',
+  image: 'https://sonar.watch/img/platforms/wallet-nfts.webp',
 };
 
 export const tokenListsPrefix = 'tokenlists';

@@ -5,7 +5,7 @@ export const platformId = 'orca';
 export const platform: Platform = {
   id: platformId,
   name: 'Orca',
-  image: 'https://sonar.watch/img/platforms/orca.png',
+  image: 'https://sonar.watch/img/platforms/orca.webp',
   defiLlamaId: 'orca',
   website: 'https://www.orca.so/',
 };

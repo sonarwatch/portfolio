@@ -4,7 +4,7 @@ export const platformId = 'jupiter-governance';
 export const platform: Platform = {
   id: platformId,
   name: 'Jupiter Governance',
-  image: 'https://sonar.watch/img/platforms/jupiter.png',
+  image: 'https://sonar.watch/img/platforms/jupiter.webp',
   website: 'https://vote.jup.ag/',
   twitter: 'https://twitter.com/JupiterExchange',
 };

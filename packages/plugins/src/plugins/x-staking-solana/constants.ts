@@ -13,7 +13,7 @@ export const stepFinancePlatformId = 'stepfinance';
 export const stepFinancePlatform: Platform = {
   id: stepFinancePlatformId,
   name: 'Step Finance',
-  image: 'https://sonar.watch/img/platforms/stepfinance.png',
+  image: 'https://sonar.watch/img/platforms/stepfinance.webp',
   website: 'https://app.step.finance/',
   twitter: 'https://twitter.com/StepFinance_',
 };
@@ -22,7 +22,7 @@ export const allbridgePlatformId = 'allbridge';
 export const allbridgePlatform: Platform = {
   id: allbridgePlatformId,
   name: 'Allbridge',
-  image: 'https://sonar.watch/img/platforms/allbridge.png',
+  image: 'https://sonar.watch/img/platforms/allbridge.webp',
   website: 'https://stake.allbridge.io/?chain=SOL',
   twitter: 'https://twitter.com/Allbridge_io',
 };

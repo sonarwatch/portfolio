@@ -7,7 +7,7 @@ export const platformId = 'zeta';
 export const platform: Platform = {
   id: platformId,
   name: 'Zeta',
-  image: 'https://sonar.watch/img/platforms/zeta.png',
+  image: 'https://sonar.watch/img/platforms/zeta.webp',
   defiLlamaId: 'zeta',
   website: 'https://www.zeta.markets/',
 };

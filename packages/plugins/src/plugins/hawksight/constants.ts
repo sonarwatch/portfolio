@@ -4,7 +4,7 @@ export const platformId = 'hawksight';
 export const platform: Platform = {
   id: platformId,
   name: 'Hawksight',
-  image: 'https://sonar.watch/img/platforms/hawksight.png',
+  image: 'https://sonar.watch/img/platforms/hawksight.webp',
   defiLlamaId: 'hawksight',
   website: 'https://hawksight.co/',
 };
