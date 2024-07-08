@@ -52,16 +52,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (proofs.length === 0) return [];
 
-  const claimStatusAccounts = await getParsedMultipleAccountsInfo(
-    client,
-    claimStatusStruct,
-    claimsPubkeys
-  );
-
-  const tokenPriceById = await cache.getTokenPricesAsMap(
-    eligibleAirdrops.map((info) => info.mint),
-    NetworkId.solana
-  );
+  const [claimStatusAccounts, tokenPriceById] = await Promise.all([
+    getParsedMultipleAccountsInfo(client, claimStatusStruct, claimsPubkeys),
+    cache.getTokenPricesAsMap(
+      eligibleAirdrops.map((info) => info.mint),
+      NetworkId.solana
+    ),
+  ]);
 
   const assets: PortfolioAsset[] = [];
   for (let j = 0; j < claimStatusAccounts.length; j++) {
