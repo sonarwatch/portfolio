@@ -21,6 +21,10 @@ export const jupDecimals = 6;
 
 export const merkleApi = 'https://worker.jup.ag/jup-claim-proof';
 
+export const asrApi = 'https://worker.jup.ag/jup-asr-july-2024-claim-proof';
+export const mainDisProgram = 'DiSLRwcSFvtwvMWSs7ubBMvYRaYNYupa76ZSuYLe6D7j';
+export const jupDisProgram = 'Dis2TfkFnXFkrtvAktEkw37sdb7qwJgY6H7YZJwk51wK';
+
 export type AirdropInfo = {
   mint: string;
   decimals: number;
@@ -39,25 +43,25 @@ export const airdropsInfo: AirdropInfo[] = [
     mint: 'ZEUS1aR7aX8DFFJf5QjWj2ftDDdNTroMNGo8YoQm3Gq',
     decimals: 6,
     claimUntilTs: 1713445200000,
-    distributorProgram: 'DiSLRwcSFvtwvMWSs7ubBMvYRaYNYupa76ZSuYLe6D7j',
+    distributorProgram: mainDisProgram,
   },
   {
     mint: 'TNSRxcUxoT9xBG3de7PiJyTDYu7kskLqcpddxnEJAS6',
     decimals: 9,
     claimUntilTs: 1728086400000,
-    distributorProgram: 'DiSLRwcSFvtwvMWSs7ubBMvYRaYNYupa76ZSuYLe6D7j',
+    distributorProgram: mainDisProgram,
   },
   {
     mint: 'SHARKSYJjqaNyxVfrpnBN9pjgkhwDhatnMyicWPnr1s',
     decimals: 6,
     claimUntilTs: 1714435200000,
-    distributorProgram: 'DiSLRwcSFvtwvMWSs7ubBMvYRaYNYupa76ZSuYLe6D7j',
+    distributorProgram: mainDisProgram,
   },
   {
     mint: 'UPTx1d24aBWuRgwxVnFmX4gNraj3QGFzL3QqBgxtWQG',
     decimals: 9,
     claimUntilTs: 1719878400000,
     claimStarts: 1717077600000,
-    distributorProgram: 'DiSLRwcSFvtwvMWSs7ubBMvYRaYNYupa76ZSuYLe6D7j',
+    distributorProgram: mainDisProgram,
   },
 ];

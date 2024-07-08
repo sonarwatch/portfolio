@@ -97,6 +97,11 @@ export type ClaimProofResponse = {
   merkle_tree: string;
   amount: string;
   proof: number[][];
+  mint?: string;
+};
+
+export type AsrResponse = {
+  claim: ClaimProofResponse[];
 };
 
 export type PriceResponse = {
