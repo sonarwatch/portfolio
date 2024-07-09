@@ -5,7 +5,7 @@ export const platformId = 'bonkrewards';
 export const platform: Platform = {
   id: platformId,
   name: 'Bonk Rewards',
-  image: 'https://sonar.watch/img/platforms/bonk.png',
+  image: 'https://sonar.watch/img/platforms/bonk.webp',
   twitter: 'https://twitter.com/bonk_inu',
   website: 'https://bonkrewards.com/',
   defiLlamaId: 'bonkswap',

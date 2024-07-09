@@ -517,6 +517,11 @@ import {
   jobs as famoustokenmarketJobs,
   fetchers as famoustokenmarketFetchers,
 } from './plugins/famousfoxfederation';
+import {
+  platforms as nxfinancePlatforms,
+  jobs as nxfinanceJobs,
+  fetchers as nxfinanceFetchers,
+} from './plugins/nxfinance';
 
 export {
   walletTokensPlatform,
@@ -638,6 +643,7 @@ export const platforms: Platform[] = [
   ...sanctumPlatforms,
   ...allbridgePlatforms,
   ...famoustokenmarketPlatforms,
+  ...nxfinancePlatforms,
 ];
 
 // JOBS //
@@ -741,6 +747,7 @@ export const jobs: Job[] = [
   ...sanctumJobs,
   ...allbridgeJobs,
   ...famoustokenmarketJobs,
+  ...nxfinanceJobs,
 ];
 
 // FETCHERS //
@@ -846,6 +853,7 @@ export const fetchers: Fetcher[] = [
   ...sanctumFetchers,
   ...allbridgeFetchers,
   ...famoustokenmarketFetchers,
+  ...nxfinanceFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 

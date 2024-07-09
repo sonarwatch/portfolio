@@ -5,7 +5,7 @@ export const platformId = 'meteora';
 export const platform: Platform = {
   id: 'meteora',
   name: 'Meteora',
-  image: 'https://sonar.watch/img/platforms/meteora.png',
+  image: 'https://sonar.watch/img/platforms/meteora.webp',
   defiLlamaId: 'parent#meteora',
   website: 'https://meteora.ag/',
 };

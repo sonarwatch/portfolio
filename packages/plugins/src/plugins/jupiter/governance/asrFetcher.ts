@@ -10,52 +10,52 @@ import BigNumber from 'bignumber.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSolana } from '../../../utils/clients';
-import { ClaimProofResponse } from '../types';
+import { AsrResponse } from '../types';
 import { deriveClaimStatus } from '../helpers';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import { claimStatusStruct } from './structs';
-import { merkleApi, airdropsInfo, platformId, AirdropInfo } from './constants';
+import { claimStatusStruct } from '../launchpad/structs';
+import {
+  asrApi,
+  jupDisProgram,
+  jupMint,
+  mainDisProgram,
+} from '../launchpad/constants';
+import { platformId } from './constants';
 import { getParsedMultipleAccountsInfo } from '../../../utils/solana';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const claimsProof: (AxiosResponse<ClaimProofResponse> | null)[] =
-    await Promise.all(
-      airdropsInfo.map((info) => {
-        if (info.claimUntilTs > Date.now()) {
-          return axios
-            .get(`${merkleApi}/${info.mint}/${owner}`, { timeout: 1000 })
-            .catch(() => null);
-        }
-        return null;
-      })
-    );
+  const claimsProof: AxiosResponse<AsrResponse> | null = await axios
+    .get(`${asrApi}/${owner}`, { timeout: 1000 })
+    .catch(() => null);
 
-  const eligibleAirdrops: AirdropInfo[] = [];
-  const proofs: ClaimProofResponse[] = [];
-  const claimsPubkeys: PublicKey[] = [];
-  for (let i = 0; i < claimsProof.length; i++) {
-    const proof = claimsProof[i];
-    if (!proof || !proof.data) continue;
+  if (!claimsProof?.data.claim) return [];
 
-    eligibleAirdrops.push(airdropsInfo[i]);
-    proofs.push(proof.data);
-    claimsPubkeys.push(
-      deriveClaimStatus(
-        owner,
-        proof.data.merkle_tree,
-        airdropsInfo[i].distributorProgram
-      )
-    );
+  const claims = claimsProof.data.claim;
+
+  const claimsStatusPubkeys: PublicKey[] = [];
+  for (let i = 0; i < claims.length; i++) {
+    const proof = claims[i];
+    if (proof.mint === jupMint) {
+      claimsStatusPubkeys.push(
+        deriveClaimStatus(owner, proof.merkle_tree, jupDisProgram)
+      );
+    } else {
+      claimsStatusPubkeys.push(
+        deriveClaimStatus(owner, proof.merkle_tree, mainDisProgram)
+      );
+    }
   }
 
-  if (proofs.length === 0) return [];
-
   const [claimStatusAccounts, tokenPriceById] = await Promise.all([
-    getParsedMultipleAccountsInfo(client, claimStatusStruct, claimsPubkeys),
+    getParsedMultipleAccountsInfo(
+      client,
+      claimStatusStruct,
+      claimsStatusPubkeys
+    ),
     cache.getTokenPricesAsMap(
-      eligibleAirdrops.map((info) => info.mint),
+      claims.map((claim) => (claim.mint ? claim.mint : [])).flat(),
       NetworkId.solana
     ),
   ]);
@@ -65,21 +65,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const claimStatus = claimStatusAccounts[j];
     if (claimStatus) continue;
 
-    const proof = proofs[j];
-    const { decimals, mint, claimStarts } = eligibleAirdrops[j];
+    const proof = claims[j];
+    if (!proof.mint) continue;
 
-    const tokenPrice = tokenPriceById.get(mint);
+    const tokenPrice = tokenPriceById.get(proof.mint);
+    if (!tokenPrice) continue;
 
     const amount = new BigNumber(proof.amount)
-      .dividedBy(10 ** decimals)
+      .dividedBy(10 ** tokenPrice.decimals)
       .toNumber();
     const asset = tokenPriceToAssetToken(
-      mint,
+      proof.mint,
       amount,
       NetworkId.solana,
-      tokenPrice,
-      undefined,
-      { lockedUntil: claimStarts }
+      tokenPrice
     );
 
     assets.push(asset);
@@ -93,7 +92,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       label: 'Airdrop',
       networkId: NetworkId.solana,
       platformId,
-      name: 'Allocation',
+      name: 'Active Staking Rewards',
       data: {
         assets,
       },
@@ -103,7 +102,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-allocation`,
+  id: `${platformId}-asr`,
   networkId: NetworkId.solana,
   executor,
 };

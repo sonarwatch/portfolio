@@ -5,7 +5,7 @@ export const platformId = 'solend';
 export const platform: Platform = {
   id: platformId,
   name: 'Solend',
-  image: 'https://sonar.watch/img/platforms/solend.png',
+  image: 'https://sonar.watch/img/platforms/solend.webp',
   defiLlamaId: 'solend',
   website: 'https://solend.fi/',
 };

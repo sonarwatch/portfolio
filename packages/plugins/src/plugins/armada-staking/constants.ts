@@ -21,7 +21,7 @@ export const flowmaticPlatformId = 'flowmatic';
 export const flowmaticPlatform: Platform = {
   id: flowmaticPlatformId,
   name: 'Flowmatic',
-  image: 'https://sonar.watch/img/platforms/flowmatic.png',
+  image: 'https://sonar.watch/img/platforms/flowmatic.webp',
   website: 'https://www.flowmatic.xyz/',
   twitter: 'https://twitter.com/FlowmaticXYZ',
 };

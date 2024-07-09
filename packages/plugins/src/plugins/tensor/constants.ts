@@ -5,7 +5,7 @@ export const platformId = 'tensor';
 export const platform: Platform = {
   id: platformId,
   name: 'Tensor',
-  image: 'https://sonar.watch/img/platforms/tensor.png',
+  image: 'https://sonar.watch/img/platforms/tensor.webp',
   twitter: 'https://twitter.com/tensor_hq',
   website: 'https://www.tensor.trade/',
 };

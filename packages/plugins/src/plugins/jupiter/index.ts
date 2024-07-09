@@ -11,6 +11,7 @@ import allocationFetcher from './launchpad/allocationsFetcher';
 import { platform as launchpadPlatform } from './launchpad/constants';
 
 import voteFetcher from './governance/voteFetcher';
+import asrFetcher from './governance/asrFetcher';
 import { platform as governancePlatform } from './governance/constants';
 
 import pricingJob from './pricingJob';
@@ -28,5 +29,6 @@ export const fetchers: Fetcher[] = [
   limitFetcher,
   dcaFetcher,
   allocationFetcher,
+  asrFetcher,
   voteFetcher,
 ];

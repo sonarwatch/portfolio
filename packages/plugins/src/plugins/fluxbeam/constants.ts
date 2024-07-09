@@ -4,7 +4,7 @@ export const platformId = 'fluxbeam';
 export const platform: Platform = {
   id: platformId,
   name: 'Flux Beam',
-  image: 'https://sonar.watch/img/platforms/fluxbeam.png',
+  image: 'https://sonar.watch/img/platforms/fluxbeam.webp',
   defiLlamaId: 'fluxbeam', // from https://defillama.com/docs/api
   website: 'https://fluxbeam.xyz/',
 };

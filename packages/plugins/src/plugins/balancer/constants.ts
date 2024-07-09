@@ -4,7 +4,7 @@ export const platformId = 'balancer';
 export const platform: Platform = {
   id: platformId,
   name: 'Balancer',
-  image: 'https://sonar.watch/img/platforms/balancer.png',
+  image: 'https://sonar.watch/img/platforms/balancer.webp',
   defiLlamaId: 'parent#balancer', // from https://defillama.com/docs/api
   website: 'https://balancer.fi/',
 };

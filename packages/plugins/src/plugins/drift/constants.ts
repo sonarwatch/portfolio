@@ -3,7 +3,7 @@ import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'drift';
 export const platformName = 'Drift';
-export const platformImage = 'https://sonar.watch/img/platforms/drift.png';
+export const platformImage = 'https://sonar.watch/img/platforms/drift.webp';
 export const platformWebsite = 'https://www.drift.trade/';
 export const platform: Platform = {
   id: platformId,

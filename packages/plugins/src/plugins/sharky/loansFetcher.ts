@@ -164,8 +164,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         healthRatio: null,
         value,
         expireOn: acc.loanState.taken
-          ? Number(acc.loanState.taken.taken.terms.time.start) +
-            Number(acc.loanState.taken.taken.terms.time.duration)
+          ? (Number(acc.loanState.taken.taken.terms.time.start) +
+              Number(acc.loanState.taken.taken.terms.time.duration)) *
+            1000
           : undefined,
       },
     });

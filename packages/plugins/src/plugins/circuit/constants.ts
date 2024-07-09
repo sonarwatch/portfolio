@@ -5,7 +5,7 @@ export const platformId = 'circuit';
 export const platform: Platform = {
   id: platformId,
   name: 'Circuit',
-  image: 'https://sonar.watch/img/platforms/circuit.png',
+  image: 'https://sonar.watch/img/platforms/circuit.webp',
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
   website: 'https://app.circuit.trade/',
   twitter: 'https://twitter.com/CircuitTrading_',

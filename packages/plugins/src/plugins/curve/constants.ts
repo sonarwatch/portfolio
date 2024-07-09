@@ -8,7 +8,7 @@ export const platformId = 'curve';
 export const platform: Platform = {
   id: platformId,
   name: 'Curve Finance',
-  image: 'https://sonar.watch/img/platforms/curve.png',
+  image: 'https://sonar.watch/img/platforms/curve.webp',
   defiLlamaId: 'parent#curve-finance',
   website: 'https://curve.fi/',
 };

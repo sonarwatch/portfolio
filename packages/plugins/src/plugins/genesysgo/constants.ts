@@ -5,7 +5,7 @@ export const platformId = 'genesysgo';
 export const platform: Platform = {
   id: platformId,
   name: 'Genesysgo',
-  image: 'https://sonar.watch/img/platforms/genesysgo.png',
+  image: 'https://sonar.watch/img/platforms/genesysgo.webp',
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
   website: 'https://testnet.shdwdrive.com/',
   twitter: 'https://twitter.com/genesysgo',

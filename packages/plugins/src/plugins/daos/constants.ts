@@ -7,7 +7,7 @@ export const platformId = 'realms';
 export const realmsPlatform: Platform = {
   id: platformId,
   name: 'Realms',
-  image: 'https://sonar.watch/img/platforms/realms.png',
+  image: 'https://sonar.watch/img/platforms/realms.webp',
   defiLlamaId: 'spl-governance',
   website: 'https://app.realms.today/',
 };

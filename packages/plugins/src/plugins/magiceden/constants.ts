@@ -5,7 +5,7 @@ export const platformId = 'magiceden';
 export const platform: Platform = {
   id: platformId,
   name: 'MagicEden',
-  image: 'https://sonar.watch/img/platforms/magiceden.png',
+  image: 'https://sonar.watch/img/platforms/magiceden.webp',
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
   website: 'https://magiceden.io/',
   twitter: 'https://twitter.com/MagicEden',

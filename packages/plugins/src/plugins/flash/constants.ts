@@ -5,7 +5,7 @@ export const platformId = 'flash';
 export const platform: Platform = {
   id: platformId,
   name: 'FlashTrade',
-  image: 'https://sonar.watch/img/platforms/flash.png',
+  image: 'https://sonar.watch/img/platforms/flash.webp',
   defiLlamaId: 'flashtrade', // from https://defillama.com/docs/api
   website: 'https://beast.flash.trade/',
   twitter: 'https://twitter.com/FlashTrade_',
