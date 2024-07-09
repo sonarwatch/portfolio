@@ -22,7 +22,8 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
 import { getAutoParsedMultipleAccountsInfo } from '../../utils/solana';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { CollateralDetail, MarginAccount, MarginPool } from './types';
+import { MarginAccount, MarginPool } from './types';
+import { getBorrowNoteRate, getSupplyNoteRate } from './helpers';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
@@ -82,15 +83,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     ),
   ]);
 
-  let jlpDeposit: CollateralDetail | undefined;
-
-  // MULTIPLE ELEMENT FOR "LEND" TAB, ALL DEPOSITS EXCEPT JLP
+  // assets for Lend
   const assets: PortfolioAsset[] = [];
+
+  // assets for Leverage
+  const borrowedAssets: PortfolioAsset[] = [];
+  const borrowedYields: Yield[][] = [];
+  const suppliedAssets: PortfolioAsset[] = [];
+  const suppliedYields: Yield[][] = [];
+  const rewardAssets: PortfolioAsset[] = [];
+
   marginAccount.deposits.forEach((deposit) => {
-    if (deposit.tokenMint === jlpMint) {
-      jlpDeposit = deposit;
-      return;
-    }
     const tokenPrice = tokenPrices.get(
       formatTokenAddress(deposit.tokenMint, NetworkId.solana)
     );
@@ -100,37 +103,50 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
     if (!marginPool) return;
 
-    /*
-    const borrowAPR = 0.2278; // TODO GET LAST VALUE
-    const preTime = Number(marginPool.accruedUntil);
-    const borrowTokens = new BigNumber(marginPool.borrowedTokens);
-
-    const m = new BigNumber(borrowAPR)
-      .multipliedBy(new Date().getTime() / 1000 - preTime)
-      .dividedBy(31536e3)
-      .multipliedBy(borrowTokens);
-
-    const supplyNoteRate = new BigNumber(marginPool.depositTokens)
-      .plus(m)
-      .dividedBy(marginPool.depositNotes);
-*/
-
-    const supplyNoteRate = 1.02;
+    const supplyNoteRate = getSupplyNoteRate(marginPool);
 
     const amount = new BigNumber(deposit.depositNote)
       .multipliedBy(supplyNoteRate)
       .dividedBy(10 ** tokenPrice.decimals)
       .toNumber();
 
-    if (amount > 0)
-      assets.push(
-        tokenPriceToAssetToken(
-          tokenPrice.address,
-          amount,
-          NetworkId.solana,
-          tokenPrice
-        )
+    if (amount > 0) {
+      const assetToken = tokenPriceToAssetToken(
+        tokenPrice.address,
+        amount,
+        NetworkId.solana,
+        tokenPrice
       );
+      if (deposit.tokenMint === jlpMint) {
+        suppliedAssets.push(assetToken);
+      } else {
+        assets.push(assetToken);
+      }
+    }
+  });
+
+  marginAccount.loans.forEach((loan) => {
+    const tokenPrice = tokenPrices.get(
+      formatTokenAddress(loan.tokenMint, NetworkId.solana)
+    );
+    if (!tokenPrice) return;
+    const marginPool = marginPools.find(
+      (mp) => mp?.tokenMint === loan.tokenMint
+    );
+    if (!marginPool) return;
+
+    const borrowNoteRate = getBorrowNoteRate(marginPool);
+    borrowedAssets.push(
+      tokenPriceToAssetToken(
+        tokenPrice.address,
+        new BigNumber(loan.loanNote)
+          .multipliedBy(borrowNoteRate)
+          .dividedBy(10 ** tokenPrice.decimals)
+          .toNumber(),
+        NetworkId.solana,
+        tokenPrice
+      )
+    );
   });
 
   if (assets.length > 0)
@@ -146,78 +162,36 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       },
     });
 
-  // LEVERAGE ELEMENT FOR "LEVERAGE" TAB
-  if (jlpDeposit) {
-    const jlpTokenPrice = tokenPrices.get(
-      formatTokenAddress(jlpDeposit.tokenMint, NetworkId.solana)
-    );
-    if (jlpTokenPrice) {
-      const borrowedAssets: PortfolioAsset[] = [];
-      const borrowedYields: Yield[][] = [];
-      const suppliedAssets: PortfolioAsset[] = [];
-      const suppliedYields: Yield[][] = [];
-      const rewardAssets: PortfolioAsset[] = [];
-
-      suppliedAssets.push(
-        tokenPriceToAssetToken(
-          jlpTokenPrice.address,
-          new BigNumber(jlpDeposit.depositToken)
-            .dividedBy(10 ** jlpTokenPrice.decimals)
-            .toNumber(),
-          NetworkId.solana,
-          jlpTokenPrice
-        )
-      );
-
-      marginAccount.loans.forEach((loan) => {
-        const tokenPrice = tokenPrices.get(
-          formatTokenAddress(loan.tokenMint, NetworkId.solana)
-        );
-        if (!tokenPrice) return;
-        borrowedAssets.push(
-          tokenPriceToAssetToken(
-            tokenPrice.address,
-            new BigNumber(loan.loanToken)
-              .dividedBy(10 ** tokenPrice.decimals)
-              .toNumber(),
-            NetworkId.solana,
-            tokenPrice
-          )
-        );
+  if (suppliedAssets.length > 0 || borrowedAssets.length > 0) {
+    const { borrowedValue, suppliedValue, rewardValue } =
+      getElementLendingValues({
+        suppliedAssets,
+        borrowedAssets,
+        rewardAssets,
       });
 
-      if (suppliedAssets.length !== 0 || borrowedAssets.length !== 0) {
-        const { borrowedValue, suppliedValue, rewardValue } =
-          getElementLendingValues({
-            suppliedAssets,
-            borrowedAssets,
-            rewardAssets,
-          });
-
-        elements.push({
-          type: PortfolioElementType.borrowlend,
-          networkId: NetworkId.solana,
-          platformId,
-          label: 'Leverage',
-          name: `JLP Leverage x${new BigNumber(marginAccount.leverage)
-            .dividedBy(100)
-            .decimalPlaces(2)}`,
-          value: suppliedValue,
-          data: {
-            borrowedAssets,
-            borrowedValue,
-            borrowedYields,
-            suppliedAssets,
-            suppliedValue,
-            suppliedYields,
-            rewardAssets,
-            rewardValue,
-            healthRatio: null,
-            value: suppliedValue,
-          },
-        });
-      }
-    }
+    elements.push({
+      type: PortfolioElementType.borrowlend,
+      networkId: NetworkId.solana,
+      platformId,
+      label: 'Leverage',
+      name: `JLP Leverage x${new BigNumber(marginAccount.leverage)
+        .dividedBy(100)
+        .decimalPlaces(2)}`,
+      value: suppliedValue,
+      data: {
+        borrowedAssets,
+        borrowedValue,
+        borrowedYields,
+        suppliedAssets,
+        suppliedValue,
+        suppliedYields,
+        rewardAssets,
+        rewardValue,
+        healthRatio: null,
+        value: suppliedValue,
+      },
+    });
   }
 
   return elements;
