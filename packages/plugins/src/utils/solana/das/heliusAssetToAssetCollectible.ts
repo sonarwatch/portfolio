@@ -65,7 +65,7 @@ export function heliusAssetToAssetCollectible(
   return {
     type: PortfolioAssetType.collectible,
     attributes: {
-      tags: tags.length > 0 ? tags : undefined,
+      tags: tags.length > 0 ? tags : [],
     },
     data: {
       address: asset.id,
