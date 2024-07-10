@@ -513,9 +513,9 @@ import {
   fetchers as allbridgeFetchers,
 } from './plugins/allbridge';
 import {
-  platforms as famoustokenmarketPlatforms,
-  jobs as famoustokenmarketJobs,
-  fetchers as famoustokenmarketFetchers,
+  platforms as famousfoxfederationPlatforms,
+  jobs as famousfoxfederationJobs,
+  fetchers as famousfoxfederationFetchers,
 } from './plugins/famousfoxfederation';
 import {
   platforms as nxfinancePlatforms,
@@ -642,7 +642,7 @@ export const platforms: Platform[] = [
   ...sharkyPlatforms,
   ...sanctumPlatforms,
   ...allbridgePlatforms,
-  ...famoustokenmarketPlatforms,
+  ...famousfoxfederationPlatforms,
   ...nxfinancePlatforms,
 ];
 
@@ -746,7 +746,7 @@ export const jobs: Job[] = [
   ...sharkyJobs,
   ...sanctumJobs,
   ...allbridgeJobs,
-  ...famoustokenmarketJobs,
+  ...famousfoxfederationJobs,
   ...nxfinanceJobs,
 ];
 
@@ -852,7 +852,7 @@ export const fetchers: Fetcher[] = [
   ...sharkyFetchers,
   ...sanctumFetchers,
   ...allbridgeFetchers,
-  ...famoustokenmarketFetchers,
+  ...famousfoxfederationFetchers,
   ...nxfinanceFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
