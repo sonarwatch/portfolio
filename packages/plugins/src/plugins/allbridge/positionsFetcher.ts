@@ -47,7 +47,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     )
   ).filter(
     (userDeposit): userDeposit is ParsedAccount<UserDeposit> =>
-      userDeposit?.lpAmount !== '0'
+      userDeposit !== null && userDeposit?.lpAmount !== '0'
   );
 
   if (userDeposits.length === 0) return [];
