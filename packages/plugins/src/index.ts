@@ -522,6 +522,11 @@ import {
   jobs as nxfinanceJobs,
   fetchers as nxfinanceFetchers,
 } from './plugins/nxfinance';
+import {
+  platforms as echelonPlatforms,
+  jobs as echelonJobs,
+  fetchers as echelonFetchers,
+} from './plugins/echelon';
 
 export {
   walletTokensPlatform,
@@ -644,6 +649,7 @@ export const platforms: Platform[] = [
   ...allbridgePlatforms,
   ...famousfoxfederationPlatforms,
   ...nxfinancePlatforms,
+  ...echelonPlatforms,
 ];
 
 // JOBS //
@@ -748,6 +754,7 @@ export const jobs: Job[] = [
   ...allbridgeJobs,
   ...famousfoxfederationJobs,
   ...nxfinanceJobs,
+  ...echelonJobs,
 ];
 
 // FETCHERS //
@@ -854,6 +861,7 @@ export const fetchers: Fetcher[] = [
   ...allbridgeFetchers,
   ...famousfoxfederationFetchers,
   ...nxfinanceFetchers,
+  ...echelonFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
