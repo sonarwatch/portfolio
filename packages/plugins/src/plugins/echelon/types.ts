@@ -34,7 +34,8 @@ export type CoinInfo = {
 
 export type Market = {
   market: string;
-  supplyApr: string;
-  borrowApr: string;
+  supplyApr: number;
+  borrowApr: number;
   coinType: string;
+  collateralFactor: number;
 };

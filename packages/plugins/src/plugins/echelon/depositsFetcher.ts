@@ -78,6 +78,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const suppliedAssets: PortfolioAsset[] = [];
   const suppliedYields: Yield[][] = [];
   const rewardAssets: PortfolioAsset[] = [];
+  const suppliedLtvs: number[] = [];
 
   userVault.collaterals.data.forEach((collateral, i) => {
     const market = marketsAsMap.get(collateral.key.inner);
@@ -98,6 +99,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       )
     );
 
+    suppliedLtvs.push(market.collateralFactor);
     suppliedYields.push([
       {
         apr: new BigNumber(market.supplyApr).toNumber(),
@@ -138,6 +140,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       suppliedAssets,
       borrowedAssets,
       rewardAssets,
+      suppliedLtvs,
     });
 
   const element: PortfolioElement = {
@@ -161,99 +164,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   };
 
   return [element];
-  /*
-  if (
-    vault.supply_coins.length === 0 &&
-    vault.borrow_coins.length === 0
-  )
-    return [];
-
-  const configStores = await cache.getItem<ConfigStores>(configStoresKey, {
-    prefix: platformId,
-    networkId: NetworkId.aptos,
-  });
-  if (!configStores) return [];
-
-  const supplyPositions =
-    vault.supply_coins.length === 0
-      ? []
-      : await getTableItemsByKeys<SupplyPosition>(
-          client,
-          vault.supply_position.handle,
-          vault.supply_coins,
-          '0x1::string::String',
-          supplyPositionType
-        );
-  const borrowPositions =
-    vault.borrow_coins.length === 0
-      ? []
-      : await getTableItemsByKeys<BorrowPosition>(
-          client,
-          vault.borrow_position.handle,
-          vault.borrow_coins,
-          '0x1::string::String',
-          borrowPositionType
-        );
-
-
-  // Token prices
-  const tokenPricesRes = await cache.getTokenPrices(
-    [...vault.supply_coins, ...vault.borrow_coins],
-    NetworkId.aptos
-  );
-  const tokenPrices: Record<string, TokenPrice> = {};
-  tokenPricesRes.forEach((tp) => {
-    if (!tp) return;
-    tokenPrices[tp?.address] = tp;
-  });
-
-  for (let i = 0; i < supplyPositions.length; i++) {
-    const supplyPosition = supplyPositions[i];
-    if (!supplyPosition) continue;
-    if (supplyPosition.amount === '0') continue;
-
-    const coinType = vault.supply_coins[i];
-    const address = formatTokenAddress(coinType, NetworkId.aptos);
-    const { decimals, ltv } = configStores[coinType];
-    const amount = new BigNumber(supplyPosition.amount)
-      .div(10 ** decimals)
-      .toNumber();
-
-    suppliedAssets.push(
-      tokenPriceToAssetToken(
-        coinType,
-        amount,
-        NetworkId.aptos,
-        tokenPrices[address] || undefined
-      )
-    );
-    suppliedLtvs.push(supplyPosition.collateral ? ltv / 100 : 0);
-    suppliedYields.push([]);
-  }
-
-  for (let i = 0; i < borrowPositions.length; i++) {
-    const borrowPosition = borrowPositions[i];
-    if (!borrowPosition) continue;
-    if (borrowPosition.amount === '0') continue;
-
-    const coinType = vault.borrow_coins[i];
-    const address = formatTokenAddress(coinType, NetworkId.aptos);
-    const { decimals } = configStores[coinType];
-    const amount = new BigNumber(borrowPosition.amount)
-      .div(10 ** decimals)
-      .toNumber();
-
-    borrowedAssets.push(
-      tokenPriceToAssetToken(
-        coinType,
-        amount,
-        NetworkId.aptos,
-        tokenPrices[address] || undefined
-      )
-    );
-    borrowedYields.push([]);
-  }
- */
 };
 
 const fetcher: Fetcher = {

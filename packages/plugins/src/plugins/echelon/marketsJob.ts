@@ -9,7 +9,7 @@ import {
 } from './constants';
 import { getClientAptos } from '../../utils/clients';
 import { getAccountResource, getView } from '../../utils/aptos';
-import { CoinInfo } from './types';
+import { CoinInfo, Market } from './types';
 import { fp64ToFloat } from './helpers';
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -28,41 +28,52 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   const markets = await Promise.all(
     marketsIds.map(async (market) => {
-      const [borrowApr, supplyApr, coinType] = await Promise.all([
-        getView(client, {
-          function: `${echelonPackage}borrow_interest_rate`,
-          functionArguments: [market as `0x${string}`],
-        }).then((res) => {
-          if (!res || !res[0]) {
-            return null;
-          }
-          const r = res[0] as { v: string };
-          return fp64ToFloat(BigInt(r.v)) * 100;
-        }),
-        getView(client, {
-          function: `${echelonPackage}supply_interest_rate`,
-          functionArguments: [market as `0x${string}`],
-        }).then((res) => {
-          if (!res || !res[0]) {
-            return null;
-          }
-          const r = res[0] as { v: string };
-          return fp64ToFloat(BigInt(r.v)) * 100;
-        }),
-        getAccountResource<CoinInfo>(client, market, coinInfoType).then(
-          (coinInfo) =>
-            coinInfo?.type_name
-              ? formatTokenAddress(coinInfo.type_name, NetworkId.aptos)
-              : null
-        ),
-      ]);
+      const [borrowApr, supplyApr, coinType, collateralFactor] =
+        await Promise.all([
+          getView(client, {
+            function: `${echelonPackage}borrow_interest_rate`,
+            functionArguments: [market as `0x${string}`],
+          }).then((res) => {
+            if (!res || !res[0]) {
+              return null;
+            }
+            const r = res[0] as { v: string };
+            return fp64ToFloat(BigInt(r.v)) * 100;
+          }),
+          getView(client, {
+            function: `${echelonPackage}supply_interest_rate`,
+            functionArguments: [market as `0x${string}`],
+          }).then((res) => {
+            if (!res || !res[0]) {
+              return null;
+            }
+            const r = res[0] as { v: string };
+            return fp64ToFloat(BigInt(r.v)) * 100;
+          }),
+          getAccountResource<CoinInfo>(client, market, coinInfoType).then(
+            (coinInfo) =>
+              coinInfo?.type_name
+                ? formatTokenAddress(coinInfo.type_name, NetworkId.aptos)
+                : null
+          ),
+          getView(client, {
+            function: `${echelonPackage}market_collateral_factor_bps`,
+            functionArguments: [market as `0x${string}`],
+          }).then((res) => {
+            if (!res || !res[0]) {
+              return null;
+            }
+            return Number(res[0]) / 1e4;
+          }),
+        ]);
 
       return {
         market,
         borrowApr,
         supplyApr,
         coinType,
-      };
+        collateralFactor,
+      } as Market;
     })
   );
 
