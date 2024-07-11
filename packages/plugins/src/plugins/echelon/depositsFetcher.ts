@@ -10,22 +10,30 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, vaultType, marketKey, echelonPackage } from './constants';
-import { Market, UserVault } from './types';
+import {
+  platformId,
+  vaultType,
+  marketKey,
+  echelonLendingPackage,
+  stakerType,
+  echelonFarmingPackage,
+} from './constants';
+import { Market, RewardBalance, UserStaker, UserVault } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getClientAptos } from '../../utils/clients';
 import { getAccountResource, getView } from '../../utils/aptos';
 import { arrayToMap } from '../../utils/misc/arrayToMap';
+import { MoveValue } from '@aptos-labs/ts-sdk';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientAptos();
 
-  const userVault = await getAccountResource<UserVault>(
-    client,
-    owner,
-    vaultType
-  );
-  if (!userVault) return [];
+  const [userVault, userStaker] = await Promise.all([
+    getAccountResource<UserVault>(client, owner, vaultType),
+    getAccountResource<UserStaker>(client, owner, stakerType),
+  ]);
+
+  if (!userVault && !userStaker) return [];
 
   const markets = await cache.getItem<Market[]>(marketKey, {
     prefix: platformId,
@@ -41,9 +49,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         NetworkId.aptos
       ),
       await Promise.all(
-        userVault.collaterals.data.map((collateral) =>
+        (userVault?.collaterals.data || []).map((collateral) =>
           getView(client, {
-            function: `${echelonPackage}account_coins`,
+            function: `${echelonLendingPackage}account_coins`,
             functionArguments: [
               owner as `0x${string}`,
               collateral.key.inner as `0x${string}`,
@@ -55,9 +63,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         )
       ),
       await Promise.all(
-        userVault.liabilities.data.map((liability) =>
+        (userVault?.liabilities.data || []).map((liability) =>
           getView(client, {
-            function: `${echelonPackage}account_liability`,
+            function: `${echelonLendingPackage}account_liability`,
             functionArguments: [
               owner as `0x${string}`,
               liability.key.inner as `0x${string}`,
@@ -80,9 +88,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const rewardAssets: PortfolioAsset[] = [];
   const suppliedLtvs: number[] = [];
 
-  userVault.collaterals.data.forEach((collateral, i) => {
+  (userVault?.collaterals.data || []).forEach((collateral, i) => {
     const market = marketsAsMap.get(collateral.key.inner);
-    if (!market) return;
+    if (!market || !market.collateralFactor) return;
     const tokenPrice = tokenPrices.get(market.coinType);
     if (!tokenPrice) return;
     const collateralBalance = collateralBalances[i];
@@ -108,7 +116,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     ]);
   });
 
-  userVault.liabilities.data.forEach((liability, i) => {
+  (userVault?.liabilities.data || []).forEach((liability, i) => {
     const market = marketsAsMap.get(liability.key.inner);
     if (!market) return;
     const tokenPrice = tokenPrices.get(market.coinType);
@@ -134,6 +142,50 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       },
     ]);
   });
+
+  if (userStaker && userStaker.user_pools.data.length > 0) {
+    const rewardPromises: Promise<RewardBalance | null>[] = [];
+
+    userStaker.user_pools.data.forEach((userPool) => {
+      userPool.value.rewards.data.forEach((reward) => {
+        rewardPromises.push(
+          getView(client, {
+            function: `${echelonFarmingPackage}claimable_reward_amount`,
+            functionArguments: [
+              owner as `0x${string}`,
+              reward.key as `0x${string}`,
+              userPool.value.farming_identifier as `0x${string}`,
+            ],
+          }).then((res) => {
+            const market = markets.find((m) => m.asset_name === reward.key);
+            if (!market || !res || !res[0]) return null;
+            return {
+              coinType: market.coinType,
+              balance: Number(res[0]),
+            };
+          })
+        );
+      });
+    });
+
+    const claimableRewardsAmounts = await Promise.all(rewardPromises);
+
+    claimableRewardsAmounts.forEach((claimableReward) => {
+      if (!claimableReward || claimableReward.balance === 0) return;
+      const tokenPrice = tokenPrices.get(claimableReward.coinType);
+      if (!tokenPrice) return;
+      rewardAssets.push(
+        tokenPriceToAssetToken(
+          claimableReward.coinType,
+          new BigNumber(claimableReward.balance)
+            .dividedBy(10 ** tokenPrice.decimals)
+            .toNumber(),
+          NetworkId.aptos,
+          tokenPrice
+        )
+      );
+    });
+  }
 
   const { borrowedValue, healthRatio, suppliedValue, value, rewardValue } =
     getElementLendingValues({

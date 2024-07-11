@@ -4,12 +4,12 @@ import { Job, JobExecutor } from '../../Job';
 import {
   platformId,
   marketKey,
-  echelonPackage,
-  coinInfoType,
+  echelonLendingPackage,
+  marketType,
 } from './constants';
 import { getClientAptos } from '../../utils/clients';
 import { getAccountResource, getView } from '../../utils/aptos';
-import { CoinInfo, Market } from './types';
+import { LendingMarket, Market } from './types';
 import { fp64ToFloat } from './helpers';
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -26,12 +26,12 @@ const executor: JobExecutor = async (cache: Cache) => {
     (o) => o.inner
   );
 
-  const markets = await Promise.all(
+  const markets: Market[] = await Promise.all(
     marketsIds.map(async (market) => {
-      const [borrowApr, supplyApr, coinType, collateralFactor] =
-        await Promise.all([
+      const [borrowApr, supplyApr, coinType, lendingMarket] = await Promise.all(
+        [
           getView(client, {
-            function: `${echelonPackage}borrow_interest_rate`,
+            function: `${echelonLendingPackage}borrow_interest_rate`,
             functionArguments: [market as `0x${string}`],
           }).then((res) => {
             if (!res || !res[0]) {
@@ -41,7 +41,7 @@ const executor: JobExecutor = async (cache: Cache) => {
             return fp64ToFloat(BigInt(r.v)) * 100;
           }),
           getView(client, {
-            function: `${echelonPackage}supply_interest_rate`,
+            function: `${echelonLendingPackage}supply_interest_rate`,
             functionArguments: [market as `0x${string}`],
           }).then((res) => {
             if (!res || !res[0]) {
@@ -50,29 +50,28 @@ const executor: JobExecutor = async (cache: Cache) => {
             const r = res[0] as { v: string };
             return fp64ToFloat(BigInt(r.v)) * 100;
           }),
-          getAccountResource<CoinInfo>(client, market, coinInfoType).then(
-            (coinInfo) =>
-              coinInfo?.type_name
-                ? formatTokenAddress(coinInfo.type_name, NetworkId.aptos)
-                : null
-          ),
           getView(client, {
-            function: `${echelonPackage}market_collateral_factor_bps`,
+            function: `${echelonLendingPackage}market_coin`,
             functionArguments: [market as `0x${string}`],
           }).then((res) => {
             if (!res || !res[0]) {
               return null;
             }
-            return Number(res[0]) / 1e4;
+            return formatTokenAddress(res[0] as string, NetworkId.aptos);
           }),
-        ]);
+          getAccountResource<LendingMarket>(client, market, marketType),
+        ]
+      );
 
       return {
         market,
+        asset_name: lendingMarket?.asset_name,
         borrowApr,
         supplyApr,
         coinType,
-        collateralFactor,
+        collateralFactor: lendingMarket
+          ? Number(lendingMarket.collateral_factor_bps) / 1e4
+          : null,
       } as Market;
     })
   );
