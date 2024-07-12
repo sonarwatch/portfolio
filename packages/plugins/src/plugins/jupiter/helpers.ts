@@ -7,21 +7,6 @@ import {
 import { PriceResponse } from './types';
 import { lockerPubkey, voteProgramId } from './launchpad/constants';
 
-export function deriveClaimStatus(
-  claimant: string,
-  merkleTree: string,
-  merkleDistributor: string
-): PublicKey {
-  return PublicKey.findProgramAddressSync(
-    [
-      Buffer.from('ClaimStatus'),
-      new PublicKey(claimant).toBytes(),
-      new PublicKey(merkleTree).toBytes(),
-    ],
-    new PublicKey(merkleDistributor)
-  )[0];
-}
-
 export function getVotePda(owner: string): PublicKey {
   return PublicKey.findProgramAddressSync(
     [

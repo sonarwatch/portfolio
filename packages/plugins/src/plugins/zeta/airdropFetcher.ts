@@ -11,9 +11,9 @@ import {
 } from './constants';
 import { GQLResponse } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { findClaimStatusesKeys } from '../jito/helper';
 import { getClientSolana } from '../../utils/clients';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
+import { deriveClaimStatuses } from '../../utils/solana/jupiter/deriveClaimStatuses';
 
 const query = gql`
   query GetAirdropFinalFrontend($authority: String!) {
@@ -53,7 +53,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (amount === 0) return [];
 
-  const claimStatuses = findClaimStatusesKeys(
+  const claimStatuses = deriveClaimStatuses(
     owner,
     distributors,
     distributorPid

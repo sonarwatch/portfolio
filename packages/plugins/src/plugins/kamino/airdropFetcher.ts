@@ -14,7 +14,7 @@ import {
   kmnoMint,
   platformId,
 } from './constants';
-import { deriveClaimStatus } from '../jupiter/helpers';
+import { deriveClaimStatus } from '../../utils/solana/jupiter/deriveClaimStatus';
 import { ClaimProofResponse } from '../jupiter/types';
 import { getClientSolana } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';

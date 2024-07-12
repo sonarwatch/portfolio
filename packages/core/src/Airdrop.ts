@@ -2,52 +2,61 @@ import { AddressSystemType } from './Address';
 import { NetworkIdType } from './Network';
 import { UsdValue } from './UsdValue';
 
-export enum AirdropClaimStatus {
+export enum AirdropStatus {
   notYetOpen = '0_notYetOpen',
   open = '1_open',
   closed = '2_closed',
 }
 
-export enum AirdropUserStatus {
+/**
+ * Indicates whether airdrop item has already been claimed by the user.
+ * If set to null it means that claim status is unknowned.
+ */
+export type IsClaimed = boolean | null;
+
+export enum AirdropItemStatus {
   claimable = '0_claimable',
   claimableLater = '1_claimableLater',
-  claimed = '2_claimed',
-  claimMissed = '3_claimMissed',
-  nonEligible = '4_nonEligible',
+  claimableOrClaimed = '2_claimableOrClaimed',
+  claimed = '3_claimed',
+  claimExpired = '4_claimExpired',
+  ineligible = '5_ineligible',
 }
 
-export function isAirdropEligible(airdrop: Airdrop): boolean {
-  return airdrop.amount > 0;
+export function getIsEligible(amount: number): boolean {
+  return amount > 0;
 }
 
-export function getAirdropClaimStatus(
+export function getAirdropStatus(
   claimStart?: number,
   claimEnd?: number
-): AirdropClaimStatus {
+): AirdropStatus {
   const now = Date.now();
-  if (claimStart === undefined) return AirdropClaimStatus.notYetOpen;
-  if (claimStart > now) return AirdropClaimStatus.notYetOpen;
-  if (claimEnd === undefined) return AirdropClaimStatus.open;
-  if (claimEnd > now) return AirdropClaimStatus.open;
-  return AirdropClaimStatus.closed;
+  if (claimStart === undefined) return AirdropStatus.notYetOpen;
+  if (claimStart > now) return AirdropStatus.notYetOpen;
+  if (claimEnd === undefined) return AirdropStatus.open;
+  if (claimEnd > now) return AirdropStatus.open;
+  return AirdropStatus.closed;
 }
 
-export function getAirdropUserStatus(
-  claimStatus: AirdropClaimStatus,
+export function getAirdropItemStatus(
+  airdropStatus: AirdropStatus,
   amount: number,
-  isClaimed: boolean
-): AirdropUserStatus {
-  if (amount <= 0) return AirdropUserStatus.nonEligible;
+  isClaimed: IsClaimed
+): AirdropItemStatus {
+  if (amount <= 0) return AirdropItemStatus.ineligible;
 
-  if (claimStatus === AirdropClaimStatus.notYetOpen)
-    return AirdropUserStatus.claimableLater;
+  if (isClaimed === true) return AirdropItemStatus.claimed;
 
-  if (isClaimed) return AirdropUserStatus.claimed;
+  if (airdropStatus === AirdropStatus.notYetOpen)
+    return AirdropItemStatus.claimableLater;
 
-  if (claimStatus === AirdropClaimStatus.closed)
-    return AirdropUserStatus.claimMissed;
+  if (airdropStatus === AirdropStatus.closed)
+    return AirdropItemStatus.claimExpired;
 
-  return AirdropUserStatus.claimable;
+  if (isClaimed === null) return AirdropItemStatus.claimableOrClaimed;
+
+  return AirdropItemStatus.claimable;
 }
 
 export type Airdrop = {
@@ -55,6 +64,10 @@ export type Airdrop = {
    * The airdrop id. (e.g. 'jupiter_season1')
    */
   id: string;
+  /**
+   * A name for the airdrop. Should not container the emitter name. (e.g. 'Season #1')
+   */
+  name?: string;
   /**
    * The airdrop image.
    */
@@ -68,11 +81,6 @@ export type Airdrop = {
    */
   emitterLink: string;
   /**
-   * A name for the airdrop. Should not container the emitter name. (e.g. 'Season #1')
-   */
-  name?: string;
-
-  /**
    * The airdrop claim link.
    */
   claimLink: string;
@@ -85,17 +93,36 @@ export type Airdrop = {
    */
   claimEnd?: number;
   /**
-   * The airdrop claim status.
+   * The airdrop status.
    */
-  claimStatus: AirdropClaimStatus;
-
+  status: AirdropStatus;
   /**
-   * Indicates whether airdrop has already been claimed by the user.
+   * The airdrop items.
    */
-  isClaimed: boolean;
+  item: AirdropItem;
+};
+
+export type AirdropItem = {
+  /**
+   * Indicates whether the user is eligible to the airdrop.
+   */
+  isEligible: boolean;
+  /**
+   * Indicates whether airdrop item has already been claimed by the user.
+   * If set to null it means that claim status is unknowned.
+   */
+  isClaimed: IsClaimed;
+  /**
+   * Indicates whether airdrop item has already been claimed by the user.
+   */
+  status: AirdropItemStatus;
+  /**
+   * The airdropped item address.
+   */
+  address?: string;
   /**
    * The airdropped item amount.
-   * If set to -1 means non eligible.
+   * If set to 0 it means ineligible.
    */
   amount: number;
   /**
@@ -106,6 +133,10 @@ export type Airdrop = {
    * The airdropped item price.
    */
   price: UsdValue;
+  /**
+   * The airdropped item image uri.
+   */
+  imageUri?: string;
 };
 
 /**

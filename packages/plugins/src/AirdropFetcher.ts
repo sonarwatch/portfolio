@@ -4,13 +4,27 @@ import {
   AirdropFetcherReport,
   AirdropFetcherResult,
   AirdropFetchersResult,
+  AirdropItem,
+  AirdropItemStatus,
+  AirdropStatus,
+  IsClaimed,
   NetworkIdType,
+  PortfolioAsset,
+  PortfolioAssetType,
+  PortfolioElementMultiple,
+  PortfolioElementType,
+  UsdValue,
   formatAddress,
   formatAddressByNetworkId,
+  getAirdropItemStatus,
+  getAirdropStatus,
+  getIsEligible,
   networks,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from './Cache';
 import promiseTimeout from './utils/misc/promiseTimeout';
+import { Fetcher } from './Fetcher';
+import tokenPriceToAssetToken from './utils/misc/tokenPriceToAssetToken';
 
 export type AirdropFetcherExecutor = (
   owner: string,
@@ -39,6 +53,56 @@ export async function runAirdropFetchersByNetworkId(
 
   const { addressSystem } = networks[networkId];
   return runAirdropFetchers(owner, addressSystem, fetchers, cache);
+}
+
+export type AirdropStatics = Omit<Airdrop, 'status' | 'item'>;
+
+export function getAirdrop(params: {
+  statics: AirdropStatics;
+  item: {
+    amount: number;
+    label: string;
+    price: UsdValue;
+    imageUri?: string;
+    address?: string;
+    isClaimed: IsClaimed;
+  };
+}): Airdrop {
+  const status = getAirdropStatus(
+    params.statics.claimStart,
+    params.statics.claimEnd
+  );
+  return {
+    ...params.statics,
+    status,
+    item: getAirdropItem({ ...params.item, airdropStatus: status }),
+  };
+}
+
+export function getAirdropItem(params: {
+  airdropStatus: AirdropStatus;
+  amount: number;
+  label: string;
+  price: UsdValue;
+  imageUri?: string;
+  address?: string;
+  isClaimed: IsClaimed;
+}): AirdropItem {
+  const isEligible = getIsEligible(params.amount);
+  return {
+    amount: params.amount,
+    isClaimed: isEligible === false ? false : params.isClaimed,
+    isEligible,
+    label: params.label,
+    price: params.price,
+    status: getAirdropItemStatus(
+      params.airdropStatus,
+      params.amount,
+      params.isClaimed
+    ),
+    address: params.address,
+    imageUri: params.imageUri,
+  };
 }
 
 export async function runAirdropFetchers(
@@ -116,4 +180,65 @@ export async function runAirdropFetcher(
     runAirdropFetcherTimeout,
     `Fetcher timed out: ${fetcher.id}`
   );
+}
+
+export function airdropFetcherToFetcher(
+  airdropFetcher: AirdropFetcher,
+  platformId: string,
+  id: string,
+  claimEnd?: number
+): Fetcher {
+  return {
+    id,
+    networkId: airdropFetcher.networkId,
+    executor: async (
+      owner: string,
+      cache: Cache
+    ): Promise<PortfolioElementMultiple[]> => {
+      if (claimEnd && Date.now() > claimEnd) return [];
+
+      const airdrop = await airdropFetcher.executor(owner, cache);
+      if (
+        airdrop.item.status !== AirdropItemStatus.claimable &&
+        airdrop.item.status !== AirdropItemStatus.claimableLater
+      )
+        return [];
+
+      const { item } = airdrop;
+      const asset: PortfolioAsset = item.address
+        ? tokenPriceToAssetToken(
+            item.address,
+            item.amount,
+            airdropFetcher.networkId,
+            undefined,
+            item.price || undefined,
+            { isClaimable: true, lockedUntil: airdrop.claimStart }
+          )
+        : {
+            type: PortfolioAssetType.generic,
+            data: {
+              amount: item.amount,
+              price: item.price,
+            },
+            name: item.label,
+            networkId: airdropFetcher.networkId,
+            attributes: { isClaimable: true, lockedUntil: airdrop.claimStart },
+            value: item.price ? item.price * item.amount : null,
+            imageUri: item.imageUri,
+          };
+      return [
+        {
+          networkId: airdropFetcher.networkId,
+          label: 'Airdrop',
+          data: {
+            assets: [asset],
+          },
+          platformId,
+          type: PortfolioElementType.multiple,
+          value: asset.value,
+          name: airdrop.name,
+        },
+      ];
+    },
+  };
 }

@@ -11,7 +11,7 @@ import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSolana } from '../../../utils/clients';
 import { AsrResponse } from '../types';
-import { deriveClaimStatus } from '../helpers';
+import { deriveClaimStatus } from '../../../utils/solana/jupiter/deriveClaimStatus';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import { claimStatusStruct } from '../launchpad/structs';
 import {
