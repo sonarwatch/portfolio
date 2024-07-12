@@ -93,13 +93,15 @@ async function fetchAirdrop(
 
   return getAirdrop({
     statics: airdropStatics,
-    item: {
-      amount,
-      isClaimed,
-      label: 'PRCL',
-      address: prclMint,
-      price: prclTokenPrice?.price || null,
-    },
+    items: [
+      {
+        amount,
+        isClaimed,
+        label: 'PRCL',
+        address: prclMint,
+        price: prclTokenPrice?.price || null,
+      },
+    ],
   });
 }
 

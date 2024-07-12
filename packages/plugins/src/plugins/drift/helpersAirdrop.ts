@@ -77,13 +77,15 @@ const fetchAirdropExecutor: AirdropFetcherExecutor = async (
 
   return getAirdrop({
     statics: airdropStatics,
-    item: {
-      amount,
-      label: 'DRIFT',
-      address: driftMint,
-      price: driftPrice?.price || null,
-      isClaimed,
-    },
+    items: [
+      {
+        amount,
+        label: 'DRIFT',
+        address: driftMint,
+        price: driftPrice?.price || null,
+        isClaimed,
+      },
+    ],
   });
 };
 

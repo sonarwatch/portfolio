@@ -99,7 +99,7 @@ export type Airdrop = {
   /**
    * The airdrop items.
    */
-  item: AirdropItem;
+  items: AirdropItem[];
 };
 
 export type AirdropItem = {
