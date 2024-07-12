@@ -50,7 +50,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       label: 'Staked',
       name: 'Vote',
       networkId: NetworkId.solana,
-      platformId: platformId,
+      platformId,
       data: { assets: [asset] },
       value: asset.value,
     },

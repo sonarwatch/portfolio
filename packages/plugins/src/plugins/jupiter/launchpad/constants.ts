@@ -21,7 +21,6 @@ export const jupDecimals = 6;
 
 export const merkleApi = 'https://worker.jup.ag/jup-claim-proof';
 
-export const asrApi = 'https://worker.jup.ag/jup-asr-july-2024-claim-proof';
 export const mainDisProgram = 'DiSLRwcSFvtwvMWSs7ubBMvYRaYNYupa76ZSuYLe6D7j';
 export const jupDisProgram = 'Dis2TfkFnXFkrtvAktEkw37sdb7qwJgY6H7YZJwk51wK';
 

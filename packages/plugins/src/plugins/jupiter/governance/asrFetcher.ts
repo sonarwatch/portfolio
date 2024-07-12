@@ -14,13 +14,8 @@ import { AsrResponse } from '../types';
 import { deriveClaimStatus } from '../../../utils/solana/jupiter/deriveClaimStatus';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import { claimStatusStruct } from '../launchpad/structs';
-import {
-  asrApi,
-  jupDisProgram,
-  jupMint,
-  mainDisProgram,
-} from '../launchpad/constants';
-import { platformId } from './constants';
+import { jupDisProgram, jupMint, mainDisProgram } from '../launchpad/constants';
+import { asrApi, platformId } from './constants';
 import { getParsedMultipleAccountsInfo } from '../../../utils/solana';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
@@ -92,7 +87,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       label: 'Airdrop',
       networkId: NetworkId.solana,
       platformId,
-      name: 'Active Staking Rewards',
+      name: 'Jupiter ASR',
       data: {
         assets,
       },
