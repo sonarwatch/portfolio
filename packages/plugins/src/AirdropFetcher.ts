@@ -21,7 +21,7 @@ import {
   formatAddressByNetworkId,
   getAirdropItemStatus,
   getAirdropStatus,
-  getIsEligible,
+  isEligibleAmount,
   getUsdValueSum,
   networks,
 } from '@sonarwatch/portfolio-core';
@@ -111,12 +111,14 @@ async function enhanceAirdrop(
 ): Promise<AirdropEnhanced> {
   const airdropStatus = getAirdropStatus(airdrop.claimStart, airdrop.claimEnd);
   const prices = await getAirdropItemsPrices(airdrop, cache);
+  const items = airdrop.items.map((i, index) =>
+    enhanceAirdropItem(i, airdropStatus, prices[index])
+  );
   return {
     ...airdrop,
     status: airdropStatus,
-    items: airdrop.items.map((i, index) =>
-      enhanceAirdropItem(i, airdropStatus, prices[index])
-    ),
+    items,
+    value: getUsdValueSum(items.map((i) => i.value)),
   };
 }
 
@@ -133,6 +135,7 @@ function enhanceAirdropItem(
       airdropItem.amount,
       airdropItem.isClaimed
     ),
+    value: price ? price * airdropItem.amount : null,
   };
 }
 
@@ -182,7 +185,7 @@ function getAirdropItems(
   }[]
 ): AirdropItem[] {
   return items.map((item) => {
-    const isEligible = getIsEligible(item.amount);
+    const isEligible = isEligibleAmount(item.amount);
     return {
       amount: item.amount,
       isClaimed: isEligible === false ? false : item.isClaimed,
@@ -248,17 +251,26 @@ const airdropCachePrefix = 'airdropraw';
 async function internalRunAirdropFetcher(
   owner: string,
   fetcher: AirdropFetcher,
-  cache: Cache
+  cache: Cache,
+  useCache = true
 ) {
-  const cachedAirdrop = await cache.getItem<Airdrop>(`${fetcher.id}_${owner}`, {
-    prefix: airdropCachePrefix,
-    networkId: fetcher.networkId,
-  });
-  if (cachedAirdrop) return enhanceAirdrop(cachedAirdrop, cache);
+  if (useCache) {
+    const cachedAirdrop = await cache.getItem<Airdrop>(
+      `${fetcher.id}_${owner}`,
+      {
+        prefix: airdropCachePrefix,
+        networkId: fetcher.networkId,
+      }
+    );
+    if (cachedAirdrop) return enhanceAirdrop(cachedAirdrop, cache);
+  }
   const airdrop = await fetcher.executor(owner, cache);
 
-  let ttl = 300000;
-  if (airdrop.items.every((i) => i.isClaimed === true)) ttl = 172800000;
+  // TTL is 120000 ms (2min)
+  // But if ineligible or claimed 172800000 ms (48h)
+  let ttl = 120000;
+  if (airdrop.items.every((i) => !isEligibleAmount(i.amount))) ttl = 172800000;
+  else if (airdrop.items.every((i) => i.isClaimed === true)) ttl = 172800000;
 
   await cache.setItem(`${fetcher.id}_${owner}`, airdrop, {
     ttl,
@@ -271,23 +283,27 @@ async function internalRunAirdropFetcher(
 export async function runAirdropFetcher(
   owner: string,
   fetcher: AirdropFetcher,
-  cache: Cache
+  cache: Cache,
+  useCache = true
 ): Promise<AirdropFetcherResult> {
   const startDate = Date.now();
   const fOwner = formatAddressByNetworkId(owner, fetcher.networkId);
-  const fetcherPromise = internalRunAirdropFetcher(owner, fetcher, cache).then(
-    (airdrop): AirdropFetcherResult => {
-      const now = Date.now();
-      return {
-        owner: fOwner,
-        fetcherId: fetcher.id,
-        networdkId: fetcher.networkId,
-        duration: now - startDate,
-        airdrop,
-        date: now,
-      };
-    }
-  );
+  const fetcherPromise = internalRunAirdropFetcher(
+    owner,
+    fetcher,
+    cache,
+    useCache
+  ).then((airdrop): AirdropFetcherResult => {
+    const now = Date.now();
+    return {
+      owner: fOwner,
+      fetcherId: fetcher.id,
+      networdkId: fetcher.networkId,
+      duration: now - startDate,
+      airdrop,
+      date: now,
+    };
+  });
   return promiseTimeout(
     fetcherPromise,
     runAirdropFetcherTimeout,
@@ -341,7 +357,7 @@ export function airdropFetcherToFetcher(
                 isClaimable: true,
                 lockedUntil: airdrop.claimStart,
               },
-              value: item.price ? item.price * item.amount : null,
+              value: item.value,
               imageUri: item.imageUri,
             };
         assets.push(asset);

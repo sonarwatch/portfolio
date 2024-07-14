@@ -23,7 +23,7 @@ export enum AirdropItemStatus {
   ineligible = '5_ineligible',
 }
 
-export function getIsEligible(amount: number): boolean {
+export function isEligibleAmount(amount: number): boolean {
   return amount > 0;
 }
 
@@ -44,7 +44,7 @@ export function getAirdropItemStatus(
   amount: number,
   isClaimed: IsClaimed
 ): AirdropItemStatus {
-  if (amount <= 0) return AirdropItemStatus.ineligible;
+  if (!isEligibleAmount(amount)) return AirdropItemStatus.ineligible;
 
   if (isClaimed === true) return AirdropItemStatus.claimed;
 
@@ -137,6 +137,10 @@ export type AirdropEnhanced = Omit<Airdrop, 'items'> & {
    */
   status: AirdropStatus;
   /**
+   * The airdrop status.
+   */
+  value: UsdValue;
+  /**
    * The airdrop items.
    */
   items: AirdropItemEnhanced[];
@@ -151,6 +155,10 @@ export type AirdropItemEnhanced = AirdropItem & {
    * Indicates whether airdrop item has already been claimed by the user.
    */
   status: AirdropItemStatus;
+  /**
+   * The airdrop status.
+   */
+  value: UsdValue;
 };
 
 /**

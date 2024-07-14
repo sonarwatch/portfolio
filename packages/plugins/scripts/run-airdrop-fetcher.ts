@@ -37,7 +37,7 @@ async function main(owner: string, fetcherId: string) {
   const cache = getCache();
 
   console.log('Fetching...');
-  const fetcherResult = await runAirdropFetcher(fOwner, fetcher, cache);
+  const fetcherResult = await runAirdropFetcher(fOwner, fetcher, cache, false);
   console.log(util.inspect(fetcherResult.airdrop, false, null, true));
   console.log(`Finished in: ${durationForHumans(fetcherResult.duration)}s`);
   await cache.dispose();
