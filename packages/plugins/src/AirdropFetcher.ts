@@ -358,7 +358,7 @@ export function airdropFetcherToFetcher(
           platformId,
           type: PortfolioElementType.multiple,
           value: getUsdValueSum(assets.map((a) => a.value)),
-          name: airdrop.name,
+          name: airdrop.name || 'Airdrop',
         },
       ];
     },
