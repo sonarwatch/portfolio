@@ -47,7 +47,7 @@ export async function setAirdropItemPrices(
     label: string;
     price: number;
   }[],
-  networdkId: NetworkIdType,
+  networkId: NetworkIdType,
   cache: Cache
 ) {
   await cache.setItems(
@@ -56,7 +56,7 @@ export async function setAirdropItemPrices(
       value: price,
     })),
     {
-      networkId: networdkId,
+      networkId,
       prefix: airdropItemPriceCachePrefix,
     }
   );
@@ -82,6 +82,7 @@ async function getAirdropItemPrices(
 
 async function getAirdropItemsPrices(
   airdrop: AirdropRaw,
+  networkId: NetworkIdType,
   cache: Cache
 ): Promise<UsdValue[]> {
   const addresses: string[] = [];
@@ -92,8 +93,8 @@ async function getAirdropItemsPrices(
   });
 
   const [tokenPricesMap, pricesMap] = await Promise.all([
-    cache.getTokenPricesAsMap(addresses, airdrop.networkId),
-    getAirdropItemPrices(labels, airdrop.networkId, cache),
+    cache.getTokenPricesAsMap(addresses, networkId),
+    getAirdropItemPrices(labels, networkId, cache),
   ]);
 
   return airdrop.items.map((i) => {
@@ -106,16 +107,23 @@ async function getAirdropItemsPrices(
 }
 
 async function enhanceAirdrop(
-  airdrop: AirdropRaw,
+  airdropRaw: AirdropRaw,
+  owner: string,
+  networkId: NetworkIdType,
   cache: Cache
 ): Promise<Airdrop> {
-  const airdropStatus = getAirdropStatus(airdrop.claimStart, airdrop.claimEnd);
-  const prices = await getAirdropItemsPrices(airdrop, cache);
-  const items = airdrop.items.map((i, index) =>
-    enhanceAirdropItem(i, airdropStatus, prices[index])
+  const airdropStatus = getAirdropStatus(
+    airdropRaw.claimStart,
+    airdropRaw.claimEnd
+  );
+  const prices = await getAirdropItemsPrices(airdropRaw, networkId, cache);
+  const items = airdropRaw.items.map((i, index) =>
+    enhanceAirdropItem(i, airdropRaw.id, airdropStatus, prices[index], owner)
   );
   return {
-    ...airdrop,
+    ...airdropRaw,
+    owner,
+    networkId,
     status: airdropStatus,
     items,
     value: getUsdValueSum(items.map((i) => i.value)),
@@ -124,11 +132,14 @@ async function enhanceAirdrop(
 
 function enhanceAirdropItem(
   airdropItem: AirdropItemRaw,
+  airdropId: string,
   airdropStatus: AirdropStatus,
-  price: UsdValue
+  price: UsdValue,
+  owner: string
 ): AirdropItem {
   return {
     ...airdropItem,
+    airdropId,
     price,
     status: getAirdropItemStatus(
       airdropStatus,
@@ -136,6 +147,7 @@ function enhanceAirdropItem(
       airdropItem.isClaimed
     ),
     value: price ? price * airdropItem.amount : null,
+    owner,
   };
 }
 
@@ -262,7 +274,8 @@ async function internalRunAirdropFetcher(
         networkId: fetcher.networkId,
       }
     );
-    if (cAirdropRaw) return enhanceAirdrop(cAirdropRaw, cache);
+    if (cAirdropRaw)
+      return enhanceAirdrop(cAirdropRaw, owner, fetcher.networkId, cache);
   }
   const airdrop = await fetcher.executor(owner, cache);
 
@@ -277,7 +290,7 @@ async function internalRunAirdropFetcher(
     prefix: airdropCachePrefix,
     networkId: fetcher.networkId,
   });
-  return enhanceAirdrop(airdrop, cache);
+  return enhanceAirdrop(airdrop, owner, fetcher.networkId, cache);
 }
 
 export async function runAirdropFetcher(

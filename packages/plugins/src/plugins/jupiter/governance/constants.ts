@@ -1,4 +1,4 @@
-import { NetworkId, Platform } from '@sonarwatch/portfolio-core';
+import { Platform } from '@sonarwatch/portfolio-core';
 import { AirdropStatics } from '../../../AirdropFetcher';
 
 export const platformId = 'jupiter-governance';
@@ -15,7 +15,6 @@ export const platform: Platform = {
 
 export const asrApi = 'https://worker.jup.ag/jup-asr-july-2024-claim-proof';
 export const asr1Statics: AirdropStatics = {
-  networkId: NetworkId.solana,
   id: 'jup-asr-1',
   claimLink: 'https://vote.jup.ag/asr',
   image: platformImage,
@@ -23,5 +22,5 @@ export const asr1Statics: AirdropStatics = {
   emitterName: platformName,
   claimStart: 1719792000000,
   claimEnd: 1722470400000,
-  name: undefined,
+  name: 'ASR #1',
 };

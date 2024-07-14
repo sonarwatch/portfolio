@@ -65,10 +65,6 @@ export type AirdropRaw = {
    */
   id: string;
   /**
-   * The airdrop network id. (e.g. 'solana')
-   */
-  networkId: NetworkIdType;
-  /**
    * A name for the airdrop. Should not container the emitter name. (e.g. 'Season #1')
    */
   name?: string;
@@ -133,9 +129,17 @@ export type AirdropItemRaw = {
 
 export type Airdrop = Omit<AirdropRaw, 'items'> & {
   /**
+   * The airdrop network id. (e.g. 'solana')
+   */
+  networkId: NetworkIdType;
+  /**
    * The airdrop status.
    */
   status: AirdropStatus;
+  /**
+   * The airdrop owner.
+   */
+  owner: string;
   /**
    * The airdrop status.
    */
@@ -147,6 +151,14 @@ export type Airdrop = Omit<AirdropRaw, 'items'> & {
 };
 
 export type AirdropItem = AirdropItemRaw & {
+  /**
+   * The airdrop item owner.
+   */
+  owner: string;
+  /**
+   * The airdrop id associated to the item.
+   */
+  airdropId: string;
   /**
    * The airdropped item price.
    */

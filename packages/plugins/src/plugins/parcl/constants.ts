@@ -1,5 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
-import { NetworkId, Platform } from '@sonarwatch/portfolio-core';
+import { Platform } from '@sonarwatch/portfolio-core';
 import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'parcl';
@@ -29,7 +29,6 @@ export const distributorProgram =
   '5tu3xkmLfud5BAwSuQke4WSjoHcQ52SbrPwX9es8j6Ve';
 
 export const airdropStatics: AirdropStatics = {
-  networkId: NetworkId.solana,
   id: 'parcl-airdrop-1',
   claimLink: 'https://claims.parcllimited.com/',
   image: platformImage,

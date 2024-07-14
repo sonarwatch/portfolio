@@ -1,5 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
-import { NetworkId, Platform } from '@sonarwatch/portfolio-core';
+import { Platform } from '@sonarwatch/portfolio-core';
 import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'drift';
@@ -28,7 +28,6 @@ export const driftDecimals = 6;
 export const driftMint = 'DriFtupJYLTosbwoN8koMbEYSx54aFAVLddWsbksjwg7';
 
 export const airdropStatics: AirdropStatics = {
-  networkId: NetworkId.solana,
   id: 'drift-airdrop-1',
   claimLink: 'https://drift.foundation',
   image: platformImage,
