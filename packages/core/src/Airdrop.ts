@@ -59,7 +59,7 @@ export function getAirdropItemStatus(
   return AirdropItemStatus.claimable;
 }
 
-export type Airdrop = {
+export type AirdropRaw = {
   /**
    * The airdrop id. (e.g. 'jupiter_season1')
    */
@@ -99,10 +99,10 @@ export type Airdrop = {
   /**
    * The airdrop items.
    */
-  items: AirdropItem[];
+  items: AirdropItemRaw[];
 };
 
-export type AirdropItem = {
+export type AirdropItemRaw = {
   /**
    * Indicates whether the user is eligible to the airdrop.
    */
@@ -131,7 +131,7 @@ export type AirdropItem = {
   imageUri?: string;
 };
 
-export type AirdropEnhanced = Omit<Airdrop, 'items'> & {
+export type Airdrop = Omit<AirdropRaw, 'items'> & {
   /**
    * The airdrop status.
    */
@@ -143,10 +143,10 @@ export type AirdropEnhanced = Omit<Airdrop, 'items'> & {
   /**
    * The airdrop items.
    */
-  items: AirdropItemEnhanced[];
+  items: AirdropItem[];
 };
 
-export type AirdropItemEnhanced = AirdropItem & {
+export type AirdropItem = AirdropItemRaw & {
   /**
    * The airdropped item price.
    */
@@ -170,7 +170,7 @@ export type AirdropFetcherResult = {
   networdkId: NetworkIdType;
   fetcherId: string;
   duration: number;
-  airdrop: AirdropEnhanced;
+  airdrop: Airdrop;
 };
 
 /**
@@ -191,5 +191,5 @@ export type AirdropFetchersResult = {
   owner: string;
   addressSystem: AddressSystemType;
   fetcherReports: AirdropFetcherReport[];
-  airdrops: AirdropEnhanced[];
+  airdrops: Airdrop[];
 };

@@ -5,7 +5,7 @@ import { asr1Statics, asrApi } from './constants';
 import {
   AirdropFetcher,
   AirdropFetcherExecutor,
-  getAirdrop,
+  getAirdropRaw,
 } from '../../../AirdropFetcher';
 import { AsrResponse, ClaimProofResponse } from '../types';
 import { getMultipleAccountsInfoSafe } from '../../../utils/solana/getMultipleAccountsInfoSafe';
@@ -58,7 +58,7 @@ const fetchAirdropExecutor: AirdropFetcherExecutor = async (owner: string) => {
     !claimsProof.data.claim ||
     claimsProof.data.claim.length === 0
   )
-    return getAirdrop({
+    return getAirdropRaw({
       statics: asr1Statics,
       items: ineligibleItems,
     });
@@ -73,7 +73,7 @@ const fetchAirdropExecutor: AirdropFetcherExecutor = async (owner: string) => {
     claimAddresses
   );
 
-  return getAirdrop({
+  return getAirdropRaw({
     statics: asr1Statics,
     items: claimAccounts
       .map((claimAcc, i) => {

@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import BigNumber from 'bignumber.js';
-import { Airdrop, IsClaimed, NetworkId } from '@sonarwatch/portfolio-core';
+import { AirdropRaw, IsClaimed, NetworkId } from '@sonarwatch/portfolio-core';
 import {
   airdropApi,
   airdropStatics,
@@ -15,7 +15,7 @@ import { deriveClaimStatus } from '../../utils/solana/jupiter/deriveClaimStatus'
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 import { SolanaClient } from '../../utils/clients/types';
 import { claimStatusStruct } from '../jupiter/launchpad/structs';
-import { AirdropFetcher, getAirdrop } from '../../AirdropFetcher';
+import { AirdropFetcher, getAirdropRaw } from '../../AirdropFetcher';
 import { getClientSolana } from '../../utils/clients';
 
 async function fetchAllocation(
@@ -71,7 +71,7 @@ async function fetchAirdrop(
   owner: string,
   client: SolanaClient,
   cache: Cache
-): Promise<Airdrop> {
+): Promise<AirdropRaw> {
   const allocation = await fetchAllocation(owner, cache);
   const amount = !allocation.merkleTree ? 0 : allocation.amount;
 
@@ -90,7 +90,7 @@ async function fetchAirdrop(
     isClaimed = claimStatusAccount !== null;
   }
 
-  return getAirdrop({
+  return getAirdropRaw({
     statics: airdropStatics,
     items: [
       {

@@ -10,7 +10,7 @@ import {
 import {
   AirdropFetcher,
   AirdropFetcherExecutor,
-  getAirdrop,
+  getAirdropRaw,
 } from '../../AirdropFetcher';
 
 const driftFactor = new BigNumber(10 ** driftDecimals);
@@ -69,7 +69,7 @@ const fetchAirdropExecutor: AirdropFetcherExecutor = async (owner: string) => {
   const airdropInfo = await fetchAirdropInfo(owner);
   const { isClaimed, amount } = airdropInfo;
 
-  return getAirdrop({
+  return getAirdropRaw({
     statics: airdropStatics,
     items: [
       {

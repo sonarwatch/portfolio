@@ -1,12 +1,12 @@
 import {
   AddressSystemType,
+  AirdropRaw,
   Airdrop,
-  AirdropEnhanced,
   AirdropFetcherReport,
   AirdropFetcherResult,
   AirdropFetchersResult,
+  AirdropItemRaw,
   AirdropItem,
-  AirdropItemEnhanced,
   AirdropItemStatus,
   AirdropStatus,
   IsClaimed,
@@ -33,7 +33,7 @@ import tokenPriceToAssetToken from './utils/misc/tokenPriceToAssetToken';
 export type AirdropFetcherExecutor = (
   owner: string,
   cache: Cache
-) => Promise<Airdrop>;
+) => Promise<AirdropRaw>;
 
 export type AirdropFetcher = {
   id: string;
@@ -81,7 +81,7 @@ async function getAirdropItemPrices(
 }
 
 async function getAirdropItemsPrices(
-  airdrop: Airdrop,
+  airdrop: AirdropRaw,
   cache: Cache
 ): Promise<UsdValue[]> {
   const addresses: string[] = [];
@@ -106,9 +106,9 @@ async function getAirdropItemsPrices(
 }
 
 async function enhanceAirdrop(
-  airdrop: Airdrop,
+  airdrop: AirdropRaw,
   cache: Cache
-): Promise<AirdropEnhanced> {
+): Promise<Airdrop> {
   const airdropStatus = getAirdropStatus(airdrop.claimStart, airdrop.claimEnd);
   const prices = await getAirdropItemsPrices(airdrop, cache);
   const items = airdrop.items.map((i, index) =>
@@ -123,10 +123,10 @@ async function enhanceAirdrop(
 }
 
 function enhanceAirdropItem(
-  airdropItem: AirdropItem,
+  airdropItem: AirdropItemRaw,
   airdropStatus: AirdropStatus,
   price: UsdValue
-): AirdropItemEnhanced {
+): AirdropItem {
   return {
     ...airdropItem,
     price,
@@ -157,9 +157,9 @@ export async function runAirdropFetchersByNetworkId(
   return runAirdropFetchers(owner, addressSystem, fetchers, cache);
 }
 
-export type AirdropStatics = Omit<Airdrop, 'status' | 'items'>;
+export type AirdropStatics = Omit<AirdropRaw, 'status' | 'items'>;
 
-export function getAirdrop(params: {
+export function getAirdropRaw(params: {
   statics: AirdropStatics;
   items: {
     amount: number;
@@ -168,7 +168,7 @@ export function getAirdrop(params: {
     address?: string;
     isClaimed: IsClaimed;
   }[];
-}): Airdrop {
+}): AirdropRaw {
   return {
     ...params.statics,
     items: getAirdropItems(params.items),
@@ -183,7 +183,7 @@ function getAirdropItems(
     address?: string;
     isClaimed: IsClaimed;
   }[]
-): AirdropItem[] {
+): AirdropItemRaw[] {
   return items.map((item) => {
     const isEligible = isEligibleAmount(item.amount);
     return {
@@ -255,14 +255,14 @@ async function internalRunAirdropFetcher(
   useCache = true
 ) {
   if (useCache) {
-    const cachedAirdrop = await cache.getItem<Airdrop>(
+    const cAirdropRaw = await cache.getItem<AirdropRaw>(
       `${fetcher.id}_${owner}`,
       {
         prefix: airdropCachePrefix,
         networkId: fetcher.networkId,
       }
     );
-    if (cachedAirdrop) return enhanceAirdrop(cachedAirdrop, cache);
+    if (cAirdropRaw) return enhanceAirdrop(cAirdropRaw, cache);
   }
   const airdrop = await fetcher.executor(owner, cache);
 
