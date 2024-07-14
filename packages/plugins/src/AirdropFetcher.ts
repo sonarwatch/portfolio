@@ -24,6 +24,7 @@ import {
   isEligibleAmount,
   getUsdValueSum,
   networks,
+  compareName,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from './Cache';
 import promiseTimeout from './utils/misc/promiseTimeout';
@@ -117,9 +118,11 @@ async function enhanceAirdrop(
     airdropRaw.claimEnd
   );
   const prices = await getAirdropItemsPrices(airdropRaw, networkId, cache);
-  const items = airdropRaw.items.map((i, index) =>
-    enhanceAirdropItem(i, airdropRaw.id, airdropStatus, prices[index], owner)
-  );
+  const items = airdropRaw.items
+    .map((i, index) =>
+      enhanceAirdropItem(i, airdropRaw.id, airdropStatus, prices[index], owner)
+    )
+    .sort((a, b) => compareName(a.label, b.label));
   return {
     ...airdropRaw,
     owner,
@@ -285,7 +288,7 @@ async function internalRunAirdropFetcher(
   if (airdrop.items.every((i) => !isEligibleAmount(i.amount))) ttl = 172800000;
   else if (airdrop.items.every((i) => i.isClaimed === true)) ttl = 172800000;
 
-  await cache.setItem(`${fetcher.id}_${owner}`, airdrop, {
+  await cache.setItem<AirdropRaw>(`${fetcher.id}_${owner}`, airdrop, {
     ttl,
     prefix: airdropCachePrefix,
     networkId: fetcher.networkId,
