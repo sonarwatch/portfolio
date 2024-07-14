@@ -51,8 +51,10 @@ function asrDeriveClaimStatus(
 
 const fetchAirdropExecutor: AirdropFetcherExecutor = async (owner: string) => {
   const claimsProof: AxiosResponse<AsrResponse> | null = await axios
-    .get(`${asrApi}/${owner}`, { timeout: 1000 })
-    .catch(() => null);
+    .get(`${asrApi}/${owner}`, { timeout: 5000 })
+    .catch(() => {
+      throw new Error('Failed to get asr claim proof');
+    });
   if (
     !claimsProof ||
     !claimsProof.data.claim ||
