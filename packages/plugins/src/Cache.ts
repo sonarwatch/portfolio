@@ -179,6 +179,7 @@ export class Cache {
   }
 
   async getTokenPrices(addresses: string[], networkId: NetworkIdType) {
+    if (addresses.length === 0) return [];
     const fAddresses = addresses.map((a) => formatTokenAddress(a, networkId));
     const ffAddresses = [...new Set(fAddresses)];
     const tokenPriceByAddress: Map<string, TokenPrice | undefined> = new Map();
