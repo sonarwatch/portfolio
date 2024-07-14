@@ -65,6 +65,10 @@ export type Airdrop = {
    */
   id: string;
   /**
+   * The airdrop network id. (e.g. 'solana')
+   */
+  networkId: NetworkIdType;
+  /**
    * A name for the airdrop. Should not container the emitter name. (e.g. 'Season #1')
    */
   name?: string;
@@ -93,10 +97,6 @@ export type Airdrop = {
    */
   claimEnd?: number;
   /**
-   * The airdrop status.
-   */
-  status: AirdropStatus;
-  /**
    * The airdrop items.
    */
   items: AirdropItem[];
@@ -113,10 +113,6 @@ export type AirdropItem = {
    */
   isClaimed: IsClaimed;
   /**
-   * Indicates whether airdrop item has already been claimed by the user.
-   */
-  status: AirdropItemStatus;
-  /**
    * The airdropped item address.
    */
   address?: string;
@@ -130,13 +126,31 @@ export type AirdropItem = {
    */
   label: string;
   /**
+   * The airdropped item image uri.
+   */
+  imageUri?: string;
+};
+
+export type AirdropEnhanced = Omit<Airdrop, 'items'> & {
+  /**
+   * The airdrop status.
+   */
+  status: AirdropStatus;
+  /**
+   * The airdrop items.
+   */
+  items: AirdropItemEnhanced[];
+};
+
+export type AirdropItemEnhanced = AirdropItem & {
+  /**
    * The airdropped item price.
    */
   price: UsdValue;
   /**
-   * The airdropped item image uri.
+   * Indicates whether airdrop item has already been claimed by the user.
    */
-  imageUri?: string;
+  status: AirdropItemStatus;
 };
 
 /**
@@ -148,7 +162,7 @@ export type AirdropFetcherResult = {
   networdkId: NetworkIdType;
   fetcherId: string;
   duration: number;
-  airdrop: Airdrop;
+  airdrop: AirdropEnhanced;
 };
 
 /**
@@ -169,5 +183,5 @@ export type AirdropFetchersResult = {
   owner: string;
   addressSystem: AddressSystemType;
   fetcherReports: AirdropFetcherReport[];
-  airdrops: Airdrop[];
+  airdrops: AirdropEnhanced[];
 };

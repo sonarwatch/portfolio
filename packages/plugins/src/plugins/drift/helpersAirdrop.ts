@@ -12,7 +12,6 @@ import {
   AirdropFetcherExecutor,
   getAirdrop,
 } from '../../AirdropFetcher';
-import { Cache } from '../../Cache';
 
 const driftFactor = new BigNumber(10 ** driftDecimals);
 type AirdropInfo = {
@@ -66,14 +65,9 @@ export async function fetchAirdropInfo(owner: string): Promise<AirdropInfo> {
   };
 }
 
-const fetchAirdropExecutor: AirdropFetcherExecutor = async (
-  owner: string,
-  cache: Cache
-) => {
+const fetchAirdropExecutor: AirdropFetcherExecutor = async (owner: string) => {
   const airdropInfo = await fetchAirdropInfo(owner);
   const { isClaimed, amount } = airdropInfo;
-
-  const driftPrice = await cache.getTokenPrice(driftMint, NetworkId.solana);
 
   return getAirdrop({
     statics: airdropStatics,
@@ -82,7 +76,6 @@ const fetchAirdropExecutor: AirdropFetcherExecutor = async (
         amount,
         label: 'DRIFT',
         address: driftMint,
-        price: driftPrice?.price || null,
         isClaimed,
       },
     ],

@@ -1,10 +1,12 @@
 import {
   AddressSystemType,
   Airdrop,
+  AirdropEnhanced,
   AirdropFetcherReport,
   AirdropFetcherResult,
   AirdropFetchersResult,
   AirdropItem,
+  AirdropItemEnhanced,
   AirdropItemStatus,
   AirdropStatus,
   IsClaimed,
@@ -39,6 +41,101 @@ export type AirdropFetcher = {
   executor: AirdropFetcherExecutor;
 };
 
+export const airdropItemPriceCachePrefix = 'airdropitemprice';
+export async function setAirdropItemPrices(
+  params: {
+    label: string;
+    price: number;
+  }[],
+  networdkId: NetworkIdType,
+  cache: Cache
+) {
+  await cache.setItems(
+    params.map(({ label, price }) => ({
+      key: label,
+      value: price,
+    })),
+    {
+      networkId: networdkId,
+      prefix: airdropItemPriceCachePrefix,
+    }
+  );
+}
+
+async function getAirdropItemPrices(
+  labels: string[],
+  networdkId: NetworkIdType,
+  cache: Cache
+) {
+  const pricesMap: Map<string, UsdValue> = new Map();
+  if (labels.length === 0) return pricesMap;
+
+  const prices = await cache.getItems<number>(labels, {
+    networkId: networdkId,
+    prefix: airdropItemPriceCachePrefix,
+  });
+  prices.forEach((p, i) => {
+    pricesMap.set(labels[i], p || null);
+  });
+  return pricesMap;
+}
+
+async function getAirdropItemsPrices(
+  airdrop: Airdrop,
+  cache: Cache
+): Promise<UsdValue[]> {
+  const addresses: string[] = [];
+  const labels: string[] = [];
+  airdrop.items.forEach((i) => {
+    if (i.address) addresses.push(i.address);
+    else labels.push(i.label);
+  });
+
+  const [tokenPricesMap, pricesMap] = await Promise.all([
+    cache.getTokenPricesAsMap(addresses, airdrop.networkId),
+    getAirdropItemPrices(labels, airdrop.networkId, cache),
+  ]);
+
+  return airdrop.items.map((i) => {
+    if (i.address) {
+      const tPrice = tokenPricesMap.get(i.address);
+      if (tPrice) return tPrice.price;
+    }
+    return pricesMap.get(i.label) || null;
+  });
+}
+
+async function enhanceAirdrop(
+  airdrop: Airdrop,
+  cache: Cache
+): Promise<AirdropEnhanced> {
+  const airdropStatus = getAirdropStatus(airdrop.claimStart, airdrop.claimEnd);
+  const prices = await getAirdropItemsPrices(airdrop, cache);
+  return {
+    ...airdrop,
+    status: airdropStatus,
+    items: airdrop.items.map((i, index) =>
+      enhanceAirdropItem(i, airdropStatus, prices[index])
+    ),
+  };
+}
+
+function enhanceAirdropItem(
+  airdropItem: AirdropItem,
+  airdropStatus: AirdropStatus,
+  price: UsdValue
+): AirdropItemEnhanced {
+  return {
+    ...airdropItem,
+    price,
+    status: getAirdropItemStatus(
+      airdropStatus,
+      airdropItem.amount,
+      airdropItem.isClaimed
+    ),
+  };
+}
+
 const runAirdropFetcherTimeout = 10000;
 
 export async function runAirdropFetchersByNetworkId(
@@ -64,29 +161,21 @@ export function getAirdrop(params: {
   items: {
     amount: number;
     label: string;
-    price: UsdValue;
     imageUri?: string;
     address?: string;
     isClaimed: IsClaimed;
   }[];
 }): Airdrop {
-  const status = getAirdropStatus(
-    params.statics.claimStart,
-    params.statics.claimEnd
-  );
   return {
     ...params.statics,
-    status,
-    items: getAirdropItems(status, params.items),
+    items: getAirdropItems(params.items),
   };
 }
 
 function getAirdropItems(
-  airdropStatus: AirdropStatus,
   items: {
     amount: number;
     label: string;
-    price: UsdValue;
     imageUri?: string;
     address?: string;
     isClaimed: IsClaimed;
@@ -99,8 +188,6 @@ function getAirdropItems(
       isClaimed: isEligible === false ? false : item.isClaimed,
       isEligible,
       label: item.label,
-      price: item.price,
-      status: getAirdropItemStatus(airdropStatus, item.amount, item.isClaimed),
       address: item.address,
       imageUri: item.imageUri,
     };
@@ -157,6 +244,30 @@ export async function runAirdropFetchers(
   };
 }
 
+const airdropCachePrefix = 'airdropraw';
+async function internalRunAirdropFetcher(
+  owner: string,
+  fetcher: AirdropFetcher,
+  cache: Cache
+) {
+  const cachedAirdrop = await cache.getItem<Airdrop>(`${fetcher.id}_${owner}`, {
+    prefix: airdropCachePrefix,
+    networkId: fetcher.networkId,
+  });
+  if (cachedAirdrop) return enhanceAirdrop(cachedAirdrop, cache);
+  const airdrop = await fetcher.executor(owner, cache);
+
+  let ttl = 300000;
+  if (airdrop.items.every((i) => i.isClaimed === true)) ttl = 172800000;
+
+  await cache.setItem(`${fetcher.id}_${owner}`, airdrop, {
+    ttl,
+    prefix: airdropCachePrefix,
+    networkId: fetcher.networkId,
+  });
+  return enhanceAirdrop(airdrop, cache);
+}
+
 export async function runAirdropFetcher(
   owner: string,
   fetcher: AirdropFetcher,
@@ -164,9 +275,8 @@ export async function runAirdropFetcher(
 ): Promise<AirdropFetcherResult> {
   const startDate = Date.now();
   const fOwner = formatAddressByNetworkId(owner, fetcher.networkId);
-  const fetcherPromise = fetcher
-    .executor(fOwner, cache)
-    .then((airdrop): AirdropFetcherResult => {
+  const fetcherPromise = internalRunAirdropFetcher(owner, fetcher, cache).then(
+    (airdrop): AirdropFetcherResult => {
       const now = Date.now();
       return {
         owner: fOwner,
@@ -176,7 +286,8 @@ export async function runAirdropFetcher(
         airdrop,
         date: now,
       };
-    });
+    }
+  );
   return promiseTimeout(
     fetcherPromise,
     runAirdropFetcherTimeout,
@@ -199,7 +310,7 @@ export function airdropFetcherToFetcher(
     ): Promise<PortfolioElementMultiple[]> => {
       if (claimEnd && Date.now() > claimEnd) return [];
 
-      const airdrop = await airdropFetcher.executor(owner, cache);
+      const { airdrop } = await runAirdropFetcher(owner, airdropFetcher, cache);
 
       const assets: (PortfolioAssetGeneric | PortfolioAssetToken)[] = [];
       airdrop.items.forEach((item) => {

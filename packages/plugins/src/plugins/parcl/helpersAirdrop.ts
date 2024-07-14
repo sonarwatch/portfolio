@@ -72,7 +72,6 @@ async function fetchAirdrop(
   client: SolanaClient,
   cache: Cache
 ): Promise<Airdrop> {
-  const prclTokenPrice = await cache.getTokenPrice(prclMint, NetworkId.solana);
   const allocation = await fetchAllocation(owner, cache);
   const amount = !allocation.merkleTree ? 0 : allocation.amount;
 
@@ -99,7 +98,6 @@ async function fetchAirdrop(
         isClaimed,
         label: 'PRCL',
         address: prclMint,
-        price: prclTokenPrice?.price || null,
       },
     ],
   });
