@@ -19,7 +19,7 @@ export const asr1Statics: AirdropStatics = {
   claimLink: 'https://vote.jup.ag/asr',
   image: platformImage,
   emitterLink: platformWebsite,
-  emitterName: platformName,
+  emitterName: 'Jupiter',
   claimStart: 1719792000000,
   claimEnd: 1722470400000,
   name: 'ASR #1',
