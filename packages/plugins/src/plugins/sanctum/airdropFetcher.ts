@@ -7,14 +7,14 @@ import {
 } from '../../AirdropFetcher';
 
 const fetchAirdropExecutor: AirdropFetcherExecutor = async () => {
-  throw new Error('myerror holdium happened');
+  throw new Error('myerror sanctum happened');
   return getAirdropRaw({
     statics: airdropStatics,
     items: [
       {
         amount: 0,
         isClaimed: false,
-        label: 'HM',
+        label: 'CLOUD',
       },
     ],
   });
