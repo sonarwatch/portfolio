@@ -1,3 +1,6 @@
+/* eslint-disable eqeqeq */
+/* eslint-disable operator-assignment */
+/* eslint-disable no-bitwise */
 // input cannot be larger the 2^31
 // this should allow at least 6 digits precision in the fractional part
 // https://stackoverflow.com/questions/45929493/node-js-maximum-safe-floating-point-number
