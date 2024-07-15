@@ -528,6 +528,12 @@ import {
   jobs as echelonJobs,
   fetchers as echelonFetchers,
 } from './plugins/echelon';
+import {
+  platforms as holdiumPlatforms,
+  jobs as holdiumJobs,
+  fetchers as holdiumFetchers,
+  airdropFetcher as holdiumAirdropFetcher,
+} from './plugins/holdium';
 
 export {
   walletTokensPlatform,
@@ -651,6 +657,7 @@ export const platforms: Platform[] = [
   ...famousfoxfederationPlatforms,
   ...nxfinancePlatforms,
   ...echelonPlatforms,
+  ...holdiumPlatforms,
 ];
 
 // JOBS //
@@ -756,6 +763,7 @@ export const jobs: Job[] = [
   ...famousfoxfederationJobs,
   ...nxfinanceJobs,
   ...echelonJobs,
+  ...holdiumJobs,
 ];
 
 // FETCHERS //
@@ -863,6 +871,7 @@ export const fetchers: Fetcher[] = [
   ...famousfoxfederationFetchers,
   ...nxfinanceFetchers,
   ...echelonFetchers,
+  ...holdiumFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
@@ -870,6 +879,7 @@ export const airdropFetchers: AirdropFetcher[] = [
   driftAirdropFetcher,
   parclAirdropFetcher,
   asrAirdropFetcher,
+  holdiumAirdropFetcher,
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);
