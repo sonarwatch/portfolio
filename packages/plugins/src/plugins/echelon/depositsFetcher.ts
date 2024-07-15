@@ -1,29 +1,28 @@
 import {
+  aprToApy,
+  getElementLendingValues,
   NetworkId,
   PortfolioAsset,
   PortfolioElement,
   PortfolioElementType,
   Yield,
-  getElementLendingValues,
-  aprToApy,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
-  platformId,
-  vaultType,
-  marketKey,
-  echelonLendingPackage,
-  stakerType,
   echelonFarmingPackage,
+  echelonLendingPackage,
+  marketKey,
+  platformId,
+  stakerType,
+  vaultType,
 } from './constants';
 import { Market, RewardBalance, UserStaker, UserVault } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getClientAptos } from '../../utils/clients';
 import { getAccountResource, getView } from '../../utils/aptos';
 import { arrayToMap } from '../../utils/misc/arrayToMap';
-import { MoveValue } from '@aptos-labs/ts-sdk';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientAptos();
