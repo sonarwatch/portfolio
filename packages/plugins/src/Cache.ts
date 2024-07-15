@@ -404,7 +404,9 @@ export function getCacheConfig(): CacheConfig {
             .map((base) => ({
               base,
               headers: {
-                Authorization: `Bearer ${publicBearerToken}`,
+                Authorization: `Bearer ${
+                  process.env['CACHE_CONFIG_HTTP_BEARER'] || publicBearerToken
+                }`,
               },
             })),
         },
