@@ -80,6 +80,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       networkId: NetworkId.aptos,
       platformId,
       label: 'Lending',
+      name: 'Vault',
       value,
       data: {
         borrowedAssets,
