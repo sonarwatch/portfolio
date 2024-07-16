@@ -1,5 +1,4 @@
 import { Platform } from '@sonarwatch/portfolio-core';
-import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'sanctum';
 export const platformImage = 'https://sonar.watch/img/platforms/sanctum.webp';
@@ -13,13 +12,3 @@ export const platform: Platform = {
   twitter: 'https://twitter.com/sanctumso',
 };
 export const lstsKey = 'lsts';
-
-export const airdropStatics: AirdropStatics = {
-  id: 'sanctum',
-  claimLink: 'https://app.sanctum.so/wonderland',
-  image: platformImage,
-  emitterLink: platformWebsite,
-  emitterName: 'Sanctum',
-  claimStart: undefined,
-  claimEnd: undefined,
-};

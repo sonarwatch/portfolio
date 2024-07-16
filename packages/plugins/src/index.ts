@@ -507,7 +507,6 @@ import {
   platforms as sanctumPlatforms,
   jobs as sanctumJobs,
   fetchers as sanctumFetchers,
-  airdropFetcher as sanctumAirdropFetcher,
 } from './plugins/sanctum';
 import {
   platforms as allbridgePlatforms,
@@ -871,7 +870,6 @@ export const airdropFetchers: AirdropFetcher[] = [
   ...jupiterAirdropFetchers,
   driftAirdropFetcher,
   parclAirdropFetcher,
-  sanctumAirdropFetcher,
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);
