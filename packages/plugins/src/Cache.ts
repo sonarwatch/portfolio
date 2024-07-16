@@ -1,16 +1,16 @@
-import { Storage, createStorage, StorageValue, Driver } from 'unstorage';
+import { createStorage, Driver, Storage, StorageValue } from 'unstorage';
 import fsDriver from 'unstorage/drivers/fs';
 import redisDriver from 'unstorage/drivers/redis';
 import httpDriver from 'unstorage/drivers/http';
 import {
-  NetworkIdType,
-  TokenPrice,
-  TokenPriceSource,
   formatTokenAddress,
   formatTokenPriceSource,
+  NetworkIdType,
   publicBearerToken,
   pushTokenPriceSource,
+  TokenPrice,
   tokenPriceFromSources,
+  TokenPriceSource,
   tokenPriceSourceTtl,
 } from '@sonarwatch/portfolio-core';
 import overlayDriver from './overlayDriver';
@@ -353,8 +353,7 @@ function getFullKey(key: string, opts: TransactionOptions): string {
 function getFullBase(opts: TransactionOptions) {
   const { networkId, prefix } = opts;
   const networkIdBasePrefix = networkId ? `${networkId.toString()}:` : '';
-  const fullBase = `${prefix}:${networkIdBasePrefix}`;
-  return fullBase;
+  return `${prefix}:${networkIdBasePrefix}`;
 }
 
 function getDriverFromCacheConfig(cacheConfig: CacheConfig) {
@@ -404,7 +403,10 @@ export function getCacheConfig(): CacheConfig {
             .map((base) => ({
               base,
               headers: {
-                Authorization: `Bearer ${publicBearerToken}`,
+                Authorization: `Bearer ${
+                  process.env['CACHE_CONFIG_OVERLAY_HTTP_BEARER'] ||
+                  publicBearerToken
+                }`,
               },
             })),
         },
