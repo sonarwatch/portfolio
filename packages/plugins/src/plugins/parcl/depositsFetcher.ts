@@ -1,7 +1,6 @@
 import {
   NetworkId,
   PortfolioAsset,
-  PortfolioElement,
   PortfolioElementType,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
@@ -69,7 +68,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     usdcSolanaMint,
     NetworkId.solana
   );
-  const elements: PortfolioElement[] = [];
   const assets: PortfolioAsset[] = [];
 
   if (oldLpAccount && !oldLpAccount.liquidity.isZero()) {
@@ -89,14 +87,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         tags: ['depreciated'],
       },
     };
-    elements.push({
-      type: PortfolioElementType.multiple,
-      label: 'Deposit',
-      networkId: NetworkId.solana,
-      platformId,
-      data: { assets: [asset] },
-      value: asset.value,
-    });
+    assets.push(asset);
   }
 
   for (const lpPosition of lpPositions) {
