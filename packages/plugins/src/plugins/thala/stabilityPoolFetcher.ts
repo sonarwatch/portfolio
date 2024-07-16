@@ -106,6 +106,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     platformId: 'thala',
     type: PortfolioElementType.liquidity,
     label: 'Staked',
+    name: 'Stability',
     value,
     data: {
       liquidities,

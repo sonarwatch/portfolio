@@ -7,19 +7,17 @@ import limitFetcher from './exchange/limitFetcher';
 import dcaFetcher from './exchange/dcaFetcher';
 import custodiesJob from './exchange/custodiesJob';
 
-import allocationFetcher from './launchpad/allocationsFetcher';
 import { platform as launchpadPlatform } from './launchpad/constants';
-
 import voteFetcher from './governance/voteFetcher';
 import {
   asr1Statics,
   platform as governancePlatform,
 } from './governance/constants';
-
 import pricingJob from './pricingJob';
 import { platform as exchangePlatform } from './exchange/constants';
-import { airdropFetcherToFetcher } from '../../AirdropFetcher';
+import { AirdropFetcher, airdropFetcherToFetcher } from '../../AirdropFetcher';
 import asrAirdropFetcher from './governance/asrAirdropFetcher';
+import { lfgAirdropFetchers, lfgFetchers } from './launchpad';
 
 export const platforms: Platform[] = [
   launchpadPlatform,
@@ -32,7 +30,6 @@ export const fetchers: Fetcher[] = [
   valueAverageFetcher,
   limitFetcher,
   dcaFetcher,
-  allocationFetcher,
   voteFetcher,
   airdropFetcherToFetcher(
     asrAirdropFetcher,
@@ -40,5 +37,9 @@ export const fetchers: Fetcher[] = [
     `${governancePlatform.id}-asr-1`,
     asr1Statics.claimEnd
   ),
+  ...lfgFetchers,
 ];
-export { asrAirdropFetcher };
+export const airdropFetchers: AirdropFetcher[] = [
+  asrAirdropFetcher,
+  ...lfgAirdropFetchers,
+];
