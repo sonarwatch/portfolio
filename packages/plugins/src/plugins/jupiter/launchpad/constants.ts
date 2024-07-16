@@ -136,4 +136,22 @@ export const airdropConfigs: AirdropConfig[] = [
       name: 'S1',
     },
   },
+  {
+    mint: 'CLoUDKc4Ane7HeQcPpE3YHnznRxhMimJ4MyaUqyHFzAu',
+    decimals: 9,
+    distributorProgram: lfgDisProgram,
+    label: 'CLOUD',
+    platformId,
+    getApiPath: (owner: string) =>
+      `${lfgApiBaseUrl}/CLoUDKc4Ane7HeQcPpE3YHnznRxhMimJ4MyaUqyHFzAu/${owner}`,
+    statics: {
+      claimStart: 1721314800000,
+      claimEnd: undefined,
+      id: 'lfg-sanctum',
+      emitterName: 'Sanctum',
+      emitterLink: 'https://www.sanctum.so/',
+      claimLink: 'https://lfg.jup.ag/sanctum',
+      image: 'https://sonar.watch/img/platforms/sanctum.webp',
+    },
+  },
 ];
