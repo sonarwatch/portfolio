@@ -135,7 +135,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const asset = tokenPriceToAssetToken(
       stakedToken.coinType,
       new BigNumber(stakedToken.amount)
-        .dividedBy(tokenPrice.decimals)
+        .dividedBy(10 ** tokenPrice.decimals)
         .toNumber(),
       NetworkId.aptos,
       tokenPrice
@@ -151,7 +151,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         tokenPriceToAssetToken(
           r.coinType,
           new BigNumber(r.amount)
-            .dividedBy(rewardTokenPrice.decimals)
+            .dividedBy(10 ** rewardTokenPrice.decimals)
             .toNumber(),
           NetworkId.aptos,
           rewardTokenPrice
