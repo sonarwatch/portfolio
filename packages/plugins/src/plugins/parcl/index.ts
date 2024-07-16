@@ -5,6 +5,7 @@ import { platform } from './constants';
 import depositsFetcher from './depositsFetcher';
 import marginFetcher from './marginFetcher';
 import airdropFetcher from './airdropFetcher';
+import stakingFetcher from './stakingFetcher';
 
 export { airdropFetcher } from './helpersAirdrop';
 export const platforms: Platform[] = [platform];
@@ -13,4 +14,5 @@ export const fetchers: Fetcher[] = [
   depositsFetcher,
   marginFetcher,
   airdropFetcher,
+  stakingFetcher,
 ];
