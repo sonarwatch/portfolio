@@ -38,7 +38,7 @@ export const airdropConfigs: AirdropConfig[] = [
       claimStart: 1706659200000,
       claimEnd: 1722430800000,
       id: 'lfg-jup-s1',
-      name: 'Season #1',
+      name: 'S1',
       emitterName: 'Jupiter',
       emitterLink: 'https://jup.ag/',
       claimLink: 'https://lfg.jup.ag/jup',
@@ -133,7 +133,7 @@ export const airdropConfigs: AirdropConfig[] = [
       emitterLink: 'https://app.kamino.finance/',
       claimLink: 'https://app.kamino.finance/genesis',
       image: 'https://sonar.watch/img/platforms/kamino.webp',
-      name: 'Season #1',
+      name: 'S1',
     },
   },
 ];
