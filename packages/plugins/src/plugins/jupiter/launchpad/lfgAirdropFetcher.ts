@@ -28,7 +28,14 @@ export function getLfgAirdropFetcher(aConfig: AirdropConfig): AirdropFetcher {
     if (!claimProof || typeof claimProof.data === 'string')
       return getAirdropRaw({
         statics: aConfig.statics,
-        items: [{ amount: 0, isClaimed: false, label: aConfig.label }],
+        items: [
+          {
+            amount: 0,
+            isClaimed: false,
+            label: aConfig.label,
+            address: aConfig.mint,
+          },
+        ],
       });
 
     const claimStatusAddress = deriveClaimStatus(
