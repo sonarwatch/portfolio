@@ -20,11 +20,6 @@ export const programId = new PublicKey(
 export const allocationApiUrl =
   'https://api.hubbleprotocol.io/v2/airdrop/users/';
 
-export const distributorApi = 'https://api.kamino.finance/distributor/user/';
-
-export const distributorProgram = 'KdisqEcXbXKaTrBFqeDLhMmBvymLTwj9GmhDcdJyGat';
-export const allocationPrefix = `${platformId}/allocation`;
-
 export const klendProgramId = new PublicKey(
   'KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD'
 );

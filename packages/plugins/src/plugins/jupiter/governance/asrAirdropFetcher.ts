@@ -1,16 +1,16 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
 import BigNumber from 'bignumber.js';
-import { asr1Statics, asrApi } from './constants';
+import { asr1Statics, asrApi, jupDisProgram } from './constants';
 import {
   AirdropFetcher,
   AirdropFetcherExecutor,
   getAirdropRaw,
 } from '../../../AirdropFetcher';
-import { AsrResponse, ClaimProofResponse } from '../types';
+import { AsrResponse, ClaimProof } from '../types';
 import { getMultipleAccountsInfoSafe } from '../../../utils/solana/getMultipleAccountsInfoSafe';
 import { getClientSolana } from '../../../utils/clients';
-import { jupDisProgram, jupMint, mainDisProgram } from '../launchpad/constants';
+import { jupMint, lfgDisProgram } from '../launchpad/constants';
 import { deriveClaimStatus } from '../../../utils/solana/jupiter/deriveClaimStatus';
 
 const asr1Items = new Map([
@@ -39,14 +39,11 @@ const ineligibleItems = Array.from(asr1Items).map(([address, { label }]) => ({
   isClaimed: false,
 }));
 
-function asrDeriveClaimStatus(
-  claimant: string,
-  claimProof: ClaimProofResponse
-) {
+function asrDeriveClaimStatus(claimant: string, claimProof: ClaimProof) {
   if (claimProof.mint === jupMint) {
     return deriveClaimStatus(claimant, claimProof.merkle_tree, jupDisProgram);
   }
-  return deriveClaimStatus(claimant, claimProof.merkle_tree, mainDisProgram);
+  return deriveClaimStatus(claimant, claimProof.merkle_tree, lfgDisProgram);
 }
 
 const fetchAirdropExecutor: AirdropFetcherExecutor = async (owner: string) => {

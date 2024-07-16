@@ -5,6 +5,8 @@ export const platformId = 'jupiter-governance';
 const platformName = 'Jupiter Governance';
 const platformImage = 'https://sonar.watch/img/platforms/jupiter.webp';
 const platformWebsite = 'https://vote.jup.ag/';
+
+export const jupDisProgram = 'Dis2TfkFnXFkrtvAktEkw37sdb7qwJgY6H7YZJwk51wK';
 export const platform: Platform = {
   id: platformId,
   name: platformName,

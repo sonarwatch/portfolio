@@ -220,7 +220,7 @@ import {
   platforms as jupiterPlatforms,
   jobs as jupiterJobs,
   fetchers as jupiterFetchers,
-  asrAirdropFetcher,
+  airdropFetchers as jupiterAirdropFetchers,
 } from './plugins/jupiter';
 import {
   platforms as zetaPlatforms,
@@ -877,9 +877,9 @@ export const fetchers: Fetcher[] = [
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
 export const airdropFetchers: AirdropFetcher[] = [
+  ...jupiterAirdropFetchers,
   driftAirdropFetcher,
   parclAirdropFetcher,
-  asrAirdropFetcher,
   holdiumAirdropFetcher,
   sanctumAirdropFetcher,
 ];
