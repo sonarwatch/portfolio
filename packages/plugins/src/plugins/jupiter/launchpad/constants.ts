@@ -88,7 +88,7 @@ export const airdropConfigs: AirdropConfig[] = [
     label: 'SHARKY',
     platformId,
     getApiPath: (owner: string) =>
-      `${lfgApiBaseUrl}/TNSRxcUxoT9xBG3de7PiJyTDYu7kskLqcpddxnEJAS6/${owner}`,
+      `${lfgApiBaseUrl}/SHARKSYJjqaNyxVfrpnBN9pjgkhwDhatnMyicWPnr1s/${owner}`,
     statics: {
       claimStart: 1713225600000,
       claimEnd: 1714435200000,
@@ -106,7 +106,7 @@ export const airdropConfigs: AirdropConfig[] = [
     label: 'UPT',
     platformId,
     getApiPath: (owner: string) =>
-      `${lfgApiBaseUrl}/TNSRxcUxoT9xBG3de7PiJyTDYu7kskLqcpddxnEJAS6/${owner}`,
+      `${lfgApiBaseUrl}/UPTx1d24aBWuRgwxVnFmX4gNraj3QGFzL3QqBgxtWQG/${owner}`,
     statics: {
       claimStart: 1717077600000,
       claimEnd: 1719878400000,
