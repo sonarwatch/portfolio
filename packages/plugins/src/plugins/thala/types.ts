@@ -72,3 +72,23 @@ export enum PoolType {
   WEIGHTED,
   STABLE,
 }
+
+export type Farming = {
+  pool_info: PoolInfo[];
+};
+
+export type PoolInfo = {
+  poolId: string;
+  stake_coin: string;
+  extra_reward_coins: string[];
+};
+
+export type StakeAndRewardAmount = {
+  poolId: number;
+  coinType: string;
+  amount: string;
+  rewards: {
+    amount: string;
+    coinType: string;
+  }[];
+};

@@ -7,7 +7,20 @@ import stakingAprJob from './stakingAprJob';
 import fetcherVaults from './vaultsFetcher';
 import fetcherStab from './stabilityPoolFetcher';
 import { platform } from './constants';
+import farmingPoolsJob from './farmingPoolsJob';
+import vethlFetcher from './vethlFetcher';
+import farmingPoolsFetcher from './farmingPoolsFetcher';
 
 export const platforms: Platform[] = [platform];
-export const jobs: Job[] = [vaultRateJob, lpTokenJob, stakingAprJob];
-export const fetchers: Fetcher[] = [fetcherVaults, fetcherStab];
+export const jobs: Job[] = [
+  vaultRateJob,
+  lpTokenJob,
+  stakingAprJob,
+  farmingPoolsJob,
+];
+export const fetchers: Fetcher[] = [
+  fetcherVaults,
+  fetcherStab,
+  vethlFetcher,
+  farmingPoolsFetcher,
+];
