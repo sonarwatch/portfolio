@@ -283,10 +283,15 @@ async function internalRunAirdropFetcher(
   const airdrop = await fetcher.executor(owner, cache);
 
   // TTL is 120000 ms (2min)
-  // But if ineligible or claimed 172800000 ms (48h)
+  // If ineligible or claimed 172800000 ms (48h)
+  // If not claimable yet 172800000 ms (48h) or until claim start
   let ttl = 120000;
+  const now = Date.now();
   if (airdrop.items.every((i) => !isEligibleAmount(i.amount))) ttl = 172800000;
   else if (airdrop.items.every((i) => i.isClaimed === true)) ttl = 172800000;
+  else if (airdrop.claimStart && airdrop.claimStart > now) {
+    ttl = Math.min(172800000, airdrop.claimStart - now);
+  }
 
   await cache.setItem<AirdropRaw>(`${fetcher.id}_${owner}`, airdrop, {
     ttl,
