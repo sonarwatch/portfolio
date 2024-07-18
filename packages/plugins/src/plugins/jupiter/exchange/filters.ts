@@ -14,7 +14,6 @@ export const limitFilters = (owner: string): GetProgramAccountsFilter[] => [
       bytes: owner,
     },
   },
-  { dataSize: 315 },
 ];
 
 export const DCAFilters = (owner: string): GetProgramAccountsFilter[] => [
