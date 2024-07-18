@@ -1,7 +1,9 @@
+import { publicKey } from '@metaplex-foundation/beet-solana';
 import {
   FixedSizeBeet,
   SupportedTypeDefinition,
 } from '@metaplex-foundation/beet';
+import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { BN } from 'bn.js';
 import Decimal from 'decimal.js';
@@ -18,6 +20,23 @@ function unsignedLargeBeet(byteSize: number, description: string) {
     read(buf: Buffer, offset: number): BigNumber {
       const subarray = buf.subarray(offset, offset + this.byteSize);
       return new BigNumber(new BN(subarray, 'le').toString());
+    },
+    byteSize,
+    description,
+  };
+}
+
+function unsignedLargeBeetStr(byteSize: number, description: string) {
+  return {
+    write(buf: Buffer, offset: number, value: string) {
+      const bn = new BN(value);
+      const bytesArray = bn.toArray('le', this.byteSize);
+      const bytesArrayBuf = Buffer.from(bytesArray);
+      bytesArrayBuf.copy(buf, offset, 0, this.byteSize);
+    },
+    read(buf: Buffer, offset: number): string {
+      const subarray = buf.subarray(offset, offset + this.byteSize);
+      return new BN(subarray, 'le').toString();
     },
     byteSize,
     description,
@@ -83,6 +102,22 @@ export const u64: FixedSizeBeet<BigNumber> = unsignedLargeBeet(8, 'u64');
 export const u128: FixedSizeBeet<BigNumber> = unsignedLargeBeet(16, 'u128');
 export const u256: FixedSizeBeet<BigNumber> = unsignedLargeBeet(32, 'u256');
 export const u512: FixedSizeBeet<BigNumber> = unsignedLargeBeet(64, 'u512');
+
+export const u64Str: FixedSizeBeet<string> = unsignedLargeBeetStr(8, 'u64');
+export const u128Str: FixedSizeBeet<string> = unsignedLargeBeetStr(16, 'u128');
+export const u256Str: FixedSizeBeet<string> = unsignedLargeBeetStr(32, 'u256');
+export const u512Str: FixedSizeBeet<string> = unsignedLargeBeetStr(64, 'u512');
+
+export const publicKeyStr = {
+  write(buf: Buffer, offset: number, value: string) {
+    publicKey.write(buf, offset, new PublicKey(value));
+  },
+  read(buf: Buffer, offset: number): string {
+    return publicKey.read(buf, offset).toString();
+  },
+  byteSize: publicKey.byteSize,
+  description: publicKey.description,
+};
 
 function signedLargeBeet(byteSize: number, description: string) {
   const bitSize = byteSize * 8;
