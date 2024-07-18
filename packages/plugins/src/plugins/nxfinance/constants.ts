@@ -19,7 +19,10 @@ export const leverageFiProgramID = new PublicKey(
   'EHBN9YKtMmrZhj8JZqyBQRGqyyeHw5xUB1Q5eAHszuMt'
 );
 
-export const jlpMint = '27G8MtK7VtTcCHkpASjSDdkWWYfoqT6ggEuKidVJidD4';
+export const leverageVaultsMints = [
+  '27G8MtK7VtTcCHkpASjSDdkWWYfoqT6ggEuKidVJidD4', // JLP
+  'vSoLxydx6akxyMD9XEcPvGYNGq6Nn66oqVb3UkGkei7', // vSOL
+];
 
 export const nxfinanceLeverageIdlItem = {
   programId: leverageFiProgramID.toString(),

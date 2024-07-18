@@ -13,8 +13,8 @@ import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import {
   ID,
-  jlpMint,
   leverageFiProgramID,
+  leverageVaultsMints,
   nxfinanceLeverageIdlItem,
   platformId,
 } from './constants';
@@ -117,7 +117,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         NetworkId.solana,
         tokenPrice
       );
-      if (deposit.tokenMint === jlpMint) {
+      if (leverageVaultsMints.includes(deposit.tokenMint)) {
         suppliedAssets.push(assetToken);
       } else {
         assets.push(assetToken);

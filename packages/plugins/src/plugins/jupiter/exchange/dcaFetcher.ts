@@ -31,13 +31,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const inputMint = account.inputMint.toString();
     const lastAmount = amountByToken.get(inputMint);
     const amountToAdd = account.inDeposited.minus(account.inUsed);
-    if (!lastAmount) {
-      amountByToken.set(inputMint, amountToAdd);
-    } else {
-      const newAmount = lastAmount.plus(amountToAdd);
-      amountByToken.set(inputMint, newAmount);
+    if (!amountToAdd.isZero()) {
+      if (!lastAmount) {
+        amountByToken.set(inputMint, amountToAdd);
+      } else {
+        const newAmount = lastAmount.plus(amountToAdd);
+        amountByToken.set(inputMint, newAmount);
+      }
     }
   }
+
+  if (amountByToken.size === 0) return [];
 
   const tokenPriceById = await cache.getTokenPricesAsMap(
     Array.from(amountByToken.keys()),
@@ -49,7 +53,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const tokenPrice = tokenPriceById.get(token);
     if (!tokenPrice) continue;
     const amount = amountByToken.get(token);
-    if (!amount) continue;
+    if (!amount || amount.isZero()) continue;
     const asset = tokenPriceToAssetToken(
       tokenPrice.address,
       amount.dividedBy(10 ** tokenPrice.decimals).toNumber(),
@@ -58,6 +62,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
     assets.push(asset);
   }
+
+  if (assets.length === 0) return [];
+
   return [
     {
       type: 'multiple',
