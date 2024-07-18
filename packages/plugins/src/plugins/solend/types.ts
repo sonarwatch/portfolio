@@ -107,3 +107,28 @@ export type ReserveRewards = {
     borrow: RewardInfo[];
   };
 };
+
+export type ExternalReward = {
+  rewardMint: string;
+  rewardSymbol: string;
+  reserveID: string;
+  marketID: string;
+  obligationID: string;
+  side: string;
+  tokenMint: string;
+  balance: string;
+  debt: string;
+  score: string;
+  lastSlot: number;
+  lastTx: 'string';
+};
+
+export type Obligation = {
+  obligationID: string;
+  lotNumber: number;
+  index: number;
+  quantity: string;
+  distributorPublicKey: string;
+  name: string;
+  incentivizer: string;
+};

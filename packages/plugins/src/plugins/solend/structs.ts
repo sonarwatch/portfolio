@@ -1,8 +1,8 @@
-import { BeetStruct, u8 } from '@metaplex-foundation/beet';
+import { BeetStruct, bool, u8 } from '@metaplex-foundation/beet';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { blob, u128, u64 } from '../../utils/solana';
+import { blob, i64, u128, u64 } from '../../utils/solana';
 
 export type Fees = {
   borrowFeeWad: BigNumber;
@@ -195,4 +195,23 @@ export const obligationLiquidityStruct = new BeetStruct<ObligationLiquidity>(
     ['padding', blob(32)],
   ],
   (args) => args as ObligationLiquidity
+);
+
+export type ClaimStatus = {
+  buffer: Buffer;
+  isClaimed: boolean;
+  claimant: PublicKey;
+  claimedAt: BigNumber;
+  amount: BigNumber;
+};
+
+export const claimStatusStruct = new BeetStruct<ClaimStatus>(
+  [
+    ['buffer', blob(8)],
+    ['isClaimed', bool],
+    ['claimant', publicKey],
+    ['claimedAt', i64],
+    ['amount', u64],
+  ],
+  (args) => args as ClaimStatus
 );
