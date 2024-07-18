@@ -23,9 +23,6 @@ const executor: JobExecutor = async (cache: Cache) => {
       ...acc,
       pubkey: acc.pubkey.toString(),
     };
-    if (newAcc.baseMint === 'SENDdRQtYMWaQrBroBrJ2Q53fgVuq95CV9UPGEvpCxa') {
-      console.log('newAcc:', newAcc);
-    }
     delete newAcc['buffer'];
     delete newAcc['padding0'];
     delete newAcc['padding'];
