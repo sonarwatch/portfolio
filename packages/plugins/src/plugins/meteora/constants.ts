@@ -12,6 +12,7 @@ export const platform: Platform = {
 
 export const prefixVaults = `${platformId}-vaults`;
 export const farmsKey = 'farms';
+export const dlmmVaultsKey = 'dlmm-vaults-1';
 
 export const vaultsProgramId = new PublicKey(
   '24Uqj9JCLxUeoC3hGfh5W3s9FM9uCHDS2SG3LYwBpyTi'
@@ -27,4 +28,8 @@ export const farmProgramId = new PublicKey(
 
 export const dlmmProgramId = new PublicKey(
   'LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo'
+);
+
+export const dlmmVaultProgramId = new PublicKey(
+  'vaU6kP7iNEGkbmPkLmZfGwiGxd4Mob24QQCie5R9kd2'
 );
