@@ -195,6 +195,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const assets: PortfolioAsset[] = [];
     const rewardAssets: PortfolioAsset[] = [];
+    const tags = [];
     if (
       positionData &&
       (!positionData.totalXAmount.isZero() ||
@@ -280,6 +281,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           yields: [],
         },
       ];
+
+      const activeBinInPosition = positionData.positionBinData.find(
+        (bin) => bin.binXAmount !== '0' && bin.binYAmount !== '0'
+      );
+      if (!activeBinInPosition) tags.push('Out Of Range');
+
       elements.push({
         type: PortfolioElementType.liquidity,
         label: 'LiquidityPool',
@@ -287,6 +294,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         platformId,
         value: getUsdValueSum(liquidities.map((a) => a.value)),
         name: 'DLMM',
+        tags,
         data: {
           liquidities,
         },
