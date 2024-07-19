@@ -11,7 +11,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { PublicKey } from '@solana/web3.js';
-import { blob, i64, u128, u64 } from '../../utils/solana';
+import { blob, i64, publicKeyStr, u128, u64, u64Str } from '../../utils/solana';
 
 export type VaultBumps = {
   vaultBump: number;
@@ -589,4 +589,80 @@ export const binArrayStruct = new BeetStruct<BinArray>(
     ['bins', uniformFixedSizeArray(binStruct, 70)],
   ],
   (args) => args as BinArray
+);
+
+export type Escrow = {
+  buffer: Buffer;
+  dlmmVault: PublicKey;
+  owner: PublicKey;
+  totalDeposit: BigNumber;
+  claimedToken: BigNumber;
+  lastClaimedSlot: BigNumber;
+  refunded: number;
+  padding1: number[];
+  padding: BigNumber[];
+};
+
+export const escrowStruct = new BeetStruct<Escrow>(
+  [
+    ['buffer', blob(8)],
+    ['dlmmVault', publicKey],
+    ['owner', publicKey],
+    ['totalDeposit', u64],
+    ['claimedToken', u64],
+    ['lastClaimedSlot', u64],
+    ['refunded', u8],
+    ['padding1', uniformFixedSizeArray(u8, 7)],
+    ['padding', uniformFixedSizeArray(u128, 2)],
+  ],
+  (args) => args as Escrow
+);
+
+export type DlmmVault = {
+  buffer: Buffer;
+  lbPair: string;
+  tokenVault: string;
+  tokenOutVault: string;
+  quoteMint: string;
+  baseMint: string;
+  base: string;
+  owner: string;
+  maxCap: string;
+  totalDeposit: string;
+  totalEscrow: string;
+  swappedAmount: string;
+  boughtToken: string;
+  totalRefund: string;
+  totalClaimedToken: string;
+  startVestingSlot: string;
+  endVestingSlot: string;
+  bump: number;
+  padding0: number[];
+  padding: Buffer;
+};
+
+export const dlmmVaultStruct = new BeetStruct<DlmmVault>(
+  [
+    ['buffer', blob(8)],
+    ['lbPair', publicKeyStr],
+    ['tokenVault', publicKeyStr],
+    ['tokenOutVault', publicKeyStr],
+    ['quoteMint', publicKeyStr],
+    ['baseMint', publicKeyStr],
+    ['base', publicKeyStr],
+    ['owner', publicKeyStr],
+    ['maxCap', u64Str],
+    ['totalDeposit', u64Str],
+    ['totalEscrow', u64Str],
+    ['swappedAmount', u64Str],
+    ['boughtToken', u64Str],
+    ['totalRefund', u64Str],
+    ['totalClaimedToken', u64Str],
+    ['startVestingSlot', u64Str],
+    ['endVestingSlot', u64Str],
+    ['bump', u8],
+    ['padding0', uniformFixedSizeArray(u8, 7)],
+    ['padding', blob(160)],
+  ],
+  (args) => args as DlmmVault
 );
