@@ -529,6 +529,11 @@ import {
   jobs as echelonJobs,
   fetchers as echelonFetchers,
 } from './plugins/echelon';
+import {
+  platforms as solayerPlatforms,
+  jobs as solayerJobs,
+  fetchers as solayerFetchers,
+} from './plugins/solayer';
 
 export {
   walletTokensPlatform,
@@ -652,6 +657,7 @@ export const platforms: Platform[] = [
   ...famousfoxfederationPlatforms,
   ...nxfinancePlatforms,
   ...echelonPlatforms,
+  ...solayerPlatforms,
 ];
 
 // JOBS //
@@ -757,6 +763,7 @@ export const jobs: Job[] = [
   ...famousfoxfederationJobs,
   ...nxfinanceJobs,
   ...echelonJobs,
+  ...solayerJobs,
 ];
 
 // FETCHERS //
@@ -864,6 +871,7 @@ export const fetchers: Fetcher[] = [
   ...famousfoxfederationFetchers,
   ...nxfinanceFetchers,
   ...echelonFetchers,
+  ...solayerFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
