@@ -8,9 +8,9 @@ export const platform: Platform = {
   image: 'https://sonar.watch/img/platforms/solayer.webp',
   website: 'https://solayer.org/',
   twitter: 'https://x.com/solayer_labs',
-  defiLlamaId: 'solayer', // from https://defillama.com/docs/api
+  defiLlamaId: 'solayer',
 };
-export const poolsCachePrefix = `${platformId}-pools`;
+
 export const programId = new PublicKey(
   'sSo1iU21jBrU9VaJ8PJib1MtorefUV4fzC9GURa2KNn'
 );

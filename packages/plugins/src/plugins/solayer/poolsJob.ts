@@ -94,6 +94,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   accounts.forEach((acc) => {
     const rstMint = acc.rstMint.toString();
     const lstMint = acc.lstMint.toString();
+
     // Ignore Solayer custom RST, already supported above
     if (rstMint === solayerRstMint) return;
 
