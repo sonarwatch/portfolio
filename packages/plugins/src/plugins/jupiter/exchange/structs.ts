@@ -60,6 +60,7 @@ export type LimitOrderV2 = {
   outputMint: PublicKey;
   inputTokenProgram: PublicKey;
   outputTokenProgram: PublicKey;
+  inputMintReserve: PublicKey;
   uniqueId: boolean;
   oriMakingAmount: BigNumber;
   oriTakingAmount: BigNumber;
@@ -82,6 +83,7 @@ export const limitOrderV2Struct = new BeetStruct<LimitOrderV2>(
     ['outputMint', publicKey],
     ['inputTokenProgram', publicKey],
     ['outputTokenProgram', publicKey],
+    ['inputMintReserve', publicKey],
     ['uniqueId', u64],
     ['oriMakingAmount', u64],
     ['oriTakingAmount', u64],
