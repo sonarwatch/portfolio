@@ -7,9 +7,9 @@ import {
 import BigNumber from 'bignumber.js';
 import {
   driftProgram,
+  keySpotMarkets,
   oracleToMintKey,
   platformId,
-  prefixSpotMarkets,
 } from './constants';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { spotMarketStruct } from './struct';
@@ -46,19 +46,16 @@ const executor: JobExecutor = async (cache: Cache) => {
     networkId: NetworkId.solana,
   });
 
+  const spotMarkets: SpotMarketEnhanced[] = [];
   for (let index = 0; index < spotMarketsAccount.length; index++) {
     const spotMarketAccount = spotMarketsAccount[index];
     const depositApr = calculateDepositRate(spotMarketAccount).toNumber();
     const borrowApr = calculateBorrowRate(spotMarketAccount).toNumber();
-    await cache.setItem<SpotMarketEnhanced>(
-      spotMarketsAccount[index].marketIndex.toString(),
-      {
-        ...spotMarketAccount,
-        depositApr,
-        borrowApr,
-      },
-      { prefix: prefixSpotMarkets, networkId: NetworkId.solana }
-    );
+    spotMarkets.push({
+      ...spotMarketAccount,
+      depositApr,
+      borrowApr,
+    });
     const { decimals } = spotMarketAccount;
     const precisionDecrease = new BigNumber(10).pow(
       new BigNumber(19 - decimals)
@@ -110,6 +107,11 @@ const executor: JobExecutor = async (cache: Cache) => {
       }
     );
   }
+
+  await cache.setItem<SpotMarketEnhanced[]>(keySpotMarkets, spotMarkets, {
+    prefix: platformId,
+    networkId: NetworkId.solana,
+  });
 };
 
 const job: Job = {

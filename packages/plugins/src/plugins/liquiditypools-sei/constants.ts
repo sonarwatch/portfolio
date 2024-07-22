@@ -5,7 +5,6 @@ import {
   getTokensInfosV1,
 } from './helpers';
 
-export const pluginId = 'liquidityPools-sei';
 export const seaswapPlatform: Platform = {
   id: 'seaswap',
   name: 'Seaswap',
@@ -22,6 +21,7 @@ export const astroportPlatform: Platform = {
   defiLlamaId: 'astroport',
 };
 
+export const liquidityPoolsKey = 'liquiditypools';
 export const liquidityPoolsInfos: LiquidityPoolsInfo[] = [
   {
     platformId: astroportPlatform.id,

@@ -7,7 +7,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
-import { getBalances } from './helpers';
+import { getBalancesYearn } from './helpers';
 import { Contract } from './types';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
@@ -21,7 +21,7 @@ export default function getYearnStakeBalancesFetcher(
 ): Fetcher {
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const client = getEvmClient(networkId);
-    const balances = await getBalances(
+    const balances = await getBalancesYearn(
       networkId,
       contracts.map((c) => c.address),
       owner

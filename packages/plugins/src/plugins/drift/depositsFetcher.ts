@@ -18,9 +18,9 @@ import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
   driftProgram,
+  keySpotMarkets,
   perpMarketsIndexesKey,
   platformId,
-  prefixSpotMarkets,
 } from './constants';
 import {
   SpotBalanceType,
@@ -56,12 +56,14 @@ import { getMintFromOracle } from './perpHelpers/getMintFromOracle';
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const spotMarketsItems = await cache.getAllItems<SpotMarketEnhanced>({
-    prefix: prefixSpotMarkets,
-    networkId: NetworkId.solana,
-  });
-
-  if (spotMarketsItems.length === 0) return [];
+  const spotMarketsItems = await cache.getItem<SpotMarketEnhanced[]>(
+    keySpotMarkets,
+    {
+      prefix: platformId,
+      networkId: NetworkId.solana,
+    }
+  );
+  if (!spotMarketsItems || spotMarketsItems.length === 0) return [];
 
   const spotMarketByIndex: Map<number, SpotMarketEnhanced> = new Map();
   const tokensMints = [];

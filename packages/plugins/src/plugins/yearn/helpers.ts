@@ -18,7 +18,7 @@ export async function getVaults(config: YearnConfig): Promise<VaultData[]> {
   return allPoolsData;
 }
 
-export async function getBalances(
+export async function getBalancesYearn(
   evmNetworkId: EvmNetworkIdType,
   contracts: string[],
   owner: string

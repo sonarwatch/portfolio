@@ -5,25 +5,22 @@ import {
   PortfolioLiquidity,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
-import { Cache } from '../../../../Cache';
-import { Fetcher } from '../../../../Fetcher';
-import { lpAddressesCachePrefix } from '../../../../utils/misc/constants';
-import { walletTokensPlatform } from '../../constants';
-import { getBalances } from '../../../yearn/helpers';
-import { getLpTag, parseLpTag } from '../../helpers';
-import { getLiquidity } from '../../../../utils/evm/getLiquidity';
+import { getLiquidity } from './getLiquidity';
+import { Fetcher } from '../../Fetcher';
+import { Cache } from '../../Cache';
+import { getLpTag, parseLpTag } from '../../plugins/tokens/helpers';
+import { getBalances } from './getBalances';
 
-export default function getEvmLpFetcher(networkId: EvmNetworkIdType): Fetcher {
+export default function getEvmLpFetcher(
+  id: string,
+  networkId: EvmNetworkIdType,
+  lpAddresses: string[]
+): Fetcher {
   return {
     executor: async (owner: string, cache: Cache) => {
-      const res = await cache.getAllItemsAsMap<string[]>({
-        networkId,
-        prefix: lpAddressesCachePrefix,
-      });
-      const lpAddresses = [...new Set(Array.from(res.values()).flat(1))];
       if (lpAddresses.length === 0) return [];
 
-      const balances = await getBalances(networkId, lpAddresses, owner);
+      const balances = await getBalances(owner, lpAddresses, networkId);
       const nonZeroAddresses = lpAddresses.filter((adress, i) => {
         const balance = balances[i];
         if (!balance) return false;
@@ -70,7 +67,7 @@ export default function getEvmLpFetcher(networkId: EvmNetworkIdType): Fetcher {
       }
       return elements;
     },
-    id: `${walletTokensPlatform.id}-${networkId}-lp`,
+    id,
     networkId,
   };
 }

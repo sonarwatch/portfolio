@@ -231,34 +231,6 @@ export class Cache {
     return res.map((r) => r.value as K);
   }
 
-  /**
-   * @deprecated
-   * This function has been deprecated. Use the getItems.
-   */
-  async getAllItems<K extends StorageValue>(
-    opts: TransactionOptions
-  ): Promise<K[]> {
-    const itemsMap = await this.getAllItemsAsMap<K>(opts);
-    return Array.from(itemsMap.values());
-  }
-
-  /**
-   * @deprecated
-   * This function has been deprecated. Use the getItems.
-   */
-  async getAllItemsAsMap<K extends StorageValue>(
-    opts: TransactionOptions
-  ): Promise<Map<string, K>> {
-    const keys = await this.getKeys(opts);
-    const itemsMap: Map<string, K> = new Map();
-    const items = await this.getItems<K>(keys, opts);
-    for (let i = 0; i < items.length; i += 1) {
-      const item = items[i];
-      if (item !== undefined) itemsMap.set(keys[i], item);
-    }
-    return itemsMap;
-  }
-
   async setItem<K extends StorageValue>(
     key: string,
     value: K,
@@ -325,19 +297,6 @@ export class Cache {
     return this.storage.removeItem(fullKey);
   }
 
-  async getKeys(opts: TransactionOptions) {
-    const fullBase = getFullBase(opts);
-    const keys = await this.storage.getKeys(fullBase);
-    return keys.map((s) => s.substring(fullBase.length));
-  }
-
-  async getTokenPriceAddresses(networkId: NetworkIdType) {
-    return this.getKeys({
-      prefix: tokenPriceSourcePrefix,
-      networkId,
-    });
-  }
-
   async dispose() {
     await this.tokenPriceStorage.dispose();
     return this.storage.dispose();
@@ -350,6 +309,7 @@ function getFullKey(key: string, opts: TransactionOptions): string {
   return `/${prefix}${networkIdKeyPrefix}/${key}`;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function getFullBase(opts: TransactionOptions) {
   const { networkId, prefix } = opts;
   const networkIdBasePrefix = networkId ? `${networkId.toString()}:` : '';

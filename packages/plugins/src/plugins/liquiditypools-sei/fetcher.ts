@@ -9,22 +9,25 @@ import { getCosmWasmClient } from '@sei-js/core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { pluginId } from './constants';
 import { getUrlEndpoint } from '../../utils/clients/constants';
 import { PlatformContracts } from './types';
 import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
 import getQueryBalanceByOwner from '../../utils/sei/getQueryBalanceByOwner';
 import { Balance } from '../../utils/sei';
+import { liquidityPoolsKey } from './constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const cosmWasmClient = await getCosmWasmClient(getUrlEndpoint(NetworkId.sei));
 
   const contractsByPlatform: Map<string, string[]> = new Map();
-  const platformsContracts = await cache.getAllItems<PlatformContracts>({
-    prefix: pluginId,
-    networkId: NetworkId.sei,
-  });
-  if (!platformsContracts) return [];
+  const platformsContracts = await cache.getItem<PlatformContracts[]>(
+    liquidityPoolsKey,
+    {
+      prefix: liquidityPoolsKey,
+      networkId: NetworkId.sei,
+    }
+  );
+  if (!platformsContracts || platformsContracts.length === 0) return [];
 
   const tokenPriceById = await cache.getTokenPricesAsMap(
     platformsContracts
@@ -95,7 +98,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: pluginId,
+  id: 'sei-liquiditypools',
   networkId: NetworkId.sei,
   executor,
 };

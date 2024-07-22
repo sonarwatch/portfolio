@@ -11,7 +11,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { vaultsKey } from './constants';
-import { getBalances } from './helpers';
+import { getBalancesYearn } from './helpers';
 import { VaultData } from './types';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
@@ -27,7 +27,7 @@ export default function getVaultsBalancesFetcher(
     });
     if (!vaults) return [];
 
-    const balances = await getBalances(
+    const balances = await getBalancesYearn(
       networkId,
       vaults.map((v) => v.address),
       owner

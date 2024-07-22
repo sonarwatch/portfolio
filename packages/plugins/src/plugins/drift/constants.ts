@@ -13,7 +13,7 @@ export const platform: Platform = {
   defiLlamaId: 'drift',
   website: platformWebsite,
 };
-export const prefixSpotMarkets = `${platformId}-spotMarkets`;
+export const keySpotMarkets = `spotMarkets`;
 
 export const driftProgram = new PublicKey(
   'dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH'
