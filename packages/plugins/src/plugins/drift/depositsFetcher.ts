@@ -56,6 +56,8 @@ import { getMintFromOracle } from './perpHelpers/getMintFromOracle';
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
+  // Insurance
+
   const spotMarketsItems = await cache.getItem<SpotMarketEnhanced[]>(
     keySpotMarkets,
     {
@@ -63,12 +65,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       networkId: NetworkId.solana,
     }
   );
-  if (!spotMarketsItems || spotMarketsItems.length === 0) return [];
-
   const spotMarketByIndex: Map<number, SpotMarketEnhanced> = new Map();
   const tokensMints = [];
   const insuranceFundStakeAccountsAddresses: PublicKey[] = [];
-  for (const spotMarketItem of spotMarketsItems) {
+  for (const spotMarketItem of spotMarketsItems || []) {
     insuranceFundStakeAccountsAddresses[spotMarketItem.marketIndex] =
       getUserInsuranceFundStakeAccountPublicKey(
         driftProgram,
@@ -91,41 +91,38 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     insuranceFundStakeStruct,
     insuranceFundStakeAccountsAddresses
   );
-
   const elements: PortfolioElement[] = [];
-  if (insuranceAccounts) {
-    const assets: PortfolioAsset[] = [];
-    insuranceAccounts.forEach((account, i) => {
-      if (!account || account.costBasis.isLessThan(0)) return;
-      const mint = spotMarketByIndex.get(i)?.mint.toString();
-      if (!mint) return;
-      const tokenPrice = tokenPriceById.get(mint);
-      if (!tokenPrice) return;
-      assets.push(
-        tokenPriceToAssetToken(
-          mint,
-          account.costBasis.dividedBy(10 ** tokenPrice.decimals).toNumber(),
-          NetworkId.solana,
-          tokenPrice
-        )
-      );
+  const insuranceAssets: PortfolioAsset[] = [];
+  insuranceAccounts.forEach((account, i) => {
+    if (!account || account.costBasis.isLessThan(0)) return;
+    const mint = spotMarketByIndex.get(i)?.mint.toString();
+    if (!mint) return;
+    const tokenPrice = tokenPriceById.get(mint);
+    if (!tokenPrice) return;
+    insuranceAssets.push(
+      tokenPriceToAssetToken(
+        mint,
+        account.costBasis.dividedBy(10 ** tokenPrice.decimals).toNumber(),
+        NetworkId.solana,
+        tokenPrice
+      )
+    );
+  });
+  if (insuranceAssets.length > 0) {
+    elements.push({
+      networkId: NetworkId.solana,
+      label: 'Staked',
+      name: 'Insurance Fund',
+      platformId,
+      type: PortfolioElementType.multiple,
+      value: getUsdValueSum(insuranceAssets.map((a) => a.value)),
+      data: {
+        assets: insuranceAssets,
+      },
     });
-
-    if (assets.length !== 0) {
-      elements.push({
-        networkId: NetworkId.solana,
-        label: 'Staked',
-        name: 'Insurance Fund',
-        platformId,
-        type: PortfolioElementType.multiple,
-        value: getUsdValueSum(assets.map((a) => a.value)),
-        data: {
-          assets,
-        },
-      });
-    }
   }
 
+  // Perps part
   let id = 0;
   const userAccounts: (ParsedAccount<UserAccount> | null)[] = [];
   let parsedAccount;
@@ -145,7 +142,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     id += 10;
   } while (parsedAccount[parsedAccount.length]);
 
-  if (!userAccounts) return elements;
+  if (!userAccounts || userAccounts.length === 0) return elements;
 
   const perpMarketIndexesArr = await cache.getItem<PerpMarketIndexes>(
     perpMarketsIndexesKey,
