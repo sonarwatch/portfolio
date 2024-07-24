@@ -61,7 +61,7 @@ export async function fetchAirdropInfo(owner: string): Promise<AirdropInfo> {
       .dividedBy(driftFactor)
       .toNumber(),
     merkle: res.data.merkle_tree,
-    isClaimed: res.data.unvested_amount === 0,
+    isClaimed: res.data.claimed_amount !== 0,
   };
 }
 
