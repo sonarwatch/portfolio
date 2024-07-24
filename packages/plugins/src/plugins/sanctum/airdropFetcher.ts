@@ -76,7 +76,7 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
   if (claimProofEarn && typeof claimProofEarn.data !== 'string') {
     const earnClaimStatusAddress = deriveClaimStatus(
       owner,
-      claimProofBase.data.merkle_tree,
+      claimProofEarn.data.merkle_tree,
       lfgDisProgram
     );
     const earnClaimStatusAaccount = await client.getAccountInfo(
