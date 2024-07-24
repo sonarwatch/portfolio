@@ -364,8 +364,7 @@ export function getCacheConfig(): CacheConfig {
               base,
               headers: {
                 Authorization: `Bearer ${
-                  process.env['CACHE_CONFIG_OVERLAY_HTTP_BEARER'] ||
-                  publicBearerToken
+                  process.env['CACHE_CONFIG_HTTP_BEARER'] || publicBearerToken
                 }`,
               },
             })),
