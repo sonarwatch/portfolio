@@ -160,7 +160,8 @@ export async function runAirdropFetchersByNetworkId(
   owner: string,
   networkId: NetworkIdType,
   fetchers: AirdropFetcher[],
-  cache: Cache
+  cache: Cache,
+  useCache = true
 ) {
   const isFetchersValids = fetchers.every((f) => f.networkId === networkId);
   if (!isFetchersValids)
@@ -169,7 +170,7 @@ export async function runAirdropFetchersByNetworkId(
     );
 
   const { addressSystem } = networks[networkId];
-  return runAirdropFetchers(owner, addressSystem, fetchers, cache);
+  return runAirdropFetchers(owner, addressSystem, fetchers, cache, useCache);
 }
 
 export type AirdropStatics = Omit<AirdropRaw, 'status' | 'items'>;
@@ -216,7 +217,8 @@ export async function runAirdropFetchers(
   owner: string,
   addressSystem: AddressSystemType,
   fetchers: AirdropFetcher[],
-  cache: Cache
+  cache: Cache,
+  useCache = true
 ): Promise<AirdropFetchersResult> {
   const fOwner = formatAddress(owner, addressSystem);
   const isFetchersValids = fetchers.every(
@@ -227,7 +229,9 @@ export async function runAirdropFetchers(
       `Not all fetchers have the right address system: ${addressSystem}`
     );
 
-  const promises = fetchers.map((f) => runAirdropFetcher(fOwner, f, cache));
+  const promises = fetchers.map((f) =>
+    runAirdropFetcher(fOwner, f, cache, useCache)
+  );
   const result = await Promise.allSettled(promises);
 
   const fReports: AirdropFetcherReport[] = [];
