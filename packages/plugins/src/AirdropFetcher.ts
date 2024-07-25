@@ -274,7 +274,7 @@ async function internalRunAirdropFetcher(
   cache: Cache,
   useCache = true
 ) {
-  if (useCache) {
+  if (useCache === true) {
     const cAirdropRaw = await cache.getItem<AirdropRaw>(
       `${fetcher.id}_${owner}`,
       {
@@ -287,7 +287,7 @@ async function internalRunAirdropFetcher(
   }
   const airdrop = await fetcher.executor(owner, cache);
 
-  if (useCache) {
+  if (useCache === true) {
     // TTL is 120000 ms (2min)
     // If ineligible or claimed 240000 ms (4min)
     // If not claimable yet 240000 ms (4min) or until claim start
