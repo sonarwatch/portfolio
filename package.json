@@ -83,6 +83,7 @@
     "graphql": "^16.8.1",
     "graphql-request": "^6.1.0",
     "ioredis": "^5.4.1",
+    "js-sha256": "^0.11.0",
     "long": "^5.2.3",
     "osmojs": "^16.5.1",
     "reflect-metadata": "^0.1.13",
