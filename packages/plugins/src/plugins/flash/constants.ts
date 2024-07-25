@@ -14,6 +14,9 @@ export const platform: Platform = {
 export const flashPid = new PublicKey(
   'FLASH6Lo6h3iasJKWDs2F8TkW2UKf3s15C8PMGuVfgBn'
 );
+export const flashPerpetuals = new PublicKey(
+  '7DWCtB5Z8rPiyBMKUwqyC95R9tJpbhoQhLM9LbK3Z5QZ'
+);
 
 export const poolsPkeys = [
   new PublicKey('HfF7GCcEc76xubFCHLLXRdYcgRzwjEPdfKWqzRS8Ncog'),
@@ -22,5 +25,6 @@ export const poolsPkeys = [
   new PublicKey('6HukhSeVVLQekKaGJYkwztBacjhKLKywVPrmcvccaYMz'),
 ];
 
+export const custodiesKey = 'custodies';
 export const marketsKey = 'markets';
 export const poolsKey = 'pools';
