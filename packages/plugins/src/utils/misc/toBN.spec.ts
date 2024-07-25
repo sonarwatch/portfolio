@@ -21,6 +21,7 @@ describe('toBN', () => {
   });
 
   it('should throw an error for unsupported types', () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore: Suppression de l'erreur de type pour le test
     expect(() => toBN('12345')).toThrow(
       'Unsupported type for conversion to BN'
