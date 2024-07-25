@@ -282,22 +282,24 @@ async function internalRunAirdropFetcher(
   }
   const airdrop = await fetcher.executor(owner, cache);
 
-  // TTL is 120000 ms (2min)
-  // If ineligible or claimed 240000 ms (4min)
-  // If not claimable yet 240000 ms (4min) or until claim start
-  let ttl = 120000;
-  const now = Date.now();
-  if (airdrop.items.every((i) => !isEligibleAmount(i.amount))) ttl = 240000;
-  else if (airdrop.items.every((i) => i.isClaimed === true)) ttl = 240000;
-  else if (airdrop.claimStart && airdrop.claimStart > now) {
-    ttl = Math.min(240000, airdrop.claimStart - now);
+  if (useCache) {
+    // TTL is 120000 ms (2min)
+    // If ineligible or claimed 240000 ms (4min)
+    // If not claimable yet 240000 ms (4min) or until claim start
+    let ttl = 120000;
+    const now = Date.now();
+    if (airdrop.items.every((i) => !isEligibleAmount(i.amount))) ttl = 240000;
+    else if (airdrop.items.every((i) => i.isClaimed === true)) ttl = 240000;
+    else if (airdrop.claimStart && airdrop.claimStart > now) {
+      ttl = Math.min(240000, airdrop.claimStart - now);
+    }
+    await cache.setItem<AirdropRaw>(`${fetcher.id}_${owner}`, airdrop, {
+      ttl,
+      prefix: airdropCachePrefix,
+      networkId: fetcher.networkId,
+    });
   }
 
-  await cache.setItem<AirdropRaw>(`${fetcher.id}_${owner}`, airdrop, {
-    ttl,
-    prefix: airdropCachePrefix,
-    networkId: fetcher.networkId,
-  });
   return enhanceAirdrop(airdrop, owner, fetcher.networkId, cache);
 }
 
