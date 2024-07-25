@@ -162,7 +162,7 @@ export async function runAirdropFetchersByNetworkId(
   networkId: NetworkIdType,
   fetchers: AirdropFetcher[],
   cache: Cache,
-  useCache = true
+  useCache = false
 ) {
   const isFetchersValids = fetchers.every((f) => f.networkId === networkId);
   if (!isFetchersValids)
@@ -219,7 +219,7 @@ export async function runAirdropFetchers(
   addressSystem: AddressSystemType,
   fetchers: AirdropFetcher[],
   cache: Cache,
-  useCache = true
+  useCache = false
 ): Promise<AirdropFetchersResult> {
   const fOwner = formatAddress(owner, addressSystem);
   const isFetchersValids = fetchers.every(
@@ -272,9 +272,9 @@ async function internalRunAirdropFetcher(
   owner: string,
   fetcher: AirdropFetcher,
   cache: Cache,
-  useCache = true
+  useCache = false
 ) {
-  if (useCache === true) {
+  if (useCache) {
     const cAirdropRaw = await cache.getItem<AirdropRaw>(
       `${fetcher.id}_${owner}`,
       {
@@ -287,7 +287,7 @@ async function internalRunAirdropFetcher(
   }
   const airdrop = await fetcher.executor(owner, cache);
 
-  if (useCache === true) {
+  if (useCache) {
     // TTL is 120000 ms (2min)
     // If ineligible or claimed 240000 ms (4min)
     // If not claimable yet 240000 ms (4min) or until claim start
@@ -312,7 +312,7 @@ export async function runAirdropFetcher(
   owner: string,
   fetcher: AirdropFetcher,
   cache: Cache,
-  useCache = true
+  useCache = false
 ): Promise<AirdropFetcherResult> {
   const startDate = Date.now();
   const fOwner = formatAddressByNetworkId(owner, fetcher.networkId);
@@ -343,7 +343,8 @@ export function airdropFetcherToFetcher(
   airdropFetcher: AirdropFetcher,
   platformId: string,
   id: string,
-  claimEnd?: number
+  claimEnd?: number,
+  useCache = false
 ): Fetcher {
   return {
     id,
@@ -354,7 +355,12 @@ export function airdropFetcherToFetcher(
     ): Promise<PortfolioElementMultiple[]> => {
       if (claimEnd && Date.now() > claimEnd) return [];
 
-      const { airdrop } = await runAirdropFetcher(owner, airdropFetcher, cache);
+      const { airdrop } = await runAirdropFetcher(
+        owner,
+        airdropFetcher,
+        cache,
+        useCache
+      );
 
       const assets: (PortfolioAssetGeneric | PortfolioAssetToken)[] = [];
       airdrop.items.forEach((item) => {
