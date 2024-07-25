@@ -30,6 +30,7 @@ import { Cache } from './Cache';
 import promiseTimeout from './utils/misc/promiseTimeout';
 import { Fetcher } from './Fetcher';
 import tokenPriceToAssetToken from './utils/misc/tokenPriceToAssetToken';
+import runInParallel from './utils/misc/runInParallel';
 
 export type AirdropFetcherExecutor = (
   owner: string,
@@ -229,10 +230,10 @@ export async function runAirdropFetchers(
       `Not all fetchers have the right address system: ${addressSystem}`
     );
 
-  const promises = fetchers.map((f) =>
-    runAirdropFetcher(fOwner, f, cache, useCache)
+  const result = await runInParallel(
+    fetchers.map((f) => () => runAirdropFetcher(fOwner, f, cache, useCache)),
+    5
   );
-  const result = await Promise.allSettled(promises);
 
   const fReports: AirdropFetcherReport[] = [];
   const airdrops = result.flatMap((r, index) => {
