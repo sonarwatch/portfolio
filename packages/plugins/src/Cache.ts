@@ -338,6 +338,18 @@ function getDriverFromCacheConfig(cacheConfig: CacheConfig) {
         tls: cacheConfig.params.tls ? {} : undefined,
         db: cacheConfig.params.db,
         ttl: cacheConfig.params.ttl,
+        connectTimeout: 20000,
+        retryStrategy: (times) => {
+          const delay = Math.min(times * 50, 2000);
+          // eslint-disable-next-line no-console
+          console.error(`PortfolioCache redis reconnecting in ${delay} ms...`);
+          return delay;
+        },
+        reconnectOnError: (err) => {
+          // eslint-disable-next-line no-console
+          console.error('PortfolioCache redis error:', err);
+          return true;
+        },
       }) as Driver;
     case 'http':
       return httpDriver({
