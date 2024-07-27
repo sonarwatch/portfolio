@@ -5,6 +5,7 @@ import poolsJob from './poolsJob';
 import addressJob from './addressJob';
 import marketJob from './marketJob';
 import spoolsMarketJob from './spoolsMarketJob';
+import sCoinJob from './sCoinJob';
 
 import lendingsFetcher from './lendingsFetcher';
 import veScaFetcher from './veScaFetcher';
@@ -12,7 +13,7 @@ import obligationsFetcher from './obligationsFetcher';
 import cnyAidropFetcher from './cnyAirdropFetcher';
 import { platform } from './constants';
 
-export const jobs: Job[] = [addressJob, poolsJob, marketJob, spoolsMarketJob];
+export const jobs: Job[] = [addressJob, poolsJob, marketJob, spoolsMarketJob, sCoinJob];
 export const fetchers: Fetcher[] = [
   lendingsFetcher,
   obligationsFetcher,

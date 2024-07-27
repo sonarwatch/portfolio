@@ -10,10 +10,8 @@ import {
   baseIndexRate,
 } from './constants';
 import { AddressInfo, SpoolCoin, SpoolJobResult } from './types';
-import { getClientSui } from '../../utils/clients';
 import { getObject } from '../../utils/sui/getObject';
-
-const client = getClientSui();
+import { client } from './suiClient';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const address = await cache.getItem<AddressInfo>(addressKey, {

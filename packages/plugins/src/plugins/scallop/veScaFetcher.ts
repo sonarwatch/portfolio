@@ -10,12 +10,11 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId, scaAddress, scaDecimals } from './constants';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
-import { getClientSui } from '../../utils/clients';
 import { multiDynamicFieldObjects } from '../../utils/sui/multiDynamicFieldObjects';
 import { VeSca } from './types/vesca';
+import { client } from './suiClient';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSui();
   const veScaKeys = await getOwnedObjects(client, owner, {
     filter: {
       StructType:
