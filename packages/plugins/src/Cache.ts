@@ -339,6 +339,7 @@ function getDriverFromCacheConfig(cacheConfig: CacheConfig) {
         db: cacheConfig.params.db,
         ttl: cacheConfig.params.ttl,
         connectTimeout: 20000,
+        keepAlive: 10000,
         retryStrategy: (times) => {
           const delay = Math.min(times * 50, 2000);
           // eslint-disable-next-line no-console
