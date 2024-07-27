@@ -4,7 +4,6 @@ import {
   NetworkId,
   PortfolioElementLeverage,
   PortfolioElementType,
-  UniTokenInfo,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
@@ -16,7 +15,6 @@ import { ParsedAccount, getParsedProgramAccounts } from '../../../utils/solana';
 import { perpetualsPositionsFilter } from '../filters';
 import { CustodyInfo, PerpetualPoolInfo } from '../types';
 import { getPythPricesAsMap } from '../../../utils/solana/pyth/helpers';
-import { tokenListsDetailsPrefix } from '../../tokens/constants';
 import {
   custodiesKey,
   perpPoolsKey,
@@ -72,15 +70,6 @@ const executor: FetcherExecutor = async (
   });
 
   const pythPricesByAccount = await getPythPricesAsMap(client, oraclesPubkeys);
-
-  const tokensDetailsById: Map<string, UniTokenInfo> = new Map();
-  const tokensDetails = await cache.getItems<UniTokenInfo>(
-    custodiesAccounts.map((acc) => acc.mint),
-    { prefix: tokenListsDetailsPrefix, networkId: NetworkId.solana }
-  );
-  tokensDetails.forEach((tD) =>
-    tD ? tokensDetailsById.set(tD.address, tD) : undefined
-  );
 
   const levPositions: LevPosition[] = [];
   for (const position of positionAccounts) {
