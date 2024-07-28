@@ -40,6 +40,7 @@
     "reflect-metadata": "^0.1.13",
     "unstorage": "^1.10.2",
     "viem": "^1.16.5",
+    "ioredis": "^5.4.1",
     "web3-v1": "npm:web3@^1.5.0",
     "js-sha256": "^0.11.0"
   }
