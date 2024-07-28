@@ -353,8 +353,9 @@ function getDriverFromCacheConfig(cacheConfig: CacheConfig) {
           return delay;
         },
         reconnectOnError: (err) => {
+          const cacheName = cacheConfig.name ? `(${cacheConfig.name})` : '';
           // eslint-disable-next-line no-console
-          console.error('PortfolioCache redis error:', err);
+          console.error(`PortfolioCache${cacheName} redis error:`, err);
           return true;
         },
       }) as Driver;
