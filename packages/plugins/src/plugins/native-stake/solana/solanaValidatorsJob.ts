@@ -9,7 +9,7 @@ import { Validator, ValidatorsApiResponse } from './types';
 const executor: JobExecutor = async (cache: Cache) => {
   const res = await axios
     .get<unknown, AxiosResponse<ValidatorsApiResponse>>(stakewizApi, {
-      timeout: 2000,
+      timeout: 10000,
     })
     .catch((err) => {
       throw Error(`STAKEWIZ_API ERR: ${err}`);
