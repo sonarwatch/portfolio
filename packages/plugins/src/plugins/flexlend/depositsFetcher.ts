@@ -11,11 +11,11 @@ import { walletTokensPlatform } from '../tokens/constants';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 import { getClientSolana } from '../../utils/clients';
 import { userAccountStruct } from './struct';
-import { obligationStruct } from '../solend/structs';
-import { mainMarket, marketsPrefix, reservesPrefix } from '../solend/constants';
-import { MarketInfo, ReserveInfo, ReserveInfoExtended } from '../solend/types';
+import { obligationStruct } from '../save/structs';
+import { mainMarket, marketsPrefix, reservesPrefix } from '../save/constants';
+import { MarketInfo, ReserveInfo, ReserveInfoExtended } from '../save/types';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
-import { getElementsFromObligations } from '../solend/helpers';
+import { getElementsFromObligations } from '../save/helpers';
 import { marginfiAccountStruct } from '../marginfi/structs/MarginfiAccount';
 import { ParsedAccount } from '../../utils/solana';
 import { BankInfo } from '../marginfi/types';
@@ -46,7 +46,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     driftElements,
     kaminoElements,
     mangoElements,
-    solendObligation,
+    saveObligation,
   ] = await Promise.all([
     isMarginFiActivated
       ? getParsedAccountInfo(
@@ -71,7 +71,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     ...[...driftElements, ...kaminoElements, ...mangoElements]
   );
 
-  if (solendObligation) {
+  if (saveObligation) {
     const mainMarketInfo = await cache.getItem<MarketInfo>(mainMarket, {
       prefix: marketsPrefix,
       networkId: NetworkId.solana,
@@ -117,7 +117,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         }
 
         const solendElements: PortfolioElement[] = getElementsFromObligations(
-          [solendObligation],
+          [saveObligation],
           reserveByAddress,
           new Map([[mainMarket, mainMarketInfo]]),
           tokenPriceByAddress,

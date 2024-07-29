@@ -11,7 +11,7 @@ import {
 } from '../../utils/solana';
 import { platformId, tulipLendingProgramId } from './constants';
 import { lendingReserveStruct } from './structs';
-import { wadsDecimal } from '../solend/constants';
+import { wadsDecimal } from '../save/constants';
 import getLpTokenSourceOld from '../../utils/misc/getLpTokenSourceOld';
 
 const executor: JobExecutor = async (cache: Cache) => {

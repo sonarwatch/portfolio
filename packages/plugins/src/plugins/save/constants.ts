@@ -1,13 +1,13 @@
 import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
-export const platformId = 'solend';
+export const platformId = 'save';
 export const platform: Platform = {
   id: platformId,
-  name: 'Solend',
-  image: 'https://sonar.watch/img/platforms/solend.webp',
-  defiLlamaId: 'solend',
-  website: 'https://solend.fi/',
+  name: 'Save',
+  image: 'https://sonar.watch/img/platforms/save.webp',
+  defiLlamaId: 'save',
+  website: 'https://save.finance/',
 };
 export const marketsPrefix = `${platformId}-markets`;
 export const reservesPrefix = `${platformId}-reserves`;
