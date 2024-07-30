@@ -24,7 +24,6 @@ async function main(owner: string) {
   }
 
   const cache = getCache();
-  await sleep(10000);
   console.log('Fetching...');
   const fetcherResult = await runAirdropFetchers(
     fOwner,
