@@ -29,10 +29,10 @@ import {
   jobs as saberJobs,
 } from './plugins/saber';
 import {
-  platforms as solendPlatforms,
-  jobs as solendJobs,
-  fetchers as solendFetchers,
-} from './plugins/solend';
+  platforms as savePlatforms,
+  jobs as saveJobs,
+  fetchers as saveFetchers,
+} from './plugins/save';
 import {
   platforms as raydiumPlatforms,
   jobs as raydiumJobs,
@@ -565,7 +565,7 @@ export const platforms: Platform[] = [
   ...nativeStakePlatforms,
   ...marinadePlatforms,
   ...saberPlatforms,
-  ...solendPlatforms,
+  ...savePlatforms,
   ...marginfiPlatforms,
   ...raydiumPlatforms,
   ...meteoraPlatforms,
@@ -667,7 +667,7 @@ export const jobs: Job[] = [
   ...thalaJobs,
   ...marginfiJobs,
   ...raydiumJobs,
-  ...solendJobs,
+  ...saveJobs,
   ...meteoraJobs,
   ...orcaJobs,
   ...driftJobs,
@@ -773,7 +773,7 @@ export const fetchers: Fetcher[] = [
   ...tensorFetchers,
   ...marginfiFetchers,
   ...marinadeFetchers,
-  ...solendFetchers,
+  ...saveFetchers,
   ...thalaFetchers,
   ...raydiumFetchers,
   ...orcaFetchers,

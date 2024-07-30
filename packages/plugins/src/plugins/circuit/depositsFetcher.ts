@@ -53,7 +53,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const assets: PortfolioAsset[] = [];
     if (
       depositAccount.lastWithdrawRequest.value.isZero() &&
-      depositAccount.netDeposits.isZero()
+      depositAccount.netDeposits.isLessThanOrEqualTo(0)
     )
       continue;
 

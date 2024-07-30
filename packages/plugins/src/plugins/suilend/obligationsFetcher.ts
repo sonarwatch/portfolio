@@ -27,7 +27,7 @@ import {
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getPoolsRewardsAsMap, getRatesAsMap } from './helpers';
-import { wadsDecimal } from '../solend/constants';
+import { wadsDecimal } from '../save/constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();

@@ -19,7 +19,7 @@ import { obligationsFilter } from './filters';
 import { parseDataflat, parseApy } from './helpers';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
-import { wadsDecimal } from '../solend/constants';
+import { wadsDecimal } from '../save/constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
