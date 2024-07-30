@@ -10,5 +10,4 @@ export { default as getEvmEthersClient } from './getEvmEthersClient';
 export { default as getEvmWeb3V1Client } from './getEvmWeb3V1Client';
 export { default as getEvmClients } from './getEvmClients';
 export { default as urlToRpcEndpoint } from './urlToRpcEndpoint';
-export { default as getEsploraEndpoint } from './getEsploraEndpoint';
 export { default as getMempoolEndpoint } from './getMempoolEndpoint';
