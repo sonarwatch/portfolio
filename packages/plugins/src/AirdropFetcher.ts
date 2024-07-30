@@ -221,6 +221,7 @@ export async function runAirdropFetchers(
   cache: Cache,
   useCache = false
 ): Promise<AirdropFetchersResult> {
+  const startDate = Date.now();
   const fOwner = formatAddress(owner, addressSystem);
   const isFetchersValids = fetchers.every(
     (f) => networks[f.networkId].addressSystem === addressSystem
@@ -258,12 +259,14 @@ export async function runAirdropFetchers(
     if (r.status === 'rejected') return [];
     return r.value.airdrop;
   });
+  const now = Date.now();
   return {
-    date: Date.now(),
+    date: now,
     owner: fOwner,
     addressSystem,
     fetcherReports: fReports,
     airdrops,
+    duration: now - startDate,
   };
 }
 
