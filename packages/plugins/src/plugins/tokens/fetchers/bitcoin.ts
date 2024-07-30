@@ -8,13 +8,13 @@ import {
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { walletTokensPlatform } from '../constants';
-import { getEsploraEndpoint } from '../../../utils/clients';
+import { getMempoolEndpoint } from '../../../utils/clients';
 import { getBalance } from '../../../utils/bitcoin/getBalance';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const esploraEndpoint = await getEsploraEndpoint();
-  const amount = await getBalance(esploraEndpoint, owner);
+  const endpoint = await getMempoolEndpoint();
+  const amount = await getBalance(endpoint, owner);
   if (amount === 0) return [];
 
   const btcTokenPrice = await cache.getTokenPrice(
