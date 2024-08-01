@@ -2,18 +2,12 @@ import { NetworkId, PortfolioAsset } from '@sonarwatch/portfolio-core';
 import request, { gql } from 'graphql-request';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import {
-  distributorPid,
-  distributors,
-  graphqlApi,
-  platformId,
-  zexMint,
-} from './constants';
+import { distributors, graphqlApi, platformId, zexMint } from './constants';
 import { GQLResponse } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getClientSolana } from '../../utils/clients';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
-import { deriveClaimStatuses } from '../../utils/solana/jupiter/deriveClaimStatuses';
+import { deriveZetaClaimStatuses } from './helpers';
 
 const query = gql`
   query GetAirdropFinalFrontend($authority: String!) {
@@ -53,11 +47,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (amount === 0) return [];
 
-  const claimStatuses = deriveClaimStatuses(
-    owner,
-    distributors,
-    distributorPid
-  );
+  const claimStatuses = deriveZetaClaimStatuses(owner, distributors);
 
   const client = getClientSolana();
   const claimStatusesAccount = await getMultipleAccountsInfoSafe(
