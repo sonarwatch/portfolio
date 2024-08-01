@@ -204,4 +204,5 @@ export type AirdropFetchersResult = {
   addressSystem: AddressSystemType;
   fetcherReports: AirdropFetcherReport[];
   airdrops: Airdrop[];
+  duration: number;
 };
