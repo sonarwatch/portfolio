@@ -2,6 +2,7 @@ import {
   getUsdValueSum,
   NetworkId,
   PortfolioAsset,
+  PortfolioElement,
   PortfolioElementType,
   PortfolioLiquidity,
 } from '@sonarwatch/portfolio-core';
@@ -50,7 +51,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       : undefined
   );
 
-  const liquidities: PortfolioLiquidity[] = [];
+  const liquiditiesWithoutRewards: PortfolioLiquidity[] = [];
+  const elementsWithRewards: PortfolioElement[] = [];
   for (let i = 0; i < userFarmAccounts.length; i += 1) {
     const rewardAssets: PortfolioAsset[] = [];
     const assets: PortfolioAsset[] = [];
@@ -114,7 +116,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const value = getUsdValueSum([assetsValue, rewardAssetsValue]);
     if (value === 0) continue;
 
-    const liquidity: PortfolioLiquidity = {
+    if (rewardAssets.length === 0) {
+      liquiditiesWithoutRewards.push({
+        assets,
+        assetsValue,
+        rewardAssets: [],
+        rewardAssetsValue: null,
+        value: assetsValue,
+        yields: [],
+      });
+      continue;
+    }
+
+    const liquidityWithRewards: PortfolioLiquidity = {
       value,
       assets,
       assetsValue,
@@ -122,20 +136,34 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       rewardAssetsValue,
       yields: [],
     };
-    liquidities.push(liquidity);
+    elementsWithRewards.push({
+      networkId: NetworkId.solana,
+      platformId,
+      type: PortfolioElementType.liquidity,
+      label: 'Farming',
+      value: liquidityWithRewards.value,
+      data: {
+        liquidities: [liquidityWithRewards],
+      },
+    });
   }
 
-  if (liquidities.length === 0) return [];
+  if (
+    liquiditiesWithoutRewards.length === 0 &&
+    elementsWithRewards.length === 0
+  )
+    return [];
 
   return [
+    ...elementsWithRewards,
     {
       networkId: NetworkId.solana,
       platformId,
       type: PortfolioElementType.liquidity,
       label: 'Farming',
-      value: getUsdValueSum(liquidities.map((l) => l.value)),
+      value: getUsdValueSum(liquiditiesWithoutRewards.map((l) => l.value)),
       data: {
-        liquidities,
+        liquidities: liquiditiesWithoutRewards,
       },
     },
   ];
