@@ -1,3 +1,5 @@
+import { PublicKey } from '@solana/web3.js';
+
 export interface ApiResponse<T> {
   results: T[];
   next: null;
@@ -123,6 +125,25 @@ export type ExternalReward = {
   lastTx: 'string';
 };
 
+export type RewardStat = {
+  incentivizer: string;
+  lastSlot: number;
+  market: string;
+  mint: string;
+  reserveID: string;
+  rewardMint: string;
+  rewardSymbol: string;
+  rewardsPerShare: string;
+  side: string;
+  tokenMint: string;
+  totalBalance: string;
+  rewardRates: {
+    name: string;
+    beginningSlot: number;
+    rewardRate: number;
+  }[];
+};
+
 export type Obligation = {
   obligationID: string;
   lotNumber: number;
@@ -131,4 +152,33 @@ export type Obligation = {
   distributorPublicKey: string;
   name: string;
   incentivizer: string;
+  distributor: {
+    mint: string;
+  };
+};
+
+export type ClaimData = {
+  name: string;
+  obligationID: string;
+  lotNumber: number;
+  index: number;
+  quantity: string;
+  root: string;
+  proof: Array<string>;
+  distributorPublicKey: PublicKey;
+  optionMarketKey: PublicKey | null;
+  incentivizer: string;
+};
+
+export type FullClaimDataType = ClaimData & {
+  claimed: boolean;
+  claimedAt: number;
+  claimStatusBump: number;
+  accountFunded: boolean;
+  distributor: {
+    mint: PublicKey;
+    bump: number;
+  };
+  claimId: PublicKey;
+  distributorATAPublicKey: PublicKey;
 };
