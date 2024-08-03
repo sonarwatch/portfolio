@@ -5,9 +5,17 @@
 /* eslint-disable no-bitwise */
 import BigNumber from 'bignumber.js';
 import BN from 'bn.js';
-import { PortfolioAssetCollectible } from '@sonarwatch/portfolio-core';
+import {
+  aprToApy,
+  NetworkId,
+  PortfolioAssetCollectible,
+  PortfolioAssetToken,
+  TokenPrice,
+  Yield,
+} from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { AMM_PROGRAM_ID_V3, positionsIdentifier } from './constants';
+import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 export function isARaydiumPosition(nft: PortfolioAssetCollectible): boolean {
   return nft.data.name === positionsIdentifier;
@@ -237,4 +245,42 @@ export function getStakePubKey(owner: string) {
     ],
     AMM_PROGRAM_ID_V3
   )[0];
+}
+
+export function getFarmYield(
+  rewardToken: TokenPrice,
+  rewardPerBlock: BigNumber,
+  tvl: number,
+  slotsPerSec = 2
+): Yield {
+  const apr = rewardPerBlock
+    .div(10 ** rewardToken.decimals)
+    .times(slotsPerSec * 60 * 60 * 24 * 365 * rewardToken.price)
+    .div(tvl)
+    .toNumber();
+  return {
+    apr,
+    apy: aprToApy(apr),
+  };
+}
+
+export function getPendingAssetToken(
+  depositBalance: BigNumber,
+  rewardDebt: BigNumber,
+  perShare: BigNumber,
+  rewardToken: TokenPrice,
+  multiplier: number | BigNumber
+): PortfolioAssetToken {
+  const amount = depositBalance
+    .times(perShare)
+    .div(multiplier)
+    .minus(rewardDebt)
+    .div(10 ** rewardToken.decimals)
+    .toNumber();
+  return tokenPriceToAssetToken(
+    rewardToken.address,
+    amount,
+    NetworkId.solana,
+    rewardToken
+  );
 }

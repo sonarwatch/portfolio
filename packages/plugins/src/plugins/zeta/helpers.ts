@@ -1,6 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { stakingPid } from './constants';
+import { distributorPid, stakingPid } from './constants';
 
 export function getCrossMarginAccount(
   programId: PublicKey,
@@ -70,4 +70,25 @@ export function getTimestamp(stakeDuration: number, startEpoch: number) {
   return timestampOfEpoch0
     .plus((startEpoch + stakeDuration) * oneDay)
     .toNumber();
+}
+
+export function deriveZetaClaimStatus(
+  claimant: string,
+  distributor: string
+): PublicKey {
+  return PublicKey.findProgramAddressSync(
+    [
+      Buffer.from('ClaimStatus'),
+      new PublicKey(distributor).toBytes(),
+      new PublicKey(claimant).toBytes(),
+    ],
+    new PublicKey(distributorPid)
+  )[0];
+}
+
+export function deriveZetaClaimStatuses(
+  claimant: string,
+  distributors: string[]
+): PublicKey[] {
+  return distributors.map((d) => deriveZetaClaimStatus(claimant, d));
 }

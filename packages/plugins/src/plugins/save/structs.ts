@@ -1,4 +1,9 @@
-import { BeetStruct, bool, u8 } from '@metaplex-foundation/beet';
+import {
+  BeetStruct,
+  bool,
+  u8,
+  uniformFixedSizeArray,
+} from '@metaplex-foundation/beet';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
@@ -214,4 +219,31 @@ export const claimStatusStruct = new BeetStruct<ClaimStatus>(
     ['amount', u64],
   ],
   (args) => args as ClaimStatus
+);
+
+export type MerkleDistributor = {
+  buffer: Buffer;
+  base: PublicKey;
+  bump: number;
+  root: number[];
+  mint: PublicKey;
+  maxTotalClaim: BigNumber;
+  maxNumNodes: BigNumber;
+  totalAmountClaimed: BigNumber;
+  numNodesClaimed: BigNumber;
+};
+
+export const merkleDistributorStruct = new BeetStruct<MerkleDistributor>(
+  [
+    ['buffer', blob(8)],
+    ['base', publicKey],
+    ['bump', u8],
+    ['root', uniformFixedSizeArray(u8, 32)],
+    ['mint', publicKey],
+    ['maxTotalClaim', u64],
+    ['maxNumNodes', u64],
+    ['totalAmountClaimed', u64],
+    ['numNodesClaimed', u64],
+  ],
+  (args) => args as MerkleDistributor
 );

@@ -6,7 +6,8 @@ import marketsJob from './marketsJob';
 import obligationFetcher from './obligationsFetcher';
 import { platform } from './constants';
 import rewardsFetcher from './rewardsFetcher';
+import rewardStatsJob from './rewardStatsJob';
 
 export const platforms: Platform[] = [platform];
-export const jobs: Job[] = [marketsJob, reservesJob];
+export const jobs: Job[] = [marketsJob, reservesJob, rewardStatsJob];
 export const fetchers: Fetcher[] = [obligationFetcher, rewardsFetcher];
