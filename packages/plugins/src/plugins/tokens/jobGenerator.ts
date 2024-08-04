@@ -20,6 +20,7 @@ export default function jobGenerator(networkId: NetworkIdType): Job {
       .catch(() => null);
     if (!tokenListResponse) return;
     const tokensData = getTokensData(tokenListResponse.data);
+    tokenListResponse.data.tokens = []; // Free some RAM
     shuffleArray(tokensData);
 
     const setSourcesPromises: Promise<void>[] = [];
