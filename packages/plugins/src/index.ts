@@ -534,6 +534,11 @@ import {
   jobs as solayerJobs,
   fetchers as solayerFetchers,
 } from './plugins/solayer';
+import {
+  platforms as picassoPlatforms,
+  jobs as picassoJobs,
+  fetchers as picassoFetchers,
+} from './plugins/picasso';
 
 export {
   walletTokensPlatform,
@@ -658,6 +663,7 @@ export const platforms: Platform[] = [
   ...nxfinancePlatforms,
   ...echelonPlatforms,
   ...solayerPlatforms,
+  ...picassoPlatforms,
 ];
 
 // JOBS //
@@ -764,6 +770,7 @@ export const jobs: Job[] = [
   ...nxfinanceJobs,
   ...echelonJobs,
   ...solayerJobs,
+  ...picassoJobs,
 ];
 
 // FETCHERS //
@@ -872,6 +879,7 @@ export const fetchers: Fetcher[] = [
   ...nxfinanceFetchers,
   ...echelonFetchers,
   ...solayerFetchers,
+  ...picassoFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 

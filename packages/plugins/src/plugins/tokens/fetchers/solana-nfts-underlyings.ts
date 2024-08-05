@@ -23,13 +23,17 @@ import { DisplayOptions } from '../../../utils/solana/das/types';
 import { heliusAssetToAssetCollectible } from '../../../utils/solana/das/heliusAssetToAssetCollectible';
 import { NftFetcher } from '../types';
 import {
-  whirlpoolProgram,
   platformId as orcaPlatformId,
+  whirlpoolProgram,
 } from '../../orca/constants';
 import {
   clmmPid,
   platformId as cropperPlatformId,
 } from '../../cropper/constants';
+import {
+  getPicassoElementsFromNFTs,
+  isPicassoPosition,
+} from '../../picasso/helpers';
 
 type NftChecker = (nft: PortfolioAssetCollectible) => boolean;
 
@@ -60,6 +64,13 @@ const nftsUnderlyingsMap: Map<
     {
       checker: isAnHeliumNFTVote,
       fetcher: getHeliumElementsFromNFTs,
+    },
+  ],
+  [
+    'picasso',
+    {
+      checker: isPicassoPosition,
+      fetcher: getPicassoElementsFromNFTs,
     },
   ],
 ]);
@@ -99,11 +110,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   }
   const result = await Promise.allSettled(results);
 
-  const elements = result
+  return result
     .map((res) => (res.status === 'rejected' ? [] : res.value))
     .flat();
-
-  return elements;
 };
 
 const fetcher: Fetcher = {
