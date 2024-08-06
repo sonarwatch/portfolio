@@ -9,6 +9,14 @@ export const platform: Platform = {
   defiLlamaId: 'parent#mango-markets',
   website: 'https://mango.markets/',
 };
+
+export const yieldFanPlatformId = 'yieldfan';
+export const yieldFanPlatform: Platform = {
+  id: yieldFanPlatformId,
+  name: 'Yieldfan',
+  image: 'https://sonar.watch/img/platforms/yieldfan.webp',
+  website: 'https://yield.fan/',
+};
 export const banksKey = `banks`;
 export const rootBankPrefix = `${platformId}-rootBank`;
 export const groupPrefix = `${platformId}-group`;

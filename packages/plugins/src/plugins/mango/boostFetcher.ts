@@ -10,7 +10,12 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { boostBanksKey, boostProgramId, platformId } from './constants';
+import {
+  boostBanksKey,
+  boostProgramId,
+  yieldFanPlatformId as platformId,
+  platformId as mangoPlatformId,
+} from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { mangoAccountStruct } from './struct';
 import { boostAccountsFilter } from './filters';
@@ -29,7 +34,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (accounts.length === 0) return [];
 
   const banksDetails = await cache.getItem<BankDetails[]>(boostBanksKey, {
-    prefix: platformId,
+    prefix: mangoPlatformId,
     networkId: NetworkId.solana,
   });
   if (!banksDetails) return [];
@@ -107,12 +112,27 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const { borrowedValue, healthRatio, suppliedValue, value, rewardValue } =
       getElementLendingValues({ suppliedAssets, borrowedAssets, rewardAssets });
 
+    let leverage;
+    if (
+      suppliedAssets[0].data.price &&
+      suppliedAssets[0].data.amount &&
+      value
+    ) {
+      const depositAmount = new BigNumber(value).dividedBy(
+        suppliedAssets[0].data.price
+      );
+      leverage = `${new BigNumber(suppliedAssets[0].data.amount)
+        .dividedBy(depositAmount)
+        .decimalPlaces(2)
+        .toString()}x`;
+    }
+
     const element: PortfolioElement = {
       type: PortfolioElementType.borrowlend,
       networkId: NetworkId.solana,
       platformId,
       label: 'Leverage',
-      name: 'Boost! v2',
+      name: leverage,
       value,
       data: {
         borrowedAssets,
