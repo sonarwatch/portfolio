@@ -85,6 +85,7 @@ export async function getPicassoElementsFromNFTs(
     data: {
       assets,
     },
+    name: `${platformId}-positions`,
   };
   return [element];
 }
