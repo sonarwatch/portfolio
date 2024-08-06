@@ -48,7 +48,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   myVaults.forEach((vault) => {
     const tokenPrice = tokenPrices.get(vault.stakeMint);
-    if (!tokenPrice) return;
+    if (!tokenPrice || !vault.withdrawalRequest) return;
+
+    const unlockingAt = new Date(
+      new BigNumber(vault.withdrawalRequest.timestampInSec)
+        .plus(7 * 24 * 60 * 60)
+        .times(1000)
+        .toNumber()
+    );
+
+    const isClaimable = unlockingAt.getTime() < Date.now();
+
     assets.push(
       tokenPriceToAssetToken(
         vault.stakeMint,
@@ -56,7 +66,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           .dividedBy(10 ** tokenPrice.decimals)
           .toNumber(),
         NetworkId.solana,
-        tokenPrice
+        tokenPrice,
+        undefined,
+        {
+          isClaimable,
+          lockedUntil: unlockingAt.getTime(),
+        }
       )
     );
   });
@@ -73,7 +88,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       data: {
         assets,
       },
-      tags: ['Unstaking'],
     },
   ];
 };
