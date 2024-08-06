@@ -74,9 +74,10 @@ export async function getLpTokenPrice(
     })),
   ];
   const data = Buffer.concat([anchorSighash('global', 'getLpTokenPrice')]);
+  const recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
   const messageV0 = new TransactionMessage({
     payerKey: new PublicKey(emptyWithSol),
-    recentBlockhash: (await connection.getLatestBlockhash()).blockhash,
+    recentBlockhash,
     instructions: [
       new TransactionInstruction({
         keys,
