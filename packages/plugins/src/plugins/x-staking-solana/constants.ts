@@ -27,6 +27,14 @@ export const allbridgePlatform: Platform = {
   twitter: 'https://twitter.com/Allbridge_io',
 };
 
+export const ligmaPlatformId = 'ligma';
+export const ligmaPlatform: Platform = {
+  id: allbridgePlatformId,
+  name: 'Ligma',
+  image: 'https://sonar.watch/img/platforms/ligma.webp',
+  website: 'https://stake.ligmanode.com/',
+  twitter: 'https://twitter.com/ligmanode',
+};
 export const xStakingConfigs: StakingConfig[] = [
   {
     mint: auryMint,
@@ -67,6 +75,14 @@ export const xStakingConfigs: StakingConfig[] = [
     xMint: 'xHWKW3Yyji9xe6FnTmDqu3rBApt3Ysu5ysywUA85Len',
     xDecimals: 6,
     platformId: hawksightPlatformId,
+  },
+  {
+    mint: 'node3SHFNF7h6N9jbztfVcXrZcvAJdns1xAV8CbYFLG',
+    decimals: 6,
+    vault: 'ENz6c4ZVYedrcK5V4fh7vwDA1SvZDNDQb1j3KKQbbo8Q',
+    xMint: 'xNodeyB1u8WNrKQJqfucbKDMq7LYcAQfYXmqVdDj9M5',
+    xDecimals: 6,
+    platformId: ligmaPlatformId,
   },
 ];
 
