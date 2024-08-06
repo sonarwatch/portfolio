@@ -123,7 +123,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           xflxTokenPrice
         ),
         attributes: {
-          tags: ['unstaking'],
+          tags: ['Unstaking'],
           lockedUntil: unlockingAt,
         },
       };
