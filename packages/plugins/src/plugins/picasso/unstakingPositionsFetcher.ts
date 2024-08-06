@@ -88,6 +88,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       data: {
         assets,
       },
+      name: `${platformId}-positions`,
     },
   ];
 };
