@@ -296,7 +296,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             suppliedAssets,
             suppliedValue,
             suppliedYields,
-            healthRatio: healthRatio ? 1 + healthRatio : healthRatio,
+            healthRatio,
             rewardAssets,
             rewardValue,
             value,
