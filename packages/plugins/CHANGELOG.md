@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.12.118](https://github.com/sonarwatch/portfolio/compare/plugins-0.12.117...plugins-0.12.118) (2024-08-06)
+
+
+### Reverts
+
+* Revert "quick fix" ([8bc6088](https://github.com/sonarwatch/portfolio/commit/8bc60880781fa62359ed79132aa56660a770ea67))
+
+
+
+## [0.12.117](https://github.com/sonarwatch/portfolio/compare/plugins-0.12.116...plugins-0.12.117) (2024-08-06)
+
+
+
 ## [0.12.116](https://github.com/sonarwatch/portfolio/compare/plugins-0.12.115...plugins-0.12.116) (2024-08-06)
 
 

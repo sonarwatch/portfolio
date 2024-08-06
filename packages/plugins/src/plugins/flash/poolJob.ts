@@ -12,7 +12,7 @@ import {
 import { walletTokensPlatform } from '../tokens/constants';
 import { CustodyInfo, PoolInfo } from './types';
 import { getLpTokenPrice } from './helpers';
-import { fetchTokenSupplyAndDecimals } from '../../utils/solana/fetchTokenSupplyAndDecimals';
+import { getDecimals } from '../../utils/solana/getDecimals';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -38,22 +38,15 @@ const executor: JobExecutor = async (cache: Cache) => {
     const pool = poolsAccounts[i];
     if (!pool) continue;
 
-    const res = await fetchTokenSupplyAndDecimals(pool.flpMint, client);
-    if (!res) continue;
-
-    const { supply, decimals } = res;
-    const lpPrice =
-      (await getLpTokenPrice(
-        client,
-        pool,
-        pool.custodies.map(
-          (c) => custodyAccounts.get(c.toString())?.oracle.oracleAccount || ''
-        )
-      )) ??
-      pool.aumUsd
-        .dividedBy(10 ** decimals)
-        .dividedBy(supply)
-        .toNumber();
+    const lpPrice = await getLpTokenPrice(
+      client,
+      pool,
+      pool.custodies.map(
+        (c) =>
+          custodyAccounts.get(c.toString())?.oracle.customOracleAccount || ''
+      )
+    );
+    const decimals = await getDecimals(client, pool.flpMint);
 
     if (decimals && lpPrice) {
       await cache.setTokenPriceSource({
@@ -93,6 +86,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-pools`,
   executor,
-  label: 'normal',
+  label: 'realtime',
 };
 export default job;
