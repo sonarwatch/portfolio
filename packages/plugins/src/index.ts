@@ -90,7 +90,7 @@ import {
   platforms as driftPlatforms,
   jobs as driftJobs,
   fetchers as driftFetchers,
-  // airdropFetcher as driftAirdropFetcher,
+  airdropFetcher as driftAirdropFetcher,
 } from './plugins/drift';
 import {
   platforms as mangoPlatforms,
@@ -220,7 +220,7 @@ import {
   platforms as jupiterPlatforms,
   jobs as jupiterJobs,
   fetchers as jupiterFetchers,
-  // airdropFetchers as jupiterAirdropFetchers,
+  airdropFetchers as jupiterAirdropFetchers,
 } from './plugins/jupiter';
 import {
   platforms as zetaPlatforms,
@@ -291,7 +291,7 @@ import {
   platforms as parclPlatforms,
   jobs as parclJobs,
   fetchers as parclFetchers,
-  // airdropFetcher as parclAirdropFetcher,
+  airdropFetcher as parclAirdropFetcher,
 } from './plugins/parcl';
 import {
   platforms as pythPlatforms,
@@ -507,7 +507,7 @@ import {
   platforms as sanctumPlatforms,
   jobs as sanctumJobs,
   fetchers as sanctumFetchers,
-  // airdropFetcher as sanctumAirdropFetcher,
+  airdropFetcher as sanctumAirdropFetcher,
 } from './plugins/sanctum';
 import {
   platforms as allbridgePlatforms,
@@ -534,7 +534,6 @@ import {
   jobs as solayerJobs,
   fetchers as solayerFetchers,
 } from './plugins/solayer';
-import { airdropFetcher as fooAirdropFetcher } from './plugins/foo';
 import {
   platforms as picassoPlatforms,
   jobs as picassoJobs,
@@ -885,11 +884,10 @@ export const fetchers: Fetcher[] = [
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
 export const airdropFetchers: AirdropFetcher[] = [
-  // ...jupiterAirdropFetchers,
-  // driftAirdropFetcher,
-  // parclAirdropFetcher,
-  // sanctumAirdropFetcher,
-  fooAirdropFetcher,
+  ...jupiterAirdropFetchers,
+  driftAirdropFetcher,
+  parclAirdropFetcher,
+  sanctumAirdropFetcher,
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);
