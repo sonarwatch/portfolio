@@ -100,7 +100,7 @@ export const lendingConfigs: Map<string, LendingMarketConfig> = new Map([
 export const marketsKey = `markets`;
 export const reservesKey = `reserves`;
 export const airdropStaticsS2: AirdropStatics = {
-  claimStart: 1721400000000,
+  claimStart: 1724340000000,
   claimEnd: undefined,
   id: 'kamino-s2',
   emitterName: 'Kamino',
