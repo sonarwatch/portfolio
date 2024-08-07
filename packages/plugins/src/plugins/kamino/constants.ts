@@ -1,6 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 import { LendingMarketConfig } from './types';
+import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'kamino';
 export const platform: Platform = {
@@ -98,3 +99,13 @@ export const lendingConfigs: Map<string, LendingMarketConfig> = new Map([
 
 export const marketsKey = `markets`;
 export const reservesKey = `reserves`;
+export const airdropStaticsS2: AirdropStatics = {
+  claimStart: 1721400000000,
+  claimEnd: undefined,
+  id: 'kamino-s2',
+  emitterName: 'Kamino',
+  emitterLink: 'https://app.kamino.finance/',
+  claimLink: 'https://app.kamino.finance/season-2-airdrop',
+  image: 'https://sonar.watch/img/platforms/kamino.webp',
+  name: 'S2',
+};

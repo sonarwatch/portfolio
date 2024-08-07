@@ -130,6 +130,7 @@ import {
   jobs as kaminoJobs,
   fetchers as kaminoFetchers,
   platforms as kaminoPlatforms,
+  airdropFetchers as kaminoAirdropFetchers,
 } from './plugins/kamino';
 import {
   fetchers as bucketFetchers,
@@ -885,6 +886,7 @@ export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
 export const airdropFetchers: AirdropFetcher[] = [
   ...jupiterAirdropFetchers,
+  ...kaminoAirdropFetchers,
   driftAirdropFetcher,
   parclAirdropFetcher,
   sanctumAirdropFetcher,
