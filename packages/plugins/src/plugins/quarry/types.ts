@@ -10,6 +10,7 @@ export type DetailedTokenInfo = TokenInfo & {
   chainId: number;
   name: string;
   symbol: string;
+  logoURI: string;
 };
 
 export type Quarry = {

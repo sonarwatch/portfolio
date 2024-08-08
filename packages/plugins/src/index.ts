@@ -545,6 +545,11 @@ import {
   jobs as quarryJobs,
   fetchers as quarryFetchers,
 } from './plugins/quarry';
+import {
+  platforms as thevaultPlatforms,
+  jobs as thevaultJobs,
+  fetchers as thevaultFetchers,
+} from './plugins/thevault';
 
 export {
   walletTokensPlatform,
@@ -671,6 +676,7 @@ export const platforms: Platform[] = [
   ...solayerPlatforms,
   ...picassoPlatforms,
   ...quarryPlatforms,
+  ...thevaultPlatforms,
 ];
 
 // JOBS //
@@ -779,6 +785,7 @@ export const jobs: Job[] = [
   ...solayerJobs,
   ...picassoJobs,
   ...quarryJobs,
+  ...thevaultJobs,
 ];
 
 // FETCHERS //
@@ -889,6 +896,7 @@ export const fetchers: Fetcher[] = [
   ...solayerFetchers,
   ...picassoFetchers,
   ...quarryFetchers,
+  ...thevaultFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 

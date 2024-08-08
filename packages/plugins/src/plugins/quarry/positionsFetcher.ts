@@ -8,7 +8,14 @@ import {
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
-import { mineIdlItem, platformId, rewardersCacheKey } from './constants';
+import {
+  mineIdlItem,
+  platform,
+  platformId,
+  rewardersCacheKey,
+} from './constants';
+import { platformId as thevaultPlatformId } from '../thevault/constants';
+import { platformId as saberPlatformId } from '../saber/constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
 import { getAutoParsedMultipleAccountsInfo } from '../../utils/solana';
@@ -16,6 +23,7 @@ import { getQuarryData } from './helpers';
 import { Miner, Rewarder } from './types';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
 
 const rewardersMemo = new MemoizedCache<Rewarder[]>(rewardersCacheKey, {
   prefix: platformId,
@@ -82,19 +90,34 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const stakedTokenPrice = tokenPrices.get(quarry.stakedToken.mint);
 
-    assets.push({
-      ...tokenPriceToAssetToken(
-        stakedTokenPrice?.address || quarry.stakedToken.mint,
-        new BigNumber(account.balance)
-          .dividedBy(
-            10 ** (stakedTokenPrice?.decimals || quarry.stakedToken.decimals)
-          )
-          .toNumber(),
-        NetworkId.solana,
-        stakedTokenPrice
-      ),
-      name: quarry.primaryTokenInfo.symbol,
-    });
+    if (stakedTokenPrice)
+      assets.push(
+        ...tokenPriceToAssetTokens(
+          stakedTokenPrice.address,
+          new BigNumber(account.balance)
+            .dividedBy(10 ** stakedTokenPrice.decimals)
+            .toNumber(),
+          NetworkId.solana,
+          stakedTokenPrice
+        )
+      );
+    else {
+      assets.push({
+        networkId: NetworkId.solana,
+        type: 'token',
+        value: null,
+        attributes: {},
+        name: quarry.primaryTokenInfo.symbol,
+        data: {
+          amount: new BigNumber(account.balance)
+            .dividedBy(10 ** quarry.primaryTokenInfo.decimals)
+            .toNumber(),
+          address: quarry.stakedToken.mint,
+          price: null,
+        },
+        imageUri: quarry.primaryTokenInfo.logoURI,
+      });
+    }
 
     const rewardTokenPrice = tokenPrices.get(rewarder.rewardsTokenInfo.address);
     if (account.rewardsEarned !== '0' && rewardTokenPrice) {
@@ -114,13 +137,27 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const rewardAssetsValue = getUsdValueSum(rewardAssets.map((a) => a.value));
     const value = assetsValue;
 
+    let elementPlatformId;
+
+    switch (rewarder.slug) {
+      case 'vault':
+        elementPlatformId = thevaultPlatformId;
+        break;
+      case 'saber':
+        elementPlatformId = saberPlatformId;
+        break;
+      default:
+        elementPlatformId = platformId;
+    }
+
     elements.push({
       networkId: NetworkId.solana,
       label: 'Deposit',
-      platformId,
+      platformId: elementPlatformId,
       type: PortfolioElementType.liquidity,
       value,
-      name: rewarder.info?.name,
+      name:
+        elementPlatformId === platformId ? rewarder.info?.name : platform.name,
       data: {
         liquidities: [
           {
