@@ -1,4 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
+import { ParsedAccount } from '../../utils/solana';
 
 export type TokenInfo = {
   decimals: number;
@@ -23,6 +24,9 @@ export type Quarry = {
   replicaMint: string;
   slug: string;
   stakedToken: TokenInfo;
+  replicaQuarries: {
+    quarry: string;
+  }[];
 };
 
 export type RewardersApiRes = {
@@ -60,4 +64,36 @@ export type Miner = {
   rewardsPerTokenPaid: string;
   balance: string;
   index: string;
+};
+
+export type MergeMiner = {
+  pool: string;
+  owner: string;
+  bump: number;
+  index: string;
+  primaryBalance: string;
+  replicaBalance: string;
+};
+
+export type Position = {
+  account: ParsedAccount<Miner> | ParsedAccount<MergeMiner>;
+  rewarders: Rewarder[];
+  rewardsToken: string[];
+  stakedBalance: string;
+  stakedTokenInfo: DetailedTokenInfo;
+};
+
+export type QuarryPDA = {
+  primaryQuarry: PublicKey;
+  mm: PublicKey;
+  rewarder: PublicKey;
+  replicas: {
+    rewardsMint: PublicKey;
+    replicaMMMiner: PublicKey;
+    rewarder: PublicKey;
+    replicaQuarry: PublicKey;
+  }[];
+  ownerMiner: PublicKey;
+  mmMiner: PublicKey;
+  rewardsToken: PublicKey;
 };

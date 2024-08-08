@@ -2,6 +2,7 @@ import { Platform } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { IdlItem } from '@solanafm/explorer-kit-idls';
 import { mineIdl } from './mineIdl';
+import { mergeMineIdl } from './mergeMineIdl';
 
 export const platformId = 'quarry';
 export const platform: Platform = {
@@ -24,5 +25,11 @@ export const mineProgramId = new PublicKey(
 export const mineIdlItem = {
   programId: mineProgramId.toString(),
   idl: mineIdl,
+  idlType: 'anchor',
+} as IdlItem;
+
+export const mergeMineIdlItem = {
+  programId: mergeMineProgramId.toString(),
+  idl: mergeMineIdl,
   idlType: 'anchor',
 } as IdlItem;
