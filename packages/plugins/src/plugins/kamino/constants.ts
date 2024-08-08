@@ -93,7 +93,18 @@ export const lendingConfigs: Map<string, LendingMarketConfig> = new Map([
       ],
     },
   ],
-  ['DxXdAyU3kCjnyggvHmY5nAwg5cRbbmdyX3npfDMjjMek', { name: 'JLP Market' }],
+  [
+    'DxXdAyU3kCjnyggvHmY5nAwg5cRbbmdyX3npfDMjjMek',
+    {
+      name: 'JLP Market',
+      multiplyPairs: [
+        [
+          '27G8MtK7VtTcCHkpASjSDdkWWYfoqT6ggEuKidVJidD4',
+          'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+        ],
+      ],
+    },
+  ],
   ['ByYiZxp8QrdN9qbdtaAiePN8AAr3qvTPppNJDpf5DVJ5', { name: 'Altcoins Market' }],
 ]);
 

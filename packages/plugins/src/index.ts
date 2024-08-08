@@ -540,6 +540,16 @@ import {
   jobs as picassoJobs,
   fetchers as picassoFetchers,
 } from './plugins/picasso';
+import {
+  platforms as quarryPlatforms,
+  jobs as quarryJobs,
+  fetchers as quarryFetchers,
+} from './plugins/quarry';
+import {
+  platforms as thevaultPlatforms,
+  jobs as thevaultJobs,
+  fetchers as thevaultFetchers,
+} from './plugins/thevault';
 
 export {
   walletTokensPlatform,
@@ -665,6 +675,8 @@ export const platforms: Platform[] = [
   ...echelonPlatforms,
   ...solayerPlatforms,
   ...picassoPlatforms,
+  ...quarryPlatforms,
+  ...thevaultPlatforms,
 ];
 
 // JOBS //
@@ -772,6 +784,8 @@ export const jobs: Job[] = [
   ...echelonJobs,
   ...solayerJobs,
   ...picassoJobs,
+  ...quarryJobs,
+  ...thevaultJobs,
 ];
 
 // FETCHERS //
@@ -881,6 +895,8 @@ export const fetchers: Fetcher[] = [
   ...echelonFetchers,
   ...solayerFetchers,
   ...picassoFetchers,
+  ...quarryFetchers,
+  ...thevaultFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
