@@ -4,13 +4,19 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import {
   AirdropFetcher,
   AirdropFetcherExecutor,
+  airdropFetcherToFetcher,
   getAirdropRaw,
 } from '../../AirdropFetcher';
 import { deriveClaimStatus } from '../../utils/solana/jupiter/deriveClaimStatus';
 import { getClientSolana } from '../../utils/clients';
 import { ClaimProofResponse } from '../jupiter/types';
 import { lfgApiBaseUrl, lfgDisProgram } from '../jupiter/launchpad/constants';
-import { airdropStatics, cloudMint, cloudDecimals } from './constants';
+import {
+  s1AirdropStatics,
+  cloudMint,
+  cloudDecimals,
+  platform,
+} from './constants';
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
   const claimProofBase: AxiosResponse<ClaimProofResponse> | null = await axios
@@ -28,7 +34,7 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
     });
   if (!claimProofBase || typeof claimProofBase.data === 'string')
     return getAirdropRaw({
-      statics: airdropStatics,
+      statics: s1AirdropStatics,
       items: [
         {
           amount: 0,
@@ -93,15 +99,20 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
   }
 
   return getAirdropRaw({
-    statics: airdropStatics,
+    statics: s1AirdropStatics,
     items,
   });
 };
 
-const airdropFetcher: AirdropFetcher = {
-  id: airdropStatics.id,
+export const airdropFetcher: AirdropFetcher = {
+  id: s1AirdropStatics.id,
   networkId: NetworkId.solana,
   executor,
 };
 
-export default airdropFetcher;
+export const fetcher = airdropFetcherToFetcher(
+  airdropFetcher,
+  platform.id,
+  `${platform.id}-airdrop`,
+  s1AirdropStatics.claimEnd
+);

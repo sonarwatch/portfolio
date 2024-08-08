@@ -3,16 +3,13 @@ import { Fetcher } from '../../Fetcher';
 import { Job } from '../../Job';
 import { platform } from './constants';
 import lstsJob from './lstsJob';
-import airdropFetcher from './airdropFetcher';
+import {
+  airdropFetcher as s1AirdropFetcher,
+  fetcher as s1Fetcher,
+} from './s1AirdropFetcher';
+import { AirdropFetcher } from '../../AirdropFetcher';
 
 export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [lstsJob];
-export const fetchers: Fetcher[] = [
-  // airdropFetcherToFetcher(
-  //   airdropFetcher,
-  //   platform.id,
-  //   `${platform.id}-airdrop`,
-  //   airdropStatics.claimEnd
-  // ),
-];
-export { airdropFetcher };
+export const fetchers: Fetcher[] = [s1Fetcher];
+export const airdropFetchers: AirdropFetcher[] = [s1AirdropFetcher];
