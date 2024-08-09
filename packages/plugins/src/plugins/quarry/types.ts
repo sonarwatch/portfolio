@@ -97,3 +97,8 @@ export type QuarryPDA = {
   mmMiner: PublicKey;
   rewardsToken: PublicKey;
 };
+
+export type Redeemer = {
+  iouMint: string;
+  redemptionMint: string;
+};

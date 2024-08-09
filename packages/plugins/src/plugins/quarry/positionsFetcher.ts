@@ -9,6 +9,7 @@ import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import {
+  IOUTokensElementName,
   mergeMineIdlItem,
   mineIdlItem,
   platform,
@@ -172,16 +173,21 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     rewardsToken.forEach((rewardToken: string, i: number) => {
       // mergeMiner are not supported
-      if (i > 0 || !isMinerAccount(account)) return;
+      if (!isMinerAccount(account)) return;
+      // only primaryReward is supported
+      if (i > 0) return;
 
-      if (!account?.rewardsEarned) return;
+      if (account?.rewardsEarned === '0') return;
 
       const rewardTokenPrice = tokenPrices.get(rewardToken);
 
       if (rewardTokenPrice) {
         rewardAssets.push(
           tokenPriceToAssetToken(
-            rewardTokenPrice.address,
+            rewardTokenPrice.elementName === IOUTokensElementName &&
+              rewardTokenPrice.underlyings?.length === 1
+              ? rewardTokenPrice.underlyings[0].address
+              : rewardTokenPrice.address,
             new BigNumber(account.rewardsEarned)
               .dividedBy(10 ** rewardTokenPrice.decimals)
               .toNumber(),
