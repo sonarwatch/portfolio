@@ -23,6 +23,9 @@ export type Quarry = {
   replicaMint: string;
   slug: string;
   stakedToken: TokenInfo;
+  replicaQuarries: {
+    quarry: string;
+  }[];
 };
 
 export type RewardersApiRes = {
@@ -60,4 +63,44 @@ export type Miner = {
   rewardsPerTokenPaid: string;
   balance: string;
   index: string;
+};
+
+export type MergeMiner = {
+  pool: string;
+  owner: string;
+  bump: number;
+  index: string;
+  primaryBalance: string;
+  replicaBalance: string;
+};
+
+export type QuarryPDA = {
+  primaryQuarry: PublicKey;
+  mm: PublicKey;
+  rewarder: PublicKey;
+  replicas: {
+    rewardsMint: PublicKey;
+    replicaMMMiner: PublicKey;
+    rewarder: PublicKey;
+    replicaQuarry: PublicKey;
+  }[];
+  ownerMiner: PublicKey;
+  mmMiner: PublicKey;
+  rewardsToken: PublicKey;
+};
+
+export type Redeemer = {
+  iouMint: string;
+  redemptionMint: string;
+};
+
+export type Position = {
+  primaryRewarder: {
+    slug: string;
+    name?: string;
+  };
+  rewardsToken: string[];
+  rewardsBalance: string[];
+  stakedTokenInfo: DetailedTokenInfo;
+  stakedBalance: string;
 };

@@ -1,6 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 import { mergeMineProgramId, mineProgramId } from './constants';
-import { QuarryAndMint, Rewarder } from './types';
+import { MergeMiner, Miner, QuarryAndMint, QuarryPDA, Rewarder } from './types';
+import { ParsedAccount } from '../../utils/solana';
 
 const getQuarryPDA = (t: PublicKey, e: PublicKey) =>
   PublicKey.findProgramAddressSync(
@@ -34,7 +35,10 @@ const getMinerPDA = (t: PublicKey, e: PublicKey) =>
     mineProgramId
   );
 
-export const getQuarryData = (rewarders: Rewarder[], owner: PublicKey) => {
+export const getQuarryPDAs = (
+  rewarders: Rewarder[],
+  owner: PublicKey
+): QuarryPDA[] => {
   const quarryAndMintsByTokenMint: { [key: string]: QuarryAndMint[] } = {};
   const e = rewarders.flatMap((rewarder: Rewarder) => {
     const n = new PublicKey(rewarder.rewarder);
@@ -77,9 +81,13 @@ export const getQuarryData = (rewarders: Rewarder[], owner: PublicKey) => {
       mmMiner: l,
       ownerMiner: d,
       rewarder,
-      stakedToken: primaryMint,
       rewardsToken: rewardsMint,
       replicas: f,
     };
   });
 };
+
+export const isMinerAccount = (
+  account: ParsedAccount<Miner> | ParsedAccount<MergeMiner>
+): account is ParsedAccount<Miner> =>
+  (account as ParsedAccount<Miner>).quarry !== undefined;
