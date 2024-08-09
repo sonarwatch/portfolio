@@ -1,5 +1,4 @@
 import { PublicKey } from '@solana/web3.js';
-import { ParsedAccount } from '../../utils/solana';
 
 export type TokenInfo = {
   decimals: number;
