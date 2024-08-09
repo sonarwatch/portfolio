@@ -1,10 +1,10 @@
 import { GetProgramAccountsFilter } from '@solana/web3.js';
 
-export const minerFilters = (owner: string): GetProgramAccountsFilter[] => [
+export const minerFilters = (authority: string): GetProgramAccountsFilter[] => [
   {
     memcmp: {
       offset: 40,
-      bytes: owner,
+      bytes: authority,
     },
   },
   { dataSize: 145 },

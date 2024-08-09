@@ -5,7 +5,6 @@ import {
   PortfolioElement,
   PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
-import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import {
@@ -24,12 +23,12 @@ import {
   getAutoParsedProgramAccounts,
   ParsedAccount,
 } from '../../utils/solana';
-import { getQuarryPDAs, isMinerAccount } from './helpers';
-import { MergeMiner, Miner, Position, Rewarder } from './types';
+import { MergeMiner, Miner, Rewarder } from './types';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
 import { mergeMinerFilters, minerFilters } from './filters';
+import { calculatePositions } from './calculatePositions';
 
 const rewardersMemo = new MemoizedCache<Rewarder[]>(rewardersCacheKey, {
   prefix: platformId,
@@ -39,89 +38,61 @@ const rewardersMemo = new MemoizedCache<Rewarder[]>(rewardersCacheKey, {
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
 
-  const accounts = (
-    await Promise.all([
-      getAutoParsedProgramAccounts<Miner>(
+  const [mergeMinerAccounts, minerAccounts] = await Promise.all([
+    getAutoParsedProgramAccounts<MergeMiner>(
+      connection,
+      mergeMineIdlItem,
+      mergeMinerFilters(owner)
+    ).then(
+      (accs) =>
+        accs.filter(
+          (acc) => acc !== null && acc.primaryBalance !== '0'
+        ) as ParsedAccount<MergeMiner>[]
+    ),
+    getAutoParsedProgramAccounts<Miner>(
+      connection,
+      mineIdlItem,
+      minerFilters(owner)
+    ).then(
+      (accs) =>
+        accs.filter(
+          (acc) => acc !== null && acc.balance !== '0'
+        ) as ParsedAccount<Miner>[]
+    ),
+  ]);
+
+  if (mergeMinerAccounts.length === 0 && minerAccounts.length === 0) return [];
+
+  const replicaMinerAccounts = await Promise.all(
+    mergeMinerAccounts.map((mmAcount) => {
+      return getAutoParsedProgramAccounts<Miner>(
         connection,
         mineIdlItem,
-        minerFilters(owner)
-      ).then(
-        (accs) =>
-          accs.filter(
-            (acc) => acc !== null && acc.balance !== '0'
-          ) as ParsedAccount<Miner>[]
-      ),
-      getAutoParsedProgramAccounts<MergeMiner>(
-        connection,
-        mergeMineIdlItem,
-        mergeMinerFilters(owner)
-      ).then(
-        (accs) =>
-          accs.filter(
-            (acc) => acc !== null && acc.primaryBalance !== '0'
-          ) as ParsedAccount<MergeMiner>[]
-      ),
-    ])
-  ).flat();
-
-  if (accounts.length === 0) return [];
+        minerFilters(mmAcount.pubkey.toString())
+      );
+    })
+  );
 
   const allRewarders = await rewardersMemo.getItem(cache);
   if (!allRewarders) return [];
 
-  const quarryPDAS = getQuarryPDAs(allRewarders, new PublicKey(owner));
+  const positions = calculatePositions(
+    mergeMinerAccounts,
+    minerAccounts,
+    replicaMinerAccounts,
+    allRewarders,
+    owner
+  );
 
-  const mints = new Set<string>();
-
-  const positions: Position[] = [];
-
-  accounts.forEach((account) => {
-    if (!account) return;
-
-    const quarryPDA = quarryPDAS.find((q) =>
-      isMinerAccount(account)
-        ? q.ownerMiner.toString() === account.pubkey.toString()
-        : q.mm.toString() === account.pubkey.toString()
-    );
-    if (!quarryPDA) return;
-
-    const rewarders: Rewarder[] = [
-      quarryPDA.rewarder.toString(),
-      ...quarryPDA.replicas.map((r) => r.rewarder.toString()),
-    ]
-      .map((rpk) => allRewarders.find((r) => r.rewarder === rpk))
-      .filter((r) => r !== null) as Rewarder[];
-
-    if (rewarders.length === 0) return;
-
-    const primaryRewarder = rewarders[0];
-
-    const primaryQuarry = primaryRewarder.quarries.find(
-      (q) => quarryPDA.primaryQuarry.toString() === q.quarry
-    );
-    if (!primaryQuarry) return;
-
-    const rewardsToken = [
-      quarryPDA.rewardsToken.toString(),
-      ...quarryPDA.replicas.map((r) => r.rewardsMint.toString()),
-    ];
-
-    const stakedToken = primaryQuarry.primaryTokenInfo.address;
-    mints.add(stakedToken);
-    rewardsToken.forEach((rewardToken) => mints.add(rewardToken.toString()));
-
-    positions.push({
-      account,
-      rewarders,
-      rewardsToken,
-      stakedBalance: isMinerAccount(account)
-        ? account.balance
-        : account.primaryBalance,
-      stakedTokenInfo: primaryQuarry.primaryTokenInfo,
-    });
-  });
   if (positions.length === 0) return [];
 
+  const mints = new Set<string>();
+  positions.forEach((position) => {
+    mints.add(position.stakedTokenInfo.address);
+    position.rewardsToken.forEach((rewardToken) =>
+      mints.add(rewardToken.toString())
+    );
+  });
   const tokenPrices = await cache.getTokenPricesAsMap(
     [...mints],
     NetworkId.solana
@@ -130,12 +101,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elements: PortfolioElement[] = [];
 
   positions.forEach((position) => {
-    const { account, rewardsToken, rewarders, stakedBalance, stakedTokenInfo } =
-      position;
-
-    const primaryRewarder = rewarders[0];
-
-    if (!account) return;
+    const {
+      rewardsToken,
+      rewardsBalance,
+      primaryRewarder,
+      stakedBalance,
+      stakedTokenInfo,
+    } = position;
 
     const assets: PortfolioAssetToken[] = [];
     const rewardAssets: PortfolioAssetToken[] = [];
@@ -172,12 +144,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
 
     rewardsToken.forEach((rewardToken: string, i: number) => {
-      // mergeMiner are not supported
-      if (!isMinerAccount(account)) return;
-      // only primaryReward is supported
-      if (i > 0) return;
-
-      if (account?.rewardsEarned === '0') return;
+      if (rewardsBalance[i] === '0') return;
 
       const rewardTokenPrice = tokenPrices.get(rewardToken);
 
@@ -188,7 +155,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
               rewardTokenPrice.underlyings?.length === 1
               ? rewardTokenPrice.underlyings[0].address
               : rewardTokenPrice.address,
-            new BigNumber(account.rewardsEarned)
+            new BigNumber(rewardsBalance[i])
               .dividedBy(10 ** rewardTokenPrice.decimals)
               .toNumber(),
             NetworkId.solana,
@@ -222,9 +189,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       type: PortfolioElementType.liquidity,
       value,
       name:
-        elementPlatformId === platformId
-          ? primaryRewarder.info?.name
-          : platform.name,
+        elementPlatformId === platformId ? primaryRewarder.name : platform.name,
       data: {
         liquidities: [
           {

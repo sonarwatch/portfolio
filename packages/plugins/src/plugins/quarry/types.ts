@@ -75,14 +75,6 @@ export type MergeMiner = {
   replicaBalance: string;
 };
 
-export type Position = {
-  account: ParsedAccount<Miner> | ParsedAccount<MergeMiner>;
-  rewarders: Rewarder[];
-  rewardsToken: string[];
-  stakedBalance: string;
-  stakedTokenInfo: DetailedTokenInfo;
-};
-
 export type QuarryPDA = {
   primaryQuarry: PublicKey;
   mm: PublicKey;
@@ -101,4 +93,15 @@ export type QuarryPDA = {
 export type Redeemer = {
   iouMint: string;
   redemptionMint: string;
+};
+
+export type Position = {
+  primaryRewarder: {
+    slug: string;
+    name?: string;
+  };
+  rewardsToken: string[];
+  rewardsBalance: string[];
+  stakedTokenInfo: DetailedTokenInfo;
+  stakedBalance: string;
 };
