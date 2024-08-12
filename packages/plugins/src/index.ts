@@ -550,6 +550,12 @@ import {
   jobs as thevaultJobs,
   fetchers as thevaultFetchers,
 } from './plugins/thevault';
+import {
+  platforms as deepbookPlatforms,
+  jobs as deepbookJobs,
+  fetchers as deepbookFetchers,
+  airdropFetcher as deepbookAirdropFetcher,
+} from './plugins/deepbook';
 
 export {
   walletTokensPlatform,
@@ -677,6 +683,7 @@ export const platforms: Platform[] = [
   ...picassoPlatforms,
   ...quarryPlatforms,
   ...thevaultPlatforms,
+  ...deepbookPlatforms,
 ];
 
 // JOBS //
@@ -786,6 +793,7 @@ export const jobs: Job[] = [
   ...picassoJobs,
   ...quarryJobs,
   ...thevaultJobs,
+  ...deepbookJobs,
 ];
 
 // FETCHERS //
@@ -897,6 +905,7 @@ export const fetchers: Fetcher[] = [
   ...picassoFetchers,
   ...quarryFetchers,
   ...thevaultFetchers,
+  ...deepbookFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
@@ -906,6 +915,7 @@ export const airdropFetchers: AirdropFetcher[] = [
   ...sanctumAirdropFetchers,
   driftAirdropFetcher,
   parclAirdropFetcher,
+  deepbookAirdropFetcher,
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);
