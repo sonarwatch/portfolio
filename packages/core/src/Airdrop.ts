@@ -87,7 +87,7 @@ export type AirdropRaw = {
   /**
    * The airdrop claim link.
    */
-  claimLink: string | undefined;
+  claimLink?: string;
   /**
    * The airdrop claim start date (as ms).
    */
