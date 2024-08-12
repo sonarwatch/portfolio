@@ -6,6 +6,7 @@ import {
   PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
+import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import {
   IOUTokensElementName,
@@ -20,10 +21,17 @@ import { platformId as saberPlatformId } from '../saber/constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
 import {
+  getAutoParsedMultipleAccountsInfo,
   getAutoParsedProgramAccounts,
   ParsedAccount,
 } from '../../utils/solana';
-import { MergeMiner, Miner, Rewarder } from './types';
+import {
+  DetailedTokenInfo,
+  MergeMiner,
+  Miner,
+  QuarryData,
+  Rewarder,
+} from './types';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
@@ -64,13 +72,23 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (mergeMinerAccounts.length === 0 && minerAccounts.length === 0) return [];
 
   const replicaMinerAccounts = await Promise.all(
-    mergeMinerAccounts.map((mmAcount) => {
-      return getAutoParsedProgramAccounts<Miner>(
+    mergeMinerAccounts.map((mmAcount) =>
+      getAutoParsedProgramAccounts<Miner>(
         connection,
         mineIdlItem,
         minerFilters(mmAcount.pubkey.toString())
-      );
-    })
+      )
+    )
+  );
+
+  const quarryAccounts = await getAutoParsedMultipleAccountsInfo<QuarryData>(
+    connection,
+    mineIdlItem,
+    [...minerAccounts, ...[...replicaMinerAccounts.values()].flat()].map(
+      (m) => new PublicKey(m.quarry)
+    )
+  ).then(
+    (accs) => accs.filter((acc) => acc !== null) as ParsedAccount<QuarryData>[]
   );
 
   const allRewarders = await rewardersMemo.getItem(cache);
@@ -81,6 +99,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     minerAccounts,
     replicaMinerAccounts,
     allRewarders,
+    quarryAccounts,
     owner
   );
 
@@ -89,8 +108,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const mints = new Set<string>();
   positions.forEach((position) => {
     mints.add(position.stakedTokenInfo.address);
-    position.rewardsToken.forEach((rewardToken) =>
-      mints.add(rewardToken.toString())
+    position.rewardsTokenInfo.forEach((rewardTokenInfo) =>
+      mints.add(rewardTokenInfo.address.toString())
     );
   });
   const tokenPrices = await cache.getTokenPricesAsMap(
@@ -102,7 +121,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   positions.forEach((position) => {
     const {
-      rewardsToken,
+      rewardsTokenInfo,
       rewardsBalance,
       primaryRewarder,
       stakedBalance,
@@ -143,27 +162,45 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       });
     }
 
-    rewardsToken.forEach((rewardToken: string, i: number) => {
-      if (rewardsBalance[i] === '0') return;
+    rewardsTokenInfo.forEach(
+      (rewardTokenInfo: DetailedTokenInfo, i: number) => {
+        if (rewardsBalance[i].isZero()) return;
 
-      const rewardTokenPrice = tokenPrices.get(rewardToken);
+        const rewardTokenPrice = tokenPrices.get(rewardTokenInfo.address);
 
-      if (rewardTokenPrice) {
-        rewardAssets.push(
-          tokenPriceToAssetToken(
-            rewardTokenPrice.elementName === IOUTokensElementName &&
-              rewardTokenPrice.underlyings?.length === 1
-              ? rewardTokenPrice.underlyings[0].address
-              : rewardTokenPrice.address,
-            new BigNumber(rewardsBalance[i])
-              .dividedBy(10 ** rewardTokenPrice.decimals)
-              .toNumber(),
-            NetworkId.solana,
-            rewardTokenPrice
-          )
-        );
+        if (rewardTokenPrice) {
+          rewardAssets.push(
+            tokenPriceToAssetToken(
+              rewardTokenPrice.elementName === IOUTokensElementName &&
+                rewardTokenPrice.underlyings?.length === 1
+                ? rewardTokenPrice.underlyings[0].address
+                : rewardTokenPrice.address,
+              rewardsBalance[i]
+                .dividedBy(10 ** rewardTokenPrice.decimals)
+                .toNumber(),
+              NetworkId.solana,
+              rewardTokenPrice
+            )
+          );
+        } else {
+          rewardAssets.push({
+            networkId: NetworkId.solana,
+            type: 'token',
+            value: null,
+            attributes: {},
+            name: rewardTokenInfo.symbol,
+            data: {
+              amount: new BigNumber(rewardsBalance[i])
+                .dividedBy(10 ** rewardTokenInfo.decimals)
+                .toNumber(),
+              address: rewardTokenInfo.address,
+              price: null,
+            },
+            imageUri: rewardTokenInfo.logoURI,
+          });
+        }
       }
-    });
+    );
 
     const assetsValue = getUsdValueSum(assets.map((a) => a.value));
     const rewardAssetsValue = getUsdValueSum(rewardAssets.map((a) => a.value));
