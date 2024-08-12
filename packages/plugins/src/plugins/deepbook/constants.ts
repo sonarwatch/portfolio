@@ -11,7 +11,7 @@ export const platform: Platform = {
   defiLlamaId: 'deepbook', // from https://defillama.com/docs/api
 };
 export const airdropStatics: AirdropStatics = {
-  claimLink: '',
+  claimLink: undefined,
   emitterLink: 'https://deepbook.tech/#airdrop',
   emitterName: 'DeepBook',
   id: `${platformId}-token-launch`,
