@@ -562,6 +562,12 @@ import {
   fetchers as suinsFetchers,
   airdropFetcher as suinsAirdropFetcher,
 } from './plugins/suins';
+import {
+  platforms as debridgePlatforms,
+  jobs as debridgeJobs,
+  fetchers as debridgeFetchers,
+  airdropFetcher as debridgeAirdropFetcher,
+} from './plugins/debridge';
 
 export {
   walletTokensPlatform,
@@ -691,6 +697,7 @@ export const platforms: Platform[] = [
   ...thevaultPlatforms,
   ...deepbookPlatforms,
   ...suinsPlatforms,
+  ...debridgePlatforms,
 ];
 
 // JOBS //
@@ -802,6 +809,7 @@ export const jobs: Job[] = [
   ...thevaultJobs,
   ...deepbookJobs,
   ...suinsJobs,
+  ...debridgeJobs,
 ];
 
 // FETCHERS //
@@ -915,6 +923,7 @@ export const fetchers: Fetcher[] = [
   ...thevaultFetchers,
   ...deepbookFetchers,
   ...suinsFetchers,
+  ...debridgeFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
@@ -926,6 +935,7 @@ export const airdropFetchers: AirdropFetcher[] = [
   parclAirdropFetcher,
   deepbookAirdropFetcher,
   suinsAirdropFetcher,
+  debridgeAirdropFetcher,
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);
