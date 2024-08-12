@@ -1,6 +1,6 @@
 import util from 'node:util';
 import { getAddressSystem } from '@sonarwatch/portfolio-core';
-import { airdropFetchers, getCache } from '../src';
+import { airdropFetchersByAddressSystem, getCache } from '../src';
 import { runAirdropFetchers } from '../src/AirdropFetcher';
 import sleep from '../src/utils/misc/sleep';
 import durationForHumans from '../src/utils/misc/durationForHumans';
@@ -23,12 +23,13 @@ async function main(owner: string) {
     process.exit(1);
   }
 
+  const fetchers = airdropFetchersByAddressSystem[addressSystem];
   const cache = getCache();
   console.log('Fetching...');
   const fetcherResult = await runAirdropFetchers(
     fOwner,
     addressSystem,
-    airdropFetchers,
+    fetchers,
     cache,
     false
   );

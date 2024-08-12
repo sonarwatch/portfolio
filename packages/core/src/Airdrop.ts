@@ -4,8 +4,9 @@ import { UsdValue } from './UsdValue';
 
 export enum AirdropStatus {
   notYetOpen = '0_notYetOpen',
-  open = '1_open',
-  closed = '2_closed',
+  unknowned = '1_unknowned',
+  open = '2_open',
+  closed = '3_closed',
 }
 
 /**
@@ -17,7 +18,7 @@ export type IsClaimed = boolean | null;
 export enum AirdropItemStatus {
   claimable = '0_claimable',
   claimableLater = '1_claimableLater',
-  claimableOrClaimed = '2_claimableOrClaimed',
+  potentiallyClaimable = '2_potentiallyClaimable',
   claimed = '3_claimed',
   claimExpired = '4_claimExpired',
   ineligible = '5_ineligible',
@@ -32,11 +33,11 @@ export function getAirdropStatus(
   claimEnd?: number
 ): AirdropStatus {
   const now = Date.now();
-  if (claimStart === undefined) return AirdropStatus.notYetOpen;
-  if (claimStart > now) return AirdropStatus.notYetOpen;
-  if (claimEnd === undefined) return AirdropStatus.open;
-  if (claimEnd > now) return AirdropStatus.open;
-  return AirdropStatus.closed;
+  if (claimStart && claimStart > now) return AirdropStatus.notYetOpen;
+  if (claimEnd && claimEnd < now) return AirdropStatus.closed;
+  if (!claimStart && !claimEnd) return AirdropStatus.unknowned;
+  if (claimStart && claimStart < now) return AirdropStatus.open;
+  return AirdropStatus.unknowned;
 }
 
 export function getAirdropItemStatus(
@@ -54,7 +55,10 @@ export function getAirdropItemStatus(
   if (airdropStatus === AirdropStatus.closed)
     return AirdropItemStatus.claimExpired;
 
-  if (isClaimed === null) return AirdropItemStatus.claimableOrClaimed;
+  if (airdropStatus === AirdropStatus.unknowned)
+    return AirdropItemStatus.potentiallyClaimable;
+
+  if (isClaimed === null) return AirdropItemStatus.potentiallyClaimable;
 
   return AirdropItemStatus.claimable;
 }
@@ -83,7 +87,7 @@ export type AirdropRaw = {
   /**
    * The airdrop claim link.
    */
-  claimLink: string;
+  claimLink?: string;
   /**
    * The airdrop claim start date (as ms).
    */
