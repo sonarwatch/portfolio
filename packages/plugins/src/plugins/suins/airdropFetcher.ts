@@ -5,19 +5,24 @@ import {
   AirdropFetcherExecutor,
   getAirdropRaw,
 } from '../../AirdropFetcher';
-import { airdropStatics, deepDecimals, deepMint } from './constants';
+import {
+  airdropStatics,
+  nsDecimals,
+  nsMint,
+  platform as suinsPlatform,
+} from './constants';
 import { getClientSui } from '../../utils/clients';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { AirdropWrapperNFT } from '../../utils/sui/types';
 
-const deepFactor = new BigNumber(10 ** deepDecimals);
+const deepFactor = new BigNumber(10 ** nsDecimals);
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
   const client = getClientSui();
   const nfts = await getOwnedObjects<AirdropWrapperNFT>(client, owner, {
     filter: {
       StructType:
-        '0x61c9c39fd86185ad60d738d4e52bd08bda071d366acde07e07c3916a2d75a816::distribution::DEEPWrapper',
+        '0x220bca2187856d09aae578e2782b2b484049a32c755d20352e01236ba5368b63::distribution::NSWrapper',
     },
   });
 
@@ -40,8 +45,9 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
       {
         amount,
         isClaimed: false,
-        label: 'DEEP',
-        address: deepMint,
+        label: 'NS',
+        address: nsMint,
+        imageUri: nsMint ? undefined : suinsPlatform.image,
       },
     ],
   });

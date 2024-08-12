@@ -556,6 +556,12 @@ import {
   fetchers as deepbookFetchers,
   airdropFetcher as deepbookAirdropFetcher,
 } from './plugins/deepbook';
+import {
+  platforms as suinsPlatforms,
+  jobs as suinsJobs,
+  fetchers as suinsFetchers,
+  airdropFetcher as suinsAirdropFetcher,
+} from './plugins/suins';
 
 export {
   walletTokensPlatform,
@@ -684,6 +690,7 @@ export const platforms: Platform[] = [
   ...quarryPlatforms,
   ...thevaultPlatforms,
   ...deepbookPlatforms,
+  ...suinsPlatforms,
 ];
 
 // JOBS //
@@ -794,6 +801,7 @@ export const jobs: Job[] = [
   ...quarryJobs,
   ...thevaultJobs,
   ...deepbookJobs,
+  ...suinsJobs,
 ];
 
 // FETCHERS //
@@ -906,6 +914,7 @@ export const fetchers: Fetcher[] = [
   ...quarryFetchers,
   ...thevaultFetchers,
   ...deepbookFetchers,
+  ...suinsFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
@@ -916,6 +925,7 @@ export const airdropFetchers: AirdropFetcher[] = [
   driftAirdropFetcher,
   parclAirdropFetcher,
   deepbookAirdropFetcher,
+  suinsAirdropFetcher,
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);

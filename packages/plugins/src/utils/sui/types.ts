@@ -30,3 +30,10 @@ export type ObjectResponse<K> = SuiObjectResponse & {
 export type Event<K> = SuiEvent & {
   parsedJson?: K;
 };
+
+export type AirdropWrapperNFT = {
+  balance: string;
+  id: {
+    id: string;
+  };
+};
