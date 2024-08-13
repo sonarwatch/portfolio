@@ -1,7 +1,12 @@
 import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { IOUTokensElementName, platformId, redeemerIdlItem } from './constants';
+import {
+  IOUTokensElementName,
+  platformId,
+  quarryRedeemerIdlItem,
+  redeemerIdlItem,
+} from './constants';
 import { Redeemer } from './types';
 import { getClientSolana } from '../../utils/clients';
 import { getAutoParsedProgramAccounts } from '../../utils/solana';
@@ -9,10 +14,12 @@ import { getAutoParsedProgramAccounts } from '../../utils/solana';
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
 
-  const accounts = await getAutoParsedProgramAccounts<Redeemer>(
-    connection,
-    redeemerIdlItem
-  );
+  const accounts = (
+    await Promise.all([
+      getAutoParsedProgramAccounts<Redeemer>(connection, quarryRedeemerIdlItem),
+      getAutoParsedProgramAccounts<Redeemer>(connection, redeemerIdlItem),
+    ])
+  ).flat();
 
   if (accounts.length === 0) return;
 

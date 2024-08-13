@@ -3,6 +3,7 @@ import { PublicKey } from '@solana/web3.js';
 import { IdlItem } from '@solanafm/explorer-kit-idls';
 import { mineIdl } from './mineIdl';
 import { mergeMineIdl } from './mergeMineIdl';
+import { quarryRedeemerIdl } from './quarryRedeemerIdl';
 import { redeemerIdl } from './redeemerIdl';
 
 export const platformId = 'quarry';
@@ -26,8 +27,11 @@ export const mineProgramId = new PublicKey(
   'QMNeHCGYnLVDn1icRAfQZpjPLBNkfGbSKRB83G5d8KB'
 );
 
-export const redeemerProgramId = new PublicKey(
+export const quarryRedeemerProgramId = new PublicKey(
   'QRDxhMw1P2NEfiw5mYXG79bwfgHTdasY2xNP76XSea9'
+);
+export const redeemerProgramId = new PublicKey(
+  'RDM23yr8pr1kEAmhnFpaabPny6C9UVcEcok3Py5v86X'
 );
 
 export const mineIdlItem = {
@@ -39,6 +43,12 @@ export const mineIdlItem = {
 export const mergeMineIdlItem = {
   programId: mergeMineProgramId.toString(),
   idl: mergeMineIdl,
+  idlType: 'anchor',
+} as IdlItem;
+
+export const quarryRedeemerIdlItem = {
+  programId: quarryRedeemerProgramId.toString(),
+  idl: quarryRedeemerIdl,
   idlType: 'anchor',
 } as IdlItem;
 

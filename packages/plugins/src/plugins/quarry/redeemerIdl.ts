@@ -1,6 +1,6 @@
 export const redeemerIdl = {
-  version: '5.0.2',
-  name: 'quarry_redeemer',
+  version: '1.1.2',
+  name: 'redeemer',
   instructions: [
     {
       name: 'createRedeemer',
@@ -9,37 +9,26 @@ export const redeemerIdl = {
           name: 'redeemer',
           isMut: !0,
           isSigner: !1,
-          pda: {
-            seeds: [
-              {
-                kind: 'const',
-                type: 'string',
-                value: 'Redeemer',
-              },
-              {
-                kind: 'account',
-                type: 'publicKey',
-                account: 'Mint',
-                path: 'iou_mint',
-              },
-              {
-                kind: 'account',
-                type: 'publicKey',
-                account: 'Mint',
-                path: 'redemption_mint',
-              },
-            ],
-          },
         },
         {
-          name: 'iouMint',
-          isMut: !1,
-          isSigner: !1,
-        },
-        {
-          name: 'redemptionMint',
-          isMut: !1,
-          isSigner: !1,
+          name: 'tokens',
+          accounts: [
+            {
+              name: 'iouMint',
+              isMut: !1,
+              isSigner: !1,
+            },
+            {
+              name: 'redemptionMint',
+              isMut: !1,
+              isSigner: !1,
+            },
+            {
+              name: 'redemptionVault',
+              isMut: !1,
+              isSigner: !1,
+            },
+          ],
         },
         {
           name: 'payer',
@@ -64,8 +53,33 @@ export const redeemerIdl = {
       accounts: [
         {
           name: 'redeemer',
-          isMut: !0,
+          isMut: !1,
           isSigner: !1,
+        },
+        {
+          name: 'tokens',
+          accounts: [
+            {
+              name: 'iouMint',
+              isMut: !0,
+              isSigner: !1,
+            },
+            {
+              name: 'redemptionMint',
+              isMut: !0,
+              isSigner: !1,
+            },
+            {
+              name: 'redemptionVault',
+              isMut: !0,
+              isSigner: !1,
+            },
+            {
+              name: 'tokenProgram',
+              isMut: !1,
+              isSigner: !1,
+            },
+          ],
         },
         {
           name: 'sourceAuthority',
@@ -73,28 +87,13 @@ export const redeemerIdl = {
           isSigner: !0,
         },
         {
-          name: 'iouMint',
-          isMut: !0,
-          isSigner: !1,
-        },
-        {
           name: 'iouSource',
-          isMut: !0,
-          isSigner: !1,
-        },
-        {
-          name: 'redemptionVault',
           isMut: !0,
           isSigner: !1,
         },
         {
           name: 'redemptionDestination',
           isMut: !0,
-          isSigner: !1,
-        },
-        {
-          name: 'tokenProgram',
-          isMut: !1,
           isSigner: !1,
         },
       ],
@@ -106,41 +105,157 @@ export const redeemerIdl = {
       ],
     },
     {
-      name: 'redeemAllTokens',
+      name: 'redeemTokensFromMintProxy',
       accounts: [
         {
-          name: 'redeemer',
-          isMut: !0,
-          isSigner: !1,
+          name: 'redeemCtx',
+          accounts: [
+            {
+              name: 'redeemer',
+              isMut: !1,
+              isSigner: !1,
+            },
+            {
+              name: 'tokens',
+              accounts: [
+                {
+                  name: 'iouMint',
+                  isMut: !0,
+                  isSigner: !1,
+                },
+                {
+                  name: 'redemptionMint',
+                  isMut: !0,
+                  isSigner: !1,
+                },
+                {
+                  name: 'redemptionVault',
+                  isMut: !0,
+                  isSigner: !1,
+                },
+                {
+                  name: 'tokenProgram',
+                  isMut: !1,
+                  isSigner: !1,
+                },
+              ],
+            },
+            {
+              name: 'sourceAuthority',
+              isMut: !1,
+              isSigner: !0,
+            },
+            {
+              name: 'iouSource',
+              isMut: !0,
+              isSigner: !1,
+            },
+            {
+              name: 'redemptionDestination',
+              isMut: !0,
+              isSigner: !1,
+            },
+          ],
         },
         {
-          name: 'sourceAuthority',
+          name: 'mintProxyState',
           isMut: !1,
-          isSigner: !0,
-        },
-        {
-          name: 'iouMint',
-          isMut: !0,
           isSigner: !1,
         },
         {
-          name: 'iouSource',
-          isMut: !0,
-          isSigner: !1,
-        },
-        {
-          name: 'redemptionVault',
-          isMut: !0,
-          isSigner: !1,
-        },
-        {
-          name: 'redemptionDestination',
-          isMut: !0,
-          isSigner: !1,
-        },
-        {
-          name: 'tokenProgram',
+          name: 'proxyMintAuthority',
           isMut: !1,
+          isSigner: !1,
+        },
+        {
+          name: 'mintProxyProgram',
+          isMut: !1,
+          isSigner: !1,
+        },
+        {
+          name: 'minterInfo',
+          isMut: !0,
+          isSigner: !1,
+        },
+      ],
+      args: [
+        {
+          name: 'amount',
+          type: 'u64',
+        },
+      ],
+    },
+    {
+      name: 'redeemAllTokensFromMintProxy',
+      accounts: [
+        {
+          name: 'redeemCtx',
+          accounts: [
+            {
+              name: 'redeemer',
+              isMut: !1,
+              isSigner: !1,
+            },
+            {
+              name: 'tokens',
+              accounts: [
+                {
+                  name: 'iouMint',
+                  isMut: !0,
+                  isSigner: !1,
+                },
+                {
+                  name: 'redemptionMint',
+                  isMut: !0,
+                  isSigner: !1,
+                },
+                {
+                  name: 'redemptionVault',
+                  isMut: !0,
+                  isSigner: !1,
+                },
+                {
+                  name: 'tokenProgram',
+                  isMut: !1,
+                  isSigner: !1,
+                },
+              ],
+            },
+            {
+              name: 'sourceAuthority',
+              isMut: !1,
+              isSigner: !0,
+            },
+            {
+              name: 'iouSource',
+              isMut: !0,
+              isSigner: !1,
+            },
+            {
+              name: 'redemptionDestination',
+              isMut: !0,
+              isSigner: !1,
+            },
+          ],
+        },
+        {
+          name: 'mintProxyState',
+          isMut: !1,
+          isSigner: !1,
+        },
+        {
+          name: 'proxyMintAuthority',
+          isMut: !1,
+          isSigner: !1,
+        },
+        {
+          name: 'mintProxyProgram',
+          isMut: !1,
+          isSigner: !1,
+        },
+        {
+          name: 'minterInfo',
+          isMut: !0,
           isSigner: !1,
         },
       ],
@@ -154,6 +269,10 @@ export const redeemerIdl = {
         kind: 'struct',
         fields: [
           {
+            name: 'bump',
+            type: 'u8',
+          },
+          {
             name: 'iouMint',
             type: 'publicKey',
           },
@@ -162,12 +281,8 @@ export const redeemerIdl = {
             type: 'publicKey',
           },
           {
-            name: 'bump',
-            type: 'u8',
-          },
-          {
-            name: 'totalTokensRedeemed',
-            type: 'u64',
+            name: 'redemptionVault',
+            type: 'publicKey',
           },
         ],
       },
@@ -188,18 +303,13 @@ export const redeemerIdl = {
           index: !1,
         },
         {
-          name: 'redemptionMint',
+          name: 'destinationMint',
           type: 'publicKey',
           index: !1,
         },
         {
           name: 'amount',
           type: 'u64',
-          index: !1,
-        },
-        {
-          name: 'timestamp',
-          type: 'i64',
           index: !1,
         },
       ],
@@ -210,6 +320,11 @@ export const redeemerIdl = {
       code: 6e3,
       name: 'Unauthorized',
       msg: 'Unauthorized.',
+    },
+    {
+      code: 6001,
+      name: 'DecimalsMismatch',
+      msg: 'Redemption token and IOU token decimals must match',
     },
   ],
 };
