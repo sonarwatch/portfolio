@@ -57,5 +57,12 @@ const otphanPlatforms: Platform[] = [
     image: 'https://sonar.watch/img/platforms/stakewise.webp',
     website: 'https://stakewise.io/',
   },
+  {
+    id: 'ondo-finance',
+    defiLlamaId: 'ondo-finance',
+    name: 'Ondo Finance',
+    image: 'https://sonar.watch/img/platforms/ondo-finance.webp',
+    website: 'https://ondo.finance/',
+  },
 ];
 export default otphanPlatforms;
