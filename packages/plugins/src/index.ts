@@ -568,6 +568,11 @@ import {
   fetchers as debridgeFetchers,
   airdropFetcher as debridgeAirdropFetcher,
 } from './plugins/debridge';
+import {
+  platforms as alphafiPlatforms,
+  jobs as alphafiJobs,
+  fetchers as alphafiFetchers,
+} from './plugins/alphafi';
 
 export {
   walletTokensPlatform,
@@ -698,6 +703,7 @@ export const platforms: Platform[] = [
   ...deepbookPlatforms,
   ...suinsPlatforms,
   ...debridgePlatforms,
+  ...alphafiPlatforms,
 ];
 
 // JOBS //
@@ -810,6 +816,7 @@ export const jobs: Job[] = [
   ...deepbookJobs,
   ...suinsJobs,
   ...debridgeJobs,
+  ...alphafiJobs,
 ];
 
 // FETCHERS //
@@ -924,6 +931,7 @@ export const fetchers: Fetcher[] = [
   ...deepbookFetchers,
   ...suinsFetchers,
   ...debridgeFetchers,
+  ...alphafiFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
