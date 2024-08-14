@@ -34,6 +34,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     ),
   ]);
 
+  if (!userInfos.some((obj) => obj.data)) return [];
+
   const tokenPriceById = await cache.getTokenPricesAsMap(
     stakedAssetInfos.map((info) => [info.underlying, info.asset]).flat(),
     NetworkId.sui
@@ -49,16 +51,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       formatMoveTokenAddress(assetInfo.asset)
     );
 
-    let userInfo: UserInfo | UserJwltokenInfo;
     if (assetInfo.underlying === suiNativeAddress) {
-      userInfo = userInfos[n].data?.content?.fields as UserInfo;
-
-      const sjwlAmount = new BigNumber(
-        userInfo.value.fields.sjwlsui_amount
-      ).dividedBy(10 ** 9);
+      const { fields } = (userInfos[n].data?.content?.fields as UserInfo).value;
+      const sjwlAmount = new BigNumber(fields.sjwlsui_amount).dividedBy(
+        10 ** 9
+      );
 
       const unstakingSuiAmount = new BigNumber(
-        userInfo.value.fields.reserved_redeem_amount
+        fields.reserved_redeem_amount
       ).dividedBy(10 ** 9);
 
       if (!unstakingSuiAmount.isZero()) {
@@ -73,8 +73,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             suiTokenPrice,
             undefined,
             {
-              lockedUntil:
-                Number(userInfo.value.fields.last_redeem_reserved_at) + tenDays,
+              lockedUntil: Number(fields.last_redeem_reserved_at) + tenDays,
             }
           )
         );
@@ -90,11 +89,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           )
         );
     } else {
-      userInfo = userInfos[n].data?.content?.fields as UserJwltokenInfo;
-
-      const amount = new BigNumber(
-        userInfo.value.fields.value.fields.jwltoken_staked
-      ).dividedBy(10 ** 9);
+      const { fields } = (
+        userInfos[n].data?.content?.fields as UserJwltokenInfo
+      ).value.fields.value;
+      const amount = new BigNumber(fields.jwltoken_staked).dividedBy(10 ** 9);
 
       if (!amount.isZero())
         stakedAssets.push(
@@ -105,9 +103,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             assetTokenPrice,
             undefined,
             {
-              lockedUntil:
-                Number(userInfo.value.fields.value.fields.last_staked_at) +
-                sevenDays,
+              lockedUntil: Number(fields.last_staked_at) + sevenDays,
             }
           )
         );
