@@ -11,7 +11,6 @@ export const platform: Platform = {
   defiLlamaId: 'suins', // from https://defillama.com/docs/api
 };
 export const airdropStatics: AirdropStatics = {
-  claimLink: undefined,
   emitterLink: 'https://token.suins.io/',
   emitterName: 'Sui NS',
   id: `${platformId}-token-launch`,

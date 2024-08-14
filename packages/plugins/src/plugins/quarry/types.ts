@@ -1,4 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
+import BigNumber from 'bignumber.js';
 
 export type TokenInfo = {
   decimals: number;
@@ -99,8 +100,22 @@ export type Position = {
     slug: string;
     name?: string;
   };
-  rewardsToken: string[];
-  rewardsBalance: string[];
+  rewardsTokenInfo: DetailedTokenInfo[];
+  rewardsBalance: BigNumber[];
   stakedTokenInfo: DetailedTokenInfo;
   stakedBalance: string;
+};
+
+export type QuarryData = {
+  rewarder: string;
+  tokenMintKey: string;
+  index: number;
+  tokenMintDecimals: number;
+  famineTs: string;
+  lastUpdateTs: string;
+  rewardsPerTokenStored: string;
+  annualRewardsRate: string;
+  rewardsShare: string;
+  totalTokensDeposited: string;
+  numMiners: string;
 };
