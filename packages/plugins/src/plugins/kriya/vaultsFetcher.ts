@@ -108,6 +108,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       yields: [],
     });
   }
+
+  if (liquidities.length === 0) return [];
+
   return [
     {
       type: 'liquidity',
