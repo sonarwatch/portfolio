@@ -2,7 +2,7 @@ import { EventId, SuiEventFilter } from '@mysten/sui.js/client';
 import { SuiClient } from '../clients/types';
 import { Event } from './types';
 
-const maxPage = 25;
+const maxPage = 250;
 
 export async function queryEvents<K>(client: SuiClient, query: SuiEventFilter) {
   let page = 0;

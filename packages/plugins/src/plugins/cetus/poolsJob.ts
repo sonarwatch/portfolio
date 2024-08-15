@@ -16,6 +16,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   const eventsData = await queryEvents<ParsedJsonEvent>(client, {
     MoveEventType: createPoolEvent,
   });
+  console.log('constexecutor:JobExecutor= ~ eventsData:', eventsData.length);
 
   const poolsAddresses = eventsData
     .map((eventData) =>
@@ -27,11 +28,11 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   const promises = [];
   const cacheItems = [];
-  for (const poolObject of poolsObjects) {
-    const poolId = poolObject.data?.objectId;
+  for (let i = 0; i < poolsObjects.length; i++) {
+    const poolId = poolsObjects[i].data?.objectId;
     if (!poolId) continue;
 
-    const pool = getPoolFromObject(poolObject);
+    const pool = getPoolFromObject(poolsObjects[i]);
     if (!pool) continue;
 
     promises.push(
@@ -51,11 +52,13 @@ const executor: JobExecutor = async (cache: Cache) => {
       value: pool,
     });
   }
+
   await cache.setItems(cacheItems, {
     prefix: clmmPoolsPrefix,
     networkId: NetworkId.sui,
   });
-  await await Promise.all(promises);
+
+  await Promise.all(promises);
 };
 
 const job: Job = {
