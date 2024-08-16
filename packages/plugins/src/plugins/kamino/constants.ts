@@ -110,6 +110,16 @@ export const lendingConfigs: Map<string, LendingMarketConfig> = new Map([
 
 export const marketsKey = `markets`;
 export const reservesKey = `reserves`;
+export const airdropStaticsS1: AirdropStatics = {
+  claimStart: 1714478400000,
+  claimEnd: 1723791000000,
+  id: 'kamino-s1',
+  emitterName: 'Kamino',
+  emitterLink: 'https://app.kamino.finance/',
+  claimLink: 'https://app.kamino.finance/genesis',
+  image: 'https://sonar.watch/img/platforms/kamino.webp',
+  name: 'S1',
+};
 export const airdropStaticsS2: AirdropStatics = {
   claimStart: 1724340000000,
   claimEnd: undefined,
