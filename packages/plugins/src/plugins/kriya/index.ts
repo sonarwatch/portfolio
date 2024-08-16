@@ -4,9 +4,9 @@ import { Job } from '../../Job';
 import { platform } from './constants';
 import vaultFetcher from './vaultsFetcher';
 import vaultJob from './vaultsJob';
-import poolsJob from './farmsJob';
+import farmsJob from './farmsJob';
 import farmsFetcher from './farmsFetcher';
 
 export const platforms: Platform[] = [platform];
-export const jobs: Job[] = [vaultJob, poolsJob];
+export const jobs: Job[] = [vaultJob, farmsJob];
 export const fetchers: Fetcher[] = [vaultFetcher, farmsFetcher];
