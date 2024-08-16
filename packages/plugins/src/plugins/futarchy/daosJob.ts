@@ -31,7 +31,6 @@ import {
 } from './structs';
 import { shortenAddress } from '../scallop/helpers';
 import { getLpTokenSource } from '../../utils/misc/getLpTokenSource';
-import { tokenListsDetailsPrefix } from '../tokens/constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -87,7 +86,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     }
   });
 
-  const [tokensAccounts, mintsAccounts, underlyingTokenPriceById, tokenList] =
+  const [tokensAccounts, mintsAccounts, underlyingTokenPriceById] =
     await Promise.all([
       getParsedMultipleAccountsInfo(client, tokenAccountStruct, tokensPubkeys),
       getParsedMultipleAccountsInfo(client, mintAccountStruct, mintsPubkeys),
@@ -95,10 +94,6 @@ const executor: JobExecutor = async (cache: Cache) => {
         Array.from(underlyingMints),
         NetworkId.solana
       ),
-      cache.getItems<UniTokenInfo>(Array.from(underlyingMints), {
-        prefix: tokenListsDetailsPrefix,
-        networkId: NetworkId.solana,
-      }),
     ]);
 
   const tokenAccountById: Map<string, TokenAccount> = new Map();
@@ -110,9 +105,6 @@ const executor: JobExecutor = async (cache: Cache) => {
   mintsAccounts.forEach((acc) => {
     if (acc) mintAccountById.set(acc.pubkey.toString(), acc);
   });
-  tokenList.forEach((tD) =>
-    tD ? tokensDetailsById.set(tD.address, tD) : undefined
-  );
 
   const tokenPriceSources: TokenPriceSource[] = [];
   const usdSourceById: Map<string, TokenPriceSource> = new Map();
@@ -131,7 +123,10 @@ const executor: JobExecutor = async (cache: Cache) => {
 
     if (!passAmm || !failAmm || !quoteVault || !baseVault || !dao) continue;
 
-    const daoName = daoNameById.get(dao.pubkey.toString());
+    const daoInfo = daoNameById.get(dao.pubkey.toString());
+    if (!daoInfo) continue;
+
+    const { name: daoName, tokenName: daoTokenName } = daoInfo;
     const elementName = `${daoName} Proposal : ${shortenAddress(
       proposal.pubkey.toString()
     )} (${ProposalState[proposal.state]})`;
@@ -268,8 +263,8 @@ const executor: JobExecutor = async (cache: Cache) => {
       const isPassAmm = amm.pubkey.toString() === proposal.passAmm.toString();
       const liquidityName = isPassAmm ? 'Pass LP' : 'Fail LP';
       const baseLiquidityName = isPassAmm
-        ? `p${baseUnderlyingTokenDetail.symbol}`
-        : `f${baseUnderlyingTokenDetail.symbol}`;
+        ? `p${daoTokenName}`
+        : `f${daoTokenName}`;
 
       const basePrice = amm.quoteAmount
         .dividedBy(10 ** amm.quoteMintDecimals)

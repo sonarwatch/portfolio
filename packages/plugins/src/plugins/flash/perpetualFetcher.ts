@@ -3,7 +3,6 @@ import {
   PortfolioAsset,
   PortfolioElement,
   PortfolioElementType,
-  UniTokenInfo,
   Yield,
   getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
@@ -15,7 +14,6 @@ import { marketsKey, flashPid, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { getPythPricesAsMap } from '../../utils/solana/pyth/helpers';
-import { tokenListsDetailsPrefix } from '../tokens/constants';
 import { perpetualsPositionsFilter } from './filters';
 import { positionStruct } from './structs';
 import { MarketInfo } from './types';
@@ -57,20 +55,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const pythPricesByAccount = await getPythPricesAsMap(client, oraclesPubkeys);
 
-  const tokensDetailsById: Map<string, UniTokenInfo> = new Map();
-  const tokensDetails = await cache.getItems<UniTokenInfo>(
-    marketsInfos
-      .map((acc) => [
-        acc.targetCustodyAccount.mint,
-        acc.collateralCustodyAccount.mint,
-      ])
-      .flat(),
-    { prefix: tokenListsDetailsPrefix, networkId: NetworkId.solana }
-  );
-  tokensDetails.forEach((tD) =>
-    tD ? tokensDetailsById.set(tD.address, tD) : undefined
-  );
-
   const elements: PortfolioElement[] = [];
   for (const position of perpetualsPositions) {
     if (position.sizeUsd.isLessThanOrEqualTo(0)) continue;
@@ -104,9 +88,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const currentPrice = new BigNumber(targetPrice);
 
     const leverage = sizeUsd.dividedBy(collateralUsd);
-
-    const targetDetails = tokensDetailsById.get(targetCustody.mint);
-    const targetName = targetDetails ? targetDetails.symbol : '';
 
     const collatAmount = collateralUsd
       .dividedBy(collateralCustodyPrice)
@@ -174,7 +155,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       platformId,
       label: 'Leverage',
       value,
-      name: `${targetName} ${side} ${leverage.decimalPlaces(2)}x`,
+      name: `${side} ${leverage.decimalPlaces(2)}x`,
       data: {
         borrowedAssets,
         borrowedValue,
