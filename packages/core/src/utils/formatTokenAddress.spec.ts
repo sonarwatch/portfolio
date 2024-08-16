@@ -7,7 +7,7 @@ import {
 import { formatTokenAddress } from './formatTokenAddress';
 
 describe('formatTokenAddress', () => {
-  it('should format SUI token address correctly', () => {
+  it('should format Move token address correctly', () => {
     const networkId: NetworkIdType = NetworkId.sui;
 
     const fTokenAddress = formatTokenAddress(
@@ -24,10 +24,45 @@ describe('formatTokenAddress', () => {
     expect(formatTokenAddress(suiNativeAddress, networkId)).toBe(
       '0x0000000000000000000000000000000000000000000000000000000000000002-sui-SUI'
     );
+    expect(
+      formatTokenAddress(
+        '0x0000000000000000000000000000000000000000000000000000000000000002-sui-SUI',
+        networkId
+      )
+    ).toBe(
+      '0x0000000000000000000000000000000000000000000000000000000000000002-sui-SUI'
+    );
 
+    expect(formatTokenAddress('0x1::aptos_coin::AptosCoin', networkId)).toBe(
+      '0x1-aptos-coin-AptosCoin'
+    );
     expect(
       formatTokenAddress(
         '06864a6f921804860930db6ddbe2e16acdf8504495ea7481637a1c8b9a8fe54b::cetus::CETUS',
+        networkId
+      )
+    ).toBe(
+      '0x06864a6f921804860930db6ddbe2e16acdf8504495ea7481637a1c8b9a8fe54b-cetus-CETUS'
+    );
+    expect(
+      formatTokenAddress(
+        '6864a6f921804860930db6ddbe2e16acdf8504495ea7481637a1c8b9a8fe54b::cetus::CETUS',
+        networkId
+      )
+    ).toBe(
+      '0x06864a6f921804860930db6ddbe2e16acdf8504495ea7481637a1c8b9a8fe54b-cetus-CETUS'
+    );
+    expect(
+      formatTokenAddress(
+        '0x6864a6f921804860930db6ddbe2e16acdf8504495ea7481637a1c8b9a8fe54b::cetus::CETUS',
+        networkId
+      )
+    ).toBe(
+      '0x06864a6f921804860930db6ddbe2e16acdf8504495ea7481637a1c8b9a8fe54b-cetus-CETUS'
+    );
+    expect(
+      formatTokenAddress(
+        '0x06864a6f921804860930db6ddbe2e16acdf8504495ea7481637a1c8b9a8fe54b-cetus-CETUS',
         networkId
       )
     ).toBe(

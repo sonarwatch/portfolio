@@ -1,4 +1,5 @@
 import { getAddress } from '@ethersproject/address';
+import { isHexString } from '@ethersproject/bytes';
 import {
   assertBitcoinAddress,
   assertEvmAddress,
@@ -19,6 +20,10 @@ export function formatMoveAddress(address: string) {
   assertMoveAddress(address);
   let fAddress = address.toLowerCase();
   if (!fAddress.startsWith('0x')) fAddress = `0x${fAddress}`;
+
+  if (!isHexString(fAddress, 32) && fAddress !== '0x1') {
+    fAddress = `${fAddress.slice(0, 2)}0${fAddress.slice(2)}`;
+  }
   return fAddress;
 }
 

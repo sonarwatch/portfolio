@@ -22,7 +22,14 @@ export function assertEvmAddress(address: string): void {
 }
 
 export function isMoveAddress(address: string): boolean {
-  return isHexString(address, 32) || isHexString(`0x${address}`, 32);
+  return (
+    address === '0x1' ||
+    isHexString(address, 32) ||
+    isHexString(`0x${address}`, 32) ||
+    isHexString(`0x0${address}`, 32) ||
+    (address.startsWith('0x') &&
+      isHexString(`${address.slice(0, 2)}0${address.slice(2)}`, 32))
+  );
 }
 export function assertMoveAddress(address: string): void {
   if (!isMoveAddress(address))
