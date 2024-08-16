@@ -566,7 +566,7 @@ import {
   platforms as debridgePlatforms,
   jobs as debridgeJobs,
   fetchers as debridgeFetchers,
-  airdropFetcher as debridgeAirdropFetcher,
+  airdropFetchers as debridgeAirdropFetchers,
 } from './plugins/debridge';
 import {
   platforms as jewelPlatforms,
@@ -943,7 +943,7 @@ export const airdropFetchers: AirdropFetcher[] = [
   parclAirdropFetcher,
   deepbookAirdropFetcher,
   suinsAirdropFetcher,
-  debridgeAirdropFetcher,
+  ...debridgeAirdropFetchers,
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);

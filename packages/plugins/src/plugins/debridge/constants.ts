@@ -10,15 +10,32 @@ export const platform: Platform = {
   twitter: 'https://x.com/deBridgeFinance',
   defiLlamaId: 'debridge', // from https://defillama.com/docs/api
 };
-export const airdropStatics: AirdropStatics = {
+
+export const commonStatics = {
   claimLink: 'https://debridge.foundation/',
   emitterLink: 'https://debridge.finance/',
   emitterName: 'deBridge',
-  id: `${platformId}-token-launch`,
   image: 'https://sonar.watch/img/platforms/debridge.webp',
-  claimEnd: undefined,
-  claimStart: undefined,
 };
+
+export const firstDistribStatics: AirdropStatics = {
+  ...commonStatics,
+  id: `${platformId}-dis1`,
+  claimEnd: undefined,
+  claimStart: 1724940000000,
+};
+
+export const secondDistribStatics: AirdropStatics = {
+  ...commonStatics,
+  id: `${platformId}-dis2`,
+  claimEnd: undefined,
+  claimStart: 1740751200000,
+};
+
+export const staticsByTitle: Map<string, AirdropStatics> = new Map([
+  ['First Distribution', firstDistribStatics],
+  ['Second Distribution', secondDistribStatics],
+]);
 
 export const dbrMint = undefined;
 export const dbrDecimals = 6;

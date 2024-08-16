@@ -7,7 +7,7 @@ import {
   getAirdropRaw,
 } from '../../AirdropFetcher';
 import {
-  airdropStatics,
+  firstDistribStatics,
   apiUrl,
   dbrDecimals,
   dbrMint,
@@ -22,33 +22,36 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
     timeout: 1000,
   });
 
-  let amount = 0;
+  const items = [];
   if (apiRes.data.distributions) {
-    const tokens = apiRes.data.distributions.map((dis) =>
-      new BigNumber(dis.tokens).div(dbrFactor)
-    );
-    amount += tokens
-      .reduce((prev, curr) => prev.plus(curr), new BigNumber(0))
-      .toNumber();
-  }
+    for (const distribution of apiRes.data.distributions) {
+      const tokens = new BigNumber(distribution.tokens).div(dbrFactor);
 
-  return getAirdropRaw({
-    statics: airdropStatics,
-    items: [
-      {
-        amount,
+      items.push({
+        amount: tokens.toNumber(),
         isClaimed: false,
         label: 'DBR',
         address: dbrMint,
         imageUri: dbrMint ? undefined : dbrPlatform.image,
-      },
-    ],
+      });
+    }
+  }
+
+  return getAirdropRaw({
+    statics: firstDistribStatics,
+    items,
   });
 };
 
-export const airdropFetcher: AirdropFetcher = {
-  id: airdropStatics.id,
+export const airdropFetcherEvm: AirdropFetcher = {
+  id: `${firstDistribStatics.id}-evm`,
   networkId: NetworkId.ethereum,
+  executor,
+};
+
+export const airdropFetcherSolana: AirdropFetcher = {
+  id: `${firstDistribStatics.id}-solana`,
+  networkId: NetworkId.solana,
   executor,
 };
 // export const fetcher = airdropFetcherToFetcher(
