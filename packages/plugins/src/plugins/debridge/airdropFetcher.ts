@@ -22,19 +22,32 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
     timeout: 1000,
   });
 
-  const items = [];
-  if (apiRes.data.distributions) {
-    for (const distribution of apiRes.data.distributions) {
-      const tokens = new BigNumber(distribution.tokens).div(dbrFactor);
+  if (!apiRes.data.distributions || apiRes.data.distributions.length === 0) {
+    return getAirdropRaw({
+      statics: firstDistribStatics,
+      items: [
+        {
+          amount: 0,
+          isClaimed: false,
+          label: 'DBR',
+          address: dbrMint,
+          imageUri: dbrMint ? undefined : dbrPlatform.image,
+        },
+      ],
+    });
+  }
 
-      items.push({
-        amount: tokens.toNumber(),
-        isClaimed: false,
-        label: 'DBR',
-        address: dbrMint,
-        imageUri: dbrMint ? undefined : dbrPlatform.image,
-      });
-    }
+  const items = [];
+  for (const distribution of apiRes.data.distributions) {
+    const tokens = new BigNumber(distribution.tokens).div(dbrFactor);
+
+    items.push({
+      amount: tokens.toNumber(),
+      isClaimed: false,
+      label: 'DBR',
+      address: dbrMint,
+      imageUri: dbrMint ? undefined : dbrPlatform.image,
+    });
   }
 
   return getAirdropRaw({
