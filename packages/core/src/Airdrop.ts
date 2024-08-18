@@ -52,13 +52,15 @@ export function getAirdropItemStatus(
   if (airdropStatus === AirdropStatus.notYetOpen)
     return AirdropItemStatus.claimableLater;
 
-  if (airdropStatus === AirdropStatus.closed)
-    return AirdropItemStatus.claimExpired;
-
   if (airdropStatus === AirdropStatus.unknowned)
     return AirdropItemStatus.potentiallyClaimable;
 
   if (isClaimed === null) return AirdropItemStatus.potentiallyClaimable;
+
+  // From here, isClaimed === false
+
+  if (airdropStatus === AirdropStatus.closed)
+    return AirdropItemStatus.claimExpired;
 
   return AirdropItemStatus.claimable;
 }

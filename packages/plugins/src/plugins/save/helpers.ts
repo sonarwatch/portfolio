@@ -105,12 +105,14 @@ export function getElementsFromObligations(
       const lTokenPrice = tokenPriceByAddress.get(lMint);
       let price: number | undefined;
       if (!lTokenPrice) {
-        const pythOracle = new PublicKey(reserve.liquidity.pythOracle);
-        const pythAccount = pythAccountByAddress.get(pythOracle.toString());
-        const pythPrice = pythAccount
-          ? parsePriceData(pythAccount.data)
-          : undefined;
-        if (pythPrice) price = pythPrice.price;
+        continue;
+        // const pythOracle = new PublicKey(reserve.liquidity.pythOracle);
+        // const pythAccount = pythAccountByAddress.get(pythOracle.toString());
+        // console.log('Account', pythAccount?.data.byteLength);
+        // const pythPrice = pythAccount
+        //   ? parsePriceData(pythAccount.data)
+        //   : undefined;
+        // if (pythPrice) price = pythPrice.price;
       }
 
       const decimals = liquidity.mintDecimals;

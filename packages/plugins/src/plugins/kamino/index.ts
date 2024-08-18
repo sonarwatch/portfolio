@@ -12,9 +12,21 @@ import farmsFetcher from './farmsFetcher';
 import {
   airdropFetcher as s2AirdropFetcher,
   fetcher as s2Fetcher,
-} from './airdropFetcher';
+} from './s2AirdropFetcher';
+import {
+  airdropFetcher as s1AirdropFetcher,
+  fetcher as s1Fetcher,
+} from './s1AirdropFetcher';
 
 export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [poolsJob, reservesJob, farmsJob, marketsJob];
-export const fetchers: Fetcher[] = [lendsFetcher, farmsFetcher, s2Fetcher];
-export const airdropFetchers: AirdropFetcher[] = [s2AirdropFetcher];
+export const fetchers: Fetcher[] = [
+  lendsFetcher,
+  farmsFetcher,
+  s1Fetcher,
+  s2Fetcher,
+];
+export const airdropFetchers: AirdropFetcher[] = [
+  s1AirdropFetcher,
+  s2AirdropFetcher,
+];

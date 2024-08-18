@@ -1,5 +1,4 @@
 export * from './MoveResource';
-export * from './types';
 export * from './constants';
 
 export * from './resources/coinInfo';
@@ -22,4 +21,3 @@ export * from './getTableItemsByKeys';
 export * from './getView';
 export * from './getAccountResource';
 export * from './getAccountResources';
-export * from './parseTypeString';
