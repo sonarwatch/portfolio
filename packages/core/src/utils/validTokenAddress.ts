@@ -3,6 +3,7 @@ import { AddressSystem, AddressSystemType } from '../Address';
 import { bitcoinNativeAddress, networks } from '../constants';
 import { isEvmAddress, isMoveAddress, isSolanaAddress } from './validAddress';
 import { TokenAddressIsNotValideError } from '../errors';
+import { parseTypeString } from './move';
 
 export function isBitcoinTokenAddress(address: string): boolean {
   return address === bitcoinNativeAddress;
@@ -22,6 +23,12 @@ export function assertEvmTokenAddress(address: string): void {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function isMoveTokenAddress(address: string): boolean {
+  try {
+    parseTypeString(address);
+  } catch (e) {
+    return false;
+  }
+
   let splitted = address.split('::');
   if (splitted.length < 3) splitted = address.split('-');
   if (splitted.length < 3) return false;

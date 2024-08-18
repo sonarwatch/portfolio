@@ -5,6 +5,9 @@ function splitTypeString(typeString: string): {
   keys?: string;
 } {
   const index = typeString.indexOf('<');
+  const index2 = typeString.indexOf('>');
+  if (index !== -1 && index2 === -1)
+    throw new Error(`Type string not splittable: ${typeString}`);
   const root = index === -1 ? typeString : typeString.slice(0, index);
   const keys = index === -1 ? undefined : typeString.slice(index + 1, -1);
   return {

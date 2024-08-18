@@ -21,5 +21,11 @@ describe('validTokenAddress', () => {
     expect(isMoveTokenAddress('0x1::aptos_coin::AptosCoin')).toBeTruthy();
     expect(isMoveTokenAddress('0x2::sui::SUI')).toBeTruthy();
     expect(isMoveTokenAddress(suiNativeAddress)).toBeTruthy();
+
+    expect(
+      isMoveTokenAddress(
+        '0x2::coin::Coin<0xc2edf324c59ad2481b47e327a710cb5353074af254560b3182d91b3a7feab6c0::PEPEGOAT::PEPEGOAT'
+      )
+    ).toBeFalsy();
   });
 });
