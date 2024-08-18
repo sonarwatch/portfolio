@@ -10,6 +10,7 @@ import {
   assertSolanaTokenAddress,
 } from './validTokenAddress';
 import { isNativeAddressAliasSui } from './isNativeAddressAlias';
+import { formatMoveAddress } from './formatAddress';
 
 export function formatBitcoinTokenAddress(address: string) {
   assertBitcoinTokenAddress(address);
@@ -21,13 +22,19 @@ export function formatMoveTokenAddress(address: string) {
   let tAddress = isNativeAddressAliasSui(address)
     ? suiNetwork.native.address
     : address;
+
   if (!address.startsWith('0x')) tAddress = `0x${tAddress}`;
-  return tAddress
+  tAddress = tAddress
     .trim()
     .replaceAll('::', '__')
     .replaceAll(',', '-')
     .replaceAll(/[^\w\s-]/g, '')
     .replaceAll(/[\s_-]+/g, '-');
+
+  const splitted = tAddress.split('-');
+  splitted[0] = formatMoveAddress(splitted[0]);
+
+  return splitted.join('-');
 }
 
 export function formatEvmTokenAddress(address: string) {

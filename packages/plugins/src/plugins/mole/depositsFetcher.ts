@@ -6,6 +6,7 @@ import {
   PortfolioElement,
   PortfolioLiquidity,
   TokenPrice,
+  parseTypeString,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -18,7 +19,6 @@ import {
   vaultsPrefix,
 } from './constants';
 import { getClientSui } from '../../utils/clients';
-import { parseTypeString } from '../../utils/aptos';
 import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
 import { UserInfo, Vault } from './types';
 import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';

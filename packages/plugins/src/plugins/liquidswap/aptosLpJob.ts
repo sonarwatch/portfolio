@@ -1,5 +1,9 @@
 import BigNumber from 'bignumber.js';
-import { NetworkId, formatTokenAddress } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  formatTokenAddress,
+  parseTypeString,
+} from '@sonarwatch/portfolio-core';
 import {
   LiquidswapLiquidityPoolData as LiquidityPoolData,
   LpInfo,
@@ -10,7 +14,6 @@ import {
   CoinInfoData,
   MoveResource,
   getAccountResources,
-  parseTypeString,
 } from '../../utils/aptos';
 import { getClientAptos } from '../../utils/clients';
 import {

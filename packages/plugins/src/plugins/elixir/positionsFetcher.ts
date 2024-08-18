@@ -8,6 +8,7 @@ import {
   TokenPrice,
   Yield,
   yieldFromApy,
+  parseTypeString,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -22,7 +23,6 @@ import { PositionField, Vault, VaultTvl } from './types';
 import { getClientSui } from '../../utils/clients';
 import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
 import { ObjectResponse } from '../../utils/sui/types';
-import { parseTypeString } from '../../utils/aptos';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import {
   formatAndCleanBigInt,

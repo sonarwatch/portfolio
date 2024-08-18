@@ -3,6 +3,7 @@ import {
   PortfolioLiquidity,
   formatTokenAddress,
   getUsdValueSum,
+  parseTypeString,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -12,7 +13,6 @@ import { getClientSui } from '../../utils/clients';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { StakingPosition } from './types';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
-import { parseTypeString } from '../../utils/aptos';
 import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
 
 const farmFactor = new BigNumber(10 ** 9);

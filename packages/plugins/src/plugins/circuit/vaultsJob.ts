@@ -16,18 +16,17 @@ import { VaultInfo } from './types';
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
 
-  const vaults = await getParsedProgramAccounts(
-    client,
-    vaultStruct,
-    circuitPid,
-    vaultFilter
-  );
-
-  const spotMarkets =
-    (await cache.getItem<SpotMarketEnhanced[]>(keySpotMarkets, {
+  const [vaults, spotMarkets] = await Promise.all([
+    getParsedProgramAccounts(client, vaultStruct, circuitPid, vaultFilter),
+    cache.getItem<SpotMarketEnhanced[]>(keySpotMarkets, {
       prefix: driftPlatformId,
       networkId: NetworkId.solana,
-    })) || [];
+    }),
+  ]);
+
+  if (!spotMarkets) return;
+
+  const cachedItems = [];
   for (const vault of vaults) {
     const name = u8ArrayToString(vault.name);
     const spotMarket = spotMarkets.find(
@@ -38,12 +37,13 @@ const executor: JobExecutor = async (cache: Cache) => {
     const mint = spotMarket.mint.toString();
     const { decimals } = spotMarket;
     const pubkey = vault.pubkey.toString();
-    await cache.setItem<VaultInfo>(
-      pubkey,
-      { pubkey, name, mint, decimals },
-      { prefix: prefixVaults, networkId: NetworkId.solana }
-    );
+    cachedItems.push({ key: pubkey, value: { pubkey, name, mint, decimals } });
   }
+
+  await cache.setItems<VaultInfo>(cachedItems, {
+    prefix: prefixVaults,
+    networkId: NetworkId.solana,
+  });
 };
 
 const job: Job = {

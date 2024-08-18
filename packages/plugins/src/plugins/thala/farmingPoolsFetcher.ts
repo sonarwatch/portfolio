@@ -5,6 +5,7 @@ import {
   PortfolioAsset,
   PortfolioElementType,
   PortfolioLiquidity,
+  parseTypeString,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -20,7 +21,6 @@ import {
   getAccountResources,
   getView,
   isCoinStoreRessourceType,
-  parseTypeString,
 } from '../../utils/aptos';
 import { getClientAptos } from '../../utils/clients';
 import { PoolInfo, StakeAndRewardAmount } from './types';

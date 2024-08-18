@@ -1,3 +1,4 @@
+export * from './move';
 export * from './assertNetworkId';
 export * from './assertAddressSystemFromString';
 export * from './networkIdIncluded';
