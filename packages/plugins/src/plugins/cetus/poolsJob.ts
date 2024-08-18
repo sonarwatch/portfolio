@@ -10,13 +10,21 @@ import { ParsedJsonEvent } from './types';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { queryEvents } from '../../utils/sui/queryEvents';
 
+let lastFetchTime: number | undefined;
+
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
 
   const eventsData = await queryEvents<ParsedJsonEvent>(client, {
     MoveEventType: createPoolEvent,
+    TimeRange: lastFetchTime
+      ? {
+          startTime: lastFetchTime.toString(),
+          endTime: Date.now().toString(),
+        }
+      : undefined,
   });
-  console.log('constexecutor:JobExecutor= ~ eventsData:', eventsData.length);
+  lastFetchTime = Date.now();
 
   const poolsAddresses = eventsData
     .map((eventData) =>

@@ -2,7 +2,13 @@ import { EventId, SuiEventFilter } from '@mysten/sui.js/client';
 import { SuiClient } from '../clients/types';
 import { Event } from './types';
 
-export async function queryEvents<K>(client: SuiClient, query: SuiEventFilter) {
+const maxPage = 50;
+
+export async function queryEventsSafe<K>(
+  client: SuiClient,
+  query: SuiEventFilter
+) {
+  let page = 0;
   let hasNextPage = true;
   let cursor: EventId | null | undefined;
 
@@ -13,9 +19,10 @@ export async function queryEvents<K>(client: SuiClient, query: SuiEventFilter) {
       cursor,
       query,
     });
-    objects.push(...res.data);
+    objects.push(...(res.data as Event<K>[]));
     cursor = res.nextCursor;
     hasNextPage = res.hasNextPage;
-  } while (hasNextPage);
-  return objects as Event<K>[];
+    page += 1;
+  } while (hasNextPage && page <= maxPage);
+  return objects;
 }
