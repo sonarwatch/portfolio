@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId, parseTypeString } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { platformId, poolsKey, poolsOwner, poolsPrefix } from './constants';
@@ -6,7 +6,6 @@ import { getDynamicFields } from '../../utils/sui/getDynamicFields';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { getClientSui } from '../../utils/clients';
 import { Pool, PoolObject } from './types';
-import { parseTypeString } from '../../utils/aptos';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();

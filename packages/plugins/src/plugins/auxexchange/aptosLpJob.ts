@@ -3,6 +3,7 @@ import {
   NetworkId,
   TokenPriceSource,
   formatTokenAddress,
+  parseTypeString,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
@@ -10,7 +11,6 @@ import {
   CoinInfoData,
   MoveResource,
   getAccountResources,
-  parseTypeString,
 } from '../../utils/aptos';
 import { getClientAptos } from '../../utils/clients';
 import { lpCoinInfoTypePrefix, platformId, packageId } from './constants';

@@ -3,6 +3,7 @@ import {
   NetworkId,
   TokenPriceSource,
   TokenPriceUnderlying,
+  parseTypeString,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import {
@@ -18,7 +19,6 @@ import {
   CoinInfoData,
   getAccountResources,
   MoveResource,
-  parseTypeString,
 } from '../../utils/aptos';
 import { getClientAptos } from '../../utils/clients';
 import { ThalaTokenPairMetadataData as TokenPairMetadataData } from './types';

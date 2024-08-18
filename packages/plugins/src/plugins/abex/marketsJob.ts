@@ -1,4 +1,8 @@
-import { NetworkId, formatTokenAddress } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  formatTokenAddress,
+  parseTypeString,
+} from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
@@ -18,7 +22,6 @@ import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import getLpTokenSourceRawOld, {
   PoolUnderlyingRaw,
 } from '../../utils/misc/getLpTokenSourceRawOld';
-import { parseTypeString } from '../../utils/aptos';
 import { getObject } from '../../utils/sui/getObject';
 import { walletTokensPlatform } from '../tokens/constants';
 

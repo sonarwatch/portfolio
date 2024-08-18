@@ -1,11 +1,14 @@
 import BigNumber from 'bignumber.js';
-import { NetworkId, formatTokenAddress } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  formatTokenAddress,
+  parseTypeString,
+} from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSui } from '../../utils/clients';
 import { lpCoinsTable, platformId } from './constants';
 import { PoolInfo } from './types';
-import { parseTypeString } from '../../utils/aptos';
 import { getDynamicFields } from '../../utils/sui/getDynamicFields';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import {
