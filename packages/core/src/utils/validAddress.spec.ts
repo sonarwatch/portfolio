@@ -54,5 +54,15 @@ describe('validAddress', () => {
         '123456789123456789123456789123456789123456789123456789123456789'
       )
     ).toBeTruthy();
+    expect(
+      isMoveAddress(
+        '0x671b1fa2a124f5be8bdae8b91ee711462c5d9e31bda232e70fd9607b523c88'
+      )
+    ).toBeTruthy();
+    expect(
+      isMoveAddress(
+        '671b1fa2a124f5be8bdae8b91ee711462c5d9e31bda232e70fd9607b523c88'
+      )
+    ).toBeTruthy();
   });
 });

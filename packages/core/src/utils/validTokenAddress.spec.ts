@@ -21,6 +21,11 @@ describe('validTokenAddress', () => {
     expect(isMoveTokenAddress('0x1::aptos_coin::AptosCoin')).toBeTruthy();
     expect(isMoveTokenAddress('0x2::sui::SUI')).toBeTruthy();
     expect(isMoveTokenAddress(suiNativeAddress)).toBeTruthy();
+    expect(
+      isMoveTokenAddress(
+        '0x671b1fa2a124f5be8bdae8b91ee711462c5d9e31bda232e70fd9607b523c88::scallop_af_sui::SCALLOP_AF_SUI'
+      )
+    ).toBeTruthy();
 
     expect(
       isMoveTokenAddress(

@@ -27,8 +27,14 @@ export function isMoveAddress(address: string): boolean {
     isHexString(address, 32) ||
     isHexString(`0x${address}`, 32) ||
     isHexString(`0x0${address}`, 32) ||
+    isHexString(`0x00${address}`, 32) ||
+    isHexString(`0x000${address}`, 32) ||
+    isHexString(`0x0000${address}`, 32) ||
     (address.startsWith('0x') &&
-      isHexString(`${address.slice(0, 2)}0${address.slice(2)}`, 32))
+      (isHexString(`${address.slice(0, 2)}0${address.slice(2)}`, 32) ||
+        isHexString(`${address.slice(0, 2)}00${address.slice(2)}`, 32) ||
+        isHexString(`${address.slice(0, 2)}000${address.slice(2)}`, 32) ||
+        isHexString(`${address.slice(0, 2)}0000${address.slice(2)}`, 32)))
   );
 }
 export function assertMoveAddress(address: string): void {
