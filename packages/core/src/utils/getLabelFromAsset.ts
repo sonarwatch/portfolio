@@ -11,7 +11,7 @@ export function getLabelFromAsset(
     case PortfolioAssetType.token:
       return asset.name || tokenInfo?.symbol || 'UNK';
     case PortfolioAssetType.generic:
-      return asset.name || asset.data.name;
+      return asset.name;
     default:
       return undefined;
   }

@@ -231,8 +231,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         type: PortfolioAssetType.generic,
         networkId: NetworkId.solana,
         value: pnl,
+        name: u8ArrayToString(market.name),
         data: {
-          name: u8ArrayToString(market.name),
           address: mint || undefined,
         },
         attributes: {

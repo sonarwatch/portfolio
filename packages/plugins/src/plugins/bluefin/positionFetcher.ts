@@ -131,12 +131,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       type: PortfolioAssetType.generic,
       networkId: NetworkId.solana,
       value: pnl.toNumber(),
+      imageUri: usdcLogoUri,
       attributes: {},
+      name: 'PnL',
       data: {
         amount: pnl.toNumber(),
         price: 1,
-        name: 'PnL',
-        imageUri: usdcLogoUri,
       },
     };
     rewardAssets.push(pnlAsset);
