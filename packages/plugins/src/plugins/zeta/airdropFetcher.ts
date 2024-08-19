@@ -69,10 +69,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       )
     : {
         type: 'generic',
+        imageUri:
+          'https://raw.githubusercontent.com/sonarwatch/token-lists/main/images/solana/ZEXy1pqteRu3n13kdyh4LwPQknkFk3GzmMYMuNadWPo.webp',
         data: {
           address: zexMint,
-          imageUri:
-            'https://statics.solscan.io/cdn/imgs/s60?ref=68747470733a2f2f7261772e67697468756275736572636f6e74656e742e636f6d2f7a6574616d61726b6574732f6272616e642f6d61737465722f6173736574732f7a6574612e706e67',
           amount,
           price: null,
           name: 'ZEX',

@@ -87,11 +87,6 @@ export type PortfolioAssetGenericData = {
   name?: string;
   amount?: number;
   price?: UsdValue;
-  /**
-   * @deprecated
-   * This property is deprecated.
-   */
-  imageUri?: string;
   address?: string;
 };
 
