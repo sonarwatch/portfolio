@@ -80,14 +80,9 @@ export type PortfolioAssetCommon = {
  * Represents the data of a generic portfolio asset.
  */
 export type PortfolioAssetGenericData = {
-  /**
-   * @deprecated
-   * This property is deprecated.
-   */
-  name?: string;
+  address?: string;
   amount?: number;
   price?: UsdValue;
-  address?: string;
 };
 
 /**

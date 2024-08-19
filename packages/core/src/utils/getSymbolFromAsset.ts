@@ -11,7 +11,7 @@ export function getSymbolFromAsset(
     case PortfolioAssetType.token:
       return tokenInfo?.symbol || 'UNK';
     case PortfolioAssetType.generic:
-      return asset.name || asset.data.name;
+      return asset.name;
     default:
       return undefined;
   }

@@ -133,10 +133,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       value: pnl.toNumber(),
       imageUri: usdcLogoUri,
       attributes: {},
+      name: 'PnL',
       data: {
         amount: pnl.toNumber(),
         price: 1,
-        name: 'PnL',
       },
     };
     rewardAssets.push(pnlAsset);

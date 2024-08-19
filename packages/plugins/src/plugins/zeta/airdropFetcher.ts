@@ -71,11 +71,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         type: 'generic',
         imageUri:
           'https://raw.githubusercontent.com/sonarwatch/token-lists/main/images/solana/ZEXy1pqteRu3n13kdyh4LwPQknkFk3GzmMYMuNadWPo.webp',
+        name: 'ZEX',
         data: {
           address: zexMint,
           amount,
           price: null,
-          name: 'ZEX',
         },
         value: null,
         networkId,

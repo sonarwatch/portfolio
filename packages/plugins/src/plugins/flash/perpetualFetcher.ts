@@ -131,7 +131,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       networkId: NetworkId.solana,
       value: pnl,
       attributes: {},
-      data: { name: 'PNL ($)', amount: pnl, price: null },
+      name: 'PNL ($)',
+      data: { amount: pnl, price: null },
     });
     // rewardAssets.push({
     //   type: 'generic',
