@@ -6,19 +6,19 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import {
-  clmmPoolPackageId,
-  clmmPoolsPrefix,
-  clmmType,
-  platformId,
-} from './constants';
+import { clmmPoolPackageId, clmmType, platformId } from './constants';
 import { getClientSui } from '../../utils/clients';
-import { buildPosition, extractStructTagFromType } from './helpers';
+import {
+  buildPosition,
+  extractStructTagFromType,
+  getPoolFromObject,
+} from './helpers';
 
 import { Pool, Position } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
+import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -46,17 +46,29 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (clmmPositions.length === 0) return [];
 
   const poolsIds = clmmPositions.map((position) => position.pool);
-  const pools = await cache.getItems<Pool>(poolsIds, {
-    prefix: clmmPoolsPrefix,
-    networkId: NetworkId.sui,
-  });
+  // const pools = await cache.getItems<Pool>(poolsIds, {
+  //   prefix: clmmPoolsPrefix,
+  //   networkId: NetworkId.sui,
+  // });
   const poolsById: Map<string, Pool> = new Map();
-  pools.forEach((pool) => {
-    if (pool) {
-      poolsById.set(pool.poolAddress, pool);
+  // pools.forEach((pool) => {
+  //   if (pool) {
+  //     poolsById.set(pool.poolAddress, pool);
+  //   }
+  // });
+  // if (poolsById.size === 0) return [];
+
+  const mints: string[] = [];
+  const poolsObjects = await multiGetObjects(client, poolsIds);
+  poolsObjects.forEach((poolObj) => {
+    if (poolObj.data?.content?.fields) {
+      const pool = getPoolFromObject(poolObj);
+      poolsById.set(poolObj.data.objectId, pool);
+      mints.push(pool.coinTypeA, pool.coinTypeB);
     }
   });
-  if (poolsById.size === 0) return [];
+
+  const tokenPriceById = await cache.getTokenPricesAsMap(mints, NetworkId.sui);
 
   const assets: PortfolioLiquidity[] = [];
   let totalLiquidityValue = 0;
@@ -72,10 +84,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       false
     );
 
-    const tokenPriceA = await cache.getTokenPrice(
-      pool.coinTypeA,
-      NetworkId.sui
-    );
+    const tokenPriceA = tokenPriceById.get(pool.coinTypeA);
     if (!tokenPriceA) continue;
 
     const assetTokenA = tokenPriceToAssetToken(
@@ -84,10 +93,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       NetworkId.sui,
       tokenPriceA
     );
-    const tokenPriceB = await cache.getTokenPrice(
-      pool.coinTypeB,
-      NetworkId.sui
-    );
+    const tokenPriceB = tokenPriceById.get(pool.coinTypeB);
     if (!tokenPriceB) continue;
 
     const assetTokenB = tokenPriceToAssetToken(
