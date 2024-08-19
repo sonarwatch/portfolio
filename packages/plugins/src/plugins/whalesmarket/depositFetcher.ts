@@ -108,10 +108,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       .dividedBy(10 ** tokenPrice.decimals)
       .toNumber();
 
-    const fill = `${offer.filledAmount
+    const fill = offer.filledAmount
       .dividedBy(offer.totalAmount)
       .times(100)
-      .toString()}% Filled`;
+      .decimalPlaces(2)
+      .toNumber();
+
+    if (fill === 0 && offer.status === OfferStatus.Closed) continue;
 
     const collatAsset = tokenPriceToAssetToken(
       mint,
@@ -122,7 +125,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       {
         tags: isEnded
           ? undefined
-          : [`${OfferType[offer.offerType]} Offer`, fill],
+          : [`${OfferType[offer.offerType]} Offer`, `${fill}% Filled`],
         isClaimable: isEnded ? true : undefined,
       }
     );
