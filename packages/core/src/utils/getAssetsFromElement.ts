@@ -4,7 +4,7 @@ import {
   PortfolioElementType,
 } from '../Portfolio';
 
-export function getAssetsFromElement(
+export function getLongAssetsFromElement(
   element: PortfolioElement
 ): PortfolioAsset[] {
   switch (element.type) {
@@ -26,4 +26,30 @@ export function getAssetsFromElement(
     default:
       return [];
   }
+}
+
+export function getShortAssetsFromElement(
+  element: PortfolioElement
+): PortfolioAsset[] {
+  switch (element.type) {
+    case PortfolioElementType.multiple:
+      return [];
+    case PortfolioElementType.liquidity:
+      return [];
+    case PortfolioElementType.borrowlend:
+      return [...element.data.borrowedAssets];
+    case PortfolioElementType.leverage:
+      return [];
+    default:
+      return [];
+  }
+}
+
+export function getAssetsFromElement(
+  element: PortfolioElement
+): PortfolioAsset[] {
+  return [
+    ...getLongAssetsFromElement(element),
+    ...getShortAssetsFromElement(element),
+  ];
 }
