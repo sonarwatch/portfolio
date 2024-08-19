@@ -1,4 +1,5 @@
 import {
+  formatMoveAddress,
   formatMoveTokenAddress,
   getUsdValueSum,
   NetworkId,
@@ -20,10 +21,13 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { getClientSui } from '../../utils/clients';
 import { Balance, Pool, Receipt } from './types';
+import { pool as cetusPool } from '../cetus/types';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { ObjectResponse } from '../../utils/sui/types';
 import { extractCointypesFromPool, getExchangeRate } from './helpers';
 import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
+import { getPoolFromObject } from '../cetus/helpers';
+import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -135,23 +139,37 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     });
   });
 
-  const tokenPrices = await cache.getTokenPricesAsMap(
-    positions
-      .map((p) => p.balances)
-      .flat()
-      .map((b) => formatMoveTokenAddress(b.coinType)),
-    NetworkId.sui
-  );
+  const poolsIds = positions
+    .map((p) => p.balances)
+    .flat()
+    .map((b) => b.coinType);
+  const poolsById: Map<string, cetusPool> = new Map();
+  const mints: string[] = [];
+  const poolsObjects = await multiGetObjects(client, poolsIds);
+  poolsObjects.forEach((poolObj) => {
+    if (poolObj.data?.content?.fields) {
+      const pool = getPoolFromObject(poolObj);
+      poolsById.set(poolObj.data.objectId, pool);
+      mints.push(pool.coinTypeA, pool.coinTypeB);
+    }
+  });
 
   positions.forEach((position) => {
     const assets: PortfolioAsset[] = [];
 
     position.balances.forEach((balance) => {
       if (balance.balance.isZero()) return;
-      const tokenPrice = tokenPrices.get(
-        formatMoveTokenAddress(balance.coinType)
-      );
-      if (!tokenPrice) return;
+
+      const pool = poolsById.get(balance.coinType);
+      if (!pool) return;
+
+      // const { tokenAmountA, tokenAmountB } = getTokenAmountsFromLiquidity(
+      //   new BigNumber(clmmPosition.liquidity),
+      //   pool.current_tick_index,
+      //   clmmPosition.tick_lower_index,
+      //   clmmPosition.tick_upper_index,
+      //   false
+      // );
 
       const attributes: PortfolioAssetAttributes = {};
 
@@ -163,7 +181,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           balance.coinType,
           balance.balance.toNumber(),
           NetworkId.sui,
-          tokenPrice,
+          undefined,
           undefined,
           attributes
         )
