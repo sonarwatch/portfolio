@@ -15,7 +15,7 @@ export const poolsPrefix = `${platformId}-pools`;
 export const spoolsPrefix = `${platformId}-spoolsmarket`;
 
 export const addressEndpoint =
-  'https://sui.api.scallop.io/addresses/6462a088a7ace142bb6d7e9b';
+  'https://sui.apis.scallop.io/addresses/664dfe22898c36c159e28bc8';
 export const addressKey = 'scallop-address-key';
 export const marketKey = 'scallop-market-key';
 export const poolsKey = 'scallop-pools-key';
