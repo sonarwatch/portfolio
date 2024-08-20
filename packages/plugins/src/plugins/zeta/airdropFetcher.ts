@@ -40,12 +40,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       'X-Api-Key': 'da2-rrupjjccivdndc6rvltixlmsma',
     }
   ).catch(() => null);
-
-  if (!res) return [];
+  if (!res || !res.getAirdropFinalFrontend) return [];
 
   const amount = res.getAirdropFinalFrontend.total_allocation;
-
-  if (amount === 0) return [];
+  if (!amount || amount === 0) return [];
 
   const claimStatuses = deriveZetaClaimStatuses(owner, distributors);
 

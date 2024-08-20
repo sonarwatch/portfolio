@@ -1,6 +1,6 @@
 import { validate, Network } from 'bitcoin-address-validation';
 import { isAddress as isAddressEthers } from '@ethersproject/address';
-import { isHexString } from '@ethersproject/bytes';
+import { hexDataLength, isHexString } from '@ethersproject/bytes';
 import { base58 } from '@metaplex-foundation/umi-serializers-encodings';
 import { AddressSystem, AddressSystemType } from '../Address';
 import { AddressIsNotValidError } from '../errors/AddressIsNotValidError';
@@ -22,20 +22,19 @@ export function assertEvmAddress(address: string): void {
 }
 
 export function isMoveAddress(address: string): boolean {
-  return (
-    address === '0x1' ||
-    isHexString(address, 32) ||
-    isHexString(`0x${address}`, 32) ||
-    isHexString(`0x0${address}`, 32) ||
-    isHexString(`0x00${address}`, 32) ||
-    isHexString(`0x000${address}`, 32) ||
-    isHexString(`0x0000${address}`, 32) ||
-    (address.startsWith('0x') &&
-      (isHexString(`${address.slice(0, 2)}0${address.slice(2)}`, 32) ||
-        isHexString(`${address.slice(0, 2)}00${address.slice(2)}`, 32) ||
-        isHexString(`${address.slice(0, 2)}000${address.slice(2)}`, 32) ||
-        isHexString(`${address.slice(0, 2)}0000${address.slice(2)}`, 32)))
-  );
+  let fAddress = address.toLowerCase();
+  if (!fAddress.startsWith('0x')) {
+    fAddress = `0x${fAddress}`;
+  }
+  if ((address.length - 2) % 2 !== 0) {
+    fAddress = `0x0${fAddress.slice(2)}`;
+  }
+
+  const isHex = isHexString(fAddress);
+  const hexLength = hexDataLength(fAddress);
+  if (!isHex || !hexLength || hexLength > 32) return false;
+
+  return true;
 }
 export function assertMoveAddress(address: string): void {
   if (!isMoveAddress(address))

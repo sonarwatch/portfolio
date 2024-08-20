@@ -7,7 +7,7 @@ export function getSymbolFromAsset(
 ): string | undefined {
   switch (asset.type) {
     case PortfolioAssetType.collectible:
-      return asset.data.name;
+      return asset.name;
     case PortfolioAssetType.token:
       return tokenInfo?.symbol || 'UNK';
     case PortfolioAssetType.generic:

@@ -25,7 +25,7 @@ export const getPositionPublicKey = (ei: PublicKey) => {
 };
 
 export const isPicassoPosition = (asset: PortfolioAssetCollectible): boolean =>
-  asset.data.name === 'Composable Restaking Position';
+  asset.name === 'Composable Restaking Position';
 
 export async function getPicassoElementsFromNFTs(
   cache: Cache,

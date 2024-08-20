@@ -1,3 +1,4 @@
+import { suiNativeAddress } from '@sonarwatch/portfolio-core';
 import { Pool, PoolFields, Types } from './types';
 import { asIntN } from '../cetus/helpers';
 import { ObjectResponse } from '../../utils/sui/types';
@@ -28,10 +29,7 @@ export function parsePool(pool: ObjectResponse<PoolFields>): Pool {
 }
 
 export function formatForNative(coin: string): string {
-  return coin ===
-    '0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI'
-    ? '0x2::sui::SUI'
-    : coin;
+  return coin === suiNativeAddress ? '0x2::sui::SUI' : coin;
 }
 
 export function bitsToNumber(bits: number) {

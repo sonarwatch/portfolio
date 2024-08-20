@@ -38,7 +38,7 @@ export function sortAssetCollectibles(
 ) {
   let r = compareUsdValue(a.value, b.value);
   if (r === 0) r = compareName(a.data.collection?.id, b.data.collection?.id);
-  if (r === 0) r = compareName(a.data.name, b.data.name);
+  if (r === 0) r = compareName(a.name, b.name);
   return r;
 }
 
