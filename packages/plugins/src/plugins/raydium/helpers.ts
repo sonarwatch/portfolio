@@ -18,7 +18,7 @@ import { AMM_PROGRAM_ID_V3, positionsIdentifier } from './constants';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 export function isARaydiumPosition(nft: PortfolioAssetCollectible): boolean {
-  return nft.data.name === positionsIdentifier;
+  return nft.name === positionsIdentifier;
 }
 
 const ZERO = new BN(0);

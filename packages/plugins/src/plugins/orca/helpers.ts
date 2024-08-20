@@ -7,7 +7,7 @@ import { PortfolioAssetCollectible } from '@sonarwatch/portfolio-core';
 import { positionsIdentifier } from './constants';
 
 export function isAnOrcaPosition(nft: PortfolioAssetCollectible): boolean {
-  return nft.data.name === positionsIdentifier;
+  return nft.name === positionsIdentifier;
 }
 
 export function signedShiftRight(n0: BN, shiftBy: number, bitWidth: number) {
