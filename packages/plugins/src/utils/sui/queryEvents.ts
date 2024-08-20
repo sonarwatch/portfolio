@@ -8,10 +8,12 @@ export async function queryEvents<K>(client: SuiClient, query: SuiEventFilter) {
 
   const objects = [];
 
+  let res;
   do {
-    const res = await client.queryEvents({
+    res = await client.queryEvents({
       cursor,
       query,
+      limit: 50,
     });
     objects.push(...res.data);
     cursor = res.nextCursor;

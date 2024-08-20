@@ -11,11 +11,11 @@ export async function queryEventsSafe<K>(
   let page = 0;
   let hasNextPage = true;
   let cursor: EventId | null | undefined;
-
+  let res;
   const objects = [];
 
   do {
-    const res = await client.queryEvents({
+    res = await client.queryEvents({
       cursor,
       query,
     });

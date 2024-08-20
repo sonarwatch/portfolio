@@ -10,55 +10,53 @@ import { ParsedJsonEvent } from './types';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { queryEvents } from '../../utils/sui/queryEvents';
 
-let lastFetchTime: number | undefined;
-
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
+  const promises = [];
+  const cacheItems = [];
 
   const eventsData = await queryEvents<ParsedJsonEvent>(client, {
     MoveEventType: createPoolEvent,
-    TimeRange: lastFetchTime
-      ? {
-          startTime: lastFetchTime.toString(),
-          endTime: Date.now().toString(),
-        }
-      : undefined,
   });
-  lastFetchTime = Date.now();
-
-  const poolsAddresses = eventsData
-    .map((eventData) =>
-      eventData.parsedJson ? eventData.parsedJson.pool_id : []
-    )
-    .flat();
-
-  const poolsObjects = await multiGetObjects(client, poolsAddresses);
-
-  const promises = [];
-  const cacheItems = [];
-  for (let i = 0; i < poolsObjects.length; i++) {
-    const poolId = poolsObjects[i].data?.objectId;
-    if (!poolId) continue;
-
-    const pool = getPoolFromObject(poolsObjects[i]);
-    if (!pool) continue;
-
-    promises.push(
-      storeTokenPricesFromSqrt(
-        cache,
-        NetworkId.sui,
-        pool.poolAddress,
-        new BigNumber(pool.coinAmountA),
-        new BigNumber(pool.coinAmountB),
-        new BigNumber(pool.current_sqrt_price),
-        pool.coinTypeA,
-        pool.coinTypeB
+  let poolsAddresses;
+  let poolsObjects;
+  let sliceEvents;
+  for (let t = 0; t < eventsData.length; t += 50) {
+    sliceEvents = eventsData.slice(t, t + 50);
+    poolsAddresses = sliceEvents
+      .map((eventData) =>
+        eventData.parsedJson ? eventData.parsedJson.pool_id : []
       )
-    );
-    cacheItems.push({
-      key: poolId,
-      value: pool,
-    });
+      .flat();
+
+    poolsObjects = await multiGetObjects(client, poolsAddresses);
+
+    let poolId;
+    let pool;
+    for (let i = 0; i < poolsObjects.length; i++) {
+      poolId = poolsObjects[i].data?.objectId;
+      if (!poolId) continue;
+
+      pool = getPoolFromObject(poolsObjects[i]);
+      if (!pool) continue;
+
+      promises.push(
+        storeTokenPricesFromSqrt(
+          cache,
+          NetworkId.sui,
+          pool.poolAddress,
+          new BigNumber(pool.coinAmountA),
+          new BigNumber(pool.coinAmountB),
+          new BigNumber(pool.current_sqrt_price),
+          pool.coinTypeA,
+          pool.coinTypeB
+        )
+      );
+      cacheItems.push({
+        key: poolId,
+        value: pool,
+      });
+    }
   }
 
   await cache.setItems(cacheItems, {
