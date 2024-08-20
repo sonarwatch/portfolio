@@ -1,6 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 import { AirdropConfig } from './types';
+import { platformId as kaminoPlatformId } from '../../kamino/constants';
 
 export const platformId = 'jupiter-launchpad';
 const platformImage = 'https://sonar.watch/img/platforms/jupiter.webp';
@@ -114,6 +115,25 @@ export const airdropConfigs: AirdropConfig[] = [
       emitterLink: 'https://uprock.com/',
       claimLink: 'https://lfg.jup.ag/uprock',
       image: 'https://sonar.watch/img/platforms/uprock.webp',
+    },
+  },
+  {
+    mint: 'KMNo3nJsBXfcpJTVhZcXLW7RmTwTt4GVFE7suUBo9sS',
+    decimals: 6,
+    distributorProgram: 'KdisqEcXbXKaTrBFqeDLhMmBvymLTwj9GmhDcdJyGat',
+    label: 'KMNO',
+    platformId: kaminoPlatformId,
+    getApiPath: (owner: string) =>
+      `https://api.kamino.finance/distributor/user/${owner}`,
+    statics: {
+      claimStart: 1724158800000,
+      claimEnd: 1724340000000,
+      id: 'kamino-s2',
+      emitterName: 'Kamino',
+      emitterLink: 'https://app.kamino.finance/',
+      claimLink: 'https://app.kamino.finance/season-2-airdrop',
+      image: 'https://sonar.watch/img/platforms/kamino.webp',
+      name: 'S2',
     },
   },
 ];
