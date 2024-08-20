@@ -1,4 +1,4 @@
-import { Platform } from '@sonarwatch/portfolio-core';
+import { Platform, suiNativeAddress } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'navi';
 export const platform: Platform = {
@@ -22,7 +22,7 @@ export const poolsInfos = [
   {
     id: 0,
     name: 'sui',
-    type: '0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI',
+    type: suiNativeAddress,
     reserveData:
       '0xab644b5fd11aa11e930d1c7bc903ef609a9feaf9ffe1b23532ad8441854fbfaf',
     pool: '0x96df0fce3c471489f4debaaa762cf960b3d97820bd1f3f025ff8190730e958c5',
