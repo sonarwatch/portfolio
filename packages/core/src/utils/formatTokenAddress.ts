@@ -1,7 +1,7 @@
 import { getAddress } from '@ethersproject/address';
 import { NetworkIdType } from '../Network';
 import { AddressSystem, AddressSystemType } from '../Address';
-import { networks, suiNetwork } from '../constants';
+import { networks } from '../constants';
 import {
   assertBitcoinTokenAddress,
   assertEvmTokenAddress,
@@ -9,7 +9,6 @@ import {
   assertSeiTokenAddress,
   assertSolanaTokenAddress,
 } from './validTokenAddress';
-import { isNativeAddressAliasSui } from './isNativeAddressAlias';
 import { formatMoveAddress } from './formatAddress';
 
 export function formatBitcoinTokenAddress(address: string) {
@@ -19,10 +18,7 @@ export function formatBitcoinTokenAddress(address: string) {
 
 export function formatMoveTokenAddress(address: string) {
   assertMoveTokenAddress(address);
-  let tAddress = isNativeAddressAliasSui(address)
-    ? suiNetwork.native.address
-    : address;
-
+  let tAddress = address;
   if (!address.startsWith('0x')) tAddress = `0x${tAddress}`;
   tAddress = tAddress
     .trim()

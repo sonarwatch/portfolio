@@ -39,6 +39,38 @@ describe('validAddress', () => {
         '0x0123456789123456789123456789123456789123456789123456789123456789'
       )
     ).toBeTruthy();
+
+    expect(
+      isMoveAddress(
+        '0x00671b1fa2a124f5be8bdae8b91ee711462c5d9e31bda232e70fd9607b523c88'
+      )
+    ).toBeTruthy();
+    expect(
+      isMoveAddress(
+        '0x671b1fa2a124f5be8bdae8b91ee711462c5d9e31bda232e70fd9607b523c88'
+      )
+    ).toBeTruthy();
+
+    expect(isMoveAddress('0x1')).toBeTruthy();
+    expect(isMoveAddress('0x0001')).toBeTruthy();
+    expect(isMoveAddress('0x00001')).toBeTruthy();
+    expect(isMoveAddress('1')).toBeTruthy();
+    expect(isMoveAddress('0x2')).toBeTruthy();
+    expect(isMoveAddress('0x0002')).toBeTruthy();
+    expect(isMoveAddress('0x00002')).toBeTruthy();
+    expect(isMoveAddress('2')).toBeTruthy();
+
+    expect(
+      isMoveAddress(
+        '0x166b12e98c51d86f0823c39b5555c557d6044822abe5cdb68f0fe761e5bffed08'
+      )
+    ).toBeFalsy();
+    expect(
+      isMoveAddress(
+        '0x111111111111111111111111111111111111111111111111166b12e98c51d86f0823c39b5555c557d6044822abe5cdb68f0fe761e5bffed08'
+      )
+    ).toBeFalsy();
+
     expect(
       isMoveAddress(
         '0123456789123456789123456789123456789123456789123456789123456789'
