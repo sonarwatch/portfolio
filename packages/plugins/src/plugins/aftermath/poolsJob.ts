@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import {
   NetworkId,
   formatMoveTokenAddress,
-  formatTokenAddress,
+  isMoveTokenAddress,
   parseTypeString,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
@@ -43,11 +43,10 @@ const executor: JobExecutor = async (cache: Cache) => {
       pool.data?.content?.fields?.type_names
         ? pool.data?.content?.fields?.type_names
             .map((type) => {
-              try {
+              if (isMoveTokenAddress(type)) {
                 return formatMoveTokenAddress(type);
-              } catch (e) {
-                return [];
               }
+              return [];
             })
             .flat()
         : []
@@ -68,12 +67,12 @@ const executor: JobExecutor = async (cache: Cache) => {
     const poolUnderlyingsRaw: PoolUnderlyingRaw[] = [];
     poolInfo.normalized_balances.forEach((nBalance, i) => {
       let cAddress;
-      try {
-        cAddress = formatTokenAddress(poolInfo.type_names[i], networkId);
-      } catch (e) {
+
+      if (isMoveTokenAddress(poolInfo.type_names[i])) {
+        cAddress = formatMoveTokenAddress(poolInfo.type_names[i]);
+      } else {
         return;
       }
-      if (!cAddress) return;
 
       const tokenPrice = tokenPriceById.get(cAddress);
       if (!tokenPrice || !poolInfo.coin_decimals) return;
