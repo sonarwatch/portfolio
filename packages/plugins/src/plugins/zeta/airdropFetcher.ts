@@ -41,7 +41,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
   ).catch(() => null);
 
-  if (!res) return [];
+  if (!res || !res.getAirdropFinalFrontend) return [];
 
   const amount = res.getAirdropFinalFrontend.total_allocation;
 
