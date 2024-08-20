@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import {
   NetworkId,
+  formatMoveTokenAddress,
   formatTokenAddress,
   parseTypeString,
 } from '@sonarwatch/portfolio-core';
@@ -8,7 +9,7 @@ import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSui } from '../../utils/clients';
 import { lpCoinsTable, platformId } from './constants';
-import { PoolInfo } from './types';
+import { PoolFactory, PoolInfo } from './types';
 import { getDynamicFields } from '../../utils/sui/getDynamicFields';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import {
@@ -25,30 +26,34 @@ const executor: JobExecutor = async (cache: Cache) => {
   const poolFactoryIds = coinsTableFields.map((f) => f.objectId);
   if (!poolFactoryIds.length) return;
 
-  const pObjects = await multiGetObjects(client, poolFactoryIds);
+  const pObjects = await multiGetObjects<PoolFactory>(client, poolFactoryIds);
   const poolsIds = pObjects
-    .map((poolObject) => {
-      if (poolObject.data?.content?.fields) {
-        const fields = poolObject.data?.content?.fields as {
-          id: { id: string };
-          name: string;
-          value: string;
-        };
-        if (fields.value) return fields.value;
-      }
-      return [];
-    })
+    .map((poolObject) =>
+      poolObject.data?.content?.fields
+        ? poolObject.data.content.fields.value
+        : []
+    )
     .flat();
   if (!poolsIds.length) return;
 
   const poolsInfo = await multiGetObjects<PoolInfo>(client, poolsIds);
 
-  const tokenPriceById = await cache.getTokenPricesAsMap(
-    poolsInfo
-      .map((pool) => pool.data?.content?.fields?.type_names || [])
-      .flat(),
-    networkId
-  );
+  const mints = poolsInfo
+    .map((pool) =>
+      pool.data?.content?.fields?.type_names
+        ? pool.data?.content?.fields?.type_names
+            .map((type) => {
+              try {
+                return formatMoveTokenAddress(type);
+              } catch (e) {
+                return [];
+              }
+            })
+            .flat()
+        : []
+    )
+    .flat();
+  const tokenPriceById = await cache.getTokenPricesAsMap(mints, networkId);
 
   const sources = [];
   for (const pool of poolsInfo) {
@@ -58,28 +63,34 @@ const executor: JobExecutor = async (cache: Cache) => {
 
     const moveType = parseTypeString(poolInfo.lp_supply.type);
     if (!moveType.keys) continue;
+
     const lpAddress = moveType.keys[0].type;
     const poolUnderlyingsRaw: PoolUnderlyingRaw[] = [];
     poolInfo.normalized_balances.forEach((nBalance, i) => {
-      const caddress = formatTokenAddress(
-        `0x${poolInfo.type_names[i]}`,
-        networkId
-      );
-      const tokenPrice = tokenPriceById.get(caddress);
+      let cAddress;
+      try {
+        cAddress = formatTokenAddress(poolInfo.type_names[i], networkId);
+      } catch (e) {
+        return;
+      }
+      if (!cAddress) return;
+
+      const tokenPrice = tokenPriceById.get(cAddress);
       if (!tokenPrice || !poolInfo.coin_decimals) return;
 
       poolUnderlyingsRaw.push({
-        address: caddress,
+        address: cAddress,
         decimals: poolInfo.coin_decimals[i],
-        reserveAmountRaw: new BigNumber(
-          poolInfo.normalized_balances[i]
-        ).dividedBy(poolInfo.decimal_scalars[i]),
+        reserveAmountRaw: new BigNumber(nBalance).dividedBy(
+          poolInfo.decimal_scalars[i]
+        ),
         tokenPrice,
         weight: new BigNumber(poolInfo.weights[i]).div(10 ** 18).toNumber(),
       });
     });
     if (poolUnderlyingsRaw.length !== poolInfo.normalized_balances.length)
       continue;
+
     const lpSources = getLpTokenSourceRaw({
       networkId,
       platformId,
