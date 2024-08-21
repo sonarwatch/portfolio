@@ -14,7 +14,6 @@ import { getClientSolana } from '../../../utils/clients';
 import { ParsedAccount, getParsedProgramAccounts } from '../../../utils/solana';
 import { perpetualsPositionsFilter } from '../filters';
 import { CustodyInfo, PerpetualPoolInfo } from '../types';
-import { getPythPricesAsMap } from '../../../utils/solana/pyth/helpers';
 import {
   custodiesKey,
   perpPoolsKey,
@@ -42,20 +41,17 @@ const executor: FetcherExecutor = async (
   )
     return [];
 
-  const custodiesAccounts = await cache.getItem<CustodyInfo[]>(custodiesKey, {
-    prefix: platformId,
-    networkId: NetworkId.solana,
-  });
-  if (!custodiesAccounts) return [];
-
-  const perpPoolsArr = await cache.getItem<ParsedAccount<PerpetualPoolInfo>[]>(
-    perpPoolsKey,
-    {
+  const [custodiesAccounts, perpPoolsArr] = await Promise.all([
+    cache.getItem<CustodyInfo[]>(custodiesKey, {
       prefix: platformId,
       networkId: NetworkId.solana,
-    }
-  );
-  if (!perpPoolsArr) return [];
+    }),
+    cache.getItem<ParsedAccount<PerpetualPoolInfo>[]>(perpPoolsKey, {
+      prefix: platformId,
+      networkId: NetworkId.solana,
+    }),
+  ]);
+  if (!custodiesAccounts || !perpPoolsArr) return [];
 
   const perpPools: Map<string, PerpetualPoolInfo> = new Map();
   perpPoolsArr.forEach((a) => {
@@ -63,13 +59,20 @@ const executor: FetcherExecutor = async (
   });
 
   const oraclesPubkeys: PublicKey[] = [];
+  const mints: Set<string> = new Set();
   const custodyById: Map<string, CustodyInfo> = new Map();
   custodiesAccounts.forEach((a) => {
     oraclesPubkeys.push(new PublicKey(a.oracle.oracleAccount));
     custodyById.set(a.pubkey, a);
+    mints.add(a.mint.toString());
   });
 
-  const pythPricesByAccount = await getPythPricesAsMap(client, oraclesPubkeys);
+  const currentPriceById = await cache.getTokenPricesAsMap(
+    Array.from(mints),
+    NetworkId.solana
+  );
+
+  // const pythPricesByAccount = await getPythPricesAsMap(client, oraclesPubkeys);
 
   const levPositions: LevPosition[] = [];
   for (const position of positionAccounts) {
@@ -88,8 +91,11 @@ const executor: FetcherExecutor = async (
     if (!perpPool) continue;
 
     const entryPrice = price.dividedBy(usdFactor);
-    const currentPrice = pythPricesByAccount.get(custody.oracle.oracleAccount);
-    if (!currentPrice) continue;
+    // const currentPrice = pythPricesByAccount.get(custody.oracle.oracleAccount);
+    const currentTokenPrice = currentPriceById.get(custody.mint.toString());
+    if (!currentTokenPrice) continue;
+
+    const currentPrice = currentTokenPrice.price;
 
     const sizeValue = sizeUsd.dividedBy(usdFactor);
     const size = sizeValue.div(entryPrice);
