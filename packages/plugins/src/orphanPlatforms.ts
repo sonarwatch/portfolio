@@ -1,13 +1,14 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 
-export const stepfinancePlatform = {
+export const stepfinancePlatform: Platform = {
   id: 'stepfinance',
   name: 'Step Finance',
   image: 'https://sonar.watch/img/platforms/stepfinance.webp',
   website: 'https://app.step.finance/',
   twitter: 'https://twitter.com/StepFinance_',
+  defiLlamaId: 'step-finance',
 };
-export const ligmaPlatform = {
+export const ligmaPlatform: Platform = {
   id: 'ligma',
   name: 'Ligma',
   image: 'https://sonar.watch/img/platforms/ligma.webp',
