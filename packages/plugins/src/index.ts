@@ -3,7 +3,7 @@ import { Fetcher } from './Fetcher';
 import { AirdropFetcher } from './AirdropFetcher';
 import { Job } from './Job';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
-import orphanPlatorms from './orphanPlatorms';
+import orphanPlatforms from './orphanPlatforms';
 import {
   platforms as tokensPlatforms,
   jobs as tokensJobs,
@@ -595,7 +595,7 @@ export { getLlamaProtocolsJob } from './plugins/llama-protocols';
 
 // PLATFORMS //
 export const platforms: Platform[] = [
-  ...orphanPlatorms,
+  ...orphanPlatforms,
   ...aavePlatforms,
   ...orcaPlatforms,
   ...cetusPlatforms,
