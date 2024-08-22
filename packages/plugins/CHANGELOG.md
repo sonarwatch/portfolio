@@ -2,6 +2,27 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.12.151](https://github.com/sonarwatch/portfolio/compare/plugins-0.12.150...plugins-0.12.151) (2024-08-21)
+
+
+
+## [0.12.150](https://github.com/sonarwatch/portfolio/compare/plugins-0.12.149...plugins-0.12.150) (2024-08-20)
+
+
+
+## [0.12.149](https://github.com/sonarwatch/portfolio/compare/plugins-0.12.148...plugins-0.12.149) (2024-08-20)
+
+
+
+## [0.12.148](https://github.com/sonarwatch/portfolio/compare/plugins-0.12.147...plugins-0.12.148) (2024-08-20)
+
+
+### Bug Fixes
+
+* **plugins:** zeta airdrop fetcher ([2df3b04](https://github.com/sonarwatch/portfolio/commit/2df3b046a5078862d9fbbb7bcbc69fa40237a5c8))
+
+
+
 ## [0.12.147](https://github.com/sonarwatch/portfolio/compare/plugins-0.12.146...plugins-0.12.147) (2024-08-20)
 
 

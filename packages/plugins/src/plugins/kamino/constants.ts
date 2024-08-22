@@ -106,6 +106,7 @@ export const lendingConfigs: Map<string, LendingMarketConfig> = new Map([
     },
   ],
   ['ByYiZxp8QrdN9qbdtaAiePN8AAr3qvTPppNJDpf5DVJ5', { name: 'Altcoins Market' }],
+  ['BJnbcRHqvppTyGesLzWASGKnmnF1wq9jZu6ExrjT7wvF', { name: 'Ethena Market' }],
 ]);
 
 export const marketsKey = `markets`;

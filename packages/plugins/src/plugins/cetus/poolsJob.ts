@@ -3,44 +3,56 @@ import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSui } from '../../utils/clients';
-import { clmmPoolsPrefix, createPoolEvent, platformId } from './constants';
+import {
+  clmmPoolsPrefix,
+  firstPool,
+  platformId,
+  poolParentId,
+} from './constants';
 import { getPoolFromObject } from './helpers';
 import storeTokenPricesFromSqrt from '../../utils/clmm/tokenPricesFromSqrt';
-import { ParsedJsonEvent } from './types';
+import { TablePoolInfo } from './types';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
-import { queryEvents } from '../../utils/sui/queryEvents';
-
-let lastFetchTime: number | undefined;
+import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
+  const promises = [];
+  const cacheItems = [];
 
-  const eventsData = await queryEvents<ParsedJsonEvent>(client, {
-    MoveEventType: createPoolEvent,
-    TimeRange: lastFetchTime
-      ? {
-          startTime: lastFetchTime.toString(),
-          endTime: Date.now().toString(),
-        }
-      : undefined,
-  });
-  lastFetchTime = Date.now();
+  const poolsAddresses: string[] = [];
+  let poolInfo;
+  let value;
+  do {
+    if (!poolInfo) {
+      value = firstPool;
+    } else {
+      value = poolInfo.data?.content?.fields.value.fields.next;
+    }
 
-  const poolsAddresses = eventsData
-    .map((eventData) =>
-      eventData.parsedJson ? eventData.parsedJson.pool_id : []
-    )
-    .flat();
+    poolInfo = await getDynamicFieldObject<TablePoolInfo>(client, {
+      parentId: poolParentId,
+      name: {
+        type: '0x2::object::ID',
+        value,
+      },
+    });
+
+    if (poolInfo.data?.content)
+      poolsAddresses.push(
+        poolInfo.data.content.fields.value.fields.value.fields.pool_id
+      );
+  } while (poolInfo && poolInfo.data?.content?.fields.value.fields.next);
 
   const poolsObjects = await multiGetObjects(client, poolsAddresses);
 
-  const promises = [];
-  const cacheItems = [];
+  let poolId;
+  let pool;
   for (let i = 0; i < poolsObjects.length; i++) {
-    const poolId = poolsObjects[i].data?.objectId;
+    poolId = poolsObjects[i].data?.objectId;
     if (!poolId) continue;
 
-    const pool = getPoolFromObject(poolsObjects[i]);
+    pool = getPoolFromObject(poolsObjects[i]);
     if (!pool) continue;
 
     promises.push(
