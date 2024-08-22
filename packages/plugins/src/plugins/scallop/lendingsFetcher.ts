@@ -60,12 +60,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     prefix: scoinPrefix,
     networkId: NetworkId.sui,
   });
-
-  if (!pools || !sCoins) return [];
+  if (!pools || !sCoins) {
+    return [];
+  }
 
   const poolValues = Object.values(pools);
   const sCoinValues = Object.values(sCoins);
-  if (poolValues.length === 0) return [];
+  if (poolValues.length === 0) {
+    return [];
+  }
 
   const client = getClientSui();
   const filterOwnerObject: SuiObjectDataFilter = {
@@ -100,13 +103,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     allOwnedObjects.length === 0 ||
     Object.keys(marketData).length === 0 ||
     Object.keys(spoolData).length === 0;
-  if (fetchedDataIncomplete) return [];
+  if (fetchedDataIncomplete) {
+    return [];
+  }
 
   const lendingRate: Map<string, number> = new Map();
 
   Object.keys(pools).forEach((coinName: string) => {
     const market = marketData[coinName];
-    if (!market) return;
+    if (!market) {
+      return;
+    }
     lendingRate.set(
       coinName,
       (Number(market.debt) + Number(market.cash) - Number(market.reserve)) /
@@ -183,13 +190,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         lendingAssetName
       ].amount.plus(new BigNumber(fields['balance'] ?? 0));
     });
-  console.log(
-    'debug: ',
-    JSON.stringify(lendingAssets, (_, v) => {
-      console.log(typeof v);
-      return v.toString();
-    })
-  );
+
   let pendingReward = BigNumber(0);
 
   for (const spoolCoin of Object.keys(stakedAccount)) {
@@ -244,6 +245,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (assetValue.amount.isZero()) continue;
 
     const market = marketData[assetName];
+    console.dir(market, { depth: null });
     if (!market) continue;
 
     const addressMove = formatMoveTokenAddress(assetValue.coinType);
@@ -271,8 +273,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     suppliedAssets.length === 0 &&
     borrowedAssets.length === 0 &&
     rewardAssets.length === 0
-  )
+  ) {
     return [];
+  }
   const { borrowedValue, healthRatio, suppliedValue, value, rewardValue } =
     getElementLendingValues({ suppliedAssets, borrowedAssets, rewardAssets });
   elements.push({

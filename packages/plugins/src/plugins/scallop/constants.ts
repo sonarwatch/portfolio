@@ -12,8 +12,8 @@ export const platform: Platform = {
 
 export const addressPrefix = `${platformId}-address`;
 export const marketPrefix = `${platformId}-market`;
-export const poolsPrefix = `${platformId}-pools`;
 export const scoinPrefix = `${platformId}-scoin`;
+export const poolsPrefix = `${platformId}-pools`;
 export const spoolsPrefix = `${platformId}-spoolsmarket`;
 
 export const addressEndpoint =
