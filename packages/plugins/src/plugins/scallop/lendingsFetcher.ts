@@ -30,6 +30,8 @@ import {
   scoinPrefix,
   sCoinToCoinName,
   sCoinNames,
+  sCoinTypeToCoinTypeMap,
+  sCoinTypeValue,
 } from './constants';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import {
@@ -184,14 +186,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const types = parseStructTag(sCoin.data.type);
       const firstCoin = types.typeParams[0] as unknown as StructTag;
       const coinName = firstCoin.name.toLowerCase() as sCoinNames;
-      const coinType = `${firstCoin.address}::${firstCoin.module}::${firstCoin.name}`;
+      const sCoinType =
+        `${firstCoin.address}::${firstCoin.module}::${firstCoin.name}` as sCoinTypeValue;
+      // need to use the underlying asset type
+      const underlyingCoinType = sCoinTypeToCoinTypeMap[sCoinType];
       const lendingAssetName = sCoinToCoinName[coinName];
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const fields = sCoin.data?.content?.fields as any;
       if (!lendingAssets[lendingAssetName]) {
         lendingAssets[lendingAssetName] = {
           amount: new BigNumber(fields['balance'] ?? 0),
-          coinType,
+          coinType: underlyingCoinType,
         };
       } else {
         lendingAssets[lendingAssetName].amount = lendingAssets[
