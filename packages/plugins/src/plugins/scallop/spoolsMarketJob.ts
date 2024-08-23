@@ -11,7 +11,7 @@ import {
 } from './constants';
 import { AddressInfo, SpoolCoin, SpoolJobResult } from './types';
 import { getObject } from '../../utils/sui/getObject';
-import { client } from './suiClient';
+import { getClientSui } from '../../utils/clients';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const address = await cache.getItem<AddressInfo>(addressKey, {
@@ -26,7 +26,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   );
   const spoolCoinNames: string[] = Array.from(spoolCoin.keys());
   const spoolMarketData: SpoolJobResult = {};
-
+  const client = getClientSui();
   for (const coinName of spoolCoinNames) {
     const detail = spoolCoin.get(coinName);
     if (!detail) continue;
