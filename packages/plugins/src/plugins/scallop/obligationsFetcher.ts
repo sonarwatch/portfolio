@@ -242,7 +242,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       networkId: NetworkId.sui,
       platformId,
       label: 'Lending',
-      name: `${shortenAddress(account, 5, 3)} Obligations`,
+      name: `Obligation ID: ${shortenAddress(account, 5, 3)}`,
       value,
       data: {
         borrowedAssets,
