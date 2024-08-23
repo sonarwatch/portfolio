@@ -5,11 +5,11 @@ import axios, { AxiosResponse } from 'axios';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { airdropUrl, platformId, tableId } from './constants';
-import { getClientSui } from '../../utils/clients';
 import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
 import { ApiResponse, ClaimStatus } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { pythMint } from '../pyth/constants';
+import { client } from './suiClient';
 
 function getAmount(claimData: string): number | undefined {
   if (!claimData) return undefined;
@@ -33,7 +33,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (!signature?.data.data || signature.status === 404) return [];
 
-  const client = getClientSui();
   const amount = getAmount(signature.data.data);
   if (!amount) return [];
 
