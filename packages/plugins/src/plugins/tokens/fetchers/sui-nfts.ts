@@ -68,6 +68,7 @@ const executor: FetcherExecutor = async (owner: string) => {
       type: PortfolioAssetType.collectible,
       value: null,
       attributes: {},
+      name: display?.name || content.fields.name || content.fields.tick,
       data: {
         address: object.data.type,
         amount: Number(content.fields.amount || 1),

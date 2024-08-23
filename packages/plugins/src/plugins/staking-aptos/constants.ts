@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
-import { Platform } from '@sonarwatch/portfolio-core';
-import { MoveResource, parseTypeString } from '../../utils/aptos';
+import { Platform, parseTypeString } from '@sonarwatch/portfolio-core';
+import { MoveResource } from '../../utils/aptos';
 import { MeeiroStakeData, StakeConfig, StakeInfo } from './types';
 
 // Meeiro

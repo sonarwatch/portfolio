@@ -12,7 +12,7 @@ import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { mainMarket, marketsKey, platformId } from './constants';
 import { LendingMarket, MarketsInfo } from './types';
 import { getBorrowApr, getDepositApr } from './helpers';
-import { wadsDecimal } from '../solend/constants';
+import { wadsDecimal } from '../save/constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();

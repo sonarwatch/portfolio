@@ -67,6 +67,10 @@ export function heliusAssetToAssetCollectible(
     attributes: {
       tags: tags.length > 0 ? tags : [],
     },
+    name:
+      asset.content.metadata.name ||
+      collection?.name ||
+      props?.collection?.name,
     data: {
       address: asset.id,
       amount,

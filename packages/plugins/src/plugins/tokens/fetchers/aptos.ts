@@ -6,6 +6,7 @@ import {
   PortfolioElementType,
   PortfolioLiquidity,
   getUsdValueSum,
+  parseTypeString,
 } from '@sonarwatch/portfolio-core';
 
 import BigNumber from 'bignumber.js';
@@ -19,7 +20,6 @@ import {
   coinStore,
   getAccountResources,
   isCoinStoreRessourceType,
-  parseTypeString,
 } from '../../../utils/aptos';
 import { walletTokensPlatform } from '../constants';
 

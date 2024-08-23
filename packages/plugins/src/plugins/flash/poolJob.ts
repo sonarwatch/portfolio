@@ -42,7 +42,8 @@ const executor: JobExecutor = async (cache: Cache) => {
       client,
       pool,
       pool.custodies.map(
-        (c) => custodyAccounts.get(c.toString())?.oracle.oracleAccount || ''
+        (c) =>
+          custodyAccounts.get(c.toString())?.oracle.customOracleAccount || ''
       )
     );
     const decimals = await getDecimals(client, pool.flpMint);
@@ -85,6 +86,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-pools`,
   executor,
-  label: 'normal',
+  label: 'realtime',
 };
 export default job;

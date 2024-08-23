@@ -13,7 +13,6 @@ import { bankStruct } from './struct';
 import { banksFilter } from './filters';
 import { getBorrowRate, getDepositRate } from './helpers';
 import { getClientSolana } from '../../utils/clients';
-import { fetchTokenSupplyAndDecimals } from '../../utils/solana/fetchTokenSupplyAndDecimals';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -24,11 +23,13 @@ const executor: JobExecutor = async (cache: Cache) => {
     banksFilter
   );
   if (!banksAccount) return;
+
   const banks: BankEnhanced[] = [];
   const rateItems = [];
   for (let index = 0; index < banksAccount.length; index++) {
     const bank = banksAccount[index];
     if (!bank) continue;
+
     const depositApr = getDepositRate(bank);
     const borrowApr = getBorrowRate(bank);
     banks.push({
@@ -36,12 +37,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       depositApr,
       borrowApr,
     });
-
-    const tokenAddress = bank.mint.toString();
-    const res = await fetchTokenSupplyAndDecimals(bank.mint, client);
-    if (!res) continue;
-    const { decimals } = res;
-
+    const decimals = bank.mintDecimals;
     const borrowedAmount = bank.depositIndex
       .multipliedBy(bank.indexedDeposits)
       .dividedBy(10 ** decimals)
@@ -54,7 +50,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     if (borrowedAmount <= 10 && depositedAmount <= 10) continue;
 
     const rate: BorrowLendRate = {
-      tokenAddress,
+      tokenAddress: bank.mint.toString(),
       borrowYield: {
         apy: aprToApy(borrowApr),
         apr: borrowApr,
@@ -69,7 +65,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       poolName: 'Main',
     };
     rateItems.push({
-      key: `${bank.vault.toString()}-${tokenAddress}`,
+      key: `${bank.vault.toString()}-${bank.mint.toString()}`,
       value: rate,
     });
   }

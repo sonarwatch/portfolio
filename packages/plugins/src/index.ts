@@ -3,7 +3,7 @@ import { Fetcher } from './Fetcher';
 import { AirdropFetcher } from './AirdropFetcher';
 import { Job } from './Job';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
-import orphanPlatorms from './orphanPlatorms';
+import orphanPlatforms from './orphanPlatforms';
 import {
   platforms as tokensPlatforms,
   jobs as tokensJobs,
@@ -29,10 +29,10 @@ import {
   jobs as saberJobs,
 } from './plugins/saber';
 import {
-  platforms as solendPlatforms,
-  jobs as solendJobs,
-  fetchers as solendFetchers,
-} from './plugins/solend';
+  platforms as savePlatforms,
+  jobs as saveJobs,
+  fetchers as saveFetchers,
+} from './plugins/save';
 import {
   platforms as raydiumPlatforms,
   jobs as raydiumJobs,
@@ -130,6 +130,7 @@ import {
   jobs as kaminoJobs,
   fetchers as kaminoFetchers,
   platforms as kaminoPlatforms,
+  airdropFetchers as kaminoAirdropFetchers,
 } from './plugins/kamino';
 import {
   fetchers as bucketFetchers,
@@ -507,7 +508,7 @@ import {
   platforms as sanctumPlatforms,
   jobs as sanctumJobs,
   fetchers as sanctumFetchers,
-  airdropFetcher as sanctumAirdropFetcher,
+  airdropFetchers as sanctumAirdropFetchers,
 } from './plugins/sanctum';
 import {
   platforms as allbridgePlatforms,
@@ -534,6 +535,49 @@ import {
   jobs as solayerJobs,
   fetchers as solayerFetchers,
 } from './plugins/solayer';
+import {
+  platforms as picassoPlatforms,
+  jobs as picassoJobs,
+  fetchers as picassoFetchers,
+} from './plugins/picasso';
+import {
+  platforms as quarryPlatforms,
+  jobs as quarryJobs,
+  fetchers as quarryFetchers,
+} from './plugins/quarry';
+import {
+  platforms as thevaultPlatforms,
+  jobs as thevaultJobs,
+  fetchers as thevaultFetchers,
+} from './plugins/thevault';
+import {
+  platforms as deepbookPlatforms,
+  jobs as deepbookJobs,
+  fetchers as deepbookFetchers,
+  airdropFetcher as deepbookAirdropFetcher,
+} from './plugins/deepbook';
+import {
+  platforms as suinsPlatforms,
+  jobs as suinsJobs,
+  fetchers as suinsFetchers,
+  airdropFetcher as suinsAirdropFetcher,
+} from './plugins/suins';
+import {
+  platforms as debridgePlatforms,
+  jobs as debridgeJobs,
+  fetchers as debridgeFetchers,
+  airdropFetchers as debridgeAirdropFetchers,
+} from './plugins/debridge';
+import {
+  platforms as alphafiPlatforms,
+  jobs as alphafiJobs,
+  fetchers as alphafiFetchers,
+} from './plugins/alphafi';
+import {
+  platforms as jewelPlatforms,
+  jobs as jewelJobs,
+  fetchers as jewelFetchers,
+} from './plugins/jewel';
 
 export {
   walletTokensPlatform,
@@ -551,7 +595,7 @@ export { getLlamaProtocolsJob } from './plugins/llama-protocols';
 
 // PLATFORMS //
 export const platforms: Platform[] = [
-  ...orphanPlatorms,
+  ...orphanPlatforms,
   ...aavePlatforms,
   ...orcaPlatforms,
   ...cetusPlatforms,
@@ -565,7 +609,7 @@ export const platforms: Platform[] = [
   ...nativeStakePlatforms,
   ...marinadePlatforms,
   ...saberPlatforms,
-  ...solendPlatforms,
+  ...savePlatforms,
   ...marginfiPlatforms,
   ...raydiumPlatforms,
   ...meteoraPlatforms,
@@ -658,6 +702,14 @@ export const platforms: Platform[] = [
   ...nxfinancePlatforms,
   ...echelonPlatforms,
   ...solayerPlatforms,
+  ...picassoPlatforms,
+  ...quarryPlatforms,
+  ...thevaultPlatforms,
+  ...deepbookPlatforms,
+  ...suinsPlatforms,
+  ...debridgePlatforms,
+  ...alphafiPlatforms,
+  ...jewelPlatforms,
 ];
 
 // JOBS //
@@ -667,7 +719,7 @@ export const jobs: Job[] = [
   ...thalaJobs,
   ...marginfiJobs,
   ...raydiumJobs,
-  ...solendJobs,
+  ...saveJobs,
   ...meteoraJobs,
   ...orcaJobs,
   ...driftJobs,
@@ -764,6 +816,14 @@ export const jobs: Job[] = [
   ...nxfinanceJobs,
   ...echelonJobs,
   ...solayerJobs,
+  ...picassoJobs,
+  ...quarryJobs,
+  ...thevaultJobs,
+  ...deepbookJobs,
+  ...suinsJobs,
+  ...debridgeJobs,
+  ...alphafiJobs,
+  ...jewelJobs,
 ];
 
 // FETCHERS //
@@ -773,7 +833,7 @@ export const fetchers: Fetcher[] = [
   ...tensorFetchers,
   ...marginfiFetchers,
   ...marinadeFetchers,
-  ...solendFetchers,
+  ...saveFetchers,
   ...thalaFetchers,
   ...raydiumFetchers,
   ...orcaFetchers,
@@ -872,14 +932,26 @@ export const fetchers: Fetcher[] = [
   ...nxfinanceFetchers,
   ...echelonFetchers,
   ...solayerFetchers,
+  ...picassoFetchers,
+  ...quarryFetchers,
+  ...thevaultFetchers,
+  ...deepbookFetchers,
+  ...suinsFetchers,
+  ...debridgeFetchers,
+  ...alphafiFetchers,
+  ...jewelFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
 export const airdropFetchers: AirdropFetcher[] = [
   ...jupiterAirdropFetchers,
+  ...kaminoAirdropFetchers,
+  ...sanctumAirdropFetchers,
   driftAirdropFetcher,
   parclAirdropFetcher,
-  sanctumAirdropFetcher,
+  deepbookAirdropFetcher,
+  suinsAirdropFetcher,
+  ...debridgeAirdropFetchers,
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);

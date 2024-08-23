@@ -9,6 +9,15 @@ export const platform: Platform = {
   defiLlamaId: 'orca',
   website: 'https://www.orca.so/',
 };
+
+export const orcaStakingPlatformId = 'orca-staking';
+export const orcaStakingPlatform: Platform = {
+  id: orcaStakingPlatformId,
+  name: 'Orca Staking',
+  image: 'https://sonar.watch/img/platforms/orca.webp',
+  website: 'https://v1.orca.so/staking',
+};
+
 export const poolsProgram = new PublicKey(
   '9W959DqEETiGZocYWCQPaJ6sBmUzgfxXfqGeTEdp3aQP'
 );

@@ -16,3 +16,7 @@ export const clmmPoolPackageId =
 export const clmmType = `${clmmPoolPackageId}::position::Position`;
 
 export const createPoolEvent = `${clmmPoolPackageId}::factory::CreatePoolEvent`;
+export const poolParentId =
+  '0x4c9ab808d50ca1358cc699bb53b6334b9471d4718fb19bb621ff41c2e93bbce4';
+export const firstPool =
+  '0x58ec75646f31c384f485bd92a5f1d19aa60713eabe2447cbc1354c8c229b10b7';

@@ -105,3 +105,46 @@ export type ParsedJsonEvent = {
   pool_id: string;
   tick_spacing: number;
 };
+
+export type ID = {
+  id: string;
+};
+
+export type TablePoolInfo = {
+  id: ID;
+  name: string;
+  value: TablePoolInfoValue;
+};
+
+export type TablePoolInfoValue = {
+  fields: TableFields;
+  type: string;
+};
+
+export type TableFields = {
+  next: string;
+  prev: string;
+  value: PoolValue;
+};
+
+export type PoolValue = {
+  fields: PoolFields;
+  type: string;
+};
+
+export type PoolFields = {
+  coin_type_a: CoinType;
+  coin_type_b: CoinType;
+  pool_id: string;
+  pool_key: string;
+  tick_spacing: number;
+};
+
+export type CoinType = {
+  fields: CoinTypeFields;
+  type: string;
+};
+
+export type CoinTypeFields = {
+  name: string;
+};

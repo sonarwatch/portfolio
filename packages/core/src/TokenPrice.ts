@@ -1,5 +1,6 @@
 import { NetworkIdType } from './Network';
 import { deepClone } from './helpers';
+import { walletTokensPlatformId } from './constants';
 
 export const coingeckoSourceId = 'coingecko';
 export const tokenPriceSourceTtl = 4 * 60 * 60 * 1000; // 4 hours
@@ -46,9 +47,13 @@ export function tokenPriceFromSources(
   const updatedSources = updateTokenPriceSources(sources);
   if (!updatedSources || updatedSources.length === 0) return undefined;
 
-  const latestSource = updatedSources.reduce((prev, current) =>
-    prev.timestamp > current.timestamp ? prev : current
-  );
+  const bestSource = updatedSources.reduce((prev, current) => {
+    if (current.platformId !== walletTokensPlatformId) return current;
+    // TODO print warning if 2 differents platformId (other than walletTokensPlatform.id)
+    // TODO print warning if 2 differents decimals
+    return prev;
+  });
+
   let price: number;
   const coingeckoSource = updatedSources.find(
     (source) => source.id === coingeckoSourceId
@@ -65,14 +70,14 @@ export function tokenPriceFromSources(
     price = weightSum === 0 ? 0 : priceSum / weightSum;
   }
   return {
-    address: latestSource.address,
-    networkId: latestSource.networkId,
-    platformId: latestSource.platformId,
-    decimals: latestSource.decimals,
+    address: bestSource.address,
+    networkId: bestSource.networkId,
+    platformId: bestSource.platformId,
+    decimals: bestSource.decimals,
     price,
-    underlyings: latestSource.underlyings,
-    elementName: latestSource.elementName,
-    liquidityName: latestSource.liquidityName,
+    underlyings: bestSource.underlyings,
+    elementName: bestSource.elementName,
+    liquidityName: bestSource.liquidityName,
     timestamp: Date.now(),
     sources: updatedSources,
   };

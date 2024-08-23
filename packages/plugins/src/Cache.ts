@@ -38,12 +38,13 @@ export type TransactionOptionsSetItem = {
 
 const tokenPriceSourcePrefix = 'tokenpricesource';
 
-export type CacheConfig =
+export type CacheConfig = { name?: string } & (
   | CacheConfigOverlayHttp
   | CacheConfigMemory
   | CacheConfigRedis
   | CacheConfigFilesystem
-  | CacheConfigHttp;
+  | CacheConfigHttp
+);
 
 export type CacheConfigOverlayHttp = {
   type: 'overlayHttp';
@@ -101,6 +102,7 @@ export type CacheConfigParams = {
 };
 
 export class Cache {
+  readonly name?: string;
   readonly storage: Storage;
   readonly driver: Driver;
   private tokenPriceStorage: Storage;
@@ -115,6 +117,7 @@ export class Cache {
         ttl: 10000,
       }),
     });
+    this.name = cacheConfig.name;
   }
 
   importData(data: Map<string, string>): void {
@@ -338,6 +341,23 @@ function getDriverFromCacheConfig(cacheConfig: CacheConfig) {
         tls: cacheConfig.params.tls ? {} : undefined,
         db: cacheConfig.params.db,
         ttl: cacheConfig.params.ttl,
+        connectTimeout: 60000,
+        keepAlive: 10000,
+        retryStrategy: () => {
+          const delay = 2000;
+          const cacheName = cacheConfig.name ? `(${cacheConfig.name})` : '';
+          // eslint-disable-next-line no-console
+          console.error(
+            `PortfolioCache${cacheName} redis reconnecting in ${delay} ms...`
+          );
+          return delay;
+        },
+        reconnectOnError: (err) => {
+          const cacheName = cacheConfig.name ? `(${cacheConfig.name})` : '';
+          // eslint-disable-next-line no-console
+          console.error(`PortfolioCache${cacheName} redis error:`, err);
+          return true;
+        },
       }) as Driver;
     case 'http':
       return httpDriver({

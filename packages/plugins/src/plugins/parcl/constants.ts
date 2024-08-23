@@ -24,7 +24,7 @@ export const stakingProgramId = new PublicKey(
 );
 
 export const airdropApi = 'https://gnome-api-mainnet.fly.dev/user/';
-export const allocationPrefix = `${platformId}/allocation`;
+export const allocationPrefix = `${platformId}-allocation`;
 export const prclMint = '4LLbsb5ReP3yEtYzmXewyGjcir5uXtKFURtaEUVC2AHs';
 export const prclDecimals = 6;
 export const merkleApi = 'https://worker.jup.ag/jup-claim-proof';

@@ -25,6 +25,7 @@ import {
   getUsdValueSum,
   networks,
   compareName,
+  formatTokenAddress,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from './Cache';
 import promiseTimeout from './utils/misc/promiseTimeout';
@@ -121,7 +122,14 @@ async function enhanceAirdrop(
   const prices = await getAirdropItemsPrices(airdropRaw, networkId, cache);
   const items = airdropRaw.items
     .map((i, index) =>
-      enhanceAirdropItem(i, airdropRaw.id, airdropStatus, prices[index], owner)
+      enhanceAirdropItem(
+        i,
+        airdropRaw.id,
+        airdropStatus,
+        prices[index],
+        owner,
+        networkId
+      )
     )
     .sort((a, b) => compareName(a.label, b.label));
   return {
@@ -139,10 +147,14 @@ function enhanceAirdropItem(
   airdropId: string,
   airdropStatus: AirdropStatus,
   price: UsdValue,
-  owner: string
+  owner: string,
+  networkId: NetworkIdType
 ): AirdropItem {
   return {
     ...airdropItem,
+    address: airdropItem.address
+      ? formatTokenAddress(airdropItem.address, networkId)
+      : undefined,
     airdropId,
     price,
     status: getAirdropItemStatus(
@@ -221,6 +233,7 @@ export async function runAirdropFetchers(
   cache: Cache,
   useCache = false
 ): Promise<AirdropFetchersResult> {
+  const startDate = Date.now();
   const fOwner = formatAddress(owner, addressSystem);
   const isFetchersValids = fetchers.every(
     (f) => networks[f.networkId].addressSystem === addressSystem
@@ -258,12 +271,14 @@ export async function runAirdropFetchers(
     if (r.status === 'rejected') return [];
     return r.value.airdrop;
   });
+  const now = Date.now();
   return {
-    date: Date.now(),
+    date: now,
     owner: fOwner,
     addressSystem,
     fetcherReports: fReports,
     airdrops,
+    duration: now - startDate,
   };
 }
 

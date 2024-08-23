@@ -1,8 +1,4 @@
-import {
-  NetworkId,
-  NetworkIdType,
-  formatTokenAddress,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId, NetworkIdType } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { getCosmWasmClient } from '@sei-js/core';
 import {
@@ -14,8 +10,6 @@ import {
 import { getUrlEndpoint } from '../clients/constants';
 import { TokenInfo, tokenInfoQueryMsg } from '../sei';
 import { Cache } from '../../Cache';
-import { tokenListsDetailsPrefix } from '../../plugins/tokens/constants';
-import { Token } from '../../plugins/tokens/types';
 import { getDecimals as getDecimalsAptos } from '../aptos/getDecimals';
 import { getDecimals as getDecimalsSolana } from '../solana/getDecimals';
 import { getDecimals as getDecimalsSui } from '../sui/getDecimals';
@@ -34,15 +28,6 @@ export async function getDecimalsForToken(
   address: string,
   networkId: NetworkIdType
 ): Promise<number | null> {
-  const tokenDetails = await cache.getItem<Token>(
-    formatTokenAddress(address, networkId),
-    {
-      prefix: tokenListsDetailsPrefix,
-      networkId,
-    }
-  );
-  if (tokenDetails) return tokenDetails.decimals;
-
   switch (networkId) {
     case 'aptos': {
       const client = getClientAptos();

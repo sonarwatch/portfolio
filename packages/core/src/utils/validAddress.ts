@@ -1,6 +1,6 @@
 import { validate, Network } from 'bitcoin-address-validation';
 import { isAddress as isAddressEthers } from '@ethersproject/address';
-import { isHexString } from '@ethersproject/bytes';
+import { hexDataLength, isHexString } from '@ethersproject/bytes';
 import { base58 } from '@metaplex-foundation/umi-serializers-encodings';
 import { AddressSystem, AddressSystemType } from '../Address';
 import { AddressIsNotValidError } from '../errors/AddressIsNotValidError';
@@ -22,7 +22,19 @@ export function assertEvmAddress(address: string): void {
 }
 
 export function isMoveAddress(address: string): boolean {
-  return isHexString(address, 32) || isHexString(`0x${address}`, 32);
+  let fAddress = address.toLowerCase();
+  if (!fAddress.startsWith('0x')) {
+    fAddress = `0x${fAddress}`;
+  }
+  if ((address.length - 2) % 2 !== 0) {
+    fAddress = `0x0${fAddress.slice(2)}`;
+  }
+
+  const isHex = isHexString(fAddress);
+  const hexLength = hexDataLength(fAddress);
+  if (!isHex || !hexLength || hexLength > 32) return false;
+
+  return true;
 }
 export function assertMoveAddress(address: string): void {
   if (!isMoveAddress(address))

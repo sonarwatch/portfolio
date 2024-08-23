@@ -106,3 +106,5 @@ export type LendingMarketConfig = {
   multiplyPairs?: string[][];
   leveragePairs?: string[][];
 };
+
+export type AllocationsApiRes = { quantity: string; name: string }[];

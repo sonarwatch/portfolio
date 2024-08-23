@@ -6,7 +6,7 @@ export const platform: Platform = {
   id: platformId,
   name: 'LuLo',
   image: 'https://sonar.watch/img/platforms/lulo.webp',
-  defiLlamaId: 'flexlend',
+  defiLlamaId: 'lulo',
   website: 'https://www.lulo.fi',
   twitter: 'https://twitter.com/uselulo',
 };

@@ -3,7 +3,6 @@ import {
   PortfolioAsset,
   PortfolioElement,
   PortfolioElementType,
-  TokenPrice,
   Yield,
   aprToApy,
   formatMoveTokenAddress,
@@ -176,15 +175,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   await runInBatch(debtsAndCollateralCalculationPromises, 5); // run in batch of size 2, calculate 5 obligation account per batch
 
   const tokenAddresses = ctmValues.map((value) => value.coinType);
-  const tokenPriceResult = await cache.getTokenPrices(
+  const tokenPrices = await cache.getTokenPricesAsMap(
     tokenAddresses,
     NetworkId.sui
   );
-  const tokenPrices: Map<string, TokenPrice> = new Map();
-  tokenPriceResult.forEach((r) => {
-    if (!r) return;
-    tokenPrices.set(r.address, r);
-  });
 
   for (const account of Object.keys(userObligations)) {
     const borrowedAssets: PortfolioAsset[] = [];

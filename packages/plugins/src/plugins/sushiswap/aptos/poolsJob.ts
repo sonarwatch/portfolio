@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId, parseTypeString } from '@sonarwatch/portfolio-core';
 import { getClientAptos } from '../../../utils/clients';
 import { Cache } from '../../../Cache';
 import { Job, JobExecutor } from '../../../Job';
@@ -8,7 +8,6 @@ import {
   CoinInfoData,
   MoveResource,
   getAccountResources,
-  parseTypeString,
 } from '../../../utils/aptos';
 import { platformId } from '../constants';
 import { TokenPairMetadataData } from './types';

@@ -38,7 +38,9 @@ import {
 import { PerpMarketIndexes, SpotMarketEnhanced } from './types';
 import {
   ParsedAccount,
+  TokenAccount,
   getParsedMultipleAccountsInfo,
+  tokenAccountStruct,
   u8ArrayToString,
 } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
@@ -56,8 +58,6 @@ import { getMintFromOracle } from './perpHelpers/getMintFromOracle';
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  // Insurance
-
   const spotMarketsItems = await cache.getItem<SpotMarketEnhanced[]>(
     keySpotMarkets,
     {
@@ -68,6 +68,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const spotMarketByIndex: Map<number, SpotMarketEnhanced> = new Map();
   const tokensMints = [];
   const insuranceFundStakeAccountsAddresses: PublicKey[] = [];
+  const insuranceVaultsPkeys: PublicKey[] = [];
   for (const spotMarketItem of spotMarketsItems || []) {
     insuranceFundStakeAccountsAddresses[spotMarketItem.marketIndex] =
       getUserInsuranceFundStakeAccountPublicKey(
@@ -75,34 +76,64 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         new PublicKey(owner),
         spotMarketItem.marketIndex
       );
+    insuranceVaultsPkeys.push(
+      new PublicKey(spotMarketItem.insuranceFund.vault)
+    );
     spotMarketByIndex.set(spotMarketItem.marketIndex, spotMarketItem);
     tokensMints.push(spotMarketItem.mint.toString());
   }
 
-  const tokensPrices = await cache.getTokenPrices(
-    tokensMints,
-    NetworkId.solana
-  );
+  const [insuranceAccounts, insuranceTokenAccounts, tokensPrices] =
+    await Promise.all([
+      getParsedMultipleAccountsInfo(
+        client,
+        insuranceFundStakeStruct,
+        insuranceFundStakeAccountsAddresses
+      ),
+      getParsedMultipleAccountsInfo(
+        client,
+        tokenAccountStruct,
+        insuranceVaultsPkeys
+      ),
+      cache.getTokenPrices(tokensMints, NetworkId.solana),
+    ]);
+
   const tokenPriceById: Map<string, TokenPrice> = new Map();
   tokensPrices.forEach((tP) => (tP ? tokenPriceById.set(tP.address, tP) : []));
 
-  const insuranceAccounts = await getParsedMultipleAccountsInfo(
-    client,
-    insuranceFundStakeStruct,
-    insuranceFundStakeAccountsAddresses
-  );
+  const insuranceTokenAccountsById: Map<string, TokenAccount> = new Map();
+  insuranceTokenAccounts.forEach((acc) => {
+    if (acc) insuranceTokenAccountsById.set(acc.pubkey.toString(), acc);
+  });
+
+  // Insurance
   const elements: PortfolioElement[] = [];
   const insuranceAssets: PortfolioAsset[] = [];
   insuranceAccounts.forEach((account, i) => {
-    if (!account || account.costBasis.isLessThan(0)) return;
-    const mint = spotMarketByIndex.get(i)?.mint.toString();
-    if (!mint) return;
-    const tokenPrice = tokenPriceById.get(mint);
+    if (!account || account.ifShares.isZero()) return;
+
+    const spotMarket = spotMarketByIndex.get(i);
+    if (!spotMarket) return;
+
+    const { insuranceFund, mint } = spotMarket;
+
+    const vault = insuranceTokenAccountsById.get(
+      insuranceFund.vault.toString()
+    );
+    if (!vault) return;
+
+    const tokenPrice = tokenPriceById.get(mint.toString());
     if (!tokenPrice) return;
+
+    const sharesAmount = account.ifShares
+      .dividedBy(insuranceFund.totalShares)
+      .times(vault.amount.dividedBy(10 ** tokenPrice.decimals))
+      .toNumber();
+
     insuranceAssets.push(
       tokenPriceToAssetToken(
-        mint,
-        account.costBasis.dividedBy(10 ** tokenPrice.decimals).toNumber(),
+        mint.toString(),
+        sharesAmount,
         NetworkId.solana,
         tokenPrice
       )
@@ -200,8 +231,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         type: PortfolioAssetType.generic,
         networkId: NetworkId.solana,
         value: pnl,
+        name: u8ArrayToString(market.name),
         data: {
-          name: u8ArrayToString(market.name),
           address: mint || undefined,
         },
         attributes: {

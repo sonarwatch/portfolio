@@ -1,6 +1,22 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 
-const otphanPlatforms: Platform[] = [
+export const stepfinancePlatform: Platform = {
+  id: 'stepfinance',
+  name: 'Step Finance',
+  image: 'https://sonar.watch/img/platforms/stepfinance.webp',
+  website: 'https://app.step.finance/',
+  twitter: 'https://twitter.com/StepFinance_',
+  defiLlamaId: 'step-finance',
+};
+export const ligmaPlatform: Platform = {
+  id: 'ligma',
+  name: 'Ligma',
+  image: 'https://sonar.watch/img/platforms/ligma.webp',
+  website: 'https://stake.ligmanode.com/',
+  twitter: 'https://twitter.com/ligmanode',
+};
+
+const orphanPlatforms: Platform[] = [
   {
     id: 'tortuga',
     defiLlamaId: 'tortuga', // from https://defillama.com/docs/api
@@ -57,5 +73,14 @@ const otphanPlatforms: Platform[] = [
     image: 'https://sonar.watch/img/platforms/stakewise.webp',
     website: 'https://stakewise.io/',
   },
+  {
+    id: 'ondo-finance',
+    defiLlamaId: 'ondo-finance',
+    name: 'Ondo Finance',
+    image: 'https://sonar.watch/img/platforms/ondo-finance.webp',
+    website: 'https://ondo.finance/',
+  },
+  stepfinancePlatform,
+  ligmaPlatform,
 ];
-export default otphanPlatforms;
+export default orphanPlatforms;

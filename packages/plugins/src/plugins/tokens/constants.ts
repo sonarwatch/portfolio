@@ -1,12 +1,16 @@
-import { Platform } from '@sonarwatch/portfolio-core';
+import {
+  Platform,
+  walletNftsPlatformId,
+  walletTokensPlatformId,
+} from '@sonarwatch/portfolio-core';
 
 export const walletTokensPlatform: Platform = {
-  id: 'wallet-tokens',
+  id: walletTokensPlatformId,
   name: 'Tokens',
   image: 'https://sonar.watch/img/platforms/wallet-tokens.webp',
 };
 export const walletNftsPlatform: Platform = {
-  id: 'wallet-nfts',
+  id: walletNftsPlatformId,
   name: 'NFTs',
   image: 'https://sonar.watch/img/platforms/wallet-nfts.webp',
 };

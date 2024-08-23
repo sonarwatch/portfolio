@@ -2,6 +2,246 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.12.152](https://github.com/sonarwatch/portfolio/compare/core-0.12.151...core-0.12.152) (2024-08-22)
+
+
+
+## [0.12.151](https://github.com/sonarwatch/portfolio/compare/core-0.12.150...core-0.12.151) (2024-08-21)
+
+
+
+## [0.12.150](https://github.com/sonarwatch/portfolio/compare/core-0.12.149...core-0.12.150) (2024-08-20)
+
+
+
+## [0.12.149](https://github.com/sonarwatch/portfolio/compare/core-0.12.148...core-0.12.149) (2024-08-20)
+
+
+
+## [0.12.148](https://github.com/sonarwatch/portfolio/compare/core-0.12.147...core-0.12.148) (2024-08-20)
+
+
+
+## [0.12.147](https://github.com/sonarwatch/portfolio/compare/core-0.12.146...core-0.12.147) (2024-08-20)
+
+
+
+## [0.12.146](https://github.com/sonarwatch/portfolio/compare/core-0.12.145...core-0.12.146) (2024-08-20)
+
+
+
+## [0.12.145](https://github.com/sonarwatch/portfolio/compare/core-0.12.144...core-0.12.145) (2024-08-19)
+
+
+
+## [0.12.144](https://github.com/sonarwatch/portfolio/compare/core-0.12.143...core-0.12.144) (2024-08-19)
+
+
+
+## [0.12.143](https://github.com/sonarwatch/portfolio/compare/core-0.12.142...core-0.12.143) (2024-08-19)
+
+
+
+## [0.12.142](https://github.com/sonarwatch/portfolio/compare/core-0.12.141...core-0.12.142) (2024-08-18)
+
+
+
+## [0.12.141](https://github.com/sonarwatch/portfolio/compare/core-0.12.140...core-0.12.141) (2024-08-16)
+
+
+
+## [0.12.140](https://github.com/sonarwatch/portfolio/compare/core-0.12.139...core-0.12.140) (2024-08-16)
+
+
+
+## [0.12.139](https://github.com/sonarwatch/portfolio/compare/core-0.12.138...core-0.12.139) (2024-08-16)
+
+
+
+## [0.12.138](https://github.com/sonarwatch/portfolio/compare/core-0.12.137...core-0.12.138) (2024-08-16)
+
+
+
+## [0.12.137](https://github.com/sonarwatch/portfolio/compare/core-0.12.136...core-0.12.137) (2024-08-16)
+
+
+
+## [0.12.136](https://github.com/sonarwatch/portfolio/compare/core-0.12.135...core-0.12.136) (2024-08-15)
+
+
+
+## [0.12.135](https://github.com/sonarwatch/portfolio/compare/core-0.12.134...core-0.12.135) (2024-08-14)
+
+
+
+## [0.12.134](https://github.com/sonarwatch/portfolio/compare/core-0.12.133...core-0.12.134) (2024-08-14)
+
+
+
+## [0.12.133](https://github.com/sonarwatch/portfolio/compare/core-0.12.132...core-0.12.133) (2024-08-13)
+
+
+
+## [0.12.132](https://github.com/sonarwatch/portfolio/compare/core-0.12.131...core-0.12.132) (2024-08-12)
+
+
+
+## [0.12.131](https://github.com/sonarwatch/portfolio/compare/core-0.12.130...core-0.12.131) (2024-08-12)
+
+
+
+## [0.12.130](https://github.com/sonarwatch/portfolio/compare/core-0.12.129...core-0.12.130) (2024-08-12)
+
+
+
+## [0.12.129](https://github.com/sonarwatch/portfolio/compare/core-0.12.128...core-0.12.129) (2024-08-09)
+
+
+
+## [0.12.128](https://github.com/sonarwatch/portfolio/compare/core-0.12.127...core-0.12.128) (2024-08-09)
+
+
+
+## [0.12.127](https://github.com/sonarwatch/portfolio/compare/core-0.12.126...core-0.12.127) (2024-08-08)
+
+
+
+## [0.12.126](https://github.com/sonarwatch/portfolio/compare/core-0.12.125...core-0.12.126) (2024-08-08)
+
+
+
+## [0.12.125](https://github.com/sonarwatch/portfolio/compare/core-0.12.124...core-0.12.125) (2024-08-08)
+
+
+
+## [0.12.124](https://github.com/sonarwatch/portfolio/compare/core-0.12.119...core-0.12.124) (2024-08-08)
+
+
+
+## [0.12.119](https://github.com/sonarwatch/portfolio/compare/core-0.12.118...core-0.12.119) (2024-08-08)
+
+
+
+## [0.12.118](https://github.com/sonarwatch/portfolio/compare/core-0.12.117...core-0.12.118) (2024-08-08)
+
+
+
+## [0.12.123](https://github.com/sonarwatch/portfolio/compare/core-0.12.122...core-0.12.123) (2024-08-07)
+
+
+
+## [0.12.122](https://github.com/sonarwatch/portfolio/compare/core-0.12.121...core-0.12.122) (2024-08-07)
+
+
+
+## [0.12.121](https://github.com/sonarwatch/portfolio/compare/core-0.12.120...core-0.12.121) (2024-08-07)
+
+
+
+## [0.12.120](https://github.com/sonarwatch/portfolio/compare/core-0.12.119...core-0.12.120) (2024-08-07)
+
+
+
+## [0.12.119](https://github.com/sonarwatch/portfolio/compare/core-0.12.118...core-0.12.119) (2024-08-06)
+
+
+
+## [0.12.118](https://github.com/sonarwatch/portfolio/compare/core-0.12.117...core-0.12.118) (2024-08-06)
+
+
+
+## [0.12.117](https://github.com/sonarwatch/portfolio/compare/core-0.12.116...core-0.12.117) (2024-08-06)
+
+
+
+## [0.12.116](https://github.com/sonarwatch/portfolio/compare/core-0.12.115...core-0.12.116) (2024-08-06)
+
+
+
+## [0.12.116](https://github.com/sonarwatch/portfolio/compare/core-0.12.115...core-0.12.116) (2024-08-06)
+
+
+
+## [0.12.115](https://github.com/sonarwatch/portfolio/compare/core-0.12.114...core-0.12.115) (2024-08-05)
+
+
+
+## [0.12.114](https://github.com/sonarwatch/portfolio/compare/core-0.12.113...core-0.12.114) (2024-08-04)
+
+
+
+## [0.12.113](https://github.com/sonarwatch/portfolio/compare/core-0.12.112...core-0.12.113) (2024-08-03)
+
+
+
+## [0.12.112](https://github.com/sonarwatch/portfolio/compare/core-0.12.111...core-0.12.112) (2024-08-02)
+
+
+
+## [0.12.111](https://github.com/sonarwatch/portfolio/compare/core-0.12.110...core-0.12.111) (2024-08-02)
+
+
+
+## [0.12.110](https://github.com/sonarwatch/portfolio/compare/core-0.12.109...core-0.12.110) (2024-08-02)
+
+
+
+## [0.12.109](https://github.com/sonarwatch/portfolio/compare/core-0.12.108...core-0.12.109) (2024-08-01)
+
+
+
+## [0.12.108](https://github.com/sonarwatch/portfolio/compare/core-0.12.107...core-0.12.108) (2024-07-30)
+
+
+
+## [0.12.107](https://github.com/sonarwatch/portfolio/compare/core-0.12.106...core-0.12.107) (2024-07-30)
+
+
+
+## [0.12.106](https://github.com/sonarwatch/portfolio/compare/core-0.12.105...core-0.12.106) (2024-07-30)
+
+
+
+## [0.12.105](https://github.com/sonarwatch/portfolio/compare/core-0.12.104...core-0.12.105) (2024-07-30)
+
+
+
+## [0.12.104](https://github.com/sonarwatch/portfolio/compare/core-0.12.103...core-0.12.104) (2024-07-28)
+
+
+
+## [0.12.103](https://github.com/sonarwatch/portfolio/compare/core-0.12.102...core-0.12.103) (2024-07-28)
+
+
+
+## [0.12.102](https://github.com/sonarwatch/portfolio/compare/core-0.12.101...core-0.12.102) (2024-07-28)
+
+
+
+## [0.12.101](https://github.com/sonarwatch/portfolio/compare/core-0.12.100...core-0.12.101) (2024-07-28)
+
+
+
+## [0.12.100](https://github.com/sonarwatch/portfolio/compare/core-0.12.99...core-0.12.100) (2024-07-28)
+
+
+
+## [0.12.99](https://github.com/sonarwatch/portfolio/compare/core-0.12.98...core-0.12.99) (2024-07-28)
+
+
+
+## [0.12.98](https://github.com/sonarwatch/portfolio/compare/core-0.12.97...core-0.12.98) (2024-07-28)
+
+
+
+## [0.12.97](https://github.com/sonarwatch/portfolio/compare/core-0.12.96...core-0.12.97) (2024-07-27)
+
+
+
+## [0.12.96](https://github.com/sonarwatch/portfolio/compare/core-0.12.95...core-0.12.96) (2024-07-27)
+
+
+
 ## [0.12.95](https://github.com/sonarwatch/portfolio/compare/core-0.12.94...core-0.12.95) (2024-07-26)
 
 

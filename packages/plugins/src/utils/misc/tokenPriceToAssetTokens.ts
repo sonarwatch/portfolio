@@ -1,5 +1,6 @@
 import {
   NetworkIdType,
+  PortfolioAssetAttributes,
   PortfolioAssetToken,
   TokenPrice,
 } from '@sonarwatch/portfolio-core';
@@ -10,18 +11,28 @@ export default function tokenPriceToAssetTokens(
   amount: number,
   networkId: NetworkIdType,
   tokenPrice?: TokenPrice | null,
-  price?: number
+  price?: number,
+  attributes?: PortfolioAssetAttributes | undefined
 ): PortfolioAssetToken[] {
   if (!tokenPrice || !tokenPrice.underlyings)
     return [
-      tokenPriceToAssetToken(address, amount, networkId, tokenPrice, price),
+      tokenPriceToAssetToken(
+        address,
+        amount,
+        networkId,
+        tokenPrice,
+        price,
+        attributes
+      ),
     ];
   return tokenPrice.underlyings.map((tokenPriceUnderlying) =>
     tokenPriceToAssetToken(
       tokenPriceUnderlying.address,
       amount * tokenPriceUnderlying.amountPerLp,
       tokenPriceUnderlying.networkId,
-      tokenPriceUnderlying
+      tokenPriceUnderlying,
+      undefined,
+      attributes
     )
   );
 }

@@ -1,10 +1,11 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
 import BigNumber from 'bignumber.js';
-import { asr1Statics, asrApi, jupDisProgram } from './constants';
+import { asr1Statics, asrApi, jupDisProgram, platformId } from './constants';
 import {
   AirdropFetcher,
   AirdropFetcherExecutor,
+  airdropFetcherToFetcher,
   getAirdropRaw,
 } from '../../../AirdropFetcher';
 import { AsrResponse, ClaimProof } from '../types';
@@ -96,10 +97,15 @@ const fetchAirdropExecutor: AirdropFetcherExecutor = async (owner: string) => {
   });
 };
 
-const airdropFetcher: AirdropFetcher = {
+export const airdropFetcher: AirdropFetcher = {
   id: asr1Statics.id,
   networkId: NetworkId.solana,
   executor: fetchAirdropExecutor,
 };
 
-export default airdropFetcher;
+export const fetcher = airdropFetcherToFetcher(
+  airdropFetcher,
+  platformId,
+  `${platformId}-asr-1`,
+  asr1Statics.claimEnd
+);

@@ -47,3 +47,9 @@ export type StakingPosition = {
 export type ID = {
   id: string;
 };
+
+export type PoolFactory = {
+  id: { id: string };
+  name: string;
+  value: string;
+};

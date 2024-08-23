@@ -33,6 +33,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     vaultsInfo.map((vault) => vault.underlyingPool),
     { prefix: clmmPoolsPrefix, networkId: NetworkId.sui }
   );
+  console.log('constexecutor:FetcherExecutor= ~ poolInfos:', poolInfos);
 
   const vaultsPositionInfo = await cache.getItem<VaultPositionInfo[]>(
     vaultsInfoKey,
@@ -83,6 +84,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       .times(shares)
       .dividedBy(10 ** tokenPriceB.decimals);
 
+    if (amountA.isZero() && amountB.isZero()) continue;
+
     const assetA = tokenPriceToAssetToken(
       tokenPriceA.address,
       amountA.toNumber(),
@@ -108,6 +111,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       yields: [],
     });
   }
+
+  if (liquidities.length === 0) return [];
+
   return [
     {
       type: 'liquidity',

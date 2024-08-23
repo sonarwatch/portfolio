@@ -126,14 +126,14 @@ export const airdropConfigs: AirdropConfig[] = [
     getApiPath: (owner: string) =>
       `https://api.kamino.finance/distributor/user/${owner}`,
     statics: {
-      claimStart: 1714478400000,
-      claimEnd: undefined,
-      id: 'kamino-s1',
+      claimStart: 1724158800000,
+      claimEnd: 1724340000000,
+      id: 'kamino-s2',
       emitterName: 'Kamino',
       emitterLink: 'https://app.kamino.finance/',
-      claimLink: 'https://app.kamino.finance/genesis',
+      claimLink: 'https://app.kamino.finance/season-2-airdrop',
       image: 'https://sonar.watch/img/platforms/kamino.webp',
-      name: 'S1',
+      name: 'S2',
     },
   },
 ];

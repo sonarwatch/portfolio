@@ -16,7 +16,7 @@ export const lstsKey = 'lsts';
 
 export const cloudMint = 'CLoUDKc4Ane7HeQcPpE3YHnznRxhMimJ4MyaUqyHFzAu';
 export const cloudDecimals = 9;
-export const airdropStatics: AirdropStatics = {
+export const s1AirdropStatics: AirdropStatics = {
   id: 'sanctum',
   claimStart: 1721314800000,
   claimEnd: 1744588800000,

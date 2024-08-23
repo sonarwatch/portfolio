@@ -2,18 +2,12 @@ import { NetworkId, PortfolioAsset } from '@sonarwatch/portfolio-core';
 import request, { gql } from 'graphql-request';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import {
-  distributorPid,
-  distributors,
-  graphqlApi,
-  platformId,
-  zexMint,
-} from './constants';
+import { distributors, graphqlApi, platformId, zexMint } from './constants';
 import { GQLResponse } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getClientSolana } from '../../utils/clients';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
-import { deriveClaimStatuses } from '../../utils/solana/jupiter/deriveClaimStatuses';
+import { deriveZetaClaimStatuses } from './helpers';
 
 const query = gql`
   query GetAirdropFinalFrontend($authority: String!) {
@@ -46,18 +40,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       'X-Api-Key': 'da2-rrupjjccivdndc6rvltixlmsma',
     }
   ).catch(() => null);
-
-  if (!res) return [];
+  if (!res || !res.getAirdropFinalFrontend) return [];
 
   const amount = res.getAirdropFinalFrontend.total_allocation;
+  if (!amount || amount === 0) return [];
 
-  if (amount === 0) return [];
-
-  const claimStatuses = deriveClaimStatuses(
-    owner,
-    distributors,
-    distributorPid
-  );
+  const claimStatuses = deriveZetaClaimStatuses(owner, distributors);
 
   const client = getClientSolana();
   const claimStatusesAccount = await getMultipleAccountsInfoSafe(
@@ -79,13 +67,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       )
     : {
         type: 'generic',
+        imageUri:
+          'https://raw.githubusercontent.com/sonarwatch/token-lists/main/images/solana/ZEXy1pqteRu3n13kdyh4LwPQknkFk3GzmMYMuNadWPo.webp',
+        name: 'ZEX',
         data: {
           address: zexMint,
-          imageUri:
-            'https://statics.solscan.io/cdn/imgs/s60?ref=68747470733a2f2f7261772e67697468756275736572636f6e74656e742e636f6d2f7a6574616d61726b6574732f6272616e642f6d61737465722f6173736574732f7a6574612e706e67',
           amount,
           price: null,
-          name: 'ZEX',
         },
         value: null,
         networkId,

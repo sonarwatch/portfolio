@@ -127,44 +127,52 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             ? farm.symbol1Decimals
             : farm.symbol2Decimals)
       );
+      if (health.isZero() && debtValue.isZero()) return;
+
       // const equityValue = health.minus(debtValue);
       // const leverage = health.dividedBy(equityValue);
       // const debtRatio = debtValue.dividedBy(health);
 
       if (borrowingInterest.isReverse) {
-        suppliedAssets.push(
-          tokenPriceToAssetToken(
-            farm.symbol1Address,
-            health.toNumber(),
-            NetworkId.sui,
-            tokenPrices.get(formatMoveTokenAddress(farm.symbol1Address))
-          )
-        );
-        borrowedAssets.push(
-          tokenPriceToAssetToken(
-            farm.symbol1Address,
-            debtValue.toNumber(),
-            NetworkId.sui,
-            tokenPrices.get(formatMoveTokenAddress(farm.symbol1Address))
-          )
-        );
+        if (!health.isZero())
+          suppliedAssets.push(
+            tokenPriceToAssetToken(
+              farm.symbol1Address,
+              health.toNumber(),
+              NetworkId.sui,
+              tokenPrices.get(formatMoveTokenAddress(farm.symbol1Address))
+            )
+          );
+
+        if (!debtValue.isZero())
+          borrowedAssets.push(
+            tokenPriceToAssetToken(
+              farm.symbol1Address,
+              debtValue.toNumber(),
+              NetworkId.sui,
+              tokenPrices.get(formatMoveTokenAddress(farm.symbol1Address))
+            )
+          );
       } else {
-        suppliedAssets.push(
-          tokenPriceToAssetToken(
-            farm.symbol2Address,
-            health.toNumber(),
-            NetworkId.sui,
-            tokenPrices.get(formatMoveTokenAddress(farm.symbol2Address))
-          )
-        );
-        borrowedAssets.push(
-          tokenPriceToAssetToken(
-            farm.symbol2Address,
-            debtValue.toNumber(),
-            NetworkId.sui,
-            tokenPrices.get(formatMoveTokenAddress(farm.symbol2Address))
-          )
-        );
+        if (!health.isZero())
+          suppliedAssets.push(
+            tokenPriceToAssetToken(
+              farm.symbol2Address,
+              health.toNumber(),
+              NetworkId.sui,
+              tokenPrices.get(formatMoveTokenAddress(farm.symbol2Address))
+            )
+          );
+
+        if (!debtValue.isZero())
+          borrowedAssets.push(
+            tokenPriceToAssetToken(
+              farm.symbol2Address,
+              debtValue.toNumber(),
+              NetworkId.sui,
+              tokenPrices.get(formatMoveTokenAddress(farm.symbol2Address))
+            )
+          );
       }
 
       if (
