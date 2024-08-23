@@ -173,7 +173,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const subParsed = parsed.typeParams[0] as unknown as StructTag;
       if (
         parsed.name !== 'Coin' ||
-        !sCoinToCoinName[subParsed.name as sCoinNames]
+        !sCoinToCoinName[subParsed.name.toLowerCase() as sCoinNames]
       )
         return false;
 
