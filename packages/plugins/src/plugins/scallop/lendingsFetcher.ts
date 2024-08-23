@@ -182,7 +182,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     .forEach((sCoin) => {
       const coinName = (
         parseStructTag(sCoin.data!.type).typeParams[0] as unknown as StructTag
-      ).name as sCoinNames;
+      ).name.toLowerCase() as sCoinNames;
       const lendingAssetName = sCoinToCoinName[coinName];
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const fields = sCoin.data?.content?.fields as any;
