@@ -10,11 +10,10 @@ import {
   poolsPrefix as prefix,
 } from './constants';
 import { AddressInfo, Coin, Pools } from './types';
-import { getClientSui } from '../../utils/clients';
+import { client } from './suiClient';
 import { getObject } from '../../utils/sui/getObject';
 
 const SUI_TYPE = normalizeStructTag(SUI_TYPE_ARG);
-const client = getClientSui();
 
 const executor: JobExecutor = async (cache: Cache) => {
   const address = await cache.getItem<AddressInfo>(addressKey, {

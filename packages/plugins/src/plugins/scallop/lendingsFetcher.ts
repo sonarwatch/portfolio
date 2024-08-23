@@ -25,17 +25,23 @@ import {
   spoolsKey,
   spoolsPrefix,
   baseIndexRate,
+  scoinKey,
+  scoinPrefix,
+  sCoinToCoinName,
 } from './constants';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import {
   MarketJobResult,
   Pools,
+  sCoinNames,
+  SCoinTypeMetadata,
   SpoolJobResult,
   UserLending,
   UserStakeAccounts,
 } from './types';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { getClientSui } from '../../utils/clients';
+import { StructTag } from '@mysten/sui.js/bcs';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elements: PortfolioElement[] = [];
@@ -50,16 +56,28 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     networkId: NetworkId.sui,
   });
 
-  if (!pools) return [];
+  const sCoins = await cache.getItem<SCoinTypeMetadata>(scoinKey, {
+    prefix: scoinPrefix,
+    networkId: NetworkId.sui,
+  });
+  if (!pools || !sCoins) {
+    return [];
+  }
 
   const poolValues = Object.values(pools);
-  if (poolValues.length === 0) return [];
+  const sCoinValues = Object.values(sCoins);
+  if (poolValues.length === 0) {
+    return [];
+  }
 
   const client = getClientSui();
   const filterOwnerObject: SuiObjectDataFilter = {
     MatchAny: [
       ...poolValues.map((value) => ({
         StructType: `0x2::coin::Coin<${marketCoinPackageId}<${value.coinType}>>`,
+      })),
+      ...sCoinValues.map(({ coinType }) => ({
+        StructType: `0x2::coin::Coin<${coinType}>`,
       })),
       {
         StructType: spoolAccountPackageId,
@@ -78,17 +96,24 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       networkId: NetworkId.sui,
     }),
   ]);
-  if (!marketData || allOwnedObjects.length === 0 || !spoolData) return [];
-  if (
+
+  const fetchedDataIncomplete =
+    !marketData ||
+    !spoolData ||
+    allOwnedObjects.length === 0 ||
     Object.keys(marketData).length === 0 ||
-    Object.keys(spoolData).length === 0
-  )
+    Object.keys(spoolData).length === 0;
+  if (fetchedDataIncomplete) {
     return [];
+  }
+
   const lendingRate: Map<string, number> = new Map();
 
   Object.keys(pools).forEach((coinName: string) => {
     const market = marketData[coinName];
-    if (!market) return;
+    if (!market) {
+      return;
+    }
     lendingRate.set(
       coinName,
       (Number(market.debt) + Number(market.cash) - Number(market.reserve)) /
@@ -137,6 +162,34 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       amount: lendingAssets[coinName].amount.plus(balance),
     };
   }
+
+  // add support for new sCoin
+  allOwnedObjects
+    .filter((obj) => {
+      const objType = obj.data?.type;
+      if (!objType) return false;
+
+      const parsed = parseStructTag(objType);
+      const subParsed = parsed.typeParams[0] as unknown as StructTag;
+      if (
+        parsed.name != 'Coin' ||
+        !sCoinToCoinName[subParsed.name as sCoinNames]
+      )
+        return false;
+
+      return true;
+    })
+    .forEach((sCoin) => {
+      const coinName = (
+        parseStructTag(sCoin.data!.type).typeParams[0] as unknown as StructTag
+      ).name as sCoinNames;
+      const lendingAssetName = sCoinToCoinName[coinName];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const fields = sCoin.data?.content?.fields as any;
+      lendingAssets[lendingAssetName].amount = lendingAssets[
+        lendingAssetName
+      ].amount.plus(new BigNumber(fields['balance'] ?? 0));
+    });
 
   let pendingReward = BigNumber(0);
 
@@ -192,6 +245,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (assetValue.amount.isZero()) continue;
 
     const market = marketData[assetName];
+    console.dir(market, { depth: null });
     if (!market) continue;
 
     const addressMove = formatMoveTokenAddress(assetValue.coinType);
@@ -219,8 +273,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     suppliedAssets.length === 0 &&
     borrowedAssets.length === 0 &&
     rewardAssets.length === 0
-  )
+  ) {
     return [];
+  }
   const { borrowedValue, healthRatio, suppliedValue, value, rewardValue } =
     getElementLendingValues({ suppliedAssets, borrowedAssets, rewardAssets });
   elements.push({
