@@ -25,9 +25,10 @@ import type {
 import runInBatch from '../../utils/misc/runInBatch';
 import { getObject } from '../../utils/sui/getObject';
 import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
-import { client } from './suiClient';
+import { getClientSui } from '../../utils/clients';
 
 const executor: JobExecutor = async (cache: Cache) => {
+  const client = getClientSui();
   const addressData = await cache.getItem<AddressInfo>(addressKey, {
     prefix: addressPrefix,
     networkId: NetworkId.sui,

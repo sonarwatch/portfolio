@@ -1,16 +1,24 @@
-import { NetworkId } from '../../../../core/src/Network';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Job, JobExecutor } from '../../Job';
-import { scoinKey, sCoinTypesMap, scoinPrefix as prefix } from './constants';
+import {
+  scoinKey,
+  sCoinTypesMap,
+  scoinPrefix as prefix,
+  sCoinNames,
+} from './constants';
 import { Cache } from '../../Cache';
-import { sCoinNames, SCoinTypeMetadata } from './types';
-import { client } from './suiClient';
+import { SCoinTypeMetadata } from './types';
+import { getClientSui } from '../../utils/clients';
 
 const executor: JobExecutor = async (cache: Cache) => {
+  const client = getClientSui();
+
   const sCoinTypes: SCoinTypeMetadata = Object.entries(sCoinTypesMap).reduce(
     (prev, curr) => {
       const [coinName, coinType] = curr;
+      // eslint-disable-next-line no-param-reassign
       prev[coinName as sCoinNames] = {
-        coinType: coinType,
+        coinType,
         metadata: null,
       };
       return prev;
@@ -21,7 +29,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   // get metadata for each coin type
   await Promise.all(
     Object.entries(sCoinTypes).map(async ([coinName, coinTypeMetadata]) => {
-      const coinType = coinTypeMetadata.coinType;
+      const { coinType } = coinTypeMetadata;
       const metadata = await client.getCoinMetadata({ coinType });
       sCoinTypes[coinName as sCoinNames].metadata = metadata;
     })

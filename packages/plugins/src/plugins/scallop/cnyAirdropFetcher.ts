@@ -9,7 +9,7 @@ import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
 import { ApiResponse, ClaimStatus } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { pythMint } from '../pyth/constants';
-import { client } from './suiClient';
+import { getClientSui } from '../../utils/clients';
 
 function getAmount(claimData: string): number | undefined {
   if (!claimData) return undefined;
@@ -36,6 +36,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const amount = getAmount(signature.data.data);
   if (!amount) return [];
 
+  const client = getClientSui();
   const claimStatus = await getDynamicFieldObject<ClaimStatus>(client, {
     name: {
       type: 'address',
