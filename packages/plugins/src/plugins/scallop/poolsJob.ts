@@ -10,8 +10,8 @@ import {
   poolsPrefix as prefix,
 } from './constants';
 import { AddressInfo, Coin, Pools } from './types';
-import { client } from './suiClient';
 import { getObject } from '../../utils/sui/getObject';
+import { getClientSui } from '../../utils/clients';
 
 const SUI_TYPE = normalizeStructTag(SUI_TYPE_ARG);
 
@@ -28,7 +28,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     Object.entries(address.mainnet.core.coins)
   );
   const coinNames: string[] = Array.from(coins.keys());
-
+  const client = getClientSui();
   for (const coinName of coinNames) {
     const detail = coins.get(coinName);
     if (!detail) continue;

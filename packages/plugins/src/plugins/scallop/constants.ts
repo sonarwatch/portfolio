@@ -1,5 +1,4 @@
 import { Platform } from '@sonarwatch/portfolio-core';
-import { CoinNames, sCoinNames } from './types';
 
 export const platformId = 'scallop';
 export const platform: Platform = {
@@ -51,6 +50,36 @@ export const SCOIN_NAMES = [
   'scallop_v_sui',
 ] as const;
 
+export const COIN_NAMES = [
+  'eth',
+  'btc',
+  'usdc',
+  'usdt',
+  'sui',
+  'apt',
+  'sol',
+  'cetus',
+  'sca',
+  'afsui',
+  'hasui',
+  'vsui',
+] as const;
+
+export const MARKET_COIN_NAMES = [
+  'seth',
+  'sbtc',
+  'susdc',
+  'susdt',
+  'ssui',
+  'sapt',
+  'ssol',
+  'scetus',
+  'ssca',
+  'safsui',
+  'shasui',
+  'svsui',
+] as const;
+
 export const sCoinTypesMap: { [T in sCoinNames]: string } = {
   scallop_sui:
     '0xaafc4f740de0dd0dde642a31148fb94517087052f19afb0f7bed1dc41a50c77b::scallop_sui::SCALLOP_SUI',
@@ -71,6 +100,11 @@ export const sCoinTypesMap: { [T in sCoinNames]: string } = {
   scallop_v_sui:
     '0xe1a1cc6bcf0001a015eab84bcc6713393ce20535f55b8b6f35c142e057a25fbe::scallop_v_sui::SCALLOP_V_SUI',
 } as const;
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export type sCoinNames = (typeof SCOIN_NAMES)[number];
+
+export type CoinNames = (typeof COIN_NAMES)[number];
 
 export const sCoinToCoinName: { [T in sCoinNames]: CoinNames } = {
   scallop_sui: 'sui',

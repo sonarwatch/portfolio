@@ -29,14 +29,13 @@ import {
   UserObligations,
 } from './types';
 import { shortenAddress } from './helpers';
-import { getClientSui } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import runInBatch from '../../utils/misc/runInBatch';
 import { CollateralAsset, DebtAsset } from './types/obligation';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { getObject } from '../../utils/sui/getObject';
 import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
-import { client } from './suiClient';
+import { getClientSui } from '../../utils/clients';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elements: PortfolioElement[] = [];
@@ -59,6 +58,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     ],
   };
 
+  const client = getClientSui();
   const [ownedObligationKeys, marketData] = await Promise.all([
     getOwnedObjects<ObligationKeyFields>(client, owner, {
       filter: filterOwnerObject,

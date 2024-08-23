@@ -12,6 +12,7 @@ import {
 import { normalizeStructTag, parseStructTag } from '@mysten/sui.js/utils';
 import BigNumber from 'bignumber.js';
 import { SuiObjectDataFilter } from '@mysten/sui.js/client';
+import { StructTag } from '@mysten/sui.js/bcs';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
@@ -28,12 +29,12 @@ import {
   scoinKey,
   scoinPrefix,
   sCoinToCoinName,
+  sCoinNames,
 } from './constants';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import {
   MarketJobResult,
   Pools,
-  sCoinNames,
   SCoinTypeMetadata,
   SpoolJobResult,
   UserLending,
@@ -41,7 +42,6 @@ import {
 } from './types';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { getClientSui } from '../../utils/clients';
-import { StructTag } from '@mysten/sui.js/bcs';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elements: PortfolioElement[] = [];
@@ -172,7 +172,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const parsed = parseStructTag(objType);
       const subParsed = parsed.typeParams[0] as unknown as StructTag;
       if (
-        parsed.name != 'Coin' ||
+        parsed.name !== 'Coin' ||
         !sCoinToCoinName[subParsed.name as sCoinNames]
       )
         return false;
@@ -180,15 +180,24 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       return true;
     })
     .forEach((sCoin) => {
-      const coinName = (
-        parseStructTag(sCoin.data!.type).typeParams[0] as unknown as StructTag
-      ).name as sCoinNames;
+      if (!sCoin.data) return;
+      const types = parseStructTag(sCoin.data.type);
+      const firstCoin = types.typeParams[0] as unknown as StructTag;
+      const coinName = firstCoin.name.toLowerCase() as sCoinNames;
+      const coinType = `${firstCoin.address}::${firstCoin.module}::${firstCoin.name}`;
       const lendingAssetName = sCoinToCoinName[coinName];
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const fields = sCoin.data?.content?.fields as any;
-      lendingAssets[lendingAssetName].amount = lendingAssets[
-        lendingAssetName
-      ].amount.plus(new BigNumber(fields['balance'] ?? 0));
+      if (!lendingAssets[lendingAssetName]) {
+        lendingAssets[lendingAssetName] = {
+          amount: new BigNumber(fields['balance'] ?? 0),
+          coinType,
+        };
+      } else {
+        lendingAssets[lendingAssetName].amount = lendingAssets[
+          lendingAssetName
+        ].amount.plus(new BigNumber(fields['balance'] ?? 0));
+      }
     });
 
   let pendingReward = BigNumber(0);
@@ -245,7 +254,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (assetValue.amount.isZero()) continue;
 
     const market = marketData[assetName];
-    console.dir(market, { depth: null });
     if (!market) continue;
 
     const addressMove = formatMoveTokenAddress(assetValue.coinType);
