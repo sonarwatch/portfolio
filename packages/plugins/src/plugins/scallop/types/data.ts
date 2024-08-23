@@ -1,6 +1,10 @@
 import BigNumber from 'bignumber.js';
-import { CoinTypeMetadata } from './coin';
-import { sCoinNames } from '../constants';
+import {
+  CoinTypeMetadata,
+  MarketCoinNames,
+  PoolCoinNames,
+  sCoinNames,
+} from './coin';
 
 export type UserLending = {
   coinType: string;
@@ -14,12 +18,16 @@ export type UserObligations = {
   };
 };
 
+export type UserLendingData = {
+  [T in PoolCoinNames]?: UserLending;
+};
+
 export type UserStakeAccounts = {
-  [T in string]: { points: string; index: string; stakes: string }[];
+  [T in MarketCoinNames]?: { points: string; index: string; stakes: string }[];
 };
 
 export type Pools = {
-  [T in string]: CoinTypeMetadata;
+  [T in PoolCoinNames]: CoinTypeMetadata;
 };
 
 export type SCoinTypeMetadata = {
