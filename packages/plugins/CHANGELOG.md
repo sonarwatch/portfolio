@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.12.153](https://github.com/sonarwatch/portfolio/compare/plugins-0.12.152...plugins-0.12.153) (2024-08-26)
+
+
+### Features
+
+* add new scoin support ([ea4382d](https://github.com/sonarwatch/portfolio/commit/ea4382d314fc366273c7847164f1028f3e3fb585))
+* update scallop lending fetcher ([0620dd9](https://github.com/sonarwatch/portfolio/commit/0620dd969814c7725e03a4ff7f0d0206cab37f42))
+
+
+
 ## [0.12.152](https://github.com/sonarwatch/portfolio/compare/plugins-0.12.151...plugins-0.12.152) (2024-08-22)
 
 
