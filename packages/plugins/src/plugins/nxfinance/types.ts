@@ -39,3 +39,31 @@ export type MarginPool = {
   accruedUntil: string;
   utilizationFlag: string;
 };
+
+export type LendingPool = {
+  nxMarket: string;
+  tokenMint: string;
+  borrowTokens: string;
+  borrowNotes: string;
+  depositTokens: string;
+  depositNotes: string;
+  depositInterest: string;
+  borrowInterest: string;
+  protocolFee: string;
+  accruedUntil: string;
+  utilizationFlag: number;
+  interestRateConfigs: {
+    utilizationRate: number;
+    kValue: number;
+    bValue: number;
+  }[];
+};
+
+export type LendingAccount = {
+  nxMarket: string;
+  owner: string;
+  depositNotes: string;
+  depositTokens: string;
+  lastNoteRate: string;
+  totalReward: string;
+};

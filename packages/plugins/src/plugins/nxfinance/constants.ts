@@ -1,7 +1,8 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 import { IdlItem } from '@solanafm/explorer-kit-idls';
 import { PublicKey } from '@solana/web3.js';
-import { NxfinanceLeverageIDL } from './idl';
+import { NxfinanceLeverageIDL } from './leverageIdl';
+import { NxfinanceLendIdl } from './lendIdl';
 
 export const platformId = 'nxfinance';
 export const platform: Platform = {
@@ -30,3 +31,19 @@ export const nxfinanceLeverageIdlItem = {
   idl: NxfinanceLeverageIDL,
   idlType: 'anchor',
 } as IdlItem;
+
+export const lendProgramId = new PublicKey(
+  'NXFiKimQN3QSL3CDhCXddyVmLfrai8HK36bHKaAzK7g'
+);
+
+export const nxfinanceLendIdlItem = {
+  programId: lendProgramId.toString(),
+  idl: NxfinanceLendIdl,
+  idlType: 'anchor',
+} as IdlItem;
+
+export const lendingPoolKey = 'lending-pools';
+
+export const lendingPools = [
+  new PublicKey('HVn3F2wq2Fvr8T5yX7VS9yWaNxX5PMgxTyHb4aKAX8z3'),
+];

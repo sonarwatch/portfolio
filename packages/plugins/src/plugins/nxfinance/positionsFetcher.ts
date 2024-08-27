@@ -155,7 +155,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       networkId: NetworkId.solana,
       platformId,
       label: 'Lending',
-      name: 'Jupiter Lending Pool',
+      name: 'Fulcrum Lending Pool',
       value: getUsdValueSum(assets.map((asset) => asset.value)),
       data: {
         assets,
