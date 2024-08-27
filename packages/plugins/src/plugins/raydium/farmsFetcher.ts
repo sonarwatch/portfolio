@@ -10,7 +10,7 @@ import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
-import { getPendingAssetToken } from './helpers';
+import { getPendingAssetToken, getStakePubKey } from './helpers';
 import { getParsedProgramAccounts, ParsedAccount } from '../../utils/solana';
 import { userFarmConfigs } from './farmsJob';
 import { FarmInfo } from './types';
@@ -30,12 +30,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
   const userFarmAccounts = (await Promise.allSettled(userFarmAccountsPromises))
     .flat(1)
-    .map((result) => {
-      if (result.status === 'fulfilled') {
-        return result.value;
-      }
-      return [];
-    })
+    .map((result) => (result.status === 'fulfilled' ? result.value : []))
     .flat();
 
   if (userFarmAccounts.length === 0) return [];
@@ -51,12 +46,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       : undefined
   );
 
+  const rayStakingPubkey = getStakePubKey(owner).toString();
   const liquiditiesWithoutRewards: PortfolioLiquidity[] = [];
   const elementsWithRewards: PortfolioElement[] = [];
   for (let i = 0; i < userFarmAccounts.length; i += 1) {
     const rewardAssets: PortfolioAsset[] = [];
     const assets: PortfolioAsset[] = [];
     const userFarmAccount: ParsedAccount<UserFarmAccount> = userFarmAccounts[i];
+    if (userFarmAccount.pubkey.toString() === rayStakingPubkey) continue;
     const farmInfo = farmsInfoMap.get(userFarmAccount.poolId.toString());
     if (!farmInfo) continue;
 
