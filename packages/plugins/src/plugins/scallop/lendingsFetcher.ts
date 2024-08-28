@@ -172,10 +172,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const parsed = parseStructTag(objType);
     const isCoin = parsed.name === 'Coin';
     const sCoinTypeParsed = parsed.typeParams[0] as StructTag;
-    const isSCoin =
+    const isObjectSCoin =
       !!sCoinToCoinName[sCoinTypeParsed.name.toLowerCase() as sCoinNames];
 
-    return isCoin && isSCoin;
+    return isCoin && isObjectSCoin;
   };
 
   const isMarketCoin = (obj: ObjectResponse<CoinStruct>) => {
@@ -184,11 +184,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const { address, module, name } = parseStructTag(objType);
     const isCoin = name === 'Coin';
-    const isMarketCoin =
+    const isObjectMarketCoin =
       address === addressData.mainnet.core.object &&
       module === 'reserve' &&
       name === 'MarketCoin';
-    return isCoin && isMarketCoin;
+    return isCoin && isObjectMarketCoin;
   };
 
   allOwnedObjects.forEach((obj: ObjectResponse<any>) => {

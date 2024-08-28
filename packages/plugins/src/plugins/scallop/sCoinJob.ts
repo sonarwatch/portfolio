@@ -16,7 +16,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       const [coinName, coinType] = curr;
       // eslint-disable-next-line no-param-reassign
       prev[coinName as sCoinNames] = {
-        coinType: coinType,
+        coinType,
         metadata: null,
       };
       return prev;

@@ -16,7 +16,6 @@ import {
 import { AddressInfo, Coin, PoolCoinNames, Pools, StructTag } from './types';
 import { getObject } from '../../utils/sui/getObject';
 import { getClientSui } from '../../utils/clients';
-import { ObjectData } from '../../utils/sui/types';
 
 const SUI_TYPE = normalizeStructTag(SUI_TYPE_ARG);
 
@@ -52,13 +51,13 @@ const executor: JobExecutor = async (cache: Cache) => {
       const metadataStruct = parseStructTag(
         normalizeStructTag(objectData.type)
       ); // 0x2::coin::CoinMetadata<T>
-      const { address, module, name } = metadataStruct
+      const { address: packageId, module, name } = metadataStruct
         .typeParams[0] as StructTag;
       const objFields = objectData.content?.fields;
       if (!objFields) return;
 
       coinTypes[coinName] = {
-        coinType: `${address}::${module}::${name}`,
+        coinType: `${packageId}::${module}::${name}`,
         metadata: objFields,
       };
     }
