@@ -27,6 +27,7 @@ import {
   getLeveragePdas,
   getMultiplyPdas,
 } from './helpers/pdas';
+import { getCumulativeBorrowRate, sfToValue } from './helpers/common';
 
 const zeroAdressValue = '11111111111111111111111111111111';
 
@@ -120,6 +121,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
           .dividedBy(reserve.exchangeRate)
           .toNumber();
+
         suppliedAssets.push(
           tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
         );
@@ -135,12 +137,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           borrow.borrowedAmountSf.isLessThanOrEqualTo(0)
         )
           continue;
-        const amountRaw = borrow.borrowedAmountSf.dividedBy(
-          borrow.cumulativeBorrowRateBsf.value0
-        );
+
         const reserve = reserves[borrow.borrowReserve.toString()];
         if (!reserve) continue;
 
+        const { cumulativeBorrowRate } = reserve;
+        const obligationCumulativeBorrowRate = getCumulativeBorrowRate(
+          borrow.cumulativeBorrowRateBsf
+        );
+        const amountRaw = sfToValue(
+          borrow.borrowedAmountSf
+            .multipliedBy(cumulativeBorrowRate)
+            .dividedBy(obligationCumulativeBorrowRate)
+        );
         const mint = reserve.liquidity.mintPubkey;
         const tokenPrice = tokenPriceById.get(mint);
         const amount = amountRaw
