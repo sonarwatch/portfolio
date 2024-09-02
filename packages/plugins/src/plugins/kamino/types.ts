@@ -12,12 +12,14 @@ export type ReserveDataEnhanced = ReserveData & {
   supplyApr: number;
   borrowApr: number;
   exchangeRate: number;
+  cumulativeBorrowRate: string;
 };
 
 export type ReserveEnhanced = Reserve & {
   supplyApr: number;
   borrowApr: number;
   exchangeRate: number;
+  cumulativeBorrowRate: string;
 };
 
 export type ReserveConfig = {

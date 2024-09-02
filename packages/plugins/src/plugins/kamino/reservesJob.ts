@@ -8,7 +8,7 @@ import { klendProgramId, platformId, reservesKey } from './constants';
 import { reserveStruct } from './structs/klend';
 import { calculateBorrowAPR, calculateSupplyAPR } from './helpers/apr';
 import { ReserveEnhanced } from './types';
-import { getEchangeRate } from './helpers/common';
+import { getCumulativeBorrowRate, getEchangeRate } from './helpers/common';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -34,11 +34,15 @@ const executor: JobExecutor = async (cache: Cache) => {
       const borrowApr = calculateBorrowAPR(reserve);
       const supplyApr = calculateSupplyAPR(reserve);
       const exchangeRate = getEchangeRate(reserve);
+      const cumulativeBorrowRate = getCumulativeBorrowRate(
+        reserve.liquidity.cumulativeBorrowRateBsf
+      ).toString();
       reserveById[reserve.pubkey.toString()] = {
         ...reserve,
         borrowApr,
         supplyApr,
         exchangeRate,
+        cumulativeBorrowRate,
       };
     }
     await cache.setItem(reservesKey, reserveById, {

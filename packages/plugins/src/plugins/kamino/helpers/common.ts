@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import axios, { AxiosResponse } from 'axios';
 import { ParsedAccount } from '../../../utils/solana';
-import { Reserve } from '../structs/klend';
+import { BigFractionBytes, Reserve } from '../structs/klend';
 import { getTotalSupply } from './apr';
 import { allocationApiUrl } from '../constants';
 
@@ -35,4 +35,23 @@ export async function getAllocationsBySeason(
     })
     .catch(() => null);
   return res ? res.data : undefined;
+}
+
+export function getCumulativeBorrowRate(borrowRatesSf: BigFractionBytes) {
+  return [
+    BigNumber(borrowRatesSf.value0),
+    BigNumber(borrowRatesSf.value1),
+    BigNumber(borrowRatesSf.value2),
+    BigNumber(borrowRatesSf.value3),
+  ].reduce(
+    (prev, curr, i) => prev.plus(curr.shiftedBy(-i * 64)),
+    new BigNumber(0)
+  );
+}
+
+const FRACTIONS = 60;
+const MULTIPLIER_NUMBER = 2 ** FRACTIONS;
+
+export function sfToValue(sf: BigNumber) {
+  return sf.dividedBy(MULTIPLIER_NUMBER);
 }
