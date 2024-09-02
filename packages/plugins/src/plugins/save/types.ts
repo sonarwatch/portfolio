@@ -13,6 +13,7 @@ export interface LiquidityToken {
   name: string;
   symbol: string;
   volume24h: string;
+  token2022Mint: string;
 }
 
 export interface MarketInfo {

@@ -1,4 +1,4 @@
-import { NetworkId, PortfolioElement } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { AccountInfo, PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -6,8 +6,8 @@ import { marketsKey, pid, platformId, reservesPrefix } from './constants';
 import { getElementsFromObligations, getObligationSeed } from './helpers';
 import { MarketInfo, ReserveInfo, ReserveInfoExtended } from './types';
 import {
-  ParsedAccount,
   getParsedMultipleAccountsInfo,
+  ParsedAccount,
 } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import { Obligation, obligationStruct } from './structs';
@@ -102,15 +102,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     pythAccByAddress.set(pythAddresses[i].toString(), account);
   }
 
-  const elements: PortfolioElement[] = getElementsFromObligations(
+  return getElementsFromObligations(
     obligations,
     reserveByAddress,
     marketsByAddress,
     tokenPriceByAddress,
     pythAccByAddress
   );
-
-  return elements;
 };
 
 const fetcher: Fetcher = {

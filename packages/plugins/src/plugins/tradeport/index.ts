@@ -3,9 +3,8 @@ import { Fetcher } from '../../Fetcher';
 import { Job } from '../../Job';
 import { platform } from './constants';
 import positionsFetcher from './positionsFetcher';
-import lendPositionsFetcher from './lendPositionsFetcher';
-import lendingPoolsJob from './lendingPoolsJob';
+import locksJob from './locksJob';
 
 export const platforms: Platform[] = [platform];
-export const jobs: Job[] = [lendingPoolsJob];
-export const fetchers: Fetcher[] = [positionsFetcher, lendPositionsFetcher];
+export const jobs: Job[] = [locksJob];
+export const fetchers: Fetcher[] = [positionsFetcher];

@@ -23,7 +23,7 @@ export const poolsPkeys = [
   new PublicKey('KwhpybQPe9xuZFmAfcjLHj3ukownWex1ratyascAC1X'),
   new PublicKey('D6bfytnxoZBSzJM7fcixg5sgWJ2hj8SbwkPvb2r8XpbH'),
   new PublicKey('6HukhSeVVLQekKaGJYkwztBacjhKLKywVPrmcvccaYMz'),
-  new PublicKey('KwhpybQPe9xuZFmAfcjLHj3ukownWex1ratyascAC1X'),
+  new PublicKey('DP1FnZjWzDjSMQA64BcMzUdpDpyAQ6723d5fpX4yTk5G'),
 ];
 
 export const custodiesKey = 'custodies';
