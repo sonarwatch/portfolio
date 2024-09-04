@@ -578,6 +578,11 @@ import {
   jobs as jewelJobs,
   fetchers as jewelFetchers,
 } from './plugins/jewel';
+import {
+  platforms as tradeportPlatforms,
+  jobs as tradeportJobs,
+  fetchers as tradeportFetchers,
+} from './plugins/tradeport';
 
 export {
   walletTokensPlatform,
@@ -710,6 +715,7 @@ export const platforms: Platform[] = [
   ...debridgePlatforms,
   ...alphafiPlatforms,
   ...jewelPlatforms,
+  ...tradeportPlatforms,
 ];
 
 // JOBS //
@@ -824,6 +830,7 @@ export const jobs: Job[] = [
   ...debridgeJobs,
   ...alphafiJobs,
   ...jewelJobs,
+  ...tradeportJobs,
 ];
 
 // FETCHERS //
@@ -940,6 +947,7 @@ export const fetchers: Fetcher[] = [
   ...debridgeFetchers,
   ...alphafiFetchers,
   ...jewelFetchers,
+  ...tradeportFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
