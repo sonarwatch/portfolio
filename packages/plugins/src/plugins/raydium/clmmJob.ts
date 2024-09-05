@@ -1,7 +1,7 @@
 import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import Decimal from 'decimal.js';
-import { platformId, poolStatesPrefix, raydiumProgram } from './constants';
+import { platformId, raydiumProgram } from './constants';
 import {
   ParsedAccount,
   TokenAccount,
@@ -32,7 +32,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   const step = 100;
   const tokenPriceSources: TokenPriceSource[] = [];
-  const promises = [];
   let clmmPoolsInfo: (ParsedAccount<PoolState> | null)[];
   let tokenAccounts;
   let tokenPriceById;
@@ -142,18 +141,9 @@ const executor: JobExecutor = async (cache: Cache) => {
         timestamp: Date.now(),
         weight: getSourceWeight(refLiquidity.times(2)),
       });
-
-      promises.push(
-        cache.setItem(poolState.pubkey.toString(), poolState, {
-          prefix: poolStatesPrefix,
-          networkId: NetworkId.solana,
-        })
-      );
     }
-    await Promise.all([
-      ...promises,
-      cache.setTokenPriceSources(tokenPriceSources),
-    ]);
+
+    await cache.setTokenPriceSources(tokenPriceSources);
   }
 };
 

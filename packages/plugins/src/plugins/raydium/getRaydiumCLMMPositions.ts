@@ -9,17 +9,14 @@ import {
   PortfolioLiquidity,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
-import { platformId, poolStatesPrefix, raydiumProgram } from './constants';
+import { platformId, raydiumProgram } from './constants';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import {
-  getParsedMultipleAccountsInfo,
-  ParsedAccount,
-} from '../../utils/solana';
+import { getParsedMultipleAccountsInfo } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import {
-  PoolState,
   personalPositionStateStruct,
   tickArrayStatetruct,
+  poolStateStruct,
 } from './structs/clmms';
 import { Cache } from '../../Cache';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
@@ -52,16 +49,14 @@ export async function getRaydiumCLMMPositions(
   );
   if (!personalPositionsInfo || personalPositionsInfo.length === 0) return [];
 
-  const poolsIds: string[] = personalPositionsInfo.flatMap((position) =>
-    position ? position.poolId.toString() : []
+  const poolsIds: PublicKey[] = personalPositionsInfo.flatMap((position) =>
+    position ? position.poolId : []
   );
 
-  const poolStatesInfo = await cache.getItems<ParsedAccount<PoolState>>(
-    poolsIds,
-    {
-      prefix: poolStatesPrefix,
-      networkId: NetworkId.solana,
-    }
+  const poolStatesInfo = await getParsedMultipleAccountsInfo(
+    client,
+    poolStateStruct,
+    poolsIds
   );
 
   const mints: Set<string> = new Set();
