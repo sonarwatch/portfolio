@@ -1,5 +1,7 @@
 import {
+  getUsdValueSum,
   NetworkId,
+  PortfolioAsset,
   PortfolioAssetCollectible,
   PortfolioElement,
   PortfolioElementLiquidity,
@@ -9,11 +11,19 @@ import {
 import { PublicKey } from '@solana/web3.js';
 import { platformId, poolStatesPrefix, raydiumProgram } from './constants';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { getParsedMultipleAccountsInfo } from '../../utils/solana';
+import {
+  getParsedMultipleAccountsInfo,
+  ParsedAccount,
+} from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
-import { PoolState, personalPositionStateStruct } from './structs/clmms';
+import {
+  PoolState,
+  personalPositionStateStruct,
+  tickArrayStatetruct,
+} from './structs/clmms';
 import { Cache } from '../../Cache';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
+import { getRewardBalance, getTickArrayAddress } from './helpers';
 
 export async function getRaydiumCLMMPositions(
   cache: Cache,
@@ -46,13 +56,56 @@ export async function getRaydiumCLMMPositions(
     position ? position.poolId.toString() : []
   );
 
-  const poolStatesInfo = await cache.getItems<PoolState>(poolsIds, {
-    prefix: poolStatesPrefix,
-    networkId: NetworkId.solana,
+  const poolStatesInfo = await cache.getItems<ParsedAccount<PoolState>>(
+    poolsIds,
+    {
+      prefix: poolStatesPrefix,
+      networkId: NetworkId.solana,
+    }
+  );
+
+  const mints: Set<string> = new Set();
+
+  personalPositionsInfo.forEach((personalPositionInfo, index) => {
+    if (!personalPositionInfo) return;
+    const poolStateInfo = poolStatesInfo[index];
+    if (!poolStateInfo) return;
+    mints.add(poolStateInfo.tokenMint0.toString());
+    mints.add(poolStateInfo.tokenMint1.toString());
+    poolStateInfo.rewardInfos.forEach((ri) => {
+      if (ri.tokenMint.toString() !== '11111111111111111111111111111111') {
+        mints.add(ri.tokenMint.toString());
+      }
+    });
   });
 
-  const assets: PortfolioLiquidity[] = [];
-  let totalLiquidityValue = 0;
+  const [tickArrays, tokenPrices] = await Promise.all([
+    Promise.all(
+      personalPositionsInfo.map((personalPositionInfo, index) => {
+        if (!personalPositionInfo) return [];
+        const poolStateInfo = poolStatesInfo[index];
+        if (!poolStateInfo) return [];
+
+        return getParsedMultipleAccountsInfo(client, tickArrayStatetruct, [
+          getTickArrayAddress(
+            raydiumProgram.toString(),
+            poolStateInfo.pubkey.toString(),
+            personalPositionInfo.tickLowerIndex,
+            poolStateInfo.tickSpacing
+          ),
+          getTickArrayAddress(
+            raydiumProgram.toString(),
+            poolStateInfo.pubkey.toString(),
+            personalPositionInfo.tickUpperIndex,
+            poolStateInfo.tickSpacing
+          ),
+        ]);
+      })
+    ),
+    cache.getTokenPricesAsMap([...Array.from(mints)], NetworkId.solana),
+  ]);
+
+  const liquidities: PortfolioLiquidity[] = [];
   for (let index = 0; index < personalPositionsInfo.length; index++) {
     const poolStateInfo = poolStatesInfo[index];
 
@@ -75,28 +128,25 @@ export async function getRaydiumCLMMPositions(
       false
     );
     if (!tokenAmountA || !tokenAmountB) continue;
-    const tokenPriceA = await cache.getTokenPrice(
-      poolStateInfo.tokenMint0.toString(),
-      NetworkId.solana
-    );
-    if (!tokenPriceA) continue;
+
+    const tokenPriceA = tokenPrices.get(poolStateInfo.tokenMint0.toString());
+    const tokenPriceB = tokenPrices.get(poolStateInfo.tokenMint1.toString());
+    if (!tokenPriceA || !tokenPriceB) continue;
+
     const assetTokenA = tokenPriceToAssetToken(
-      poolStateInfo.tokenMint0.toString(),
+      tokenPriceA.address,
       tokenAmountA.dividedBy(10 ** tokenPriceA.decimals).toNumber(),
       NetworkId.solana,
       tokenPriceA
     );
-    const tokenPriceB = await cache.getTokenPrice(
-      poolStateInfo.tokenMint1.toString(),
-      NetworkId.solana
-    );
-    if (!tokenPriceB) continue;
+
     const assetTokenB = tokenPriceToAssetToken(
-      poolStateInfo.tokenMint1.toString(),
+      tokenPriceB.address,
       tokenAmountB.dividedBy(10 ** tokenPriceB.decimals).toNumber(),
       NetworkId.solana,
       tokenPriceB
     );
+
     if (
       !assetTokenB ||
       !assetTokenA ||
@@ -104,19 +154,60 @@ export async function getRaydiumCLMMPositions(
       assetTokenA.value === null
     )
       continue;
-    const value = assetTokenB.value + assetTokenA.value;
-    assets.push({
-      assets: [assetTokenA, assetTokenB],
-      assetsValue: value,
-      rewardAssets: [],
-      rewardAssetsValue: 0,
+
+    if (tokenAmountA.isZero()) assetTokenA.attributes.tags = ['Out Of Range'];
+    if (tokenAmountB.isZero()) assetTokenB.attributes.tags = ['Out Of Range'];
+
+    const rewardAssets: PortfolioAsset[] = [];
+
+    const rewardBalances = getRewardBalance(
+      personalPositionInfo,
+      poolStateInfo,
+      tickArrays[index]
+    );
+
+    rewardBalances.forEach((rewardBalance, i) => {
+      if (
+        rewardBalance.isZero() ||
+        poolStateInfo.rewardInfos[i].tokenMint.toString() ===
+          '11111111111111111111111111111111'
+      )
+        return;
+
+      const rewardTokenPrice = tokenPrices.get(
+        poolStateInfo.rewardInfos[i].tokenMint.toString()
+      );
+      if (!rewardTokenPrice) return;
+      rewardAssets.push(
+        tokenPriceToAssetToken(
+          poolStateInfo.rewardInfos[i].tokenMint.toString(),
+          rewardBalance.dividedBy(10 ** rewardTokenPrice.decimals).toNumber(),
+          NetworkId.solana,
+          rewardTokenPrice
+        )
+      );
+    });
+
+    const assets = [assetTokenA, assetTokenB];
+    const assetsValue = getUsdValueSum(assets.map((a) => a.value));
+    const rewardAssetsValue = getUsdValueSum(rewardAssets.map((a) => a.value));
+    const value = getUsdValueSum(
+      [...assets, ...rewardAssets].map((a) => a.value)
+    );
+
+    if (!value) continue;
+
+    liquidities.push({
+      assets,
+      assetsValue,
+      rewardAssets,
+      rewardAssetsValue,
       value,
       yields: [],
     });
-    totalLiquidityValue += value;
   }
 
-  if (assets.length === 0) return [];
+  if (liquidities.length === 0) return [];
 
   const elements: PortfolioElementLiquidity[] = [];
   elements.push({
@@ -125,9 +216,9 @@ export async function getRaydiumCLMMPositions(
     platformId,
     label: 'LiquidityPool',
     name: 'Concentrated',
-    value: totalLiquidityValue,
+    value: getUsdValueSum(liquidities.map((a) => a.value)),
     data: {
-      liquidities: assets,
+      liquidities,
     },
   });
 

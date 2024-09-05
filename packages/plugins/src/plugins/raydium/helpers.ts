@@ -16,6 +16,14 @@ import {
 import { PublicKey } from '@solana/web3.js';
 import { AMM_PROGRAM_ID_V3, positionsIdentifier } from './constants';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { ClmmPoolInfo, ClmmPoolRewardInfo, Tick } from './types';
+import { toBN } from '../../utils/misc/toBN';
+import {
+  PersonalPositionState,
+  PoolState,
+  TickArrayState,
+} from './structs/clmms';
+import { ParsedAccount } from '../../utils/solana';
 
 export function isARaydiumPosition(nft: PortfolioAssetCollectible): boolean {
   return nft.name === positionsIdentifier;
@@ -126,6 +134,10 @@ function mulDivFloor(a: BN, b: BN, denominator: BN) {
     throw new Error('division by 0');
   }
   return a.mul(b).div(denominator);
+}
+
+function wrappingSubU128(n0: BN, n1: BN): BN {
+  return n0.add(Q128).sub(n1).mod(Q128);
 }
 
 function mulDivCeil(a: BN, b: BN, denominator: BN) {
@@ -284,3 +296,257 @@ export function getPendingAssetToken(
     rewardToken
   );
 }
+
+function getRewardGrowthInsideV2(
+  tickCurrentIndex: number,
+  tickLowerState: Tick,
+  tickUpperState: Tick,
+  rewardInfos: Pick<ClmmPoolRewardInfo, 'rewardGrowthGlobalX64'>[]
+): BN[] {
+  const rewardGrowthsInside: BN[] = [];
+  for (let i = 0; i < rewardInfos.length; i++) {
+    let rewardGrowthsBelow = new BN(0);
+    if (tickLowerState.liquidityGross.eqn(0)) {
+      rewardGrowthsBelow = rewardInfos[i].rewardGrowthGlobalX64;
+    } else if (tickCurrentIndex < tickLowerState.tick) {
+      rewardGrowthsBelow = rewardInfos[i].rewardGrowthGlobalX64.sub(
+        tickLowerState.rewardGrowthsOutsideX64[i]
+      );
+    } else {
+      rewardGrowthsBelow = tickLowerState.rewardGrowthsOutsideX64[i];
+    }
+
+    let rewardGrowthsAbove = new BN(0);
+    if (tickUpperState.liquidityGross.eqn(0)) {
+      //
+    } else if (tickCurrentIndex < tickUpperState.tick) {
+      rewardGrowthsAbove = tickUpperState.rewardGrowthsOutsideX64[i];
+    } else {
+      rewardGrowthsAbove = rewardInfos[i].rewardGrowthGlobalX64.sub(
+        tickUpperState.rewardGrowthsOutsideX64[i]
+      );
+    }
+
+    rewardGrowthsInside.push(
+      wrappingSubU128(
+        wrappingSubU128(
+          rewardInfos[i].rewardGrowthGlobalX64,
+          rewardGrowthsBelow
+        ),
+        rewardGrowthsAbove
+      )
+    );
+  }
+
+  return rewardGrowthsInside;
+}
+const GetPositionRewardsV2 = (
+  ammPool: Pick<ClmmPoolInfo, 'tickCurrent' | 'feeGrowthGlobalX64B'> & {
+    rewardInfos: { rewardGrowthGlobalX64: BN }[];
+  },
+  positionState: {
+    liquidity: BN;
+    rewardInfos: {
+      growthInsideLastX64: BN;
+      rewardAmountOwed: BN;
+    }[];
+  },
+  tickLowerState: Tick,
+  tickUpperState: Tick
+): BN[] => {
+  const rewards: BN[] = [];
+  const rewardGrowthsInside = getRewardGrowthInsideV2(
+    ammPool.tickCurrent,
+    tickLowerState,
+    tickUpperState,
+    ammPool.rewardInfos
+  );
+  for (let i = 0; i < rewardGrowthsInside.length; i++) {
+    const rewardGrowthInside = rewardGrowthsInside[i];
+    const currRewardInfo = positionState.rewardInfos[i];
+
+    const rewardGrowthDelta = wrappingSubU128(
+      rewardGrowthInside,
+      currRewardInfo.growthInsideLastX64
+    );
+    const amountOwedDelta = mulDivFloor(
+      rewardGrowthDelta,
+      positionState.liquidity,
+      Q64
+    );
+    const rewardAmountOwed =
+      currRewardInfo.rewardAmountOwed.add(amountOwedDelta);
+    rewards.push(rewardAmountOwed);
+  }
+
+  return rewards;
+};
+
+export const getTickArrayAddress = (
+  programId: string,
+  poolId: string,
+  tickNumber: number,
+  tickSpacing: number
+) =>
+  getTickArrayAddressByTick(
+    new PublicKey(programId),
+    new PublicKey(poolId),
+    tickNumber,
+    tickSpacing
+  );
+
+const TICK_ARRAY_SIZE = 60;
+
+function tickCount(tickSpacing: number): number {
+  return TICK_ARRAY_SIZE * tickSpacing;
+}
+
+function getTickArrayBitIndex(tickIndex: number, tickSpacing: number): number {
+  const ticksInArray = tickCount(tickSpacing);
+
+  let startIndex: number = tickIndex / ticksInArray;
+  if (tickIndex < 0 && tickIndex % ticksInArray != 0) {
+    startIndex = Math.ceil(startIndex) - 1;
+  } else {
+    startIndex = Math.floor(startIndex);
+  }
+  return startIndex;
+}
+
+function getTickArrayStartIndexByTick(
+  tickIndex: number,
+  tickSpacing: number
+): number {
+  return getTickArrayBitIndex(tickIndex, tickSpacing) * tickCount(tickSpacing);
+}
+
+const TICK_ARRAY_SEED = Buffer.from('tick_array', 'utf8');
+
+function getPdaTickArrayAddress(
+  programId: PublicKey,
+  poolId: PublicKey,
+  startIndex: number
+): {
+  publicKey: PublicKey;
+  nonce: number;
+} {
+  return findProgramAddress(
+    [TICK_ARRAY_SEED, poolId.toBuffer(), i32ToBytes(startIndex)],
+    programId
+  );
+}
+
+function getTickArrayAddressByTick(
+  programId: PublicKey,
+  poolId: PublicKey,
+  tickIndex: number,
+  tickSpacing: number
+): PublicKey {
+  const startIndex = getTickArrayStartIndexByTick(tickIndex, tickSpacing);
+  const { publicKey: tickArrayAddress } = getPdaTickArrayAddress(
+    programId,
+    poolId,
+    startIndex
+  );
+  return tickArrayAddress;
+}
+
+function i32ToBytes(num: number): Uint8Array {
+  const arr = new ArrayBuffer(4);
+  const view = new DataView(arr);
+  view.setInt32(0, num, false);
+  return new Uint8Array(arr);
+}
+
+function findProgramAddress(
+  seeds: Array<Buffer | Uint8Array>,
+  programId: PublicKey
+): {
+  publicKey: PublicKey;
+  nonce: number;
+} {
+  const [publicKey, nonce] = PublicKey.findProgramAddressSync(seeds, programId);
+  return { publicKey, nonce };
+}
+
+function getTickOffsetInArray(tickIndex: number, tickSpacing: number): number {
+  if (tickIndex % tickSpacing != 0) {
+    throw new Error('tickIndex % tickSpacing not equal 0');
+  }
+  const startTickIndex = getTickArrayStartIndexByTick(tickIndex, tickSpacing);
+  const offsetInArray = Math.floor((tickIndex - startTickIndex) / tickSpacing);
+  if (offsetInArray < 0 || offsetInArray >= TICK_ARRAY_SIZE) {
+    throw new Error('tick offset in array overflow');
+  }
+  return offsetInArray;
+}
+
+export const getRewardBalance = (
+  personalPositionInfo: ParsedAccount<PersonalPositionState>,
+  poolStateInfo: ParsedAccount<PoolState>,
+  tickArrays: (ParsedAccount<TickArrayState> | null)[]
+): BigNumber[] => {
+  const [tickArrayLower, tickArrayUpper] = tickArrays;
+
+  if (!tickArrayLower || !tickArrayUpper) return [];
+
+  const tickLowerState =
+    tickArrayLower &&
+    tickArrayLower.ticks[
+      getTickOffsetInArray(
+        personalPositionInfo.tickLowerIndex,
+        poolStateInfo.tickSpacing
+      )
+    ];
+  const tickUpperState =
+    tickArrayUpper &&
+    tickArrayUpper.ticks[
+      getTickOffsetInArray(
+        personalPositionInfo.tickUpperIndex,
+        poolStateInfo.tickSpacing
+      )
+    ];
+
+  if (!tickLowerState || !tickUpperState) return [];
+
+  return GetPositionRewardsV2(
+    {
+      tickCurrent: poolStateInfo.tickCurrent,
+      feeGrowthGlobalX64B: toBN(poolStateInfo.feeGrowthGlobal0X64),
+      rewardInfos: poolStateInfo.rewardInfos.map((ri) => ({
+        rewardGrowthGlobalX64: toBN(ri.rewardGrowthGlobalX64),
+      })),
+    },
+    {
+      liquidity: toBN(personalPositionInfo.liquidity),
+      rewardInfos: personalPositionInfo.rewardInfos.map((ri) => ({
+        growthInsideLastX64: toBN(ri.growthInsideLastX64),
+        rewardAmountOwed: toBN(ri.rewardAmountOwed),
+      })),
+    },
+    {
+      tick: tickLowerState.tick,
+      liquidityNet: toBN(tickLowerState.liquidityNet),
+      liquidityGross: toBN(tickLowerState.liquidityGross),
+      feeGrowthOutsideX64A: toBN(tickLowerState.feeGrowthOutsideX64A),
+      feeGrowthOutsideX64B: toBN(tickLowerState.feeGrowthOutsideX64B),
+      rewardGrowthsOutsideX64: [
+        toBN(tickLowerState.rewardGrowthsOutsideX640),
+        toBN(tickLowerState.rewardGrowthsOutsideX641),
+        toBN(tickLowerState.rewardGrowthsOutsideX642),
+      ],
+    },
+    {
+      tick: tickUpperState.tick,
+      liquidityNet: toBN(tickUpperState.liquidityNet),
+      liquidityGross: toBN(tickUpperState.liquidityGross),
+      feeGrowthOutsideX64A: toBN(tickUpperState.feeGrowthOutsideX64A),
+      feeGrowthOutsideX64B: toBN(tickUpperState.feeGrowthOutsideX64B),
+      rewardGrowthsOutsideX64: [
+        toBN(tickUpperState.rewardGrowthsOutsideX640),
+        toBN(tickUpperState.rewardGrowthsOutsideX641),
+        toBN(tickUpperState.rewardGrowthsOutsideX642),
+      ],
+    }
+  ).map((bn) => new BigNumber(bn.toString(10)));
+};
