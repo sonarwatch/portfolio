@@ -6,7 +6,6 @@ import {
   PortfolioElement,
   PortfolioElementLiquidity,
   PortfolioElementType,
-  PortfolioLiquidity,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { platformId, raydiumProgram } from './constants';
@@ -100,7 +99,8 @@ export async function getRaydiumCLMMPositions(
     cache.getTokenPricesAsMap([...Array.from(mints)], NetworkId.solana),
   ]);
 
-  const liquidities: PortfolioLiquidity[] = [];
+  const elements: PortfolioElementLiquidity[] = [];
+
   for (let index = 0; index < personalPositionsInfo.length; index++) {
     const poolStateInfo = poolStatesInfo[index];
 
@@ -192,30 +192,29 @@ export async function getRaydiumCLMMPositions(
 
     if (!value) continue;
 
-    liquidities.push({
-      assets,
-      assetsValue,
-      rewardAssets,
-      rewardAssetsValue,
-      value,
-      yields: [],
+    const liquidities = [
+      {
+        assets,
+        assetsValue,
+        rewardAssets,
+        rewardAssetsValue,
+        value,
+        yields: [],
+      },
+    ];
+
+    elements.push({
+      type: PortfolioElementType.liquidity,
+      networkId: NetworkId.solana,
+      platformId,
+      label: 'LiquidityPool',
+      name: 'Concentrated',
+      value: getUsdValueSum(liquidities.map((a) => a.value)),
+      data: {
+        liquidities,
+      },
     });
   }
-
-  if (liquidities.length === 0) return [];
-
-  const elements: PortfolioElementLiquidity[] = [];
-  elements.push({
-    type: PortfolioElementType.liquidity,
-    networkId: NetworkId.solana,
-    platformId,
-    label: 'LiquidityPool',
-    name: 'Concentrated',
-    value: getUsdValueSum(liquidities.map((a) => a.value)),
-    data: {
-      liquidities,
-    },
-  });
 
   return elements;
 }
