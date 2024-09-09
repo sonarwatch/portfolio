@@ -15,7 +15,6 @@ const executor: JobExecutor = async (cache: Cache) => {
       },
     })
     .catch(() => null);
-  console.log('constexecutor:JobExecutor= ~ pools:', pools);
 
   if (!pools) return;
 

@@ -33,7 +33,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     vaultsInfo.map((vault) => vault.underlyingPool),
     { prefix: clmmPoolsPrefix, networkId: NetworkId.sui }
   );
-  console.log('constexecutor:FetcherExecutor= ~ poolInfos:', poolInfos);
 
   const vaultsPositionInfo = await cache.getItem<VaultPositionInfo[]>(
     vaultsInfoKey,

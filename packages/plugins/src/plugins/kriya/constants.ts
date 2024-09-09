@@ -17,12 +17,15 @@ export const farmsPackageId =
   '0x88701243d0445aa38c0a13f02a9af49a58092dfadb93af9754edb41c52f40085';
 
 export const vaultsInfoKey = 'vaultsInfos';
+export const leverageVaultsInfoKey = 'leverageVaultsInfos';
 export const farmsInfoKey = 'farmsInfos';
 
 export const vaultsUrl =
   'https://88ob93rfva.execute-api.ap-southeast-1.amazonaws.com/release/vaults';
 export const poolsUrl =
   'https://xd0ljetd33.execute-api.ap-southeast-1.amazonaws.com/release/pools';
+export const leverageVaultsUrl =
+  'https://4sacq88271.execute-api.ap-southeast-1.amazonaws.com/release/vaults';
 
 export const vaultsCointsTypes = [
   '0xc4ee7b00ea981402a6285b14ffa5dcd1ee7f97eb2a91df3bcc04fa88c56ac7d7::kc_allweather_vt::KC_ALLWEATHER_VT',

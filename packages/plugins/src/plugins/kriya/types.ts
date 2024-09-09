@@ -174,3 +174,55 @@ export type LiquidityPosition = {
   stake_weight: string;
   start_unit: string;
 };
+
+export type StakeReceiptWithPoints = {
+  farm_id: string;
+  id: ID;
+  rewards_stake_receipt: {
+    fields: {
+      farm_id: string;
+      id: ID;
+      reward_infos: {
+        fields: {
+          id: ID;
+          size: string;
+        };
+        type: string;
+      };
+      shares: string;
+    };
+    type: string;
+  };
+  user_points_info: {
+    fields: {
+      claimed_points: string;
+      index: string;
+      updated_at: string;
+    };
+    type: string;
+  };
+};
+
+export type LeverageVaultInfo = {
+  depositedA: string;
+  apr: string;
+  borrowedBUsd: string;
+  farmStakeReceiptType: string;
+  decimalA: string;
+  createdAt: string;
+  farmSource: string;
+  coinB: string;
+  decimalB: string;
+  tvl: string;
+  borrowedB: string;
+  targetLeverage: string;
+  vaultName: string;
+  depositedAUsd: string;
+  lpSupply: string;
+  vaultSource: string;
+  farmId: string;
+  fees: string;
+  coinA: string;
+  updatedAt: string;
+  id: string;
+};
