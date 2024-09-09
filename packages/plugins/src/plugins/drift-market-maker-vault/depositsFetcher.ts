@@ -8,7 +8,8 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { circuitPid, platformId, prefixVaults } from './constants';
+import { platformId as driftPlatformId } from '../drift/constants';
+import { vaultsPid, prefixVaults } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { vaultDepositorStruct } from './structs';
@@ -23,7 +24,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const depositAccounts = await getParsedProgramAccounts(
     client,
     vaultDepositorStruct,
-    circuitPid,
+    vaultsPid,
     vaultDepositorFilter(owner)
   );
 
@@ -60,7 +61,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const vaultInfo = vaultById.get(depositAccount.vault.toString());
     if (!vaultInfo) continue;
 
-    const { decimals, name, mint } = vaultInfo;
+    const { decimals, name, mint, platformId } = vaultInfo;
     const tokenPrice = tokenPriceById.get(mint);
     let amountLeft = depositAccount.netDeposits.plus(
       depositAccount.cumulativeProfitShareAmount
@@ -109,7 +110,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-deposits`,
+  id: `${driftPlatformId}-mm-vaults-deposits`,
   networkId: NetworkId.solana,
   executor,
 };
