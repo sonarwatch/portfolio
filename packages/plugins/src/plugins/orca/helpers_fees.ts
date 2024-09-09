@@ -4,6 +4,7 @@ import {
   TickArray,
   tickArrayStruct,
   Whirlpool,
+  WhirlpoolRewardInfo,
 } from './structs/whirlpool';
 import {
   getParsedMultipleAccountsInfo,
@@ -21,6 +22,7 @@ const U128 = TWO.pow(new BN(128));
 const TICK_ARRAY_SIZE = 88;
 const MAX_TICK_INDEX = 443636;
 const MIN_TICK_INDEX = -443636;
+const NUM_REWARDS = 3;
 
 export const getTickArraysAsMap = async (
   positionsInfo: (ParsedAccount<Position> | null)[],
@@ -72,7 +74,7 @@ export const getTickArraysAsMap = async (
   return tickArraysAsMap;
 };
 
-export const getFees = (
+export const calcFeesAndRewards = (
   whirlpool: Whirlpool,
   position: ParsedAccount<Position>,
   tickArrays: Map<string, TickArray>
@@ -93,7 +95,7 @@ export const getFees = (
   const tickArrayUpper = tickArrays.get(tickArrayUpperAddress.toString());
 
   if (!tickArrayLower || !tickArrayUpper) {
-    return { feeOwedA: new BigNumber(0), feeOwedB: new BigNumber(0) };
+    return null;
   }
 
   const tickLower = getTick(
@@ -107,12 +109,21 @@ export const getFees = (
     whirlpool.tickSpacing
   );
 
-  return getCollectFeesQuoteInternal({
+  const rewards = getCollectRewardsQuoteInternal({
+    whirlpool,
+    position,
+    tickLower,
+    tickUpper,
+  });
+
+  const fees = getCollectFeesQuoteInternal({
     whirlpool,
     position,
     tickUpper,
     tickLower,
   });
+
+  return { ...rewards, ...fees };
 };
 
 function invariant(
@@ -290,4 +301,150 @@ function tickIndexToTickArrayIndex(
   tickSpacing: number
 ): number {
   return Math.floor((tickIndex - startTickIndex) / tickSpacing);
+}
+
+export function isRewardInitialized(rewardInfo: WhirlpoolRewardInfo): boolean {
+  return (
+    rewardInfo.mint.toString() !== '11111111111111111111111111111111' &&
+    rewardInfo.vault.toString() !== '11111111111111111111111111111111'
+  );
+}
+
+export function getCollectRewardsQuoteInternal(param: {
+  whirlpool: Whirlpool;
+  position: Position;
+  tickLower: Tick;
+  tickUpper: Tick;
+}): {
+  rewardOwedA: BigNumber;
+  rewardOwedB: BigNumber;
+  rewardOwedC: BigNumber;
+} {
+  const { whirlpool, position, tickLower, tickUpper } = param;
+
+  const { tickCurrentIndex, rewardInfos: whirlpoolRewardsInfos } = whirlpool;
+  const { tickLowerIndex, tickUpperIndex, liquidity, rewardInfos } = position;
+
+  // Calculate the reward growths inside the position
+
+  const range = [...Array(NUM_REWARDS).keys()];
+  const rewardGrowthsBelowX64: BN[] = range.map(() => new BN(0));
+  const rewardGrowthsAboveX64: BN[] = range.map(() => new BN(0));
+
+  const tickLowerRewardGrowthsOutside = [
+    tickLower.rewardGrowthsOutside1,
+    tickLower.rewardGrowthsOutside2,
+    tickLower.rewardGrowthsOutside3,
+  ];
+  const tickUpperRewardGrowthsOutside = [
+    tickUpper.rewardGrowthsOutside1,
+    tickUpper.rewardGrowthsOutside2,
+    tickLower.rewardGrowthsOutside3,
+  ];
+
+  for (const i of range) {
+    const rewardInfo = whirlpoolRewardsInfos[i];
+    invariant(!!rewardInfo, 'whirlpoolRewardsInfos cannot be undefined');
+
+    const growthGlobalX64 = rewardInfo.growthGlobalX64;
+    const lowerRewardGrowthsOutside = tickLowerRewardGrowthsOutside[i];
+    const upperRewardGrowthsOutside = tickUpperRewardGrowthsOutside[i];
+    invariant(
+      !!lowerRewardGrowthsOutside,
+      'lowerRewardGrowthsOutside cannot be undefined'
+    );
+    invariant(
+      !!upperRewardGrowthsOutside,
+      'upperRewardGrowthsOutside cannot be undefined'
+    );
+
+    if (tickCurrentIndex < tickLowerIndex) {
+      rewardGrowthsBelowX64[i] = subUnderflowU128(
+        toBN(growthGlobalX64),
+        toBN(lowerRewardGrowthsOutside)
+      );
+    } else {
+      rewardGrowthsBelowX64[i] = toBN(lowerRewardGrowthsOutside);
+    }
+
+    if (tickCurrentIndex < tickUpperIndex) {
+      rewardGrowthsAboveX64[i] = toBN(upperRewardGrowthsOutside);
+    } else {
+      rewardGrowthsAboveX64[i] = subUnderflowU128(
+        toBN(growthGlobalX64),
+        toBN(upperRewardGrowthsOutside)
+      );
+    }
+  }
+
+  const rewardGrowthsInsideX64: [BN, boolean][] = range.map(() => [
+    new BN(0),
+    false,
+  ]);
+
+  for (const i of range) {
+    const rewardInfo = whirlpoolRewardsInfos[i];
+    invariant(!!rewardInfo, 'whirlpoolRewardsInfos cannot be undefined');
+
+    const rewardInitialized = isRewardInitialized(rewardInfo);
+
+    if (rewardInitialized) {
+      const growthBelowX64 = rewardGrowthsBelowX64[i];
+      const growthAboveX64 = rewardGrowthsAboveX64[i];
+      invariant(!!growthBelowX64, 'growthBelowX64 cannot be undefined');
+      invariant(!!growthAboveX64, 'growthAboveX64 cannot be undefined');
+
+      const growthInsde = subUnderflowU128(
+        subUnderflowU128(toBN(rewardInfo.growthGlobalX64), growthBelowX64),
+        growthAboveX64
+      );
+      rewardGrowthsInsideX64[i] = [growthInsde, true];
+    }
+  }
+
+  // Calculate the updated rewards owed
+
+  const updatedRewardInfosX64: BN[] = range.map(() => new BN(0));
+
+  for (const i of range) {
+    const growthInsideX64 = rewardGrowthsInsideX64[i];
+    invariant(!!growthInsideX64, 'growthInsideX64 cannot be undefined');
+
+    const [rewardGrowthInsideX64, isRewardInitialized] = growthInsideX64;
+
+    if (isRewardInitialized) {
+      const rewardInfo = rewardInfos[i];
+      invariant(!!rewardInfo, 'rewardInfo cannot be undefined');
+
+      const amountOwedX64 = toBN(rewardInfo.amountOwed).shln(64);
+      const growthInsideCheckpointX64 = rewardInfo.growthInsideCheckpoint;
+      updatedRewardInfosX64[i] = amountOwedX64.add(
+        subUnderflowU128(
+          rewardGrowthInsideX64,
+          toBN(growthInsideCheckpointX64)
+        ).mul(toBN(liquidity))
+      );
+    }
+  }
+
+  invariant(
+    rewardGrowthsInsideX64.length >= 3,
+    'rewards length is less than 3'
+  );
+
+  const rewardExistsA = rewardGrowthsInsideX64[0]?.[1];
+  const rewardExistsB = rewardGrowthsInsideX64[1]?.[1];
+  const rewardExistsC = rewardGrowthsInsideX64[2]?.[1];
+
+  const rewardOwedA = rewardExistsA
+    ? new BigNumber(updatedRewardInfosX64[0]?.shrn(64).toString())
+    : new BigNumber(0);
+  const rewardOwedB = rewardExistsB
+    ? new BigNumber(updatedRewardInfosX64[1]?.shrn(64).toString())
+    : new BigNumber(0);
+  const rewardOwedC = rewardExistsC
+    ? new BigNumber(updatedRewardInfosX64[2]?.shrn(64).toString())
+    : new BigNumber(0);
+
+  return { rewardOwedA, rewardOwedB, rewardOwedC };
 }
