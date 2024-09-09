@@ -5,7 +5,6 @@ import {
   PortfolioAssetCollectible,
   PortfolioElement,
   PortfolioElementType,
-  PortfolioLiquidity,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import {
@@ -105,8 +104,7 @@ export function getOrcaNftFetcher(
       getTickArraysAsMap(positionsInfo, whirlpoolMap),
     ]);
 
-    const assets: PortfolioLiquidity[] = [];
-    let totalLiquidityValue = 0;
+    const elements: PortfolioElement[] = [];
     for (let index = 0; index < positionsInfo.length; index++) {
       const positionInfo = positionsInfo[index];
       if (!positionInfo) continue;
@@ -247,30 +245,32 @@ export function getOrcaNftFetcher(
         continue;
 
       const value = assetTokenA.value + assetTokenB.value;
-      assets.push({
-        assets: [assetTokenA, assetTokenB],
-        assetsValue: value,
-        rewardAssets,
-        rewardAssetsValue: getUsdValueSum(rewardAssets.map((a) => a.value)),
-        value,
-        yields: [],
-      });
-      totalLiquidityValue += value;
-    }
-    if (assets.length === 0) return [];
+      const rewardAssetsValue = getUsdValueSum(
+        rewardAssets.map((a) => a.value)
+      );
 
-    return [
-      {
+      elements.push({
         type: PortfolioElementType.liquidity,
         networkId: NetworkId.solana,
         platformId,
         label: 'LiquidityPool',
         name: 'Concentrated',
-        value: totalLiquidityValue,
+        value: value + (rewardAssetsValue || 0),
         data: {
-          liquidities: assets,
+          liquidities: [
+            {
+              assets: [assetTokenA, assetTokenB],
+              assetsValue: value,
+              rewardAssets,
+              rewardAssetsValue,
+              value: value + (rewardAssetsValue || 0),
+              yields: [],
+            },
+          ],
         },
-      },
-    ];
+      });
+    }
+
+    return elements;
   };
 }
