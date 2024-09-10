@@ -481,14 +481,107 @@ function getTickOffsetInArray(tickIndex: number, tickSpacing: number): number {
   return offsetInArray;
 }
 
-export const getRewardBalance = (
+function getfeeGrowthInside(
+  poolState: Pick<
+    ClmmPoolInfo,
+    'tickCurrent' | 'feeGrowthGlobalX64A' | 'feeGrowthGlobalX64B'
+  >,
+  tickLowerState: Tick,
+  tickUpperState: Tick
+): { feeGrowthInsideX64A: BN; feeGrowthInsideBX64: BN } {
+  let feeGrowthBelowX64A = new BN(0);
+  let feeGrowthBelowX64B = new BN(0);
+  if (poolState.tickCurrent >= tickLowerState.tick) {
+    feeGrowthBelowX64A = tickLowerState.feeGrowthOutsideX64A;
+    feeGrowthBelowX64B = tickLowerState.feeGrowthOutsideX64B;
+  } else {
+    feeGrowthBelowX64A = poolState.feeGrowthGlobalX64A.sub(
+      tickLowerState.feeGrowthOutsideX64A
+    );
+    feeGrowthBelowX64B = poolState.feeGrowthGlobalX64B.sub(
+      tickLowerState.feeGrowthOutsideX64B
+    );
+  }
+
+  let feeGrowthAboveX64A = new BN(0);
+  let feeGrowthAboveX64B = new BN(0);
+  if (poolState.tickCurrent < tickUpperState.tick) {
+    feeGrowthAboveX64A = tickUpperState.feeGrowthOutsideX64A;
+    feeGrowthAboveX64B = tickUpperState.feeGrowthOutsideX64B;
+  } else {
+    feeGrowthAboveX64A = poolState.feeGrowthGlobalX64A.sub(
+      tickUpperState.feeGrowthOutsideX64A
+    );
+    feeGrowthAboveX64B = poolState.feeGrowthGlobalX64B.sub(
+      tickUpperState.feeGrowthOutsideX64B
+    );
+  }
+
+  const feeGrowthInsideX64A = wrappingSubU128(
+    wrappingSubU128(poolState.feeGrowthGlobalX64A, feeGrowthBelowX64A),
+    feeGrowthAboveX64A
+  );
+  const feeGrowthInsideBX64 = wrappingSubU128(
+    wrappingSubU128(poolState.feeGrowthGlobalX64B, feeGrowthBelowX64B),
+    feeGrowthAboveX64B
+  );
+  return { feeGrowthInsideX64A, feeGrowthInsideBX64 };
+}
+
+function GetPositionFeesV2(
+  ammPool: Pick<
+    ClmmPoolInfo,
+    'tickCurrent' | 'feeGrowthGlobalX64A' | 'feeGrowthGlobalX64B'
+  >,
+  positionState: {
+    liquidity: BN;
+    rewardInfos: {
+      growthInsideLastX64: BN;
+      rewardAmountOwed: BN;
+    }[];
+    feeGrowthInsideLastX64A: BN;
+    feeGrowthInsideLastX64B: BN;
+    tokenFeesOwedA: BN;
+    tokenFeesOwedB: BN;
+  },
+  tickLowerState: Tick,
+  tickUpperState: Tick
+): { tokenFeeAmountA: BN; tokenFeeAmountB: BN } {
+  const { feeGrowthInsideX64A, feeGrowthInsideBX64 } = getfeeGrowthInside(
+    ammPool,
+    tickLowerState,
+    tickUpperState
+  );
+
+  const feeGrowthdeltaA = mulDivFloor(
+    wrappingSubU128(feeGrowthInsideX64A, positionState.feeGrowthInsideLastX64A),
+    positionState.liquidity,
+    Q64
+  );
+  const tokenFeeAmountA = positionState.tokenFeesOwedA.add(feeGrowthdeltaA);
+
+  const feeGrowthdelta1 = mulDivFloor(
+    wrappingSubU128(feeGrowthInsideBX64, positionState.feeGrowthInsideLastX64B),
+    positionState.liquidity,
+    Q64
+  );
+  const tokenFeeAmountB = positionState.tokenFeesOwedB.add(feeGrowthdelta1);
+
+  return { tokenFeeAmountA, tokenFeeAmountB };
+}
+
+export const getFeesAndRewardsBalance = (
   personalPositionInfo: ParsedAccount<PersonalPositionState>,
   poolStateInfo: ParsedAccount<PoolState>,
   tickArrays: (ParsedAccount<TickArrayState> | null)[]
-): BigNumber[] => {
+): {
+  tokenFeeAmountA: BigNumber;
+  tokenFeeAmountB: BigNumber;
+  rewards: BigNumber[];
+} | null => {
   const [tickArrayLower, tickArrayUpper] = tickArrays;
 
-  if (!tickArrayLower || !tickArrayUpper) return [];
+  if (!tickArrayLower || !tickArrayUpper) return null;
 
   const tickLowerState =
     tickArrayLower &&
@@ -507,46 +600,70 @@ export const getRewardBalance = (
       )
     ];
 
-  if (!tickLowerState || !tickUpperState) return [];
+  if (!tickLowerState || !tickUpperState) return null;
 
-  return GetPositionRewardsV2(
-    {
-      tickCurrent: poolStateInfo.tickCurrent,
-      feeGrowthGlobalX64B: toBN(poolStateInfo.feeGrowthGlobal0X64),
-      rewardInfos: poolStateInfo.rewardInfos.map((ri) => ({
-        rewardGrowthGlobalX64: toBN(ri.rewardGrowthGlobalX64),
-      })),
-    },
-    {
-      liquidity: toBN(personalPositionInfo.liquidity),
-      rewardInfos: personalPositionInfo.rewardInfos.map((ri) => ({
-        growthInsideLastX64: toBN(ri.growthInsideLastX64),
-        rewardAmountOwed: toBN(ri.rewardAmountOwed),
-      })),
-    },
-    {
-      tick: tickLowerState.tick,
-      liquidityNet: toBN(tickLowerState.liquidityNet),
-      liquidityGross: toBN(tickLowerState.liquidityGross),
-      feeGrowthOutsideX64A: toBN(tickLowerState.feeGrowthOutsideX64A),
-      feeGrowthOutsideX64B: toBN(tickLowerState.feeGrowthOutsideX64B),
-      rewardGrowthsOutsideX64: [
-        toBN(tickLowerState.rewardGrowthsOutsideX640),
-        toBN(tickLowerState.rewardGrowthsOutsideX641),
-        toBN(tickLowerState.rewardGrowthsOutsideX642),
-      ],
-    },
-    {
-      tick: tickUpperState.tick,
-      liquidityNet: toBN(tickUpperState.liquidityNet),
-      liquidityGross: toBN(tickUpperState.liquidityGross),
-      feeGrowthOutsideX64A: toBN(tickUpperState.feeGrowthOutsideX64A),
-      feeGrowthOutsideX64B: toBN(tickUpperState.feeGrowthOutsideX64B),
-      rewardGrowthsOutsideX64: [
-        toBN(tickUpperState.rewardGrowthsOutsideX640),
-        toBN(tickUpperState.rewardGrowthsOutsideX641),
-        toBN(tickUpperState.rewardGrowthsOutsideX642),
-      ],
-    }
-  ).map((bn) => new BigNumber(bn.toString(10)));
+  const ammPool = {
+    tickCurrent: poolStateInfo.tickCurrent,
+    feeGrowthGlobalX64A: toBN(poolStateInfo.feeGrowthGlobal0X64),
+    feeGrowthGlobalX64B: toBN(poolStateInfo.feeGrowthGlobal1X64),
+    rewardInfos: poolStateInfo.rewardInfos.map((ri) => ({
+      rewardGrowthGlobalX64: toBN(ri.rewardGrowthGlobalX64),
+    })),
+  };
+  const positionState = {
+    liquidity: toBN(personalPositionInfo.liquidity),
+    rewardInfos: personalPositionInfo.rewardInfos.map((ri) => ({
+      growthInsideLastX64: toBN(ri.growthInsideLastX64),
+      rewardAmountOwed: toBN(ri.rewardAmountOwed),
+    })),
+    feeGrowthInsideLastX64A: toBN(personalPositionInfo.feeGrowthInside0LastX64),
+    feeGrowthInsideLastX64B: toBN(personalPositionInfo.feeGrowthInside1LastX64),
+    tokenFeesOwedA: toBN(personalPositionInfo.tokenFeesOwed0),
+    tokenFeesOwedB: toBN(personalPositionInfo.tokenFeesOwed1),
+  };
+
+  const tickLowerS = {
+    tick: tickLowerState.tick,
+    liquidityNet: toBN(tickLowerState.liquidityNet),
+    liquidityGross: toBN(tickLowerState.liquidityGross),
+    feeGrowthOutsideX64A: toBN(tickLowerState.feeGrowthOutsideX64A),
+    feeGrowthOutsideX64B: toBN(tickLowerState.feeGrowthOutsideX64B),
+    rewardGrowthsOutsideX64: [
+      toBN(tickLowerState.rewardGrowthsOutsideX640),
+      toBN(tickLowerState.rewardGrowthsOutsideX641),
+      toBN(tickLowerState.rewardGrowthsOutsideX642),
+    ],
+  };
+
+  const tickUpperS = {
+    tick: tickUpperState.tick,
+    liquidityNet: toBN(tickUpperState.liquidityNet),
+    liquidityGross: toBN(tickUpperState.liquidityGross),
+    feeGrowthOutsideX64A: toBN(tickUpperState.feeGrowthOutsideX64A),
+    feeGrowthOutsideX64B: toBN(tickUpperState.feeGrowthOutsideX64B),
+    rewardGrowthsOutsideX64: [
+      toBN(tickUpperState.rewardGrowthsOutsideX640),
+      toBN(tickUpperState.rewardGrowthsOutsideX641),
+      toBN(tickUpperState.rewardGrowthsOutsideX642),
+    ],
+  };
+
+  const fees = GetPositionFeesV2(
+    ammPool,
+    positionState,
+    tickLowerS,
+    tickUpperS
+  );
+  const rewards = GetPositionRewardsV2(
+    ammPool,
+    positionState,
+    tickLowerS,
+    tickUpperS
+  );
+
+  return {
+    tokenFeeAmountA: new BigNumber(fees.tokenFeeAmountA.toString(10)),
+    tokenFeeAmountB: new BigNumber(fees.tokenFeeAmountB.toString(10)),
+    rewards: rewards.map((bn) => new BigNumber(bn.toString(10))),
+  };
 };

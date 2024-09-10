@@ -19,7 +19,7 @@ import {
 } from './structs/clmms';
 import { Cache } from '../../Cache';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
-import { getRewardBalance, getTickArrayAddress } from './helpers';
+import { getFeesAndRewardsBalance, getTickArrayAddress } from './helpers';
 
 export async function getRaydiumCLMMPositions(
   cache: Cache,
@@ -155,33 +155,59 @@ export async function getRaydiumCLMMPositions(
 
     const rewardAssets: PortfolioAsset[] = [];
 
-    const rewardBalances = getRewardBalance(
+    const feesAndRewardsBalances = getFeesAndRewardsBalance(
       personalPositionInfo,
       poolStateInfo,
       tickArrays[index]
     );
 
-    rewardBalances.forEach((rewardBalance, i) => {
-      if (
-        rewardBalance.isZero() ||
-        poolStateInfo.rewardInfos[i].tokenMint.toString() ===
-          '11111111111111111111111111111111'
-      )
-        return;
+    if (feesAndRewardsBalances) {
+      if (feesAndRewardsBalances.tokenFeeAmountA.isGreaterThan(0))
+        rewardAssets.push(
+          tokenPriceToAssetToken(
+            tokenPriceA.address,
+            feesAndRewardsBalances.tokenFeeAmountA
+              .dividedBy(10 ** tokenPriceA.decimals)
+              .toNumber(),
+            NetworkId.solana,
+            tokenPriceA
+          )
+        );
 
-      const rewardTokenPrice = tokenPrices.get(
-        poolStateInfo.rewardInfos[i].tokenMint.toString()
-      );
-      if (!rewardTokenPrice) return;
-      rewardAssets.push(
-        tokenPriceToAssetToken(
-          poolStateInfo.rewardInfos[i].tokenMint.toString(),
-          rewardBalance.dividedBy(10 ** rewardTokenPrice.decimals).toNumber(),
-          NetworkId.solana,
-          rewardTokenPrice
+      if (feesAndRewardsBalances.tokenFeeAmountB.isGreaterThan(0))
+        rewardAssets.push(
+          tokenPriceToAssetToken(
+            tokenPriceB.address,
+            feesAndRewardsBalances.tokenFeeAmountB
+              .dividedBy(10 ** tokenPriceB.decimals)
+              .toNumber(),
+            NetworkId.solana,
+            tokenPriceB
+          )
+        );
+
+      feesAndRewardsBalances.rewards.forEach((rewardBalance, i) => {
+        if (
+          rewardBalance.isZero() ||
+          poolStateInfo.rewardInfos[i].tokenMint.toString() ===
+            '11111111111111111111111111111111'
         )
-      );
-    });
+          return;
+
+        const rewardTokenPrice = tokenPrices.get(
+          poolStateInfo.rewardInfos[i].tokenMint.toString()
+        );
+        if (!rewardTokenPrice) return;
+        rewardAssets.push(
+          tokenPriceToAssetToken(
+            poolStateInfo.rewardInfos[i].tokenMint.toString(),
+            rewardBalance.dividedBy(10 ** rewardTokenPrice.decimals).toNumber(),
+            NetworkId.solana,
+            rewardTokenPrice
+          )
+        );
+      });
+    }
 
     const assets = [assetTokenA, assetTokenB];
     const assetsValue = getUsdValueSum(assets.map((a) => a.value));
