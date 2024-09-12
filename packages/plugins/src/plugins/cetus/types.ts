@@ -148,3 +148,71 @@ export type CoinType = {
 export type CoinTypeFields = {
   name: string;
 };
+
+export type Vault = {
+  id: ID;
+  pool: string;
+  liquidity: string;
+  lp_token_treasury: {
+    fields: {
+      id: ID;
+      total_supply: {
+        fields: {
+          value: string;
+        };
+        type: string;
+      };
+    };
+    type: string;
+  };
+  positions: {
+    fields: {
+      clmm_postion: {
+        fields: {
+          coin_type_a: {
+            fields: {
+              name: string;
+            };
+            type: string;
+          };
+          coin_type_b: {
+            fields: {
+              name: string;
+            };
+            type: string;
+          };
+          description: string;
+          id: ID;
+          index: number;
+          liquidity: string;
+          name: string;
+          pool: SuiObjectIdType;
+          tick_lower_index: {
+            fields: {
+              bits: number;
+            };
+            type: string;
+          };
+          tick_upper_index: {
+            fields: {
+              bits: number;
+            };
+            type: string;
+          };
+          url: string;
+        };
+        type: string;
+      };
+      id: ID;
+      pool_id: string;
+      url: string;
+    };
+    type: string;
+  }[];
+};
+
+export type VaultToPoolMapItem = {
+  id: ID;
+  name: string;
+  value: string;
+};

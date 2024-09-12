@@ -20,3 +20,8 @@ export const poolParentId =
   '0x4c9ab808d50ca1358cc699bb53b6334b9471d4718fb19bb621ff41c2e93bbce4';
 export const firstPool =
   '0x58ec75646f31c384f485bd92a5f1d19aa60713eabe2447cbc1354c8c229b10b7';
+
+// VaultsManager : 0x25b82dd2f5ee486ed1c8af144b89a8931cd9c29dee3a86a1bfe194fdea9d04a6
+// Vaults https://api-sui.cetus.zone/v2/sui/auto_pools
+export const vaultManagerMap =
+  '0x9036bcc5aa7fd2cceec1659a6a1082871f45bc400c743f50063363457d1738bd';
