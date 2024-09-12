@@ -8,12 +8,13 @@ import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSui } from '../../utils/clients';
 import { clmmPoolsPrefix, platformId, vaultManagerMap } from './constants';
-import { extractStructTagFromType } from './helpers';
+import {
+  extractStructTagFromType,
+  wrappedPositionToTokenAmounts,
+} from './helpers';
 import { Pool, Vault, VaultToPoolMapItem } from './types';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
-import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 import { getDynamicFieldObjects } from '../../utils/sui/getDynamicFieldObjects';
-import { bitsToNumber } from '../../utils/sui/bitsToNumber';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
@@ -68,33 +69,23 @@ const executor: JobExecutor = async (cache: Cache) => {
     } = {};
 
     vault.data.content.fields.positions.forEach((position) => {
-      const { tokenAmountA, tokenAmountB } = getTokenAmountsFromLiquidity(
-        new BigNumber(position.fields.clmm_postion.fields.liquidity),
-        pool.current_tick_index,
-        bitsToNumber(
-          position.fields.clmm_postion.fields.tick_lower_index.fields.bits
-        ),
-        bitsToNumber(
-          position.fields.clmm_postion.fields.tick_upper_index.fields.bits
-        ),
-        false
+      const { tokenAmountA, tokenAmountB } = wrappedPositionToTokenAmounts(
+        position.fields,
+        pool
       );
 
+      const coinTypeA = formatMoveTokenAddress(pool.coinTypeA);
+      const coinTypeB = formatMoveTokenAddress(pool.coinTypeB);
+
       if (tokenAmountA.isGreaterThan(0)) {
-        const amount =
-          balances[
-            position.fields.clmm_postion.fields.coin_type_a.fields.name
-          ] || new BigNumber(0);
-        balances[position.fields.clmm_postion.fields.coin_type_a.fields.name] =
-          amount.plus(tokenAmountA);
+        balances[coinTypeA] = (balances[coinTypeA] || new BigNumber(0)).plus(
+          tokenAmountA
+        );
       }
       if (tokenAmountB.isGreaterThan(0)) {
-        const amount =
-          balances[
-            position.fields.clmm_postion.fields.coin_type_b.fields.name
-          ] || new BigNumber(0);
-        balances[position.fields.clmm_postion.fields.coin_type_b.fields.name] =
-          amount.plus(tokenAmountB);
+        balances[coinTypeB] = (balances[coinTypeB] || new BigNumber(0)).plus(
+          tokenAmountB
+        );
       }
     });
 
@@ -102,16 +93,15 @@ const executor: JobExecutor = async (cache: Cache) => {
     if (!coinMetadata) continue;
 
     const tokenPrices = await cache.getTokenPricesAsMap(
-      Object.keys(balances).map((c) => formatMoveTokenAddress(c)),
+      Object.keys(balances).map((c) => c),
       NetworkId.sui
     );
 
     const underlyings = Object.keys(balances)
       .map((address: string) => {
         const balance = balances[address];
-        const tokenPrice = tokenPrices.get(formatMoveTokenAddress(address));
+        const tokenPrice = tokenPrices.get(address);
         if (!tokenPrice) return null;
-
         const amountPerLp = balance
           .dividedBy(10 ** tokenPrice.decimals)
           .dividedBy(totalSupply.dividedBy(10 ** coinMetadata.decimals));

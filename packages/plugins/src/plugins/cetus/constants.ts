@@ -25,3 +25,6 @@ export const firstPool =
 // Vaults https://api-sui.cetus.zone/v2/sui/auto_pools
 export const vaultManagerMap =
   '0x9036bcc5aa7fd2cceec1659a6a1082871f45bc400c743f50063363457d1738bd';
+
+export const farmNftType =
+  '0x11ea791d82b5742cc8cab0bf7946035c97d9001d7c3803a93f119753da66f526::pool::WrappedPositionNFT';
