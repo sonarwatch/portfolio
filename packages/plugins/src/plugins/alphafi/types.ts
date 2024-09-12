@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { ID } from '../../utils/sui/structs/id';
 
 export type Receipt = {
   id: {
@@ -125,10 +126,6 @@ export type FreeRewards = {
 export type Fields = {
   id: ID;
   size: string;
-};
-
-export type ID = {
-  id: string;
 };
 
 export type AlphaPoolInfo = {

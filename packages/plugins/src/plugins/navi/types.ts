@@ -1,7 +1,7 @@
+import { ID } from '../../utils/sui/structs/id';
+
 export type ReserveData = {
-  id: {
-    id: string;
-  };
+  id: ID;
   name: number;
   value: {
     type: string;
@@ -54,9 +54,7 @@ export type Balance = {
     user_state: {
       type: string;
       fields: {
-        id: {
-          id: string;
-        };
+        id: ID;
         size: string;
       };
     };
@@ -64,9 +62,7 @@ export type Balance = {
 };
 
 export type BalanceData = {
-  id: {
-    id: string;
-  };
+  id: ID;
   name: string;
   value: string;
 };

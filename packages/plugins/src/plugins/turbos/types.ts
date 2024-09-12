@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { ID } from '../../utils/sui/structs/id';
 
 export type PoolFields = {
   coin_a: string;
@@ -18,9 +19,7 @@ export type PoolFields = {
     fields: {
       emissions_per_second: string;
       growth_global: string;
-      id: {
-        id: string;
-      };
+      id: ID;
       manager: string;
       vault: string;
       vault_coin_type: string;
@@ -117,10 +116,6 @@ export type CoinTypeName = {
 
 export type Fields = {
   name: string;
-};
-
-export type ID = {
-  id: string;
 };
 
 export type VaultStrategy = {

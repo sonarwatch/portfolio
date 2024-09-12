@@ -1,3 +1,5 @@
+import { ID } from '../../utils/sui/structs/id';
+
 export type VaultInfo = {
   id: string;
   underlyingPool: string;
@@ -30,10 +32,6 @@ export type Vault = {
   upper_tick: number;
   upper_trigger_price: string;
   upper_trigger_price_scalling: string;
-};
-
-export type ID = {
-  id: string;
 };
 
 export type RewardsBag = {

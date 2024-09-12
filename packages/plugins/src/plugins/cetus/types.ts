@@ -1,3 +1,5 @@
+import { ID } from '../../utils/sui/structs/id';
+
 export type SuiAddressType = string;
 export type SuiObjectIdType = string;
 
@@ -104,10 +106,6 @@ export type ParsedJsonEvent = {
   coin_type_b: string;
   pool_id: string;
   tick_spacing: number;
-};
-
-export type ID = {
-  id: string;
 };
 
 export type TablePoolInfo = {

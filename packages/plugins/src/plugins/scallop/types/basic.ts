@@ -1,11 +1,11 @@
+import { ID } from '../../../utils/sui/structs/id';
+
 export type BasicField = {
   type: string;
   fields: object;
 };
 
-export type IdField = {
-  id: string;
-};
+export type IdField = ID;
 
 export type NameField = {
   name: string;

@@ -1,11 +1,9 @@
+import { ID } from '../../utils/sui/structs/id';
+
 export type UserInfo = {
   id: ID;
   name: string;
   value: UserInfoValueV1;
-};
-
-export type ID = {
-  id: string;
 };
 
 export type UserInfoValueV1 = {
