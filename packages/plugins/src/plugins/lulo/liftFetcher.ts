@@ -6,7 +6,7 @@ import {
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { flexProgramId, platformId } from './constants';
+import { luloProgramId, platformId } from './constants';
 import { getDerivedAccount, isLiftEmpty } from './helpers';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 import { getClientSolana } from '../../utils/clients';
@@ -35,7 +35,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const authorityAddress = PublicKey.findProgramAddressSync(
     [Buffer.from('promotion_authority'), Buffer.from(seedValue.toString())],
-    flexProgramId
+    luloProgramId
   )[0];
   const promotionAuthority = await getParsedAccountInfo(
     client,

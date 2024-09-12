@@ -208,10 +208,10 @@ import {
   fetchers as mapleFetchers,
 } from './plugins/maple';
 import {
-  platforms as flexlendPlatforms,
-  jobs as flexlendJobs,
-  fetchers as flexlendFetchers,
-} from './plugins/flexlend';
+  platforms as luloPlatforms,
+  jobs as luloJobs,
+  fetchers as luloFetchers,
+} from './plugins/lulo';
 import {
   platforms as fluxbeamPlatforms,
   jobs as fluxbeamJobs,
@@ -642,7 +642,7 @@ export const platforms: Platform[] = [
   ...hawksightPlatforms,
   ...realmsPlatforms,
   ...maplePlatforms,
-  ...flexlendPlatforms,
+  ...luloPlatforms,
   ...fluxbeamPlatforms,
   ...zetaPlatforms,
   ...venusPlatforms,
@@ -756,7 +756,7 @@ export const jobs: Job[] = [
   ...paraswapJobs,
   ...realmsJobs,
   ...mapleJobs,
-  ...flexlendJobs,
+  ...luloJobs,
   ...fluxbeamJobs,
   ...jupiterJobs,
   ...zetaJobs,
@@ -873,7 +873,7 @@ export const fetchers: Fetcher[] = [
   ...hawksightFetchers,
   ...realmsFetchers,
   ...mapleFetchers,
-  ...flexlendFetchers,
+  ...luloFetchers,
   ...fluxbeamFetchers,
   ...jupiterFetchers,
   ...zetaFetchers,

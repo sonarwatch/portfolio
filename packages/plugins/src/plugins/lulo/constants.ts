@@ -11,7 +11,7 @@ export const platform: Platform = {
   twitter: 'https://twitter.com/uselulo',
 };
 
-export const flexProgramId = new PublicKey(
+export const luloProgramId = new PublicKey(
   'FL3X2pRsQ9zHENpZSKDRREtccwJuei8yg9fwDu9UN69Q'
 );
 
