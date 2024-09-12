@@ -7,8 +7,9 @@ import prepMarketsJob from './prepMarketsJob';
 import depositsFetcher from './depositsFetcher';
 import premarketJob from './premarketJob';
 // import airdropFetcher from './airdropFetcher';
+import driftAirdropFetcher from './airdropFetcher';
 
 export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [spotMarketsJob, premarketJob, prepMarketsJob];
-export const fetchers: Fetcher[] = [depositsFetcher];
+export const fetchers: Fetcher[] = [depositsFetcher, driftAirdropFetcher];
 export { airdropFetcher } from './helpersAirdrop';
