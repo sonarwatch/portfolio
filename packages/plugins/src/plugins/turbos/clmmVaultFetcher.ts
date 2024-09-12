@@ -18,10 +18,10 @@ import {
   Pool,
 } from './types';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
-import { bitsToNumber } from './helper';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { multiDynamicFieldObjects } from '../../utils/sui/multiDynamicFieldObjects';
+import { bitsToNumber } from '../../utils/sui/bitsToNumber';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();

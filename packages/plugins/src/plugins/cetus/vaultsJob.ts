@@ -8,11 +8,12 @@ import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSui } from '../../utils/clients';
 import { clmmPoolsPrefix, platformId, vaultManagerMap } from './constants';
-import { asIntN, extractStructTagFromType } from './helpers';
+import { extractStructTagFromType } from './helpers';
 import { Pool, Vault, VaultToPoolMapItem } from './types';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 import { getDynamicFieldObjects } from '../../utils/sui/getDynamicFieldObjects';
+import { bitsToNumber } from '../../utils/sui/bitsToNumber';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
@@ -70,15 +71,11 @@ const executor: JobExecutor = async (cache: Cache) => {
       const { tokenAmountA, tokenAmountB } = getTokenAmountsFromLiquidity(
         new BigNumber(position.fields.clmm_postion.fields.liquidity),
         pool.current_tick_index,
-        asIntN(
-          BigInt(
-            position.fields.clmm_postion.fields.tick_lower_index.fields.bits
-          )
+        bitsToNumber(
+          position.fields.clmm_postion.fields.tick_lower_index.fields.bits
         ),
-        asIntN(
-          BigInt(
-            position.fields.clmm_postion.fields.tick_upper_index.fields.bits
-          )
+        bitsToNumber(
+          position.fields.clmm_postion.fields.tick_upper_index.fields.bits
         ),
         false
       );
