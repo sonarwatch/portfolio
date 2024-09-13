@@ -6,7 +6,6 @@ import { suiNetwork } from '@sonarwatch/portfolio-core';
 import { normalizeSuiObjectId } from '@mysten/sui.js/utils';
 import {
   ClmmPositionStatus,
-  WrappedPositionNFT,
   NFT,
   Pool,
   Position,
@@ -18,7 +17,6 @@ import { ObjectResponse } from '../../utils/sui/types';
 import { getObjectDeletedResponse } from '../../utils/sui/getObjectDeletedResponse';
 import { getObjectNotExistsResponse } from '../../utils/sui/getObjectNotExistsResponse';
 import { bitsToNumber } from '../../utils/sui/bitsToNumber';
-import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 
 export function fromX64(num: BigNumber): Decimal {
   return new Decimal(num.toString()).mul(Decimal.pow(2, -64));
@@ -144,7 +142,6 @@ export function getPoolFromObject(object: ObjectResponse<unknown>): Pool {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const fields = object.data.content.fields as any;
   const rewarders: Rewarder[] = [];
-  console.log(fields);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fields.rewarder_manager.fields.rewarders.forEach((item: any) => {
     const { emissions_per_second: emissionsPerSecond } =
@@ -313,15 +310,3 @@ export function buildNFT(objects: ObjectResponse<unknown>): NFT {
   }
   return nft;
 }
-
-export const wrappedPositionToTokenAmounts = (
-  position: WrappedPositionNFT,
-  pool: Pool
-): { tokenAmountA: BigNumber; tokenAmountB: BigNumber } =>
-  getTokenAmountsFromLiquidity(
-    new BigNumber(position.clmm_postion.fields.liquidity),
-    pool.current_tick_index,
-    bitsToNumber(position.clmm_postion.fields.tick_lower_index.fields.bits),
-    bitsToNumber(position.clmm_postion.fields.tick_upper_index.fields.bits),
-    false
-  );
