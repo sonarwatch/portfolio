@@ -1,3 +1,5 @@
+import { ID } from '../../utils/sui/structs/id';
+
 export type StakingPosition = {
   id: {
     id: string;
@@ -22,9 +24,7 @@ export type UnstakingPositionObject = {
 export type PositionObject = {
   amount: string;
   flx_reward_debt: string;
-  id: {
-    id: string;
-  };
+  id: ID;
   pool_idx: string;
   token_reward_debt: string;
 };
@@ -88,31 +88,31 @@ export type PositionV3Object = {
   coin_type_x: {
     fields: {
       name: string;
-    }
+    };
   };
   coin_type_y: {
     fields: {
       name: string;
-    }
+    };
   };
   pool_id: string;
   liquidity: string;
   tick_lower_index: {
     fields: {
-      bits: string
-    }
+      bits: string;
+    };
   };
   tick_upper_index: {
     fields: {
-      bits: string
-    }
+      bits: string;
+    };
   };
 };
 
 export type PoolV3 = {
   tick_index: {
     fields: {
-      bits: string
-    }
+      bits: string;
+    };
   };
-}
+};

@@ -1,6 +1,4 @@
-type ID = {
-  id: string;
-};
+import { ID } from '../../utils/sui/structs/id';
 
 export type Lock = {
   fields: {

@@ -1,3 +1,5 @@
+import { ID } from '../../utils/sui/structs/id';
+
 export type CollateralFields = {
   id: string;
   name: string;
@@ -11,9 +13,7 @@ export type CollateralFields = {
         fields: {
           buck_amount: string;
           collateral_amount: string;
-          id: {
-            id: string;
-          };
+          id: ID;
           reward_coll_snapshot: string;
           reward_debt_snapshot: string;
           stake_amount: string;

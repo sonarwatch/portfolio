@@ -1,3 +1,5 @@
+import { ID } from '../../utils/sui/structs/id';
+
 export type SuiAddressType = string;
 export type SuiObjectIdType = string;
 
@@ -106,10 +108,6 @@ export type ParsedJsonEvent = {
   tick_spacing: number;
 };
 
-export type ID = {
-  id: string;
-};
-
 export type TablePoolInfo = {
   id: ID;
   name: string;
@@ -147,4 +145,99 @@ export type CoinType = {
 
 export type CoinTypeFields = {
   name: string;
+};
+
+export type Vault = {
+  id: ID;
+  pool: string;
+  liquidity: string;
+  lp_token_treasury: {
+    fields: {
+      id: ID;
+      total_supply: {
+        fields: {
+          value: string;
+        };
+        type: string;
+      };
+    };
+    type: string;
+  };
+  positions: {
+    fields: WrappedPositionNFT;
+    type: string;
+  }[];
+};
+
+export type WrappedPositionNFT = {
+  clmm_postion: {
+    fields: {
+      coin_type_a: {
+        fields: {
+          name: string;
+        };
+        type: string;
+      };
+      coin_type_b: {
+        fields: {
+          name: string;
+        };
+        type: string;
+      };
+      description: string;
+      id: ID;
+      index: number;
+      liquidity: string;
+      name: string;
+      pool: SuiObjectIdType;
+      tick_lower_index: {
+        fields: {
+          bits: number;
+        };
+        type: string;
+      };
+      tick_upper_index: {
+        fields: {
+          bits: number;
+        };
+        type: string;
+      };
+      url: string;
+    };
+    type: string;
+  };
+  id: ID;
+  pool_id: string;
+  url: string;
+};
+
+export type VaultToPoolMapItem = {
+  id: ID;
+  name: string;
+  value: string;
+};
+
+export type Farm = {
+  clmm_pool_id: string;
+  effective_tick_lower: {
+    fields: {
+      bits: number;
+    };
+    type: string;
+  };
+  effective_tick_upper: {
+    fields: {
+      bits: number;
+    };
+    type: string;
+  };
+  id: ID;
+  rewarders: {
+    fields: {
+      name: string;
+    };
+    type: string;
+  }[];
+  sqrt_price: string;
+  total_share: string;
 };

@@ -16,9 +16,10 @@ import { getClientSui } from '../../utils/clients';
 import { NFTFields, Pool, PositionFields } from './types';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { bitsToNumber, formatForNative } from './helper';
+import { formatForNative } from './helper';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
+import { bitsToNumber } from '../../utils/sui/bitsToNumber';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
