@@ -39,7 +39,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
 
   const [tokenPrices, pools] = await Promise.all([
-    cache.getTokenPricesAsMap([...mints], NetworkId.sui),
+    cache.getTokenPricesAsMap(mints, NetworkId.sui),
     multiGetObjects<PoolV3>(client, Array.from(poolsIds.values())),
   ]);
 

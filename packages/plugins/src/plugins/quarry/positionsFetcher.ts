@@ -112,10 +112,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       mints.add(rewardTokenInfo.address.toString())
     );
   });
-  const tokenPrices = await cache.getTokenPricesAsMap(
-    [...mints],
-    NetworkId.solana
-  );
+  const tokenPrices = await cache.getTokenPricesAsMap(mints, NetworkId.solana);
 
   const elements: PortfolioElement[] = [];
 
