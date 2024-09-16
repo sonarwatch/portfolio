@@ -34,7 +34,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 
-  const element = elementRegistry.addMultiple({
+  const element = elementRegistry.addElementMultiple({
     label: 'Staked',
   });
 
@@ -44,7 +44,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     alreadyShifted: true,
   });
 
-  return elementRegistry.export(cache);
+  return elementRegistry.dump(cache);
 };
 
 const fetcher: Fetcher = {

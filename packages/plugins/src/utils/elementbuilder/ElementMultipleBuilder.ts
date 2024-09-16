@@ -26,7 +26,7 @@ export class ElementMultipleBuilder extends ElementBuilder {
     return this.assets.map((a) => a.address);
   }
 
-  export(
+  dump(
     networkId: NetworkIdType,
     platformId: string,
     tokenPrices: TokenPriceMap
@@ -46,6 +46,8 @@ export class ElementMultipleBuilder extends ElementBuilder {
         assets,
       },
       value: getUsdValueSum(assets.map((asset) => asset.value)),
+      name: this.name,
+      tags: this.tags,
     };
 
     return element as PortfolioElement;

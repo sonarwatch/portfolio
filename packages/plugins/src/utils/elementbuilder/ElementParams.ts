@@ -6,4 +6,6 @@ import {
 export type ElementParams = {
   type: PortfolioElementTypeType;
   label: PortfolioElementLabel;
+  name?: string;
+  tags?: string[];
 };

@@ -26,7 +26,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const farmById: Map<string, FarmInfo> = arrayToMap(farmsInfos, 'farmId');
 
   const elementRegistry = new ElementRegistry(NetworkId.sui, platformId);
-  const element = elementRegistry.addLiquidity({
+  const element = elementRegistry.addElementLiquidity({
     label: 'Farming',
   });
 
@@ -43,19 +43,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const tokenAmountX = new BigNumber(farmInfo.tokenXReserve)
       .times(shares)
-      .dividedBy(10 ** farmInfo.tokenX.decimals)
-      .toNumber();
+      .dividedBy(10 ** farmInfo.tokenX.decimals);
+
     const tokenAmountY = new BigNumber(farmInfo.tokenYReserve)
       .times(shares)
-      .dividedBy(10 ** farmInfo.tokenY.decimals)
-      .toNumber();
+      .dividedBy(10 ** farmInfo.tokenY.decimals);
 
     const liquidity = element.addLiquidity();
+
     liquidity.addAsset({
       address: farmInfo.tokenXType,
       amount: tokenAmountX,
       alreadyShifted: true,
     });
+
     liquidity.addAsset({
       address: farmInfo.tokenYType,
       amount: tokenAmountY,
@@ -68,7 +69,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     });
   }
 
-  return elementRegistry.export(cache);
+  return elementRegistry.dump(cache);
 };
 
 const fetcher: Fetcher = {

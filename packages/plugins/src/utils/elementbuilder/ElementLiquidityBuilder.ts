@@ -28,7 +28,7 @@ export class ElementLiquidityBuilder extends ElementBuilder {
     return this.liquidities.map((liquidity) => liquidity.mints()).flat();
   }
 
-  override export(
+  override dump(
     networkId: NetworkIdType,
     platformId: string,
     tokenPrices: TokenPriceMap
@@ -48,6 +48,8 @@ export class ElementLiquidityBuilder extends ElementBuilder {
         liquidities,
       },
       value: getUsdValueSum(liquidities.map((asset) => asset.value)),
+      name: this.name,
+      tags: this.tags,
     };
 
     return element as PortfolioElementLiquidity;

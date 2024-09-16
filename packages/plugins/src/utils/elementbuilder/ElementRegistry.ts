@@ -10,6 +10,7 @@ import { ElementParams } from './ElementParams';
 import { Cache } from '../../Cache';
 import { ElementMultipleBuilder } from './ElementMultipleBuilder';
 import { ElementLiquidityBuilder } from './ElementLiquidityBuilder';
+import { ElementBorrowlendBuilder } from './ElementBorrowlendBuilder';
 
 export class ElementRegistry {
   readonly networkId: NetworkIdType;
@@ -21,7 +22,9 @@ export class ElementRegistry {
     this.platformId = platformId;
     this.elements = [];
   }
-  addMultiple(params: Omit<ElementParams, 'type'>): ElementMultipleBuilder {
+  addElementMultiple(
+    params: Omit<ElementParams, 'type'>
+  ): ElementMultipleBuilder {
     const elementBuilder = new ElementMultipleBuilder({
       type: PortfolioElementType.multiple,
       ...params,
@@ -30,7 +33,9 @@ export class ElementRegistry {
     return elementBuilder;
   }
 
-  addLiquidity(params: Omit<ElementParams, 'type'>): ElementLiquidityBuilder {
+  addElementLiquidity(
+    params: Omit<ElementParams, 'type'>
+  ): ElementLiquidityBuilder {
     const elementBuilder = new ElementLiquidityBuilder({
       type: PortfolioElementType.liquidity,
       ...params,
@@ -39,12 +44,23 @@ export class ElementRegistry {
     return elementBuilder;
   }
 
-  async export(cache: Cache): Promise<PortfolioElement[]> {
+  addElementBorrowlend(
+    params: Omit<ElementParams, 'type'>
+  ): ElementBorrowlendBuilder {
+    const elementBuilder = new ElementBorrowlendBuilder({
+      type: PortfolioElementType.borrowlend,
+      ...params,
+    });
+    this.elements.push(elementBuilder);
+    return elementBuilder;
+  }
+
+  async dump(cache: Cache): Promise<PortfolioElement[]> {
     const mints = this.elements.map((e) => e.mints()).flat();
     const tokenPrices = await cache.getTokenPricesAsMap(mints, this.networkId);
 
     return this.elements
-      .map((e) => e.export(this.networkId, this.platformId, tokenPrices))
+      .map((e) => e.dump(this.networkId, this.platformId, tokenPrices))
       .filter(
         (e) => e !== null && e.value && e.value > 0
       ) as PortfolioElement[];

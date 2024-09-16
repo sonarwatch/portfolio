@@ -2,16 +2,11 @@ import {
   getUsdValueSum,
   NetworkIdType,
   PortfolioAsset,
-  PortfolioElementLiquidity,
   PortfolioLiquidity,
-  UsdValue,
   Yield,
 } from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
 import { TokenPriceMap } from '../../TokenPriceMap';
-import tokenPriceToAssetToken from '../misc/tokenPriceToAssetToken';
 import { AssetBuilder } from './AssetBuilder';
-import { ElementParams } from './ElementParams';
 import { PortfolioAssetParams } from './PortfolioAssetParams';
 
 export class LiquidityBuilder {

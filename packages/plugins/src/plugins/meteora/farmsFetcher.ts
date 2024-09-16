@@ -33,7 +33,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
-  const element = elementRegistry.addLiquidity({
+  const element = elementRegistry.addElementLiquidity({
     label: 'Farming',
   });
 
@@ -65,7 +65,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     });
   }
 
-  return elementRegistry.export(cache);
+  return elementRegistry.dump(cache);
 };
 
 const fetcher: Fetcher = {

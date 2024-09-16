@@ -5,7 +5,7 @@ import { AddressSystemType } from './Address';
 import { TokenInfo } from './TokenList';
 
 /**
- * Represents the type of a portfolio asset.
+ * Represents the type of portfolio asset.
  */
 export const PortfolioAssetType = {
   generic: 'generic',
