@@ -205,7 +205,7 @@ export class Cache {
       networkId
     ).then(
       (values) =>
-        values.filter((tokenPrice) => tokenPrice !== null) as TokenPrice[]
+        values.filter((tokenPrice) => tokenPrice !== undefined) as TokenPrice[]
     );
     return new TokenPriceMap(
       networkId,
