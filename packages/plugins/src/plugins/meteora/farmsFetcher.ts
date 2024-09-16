@@ -1,20 +1,13 @@
-import {
-  NetworkId,
-  PortfolioAsset,
-  PortfolioElementType,
-  PortfolioLiquidity,
-  getUsdValueSum,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { farmsKey, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedMultipleAccountsInfo } from '../../utils/solana';
 import { farmAccountStruct } from './struct';
-import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
 import { FormattedFarm } from './types';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getStakingAccounts } from './helpers';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -39,25 +32,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     farmingAccountsAddresses
   );
 
-  const neededMints = farmingAccounts
-    .map((fA, i) => {
-      if (!fA) return [];
-      const farm = farms.at(i);
-      if (!farm) return [];
-      return [farm.stakingMint, farm.rewardAMint, farm.rewardBMint];
-    })
-    .flat();
-  const tokenPrices = await cache.getTokenPricesAsMap(
-    neededMints,
-    NetworkId.solana
-  );
+  const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
+  const element = elementRegistry.addLiquidity({
+    label: 'Farming',
+  });
 
-  const liquidities: PortfolioLiquidity[] = [];
   for (const farmingAccount of farmingAccounts) {
     if (!farmingAccount) continue;
 
-    const rewardAssets: PortfolioAsset[] = [];
-    const assets: PortfolioAsset[] = [];
     const { balanceStaked, rewardAPerTokenPending, rewardBPerTokenPending } =
       farmingAccount;
     const farmInfo = farmsById.get(farmingAccount.pool.toString());
@@ -65,79 +47,25 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const { stakingMint, rewardAMint, rewardBMint } = farmInfo;
 
-    const [poolTokenPrice, rewardATokenPrice, rewardBTokenPrice] = [
-      tokenPrices.get(stakingMint),
-      tokenPrices.get(rewardAMint),
-      tokenPrices.get(rewardBMint),
-    ];
+    const liquidity = element.addLiquidity();
 
-    if (!poolTokenPrice) continue;
-    const amount = balanceStaked.dividedBy(10 ** poolTokenPrice.decimals);
-    assets.push(
-      ...tokenPriceToAssetTokens(
-        poolTokenPrice.address,
-        amount.toNumber(),
-        NetworkId.solana,
-        poolTokenPrice
-      )
-    );
-    if (rewardAPerTokenPending.isGreaterThan(0) && rewardATokenPrice) {
-      const rewardAmount = rewardAPerTokenPending
-        .dividedBy(10 ** rewardATokenPrice.decimals)
-        .toNumber();
-      rewardAssets.push(
-        tokenPriceToAssetToken(
-          rewardAMint,
-          rewardAmount,
-          NetworkId.solana,
-          rewardATokenPrice
-        )
-      );
-    }
-    if (rewardBPerTokenPending.isGreaterThan(0) && rewardBTokenPrice) {
-      const rewardAmount = rewardBPerTokenPending
-        .dividedBy(10 ** rewardBTokenPrice.decimals)
-        .toNumber();
-      rewardAssets.push(
-        tokenPriceToAssetToken(
-          rewardBMint,
-          rewardAmount,
-          NetworkId.solana,
-          rewardBTokenPrice
-        )
-      );
-    }
+    liquidity.addAsset({
+      address: stakingMint,
+      amount: balanceStaked,
+    });
 
-    const assetsValue = getUsdValueSum(assets.map((a) => a.value));
-    const rewardAssetsValue = getUsdValueSum(rewardAssets.map((r) => r.value));
-    const value = getUsdValueSum([assetsValue, rewardAssetsValue]);
-    if (value === 0) continue;
+    liquidity.addRewardAsset({
+      address: rewardAMint,
+      amount: rewardAPerTokenPending,
+    });
 
-    const liquidity: PortfolioLiquidity = {
-      value,
-      assets,
-      assetsValue,
-      rewardAssets,
-      rewardAssetsValue,
-      yields: [],
-    };
-    liquidities.push(liquidity);
+    liquidity.addRewardAsset({
+      address: rewardBMint,
+      amount: rewardBPerTokenPending,
+    });
   }
 
-  if (liquidities.length === 0) return [];
-
-  return [
-    {
-      networkId: NetworkId.solana,
-      platformId,
-      type: PortfolioElementType.liquidity,
-      label: 'Farming',
-      value: getUsdValueSum(liquidities.map((l) => l.value)),
-      data: {
-        liquidities,
-      },
-    },
-  ];
+  return elementRegistry.export(cache);
 };
 
 const fetcher: Fetcher = {
