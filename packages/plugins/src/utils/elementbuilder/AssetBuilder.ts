@@ -6,7 +6,7 @@ import { TokenPriceMap } from '../../TokenPriceMap';
 
 export class AssetBuilder {
   address: string;
-  amount: number | BigNumber;
+  amount: number | BigNumber | string;
   alreadyShifted: boolean;
 
   constructor(params: PortfolioAssetParams) {

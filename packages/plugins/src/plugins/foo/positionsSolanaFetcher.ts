@@ -1,12 +1,4 @@
-import {
-  NetworkId,
-  PortfolioAssetToken,
-  PortfolioElementMultiple,
-  PortfolioElementType,
-  getUsdValueSum,
-  solanaNativeAddress,
-  solanaNativeDecimals,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId, solanaNativeAddress } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { platformId } from './constants';
@@ -14,7 +6,7 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { liquidityStruct } from './structs';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
@@ -36,37 +28,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
   if (accounts.length === 0) return [];
 
-  const solTokenPrice = await cache.getTokenPrice(
-    solanaNativeAddress,
-    NetworkId.solana
-  );
-  const assets: PortfolioAssetToken[] = [];
-  accounts.forEach((acc) => {
-    if (acc.amountDeposited.isZero()) return;
-    const amount = acc.amountDeposited
-      .div(10 ** solanaNativeDecimals)
-      .toNumber();
-    const asset = tokenPriceToAssetToken(
-      solanaNativeAddress,
-      amount,
-      NetworkId.solana,
-      solTokenPrice
-    );
-    assets.push(asset);
-  });
-  if (assets.length === 0) return [];
-
-  const element: PortfolioElementMultiple = {
-    networkId: NetworkId.solana,
+  const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
+  const element = elementRegistry.addElementMultiple({
     label: 'Deposit',
-    platformId,
-    type: PortfolioElementType.multiple,
-    value: getUsdValueSum(assets.map((a) => a.value)),
-    data: {
-      assets,
-    },
-  };
-  return [element];
+  });
+
+  accounts.forEach((acc) => {
+    element.addAsset({
+      address: solanaNativeAddress,
+      amount: acc.amountDeposited,
+    });
+  });
+
+  return elementRegistry.dump(cache);
 };
 
 const fetcher: Fetcher = {

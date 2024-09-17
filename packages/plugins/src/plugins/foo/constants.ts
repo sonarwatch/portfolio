@@ -10,7 +10,7 @@ export const platform: Platform = {
   twitter: 'https://x.com/foo_finance',
   defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
 };
-export const marketsCachePrefix = `${platformId}-markets`;
+export const marketsCacheKey = `markets`;
 
 export const airdropStatics: AirdropStatics = {
   claimLink: 'https://foo.com/claim',
