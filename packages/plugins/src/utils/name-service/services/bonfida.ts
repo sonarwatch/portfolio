@@ -10,7 +10,7 @@ import { NameService } from '../types';
 
 async function getOwner(name: string): Promise<string | null> {
   const client = getClientSolana();
-  const domainName = name.slice(0, -4);
+  const domainName = name.slice(0, -4).toLowerCase();
   const { pubkey } = getDomainKeySync(domainName);
   const { registry, nftOwner } = await NameRegistryState.retrieve(
     client,
