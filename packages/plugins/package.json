@@ -4,7 +4,7 @@
   "type": "commonjs",
   "types": "./src/index.d.ts",
   "peerDependencies": {
-    "@sonarwatch/portfolio-core": "^0.12.0"
+    "@sonarwatch/portfolio-core": "^0.13.0"
   },
   "dependencies": {
     "@solanafm/explorer-kit-idls": "^1.1.3",
