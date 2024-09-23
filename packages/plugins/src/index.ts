@@ -583,6 +583,11 @@ import {
   jobs as tradeportJobs,
   fetchers as tradeportFetchers,
 } from './plugins/tradeport';
+import {
+  platforms as stabblePlatforms,
+  jobs as stabbleJobs,
+  fetchers as stabbleFetchers,
+} from './plugins/stabble';
 
 export {
   walletTokensPlatform,
@@ -716,6 +721,7 @@ export const platforms: Platform[] = [
   ...alphafiPlatforms,
   ...jewelPlatforms,
   ...tradeportPlatforms,
+  ...stabblePlatforms,
 ];
 
 // JOBS //
@@ -831,6 +837,7 @@ export const jobs: Job[] = [
   ...alphafiJobs,
   ...jewelJobs,
   ...tradeportJobs,
+  ...stabbleJobs,
 ];
 
 // FETCHERS //
@@ -948,6 +955,7 @@ export const fetchers: Fetcher[] = [
   ...alphafiFetchers,
   ...jewelFetchers,
   ...tradeportFetchers,
+  ...stabbleFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
