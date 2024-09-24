@@ -583,6 +583,11 @@ import {
   jobs as tradeportJobs,
   fetchers as tradeportFetchers,
 } from './plugins/tradeport';
+import {
+  platforms as franciumPlatforms,
+  jobs as franciumJobs,
+  fetchers as franciumFetchers,
+} from './plugins/francium';
 
 export {
   walletTokensPlatform,
@@ -716,6 +721,7 @@ export const platforms: Platform[] = [
   ...alphafiPlatforms,
   ...jewelPlatforms,
   ...tradeportPlatforms,
+  ...franciumPlatforms,
 ];
 
 // JOBS //
@@ -831,6 +837,7 @@ export const jobs: Job[] = [
   ...alphafiJobs,
   ...jewelJobs,
   ...tradeportJobs,
+  ...franciumJobs,
 ];
 
 // FETCHERS //
@@ -948,6 +955,7 @@ export const fetchers: Fetcher[] = [
   ...alphafiFetchers,
   ...jewelFetchers,
   ...tradeportFetchers,
+  ...franciumFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
