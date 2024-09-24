@@ -4,7 +4,7 @@ import { PublicKey } from '@solana/web3.js';
 export const platformId = 'adrastea';
 export const platform: Platform = {
   id: platformId,
-  name: 'Foo Finance',
+  name: 'Adrastea',
   image: 'https://sonar.watch/img/platforms/adrastea.webp',
   website: 'https://app.adrastea.fi/',
   twitter: 'https://x.com/AdrasteaFinance',
