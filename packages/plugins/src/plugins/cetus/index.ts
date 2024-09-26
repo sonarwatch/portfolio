@@ -6,7 +6,12 @@ import clmmPositionFetcher from './clmmsFetcher';
 import { platform } from './constants';
 import vaultsJob from './vaultsJob';
 import farmsFetcher from './farmsFetcher';
+import limitFetcher from './limitFetcher';
 
 export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [poolsJob, vaultsJob];
-export const fetchers: Fetcher[] = [clmmPositionFetcher, farmsFetcher];
+export const fetchers: Fetcher[] = [
+  clmmPositionFetcher,
+  farmsFetcher,
+  limitFetcher,
+];

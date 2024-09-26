@@ -241,3 +241,18 @@ export type Farm = {
   sqrt_price: string;
   total_share: string;
 };
+
+export type LimitOrder = {
+  canceled_ts: string;
+  claimed_amount: string;
+  created_ts: string;
+  expire_ts: string;
+  id: ID;
+  obtained_amount: string;
+  owner: string;
+  pay_balance: string;
+  rate: string;
+  rate_order_indexer_id: string;
+  target_balance: string;
+  total_pay_amount: string;
+};
