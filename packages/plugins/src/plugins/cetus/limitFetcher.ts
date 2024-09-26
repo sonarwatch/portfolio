@@ -40,12 +40,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (!fields.length) return [];
 
-  const limitOrders = await multiGetObjects<LimitOrder>(
+  const orders = await multiGetObjects<LimitOrder>(
     client,
     fields.flat().map((o) => (o.data?.content?.fields as { name: string }).name)
   );
 
-  if (!limitOrders.length) return [];
+  if (!orders.length) return [];
 
   const elementRegistry = new ElementRegistry(NetworkId.sui, platformId);
   const element = elementRegistry.addElementMultiple({
@@ -53,12 +53,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     name: `Limit Orders`,
   });
 
-  limitOrders.forEach((limitOrder) => {
-    if (!limitOrder.data?.content) return;
-    const structTag = extractStructTagFromType(limitOrder.data.type);
+  orders.forEach((order) => {
+    if (!order.data?.content) return;
+    if (order.data.content.fields.pay_balance === '0') return;
+    const structTag = extractStructTagFromType(order.data.type);
+
     element.addAsset({
       address: structTag.type_arguments[0],
-      amount: limitOrder.data.content.fields.pay_balance,
+      amount: order.data.content.fields.pay_balance,
     });
   });
 

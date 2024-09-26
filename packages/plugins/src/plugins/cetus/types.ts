@@ -256,3 +256,22 @@ export type LimitOrder = {
   target_balance: string;
   total_pay_amount: string;
 };
+
+export type DcaOrder = {
+  amount_left_next_cycle: string;
+  created_at: string;
+  cycle_frequency: string;
+  fee_rate: string;
+  id: ID;
+  in_amount_per_cycle: string;
+  in_balance: string;
+  in_deposited: string;
+  in_withdrawn: string;
+  max_out_amount_per_cycle: string;
+  min_out_amount_per_cycle: string;
+  next_cycle_at: string;
+  out_balance: string;
+  out_withdrawn: string;
+  status: string;
+  user: string;
+};
