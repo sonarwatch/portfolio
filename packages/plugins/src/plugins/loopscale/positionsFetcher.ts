@@ -1,76 +1,78 @@
-import {
-  NetworkId,
-  PortfolioAssetToken,
-  PortfolioElementMultiple,
-  PortfolioElementType,
-  getUsdValueSum,
-  solanaNativeAddress,
-  solanaNativeDecimals,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
-import { platformId } from './constants';
+import { platformId, programId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
-import { liquidityStruct } from './structs';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import {
+  EscrowAccount,
+  escrowAccountStruct,
+  LoanVault,
+  loanVaultStruct,
+  Order,
+  orderStruct,
+} from './structs';
+import { escrowFilters, loanVaultFilters, orderFilters } from './filters';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
-  const accounts = await getParsedProgramAccounts(
+
+  // TODO owner to organizationIdentifier ?
+  const organizationIdentifier = 'FYyU8uwsBpDPAH4pUE65nLsqbgQbZMBom6KnnraxWQb5';
+  /* const escrowAccounts = await getParsedProgramAccounts<EscrowAccount>(
     connection,
-    liquidityStruct,
-    new PublicKey('pid'),
-    [
-      {
-        dataSize: liquidityStruct.byteSize,
-      },
-      {
-        memcmp: {
-          bytes: owner,
-          offset: 40,
-        },
-      },
-    ]
+    escrowAccountStruct,
+    new PublicKey(programId),
+    escrowFilters(organizationIdentifier)
   );
-  if (accounts.length === 0) return [];
 
-  const solTokenPrice = await cache.getTokenPrice(
-    solanaNativeAddress,
-    NetworkId.solana
+  if (!escrowAccounts.length) return [];
+
+  const loanVaultAccounts = await Promise.all(
+    escrowAccounts.map((escrowAccount) =>
+      getParsedProgramAccounts<LoanVault>(
+        connection,
+        loanVaultStruct,
+        new PublicKey(programId),
+        loanVaultFilters(escrowAccount.pubkey.toString())
+      )
+    )
   );
-  const assets: PortfolioAssetToken[] = [];
-  accounts.forEach((acc) => {
-    if (acc.amountDeposited.isZero()) return;
-    const amount = acc.amountDeposited
-      .div(10 ** solanaNativeDecimals)
-      .toNumber();
-    const asset = tokenPriceToAssetToken(
-      solanaNativeAddress,
-      amount,
-      NetworkId.solana,
-      solTokenPrice
-    );
-    assets.push(asset);
+
+  console.log(loanVaultAccounts); */
+
+  const orderAccounts = await getParsedProgramAccounts<Order>(
+    connection,
+    orderStruct,
+    new PublicKey(programId),
+    orderFilters(organizationIdentifier)
+  );
+
+  console.log(orderAccounts);
+
+  const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
+
+  orderAccounts.forEach((orderAccount) => {
+    const element = elementRegistry.addElementBorrowlend({
+      label: 'Lending',
+    });
+    element.addSuppliedAsset({
+      address: orderAccount.collateral_mint,
+      amount: orderAccount.collateral_amount,
+    });
+    element.addBorrowedAsset({
+      address: orderAccount.principal_mint,
+      amount: orderAccount.principal_amount,
+    });
   });
-  if (assets.length === 0) return [];
 
-  const element: PortfolioElementMultiple = {
-    networkId: NetworkId.solana,
-    label: 'Deposit',
-    platformId,
-    type: PortfolioElementType.multiple,
-    value: getUsdValueSum(assets.map((a) => a.value)),
-    data: {
-      assets,
-    },
-  };
-  return [element];
+  return elementRegistry.dump(cache);
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-solana`,
+  id: `${platformId}-positions`,
   networkId: NetworkId.solana,
   executor,
 };

@@ -583,6 +583,11 @@ import {
   jobs as tradeportJobs,
   fetchers as tradeportFetchers,
 } from './plugins/tradeport';
+import {
+  platforms as loopscalePlatforms,
+  jobs as loopscaleJobs,
+  fetchers as loopscaleFetchers,
+} from './plugins/loopscale';
 
 export {
   walletTokensPlatform,
@@ -716,6 +721,7 @@ export const platforms: Platform[] = [
   ...alphafiPlatforms,
   ...jewelPlatforms,
   ...tradeportPlatforms,
+  ...loopscalePlatforms,
 ];
 
 // JOBS //
@@ -831,6 +837,7 @@ export const jobs: Job[] = [
   ...alphafiJobs,
   ...jewelJobs,
   ...tradeportJobs,
+  ...loopscaleJobs,
 ];
 
 // FETCHERS //
@@ -948,6 +955,7 @@ export const fetchers: Fetcher[] = [
   ...alphafiFetchers,
   ...jewelFetchers,
   ...tradeportFetchers,
+  ...loopscaleFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
