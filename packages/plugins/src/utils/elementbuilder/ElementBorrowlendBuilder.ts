@@ -79,16 +79,16 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
     tokenPrices: TokenPriceMap
   ): PortfolioElement | null {
     const suppliedAssets = this.suppliedAssets
-      .map((a) => a.export(networkId, tokenPrices))
+      .map((a) => a.dump(networkId, tokenPrices))
       .filter((a) => a !== null) as PortfolioAsset[];
     const borrowedAssets = this.borrowedAssets
-      .map((a) => a.export(networkId, tokenPrices))
+      .map((a) => a.dump(networkId, tokenPrices))
       .filter((a) => a !== null) as PortfolioAsset[];
     const rewardAssets = this.rewardAssets
-      .map((a) => a.export(networkId, tokenPrices))
+      .map((a) => a.dump(networkId, tokenPrices))
       .filter((a) => a !== null) as PortfolioAsset[];
     const unsettledAssets = this.unsettledAssets
-      .map((a) => a.export(networkId, tokenPrices))
+      .map((a) => a.dump(networkId, tokenPrices))
       .filter((a) => a !== null) as PortfolioAsset[];
 
     if (
