@@ -5,7 +5,6 @@ import {
   PortfolioElementMultiple,
   PortfolioElementType,
   PortfolioLiquidity,
-  TokenPrice,
   formatMoveTokenAddress,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
@@ -22,13 +21,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
   const coinsBalances = await client.getAllBalances({ owner });
-  const coinsTypes = [...new Set(coinsBalances.map((cb) => cb.coinType))];
-  const tokensPrices = await cache.getTokenPrices(coinsTypes, NetworkId.sui);
-  const tokenPricesMap: Map<string, TokenPrice> = new Map();
-  tokensPrices.forEach((tp) => {
-    if (!tp) return;
-    tokenPricesMap.set(tp.address, tp);
-  });
+
+  const tokenPricesMap = await cache.getTokenPricesAsMap(
+    [...new Set(coinsBalances.map((cb) => cb.coinType))],
+    NetworkId.sui
+  );
 
   const walletTokensAssets: PortfolioAssetToken[] = [];
   const liquiditiesByTag: Record<string, PortfolioLiquidity[]> = {};

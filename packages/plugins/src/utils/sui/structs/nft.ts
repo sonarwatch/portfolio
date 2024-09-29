@@ -1,7 +1,7 @@
+import { ID } from './id';
+
 export type NftStruct = {
-  id?: {
-    id: string;
-  };
+  id?: ID;
   name?: string;
   description?: string;
   url?: string;

@@ -208,10 +208,10 @@ import {
   fetchers as mapleFetchers,
 } from './plugins/maple';
 import {
-  platforms as flexlendPlatforms,
-  jobs as flexlendJobs,
-  fetchers as flexlendFetchers,
-} from './plugins/flexlend';
+  platforms as luloPlatforms,
+  jobs as luloJobs,
+  fetchers as luloFetchers,
+} from './plugins/lulo';
 import {
   platforms as fluxbeamPlatforms,
   jobs as fluxbeamJobs,
@@ -300,10 +300,10 @@ import {
   fetchers as pythFetchers,
 } from './plugins/pyth';
 import {
-  platforms as circuitPlatforms,
-  jobs as circuitJobs,
-  fetchers as circuitFetchers,
-} from './plugins/circuit';
+  platforms as driftMMPlatforms,
+  jobs as driftMMJobs,
+  fetchers as driftMMFetchers,
+} from './plugins/drift-market-maker-vault';
 import {
   platforms as ariesPlatforms,
   jobs as ariesJobs,
@@ -642,7 +642,7 @@ export const platforms: Platform[] = [
   ...hawksightPlatforms,
   ...realmsPlatforms,
   ...maplePlatforms,
-  ...flexlendPlatforms,
+  ...luloPlatforms,
   ...fluxbeamPlatforms,
   ...zetaPlatforms,
   ...venusPlatforms,
@@ -660,7 +660,7 @@ export const platforms: Platform[] = [
   ...parclPlatforms,
   ...pythPlatforms,
   ...jupiterPlatforms,
-  ...circuitPlatforms,
+  ...driftMMPlatforms,
   ...ariesPlatforms,
   ...flashPlatforms,
   ...bonkrewardsPlatforms,
@@ -756,7 +756,7 @@ export const jobs: Job[] = [
   ...paraswapJobs,
   ...realmsJobs,
   ...mapleJobs,
-  ...flexlendJobs,
+  ...luloJobs,
   ...fluxbeamJobs,
   ...jupiterJobs,
   ...zetaJobs,
@@ -774,7 +774,7 @@ export const jobs: Job[] = [
   ...benqiJobs,
   ...parclJobs,
   ...pythJobs,
-  ...circuitJobs,
+  ...driftMMJobs,
   ...ariesJobs,
   ...flashJobs,
   ...bonkrewardsJobs,
@@ -873,7 +873,7 @@ export const fetchers: Fetcher[] = [
   ...hawksightFetchers,
   ...realmsFetchers,
   ...mapleFetchers,
-  ...flexlendFetchers,
+  ...luloFetchers,
   ...fluxbeamFetchers,
   ...jupiterFetchers,
   ...zetaFetchers,
@@ -892,7 +892,7 @@ export const fetchers: Fetcher[] = [
   ...benqiFetchers,
   ...parclFetchers,
   ...pythFetchers,
-  ...circuitFetchers,
+  ...driftMMFetchers,
   ...ariesFetchers,
   ...flashFetchers,
   ...bonkrewardsFetchers,

@@ -73,11 +73,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     .flat()
     .filter(
       (acc) =>
-        acc.bondTradeTransactionState.perpetualActive ||
-        acc.bondTradeTransactionState.perpetualPartialRepaid ||
-        acc.bondTradeTransactionState.perpetualRefinancedActive ||
-        acc.bondTradeTransactionState.perpetualManualTerminating ||
-        acc.bondTradeTransactionState.active
+        (acc.bondTradeTransactionState.perpetualActive ||
+          acc.bondTradeTransactionState.perpetualPartialRepaid ||
+          acc.bondTradeTransactionState.perpetualRefinancedActive ||
+          acc.bondTradeTransactionState.perpetualManualTerminating ||
+          acc.bondTradeTransactionState.active) &&
+        acc.redeemedAt === '0'
     );
 
   if (accounts.length === 0) return [];

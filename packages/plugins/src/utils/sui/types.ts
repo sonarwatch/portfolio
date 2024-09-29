@@ -3,6 +3,7 @@ import {
   SuiObjectData,
   SuiObjectResponse,
 } from '@mysten/sui.js/client';
+import { ID } from './structs/id';
 
 export type ParsedData<K> = {
   hasPublicTransfer: boolean;
@@ -33,7 +34,5 @@ export type Event<K> = SuiEvent & {
 
 export type AirdropWrapperNFT = {
   balance: string;
-  id: {
-    id: string;
-  };
+  id: ID;
 };

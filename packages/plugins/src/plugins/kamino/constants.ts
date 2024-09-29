@@ -28,6 +28,7 @@ export const farmProgramId = new PublicKey(
   'FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr'
 );
 export const farmsKey = 'farms';
+export const elevationGroupsKey = 'elevatorGroups';
 export const mainMarket = '7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF';
 
 export const lendingConfigs: Map<string, LendingMarketConfig> = new Map([

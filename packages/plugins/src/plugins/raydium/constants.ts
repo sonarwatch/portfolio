@@ -30,8 +30,6 @@ export const cpmmProgramId = new PublicKey(
   'CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C'
 );
 
-export const poolStatesPrefix = `${platformId}-poolSates`;
-
 export const positionsIdentifier = 'Raydium Concentrated Liquidity';
 
 export const rayMint = '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R';

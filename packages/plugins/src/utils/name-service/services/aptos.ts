@@ -3,7 +3,7 @@ import { NameService } from '../types';
 import { getClientAptos } from '../../clients';
 
 async function getOwner(name: string): Promise<string | null> {
-  const res = await getClientAptos().getName({ name });
+  const res = await getClientAptos().getName({ name: name.toLowerCase() });
   if (!res?.owner_address) return null;
 
   return res.owner_address;

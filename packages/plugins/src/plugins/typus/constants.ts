@@ -19,3 +19,19 @@ export const packageDovSingle =
 export const registryDovSingle =
   '0x3d70b09359e3ca8301ae0abeda4f2fdf72ce313ba58c919ce568e5f535fd2ea8';
 export const viewDepositSharesType = `${packageDovSingle}::tds_view_function::get_deposit_shares_bcs`;
+
+export const safuPackage =
+  '0x8bde4eedabbdaf0c4c463c4eb35f00456dbac5fdccb94ce9c2d7a77653aa481f';
+export const frameworkPackage =
+  '0x5c6648fb219c046256488486d23d4af7bc562d5ab5c382e1f4b558066a327fe8';
+export const safuRegistryId =
+  '0xdc970d638d1489385e49ddb76889748011bac4616b95a51aa63633972b841706';
+export const safuVaultsKey = 'safu-vaults';
+
+export const vaultsIndexes = ['0', '1', '2', '3'];
+export const safuVaultsNames: { [key: string]: string } = {
+  '0': 'Bull',
+  '1': 'Bear',
+  '2': 'All Weather SUI',
+  '3': 'All Weather USDC',
+};

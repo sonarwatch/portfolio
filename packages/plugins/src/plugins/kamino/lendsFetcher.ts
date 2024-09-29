@@ -10,6 +10,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import {
+  elevationGroupsKey,
   lendingConfigs,
   marketsKey,
   platformId,
@@ -18,7 +19,7 @@ import {
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { Cache } from '../../Cache';
 import { getClientSolana } from '../../utils/clients';
-import { obligationStruct } from './structs/klend';
+import { ElevationGroup, obligationStruct } from './structs/klend';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { ReserveDataEnhanced } from './types';
 import { getParsedMultipleAccountsInfo } from '../../utils/solana';
@@ -35,10 +36,23 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
   const networkId = NetworkId.solana;
 
-  const markets = await cache.getItem<string[]>(marketsKey, {
-    prefix: platformId,
-    networkId: NetworkId.solana,
-  });
+  const [markets, elevationGroupsAccounts] = await Promise.all([
+    cache.getItem<string[]>(marketsKey, {
+      prefix: platformId,
+      networkId: NetworkId.solana,
+    }),
+    cache.getItem<ElevationGroup[]>(elevationGroupsKey, {
+      prefix: platformId,
+      networkId: NetworkId.solana,
+    }),
+  ]);
+
+  if (!markets) return [];
+
+  const elevationGroups: Map<number, ElevationGroup> = new Map();
+  elevationGroupsAccounts?.forEach((group) =>
+    elevationGroups.set(group.id, group)
+  );
 
   const [lendingPdas, multiplyPdas] = markets
     ? [getLendingPda(owner, markets), getMultiplyPdas(owner, markets)]
@@ -218,6 +232,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         ? `Multiply ${lendingConfig.name}`
         : 'Multiply';
 
+      const elevationGroup = elevationGroups.get(
+        multiplyAccount.elevationGroup
+      );
+
       const borrowedAssets: PortfolioAsset[] = [];
       const borrowedYields: Yield[][] = [];
       const suppliedAssets: PortfolioAsset[] = [];
@@ -246,7 +264,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         suppliedAssets.push(
           tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
         );
-        suppliedLtvs.push(reserve.config.liquidationThresholdPct / 100);
+        if (elevationGroup)
+          suppliedLtvs.push(elevationGroup.liquidationThresholdPct / 100);
+        else {
+          suppliedLtvs.push(0);
+        }
         suppliedYields.push([
           { apr: reserve.supplyApr, apy: aprToApy(reserve.supplyApr) },
         ]);

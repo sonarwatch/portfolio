@@ -4,7 +4,9 @@ import { Job } from '../../Job';
 import poolsJob from './poolsJob';
 import clmmPositionFetcher from './clmmsFetcher';
 import { platform } from './constants';
+import vaultsJob from './vaultsJob';
+import farmsFetcher from './farmsFetcher';
 
 export const platforms: Platform[] = [platform];
-export const jobs: Job[] = [poolsJob];
-export const fetchers: Fetcher[] = [clmmPositionFetcher];
+export const jobs: Job[] = [poolsJob, vaultsJob];
+export const fetchers: Fetcher[] = [clmmPositionFetcher, farmsFetcher];

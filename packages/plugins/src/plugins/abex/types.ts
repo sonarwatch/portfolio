@@ -1,8 +1,8 @@
+import { ID } from '../../utils/sui/structs/id';
+
 export type Credential = {
   acc_reward_per_share: string;
-  id: {
-    id: string;
-  };
+  id: ID;
   lock_until: string;
   stake: string;
 };
@@ -11,9 +11,7 @@ export type Pool = {
   acc_reward_per_share: string;
   enabled: boolean;
   end_time: string;
-  id: {
-    id: string;
-  };
+  id: ID;
   last_updated_time: string;
   lock_duration: string;
   reward: string;
@@ -23,9 +21,7 @@ export type Pool = {
 
 export type AlpMarket = {
   fun_mask: string;
-  id: {
-    id: string;
-  };
+  id: ID;
   lp_supply: {
     type: string;
     fields: { value: string };
@@ -33,9 +29,7 @@ export type AlpMarket = {
 };
 
 export type Market = {
-  id: {
-    id: string;
-  };
+  id: ID;
   name: {
     type: string;
     fields: {

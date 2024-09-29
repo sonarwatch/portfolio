@@ -1,5 +1,6 @@
 import {
   BeetStruct,
+  bool,
   i32,
   u16,
   u8,
@@ -8,7 +9,7 @@ import {
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
-import { blob, u128, u64 } from '../../../utils/solana';
+import { blob, i128, u128, u64 } from '../../../utils/solana';
 
 export type PositionRewardInfo = {
   growthInsideCheckpoint: BigNumber;
@@ -120,4 +121,46 @@ export const whirlpoolStruct = new BeetStruct<Whirlpool>(
     ['rewardInfos', uniformFixedSizeArray(whirlpoolRewardInfoStruct, 3)],
   ],
   (args) => args as Whirlpool
+);
+
+export type Tick = {
+  initialized: boolean;
+  liquidityNet: BigNumber;
+  liquidityGross: BigNumber;
+  feeGrowthOutsideA: BigNumber;
+  feeGrowthOutsideB: BigNumber;
+  rewardGrowthsOutside1: BigNumber;
+  rewardGrowthsOutside2: BigNumber;
+  rewardGrowthsOutside3: BigNumber;
+};
+
+export const tickStruct = new BeetStruct<Tick>(
+  [
+    ['initialized', bool],
+    ['liquidityNet', i128],
+    ['liquidityGross', u128],
+    ['feeGrowthOutsideA', u128],
+    ['feeGrowthOutsideB', u128],
+    ['rewardGrowthsOutside1', u128],
+    ['rewardGrowthsOutside2', u128],
+    ['rewardGrowthsOutside3', u128],
+  ],
+  (args) => args as Tick
+);
+
+export type TickArray = {
+  padding: Buffer;
+  startTickIndex: number;
+  ticks: Tick[];
+  whirlpool: PublicKey;
+};
+
+export const tickArrayStruct = new BeetStruct<TickArray>(
+  [
+    ['padding', blob(8)],
+    ['startTickIndex', i32],
+    ['ticks', uniformFixedSizeArray(tickStruct, 88)],
+    ['whirlpool', publicKey],
+  ],
+  (args) => args as TickArray
 );

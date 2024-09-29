@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { ID } from '../../utils/sui/structs/id';
+
 export type DepositShare = {
   index: string;
   activeSubVaultUserShare: string;
@@ -15,10 +17,6 @@ export type DepositReceipt = {
   metadata: string;
   u64_padding: any[];
   vid: string;
-};
-
-export type ID = {
-  id: string;
 };
 
 export type Vault = {

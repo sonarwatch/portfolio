@@ -117,7 +117,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     elements.push({
       type: PortfolioElementType.multiple,
       label: 'Staked',
-      networkId: NetworkId.solana,
+      networkId: NetworkId.sui,
       platformId,
       data: {
         assets: stakedAssets,
@@ -130,7 +130,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     elements.push({
       type: PortfolioElementType.multiple,
       label: 'Deposit',
-      networkId: NetworkId.solana,
+      networkId: NetworkId.sui,
       platformId,
       data: {
         assets: suiUnstakingAssets,

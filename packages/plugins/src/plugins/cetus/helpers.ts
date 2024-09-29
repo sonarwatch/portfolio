@@ -16,6 +16,7 @@ import {
 import { ObjectResponse } from '../../utils/sui/types';
 import { getObjectDeletedResponse } from '../../utils/sui/getObjectDeletedResponse';
 import { getObjectNotExistsResponse } from '../../utils/sui/getObjectNotExistsResponse';
+import { bitsToNumber } from '../../utils/sui/bitsToNumber';
 
 export function fromX64(num: BigNumber): Decimal {
   return new Decimal(num.toString()).mul(Decimal.pow(2, -64));
@@ -141,7 +142,6 @@ export function getPoolFromObject(object: ObjectResponse<unknown>): Pool {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const fields = object.data.content.fields as any;
   const rewarders: Rewarder[] = [];
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fields.rewarder_manager.fields.rewarders.forEach((item: any) => {
     const { emissions_per_second: emissionsPerSecond } =
@@ -173,9 +173,7 @@ export function getPoolFromObject(object: ObjectResponse<unknown>): Pool {
     coinAmountA: fields['coin_a'],
     coinAmountB: fields['coin_b'],
     current_sqrt_price: fields['current_sqrt_price'],
-    current_tick_index: asIntN(
-      BigInt(fields['current_tick_index'].fields.bits)
-    ),
+    current_tick_index: bitsToNumber(fields['current_tick_index'].fields.bits),
     fee_growth_global_a: fields['fee_growth_global_a'],
     fee_growth_global_b: fields['fee_growth_global_b'],
     fee_protocol_coin_a: fields['fee_protocol_coin_a'],
@@ -260,8 +258,8 @@ export function buildPosition(objects: ObjectResponse<unknown>): Position {
       coin_type_a: fields['coin_type_a'].fields.name,
       coin_type_b: fields['coin_type_b'].fields.name,
       liquidity: fields['liquidity'],
-      tick_lower_index: asIntN(BigInt(fields['tick_lower_index'].fields.bits)),
-      tick_upper_index: asIntN(BigInt(fields['tick_upper_index'].fields.bits)),
+      tick_lower_index: bitsToNumber(fields['tick_lower_index'].fields.bits),
+      tick_upper_index: bitsToNumber(fields['tick_upper_index'].fields.bits),
       index: fields['index'],
       pool: fields['pool'],
       reward_amount_owed_0: '0',

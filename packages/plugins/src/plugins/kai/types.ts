@@ -1,14 +1,12 @@
+import { ID } from '../../utils/sui/structs/id';
+
 export interface Vault {
   free_balance: string;
-  id: {
-    id: string;
-  };
+  id: ID;
   lp_treasury: {
     type: string;
     fields: {
-      id: {
-        id: string;
-      };
+      id: ID;
       total_supply: {
         type: string;
         fields: {

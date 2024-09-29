@@ -1,14 +1,16 @@
 import {
   BeetStruct,
+  FixableBeetStruct,
   i32,
   u16,
+  u32,
   u8,
   uniformFixedSizeArray,
 } from '@metaplex-foundation/beet';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
-import { blob, u128, u64 } from '../../../utils/solana';
+import { blob, i128, u128, u64 } from '../../../utils/solana';
 
 export type PositionRewardInfo = {
   growthInsideLastX64: BigNumber;
@@ -60,7 +62,7 @@ export const personalPositionStateStruct =
   );
 
 export type RewardInfo = {
-  rewardState: Buffer;
+  rewardState: number;
   openTime: BigNumber;
   endTime: BigNumber;
   lastUpdateTime: BigNumber;
@@ -75,7 +77,7 @@ export type RewardInfo = {
 
 export const rewardInfoStruct = new BeetStruct<RewardInfo>(
   [
-    ['rewardState', blob(8)],
+    ['rewardState', u8],
     ['openTime', u64],
     ['endTime', u64],
     ['lastUpdateTime', u64],
@@ -177,4 +179,52 @@ export const poolStateStruct = new BeetStruct<PoolState>(
     ['padding2', uniformFixedSizeArray(u64, 32)],
   ],
   (args) => args as PoolState
+);
+
+export type TickState = {
+  tick: number;
+  liquidityNet: BigNumber;
+  liquidityGross: BigNumber;
+  feeGrowthOutsideX64A: BigNumber;
+  feeGrowthOutsideX64B: BigNumber;
+  rewardGrowthsOutsideX640: BigNumber;
+  rewardGrowthsOutsideX641: BigNumber;
+  rewardGrowthsOutsideX642: BigNumber;
+  padding: number[];
+};
+
+export const tickStatetruct = new BeetStruct<TickState>(
+  [
+    ['tick', i32],
+    ['liquidityNet', i128],
+    ['liquidityGross', u128],
+    ['feeGrowthOutsideX64A', u128],
+    ['feeGrowthOutsideX64B', u128],
+    ['rewardGrowthsOutsideX640', u128],
+    ['rewardGrowthsOutsideX641', u128],
+    ['rewardGrowthsOutsideX642', u128],
+    ['padding', uniformFixedSizeArray(u32, 13)],
+  ],
+  (args) => args as TickState
+);
+
+export type TickArrayState = {
+  buffer: Buffer;
+  poolId: PublicKey;
+  startTickIndex: number;
+  ticks: TickState[];
+  initializedTickCount: number;
+  padding: number[];
+};
+
+export const tickArrayStatetruct = new FixableBeetStruct<TickArrayState>(
+  [
+    ['buffer', blob(8)],
+    ['poolId', publicKey],
+    ['startTickIndex', i32],
+    ['ticks', uniformFixedSizeArray(tickStatetruct, 60)],
+    ['initializedTickCount', u8],
+    ['padding', uniformFixedSizeArray(u8, 115)],
+  ],
+  (args) => args as TickArrayState
 );
