@@ -593,6 +593,11 @@ import {
   jobs as stabbleJobs,
   fetchers as stabbleFetchers,
 } from './plugins/stabble';
+import {
+  platforms as franciumPlatforms,
+  jobs as franciumJobs,
+  fetchers as franciumFetchers,
+} from './plugins/francium';
 
 export {
   walletTokensPlatform,
@@ -728,6 +733,7 @@ export const platforms: Platform[] = [
   ...tradeportPlatforms,
   ...bluemovePlatforms,
   ...stabblePlatforms,
+  ...franciumPlatforms,
 ];
 
 // JOBS //
@@ -845,6 +851,7 @@ export const jobs: Job[] = [
   ...tradeportJobs,
   ...bluemoveJobs,
   ...stabbleJobs,
+  ...franciumJobs,
 ];
 
 // FETCHERS //
@@ -964,6 +971,7 @@ export const fetchers: Fetcher[] = [
   ...tradeportFetchers,
   ...bluemoveFetchers,
   ...stabbleFetchers,
+  ...franciumFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
