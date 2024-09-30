@@ -21,9 +21,9 @@ import {
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
 import { getAutoParsedMultipleAccountsInfo } from '../../utils/solana';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { MarginAccount, MarginPool } from './types';
 import { getBorrowNoteRate, getSupplyNoteRate } from './helpers';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
@@ -50,15 +50,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (!marginAccount) return [];
 
-  const elements: PortfolioElement[] = [];
-
   const mints = new Set<string>();
-  marginAccount.deposits.forEach((d) =>
-    mints.add(formatTokenAddress(d.tokenMint, NetworkId.solana))
-  );
-  marginAccount.loans.forEach((l) =>
-    mints.add(formatTokenAddress(l.tokenMint, NetworkId.solana))
-  );
+  marginAccount.deposits.forEach((d) => mints.add(d.tokenMint));
+  marginAccount.loans.forEach((l) => mints.add(l.tokenMint));
 
   const marginPoolsPublicKeys = [...mints].map(
     (mint) =>
@@ -74,28 +68,25 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       )[0]
   );
 
-  const [tokenPrices, marginPools] = await Promise.all([
-    cache.getTokenPricesAsMap(mints, NetworkId.solana),
-    getAutoParsedMultipleAccountsInfo<MarginPool>(
-      connection,
-      nxfinanceLeverageIdlItem,
-      marginPoolsPublicKeys
-    ),
-  ]);
+  const marginPools = await getAutoParsedMultipleAccountsInfo<MarginPool>(
+    connection,
+    nxfinanceLeverageIdlItem,
+    marginPoolsPublicKeys
+  );
 
-  // assets for Lend
-  const assets: PortfolioAsset[] = [];
-
-  // assets for Leverage
-  const borrowedAssets: PortfolioAsset[] = [];
-  const borrowedYields: Yield[][] = [];
-  const suppliedAssets: PortfolioAsset[] = [];
-  const suppliedYields: Yield[][] = [];
-  const rewardAssets: PortfolioAsset[] = [];
+  const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
+  const elementMultiple = elementRegistry.addElementMultiple({
+    label: 'Lending',
+    name: 'Fulcrum Lending Pool',
+  });
+  const elementBorrowlend = elementRegistry.addElementBorrowlend({
+    label: 'Leverage',
+    name: `JLP Leverage x${new BigNumber(marginAccount.leverage)
+      .dividedBy(100)
+      .decimalPlaces(2)}`,
+  });
 
   marginAccount.deposits.forEach((deposit) => {
-    const tokenPrice = tokenPrices.get(deposit.tokenMint);
-    if (!tokenPrice) return;
     const marginPool = marginPools.find(
       (mp) => mp?.tokenMint === deposit.tokenMint
     );
@@ -103,94 +94,38 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const supplyNoteRate = getSupplyNoteRate(marginPool);
 
-    const amount = new BigNumber(deposit.depositNote)
-      .multipliedBy(supplyNoteRate)
-      .dividedBy(10 ** tokenPrice.decimals)
-      .toNumber();
+    const amount = new BigNumber(deposit.depositNote).multipliedBy(
+      supplyNoteRate
+    );
 
-    if (amount > 0) {
-      const assetToken = tokenPriceToAssetToken(
-        tokenPrice.address,
-        amount,
-        NetworkId.solana,
-        tokenPrice
-      );
-      if (leverageVaultsMints.includes(deposit.tokenMint)) {
-        suppliedAssets.push(assetToken);
-      } else {
-        assets.push(assetToken);
-      }
+    const asset = {
+      address: deposit.tokenMint,
+      amount: amount,
+    };
+
+    if (leverageVaultsMints.includes(deposit.tokenMint)) {
+      elementBorrowlend.addSuppliedAsset(asset);
+    } else {
+      elementMultiple.addAsset(asset);
     }
   });
 
   marginAccount.loans.forEach((loan) => {
-    const tokenPrice = tokenPrices.get(loan.tokenMint);
-    if (!tokenPrice) return;
     const marginPool = marginPools.find(
       (mp) => mp?.tokenMint === loan.tokenMint
     );
     if (!marginPool) return;
+    if (loan.loanNote === '0') return;
 
     const borrowNoteRate = getBorrowNoteRate(marginPool);
-    borrowedAssets.push(
-      tokenPriceToAssetToken(
-        tokenPrice.address,
-        new BigNumber(loan.loanNote)
-          .multipliedBy(borrowNoteRate)
-          .dividedBy(10 ** tokenPrice.decimals)
-          .toNumber(),
-        NetworkId.solana,
-        tokenPrice
-      )
-    );
+
+    elementBorrowlend.addBorrowedAsset({
+      address: loan.tokenMint,
+      amount: new BigNumber(loan.loanNote).multipliedBy(borrowNoteRate),
+    });
   });
 
-  if (assets.length > 0)
-    elements.push({
-      type: PortfolioElementType.multiple,
-      networkId: NetworkId.solana,
-      platformId,
-      label: 'Lending',
-      name: 'Fulcrum Lending Pool',
-      value: getUsdValueSum(assets.map((asset) => asset.value)),
-      data: {
-        assets,
-      },
-    });
-
-  if (suppliedAssets.length > 0 || borrowedAssets.length > 0) {
-    const { borrowedValue, suppliedValue, rewardValue } =
-      getElementLendingValues({
-        suppliedAssets,
-        borrowedAssets,
-        rewardAssets,
-      });
-
-    elements.push({
-      type: PortfolioElementType.borrowlend,
-      networkId: NetworkId.solana,
-      platformId,
-      label: 'Leverage',
-      name: `JLP Leverage x${new BigNumber(marginAccount.leverage)
-        .dividedBy(100)
-        .decimalPlaces(2)}`,
-      value: suppliedValue,
-      data: {
-        borrowedAssets,
-        borrowedValue,
-        borrowedYields,
-        suppliedAssets,
-        suppliedValue,
-        suppliedYields,
-        rewardAssets,
-        rewardValue,
-        healthRatio: null,
-        value: suppliedValue,
-      },
-    });
-  }
-
-  return elements;
+  return elementRegistry.dump(cache);
 };
 
 const fetcher: Fetcher = {

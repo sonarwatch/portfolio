@@ -584,6 +584,11 @@ import {
   fetchers as tradeportFetchers,
 } from './plugins/tradeport';
 import {
+  platforms as bluemovePlatforms,
+  jobs as bluemoveJobs,
+  fetchers as bluemoveFetchers,
+} from './plugins/bluemove';
+import {
   platforms as stabblePlatforms,
   jobs as stabbleJobs,
   fetchers as stabbleFetchers,
@@ -721,6 +726,7 @@ export const platforms: Platform[] = [
   ...alphafiPlatforms,
   ...jewelPlatforms,
   ...tradeportPlatforms,
+  ...bluemovePlatforms,
   ...stabblePlatforms,
 ];
 
@@ -837,6 +843,7 @@ export const jobs: Job[] = [
   ...alphafiJobs,
   ...jewelJobs,
   ...tradeportJobs,
+  ...bluemoveJobs,
   ...stabbleJobs,
 ];
 
@@ -955,6 +962,7 @@ export const fetchers: Fetcher[] = [
   ...alphafiFetchers,
   ...jewelFetchers,
   ...tradeportFetchers,
+  ...bluemoveFetchers,
   ...stabbleFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
