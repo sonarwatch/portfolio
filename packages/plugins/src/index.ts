@@ -583,6 +583,26 @@ import {
   jobs as tradeportJobs,
   fetchers as tradeportFetchers,
 } from './plugins/tradeport';
+import {
+  platforms as bluemovePlatforms,
+  jobs as bluemoveJobs,
+  fetchers as bluemoveFetchers,
+} from './plugins/bluemove';
+import {
+  platforms as stabblePlatforms,
+  jobs as stabbleJobs,
+  fetchers as stabbleFetchers,
+} from './plugins/stabble';
+import {
+  platforms as franciumPlatforms,
+  jobs as franciumJobs,
+  fetchers as franciumFetchers,
+} from './plugins/francium';
+import {
+  platforms as adrasteaPlatforms,
+  jobs as adrasteaJobs,
+  fetchers as adrasteaFetchers,
+} from './plugins/adrastea';
 
 export {
   walletTokensPlatform,
@@ -716,6 +736,10 @@ export const platforms: Platform[] = [
   ...alphafiPlatforms,
   ...jewelPlatforms,
   ...tradeportPlatforms,
+  ...bluemovePlatforms,
+  ...stabblePlatforms,
+  ...franciumPlatforms,
+  ...adrasteaPlatforms,
 ];
 
 // JOBS //
@@ -831,6 +855,10 @@ export const jobs: Job[] = [
   ...alphafiJobs,
   ...jewelJobs,
   ...tradeportJobs,
+  ...bluemoveJobs,
+  ...stabbleJobs,
+  ...franciumJobs,
+  ...adrasteaJobs,
 ];
 
 // FETCHERS //
@@ -948,6 +976,10 @@ export const fetchers: Fetcher[] = [
   ...alphafiFetchers,
   ...jewelFetchers,
   ...tradeportFetchers,
+  ...bluemoveFetchers,
+  ...stabbleFetchers,
+  ...franciumFetchers,
+  ...adrasteaFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 

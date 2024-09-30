@@ -1,21 +1,14 @@
-import {
-  getUsdValueSum,
-  NetworkId,
-  PortfolioAsset,
-  PortfolioElement,
-  PortfolioElementType,
-  PortfolioLiquidity,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
-import { getPendingAssetToken, getStakePubKey } from './helpers';
+import { getPendingAssetParams, getStakePubKey } from './helpers';
 import { getParsedProgramAccounts, ParsedAccount } from '../../utils/solana';
 import { userFarmConfigs } from './farmsJob';
 import { FarmInfo } from './types';
-import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
 import { UserFarmAccount } from './structs/farms';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -46,14 +39,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       : undefined
   );
 
+  const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
+
   const rayStakingPubkey = getStakePubKey(owner).toString();
-  const liquiditiesWithoutRewards: PortfolioLiquidity[] = [];
-  const elementsWithRewards: PortfolioElement[] = [];
+
+  const uniqueElementForFarmsWithoutRewards =
+    elementRegistry.addElementLiquidity({
+      label: 'Farming',
+    });
+  const liquidityOfUniqueElement =
+    uniqueElementForFarmsWithoutRewards.addLiquidity();
+
   for (let i = 0; i < userFarmAccounts.length; i += 1) {
-    const rewardAssets: PortfolioAsset[] = [];
-    const assets: PortfolioAsset[] = [];
     const userFarmAccount: ParsedAccount<UserFarmAccount> = userFarmAccounts[i];
-    if (userFarmAccount.pubkey.toString() === rayStakingPubkey) continue;
     const farmInfo = farmsInfoMap.get(userFarmAccount.poolId.toString());
     if (!farmInfo) continue;
 
@@ -62,32 +60,26 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const farmAccount = farmInfo.account;
 
-    // LP staked on Farm
-    const amount = userFarmAccount.depositBalance
-      .div(10 ** farmInfo.lpToken.decimals)
-      .toNumber();
-    if (amount > 0) {
-      const underlyingAssets = tokenPriceToAssetTokens(
-        lpTokenPrice.address,
-        amount,
-        NetworkId.solana,
-        lpTokenPrice
-      );
-      assets.push(...underlyingAssets);
-    }
+    const element = elementRegistry.addElementLiquidity({
+      label:
+        userFarmAccount.pubkey.toString() === rayStakingPubkey
+          ? 'Staked'
+          : 'Farming',
+    });
+
+    const liquidity = element.addLiquidity();
 
     // Farm pending reward A
     if (farmInfo.rewardTokenA) {
-      const assetTokenA = getPendingAssetToken(
-        userFarmAccount.depositBalance,
-        userFarmAccount.rewardDebt,
-        farmAccount.perShare,
-        farmInfo.rewardTokenA,
-        farmInfo.d
+      liquidity.addRewardAsset(
+        getPendingAssetParams(
+          userFarmAccount.depositBalance,
+          userFarmAccount.rewardDebt,
+          farmAccount.perShare,
+          farmInfo.rewardTokenA,
+          farmInfo.d
+        )
       );
-      if (assetTokenA.data.amount > 0) {
-        rewardAssets.push(assetTokenA);
-      }
     }
 
     // Farm pending reward B
@@ -96,74 +88,41 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       farmAccount.perShareB &&
       userFarmAccount.rewardDebtB
     ) {
-      const assetTokenB = getPendingAssetToken(
-        userFarmAccount.depositBalance,
-        userFarmAccount.rewardDebtB,
-        farmAccount.perShareB,
-        farmInfo.rewardTokenB,
-        farmInfo.d
+      liquidity.addRewardAsset(
+        getPendingAssetParams(
+          userFarmAccount.depositBalance,
+          userFarmAccount.rewardDebtB,
+          farmAccount.perShareB,
+          farmInfo.rewardTokenB,
+          farmInfo.d
+        )
       );
-      if (assetTokenB.data.amount > 0) {
-        rewardAssets.push(assetTokenB);
-      }
     }
 
-    const assetsValue = getUsdValueSum(assets.map((a) => a.value));
-    const rewardAssetsValue = getUsdValueSum(rewardAssets.map((r) => r.value));
-    const value = getUsdValueSum([assetsValue, rewardAssetsValue]);
-    if (value === 0) continue;
+    // LP staked on Farm
+    const amount = userFarmAccount.depositBalance.div(
+      10 ** farmInfo.lpToken.decimals
+    );
 
-    if (rewardAssets.length === 0) {
-      liquiditiesWithoutRewards.push({
-        assets,
-        assetsValue,
-        rewardAssets: [],
-        rewardAssetsValue: null,
-        value: assetsValue,
-        yields: [],
+    if (
+      liquidity.rewardAssets.length > 0 ||
+      userFarmAccount.pubkey.toString() === rayStakingPubkey
+    ) {
+      liquidity.addAsset({
+        address: lpTokenPrice.address,
+        amount,
+        alreadyShifted: true,
       });
-      continue;
+    } else {
+      liquidityOfUniqueElement.addAsset({
+        address: lpTokenPrice.address,
+        amount,
+        alreadyShifted: true,
+      });
     }
-
-    const liquidityWithRewards: PortfolioLiquidity = {
-      value,
-      assets,
-      assetsValue,
-      rewardAssets,
-      rewardAssetsValue,
-      yields: [],
-    };
-    elementsWithRewards.push({
-      networkId: NetworkId.solana,
-      platformId,
-      type: PortfolioElementType.liquidity,
-      label: 'Farming',
-      value: liquidityWithRewards.value,
-      data: {
-        liquidities: [liquidityWithRewards],
-      },
-    });
   }
 
-  if (
-    liquiditiesWithoutRewards.length === 0 &&
-    elementsWithRewards.length === 0
-  )
-    return [];
-
-  return [
-    ...elementsWithRewards,
-    {
-      networkId: NetworkId.solana,
-      platformId,
-      type: PortfolioElementType.liquidity,
-      label: 'Farming',
-      value: getUsdValueSum(liquiditiesWithoutRewards.map((l) => l.value)),
-      data: {
-        liquidities: liquiditiesWithoutRewards,
-      },
-    },
-  ];
+  return elementRegistry.dump(cache);
 };
 
 const fetcher: Fetcher = {

@@ -32,7 +32,7 @@ export class ElementMultipleBuilder extends ElementBuilder {
     tokenPrices: TokenPriceMap
   ): PortfolioElement | null {
     const assets = this.assets
-      .map((a) => a.export(networkId, tokenPrices))
+      .map((a) => a.dump(networkId, tokenPrices))
       .filter((a) => a !== null) as PortfolioAsset[];
 
     if (assets.length === 0) return null;

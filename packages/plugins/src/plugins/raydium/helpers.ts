@@ -7,15 +7,12 @@ import BigNumber from 'bignumber.js';
 import BN from 'bn.js';
 import {
   aprToApy,
-  NetworkId,
   PortfolioAssetCollectible,
-  PortfolioAssetToken,
   TokenPrice,
   Yield,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { AMM_PROGRAM_ID_V3, positionsIdentifier } from './constants';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { ClmmPoolInfo, ClmmPoolRewardInfo, Tick } from './types';
 import { toBN } from '../../utils/misc/toBN';
 import {
@@ -24,6 +21,7 @@ import {
   TickArrayState,
 } from './structs/clmms';
 import { ParsedAccount } from '../../utils/solana';
+import { PortfolioAssetParams } from '../../utils/elementbuilder/PortfolioAssetParams';
 
 export function isARaydiumPosition(nft: PortfolioAssetCollectible): boolean {
   return nft.name === positionsIdentifier;
@@ -276,25 +274,19 @@ export function getFarmYield(
   };
 }
 
-export function getPendingAssetToken(
+export function getPendingAssetParams(
   depositBalance: BigNumber,
   rewardDebt: BigNumber,
   perShare: BigNumber,
   rewardToken: TokenPrice,
   multiplier: number | BigNumber
-): PortfolioAssetToken {
+): PortfolioAssetParams {
   const amount = depositBalance
     .times(perShare)
     .div(multiplier)
     .minus(rewardDebt)
-    .div(10 ** rewardToken.decimals)
-    .toNumber();
-  return tokenPriceToAssetToken(
-    rewardToken.address,
-    amount,
-    NetworkId.solana,
-    rewardToken
-  );
+    .div(10 ** rewardToken.decimals);
+  return { address: rewardToken.address, amount, alreadyShifted: true };
 }
 
 function getRewardGrowthInsideV2(
