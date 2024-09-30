@@ -1,7 +1,7 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 import { IdlItem } from '@solanafm/explorer-kit-idls';
 import { StableIdl } from './stableIdl';
-import { WeightedIdl } from './WeightedIdl';
+import { WeightedIdl } from './weightedIdl';
 
 export const platformId = 'stabble';
 export const platform: Platform = {
