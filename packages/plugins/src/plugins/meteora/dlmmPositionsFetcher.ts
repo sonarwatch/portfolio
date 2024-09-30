@@ -266,11 +266,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           )
         );
 
-      if (positionData.totalXAmount.isZero())
-        assets[0].attributes.tags = ['Out Of Range'];
-      if (positionData.totalYAmount.isZero())
-        assets[1].attributes.tags = ['Out Of Range'];
-
       const liquidities: PortfolioLiquidity[] = [
         {
           assets,
@@ -286,6 +281,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         },
       ];
 
+      const tags = [];
+      if (
+        positionData.totalXAmount.isZero() ||
+        positionData.totalYAmount.isZero()
+      )
+        tags.push('Out Of Range');
+
       elements.push({
         type: PortfolioElementType.liquidity,
         label: 'LiquidityPool',
@@ -296,6 +298,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         data: {
           liquidities,
         },
+        tags,
       });
     }
   }

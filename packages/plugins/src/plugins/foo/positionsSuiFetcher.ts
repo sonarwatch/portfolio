@@ -1,4 +1,4 @@
-import { NetworkId, solanaNativeAddress } from '@sonarwatch/portfolio-core';
+import { NetworkId, suiNativeAddress } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { platformId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -27,7 +27,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   receipts.forEach((r) => {
     if (r.data?.content?.fields.amountDeposited)
       element.addAsset({
-        address: solanaNativeAddress,
+        address: suiNativeAddress,
         amount: r.data?.content?.fields.amountDeposited,
       });
   });
@@ -37,7 +37,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
 const fetcher: Fetcher = {
   id: `${platformId}-positions-sui`,
-  networkId: NetworkId.solana,
+  networkId: NetworkId.sui,
   executor,
 };
 
