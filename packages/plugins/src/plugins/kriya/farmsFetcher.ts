@@ -1,11 +1,4 @@
-import {
-  NetworkId,
-  PortfolioLiquidity,
-  UsdValue,
-  apyToApr,
-  formatMoveTokenAddress,
-  getUsdValueSum,
-} from '@sonarwatch/portfolio-core';
+import { apyToApr, NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -13,7 +6,8 @@ import { platformId, farmsInfoKey, farmsPackageId } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { LiquidityPosition, FarmInfo } from './types';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { arrayToMap } from '../../utils/misc/arrayToMap';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -29,21 +23,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
   if (!farmsInfos) return [];
 
-  const farmById: Map<string, FarmInfo> = new Map();
-  const mints: Set<string> = new Set();
-  farmsInfos.forEach((farm) => {
-    farmById.set(farm.farmId, farm);
-    mints.add(farm.tokenXType);
-    mints.add(farm.tokenYType);
+  const farmById: Map<string, FarmInfo> = arrayToMap(farmsInfos, 'farmId');
+
+  const elementRegistry = new ElementRegistry(NetworkId.sui, platformId);
+  const element = elementRegistry.addElementLiquidity({
+    label: 'Farming',
   });
 
-  const tokenPriceById = await cache.getTokenPricesAsMap(
-    Array.from(mints),
-    NetworkId.sui
-  );
-
-  const liquidities: PortfolioLiquidity[] = [];
-  let totalValue: UsdValue = 0;
   for (const object of farmsObjects) {
     if (!object.data?.content?.fields) continue;
     const position = object.data.content.fields;
@@ -51,67 +37,39 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const farmInfo = farmById.get(position.farm_id);
     if (!farmInfo) continue;
 
-    const [tokenPriceX, tokenPriceY] = [
-      tokenPriceById.get(formatMoveTokenAddress(farmInfo.tokenXType)),
-      tokenPriceById.get(formatMoveTokenAddress(farmInfo.tokenYType)),
-    ];
-
     const shares = new BigNumber(position.stake_amount).dividedBy(
       new BigNumber(farmInfo.lspSupply)
     );
 
     const tokenAmountX = new BigNumber(farmInfo.tokenXReserve)
       .times(shares)
-      .dividedBy(10 ** farmInfo.tokenX.decimals)
-      .toNumber();
+      .dividedBy(10 ** farmInfo.tokenX.decimals);
+
     const tokenAmountY = new BigNumber(farmInfo.tokenYReserve)
       .times(shares)
-      .dividedBy(10 ** farmInfo.tokenY.decimals)
-      .toNumber();
+      .dividedBy(10 ** farmInfo.tokenY.decimals);
 
-    const assetX = tokenPriceToAssetToken(
-      farmInfo.tokenXType,
-      tokenAmountX,
-      NetworkId.sui,
-      tokenPriceX
-    );
-    const assetY = tokenPriceToAssetToken(
-      farmInfo.tokenYType,
-      tokenAmountY,
-      NetworkId.sui,
-      tokenPriceY
-    );
-    const value = getUsdValueSum([assetX.value, assetY.value]);
+    const liquidity = element.addLiquidity();
 
-    totalValue = getUsdValueSum([totalValue, value]);
-    liquidities.push({
-      assets: [assetX, assetY],
-      assetsValue: value,
-      rewardAssets: [],
-      rewardAssetsValue: null,
-      value,
-      yields: [
-        {
-          apy: farmInfo.apy / 100,
-          apr: apyToApr(farmInfo.apy / 100),
-        },
-      ],
+    liquidity.addAsset({
+      address: farmInfo.tokenXType,
+      amount: tokenAmountX,
+      alreadyShifted: true,
+    });
+
+    liquidity.addAsset({
+      address: farmInfo.tokenYType,
+      amount: tokenAmountY,
+      alreadyShifted: true,
+    });
+
+    liquidity.addYield({
+      apy: farmInfo.apy / 100,
+      apr: apyToApr(farmInfo.apy / 100),
     });
   }
 
-  if (liquidities.length === 0) return [];
-  return [
-    {
-      type: 'liquidity',
-      data: {
-        liquidities,
-      },
-      label: 'Farming',
-      networkId: NetworkId.sui,
-      platformId,
-      value: totalValue,
-    },
-  ];
+  return elementRegistry.dump(cache);
 };
 
 const fetcher: Fetcher = {
