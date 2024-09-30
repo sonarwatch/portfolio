@@ -588,6 +588,11 @@ import {
   jobs as bluemoveJobs,
   fetchers as bluemoveFetchers,
 } from './plugins/bluemove';
+import {
+  platforms as stabblePlatforms,
+  jobs as stabbleJobs,
+  fetchers as stabbleFetchers,
+} from './plugins/stabble';
 
 export {
   walletTokensPlatform,
@@ -722,6 +727,7 @@ export const platforms: Platform[] = [
   ...jewelPlatforms,
   ...tradeportPlatforms,
   ...bluemovePlatforms,
+  ...stabblePlatforms,
 ];
 
 // JOBS //
@@ -838,6 +844,7 @@ export const jobs: Job[] = [
   ...jewelJobs,
   ...tradeportJobs,
   ...bluemoveJobs,
+  ...stabbleJobs,
 ];
 
 // FETCHERS //
@@ -956,6 +963,7 @@ export const fetchers: Fetcher[] = [
   ...jewelFetchers,
   ...tradeportFetchers,
   ...bluemoveFetchers,
+  ...stabbleFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
