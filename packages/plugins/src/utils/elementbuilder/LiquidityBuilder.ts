@@ -44,10 +44,10 @@ export class LiquidityBuilder {
     tokenPrices: TokenPriceMap
   ): PortfolioLiquidity | null {
     const assets = this.assets
-      .map((a) => a.export(networkId, tokenPrices))
+      .map((a) => a.dump(networkId, tokenPrices))
       .filter((a) => a !== null) as PortfolioAsset[];
     const rewardAssets = this.rewardAssets
-      .map((a) => a.export(networkId, tokenPrices))
+      .map((a) => a.dump(networkId, tokenPrices))
       .filter((a) => a !== null) as PortfolioAsset[];
 
     if (assets.length === 0 && rewardAssets.length === 0) return null;
