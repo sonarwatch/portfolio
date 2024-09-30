@@ -150,8 +150,9 @@ export async function getRaydiumCLMMPositions(
     )
       continue;
 
-    if (tokenAmountA.isZero()) assetTokenA.attributes.tags = ['Out Of Range'];
-    if (tokenAmountB.isZero()) assetTokenB.attributes.tags = ['Out Of Range'];
+    const tags = [];
+    if (tokenAmountA.isZero() || tokenAmountB.isZero())
+      tags.push('Out Of Range');
 
     const rewardAssets: PortfolioAsset[] = [];
 
@@ -239,6 +240,7 @@ export async function getRaydiumCLMMPositions(
       data: {
         liquidities,
       },
+      tags,
     });
   }
 

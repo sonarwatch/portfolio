@@ -10,12 +10,12 @@ export class AssetBuilder {
   alreadyShifted: boolean;
 
   constructor(params: PortfolioAssetParams) {
-    this.address = params.address;
+    this.address = params.address.toString();
     this.amount = params.amount;
     this.alreadyShifted = params.alreadyShifted || false;
   }
 
-  export(
+  dump(
     networkId: NetworkIdType,
     tokenPrices: TokenPriceMap
   ): PortfolioAsset | null {
