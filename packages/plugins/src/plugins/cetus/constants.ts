@@ -28,3 +28,12 @@ export const vaultManagerMap =
 
 export const farmNftType =
   '0x11ea791d82b5742cc8cab0bf7946035c97d9001d7c3803a93f119753da66f526::pool::WrappedPositionNFT';
+
+export const limitPackageId =
+  '0x533fab9a116080e2cb1c87f1832c1bf4231ab4c32318ced041e75cc28604bba9';
+export const limitUserIndexId =
+  '0x7f851ac19e438f97e78a5335eed4f12766a3a0ae94340bab7956a402f0e6212e';
+export const devInspectTxSender =
+  '0x326ce9894f08dcaa337fa232641cc34db957aec9ff6614c1186bc9a7508df0bb';
+export const dcaUserIndexerId =
+  '0x0ae365f60f2fa692831f9496c9e49b2440c74f14e8eab6f88dbb418c443b5020';
