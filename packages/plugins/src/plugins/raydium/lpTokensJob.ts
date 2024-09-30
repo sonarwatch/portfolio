@@ -135,7 +135,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       }
 
       const tokenPrices = await cache.getTokenPricesAsMap(
-        [...mints],
+        mints,
         NetworkId.solana
       );
 

@@ -75,7 +75,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
 
   const [tokenPrices, marginPools] = await Promise.all([
-    cache.getTokenPricesAsMap([...mints], NetworkId.solana),
+    cache.getTokenPricesAsMap(mints, NetworkId.solana),
     getAutoParsedMultipleAccountsInfo<MarginPool>(
       connection,
       nxfinanceLeverageIdlItem,
@@ -94,9 +94,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const rewardAssets: PortfolioAsset[] = [];
 
   marginAccount.deposits.forEach((deposit) => {
-    const tokenPrice = tokenPrices.get(
-      formatTokenAddress(deposit.tokenMint, NetworkId.solana)
-    );
+    const tokenPrice = tokenPrices.get(deposit.tokenMint);
     if (!tokenPrice) return;
     const marginPool = marginPools.find(
       (mp) => mp?.tokenMint === deposit.tokenMint
@@ -126,9 +124,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
 
   marginAccount.loans.forEach((loan) => {
-    const tokenPrice = tokenPrices.get(
-      formatTokenAddress(loan.tokenMint, NetworkId.solana)
-    );
+    const tokenPrice = tokenPrices.get(loan.tokenMint);
     if (!tokenPrice) return;
     const marginPool = marginPools.find(
       (mp) => mp?.tokenMint === loan.tokenMint

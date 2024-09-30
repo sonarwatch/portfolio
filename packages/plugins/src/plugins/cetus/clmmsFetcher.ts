@@ -1,5 +1,4 @@
 import {
-  formatMoveTokenAddress,
   NetworkId,
   PortfolioElementType,
   PortfolioLiquidity,
@@ -65,10 +64,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (poolObj.data?.content?.fields) {
       const pool = getPoolFromObject(poolObj);
       poolsById.set(poolObj.data.objectId, pool);
-      mints.push(
-        formatMoveTokenAddress(pool.coinTypeA),
-        formatMoveTokenAddress(pool.coinTypeB)
-      );
+      mints.push(pool.coinTypeA, pool.coinTypeB);
     }
   });
 
@@ -88,9 +84,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       false
     );
 
-    const tokenPriceA = tokenPriceById.get(
-      formatMoveTokenAddress(pool.coinTypeA)
-    );
+    const tokenPriceA = tokenPriceById.get(pool.coinTypeA);
     if (!tokenPriceA) continue;
 
     const assetTokenA = tokenPriceToAssetToken(
@@ -99,9 +93,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       NetworkId.sui,
       tokenPriceA
     );
-    const tokenPriceB = tokenPriceById.get(
-      formatMoveTokenAddress(pool.coinTypeB)
-    );
+    const tokenPriceB = tokenPriceById.get(pool.coinTypeB);
     if (!tokenPriceB) continue;
 
     const assetTokenB = tokenPriceToAssetToken(
