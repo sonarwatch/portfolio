@@ -598,6 +598,11 @@ import {
   jobs as franciumJobs,
   fetchers as franciumFetchers,
 } from './plugins/francium';
+import {
+  platforms as adrasteaPlatforms,
+  jobs as adrasteaJobs,
+  fetchers as adrasteaFetchers,
+} from './plugins/adrastea';
 
 export {
   walletTokensPlatform,
@@ -734,6 +739,7 @@ export const platforms: Platform[] = [
   ...bluemovePlatforms,
   ...stabblePlatforms,
   ...franciumPlatforms,
+  ...adrasteaPlatforms,
 ];
 
 // JOBS //
@@ -852,6 +858,7 @@ export const jobs: Job[] = [
   ...bluemoveJobs,
   ...stabbleJobs,
   ...franciumJobs,
+  ...adrasteaJobs,
 ];
 
 // FETCHERS //
@@ -972,6 +979,7 @@ export const fetchers: Fetcher[] = [
   ...bluemoveFetchers,
   ...stabbleFetchers,
   ...franciumFetchers,
+  ...adrasteaFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
