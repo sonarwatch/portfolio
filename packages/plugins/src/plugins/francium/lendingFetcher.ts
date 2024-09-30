@@ -69,7 +69,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-positions-solana`,
+  id: `${platformId}-lending`,
   networkId: NetworkId.solana,
   executor,
 };
