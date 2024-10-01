@@ -59,7 +59,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   // if (poolsById.size === 0) return [];
 
   const mints: string[] = [];
-  const poolsObjects = await multiGetObjects(client, poolsIds);
+  const poolsObjects = await multiGetObjects(client, [...new Set(poolsIds)]);
   poolsObjects.forEach((poolObj) => {
     if (poolObj.data?.content?.fields) {
       const pool = getPoolFromObject(poolObj);
