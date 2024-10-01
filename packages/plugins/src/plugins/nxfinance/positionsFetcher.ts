@@ -125,7 +125,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     });
   });
 
-  return elementRegistry.dump(cache);
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {
