@@ -55,12 +55,12 @@ export class ElementRegistry {
     return elementBuilder;
   }
 
-  async dump(cache: Cache): Promise<PortfolioElement[]> {
+  async getElements(cache: Cache): Promise<PortfolioElement[]> {
     const mints = this.elements.map((e) => e.mints()).flat();
     const tokenPrices = await cache.getTokenPricesAsMap(mints, this.networkId);
 
     return this.elements
-      .map((e) => e.dump(this.networkId, this.platformId, tokenPrices))
+      .map((e) => e.get(this.networkId, this.platformId, tokenPrices))
       .filter(
         (e) => e !== null && e.value && e.value > 0
       ) as PortfolioElement[];

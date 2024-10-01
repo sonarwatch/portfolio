@@ -15,7 +15,7 @@ export class AssetBuilder {
     this.alreadyShifted = params.alreadyShifted || false;
   }
 
-  dump(
+  get(
     networkId: NetworkIdType,
     tokenPrices: TokenPriceMap
   ): PortfolioAsset | null {

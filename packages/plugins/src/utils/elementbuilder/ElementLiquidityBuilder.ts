@@ -28,13 +28,13 @@ export class ElementLiquidityBuilder extends ElementBuilder {
     return this.liquidities.map((liquidity) => liquidity.mints()).flat();
   }
 
-  override dump(
+  override get(
     networkId: NetworkIdType,
     platformId: string,
     tokenPrices: TokenPriceMap
   ): PortfolioElement | null {
     const liquidities = this.liquidities
-      .map((l) => l.export(networkId, tokenPrices))
+      .map((l) => l.get(networkId, tokenPrices))
       .filter((a) => a !== null) as PortfolioLiquidity[];
 
     if (liquidities.length === 0) return null;

@@ -65,7 +65,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   assets.forEach((asset) => asset && element.addSuppliedAsset(asset));
 
-  return elementRegistry.dump(cache);
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

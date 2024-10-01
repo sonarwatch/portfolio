@@ -26,13 +26,13 @@ export class ElementMultipleBuilder extends ElementBuilder {
     return this.assets.map((a) => a.address);
   }
 
-  dump(
+  get(
     networkId: NetworkIdType,
     platformId: string,
     tokenPrices: TokenPriceMap
   ): PortfolioElement | null {
     const assets = this.assets
-      .map((a) => a.dump(networkId, tokenPrices))
+      .map((a) => a.get(networkId, tokenPrices))
       .filter((a) => a !== null) as PortfolioAsset[];
 
     if (assets.length === 0) return null;
