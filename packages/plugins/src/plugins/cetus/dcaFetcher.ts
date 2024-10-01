@@ -22,7 +22,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     },
   });
 
-  if (!userIndexField) return [];
+  if (!userIndexField || userIndexField.error) return [];
 
   const fields = await getDynamicFields(
     client,

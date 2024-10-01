@@ -26,7 +26,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     },
   });
 
-  if (!accountCaps[0].data) return [];
+  if (!accountCaps[0]?.data) return [];
 
   const accountCapId = accountCaps[0].data.objectId;
 
