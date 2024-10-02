@@ -5,7 +5,7 @@ export const platform: Platform = {
   id: platformId,
   name: 'Cetus',
   image: 'https://sonar.watch/img/platforms/cetus.webp',
-  defiLlamaId: 'cetus',
+  defiLlamaId: 'parent#cetus',
   website: 'https://www.cetus.zone/',
 };
 export const clmmPoolsPrefix = `${platformId}-clmmPools`;

@@ -6,6 +6,7 @@ export const platform: Platform = {
   name: 'Jewel Swap',
   image: 'https://sonar.watch/img/platforms/jewel.webp',
   website: 'https://sui.jewelswap.io/',
+  defiLlamaId: 'parent#jewelswap',
   twitter: 'https://twitter.com/JewelSwapX',
 };
 export const marketsCachePrefix = `${platformId}-markets`;
