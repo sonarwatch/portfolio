@@ -66,15 +66,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     element.addAsset({
       address: pool.liquidity_mint,
-      amount: position.deactivating_amount
-        .plus(position.claiming_amount)
-        .div(pool.per_token_amount),
-      alreadyShifted: true,
-      attributes: { tags: ['withdrawing'] },
-    });
-
-    element.addAsset({
-      address: pool.liquidity_mint,
       amount: position.deactivating_amount.div(pool.per_token_amount),
       alreadyShifted: true,
       attributes: { tags: ['deactivating'] },
