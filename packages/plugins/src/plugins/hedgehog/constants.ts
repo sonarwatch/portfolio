@@ -8,7 +8,7 @@ export const platform: Platform = {
   image: 'https://sonar.watch/img/platforms/hedgehog.webp',
   website: 'https://hedgehog.markets',
   twitter: 'https://twitter.com/HedgehogMarket',
-  // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
+  defiLlamaId: 'hedgehog-markets', // from https://defillama.com/docs/api
 };
 export const ammPid = new PublicKey(
   'Hr4whNgXr3yZsJvx3TVSwfsFgXuSEPB1xKmvgrtLhsrM'

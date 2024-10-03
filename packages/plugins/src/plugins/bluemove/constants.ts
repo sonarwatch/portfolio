@@ -7,7 +7,7 @@ export const platform: Platform = {
   image: 'https://sonar.watch/img/platforms/bluemove.webp',
   website: 'https://dex.bluemove.net/',
   twitter: 'https://x.com/BlueMove_OA',
-  defiLlamaId: 'bluemove', // from https://defillama.com/docs/api
+  defiLlamaId: 'parent#bluemove', // from https://defillama.com/docs/api
 };
 export const marketsCacheKey = `markets`;
 

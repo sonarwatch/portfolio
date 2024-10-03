@@ -39,7 +39,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     .map((marketInfo) => [
       marketInfo.ptMint,
       marketInfo.ytMint,
-      // marketInfo.lpMint,
+      marketInfo.lpMint,
       // marketInfo.syMint,
     ])
     .flat();
@@ -53,9 +53,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const market = marketInfoById.get(account.marketAccount.toString());
     if (!market) continue;
 
-    const { stakePtAmount, stakeYtAmount } = account.stakeInfo;
+    const { stakePtAmount, stakeYtAmount, stakeLpAmount } = account.stakeInfo;
     const ptPrice = tokenPriceById.get(market.ptMint);
     const ytPrice = tokenPriceById.get(market.ytMint);
+    const lpPrice = tokenPriceById.get(market.lpMint);
 
     if (ptPrice && !stakePtAmount.isZero()) {
       const amount = stakePtAmount.dividedBy(10 ** ptPrice.decimals).toNumber();
@@ -68,6 +69,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const amount = stakeYtAmount.dividedBy(10 ** ytPrice.decimals).toNumber();
       assets.push(
         tokenPriceToAssetToken(market.ytMint, amount, NetworkId.solana, ytPrice)
+      );
+    }
+
+    if (lpPrice && !stakeLpAmount.isZero()) {
+      const amount = stakeLpAmount.dividedBy(10 ** lpPrice.decimals).toNumber();
+      assets.push(
+        tokenPriceToAssetToken(market.lpMint, amount, NetworkId.solana, lpPrice)
       );
     }
   }
