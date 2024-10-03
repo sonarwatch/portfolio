@@ -37,3 +37,13 @@ export const valueAverageFilters = (
   },
   { dataSize: 339 },
 ];
+
+export const lockFilters = (owner: string): GetProgramAccountsFilter[] => [
+  {
+    memcmp: {
+      offset: 8,
+      bytes: owner,
+    },
+  },
+  { dataSize: 296 },
+];

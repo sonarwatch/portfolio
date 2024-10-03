@@ -5,6 +5,7 @@ import perpetualFetcher from './exchange/perpetualFetcher';
 import valueAverageFetcher from './exchange/valueAverageFetcher';
 import limitFetcher from './exchange/limitFetcher';
 import dcaFetcher from './exchange/dcaFetcher';
+import lockFetcher from './exchange/lockFetcher';
 import custodiesJob from './exchange/custodiesJob';
 
 import { platform as launchpadPlatform } from './launchpad/constants';
@@ -30,6 +31,7 @@ export const fetchers: Fetcher[] = [
   valueAverageFetcher,
   limitFetcher,
   dcaFetcher,
+  lockFetcher,
   voteFetcher,
   asrFetcher,
   ...lfgFetchers,

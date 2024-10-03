@@ -27,6 +27,9 @@ export const limitV2ProgramId = new PublicKey(
 export const dcaProgramId = new PublicKey(
   'DCA265Vj8a9CEuX1eb1LWRnDT7uK6q1xMipnNyatn23M'
 );
+export const lockProgramId = new PublicKey(
+  'LocpQgucEQHbqNABEYvBvwoxCPsSbG91A1QaQhQQqjn'
+);
 
 export const jlpPool = new PublicKey(
   '5BUwFW4nRbftYTDMbgxykoFWqWHPzahFSNAaaaJtVKsq'
