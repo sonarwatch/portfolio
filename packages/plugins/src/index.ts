@@ -603,6 +603,11 @@ import {
   jobs as adrasteaJobs,
   fetchers as adrasteaFetchers,
 } from './plugins/adrastea';
+import {
+  platforms as elementalPlatforms,
+  jobs as elementalJobs,
+  fetchers as elementalFetchers,
+} from './plugins/elemental';
 
 export {
   walletTokensPlatform,
@@ -740,6 +745,7 @@ export const platforms: Platform[] = [
   ...stabblePlatforms,
   ...franciumPlatforms,
   ...adrasteaPlatforms,
+  ...elementalPlatforms,
 ];
 
 // JOBS //
@@ -859,6 +865,7 @@ export const jobs: Job[] = [
   ...stabbleJobs,
   ...franciumJobs,
   ...adrasteaJobs,
+  ...elementalJobs,
 ];
 
 // FETCHERS //
@@ -980,6 +987,7 @@ export const fetchers: Fetcher[] = [
   ...stabbleFetchers,
   ...franciumFetchers,
   ...adrasteaFetchers,
+  ...elementalFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
