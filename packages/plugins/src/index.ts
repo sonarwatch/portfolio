@@ -618,6 +618,11 @@ import {
   jobs as jouleJobs,
   fetchers as jouleFetchers,
 } from './plugins/joule';
+import {
+  platforms as mesoPlatforms,
+  jobs as mesoJobs,
+  fetchers as mesoFetchers,
+} from './plugins/meso';
 
 export {
   walletTokensPlatform,
@@ -758,6 +763,7 @@ export const platforms: Platform[] = [
   ...elementalPlatforms,
   ...adrenaPlatforms,
   ...joulePlatforms,
+  ...mesoPlatforms,
 ];
 
 // JOBS //
@@ -880,6 +886,7 @@ export const jobs: Job[] = [
   ...elementalJobs,
   ...adrenaJobs,
   ...jouleJobs,
+  ...mesoJobs,
 ];
 
 // FETCHERS //
@@ -1004,6 +1011,7 @@ export const fetchers: Fetcher[] = [
   ...elementalFetchers,
   ...adrenaFetchers,
   ...jouleFetchers,
+  ...mesoFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
