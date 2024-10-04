@@ -148,7 +148,7 @@ export function getOrcaNftFetcher(
         tokenPriceB
       );
 
-      const feesAndRewards = calcFeesAndRewards(
+      /* const feesAndRewards = calcFeesAndRewards(
         whirlpoolInfo,
         positionInfo,
         tickArrays
@@ -234,7 +234,7 @@ export function getOrcaNftFetcher(
             );
           }
         }
-      }
+      } */
 
       if (
         !assetTokenA ||

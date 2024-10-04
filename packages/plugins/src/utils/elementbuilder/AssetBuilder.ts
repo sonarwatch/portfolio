@@ -1,4 +1,8 @@
-import { NetworkIdType, PortfolioAsset } from '@sonarwatch/portfolio-core';
+import {
+  NetworkIdType,
+  PortfolioAsset,
+  PortfolioAssetAttributes,
+} from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { PortfolioAssetParams } from './PortfolioAssetParams';
 import tokenPriceToAssetToken from '../misc/tokenPriceToAssetToken';
@@ -7,15 +11,17 @@ import { TokenPriceMap } from '../../TokenPriceMap';
 export class AssetBuilder {
   address: string;
   amount: number | BigNumber | string;
+  attributes: PortfolioAssetAttributes;
   alreadyShifted: boolean;
 
   constructor(params: PortfolioAssetParams) {
     this.address = params.address.toString();
     this.amount = params.amount;
+    this.attributes = params.attributes || {};
     this.alreadyShifted = params.alreadyShifted || false;
   }
 
-  dump(
+  get(
     networkId: NetworkIdType,
     tokenPrices: TokenPriceMap
   ): PortfolioAsset | null {
@@ -31,7 +37,9 @@ export class AssetBuilder {
       tokenPrice.address,
       amount.toNumber(),
       networkId,
-      tokenPrice
+      tokenPrice,
+      undefined,
+      this.attributes
     );
   }
 }

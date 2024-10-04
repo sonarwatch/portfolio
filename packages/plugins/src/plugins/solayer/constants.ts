@@ -20,3 +20,10 @@ export const solayerLstPool = 'po1osKDWYF9oiVEGmzKA4eTs8eMveFRMox3bUKazGN2';
 export const solayerLstMint = 'sSo1wxKKr6zW2hqf5hZrp2CawLibcwi1pMBqk5bg2G4';
 export const solayerRstMint = 'sSo14endRuUbvQaJS3dq36Q829a3A6BEfoeeRGJywEh';
 export const solayerLstDecimals = 9;
+
+export const avsTokens = [
+  'sonickAJFiVLcYXx25X9vpF293udaWqDMUCiGtk7dg2',
+  'hash4eTHsuZakZiHg5vfQwFtBaEhhC9SXRYsZm4Br7k',
+  'bonkABCQVasnhyVAvB2zYFSCRMGB6xKhpthKuCnsU5K',
+  '6C41vb9AqJzmbWZ4zi6eCGJz3vSKrwjxfu8N77SRRtyr',
+];

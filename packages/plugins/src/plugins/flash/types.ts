@@ -109,3 +109,9 @@ export type CustodyInfo = {
 };
 
 export type PoolInfo = { pkey: string; flpMint: string; rewardPerLp: number };
+
+export type Prefix = {
+  keys: any[];
+  programId: string;
+  data: number[];
+};

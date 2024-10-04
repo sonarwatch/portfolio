@@ -22,7 +22,7 @@ export abstract class ElementBuilder {
 
   abstract mints(): string[];
 
-  abstract dump(
+  abstract get(
     networkId: NetworkIdType,
     platformId: string,
     tokenPrices: TokenPriceMap

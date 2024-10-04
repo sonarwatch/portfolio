@@ -12,6 +12,7 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId } from './constants';
 import { getHawksightUserPdas } from './helper';
 import obligationsFetcher from '../save/obligationsFetcher';
+import dlmmPositionFetcher from '../meteora/dlmmPositionsFetcher';
 import tokenFetcher from '../tokens/fetchers/solana';
 import { getWhirlpoolPositions } from '../orca/getWhirlpoolPositions';
 import { walletTokensPlatform } from '../tokens/constants';
@@ -63,6 +64,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       // This handles Save
       obligationsFetcher.executor(derivedAddresses[0].toString(), cache),
       obligationsFetcher.executor(derivedAddresses[1].toString(), cache),
+      // This handles Meteora
+      dlmmPositionFetcher.executor(derivedAddresses[0].toString(), cache),
+      dlmmPositionFetcher.executor(derivedAddresses[1].toString(), cache),
     ])
   ).flat();
 

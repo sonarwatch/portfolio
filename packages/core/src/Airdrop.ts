@@ -1,6 +1,7 @@
 import { AddressSystemType } from './Address';
 import { NetworkIdType } from './Network';
 import { UsdValue } from './UsdValue';
+import { TokenInfo } from './TokenList';
 
 export enum AirdropStatus {
   notYetOpen = '0_notYetOpen',
@@ -211,4 +212,5 @@ export type AirdropFetchersResult = {
   fetcherReports: AirdropFetcherReport[];
   airdrops: Airdrop[];
   duration: number;
+  tokenInfo?: Partial<Record<NetworkIdType, Record<string, TokenInfo>>>;
 };

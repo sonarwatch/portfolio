@@ -584,6 +584,31 @@ import {
   fetchers as tradeportFetchers,
 } from './plugins/tradeport';
 import {
+  platforms as bluemovePlatforms,
+  jobs as bluemoveJobs,
+  fetchers as bluemoveFetchers,
+} from './plugins/bluemove';
+import {
+  platforms as stabblePlatforms,
+  jobs as stabbleJobs,
+  fetchers as stabbleFetchers,
+} from './plugins/stabble';
+import {
+  platforms as franciumPlatforms,
+  jobs as franciumJobs,
+  fetchers as franciumFetchers,
+} from './plugins/francium';
+import {
+  platforms as adrasteaPlatforms,
+  jobs as adrasteaJobs,
+  fetchers as adrasteaFetchers,
+} from './plugins/adrastea';
+import {
+  platforms as elementalPlatforms,
+  jobs as elementalJobs,
+  fetchers as elementalFetchers,
+} from './plugins/elemental';
+import {
   platforms as loopscalePlatforms,
   jobs as loopscaleJobs,
   fetchers as loopscaleFetchers,
@@ -721,6 +746,11 @@ export const platforms: Platform[] = [
   ...alphafiPlatforms,
   ...jewelPlatforms,
   ...tradeportPlatforms,
+  ...bluemovePlatforms,
+  ...stabblePlatforms,
+  ...franciumPlatforms,
+  ...adrasteaPlatforms,
+  ...elementalPlatforms,
   ...loopscalePlatforms,
 ];
 
@@ -837,6 +867,11 @@ export const jobs: Job[] = [
   ...alphafiJobs,
   ...jewelJobs,
   ...tradeportJobs,
+  ...bluemoveJobs,
+  ...stabbleJobs,
+  ...franciumJobs,
+  ...adrasteaJobs,
+  ...elementalJobs,
   ...loopscaleJobs,
 ];
 
@@ -955,6 +990,11 @@ export const fetchers: Fetcher[] = [
   ...alphafiFetchers,
   ...jewelFetchers,
   ...tradeportFetchers,
+  ...bluemoveFetchers,
+  ...stabbleFetchers,
+  ...franciumFetchers,
+  ...adrasteaFetchers,
+  ...elementalFetchers,
   ...loopscaleFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);

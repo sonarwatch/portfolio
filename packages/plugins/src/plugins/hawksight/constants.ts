@@ -5,6 +5,6 @@ export const platform: Platform = {
   id: platformId,
   name: 'Hawksight',
   image: 'https://sonar.watch/img/platforms/hawksight.webp',
-  defiLlamaId: 'hawksight',
+  defiLlamaId: 'hawkfi',
   website: 'https://hawksight.co/',
 };

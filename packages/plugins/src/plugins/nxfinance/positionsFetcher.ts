@@ -115,6 +115,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       (mp) => mp?.tokenMint === loan.tokenMint
     );
     if (!marginPool) return;
+    if (loan.loanNote === '0') return;
 
     const borrowNoteRate = getBorrowNoteRate(marginPool);
 
@@ -124,7 +125,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     });
   });
 
-  return elementRegistry.dump(cache);
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

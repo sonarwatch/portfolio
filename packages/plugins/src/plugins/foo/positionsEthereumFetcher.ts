@@ -15,7 +15,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     alreadyShifted: true,
   });
 
-  return elementRegistry.dump(cache);
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

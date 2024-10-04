@@ -27,11 +27,10 @@ export function getElementNFTLendingValues(params: {
 
   // Total value
   let value = null;
-
-  if (borrowedValue == null) {
+  if (borrowedValue === null || borrowedValue === 0) {
     // it's an offer
     value = suppliedValue;
-  } else if (suppliedValue !== null) {
+  } else if (suppliedValue !== null && suppliedValue !== 0) {
     if (lender) {
       // supplied sol, nft as collat
       value = Math.min(suppliedValue, borrowedValue);
