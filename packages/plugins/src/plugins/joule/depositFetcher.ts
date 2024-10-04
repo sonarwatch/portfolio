@@ -16,7 +16,7 @@ const marketsMemo = new MemoizedCache<Market[]>(marketsCacheKey, {
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientAptos();
 
-  const profilesSummary = await getAccountResource<UserPositionMap>(
+  const positionMap = await getAccountResource<UserPositionMap>(
     client,
     owner,
     userPositionMapType
@@ -24,11 +24,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const markets = await marketsMemo.getItem(cache);
 
-  if (!profilesSummary) return [];
+  if (!positionMap) return [];
 
   const registry = new ElementRegistry(NetworkId.aptos, platformId);
 
-  for (const position of profilesSummary.positions_map.data) {
+  for (const position of positionMap.positions_map.data) {
     const element = registry.addElementBorrowlend({
       label: 'Lending',
       name: position.value.position_name,
