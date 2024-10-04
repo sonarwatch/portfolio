@@ -83,7 +83,9 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
       .filter((a) => a !== null) as PortfolioAsset[];
     const borrowedAssets = this.borrowedAssets
       .map((a) => a.get(networkId, tokenPrices))
-      .filter((a) => a !== null) as PortfolioAsset[];
+      .filter(
+        (a) => a !== null && a.value && a.value > 0.002
+      ) as PortfolioAsset[];
     const rewardAssets = this.rewardAssets
       .map((a) => a.get(networkId, tokenPrices))
       .filter((a) => a !== null) as PortfolioAsset[];
