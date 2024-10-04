@@ -608,6 +608,11 @@ import {
   jobs as elementalJobs,
   fetchers as elementalFetchers,
 } from './plugins/elemental';
+import {
+  platforms as adrenaPlatforms,
+  jobs as adrenaJobs,
+  fetchers as adrenaFetchers,
+} from './plugins/adrena';
 
 export {
   walletTokensPlatform,
@@ -746,6 +751,7 @@ export const platforms: Platform[] = [
   ...franciumPlatforms,
   ...adrasteaPlatforms,
   ...elementalPlatforms,
+  ...adrenaPlatforms,
 ];
 
 // JOBS //
@@ -866,6 +872,7 @@ export const jobs: Job[] = [
   ...franciumJobs,
   ...adrasteaJobs,
   ...elementalJobs,
+  ...adrenaJobs,
 ];
 
 // FETCHERS //
@@ -988,6 +995,7 @@ export const fetchers: Fetcher[] = [
   ...franciumFetchers,
   ...adrasteaFetchers,
   ...elementalFetchers,
+  ...adrenaFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
