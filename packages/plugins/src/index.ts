@@ -609,6 +609,21 @@ import {
   fetchers as elementalFetchers,
 } from './plugins/elemental';
 import {
+  platforms as adrenaPlatforms,
+  jobs as adrenaJobs,
+  fetchers as adrenaFetchers,
+} from './plugins/adrena';
+import {
+  platforms as joulePlatforms,
+  jobs as jouleJobs,
+  fetchers as jouleFetchers,
+} from './plugins/joule';
+import {
+  platforms as mesoPlatforms,
+  jobs as mesoJobs,
+  fetchers as mesoFetchers,
+} from './plugins/meso';
+import {
   platforms as loopscalePlatforms,
   jobs as loopscaleJobs,
   fetchers as loopscaleFetchers,
@@ -751,6 +766,9 @@ export const platforms: Platform[] = [
   ...franciumPlatforms,
   ...adrasteaPlatforms,
   ...elementalPlatforms,
+  ...adrenaPlatforms,
+  ...joulePlatforms,
+  ...mesoPlatforms,
   ...loopscalePlatforms,
 ];
 
@@ -872,6 +890,9 @@ export const jobs: Job[] = [
   ...franciumJobs,
   ...adrasteaJobs,
   ...elementalJobs,
+  ...adrenaJobs,
+  ...jouleJobs,
+  ...mesoJobs,
   ...loopscaleJobs,
 ];
 
@@ -995,6 +1016,9 @@ export const fetchers: Fetcher[] = [
   ...franciumFetchers,
   ...adrasteaFetchers,
   ...elementalFetchers,
+  ...adrenaFetchers,
+  ...jouleFetchers,
+  ...mesoFetchers,
   ...loopscaleFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
