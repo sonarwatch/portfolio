@@ -1,5 +1,14 @@
 import { GetProgramAccountsFilter } from '@solana/web3.js';
 
+export const roleFilters = (owner: string): GetProgramAccountsFilter[] => [
+  {
+    memcmp: {
+      offset: 8,
+      bytes: owner,
+    },
+  },
+];
+
 export const escrowFilters = (
   organization_identifier: string
 ): GetProgramAccountsFilter[] => [
@@ -24,7 +33,19 @@ export const orderFilters = (
   { dataSize: 355 },
 ];
 
-export const loanVaultFilters = (
+export const loanVaultLentFilters = (
+  borrower: string
+): GetProgramAccountsFilter[] => [
+  {
+    memcmp: {
+      offset: 8 + 32,
+      bytes: borrower,
+    },
+  },
+  { dataSize: 338 },
+];
+
+export const loanVaultBorrowedFilters = (
   borrower: string
 ): GetProgramAccountsFilter[] => [
   {
@@ -34,4 +55,13 @@ export const loanVaultFilters = (
     },
   },
   { dataSize: 338 },
+];
+
+export const lockboxFilters = (nft: string): GetProgramAccountsFilter[] => [
+  {
+    memcmp: {
+      offset: 52,
+      bytes: nft,
+    },
+  },
 ];

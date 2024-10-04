@@ -1,8 +1,33 @@
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { BeetStruct, bool, u8 } from '@metaplex-foundation/beet';
+import {
+  array,
+  BeetStruct,
+  bool,
+  FixableBeetStruct,
+  u32,
+  u8,
+  uniformFixedSizeArray,
+} from '@metaplex-foundation/beet';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { blob, i64, u64 } from '../../utils/solana';
+
+export type RoleAccount = {
+  buffer: Buffer;
+  user: PublicKey;
+  organization: PublicKey;
+  type: number;
+};
+
+export const roleAccountStruct = new BeetStruct<RoleAccount>(
+  [
+    ['buffer', blob(8)],
+    ['user', publicKey],
+    ['organization', publicKey],
+    ['type', u32],
+  ],
+  (args) => args as RoleAccount
+);
 
 export type LoanVault = {
   buffer: Buffer;
@@ -123,4 +148,78 @@ export const orderStruct = new BeetStruct<Order>(
     ['refinance_duration_type', u8],
   ],
   (args) => args as Order
+);
+
+export type Ledger = {
+  ledger_id: BigNumber;
+  principal_due: BigNumber;
+  principal_repaid: BigNumber;
+  interest_due: BigNumber;
+  interest_repaid: BigNumber;
+  due_time_offset: BigNumber;
+  paid_time: BigNumber;
+  payment_type: number;
+  is_filled: boolean;
+  grace_period: BigNumber;
+  late_payment_fee: BigNumber;
+  early_payment_fee: BigNumber;
+  payment_window: BigNumber;
+  reserve: number[];
+};
+
+export const ledgerStruct = new BeetStruct<Ledger>(
+  [
+    ['ledger_id', u64],
+    ['principal_due', u64],
+    ['principal_repaid', u64],
+    ['interest_due', u64],
+    ['interest_repaid', u64],
+    ['due_time_offset', i64],
+    ['paid_time', i64],
+    ['payment_type', u8],
+    ['is_filled', bool],
+    ['grace_period', i64],
+    ['late_payment_fee', u64],
+    ['early_payment_fee', u64],
+    ['payment_window', i64],
+    ['reserve', uniformFixedSizeArray(u8, 32)],
+  ],
+  (args) => args as Ledger
+);
+
+export type OrderLedger = {
+  buffer: Buffer;
+  version: number;
+  order: PublicKey;
+  ledgers: Ledger[];
+};
+
+export const orderLedgerStruct = new FixableBeetStruct<OrderLedger>(
+  [
+    ['buffer', blob(8)],
+    ['version', u8],
+    ['order', publicKey],
+    ['ledgers', array(ledgerStruct)],
+  ],
+  (args) => args as OrderLedger
+);
+
+export type Lockbox = {
+  buffer: Buffer;
+  nonce: PublicKey;
+  name: Buffer;
+  initialization_time: BigNumber;
+  nft_mint: PublicKey;
+  state: number;
+};
+export const lockboxStruct = new FixableBeetStruct<Lockbox>(
+  [
+    ['buffer', blob(8)],
+    ['nonce', publicKey],
+    ['name', blob(24)],
+    ['initialization_time', i64],
+    ['nft_mint', publicKey],
+    ['state', u8],
+  ],
+  (args) => args as Lockbox
 );
