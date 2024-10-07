@@ -133,6 +133,7 @@ import {
   airdropFetchers as kaminoAirdropFetchers,
 } from './plugins/kamino';
 import {
+  jobs as bucketJobs,
   fetchers as bucketFetchers,
   platforms as bucketPlatforms,
 } from './plugins/bucket';
@@ -798,6 +799,7 @@ export const jobs: Job[] = [
   ...aftermathJobs,
   ...liquidswapJobs,
   ...kaminoJobs,
+  ...bucketJobs,
   ...naviJobs,
   ...scallopJobs,
   ...curveJobs,
