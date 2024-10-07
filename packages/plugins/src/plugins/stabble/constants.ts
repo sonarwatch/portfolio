@@ -6,7 +6,7 @@ import { WeightedIdl } from './weightedIdl';
 export const platformId = 'stabble';
 export const platform: Platform = {
   id: platformId,
-  name: 'stabble',
+  name: 'Stabble',
   image: 'https://sonar.watch/img/platforms/stabble.webp',
   website: 'https://app.stabble.org/',
   twitter: 'https://x.com/stabbleorg',
