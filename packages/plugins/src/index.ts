@@ -623,6 +623,11 @@ import {
   jobs as mesoJobs,
   fetchers as mesoFetchers,
 } from './plugins/meso';
+import {
+  platforms as loopscalePlatforms,
+  jobs as loopscaleJobs,
+  fetchers as loopscaleFetchers,
+} from './plugins/loopscale';
 
 export {
   walletTokensPlatform,
@@ -764,6 +769,7 @@ export const platforms: Platform[] = [
   ...adrenaPlatforms,
   ...joulePlatforms,
   ...mesoPlatforms,
+  ...loopscalePlatforms,
 ];
 
 // JOBS //
@@ -887,6 +893,7 @@ export const jobs: Job[] = [
   ...adrenaJobs,
   ...jouleJobs,
   ...mesoJobs,
+  ...loopscaleJobs,
 ];
 
 // FETCHERS //
@@ -1012,6 +1019,7 @@ export const fetchers: Fetcher[] = [
   ...adrenaFetchers,
   ...jouleFetchers,
   ...mesoFetchers,
+  ...loopscaleFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
