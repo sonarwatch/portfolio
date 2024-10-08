@@ -1,4 +1,4 @@
-import { DynamicFieldInfo } from '@mysten/sui.js/client';
+import { DynamicFieldInfo } from '@mysten/sui/client';
 import { SuiClient } from '../clients/types';
 
 const maxPage = 25;

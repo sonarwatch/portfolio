@@ -9,10 +9,9 @@ import {
   getElementLendingValues,
   suiNetwork,
 } from '@sonarwatch/portfolio-core';
-import { normalizeStructTag, parseStructTag } from '@mysten/sui.js/utils';
+import { normalizeStructTag, parseStructTag } from '@mysten/sui/utils';
 import BigNumber from 'bignumber.js';
-import { SuiObjectDataFilter } from '@mysten/sui.js/client';
-import { StructTag } from '@mysten/sui.js/bcs';
+import { SuiObjectDataFilter } from '@mysten/sui/client';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
@@ -42,6 +41,7 @@ import {
 } from './types';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { getClientSui } from '../../utils/clients';
+import { StructTag } from '../../utils/sui/types';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elements: PortfolioElement[] = [];
@@ -171,13 +171,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
       const parsed = parseStructTag(objType);
       const subParsed = parsed.typeParams[0] as unknown as StructTag;
-      if (
+      return !(
         parsed.name !== 'Coin' ||
         !sCoinToCoinName[subParsed.name.toLowerCase() as sCoinNames]
-      )
-        return false;
-
-      return true;
+      );
     })
     .forEach((sCoin) => {
       if (!sCoin.data) return;

@@ -1,5 +1,5 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import { TransactionBlock } from '@mysten/sui.js/transactions';
+import { Transaction } from '@mysten/sui/transactions';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
@@ -18,7 +18,7 @@ import { extractStructTagFromType } from './helpers';
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
-  const tx = new TransactionBlock();
+  const tx = new Transaction();
   tx.moveCall({
     target: `${limitPackageId}::limit_order::get_orders_indexer_by_owner`,
     arguments: [tx.pure.address(owner), tx.object(limitUserIndexId)],

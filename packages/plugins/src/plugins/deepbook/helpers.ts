@@ -1,5 +1,5 @@
 import { BcsReader, splitGenericParameters } from '@mysten/bcs';
-import { TransactionBlock } from '@mysten/sui.js/transactions';
+import { Transaction } from '@mysten/sui/transactions';
 import BigNumber from 'bignumber.js';
 import { SuiClient } from '../../utils/clients/types';
 import { MODULE_CLOB, PACKAGE_ID } from './constants';
@@ -125,7 +125,7 @@ export const getUserPosition = async (
   accountCap: string,
   suiClient: SuiClient
 ): Promise<UserPosition> => {
-  const tx = new TransactionBlock();
+  const tx = new Transaction();
   const cap = checkAccountCap(accountCap);
 
   tx.moveCall({
