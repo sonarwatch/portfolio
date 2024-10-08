@@ -54,8 +54,8 @@ const executor: FetcherExecutor = async (owner: string) => {
     const content = object.data.content as ParsedData<NftStruct>;
 
     let attributes: CollectibleAttribute[] | undefined;
-    if (content.fields.attributes?.fields.map.fields.contents) {
-      attributes = content.fields.attributes?.fields.map.fields.contents.map(
+    if (content.fields?.attributes?.fields.map?.fields?.contents) {
+      attributes = content.fields.attributes.fields.map.fields.contents?.map(
         (c) => ({
           trait_type: c.fields.key,
           value: c.fields.value,
