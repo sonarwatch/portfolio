@@ -113,7 +113,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (!stakedAssets && !suiUnstakingAssets) return [];
 
   const elements: PortfolioElement[] = [];
-  if (stakedAssets) {
+  if (stakedAssets.length !== 0) {
     elements.push({
       type: PortfolioElementType.multiple,
       label: 'Staked',
