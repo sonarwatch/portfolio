@@ -14,3 +14,5 @@ export const gamesCacheId = `games`;
 export const programId = new PublicKey(
   'FitAFk15vtx2PBjfr7QTnefaHRx6HwajRiZMt1DdSSKU'
 );
+
+export const api = 'https://api.moonwalk.fit/api/users/tokens/';

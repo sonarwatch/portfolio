@@ -1,98 +1,38 @@
-import {
-  NetworkId,
-  PortfolioAssetToken,
-  PortfolioElementMultiple,
-  PortfolioElementType,
-  getUsdValueSum,
-  solanaNativeAddress,
-} from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import axios, { AxiosResponse } from 'axios';
 import { Cache } from '../../Cache';
-import { programId, platformId, gamesCacheId } from './constants';
+import { platformId, api } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { getClientSolana } from '../../utils/clients';
-import { getParsedProgramAccounts, usdcSolanaMint } from '../../utils/solana';
-import { CachedGame, gamePlayerStruct } from './structs';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { bonkMint } from '../bonkrewards/constants';
-import { getMintFromCurrency } from './helpers';
-
-const cachedGames: Map<string, CachedGame> = new Map();
-let lastCachedGames = 0;
+import { Games } from './types';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const connection = getClientSolana();
+  const apiResponse: AxiosResponse<Games> = await axios.get(api + owner, {
+    timeout: 3000,
+  });
 
-  const now = Date.now();
-  if (lastCachedGames + 600000 < now) {
-    const cCachedGames = await cache.getItem<CachedGame[]>(gamesCacheId, {
-      prefix: platformId,
-      networkId: NetworkId.solana,
+  if (!apiResponse.data) return [];
+
+  const registry = new ElementRegistry(NetworkId.solana, platformId);
+  for (const game of apiResponse.data) {
+    const element = registry.addElementMultiple({
+      label: 'Deposit',
+      name: game.game,
     });
-    lastCachedGames = now;
-    cCachedGames?.forEach((c) => {
-      cachedGames.set(c.gameId, c);
+    element.addAsset({
+      address: game.token,
+      amount: game.claimable,
+      alreadyShifted: true,
+      attributes: { isClaimable: true },
+    });
+    element.addAsset({
+      address: game.token,
+      amount: game.locked,
+      alreadyShifted: true,
+      attributes: { lockedUntil: game.end * 1000 },
     });
   }
-
-  const accounts = await getParsedProgramAccounts(
-    connection,
-    gamePlayerStruct,
-    programId,
-    [
-      {
-        dataSize: gamePlayerStruct.byteSize,
-      },
-      {
-        memcmp: {
-          bytes: owner,
-          offset: 9,
-        },
-      },
-    ]
-  );
-  if (accounts.length === 0) return [];
-
-  const tokenPrices = await cache.getTokenPricesAsMap(
-    [solanaNativeAddress, usdcSolanaMint, bonkMint],
-    NetworkId.solana
-  );
-  const assets: PortfolioAssetToken[] = [];
-  accounts.forEach((acc) => {
-    if (acc.claimed) return;
-    const game = cachedGames.get(acc.gameId.toString());
-    if (!game) return;
-
-    const { mint } = getMintFromCurrency(game.currency);
-    const tokenPrice = tokenPrices.get(mint);
-
-    const amount = new BigNumber(game.playerDeposit).toNumber();
-    const lockedUntil = Number(game.blocktimeEnd);
-    const asset = tokenPriceToAssetToken(
-      mint,
-      amount,
-      NetworkId.solana,
-      tokenPrice,
-      tokenPrice?.price,
-      {
-        lockedUntil,
-      }
-    );
-    assets.push(asset);
-  });
-  if (assets.length === 0) return [];
-
-  const element: PortfolioElementMultiple = {
-    networkId: NetworkId.solana,
-    label: 'Deposit',
-    platformId,
-    type: PortfolioElementType.multiple,
-    value: getUsdValueSum(assets.map((a) => a.value)),
-    data: {
-      assets,
-    },
-  };
-  return [element];
+  return registry.getElements(cache);
 };
 
 const fetcher: Fetcher = {
