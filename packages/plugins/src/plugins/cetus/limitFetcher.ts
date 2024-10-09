@@ -11,7 +11,7 @@ import {
 import { getClientSui } from '../../utils/clients';
 import { LimitOrder } from './types';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
-import { multipleGetDynamicFieldsObjects } from '../../utils/sui/multipleGetDynamicFieldsObjects';
+import { multipleGetDynamicFieldsObjectsSafe } from '../../utils/sui/multipleGetDynamicFieldsObjectsSafe';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { extractStructTagFromType } from './helpers';
 
@@ -36,7 +36,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     (e) => (e.parsedJson as { orders_table_id: string }).orders_table_id
   );
 
-  const fields = await multipleGetDynamicFieldsObjects(client, ordersTableIds);
+  const fields = await multipleGetDynamicFieldsObjectsSafe(
+    client,
+    ordersTableIds
+  );
 
   if (!fields.length) return [];
 

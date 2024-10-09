@@ -8,7 +8,7 @@ import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { extractStructTagFromType } from './helpers';
 import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
-import { getDynamicFields } from '../../utils/sui/getDynamicFields';
+import { getDynamicFieldsSafe } from '../../utils/sui/getDynamicFieldsSafe';
 import { ID } from '../../utils/sui/structs/id';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
@@ -24,7 +24,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (!userIndexField || userIndexField.error) return [];
 
-  const fields = await getDynamicFields(
+  const fields = await getDynamicFieldsSafe(
     client,
     (userIndexField.data?.content?.fields as { value: { fields: { id: ID } } })
       .value.fields.id.id
