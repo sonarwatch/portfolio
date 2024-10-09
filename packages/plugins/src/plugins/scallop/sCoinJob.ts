@@ -2,12 +2,10 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Job, JobExecutor } from '../../Job';
 import {
   scoinKey,
-  sCoinTypesMap,
   scoinPrefix as prefix,
-  sCoinNames,
 } from './constants';
 import { Cache } from '../../Cache';
-import { SCoinTypeMetadata } from './types';
+import { sCoinNames, SCoinTypeMetadata, sCoinTypesMap } from './types';
 import { getClientSui } from '../../utils/clients';
 
 const executor: JobExecutor = async (cache: Cache) => {

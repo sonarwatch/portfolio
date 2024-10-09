@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js';
 import axios, { AxiosResponse } from 'axios';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { airdropUrl, platformId, tableId } from './constants';
+import { AIRDROP_URL, platformId, CNY_TABLE_ID } from './constants';
 import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
 import { ApiResponse, ClaimStatus } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
@@ -28,7 +28,7 @@ function getAmount(claimData: string): number | undefined {
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const signature: AxiosResponse<ApiResponse> | null = await axios
-    .get(airdropUrl + owner)
+    .get(AIRDROP_URL + owner)
     .catch(() => null);
 
   if (!signature?.data.data || signature.status === 404) return [];
@@ -42,7 +42,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       type: 'address',
       value: owner,
     },
-    parentId: tableId,
+    parentId: CNY_TABLE_ID,
   });
   if (claimStatus.data) return [];
 

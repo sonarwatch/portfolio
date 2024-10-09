@@ -26,3 +26,8 @@ export type WitTable = {
     with_keys: boolean;
   };
 };
+
+export type ExtendedBasicField<T> = {
+  type: string;
+  fields: T;
+}

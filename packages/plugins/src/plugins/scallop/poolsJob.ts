@@ -1,5 +1,9 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import { SUI_TYPE_ARG, normalizeStructTag } from '@mysten/sui.js/utils';
+import {
+  SUI_TYPE_ARG,
+  normalizeStructTag,
+  parseStructTag,
+} from '@mysten/sui.js/utils';
 import { CoinMetadata } from '@mysten/sui.js/client';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
@@ -9,7 +13,7 @@ import {
   poolsKey,
   poolsPrefix as prefix,
 } from './constants';
-import { AddressInfo, Coin, Pools } from './types';
+import { AddressInfo, Coin, PoolCoinNames, Pools, StructTag } from './types';
 import { getObject } from '../../utils/sui/getObject';
 import { getClientSui } from '../../utils/clients';
 
@@ -23,11 +27,13 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   if (!address) return;
 
-  const coinTypes: Pools = {};
+  const coinTypes: Partial<Pools> = {};
   const coins = new Map<string, Coin>(
     Object.entries(address.mainnet.core.coins)
   );
-  const coinNames: string[] = Array.from(coins.keys());
+  const coinNames: PoolCoinNames[] = Array.from(
+    coins.keys()
+  ) as PoolCoinNames[];
   const client = getClientSui();
   for (const coinName of coinNames) {
     const detail = coins.get(coinName);
@@ -39,14 +45,19 @@ const executor: JobExecutor = async (cache: Cache) => {
       };
     } else {
       const object = await getObject<CoinMetadata>(client, detail.metaData);
-      const objType = normalizeStructTag(object.data?.type || '');
-      const objFields = object.data?.content?.fields;
-      if (!objType || !objFields) return;
+      const objectData = object.data;
+      if (!objectData || !objectData.type) return;
+
+      const metadataStruct = parseStructTag(
+        normalizeStructTag(objectData.type)
+      ); // 0x2::coin::CoinMetadata<T>
+      const { address: packageId, module, name } = metadataStruct
+        .typeParams[0] as StructTag;
+      const objFields = objectData.content?.fields;
+      if (!objFields) return;
+
       coinTypes[coinName] = {
-        coinType: objType.substring(
-          objType.indexOf('<') + 1,
-          objType.indexOf('>')
-        ),
+        coinType: `${packageId}::${module}::${name}`,
         metadata: objFields,
       };
     }
