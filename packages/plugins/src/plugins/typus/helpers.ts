@@ -16,7 +16,7 @@ export async function getDepositShares(
   const transactionBlock = new Transaction();
   const target = viewDepositSharesType as `${string}::${string}::${string}`;
   const transactionBlockArguments = [
-    transactionBlock.pure.address(registryDovSingle),
+    transactionBlock.object(registryDovSingle),
     transactionBlock.makeMoveVec({
       type: depositReceiptType,
       elements: receipts.map((id) => transactionBlock.object(id)),
