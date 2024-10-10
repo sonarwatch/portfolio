@@ -8,14 +8,17 @@ import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId, usersInfosOwner } from './constants';
 import { getClientSui } from '../../utils/clients';
-import { getDynamicFieldObjects } from '../../utils/sui/getDynamicFieldObjects';
+import { getDynamicFieldObjectsSafe } from '../../utils/sui/getDynamicFieldObjectsSafe';
 import { UserInfo } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
-  const test = await getDynamicFieldObjects<UserInfo>(client, usersInfosOwner);
+  const test = await getDynamicFieldObjectsSafe<UserInfo>(
+    client,
+    usersInfosOwner
+  );
   const userInfos = test.filter(
     (object) => object.data?.content?.fields.name === owner
   );

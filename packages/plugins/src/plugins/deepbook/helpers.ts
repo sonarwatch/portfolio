@@ -1,10 +1,10 @@
 import { BcsReader, splitGenericParameters } from '@mysten/bcs';
-import { TransactionBlock } from '@mysten/sui.js/transactions';
+import { Transaction } from '@mysten/sui/transactions';
 import BigNumber from 'bignumber.js';
 import { SuiClient } from '../../utils/clients/types';
 import { MODULE_CLOB, PACKAGE_ID } from './constants';
 import { PoolSummary, UserPosition } from './types';
-import { queryEventsSafe } from '../../utils/sui/queryEventsSafe';
+import { queryEvents } from '../../utils/sui/queryEvents';
 
 const SUI_ADDRESS_LENGTH = 32;
 const DUMMY_ADDRESS = normalizeSuiAddress('0x0');
@@ -125,7 +125,7 @@ export const getUserPosition = async (
   accountCap: string,
   suiClient: SuiClient
 ): Promise<UserPosition> => {
-  const tx = new TransactionBlock();
+  const tx = new Transaction();
   const cap = checkAccountCap(accountCap);
 
   tx.moveCall({
@@ -158,7 +158,7 @@ export const getUserPosition = async (
 export const getAllPools = async (
   suiClient: SuiClient
 ): Promise<PoolSummary[]> => {
-  const events = await queryEventsSafe<{
+  const events = await queryEvents<{
     pool_id: string;
     base_asset: { name: string };
     quote_asset: { name: string };

@@ -1,4 +1,4 @@
-import { SuiObjectRef } from '@mysten/sui.js/client';
+import { SuiObjectRef } from '@mysten/sui/client';
 import { ObjectResponse } from './types';
 
 export function getObjectDeletedResponse<K>(

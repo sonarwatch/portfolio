@@ -1,5 +1,5 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import { TransactionBlock } from '@mysten/sui.js/transactions';
+import { Transaction } from '@mysten/sui/transactions';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
@@ -11,14 +11,14 @@ import {
 import { getClientSui } from '../../utils/clients';
 import { LimitOrder } from './types';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
-import { multipleGetDynamicFieldsObjects } from '../../utils/sui/multipleGetDynamicFieldsObjects';
+import { multipleGetDynamicFieldsObjectsSafe } from '../../utils/sui/multipleGetDynamicFieldsObjectsSafe';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { extractStructTagFromType } from './helpers';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
-  const tx = new TransactionBlock();
+  const tx = new Transaction();
   tx.moveCall({
     target: `${limitPackageId}::limit_order::get_orders_indexer_by_owner`,
     arguments: [tx.pure.address(owner), tx.object(limitUserIndexId)],
@@ -36,7 +36,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     (e) => (e.parsedJson as { orders_table_id: string }).orders_table_id
   );
 
-  const fields = await multipleGetDynamicFieldsObjects(client, ordersTableIds);
+  const fields = await multipleGetDynamicFieldsObjectsSafe(
+    client,
+    ordersTableIds
+  );
 
   if (!fields.length) return [];
 

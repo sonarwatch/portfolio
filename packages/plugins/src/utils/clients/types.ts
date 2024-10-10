@@ -1,5 +1,5 @@
 import { Aptos } from '@aptos-labs/ts-sdk';
-import { SuiClient as MystenSuiClient } from '@mysten/sui.js/client';
+import { SuiClient as MystenSuiClient } from '@mysten/sui/client';
 import { Connection } from '@solana/web3.js';
 import { PublicClient } from 'viem';
 

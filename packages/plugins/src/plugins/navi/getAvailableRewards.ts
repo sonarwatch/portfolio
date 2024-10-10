@@ -1,4 +1,4 @@
-import { TransactionBlock } from '@mysten/sui.js/transactions';
+import { Transaction } from '@mysten/sui/transactions';
 import { BCS, getSuiMoveConfig } from '@mysten/bcs';
 import BigNumber from 'bignumber.js';
 import { suiClockAddress } from '@sonarwatch/portfolio-core';
@@ -36,7 +36,7 @@ bcs.registerStructType('IncentivePoolInfoByPhase', {
 });
 
 function getTransactionBlock(owner: string, optionType: number) {
-  const tx = new TransactionBlock();
+  const tx = new Transaction();
 
   tx.moveCall({
     target: incentiveFunction,
@@ -44,9 +44,9 @@ function getTransactionBlock(owner: string, optionType: number) {
       tx.object(suiClockAddress),
       tx.object(incentiveObjectId),
       tx.object(incentiveStorageObjectId),
-      tx.pure(0),
-      tx.pure(optionType),
-      tx.pure(owner),
+      tx.pure.u64(0),
+      tx.pure.u64(optionType),
+      tx.pure.address(owner),
     ],
   });
 
@@ -55,7 +55,7 @@ function getTransactionBlock(owner: string, optionType: number) {
 
 async function getRewardPoolsData(
   client: SuiClient,
-  tx: TransactionBlock,
+  tx: Transaction,
   owner: string
 ): Promise<{ phase: string; pools: Pool[] }[]> {
   try {

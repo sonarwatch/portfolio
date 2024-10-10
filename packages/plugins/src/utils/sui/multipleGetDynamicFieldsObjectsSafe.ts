@@ -1,17 +1,18 @@
 import { SuiObjectDataOptions } from '@mysten/sui/client';
 import { SuiClient } from '../clients/types';
 import runInBatch from '../misc/runInBatch';
+import { getDynamicFieldObjectsSafe } from './getDynamicFieldObjectsSafe';
 import { ObjectResponse } from './types';
-import { getDynamicFieldObjects } from './getDynamicFieldObjects';
 
-export async function multipleGetDynamicFieldsObjects<K>(
+export async function multipleGetDynamicFieldsObjectsSafe<K>(
   client: SuiClient,
   parentIds: string[],
   options?: SuiObjectDataOptions
 ): Promise<ObjectResponse<K>[][]> {
   const result = await runInBatch(
     parentIds.map(
-      (parentId) => () => getDynamicFieldObjects<K>(client, parentId, options)
+      (parentId) => () =>
+        getDynamicFieldObjectsSafe<K>(client, parentId, options)
     ),
     10
   );

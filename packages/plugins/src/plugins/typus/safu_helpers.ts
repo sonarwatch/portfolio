@@ -1,5 +1,5 @@
 import { Share, TypusBidReceipt, Vault } from './safu_types';
-import { TransactionBlock } from '@mysten/sui.js/transactions';
+import { Transaction } from '@mysten/sui/transactions';
 import { SuiClient } from '../../utils/clients/types';
 import {
   frameworkPackage,
@@ -7,6 +7,7 @@ import {
   safuPackage,
   safuRegistryId,
 } from './constants';
+import { bcs } from '@mysten/sui/bcs';
 import { BcsReader } from '@mysten/bcs';
 
 const SENDER =
@@ -15,19 +16,19 @@ const SENDER =
 export async function getVaultData(
   provider: SuiClient
 ): Promise<{ [key: string]: [Vault, TypusBidReceipt | null] }> {
-  let transactionBlock = new TransactionBlock();
-  transactionBlock.moveCall({
+  let transaction = new Transaction();
+  transaction.moveCall({
     target: `${safuPackage}::view_function::get_vault_data_bcs`,
     typeArguments: [`${frameworkPackage}::vault::TypusBidReceipt`],
     arguments: [
-      transactionBlock.pure(safuRegistryId),
-      transactionBlock.pure(vaultsIndexes),
+      transaction.object(safuRegistryId),
+      transaction.pure(bcs.vector(bcs.U64).serialize(vaultsIndexes)),
     ],
   });
   let results = (
     await provider.devInspectTransactionBlock({
       sender: SENDER,
-      transactionBlock,
+      transactionBlock: transaction,
     })
   ).results;
   // console.log(JSON.stringify(results));
@@ -164,15 +165,15 @@ export async function getShareData(
   provider: SuiClient,
   owner: string
 ): Promise<{ [key: string]: Share[] }> {
-  let transactionBlock = new TransactionBlock();
+  let transactionBlock = new Transaction();
   const indexes = vaultsIndexes.slice();
   transactionBlock.moveCall({
     target: `${safuPackage}::view_function::get_share_data_bcs`,
     typeArguments: [],
     arguments: [
-      transactionBlock.pure(safuRegistryId),
-      transactionBlock.pure(owner),
-      transactionBlock.pure(indexes),
+      transactionBlock.object(safuRegistryId),
+      transactionBlock.pure.address(owner),
+      transactionBlock.pure(bcs.vector(bcs.U64).serialize(indexes)),
     ],
   });
   let results = (

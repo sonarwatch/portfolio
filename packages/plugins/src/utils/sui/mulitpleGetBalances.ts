@@ -1,4 +1,4 @@
-import { CoinBalance } from '@mysten/sui.js/dist/cjs/client';
+import { CoinBalance } from '@mysten/sui/client';
 import { SuiClient } from '../clients/types';
 
 export async function getMultipleBalances(
