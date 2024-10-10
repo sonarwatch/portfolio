@@ -1,4 +1,4 @@
-import { CoinMetadata } from '@mysten/sui.js/client';
+import { CoinMetadata } from '@mysten/sui/client';
 import { CoinNames, MARKET_COIN_NAMES } from '../constants';
 
 export const SUPPORTED_SPOOL_COIN_NAMES = ['ssui', 'susdc'] as const;

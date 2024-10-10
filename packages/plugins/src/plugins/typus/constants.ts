@@ -28,10 +28,35 @@ export const safuRegistryId =
   '0xdc970d638d1489385e49ddb76889748011bac4616b95a51aa63633972b841706';
 export const safuVaultsKey = 'safu-vaults';
 
-export const vaultsIndexes = ['0', '1', '2', '3'];
+export const vaultsIndexes = [
+  '0',
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '10',
+  '11',
+  '12',
+  '13',
+];
 export const safuVaultsNames: { [key: string]: string } = {
-  '0': 'Bull',
-  '1': 'Bear',
-  '2': 'All Weather SUI',
-  '3': 'All Weather USDC',
+  '0': 'SUI Daily Bull',
+  '1': 'SUI Daily Bear',
+  '2': 'Daily All Weather',
+  '3': 'Daily All Weather',
+  '4': 'SUI Hourly Bull',
+  '5': 'SUI Hourly Bear',
+  '6': 'BTC Daily Bull',
+  '7': 'BTC Daily Bear',
+  '8': 'ETH Daily Bull',
+  '9': 'ETH Daily Bear',
+  '10': 'SOL Daily Bull',
+  '11': 'SOL Daily Bear',
+  '12': 'SUI Daily Bull',
+  '13': 'SUI Daily Bull',
 };

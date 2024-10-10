@@ -1,4 +1,4 @@
-import { SuiObjectResponseQuery } from '@mysten/sui.js/client';
+import { SuiObjectResponseQuery } from '@mysten/sui/client';
 import { SuiClient } from '../clients/types';
 import { ObjectResponse } from './types';
 

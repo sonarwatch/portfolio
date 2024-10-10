@@ -1,4 +1,4 @@
-import { TransactionBlock } from '@mysten/sui.js/transactions';
+import { Transaction } from '@mysten/sui/transactions';
 import {
   formatMoveTokenAddress,
   getElementLendingValues,
@@ -76,7 +76,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         ? 'position_info_reverse'
         : 'position_info';
 
-      const tx = new TransactionBlock();
+      const tx = new Transaction();
 
       tx.moveCall({
         target: `${packageObjectId}::${module}::${func}`,
@@ -84,7 +84,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           tx.object(borrowingInterest.workerInfo),
           tx.object(data.others.globalStorage),
           tx.object(borrowingInterest.pool),
-          tx.pure(positionId),
+          tx.pure.u64(positionId),
         ],
         typeArguments: [
           borrowingInterest.isReverse

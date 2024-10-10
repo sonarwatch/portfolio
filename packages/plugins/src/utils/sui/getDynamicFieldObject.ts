@@ -1,4 +1,4 @@
-import { GetDynamicFieldObjectParams } from '@mysten/sui.js/client';
+import { GetDynamicFieldObjectParams } from '@mysten/sui/client';
 import { SuiClient } from '../clients/types';
 import { ObjectResponse } from './types';
 

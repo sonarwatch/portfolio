@@ -1,6 +1,6 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import { SUI_TYPE_ARG, normalizeStructTag } from '@mysten/sui.js/utils';
-import { CoinMetadata } from '@mysten/sui.js/client';
+import { SUI_TYPE_ARG, normalizeStructTag } from '@mysten/sui/utils';
+import { CoinMetadata } from '@mysten/sui/client';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import {
