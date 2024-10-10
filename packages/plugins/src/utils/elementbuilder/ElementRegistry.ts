@@ -1,8 +1,6 @@
 import {
   NetworkIdType,
   PortfolioElement,
-  PortfolioElementLiquidity,
-  PortfolioElementMultiple,
   PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
 import { ElementBuilder } from './ElementBuilder';

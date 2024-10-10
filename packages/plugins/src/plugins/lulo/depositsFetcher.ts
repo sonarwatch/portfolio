@@ -1,5 +1,5 @@
 import { NetworkId, PortfolioElement } from '@sonarwatch/portfolio-core';
-import { AccountInfo, PublicKey } from '@solana/web3.js';
+import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId } from './constants';
@@ -14,7 +14,6 @@ import { userAccountStruct } from './struct';
 import { obligationStruct } from '../save/structs';
 import { mainMarket, marketsPrefix, reservesPrefix } from '../save/constants';
 import { MarketInfo, ReserveInfo, ReserveInfoExtended } from '../save/types';
-import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 import { getElementsFromObligations } from '../save/helpers';
 import { marginfiAccountStruct } from '../marginfi/structs/MarginfiAccount';
 import { ParsedAccount } from '../../utils/solana';
@@ -90,39 +89,21 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         }
       );
       if (reservesInfos.length !== 0) {
-        const mints: string[] = [];
-        const pythAddresses: PublicKey[] = [];
         const reserveByAddress: Map<string, ReserveInfo> = new Map();
         reservesInfos.forEach((reserve) => {
           if (!reserve) return;
 
-          pythAddresses.push(
-            new PublicKey(reserve.reserve.liquidity.pythOracle)
-          );
-          mints.push(reserve.reserve.liquidity.mintPubkey);
           reserveByAddress.set(reserve.pubkey, reserve);
         });
 
-        const [pythAccounts, tokenPriceByAddress] = await Promise.all([
-          getMultipleAccountsInfoSafe(client, pythAddresses),
-          cache.getTokenPricesAsMap(mints, NetworkId.solana),
-        ]);
-
-        const pythAccByAddress: Map<string, AccountInfo<Buffer>> = new Map();
-        for (let i = 0; i < pythAddresses.length; i++) {
-          const account = pythAccounts[i];
-          if (account === null) continue;
-
-          pythAccByAddress.set(pythAddresses[i].toString(), account);
-        }
-
-        const solendElements: PortfolioElement[] = getElementsFromObligations(
-          [saveObligation],
-          reserveByAddress,
-          new Map([[mainMarket, mainMarketInfo]]),
-          tokenPriceByAddress,
-          pythAccByAddress
-        );
+        const solendElements: PortfolioElement[] =
+          await getElementsFromObligations(
+            [saveObligation],
+            reserveByAddress,
+            new Map([[mainMarket, mainMarketInfo]]),
+            owner,
+            cache
+          );
         portfolioElements.push(...solendElements);
       }
     }
