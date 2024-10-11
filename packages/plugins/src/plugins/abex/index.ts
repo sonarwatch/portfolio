@@ -12,5 +12,5 @@ export const jobs: Job[] = [marketsJob];
 export const fetchers: Fetcher[] = [
   stakingFetcher,
   positionsFetcher,
-  // ordersFetcher,
+  ordersFetcher,
 ];

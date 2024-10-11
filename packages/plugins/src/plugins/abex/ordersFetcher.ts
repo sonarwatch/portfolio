@@ -19,7 +19,22 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     owner
   );
 
+  if (!positionInfoList.length) return [];
+
   const elementRegistry = new ElementRegistry(NetworkId.sui, platformId);
+  const element = elementRegistry.addElementMultiple({
+    label: 'Deposit',
+    tags: ['Orders'],
+  });
+
+  positionInfoList.forEach((positionInfo) => {
+    if (positionInfo.executed) return;
+    if (!positionInfo.openOrder?.collateralAmount) return;
+    element.addAsset({
+      address: positionInfo.collateralToken,
+      amount: positionInfo.openOrder.collateralAmount,
+    });
+  });
 
   return elementRegistry.getElements(cache);
 };
