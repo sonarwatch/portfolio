@@ -14,7 +14,7 @@ import { IMarketInfo } from './types';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
-  // TODO orders
+
   const positionCapInfoList = await getPositionCapInfoList(client, owner);
 
   if (positionCapInfoList.length === 0) return [];
