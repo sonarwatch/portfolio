@@ -22,6 +22,8 @@ const executor: JobExecutor = async (cache: Cache) => {
       params: { take: lastCount || minToTake, chain_id: 666666 },
     })
     .catch(() => null);
+  if (!apiRes)
+    console.log('WhalesMarket Job : unable to reach the API :', whalesApi);
 
   if (apiRes?.data.data) {
     const tokens = apiRes.data.data.list;
