@@ -42,9 +42,13 @@ export default async function storeTokenPricesFromSqrt(
   if (!tokenPriceX && !tokenPriceY) return undefined;
 
   const decimalsX =
-    tempDecimalsX || (await getCachedDecimalsForToken(cache, mintX, networkId));
+    tempDecimalsX ||
+    tokenPriceX?.decimals ||
+    (await getCachedDecimalsForToken(cache, mintX, networkId));
   const decimalsY =
-    tempDecimalsY || (await getCachedDecimalsForToken(cache, mintY, networkId));
+    tempDecimalsY ||
+    tokenPriceY?.decimals ||
+    (await getCachedDecimalsForToken(cache, mintY, networkId));
   if (!decimalsX || !decimalsY) return undefined;
   const xToYPrice = sqrtPriceX64ToPrice(sqrtPrice, decimalsX, decimalsY);
 
