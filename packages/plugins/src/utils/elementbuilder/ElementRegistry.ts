@@ -11,6 +11,7 @@ import { Cache } from '../../Cache';
 import { ElementMultipleBuilder } from './ElementMultipleBuilder';
 import { ElementLiquidityBuilder } from './ElementLiquidityBuilder';
 import { ElementBorrowlendBuilder } from './ElementBorrowlendBuilder';
+import { ElementLeverageBuilder } from './ElementLeverageBuilder';
 
 export class ElementRegistry {
   readonly networkId: NetworkIdType;
@@ -49,6 +50,17 @@ export class ElementRegistry {
   ): ElementBorrowlendBuilder {
     const elementBuilder = new ElementBorrowlendBuilder({
       type: PortfolioElementType.borrowlend,
+      ...params,
+    });
+    this.elements.push(elementBuilder);
+    return elementBuilder;
+  }
+
+  addElementLeverage(
+    params: Omit<ElementParams, 'type'>
+  ): ElementLeverageBuilder {
+    const elementBuilder = new ElementLeverageBuilder({
+      type: PortfolioElementType.leverage,
       ...params,
     });
     this.elements.push(elementBuilder);
