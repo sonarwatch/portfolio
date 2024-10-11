@@ -12,7 +12,7 @@ import {
   tokenInfoQueryMsg,
 } from '../../utils/sei';
 import isAContract from '../../utils/sei/isAContract';
-import { getDecimalsForToken } from '../../utils/misc/getDecimalsForToken';
+import { getCachedDecimalsForToken } from '../../utils/misc/getCachedDecimalsForToken';
 import getLpUnderlyingTokenSourceOld from '../../utils/misc/getLpUnderlyingTokenSourceOld';
 import getLpTokenSourceRawOld from '../../utils/misc/getLpTokenSourceRawOld';
 import { PlatformContracts } from './types';
@@ -60,8 +60,8 @@ const executor: JobExecutor = async (cache: Cache) => {
       );
 
       const [decimalsX, decimalsY] = await Promise.all([
-        getDecimalsForToken(cache, poolInfo.mintX, NetworkId.sei),
-        getDecimalsForToken(cache, poolInfo.mintY, NetworkId.sei),
+        getCachedDecimalsForToken(cache, poolInfo.mintX, NetworkId.sei),
+        getCachedDecimalsForToken(cache, poolInfo.mintY, NetworkId.sei),
       ]);
 
       const [reserveAmountRawX, reserveAmountRawY] = [
