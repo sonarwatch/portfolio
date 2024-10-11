@@ -13,7 +13,6 @@ import {
 } from '../../utils/solana';
 import { ammV4Filter, ammV5Filter } from './filters';
 import { LiquidityPoolStatus } from './types';
-import runInBatch from '../../utils/misc/runInBatch';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 import { CLOBOrderStruct } from '../orders/clobs-solana/structs';
 import getLpUnderlyingTokenSourceOld from '../../utils/misc/getLpUnderlyingTokenSourceOld';
@@ -243,11 +242,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     }
   }
 
-  await runInBatch(
-    tokenPriceSources.map(
-      (tokenPriceSource) => () => cache.setTokenPriceSource(tokenPriceSource)
-    )
-  );
+  await cache.setTokenPriceSources(tokenPriceSources);
 };
 
 const job: Job = {
