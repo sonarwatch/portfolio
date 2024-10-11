@@ -1,10 +1,6 @@
-import { StorageValue } from 'unstorage';
-import { Cache, TransactionOptions } from '../../Cache';
-
 const defaultMemoizedRefreshInterval = 600;
 
-// T is the type of stored item in cache
-// K is the type of the item after transformation
+// T is the type of item memoized
 export class Memoized<T> {
   private readonly fetch: () => Promise<T>;
   private readonly ttl: number;
