@@ -8,38 +8,60 @@ import {
 import { airdropStatics, deepDecimals, deepMint } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
-import { AirdropWrapperNFT } from '../../utils/sui/types';
+import { AirdropWrapperNFT, DeepAirdropNFT } from '../../utils/sui/types';
 
 const deepFactor = new BigNumber(10 ** deepDecimals);
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
   const client = getClientSui();
-  const nfts = await getOwnedObjects<AirdropWrapperNFT>(client, owner, {
-    filter: {
-      StructType:
-        '0x61c9c39fd86185ad60d738d4e52bd08bda071d366acde07e07c3916a2d75a816::distribution::DEEPWrapper',
-    },
-  });
+  const [nfts, claimed] = await Promise.all([
+    getOwnedObjects<AirdropWrapperNFT>(client, owner, {
+      filter: {
+        StructType:
+          '0x61c9c39fd86185ad60d738d4e52bd08bda071d366acde07e07c3916a2d75a816::distribution::DEEPWrapper',
+      },
+    }),
+    getOwnedObjects<DeepAirdropNFT>(client, owner, {
+      filter: {
+        StructType:
+          '0xc2cfa18b841df1887d931055cf41f2773c58164f719675595d020829893188a5::distribution::DEEPAirdrop',
+      },
+    }),
+  ]);
 
-  let amount = 0;
-
-  if (nfts) {
+  let amount;
+  if (nfts.length !== 0) {
     const amounts = nfts.map((nft) => {
       if (nft.data?.content?.fields) {
-        return BigNumber(nft.data.content.fields.balance)
-          .dividedBy(deepFactor)
-          .toNumber();
+        return BigNumber(nft.data.content.fields.balance);
       }
-      return 0;
+      return BigNumber(0);
     });
-    amount = amounts.reduce((am, curr) => curr + am, 0);
+    amount = amounts
+      .reduce((am, curr) => curr.plus(am), new BigNumber(0))
+      .dividedBy(deepFactor)
+      .toNumber();
+  }
+
+  let claimedAmount = 0;
+  if (claimed) {
+    const amounts = claimed.map((nft) => {
+      if (nft.data?.content?.fields) {
+        return BigNumber(nft.data.content.fields.amount);
+      }
+      return BigNumber(0);
+    });
+    claimedAmount = amounts
+      .reduce((am, curr) => curr.plus(am), new BigNumber(0))
+      .dividedBy(deepFactor)
+      .toNumber();
   }
   return getAirdropRaw({
     statics: airdropStatics,
     items: [
       {
-        amount,
-        isClaimed: false,
+        amount: amount ?? claimedAmount,
+        isClaimed: !!claimedAmount,
         label: 'DEEP',
         address: deepMint,
       },

@@ -33,6 +33,11 @@ export type AirdropWrapperNFT = {
   id: ID;
 };
 
+export type DeepAirdropNFT = {
+  amount: string;
+  id: ID;
+};
+
 export type StructTag = {
   address: string;
   module: string;
