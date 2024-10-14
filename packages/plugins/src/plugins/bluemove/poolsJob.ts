@@ -11,6 +11,7 @@ import { getClientSui } from '../../utils/clients';
 import { getDynamicFieldObjects } from '../../utils/sui/getDynamicFieldObjects';
 import { Pool } from './types';
 import { getLpTokenSourceRaw } from '../../utils/misc/getLpTokenSourceRaw';
+import { getCachedDecimalsForToken } from '../../utils/misc/getCachedDecimalsForToken';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
@@ -42,32 +43,39 @@ const executor: JobExecutor = async (cache: Cache) => {
   const tokenPrices = await cache.getTokenPricesAsMap(mints, NetworkId.sui);
   const lpSources: TokenPriceSource[] = [];
 
-  pools.forEach((pool) => {
+  for (const pool of pools) {
     if (
       !pool.data ||
       !pool.data.type ||
       pool.data.content?.fields.is_freeze ||
       !pool.data.content?.fields.lsp_supply?.type
     )
-      return;
+      continue;
 
     const { keys: coinTypeKeys } = parseTypeString(pool.data.type);
-    if (!coinTypeKeys) return;
+    if (!coinTypeKeys) continue;
     const coinTypeX = coinTypeKeys[0].type;
     const coinTypeY = coinTypeKeys[1].type;
 
     const { keys: lpCoinTypeKeys } = parseTypeString(
       pool.data.content.fields.lsp_supply.type
     );
-    if (!lpCoinTypeKeys) return;
+    if (!lpCoinTypeKeys) continue;
     const lpCoinType = lpCoinTypeKeys[0].type;
 
-    if (!coinTypeX || !coinTypeY || !lpCoinType) return;
+    if (!coinTypeX || !coinTypeY || !lpCoinType) continue;
 
     const tokenPriceX = tokenPrices.get(coinTypeX);
     const tokenPriceY = tokenPrices.get(coinTypeY);
 
-    if (!tokenPriceX || !tokenPriceY) return;
+    const decimalsX = tokenPriceX
+      ? tokenPriceX.decimals
+      : await getCachedDecimalsForToken(cache, coinTypeX, NetworkId.sui);
+    const decimalsY = tokenPriceY
+      ? tokenPriceY.decimals
+      : await getCachedDecimalsForToken(cache, coinTypeY, NetworkId.sui);
+
+    if (!decimalsX || !decimalsY) continue;
 
     const newLpSources = getLpTokenSourceRaw({
       networkId: NetworkId.sui,
@@ -82,14 +90,14 @@ const executor: JobExecutor = async (cache: Cache) => {
       poolUnderlyingsRaw: [
         {
           address: formatTokenAddress(coinTypeX, NetworkId.sui),
-          decimals: tokenPriceX.decimals,
+          decimals: decimalsX,
           reserveAmountRaw: pool.data.content.fields.reserve_x,
           weight: 0.5,
           tokenPrice: tokenPriceX,
         },
         {
           address: formatTokenAddress(coinTypeY, NetworkId.sui),
-          decimals: tokenPriceY.decimals,
+          decimals: decimalsY,
           reserveAmountRaw: pool.data.content.fields.reserve_y,
           weight: 0.5,
           tokenPrice: tokenPriceY,
@@ -98,7 +106,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     });
 
     lpSources.push(...newLpSources);
-  });
+  }
 
   await cache.setTokenPriceSources(lpSources);
 };

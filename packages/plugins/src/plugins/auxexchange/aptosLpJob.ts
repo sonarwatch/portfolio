@@ -14,7 +14,7 @@ import {
 } from '../../utils/aptos';
 import { getClientAptos } from '../../utils/clients';
 import { lpCoinInfoTypePrefix, platformId, packageId } from './constants';
-import { getDecimalsForToken } from '../../utils/misc/getDecimalsForToken';
+import { getCachedDecimalsForToken } from '../../utils/misc/getCachedDecimalsForToken';
 import getLpUnderlyingTokenSourceOld from '../../utils/misc/getLpUnderlyingTokenSourceOld';
 import getLpTokenSourceRawOld from '../../utils/misc/getLpTokenSourceRawOld';
 
@@ -78,8 +78,8 @@ const executor: JobExecutor = async (cache: Cache) => {
     ];
 
     const [decimalsX, decimalsY] = await Promise.all([
-      getDecimalsForToken(cache, typeX, NetworkId.aptos),
-      getDecimalsForToken(cache, typeY, NetworkId.aptos),
+      getCachedDecimalsForToken(cache, typeX, NetworkId.aptos),
+      getCachedDecimalsForToken(cache, typeY, NetworkId.aptos),
     ]);
     if (!decimalsX || !decimalsY) continue;
 

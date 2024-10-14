@@ -17,7 +17,7 @@ import { getClientSui } from '../../utils/clients';
 import { PerpetualV2, UserPosition } from './types';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { usdcSuiType } from '../../utils/sui/constants';
+import { wUsdcSuiType } from '../../utils/sui/constants';
 import { usdcLogoUri } from '../../utils/misc/constants';
 
 const perpsTtl = 20000;
@@ -55,7 +55,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     )
   );
 
-  const tokenPrice = await cache.getTokenPrice(usdcSuiType, NetworkId.sui);
+  const tokenPrice = await cache.getTokenPrice(wUsdcSuiType, NetworkId.sui);
   if (!tokenPrice) return [];
 
   const elements: PortfolioElement[] = [];

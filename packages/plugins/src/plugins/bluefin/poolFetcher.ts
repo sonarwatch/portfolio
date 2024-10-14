@@ -13,7 +13,7 @@ import { Vault, VaultAccount } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
 import { getClientSui } from '../../utils/clients';
-import { usdcSuiType } from '../../utils/sui/constants';
+import { wUsdcSuiType } from '../../utils/sui/constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -23,7 +23,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       prefix: platformId,
       networkId: NetworkId.sui,
     }),
-    cache.getTokenPrice(formatMoveTokenAddress(usdcSuiType), NetworkId.sui),
+    cache.getTokenPrice(formatMoveTokenAddress(wUsdcSuiType), NetworkId.sui),
   ]);
 
   if (!vault || !tokenPrice) return [];
@@ -43,7 +43,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (vaultAccount.data?.content?.fields.value.fields.amount_locked !== '0')
     assets.push(
       tokenPriceToAssetToken(
-        usdcSuiType,
+        wUsdcSuiType,
         new BigNumber(
           vaultAccount.data?.content?.fields.value.fields.amount_locked
         )
@@ -59,7 +59,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   )
     assets.push({
       ...tokenPriceToAssetToken(
-        usdcSuiType,
+        wUsdcSuiType,
         new BigNumber(
           vaultAccount.data?.content?.fields.value.fields.pending_withdrawal
         )

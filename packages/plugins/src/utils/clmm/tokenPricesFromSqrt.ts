@@ -6,7 +6,7 @@ import {
 import BigNumber from 'bignumber.js';
 import Decimal from 'decimal.js';
 import { Cache } from '../../Cache';
-import { getDecimalsForToken } from '../misc/getDecimalsForToken';
+import { getCachedDecimalsForToken } from '../misc/getCachedDecimalsForToken';
 import { walletTokensPlatform } from '../../plugins/tokens/constants';
 import getSourceWeight from '../misc/getSourceWeight';
 import { minimumLiquidity } from '../misc/computeAndStoreLpPrice';
@@ -42,9 +42,13 @@ export default async function storeTokenPricesFromSqrt(
   if (!tokenPriceX && !tokenPriceY) return undefined;
 
   const decimalsX =
-    tempDecimalsX || (await getDecimalsForToken(cache, mintX, networkId));
+    tempDecimalsX ||
+    tokenPriceX?.decimals ||
+    (await getCachedDecimalsForToken(cache, mintX, networkId));
   const decimalsY =
-    tempDecimalsY || (await getDecimalsForToken(cache, mintY, networkId));
+    tempDecimalsY ||
+    tokenPriceY?.decimals ||
+    (await getCachedDecimalsForToken(cache, mintY, networkId));
   if (!decimalsX || !decimalsY) return undefined;
   const xToYPrice = sqrtPriceX64ToPrice(sqrtPrice, decimalsX, decimalsY);
 
