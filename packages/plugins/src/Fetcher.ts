@@ -42,6 +42,7 @@ export async function runFetchers(
       `Not all fetchers have the right address system: ${addressSystem}`
     );
 
+  const startDate = Date.now();
   const promises = fetchers.map((f) => runFetcher(fOwner, f, cache));
   const result = await Promise.allSettled(promises);
 
@@ -75,6 +76,7 @@ export async function runFetchers(
     fetcherReports: fReports,
     value: getUsdValueSum(elements.map((e) => e.value)),
     elements,
+    duration: Date.now() - startDate,
   };
 }
 
