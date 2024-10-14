@@ -12,11 +12,12 @@ export const platform: Platform = {
 };
 export const airdropStatics: AirdropStatics = {
   emitterLink: 'https://deepbook.tech',
+  claimLink: 'https://claim.deepbook.tech/',
   emitterName: 'DeepBook',
   id: `${platformId}-token-launch`,
   image: 'https://sonar.watch/img/platforms/deepbook.webp',
   claimEnd: undefined,
-  claimStart: undefined,
+  claimStart: 1728907200000,
 };
 
 export const deepMint =
