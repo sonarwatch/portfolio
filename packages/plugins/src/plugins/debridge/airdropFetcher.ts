@@ -16,7 +16,10 @@ import {
 import { ApiResponse } from './types';
 
 const dbrFactor = new BigNumber(10 ** dbrDecimals);
-
+const realDistributions = [
+  'Claim 50% vested with bonus in 6 months after TGE',
+  'First distribution',
+];
 const executor: AirdropFetcherExecutor = async (owner: string) => {
   const apiRes: AxiosResponse<ApiResponse> = await axios.get(apiUrl + owner, {
     timeout: 1000,
@@ -39,6 +42,8 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
 
   const items = [];
   for (const distribution of apiRes.data.distributions) {
+    if (!realDistributions.includes(distribution.title)) continue;
+
     const tokens = new BigNumber(distribution.tokens).div(dbrFactor);
 
     items.push({
