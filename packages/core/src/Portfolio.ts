@@ -414,5 +414,6 @@ export type FetchersResult = {
   fetcherReports: FetcherReport[];
   value: UsdValue;
   elements: PortfolioElement[];
+  duration: number;
   tokenInfo?: Partial<Record<NetworkIdType, Record<string, TokenInfo>>>;
 };
