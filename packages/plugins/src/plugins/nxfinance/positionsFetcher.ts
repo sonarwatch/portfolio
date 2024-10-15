@@ -100,7 +100,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const asset = {
       address: deposit.tokenMint,
-      amount: amount,
+      amount,
     };
 
     if (leverageVaultsMints.includes(deposit.tokenMint)) {
