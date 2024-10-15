@@ -1,10 +1,10 @@
-export type VeSca = {
-  id: {
-    id: string;
-  };
-  name: string;
-  value: {
-    type: string;
-    fields: { locked_sca_amount: string; unlock_at: string };
-  };
+import { ExtendedBasicField, IdField, NameField } from './basic';
+
+type VeScaValueType = {
+  locked_sca_amount: string;
+  unlock_at: string;
 };
+export type VeSca = {
+  id: IdField;
+  value: ExtendedBasicField<VeScaValueType>;
+} & NameField;

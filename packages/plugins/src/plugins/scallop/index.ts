@@ -13,7 +13,13 @@ import obligationsFetcher from './obligationsFetcher';
 import cnyAidropFetcher from './cnyAirdropFetcher';
 import { platform } from './constants';
 
-export const jobs: Job[] = [addressJob, sCoinJob, poolsJob, marketJob, spoolsMarketJob];
+export const jobs: Job[] = [
+  addressJob,
+  sCoinJob,
+  poolsJob,
+  marketJob,
+  spoolsMarketJob,
+];
 export const fetchers: Fetcher[] = [
   lendingsFetcher,
   obligationsFetcher,
