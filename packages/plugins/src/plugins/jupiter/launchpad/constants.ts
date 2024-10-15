@@ -127,7 +127,7 @@ export const airdropConfigs: AirdropConfig[] = [
       `https://api.kamino.finance/distributor/user/${owner}`,
     statics: {
       claimStart: 1724158800000,
-      claimEnd: 1724340000000,
+      claimEnd: 1733130000000,
       id: 'kamino-s2',
       emitterName: 'Kamino',
       emitterLink: 'https://app.kamino.finance/',
