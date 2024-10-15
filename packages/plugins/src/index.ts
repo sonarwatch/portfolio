@@ -133,6 +133,7 @@ import {
   airdropFetchers as kaminoAirdropFetchers,
 } from './plugins/kamino';
 import {
+  jobs as bucketJobs,
   fetchers as bucketFetchers,
   platforms as bucketPlatforms,
 } from './plugins/bucket';
@@ -583,6 +584,51 @@ import {
   jobs as tradeportJobs,
   fetchers as tradeportFetchers,
 } from './plugins/tradeport';
+import {
+  platforms as bluemovePlatforms,
+  jobs as bluemoveJobs,
+  fetchers as bluemoveFetchers,
+} from './plugins/bluemove';
+import {
+  platforms as stabblePlatforms,
+  jobs as stabbleJobs,
+  fetchers as stabbleFetchers,
+} from './plugins/stabble';
+import {
+  platforms as franciumPlatforms,
+  jobs as franciumJobs,
+  fetchers as franciumFetchers,
+} from './plugins/francium';
+import {
+  platforms as adrasteaPlatforms,
+  jobs as adrasteaJobs,
+  fetchers as adrasteaFetchers,
+} from './plugins/adrastea';
+import {
+  platforms as elementalPlatforms,
+  jobs as elementalJobs,
+  fetchers as elementalFetchers,
+} from './plugins/elemental';
+import {
+  platforms as adrenaPlatforms,
+  jobs as adrenaJobs,
+  fetchers as adrenaFetchers,
+} from './plugins/adrena';
+import {
+  platforms as joulePlatforms,
+  jobs as jouleJobs,
+  fetchers as jouleFetchers,
+} from './plugins/joule';
+import {
+  platforms as mesoPlatforms,
+  jobs as mesoJobs,
+  fetchers as mesoFetchers,
+} from './plugins/meso';
+import {
+  platforms as loopscalePlatforms,
+  jobs as loopscaleJobs,
+  fetchers as loopscaleFetchers,
+} from './plugins/loopscale';
 
 export {
   walletTokensPlatform,
@@ -716,6 +762,15 @@ export const platforms: Platform[] = [
   ...alphafiPlatforms,
   ...jewelPlatforms,
   ...tradeportPlatforms,
+  ...bluemovePlatforms,
+  ...stabblePlatforms,
+  ...franciumPlatforms,
+  ...adrasteaPlatforms,
+  ...elementalPlatforms,
+  ...adrenaPlatforms,
+  ...joulePlatforms,
+  ...mesoPlatforms,
+  ...loopscalePlatforms,
 ];
 
 // JOBS //
@@ -744,6 +799,7 @@ export const jobs: Job[] = [
   ...aftermathJobs,
   ...liquidswapJobs,
   ...kaminoJobs,
+  ...bucketJobs,
   ...naviJobs,
   ...scallopJobs,
   ...curveJobs,
@@ -831,6 +887,15 @@ export const jobs: Job[] = [
   ...alphafiJobs,
   ...jewelJobs,
   ...tradeportJobs,
+  ...bluemoveJobs,
+  ...stabbleJobs,
+  ...franciumJobs,
+  ...adrasteaJobs,
+  ...elementalJobs,
+  ...adrenaJobs,
+  ...jouleJobs,
+  ...mesoJobs,
+  ...loopscaleJobs,
 ];
 
 // FETCHERS //
@@ -948,6 +1013,15 @@ export const fetchers: Fetcher[] = [
   ...alphafiFetchers,
   ...jewelFetchers,
   ...tradeportFetchers,
+  ...bluemoveFetchers,
+  ...stabbleFetchers,
+  ...franciumFetchers,
+  ...adrasteaFetchers,
+  ...elementalFetchers,
+  ...adrenaFetchers,
+  ...jouleFetchers,
+  ...mesoFetchers,
+  ...loopscaleFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 

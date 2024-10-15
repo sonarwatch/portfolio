@@ -1,4 +1,4 @@
-import { CoinMetadata } from '@mysten/sui.js/client';
+import { CoinMetadata } from '@mysten/sui/client';
 import { COIN_NAMES, MARKET_COIN_NAMES, SCOIN_NAMES } from '../constants';
 
 export type MarketCoinNames = (typeof MARKET_COIN_NAMES)[number];
@@ -17,12 +17,15 @@ export const sCoinToCoinName: sCoinToCoinNameType = {
   scallop_sui: 'sui',
   scallop_cetus: 'cetus',
   scallop_sca: 'sca',
-  scallop_wormhole_usdc: 'usdc',
-  scallop_wormhole_usdt: 'usdt',
-  scallop_wormhole_eth: 'eth',
+  scallop_wormhole_usdc: 'wusdc',
+  scallop_wormhole_usdt: 'wusdt',
+  scallop_wormhole_eth: 'weth',
+  scallop_wormhole_btc: 'wbtc',
+  scallop_wormhole_sol: 'wsol',
   scallop_af_sui: 'afsui',
   scallop_ha_sui: 'hasui',
   scallop_v_sui: 'vsui',
+  scallop_usdc: 'usdc',
 };
 
 export const sCoinTypesMap: sCoinTypesMapType = {
@@ -44,6 +47,12 @@ export const sCoinTypesMap: sCoinTypesMapType = {
     '0x9a2376943f7d22f88087c259c5889925f332ca4347e669dc37d54c2bf651af3c::scallop_ha_sui::SCALLOP_HA_SUI',
   scallop_v_sui:
     '0xe1a1cc6bcf0001a015eab84bcc6713393ce20535f55b8b6f35c142e057a25fbe::scallop_v_sui::SCALLOP_V_SUI',
+  scallop_usdc:
+    '0x854950aa624b1df59fe64e630b2ba7c550642e9342267a33061d59fb31582da5::scallop_usdc::SCALLOP_USDC',
+  scallop_wormhole_btc:
+    '0x2cf76a9cf5d3337961d1154283234f94da2dcff18544dfe5cbdef65f319591b5::scallop_wormhole_btc::SCALLOP_WORMHOLE_BTC',
+  scallop_wormhole_sol:
+    '0x1392650f2eca9e3f6ffae3ff89e42a3590d7102b80e2b430f674730bc30d3259::scallop_wormhole_sol::SCALLOP_WORMHOLE_SOL',
 } as const;
 
 export type sCoinTypeValue = (typeof sCoinTypesMap)[sCoinNames];
@@ -61,10 +70,16 @@ export const sCoinTypeToCoinTypeMap: { [T in sCoinTypeValue]: string } = {
     '0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN',
   [sCoinTypesMap.scallop_wormhole_eth]:
     '0xaf8cd5edc19c4512f4259f0bee101a40d41ebed738ade5874359610ef8eeced5::coin::COIN',
+  [sCoinTypesMap.scallop_wormhole_btc]:
+    '0x027792d9fed7f9844eb4839566001bb6f6cb4804f66aa2da6fe1ee242d896881::coin::COIN',
+  [sCoinTypesMap.scallop_wormhole_sol]:
+    '0xb7844e289a8410e50fb3ca48d69eb9cf29e27d223ef90353fe1bd8e27ff8f3f8::coin::COIN',
   [sCoinTypesMap.scallop_af_sui]:
     '0xf325ce1300e8dac124071d3152c5c5ee6174914f8bc2161e88329cf579246efc::afsui::AFSUI',
   [sCoinTypesMap.scallop_ha_sui]:
     '0xbde4ba4c2e274a60ce15c1cfff9e5c42e41654ac8b6d906a57efa4bd3c29f47d::hasui::HASUI',
   [sCoinTypesMap.scallop_v_sui]:
     '0x549e8b69270defbfafd4f94e17ec44cdbdd99820b33bda2278dea3b9a32d3f55::cert::CERT',
+  [sCoinTypesMap.scallop_usdc]:
+    '0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC',
 } as const;

@@ -1,4 +1,8 @@
-import { NetworkId, NetworkIdType } from '@sonarwatch/portfolio-core';
+import {
+  formatTokenAddress,
+  NetworkId,
+  NetworkIdType,
+} from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { getCosmWasmClient } from '@sei-js/core';
 import {
@@ -13,21 +17,17 @@ import { Cache } from '../../Cache';
 import { getDecimals as getDecimalsAptos } from '../aptos/getDecimals';
 import { getDecimals as getDecimalsSolana } from '../solana/getDecimals';
 import { getDecimals as getDecimalsSui } from '../sui/getDecimals';
+import { MemoizedCache } from './MemoizedCache';
 
-/**
- * Return the decimals of a token on any network using RPC calls or TokenList.
- *
- * @param cache Cache where to look for decimals
- * @param address The mint/address of the token.
- * @param networkId The network on which to execute the request.
- *
- * @returns The number of decimals or undefined if unsucessful request.
- */
+type Decimal = number | null;
+const ttl = 60 * 60 * 24;
+
+const decimalsMemo: Map<string, MemoizedCache<Decimal>> = new Map();
+
 export async function getDecimalsForToken(
-  cache: Cache,
   address: string,
   networkId: NetworkIdType
-): Promise<number | null> {
+): Promise<Decimal> {
   switch (networkId) {
     case 'aptos': {
       const client = getClientAptos();
@@ -67,4 +67,39 @@ export async function getDecimalsForToken(
     default:
       throw new Error('getDecimalsForToken : Network not supported');
   }
+}
+
+/**
+ * Return the decimals of a token on any network using RPC calls or TokenList.
+ *
+ * @param cache Cache where to look for decimals
+ * @param address The mint/address of the token.
+ * @param networkId The network on which to execute the request.
+ *
+ * @returns The number of decimals or undefined if unsuccessful request.
+ */
+export async function getCachedDecimalsForToken(
+  cache: Cache,
+  address: string,
+  networkId: NetworkIdType
+): Promise<Decimal> {
+  const key = `${networkId}-${formatTokenAddress(address, networkId)}`;
+
+  let decimalMemo = decimalsMemo.get(key);
+
+  if (!decimalMemo) {
+    decimalMemo = new MemoizedCache<Decimal>(
+      formatTokenAddress(address, networkId),
+      {
+        prefix: 'decimalsfortoken',
+        networkId,
+      },
+      undefined,
+      ttl,
+      async () => getDecimalsForToken(address, networkId)
+    );
+    decimalsMemo.set(key, decimalMemo);
+  }
+
+  return decimalMemo.getItem(cache);
 }

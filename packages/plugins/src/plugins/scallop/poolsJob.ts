@@ -3,8 +3,8 @@ import {
   SUI_TYPE_ARG,
   normalizeStructTag,
   parseStructTag,
-} from '@mysten/sui.js/utils';
-import { CoinMetadata } from '@mysten/sui.js/client';
+} from '@mysten/sui/utils';
+import { CoinMetadata } from '@mysten/sui/client';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import {

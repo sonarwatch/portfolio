@@ -10,7 +10,7 @@ export const platform: Platform = {
   id: platformId,
   name: platformName,
   image: platformImage,
-  defiLlamaId: 'drift',
+  defiLlamaId: 'parent#drift',
   website: platformWebsite,
 };
 export const keySpotMarkets = `spotMarkets`;

@@ -1,5 +1,7 @@
 import {
+  array,
   BeetStruct,
+  FixableBeetStruct,
   u8,
   uniformFixedSizeArray,
 } from '@metaplex-foundation/beet';
@@ -22,11 +24,11 @@ export type PositionData = {
   positions: Position[];
 };
 
-export const positionDataStruct = new BeetStruct<PositionData>(
+export const positionDataStruct = new FixableBeetStruct<PositionData>(
   [
     ['buffer', blob(8)],
     ['owner', publicKey],
-    ['positions', uniformFixedSizeArray(positionStruct, 20)],
+    ['positions', array(positionStruct)],
   ],
   (args) => args as PositionData
 );

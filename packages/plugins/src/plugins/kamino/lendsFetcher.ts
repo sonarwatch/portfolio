@@ -1,13 +1,4 @@
-import {
-  NetworkId,
-  PortfolioAsset,
-  PortfolioElement,
-  PortfolioElementType,
-  TokenPrice,
-  Yield,
-  aprToApy,
-  getElementLendingValues,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId, aprToApy } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import {
   elevationGroupsKey,
@@ -20,7 +11,6 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { Cache } from '../../Cache';
 import { getClientSolana } from '../../utils/clients';
 import { ElevationGroup, obligationStruct } from './structs/klend';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { ReserveDataEnhanced } from './types';
 import { getParsedMultipleAccountsInfo } from '../../utils/solana';
 import {
@@ -29,6 +19,7 @@ import {
   getMultiplyPdas,
 } from './helpers/pdas';
 import { getCumulativeBorrowRate, sfToValue } from './helpers/common';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const zeroAdressValue = '11111111111111111111111111111111';
 
@@ -91,15 +82,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
   if (!reserves) return [];
 
-  const tokenAddresses = Object.entries(reserves).map((entry) =>
-    reserves[entry[0]].liquidity.mintPubkey.toString()
-  );
-
-  const tokensPrices = await cache.getTokenPrices(tokenAddresses, networkId);
-  const tokenPriceById: Map<string, TokenPrice> = new Map();
-  tokensPrices.forEach((tP) => (tP ? tokenPriceById.set(tP.address, tP) : []));
-
-  const elements: PortfolioElement[] = [];
+  const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 
   // *************
   // KLend : https://app.kamino.finance/lending
@@ -111,13 +94,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const lendingConfig = lendingConfigs.get(
         lendingAccount.lendingMarket.toString()
       );
-      const borrowedAssets: PortfolioAsset[] = [];
-      const borrowedYields: Yield[][] = [];
-      const suppliedAssets: PortfolioAsset[] = [];
-      const suppliedYields: Yield[][] = [];
-      const rewardAssets: PortfolioAsset[] = [];
-      const suppliedLtvs: number[] = [];
-      const borrowedWeights: number[] = [];
+
+      const element = elementRegistry.addElementBorrowlend({
+        label: 'Lending',
+        name: lendingConfig?.name,
+      });
+
       for (const deposit of lendingAccount.deposits) {
         if (
           deposit.depositReserve.toString() === zeroAdressValue ||
@@ -129,18 +111,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         const reserve = reserves[deposit.depositReserve.toString()];
         if (!reserve) continue;
 
-        const mint = reserve.liquidity.mintPubkey;
-        const tokenPrice = tokenPriceById.get(mint);
-        const amount = amountRaw
-          .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
-          .dividedBy(reserve.exchangeRate)
-          .toNumber();
-
-        suppliedAssets.push(
-          tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
-        );
-        suppliedLtvs.push(reserve.config.liquidationThresholdPct / 100);
-        suppliedYields.push([
+        element.addSuppliedAsset({
+          address: reserve.liquidity.mintPubkey,
+          amount: amountRaw
+            .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
+            .dividedBy(reserve.exchangeRate),
+          alreadyShifted: true,
+        });
+        element.addSuppliedLtv(reserve.config.liquidationThresholdPct / 100);
+        element.addSuppliedYield([
           { apr: reserve.supplyApr, apy: aprToApy(reserve.supplyApr) },
         ]);
       }
@@ -164,55 +143,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             .multipliedBy(cumulativeBorrowRate)
             .dividedBy(obligationCumulativeBorrowRate)
         );
-        const mint = reserve.liquidity.mintPubkey;
-        const tokenPrice = tokenPriceById.get(mint);
-        const amount = amountRaw
-          .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
-          .toNumber();
-        borrowedAssets.push(
-          tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
-        );
-        borrowedWeights.push(Number(reserve.config.borrowFactorPct) / 100);
-        borrowedYields.push([
+        element.addBorrowedAsset({
+          address: reserve.liquidity.mintPubkey,
+          amount: amountRaw.dividedBy(
+            new BigNumber(10).pow(reserve.liquidity.mintDecimals)
+          ),
+          alreadyShifted: true,
+        });
+        element.addBorrowedWeight(Number(reserve.config.borrowFactorPct) / 100);
+        element.addBorrowedYield([
           { apr: -reserve.borrowApr, apy: -aprToApy(reserve.borrowApr) },
         ]);
-      }
-
-      if (suppliedAssets.length !== 0 || borrowedAssets.length !== 0) {
-        const {
-          borrowedValue,
-          suppliedValue,
-          value,
-          healthRatio,
-          rewardValue,
-        } = getElementLendingValues({
-          suppliedAssets,
-          borrowedAssets,
-          rewardAssets,
-          suppliedLtvs,
-          borrowedWeights,
-        });
-
-        elements.push({
-          type: PortfolioElementType.borrowlend,
-          networkId,
-          platformId,
-          label: 'Lending',
-          name: lendingConfig?.name,
-          value,
-          data: {
-            borrowedAssets,
-            borrowedValue,
-            borrowedYields,
-            suppliedAssets,
-            suppliedValue,
-            suppliedYields,
-            healthRatio,
-            rewardAssets,
-            rewardValue,
-            value,
-          },
-        });
       }
     }
   }
@@ -236,13 +177,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         multiplyAccount.elevationGroup
       );
 
-      const borrowedAssets: PortfolioAsset[] = [];
-      const borrowedYields: Yield[][] = [];
-      const suppliedAssets: PortfolioAsset[] = [];
-      const suppliedYields: Yield[][] = [];
-      const rewardAssets: PortfolioAsset[] = [];
-      const suppliedLtvs: number[] = [];
-      const borrowedWeights: number[] = [];
+      const element = elementRegistry.addElementBorrowlend({
+        label: 'Lending',
+        name,
+      });
 
       for (const deposit of multiplyAccount.deposits) {
         if (
@@ -255,21 +193,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         const reserve = reserves[deposit.depositReserve.toString()];
         if (!reserve) continue;
 
-        const mint = reserve.liquidity.mintPubkey;
-        const tokenPrice = tokenPriceById.get(mint);
-        const amount = amountRaw
-          .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
-          .dividedBy(reserve.exchangeRate)
-          .toNumber();
-        suppliedAssets.push(
-          tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
-        );
+        element.addSuppliedAsset({
+          address: reserve.liquidity.mintPubkey,
+          amount: amountRaw
+            .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
+            .dividedBy(reserve.exchangeRate),
+          alreadyShifted: true,
+        });
+
         if (elevationGroup)
-          suppliedLtvs.push(elevationGroup.liquidationThresholdPct / 100);
+          element.addSuppliedLtv(elevationGroup.liquidationThresholdPct / 100);
         else {
-          suppliedLtvs.push(0);
+          element.addSuppliedLtv(0);
         }
-        suppliedYields.push([
+        element.addSuppliedYield([
           { apr: reserve.supplyApr, apy: aprToApy(reserve.supplyApr) },
         ]);
       }
@@ -284,55 +221,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         const reserve = reserves[borrow.borrowReserve.toString()];
         if (!reserve) continue;
 
-        const mint = reserve.liquidity.mintPubkey;
-        const tokenPrice = tokenPriceById.get(mint);
-        const amount = amountRaw
-          .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
-          .toNumber();
-        borrowedAssets.push(
-          tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
-        );
-        borrowedWeights.push(Number(reserve.config.borrowFactorPct) / 100);
-        borrowedYields.push([
+        element.addBorrowedAsset({
+          address: reserve.liquidity.mintPubkey,
+          amount: amountRaw.dividedBy(
+            new BigNumber(10).pow(reserve.liquidity.mintDecimals)
+          ),
+          alreadyShifted: true,
+        });
+        element.addBorrowedWeight(Number(reserve.config.borrowFactorPct) / 100);
+        element.addBorrowedYield([
           { apr: -reserve.borrowApr, apy: -aprToApy(reserve.borrowApr) },
         ]);
-      }
-
-      if (suppliedAssets.length !== 0 || borrowedAssets.length !== 0) {
-        const {
-          borrowedValue,
-          suppliedValue,
-          value,
-          rewardValue,
-          healthRatio,
-        } = getElementLendingValues({
-          suppliedAssets,
-          borrowedAssets,
-          rewardAssets,
-          suppliedLtvs,
-          borrowedWeights,
-        });
-
-        elements.push({
-          type: PortfolioElementType.borrowlend,
-          networkId,
-          platformId,
-          label: 'Lending',
-          name,
-          value,
-          data: {
-            borrowedAssets,
-            borrowedValue,
-            borrowedYields,
-            suppliedAssets,
-            suppliedValue,
-            suppliedYields,
-            healthRatio,
-            rewardAssets,
-            rewardValue,
-            value,
-          },
-        });
       }
     }
 
@@ -343,13 +242,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   for (const leverageAccount of leverageAccounts) {
     if (!leverageAccount) continue;
 
-    const borrowedAssets: PortfolioAsset[] = [];
-    const borrowedYields: Yield[][] = [];
-    const suppliedAssets: PortfolioAsset[] = [];
-    const suppliedYields: Yield[][] = [];
-    const rewardAssets: PortfolioAsset[] = [];
-    const suppliedLtvs: number[] = [];
-    const borrowedWeights: number[] = [];
+    const element = elementRegistry.addElementBorrowlend({
+      label: 'Lending',
+      name: 'Leverage',
+    });
 
     for (const deposit of leverageAccount.deposits) {
       if (
@@ -362,17 +258,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const reserve = reserves[deposit.depositReserve.toString()];
       if (!reserve) continue;
 
-      const mint = reserve.liquidity.mintPubkey;
-      const tokenPrice = tokenPriceById.get(mint);
-      const amount = amountRaw
-        .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
-        .dividedBy(reserve.exchangeRate)
-        .toNumber();
-      suppliedAssets.push(
-        tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
-      );
-      suppliedLtvs.push(reserve.config.liquidationThresholdPct / 100);
-      suppliedYields.push([
+      element.addSuppliedAsset({
+        address: reserve.liquidity.mintPubkey,
+        amount: amountRaw
+          .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
+          .dividedBy(reserve.exchangeRate),
+        alreadyShifted: true,
+      });
+      element.addSuppliedLtv(reserve.config.liquidationThresholdPct / 100);
+      element.addSuppliedYield([
         { apr: reserve.supplyApr, apy: aprToApy(reserve.supplyApr) },
       ]);
     }
@@ -389,53 +283,21 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const reserve = reserves[borrow.borrowReserve.toString()];
       if (!reserve) continue;
 
-      const mint = reserve.liquidity.mintPubkey;
-      const tokenPrice = tokenPriceById.get(mint);
-      const amount = amountRaw
-        .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
-        .toNumber();
-      borrowedAssets.push(
-        tokenPriceToAssetToken(mint, amount, networkId, tokenPrice)
-      );
-      borrowedWeights.push(Number(reserve.config.borrowFactorPct) / 100);
-      borrowedYields.push([
+      element.addBorrowedAsset({
+        address: reserve.liquidity.mintPubkey,
+        amount: amountRaw.dividedBy(
+          new BigNumber(10).pow(reserve.liquidity.mintDecimals)
+        ),
+        alreadyShifted: true,
+      });
+      element.addBorrowedWeight(Number(reserve.config.borrowFactorPct) / 100);
+      element.addBorrowedYield([
         { apr: -reserve.borrowApr, apy: -aprToApy(reserve.borrowApr) },
       ]);
     }
-
-    if (suppliedAssets.length !== 0 || borrowedAssets.length !== 0) {
-      const { borrowedValue, suppliedValue, value, rewardValue } =
-        getElementLendingValues({
-          suppliedAssets,
-          borrowedAssets,
-          rewardAssets,
-          suppliedLtvs,
-          borrowedWeights,
-        });
-
-      elements.push({
-        type: PortfolioElementType.borrowlend,
-        networkId,
-        platformId,
-        label: 'Lending',
-        name: 'Leverage',
-        value,
-        data: {
-          borrowedAssets,
-          borrowedValue,
-          borrowedYields,
-          suppliedAssets,
-          suppliedValue,
-          suppliedYields,
-          healthRatio: null,
-          rewardAssets,
-          rewardValue,
-          value,
-        },
-      });
-    }
   }
-  return elements;
+
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

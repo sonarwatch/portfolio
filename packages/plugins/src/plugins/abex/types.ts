@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { ID } from '../../utils/sui/structs/id';
 
 export type Credential = {
@@ -17,15 +18,6 @@ export type Pool = {
   reward: string;
   staked_amount: string;
   start_time: string;
-};
-
-export type AlpMarket = {
-  fun_mask: string;
-  id: ID;
-  lp_supply: {
-    type: string;
-    fields: { value: string };
-  };
 };
 
 export type Market = {
@@ -76,3 +68,198 @@ export type MarketFields = {
     };
   };
 };
+
+export interface IMarketInfo {
+  lpSupply: string;
+  positionId: string;
+  vaultId: string;
+  symbolId: string;
+  referralId: string;
+  orderId: string;
+  rebaseFeeModel: string;
+  lpSupplyWithDecimals: number;
+}
+
+export interface IRebaseFeeModel {
+  base: number;
+  multiplier: number;
+}
+
+export interface IReservingFeeModel {
+  multiplier: number;
+}
+
+export interface IFundingFeeModel {
+  multiplier: number;
+  max: number;
+}
+
+export interface IVaultInfo {
+  liquidity: number;
+  reservedAmount: number;
+  unrealisedReservingFeeAmount: number;
+  accReservingRate: number;
+  enabled: boolean;
+  weight: number;
+  lastUpdate: number;
+  reservingFeeModel: IReservingFeeModel;
+  priceConfig: {
+    maxInterval: number;
+    maxConfidence: number;
+    precision: number;
+    feeder: string;
+  };
+}
+
+export interface ISymbolInfo {
+  openingSize: number;
+  openingAmount: number;
+  accFundingRate: number;
+  realisedPnl: number;
+  unrealisedFundingFeeValue: number;
+  openEnabled: boolean;
+  liquidateEnabled: boolean;
+  decreaseEnabled: boolean;
+  lastUpdate: number;
+  fundingFeeModel: IFundingFeeModel;
+  long: boolean;
+  priceConfig: {
+    maxInterval: number;
+    maxConfidence: number;
+    precision: number;
+    feeder: string;
+  };
+}
+
+export interface IPositionInfo {
+  id: string;
+  long: boolean;
+  owner: string;
+  version: number;
+
+  collateralToken: string;
+  indexToken: string;
+
+  collateralAmount: number;
+  positionAmount: number;
+  reservedAmount: number;
+
+  positionSize: number;
+  lastFundingRate: number;
+  lastReservingRate: number;
+
+  reservingFeeAmount: number;
+  fundingFeeValue: number;
+
+  closed: boolean;
+
+  openTimestamp: number;
+
+  openFeeBps: number;
+}
+
+export interface IPositionCapInfo {
+  positionCapId: string;
+  symbol0: string;
+  symbol1: string;
+  long: boolean;
+}
+
+export interface IOrderCapInfo {
+  orderCapId: string;
+  symbol0: string;
+  symbol1: string;
+  long: boolean;
+  positionId: string | null;
+}
+
+export interface IOrderInfo {
+  id: string;
+  capId: string;
+  executed: boolean;
+  owner: string;
+  collateralToken: string;
+  indexToken: string;
+  feeToken: string;
+  collateralPriceThreshold: number;
+  feeAmount: BigNumber;
+  long: boolean;
+  indexPrice: number;
+  openOrder?: {
+    reserveAmount: BigNumber;
+    collateralAmount: BigNumber;
+    openAmount: BigNumber;
+  };
+  decreaseOrder?: {
+    decreaseAmount: BigNumber;
+    takeProfit: boolean;
+  };
+  orderType: 'OPEN_POSITION' | 'DECREASE_POSITION';
+  createdAt: number;
+  v11Order: boolean;
+}
+
+export interface IMarketValuationInfo {
+  marketCap: number;
+  alpPrice: number;
+  alpSupply: number;
+  apr?: number;
+}
+
+export interface IPositionConfig {
+  decreaseFeeBps: number;
+  liquidationBonus: number;
+  liquidationThreshold: number;
+  maxLeverage: number;
+  minHoldingDuration: number;
+  openFeeBps: number;
+  maxReservedMultiplier: number;
+  minCollateralValue: number;
+}
+
+export interface IHistory {
+  owner: string;
+  txid: string;
+  id: string;
+  created: number;
+  eventName: string;
+  parsedDetail: {
+    [key: string]: any;
+  };
+  detailRaw: string;
+  volume: number;
+  network: string;
+}
+
+export interface IStaked {
+  credentials: ICredential[];
+  amount: bigint;
+  claimable: bigint;
+}
+
+export interface ICredential {
+  id: string;
+  lockUntil: number;
+  accRewardPerShare: bigint;
+  amount: bigint;
+  claimable: bigint;
+}
+
+export interface IStakePool {
+  id: string;
+  enabled: boolean;
+  lastUpdatedTime: number;
+  stakedAmount: bigint;
+  reward: bigint;
+  startTime: number;
+  endTime: number;
+  accRewardPerShare: bigint;
+  lockDuration: number;
+}
+
+export interface ICoin {
+  decimals: number;
+  module: string;
+  metadata: string;
+  treasury?: string | null;
+}

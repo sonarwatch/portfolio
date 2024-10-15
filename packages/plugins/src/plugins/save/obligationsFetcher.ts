@@ -28,8 +28,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (market) marketsByAddress.set(market.address.toString(), market);
   });
 
-  await marketsByAddress.forEach(async (marketInfo) => {
-    if (!marketInfo) return;
+  for (const marketInfo of marketsByAddress.values()) {
+    if (!marketInfo) continue;
     const seeds = [
       getObligationSeed(marketInfo.address, 0),
       getObligationSeed(marketInfo.address, 1),
@@ -44,7 +44,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       );
       obligationAddresses.push(obligationAddress);
     }
-  });
+  }
 
   const obligationsRaw = await getParsedMultipleAccountsInfo(
     client,

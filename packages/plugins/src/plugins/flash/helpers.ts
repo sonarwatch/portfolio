@@ -6,6 +6,7 @@ import {
   VersionedTransaction,
   SYSVAR_INSTRUCTIONS_PUBKEY,
 } from '@solana/web3.js';
+import axios, { AxiosResponse } from 'axios';
 import { flashPerpetuals, flashPid, poolsPkeys } from './constants';
 import { SolanaClient } from '../../utils/clients/types';
 import { anchorSighash } from '../../utils/solana/anchorSighash';
@@ -16,6 +17,7 @@ import {
   u64,
   usdcSolanaDecimals,
 } from '../../utils/solana';
+import { Prefix } from './types';
 
 export function getPdas(owner: string) {
   return poolsPkeys.map(
@@ -75,17 +77,36 @@ export async function getLpTokenPrice(
   ];
   const data = Buffer.concat([anchorSighash('global', 'getLpTokenPrice')]);
   const recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+
+  const prefixResponse: AxiosResponse<Prefix> = await axios.get(
+    `https://api.prod.flash.trade/backup-oracle/prices?poolAddress=${pool.pubkey.toString()}`
+  );
+  if (!prefixResponse.data) return null;
+
+  const addressLookupTable = (
+    await connection.getAddressLookupTable(
+      new PublicKey('4E5u7DBVrJp6tVaWkH1sr6r9hhkFwGWmhEHrHeTNDdnP')
+    )
+  ).value;
+
+  if (!addressLookupTable) return null;
+
   const messageV0 = new TransactionMessage({
     payerKey: new PublicKey(emptyWithSol),
     recentBlockhash,
     instructions: [
+      new TransactionInstruction({
+        keys: prefixResponse.data.keys,
+        programId: new PublicKey(prefixResponse.data.programId),
+        data: Buffer.from(prefixResponse.data.data),
+      }),
       new TransactionInstruction({
         keys,
         programId: flashPid,
         data,
       }),
     ],
-  }).compileToV0Message();
+  }).compileToV0Message([addressLookupTable]);
   const versionedTransaction = new VersionedTransaction(messageV0);
   const simulatedTransactionResponse = await connection.simulateTransaction(
     versionedTransaction

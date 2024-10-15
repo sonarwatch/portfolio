@@ -1,13 +1,11 @@
-import { DynamicFieldInfo } from '@mysten/sui.js/client';
+import { DynamicFieldInfo } from '@mysten/sui/client';
 import { SuiClient } from '../clients/types';
 
-const maxPage = 25;
 export async function getDynamicFields(
   client: SuiClient,
   parentId: string,
   objectOnly?: boolean
 ) {
-  let page = 0;
   let hasNextPage = true;
   let cursor: string | null | undefined;
 
@@ -23,7 +21,6 @@ export async function getDynamicFields(
     });
     cursor = res.nextCursor;
     hasNextPage = res.hasNextPage;
-    page += 1;
-  } while (hasNextPage && page <= maxPage);
+  } while (hasNextPage);
   return objects;
 }

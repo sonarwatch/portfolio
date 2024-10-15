@@ -1,4 +1,4 @@
-import { EventId, SuiEventFilter } from '@mysten/sui.js/client';
+import { EventId, SuiEventFilter } from '@mysten/sui/client';
 import { SuiClient } from '../clients/types';
 import { Event } from './types';
 

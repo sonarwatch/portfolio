@@ -9,13 +9,12 @@ import {
   getElementLendingValues,
   suiNetwork,
 } from '@sonarwatch/portfolio-core';
-import { normalizeStructTag, parseStructTag } from '@mysten/sui.js/utils';
+import { normalizeStructTag, parseStructTag } from '@mysten/sui/utils';
 import BigNumber from 'bignumber.js';
-import {
+import { 
   CoinMetadata,
   CoinStruct,
-  SuiObjectDataFilter,
-} from '@mysten/sui.js/client';
+  SuiObjectDataFilter} from '@mysten/sui/client';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {

@@ -104,11 +104,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     if (tokenAmountA.isZero() && tokenAmountB.isZero()) return;
 
-    const coinTypeA = formatMoveTokenAddress(pool.coinTypeA);
-    const coinTypeB = formatMoveTokenAddress(pool.coinTypeB);
-
-    const tokenPriceA = tokenPrices.get(coinTypeA);
-    const tokenPriceB = tokenPrices.get(coinTypeB);
+    const tokenPriceA = tokenPrices.get(pool.coinTypeA);
+    const tokenPriceB = tokenPrices.get(pool.coinTypeB);
 
     const assets = [];
 

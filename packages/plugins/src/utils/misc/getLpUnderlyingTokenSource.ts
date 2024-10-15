@@ -13,7 +13,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { walletTokensPlatform } from '../../plugins/tokens/constants';
 import getSourceWeight from './getSourceWeight';
-import { usdcSuiType } from '../sui/constants';
+import { usdcSuiType, wUsdcSuiType } from '../sui/constants';
 import { minimumReserveValue } from './constants';
 import { usdcSolanaMint } from '../solana';
 
@@ -48,8 +48,9 @@ export const defaultAcceptedPairs = new Map<NetworkIdType, string[]>([
     [
       suiNativeAddress,
       '0x2::sui::SUI',
-      usdcSuiType, // USDCet
+      wUsdcSuiType, // USDCet
       '0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN', // USDCet
+      usdcSuiType, // native USDC
     ].map((a) => formatTokenAddress(a, NetworkId.sui)),
   ],
 ]);

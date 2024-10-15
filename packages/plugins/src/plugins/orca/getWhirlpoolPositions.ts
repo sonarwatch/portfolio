@@ -148,7 +148,11 @@ export function getOrcaNftFetcher(
         tokenPriceB
       );
 
-      const feesAndRewards = calcFeesAndRewards(
+      const tags = [];
+      if (tokenAmountA.isZero() || tokenAmountB.isZero())
+        tags.push('Out Of Range');
+
+      /* const feesAndRewards = calcFeesAndRewards(
         whirlpoolInfo,
         positionInfo,
         tickArrays
@@ -234,7 +238,7 @@ export function getOrcaNftFetcher(
             );
           }
         }
-      }
+      } */
 
       if (
         !assetTokenA ||
@@ -268,6 +272,7 @@ export function getOrcaNftFetcher(
             },
           ],
         },
+        tags,
       });
     }
 

@@ -47,7 +47,7 @@ export const lendingConfigs: Map<NetworkIdType, LendingConfig[]> = new Map([
           '0xa97684ead0e402dC232d5A977953DF7ECBaB3CDb',
         uiIncentiveDataProviderAddress:
           '0x265d414f80b0fca9505710e6F16dB4b67555D365',
-        uiPoolDataProviderAddress: '0xF71DBe0FAEF1473ffC607d4c555dfF0aEaDb878d',
+        uiPoolDataProviderAddress: '0x374a2592f0265b3bb802d75809e61b1b5BbD85B7',
         version: 3,
       },
     ],

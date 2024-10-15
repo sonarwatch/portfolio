@@ -1,12 +1,12 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { marketsCachePrefix, platformId } from './constants';
+import { marketsCacheKey, platformId } from './constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
-  await cache.setItem('market_id', 'market_object', {
-    prefix: marketsCachePrefix,
-    networkId: NetworkId.ethereum,
+  await cache.setItem(marketsCacheKey, 'market_object', {
+    prefix: platformId,
+    networkId: NetworkId.solana,
   });
 };
 const job: Job = {

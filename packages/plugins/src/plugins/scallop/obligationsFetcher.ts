@@ -8,9 +8,9 @@ import {
   formatMoveTokenAddress,
   getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
-import { normalizeStructTag } from '@mysten/sui.js/utils';
+import { normalizeStructTag } from '@mysten/sui/utils';
 import BigNumber from 'bignumber.js';
-import { SuiObjectDataFilter } from '@mysten/sui.js/client';
+import { SuiObjectDataFilter } from '@mysten/sui/client';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {

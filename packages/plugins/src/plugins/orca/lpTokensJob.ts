@@ -21,7 +21,7 @@ import { Job, JobExecutor } from '../../Job';
 import { Cache } from '../../Cache';
 import runInBatch from '../../utils/misc/runInBatch';
 import { minimumLiquidity } from '../../utils/misc/computeAndStoreLpPrice';
-import { getDecimalsForToken } from '../../utils/misc/getDecimalsForToken';
+import { getCachedDecimalsForToken } from '../../utils/misc/getCachedDecimalsForToken';
 import { getLpTokenSource } from '../../utils/misc/getLpTokenSource';
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -85,7 +85,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   const mintDecimals = await runInBatch(
     unknownMints.map(
-      (mint) => () => getDecimalsForToken(cache, mint, NetworkId.solana)
+      (mint) => () => getCachedDecimalsForToken(cache, mint, NetworkId.solana)
     )
   );
   const tokenAccountByAddress: Map<string, TokenAccount> = new Map();

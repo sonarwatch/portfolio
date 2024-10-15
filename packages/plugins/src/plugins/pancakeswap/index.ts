@@ -11,9 +11,9 @@ import {
   platformId,
   stakersBnb,
   stakersEthereum,
-  theGraphUrlEthV2,
+  // theGraphUrlEthV2,
 } from './constants';
-import getPoolsJob from '../uniswap-v2/getPoolsJob';
+// import getPoolsJob from '../uniswap-v2/getPoolsJob';
 import getPositionsV2Fetcher from '../uniswap-v2/getPositionsV2Fetcher';
 import getStakersBalancesFetcher from './getStakersBalancesFetcher';
 import stakerCakeFetcher from './stakerCakeFetcher';
@@ -25,7 +25,7 @@ export const jobs: Job[] = [
   // Aptos
   aptosJob,
   // Ethereum
-  getPoolsJob(NetworkId.ethereum, platformId, 'V2', theGraphUrlEthV2),
+  // getPoolsJob(NetworkId.ethereum, platformId, 'V2', theGraphUrlEthV2),
   // BNB
   // getPoolsJob(NetworkId.bnb, platformId, 'V1', factoryV2Bnb),
 ];

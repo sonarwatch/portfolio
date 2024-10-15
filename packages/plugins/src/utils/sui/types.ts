@@ -1,8 +1,4 @@
-import {
-  SuiEvent,
-  SuiObjectData,
-  SuiObjectResponse,
-} from '@mysten/sui.js/client';
+import { SuiEvent, SuiObjectData, SuiObjectResponse } from '@mysten/sui/client';
 import { ID } from './structs/id';
 
 export type ParsedData<K> = {
@@ -35,4 +31,16 @@ export type Event<K> = SuiEvent & {
 export type AirdropWrapperNFT = {
   balance: string;
   id: ID;
+};
+
+export type DeepAirdropNFT = {
+  amount: string;
+  id: ID;
+};
+
+export type StructTag = {
+  address: string;
+  module: string;
+  name: string;
+  typeParams: (string | StructTag)[];
 };

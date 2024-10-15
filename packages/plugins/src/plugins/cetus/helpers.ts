@@ -3,7 +3,7 @@
 import Decimal from 'decimal.js';
 import BigNumber from 'bignumber.js';
 import { suiNetwork } from '@sonarwatch/portfolio-core';
-import { normalizeSuiObjectId } from '@mysten/sui.js/utils';
+import { normalizeSuiObjectId } from '@mysten/sui/utils';
 import {
   ClmmPositionStatus,
   NFT,

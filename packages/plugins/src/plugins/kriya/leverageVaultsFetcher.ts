@@ -1,6 +1,5 @@
 import {
   NetworkId,
-  formatMoveTokenAddress,
   PortfolioElementType,
   PortfolioElement,
   PortfolioAsset,
@@ -56,14 +55,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     if (!vault) return;
 
-    mints.add(formatMoveTokenAddress(vault.coinA));
-    mints.add(formatMoveTokenAddress(vault.coinB));
+    mints.add(vault.coinA);
+    mints.add(vault.coinB);
   });
 
-  const tokenPrices = await cache.getTokenPricesAsMap(
-    [...mints],
-    NetworkId.sui
-  );
+  const tokenPrices = await cache.getTokenPricesAsMap(mints, NetworkId.sui);
 
   if (!tokenPrices) return [];
 
@@ -79,8 +75,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     if (!vault) return;
 
-    const tokenPriceA = tokenPrices.get(formatMoveTokenAddress(vault.coinA));
-    const tokenPriceB = tokenPrices.get(formatMoveTokenAddress(vault.coinB));
+    const tokenPriceA = tokenPrices.get(vault.coinA);
+    const tokenPriceB = tokenPrices.get(vault.coinB);
 
     if (!tokenPriceA || !tokenPriceB) return;
 

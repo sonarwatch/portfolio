@@ -8,7 +8,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import getSourceWeight from './getSourceWeight';
-import { getDecimalsForToken } from './getDecimalsForToken';
+import { getCachedDecimalsForToken } from './getCachedDecimalsForToken';
 import { walletTokensPlatform } from '../../plugins/tokens/constants';
 import { usdcSolanaMint } from '../solana';
 
@@ -141,7 +141,11 @@ export default async function checkComputeAndStoreTokensPrices(
     } else if (tokenPriceX) {
       decimalsTokenX = tokenPriceX.decimals;
     } else {
-      decimalsTokenX = await getDecimalsForToken(cache, tokenX.mint, networkId);
+      decimalsTokenX = await getCachedDecimalsForToken(
+        cache,
+        tokenX.mint,
+        networkId
+      );
     }
 
     let decimalsTokenY;
@@ -150,7 +154,11 @@ export default async function checkComputeAndStoreTokensPrices(
     } else if (tokenPriceY) {
       decimalsTokenY = tokenPriceY.decimals;
     } else {
-      decimalsTokenY = await getDecimalsForToken(cache, tokenY.mint, networkId);
+      decimalsTokenY = await getCachedDecimalsForToken(
+        cache,
+        tokenY.mint,
+        networkId
+      );
     }
 
     if (decimalsTokenX === null || decimalsTokenY === null) return undefined;
