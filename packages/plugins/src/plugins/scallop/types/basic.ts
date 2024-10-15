@@ -30,4 +30,4 @@ export type WitTable = {
 export type ExtendedBasicField<T> = {
   type: string;
   fields: T;
-}
+};

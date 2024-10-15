@@ -1,19 +1,19 @@
 import { CoinMetadata } from '@mysten/sui/client';
-import { COIN_NAMES, MARKET_COIN_NAMES, SCOIN_NAMES } from '../constants';
+import { coinNames, marketCoinNames, scoinNames } from '../constants';
 
-export type MarketCoinNames = (typeof MARKET_COIN_NAMES)[number];
-export type PoolCoinNames = (typeof COIN_NAMES)[number];
-export type sCoinNames = (typeof SCOIN_NAMES)[number];
+export type MarketCoinNames = (typeof marketCoinNames)[number];
+export type PoolCoinNames = (typeof coinNames)[number];
+export type SCoinNames = (typeof scoinNames)[number];
 
 export type CoinTypeMetadata = {
   coinType: string;
   metadata: CoinMetadata | null;
 };
 
-type sCoinToCoinNameType = { [T in sCoinNames]: PoolCoinNames };
-type sCoinTypesMapType = { [T in sCoinNames]: string };
+type SCoinToCoinNameType = { [T in SCoinNames]: PoolCoinNames };
+type SCoinTypesMapType = { [T in SCoinNames]: string };
 
-export const sCoinToCoinName: sCoinToCoinNameType = {
+export const sCoinToCoinName: SCoinToCoinNameType = {
   scallop_sui: 'sui',
   scallop_cetus: 'cetus',
   scallop_sca: 'sca',
@@ -28,7 +28,7 @@ export const sCoinToCoinName: sCoinToCoinNameType = {
   scallop_usdc: 'usdc',
 };
 
-export const sCoinTypesMap: sCoinTypesMapType = {
+export const sCoinTypesMap: SCoinTypesMapType = {
   scallop_sui:
     '0xaafc4f740de0dd0dde642a31148fb94517087052f19afb0f7bed1dc41a50c77b::scallop_sui::SCALLOP_SUI',
   scallop_cetus:
@@ -55,9 +55,9 @@ export const sCoinTypesMap: sCoinTypesMapType = {
     '0x1392650f2eca9e3f6ffae3ff89e42a3590d7102b80e2b430f674730bc30d3259::scallop_wormhole_sol::SCALLOP_WORMHOLE_SOL',
 } as const;
 
-export type sCoinTypeValue = (typeof sCoinTypesMap)[sCoinNames];
+export type SCoinTypeValue = (typeof sCoinTypesMap)[SCoinNames];
 
-export const sCoinTypeToCoinTypeMap: { [T in sCoinTypeValue]: string } = {
+export const sCoinTypeToCoinTypeMap: { [T in SCoinTypeValue]: string } = {
   [sCoinTypesMap.scallop_sui]:
     '0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI',
   [sCoinTypesMap.scallop_cetus]:
@@ -84,7 +84,7 @@ export const sCoinTypeToCoinTypeMap: { [T in sCoinTypeValue]: string } = {
     '0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC',
 } as const;
 
-export const wormholeCoinTypeToSymbolMap: Record<string, sCoinTypeValue> = {
+export const wormholeCoinTypeToSymbolMap: Record<string, SCoinTypeValue> = {
   [sCoinTypeToCoinTypeMap[sCoinTypesMap.scallop_wormhole_usdc]]: 'wUSDC',
   [sCoinTypeToCoinTypeMap[sCoinTypesMap.scallop_wormhole_usdt]]: 'wUSDT',
   [sCoinTypeToCoinTypeMap[sCoinTypesMap.scallop_wormhole_eth]]: 'wETH',

@@ -15,7 +15,7 @@ import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
   marketKey,
-  OBLIGATION_KEY_TYPE,
+  obligationKeyType,
   platformId,
   poolsKey,
   poolsPrefix,
@@ -53,7 +53,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const filterOwnerObject: SuiObjectDataFilter = {
     MatchAny: [
       {
-        StructType: OBLIGATION_KEY_TYPE,
+        StructType: obligationKeyType,
       },
     ],
   };

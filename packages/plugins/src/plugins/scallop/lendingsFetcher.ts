@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
   NetworkId,
   PortfolioAsset,
@@ -19,7 +21,7 @@ import {
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
-  MARKET_COIN_TYPE,
+  marketCoinType,
   marketKey,
   platformId,
   marketPrefix as prefix,
@@ -32,8 +34,8 @@ import {
   scoinPrefix,
   addressKey,
   addressPrefix,
-  SPOOL_ACCOUNT_TYPE,
-  MARKET_COIN_NAMES,
+  sPoolAccountType,
+  marketCoinNames,
 } from './constants';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import {
@@ -42,11 +44,11 @@ import {
   MarketJobResult,
   PoolCoinNames,
   Pools,
-  sCoinNames,
+  SCoinNames,
   sCoinToCoinName,
   SCoinTypeMetadata,
   sCoinTypeToCoinTypeMap,
-  sCoinTypeValue,
+  SCoinTypeValue,
   SpoolAccountFieldsType,
   SpoolJobResult,
   StructTag,
@@ -96,13 +98,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const filterOwnerObject: SuiObjectDataFilter = {
     MatchAny: [
       ...poolValues.map((value) => ({
-        StructType: `0x2::coin::Coin<${MARKET_COIN_TYPE}<${value.coinType}>>`,
+        StructType: `0x2::coin::Coin<${marketCoinType}<${value.coinType}>>`,
       })),
       ...sCoinValues.map(({ coinType }) => ({
         StructType: `0x2::coin::Coin<${coinType}>`,
       })),
       {
-        StructType: SPOOL_ACCOUNT_TYPE,
+        StructType: sPoolAccountType,
       },
     ],
   };
@@ -164,7 +166,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       normalizeStructTag(objType)
     );
 
-    return `${address}::${module}::${name}` === SPOOL_ACCOUNT_TYPE;
+    return `${address}::${module}::${name}` === sPoolAccountType;
   };
 
   const isSCoin = (
@@ -177,7 +179,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const isCoin = parsed.name === 'Coin';
     const sCoinTypeParsed = parsed.typeParams[0] as StructTag;
     const isObjectSCoin =
-      !!sCoinToCoinName[sCoinTypeParsed.name.toLowerCase() as sCoinNames];
+      !!sCoinToCoinName[sCoinTypeParsed.name.toLowerCase() as SCoinNames];
 
     return isCoin && isObjectSCoin;
   };
@@ -270,7 +272,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
       // convert sCoinType to coinType
       const sCoinType = `${address}::${module}::${name}`;
-      const coinType = sCoinTypeToCoinTypeMap[sCoinType as sCoinTypeValue];
+      const coinType = sCoinTypeToCoinTypeMap[sCoinType as SCoinTypeValue];
       if (!coinType) return;
 
       const coinName = poolValuesMetadataMap[
@@ -291,7 +293,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   let pendingReward = BigNumber(0);
 
-  MARKET_COIN_NAMES.forEach((marketCoin) => {
+  marketCoinNames.forEach((marketCoin) => {
     if (!stakedAccounts[marketCoin]) return;
 
     stakedAccounts[marketCoin]!.forEach(({ points, index, stakes }) => {
