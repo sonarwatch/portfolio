@@ -38,7 +38,7 @@ export const staticsByTitle: Map<string, AirdropStatics> = new Map([
   ['Second Distribution', secondDistribStatics],
 ]);
 
-export const dbrMint = undefined;
+export const dbrMint = 'DBRiDgJAMsM95moTzJs7M9LnkGErpbv9v6CUR1DXnUu5';
 export const dbrDecimals = 6;
 export const apiUrl =
   'https://points-api.debridge.foundation/api/TokenDistribution/';
