@@ -629,6 +629,11 @@ import {
   jobs as loopscaleJobs,
   fetchers as loopscaleFetchers,
 } from './plugins/loopscale';
+import {
+  platforms as vaultkaPlatforms,
+  jobs as vaultkaJobs,
+  fetchers as vaultkaFetchers,
+} from './plugins/vaultka';
 
 export {
   walletTokensPlatform,
@@ -771,6 +776,7 @@ export const platforms: Platform[] = [
   ...joulePlatforms,
   ...mesoPlatforms,
   ...loopscalePlatforms,
+  ...vaultkaPlatforms,
 ];
 
 // JOBS //
@@ -896,6 +902,7 @@ export const jobs: Job[] = [
   ...jouleJobs,
   ...mesoJobs,
   ...loopscaleJobs,
+  ...vaultkaJobs,
 ];
 
 // FETCHERS //
@@ -1022,6 +1029,7 @@ export const fetchers: Fetcher[] = [
   ...jouleFetchers,
   ...mesoFetchers,
   ...loopscaleFetchers,
+  ...vaultkaFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
