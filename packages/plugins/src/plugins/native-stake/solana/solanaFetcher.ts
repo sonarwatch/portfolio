@@ -65,12 +65,16 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   for (let i = 0; i < stakeAccounts.length; i += 1) {
     const stakeAccount = stakeAccounts[i];
     const validator = validators.get(stakeAccount.voter.toString());
+    const { deactivationEpoch, activationEpoch, staker } = stakeAccount;
 
-    mevRewards += new BigNumber(stakeAccount.lamports)
-      .minus(stakeAccount.rentExemptReserve)
-      .minus(stakeAccount.stake)
-      .dividedBy(10 ** 9)
-      .toNumber();
+    const isMarinade = marinadeManagerAddresses.includes(staker.toString());
+
+    if (!activationEpoch.isZero() && !isMarinade)
+      mevRewards += new BigNumber(stakeAccount.lamports)
+        .minus(stakeAccount.rentExemptReserve)
+        .minus(stakeAccount.stake)
+        .dividedBy(10 ** 9)
+        .toNumber();
 
     const amount = new BigNumber(stakeAccount.lamports)
       .minus(stakeAccount.rentExemptReserve)
@@ -78,9 +82,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       .toNumber();
     if (amount <= 0) continue;
 
-    const isMarinade = marinadeManagerAddresses.includes(
-      stakeAccount.staker.toString()
-    );
     if (isMarinade) {
       marinadeSolAmount += amount;
       nMarinadeAccounts += 1;
@@ -88,7 +89,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     } else solAmount += amount;
 
     // Status tags
-    const { deactivationEpoch, activationEpoch } = stakeAccount;
     const tags = [];
     if (
       epoch &&
@@ -102,6 +102,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       tags.push('Inactive');
     } else if (epoch && deactivationEpoch.isEqualTo(epoch)) {
       tags.push('Unstaking');
+    } else if (deactivationEpoch.isZero() && activationEpoch.isZero()) {
+      tags.push('Initialized');
     } else {
       tags.push('Active');
     }
