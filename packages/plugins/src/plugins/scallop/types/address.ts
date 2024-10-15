@@ -27,6 +27,7 @@ export interface Core {
   coins: Map<string, Coin>;
   oracles: Oracle;
   packages: Map<string, Package>;
+  object: string;
 }
 
 export interface Coin {
