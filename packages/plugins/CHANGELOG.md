@@ -2,6 +2,23 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.2](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.1...plugins-0.14.2) (2024-10-15)
+
+
+### Bug Fixes
+
+* convert to lowercase ([38a34cd](https://github.com/sonarwatch/portfolio/commit/38a34cdd71b24c00a77e08b7d042bed255cc8a1e))
+* minor ([20d39a4](https://github.com/sonarwatch/portfolio/commit/20d39a48b0e6806269a334f6c366668b4a0043d0))
+* use underlying asset type for new sCoin ([e5f39b6](https://github.com/sonarwatch/portfolio/commit/e5f39b6a85551df03a8e08fc219315a507fee102))
+
+
+### Features
+
+* add new types ([9e3c962](https://github.com/sonarwatch/portfolio/commit/9e3c96279015ef232f9503b4a0b7d8e60f21bd63))
+* add support for native usdc ([7350aaa](https://github.com/sonarwatch/portfolio/commit/7350aaa72bf205c9013c2e602dedc5061d6b029e))
+
+
+
 ## [0.14.1](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.0...plugins-0.14.1) (2024-10-14)
 
 
