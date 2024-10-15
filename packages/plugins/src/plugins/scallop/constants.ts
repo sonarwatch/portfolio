@@ -16,7 +16,7 @@ export const poolsPrefix = `${platformId}-pools`;
 export const spoolsPrefix = `${platformId}-spoolsmarket`;
 
 export const addressEndpoint =
-  'https://sui.apis.scallop.io/addresses/664dfe22898c36c159e28bc8';
+  'https://sui.apis.scallop.io/addresses/66f8e7ed9bb9e07fdfb86bbb';
 export const addressKey = 'scallop-address-key';
 export const marketKey = 'scallop-market-key';
 export const poolsKey = 'scallop-pools-key';
@@ -49,37 +49,42 @@ export const SCOIN_NAMES = [
   'scallop_wormhole_usdc',
   'scallop_wormhole_usdt',
   'scallop_wormhole_eth',
+  'scallop_wormhole_btc',
+  'scallop_wormhole_sol',
   'scallop_af_sui',
   'scallop_ha_sui',
   'scallop_v_sui',
+  'scallop_usdc',
 ] as const;
 
 export const COIN_NAMES = [
-  'eth',
-  'btc',
-  'usdc',
-  'usdt',
+  'weth',
+  'wbtc',
+  'wusdc',
+  'wusdt',
   'sui',
-  'apt',
-  'sol',
+  'wapt',
+  'wsol',
   'cetus',
   'sca',
   'afsui',
   'hasui',
   'vsui',
+  'usdc',
 ] as const;
 
 export const MARKET_COIN_NAMES = [
-  'seth',
-  'sbtc',
-  'susdc',
-  'susdt',
+  'sweth',
+  'swbtc',
+  'swusdc',
+  'swusdt',
   'ssui',
-  'sapt',
-  'ssol',
+  'swapt',
+  'swsol',
   'scetus',
   'ssca',
   'safsui',
   'shasui',
   'svsui',
+  'susdc',
 ] as const;

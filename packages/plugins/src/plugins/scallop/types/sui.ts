@@ -1,3 +1,3 @@
-import { parseStructTag } from "@mysten/sui.js/utils";
+import { parseStructTag } from "@mysten/sui/utils";
 
 export type StructTag = ReturnType<typeof parseStructTag>;

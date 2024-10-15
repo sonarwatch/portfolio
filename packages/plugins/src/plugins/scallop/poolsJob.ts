@@ -13,7 +13,14 @@ import {
   poolsKey,
   poolsPrefix as prefix,
 } from './constants';
-import { AddressInfo, Coin, PoolCoinNames, Pools, StructTag } from './types';
+import {
+  AddressInfo,
+  Coin,
+  PoolCoinNames,
+  Pools,
+  StructTag,
+  wormholeCoinTypeToSymbolMap,
+} from './types';
 import { getObject } from '../../utils/sui/getObject';
 import { getClientSui } from '../../utils/clients';
 
@@ -51,13 +58,20 @@ const executor: JobExecutor = async (cache: Cache) => {
       const metadataStruct = parseStructTag(
         normalizeStructTag(objectData.type)
       ); // 0x2::coin::CoinMetadata<T>
-      const { address: packageId, module, name } = metadataStruct
-        .typeParams[0] as StructTag;
+      const {
+        address: packageId,
+        module,
+        name,
+      } = metadataStruct.typeParams[0] as StructTag;
       const objFields = objectData.content?.fields;
       if (!objFields) return;
 
+      // manually map wormhole usdc symbol into wusdc
+      const coinType = `${packageId}::${module}::${name}`;
+      objFields.symbol =
+        wormholeCoinTypeToSymbolMap[coinType] ?? objFields.symbol;
       coinTypes[coinName] = {
-        coinType: `${packageId}::${module}::${name}`,
+        coinType,
         metadata: objFields,
       };
     }

@@ -83,3 +83,11 @@ export const sCoinTypeToCoinTypeMap: { [T in sCoinTypeValue]: string } = {
   [sCoinTypesMap.scallop_usdc]:
     '0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC',
 } as const;
+
+export const wormholeCoinTypeToSymbolMap: Record<string, sCoinTypeValue> = {
+  [sCoinTypeToCoinTypeMap[sCoinTypesMap.scallop_wormhole_usdc]]: 'wUSDC',
+  [sCoinTypeToCoinTypeMap[sCoinTypesMap.scallop_wormhole_usdt]]: 'wUSDT',
+  [sCoinTypeToCoinTypeMap[sCoinTypesMap.scallop_wormhole_eth]]: 'wETH',
+  [sCoinTypeToCoinTypeMap[sCoinTypesMap.scallop_wormhole_btc]]: 'wBTC',
+  [sCoinTypeToCoinTypeMap[sCoinTypesMap.scallop_wormhole_sol]]: 'wSOL',
+};

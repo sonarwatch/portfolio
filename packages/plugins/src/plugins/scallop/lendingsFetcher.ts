@@ -11,10 +11,11 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { normalizeStructTag, parseStructTag } from '@mysten/sui/utils';
 import BigNumber from 'bignumber.js';
-import { 
+import {
   CoinMetadata,
   CoinStruct,
-  SuiObjectDataFilter} from '@mysten/sui/client';
+  SuiObjectDataFilter,
+} from '@mysten/sui/client';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
@@ -55,7 +56,7 @@ import {
 } from './types';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { getClientSui } from '../../utils/clients';
-import { ObjectData, ObjectResponse } from '../../utils/sui/types';
+import { ObjectResponse } from '../../utils/sui/types';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elements: PortfolioElement[] = [];
@@ -153,7 +154,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const lendingAssets: UserLendingData = {};
   const stakedAccounts: UserStakeAccounts = {};
 
-  const isSpoolAccount = (obj: ObjectResponse<SpoolAccountFieldsType>) => {
+  const isSpoolAccount = (
+    obj: ObjectResponse<any>
+  ): obj is ObjectResponse<SpoolAccountFieldsType> => {
     const objType = obj.data?.type;
     if (!objType) return false;
 
@@ -164,7 +167,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     return `${address}::${module}::${name}` === SPOOL_ACCOUNT_TYPE;
   };
 
-  const isSCoin = (obj: ObjectResponse<CoinStruct>) => {
+  const isSCoin = (
+    obj: ObjectResponse<any>
+  ): obj is ObjectResponse<CoinStruct> => {
     const objType = obj.data?.type;
     if (!objType) return false;
 
@@ -177,7 +182,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     return isCoin && isObjectSCoin;
   };
 
-  const isMarketCoin = (obj: ObjectResponse<CoinStruct>) => {
+  const isMarketCoin = (
+    obj: ObjectResponse<any>
+  ): obj is ObjectResponse<CoinStruct> => {
     const objType = obj.data?.type;
     if (!objType) return false;
 
@@ -192,7 +199,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   allOwnedObjects.forEach((obj: ObjectResponse<any>) => {
     if (isMarketCoin(obj)) {
-      const marketCoinObj = obj.data as ObjectData<CoinStruct>;
+      const marketCoinObj = obj.data;
+      if (!marketCoinObj) return;
 
       // access underlying asset type from market coin struct
       // 0x2::coin::Coin<T>
@@ -215,8 +223,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         lendingAssets[coinName] = { coinType, amount: coinBalance };
       }
     } else if (isSpoolAccount(obj)) {
-      const spoolObj = obj.data as ObjectData<SpoolAccountFieldsType>;
-      const fields = spoolObj.content?.fields;
+      const spoolObj = obj.data;
+      const fields = spoolObj?.content?.fields;
       if (!fields) return;
 
       // parse market coin struct inside the spoolAccount struct
@@ -251,7 +259,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         lendingAssets[coinName] = { coinType: stakeType, amount: stakeBalance };
       }
     } else if (isSCoin(obj)) {
-      const marketCoinObj = obj.data as ObjectData<CoinStruct>;
+      const marketCoinObj = obj.data;
+      if (!marketCoinObj) return;
 
       // access underlying asset type from market coin struct
       // 0x2::coin::Coin<T>
@@ -338,7 +347,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   }
 
   Object.entries<UserLending>(lendingAssets)
-    .filter(([assetName, assetValue]) => assetValue.amount.isGreaterThan(0) && marketData[assetName])
+    .filter(
+      ([assetName, assetValue]) =>
+        assetValue.amount.isGreaterThan(0) && marketData[assetName]
+    )
     .forEach(([assetName, assetValue]) => {
       const { supplyInterestRate } = marketData[assetName]!;
       const addressMove = formatMoveTokenAddress(assetValue.coinType);
