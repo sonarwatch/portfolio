@@ -1,4 +1,5 @@
 import { Platform } from '@sonarwatch/portfolio-core';
+import { PublicKey } from '@solana/web3.js';
 import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'debridge';
@@ -41,3 +42,7 @@ export const dbrMint = undefined;
 export const dbrDecimals = 6;
 export const apiUrl =
   'https://points-api.debridge.foundation/api/TokenDistribution/';
+
+export const dlmmVaultProgramId = new PublicKey(
+  'DBrLFG4dco1xNC5Aarbt3KEaKaJ5rBYHwysqZoeqsSFE'
+);
