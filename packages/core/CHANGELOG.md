@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.5](https://github.com/sonarwatch/portfolio/compare/core-0.14.4...core-0.14.5) (2024-10-17)
+
+
+### Reverts
+
+* Revert "nxfinance fix" ([771326b](https://github.com/sonarwatch/portfolio/commit/771326b2733e529f7b90a7827978822b4f640349))
+
+
+
 ## [0.14.4](https://github.com/sonarwatch/portfolio/compare/core-0.14.3...core-0.14.4) (2024-10-17)
 
 
