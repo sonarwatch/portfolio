@@ -6,7 +6,6 @@ import {
   getParsedMultipleAccountsInfo,
   getParsedProgramAccounts,
 } from '../../../utils/solana';
-import { dataStructSizeFilter } from '../../../utils/solana/filters';
 import {
   custodiesKey,
   perpPoolsKey,
@@ -14,6 +13,7 @@ import {
   platformId,
 } from './constants';
 import { Custody, custodyStruct, perpetualPoolStruct } from './structs';
+import { custodiesFilters } from './filters';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -22,7 +22,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     client,
     custodyStruct,
     perpsProgramId,
-    dataStructSizeFilter(custodyStruct)
+    custodiesFilters()
   );
   if (custodiesAccs.length === 0) return;
   const custodyAccsInfo = custodiesAccs.map((acc) => ({

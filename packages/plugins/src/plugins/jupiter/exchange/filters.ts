@@ -47,3 +47,12 @@ export const lockFilters = (owner: string): GetProgramAccountsFilter[] => [
   },
   { dataSize: 296 },
 ];
+
+export const custodiesFilters = (): GetProgramAccountsFilter[] => [
+  {
+    memcmp: {
+      offset: 0,
+      bytes: 'HgWVUrv1XE',
+    },
+  },
+];
