@@ -11,7 +11,7 @@ import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
-import { dlmmVaultProgramId, platformId } from './constants';
+import { dbrDecimals, dlmmVaultProgramId, platformId } from './constants';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { escrowStruct } from '../meteora/struct';
@@ -21,37 +21,10 @@ import { dlmmVaultsKey } from '../meteora/constants';
 const slotTtl = 30000;
 let slot: number | null = null;
 let slotUpdate = 0;
+const pricePerDbrToken = 0.025;
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
-
-  const accounts = await getParsedProgramAccounts(
-    client,
-    escrowStruct,
-    dlmmVaultProgramId,
-    [
-      { dataSize: escrowStruct.byteSize },
-      {
-        memcmp: {
-          offset: 40,
-          bytes: owner,
-        },
-      },
-      // {
-      //   memcmp: {
-      //     offset: 8,
-      //     bytes: 'CGZvC5MWsu1bc3vRis619ZBEtvuPqoXrtBMeV9RrKFJp',
-      //   },
-      // },
-      // {
-      //   memcmp: {
-      //     offset: 96,
-      //     bytes: '1', // refunded === false
-      //   },
-      // },
-    ]
-  );
-  if (accounts.length === 0) return [];
 
   const vaults = await cache.getItem<CachedDlmmVaults>(dlmmVaultsKey, {
     prefix: platformId,
@@ -65,6 +38,22 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   }
   if (!slot) return [];
 
+  const accounts = await getParsedProgramAccounts(
+    client,
+    escrowStruct,
+    dlmmVaultProgramId,
+    [
+      { dataSize: escrowStruct.byteSize },
+      {
+        memcmp: {
+          offset: 40,
+          bytes: owner,
+        },
+      },
+    ]
+  );
+  if (accounts.length === 0) return [];
+
   const tokenPrices = await cache.getTokenPricesAsMap(
     accounts
       .map((a) => {
@@ -76,107 +65,38 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
 
   const assets: PortfolioAssetToken[] = [];
-  accounts.forEach((escrow) => {
-    if (!slot) return;
+  for (const escrow of accounts) {
     const vault = vaults[escrow.dlmmVault.toString()];
-    if (!vault) return;
+    if (!vault) continue;
 
-    // Vesting not started yet
-    if (slot < Number(vault.startVestingSlot)) {
-      const tpQuote = tokenPrices.get(vault.quoteMint);
-      if (!tpQuote) return;
-      assets.push(
-        tokenPriceToAssetToken(
-          vault.quoteMint,
-          new BigNumber(escrow.totalDeposit)
-            .div(10 ** tpQuote.decimals)
-            .toNumber(),
-          NetworkId.solana,
-          tpQuote,
-          undefined,
-          {}
-        )
-      );
-    } else {
-      // Vesting started
-      // If not refunded yet
+    const [quoteTokenPrice, baseTokenPrice] = [
+      tokenPrices.get(vault.quoteMint),
+      tokenPrices.get(vault.baseMint),
+    ];
 
-      const filledRatio = new BigNumber(vault.totalDeposit)
-        .div(vault.maxCap)
-        .toNumber();
+    if (!quoteTokenPrice) continue;
 
-      if (escrow.refunded === 0 && filledRatio > 1) {
-        const tpQuote = tokenPrices.get(vault.quoteMint);
-        if (!tpQuote) return;
-        const amount = new BigNumber(escrow.totalDeposit)
-          .div(10 ** tpQuote.decimals)
-          .times(1 - 1 / filledRatio)
-          .toNumber();
-        assets.push(
-          tokenPriceToAssetToken(
-            vault.quoteMint,
-            amount,
-            NetworkId.solana,
-            tpQuote,
-            undefined,
-            {
-              isClaimable: true,
-            }
-          )
-        );
-      }
-      const tpBase = tokenPrices.get(vault.baseMint);
-      if (!tpBase) return;
-      const shares = new BigNumber(escrow.totalDeposit).div(vault.totalDeposit);
-      const totalAmount = new BigNumber(vault.boughtToken).times(shares);
-      const remainingAmount = totalAmount.minus(escrow.claimedToken);
-      if (remainingAmount.isZero()) return;
+    const totalTokenEligible = escrow.totalDeposit
+      .dividedBy(10 ** quoteTokenPrice.decimals)
+      .dividedBy(pricePerDbrToken);
 
-      let claimableAmount = new BigNumber(remainingAmount.toString());
-      if (slot < Number(vault.endVestingSlot)) {
-        const amountPerSlot = new BigNumber(totalAmount).div(
-          Number(vault.endVestingSlot) - Number(vault.startVestingSlot)
-        );
-        let lastClaimedSlot = escrow.lastClaimedSlot.isZero()
-          ? Number(vault.startVestingSlot)
-          : escrow.lastClaimedSlot.toNumber();
-        if (lastClaimedSlot > slot) lastClaimedSlot = slot;
-        claimableAmount = amountPerSlot.times(
-          Math.min(slot, Number(vault.endVestingSlot)) - lastClaimedSlot
-        );
-      }
-      if (claimableAmount.isGreaterThan(0)) {
-        assets.push(
-          tokenPriceToAssetToken(
-            vault.baseMint,
-            claimableAmount.div(10 ** tpBase.decimals).toNumber(),
-            NetworkId.solana,
-            tpBase,
-            undefined,
-            {
-              isClaimable: true,
-            }
-          )
-        );
-      }
+    const remainingClaimableTokens = totalTokenEligible.minus(
+      escrow.claimedToken.dividedBy(10 ** dbrDecimals)
+    );
 
-      const vestingAmount = remainingAmount.minus(claimableAmount);
-      if (vestingAmount.isGreaterThan(0)) {
-        assets.push(
-          tokenPriceToAssetToken(
-            vault.baseMint,
-            vestingAmount.div(10 ** tpBase.decimals).toNumber(),
-            NetworkId.solana,
-            tpBase,
-            undefined,
-            {
-              tags: ['Vesting'],
-            }
-          )
-        );
-      }
-    }
-  });
+    if (remainingClaimableTokens.isLessThanOrEqualTo(0)) continue;
+    assets.push(
+      tokenPriceToAssetToken(
+        vault.baseMint,
+        remainingClaimableTokens.toNumber(),
+        NetworkId.solana,
+        baseTokenPrice,
+        undefined,
+        { lockedUntil: 1744876800000 }
+      )
+    );
+  }
+
   if (assets.length === 0) return [];
 
   return [
@@ -185,7 +105,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       type: PortfolioElementType.multiple,
       label: 'Vesting',
       platformId,
-      name: 'Alpha Vault',
+      name: 'LFG Vault',
       data: {
         assets,
       },

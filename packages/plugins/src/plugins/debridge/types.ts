@@ -13,7 +13,7 @@ export type Distribution = {
   distributionEndTimestamp: number;
   points: number;
   tokens: string;
-  merkleTreeRoute: null;
+  merkleTreeRoute: string[];
 };
 
 export type Notification = {
