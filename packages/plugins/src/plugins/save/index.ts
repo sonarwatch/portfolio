@@ -4,12 +4,12 @@ import { Fetcher } from '../../Fetcher';
 import reservesJob from './reservesJob';
 import marketsJob from './marketsJob';
 import obligationFetcher from './obligationsFetcher';
-import { platform } from './constants';
+import { platform, platformDumpy } from './constants';
 import rewardsFetcher from './rewardsFetcher';
 import rewardStatsJob from './rewardStatsJob';
 import token2022wrapperJob from './token2022wrapperJob';
 
-export const platforms: Platform[] = [platform];
+export const platforms: Platform[] = [platform, platformDumpy];
 export const jobs: Job[] = [
   marketsJob,
   reservesJob,

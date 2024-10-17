@@ -12,14 +12,12 @@ export abstract class ElementBuilder {
   readonly label: PortfolioElementLabel;
   readonly name?: string;
   readonly tags?: string[];
-  readonly leveraged?: boolean;
 
   protected constructor(params: ElementParams) {
     this.type = params.type;
     this.label = params.label;
     this.name = params.name;
     this.tags = params.tags;
-    this.leveraged = params.leveraged;
   }
 
   abstract mints(): string[];
