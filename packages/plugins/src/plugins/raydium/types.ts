@@ -270,4 +270,4 @@ export type LpMint = {
   extensions: Extensions;
 };
 
-export type Extensions = {};
+export type Extensions = object;
