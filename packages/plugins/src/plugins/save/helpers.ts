@@ -1,15 +1,11 @@
 import { uniformFixedSizeArray } from '@metaplex-foundation/beet';
 import {
   NetworkId,
-  PortfolioAsset,
   PortfolioElement,
-  PortfolioElementType,
-  TokenPrice,
   Yield,
   apyToApr,
-  getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
-import { AccountInfo, PublicKey } from '@solana/web3.js';
+import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import {
   Obligation,
@@ -18,9 +14,9 @@ import {
 } from './structs';
 import { ParsedAccount } from '../../utils/solana';
 import { MarketInfo, ReserveInfo } from './types';
-import { platformId, wadsDecimal } from './constants';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { parsePriceData } from '../../utils/solana/pyth/helpers';
+import { pid, platformDumpyId, platformId, wadsDecimal } from './constants';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { Cache } from '../../Cache';
 
 export const upperFirst = (string: string) =>
   string ? string.charAt(0).toUpperCase() + string.slice(1) : '';
@@ -64,14 +60,22 @@ export const parseDataflat = (
   };
 };
 
-export function getElementsFromObligations(
+export async function getElementsFromObligations(
   obligations: ParsedAccount<Obligation>[],
   reserveByAddress: Map<string, ReserveInfo>,
   marketByAddress: Map<string, MarketInfo>,
-  tokenPriceByAddress: Map<string, TokenPrice>,
-  pythAccountByAddress: Map<string, AccountInfo<Buffer>>
-): PortfolioElement[] {
-  const elements: PortfolioElement[] = [];
+  owner: string,
+  cache: Cache
+): Promise<PortfolioElement[]> {
+  const obligationAddressesRelatedToSavePlatform =
+    await getObligationAddressesRelatedToSavePlatform(owner, marketByAddress);
+
+  const elementRegistrySave = new ElementRegistry(NetworkId.solana, platformId);
+  const elementRegistryDumpy = new ElementRegistry(
+    NetworkId.solana,
+    platformDumpyId
+  );
+
   for (let i = 0; i < obligations.length; i += 1) {
     const obligation = obligations[i];
     if (!obligation) continue;
@@ -86,13 +90,15 @@ export function getElementsFromObligations(
     );
     if (depositsMap.size === 0 && borrowsMap.size === 0) continue;
 
-    const borrowedAssets: PortfolioAsset[] = [];
-    const borrowedYields: Yield[][] = [];
-    const suppliedAssets: PortfolioAsset[] = [];
-    const suppliedYields: Yield[][] = [];
-    const rewardAssets: PortfolioAsset[] = [];
-    const suppliedLtvs: number[] = [];
-    const borrowedWeights: number[] = [];
+    const element = obligationAddressesRelatedToSavePlatform?.includes(
+      obligation.pubkey.toString()
+    )
+      ? elementRegistrySave.addElementBorrowlend({
+          label: 'Lending',
+        })
+      : elementRegistryDumpy.addElementBorrowlend({
+          label: 'Lending',
+        });
 
     for (let j = 0; j < market.reserves.length; j += 1) {
       const { address: reserveAddress } = market.reserves[j];
@@ -102,18 +108,6 @@ export function getElementsFromObligations(
       const { reserve } = reserveInfo;
       const { liquidity, collateral } = reserve;
       const lMint = liquidity.mintPubkey;
-      const lTokenPrice = tokenPriceByAddress.get(lMint);
-      let price: number | undefined;
-      if (!lTokenPrice) {
-        continue;
-        // const pythOracle = new PublicKey(reserve.liquidity.pythOracle);
-        // const pythAccount = pythAccountByAddress.get(pythOracle.toString());
-        // console.log('Account', pythAccount?.data.byteLength);
-        // const pythPrice = pythAccount
-        //   ? parsePriceData(pythAccount.data)
-        //   : undefined;
-        // if (pythPrice) price = pythPrice.price;
-      }
 
       const decimals = liquidity.mintDecimals;
       const reserveBorrowAmount = new BigNumber(liquidity.borrowedAmountWads)
@@ -136,7 +130,7 @@ export function getElementsFromObligations(
             .times(reserveDepositAmount / collateralSupply)
             .toNumber();
 
-          suppliedLtvs.push(reserve.config.liquidationThreshold / 100);
+          element.addSuppliedLtv(reserve.config.liquidationThreshold / 100);
 
           const apy = +reserveInfo.rates.supplyInterest / 100;
           const cSuppliedYields: Yield[] = [
@@ -145,16 +139,13 @@ export function getElementsFromObligations(
               apy,
             },
           ];
-          suppliedYields.push(cSuppliedYields);
-          suppliedAssets.push(
-            tokenPriceToAssetToken(
-              lMint,
-              suppliedAmount,
-              NetworkId.solana,
-              lTokenPrice,
-              price
-            )
-          );
+
+          element.addSuppliedYield(cSuppliedYields);
+          element.addSuppliedAsset({
+            address: lMint,
+            amount: suppliedAmount,
+            alreadyShifted: true,
+          });
         }
       }
 
@@ -168,7 +159,7 @@ export function getElementsFromObligations(
             .dividedBy(new BigNumber(10 ** (wadsDecimal + decimals)))
             .toNumber();
 
-          borrowedWeights.push(
+          element.addBorrowedWeight(
             new BigNumber(reserve.config.addedBorrowWeightBPS)
               .dividedBy(10 ** 4)
               .plus(1)
@@ -182,50 +173,46 @@ export function getElementsFromObligations(
               apy: -apy,
             },
           ];
-          borrowedYields.push(cBorrowedYields);
-          borrowedAssets.push(
-            tokenPriceToAssetToken(
-              lMint,
-              borrowedAmount,
-              NetworkId.solana,
-              lTokenPrice,
-              price
-            )
-          );
+          element.addBorrowedYield(cBorrowedYields);
+          element.addSuppliedAsset({
+            address: lMint,
+            amount: borrowedAmount,
+            alreadyShifted: true,
+          });
         }
       }
     }
-    if (suppliedAssets.length === 0 && borrowedAssets.length === 0) continue;
-
-    const { borrowedValue, suppliedValue, value, healthRatio, rewardValue } =
-      getElementLendingValues({
-        suppliedAssets,
-        borrowedAssets,
-        rewardAssets,
-        suppliedLtvs,
-        borrowedWeights,
-      });
-
-    elements.push({
-      type: PortfolioElementType.borrowlend,
-      networkId: NetworkId.solana,
-      platformId,
-      label: 'Lending',
-      value,
-      name: market.name,
-      data: {
-        borrowedAssets,
-        borrowedValue,
-        borrowedYields,
-        suppliedAssets,
-        suppliedValue,
-        suppliedYields,
-        healthRatio,
-        rewardAssets,
-        rewardValue,
-        value,
-      },
-    });
   }
-  return elements;
+
+  const dumpyElements = await elementRegistryDumpy.getElements(cache);
+  const saveElements = await elementRegistrySave.getElements(cache);
+
+  return [...dumpyElements, ...saveElements];
 }
+
+const getObligationAddressesRelatedToSavePlatform = async (
+  owner: string,
+  marketsByAddress: Map<string, MarketInfo>
+) => {
+  const obligationAddressesRelatedToSavePlatform: string[] = [];
+  for (const marketInfo of marketsByAddress.values()) {
+    if (!marketInfo) continue;
+    const seeds = [
+      getObligationSeed(marketInfo.address, 0),
+      getObligationSeed(marketInfo.address, 1),
+      getObligationSeed(marketInfo.address, 2),
+    ];
+    for (let i = 0; i < seeds.length; i += 1) {
+      const seed = seeds[i];
+      const obligationAddress = await PublicKey.createWithSeed(
+        new PublicKey(owner),
+        seed,
+        pid
+      );
+      obligationAddressesRelatedToSavePlatform.push(
+        obligationAddress.toString()
+      );
+    }
+  }
+  return obligationAddressesRelatedToSavePlatform;
+};

@@ -2,6 +2,8 @@ import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'save';
+export const platformDumpyId = 'dumpy';
+
 export const platform: Platform = {
   id: platformId,
   name: 'Save',
@@ -9,6 +11,15 @@ export const platform: Platform = {
   defiLlamaId: 'save',
   website: 'https://save.finance/',
 };
+
+export const platformDumpy: Platform = {
+  id: platformDumpyId,
+  name: 'Dumpy',
+  image: 'https://sonar.watch/img/platforms/dumpy.webp',
+  // defiLlamaId: 'dumpy',
+  website: 'https://dumpy.fun/',
+};
+
 export const marketsPrefix = `${platformId}-markets`;
 export const marketsKey = 'markets';
 export const reservesPrefix = `${platformId}-reserves`;
