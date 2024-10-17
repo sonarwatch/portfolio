@@ -42,6 +42,7 @@ export function getElementLendingValues(params: {
   suppliedLtvs?: number[];
   borrowedWeights?: number[];
   unsettledAssets?: PortfolioAsset[];
+  leveraged?: boolean;
 }) {
   const {
     suppliedAssets,
@@ -50,6 +51,7 @@ export function getElementLendingValues(params: {
     suppliedLtvs,
     borrowedWeights,
     unsettledAssets,
+    leveraged,
   } = params;
 
   const unsettledValue: UsdValue = getUsdValueSumStrict(
@@ -79,10 +81,15 @@ export function getElementLendingValues(params: {
   );
 
   // Total value
-  let value =
-    suppliedValue !== null && borrowedValue !== null
-      ? suppliedValue - borrowedValue
-      : null;
+  let value;
+  if (leveraged && suppliedValue) {
+    value = suppliedValue;
+  } else {
+    value =
+      suppliedValue !== null && borrowedValue !== null
+        ? suppliedValue - borrowedValue
+        : null;
+  }
   if (rewardValue !== null && value !== null) value += rewardValue;
   if (unsettledValue !== null && value !== null) value += unsettledValue;
 

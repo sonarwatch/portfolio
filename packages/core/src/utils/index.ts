@@ -21,6 +21,7 @@ export * from './getAddressSystemFromString';
 export * from './getAddressSystemFromNetworkId';
 export * from './getAssetsFromElement';
 export * from './getAssetsFromElements';
+export * from './getAddressesFromElement';
 export * from './getCollectiblesFromAssets';
 export * from './getUsdValueSum';
 export * from './getUsdValueSumStrict';
