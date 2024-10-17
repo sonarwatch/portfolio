@@ -174,7 +174,7 @@ export async function getElementsFromObligations(
             },
           ];
           element.addBorrowedYield(cBorrowedYields);
-          element.addSuppliedAsset({
+          element.addBorrowedAsset({
             address: lMint,
             amount: borrowedAmount,
             alreadyShifted: true,
