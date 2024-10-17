@@ -1,13 +1,4 @@
-import {
-  formatTokenAddress,
-  getElementLendingValues,
-  getUsdValueSum,
-  NetworkId,
-  PortfolioAsset,
-  PortfolioElement,
-  PortfolioElementType,
-  Yield,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -104,6 +95,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     };
 
     if (leverageVaultsMints.includes(deposit.tokenMint)) {
+      asset.amount = asset.amount
+        .multipliedBy(marginAccount.leverage)
+        .dividedBy(100);
       elementBorrowlend.addSuppliedAsset(asset);
     } else {
       elementMultiple.addAsset(asset);
