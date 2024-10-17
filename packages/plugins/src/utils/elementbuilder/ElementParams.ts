@@ -8,4 +8,5 @@ export type ElementParams = {
   label: PortfolioElementLabel;
   name?: string;
   tags?: string[];
+  leveraged?: boolean;
 };
