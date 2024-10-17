@@ -15,9 +15,8 @@ import { ammV4Filter, ammV5Filter } from './filters';
 import { LiquidityPoolStatus } from './types';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 import { CLOBOrderStruct } from '../orders/clobs-solana/structs';
-import getLpUnderlyingTokenSourceOld from '../../utils/misc/getLpUnderlyingTokenSourceOld';
-import getLpTokenSourceRawOld from '../../utils/misc/getLpTokenSourceRawOld';
 import { orderStructByProgramId } from '../orders/clobs-solana/constants';
+import { getLpTokenSourceRaw } from '../../utils/misc/getLpTokenSourceRaw';
 
 const ammsDetails = [
   {
@@ -27,13 +26,13 @@ const ammsDetails = [
     filters: ammV4Filter,
     name: 'Pools V4',
   },
-  {
-    versionId: 5,
-    struct: ammInfoV5Struct,
-    programId: AMM_PROGRAM_ID_V5,
-    filters: ammV5Filter,
-    name: 'Pools V5',
-  },
+  // {
+  //   versionId: 5,
+  //   struct: ammInfoV5Struct,
+  //   programId: AMM_PROGRAM_ID_V5,
+  //   filters: ammV5Filter,
+  //   name: 'Pools V5',
+  // },
 ];
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -180,30 +179,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 
         const lpMint = amm.lpMintAddress;
 
-        const underlyingSource = getLpUnderlyingTokenSourceOld(
-          lpMint.toString(),
-          NetworkId.solana,
-          {
-            address: mintA,
-            decimals: decimalsA,
-            reserveAmountRaw: tokenAmountA,
-            tokenPrice: tokenPriceA,
-            weight: 0.5,
-          },
-          {
-            address: mintB,
-            decimals: decimalsB,
-            reserveAmountRaw: tokenAmountB,
-            tokenPrice: tokenPriceB,
-            weight: 0.5,
-          }
-        );
-        if (underlyingSource) {
-          await cache.setTokenPriceSource(underlyingSource);
-        }
-
-        if (!tokenPriceB || !tokenPriceA) continue;
-
         const lpMintAccount = mintAccountsMap.get(lpMint.toString());
         if (!lpMintAccount) continue;
 
@@ -211,33 +186,35 @@ const executor: JobExecutor = async (cache: Cache) => {
         const lpSupply = amm.lpAmount;
         if (lpSupply.isZero()) continue;
 
-        tokenPriceSources.push(
-          getLpTokenSourceRawOld(
-            NetworkId.solana,
-            lpMint.toString(),
-            platformId,
+        const tokenSources = getLpTokenSourceRaw({
+          networkId: NetworkId.solana,
+          sourceId: lpMint.toString(),
+          platformId,
+          priceUnderlyings: true,
+          lpDetails: {
+            address: lpMint.toString(),
+            decimals: lpDecimals,
+            supplyRaw: lpSupply,
+          },
+          poolUnderlyingsRaw: [
             {
-              address: lpMint.toString(),
-              decimals: lpDecimals,
-              supplyRaw: lpSupply,
+              address: mintA,
+              decimals: decimalsA,
+              reserveAmountRaw: tokenAmountA,
+              tokenPrice: tokenPriceA,
+              weight: 0.5,
             },
-            [
-              {
-                address: tokenPriceA.address,
-                decimals: tokenPriceA.decimals,
-                price: tokenPriceA.price,
-                reserveAmountRaw: tokenAmountA,
-              },
-              {
-                address: tokenPriceB.address,
-                decimals: tokenPriceB.decimals,
-                price: tokenPriceB.price,
-                reserveAmountRaw: tokenAmountB,
-              },
-            ],
-            amm.ammName
-          )
-        );
+            {
+              address: mintB,
+              decimals: decimalsB,
+              reserveAmountRaw: tokenAmountB,
+              tokenPrice: tokenPriceB,
+              weight: 0.5,
+            },
+          ],
+        });
+
+        tokenPriceSources.push(...tokenSources);
       }
     }
   }
