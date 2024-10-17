@@ -7,7 +7,6 @@ import {
   PortfolioAssetToken,
   PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
