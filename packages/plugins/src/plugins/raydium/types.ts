@@ -209,3 +209,65 @@ export type Tick = {
   feeGrowthOutsideX64B: BN;
   rewardGrowthsOutsideX64: BN[];
 };
+
+export type ApiV3Response = {
+  id: string;
+  success: boolean;
+  data: {
+    count: number;
+    data: PoolInfo[];
+    hasNextPage: boolean;
+  };
+};
+
+export type PoolInfo = {
+  type: string;
+  programId: string;
+  id: string;
+  mintA: LpMint;
+  mintB: LpMint;
+  price: number;
+  mintAmountA: number;
+  mintAmountB: number;
+  feeRate: number;
+  openTime: string;
+  tvl: number;
+  day: Day;
+  week: Day;
+  month: Day;
+  pooltype: string[];
+  rewardDefaultInfos: number[];
+  farmUpcomingCount: number;
+  farmOngoingCount: number;
+  farmFinishedCount: number;
+  marketId: string;
+  lpMint: LpMint;
+  lpPrice: number;
+  lpAmount: number;
+  burnPercent: number;
+};
+
+export type Day = {
+  volume: number;
+  volumeQuote: number;
+  volumeFee: number;
+  apr: number;
+  feeApr: number;
+  priceMin: number;
+  priceMax: number;
+  rewardApr: number[];
+};
+
+export type LpMint = {
+  chainId: number;
+  address: string;
+  programId: string;
+  logoURI: string;
+  symbol: string;
+  name: string;
+  decimals: number;
+  tags: string[];
+  extensions: Extensions;
+};
+
+export type Extensions = {};
