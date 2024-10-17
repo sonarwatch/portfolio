@@ -1,4 +1,13 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import {
+  formatTokenAddress,
+  getElementLendingValues,
+  getUsdValueSum,
+  NetworkId,
+  PortfolioAsset,
+  PortfolioElement,
+  PortfolioElementType,
+  Yield,
+} from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -75,7 +84,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     name: `JLP Leverage x${new BigNumber(marginAccount.leverage)
       .dividedBy(100)
       .decimalPlaces(2)}`,
-    leveraged: true,
   });
 
   marginAccount.deposits.forEach((deposit) => {

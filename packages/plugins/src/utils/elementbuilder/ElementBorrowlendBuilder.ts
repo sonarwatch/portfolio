@@ -120,7 +120,6 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
           ? this.borrowedWeights
           : undefined,
       unsettledAssets,
-      leveraged: this.leveraged,
     });
 
     if (!suppliedValue && !borrowedValue && !rewardValue) return null;
