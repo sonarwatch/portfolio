@@ -2,13 +2,18 @@
 
 import Decimal from 'decimal.js';
 import BigNumber from 'bignumber.js';
-import { suiNetwork } from '@sonarwatch/portfolio-core';
+import { suiClockAddress, suiNetwork } from '@sonarwatch/portfolio-core';
 import { normalizeSuiObjectId } from '@mysten/sui/utils';
+import { Transaction } from '@mysten/sui/transactions';
 import {
   ClmmPositionStatus,
+  CollectFeesQuote,
+  FetchPosFeeParams,
+  FetchPosRewardParams,
   NFT,
   Pool,
   Position,
+  PosRewarderResult,
   Rewarder,
   SuiAddressType,
   SuiStructTag,
@@ -17,6 +22,7 @@ import { ObjectResponse } from '../../utils/sui/types';
 import { getObjectDeletedResponse } from '../../utils/sui/getObjectDeletedResponse';
 import { getObjectNotExistsResponse } from '../../utils/sui/getObjectNotExistsResponse';
 import { bitsToNumber } from '../../utils/sui/bitsToNumber';
+import { getClientSui } from '../../utils/clients';
 
 export function fromX64(num: BigNumber): Decimal {
   return new Decimal(num.toString()).mul(Decimal.pow(2, -64));
@@ -310,3 +316,132 @@ export function buildNFT(objects: ObjectResponse<unknown>): NFT {
   }
   return nft;
 }
+
+export const fetchPosFeeAmount = async (
+  params: FetchPosFeeParams[]
+): Promise<CollectFeesQuote[]> => {
+  const tx = new Transaction();
+
+  for (const paramItem of params) {
+    const typeArguments = [paramItem.coinTypeA, paramItem.coinTypeB];
+    const args = [
+      tx.object(
+        '0xdaa46292632c3c4d8f31f23ea0f9b36a28ff3677e9684980e4438403a67a3d8f'
+      ),
+      tx.object(paramItem.poolAddress),
+      tx.pure.address(paramItem.positionId),
+    ];
+    tx.moveCall({
+      target: `0x8faab90228e4c4df91c41626bbaefa19fc25c514405ac64de54578dec9e6f5ee::fetcher_script::fetch_position_fees`,
+      arguments: args,
+      typeArguments,
+    });
+  }
+
+  const simulateRes = await getClientSui().devInspectTransactionBlock({
+    transactionBlock: tx,
+    sender: simulationAccount,
+  });
+
+  if (simulateRes.error != null) {
+    throw new Error(
+      `fetch position fee error code: ${
+        simulateRes.error ?? 'unknown error'
+      }, please check config and postion and pool object ids`
+    );
+  }
+
+  const valueData: any = simulateRes.events?.filter(
+    (item: any) =>
+      extractStructTagFromType(item.type).name === `FetchPositionFeesEvent`
+  );
+  if (valueData.length === 0) {
+    return [];
+  }
+
+  const result: CollectFeesQuote[] = [];
+
+  for (let i = 0; i < valueData.length; i += 1) {
+    const { parsedJson } = valueData[i];
+    const posRrewarderResult: CollectFeesQuote = {
+      feeOwedA: new BigNumber(parsedJson.fee_owned_a),
+      feeOwedB: new BigNumber(parsedJson.fee_owned_b),
+      position_id: parsedJson.position_id,
+    };
+    result.push(posRrewarderResult);
+  }
+
+  return result;
+};
+
+const simulationAccount =
+  '0x326ce9894f08dcaa337fa232641cc34db957aec9ff6614c1186bc9a7508df0bb';
+
+export const fetchPosRewardersAmount = async (
+  params: FetchPosRewardParams[]
+) => {
+  const tx = new Transaction();
+
+  for (const paramItem of params) {
+    const typeArguments = [paramItem.coinTypeA, paramItem.coinTypeB];
+    const args = [
+      tx.object(
+        '0xdaa46292632c3c4d8f31f23ea0f9b36a28ff3677e9684980e4438403a67a3d8f'
+      ),
+      tx.object(paramItem.poolAddress),
+      tx.pure.address(paramItem.positionId),
+      tx.object(suiClockAddress),
+    ];
+    tx.moveCall({
+      target: `0x8faab90228e4c4df91c41626bbaefa19fc25c514405ac64de54578dec9e6f5ee::fetcher_script::fetch_position_rewards`,
+      arguments: args,
+      typeArguments,
+    });
+  }
+
+  const simulateRes = await getClientSui().devInspectTransactionBlock({
+    transactionBlock: tx,
+    sender: simulationAccount,
+  });
+
+  if (simulateRes.error != null) {
+    throw new Error(
+      `fetch position rewards error code: ${
+        simulateRes.error ?? 'unknown error'
+      }, please check config and params`
+    );
+  }
+
+  const valueData: any = simulateRes.events?.filter(
+    (item: any) =>
+      extractStructTagFromType(item.type).name === `FetchPositionRewardsEvent`
+  );
+  if (valueData.length === 0) {
+    return [];
+  }
+
+  if (valueData.length !== params.length) {
+    throw new Error('valueData.length !== params.pools.length');
+  }
+
+  const result: PosRewarderResult[] = [];
+
+  for (let i = 0; i < valueData.length; i += 1) {
+    const posRrewarderResult: PosRewarderResult = {
+      poolAddress: params[i].poolAddress,
+      positionId: params[i].positionId,
+      rewarderAmountOwed: [],
+    };
+
+    for (let j = 0; j < params[i].rewarderInfo.length; j += 1) {
+      posRrewarderResult.rewarderAmountOwed.push({
+        amount_owed: new BigNumber(valueData[i].parsedJson.data[j]),
+        coin_address: params[i].rewarderInfo[j].coinAddress,
+      });
+    }
+
+    result.push(posRrewarderResult);
+  }
+
+  return result;
+};

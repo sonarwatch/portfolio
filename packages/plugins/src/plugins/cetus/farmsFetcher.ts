@@ -1,21 +1,22 @@
-import {
-  formatMoveTokenAddress,
-  getUsdValueSum,
-  NetworkId,
-  PortfolioElement,
-  PortfolioElementType,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { clmmPoolsPrefix, farmNftType, platformId } from './constants';
 import { getClientSui } from '../../utils/clients';
-import { WrappedPositionNFT, Pool, Farm } from './types';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import {
+  WrappedPositionNFT,
+  Pool,
+  Farm,
+  FetchPosFeeParams,
+  FetchPosRewardParams,
+} from './types';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { bitsToNumber } from '../../utils/sui/bitsToNumber';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { fetchPosFeeAmount, fetchPosRewardersAmount } from './helpers';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -29,7 +30,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
   if (positions.length === 0) return [];
 
-  const [farms, pools] = await Promise.all([
+  const [farms, pools, allFees] = await Promise.all([
     multiGetObjects<Farm>(
       client,
       positions
@@ -50,21 +51,44 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         }
       )
       .then((res) => res.filter((p) => p !== null) as Pool[]),
+    fetchPosFeeAmount(
+      positions
+        .map((position) => {
+          const clmmPosition =
+            position.data?.content?.fields.clmm_postion.fields;
+          if (!clmmPosition) return null;
+          return {
+            poolAddress: clmmPosition.pool,
+            positionId: clmmPosition.id.id,
+            coinTypeA: clmmPosition.coin_type_a.fields.name,
+            coinTypeB: clmmPosition.coin_type_b.fields.name,
+          };
+        })
+        .filter((v) => v !== null) as FetchPosFeeParams[]
+    ),
   ]);
 
-  const mints: string[] = [];
+  const allRewards = await fetchPosRewardersAmount(
+    positions
+      .map((position) => {
+        const clmmPosition = position.data?.content?.fields.clmm_postion.fields;
+        if (!clmmPosition) return null;
+        const pool = pools.find((p) => p.poolAddress === clmmPosition.pool);
+        if (!pool) return null;
+        return {
+          poolAddress: clmmPosition.pool,
+          positionId: clmmPosition.id.id,
+          coinTypeA: clmmPosition.coin_type_a.fields.name,
+          coinTypeB: clmmPosition.coin_type_b.fields.name,
+          rewarderInfo: pool.rewarder_infos,
+        };
+      })
+      .filter((v) => v !== null) as FetchPosRewardParams[]
+  );
 
-  pools.forEach((pool) => {
-    mints.push(
-      formatMoveTokenAddress(pool.coinTypeA),
-      formatMoveTokenAddress(pool.coinTypeB)
-    );
-  });
+  const elementRegistry = new ElementRegistry(NetworkId.sui, platformId);
 
-  const elements: PortfolioElement[] = [];
-  const tokenPrices = await cache.getTokenPricesAsMap(mints, NetworkId.sui);
-
-  positions.forEach((position) => {
+  positions.forEach((position, i) => {
     if (!position.data?.content?.fields) return;
 
     const farm = farms.find(
@@ -78,6 +102,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         position.data?.content?.fields.clmm_postion.fields.pool
     );
     if (!pool) return;
+
+    const fees = allFees[i];
+    const rewards = allRewards[i];
 
     const tickLowerIndex = bitsToNumber(
       position.data.content.fields.clmm_postion.fields.tick_lower_index.fields
@@ -104,56 +131,43 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     if (tokenAmountA.isZero() && tokenAmountB.isZero()) return;
 
-    const tokenPriceA = tokenPrices.get(pool.coinTypeA);
-    const tokenPriceB = tokenPrices.get(pool.coinTypeB);
-
-    const assets = [];
-
-    if (tokenAmountA.isGreaterThan(0) && tokenPriceA) {
-      assets.push(
-        tokenPriceToAssetToken(
-          tokenPriceA.address,
-          tokenAmountA.dividedBy(10 ** tokenPriceA.decimals).toNumber(),
-          NetworkId.sui,
-          tokenPriceA
-        )
-      );
-    }
-    if (tokenAmountB.isGreaterThan(0) && tokenPriceB) {
-      assets.push(
-        tokenPriceToAssetToken(
-          tokenPriceB.address,
-          tokenAmountB.dividedBy(10 ** tokenPriceB.decimals).toNumber(),
-          NetworkId.sui,
-          tokenPriceB
-        )
-      );
-    }
-
-    const liquidities = [
-      {
-        assets,
-        assetsValue: getUsdValueSum(assets.map((a) => a.value)),
-        rewardAssets: [],
-        rewardAssetsValue: 0,
-        value: getUsdValueSum(assets.map((a) => a.value)),
-        yields: [],
-      },
-    ];
-
-    elements.push({
-      type: PortfolioElementType.liquidity,
-      networkId: NetworkId.sui,
-      platformId,
+    const element = elementRegistry.addElementLiquidity({
       label: 'Farming',
-      value: getUsdValueSum(liquidities.map((a) => a.value)),
-      data: {
-        liquidities,
-      },
     });
+    const liquidity = element.addLiquidity();
+
+    liquidity.addAsset({
+      address: pool.coinTypeA,
+      amount: tokenAmountA,
+    });
+
+    liquidity.addAsset({
+      address: pool.coinTypeB,
+      amount: tokenAmountB,
+    });
+
+    liquidity.addRewardAsset({
+      address: pool.coinTypeA,
+      amount: fees.feeOwedA,
+    });
+
+    liquidity.addRewardAsset({
+      address: pool.coinTypeB,
+      amount: fees.feeOwedB,
+    });
+
+    rewards.rewarderAmountOwed.forEach((rewarderAmountOwed) => {
+      liquidity.addRewardAsset({
+        address: rewarderAmountOwed.coin_address,
+        amount: rewarderAmountOwed.amount_owed,
+      });
+    });
+
+    if (tokenAmountA.isZero() || tokenAmountB.isZero())
+      element.addTag('Out Of Range');
   });
 
-  return elements;
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

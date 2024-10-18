@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { ID } from '../../utils/sui/structs/id';
 
 export type SuiAddressType = string;
@@ -274,4 +275,36 @@ export type DcaOrder = {
   out_withdrawn: string;
   status: string;
   user: string;
+};
+
+export type FetchPosFeeParams = {
+  poolAddress: string;
+  positionId: string;
+  coinTypeA: string;
+  coinTypeB: string;
+};
+
+export type CollectFeesQuote = {
+  position_id: string;
+  feeOwedA: BigNumber;
+  feeOwedB: BigNumber;
+};
+
+export type FetchPosRewardParams = {
+  poolAddress: string;
+  positionId: string;
+  coinTypeA: string;
+  coinTypeB: string;
+  rewarderInfo: Rewarder[];
+};
+
+export type RewarderAmountOwed = {
+  amount_owed: BigNumber;
+  coin_address: string;
+};
+
+export type PosRewarderResult = {
+  poolAddress: string;
+  positionId: string;
+  rewarderAmountOwed: RewarderAmountOwed[];
 };
