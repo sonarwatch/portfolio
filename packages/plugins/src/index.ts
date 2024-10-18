@@ -634,6 +634,11 @@ import {
   jobs as vaultkaJobs,
   fetchers as vaultkaFetchers,
 } from './plugins/vaultka';
+import {
+  platforms as loverflowPlatforms,
+  jobs as loverflowJobs,
+  fetchers as loverflowFetchers,
+} from './plugins/loverflow';
 
 export {
   walletTokensPlatform,
@@ -777,6 +782,7 @@ export const platforms: Platform[] = [
   ...mesoPlatforms,
   ...loopscalePlatforms,
   ...vaultkaPlatforms,
+  ...loverflowPlatforms,
 ];
 
 // JOBS //
@@ -903,6 +909,7 @@ export const jobs: Job[] = [
   ...mesoJobs,
   ...loopscaleJobs,
   ...vaultkaJobs,
+  ...loverflowJobs,
 ];
 
 // FETCHERS //
@@ -1030,6 +1037,7 @@ export const fetchers: Fetcher[] = [
   ...mesoFetchers,
   ...loopscaleFetchers,
   ...vaultkaFetchers,
+  ...loverflowFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
