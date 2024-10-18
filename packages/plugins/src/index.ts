@@ -639,6 +639,11 @@ import {
   jobs as loverflowJobs,
   fetchers as loverflowFetchers,
 } from './plugins/loverflow';
+import {
+  platforms as zeloPlatforms,
+  jobs as zeloJobs,
+  fetchers as zeloFetchers,
+} from './plugins/zelo';
 
 export {
   walletTokensPlatform,
@@ -783,6 +788,7 @@ export const platforms: Platform[] = [
   ...loopscalePlatforms,
   ...vaultkaPlatforms,
   ...loverflowPlatforms,
+  ...zeloPlatforms,
 ];
 
 // JOBS //
@@ -910,6 +916,7 @@ export const jobs: Job[] = [
   ...loopscaleJobs,
   ...vaultkaJobs,
   ...loverflowJobs,
+  ...zeloJobs,
 ];
 
 // FETCHERS //
@@ -1038,6 +1045,7 @@ export const fetchers: Fetcher[] = [
   ...loopscaleFetchers,
   ...vaultkaFetchers,
   ...loverflowFetchers,
+  ...zeloFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
