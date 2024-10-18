@@ -23,10 +23,11 @@ export class AssetBuilder {
 
   get(
     networkId: NetworkIdType,
-    tokenPrices: TokenPriceMap
+    tokenPrices: TokenPriceMap,
+    keepIfZero?: boolean
   ): PortfolioAsset | null {
     let amount = new BigNumber(this.amount);
-    if (amount.isZero()) return null;
+    if (!keepIfZero && amount.isZero()) return null;
     const tokenPrice = tokenPrices.get(this.address);
     if (!tokenPrice) return null;
 

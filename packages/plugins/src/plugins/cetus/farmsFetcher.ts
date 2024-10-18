@@ -1,21 +1,15 @@
-import {
-  formatMoveTokenAddress,
-  getUsdValueSum,
-  NetworkId,
-  PortfolioElement,
-  PortfolioElementType,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { clmmPoolsPrefix, farmNftType, platformId } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { WrappedPositionNFT, Pool, Farm } from './types';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { bitsToNumber } from '../../utils/sui/bitsToNumber';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -52,17 +46,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       .then((res) => res.filter((p) => p !== null) as Pool[]),
   ]);
 
-  const mints: string[] = [];
-
-  pools.forEach((pool) => {
-    mints.push(
-      formatMoveTokenAddress(pool.coinTypeA),
-      formatMoveTokenAddress(pool.coinTypeB)
-    );
-  });
-
-  const elements: PortfolioElement[] = [];
-  const tokenPrices = await cache.getTokenPricesAsMap(mints, NetworkId.sui);
+  const elementRegistry = new ElementRegistry(NetworkId.sui, platformId);
 
   positions.forEach((position) => {
     if (!position.data?.content?.fields) return;
@@ -104,56 +88,26 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     if (tokenAmountA.isZero() && tokenAmountB.isZero()) return;
 
-    const tokenPriceA = tokenPrices.get(pool.coinTypeA);
-    const tokenPriceB = tokenPrices.get(pool.coinTypeB);
-
-    const assets = [];
-
-    if (tokenAmountA.isGreaterThan(0) && tokenPriceA) {
-      assets.push(
-        tokenPriceToAssetToken(
-          tokenPriceA.address,
-          tokenAmountA.dividedBy(10 ** tokenPriceA.decimals).toNumber(),
-          NetworkId.sui,
-          tokenPriceA
-        )
-      );
-    }
-    if (tokenAmountB.isGreaterThan(0) && tokenPriceB) {
-      assets.push(
-        tokenPriceToAssetToken(
-          tokenPriceB.address,
-          tokenAmountB.dividedBy(10 ** tokenPriceB.decimals).toNumber(),
-          NetworkId.sui,
-          tokenPriceB
-        )
-      );
-    }
-
-    const liquidities = [
-      {
-        assets,
-        assetsValue: getUsdValueSum(assets.map((a) => a.value)),
-        rewardAssets: [],
-        rewardAssetsValue: 0,
-        value: getUsdValueSum(assets.map((a) => a.value)),
-        yields: [],
-      },
-    ];
-
-    elements.push({
-      type: PortfolioElementType.liquidity,
-      networkId: NetworkId.sui,
-      platformId,
+    const element = elementRegistry.addElementLiquidity({
       label: 'Farming',
-      value: getUsdValueSum(liquidities.map((a) => a.value)),
-      data: {
-        liquidities,
-      },
     });
+    const liquidity = element.addLiquidity();
+
+    liquidity.addAsset({
+      address: pool.coinTypeA,
+      amount: tokenAmountA,
+    });
+
+    liquidity.addAsset({
+      address: pool.coinTypeB,
+      amount: tokenAmountB,
+    });
+
+    if (tokenAmountA.isZero() || tokenAmountB.isZero())
+      element.addTag('Out Of Range');
   });
 
-  return elements;
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {
