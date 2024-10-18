@@ -4,13 +4,19 @@ import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { clmmPoolsPrefix, farmNftType, platformId } from './constants';
 import { getClientSui } from '../../utils/clients';
-import { WrappedPositionNFT, Pool, Farm, FetchPosFeeParams } from './types';
+import {
+  WrappedPositionNFT,
+  Pool,
+  Farm,
+  FetchPosFeeParams,
+  FetchPosRewardParams,
+} from './types';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { bitsToNumber } from '../../utils/sui/bitsToNumber';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
-import { fetchPosFeeAmount } from './helpers';
+import { fetchPosFeeAmount, fetchPosRewardersAmount } from './helpers';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -24,7 +30,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
   if (positions.length === 0) return [];
 
-  const [farms, pools, feesByPosition] = await Promise.all([
+  const [farms, pools, allFees] = await Promise.all([
     multiGetObjects<Farm>(
       client,
       positions
@@ -62,6 +68,24 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     ),
   ]);
 
+  const allRewards = await fetchPosRewardersAmount(
+    positions
+      .map((position) => {
+        const clmmPosition = position.data?.content?.fields.clmm_postion.fields;
+        if (!clmmPosition) return null;
+        const pool = pools.find((p) => p.poolAddress === clmmPosition.pool);
+        if (!pool) return null;
+        return {
+          poolAddress: clmmPosition.pool,
+          positionId: clmmPosition.id.id,
+          coinTypeA: clmmPosition.coin_type_a.fields.name,
+          coinTypeB: clmmPosition.coin_type_b.fields.name,
+          rewarderInfo: pool.rewarder_infos,
+        };
+      })
+      .filter((v) => v !== null) as FetchPosRewardParams[]
+  );
+
   const elementRegistry = new ElementRegistry(NetworkId.sui, platformId);
 
   positions.forEach((position, i) => {
@@ -79,7 +103,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
     if (!pool) return;
 
-    const fees = feesByPosition[i];
+    const fees = allFees[i];
+    const rewards = allRewards[i];
 
     const tickLowerIndex = bitsToNumber(
       position.data.content.fields.clmm_postion.fields.tick_lower_index.fields
@@ -125,9 +150,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       address: pool.coinTypeA,
       amount: fees.feeOwedA,
     });
+
     liquidity.addRewardAsset({
       address: pool.coinTypeB,
       amount: fees.feeOwedB,
+    });
+
+    rewards.rewarderAmountOwed.forEach((rewarderAmountOwed) => {
+      liquidity.addRewardAsset({
+        address: rewarderAmountOwed.coin_address,
+        amount: rewarderAmountOwed.amount_owed,
+      });
     });
 
     if (tokenAmountA.isZero() || tokenAmountB.isZero())

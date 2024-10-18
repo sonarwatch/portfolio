@@ -289,3 +289,22 @@ export type CollectFeesQuote = {
   feeOwedA: BigNumber;
   feeOwedB: BigNumber;
 };
+
+export type FetchPosRewardParams = {
+  poolAddress: string;
+  positionId: string;
+  coinTypeA: string;
+  coinTypeB: string;
+  rewarderInfo: Rewarder[];
+};
+
+export type RewarderAmountOwed = {
+  amount_owed: BigNumber;
+  coin_address: string;
+};
+
+export type PosRewarderResult = {
+  poolAddress: string;
+  positionId: string;
+  rewarderAmountOwed: RewarderAmountOwed[];
+};

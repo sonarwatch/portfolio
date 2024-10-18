@@ -8,10 +8,11 @@ import {
   buildPosition,
   extractStructTagFromType,
   fetchPosFeeAmount,
+  fetchPosRewardersAmount,
   getPoolFromObject,
 } from './helpers';
 
-import { Pool, Position } from './types';
+import { FetchPosRewardParams, Pool, Position } from './types';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
@@ -55,20 +56,39 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const elementRegistry = new ElementRegistry(NetworkId.sui, platformId);
 
-  const feesByPosition = await fetchPosFeeAmount(
-    clmmPositions.map((clmmPosition) => ({
-      poolAddress: clmmPosition.pool,
-      positionId: clmmPosition.pos_object_id,
-      coinTypeA: clmmPosition.coin_type_a,
-      coinTypeB: clmmPosition.coin_type_b,
-    }))
-  );
+  const [allFees, allRewards] = await Promise.all([
+    fetchPosFeeAmount(
+      clmmPositions.map((clmmPosition) => ({
+        poolAddress: clmmPosition.pool,
+        positionId: clmmPosition.pos_object_id,
+        coinTypeA: clmmPosition.coin_type_a,
+        coinTypeB: clmmPosition.coin_type_b,
+      }))
+    ),
+    fetchPosRewardersAmount(
+      clmmPositions
+        .map((clmmPosition) => {
+          if (!clmmPosition) return null;
+          const pool = poolsById.get(clmmPosition.pool);
+          if (!pool) return null;
+          return {
+            poolAddress: clmmPosition.pool,
+            positionId: clmmPosition.pos_object_id,
+            coinTypeA: clmmPosition.coin_type_a,
+            coinTypeB: clmmPosition.coin_type_b,
+            rewarderInfo: pool.rewarder_infos,
+          };
+        })
+        .filter((v) => v !== null) as FetchPosRewardParams[]
+    ),
+  ]);
 
   clmmPositions.forEach((clmmPosition, i) => {
     const pool = poolsById.get(clmmPosition.pool);
     if (!pool) return;
 
-    const fees = feesByPosition[i];
+    const fees = allFees[i];
+    const rewards = allRewards[i];
 
     const { tokenAmountA, tokenAmountB } = getTokenAmountsFromLiquidity(
       new BigNumber(clmmPosition.liquidity),
@@ -102,6 +122,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     liquidity.addRewardAsset({
       address: pool.coinTypeB,
       amount: fees.feeOwedB,
+    });
+
+    rewards.rewarderAmountOwed.forEach((rewarderAmountOwed) => {
+      liquidity.addRewardAsset({
+        address: rewarderAmountOwed.coin_address,
+        amount: rewarderAmountOwed.amount_owed,
+      });
     });
 
     if (tokenAmountA.isZero() || tokenAmountB.isZero())
