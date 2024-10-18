@@ -634,6 +634,11 @@ import {
   jobs as vaultkaJobs,
   fetchers as vaultkaFetchers,
 } from './plugins/vaultka';
+import {
+  platforms as zeloPlatforms,
+  jobs as zeloJobs,
+  fetchers as zeloFetchers,
+} from './plugins/zelo';
 
 export {
   walletTokensPlatform,
@@ -777,6 +782,7 @@ export const platforms: Platform[] = [
   ...mesoPlatforms,
   ...loopscalePlatforms,
   ...vaultkaPlatforms,
+  ...zeloPlatforms,
 ];
 
 // JOBS //
@@ -903,6 +909,7 @@ export const jobs: Job[] = [
   ...mesoJobs,
   ...loopscaleJobs,
   ...vaultkaJobs,
+  ...zeloJobs,
 ];
 
 // FETCHERS //
@@ -1030,6 +1037,7 @@ export const fetchers: Fetcher[] = [
   ...mesoFetchers,
   ...loopscaleFetchers,
   ...vaultkaFetchers,
+  ...zeloFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
