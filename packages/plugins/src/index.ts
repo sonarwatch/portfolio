@@ -635,6 +635,11 @@ import {
   fetchers as vaultkaFetchers,
 } from './plugins/vaultka';
 import {
+  platforms as loverflowPlatforms,
+  jobs as loverflowJobs,
+  fetchers as loverflowFetchers,
+} from './plugins/loverflow';
+import {
   platforms as zeloPlatforms,
   jobs as zeloJobs,
   fetchers as zeloFetchers,
@@ -782,6 +787,7 @@ export const platforms: Platform[] = [
   ...mesoPlatforms,
   ...loopscalePlatforms,
   ...vaultkaPlatforms,
+  ...loverflowPlatforms,
   ...zeloPlatforms,
 ];
 
@@ -909,6 +915,7 @@ export const jobs: Job[] = [
   ...mesoJobs,
   ...loopscaleJobs,
   ...vaultkaJobs,
+  ...loverflowJobs,
   ...zeloJobs,
 ];
 
@@ -1037,6 +1044,7 @@ export const fetchers: Fetcher[] = [
   ...mesoFetchers,
   ...loopscaleFetchers,
   ...vaultkaFetchers,
+  ...loverflowFetchers,
   ...zeloFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
