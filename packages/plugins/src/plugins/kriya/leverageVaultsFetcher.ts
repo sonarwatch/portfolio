@@ -11,7 +11,7 @@ import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { leverageVaultsInfoKey, platformId } from './constants';
 import { getClientSui } from '../../utils/clients';
-import { LeverageVaultInfo, StakeReceiptWithPoints } from './types';
+import { LeverageVaultInfo, StakeReceiptWithPoints } from './types/vaults';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';

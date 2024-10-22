@@ -1,68 +1,76 @@
-import {
-  NetworkId,
-  PortfolioLiquidity,
-  UsdValue,
-  formatMoveTokenAddress,
-  getUsdValueSum,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, vaultsInfo, vaultsInfoKey } from './constants';
+import {
+  platformId,
+  vaultsInfo,
+  vaultsInfoKey,
+  vaultStakeReceipt,
+} from './constants';
 import { getClientSui } from '../../utils/clients';
 import { getMultipleBalances } from '../../utils/sui/mulitpleGetBalances';
-import { Pool } from '../cetus/types';
-import { clmmPoolsPrefix } from '../cetus/constants';
-import { VaultPositionInfo } from './types';
+import { VaultPositionInfo } from './types/common';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
+import { MemoizedCache } from '../../utils/misc/MemoizedCache';
+import { VaultReceipt } from './types/vaults';
+
+const vaultsPositionInfoMemo = new MemoizedCache<VaultPositionInfo[]>(
+  vaultsInfoKey,
+  {
+    prefix: platformId,
+    networkId: NetworkId.sui,
+  }
+);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
-  const vaultsBalances = await getMultipleBalances(
-    client,
-    owner,
-    vaultsInfo.map((vault) => vault.tokenType)
-  );
+  const [vaultsOldBalances, vaultBalances, vaultsPositionInfo] =
+    await Promise.all([
+      getMultipleBalances(
+        client,
+        owner,
+        vaultsInfo.map((vault) => vault.tokenType)
+      ),
+      getOwnedObjects<VaultReceipt>(client, owner, {
+        filter: { StructType: vaultStakeReceipt },
+      }),
+      vaultsPositionInfoMemo.getItem(cache),
+    ]);
 
-  if (!vaultsBalances.some((balance) => balance.totalBalance !== '0'))
-    return [];
-
-  const poolInfos = await cache.getItems<Pool>(
-    vaultsInfo.map((vault) => vault.underlyingPool),
-    { prefix: clmmPoolsPrefix, networkId: NetworkId.sui }
-  );
-
-  const vaultsPositionInfo = await cache.getItem<VaultPositionInfo[]>(
-    vaultsInfoKey,
-    {
-      prefix: platformId,
-      networkId: NetworkId.sui,
-    }
-  );
   if (!vaultsPositionInfo) return [];
 
-  const tokenPriceById = await cache.getTokenPricesAsMap(
-    poolInfos
-      .map((pool) => (pool ? [pool.coinTypeA, pool.coinTypeB] : []))
-      .flat(),
-    NetworkId.sui
+  const vaultsByCoinType: Map<string, VaultPositionInfo> = new Map();
+  vaultsPositionInfo.forEach((vault) =>
+    vaultsByCoinType.set(vault.coinType, vault)
   );
 
-  let totalValue: UsdValue = 0;
-  const liquidities: PortfolioLiquidity[] = [];
-  for (let i = 0; i < vaultsBalances.length; i++) {
-    const balance = vaultsBalances[i];
-    const pool = poolInfos[i];
-    const vault = vaultsPositionInfo[i];
-    if (!pool || !vault) continue;
+  const vaultsByFarmId: Map<string, VaultPositionInfo> = new Map();
+  vaultsPositionInfo.forEach((vault) =>
+    vaultsByFarmId.set(vault.farmId, vault)
+  );
+
+  const registry = new ElementRegistry(NetworkId.sui, platformId);
+  const liquidities = registry.addElementLiquidity({
+    name: 'Vaults',
+    label: 'LiquidityPool',
+  });
+  for (let i = 0; i < vaultsOldBalances.length; i++) {
+    const liquidity = liquidities.addLiquidity();
+    const balance = vaultsOldBalances[i];
+    if (balance.totalBalance === '0') continue;
+
+    const vault = vaultsByCoinType.get(balance.coinType);
+    if (!vault) continue;
 
     const totalSupply = new BigNumber(vault.totalSupply);
 
     const { tokenAmountA, tokenAmountB } = getTokenAmountsFromLiquidity(
       new BigNumber(vault.liquidity),
-      pool.current_tick_index,
+      vault.currentTickIndex,
       vault.lowerTick,
       vault.upperTick,
       false
@@ -70,62 +78,58 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const shares = new BigNumber(balance.totalBalance).dividedBy(totalSupply);
 
-    const [tokenPriceA, tokenPriceB] = [
-      tokenPriceById.get(formatMoveTokenAddress(pool.coinTypeA)),
-      tokenPriceById.get(formatMoveTokenAddress(pool.coinTypeB)),
-    ];
-    if (!tokenPriceA || !tokenPriceB) continue;
+    const amountA = tokenAmountA.times(shares);
+    const amountB = tokenAmountB.times(shares);
 
-    const amountA = tokenAmountA
-      .times(shares)
-      .dividedBy(10 ** tokenPriceA.decimals);
-    const amountB = tokenAmountB
-      .times(shares)
-      .dividedBy(10 ** tokenPriceB.decimals);
-
-    if (amountA.isZero() && amountB.isZero()) continue;
-
-    const assetA = tokenPriceToAssetToken(
-      tokenPriceA.address,
-      amountA.toNumber(),
-      NetworkId.sui,
-      tokenPriceA
-    );
-
-    const assetB = tokenPriceToAssetToken(
-      tokenPriceB.address,
-      amountB.toNumber(),
-      NetworkId.sui,
-      tokenPriceB
-    );
-    const value = getUsdValueSum([assetA.value, assetB.value]);
-
-    totalValue = getUsdValueSum([totalValue, value]);
-    liquidities.push({
-      assets: [assetA, assetB],
-      assetsValue: value,
-      rewardAssets: [],
-      rewardAssetsValue: null,
-      value,
-      yields: [],
+    liquidity.addAsset({
+      address: vault.mintA,
+      amount: amountA,
+    });
+    liquidity.addAsset({
+      address: vault.mintB,
+      amount: amountB,
     });
   }
 
-  if (liquidities.length === 0) return [];
+  for (let i = 0; i < vaultBalances.length; i++) {
+    const liquidity = liquidities.addLiquidity();
+    const stakeReceipt = vaultBalances[i].data?.content?.fields;
+    if (!stakeReceipt || stakeReceipt.shares === '0') continue;
 
-  return [
-    {
-      type: 'liquidity',
-      data: {
-        liquidities,
-      },
-      label: 'LiquidityPool',
-      networkId: NetworkId.sui,
-      platformId,
-      value: totalValue,
-      name: 'Vaults',
-    },
-  ];
+    const vault = vaultsByFarmId.get(stakeReceipt.farm_id);
+    if (!vault) continue;
+
+    const totalSupply = new BigNumber(vault.totalSupply);
+
+    const { tokenAmountA, tokenAmountB } = getTokenAmountsFromLiquidity(
+      new BigNumber(vault.liquidity),
+      600,
+      vault.lowerTick,
+      vault.upperTick,
+      false
+    );
+    const useApiData = tokenAmountA.isLessThan(0) || tokenAmountB.isLessThan(0);
+
+    const shares = new BigNumber(stakeReceipt.shares).dividedBy(totalSupply);
+
+    const amountA = useApiData
+      ? new BigNumber(vault.amountA).times(shares)
+      : tokenAmountA.times(shares);
+    const amountB = useApiData
+      ? new BigNumber(vault.amountB).times(shares)
+      : tokenAmountB.times(shares);
+
+    liquidity.addAsset({
+      address: vault.mintA,
+      amount: amountA,
+    });
+    liquidity.addAsset({
+      address: vault.mintB,
+      amount: amountB,
+    });
+  }
+
+  return registry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

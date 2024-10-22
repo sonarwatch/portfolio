@@ -5,14 +5,14 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId, farmsInfoKey, farmsPackageId } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
-import { LiquidityPosition, FarmInfo } from './types';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { arrayToMap } from '../../utils/misc/arrayToMap';
+import { FarmInfo, FarmPosition } from './types/farms';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
-  const farmsObjects = await getOwnedObjects<LiquidityPosition>(client, owner, {
+  const farmsObjects = await getOwnedObjects<FarmPosition>(client, owner, {
     filter: { Package: farmsPackageId },
   });
   if (farmsObjects.length === 0) return [];
