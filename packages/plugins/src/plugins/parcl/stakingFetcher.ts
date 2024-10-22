@@ -1,18 +1,12 @@
-import {
-  getUsdValueSum,
-  NetworkId,
-  PortfolioAsset,
-  PortfolioElementType,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
-import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { platformId, prclMint, stakingProgramId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
 import { getProgramAccounts } from '../../utils/solana';
 import { Position, PositionAccount } from './types';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const decodePosition = (buffer: Buffer): Position => ({
   amount: Number(buffer.readBigUInt64LE(1)),
@@ -55,7 +49,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     {
       memcmp: {
         offset: 8,
-        bytes: new PublicKey(owner).toBase58(),
+        bytes: new PublicKey(owner).toString(),
       },
     },
   ]);
@@ -66,36 +60,22 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     (acc) => acc && decodePositionAccount(acc.account.data)
   );
 
-  const tokenPrice = await cache.getTokenPrice(prclMint, NetworkId.solana);
-  if (!tokenPrice) return [];
-
-  const assets: PortfolioAsset[] = [];
+  const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
+  const element = elementRegistry.addElementMultiple({
+    label: 'Staked',
+  });
 
   positions.forEach((positionAccount) => {
-    positionAccount.positions.forEach((position) => {
-      assets.push(
-        tokenPriceToAssetToken(
-          tokenPrice.address,
-          new BigNumber(position.amount)
-            .dividedBy(10 ** tokenPrice.decimals)
-            .toNumber(),
-          NetworkId.solana,
-          tokenPrice
-        )
-      );
+    element.addAsset({
+      address: prclMint,
+      amount: positionAccount.positions.reduce(
+        (sum: number, position) => sum + Number(position.amount),
+        0
+      ),
     });
   });
 
-  return [
-    {
-      type: PortfolioElementType.multiple,
-      label: 'Staked',
-      networkId: NetworkId.solana,
-      platformId,
-      data: { assets },
-      value: getUsdValueSum(assets.map((asset) => asset.value)),
-    },
-  ];
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {
