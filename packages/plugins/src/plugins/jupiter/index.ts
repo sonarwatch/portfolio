@@ -15,9 +15,11 @@ import pricingJob from './pricingJob';
 import { platform as exchangePlatform } from './exchange/constants';
 import { AirdropFetcher } from '../../AirdropFetcher';
 import {
-  airdropFetcher as asrAirdropFetcher,
-  fetcher as asrFetcher,
-} from './governance/asrAirdropFetcher';
+  asr1AirdropFetcher,
+  asr1Fetcher,
+  asr2AirdropFetcher,
+  asr2Fetcher,
+} from './governance';
 import { lfgAirdropFetchers, lfgFetchers } from './launchpad';
 
 export const platforms: Platform[] = [
@@ -33,10 +35,12 @@ export const fetchers: Fetcher[] = [
   dcaFetcher,
   lockFetcher,
   voteFetcher,
-  asrFetcher,
+  asr1Fetcher,
+  asr2Fetcher,
   ...lfgFetchers,
 ];
 export const airdropFetchers: AirdropFetcher[] = [
-  asrAirdropFetcher,
+  asr1AirdropFetcher,
+  asr2AirdropFetcher,
   ...lfgAirdropFetchers,
 ];
