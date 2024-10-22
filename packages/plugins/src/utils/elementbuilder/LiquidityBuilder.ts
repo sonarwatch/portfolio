@@ -58,7 +58,7 @@ export class LiquidityBuilder {
     );
     const value = (assetsValue || 0) + (rewardAssetsValue || 0);
 
-    if (value === 0) return null;
+    if (value <= 0) return null;
 
     return {
       assets,
