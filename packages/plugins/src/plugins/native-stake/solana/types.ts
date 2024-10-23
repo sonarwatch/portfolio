@@ -4,16 +4,20 @@ export type ValidatorApiResponse = {
   vote_identity: string;
   name: string;
   image: string;
-  activated_stake: number;
-  commission: number;
   apy_estimate: number;
+  jito_apy: number;
+  staking_apy: number;
+  total_apy: number;
+  commission: number;
 };
 
 export type Validator = {
   voter: string;
   name?: string;
   imageUri?: string;
-  activated_stake: number;
+  baseApy: number;
+  jitoApy: number;
+  stakingApy: number;
+  totalApy: number;
   commission: number;
-  apy_estimate: number;
 };

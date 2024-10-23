@@ -26,16 +26,19 @@ export const firstDistribStatics: AirdropStatics = {
   claimStart: 1724940000000,
 };
 
-export const secondDistribStatics: AirdropStatics = {
+export const vestedDistributionStatics: AirdropStatics = {
   ...commonStatics,
-  id: `${platformId}-dis2`,
+  id: `${platformId}-dis1-vested`,
   claimEnd: undefined,
   claimStart: 1740751200000,
 };
 
 export const staticsByTitle: Map<string, AirdropStatics> = new Map([
   ['First Distribution', firstDistribStatics],
-  ['Second Distribution', secondDistribStatics],
+  [
+    'Claim 50% vested with bonus in 6 months after TGE',
+    vestedDistributionStatics,
+  ],
 ]);
 
 export const dbrMint = 'DBRiDgJAMsM95moTzJs7M9LnkGErpbv9v6CUR1DXnUu5';
@@ -46,3 +49,8 @@ export const apiUrl =
 export const dlmmVaultProgramId = new PublicKey(
   'DBrLFG4dco1xNC5Aarbt3KEaKaJ5rBYHwysqZoeqsSFE'
 );
+
+export const distributorPid = new PublicKey(
+  'DeDRoPXNyHRJSagxZBBqs4hLAAM1bGKgxh7cyfuNCBpo'
+);
+export const receiptBuffer = Buffer.from('receipt', 'utf-8');
