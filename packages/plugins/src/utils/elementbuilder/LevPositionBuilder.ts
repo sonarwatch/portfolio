@@ -1,4 +1,8 @@
-import { LevPosition, NetworkIdType } from '@sonarwatch/portfolio-core';
+import {
+  formatTokenAddress,
+  LevPosition,
+  NetworkIdType,
+} from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { TokenPriceMap } from '../../TokenPriceMap';
 import { LevPositionParams } from './LevPositionParams';
@@ -33,7 +37,7 @@ export class LevPositionBuilder {
     }
 
     return {
-      address: this.params.address,
+      address: formatTokenAddress(this.params.address, networkId),
       side: this.params.side,
       liquidationPrice: this.params.liquidationPrice || null,
       collateralValue: collateralValue.toNumber(),
