@@ -60,9 +60,13 @@ export function getBorrowApr(
     reserveFields.config.fields.element.fields;
 
   if (borrowedAmount.isZero())
-    return BigNumber(rateAprs[0]).dividedBy(100).toNumber();
+    return BigNumber(rateAprs[0])
+      .dividedBy(10 ** 4)
+      .toNumber();
   if (availableAmount.isZero())
-    return BigNumber(rateAprs[rateAprs.length]).dividedBy(100).toNumber();
+    return BigNumber(rateAprs[rateAprs.length])
+      .dividedBy(10 ** 4)
+      .toNumber();
 
   for (let i = 0; i < rateUtils.length; i++) {
     const currentUtil = rateUtils[i] / 100;
