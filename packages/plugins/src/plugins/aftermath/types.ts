@@ -1,3 +1,5 @@
+import { ID } from '../../utils/sui/structs/id';
+
 export type Pool = {
   id: { id: string };
   name: string;
@@ -13,9 +15,7 @@ export type PoolInfo = {
   fees_swap_out: string[];
   fees_withdraw: string[];
   flatness: string;
-  id: {
-    id: string;
-  };
+  id: ID;
   illiquid_lp_supply: string;
   lp_decimal_scalar: string;
   lp_decimals: number;
@@ -44,8 +44,10 @@ export type StakingPosition = {
   multiplier_staked_amount: string;
 };
 
-export type ID = {
-  id: string;
+export type PoolFactory = {
+  id: { id: string };
+  name: string;
+  value: string;
 };
 
 export type BurnerVault = {

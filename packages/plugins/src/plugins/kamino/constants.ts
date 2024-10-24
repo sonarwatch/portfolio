@@ -1,12 +1,13 @@
 import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 import { LendingMarketConfig } from './types';
+import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'kamino';
 export const platform: Platform = {
   id: platformId,
   name: 'Kamino',
-  image: `https://sonar.watch/img/platforms/${platformId}.png`,
+  image: `https://sonar.watch/img/platforms/${platformId}.webp`,
   website: 'https://kamino.finance/',
   defiLlamaId: 'parent#kamino-finance',
 };
@@ -20,11 +21,6 @@ export const programId = new PublicKey(
 export const allocationApiUrl =
   'https://api.hubbleprotocol.io/v2/airdrop/users/';
 
-export const distributorApi = 'https://api.kamino.finance/distributor/user/';
-
-export const distributorProgram = 'KdisqEcXbXKaTrBFqeDLhMmBvymLTwj9GmhDcdJyGat';
-export const allocationPrefix = `${platformId}/allocation`;
-
 export const klendProgramId = new PublicKey(
   'KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD'
 );
@@ -32,6 +28,7 @@ export const farmProgramId = new PublicKey(
   'FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr'
 );
 export const farmsKey = 'farms';
+export const elevationGroupsKey = 'elevatorGroups';
 export const mainMarket = '7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF';
 
 export const lendingConfigs: Map<string, LendingMarketConfig> = new Map([
@@ -97,9 +94,45 @@ export const lendingConfigs: Map<string, LendingMarketConfig> = new Map([
       ],
     },
   ],
-  ['DxXdAyU3kCjnyggvHmY5nAwg5cRbbmdyX3npfDMjjMek', { name: 'JLP Market' }],
+  [
+    'DxXdAyU3kCjnyggvHmY5nAwg5cRbbmdyX3npfDMjjMek',
+    {
+      name: 'JLP Market',
+      multiplyPairs: [
+        [
+          '27G8MtK7VtTcCHkpASjSDdkWWYfoqT6ggEuKidVJidD4',
+          'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+        ],
+        [
+          '27G8MtK7VtTcCHkpASjSDdkWWYfoqT6ggEuKidVJidD4',
+          '2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo',
+        ],
+      ],
+    },
+  ],
   ['ByYiZxp8QrdN9qbdtaAiePN8AAr3qvTPppNJDpf5DVJ5', { name: 'Altcoins Market' }],
+  ['BJnbcRHqvppTyGesLzWASGKnmnF1wq9jZu6ExrjT7wvF', { name: 'Ethena Market' }],
 ]);
 
 export const marketsKey = `markets`;
 export const reservesKey = `reserves`;
+export const airdropStaticsS1: AirdropStatics = {
+  claimStart: 1714478400000,
+  claimEnd: 1723791000000,
+  id: 'kamino-s1',
+  emitterName: 'Kamino',
+  emitterLink: 'https://app.kamino.finance/',
+  claimLink: 'https://app.kamino.finance/genesis',
+  image: 'https://sonar.watch/img/platforms/kamino.webp',
+  name: 'S1',
+};
+export const airdropStaticsS2: AirdropStatics = {
+  claimStart: 1724340000000,
+  claimEnd: undefined,
+  id: 'kamino-s2',
+  emitterName: 'Kamino',
+  emitterLink: 'https://app.kamino.finance/',
+  claimLink: 'https://app.kamino.finance/season-2-airdrop',
+  image: 'https://sonar.watch/img/platforms/kamino.webp',
+  name: 'S2',
+};

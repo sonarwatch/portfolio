@@ -3,7 +3,7 @@ import {
   PortfolioLiquidity,
   formatTokenAddress,
   getUsdValueSum,
-  PortfolioAsset,
+  parseTypeString,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -13,7 +13,6 @@ import { getClientSui } from '../../utils/clients';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { BurnerVault, StakingPosition } from './types';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
-import { parseTypeString } from '../../utils/aptos';
 import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
 import { getHarvestRewards } from './helpers';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';

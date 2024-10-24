@@ -5,16 +5,22 @@ import perpetualFetcher from './exchange/perpetualFetcher';
 import valueAverageFetcher from './exchange/valueAverageFetcher';
 import limitFetcher from './exchange/limitFetcher';
 import dcaFetcher from './exchange/dcaFetcher';
+import lockFetcher from './exchange/lockFetcher';
 import custodiesJob from './exchange/custodiesJob';
 
-import allocationFetcher from './launchpad/allocationsFetcher';
 import { platform as launchpadPlatform } from './launchpad/constants';
-
 import voteFetcher from './governance/voteFetcher';
 import { platform as governancePlatform } from './governance/constants';
-
 import pricingJob from './pricingJob';
 import { platform as exchangePlatform } from './exchange/constants';
+import { AirdropFetcher } from '../../AirdropFetcher';
+import {
+  asr1AirdropFetcher,
+  asr1Fetcher,
+  asr2AirdropFetcher,
+  asr2Fetcher,
+} from './governance';
+import { lfgAirdropFetchers, lfgFetchers } from './launchpad';
 
 export const platforms: Platform[] = [
   launchpadPlatform,
@@ -27,6 +33,14 @@ export const fetchers: Fetcher[] = [
   valueAverageFetcher,
   limitFetcher,
   dcaFetcher,
-  allocationFetcher,
+  lockFetcher,
   voteFetcher,
+  asr1Fetcher,
+  asr2Fetcher,
+  ...lfgFetchers,
+];
+export const airdropFetchers: AirdropFetcher[] = [
+  asr1AirdropFetcher,
+  asr2AirdropFetcher,
+  ...lfgAirdropFetchers,
 ];

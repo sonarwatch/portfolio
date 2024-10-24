@@ -2,6 +2,7 @@ import {
   formatTokenAddress,
   NetworkId,
   TokenPriceSource,
+  parseTypeString,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
@@ -11,7 +12,6 @@ import { getDynamicFields } from '../../utils/sui/getDynamicFields';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { getLpTokenSourceRaw } from '../../utils/misc/getLpTokenSourceRaw';
 import { PairObject, PairObjectFields } from './types';
-import { parseTypeString } from '../../utils/aptos';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();

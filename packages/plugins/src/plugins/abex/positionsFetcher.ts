@@ -1,106 +1,87 @@
-import {
-  NetworkId,
-  PortfolioElementLiquidity,
-  getUsdValueSum,
-  suiNativeAddress,
-  suiNativeDecimals,
-} from '@sonarwatch/portfolio-core';
+import { LeverageSide, NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
-import {
-  alpDecimals,
-  alpType,
-  platformId,
-  poolAccRewardPerShareKey,
-} from './constants';
+import { abexMarketCacheKey, platformId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSui } from '../../utils/clients';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
-import { Credential } from './types';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import {
+  calculatePNL,
+  getPositionCapInfoList,
+  getPositionInfoList,
+} from './helpers';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { IMarketInfo } from './types';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
-  const objects = await getOwnedObjects<Credential>(client, owner, {
-    filter: {
-      Package:
-        '0xc985ff436f334f864d74f35c3da9e116419b63a0c027cbe2ac7815afc4abc450',
-    },
-  });
-  if (objects.length === 0) return [];
 
-  const [alpPrice, suiPrice] = await cache.getTokenPrices(
-    [alpType, suiNativeAddress],
-    NetworkId.sui
-  );
-  const poolAccRewardPerShareStr = await cache.getItem<string>(
-    poolAccRewardPerShareKey,
-    {
-      prefix: platformId,
-      networkId: NetworkId.sui,
-    }
-  );
-  const poolAccRewardPerShare = poolAccRewardPerShareStr
-    ? new BigNumber(poolAccRewardPerShareStr)
-    : undefined;
+  const positionCapInfoList = await getPositionCapInfoList(client, owner);
 
-  let alpAmount = new BigNumber(0);
-  let claimmableAmount = new BigNumber(0);
-  for (let i = 0; i < objects.length; i++) {
-    const object = objects[i];
-    const cAlpAmount = object.data?.content?.fields.stake;
-    if (!cAlpAmount) continue;
-    alpAmount = alpAmount.plus(cAlpAmount);
+  if (positionCapInfoList.length === 0) return [];
 
-    if (!poolAccRewardPerShare) continue;
-    const accRewardPerShare = object.data?.content?.fields.acc_reward_per_share;
-    if (!accRewardPerShare) continue;
-
-    const cClaimmableAmount = poolAccRewardPerShare
-      .minus(accRewardPerShare)
-      .times(cAlpAmount)
-      .div(10 ** 18);
-    claimmableAmount = claimmableAmount.plus(cClaimmableAmount);
-  }
-  const asset = tokenPriceToAssetToken(
-    alpType,
-    alpAmount.dividedBy(10 ** alpDecimals).toNumber(),
-    NetworkId.sui,
-    alpPrice
-  );
-  const rewardAsset = tokenPriceToAssetToken(
-    suiNativeAddress,
-    claimmableAmount.dividedBy(10 ** suiNativeDecimals).toNumber(),
-    NetworkId.sui,
-    suiPrice,
-    undefined,
-    {
-      isClaimable: true,
-    }
-  );
-
-  if (claimmableAmount.isZero() && alpAmount.isZero()) return [];
-  const value = getUsdValueSum([rewardAsset.value, asset.value]);
-  const element: PortfolioElementLiquidity = {
+  const marketInfo = await cache.getItem<IMarketInfo>(abexMarketCacheKey, {
+    prefix: platformId,
     networkId: NetworkId.sui,
-    label: 'Staked',
-    platformId,
-    type: 'liquidity',
-    data: {
-      liquidities: [
-        {
-          assets: [asset],
-          assetsValue: asset.value,
-          rewardAssets: [rewardAsset],
-          rewardAssetsValue: rewardAsset.value,
-          value,
-          yields: [],
-        },
-      ],
-    },
-    value,
-  };
-  return [element];
+  });
+
+  if (!marketInfo) return [];
+
+  const positionInfoList = await getPositionInfoList(
+    client,
+    positionCapInfoList,
+    marketInfo,
+    cache,
+    owner
+  );
+
+  const elementRegistry = new ElementRegistry(NetworkId.sui, platformId);
+
+  for (const positionInfo of positionInfoList) {
+    if (positionInfo.closed) continue;
+    const element = elementRegistry.addElementLeverage({
+      label: 'Leverage',
+    });
+
+    const tokenPrices = await cache.getTokenPricesAsMap(
+      [positionInfo.indexToken, positionInfo.collateralToken],
+      NetworkId.sui
+    );
+
+    const tokenPriceIndex = tokenPrices.get(positionInfo.indexToken);
+    const tokenPriceCollateral = tokenPrices.get(positionInfo.collateralToken);
+
+    if (!tokenPriceCollateral) continue;
+
+    let pnlValue;
+    let leverage;
+
+    if (tokenPriceIndex) {
+      const calcPnl = await calculatePNL(
+        positionInfo,
+        tokenPriceIndex,
+        tokenPriceCollateral
+      );
+
+      if (calcPnl) {
+        pnlValue = new BigNumber(calcPnl.pnlValue);
+        leverage = calcPnl.leverage;
+      }
+    }
+
+    element.addPosition({
+      address: positionInfo.indexToken,
+      collateralValue: new BigNumber(positionInfo.collateralAmount)
+        .multipliedBy(tokenPriceCollateral.price)
+        .dividedBy(10 ** tokenPriceCollateral.decimals)
+        .toNumber(),
+      side: positionInfo.long ? LeverageSide.long : LeverageSide.short,
+      sizeValue: new BigNumber(positionInfo.positionSize),
+      pnlValue,
+      leverage,
+    });
+  }
+
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

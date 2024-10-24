@@ -14,7 +14,6 @@ export const limitFilters = (owner: string): GetProgramAccountsFilter[] => [
       bytes: owner,
     },
   },
-  { dataSize: 315 },
 ];
 
 export const DCAFilters = (owner: string): GetProgramAccountsFilter[] => [
@@ -37,4 +36,23 @@ export const valueAverageFilters = (
     },
   },
   { dataSize: 339 },
+];
+
+export const lockFilters = (owner: string): GetProgramAccountsFilter[] => [
+  {
+    memcmp: {
+      offset: 8,
+      bytes: owner,
+    },
+  },
+  { dataSize: 296 },
+];
+
+export const custodiesFilters = (): GetProgramAccountsFilter[] => [
+  {
+    memcmp: {
+      offset: 0,
+      bytes: 'HgWVUrv1XE',
+    },
+  },
 ];

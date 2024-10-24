@@ -1,6 +1,10 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import { SUI_TYPE_ARG, normalizeStructTag } from '@mysten/sui.js/utils';
-import { CoinMetadata } from '@mysten/sui.js/client';
+import {
+  SUI_TYPE_ARG,
+  normalizeStructTag,
+  parseStructTag,
+} from '@mysten/sui/utils';
+import { CoinMetadata } from '@mysten/sui/client';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import {
@@ -9,12 +13,18 @@ import {
   poolsKey,
   poolsPrefix as prefix,
 } from './constants';
-import { AddressInfo, Coin, Pools } from './types';
-import { getClientSui } from '../../utils/clients';
+import {
+  AddressInfo,
+  Coin,
+  PoolCoinNames,
+  Pools,
+  StructTag,
+  wormholeCoinTypeToSymbolMap,
+} from './types';
 import { getObject } from '../../utils/sui/getObject';
+import { getClientSui } from '../../utils/clients';
 
 const SUI_TYPE = normalizeStructTag(SUI_TYPE_ARG);
-const client = getClientSui();
 
 const executor: JobExecutor = async (cache: Cache) => {
   const address = await cache.getItem<AddressInfo>(addressKey, {
@@ -24,12 +34,14 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   if (!address) return;
 
-  const coinTypes: Pools = {};
+  const coinTypes: Partial<Pools> = {};
   const coins = new Map<string, Coin>(
     Object.entries(address.mainnet.core.coins)
   );
-  const coinNames: string[] = Array.from(coins.keys());
-
+  const coinNames: PoolCoinNames[] = Array.from(
+    coins.keys()
+  ) as PoolCoinNames[];
+  const client = getClientSui();
   for (const coinName of coinNames) {
     const detail = coins.get(coinName);
     if (!detail) continue;
@@ -40,14 +52,26 @@ const executor: JobExecutor = async (cache: Cache) => {
       };
     } else {
       const object = await getObject<CoinMetadata>(client, detail.metaData);
-      const objType = normalizeStructTag(object.data?.type || '');
-      const objFields = object.data?.content?.fields;
-      if (!objType || !objFields) return;
+      const objectData = object.data;
+      if (!objectData || !objectData.type) return;
+
+      const metadataStruct = parseStructTag(
+        normalizeStructTag(objectData.type)
+      ); // 0x2::coin::CoinMetadata<T>
+      const {
+        address: packageId,
+        module,
+        name,
+      } = metadataStruct.typeParams[0] as StructTag;
+      const objFields = objectData.content?.fields;
+      if (!objFields) return;
+
+      // manually map wormhole usdc symbol into wusdc
+      const coinType = `${packageId}::${module}::${name}`;
+      objFields.symbol =
+        wormholeCoinTypeToSymbolMap[coinType] ?? objFields.symbol;
       coinTypes[coinName] = {
-        coinType: objType.substring(
-          objType.indexOf('<') + 1,
-          objType.indexOf('>')
-        ),
+        coinType,
         metadata: objFields,
       };
     }

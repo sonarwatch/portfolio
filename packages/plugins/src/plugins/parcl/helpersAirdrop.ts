@@ -1,30 +1,24 @@
 import axios, { AxiosResponse } from 'axios';
 import BigNumber from 'bignumber.js';
-import {
-  Airdrop,
-  NetworkId,
-  getAirdropClaimStatus,
-} from '@sonarwatch/portfolio-core';
+import { AirdropRaw, IsClaimed, NetworkId } from '@sonarwatch/portfolio-core';
 import {
   airdropApi,
+  airdropStatics,
   allocationPrefix,
   distributorProgram,
-  platformImage,
-  platformName,
-  platformWebsite,
   prclDecimals,
   prclMint,
 } from './constants';
 import { Allocation, ApiAirdropResponse } from './types';
 import { Cache } from '../../Cache';
-import { deriveClaimStatus } from '../jupiter/helpers';
+import { deriveClaimStatus } from '../../utils/solana/jupiter/deriveClaimStatus';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 import { SolanaClient } from '../../utils/clients/types';
 import { claimStatusStruct } from '../jupiter/launchpad/structs';
-import { AirdropFetcher } from '../../AirdropFetcher';
+import { AirdropFetcher, getAirdropRaw } from '../../AirdropFetcher';
 import { getClientSolana } from '../../utils/clients';
 
-export async function fetchAllocation(
+async function fetchAllocation(
   owner: string,
   cache: Cache
 ): Promise<Allocation> {
@@ -73,56 +67,40 @@ export async function fetchAllocation(
   return allocation;
 }
 
-export const airdropStatics = {
-  id: 'parcl-airdrop-1',
-  claimLink: 'https://claims.parcllimited.com/',
-  image: platformImage,
-  label: 'PRCL',
-  emitterLink: platformWebsite,
-  emitterName: platformName,
-  claimStart: 1,
-  claimEnd: 1735603200000,
-  name: undefined,
-};
-export async function fetchAirdrop(
+async function fetchAirdrop(
   owner: string,
   client: SolanaClient,
   cache: Cache
-): Promise<Airdrop> {
-  const prclTokenPrice = await cache.getTokenPrice(prclMint, NetworkId.solana);
+): Promise<AirdropRaw> {
   const allocation = await fetchAllocation(owner, cache);
-  const claimStatus = getAirdropClaimStatus(
-    airdropStatics.claimStart,
-    airdropStatics.claimEnd
-  );
-  if (allocation.amount === 0 || !allocation.merkleTree)
-    return {
-      ...airdropStatics,
-      claimStatus,
-      isClaimed: false,
-      amount: -1,
-      price: prclTokenPrice?.price || null,
-    };
+  const amount = !allocation.merkleTree ? 0 : allocation.amount;
 
-  const claimStatusPubkey = deriveClaimStatus(
-    owner,
-    allocation.merkleTree,
-    distributorProgram
-  );
-  const claimStatusAccounts = await getParsedAccountInfo(
-    client,
-    claimStatusStruct,
-    claimStatusPubkey
-  );
-  const isClaimed = claimStatusAccounts !== null;
+  let isClaimed: IsClaimed = false;
+  if (amount > 0 && allocation.merkleTree) {
+    const claimStatusPubkey = deriveClaimStatus(
+      owner,
+      allocation.merkleTree,
+      distributorProgram
+    );
+    const claimStatusAccount = await getParsedAccountInfo(
+      client,
+      claimStatusStruct,
+      claimStatusPubkey
+    );
+    isClaimed = claimStatusAccount !== null;
+  }
 
-  return {
-    ...airdropStatics,
-    claimStatus,
-    isClaimed,
-    amount: allocation.amount,
-    price: prclTokenPrice?.price || null,
-  };
+  return getAirdropRaw({
+    statics: airdropStatics,
+    items: [
+      {
+        amount,
+        isClaimed,
+        label: 'PRCL',
+        address: prclMint,
+      },
+    ],
+  });
 }
 
 export const airdropFetcher: AirdropFetcher = {

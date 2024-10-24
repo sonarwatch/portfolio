@@ -1,29 +1,43 @@
-import { NetworkId, formatTokenAddress } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  formatTokenAddress,
+  parseTypeString,
+} from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import {
   poolAccRewardPerShareKey,
   alpDecimals,
-  alpSupplyObjectId,
   alpType,
   depositVaultRegistry,
   platformId,
   poolObjectId,
+  abexMarketCacheKey,
 } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { getDynamicFields } from '../../utils/sui/getDynamicFields';
-import { AlpMarket, Market, Pool } from './types';
+import { Market, Pool } from './types';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import getLpTokenSourceRawOld, {
   PoolUnderlyingRaw,
 } from '../../utils/misc/getLpTokenSourceRawOld';
-import { parseTypeString } from '../../utils/aptos';
 import { getObject } from '../../utils/sui/getObject';
 import { walletTokensPlatform } from '../tokens/constants';
+import { getMarketInfo } from './helpers';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
+
+  // Abex market
+  const marketInfo = await getMarketInfo(client);
+  const { lpSupply } = marketInfo;
+  if (!lpSupply) return;
+
+  await cache.setItem(abexMarketCacheKey, marketInfo, {
+    prefix: platformId,
+    networkId: NetworkId.sui,
+  });
 
   // Pool
   const poolObject = await getObject<Pool>(client, poolObjectId);
@@ -35,10 +49,6 @@ const executor: JobExecutor = async (cache: Cache) => {
       networkId: NetworkId.sui,
     });
   }
-
-  const lpObject = await getObject<AlpMarket>(client, alpSupplyObjectId);
-  const lpSupply = lpObject.data?.content?.fields.lp_supply.fields.value;
-  if (!lpSupply) return;
 
   const depositVaultFields = await getDynamicFields(
     client,

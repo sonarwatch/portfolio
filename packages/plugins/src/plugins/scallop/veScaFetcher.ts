@@ -7,19 +7,18 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, scaAddress, scaDecimals } from './constants';
+import { platformId, scaAddress, scaDecimals, veScaKeyType } from './constants';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
-import { getClientSui } from '../../utils/clients';
 import { multiDynamicFieldObjects } from '../../utils/sui/multiDynamicFieldObjects';
 import { VeSca } from './types/vesca';
+import { getClientSui } from '../../utils/clients';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
   const veScaKeys = await getOwnedObjects(client, owner, {
     filter: {
-      StructType:
-        '0xcfe2d87aa5712b67cad2732edb6a2201bfdf592377e5c0968b7cb02099bd8e21::ve_sca::VeScaKey',
+      StructType: veScaKeyType,
     },
   });
   if (veScaKeys.length === 0) return [];

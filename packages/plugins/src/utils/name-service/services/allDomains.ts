@@ -6,7 +6,7 @@ import { NameService } from '../types';
 async function getOwner(name: string): Promise<string | null> {
   const client = getClientSolana();
   const parser = new TldParser(client);
-  const owner = await parser.getOwnerFromDomainTld(name);
+  const owner = await parser.getOwnerFromDomainTld(name.toLowerCase());
   if (owner) return owner.toString();
   return null;
 }

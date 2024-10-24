@@ -22,6 +22,10 @@
       "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/run-airdrop-fetcher.ts",
       "dependsOn": []
     },
+    "run-airdrop-fetchers": {
+      "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/run-airdrop-fetchers.ts",
+      "dependsOn": []
+    },
     "run-fetcher": {
       "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/run-fetcher.ts",
       "dependsOn": []

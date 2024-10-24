@@ -5,7 +5,7 @@ export const platformId = 'aurory';
 export const platform: Platform = {
   id: platformId,
   name: 'Aurory',
-  image: 'https://sonar.watch/img/platforms/aurory.png',
+  image: 'https://sonar.watch/img/platforms/aurory.webp',
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
   website: 'https://app.aurory.io',
   twitter: 'https://twitter.com/AuroryProject',

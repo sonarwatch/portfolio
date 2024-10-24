@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js';
 
 const bnFactor = new BigNumber(10 ** bitcoinNetwork.native.decimals);
 
-interface EsploraApiAddressResponse {
+interface MempoolApiAddressResponse {
   address: string;
   chain_stats: Stats;
   mempool_stats: Stats;
@@ -25,11 +25,12 @@ export async function getBalance(rpcEndpoint: RpcEndpoint, owner: string) {
       }
     : undefined;
 
-  const response = await axios.get<EsploraApiAddressResponse>(
+  const response = await axios.get<MempoolApiAddressResponse>(
     `/address/${owner}`,
     {
       baseURL: rpcEndpoint.url,
       auth,
+      timeout: 20000,
     }
   );
   return new BigNumber(response.data.chain_stats.funded_txo_sum)

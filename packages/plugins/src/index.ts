@@ -3,7 +3,7 @@ import { Fetcher } from './Fetcher';
 import { AirdropFetcher } from './AirdropFetcher';
 import { Job } from './Job';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
-import orphanPlatorms from './orphanPlatorms';
+import orphanPlatforms from './orphanPlatforms';
 import {
   platforms as tokensPlatforms,
   jobs as tokensJobs,
@@ -29,10 +29,10 @@ import {
   jobs as saberJobs,
 } from './plugins/saber';
 import {
-  platforms as solendPlatforms,
-  jobs as solendJobs,
-  fetchers as solendFetchers,
-} from './plugins/solend';
+  platforms as savePlatforms,
+  jobs as saveJobs,
+  fetchers as saveFetchers,
+} from './plugins/save';
 import {
   platforms as raydiumPlatforms,
   jobs as raydiumJobs,
@@ -130,8 +130,10 @@ import {
   jobs as kaminoJobs,
   fetchers as kaminoFetchers,
   platforms as kaminoPlatforms,
+  airdropFetchers as kaminoAirdropFetchers,
 } from './plugins/kamino';
 import {
+  jobs as bucketJobs,
   fetchers as bucketFetchers,
   platforms as bucketPlatforms,
 } from './plugins/bucket';
@@ -207,10 +209,10 @@ import {
   fetchers as mapleFetchers,
 } from './plugins/maple';
 import {
-  platforms as flexlendPlatforms,
-  jobs as flexlendJobs,
-  fetchers as flexlendFetchers,
-} from './plugins/flexlend';
+  platforms as luloPlatforms,
+  jobs as luloJobs,
+  fetchers as luloFetchers,
+} from './plugins/lulo';
 import {
   platforms as fluxbeamPlatforms,
   jobs as fluxbeamJobs,
@@ -220,6 +222,7 @@ import {
   platforms as jupiterPlatforms,
   jobs as jupiterJobs,
   fetchers as jupiterFetchers,
+  airdropFetchers as jupiterAirdropFetchers,
 } from './plugins/jupiter';
 import {
   platforms as zetaPlatforms,
@@ -298,10 +301,10 @@ import {
   fetchers as pythFetchers,
 } from './plugins/pyth';
 import {
-  platforms as circuitPlatforms,
-  jobs as circuitJobs,
-  fetchers as circuitFetchers,
-} from './plugins/circuit';
+  platforms as driftMMPlatforms,
+  jobs as driftMMJobs,
+  fetchers as driftMMFetchers,
+} from './plugins/drift-market-maker-vault';
 import {
   platforms as ariesPlatforms,
   jobs as ariesJobs,
@@ -506,12 +509,141 @@ import {
   platforms as sanctumPlatforms,
   jobs as sanctumJobs,
   fetchers as sanctumFetchers,
+  airdropFetchers as sanctumAirdropFetchers,
 } from './plugins/sanctum';
 import {
   platforms as allbridgePlatforms,
   jobs as allbridgeJobs,
   fetchers as allbridgeFetchers,
 } from './plugins/allbridge';
+import {
+  platforms as famousfoxfederationPlatforms,
+  jobs as famousfoxfederationJobs,
+  fetchers as famousfoxfederationFetchers,
+} from './plugins/famousfoxfederation';
+import {
+  platforms as nxfinancePlatforms,
+  jobs as nxfinanceJobs,
+  fetchers as nxfinanceFetchers,
+} from './plugins/nxfinance';
+import {
+  platforms as echelonPlatforms,
+  jobs as echelonJobs,
+  fetchers as echelonFetchers,
+} from './plugins/echelon';
+import {
+  platforms as solayerPlatforms,
+  jobs as solayerJobs,
+  fetchers as solayerFetchers,
+} from './plugins/solayer';
+import {
+  platforms as picassoPlatforms,
+  jobs as picassoJobs,
+  fetchers as picassoFetchers,
+} from './plugins/picasso';
+import {
+  platforms as quarryPlatforms,
+  jobs as quarryJobs,
+  fetchers as quarryFetchers,
+} from './plugins/quarry';
+import {
+  platforms as thevaultPlatforms,
+  jobs as thevaultJobs,
+  fetchers as thevaultFetchers,
+} from './plugins/thevault';
+import {
+  platforms as deepbookPlatforms,
+  jobs as deepbookJobs,
+  fetchers as deepbookFetchers,
+  airdropFetcher as deepbookAirdropFetcher,
+} from './plugins/deepbook';
+import {
+  platforms as suinsPlatforms,
+  jobs as suinsJobs,
+  fetchers as suinsFetchers,
+  airdropFetcher as suinsAirdropFetcher,
+} from './plugins/suins';
+import {
+  platforms as debridgePlatforms,
+  jobs as debridgeJobs,
+  fetchers as debridgeFetchers,
+  airdropFetchers as debridgeAirdropFetchers,
+} from './plugins/debridge';
+import {
+  platforms as alphafiPlatforms,
+  jobs as alphafiJobs,
+  fetchers as alphafiFetchers,
+} from './plugins/alphafi';
+import {
+  platforms as jewelPlatforms,
+  jobs as jewelJobs,
+  fetchers as jewelFetchers,
+} from './plugins/jewel';
+import {
+  platforms as tradeportPlatforms,
+  jobs as tradeportJobs,
+  fetchers as tradeportFetchers,
+} from './plugins/tradeport';
+import {
+  platforms as bluemovePlatforms,
+  jobs as bluemoveJobs,
+  fetchers as bluemoveFetchers,
+} from './plugins/bluemove';
+import {
+  platforms as stabblePlatforms,
+  jobs as stabbleJobs,
+  fetchers as stabbleFetchers,
+} from './plugins/stabble';
+import {
+  platforms as franciumPlatforms,
+  jobs as franciumJobs,
+  fetchers as franciumFetchers,
+} from './plugins/francium';
+import {
+  platforms as adrasteaPlatforms,
+  jobs as adrasteaJobs,
+  fetchers as adrasteaFetchers,
+} from './plugins/adrastea';
+import {
+  platforms as elementalPlatforms,
+  jobs as elementalJobs,
+  fetchers as elementalFetchers,
+} from './plugins/elemental';
+import {
+  platforms as adrenaPlatforms,
+  jobs as adrenaJobs,
+  fetchers as adrenaFetchers,
+} from './plugins/adrena';
+import {
+  platforms as joulePlatforms,
+  jobs as jouleJobs,
+  fetchers as jouleFetchers,
+} from './plugins/joule';
+import {
+  platforms as mesoPlatforms,
+  jobs as mesoJobs,
+  fetchers as mesoFetchers,
+} from './plugins/meso';
+import {
+  platforms as loopscalePlatforms,
+  jobs as loopscaleJobs,
+  fetchers as loopscaleFetchers,
+} from './plugins/loopscale';
+import {
+  platforms as vaultkaPlatforms,
+  jobs as vaultkaJobs,
+  fetchers as vaultkaFetchers,
+} from './plugins/vaultka';
+import {
+  platforms as loverflowPlatforms,
+  jobs as loverflowJobs,
+  fetchers as loverflowFetchers,
+} from './plugins/loverflow';
+import {
+  platforms as zeloPlatforms,
+  jobs as zeloJobs,
+  fetchers as zeloFetchers,
+} from './plugins/zelo';
 
 export {
   walletTokensPlatform,
@@ -529,7 +661,7 @@ export { getLlamaProtocolsJob } from './plugins/llama-protocols';
 
 // PLATFORMS //
 export const platforms: Platform[] = [
-  ...orphanPlatorms,
+  ...orphanPlatforms,
   ...aavePlatforms,
   ...orcaPlatforms,
   ...cetusPlatforms,
@@ -543,7 +675,7 @@ export const platforms: Platform[] = [
   ...nativeStakePlatforms,
   ...marinadePlatforms,
   ...saberPlatforms,
-  ...solendPlatforms,
+  ...savePlatforms,
   ...marginfiPlatforms,
   ...raydiumPlatforms,
   ...meteoraPlatforms,
@@ -571,7 +703,7 @@ export const platforms: Platform[] = [
   ...hawksightPlatforms,
   ...realmsPlatforms,
   ...maplePlatforms,
-  ...flexlendPlatforms,
+  ...luloPlatforms,
   ...fluxbeamPlatforms,
   ...zetaPlatforms,
   ...venusPlatforms,
@@ -589,7 +721,7 @@ export const platforms: Platform[] = [
   ...parclPlatforms,
   ...pythPlatforms,
   ...jupiterPlatforms,
-  ...circuitPlatforms,
+  ...driftMMPlatforms,
   ...ariesPlatforms,
   ...flashPlatforms,
   ...bonkrewardsPlatforms,
@@ -632,6 +764,31 @@ export const platforms: Platform[] = [
   ...sharkyPlatforms,
   ...sanctumPlatforms,
   ...allbridgePlatforms,
+  ...famousfoxfederationPlatforms,
+  ...nxfinancePlatforms,
+  ...echelonPlatforms,
+  ...solayerPlatforms,
+  ...picassoPlatforms,
+  ...quarryPlatforms,
+  ...thevaultPlatforms,
+  ...deepbookPlatforms,
+  ...suinsPlatforms,
+  ...debridgePlatforms,
+  ...alphafiPlatforms,
+  ...jewelPlatforms,
+  ...tradeportPlatforms,
+  ...bluemovePlatforms,
+  ...stabblePlatforms,
+  ...franciumPlatforms,
+  ...adrasteaPlatforms,
+  ...elementalPlatforms,
+  ...adrenaPlatforms,
+  ...joulePlatforms,
+  ...mesoPlatforms,
+  ...loopscalePlatforms,
+  ...vaultkaPlatforms,
+  ...loverflowPlatforms,
+  ...zeloPlatforms,
 ];
 
 // JOBS //
@@ -641,7 +798,7 @@ export const jobs: Job[] = [
   ...thalaJobs,
   ...marginfiJobs,
   ...raydiumJobs,
-  ...solendJobs,
+  ...saveJobs,
   ...meteoraJobs,
   ...orcaJobs,
   ...driftJobs,
@@ -660,6 +817,7 @@ export const jobs: Job[] = [
   ...aftermathJobs,
   ...liquidswapJobs,
   ...kaminoJobs,
+  ...bucketJobs,
   ...naviJobs,
   ...scallopJobs,
   ...curveJobs,
@@ -672,7 +830,7 @@ export const jobs: Job[] = [
   ...paraswapJobs,
   ...realmsJobs,
   ...mapleJobs,
-  ...flexlendJobs,
+  ...luloJobs,
   ...fluxbeamJobs,
   ...jupiterJobs,
   ...zetaJobs,
@@ -690,7 +848,7 @@ export const jobs: Job[] = [
   ...benqiJobs,
   ...parclJobs,
   ...pythJobs,
-  ...circuitJobs,
+  ...driftMMJobs,
   ...ariesJobs,
   ...flashJobs,
   ...bonkrewardsJobs,
@@ -734,6 +892,31 @@ export const jobs: Job[] = [
   ...sharkyJobs,
   ...sanctumJobs,
   ...allbridgeJobs,
+  ...famousfoxfederationJobs,
+  ...nxfinanceJobs,
+  ...echelonJobs,
+  ...solayerJobs,
+  ...picassoJobs,
+  ...quarryJobs,
+  ...thevaultJobs,
+  ...deepbookJobs,
+  ...suinsJobs,
+  ...debridgeJobs,
+  ...alphafiJobs,
+  ...jewelJobs,
+  ...tradeportJobs,
+  ...bluemoveJobs,
+  ...stabbleJobs,
+  ...franciumJobs,
+  ...adrasteaJobs,
+  ...elementalJobs,
+  ...adrenaJobs,
+  ...jouleJobs,
+  ...mesoJobs,
+  ...loopscaleJobs,
+  ...vaultkaJobs,
+  ...loverflowJobs,
+  ...zeloJobs,
 ];
 
 // FETCHERS //
@@ -743,7 +926,7 @@ export const fetchers: Fetcher[] = [
   ...tensorFetchers,
   ...marginfiFetchers,
   ...marinadeFetchers,
-  ...solendFetchers,
+  ...saveFetchers,
   ...thalaFetchers,
   ...raydiumFetchers,
   ...orcaFetchers,
@@ -776,7 +959,7 @@ export const fetchers: Fetcher[] = [
   ...hawksightFetchers,
   ...realmsFetchers,
   ...mapleFetchers,
-  ...flexlendFetchers,
+  ...luloFetchers,
   ...fluxbeamFetchers,
   ...jupiterFetchers,
   ...zetaFetchers,
@@ -795,7 +978,7 @@ export const fetchers: Fetcher[] = [
   ...benqiFetchers,
   ...parclFetchers,
   ...pythFetchers,
-  ...circuitFetchers,
+  ...driftMMFetchers,
   ...ariesFetchers,
   ...flashFetchers,
   ...bonkrewardsFetchers,
@@ -838,12 +1021,43 @@ export const fetchers: Fetcher[] = [
   ...sharkyFetchers,
   ...sanctumFetchers,
   ...allbridgeFetchers,
+  ...famousfoxfederationFetchers,
+  ...nxfinanceFetchers,
+  ...echelonFetchers,
+  ...solayerFetchers,
+  ...picassoFetchers,
+  ...quarryFetchers,
+  ...thevaultFetchers,
+  ...deepbookFetchers,
+  ...suinsFetchers,
+  ...debridgeFetchers,
+  ...alphafiFetchers,
+  ...jewelFetchers,
+  ...tradeportFetchers,
+  ...bluemoveFetchers,
+  ...stabbleFetchers,
+  ...franciumFetchers,
+  ...adrasteaFetchers,
+  ...elementalFetchers,
+  ...adrenaFetchers,
+  ...jouleFetchers,
+  ...mesoFetchers,
+  ...loopscaleFetchers,
+  ...vaultkaFetchers,
+  ...loverflowFetchers,
+  ...zeloFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
 export const airdropFetchers: AirdropFetcher[] = [
+  ...jupiterAirdropFetchers,
+  ...kaminoAirdropFetchers,
+  ...sanctumAirdropFetchers,
   driftAirdropFetcher,
   parclAirdropFetcher,
+  deepbookAirdropFetcher,
+  suinsAirdropFetcher,
+  ...debridgeAirdropFetchers,
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);

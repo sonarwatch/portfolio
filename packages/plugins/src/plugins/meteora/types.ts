@@ -1,6 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { LbPair } from './struct';
+import { DlmmVault, LbPair } from './struct';
 
 export type FormattedFarm = {
   pubkey: string;
@@ -23,6 +23,11 @@ export type FormattedFarm = {
   totalStaked: string;
   paused: boolean;
 };
+
+export type DlmmVaultC = Omit<DlmmVault, 'buffer' | 'padding' | 'padding0'> & {
+  pubkey: string;
+};
+export type CachedDlmmVaults = Record<string, DlmmVaultC>;
 
 export enum PositionVersion {
   V1,

@@ -1,7 +1,7 @@
 import { NetworkId, Platform, Service } from '@sonarwatch/portfolio-core';
 import { Job } from '../../Job';
 import { Fetcher } from '../../Fetcher';
-import lendingPoolsJob from './lendingPoolsJob';
+// import lendingPoolsJob from './lendingPoolsJob';
 import getLendingFetcherExecutor from './getLendingFetcherExecutor';
 import stakingFetcher from './stakingFetcher';
 import { platformId, platform } from './constants';
@@ -9,7 +9,9 @@ import { lendingV2, lendingV3 } from './services';
 
 export const platforms: Platform[] = [platform];
 export const services: Service[] = [lendingV2, lendingV3];
-export const jobs: Job[] = [lendingPoolsJob];
+export const jobs: Job[] = [
+  // lendingPoolsJob,
+];
 export const fetchers: Fetcher[] = [
   {
     id: `${platformId}-${NetworkId.ethereum}-lending`,

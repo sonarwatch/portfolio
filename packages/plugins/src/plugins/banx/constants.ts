@@ -18,7 +18,7 @@ export const banxPid = new PublicKey(
 );
 export const banxMint = 'BANXbTpN8U2cU41FjPxe2Ti37PiT5cCxLUKDQZuJeMMR';
 export const banxDecimals = 9;
-export const banxApiUrl = 'https://api.banx.gg/tokenStake/v2?walletPubkey=';
+export const banxApiUrl = 'https://api.banx.gg/staking/v2/info?walletPubkey=';
 
 export const banxApiCollectionsUrl =
   'https://api.banx.gg/bonds/preview?isPrivate=false&getAll=true';

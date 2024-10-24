@@ -1,24 +1,22 @@
-import {
-  NetworkId,
-  PortfolioElementType,
-  PortfolioLiquidity,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import {
-  clmmPoolPackageId,
-  clmmPoolsPrefix,
-  clmmType,
-  platformId,
-} from './constants';
+import { clmmPoolPackageId, clmmType, platformId } from './constants';
 import { getClientSui } from '../../utils/clients';
-import { buildPosition, extractStructTagFromType } from './helpers';
+import {
+  buildPosition,
+  extractStructTagFromType,
+  fetchPosFeeAmount,
+  fetchPosRewardersAmount,
+  getPoolFromObject,
+} from './helpers';
 
-import { Pool, Position } from './types';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { FetchPosRewardParams, Pool, Position } from './types';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
+import { multiGetObjects } from '../../utils/sui/multiGetObjects';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -46,23 +44,51 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (clmmPositions.length === 0) return [];
 
   const poolsIds = clmmPositions.map((position) => position.pool);
-  const pools = await cache.getItems<Pool>(poolsIds, {
-    prefix: clmmPoolsPrefix,
-    networkId: NetworkId.sui,
-  });
   const poolsById: Map<string, Pool> = new Map();
-  pools.forEach((pool) => {
-    if (pool) {
-      poolsById.set(pool.poolAddress, pool);
+
+  const poolsObjects = await multiGetObjects(client, [...new Set(poolsIds)]);
+  poolsObjects.forEach((poolObj) => {
+    if (poolObj.data?.content?.fields) {
+      const pool = getPoolFromObject(poolObj);
+      poolsById.set(poolObj.data.objectId, pool);
     }
   });
-  if (poolsById.size === 0) return [];
 
-  const assets: PortfolioLiquidity[] = [];
-  let totalLiquidityValue = 0;
-  for (const clmmPosition of clmmPositions) {
+  const elementRegistry = new ElementRegistry(NetworkId.sui, platformId);
+
+  const [allFees, allRewards] = await Promise.all([
+    fetchPosFeeAmount(
+      clmmPositions.map((clmmPosition) => ({
+        poolAddress: clmmPosition.pool,
+        positionId: clmmPosition.pos_object_id,
+        coinTypeA: clmmPosition.coin_type_a,
+        coinTypeB: clmmPosition.coin_type_b,
+      }))
+    ),
+    fetchPosRewardersAmount(
+      clmmPositions
+        .map((clmmPosition) => {
+          if (!clmmPosition) return null;
+          const pool = poolsById.get(clmmPosition.pool);
+          if (!pool) return null;
+          return {
+            poolAddress: clmmPosition.pool,
+            positionId: clmmPosition.pos_object_id,
+            coinTypeA: clmmPosition.coin_type_a,
+            coinTypeB: clmmPosition.coin_type_b,
+            rewarderInfo: pool.rewarder_infos,
+          };
+        })
+        .filter((v) => v !== null) as FetchPosRewardParams[]
+    ),
+  ]);
+
+  clmmPositions.forEach((clmmPosition, i) => {
     const pool = poolsById.get(clmmPosition.pool);
-    if (!pool) continue;
+    if (!pool) return;
+
+    const fees = allFees[i];
+    const rewards = allRewards[i];
 
     const { tokenAmountA, tokenAmountB } = getTokenAmountsFromLiquidity(
       new BigNumber(clmmPosition.liquidity),
@@ -72,63 +98,44 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       false
     );
 
-    const tokenPriceA = await cache.getTokenPrice(
-      pool.coinTypeA,
-      NetworkId.sui
-    );
-    if (!tokenPriceA) continue;
-
-    const assetTokenA = tokenPriceToAssetToken(
-      pool.coinTypeA,
-      tokenAmountA.dividedBy(10 ** tokenPriceA.decimals).toNumber(),
-      NetworkId.sui,
-      tokenPriceA
-    );
-    const tokenPriceB = await cache.getTokenPrice(
-      pool.coinTypeB,
-      NetworkId.sui
-    );
-    if (!tokenPriceB) continue;
-
-    const assetTokenB = tokenPriceToAssetToken(
-      pool.coinTypeB,
-      tokenAmountB.dividedBy(10 ** tokenPriceB.decimals).toNumber(),
-      NetworkId.sui,
-      tokenPriceB
-    );
-    if (
-      !assetTokenA ||
-      !assetTokenB ||
-      assetTokenA.value === null ||
-      assetTokenB.value === null
-    )
-      continue;
-    const value = assetTokenA.value + assetTokenB.value;
-    assets.push({
-      assets: [assetTokenA, assetTokenB],
-      assetsValue: value,
-      rewardAssets: [],
-      rewardAssetsValue: 0,
-      value,
-      yields: [],
-    });
-    totalLiquidityValue += value;
-  }
-  if (assets.length === 0) return [];
-
-  return [
-    {
-      type: PortfolioElementType.liquidity,
-      networkId: NetworkId.sui,
-      platformId,
+    const element = elementRegistry.addElementLiquidity({
       label: 'LiquidityPool',
       tags: ['Concentrated'],
-      value: totalLiquidityValue,
-      data: {
-        liquidities: assets,
-      },
-    },
-  ];
+    });
+    const liquidity = element.addLiquidity();
+
+    liquidity.addAsset({
+      address: pool.coinTypeA,
+      amount: tokenAmountA,
+    });
+
+    liquidity.addAsset({
+      address: pool.coinTypeB,
+      amount: tokenAmountB,
+    });
+
+    liquidity.addRewardAsset({
+      address: pool.coinTypeA,
+      amount: fees.feeOwedA,
+    });
+
+    liquidity.addRewardAsset({
+      address: pool.coinTypeB,
+      amount: fees.feeOwedB,
+    });
+
+    rewards.rewarderAmountOwed.forEach((rewarderAmountOwed) => {
+      liquidity.addRewardAsset({
+        address: rewarderAmountOwed.coin_address,
+        amount: rewarderAmountOwed.amount_owed,
+      });
+    });
+
+    if (tokenAmountA.isZero() || tokenAmountB.isZero())
+      element.addTag('Out Of Range');
+  });
+
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

@@ -280,6 +280,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           yields: [],
         },
       ];
+
+      const tags = [];
+      if (
+        positionData.totalXAmount.isZero() ||
+        positionData.totalYAmount.isZero()
+      )
+        tags.push('Out Of Range');
+
       elements.push({
         type: PortfolioElementType.liquidity,
         label: 'LiquidityPool',
@@ -290,6 +298,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         data: {
           liquidities,
         },
+        tags,
       });
     }
   }

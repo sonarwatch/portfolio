@@ -4,7 +4,7 @@ export const platformId = 'suilend';
 export const platform: Platform = {
   id: platformId,
   name: 'Suilend',
-  image: 'https://sonar.watch/img/platforms/suilend.png',
+  image: 'https://sonar.watch/img/platforms/suilend.webp',
   defiLlamaId: 'suilend', // from https://defillama.com/docs/api
   website: 'https://www.suilend.fi/',
   twitter: 'https://twitter.com/suilendprotocol',

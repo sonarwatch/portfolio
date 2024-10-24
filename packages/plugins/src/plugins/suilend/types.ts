@@ -96,7 +96,7 @@ export type PoolRewardManager = {
   total_shares: string;
 };
 
-export type PoolReward = {
+export type PoolReward = null | {
   id: ID;
   additional_fields: ParsedData<AdditionalFields>;
   allocated_rewards: ParsedData<Value>;

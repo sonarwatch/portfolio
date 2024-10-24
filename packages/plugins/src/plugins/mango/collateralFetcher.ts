@@ -11,7 +11,12 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { mangoV4Pid, platformId, banksKey } from './constants';
+import {
+  mangoV4Pid,
+  platformId,
+  banksKey,
+  yieldFanPlatformId,
+} from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { mangoAccountStruct } from './struct';
 import { accountsFilter } from './filters';
@@ -68,6 +73,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const userAccount = userAccounts[index];
     const tokenPositions = userAccount.tokens;
     if (tokenPositions.length === 0) continue;
+
     const borrowedAssets: PortfolioAsset[] = [];
     const borrowedYields: Yield[][] = [];
     const suppliedAssets: PortfolioAsset[] = [];
@@ -141,12 +147,35 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (suppliedAssets.length === 0 && borrowedAssets.length === 0) continue;
 
     const { borrowedValue, suppliedValue, value, healthRatio, rewardValue } =
-      getElementLendingValues({ suppliedAssets, borrowedAssets, rewardAssets });
+      getElementLendingValues({
+        suppliedAssets,
+        borrowedAssets,
+        rewardAssets,
+      });
+
+    const name = u8ArrayToString(userAccount.name);
+    const isYieldFan = name.includes('Leverage Stake');
+    let leverage;
+    if (
+      isYieldFan &&
+      suppliedAssets[0].data.price &&
+      suppliedAssets[0].data.amount &&
+      value
+    ) {
+      const depositAmount = new BigNumber(value).dividedBy(
+        suppliedAssets[0].data.price
+      );
+      leverage = `${new BigNumber(suppliedAssets[0].data.amount)
+        .dividedBy(depositAmount)
+        .decimalPlaces(2)
+        .toString()}x`;
+    }
+
     elements.push({
       type: PortfolioElementType.borrowlend,
       networkId: NetworkId.solana,
-      platformId,
-      label: 'Lending',
+      platformId: isYieldFan ? yieldFanPlatformId : platformId,
+      label: isYieldFan ? 'Leverage' : 'Lending',
       value,
       data: {
         borrowedAssets,
@@ -160,7 +189,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         rewardValue,
         value,
       },
-      name: u8ArrayToString(userAccount.name),
+      name: isYieldFan ? leverage : name,
     });
   }
   return elements;

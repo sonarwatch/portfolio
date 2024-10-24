@@ -2,7 +2,6 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { getClientSui } from '../../utils/clients';
 import {
   marketKey,
   addressPrefix,
@@ -21,15 +20,16 @@ import type {
   InterestModelData,
   MarketData,
   MarketJobResult,
+  PoolCoinNames,
   Pools,
 } from './types';
 import runInBatch from '../../utils/misc/runInBatch';
 import { getObject } from '../../utils/sui/getObject';
 import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
+import { getClientSui } from '../../utils/clients';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
-
   const addressData = await cache.getItem<AddressInfo>(addressKey, {
     prefix: addressPrefix,
     networkId: NetworkId.sui,
@@ -62,7 +62,7 @@ const executor: JobExecutor = async (cache: Cache) => {
           name: {
             type: '0x1::type_name::TypeName',
             value: {
-              name: pools[coinName].coinType.substring(2),
+              name: pools[coinName as PoolCoinNames].coinType.substring(2),
             },
           },
         })
@@ -84,7 +84,7 @@ const executor: JobExecutor = async (cache: Cache) => {
           name: {
             type: '0x1::type_name::TypeName',
             value: {
-              name: pools[coinName].coinType.substring(2),
+              name: pools[coinName as PoolCoinNames].coinType.substring(2),
             },
           },
         })
@@ -105,7 +105,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         name: {
           type: '0x1::type_name::TypeName',
           value: {
-            name: pools[coinName].coinType.substring(2),
+            name: pools[coinName as PoolCoinNames].coinType.substring(2),
           },
         },
       })
@@ -172,8 +172,8 @@ const executor: JobExecutor = async (cache: Cache) => {
 
     market[asset] = {
       coin: asset,
-      decimal: pools[asset].metadata?.decimals ?? 0,
-      coinType: pools[asset].coinType,
+      decimal: pools[asset as PoolCoinNames].metadata?.decimals ?? 0,
+      coinType: pools[asset as PoolCoinNames].coinType,
       growthInterest: growthInterest.toNumber(),
       borrowInterestRate: Math.min(
         calculatedBorrowRate,

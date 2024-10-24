@@ -40,10 +40,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const token = formatMoveTokenAddress(pool.lpToken);
     mints.add(token);
   });
-  const tokenPrices = await cache.getTokenPricesAsMap(
-    [...mints],
-    NetworkId.sui
-  );
+  const tokenPrices = await cache.getTokenPricesAsMap(mints, NetworkId.sui);
 
   const liquidities: PortfolioLiquidity[] = [];
   for (const position of activePositions) {

@@ -1,4 +1,4 @@
-import { NetworkId, formatTokenAddress } from '@sonarwatch/portfolio-core';
+import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
 import { getAddress } from 'viem';
 import BigNumber from 'bignumber.js';
 import { liteConfigs, platformId } from './constants';
@@ -6,11 +6,11 @@ import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getEvmClient } from '../../utils/clients';
 import { liteAbiV1, liteAbiV2 } from './abis';
-import { lpAddressesCachePrefix } from '../../utils/misc/constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getEvmClient(NetworkId.ethereum);
 
+  const sources: TokenPriceSource[] = [];
   for (let i = 0; i < liteConfigs.length; i++) {
     const config = liteConfigs[i];
     const uTokenPrice = await cache.getTokenPrice(
@@ -39,7 +39,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       .dividedBy(10 ** 18)
       .toNumber();
 
-    await cache.setTokenPriceSource({
+    sources.push({
       networkId: NetworkId.ethereum,
       platformId,
       price: ratio * uTokenPrice.price,
@@ -61,14 +61,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     });
   }
 
-  await cache.setItem(
-    `${platformId}-lite`,
-    liteConfigs.map((c) => formatTokenAddress(c.address, NetworkId.ethereum)),
-    {
-      prefix: lpAddressesCachePrefix,
-      networkId: NetworkId.ethereum,
-    }
-  );
+  await cache.setTokenPriceSources(sources);
 };
 
 const job: Job = {

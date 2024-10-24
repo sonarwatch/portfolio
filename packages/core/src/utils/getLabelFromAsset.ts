@@ -7,11 +7,11 @@ export function getLabelFromAsset(
 ): string | undefined {
   switch (asset.type) {
     case PortfolioAssetType.collectible:
-      return asset.data.name;
+      return asset.name;
     case PortfolioAssetType.token:
-      return tokenInfo?.symbol || 'UNK';
+      return asset.name || tokenInfo?.symbol || 'UNK';
     case PortfolioAssetType.generic:
-      return asset.data.name;
+      return asset.name;
     default:
       return undefined;
   }

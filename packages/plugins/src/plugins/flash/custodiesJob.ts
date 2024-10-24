@@ -3,12 +3,11 @@ import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
-import { marketsKey, flashPid, platformId } from './constants';
+import { marketsKey, flashPid, platformId, custodiesKey } from './constants';
 import { Custody, custodyStruct, marketStruct } from './structs';
 import { marketsFilter } from './filters';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 import { CustodyEnhanced } from './types';
-import { custodiesKey } from '../jupiter/exchange/constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();

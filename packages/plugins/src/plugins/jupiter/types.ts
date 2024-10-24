@@ -93,10 +93,17 @@ type FundingRateState = {
   hourlyFundingBps: string;
 };
 
-export type ClaimProofResponse = {
+export type ClaimProof = {
   merkle_tree: string;
   amount: string;
   proof: number[][];
+  mint?: string;
+};
+
+export type ClaimProofResponse = ClaimProof | string;
+
+export type AsrResponse = {
+  claim: ClaimProof[];
 };
 
 export type PriceResponse = {

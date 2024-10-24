@@ -2,6 +2,7 @@ import util from 'node:util';
 import { assertNetworkId } from '@sonarwatch/portfolio-core';
 import { fetchers, getCache } from '../src';
 import { runFetchersByNetworkId } from '../src/Fetcher';
+import sleep from '../src/utils/misc/sleep';
 
 const networkId = process.argv.at(2);
 if (!networkId || networkId === '') {
@@ -31,8 +32,10 @@ async function main() {
     cache
   );
   const duration = ((Date.now() - startDate) / 1000).toFixed(2);
-  console.log(`Finished (${duration}s)`);
   console.log(util.inspect(result, false, null, true));
+  console.log(`Finished (${duration}s)`);
+  await cache.dispose();
+  await sleep(100);
   process.exit(0);
 }
 

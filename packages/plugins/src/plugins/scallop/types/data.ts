@@ -1,5 +1,11 @@
 import BigNumber from 'bignumber.js';
-import { CoinTypeMetadata } from './coin';
+import {
+  CoinTypeMetadata,
+  MarketCoinNames,
+  PoolCoinNames,
+  SCoinNames,
+} from './coin';
+import { ID } from '../../../utils/sui/structs/id';
 
 export type UserLending = {
   coinType: string;
@@ -13,12 +19,20 @@ export type UserObligations = {
   };
 };
 
+export type UserLendingData = {
+  [T in PoolCoinNames]?: UserLending;
+};
+
 export type UserStakeAccounts = {
-  [T in string]: { points: string; index: string; stakes: string }[];
+  [T in MarketCoinNames]?: { points: string; index: string; stakes: string }[];
 };
 
 export type Pools = {
-  [T in string]: CoinTypeMetadata;
+  [T in PoolCoinNames]: CoinTypeMetadata;
+};
+
+export type SCoinTypeMetadata = {
+  [T in SCoinNames]: CoinTypeMetadata;
 };
 
 export type ClaimStatus = {
@@ -43,10 +57,6 @@ export type ClaimRecord = {
 export type Fields = {
   id: ID;
   size: string;
-};
-
-export type ID = {
-  id: string;
 };
 
 export type ApiResponse = {

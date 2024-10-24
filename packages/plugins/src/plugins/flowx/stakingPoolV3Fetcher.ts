@@ -15,7 +15,7 @@ import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
-import { asIntN } from '../cetus/helpers';
+import { bitsToNumber } from '../../utils/sui/bitsToNumber';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -39,7 +39,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
 
   const [tokenPrices, pools] = await Promise.all([
-    cache.getTokenPricesAsMap([...mints], NetworkId.sui),
+    cache.getTokenPricesAsMap(mints, NetworkId.sui),
     multiGetObjects<PoolV3>(client, Array.from(poolsIds.values())),
   ]);
 
@@ -66,13 +66,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const tokenAmounts = getTokenAmountsFromLiquidity(
       new BigNumber(position.data?.content?.fields.liquidity),
-      asIntN(BigInt(pool?.data?.content?.fields.tick_index.fields.bits)),
-      asIntN(
-        BigInt(position.data?.content?.fields.tick_lower_index.fields.bits)
-      ),
-      asIntN(
-        BigInt(position.data?.content?.fields.tick_upper_index.fields.bits)
-      ),
+      bitsToNumber(pool?.data?.content?.fields.tick_index.fields.bits),
+      bitsToNumber(position.data?.content?.fields.tick_lower_index.fields.bits),
+      bitsToNumber(position.data?.content?.fields.tick_upper_index.fields.bits),
       false
     );
 

@@ -5,7 +5,7 @@ import { AddressSystemType } from './Address';
 import { TokenInfo } from './TokenList';
 
 /**
- * Represents the type of a portfolio asset.
+ * Represents the type of portfolio asset.
  */
 export const PortfolioAssetType = {
   generic: 'generic',
@@ -80,19 +80,9 @@ export type PortfolioAssetCommon = {
  * Represents the data of a generic portfolio asset.
  */
 export type PortfolioAssetGenericData = {
-  /**
-   * @deprecated
-   * This property is deprecated.
-   */
-  name?: string;
+  address?: string;
   amount?: number;
   price?: UsdValue;
-  /**
-   * @deprecated
-   * This property is deprecated.
-   */
-  imageUri?: string;
-  address?: string;
 };
 
 /**
@@ -127,6 +117,10 @@ export type PortfolioAssetCollectibleData = {
   address: string;
   amount: number;
   price: UsdValue;
+  /**
+   * @deprecated
+   * This params has been deprecated. Use name from PortfolioAssetCommon instead.
+   */
   name?: string;
   description?: string;
   imageUri?: string;
@@ -420,5 +414,6 @@ export type FetchersResult = {
   fetcherReports: FetcherReport[];
   value: UsdValue;
   elements: PortfolioElement[];
+  duration: number;
   tokenInfo?: Partial<Record<NetworkIdType, Record<string, TokenInfo>>>;
 };

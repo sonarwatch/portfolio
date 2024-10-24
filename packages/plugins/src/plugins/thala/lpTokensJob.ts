@@ -1,4 +1,10 @@
-import { NetworkId, TokenPriceUnderlying } from '@sonarwatch/portfolio-core';
+import {
+  formatMoveTokenAddress,
+  NetworkId,
+  TokenPriceSource,
+  TokenPriceUnderlying,
+  parseTypeString,
+} from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import {
   lpStableTypePrefix,
@@ -9,73 +15,117 @@ import {
   programAddressLP,
 } from './constants';
 import {
-  CoinInfoData,
-  MoveResource,
   coinInfo,
+  CoinInfoData,
   getAccountResources,
-  parseTypeString,
+  MoveResource,
 } from '../../utils/aptos';
 import { getClientAptos } from '../../utils/clients';
 import { ThalaTokenPairMetadataData as TokenPairMetadataData } from './types';
 import { tokenToLpType } from './helpers';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
+import { arrayToMap } from '../../utils/misc/arrayToMap';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientAptos();
-  const resources = await getAccountResources(connection, programAddressLP);
+  const resources = await getAccountResources(
+    connection,
+    programAddressLP
+  ).then((unfilteredResources) =>
+    (unfilteredResources || []).filter((resource) => {
+      if (!resource) return false;
+      return !(
+        !resource.type.includes(lpStableTypePrefix) &&
+        !resource.type.includes(lpWeightedTypePrefix)
+      );
+    })
+  );
   if (!resources) return;
 
-  const tokenResourcesByType: Map<string, MoveResource<unknown>> = new Map();
-  resources.forEach((resource) => {
-    if (
-      resource.type.includes(lpStableTypePrefix) ||
-      resource.type.includes(lpWeightedTypePrefix)
-    )
-      tokenResourcesByType.set(resource.type, resource);
-  });
+  const tokenResourcesByType = arrayToMap(resources, 'type');
 
-  for (let i = 0; i < resources.length; i++) {
-    const resource = resources[i];
+  const tokenAdresses = new Set<string>();
+
+  resources.forEach((resource) => {
     const parseLpInfo = parseTypeString(resource.type);
 
-    if (parseLpInfo.root !== coinInfo) continue;
-    if (!parseLpInfo.keys) continue;
+    if (parseLpInfo.root !== coinInfo) return;
+    if (!parseLpInfo.keys) return;
 
     const poolInfo = parseLpInfo.keys?.at(0);
-    if (poolInfo === undefined) continue;
+    if (poolInfo === undefined) return;
 
     if (
       poolInfo.root !== lpStableTypeTokenPrefix &&
       poolInfo.root !== lpWeightedTypeTokenPrefix
     ) {
-      continue;
+      return;
+    }
+
+    const lpTokenComposition = poolInfo.keys;
+    if (!lpTokenComposition) return;
+
+    for (let index = 0; index < lpTokenComposition.length; index++) {
+      const token = lpTokenComposition.at(index);
+      if (!token) continue;
+      if (token.struct === 'Null') break;
+
+      const tokenAddress = token.type;
+      if (!tokenAddress) continue;
+
+      tokenAdresses.add(tokenAddress);
+    }
+  });
+
+  const tokenPrices = await cache.getTokenPricesAsMap(
+    [...tokenAdresses],
+    NetworkId.aptos
+  );
+
+  const tokenPriceSources: TokenPriceSource[] = [];
+
+  resources.forEach((resource) => {
+    const parseLpInfo = parseTypeString(resource.type);
+
+    if (parseLpInfo.root !== coinInfo) return;
+    if (!parseLpInfo.keys) return;
+
+    const poolInfo = parseLpInfo.keys?.at(0);
+    if (poolInfo === undefined) return;
+
+    if (
+      poolInfo.root !== lpStableTypeTokenPrefix &&
+      poolInfo.root !== lpWeightedTypeTokenPrefix
+    ) {
+      return;
     }
 
     const lpInfoData = resource.data as CoinInfoData;
     const lpSupplyString = lpInfoData.supply?.vec[0]?.integer.vec[0]?.value;
-    if (!lpSupplyString) continue;
+    if (!lpSupplyString) return;
 
     const lpDecimals = lpInfoData.decimals;
     const lpSupply = new BigNumber(lpSupplyString)
       .div(10 ** lpDecimals)
       .toNumber();
-    if (lpSupply === 0) continue;
+    if (lpSupply === 0) return;
 
     const lpType = poolInfo.type;
     const lpTokenComposition = poolInfo.keys;
-    if (!lpTokenComposition) continue;
+    if (!lpTokenComposition) return;
 
     const tokenPairResource = tokenResourcesByType.get(
       tokenToLpType(lpType)
     ) as MoveResource<TokenPairMetadataData> | undefined;
-    if (!tokenPairResource) continue;
+    if (!tokenPairResource) return;
 
     const tokensValues = getTokensValuesArray(tokenPairResource.data);
     const underlyings: TokenPriceUnderlying[] = [];
     let totalReserveValue = 0;
     for (let index = 0; index < lpTokenComposition.length; index++) {
       const token = lpTokenComposition.at(index);
+
       if (!token) continue;
       if (token.struct === 'Null') break;
 
@@ -86,11 +136,8 @@ const executor: JobExecutor = async (cache: Cache) => {
       if (!tokenAmount) continue;
       if (tokenAmount.isZero()) continue;
 
-      const tokenPrice = await cache.getTokenPrice(
-        tokenAddress,
-        NetworkId.aptos
-      );
-      if (!tokenPrice || tokenPrice === undefined) continue;
+      const tokenPrice = tokenPrices.get(formatMoveTokenAddress(tokenAddress));
+      if (!tokenPrice) continue;
 
       const reserveAmount = new BigNumber(tokenAmount)
         .div(10 ** tokenPrice.decimals)
@@ -107,9 +154,11 @@ const executor: JobExecutor = async (cache: Cache) => {
       });
     }
 
-    if (totalReserveValue === 0) continue;
+    if (totalReserveValue === 0) return;
+
     const price = totalReserveValue / lpSupply;
-    await cache.setTokenPriceSource({
+
+    tokenPriceSources.push({
       id: platformId,
       weight: 1,
       address: poolInfo.type,
@@ -120,7 +169,9 @@ const executor: JobExecutor = async (cache: Cache) => {
       underlyings,
       timestamp: Date.now(),
     });
-  }
+  });
+
+  await cache.setTokenPriceSources(tokenPriceSources);
 };
 
 function getTokensValuesArray(

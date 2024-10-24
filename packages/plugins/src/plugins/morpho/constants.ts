@@ -4,7 +4,7 @@ export const platformId = 'morpho';
 export const platform: Platform = {
   id: platformId,
   name: 'Morpho',
-  image: 'https://sonar.watch/img/platforms/morpho.png',
+  image: 'https://sonar.watch/img/platforms/morpho.webp',
   defiLlamaId: 'parent#morpho',
   website: 'https://morpho.org/',
 };

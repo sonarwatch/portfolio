@@ -1,71 +1,50 @@
-import {
-  NetworkId,
-  PortfolioAsset,
-  PortfolioElementType,
-  getUsdValueSum,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
-import axios, { AxiosResponse } from 'axios';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { banxApiUrl, banxDecimals, banxMint, platformId } from './constants';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { BanxResponse } from './types';
+import { banxDecimals, banxMint, banxPid, platformId } from './constants';
+import { getParsedProgramAccounts } from '../../utils/solana';
+import { BanxTokenStakeState, banxTokenStakeStruct } from './structs';
+import { stakeFilters } from './filters';
+import { getClientSolana } from '../../utils/clients';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const banxFactor = new BigNumber(10 ** banxDecimals);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  // Account fetch was taking up to 1 min so better to use their API for now.
+  const client = getClientSolana();
 
-  // const client = getClientSolana();
+  const accounts = await getParsedProgramAccounts(
+    client,
+    banxTokenStakeStruct,
+    banxPid,
+    stakeFilters(owner)
+  );
 
-  // const accounts = await getParsedProgramAccounts(
-  //   client,
-  //   banxTokenStakeStruct,
-  //   banxPid,
-  //   stakeFilters(owner)
-  // );
+  const amounts: BigNumber[] = [];
+  for (const account of accounts) {
+    if (account.banxStakeState === BanxTokenStakeState.Unstaked) continue;
+    if (account.tokensStaked.isZero()) continue;
 
-  // const amounts: BigNumber[] = [];
-  // for (const account of accounts) {
-  //   if (account.banxStakeState === BanxTokenStakeState.Unstaked) continue;
-  //   if (account.tokensStaked.isZero()) continue;
+    amounts.push(account.tokensStaked.dividedBy(banxFactor));
+  }
+  if (amounts.length === 0) return [];
 
-  //   amounts.push(account.tokensStaked.dividedBy(banxFactor));
-  // }
+  const amount = amounts.reduce((curr, sum) => curr.plus(sum), BigNumber(0));
 
-  // if (amounts.length === 0) return [];
+  const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 
-  const banxRes: AxiosResponse<BanxResponse> | null = await axios
-    .get(banxApiUrl + owner, { timeout: 1000 })
-    .catch(() => null);
-  if (!banxRes) return [];
+  const element = elementRegistry.addElementMultiple({
+    label: 'Staked',
+  });
 
-  const amount = new BigNumber(
-    banxRes.data.data.banxTokenStake.tokensStaked
-  ).dividedBy(banxFactor);
-  if (amount.isZero()) return [];
+  element.addAsset({
+    address: banxMint,
+    amount,
+    alreadyShifted: true,
+  });
 
-  const tokenPrice = await cache.getTokenPrice(banxMint, NetworkId.solana);
-  const assets: PortfolioAsset[] = [
-    tokenPriceToAssetToken(
-      banxMint,
-      amount.toNumber(),
-      NetworkId.solana,
-      tokenPrice
-    ),
-  ];
-
-  return [
-    {
-      type: PortfolioElementType.multiple,
-      label: 'Staked',
-      networkId: NetworkId.solana,
-      platformId,
-      data: { assets },
-      value: getUsdValueSum(assets.map((asset) => asset.value)),
-    },
-  ];
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

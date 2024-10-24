@@ -13,3 +13,31 @@ export type GetAirdropFinalFrontend = {
   total_allocation: number;
   __typename: string;
 };
+
+export enum StakeStateName {
+  Uninitialized,
+  Vesting,
+  Locked,
+}
+
+export type StakeState = {
+  vesting?: {
+    lastClaimTs: string;
+    stakeStartEpoch: number;
+  };
+  locked?: null;
+  uninitialized?: null;
+};
+
+export type StakeAccount = {
+  buffer: Buffer;
+  name: number[];
+  vaultNonce: number;
+  bitInUse: number;
+  stakeState: StakeState;
+  initialStakeAmount: string;
+  amountStillStaked: string;
+  amountClaimed: string;
+  stakeDurationEpochs: number;
+  authority: string;
+};

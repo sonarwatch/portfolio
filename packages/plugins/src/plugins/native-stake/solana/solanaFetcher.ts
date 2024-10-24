@@ -9,7 +9,7 @@ import BigNumber from 'bignumber.js';
 import { EpochInfo } from '@solana/web3.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
-import { nativeStakePlatform, platformId } from '../constants';
+import { nativeStakePlatform, platformId, validatorsKey } from '../constants';
 import { getClientSolana } from '../../../utils/clients';
 import { getParsedProgramAccounts } from '../../../utils/solana';
 import { stakeAccountsFilter } from './filters';
@@ -22,6 +22,18 @@ import {
   marinadeManagerAddresses,
   stakeProgramId,
 } from './constants';
+import { MemoizedCache } from '../../../utils/misc/MemoizedCache';
+import { Validator } from './types';
+import { arrayToMap } from '../../../utils/misc/arrayToMap';
+
+const validatorsMemo = new MemoizedCache<Validator[], Map<string, Validator>>(
+  validatorsKey,
+  {
+    prefix: platformId,
+    networkId: NetworkId.solana,
+  },
+  (arr) => arrayToMap(arr || [], 'voter')
+);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -35,17 +47,16 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
   if (stakeAccounts.length === 0) return [];
 
-  const solTokenPrice = await cache.getTokenPrice(
-    solanaNetwork.native.address,
-    NetworkId.solana
-  );
+  const [solTokenPrice, epochInfo, validators] = await Promise.all([
+    cache.getTokenPrice(solanaNetwork.native.address, NetworkId.solana),
+    cache.getItem<EpochInfo>(epochInfoCacheKey, {
+      prefix: platformId,
+      networkId: NetworkId.solana,
+    }),
+    validatorsMemo.getItem(cache),
+  ]);
 
-  const epochInfo = await cache.getItem<EpochInfo>(epochInfoCacheKey, {
-    prefix: platformId,
-    networkId: NetworkId.solana,
-  });
   const epoch = epochInfo?.epoch;
-
   let marinadeSolAmount = 0;
   let solAmount = 0;
   let nMarinadeAccounts = 0;
@@ -53,12 +64,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   let nativeAssets: PortfolioAsset[] = [];
   for (let i = 0; i < stakeAccounts.length; i += 1) {
     const stakeAccount = stakeAccounts[i];
+    const validator = validators.get(stakeAccount.voter.toString());
+    const { deactivationEpoch, activationEpoch, staker } = stakeAccount;
 
-    mevRewards += new BigNumber(stakeAccount.lamports)
-      .minus(stakeAccount.rentExemptReserve)
-      .minus(stakeAccount.stake)
-      .dividedBy(10 ** 9)
-      .toNumber();
+    const isMarinade = marinadeManagerAddresses.includes(staker.toString());
+
+    if (!activationEpoch.isZero() && !isMarinade)
+      mevRewards += new BigNumber(stakeAccount.lamports)
+        .minus(stakeAccount.rentExemptReserve)
+        .minus(stakeAccount.stake)
+        .dividedBy(10 ** 9)
+        .toNumber();
 
     const amount = new BigNumber(stakeAccount.lamports)
       .minus(stakeAccount.rentExemptReserve)
@@ -66,9 +82,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       .toNumber();
     if (amount <= 0) continue;
 
-    const isMarinade = marinadeManagerAddresses.includes(
-      stakeAccount.staker.toString()
-    );
     if (isMarinade) {
       marinadeSolAmount += amount;
       nMarinadeAccounts += 1;
@@ -76,7 +89,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     } else solAmount += amount;
 
     // Status tags
-    const { deactivationEpoch, activationEpoch } = stakeAccount;
     const tags = [];
     if (
       epoch &&
@@ -90,6 +102,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       tags.push('Inactive');
     } else if (epoch && deactivationEpoch.isEqualTo(epoch)) {
       tags.push('Unstaking');
+    } else if (deactivationEpoch.isZero() && activationEpoch.isZero()) {
+      tags.push('Initialized');
     } else {
       tags.push('Active');
     }
@@ -109,10 +123,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           lockedUntil,
         }
       ),
+      name: validator?.name,
+      imageUri: validator?.imageUri,
     });
   }
 
-  if (nativeAssets.length > 20) {
+  if (nativeAssets.length > 30) {
     nativeAssets = [
       tokenPriceToAssetToken(
         solanaNetwork.native.address,

@@ -4,12 +4,12 @@ import BigNumber from 'bignumber.js';
 import axios, { AxiosResponse } from 'axios';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { airdropUrl, platformId, tableId } from './constants';
-import { getClientSui } from '../../utils/clients';
+import { airdropUrl, platformId, cnyTableId } from './constants';
 import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
 import { ApiResponse, ClaimStatus } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { pythMint } from '../pyth/constants';
+import { getClientSui } from '../../utils/clients';
 
 function getAmount(claimData: string): number | undefined {
   if (!claimData) return undefined;
@@ -33,16 +33,16 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (!signature?.data.data || signature.status === 404) return [];
 
-  const client = getClientSui();
   const amount = getAmount(signature.data.data);
   if (!amount) return [];
 
+  const client = getClientSui();
   const claimStatus = await getDynamicFieldObject<ClaimStatus>(client, {
     name: {
       type: 'address',
       value: owner,
     },
-    parentId: tableId,
+    parentId: cnyTableId,
   });
   if (claimStatus.data) return [];
 

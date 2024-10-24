@@ -1,100 +1,85 @@
-import {
-  NetworkId,
-  PortfolioAsset,
-  PortfolioElement,
-  PortfolioElementType,
-  Yield,
-  getElementLendingValues,
-} from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { buckId, collaterals, platformId } from './constants';
+import {
+  bottleTableException,
+  bucketsCacheKey,
+  buckId,
+  platformId,
+} from './constants';
 import { getClientSui } from '../../utils/clients';
-import { CollateralFields } from './types';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { Bucket, CollateralFields, FountainStakeProof } from './types';
 import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { MemoizedCache } from '../../utils/misc/MemoizedCache';
+
+const bucketsMemo = new MemoizedCache<Bucket[]>(bucketsCacheKey, {
+  prefix: platformId,
+  networkId: NetworkId.sui,
+});
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
-  const buckPrice = await cache.getTokenPrice(buckId, NetworkId.sui);
-  if (!buckPrice) return [];
-  const elements: PortfolioElement[] = [];
 
-  for (const collateral of collaterals) {
-    const borrowedAssets: PortfolioAsset[] = [];
-    const borrowedYields: Yield[][] = [];
-    const suppliedAssets: PortfolioAsset[] = [];
-    const suppliedYields: Yield[][] = [];
-    const rewardAssets: PortfolioAsset[] = [];
-    const input = {
-      parentId: collateral.parentId,
-      name: {
-        type: 'address',
-        value: owner,
-      },
-    };
-    const positionData = await getDynamicFieldObject<CollateralFields>(
-      client,
-      input
-    );
-    if (!positionData.data) continue;
+  const buckets = await bucketsMemo.getItem(cache);
 
-    const tokenPrice = await cache.getTokenPrice(
-      collateral.tokenId,
-      NetworkId.sui
-    );
-    if (!tokenPrice) continue;
+  if (!buckets || !buckets.length) return [];
 
-    const collateralInfo =
-      positionData.data.content?.fields.value.fields.value.fields;
-    if (!collateralInfo) continue;
-    const suppliedQuantity = new BigNumber(collateralInfo.collateral_amount)
-      .dividedBy(10 ** tokenPrice.decimals)
-      .toNumber();
-    if (suppliedQuantity === 0) continue;
-    const borrowedQuantity = new BigNumber(collateralInfo.buck_amount)
-      .dividedBy(10 ** buckPrice.decimals)
-      .toNumber();
+  const positions = await Promise.all(
+    buckets.map(async (bucket) => {
+      let address = owner;
+      if (Object.keys(bottleTableException).includes(bucket.token)) {
+        const stakeProof = await getDynamicFieldObject<FountainStakeProof>(
+          client,
+          {
+            parentId: bottleTableException[bucket.token],
+            name: {
+              type: 'address',
+              value: owner,
+            },
+          }
+        );
 
-    borrowedAssets.push(
-      tokenPriceToAssetToken(buckId, borrowedQuantity, NetworkId.sui, buckPrice)
-    );
+        address =
+          stakeProof.data?.content?.fields.value[0].fields.strap_address ||
+          owner;
+      }
+      return getDynamicFieldObject<CollateralFields>(client, {
+        parentId: bucket.bottleTableId,
+        name: {
+          type: 'address',
+          value: address,
+        },
+      });
+    })
+  );
 
-    suppliedAssets.push(
-      tokenPriceToAssetToken(
-        collateral.tokenId,
-        suppliedQuantity,
-        NetworkId.sui,
-        tokenPrice
-      )
-    );
+  const elementRegistry = new ElementRegistry(NetworkId.sui, platformId);
 
-    const { borrowedValue, healthRatio, suppliedValue, value, rewardValue } =
-      getElementLendingValues({ suppliedAssets, borrowedAssets, rewardAssets });
+  buckets.forEach((bucket, i) => {
+    const positionData = positions[i];
+    if (!positionData.data?.content?.fields.value.fields.value.fields) return;
 
-    const element: PortfolioElement = {
-      type: PortfolioElementType.borrowlend,
-      networkId: NetworkId.sui,
-      platformId,
+    const element = elementRegistry.addElementBorrowlend({
       label: 'Lending',
-      value,
-      data: {
-        borrowedAssets,
-        borrowedValue,
-        borrowedYields,
-        suppliedAssets,
-        suppliedValue,
-        suppliedYields,
-        healthRatio,
-        rewardAssets,
-        rewardValue,
-        value,
-      },
-    };
-    elements.push(element);
-  }
-  return elements;
+    });
+
+    element.addBorrowedAsset({
+      address: buckId,
+      amount:
+        positionData.data?.content?.fields.value.fields.value.fields
+          .buck_amount,
+    });
+
+    element.addSuppliedAsset({
+      address: bucket.token,
+      amount:
+        positionData.data?.content?.fields.value.fields.value.fields
+          .collateral_amount,
+    });
+  });
+
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

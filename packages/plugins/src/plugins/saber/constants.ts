@@ -4,7 +4,7 @@ export const platformId = 'saber';
 export const platform: Platform = {
   id: platformId,
   name: 'Saber',
-  image: 'https://sonar.watch/img/platforms/saber.png',
+  image: 'https://sonar.watch/img/platforms/saber.webp',
   defiLlamaId: 'saber',
   website: 'https://saberdao.io/',
 };

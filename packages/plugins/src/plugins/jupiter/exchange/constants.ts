@@ -6,7 +6,7 @@ export const platformId = 'jupiter-exchange';
 export const platform: Platform = {
   id: platformId,
   name: 'Jupiter Exchange',
-  image: 'https://sonar.watch/img/platforms/jupiter.png',
+  image: 'https://sonar.watch/img/platforms/jupiter.webp',
   defiLlamaId: 'parent#jupiter',
   website: 'https://jup.ag/',
   twitter: 'https://twitter.com/JupiterExchange',
@@ -16,7 +16,7 @@ export const perpsProgramId = new PublicKey(
   'PERPHjGBqRHArX4DySjwM6UJHiR3sWAatqfdBS2qQJu'
 );
 export const valueAverageProgramId = new PublicKey(
-  'JVAp1DSLnM4Qh8qM1QasQ8x56ccb9S3DhbyEckybTF9'
+  'VALaaymxQh2mNy2trH9jUqHT1mTow76wpTcGmSWSwJe'
 );
 export const limitProgramId = new PublicKey(
   'jupoNjAxXgZ4rjzxzPMP4oxduvQsQtZzyknqvzYNrNu'
@@ -26,6 +26,9 @@ export const limitV2ProgramId = new PublicKey(
 );
 export const dcaProgramId = new PublicKey(
   'DCA265Vj8a9CEuX1eb1LWRnDT7uK6q1xMipnNyatn23M'
+);
+export const lockProgramId = new PublicKey(
+  'LocpQgucEQHbqNABEYvBvwoxCPsSbG91A1QaQhQQqjn'
 );
 
 export const jlpPool = new PublicKey(

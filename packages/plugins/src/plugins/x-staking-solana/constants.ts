@@ -1,4 +1,3 @@
-import { Platform } from '@sonarwatch/portfolio-core';
 import {
   platformId as auroryPlatformId,
   auryMint,
@@ -8,24 +7,8 @@ import {
 } from '../aurory/constants';
 import { platformId as hawksightPlatformId } from '../hawksight/constants';
 import { platformId as whalesMarketPlatformId } from '../whalesmarket/constants';
-
-export const stepFinancePlatformId = 'stepfinance';
-export const stepFinancePlatform: Platform = {
-  id: stepFinancePlatformId,
-  name: 'Step Finance',
-  image: 'https://sonar.watch/img/platforms/stepfinance.png',
-  website: 'https://app.step.finance/',
-  twitter: 'https://twitter.com/StepFinance_',
-};
-
-export const allbridgePlatformId = 'allbridge';
-export const allbridgePlatform: Platform = {
-  id: allbridgePlatformId,
-  name: 'Allbridge',
-  image: 'https://sonar.watch/img/platforms/allbridge.png',
-  website: 'https://stake.allbridge.io/?chain=SOL',
-  twitter: 'https://twitter.com/Allbridge_io',
-};
+import { platformId as allbridgePlatformId } from '../allbridge/constants';
+import { stepfinancePlatform, ligmaPlatform } from '../../orphanPlatforms';
 
 export const xStakingConfigs: StakingConfig[] = [
   {
@@ -50,7 +33,7 @@ export const xStakingConfigs: StakingConfig[] = [
     vault: 'ANYxxG365hutGYaTdtUQG8u2hC4dFX9mFHKuzy9ABQJi',
     xMint: 'xStpgUCss9piqeFUk2iLVcvJEGhAdJxJQuwLkXP555G',
     xDecimals: 9,
-    platformId: stepFinancePlatformId,
+    platformId: stepfinancePlatform.id,
   },
   {
     mint: 'a11bdAAuV8iB2fu7X6AxAvDTo1QZ8FXB3kk5eecdasp',
@@ -67,6 +50,14 @@ export const xStakingConfigs: StakingConfig[] = [
     xMint: 'xHWKW3Yyji9xe6FnTmDqu3rBApt3Ysu5ysywUA85Len',
     xDecimals: 6,
     platformId: hawksightPlatformId,
+  },
+  {
+    mint: 'node3SHFNF7h6N9jbztfVcXrZcvAJdns1xAV8CbYFLG',
+    decimals: 6,
+    vault: 'ENz6c4ZVYedrcK5V4fh7vwDA1SvZDNDQb1j3KKQbbo8Q',
+    xMint: 'xNodeyB1u8WNrKQJqfucbKDMq7LYcAQfYXmqVdDj9M5',
+    xDecimals: 6,
+    platformId: ligmaPlatform.id,
   },
 ];
 

@@ -1,16 +1,16 @@
-import { Storage, createStorage, StorageValue, Driver } from 'unstorage';
+import { createStorage, Driver, Storage, StorageValue } from 'unstorage';
 import fsDriver from 'unstorage/drivers/fs';
 import redisDriver from 'unstorage/drivers/redis';
 import httpDriver from 'unstorage/drivers/http';
 import {
-  NetworkIdType,
-  TokenPrice,
-  TokenPriceSource,
   formatTokenAddress,
   formatTokenPriceSource,
+  NetworkIdType,
   publicBearerToken,
   pushTokenPriceSource,
+  TokenPrice,
   tokenPriceFromSources,
+  TokenPriceSource,
   tokenPriceSourceTtl,
 } from '@sonarwatch/portfolio-core';
 import overlayDriver from './overlayDriver';
@@ -19,7 +19,7 @@ import memoryDriver, {
   MemoryDriver,
 } from './memoryDriver';
 import runInBatch from './utils/misc/runInBatch';
-import { arrayToMap } from './utils/misc/arrayToMap';
+import { TokenPriceMap } from './TokenPriceMap';
 
 export type TransactionOptions = {
   prefix: string;
@@ -38,12 +38,13 @@ export type TransactionOptionsSetItem = {
 
 const tokenPriceSourcePrefix = 'tokenpricesource';
 
-export type CacheConfig =
+export type CacheConfig = { name?: string } & (
   | CacheConfigOverlayHttp
   | CacheConfigMemory
   | CacheConfigRedis
   | CacheConfigFilesystem
-  | CacheConfigHttp;
+  | CacheConfigHttp
+);
 
 export type CacheConfigOverlayHttp = {
   type: 'overlayHttp';
@@ -101,6 +102,7 @@ export type CacheConfigParams = {
 };
 
 export class Cache {
+  readonly name?: string;
   readonly storage: Storage;
   readonly driver: Driver;
   private tokenPriceStorage: Storage;
@@ -115,6 +117,7 @@ export class Cache {
         ttl: 10000,
       }),
     });
+    this.name = cacheConfig.name;
   }
 
   importData(data: Map<string, string>): void {
@@ -179,6 +182,7 @@ export class Cache {
   }
 
   async getTokenPrices(addresses: string[], networkId: NetworkIdType) {
+    if (addresses.length === 0) return [];
     const fAddresses = addresses.map((a) => formatTokenAddress(a, networkId));
     const ffAddresses = [...new Set(fAddresses)];
     const tokenPriceByAddress: Map<string, TokenPrice | undefined> = new Map();
@@ -193,11 +197,20 @@ export class Cache {
   }
 
   async getTokenPricesAsMap(
-    addresses: string[],
+    addresses: string[] | Set<string>,
     networkId: NetworkIdType
-  ): Promise<Map<string, TokenPrice>> {
-    const tokenPrices = await this.getTokenPrices(addresses, networkId);
-    return arrayToMap(tokenPrices as TokenPrice[], 'address');
+  ): Promise<TokenPriceMap> {
+    const tokenPrices = await this.getTokenPrices(
+      [...addresses],
+      networkId
+    ).then(
+      (values) =>
+        values.filter((tokenPrice) => tokenPrice !== undefined) as TokenPrice[]
+    );
+    return new TokenPriceMap(
+      networkId,
+      tokenPrices.map((tokenPrice) => [tokenPrice.address, tokenPrice])
+    );
   }
 
   private async getTokenPriceSources(
@@ -228,34 +241,6 @@ export class Cache {
     const fullKeys = keys.map((k) => getFullKey(k, opts));
     const res = await this.storage.getItems(fullKeys);
     return res.map((r) => r.value as K);
-  }
-
-  /**
-   * @deprecated
-   * This function has been deprecated. Use the getItems.
-   */
-  async getAllItems<K extends StorageValue>(
-    opts: TransactionOptions
-  ): Promise<K[]> {
-    const itemsMap = await this.getAllItemsAsMap<K>(opts);
-    return Array.from(itemsMap.values());
-  }
-
-  /**
-   * @deprecated
-   * This function has been deprecated. Use the getItems.
-   */
-  async getAllItemsAsMap<K extends StorageValue>(
-    opts: TransactionOptions
-  ): Promise<Map<string, K>> {
-    const keys = await this.getKeys(opts);
-    const itemsMap: Map<string, K> = new Map();
-    const items = await this.getItems<K>(keys, opts);
-    for (let i = 0; i < items.length; i += 1) {
-      const item = items[i];
-      if (item !== undefined) itemsMap.set(keys[i], item);
-    }
-    return itemsMap;
   }
 
   async setItem<K extends StorageValue>(
@@ -324,19 +309,6 @@ export class Cache {
     return this.storage.removeItem(fullKey);
   }
 
-  async getKeys(opts: TransactionOptions) {
-    const fullBase = getFullBase(opts);
-    const keys = await this.storage.getKeys(fullBase);
-    return keys.map((s) => s.substring(fullBase.length));
-  }
-
-  async getTokenPriceAddresses(networkId: NetworkIdType) {
-    return this.getKeys({
-      prefix: tokenPriceSourcePrefix,
-      networkId,
-    });
-  }
-
   async dispose() {
     await this.tokenPriceStorage.dispose();
     return this.storage.dispose();
@@ -349,11 +321,11 @@ function getFullKey(key: string, opts: TransactionOptions): string {
   return `/${prefix}${networkIdKeyPrefix}/${key}`;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function getFullBase(opts: TransactionOptions) {
   const { networkId, prefix } = opts;
   const networkIdBasePrefix = networkId ? `${networkId.toString()}:` : '';
-  const fullBase = `${prefix}:${networkIdBasePrefix}`;
-  return fullBase;
+  return `${prefix}:${networkIdBasePrefix}`;
 }
 
 function getDriverFromCacheConfig(cacheConfig: CacheConfig) {
@@ -378,6 +350,23 @@ function getDriverFromCacheConfig(cacheConfig: CacheConfig) {
         tls: cacheConfig.params.tls ? {} : undefined,
         db: cacheConfig.params.db,
         ttl: cacheConfig.params.ttl,
+        connectTimeout: 60000,
+        keepAlive: 10000,
+        retryStrategy: () => {
+          const delay = 2000;
+          const cacheName = cacheConfig.name ? `(${cacheConfig.name})` : '';
+          // eslint-disable-next-line no-console
+          console.error(
+            `PortfolioCache${cacheName} redis reconnecting in ${delay} ms...`
+          );
+          return delay;
+        },
+        reconnectOnError: (err) => {
+          const cacheName = cacheConfig.name ? `(${cacheConfig.name})` : '';
+          // eslint-disable-next-line no-console
+          console.error(`PortfolioCache${cacheName} redis error:`, err);
+          return true;
+        },
       }) as Driver;
     case 'http':
       return httpDriver({
@@ -403,7 +392,10 @@ export function getCacheConfig(): CacheConfig {
             .map((base) => ({
               base,
               headers: {
-                Authorization: `Bearer ${publicBearerToken}`,
+                Authorization: `Bearer ${
+                  process.env['CACHE_CONFIG_OVERLAY_HTTP_BEARER'] ||
+                  publicBearerToken
+                }`,
               },
             })),
         },

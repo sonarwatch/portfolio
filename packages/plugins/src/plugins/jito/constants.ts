@@ -4,7 +4,7 @@ export const platformId = 'jito';
 export const platform: Platform = {
   id: platformId,
   name: 'Jito',
-  image: 'https://sonar.watch/img/platforms/jito.png',
+  image: 'https://sonar.watch/img/platforms/jito.webp',
   defiLlamaId: 'jito',
   website: 'https://jito.network/harvest',
   twitter: 'https://twitter.com/jito_sol',

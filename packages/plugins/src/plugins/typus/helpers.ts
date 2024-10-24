@@ -1,5 +1,5 @@
 import { BcsReader } from '@mysten/bcs';
-import { TransactionBlock } from '@mysten/sui.js/transactions';
+import { Transaction } from '@mysten/sui/transactions';
 import { SuiClient } from '../../utils/clients/types';
 import { DepositShare } from './types';
 import {
@@ -13,13 +13,13 @@ export async function getDepositShares(
   provider: SuiClient,
   receipts: string[]
 ): Promise<DepositShare[] | undefined> {
-  const transactionBlock = new TransactionBlock();
+  const transactionBlock = new Transaction();
   const target = viewDepositSharesType as `${string}::${string}::${string}`;
   const transactionBlockArguments = [
-    transactionBlock.pure(registryDovSingle),
+    transactionBlock.object(registryDovSingle),
     transactionBlock.makeMoveVec({
       type: depositReceiptType,
-      objects: receipts.map((id) => transactionBlock.object(id)),
+      elements: receipts.map((id) => transactionBlock.object(id)),
     }),
   ];
   transactionBlock.moveCall({
@@ -38,7 +38,7 @@ export async function getDepositShares(
 
   const bytes = returnValues[0][0];
   const reader = new BcsReader(new Uint8Array(bytes));
-  const res: DepositShare[] = reader.readVec((bcsReader) => {
+  return reader.readVec((bcsReader) => {
     bcsReader.read8();
     const index = bcsReader.read64();
     const activeSubVaultUserShare = bcsReader.read64();
@@ -57,6 +57,4 @@ export async function getDepositShares(
       incentiveShare,
     } as DepositShare;
   });
-
-  return res;
 }

@@ -60,6 +60,7 @@ export type LimitOrderV2 = {
   outputMint: PublicKey;
   inputTokenProgram: PublicKey;
   outputTokenProgram: PublicKey;
+  inputMintReserve: PublicKey;
   uniqueId: boolean;
   oriMakingAmount: BigNumber;
   oriTakingAmount: BigNumber;
@@ -82,6 +83,7 @@ export const limitOrderV2Struct = new BeetStruct<LimitOrderV2>(
     ['outputMint', publicKey],
     ['inputTokenProgram', publicKey],
     ['outputTokenProgram', publicKey],
+    ['inputMintReserve', publicKey],
     ['uniqueId', u64],
     ['oriMakingAmount', u64],
     ['oriTakingAmount', u64],
@@ -206,6 +208,47 @@ export const valueAverageStruct = new BeetStruct<ValueAverage>(
     ['outBalanceBeforeSwap', u64],
   ],
   (args) => args as ValueAverage
+);
+
+export type VestingEscrow = {
+  buffer: Buffer;
+  recipient: PublicKey;
+  tokenMint: PublicKey;
+  creator: PublicKey;
+  base: PublicKey;
+  escrowBump: number;
+  updateRecipientMode: number;
+  padding0: number[];
+  cliffTime: BigNumber;
+  frequency: BigNumber;
+  cliffUnlockAmount: BigNumber;
+  amountPerPeriod: BigNumber;
+  numberOfPeriod: BigNumber;
+  totalClaimedAmount: BigNumber;
+  vestingStartTime: BigNumber;
+  padding: BigNumber[];
+};
+
+export const vestingEscrowStruct = new BeetStruct<VestingEscrow>(
+  [
+    ['buffer', blob(8)],
+    ['recipient', publicKey],
+    ['tokenMint', publicKey],
+    ['creator', publicKey],
+    ['base', publicKey],
+    ['escrowBump', u8],
+    ['updateRecipientMode', u8],
+    ['padding0', uniformFixedSizeArray(u8, 6)],
+    ['cliffTime', u64],
+    ['frequency', u64],
+    ['cliffUnlockAmount', u64],
+    ['amountPerPeriod', u64],
+    ['numberOfPeriod', u64],
+    ['totalClaimedAmount', u64],
+    ['vestingStartTime', u64],
+    ['padding', uniformFixedSizeArray(u128, 6)],
+  ],
+  (args) => args as VestingEscrow
 );
 
 export type Limit = {

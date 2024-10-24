@@ -1,4 +1,4 @@
-import { TransactionBlock } from '@mysten/sui.js/transactions';
+import { Transaction } from '@mysten/sui/transactions';
 import {
   formatMoveTokenAddress,
   getElementLendingValues,
@@ -76,7 +76,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         ? 'position_info_reverse'
         : 'position_info';
 
-      const tx = new TransactionBlock();
+      const tx = new Transaction();
 
       tx.moveCall({
         target: `${packageObjectId}::${module}::${func}`,
@@ -84,7 +84,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           tx.object(borrowingInterest.workerInfo),
           tx.object(data.others.globalStorage),
           tx.object(borrowingInterest.pool),
-          tx.pure(positionId),
+          tx.pure.u64(positionId),
         ],
         typeArguments: [
           borrowingInterest.isReverse
@@ -127,44 +127,52 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             ? farm.symbol1Decimals
             : farm.symbol2Decimals)
       );
+      if (health.isZero() && debtValue.isZero()) return;
+
       // const equityValue = health.minus(debtValue);
       // const leverage = health.dividedBy(equityValue);
       // const debtRatio = debtValue.dividedBy(health);
 
       if (borrowingInterest.isReverse) {
-        suppliedAssets.push(
-          tokenPriceToAssetToken(
-            farm.symbol1Address,
-            health.toNumber(),
-            NetworkId.sui,
-            tokenPrices.get(formatMoveTokenAddress(farm.symbol1Address))
-          )
-        );
-        borrowedAssets.push(
-          tokenPriceToAssetToken(
-            farm.symbol1Address,
-            debtValue.toNumber(),
-            NetworkId.sui,
-            tokenPrices.get(formatMoveTokenAddress(farm.symbol1Address))
-          )
-        );
+        if (!health.isZero())
+          suppliedAssets.push(
+            tokenPriceToAssetToken(
+              farm.symbol1Address,
+              health.toNumber(),
+              NetworkId.sui,
+              tokenPrices.get(formatMoveTokenAddress(farm.symbol1Address))
+            )
+          );
+
+        if (!debtValue.isZero())
+          borrowedAssets.push(
+            tokenPriceToAssetToken(
+              farm.symbol1Address,
+              debtValue.toNumber(),
+              NetworkId.sui,
+              tokenPrices.get(formatMoveTokenAddress(farm.symbol1Address))
+            )
+          );
       } else {
-        suppliedAssets.push(
-          tokenPriceToAssetToken(
-            farm.symbol2Address,
-            health.toNumber(),
-            NetworkId.sui,
-            tokenPrices.get(formatMoveTokenAddress(farm.symbol2Address))
-          )
-        );
-        borrowedAssets.push(
-          tokenPriceToAssetToken(
-            farm.symbol2Address,
-            debtValue.toNumber(),
-            NetworkId.sui,
-            tokenPrices.get(formatMoveTokenAddress(farm.symbol2Address))
-          )
-        );
+        if (!health.isZero())
+          suppliedAssets.push(
+            tokenPriceToAssetToken(
+              farm.symbol2Address,
+              health.toNumber(),
+              NetworkId.sui,
+              tokenPrices.get(formatMoveTokenAddress(farm.symbol2Address))
+            )
+          );
+
+        if (!debtValue.isZero())
+          borrowedAssets.push(
+            tokenPriceToAssetToken(
+              farm.symbol2Address,
+              debtValue.toNumber(),
+              NetworkId.sui,
+              tokenPrices.get(formatMoveTokenAddress(farm.symbol2Address))
+            )
+          );
       }
 
       if (

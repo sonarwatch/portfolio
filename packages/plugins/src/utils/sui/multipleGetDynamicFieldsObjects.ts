@@ -1,8 +1,8 @@
-import { SuiObjectDataOptions } from '@mysten/sui.js/dist/cjs/client';
+import { SuiObjectDataOptions } from '@mysten/sui/client';
 import { SuiClient } from '../clients/types';
 import runInBatch from '../misc/runInBatch';
-import { getDynamicFieldObjects } from './getDynamicFieldObjects';
 import { ObjectResponse } from './types';
+import { getDynamicFieldObjects } from './getDynamicFieldObjects';
 
 export async function multipleGetDynamicFieldsObjects<K>(
   client: SuiClient,

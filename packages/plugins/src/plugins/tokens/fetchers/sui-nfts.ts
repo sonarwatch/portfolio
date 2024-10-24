@@ -14,7 +14,7 @@ import { getOwnedObjects } from '../../../utils/sui/getOwnedObjects';
 import { ParsedData } from '../../../utils/sui/types';
 import { NftDisplayData, NftStruct } from '../../../utils/sui/structs/nft';
 import { KioskStruct } from '../../../utils/sui/structs/kiosk';
-import { getDynamicFields } from '../../../utils/sui/getDynamicFields';
+import { getDynamicFieldsSafe } from '../../../utils/sui/getDynamicFieldsSafe';
 import { multiGetObjects } from '../../../utils/sui/multiGetObjects';
 
 const executor: FetcherExecutor = async (owner: string) => {
@@ -31,7 +31,7 @@ const executor: FetcherExecutor = async (owner: string) => {
     (o) => o.data?.type === obKioskStructType
   );
   if (obKioskObject) {
-    const kioskDynamicObjects = await getDynamicFields(
+    const kioskDynamicObjects = await getDynamicFieldsSafe(
       client,
       (obKioskObject?.data?.content as ParsedData<KioskStruct>).fields.kiosk,
       true
@@ -54,8 +54,8 @@ const executor: FetcherExecutor = async (owner: string) => {
     const content = object.data.content as ParsedData<NftStruct>;
 
     let attributes: CollectibleAttribute[] | undefined;
-    if (content.fields.attributes?.fields.map.fields.contents) {
-      attributes = content.fields.attributes?.fields.map.fields.contents.map(
+    if (content.fields?.attributes?.fields.map?.fields?.contents) {
+      attributes = content.fields.attributes.fields.map.fields.contents?.map(
         (c) => ({
           trait_type: c.fields.key,
           value: c.fields.value,
@@ -68,6 +68,7 @@ const executor: FetcherExecutor = async (owner: string) => {
       type: PortfolioAssetType.collectible,
       value: null,
       attributes: {},
+      name: display?.name || content.fields.name || content.fields.tick,
       data: {
         address: object.data.type,
         amount: Number(content.fields.amount || 1),

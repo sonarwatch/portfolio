@@ -11,7 +11,7 @@ export async function getAssetsByOwnerDas(
   dasEndpoint: RpcEndpoint,
   owner: string,
   displayOptions?: DisplayOptions
-) {
+): Promise<HeliusAsset[]> {
   const httpHeaders = dasEndpoint.basicAuth
     ? getBasicAuthHeaders(
         dasEndpoint.basicAuth.username,

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
   NetworkId,
   PortfolioAsset,
@@ -9,33 +11,54 @@ import {
   getElementLendingValues,
   suiNetwork,
 } from '@sonarwatch/portfolio-core';
-import { normalizeStructTag, parseStructTag } from '@mysten/sui.js/utils';
+import { normalizeStructTag, parseStructTag } from '@mysten/sui/utils';
 import BigNumber from 'bignumber.js';
-import { SuiObjectDataFilter } from '@mysten/sui.js/client';
+import {
+  CoinMetadata,
+  CoinStruct,
+  SuiObjectDataFilter,
+} from '@mysten/sui/client';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
-  marketCoinPackageId,
+  marketCoinType,
   marketKey,
   platformId,
-  spoolAccountPackageId,
   marketPrefix as prefix,
   poolsKey,
   poolsPrefix,
   spoolsKey,
   spoolsPrefix,
   baseIndexRate,
+  scoinKey,
+  scoinPrefix,
+  addressKey,
+  addressPrefix,
+  sPoolAccountType,
+  marketCoinNames,
 } from './constants';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import {
+  AddressInfo,
+  MarketCoinNames,
   MarketJobResult,
+  PoolCoinNames,
   Pools,
+  SCoinNames,
+  sCoinToCoinName,
+  SCoinTypeMetadata,
+  sCoinTypeToCoinTypeMap,
+  SCoinTypeValue,
+  SpoolAccountFieldsType,
   SpoolJobResult,
+  StructTag,
   UserLending,
+  UserLendingData,
   UserStakeAccounts,
 } from './types';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { getClientSui } from '../../utils/clients';
+import { ObjectResponse } from '../../utils/sui/types';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elements: PortfolioElement[] = [];
@@ -50,45 +73,78 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     networkId: NetworkId.sui,
   });
 
-  if (!pools) return [];
+  const sCoins = await cache.getItem<SCoinTypeMetadata>(scoinKey, {
+    prefix: scoinPrefix,
+    networkId: NetworkId.sui,
+  });
+  if (!pools || !sCoins) {
+    return [];
+  }
 
   const poolValues = Object.values(pools);
-  if (poolValues.length === 0) return [];
+  if (poolValues.length === 0) {
+    return [];
+  }
+
+  const sCoinValues = Object.values(sCoins);
+
+  // {'0x...': CoinMetaData }
+  const poolValuesMetadataMap = poolValues.reduce((acc, poolValue) => {
+    if (poolValue.metadata) acc[poolValue.coinType] = poolValue.metadata;
+    return acc;
+  }, {} as { [k in string]: CoinMetadata });
 
   const client = getClientSui();
   const filterOwnerObject: SuiObjectDataFilter = {
     MatchAny: [
       ...poolValues.map((value) => ({
-        StructType: `0x2::coin::Coin<${marketCoinPackageId}<${value.coinType}>>`,
+        StructType: `0x2::coin::Coin<${marketCoinType}<${value.coinType}>>`,
+      })),
+      ...sCoinValues.map(({ coinType }) => ({
+        StructType: `0x2::coin::Coin<${coinType}>`,
       })),
       {
-        StructType: spoolAccountPackageId,
+        StructType: sPoolAccountType,
       },
     ],
   };
 
-  const [allOwnedObjects, marketData, spoolData] = await Promise.all([
-    getOwnedObjects(client, owner, { filter: filterOwnerObject }),
-    cache.getItem<MarketJobResult>(marketKey, {
-      prefix,
-      networkId: NetworkId.sui,
-    }),
-    cache.getItem<SpoolJobResult>(spoolsKey, {
-      prefix: spoolsPrefix,
-      networkId: NetworkId.sui,
-    }),
-  ]);
-  if (!marketData || allOwnedObjects.length === 0 || !spoolData) return [];
-  if (
+  const [allOwnedObjects, marketData, spoolData, addressData] =
+    await Promise.all([
+      getOwnedObjects(client, owner, { filter: filterOwnerObject }),
+      cache.getItem<MarketJobResult>(marketKey, {
+        prefix,
+        networkId: NetworkId.sui,
+      }),
+      cache.getItem<SpoolJobResult>(spoolsKey, {
+        prefix: spoolsPrefix,
+        networkId: NetworkId.sui,
+      }),
+      cache.getItem<AddressInfo>(addressKey, {
+        prefix: addressPrefix,
+        networkId: NetworkId.sui,
+      }),
+    ]);
+
+  const fetchedDataIncomplete =
+    !marketData ||
+    !spoolData ||
+    !addressData ||
+    allOwnedObjects.length === 0 ||
     Object.keys(marketData).length === 0 ||
-    Object.keys(spoolData).length === 0
-  )
+    Object.keys(spoolData).length === 0 ||
+    Object.keys(addressData).length === 0;
+  if (fetchedDataIncomplete) {
     return [];
+  }
+
   const lendingRate: Map<string, number> = new Map();
 
   Object.keys(pools).forEach((coinName: string) => {
     const market = marketData[coinName];
-    if (!market) return;
+    if (!market) {
+      return;
+    }
     lendingRate.set(
       coinName,
       (Number(market.debt) + Number(market.cash) - Number(market.reserve)) /
@@ -97,67 +153,171 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
 
   // get user lending assets
-  const lendingAssets: { [key: string]: UserLending } = {};
-  const stakedAccount: UserStakeAccounts = {};
-  for (const ownedMarketCoin of allOwnedObjects) {
-    const objType = ownedMarketCoin.data?.type;
-    if (!objType) continue;
+  const lendingAssets: UserLendingData = {};
+  const stakedAccounts: UserStakeAccounts = {};
+
+  const isSpoolAccount = (
+    obj: ObjectResponse<any>
+  ): obj is ObjectResponse<SpoolAccountFieldsType> => {
+    const objType = obj.data?.type;
+    if (!objType) return false;
+
+    const { address, module, name } = parseStructTag(
+      normalizeStructTag(objType)
+    );
+
+    return `${address}::${module}::${name}` === sPoolAccountType;
+  };
+
+  const isSCoin = (
+    obj: ObjectResponse<any>
+  ): obj is ObjectResponse<CoinStruct> => {
+    const objType = obj.data?.type;
+    if (!objType) return false;
 
     const parsed = parseStructTag(objType);
-    const coinType = normalizeStructTag(
-      objType.substring(
-        objType.indexOf('MarketCoin<') + 11,
-        objType.indexOf('>')
-      )
-    );
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const fields = ownedMarketCoin.data?.content?.fields as any;
-    const coinName = poolValues
-      .find((value) => value.coinType === coinType)
-      ?.metadata?.symbol.toLowerCase();
-    if (!coinName || !fields) continue;
-    if (!lendingAssets[coinName]) {
-      lendingAssets[coinName] = { coinType, amount: new BigNumber(0) };
-    }
-    if (fields['stakes']) {
-      if (!stakedAccount[`s${coinName}`]) {
-        stakedAccount[`s${coinName}`] = [];
+    const isCoin = parsed.name === 'Coin';
+    const sCoinTypeParsed = parsed.typeParams[0] as StructTag;
+    const isObjectSCoin =
+      !!sCoinToCoinName[sCoinTypeParsed.name.toLowerCase() as SCoinNames];
+
+    return isCoin && isObjectSCoin;
+  };
+
+  const isMarketCoin = (
+    obj: ObjectResponse<any>
+  ): obj is ObjectResponse<CoinStruct> => {
+    const objType = obj.data?.type;
+    if (!objType) return false;
+
+    const { address, module, name } = parseStructTag(objType);
+    const isCoin = name === 'Coin';
+    const isObjectMarketCoin =
+      address === addressData.mainnet.core.object &&
+      module === 'reserve' &&
+      name === 'MarketCoin';
+    return isCoin && isObjectMarketCoin;
+  };
+
+  allOwnedObjects.forEach((obj: ObjectResponse<any>) => {
+    if (isMarketCoin(obj)) {
+      const marketCoinObj = obj.data;
+      if (!marketCoinObj) return;
+
+      // access underlying asset type from market coin struct
+      // 0x2::coin::Coin<T>
+      const { address, module, name } = parseStructTag(
+        normalizeStructTag(marketCoinObj.type)
+      ).typeParams[0] as StructTag;
+      const coinType = `${address}::${module}::${name}`;
+      const coinName = poolValuesMetadataMap[
+        coinType
+      ]?.symbol.toLowerCase() as PoolCoinNames;
+      if (!coinName) return;
+
+      const coinBalance = BigNumber(marketCoinObj.content?.fields.balance ?? 0);
+      if (!coinName) return;
+
+      if (lendingAssets[coinName]) {
+        lendingAssets[coinName]!.amount =
+          lendingAssets[coinName]!.amount.plus(coinBalance);
+      } else {
+        lendingAssets[coinName] = { coinType, amount: coinBalance };
       }
-      stakedAccount[`s${coinName}`].push({
-        points: fields['points'],
-        index: fields['index'],
-        stakes: fields['stakes'],
+    } else if (isSpoolAccount(obj)) {
+      const spoolObj = obj.data;
+      const fields = spoolObj?.content?.fields;
+      if (!fields) return;
+
+      // parse market coin struct inside the spoolAccount struct
+      // 0x...::spool_account::SpoolAccount<0x..::reserve::MarketCoin<T>>
+      const marketCoinStruct = parseStructTag(normalizeStructTag(spoolObj.type))
+        .typeParams[0] as StructTag;
+      const { address, module, name } = marketCoinStruct
+        .typeParams[0] as StructTag;
+      const stakeType = `${address}::${module}::${name}`;
+      const coinName = poolValuesMetadataMap[
+        stakeType
+      ]?.symbol.toLowerCase() as PoolCoinNames;
+      if (!coinName) return;
+
+      // sui -> ssui, usdc -> susdc, ...
+      const spoolName = `s${coinName}` as MarketCoinNames;
+      const { stakes, points, index } = fields;
+      if (!stakedAccounts[spoolName]) {
+        stakedAccounts[spoolName] = [];
+      }
+      stakedAccounts[spoolName]!.push({
+        stakes,
+        points,
+        index,
       });
+
+      const stakeBalance = BigNumber(stakes);
+      if (lendingAssets[coinName]) {
+        lendingAssets[coinName]!.amount =
+          lendingAssets[coinName]!.amount.plus(stakeBalance);
+      } else {
+        lendingAssets[coinName] = { coinType: stakeType, amount: stakeBalance };
+      }
+    } else if (isSCoin(obj)) {
+      const marketCoinObj = obj.data;
+      if (!marketCoinObj) return;
+
+      // access underlying asset type from market coin struct
+      // 0x2::coin::Coin<T>
+      const { address, module, name } = parseStructTag(
+        normalizeStructTag(marketCoinObj.type)
+      ).typeParams[0] as StructTag;
+
+      // convert sCoinType to coinType
+      const sCoinType = `${address}::${module}::${name}`;
+      const coinType = sCoinTypeToCoinTypeMap[sCoinType as SCoinTypeValue];
+      if (!coinType) return;
+
+      const coinName = poolValuesMetadataMap[
+        coinType
+      ]?.symbol.toLowerCase() as PoolCoinNames;
+      if (!coinName) return;
+
+      const coinBalance = BigNumber(marketCoinObj.content?.fields.balance ?? 0);
+
+      if (lendingAssets[coinName]) {
+        lendingAssets[coinName]!.amount =
+          lendingAssets[coinName]!.amount.plus(coinBalance);
+      } else {
+        lendingAssets[coinName] = { coinType, amount: coinBalance };
+      }
     }
-    const balance = BigNumber(
-      (parsed.name === 'Coin' ? fields['balance'] : fields['stakes']) ?? 0
-    );
-    lendingAssets[coinName] = {
-      ...lendingAssets[coinName],
-      amount: lendingAssets[coinName].amount.plus(balance),
-    };
-  }
+  });
 
   let pendingReward = BigNumber(0);
 
-  for (const spoolCoin of Object.keys(stakedAccount)) {
-    for (const { points, index, stakes } of stakedAccount[spoolCoin]) {
-      if (spoolData[spoolCoin]) {
-        const increasedPointRate = spoolData[spoolCoin].currentPointIndex
-          ? BigNumber(
-              BigNumber(spoolData[spoolCoin].currentPointIndex).minus(index)
-            ).dividedBy(baseIndexRate)
+  marketCoinNames.forEach((marketCoin) => {
+    if (!stakedAccounts[marketCoin]) return;
+
+    stakedAccounts[marketCoin]!.forEach(({ points, index, stakes }) => {
+      if (spoolData[marketCoin]) {
+        const {
+          currentPointIndex,
+          exchangeRateNumerator,
+          exchangeRateDenominator,
+        } = spoolData[marketCoin];
+        const increasedPointRate = currentPointIndex
+          ? BigNumber(BigNumber(currentPointIndex).minus(index)).dividedBy(
+              baseIndexRate
+            )
           : 0;
         pendingReward = pendingReward.plus(
           BigNumber(stakes)
             .multipliedBy(increasedPointRate)
             .plus(points)
-            .multipliedBy(spoolData[spoolCoin].exchangeRateNumerator)
-            .dividedBy(spoolData[spoolCoin].exchangeRateDenominator)
+            .multipliedBy(exchangeRateNumerator)
+            .dividedBy(exchangeRateDenominator)
         );
       }
-    }
-  }
+    });
+  });
 
   const tokenAddresses = Object.values(lendingAssets).map(
     (value) => value.coinType
@@ -188,39 +348,43 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     rewardAssets.push({ ...rewardAssetToken });
   }
 
-  for (const [assetName, assetValue] of Object.entries(lendingAssets)) {
-    if (assetValue.amount.isZero()) continue;
+  Object.entries<UserLending>(lendingAssets)
+    .filter(
+      ([assetName, assetValue]) =>
+        assetValue.amount.isGreaterThan(0) && marketData[assetName]
+    )
+    .forEach(([assetName, assetValue]) => {
+      const { supplyInterestRate } = marketData[assetName]!;
+      const addressMove = formatMoveTokenAddress(assetValue.coinType);
+      const tokenPrice = tokenPrices.get(addressMove);
+      const lendingAmount = assetValue.amount
+        .multipliedBy(lendingRate.get(assetName) ?? 0)
+        .shiftedBy(
+          -1 * (pools[assetName as PoolCoinNames]?.metadata?.decimals ?? 0)
+        )
+        .toNumber();
+      const assetToken = tokenPriceToAssetToken(
+        addressMove,
+        lendingAmount,
+        NetworkId.sui,
+        tokenPrice
+      );
 
-    const market = marketData[assetName];
-    if (!market) continue;
-
-    const addressMove = formatMoveTokenAddress(assetValue.coinType);
-    const tokenPrice = tokenPrices.get(addressMove);
-    const lendingAmount = assetValue.amount
-      .multipliedBy(lendingRate.get(assetName) ?? 0)
-      .shiftedBy(-1 * (pools[assetName]?.metadata?.decimals ?? 0))
-      .toNumber();
-    const assetToken = tokenPriceToAssetToken(
-      addressMove,
-      lendingAmount,
-      NetworkId.sui,
-      tokenPrice
-    );
-
-    suppliedYields.push([
-      {
-        apy: aprToApy(market.supplyInterestRate),
-        apr: market.supplyInterestRate,
-      },
-    ]);
-    suppliedAssets.push(assetToken);
-  }
+      suppliedYields.push([
+        {
+          apy: aprToApy(supplyInterestRate),
+          apr: supplyInterestRate,
+        },
+      ]);
+      suppliedAssets.push(assetToken);
+    });
   if (
     suppliedAssets.length === 0 &&
     borrowedAssets.length === 0 &&
     rewardAssets.length === 0
-  )
+  ) {
     return [];
+  }
   const { borrowedValue, healthRatio, suppliedValue, value, rewardValue } =
     getElementLendingValues({ suppliedAssets, borrowedAssets, rewardAssets });
   elements.push({

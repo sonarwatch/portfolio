@@ -26,8 +26,8 @@ import {
 } from './types';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { getPoolsRewardsAsMap, getRatesAsMap } from './helpers';
-import { wadsDecimal } from '../solend/constants';
+import { getPoolsRewardsMaps, getRatesAsMap } from './helpers';
+import { wadsDecimal } from '../save/constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -66,8 +66,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     marketsInfo.lendingMarkets.forEach((market) => {
       marketsByIndex.set(market.id.id, market);
     });
-  const poolRewardById = getPoolsRewardsAsMap(lendingMarkets);
-  poolRewardById.forEach((pool) => mints.add(pool.coin_type.fields.name));
+  const [poolRewardById, poolsRewardByManagerId] =
+    getPoolsRewardsMaps(lendingMarkets);
+  poolRewardById.forEach((pool) =>
+    pool ? mints.add(pool.coin_type.fields.name) : undefined
+  );
 
   const borrowedAssets: PortfolioAsset[] = [];
   const borrowedYields: Yield[][] = [];
@@ -214,6 +217,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
       for (const userReward of userRewardManager.fields.rewards) {
         if (!userReward) continue;
+
         const poolReward = poolRewardById.get(userReward.fields.pool_reward_id);
         if (!poolReward) continue;
 
@@ -227,14 +231,43 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           .dividedBy(10 ** wadsDecimal);
         if (cumulativeAmount.isLessThanOrEqualTo(0)) continue;
 
-        const previousCumAmount = rewardAmountByMint.get(rewardMint);
-        if (previousCumAmount) {
+        const previousAmount = rewardAmountByMint.get(rewardMint);
+        if (previousAmount) {
           rewardAmountByMint.set(
             rewardMint,
-            previousCumAmount.plus(cumulativeAmount)
+            previousAmount.plus(cumulativeAmount)
           );
         } else {
           rewardAmountByMint.set(rewardMint, cumulativeAmount);
+        }
+      }
+
+      if (userRewardManager.fields.rewards.length === 0) {
+        const poolsRewards = poolsRewardByManagerId.get(
+          userRewardManager.fields.pool_reward_manager_id
+        );
+        if (poolsRewards) {
+          for (const poolReward of poolsRewards) {
+            if (!poolReward) continue;
+
+            const amount = new BigNumber(
+              poolReward.cumulative_rewards_per_share.fields.value
+            )
+              .times(share)
+              .dividedBy(10 ** wadsDecimal);
+
+            const previousAmount = rewardAmountByMint.get(
+              poolReward.coin_type.fields.name
+            );
+            if (previousAmount) {
+              rewardAmountByMint.set(
+                poolReward.coin_type.fields.name,
+                previousAmount.plus(amount)
+              );
+            } else {
+              rewardAmountByMint.set(poolReward.coin_type.fields.name, amount);
+            }
+          }
         }
       }
     }

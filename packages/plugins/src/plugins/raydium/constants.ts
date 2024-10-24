@@ -5,10 +5,12 @@ export const platformId = 'raydium';
 export const platform: Platform = {
   id: platformId,
   name: 'Raydium',
-  image: 'https://sonar.watch/img/platforms/raydium.png',
+  image: 'https://sonar.watch/img/platforms/raydium.webp',
   defiLlamaId: 'raydium',
   website: 'https://raydium.io/',
 };
+
+export const apiV3 = 'https://api-v3.raydium.io/';
 
 export const AMM_PROGRAM_ID_V3 = new PublicKey(
   'EhhTKczWMGQt46ynNeRX1WfeagwwJd7ufHvCDjRxjo5Q'
@@ -17,7 +19,6 @@ export const AMM_PROGRAM_ID_V3 = new PublicKey(
 export const AMM_PROGRAM_ID_V4 = new PublicKey(
   '675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8'
 );
-
 export const AMM_PROGRAM_ID_V5 = new PublicKey(
   '5quBtoiQqxF9Jv6KYKctB59NT3gtJD2Y65kdnB1Uev3h'
 );
@@ -29,8 +30,6 @@ export const raydiumProgram = new PublicKey(
 export const cpmmProgramId = new PublicKey(
   'CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C'
 );
-
-export const poolStatesPrefix = `${platformId}-poolSates`;
 
 export const positionsIdentifier = 'Raydium Concentrated Liquidity';
 

@@ -5,7 +5,7 @@ export const platformId = 'uniswap';
 export const platform: Platform = {
   id: platformId,
   name: 'Uniswap',
-  image: 'https://sonar.watch/img/platforms/uniswap.png',
+  image: 'https://sonar.watch/img/platforms/uniswap.webp',
   defiLlamaId: 'parent#uniswap',
   website: 'https://uniswap.org/',
 };

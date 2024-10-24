@@ -17,7 +17,7 @@ import { heliumPlatformId } from './constants';
 export const nftIdentifier = 'Voting Escrow Token Position';
 
 export function isAnHeliumNFTVote(nft: PortfolioAssetCollectible): boolean {
-  return nft.data.name === nftIdentifier;
+  return nft.name === nftIdentifier;
 }
 
 export function getVoterPda(

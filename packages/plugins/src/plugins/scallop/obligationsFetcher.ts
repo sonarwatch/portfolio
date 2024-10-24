@@ -3,20 +3,19 @@ import {
   PortfolioAsset,
   PortfolioElement,
   PortfolioElementType,
-  TokenPrice,
   Yield,
   aprToApy,
   formatMoveTokenAddress,
   getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
-import { normalizeStructTag } from '@mysten/sui.js/utils';
+import { normalizeStructTag } from '@mysten/sui/utils';
 import BigNumber from 'bignumber.js';
-import { SuiObjectDataFilter } from '@mysten/sui.js/client';
+import { SuiObjectDataFilter } from '@mysten/sui/client';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
   marketKey,
-  obligationKeyPackageId,
+  obligationKeyType,
   platformId,
   poolsKey,
   poolsPrefix,
@@ -30,16 +29,15 @@ import {
   UserObligations,
 } from './types';
 import { shortenAddress } from './helpers';
-import { getClientSui } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import runInBatch from '../../utils/misc/runInBatch';
 import { CollateralAsset, DebtAsset } from './types/obligation';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { getObject } from '../../utils/sui/getObject';
 import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
+import { getClientSui } from '../../utils/clients';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSui();
   const elements: PortfolioElement[] = [];
   const rewardAssets: PortfolioAsset[] = [];
 
@@ -55,11 +53,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const filterOwnerObject: SuiObjectDataFilter = {
     MatchAny: [
       {
-        StructType: obligationKeyPackageId,
+        StructType: obligationKeyType,
       },
     ],
   };
 
+  const client = getClientSui();
   const [ownedObligationKeys, marketData] = await Promise.all([
     getOwnedObjects<ObligationKeyFields>(client, owner, {
       filter: filterOwnerObject,
@@ -176,15 +175,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   await runInBatch(debtsAndCollateralCalculationPromises, 5); // run in batch of size 2, calculate 5 obligation account per batch
 
   const tokenAddresses = ctmValues.map((value) => value.coinType);
-  const tokenPriceResult = await cache.getTokenPrices(
+  const tokenPrices = await cache.getTokenPricesAsMap(
     tokenAddresses,
     NetworkId.sui
   );
-  const tokenPrices: Map<string, TokenPrice> = new Map();
-  tokenPriceResult.forEach((r) => {
-    if (!r) return;
-    tokenPrices.set(r.address, r);
-  });
 
   for (const account of Object.keys(userObligations)) {
     const borrowedAssets: PortfolioAsset[] = [];
@@ -248,7 +242,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       networkId: NetworkId.sui,
       platformId,
       label: 'Lending',
-      name: `${shortenAddress(account, 5, 3)} Obligations`,
+      name: `Obligation ID: ${shortenAddress(account, 5, 3)}`,
       value,
       data: {
         borrowedAssets,

@@ -21,7 +21,7 @@ import {
 export const bitcoinNetwork: Network = {
   id: NetworkId.bitcoin,
   name: 'Bitcoin',
-  image: 'https://sonar.watch/img/networks/bitcoin.png',
+  image: 'https://sonar.watch/img/networks/bitcoin.webp',
   addressSystem: AddressSystem.bitcoin,
   chainId: 1,
   native: {
@@ -34,12 +34,12 @@ export const bitcoinNetwork: Network = {
   geckoId: 'bitcoin',
   llamaId: 'Bitcoin',
   tokenListUrl:
-    'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.bitcoin.tokenlist.json',
+    'https://github.com/sonarwatch/token-lists/releases/latest/download/sonarwatch.bitcoin.tokenlist.json',
 };
 export const ethereumNetwork: Network = {
   id: NetworkId.ethereum,
   name: 'Ethereum',
-  image: 'https://sonar.watch/img/networks/ethereum.png',
+  image: 'https://sonar.watch/img/networks/ethereum.webp',
   addressSystem: AddressSystem.evm,
   chainId: 1,
   native: {
@@ -56,12 +56,12 @@ export const ethereumNetwork: Network = {
   geckoId: 'ethereum',
   llamaId: 'Ethereum',
   tokenListUrl:
-    'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.ethereum.tokenlist.json',
+    'https://github.com/sonarwatch/token-lists/releases/latest/download/sonarwatch.ethereum.tokenlist.json',
 };
 export const avalancheNetwork: Network = {
   id: NetworkId.avalanche,
   name: 'Avalanche',
-  image: 'https://sonar.watch/img/networks/avalanche.png',
+  image: 'https://sonar.watch/img/networks/avalanche.webp',
   addressSystem: AddressSystem.evm,
   chainId: 43114,
   native: {
@@ -78,12 +78,12 @@ export const avalancheNetwork: Network = {
   geckoId: 'avalanche',
   llamaId: 'Avalanche',
   tokenListUrl:
-    'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.avalanche.tokenlist.json',
+    'https://github.com/sonarwatch/token-lists/releases/latest/download/sonarwatch.avalanche.tokenlist.json',
 };
 export const polygonNetwork: Network = {
   id: NetworkId.polygon,
   name: 'Polygon',
-  image: 'https://sonar.watch/img/networks/polygon.png',
+  image: 'https://sonar.watch/img/networks/polygon.webp',
   addressSystem: AddressSystem.evm,
   chainId: 137,
   native: {
@@ -100,12 +100,12 @@ export const polygonNetwork: Network = {
   geckoId: 'polygon-pos',
   llamaId: 'Polygon',
   tokenListUrl:
-    'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.polygon.tokenlist.json',
+    'https://github.com/sonarwatch/token-lists/releases/latest/download/sonarwatch.polygon.tokenlist.json',
 };
 export const solanaNetwork: Network = {
   id: NetworkId.solana,
   name: 'Solana',
-  image: 'https://sonar.watch/img/networks/solana.png',
+  image: 'https://sonar.watch/img/networks/solana.webp',
   addressSystem: AddressSystem.solana,
   chainId: 101,
   native: {
@@ -118,12 +118,12 @@ export const solanaNetwork: Network = {
   geckoId: 'solana',
   llamaId: 'Solana',
   tokenListUrl:
-    'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.solana.tokenlist.json',
+    'https://github.com/sonarwatch/token-lists/releases/latest/download/sonarwatch.solana.tokenlist.json',
 };
 export const aptosNetwork: Network = {
   id: NetworkId.aptos,
   name: 'Aptos',
-  image: 'https://sonar.watch/img/networks/aptos.png',
+  image: 'https://sonar.watch/img/networks/aptos.webp',
   addressSystem: AddressSystem.move,
   chainId: 1,
   native: {
@@ -136,12 +136,12 @@ export const aptosNetwork: Network = {
   geckoId: 'aptos',
   llamaId: 'Aptos',
   tokenListUrl:
-    'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.aptos.tokenlist.json',
+    'https://github.com/sonarwatch/token-lists/releases/latest/download/sonarwatch.aptos.tokenlist.json',
 };
 export const suiNetwork: Network = {
   id: NetworkId.sui,
   name: 'Sui',
-  image: 'https://sonar.watch/img/networks/sui.png',
+  image: 'https://sonar.watch/img/networks/sui.webp',
   addressSystem: AddressSystem.move,
   chainId: 1,
   native: {
@@ -154,13 +154,13 @@ export const suiNetwork: Network = {
   geckoId: 'sui',
   llamaId: 'Sui',
   tokenListUrl:
-    'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.sui.tokenlist.json',
+    'https://github.com/sonarwatch/token-lists/releases/latest/download/sonarwatch.sui.tokenlist.json',
 };
 
 export const seiNetwork: Network = {
   id: NetworkId.sei,
   name: 'Sei',
-  image: 'https://sonar.watch/img/networks/sei.png',
+  image: 'https://sonar.watch/img/networks/sei.webp',
   addressSystem: AddressSystem.sei,
   chainId: 1,
   native: {
@@ -173,13 +173,13 @@ export const seiNetwork: Network = {
   geckoId: 'sei',
   llamaId: 'Sei',
   tokenListUrl:
-    'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.sei.tokenlist.json',
+    'https://github.com/sonarwatch/token-lists/releases/latest/download/sonarwatch.sei.tokenlist.json',
 };
 
 export const bnbNetwork: Network = {
   id: NetworkId.bnb,
   name: 'BNB Chain',
-  image: 'https://sonar.watch/img/networks/bnb.png',
+  image: 'https://sonar.watch/img/networks/bnb.webp',
   addressSystem: AddressSystem.evm,
   chainId: 56,
   native: {
@@ -196,7 +196,7 @@ export const bnbNetwork: Network = {
   geckoId: 'binance-smart-chain',
   llamaId: 'BSC',
   tokenListUrl:
-    'https://cdn.jsdelivr.net/npm/@sonarwatch/token-lists/build/sonarwatch.bnb.tokenlist.json',
+    'https://github.com/sonarwatch/token-lists/releases/latest/download/sonarwatch.bnb.tokenlist.json',
 };
 
 export const networks: Record<NetworkIdType, Network> = {

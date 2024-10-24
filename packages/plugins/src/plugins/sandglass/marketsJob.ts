@@ -8,12 +8,14 @@ import {
   getParsedMultipleAccountsInfo,
   getParsedProgramAccounts,
   mintAccountStruct,
+  tokenAccountStruct,
 } from '../../utils/solana';
 import { marketsInfoKey, platformId, programId } from './constants';
 import { marketStruct } from './structs';
 import { marketAccountFilters } from './filters';
 import { MarketInfo } from './types';
 import { walletTokensPlatform } from '../tokens/constants';
+import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -67,9 +69,11 @@ const executor: JobExecutor = async (cache: Cache) => {
 
     const ptMint = market.tokenPtMintAddress;
     const ytMint = market.tokenYtMintAddress;
+    const lpMint = market.tokenLpMintAddress;
 
     const ptDecimals = mintsInfoById.get(ptMint.toString())?.decimals;
     const ytDecimals = mintsInfoById.get(ytMint.toString())?.decimals;
+    const lpDecimals = mintsInfoById.get(lpMint.toString())?.decimals;
 
     if (ptDecimals)
       sources.push({
@@ -94,6 +98,29 @@ const executor: JobExecutor = async (cache: Cache) => {
         timestamp: Date.now(),
         weight: 1,
       });
+
+    const lpSupply = (await client.getTokenSupply(lpMint)).value.uiAmount;
+    const lpUnderlyingTokenAccount = await getParsedAccountInfo(
+      client,
+      tokenAccountStruct,
+      market.vaultLpTokenAccount
+    );
+    if (lpSupply && lpUnderlyingTokenAccount && lpDecimals) {
+      const lpPrice = lpUnderlyingTokenAccount.amount
+        .dividedBy(10 ** baseTokenPrice.decimals)
+        .times(baseTokenPrice.price)
+        .dividedBy(lpSupply);
+      sources.push({
+        address: lpMint.toString(),
+        decimals: lpDecimals,
+        id: market.pubkey.toString(),
+        networkId: NetworkId.solana,
+        platformId: walletTokensPlatform.id,
+        price: lpPrice.toNumber(),
+        timestamp: Date.now(),
+        weight: 1,
+      });
+    }
 
     marketsInfos.push({
       pubkey: market.pubkey.toString(),

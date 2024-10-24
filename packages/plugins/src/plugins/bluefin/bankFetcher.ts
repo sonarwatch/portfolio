@@ -14,14 +14,14 @@ import { getObject } from '../../utils/sui/getObject';
 import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
 import { Bank, BankAccount } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { usdcSuiType } from '../../utils/sui/constants';
+import { wUsdcSuiType } from '../../utils/sui/constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
   const [bank, tokenPrice] = await Promise.all([
     getObject<Bank>(client, bankObjectId),
-    cache.getTokenPrice(formatMoveTokenAddress(usdcSuiType), NetworkId.sui),
+    cache.getTokenPrice(formatMoveTokenAddress(wUsdcSuiType), NetworkId.sui),
   ]);
 
   if (!bank.data?.content?.fields.accounts.fields.id.id || !tokenPrice)
@@ -45,7 +45,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   )
     assets.push(
       tokenPriceToAssetToken(
-        usdcSuiType,
+        wUsdcSuiType,
         new BigNumber(account.data?.content?.fields.value.fields.balance)
           .dividedBy(10 ** 9)
           .toNumber(),

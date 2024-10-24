@@ -6,6 +6,7 @@ import { OraclePriceData } from './types';
 import { getPythOraclePriceDataFromBuffer } from './pyth';
 import { getSwitchboardOraclePriceDataFromBuffer } from './switchboard';
 import { getPreLaunchOraclePriceDataFromBuffer } from './prelaunchOracle';
+import { getPythPullOraclePriceDataFromBuffer } from './pythPull';
 
 const oraclePrices: Map<string, OraclePriceData> = new Map();
 const lastUpdates: Map<string, number> = new Map();
@@ -57,8 +58,36 @@ export async function getOraclePrice(
       case OracleSource.Prelaunch:
         coPriceData = getPreLaunchOraclePriceDataFromBuffer(acc.data);
         break;
+      case OracleSource.PythPull:
+        coPriceData = getPythPullOraclePriceDataFromBuffer(
+          acc.data,
+          new BN(1),
+          false
+        );
+        break;
+      case OracleSource.Pyth1KPull:
+        coPriceData = getPythPullOraclePriceDataFromBuffer(
+          acc.data,
+          new BN(1000),
+          false
+        );
+        break;
+      case OracleSource.Pyth1MPull:
+        coPriceData = getPythPullOraclePriceDataFromBuffer(
+          acc.data,
+          new BN(1000000),
+          false
+        );
+        break;
+      case OracleSource.PythStableCoinPull:
+        coPriceData = getPythPullOraclePriceDataFromBuffer(
+          acc.data,
+          new BN(1),
+          true
+        );
+        break;
       default:
-        throw new Error('Unsupported OracleSource');
+        throw new Error(`Unsupported OracleSource: ${oracleSource}`);
     }
 
     oraclePrices.set(oracle, coPriceData);

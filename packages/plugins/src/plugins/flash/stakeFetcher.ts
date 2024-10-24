@@ -7,7 +7,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, poolsKey } from './constants';
+import { custodiesKey, platformId, poolsKey } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import {
   getParsedMultipleAccountsInfo,
@@ -17,7 +17,6 @@ import { flpStakeStruct } from './structs';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getPdas } from './helpers';
 import { CustodyInfo, PoolInfo } from './types';
-import { custodiesKey } from '../jupiter/exchange/constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();

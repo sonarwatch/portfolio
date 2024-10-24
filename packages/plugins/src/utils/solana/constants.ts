@@ -14,3 +14,4 @@ export const associatedTokenProgramId = new PublicKey(
 export const usdcSolanaMint = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 export const usdcSolanaDecimals = 6;
 export const usdcSolanaFactor = new BigNumber(10 ** 6);
+export const emptyWithSol = 'empty11111111111111111111111111111111111111';

@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getUrlEndpoint } from '../../utils/clients/constants';
-import { liquidityPoolsInfos, pluginId } from './constants';
+import { liquidityPoolsInfos, liquidityPoolsKey } from './constants';
 import {
   MinterInfo,
   TokenInfo,
@@ -12,9 +12,10 @@ import {
   tokenInfoQueryMsg,
 } from '../../utils/sei';
 import isAContract from '../../utils/sei/isAContract';
-import { getDecimalsForToken } from '../../utils/misc/getDecimalsForToken';
+import { getCachedDecimalsForToken } from '../../utils/misc/getCachedDecimalsForToken';
 import getLpUnderlyingTokenSourceOld from '../../utils/misc/getLpUnderlyingTokenSourceOld';
 import getLpTokenSourceRawOld from '../../utils/misc/getLpTokenSourceRawOld';
+import { PlatformContracts } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const cosmWasmClient = await getCosmWasmClient(getUrlEndpoint(NetworkId.sei));
@@ -59,8 +60,8 @@ const executor: JobExecutor = async (cache: Cache) => {
       );
 
       const [decimalsX, decimalsY] = await Promise.all([
-        getDecimalsForToken(cache, poolInfo.mintX, NetworkId.sei),
-        getDecimalsForToken(cache, poolInfo.mintY, NetworkId.sei),
+        getCachedDecimalsForToken(cache, poolInfo.mintX, NetworkId.sei),
+        getCachedDecimalsForToken(cache, poolInfo.mintY, NetworkId.sei),
       ]);
 
       const [reserveAmountRawX, reserveAmountRawY] = [
@@ -131,22 +132,20 @@ const executor: JobExecutor = async (cache: Cache) => {
     }
   }
 
+  const items: PlatformContracts[] = [];
   for (const platform of pushedContractsByPlatform.keys()) {
     const contracts = pushedContractsByPlatform.get(platform);
     if (!contracts || contracts.length === 0) continue;
-    await cache.setItem(
-      platform,
-      { id: platform, contracts },
-      {
-        prefix: pluginId,
-        networkId: NetworkId.sei,
-      }
-    );
+    items.push({ id: platform, contracts });
   }
+  await cache.setItem(liquidityPoolsKey, items, {
+    prefix: liquidityPoolsKey,
+    networkId: NetworkId.sei,
+  });
 };
 
 const job: Job = {
-  id: pluginId,
+  id: 'sei-liquiditypools',
   executor,
   label: 'normal',
 };

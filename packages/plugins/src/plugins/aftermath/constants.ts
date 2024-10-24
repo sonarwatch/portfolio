@@ -5,7 +5,7 @@ export const platformId = 'aftermath';
 export const platform: Platform = {
   id: platformId,
   name: 'Aftermath',
-  image: 'https://sonar.watch/img/platforms/aftermath.png',
+  image: 'https://sonar.watch/img/platforms/aftermath.webp',
   defiLlamaId: 'parent#aftermath-finance',
   website: 'https://aftermath.finance/',
 };
