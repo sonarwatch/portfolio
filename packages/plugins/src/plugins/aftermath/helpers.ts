@@ -13,20 +13,6 @@ import {
 import { SuiClient } from '../../utils/clients/types';
 import { Event } from '../../utils/sui/types';
 
-const getActiveRewardCoinTypes = (burnerVault: BurnerVault) =>
-  burnerVault.type_names.filter(
-    (coinType, i) =>
-      // TODO comment on sait le rewardCoinType ?
-      i > 0
-    /* data.actualRewards.find(
-      (actualRewards) =>
-        Helpers.addLeadingZeroesToType(
-          actualRewards.type
-        ) ===
-        Helpers.addLeadingZeroesToType("0x" + coinType)
-    )?.balance ?? 0 */
-  );
-
 export const getHarvestRewards = async (
   client: SuiClient,
   sender: string,
@@ -36,8 +22,9 @@ export const getHarvestRewards = async (
 ) => {
   const rewards = new Map<string, BigNumber>();
 
-  const rewardCoinTypes = getActiveRewardCoinTypes(vault);
-
+  const rewardCoinTypes = vault.type_names.filter(
+    (coinType, i) => vault.rewards[i] !== '0' && i > 0
+  );
   if (rewardCoinTypes.length === 0) return rewards;
 
   const transactionBlock = new Transaction();

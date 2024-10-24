@@ -54,6 +54,7 @@ export type BurnerVault = {
   id: ID;
   emission_rates: string[];
   type_names: string[];
+  rewards: string[];
 };
 
 export type CoinType = string;
