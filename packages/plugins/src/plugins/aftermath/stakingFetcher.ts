@@ -1,5 +1,6 @@
 import {
   NetworkId,
+  PortfolioAsset,
   PortfolioLiquidity,
   formatTokenAddress,
   getUsdValueSum,

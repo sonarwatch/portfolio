@@ -1,9 +1,9 @@
-import {
-  TransactionBlock,
-  TransactionObjectArgument,
-} from '@mysten/sui.js/transactions';
 import { suiClockAddress } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
+import {
+  Transaction,
+  TransactionObjectArgument,
+} from '@mysten/sui/transactions';
 import {
   BurnerVault,
   CoinType,
@@ -13,10 +13,11 @@ import {
 import { SuiClient } from '../../utils/clients/types';
 import { Event } from '../../utils/sui/types';
 
-const getActiveRewardCoinTypes = (burnerVault: BurnerVault) => {
-  return burnerVault.type_names.filter((coinType, i) => {
-    // TODO comment on sait le rewardCoinType ?
-    return i > 0;
+const getActiveRewardCoinTypes = (burnerVault: BurnerVault) =>
+  burnerVault.type_names.filter(
+    (coinType, i) =>
+      // TODO comment on sait le rewardCoinType ?
+      i > 0
     /* data.actualRewards.find(
       (actualRewards) =>
         Helpers.addLeadingZeroesToType(
@@ -24,8 +25,7 @@ const getActiveRewardCoinTypes = (burnerVault: BurnerVault) => {
         ) ===
         Helpers.addLeadingZeroesToType("0x" + coinType)
     )?.balance ?? 0 */
-  });
-};
+  );
 
 export const getHarvestRewards = async (
   client: SuiClient,
@@ -40,7 +40,7 @@ export const getHarvestRewards = async (
 
   if (rewardCoinTypes.length === 0) return rewards;
 
-  const transactionBlock = new TransactionBlock();
+  const transactionBlock = new Transaction();
 
   const harvestedRewardsEventMetadataId = transactionBlock.moveCall({
     target: `0xcd41fbc59af65b7c58fd2590d5e35efbf756d50e6da2bd0413917102be6e1fdf::staked_position::begin_harvest`,
@@ -74,7 +74,7 @@ export const getHarvestRewards = async (
     arguments: [harvestedRewardsEventMetadataId],
   });
 
-  for (const [coinType, harvestedCoinIds] of Object.entries(harvestedCoins)) {
+  for (const [, harvestedCoinIds] of Object.entries(harvestedCoins)) {
     const coinToTransfer = harvestedCoinIds[0];
 
     if (harvestedCoinIds.length > 1)
@@ -88,8 +88,7 @@ export const getHarvestRewards = async (
     transactionBlock,
   });
 
-  // @ts-ignore
-  const event: Event<HarvestedRewards> | undefined = dir.events.find(
+  const event = dir.events.find(
     (e) =>
       e.type ===
       '0x4f0a1a923dd063757fd37e04a9c2cee8980008e94433c9075c390065f98e9e4b::events::HarvestedRewardsEvent'
@@ -97,9 +96,12 @@ export const getHarvestRewards = async (
 
   if (!event || !event.parsedJson) return rewards;
 
-  event.parsedJson.reward_types.forEach((coinType, i) => {
-    if (event.parsedJson) {
-      const balance = new BigNumber(event.parsedJson.reward_amounts[i]);
+  const parsedEvent = event as Event<HarvestedRewards>;
+  if (!parsedEvent.parsedJson) return rewards;
+
+  parsedEvent.parsedJson.reward_types.forEach((coinType, i) => {
+    if (parsedEvent.parsedJson) {
+      const balance = new BigNumber(parsedEvent.parsedJson.reward_amounts[i]);
       if (balance.isGreaterThan(0)) rewards.set(coinType, balance);
     }
   });

@@ -73,9 +73,9 @@ const executor: JobExecutor = async (cache: Cache) => {
       } else {
         return;
       }
-
       const tokenPrice = tokenPriceById.get(cAddress);
-      if (!tokenPrice || !poolInfo.coin_decimals) return;
+
+      if (!poolInfo.coin_decimals) return;
 
       poolUnderlyingsRaw.push({
         address: cAddress,
