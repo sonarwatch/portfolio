@@ -2,25 +2,43 @@ import BigNumber from 'bignumber.js';
 import { BorrowLendRate } from '@sonarwatch/portfolio-core';
 import { LendingMarket, PoolReward, Reserve } from './types';
 
-export function getPoolsRewardsAsMap(
+export function getPoolsRewardsMaps(
   lendingMarkets: LendingMarket[] | undefined
-): Map<string, PoolReward> {
-  const rewardMintByPoolId: Map<string, PoolReward> = new Map();
-  if (!lendingMarkets) return rewardMintByPoolId;
+): [PoolRewardById, PoolsRewardByManagerId] {
+  const poolRewardById: PoolRewardById = new Map();
+  const poolsRewardByManagerId: PoolsRewardByManagerId = new Map();
+  if (!lendingMarkets) return [poolRewardById, poolsRewardByManagerId];
 
   for (const lendingMarket of lendingMarkets) {
     const { reserves } = lendingMarket;
     for (const reserve of reserves) {
-      const poolsRewards =
+      const depositdPoolsRewards =
         reserve.fields.deposits_pool_reward_manager.fields.pool_rewards;
-      for (const poolReward of poolsRewards) {
-        if (!poolReward) continue;
-        rewardMintByPoolId.set(poolReward.fields.id.id, poolReward.fields);
+      for (const poolReward of depositdPoolsRewards) {
+        if (!poolReward || !poolReward.fields) continue;
+        poolRewardById.set(poolReward.fields.id.id, poolReward.fields);
       }
+      poolsRewardByManagerId.set(
+        reserve.fields.deposits_pool_reward_manager.fields.id.id,
+        depositdPoolsRewards.map((data) => (data ? data.fields : null))
+      );
+      const borrowPoolsRewards =
+        reserve.fields.borrows_pool_reward_manager.fields.pool_rewards;
+      for (const poolReward of borrowPoolsRewards) {
+        if (!poolReward || !poolReward.fields) continue;
+        poolRewardById.set(poolReward.fields.id.id, poolReward.fields);
+      }
+      poolsRewardByManagerId.set(
+        reserve.fields.borrows_pool_reward_manager.fields.id.id,
+        borrowPoolsRewards.map((data) => (data ? data.fields : null))
+      );
     }
   }
-  return rewardMintByPoolId;
+  return [poolRewardById, poolsRewardByManagerId];
 }
+
+type PoolRewardById = Map<string, PoolReward>;
+type PoolsRewardByManagerId = Map<string, PoolReward[]>;
 
 export function getRatesAsMap(borrowLendRates: BorrowLendRate[] | undefined) {
   const ratesByReserveId: Map<string, BorrowLendRate> = new Map();
