@@ -1,5 +1,6 @@
 import {
   NetworkId,
+  PortfolioAsset,
   PortfolioLiquidity,
   formatTokenAddress,
   getUsdValueSum,
@@ -11,9 +12,11 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId, stakingType } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
-import { StakingPosition } from './types';
+import { BurnerVault, StakingPosition } from './types';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
+import { getHarvestRewards } from './helpers';
+import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 const farmFactor = new BigNumber(10 ** 9);
 
@@ -41,11 +44,16 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     return '';
   });
 
-  const burnerVaultsObjects = await multiGetObjects(client, burnerVaults);
+  const burnerVaultsObjects = await multiGetObjects<BurnerVault>(
+    client,
+    burnerVaults
+  );
 
   const burnerVaultsTypes = burnerVaultsObjects.map(
     (vault) => vault.data?.type
   );
+
+  const tokenAddresses: string[] = [];
 
   const lpMints = burnerVaultsTypes
     .map((type) => {
@@ -54,14 +62,41 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const lp = parseTypeString(type).keys?.at(0)?.type;
       if (!lp || !lp.includes('af_lp')) return undefined;
 
-      return formatTokenAddress(lp, NetworkId.sui);
+      tokenAddresses.push(formatTokenAddress(lp, NetworkId.sui));
+
+      return lp;
     })
     .flat();
 
-  const lpTokenPriceById = await cache.getTokenPricesAsMap(
-    lpMints.map((lp) => (lp !== undefined ? lp : [])).flat(),
-    NetworkId.sui
-  );
+  burnerVaultsObjects.forEach((vault) => {
+    vault.data?.content?.fields.type_names.forEach((ct) =>
+      tokenAddresses.push(ct)
+    );
+  });
+
+  const [tokenPriceById, rewards] = await Promise.all([
+    cache.getTokenPricesAsMap(tokenAddresses, NetworkId.sui),
+    Promise.all(
+      stakedPositions.map((object, i) => {
+        const lp = lpMints[i];
+        const burnerVault = burnerVaultsObjects.find(
+          (bv) => bv.data?.content?.fields.id.id
+        );
+        if (!lp) return null;
+        if (!object.data?.content) return null;
+        if (!burnerVault || !burnerVault.data?.content?.fields) return null;
+        return getHarvestRewards(
+          client,
+          owner,
+          object.data.content.fields,
+          lp,
+          burnerVault.data?.content?.fields
+        );
+      })
+    ),
+  ]);
+
+  if (!tokenPriceById) return [];
 
   const liquidities: PortfolioLiquidity[] = [];
   for (let i = 0; i < stakedPositions.length; i++) {
@@ -71,8 +106,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const lp = lpMints[i];
     if (!lp) continue;
 
-    const lpPrice = lpTokenPriceById.get(lp);
-    if (!lpPrice) continue;
+    const lpTokenPrice = tokenPriceById.get(
+      formatTokenAddress(lp, NetworkId.sui)
+    );
+    if (!lpTokenPrice) continue;
 
     const position = object.data.content.fields;
 
@@ -81,19 +118,44 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       .toNumber();
 
     const assets = tokenPriceToAssetTokens(
-      lpPrice.address,
+      lpTokenPrice.address,
       amount,
       NetworkId.sui,
-      lpPrice
+      lpTokenPrice
     );
 
-    const value = getUsdValueSum(assets.map((asset) => asset.value));
+    const rewardAssets: PortfolioAsset[] = [];
+
+    const rewardsForPosition = rewards[i];
+    if (rewardsForPosition) {
+      rewardsForPosition.forEach((rewardAmount, coinType) => {
+        const tokenPrice = tokenPriceById.get(
+          formatTokenAddress(coinType, NetworkId.sui)
+        );
+
+        if (tokenPrice)
+          rewardAssets.push(
+            tokenPriceToAssetToken(
+              formatTokenAddress(coinType, NetworkId.sui),
+              rewardAmount.dividedBy(10 ** tokenPrice.decimals).toNumber(),
+              NetworkId.sui,
+              tokenPrice
+            )
+          );
+      });
+    }
+
+    const value = getUsdValueSum(
+      [...assets, ...rewardAssets].map((asset) => asset.value)
+    );
 
     liquidities.push({
       assets,
-      assetsValue: value,
-      rewardAssets: [],
-      rewardAssetsValue: null,
+      assetsValue: getUsdValueSum(assets.map((asset) => asset.value)),
+      rewardAssets,
+      rewardAssetsValue: getUsdValueSum(
+        rewardAssets.map((asset) => asset.value)
+      ),
       value,
       yields: [],
     });
