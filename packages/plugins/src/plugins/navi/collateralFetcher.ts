@@ -47,24 +47,29 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (!borrowBalance.error && borrowBalance.data?.content) {
       const borrowInfo = borrowBalance.data.content?.fields;
       if (borrowInfo.value) {
-        element.addBorrowedAsset({
-          address: rData.value.fields.coin_type,
-          amount: new BigNumber(borrowInfo.value)
-            .times(rData.value.fields.current_borrow_index)
-            .dividedBy(amountFactor),
-          alreadyShifted: true,
-        });
+        const amount = new BigNumber(borrowInfo.value)
+          .times(rData.value.fields.current_borrow_index)
+          .dividedBy(amountFactor);
+        if (amount.isGreaterThan(0.002)) {
+          element.addBorrowedAsset({
+            address: rData.value.fields.coin_type,
+            amount: new BigNumber(borrowInfo.value)
+              .times(rData.value.fields.current_borrow_index)
+              .dividedBy(amountFactor),
+            alreadyShifted: true,
+          });
 
-        const apy = new BigNumber(rData.value.fields.current_borrow_rate)
-          .dividedBy(10 ** rateFactor)
-          .toNumber();
+          const apy = new BigNumber(rData.value.fields.current_borrow_rate)
+            .dividedBy(10 ** rateFactor)
+            .toNumber();
 
-        element.addBorrowedYield([
-          {
-            apr: -apyToApr(apy),
-            apy: -apy,
-          },
-        ]);
+          element.addBorrowedYield([
+            {
+              apr: -apyToApr(apy),
+              apy: -apy,
+            },
+          ]);
+        }
       }
     }
 
@@ -74,35 +79,42 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         const amount = new BigNumber(supplyInfo.value)
           .times(rData.value.fields.current_supply_index)
           .dividedBy(amountFactor);
-        element.addSuppliedAsset({
-          address: rData.value.fields.coin_type,
-          amount,
-          alreadyShifted: true,
-        });
-        const apy = new BigNumber(rData.value.fields.current_supply_rate)
-          .dividedBy(10 ** rateFactor)
-          .toNumber();
-        element.addSuppliedYield([
-          {
-            apr: apyToApr(apy),
-            apy,
-          },
-        ]);
-        element.addSuppliedLtv(
-          new BigNumber(rData.value.fields.liquidation_factors.fields.threshold)
-            .div(10 ** 27)
-            .toNumber()
-        );
+
+        if (amount.isGreaterThan(0.002)) {
+          element.addSuppliedAsset({
+            address: rData.value.fields.coin_type,
+            amount,
+            alreadyShifted: true,
+          });
+          const apy = new BigNumber(rData.value.fields.current_supply_rate)
+            .dividedBy(10 ** rateFactor)
+            .toNumber();
+          element.addSuppliedYield([
+            {
+              apr: apyToApr(apy),
+              apy,
+            },
+          ]);
+          element.addSuppliedLtv(
+            new BigNumber(
+              rData.value.fields.liquidation_factors.fields.threshold
+            )
+              .div(10 ** 27)
+              .toNumber()
+          );
+        }
       }
     }
   }
 
   if (rewards.size > 0) {
     rewards.forEach((amount, coinType) => {
-      element.addRewardAsset({
-        address: coinType,
-        amount,
-      });
+      if (amount > 0.002) {
+        element.addRewardAsset({
+          address: coinType,
+          amount,
+        });
+      }
     });
   }
 
