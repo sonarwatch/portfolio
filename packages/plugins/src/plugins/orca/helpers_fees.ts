@@ -1,3 +1,6 @@
+import { PublicKey } from '@solana/web3.js';
+import BN from 'bn.js';
+import BigNumber from 'bignumber.js';
 import {
   Position,
   Tick,
@@ -12,10 +15,7 @@ import {
 } from '../../utils/solana';
 import { whirlpoolProgram } from './constants';
 import { getClientSolana } from '../../utils/clients';
-import { PublicKey } from '@solana/web3.js';
-import BN from 'bn.js';
 import { toBN } from '../../utils/misc/toBN';
-import BigNumber from 'bignumber.js';
 
 const TWO = new BN(2);
 const U128 = TWO.pow(new BN(128));
@@ -119,8 +119,8 @@ export const calcFeesAndRewards = (
   const fees = getCollectFeesQuoteInternal({
     whirlpool,
     position,
-    tickUpper,
     tickLower,
+    tickUpper,
   });
 
   return { ...rewards, ...fees };
@@ -134,7 +134,7 @@ function invariant(
     return;
   }
 
-  const prefix: string = 'Invariant failed';
+  const prefix = 'Invariant failed';
 
   const provided: string | undefined =
     typeof message === 'function' ? message() : message;
@@ -275,8 +275,12 @@ function getCollectFeesQuoteInternal(param: {
   const updatedFeeOwedB = feeOwedB.plus(feeOwedBDelta.toString());
 
   return {
-    feeOwedA: updatedFeeOwedA,
-    feeOwedB: updatedFeeOwedB,
+    feeOwedA: updatedFeeOwedA.isGreaterThan(10 ** 18)
+      ? BigNumber(0)
+      : updatedFeeOwedA,
+    feeOwedB: updatedFeeOwedB.isGreaterThan(10 ** 18)
+      ? BigNumber(0)
+      : updatedFeeOwedB,
   };
 }
 
@@ -346,7 +350,7 @@ export function getCollectRewardsQuoteInternal(param: {
     const rewardInfo = whirlpoolRewardsInfos[i];
     invariant(!!rewardInfo, 'whirlpoolRewardsInfos cannot be undefined');
 
-    const growthGlobalX64 = rewardInfo.growthGlobalX64;
+    const { growthGlobalX64 } = rewardInfo;
     const lowerRewardGrowthsOutside = tickLowerRewardGrowthsOutside[i];
     const upperRewardGrowthsOutside = tickUpperRewardGrowthsOutside[i];
     invariant(
@@ -410,9 +414,9 @@ export function getCollectRewardsQuoteInternal(param: {
     const growthInsideX64 = rewardGrowthsInsideX64[i];
     invariant(!!growthInsideX64, 'growthInsideX64 cannot be undefined');
 
-    const [rewardGrowthInsideX64, isRewardInitialized] = growthInsideX64;
+    const [rewardGrowthInsideX64, isRewardAlreadyInitialized] = growthInsideX64;
 
-    if (isRewardInitialized) {
+    if (isRewardAlreadyInitialized) {
       const rewardInfo = rewardInfos[i];
       invariant(!!rewardInfo, 'rewardInfo cannot be undefined');
 
