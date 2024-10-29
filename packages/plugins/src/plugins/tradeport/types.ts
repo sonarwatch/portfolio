@@ -25,3 +25,24 @@ export type LockObject = {
   name: number[];
   value: Lock;
 };
+
+export type Bid = {
+  beneficiary: string;
+  buyer: string;
+  commission: string;
+  id: ID;
+  nft_id: null;
+  nft_type: string;
+  price: string;
+  wallet: Wallet;
+};
+
+export type Wallet = {
+  fields: Fields;
+  type: string;
+};
+
+export type Fields = {
+  balance: string;
+  id: ID;
+};

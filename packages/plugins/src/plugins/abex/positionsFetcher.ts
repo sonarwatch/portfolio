@@ -69,7 +69,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
 
     element.addPosition({
-      address: positionInfo.collateralToken,
+      address: positionInfo.indexToken,
       collateralValue: new BigNumber(positionInfo.collateralAmount)
         .multipliedBy(tokenPriceCollateral.price)
         .dividedBy(10 ** tokenPriceCollateral.decimals)

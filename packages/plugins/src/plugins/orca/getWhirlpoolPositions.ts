@@ -152,7 +152,7 @@ export function getOrcaNftFetcher(
       if (tokenAmountA.isZero() || tokenAmountB.isZero())
         tags.push('Out Of Range');
 
-      /* const feesAndRewards = calcFeesAndRewards(
+      const feesAndRewards = calcFeesAndRewards(
         whirlpoolInfo,
         positionInfo,
         tickArrays
@@ -238,7 +238,7 @@ export function getOrcaNftFetcher(
             );
           }
         }
-      } */
+      }
 
       if (
         !assetTokenA ||
@@ -248,10 +248,17 @@ export function getOrcaNftFetcher(
       )
         continue;
 
+      const assets =
+        !tokenAmountA.isZero() && !tokenAmountB.isZero()
+          ? [assetTokenA, assetTokenB]
+          : [];
+
       const value = assetTokenA.value + assetTokenB.value;
       const rewardAssetsValue = getUsdValueSum(
         rewardAssets.map((a) => a.value)
       );
+
+      if (assets.length === 0 && rewardAssets.length === 0) continue;
 
       elements.push({
         type: PortfolioElementType.liquidity,
@@ -263,7 +270,7 @@ export function getOrcaNftFetcher(
         data: {
           liquidities: [
             {
-              assets: [assetTokenA, assetTokenB],
+              assets,
               assetsValue: value,
               rewardAssets,
               rewardAssetsValue,

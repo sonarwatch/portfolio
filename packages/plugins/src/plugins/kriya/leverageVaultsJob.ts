@@ -7,7 +7,7 @@ import {
   leverageVaultsUrl,
   leverageVaultsInfoKey,
 } from './constants';
-import { LeverageVaultInfo } from './types';
+import { LeverageVaultInfo } from './types/vaults';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const vaults: AxiosResponse<LeverageVaultInfo[]> | null = await axios

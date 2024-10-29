@@ -49,3 +49,18 @@ export type PoolFactory = {
   name: string;
   value: string;
 };
+
+export type BurnerVault = {
+  id: ID;
+  emission_rates: string[];
+  type_names: string[];
+  rewards: string[];
+};
+
+export type CoinType = string;
+
+export type HarvestedRewards = {
+  afterburner_vault_id: string;
+  reward_amounts: string[];
+  reward_types: string[];
+};

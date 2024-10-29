@@ -308,3 +308,133 @@ export type PosRewarderResult = {
   positionId: string;
   rewarderAmountOwed: RewarderAmountOwed[];
 };
+
+export type CetusPool = {
+  coin_a: string;
+  coin_b: string;
+  current_sqrt_price: string;
+  current_tick_index: CurrentTickIndex;
+  fee_growth_global_a: string;
+  fee_growth_global_b: string;
+  fee_protocol_coin_a: string;
+  fee_protocol_coin_b: string;
+  fee_rate: string;
+  id: ID;
+  index: string;
+  is_pause: boolean;
+  liquidity: string;
+  position_manager: PositionManager;
+  rewarder_manager: RewarderManager;
+  tick_manager: TickManager;
+  tick_spacing: number;
+  url: string;
+};
+
+export type CurrentTickIndex = {
+  fields: CurrentTickIndexFields;
+  type: string;
+};
+
+export type CurrentTickIndexFields = {
+  bits: number;
+};
+
+export type PositionManager = {
+  fields: PositionManagerFields;
+  type: string;
+};
+
+export type PositionManagerFields = {
+  position_index: string;
+  positions: Positions;
+  tick_spacing: number;
+};
+
+export type Positions = {
+  fields: PositionsFields;
+  type: string;
+};
+
+export type PositionsFields = {
+  head: string;
+  id: ID;
+  size: string;
+  tail: string;
+};
+
+export type RewarderManager = {
+  fields: RewarderManagerFields;
+  type: string;
+};
+
+export type RewarderManagerFields = {
+  last_updated_time: string;
+  points_growth_global: string;
+  points_released: string;
+  rewarders: RewarderInfo[];
+};
+
+export type RewarderInfo = {
+  fields: RewarderFields;
+  type: string;
+};
+
+export type RewarderFields = {
+  emissions_per_second: string;
+  growth_global: string;
+  reward_coin: RewardCoin;
+};
+
+export type RewardCoin = {
+  fields: RewardCoinFields;
+  type: string;
+};
+
+export type RewardCoinFields = {
+  name: string;
+};
+
+export type TickManager = {
+  fields: TickManagerFields;
+  type: string;
+};
+
+export type TickManagerFields = {
+  tick_spacing: number;
+  ticks: Ticks;
+};
+
+export type Ticks = {
+  fields: TicksFields;
+  type: string;
+};
+
+export type TicksFields = {
+  head: Tail[];
+  id: ID;
+  level: string;
+  list_p: string;
+  max_level: string;
+  random: Random;
+  size: string;
+  tail: Tail;
+};
+
+export type Tail = {
+  fields: TailFields;
+  type: string;
+};
+
+export type TailFields = {
+  is_none: boolean;
+  v: string;
+};
+
+export type Random = {
+  fields: RandomFields;
+  type: string;
+};
+
+export type RandomFields = {
+  seed: string;
+};
