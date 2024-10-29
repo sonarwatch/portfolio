@@ -34,6 +34,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
   const assets: PortfolioAssetToken[] = [];
   accounts.forEach((account) => {
+    if (account.totalStake.isZero()) return;
+
     const asset = tokenPriceToAssetToken(
       atlasMint,
       account.totalStake.div(10 ** atlasDecimals).toNumber(),
@@ -43,6 +45,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (!account.pendingRewards.isZero()) {
       asset.attributes = { isClaimable: true };
     }
+
     assets.push(asset);
   });
 
