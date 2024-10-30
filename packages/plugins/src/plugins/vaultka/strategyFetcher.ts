@@ -43,9 +43,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   positionInfos.forEach((positionInfo, i) => {
     if (
-      positionInfo[0] &&
-      !positionInfo[0].liquidated &&
-      !positionInfo[0].closed
+      positionInfo[i] &&
+      !positionInfo[i].liquidated &&
+      !positionInfo[i].closed
     ) {
       const element = elementRegistry.addElementBorrowlend({
         label: 'Leverage',
@@ -53,11 +53,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
       element.addSuppliedAsset({
         address: strategiesInfo[i].token_mint,
-        amount: positionInfo[0].position_amount,
+        amount: positionInfo[i].position_amount,
       });
       element.addBorrowedAsset({
         address: strategiesInfo[i].collateral_mint,
-        amount: positionInfo[0].leverage_amount,
+        amount: positionInfo[i].leverage_amount,
       });
     }
   });
