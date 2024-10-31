@@ -1,5 +1,12 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
+import { StrategyInfo } from './types';
+import {
+  lstPositionInfoStruct,
+  lstStrategyStruct,
+  positionInfoStruct,
+  strategyStruct,
+} from './structs';
 
 export const platformId = 'vaultka';
 export const platform: Platform = {
@@ -22,12 +29,40 @@ export const lendingProgramIds = [
 
 export const strategiesCacheKey = `strategies`;
 
-export const strategies = [
-  '6UBsNdYq3MEao1m9NXQD1VEmXvptUXhfMwdHANGAo4bs',
-  'B3FS1X2PZPBrtBZiyAN9oqABnu3o5YWwdY5ioqoVh64P',
-  'SkFLfp7eSRsan13dEUZSVzMBj3vdyZnhaasFKQTzuiE',
-  '6VwarrrqWVWAmZtNdgGafeyoXD3SsspKxuxkZVarZqTA',
-  '9p5Sc5SvR8QpJCQV3U4q6zVUTupr4Tr9Jmf48sbcSjtX',
-  'FRyGij76xTvAg1nPPTaXHfa3QxUfZuKARuAyAaMyoLPo',
-  'A7PDwCJ3qcdVoZLqq7wHAwMq9yEKZU2vFx7Y9qbZ1dKJ',
+export const strategies: StrategyInfo[] = [
+  {
+    pubkey: '6UBsNdYq3MEao1m9NXQD1VEmXvptUXhfMwdHANGAo4bs',
+    strategyStruct,
+    positionInfoStruct,
+  },
+  {
+    pubkey: 'B3FS1X2PZPBrtBZiyAN9oqABnu3o5YWwdY5ioqoVh64P',
+    strategyStruct,
+    positionInfoStruct,
+  },
+  {
+    pubkey: 'SkFLfp7eSRsan13dEUZSVzMBj3vdyZnhaasFKQTzuiE',
+    strategyStruct,
+    positionInfoStruct,
+  },
+  {
+    pubkey: '6VwarrrqWVWAmZtNdgGafeyoXD3SsspKxuxkZVarZqTA',
+    strategyStruct,
+    positionInfoStruct,
+  },
+  {
+    pubkey: '9p5Sc5SvR8QpJCQV3U4q6zVUTupr4Tr9Jmf48sbcSjtX',
+    strategyStruct: lstStrategyStruct,
+    positionInfoStruct: lstPositionInfoStruct,
+  },
+  {
+    pubkey: 'FRyGij76xTvAg1nPPTaXHfa3QxUfZuKARuAyAaMyoLPo',
+    strategyStruct: lstStrategyStruct,
+    positionInfoStruct: lstPositionInfoStruct,
+  },
+  {
+    pubkey: 'A7PDwCJ3qcdVoZLqq7wHAwMq9yEKZU2vFx7Y9qbZ1dKJ',
+    strategyStruct: lstStrategyStruct,
+    positionInfoStruct: lstPositionInfoStruct,
+  },
 ];
