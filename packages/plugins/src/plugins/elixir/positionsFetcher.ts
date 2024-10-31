@@ -157,7 +157,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           NetworkId.sui,
           tokenPrice,
           undefined,
-          {}
+          { isClaimable: true }
         )
       );
       yields.push({
