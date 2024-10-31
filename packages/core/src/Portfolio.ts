@@ -23,6 +23,7 @@ export type PortfolioElementLabel =
   | 'Staked'
   | 'LiquidityPool'
   | 'Farming'
+  | 'Vault'
   | 'Lending'
   | 'Vesting'
   | 'Deposit'

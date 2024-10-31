@@ -55,7 +55,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       ],
       'Vaults'
     );
-    await cache.setTokenPriceSource(lpSource);
+    await cache.setTokenPriceSource({ ...lpSource, label: 'Vault' });
   }
 };
 const job: Job = {
