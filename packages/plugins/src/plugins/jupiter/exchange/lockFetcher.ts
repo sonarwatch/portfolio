@@ -20,23 +20,41 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (vestingEscrowAccounts.length === 0) return [];
 
   const registry = new ElementRegistry(NetworkId.solana, platformId);
-  const element = registry.addElementMultiple({
-    label: 'Vesting',
-    name: 'lock',
-  });
 
   for (const lock of vestingEscrowAccounts) {
-    const endTime = lock.vestingStartTime.plus(
-      lock.numberOfPeriod.times(lock.frequency)
-    );
-
-    element.addAsset({
-      address: lock.tokenMint,
-      amount: lock.amountPerPeriod
-        .times(lock.numberOfPeriod)
-        .minus(lock.totalClaimedAmount),
-      attributes: { lockedUntil: endTime.toNumber() },
+    const element = registry.addElementMultiple({
+      label: 'Vesting',
+      name: 'Lock',
     });
+    const endTime = lock.cliffTime
+      .plus(lock.numberOfPeriod.times(lock.frequency))
+      .times(1000);
+
+    if (lock.totalClaimedAmount.isZero()) {
+      // Unlock at cliff time
+      element.addAsset({
+        address: lock.tokenMint,
+        amount: lock.cliffUnlockAmount,
+        attributes: { lockedUntil: lock.cliffTime.times(1000).toNumber() },
+      });
+
+      // Remaining vesting with end date
+      element.addAsset({
+        address: lock.tokenMint,
+        amount: lock.amountPerPeriod.times(lock.numberOfPeriod),
+        attributes: { lockedUntil: endTime.toNumber() },
+      });
+    } else {
+      // Remaining vesting with end date, minus already claimed
+      element.addAsset({
+        address: lock.tokenMint,
+        amount: lock.amountPerPeriod
+          .times(lock.numberOfPeriod)
+          .plus(lock.cliffUnlockAmount)
+          .minus(lock.totalClaimedAmount),
+        attributes: { lockedUntil: endTime.toNumber() },
+      });
+    }
   }
 
   return registry.getElements(cache);

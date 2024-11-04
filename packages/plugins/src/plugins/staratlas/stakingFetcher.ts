@@ -34,32 +34,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
   const assets: PortfolioAssetToken[] = [];
   accounts.forEach((account) => {
-    if (!account.totalStake.isZero()) {
-      assets.push(
-        tokenPriceToAssetToken(
-          atlasMint,
-          account.totalStake.div(10 ** atlasDecimals).toNumber(),
-          NetworkId.solana,
-          atlasTokenPrice,
-          atlasTokenPrice?.price,
-          {}
-        )
-      );
-    }
+    if (account.totalStake.isZero()) return;
+
+    const asset = tokenPriceToAssetToken(
+      atlasMint,
+      account.totalStake.div(10 ** atlasDecimals).toNumber(),
+      NetworkId.solana,
+      atlasTokenPrice
+    );
     if (!account.pendingRewards.isZero()) {
-      assets.push(
-        tokenPriceToAssetToken(
-          atlasMint,
-          account.totalStake.div(10 ** atlasDecimals).toNumber(),
-          NetworkId.solana,
-          atlasTokenPrice,
-          atlasTokenPrice?.price,
-          {
-            isClaimable: true,
-          }
-        )
-      );
+      asset.attributes = { isClaimable: true };
     }
+
+    assets.push(asset);
   });
 
   if (assets.length === 0) return [];

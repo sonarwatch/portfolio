@@ -21,7 +21,6 @@ import {
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getEvmClient } from '../../utils/clients';
 import { cdpManagerAbi, proxyRegAbi, vatAbi } from './abis';
-import { getDSA } from '../../utils/evm/getDSA';
 import { IlkData } from './type';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { zeroBigInt } from '../../utils/misc/constants';
@@ -29,8 +28,10 @@ import { zeroBigInt } from '../../utils/misc/constants';
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   // Get the user's proxy address
   const client = getEvmClient(NetworkId.ethereum);
-  const instadappDSA = getDSA(NetworkId.ethereum);
-  const instadappAccounts = await instadappDSA.getAccounts(owner);
+
+  // WARNING: intadapp removed because it use an old version of web3 that cause process.exit
+  // const instadappDSA = getDSA(NetworkId.ethereum);
+  // const instadappAccounts = await instadappDSA.getAccounts(owner);
 
   const ownerProxyRes = await client.readContract({
     abi: proxyRegAbi,
@@ -39,7 +40,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     args: [owner as `0x${string}`],
   });
 
-  const proxyAddresses = [owner, ...instadappAccounts.map((a) => a.address)];
+  // const proxyAddresses = [owner, ...instadappAccounts.map((a) => a.address)];
+  const proxyAddresses = [owner];
   if (ownerProxyRes !== zeroAddressEvm) proxyAddresses.push(ownerProxyRes);
   if (proxyAddresses.length === 0) return [];
 

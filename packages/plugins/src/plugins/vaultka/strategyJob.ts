@@ -3,7 +3,6 @@ import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { platformId, strategies, strategiesCacheKey } from './constants';
-import { strategyStruct } from './structs';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 
@@ -14,10 +13,10 @@ const executor: JobExecutor = async (cache: Cache) => {
     strategies.map((strategy) =>
       getParsedAccountInfo(
         connection,
-        strategyStruct,
+        strategy.strategyStruct,
         PublicKey.findProgramAddressSync(
           [Buffer.from('STRATEGY')],
-          new PublicKey(strategy)
+          new PublicKey(strategy.pubkey)
         )[0]
       )
     )
