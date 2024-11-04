@@ -649,6 +649,11 @@ import {
   jobs as hxroJobs,
   fetchers as hxroFetchers,
 } from './plugins/hxro';
+import {
+  platforms as spdrPlatforms,
+  jobs as spdrJobs,
+  fetchers as spdrFetchers,
+} from './plugins/spdr';
 
 export {
   walletTokensPlatform,
@@ -795,6 +800,7 @@ export const platforms: Platform[] = [
   ...loverflowPlatforms,
   ...zeloPlatforms,
   ...hxroPlatforms,
+  ...spdrPlatforms,
 ];
 
 // JOBS //
@@ -924,6 +930,7 @@ export const jobs: Job[] = [
   ...loverflowJobs,
   ...zeloJobs,
   ...hxroJobs,
+  ...spdrJobs,
 ];
 
 // FETCHERS //
@@ -1054,6 +1061,7 @@ export const fetchers: Fetcher[] = [
   ...loverflowFetchers,
   ...zeloFetchers,
   ...hxroFetchers,
+  ...spdrFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
