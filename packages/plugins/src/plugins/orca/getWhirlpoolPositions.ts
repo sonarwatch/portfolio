@@ -243,8 +243,7 @@ export function getOrcaNftFetcher(
       if (
         !assetTokenA ||
         !assetTokenB ||
-        assetTokenA.value === null ||
-        assetTokenB.value === null
+        (assetTokenA.value === null && assetTokenB.value === null)
       )
         continue;
 
@@ -253,10 +252,14 @@ export function getOrcaNftFetcher(
           ? [assetTokenA, assetTokenB]
           : [];
 
-      const value = assetTokenA.value + assetTokenB.value;
+      const assetsValue = getUsdValueSum([
+        assetTokenA.value,
+        assetTokenB.value,
+      ]);
       const rewardAssetsValue = getUsdValueSum(
         rewardAssets.map((a) => a.value)
       );
+      const totalValue = getUsdValueSum([assetsValue, rewardAssetsValue]);
 
       if (assets.length === 0 && rewardAssets.length === 0) continue;
 
@@ -266,15 +269,15 @@ export function getOrcaNftFetcher(
         platformId,
         label: 'LiquidityPool',
         name: 'Concentrated',
-        value: value + (rewardAssetsValue || 0),
+        value: totalValue,
         data: {
           liquidities: [
             {
               assets,
-              assetsValue: value,
+              assetsValue,
               rewardAssets,
               rewardAssetsValue,
-              value: value + (rewardAssetsValue || 0),
+              value: totalValue,
               yields: [],
             },
           ],
