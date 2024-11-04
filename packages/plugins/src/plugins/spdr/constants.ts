@@ -4,7 +4,7 @@ import { PublicKey } from '@solana/web3.js';
 export const platformId = 'spdr';
 export const platform: Platform = {
   id: platformId,
-  name: 'spdr Finance',
+  name: 'Spiderswap',
   image: 'https://sonar.watch/img/platforms/spdr.webp',
   website: 'https://www.spiderswap.io/staking',
   twitter: 'https://twitter.com/spdrswap',
