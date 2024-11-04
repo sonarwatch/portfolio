@@ -3,12 +3,12 @@ import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts, u8ArrayToString } from '../../utils/solana';
+import { keySpotMarkets, platformId } from '../drift/constants';
 import {
-  keySpotMarkets,
-  platformId as driftPlatformId,
-  platformId,
-} from '../drift/constants';
-import { vaultsPid, platformIdByVaultManager, prefixVaults } from './constants';
+  vaultsPids,
+  platformIdByVaultManager,
+  prefixVaults,
+} from './constants';
 import { vaultFilter } from './filters';
 import { vaultStruct } from './structs';
 import { SpotMarketEnhanced } from '../drift/types';
@@ -18,9 +18,15 @@ const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
 
   const [vaults, spotMarkets] = await Promise.all([
-    getParsedProgramAccounts(client, vaultStruct, vaultsPid, vaultFilter),
+    (
+      await Promise.all(
+        vaultsPids.map((vaultsPid) =>
+          getParsedProgramAccounts(client, vaultStruct, vaultsPid, vaultFilter)
+        )
+      )
+    ).flat(),
     cache.getItem<SpotMarketEnhanced[]>(keySpotMarkets, {
-      prefix: driftPlatformId,
+      prefix: platformId,
       networkId: NetworkId.solana,
     }),
   ]);

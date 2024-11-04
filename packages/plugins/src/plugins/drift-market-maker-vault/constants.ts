@@ -6,7 +6,6 @@ export const circuitPlatform: Platform = {
   id: circuitPlatformId,
   name: 'Circuit',
   image: 'https://sonar.watch/img/platforms/circuit.webp',
-  // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
   website: 'https://app.circuit.trade/',
   twitter: 'https://twitter.com/CircuitTrading_',
 };
@@ -16,17 +15,40 @@ export const moosePlatform: Platform = {
   id: moosePlatformId,
   name: 'Moose Market',
   image: 'https://sonar.watch/img/platforms/moose.webp',
-  // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
   website: 'https://moose.market/',
   twitter: 'https://twitter.com/moose_market',
 };
 
-export const vaultsPid = new PublicKey(
-  'vAuLTsyrvSfZRuRB3XgvkPwNGgYSs9YRYymVebLKoxR'
-);
+export const neutralPlatformId = 'neutral';
+export const neutralPlatform: Platform = {
+  id: neutralPlatformId,
+  name: 'Neutral',
+  image: 'https://sonar.watch/img/platforms/neutral.webp',
+  website: 'https://www.app.neutral.trade/',
+  twitter: 'https://twitter.com/TradeNeutral',
+};
+
+export const gauntletPlatformId = 'gauntlet';
+export const gauntletPlatform: Platform = {
+  id: gauntletPlatformId,
+  name: 'Gauntlet',
+  image: 'https://sonar.watch/img/platforms/gauntlet.webp',
+  twitter: 'https://twitter.com/gauntlet_xyz',
+};
+
+export const vaultsPids = [
+  new PublicKey('vAuLTsyrvSfZRuRB3XgvkPwNGgYSs9YRYymVebLKoxR'), // from Drift
+  new PublicKey('9Fcn3Fd4d5ocrb12xCUtEvezxcjFEAyHBPfrZDiPt9Qj'), // from Neutral
+  new PublicKey('EuSLjg23BrtwYAk1t4TFe5ArYSXCVXLBqrHRBfWQiTeJ'), // from Neutral
+  new PublicKey('BVddkVtFJLCihbVrtLo8e3iEd9NftuLunaznAxFFW8vf'), // from Neutral
+];
+
 export const prefixVaults = 'circuitVaults';
 
 export const platformIdByVaultManager: Map<string, string> = new Map([
   ['GT3RSBy5nS2ACpT3LCkycHWm9CVJCSuqErAgf4sE33Qu', circuitPlatformId],
   ['En8nqJqCE9D2Bsqetw4p89VgZTh8QK8SfCAn5sSyL4PM', moosePlatformId],
+  ['C77bxLHWjnAVeG9HdMxu1gunFnjRCcWUDZYfa7xbacHr', neutralPlatformId],
+  ['neutBqYtHqPiu89Yfuk3X3cebgBtyppzSbxJ9tt1eSB', neutralPlatformId],
+  ['G6L1NE8tLYYzvMHYHbkHZqPFvfEsiRAsHSvyNQ2hut3o', gauntletPlatformId],
 ]);

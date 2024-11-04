@@ -9,7 +9,7 @@ import {
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId as driftPlatformId } from '../drift/constants';
-import { vaultsPid, prefixVaults } from './constants';
+import { vaultsPids, prefixVaults } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { vaultDepositorStruct } from './structs';
@@ -21,12 +21,18 @@ import { VaultInfo } from './types';
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const depositAccounts = await getParsedProgramAccounts(
-    client,
-    vaultDepositorStruct,
-    vaultsPid,
-    vaultDepositorFilter(owner)
-  );
+  const depositAccounts = (
+    await Promise.all(
+      vaultsPids.map((vaultsPid) =>
+        getParsedProgramAccounts(
+          client,
+          vaultDepositorStruct,
+          vaultsPid,
+          vaultDepositorFilter(owner)
+        )
+      )
+    )
+  ).flat();
 
   if (depositAccounts.length === 0) return [];
 
