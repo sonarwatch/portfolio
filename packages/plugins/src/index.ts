@@ -644,6 +644,11 @@ import {
   jobs as zeloJobs,
   fetchers as zeloFetchers,
 } from './plugins/zelo';
+import {
+  platforms as hxroPlatforms,
+  jobs as hxroJobs,
+  fetchers as hxroFetchers,
+} from './plugins/hxro';
 
 export {
   walletTokensPlatform,
@@ -789,6 +794,7 @@ export const platforms: Platform[] = [
   ...vaultkaPlatforms,
   ...loverflowPlatforms,
   ...zeloPlatforms,
+  ...hxroPlatforms,
 ];
 
 // JOBS //
@@ -917,6 +923,7 @@ export const jobs: Job[] = [
   ...vaultkaJobs,
   ...loverflowJobs,
   ...zeloJobs,
+  ...hxroJobs,
 ];
 
 // FETCHERS //
@@ -1046,6 +1053,7 @@ export const fetchers: Fetcher[] = [
   ...vaultkaFetchers,
   ...loverflowFetchers,
   ...zeloFetchers,
+  ...hxroFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
