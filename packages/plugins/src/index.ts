@@ -654,6 +654,11 @@ import {
   jobs as spdrJobs,
   fetchers as spdrFetchers,
 } from './plugins/spdr';
+import {
+  platforms as grassPlatforms,
+  jobs as grassJobs,
+  fetchers as grassFetchers,
+} from './plugins/grass';
 
 export {
   walletTokensPlatform,
@@ -801,6 +806,7 @@ export const platforms: Platform[] = [
   ...zeloPlatforms,
   ...hxroPlatforms,
   ...spdrPlatforms,
+  ...grassPlatforms,
 ];
 
 // JOBS //
@@ -931,6 +937,7 @@ export const jobs: Job[] = [
   ...zeloJobs,
   ...hxroJobs,
   ...spdrJobs,
+  ...grassJobs,
 ];
 
 // FETCHERS //
@@ -1062,6 +1069,7 @@ export const fetchers: Fetcher[] = [
   ...zeloFetchers,
   ...hxroFetchers,
   ...spdrFetchers,
+  ...grassFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
