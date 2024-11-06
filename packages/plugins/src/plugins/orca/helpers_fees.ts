@@ -440,15 +440,25 @@ export function getCollectRewardsQuoteInternal(param: {
   const rewardExistsB = rewardGrowthsInsideX64[1]?.[1];
   const rewardExistsC = rewardGrowthsInsideX64[2]?.[1];
 
-  const rewardOwedA = rewardExistsA
+  const finalRewardA = rewardExistsA
     ? new BigNumber(updatedRewardInfosX64[0]?.shrn(64).toString())
     : new BigNumber(0);
-  const rewardOwedB = rewardExistsB
+  const finalRewardB = rewardExistsB
     ? new BigNumber(updatedRewardInfosX64[1]?.shrn(64).toString())
     : new BigNumber(0);
-  const rewardOwedC = rewardExistsC
+  const finalRewardC = rewardExistsC
     ? new BigNumber(updatedRewardInfosX64[2]?.shrn(64).toString())
     : new BigNumber(0);
+
+  const rewardOwedA = finalRewardA.isGreaterThan(10 ** 18)
+    ? BigNumber(0)
+    : finalRewardA;
+  const rewardOwedB = finalRewardB.isGreaterThan(10 ** 18)
+    ? BigNumber(0)
+    : finalRewardB;
+  const rewardOwedC = finalRewardC.isGreaterThan(10 ** 18)
+    ? BigNumber(0)
+    : finalRewardC;
 
   return { rewardOwedA, rewardOwedB, rewardOwedC };
 }

@@ -247,10 +247,7 @@ export function getOrcaNftFetcher(
       )
         continue;
 
-      const assets =
-        !tokenAmountA.isZero() && !tokenAmountB.isZero()
-          ? [assetTokenA, assetTokenB]
-          : [];
+      const assets = [assetTokenA, assetTokenB];
 
       const assetsValue = getUsdValueSum([
         assetTokenA.value,
@@ -260,8 +257,6 @@ export function getOrcaNftFetcher(
         rewardAssets.map((a) => a.value)
       );
       const totalValue = getUsdValueSum([assetsValue, rewardAssetsValue]);
-
-      if (assets.length === 0 && rewardAssets.length === 0) continue;
 
       elements.push({
         type: PortfolioElementType.liquidity,
