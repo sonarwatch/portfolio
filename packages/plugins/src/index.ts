@@ -659,6 +659,11 @@ import {
   jobs as grassJobs,
   fetchers as grassFetchers,
 } from './plugins/grass';
+import {
+  platforms as autothorPlatforms,
+  jobs as autothorJobs,
+  fetchers as autothorFetchers,
+} from './plugins/cyberfrogs';
 
 export {
   walletTokensPlatform,
@@ -807,6 +812,7 @@ export const platforms: Platform[] = [
   ...hxroPlatforms,
   ...spdrPlatforms,
   ...grassPlatforms,
+  ...autothorPlatforms,
 ];
 
 // JOBS //
@@ -938,6 +944,7 @@ export const jobs: Job[] = [
   ...hxroJobs,
   ...spdrJobs,
   ...grassJobs,
+  ...autothorJobs,
 ];
 
 // FETCHERS //
@@ -1070,6 +1077,7 @@ export const fetchers: Fetcher[] = [
   ...hxroFetchers,
   ...spdrFetchers,
   ...grassFetchers,
+  ...autothorFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
