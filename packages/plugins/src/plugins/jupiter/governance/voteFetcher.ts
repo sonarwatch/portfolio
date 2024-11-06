@@ -1,17 +1,15 @@
-import {
-  NetworkId,
-  PortfolioAsset,
-  PortfolioElementType,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSolana } from '../../../utils/clients';
 import { getParsedAccountInfo } from '../../../utils/solana/getParsedAccountInfo';
 import { getVotePda } from '../helpers';
-import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import { escrowStruct } from '../launchpad/structs';
-import { jupMint } from '../launchpad/constants';
+import { escrowStruct, partialUnstakeStruct } from '../launchpad/structs';
+import { jupMint, voteProgramId } from '../launchpad/constants';
 import { platformId } from './constants';
+import { getParsedProgramAccounts } from '../../../utils/solana';
+import { partialUnstakeFilter } from '../filters';
+import { ElementRegistry } from '../../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -22,39 +20,38 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     escrowStruct,
     escrowPubkey
   );
-
   if (!escrowAccount) return [];
 
-  const jupTokenPrice = await cache.getTokenPrice(jupMint, NetworkId.solana);
-  if (!jupTokenPrice) return [];
-  const { decimals } = jupTokenPrice;
-
-  if (escrowAccount.amount.isZero()) return [];
-
-  const asset: PortfolioAsset = tokenPriceToAssetToken(
-    jupMint,
-    escrowAccount.amount.dividedBy(10 ** decimals).toNumber(),
-    NetworkId.solana,
-    jupTokenPrice
+  const partialUnstakingAccounts = await getParsedProgramAccounts(
+    client,
+    partialUnstakeStruct,
+    voteProgramId,
+    partialUnstakeFilter(escrowAccount.pubkey.toString())
   );
-  if (!escrowAccount.escrowStartedAt.isZero()) {
-    const unlockingAt = new Date(
-      escrowAccount.escrowEndsAt.times(1000).toNumber()
-    );
-    asset.attributes = { lockedUntil: unlockingAt.getTime() };
-  }
 
-  return [
-    {
-      type: PortfolioElementType.multiple,
-      label: 'Staked',
-      name: 'Vote',
-      networkId: NetworkId.solana,
-      platformId,
-      data: { assets: [asset] },
-      value: asset.value,
+  const registry = new ElementRegistry(NetworkId.solana, platformId);
+
+  const element = registry.addElementMultiple({ label: 'Staked' });
+
+  element.addAsset({
+    address: jupMint,
+    amount: escrowAccount.amount,
+    attributes: {
+      lockedUntil: escrowAccount.escrowStartedAt.isZero()
+        ? undefined
+        : escrowAccount.escrowEndsAt.times(1000).toNumber(),
     },
-  ];
+  });
+
+  partialUnstakingAccounts.forEach((account) => {
+    element.addAsset({
+      address: jupMint,
+      amount: account.amount,
+      attributes: { lockedUntil: account.expiration.times(1000).toNumber() },
+    });
+  });
+
+  return registry.getElements(cache);
 };
 
 const fetcher: Fetcher = {
