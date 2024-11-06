@@ -1077,7 +1077,7 @@ export const fetchers: Fetcher[] = [
   ...hxroFetchers,
   ...spdrFetchers,
   ...grassFetchers,
-  ...autothorFetchers,
+  // ...autothorFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
