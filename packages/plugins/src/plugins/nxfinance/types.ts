@@ -67,3 +67,24 @@ export type LendingAccount = {
   lastNoteRate: string;
   totalReward: string;
 };
+
+export type StakingAccount = {
+  owner: string;
+  notes: string;
+  stakedTokens: string;
+  stakedNotes: string;
+  withdrawingTokens: string;
+  timeOfWithdrawApply: string;
+  claimableReward: string;
+  lastUpdateNoteTime: string;
+  lastDistributedAndNoteRate: string;
+};
+
+export type StakingPoolAccount = {
+  stakeTokenMint: string;
+  stakedTokens: string;
+  stakedNotes: string;
+  withdrawingTokens: string;
+  increaseNoteRatePerSecond: string;
+  maxMultipleOfNote: string;
+};
