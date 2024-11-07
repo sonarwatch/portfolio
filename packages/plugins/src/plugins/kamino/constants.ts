@@ -112,6 +112,18 @@ export const lendingConfigs: Map<string, LendingMarketConfig> = new Map([
   ],
   ['ByYiZxp8QrdN9qbdtaAiePN8AAr3qvTPppNJDpf5DVJ5', { name: 'Altcoins Market' }],
   ['BJnbcRHqvppTyGesLzWASGKnmnF1wq9jZu6ExrjT7wvF', { name: 'Ethena Market' }],
+  [
+    'H6rHXmXoCQvq8Ue81MqNh7ow5ysPa1dSozwW3PU1dDH6',
+    {
+      name: 'Jito Market',
+      multiplyPairs: [
+        [
+          'J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn',
+          'So11111111111111111111111111111111111111112',
+        ],
+      ],
+    },
+  ],
 ]);
 
 export const marketsKey = `markets`;
