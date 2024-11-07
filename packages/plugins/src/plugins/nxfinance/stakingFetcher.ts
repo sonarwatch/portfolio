@@ -77,10 +77,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     amount: (M.isGreaterThan(A) ? A : M).toNumber(),
   }); */
 
-  element.addRewardAsset({
-    address: solanaNativeAddress,
-    amount: stakingAccount.claimableReward,
-  });
+  if (new BigNumber(stakingAccount.claimableReward).isGreaterThan(0.002)) {
+    element.addRewardAsset({
+      address: solanaNativeAddress,
+      amount: stakingAccount.claimableReward,
+    });
+  }
 
   element.addSuppliedAsset({
     address: stakePoolAccount.stakeTokenMint,
