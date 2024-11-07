@@ -126,7 +126,6 @@ export function getOrcaNftFetcher(
         positionInfo.tickUpperIndex,
         false
       );
-
       const rewardAssets: PortfolioAsset[] = [];
 
       const tokenPriceA = tokenPrices.get(whirlpoolInfo.tokenMintA.toString());
@@ -240,12 +239,7 @@ export function getOrcaNftFetcher(
         }
       }
 
-      if (
-        !assetTokenA ||
-        !assetTokenB ||
-        (assetTokenA.value === null && assetTokenB.value === null)
-      )
-        continue;
+      if (!assetTokenA || !assetTokenB) continue;
 
       const assets = [assetTokenA, assetTokenB];
 
@@ -257,6 +251,8 @@ export function getOrcaNftFetcher(
         rewardAssets.map((a) => a.value)
       );
       const totalValue = getUsdValueSum([assetsValue, rewardAssetsValue]);
+
+      if (totalValue === 0 || totalValue === null) continue;
 
       elements.push({
         type: PortfolioElementType.liquidity,

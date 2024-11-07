@@ -4,10 +4,12 @@ import BN from 'bn.js';
 import Decimal from 'decimal.js';
 
 import { PortfolioAssetCollectible } from '@sonarwatch/portfolio-core';
-import { positionsIdentifier } from './constants';
+import { positionsIdentifiers } from './constants';
 
 export function isAnOrcaPosition(nft: PortfolioAssetCollectible): boolean {
-  return nft.name === positionsIdentifier;
+  return positionsIdentifiers.some((identifier) =>
+    nft.name?.includes(identifier)
+  );
 }
 
 export function signedShiftRight(n0: BN, shiftBy: number, bitWidth: number) {
