@@ -1,7 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
-export const platformId = 'autothor';
+export const platformId = 'cyberfrogs';
 export const platform: Platform = {
   id: platformId,
   name: 'CyberFrogs Thor',

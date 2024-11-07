@@ -22,12 +22,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
   if (!escrowAccount) return [];
 
-  // const partialUnstakingAccounts = await getParsedProgramAccounts(
-  //   client,
-  //   partialUnstakeStruct,
-  //   voteProgramId,
-  //   partialUnstakeFilter(escrowAccount.pubkey.toString())
-  // );
+  const partialUnstakingAccounts = await getParsedProgramAccounts(
+    client,
+    partialUnstakeStruct,
+    voteProgramId,
+    partialUnstakeFilter(escrowAccount.pubkey.toString())
+  );
 
   const registry = new ElementRegistry(NetworkId.solana, platformId);
 
@@ -43,13 +43,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     },
   });
 
-  // partialUnstakingAccounts.forEach((account) => {
-  //   element.addAsset({
-  //     address: jupMint,
-  //     amount: account.amount,
-  //     attributes: { lockedUntil: account.expiration.times(1000).toNumber() },
-  //   });
-  // });
+  partialUnstakingAccounts.forEach((account) => {
+    element.addAsset({
+      address: jupMint,
+      amount: account.amount,
+      attributes: { lockedUntil: account.expiration.times(1000).toNumber() },
+    });
+  });
 
   return registry.getElements(cache);
 };

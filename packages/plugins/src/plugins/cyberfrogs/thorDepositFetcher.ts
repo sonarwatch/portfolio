@@ -46,7 +46,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-deposit`,
+  id: `${platformId}-thor-deposit`,
   networkId: NetworkId.solana,
   executor,
 };
