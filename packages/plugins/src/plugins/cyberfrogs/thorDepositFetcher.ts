@@ -30,6 +30,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
   const element = elementRegistry.addElementMultiple({
     label: 'Deposit',
+    name: 'Thor V3',
   });
 
   accounts.forEach((deposit) => {

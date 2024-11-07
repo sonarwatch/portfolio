@@ -4,7 +4,7 @@ import { Platform } from '@sonarwatch/portfolio-core';
 export const platformId = 'cyberfrogs';
 export const platform: Platform = {
   id: platformId,
-  name: 'CyberFrogs Thor',
+  name: 'CyberFrogs',
   image: 'https://sonar.watch/img/platforms/cyberfrogs.webp',
   website: 'https://legacy.cyberfrogs.io/faction-contracts-v3',
   twitter: 'https://twitter.com/CyberFrogsNFT',
