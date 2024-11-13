@@ -110,11 +110,14 @@ export function updateTokenPriceSources(
   newSources = newSources.filter((source) => source.timestamp > tsThreshold);
   if (newSources.length === 0) return undefined;
 
-  // Detect iregular priceSource with price 20% above median price
-  const medianPrice = getMedianPriceFromSources(newSources);
-  newSources = newSources.filter(
-    (source) => Math.abs(source.price - medianPrice) / medianPrice < 0.2
-  );
+  // Detect iregular priceSource with price 50% above median price
+  if (newSources.length > 2) {
+    const medianPrice = getMedianPriceFromOnchainSources(newSources);
+    newSources = newSources.filter((source) => {
+      if (source.id !== coingeckoSourceId) return true;
+      return Math.abs(source.price - medianPrice) / medianPrice < 0.5;
+    });
+  }
 
   // Keep only MAX_N_SOURCES
   newSources.sort((sourceA, sourceB) => {
@@ -147,8 +150,11 @@ export function getTokenPricesUnderlyingsFromTokensPrices(
   }));
 }
 
-function getMedianPriceFromSources(sources: TokenPriceSource[]): number {
-  const sortedPrices = sources.slice().sort((a, b) => a.price - b.price);
+function getMedianPriceFromOnchainSources(sources: TokenPriceSource[]): number {
+  const sortedPrices = sources
+    .filter((source) => source.id !== coingeckoSourceId)
+    .slice()
+    .sort((a, b) => a.price - b.price);
   const mid = Math.floor(sortedPrices.length / 2);
 
   if (sortedPrices.length % 2 === 0) {
