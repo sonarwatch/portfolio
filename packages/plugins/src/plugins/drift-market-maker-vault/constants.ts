@@ -36,6 +36,15 @@ export const gauntletPlatform: Platform = {
   twitter: 'https://twitter.com/gauntlet_xyz',
 };
 
+export const hedgyPlatformId = 'hedgy';
+export const hedgyPlatform: Platform = {
+  id: hedgyPlatformId,
+  name: 'Hedgy',
+  image: 'https://sonar.watch/img/platforms/hedgy.webp',
+  twitter: 'https://x.com/HedgyMarket',
+  website: 'https://hedgy.market/',
+};
+
 export const vaultsPids = [
   new PublicKey('vAuLTsyrvSfZRuRB3XgvkPwNGgYSs9YRYymVebLKoxR'), // from Drift
   new PublicKey('9Fcn3Fd4d5ocrb12xCUtEvezxcjFEAyHBPfrZDiPt9Qj'), // from Neutral
@@ -51,4 +60,6 @@ export const platformIdByVaultManager: Map<string, string> = new Map([
   ['C77bxLHWjnAVeG9HdMxu1gunFnjRCcWUDZYfa7xbacHr', neutralPlatformId],
   ['neutBqYtHqPiu89Yfuk3X3cebgBtyppzSbxJ9tt1eSB', neutralPlatformId],
   ['G6L1NE8tLYYzvMHYHbkHZqPFvfEsiRAsHSvyNQ2hut3o', gauntletPlatformId],
+  ['GcGx7VBJX9AxW2EKayVVovpPXvfjpCdjGkKXa27Ryg3a', hedgyPlatformId],
+  ['86fYXDydyKKnL7gxWpVrUDnsrVyQyZkwb4YsisBHC9ab', gauntletPlatformId],
 ]);

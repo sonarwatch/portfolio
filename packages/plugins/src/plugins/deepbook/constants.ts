@@ -6,7 +6,7 @@ export const platform: Platform = {
   id: platformId,
   name: 'DeepBook',
   image: 'https://sonar.watch/img/platforms/deepbook.webp',
-  website: 'https://deepbook.com/',
+  website: 'https://deepbook.tech/',
   twitter: 'https://x.com/DeepBookonSui',
   defiLlamaId: 'deepbook', // from https://defillama.com/docs/api
 };

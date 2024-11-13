@@ -4,6 +4,7 @@ import { Job } from '../../Job';
 import {
   circuitPlatform,
   gauntletPlatform,
+  hedgyPlatform,
   moosePlatform,
   neutralPlatform,
 } from './constants';
@@ -15,6 +16,7 @@ export const platforms: Platform[] = [
   moosePlatform,
   neutralPlatform,
   gauntletPlatform,
+  hedgyPlatform,
 ];
 export const jobs: Job[] = [vaultsJob];
 export const fetchers: Fetcher[] = [depositsFetcher];
