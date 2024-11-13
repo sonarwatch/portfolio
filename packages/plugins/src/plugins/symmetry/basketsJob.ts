@@ -35,8 +35,14 @@ const executor: JobExecutor = async (cache: Cache) => {
     tokenSettings
       .filter((ts) => ts.oracleType === OracleType.Pyth)
       .map((ts) => ({
-        mint: ts.tokenMint,
-        feed: ts.oracleAccount,
+        tokens: [
+          {
+            mint: ts.tokenMint.toString(),
+            networkdId: NetworkId.solana,
+            decimals: ts.decimals,
+          },
+        ],
+        address: ts.oracleAccount,
       }))
   );
   await cache.setTokenPriceSources(pythSources);
