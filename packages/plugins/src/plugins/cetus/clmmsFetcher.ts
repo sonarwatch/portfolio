@@ -9,14 +9,13 @@ import {
   extractStructTagFromType,
   fetchPosFeeAmount,
   fetchPosRewardersAmount,
-  getPoolFromObject,
 } from './helpers';
 
 import { FetchPosRewardParams, Pool, Position } from './types';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
-import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { getPools } from './getPools';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -46,11 +45,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const poolsIds = clmmPositions.map((position) => position.pool);
   const poolsById: Map<string, Pool> = new Map();
 
-  const poolsObjects = await multiGetObjects(client, [...new Set(poolsIds)]);
-  poolsObjects.forEach((poolObj) => {
-    if (poolObj.data?.content?.fields) {
-      const pool = getPoolFromObject(poolObj);
-      poolsById.set(poolObj.data.objectId, pool);
+  const poolsObjects = await getPools([...new Set(poolsIds)], cache);
+  poolsObjects.forEach((pool) => {
+    if (pool) {
+      poolsById.set(pool.poolAddress, pool);
     }
   });
 
