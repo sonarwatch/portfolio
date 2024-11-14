@@ -15,10 +15,6 @@ import { lstsKey, platformId as sanctumPlatformId } from '../sanctum/constants';
 
 const mints = [
   'xLfNTYy76B8Tiix3hA51Jyvc1kMSFV4sPdR7szTZsRu', // xLifinity
-  'BANXbTpN8U2cU41FjPxe2Ti37PiT5cCxLUKDQZuJeMMR', // Banx
-  '4LLbsb5ReP3yEtYzmXewyGjcir5uXtKFURtaEUVC2AHs', // Parcl
-  'SHARKSYJjqaNyxVfrpnBN9pjgkhwDhatnMyicWPnr1s', // Shark
-  'KMNo3nJsBXfcpJTVhZcXLW7RmTwTt4GVFE7suUBo9sS', // Kamino
   'DdFPRnccQqLD4zCHrBqdY95D6hvw6PLWp9DEXj1fLCL9', // Wrapped USDC (Allbridge from Ethereum)
   'eqKJTf1Do4MDPyKisMYqVaUFpkEFAs3riGF3ceDH2Ca', // Wrapped USDC (Allbridge from Polygon)
   '8Yv9Jz4z7BUHP68dz8E8m3tMe6NKgpMUKn8KVqrPA6Fr', // Wrapped USDC (Allbridge from Avalanche)

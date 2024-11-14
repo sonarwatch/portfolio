@@ -9,24 +9,32 @@ import {
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId as driftPlatformId } from '../drift/constants';
-import { vaultsPid, prefixVaults } from './constants';
+import { vaultsPids, prefixVaults, neutralPlatformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { vaultDepositorStruct } from './structs';
 import { vaultDepositorFilter } from './filters';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { sevenDays } from '../goosefx/stakingFetcher';
 import { VaultInfo } from './types';
+
+export const oneDay = 1000 * 60 * 60 * 24;
+export const sevenDays = 7 * oneDay;
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const depositAccounts = await getParsedProgramAccounts(
-    client,
-    vaultDepositorStruct,
-    vaultsPid,
-    vaultDepositorFilter(owner)
-  );
+  const depositAccounts = (
+    await Promise.all(
+      vaultsPids.map((vaultsPid) =>
+        getParsedProgramAccounts(
+          client,
+          vaultDepositorStruct,
+          vaultsPid,
+          vaultDepositorFilter(owner)
+        )
+      )
+    )
+  ).flat();
 
   if (depositAccounts.length === 0) return [];
 
@@ -80,7 +88,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         attributes: {
           lockedUntil: depositAccount.lastWithdrawRequest.ts
             .times(1000)
-            .plus(sevenDays)
+            .plus(platformId === neutralPlatformId ? oneDay : sevenDays)
             .toNumber(),
         },
       });

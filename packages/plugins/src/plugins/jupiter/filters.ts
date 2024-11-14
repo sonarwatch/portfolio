@@ -21,3 +21,15 @@ export const escrowFilter = (owner: string): GetProgramAccountsFilter[] => [
   },
   { dataSize: 322 },
 ];
+
+export const partialUnstakeFilter = (
+  escrow: string
+): GetProgramAccountsFilter[] => [
+  {
+    memcmp: {
+      offset: 8,
+      bytes: escrow,
+    },
+  },
+  { dataSize: 156 },
+];

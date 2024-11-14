@@ -9,6 +9,7 @@ export type ValidatorApiResponse = {
   staking_apy: number;
   total_apy: number;
   commission: number;
+  jito_commission_bps: number;
 };
 
 export type Validator = {
@@ -19,5 +20,6 @@ export type Validator = {
   jitoApy: number;
   stakingApy: number;
   totalApy: number;
-  commission: number;
+  stakeCommission: number;
+  mevCommission: number;
 };

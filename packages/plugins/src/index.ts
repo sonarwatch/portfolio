@@ -635,15 +635,35 @@ import {
   fetchers as vaultkaFetchers,
 } from './plugins/vaultka';
 import {
-  platforms as loverflowPlatforms,
-  jobs as loverflowJobs,
-  fetchers as loverflowFetchers,
-} from './plugins/loverflow';
-import {
   platforms as zeloPlatforms,
   jobs as zeloJobs,
   fetchers as zeloFetchers,
 } from './plugins/zelo';
+import {
+  platforms as hxroPlatforms,
+  jobs as hxroJobs,
+  fetchers as hxroFetchers,
+} from './plugins/hxro';
+import {
+  platforms as spdrPlatforms,
+  jobs as spdrJobs,
+  fetchers as spdrFetchers,
+} from './plugins/spdr';
+import {
+  platforms as grassPlatforms,
+  jobs as grassJobs,
+  fetchers as grassFetchers,
+} from './plugins/grass';
+import {
+  platforms as autothorPlatforms,
+  jobs as autothorJobs,
+  fetchers as autothorFetchers,
+} from './plugins/cyberfrogs';
+import {
+  platforms as metaplexPlatforms,
+  jobs as metaplexJobs,
+  fetchers as metaplexFetchers,
+} from './plugins/metaplex';
 
 export {
   walletTokensPlatform,
@@ -787,8 +807,12 @@ export const platforms: Platform[] = [
   ...mesoPlatforms,
   ...loopscalePlatforms,
   ...vaultkaPlatforms,
-  ...loverflowPlatforms,
   ...zeloPlatforms,
+  ...hxroPlatforms,
+  ...spdrPlatforms,
+  ...grassPlatforms,
+  ...autothorPlatforms,
+  ...metaplexPlatforms,
 ];
 
 // JOBS //
@@ -886,7 +910,7 @@ export const jobs: Job[] = [
   ...whalesmarketJobs,
   ...futarchyJobs,
   ...elixirJobs,
-  ...moonwalkJobs,
+  // ...moonwalkJobs,
   ...bluefinJobs,
   ...citrusJobs,
   ...sharkyJobs,
@@ -915,8 +939,12 @@ export const jobs: Job[] = [
   ...mesoJobs,
   ...loopscaleJobs,
   ...vaultkaJobs,
-  ...loverflowJobs,
   ...zeloJobs,
+  ...hxroJobs,
+  ...spdrJobs,
+  ...grassJobs,
+  ...autothorJobs,
+  ...metaplexJobs,
 ];
 
 // FETCHERS //
@@ -1015,7 +1043,7 @@ export const fetchers: Fetcher[] = [
   ...whalesmarketFetchers,
   ...futarchyFetchers,
   ...elixirFetchers,
-  ...moonwalkFetchers,
+  // ...moonwalkFetchers,
   ...bluefinFetchers,
   ...citrusFetchers,
   ...sharkyFetchers,
@@ -1044,8 +1072,12 @@ export const fetchers: Fetcher[] = [
   ...mesoFetchers,
   ...loopscaleFetchers,
   ...vaultkaFetchers,
-  ...loverflowFetchers,
   ...zeloFetchers,
+  ...hxroFetchers,
+  ...spdrFetchers,
+  ...grassFetchers,
+  ...autothorFetchers,
+  ...metaplexFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 

@@ -1,6 +1,8 @@
 import {
+  array,
   BeetStruct,
   bool,
+  FixableBeetStruct,
   u8,
   uniformFixedSizeArray,
 } from '@metaplex-foundation/beet';
@@ -38,6 +40,26 @@ export const escrowStruct = new BeetStruct<Escrow>(
     ['buffers', uniformFixedSizeArray(u128, 10)],
   ],
   (args) => args as Escrow
+);
+
+export type PartialUnstake = {
+  buffer: Buffer;
+  escrow: PublicKey;
+  amount: BigNumber;
+  expiration: BigNumber;
+  buffers: BigNumber[];
+  memo: number[];
+};
+export const partialUnstakeStruct = new FixableBeetStruct<PartialUnstake>(
+  [
+    ['buffer', blob(8)],
+    ['escrow', publicKey],
+    ['amount', u64],
+    ['expiration', i64],
+    ['buffers', uniformFixedSizeArray(u128, 6)],
+    ['memo', array(u8)],
+  ],
+  (args) => args as PartialUnstake
 );
 
 export type ClaimStatus = {

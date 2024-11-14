@@ -18,19 +18,35 @@ export function getVotePda(owner: string): PublicKey {
   )[0];
 }
 
+const maxIdsPerRequest = 100;
+
 export async function getJupiterPrices(mints: PublicKey[], vsMint: PublicKey) {
-  const res = await axios.get<unknown, AxiosResponse<PriceResponse>>(
-    'https://price.jup.ag/v4/price',
-    {
-      params: {
-        ids: mints.map((m) => m.toString()).join(','),
-        vsToken: vsMint.toString(),
-      },
-    }
-  );
+  let res;
+  const pricesData = [];
+  let subMints;
+  let start = 0;
+  let end = maxIdsPerRequest - 1;
+  do {
+    subMints = mints.slice(start, end);
+    res = await axios.get<unknown, AxiosResponse<PriceResponse>>(
+      'https://api.jup.ag/price/v2',
+      {
+        params: {
+          ids: subMints.map((m) => m.toString()).join(','),
+          vsToken: vsMint.toString(),
+        },
+      }
+    );
+    start += maxIdsPerRequest;
+    end += maxIdsPerRequest;
+    pricesData.push(res.data.data);
+  } while (mints.at(start));
+
   const prices: Map<string, number> = new Map();
-  for (const [, value] of Object.entries(res.data.data)) {
-    prices.set(value.id, value.price);
+  for (const priceData of pricesData) {
+    for (const [, value] of Object.entries(priceData)) {
+      prices.set(value.id, value.price);
+    }
   }
   return prices;
 }
