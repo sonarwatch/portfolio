@@ -659,6 +659,11 @@ import {
   jobs as autothorJobs,
   fetchers as autothorFetchers,
 } from './plugins/cyberfrogs';
+import {
+  platforms as metaplexPlatforms,
+  jobs as metaplexJobs,
+  fetchers as metaplexFetchers,
+} from './plugins/metaplex';
 
 export {
   walletTokensPlatform,
@@ -807,6 +812,7 @@ export const platforms: Platform[] = [
   ...spdrPlatforms,
   ...grassPlatforms,
   ...autothorPlatforms,
+  ...metaplexPlatforms,
 ];
 
 // JOBS //
@@ -938,6 +944,7 @@ export const jobs: Job[] = [
   ...spdrJobs,
   ...grassJobs,
   ...autothorJobs,
+  ...metaplexJobs,
 ];
 
 // FETCHERS //
@@ -1070,6 +1077,7 @@ export const fetchers: Fetcher[] = [
   ...spdrFetchers,
   ...grassFetchers,
   ...autothorFetchers,
+  ...metaplexFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
