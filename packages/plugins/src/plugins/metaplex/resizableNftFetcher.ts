@@ -20,9 +20,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     programId: new PublicKey(solanaTokenPid),
   });
 
-  const tokenAccounts = asset.value.map(
-    (account) => tokenAccountStruct.deserialize(account.account.data)[0]
-  );
+  const tokenAccounts = asset.value
+    .map((account) => tokenAccountStruct.deserialize(account.account.data)[0])
+    .filter((tA) => !tA.amount.isZero());
 
   const metadataPubkeys: PublicKey[] = [];
   const editionPubkeys: PublicKey[] = [];
