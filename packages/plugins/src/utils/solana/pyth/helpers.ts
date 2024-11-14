@@ -1,5 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
-import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
+import { NetworkIdType, TokenPriceSource } from '@sonarwatch/portfolio-core';
 import {
   AccountType,
   Base,
@@ -17,7 +17,6 @@ import { readBigInt64LE, readBigUInt64LE } from './readBig';
 import { SolanaClient } from '../../clients/types';
 import { getMultipleAccountsInfoSafe } from '../getMultipleAccountsInfoSafe';
 import { walletTokensPlatform } from '../../../plugins/tokens/constants';
-import { getMultipleDecimalsAsMap } from '../getMultipleDecimalsAsMap';
 
 export const Magic = 0xa1b2c3d4;
 export const Version2 = 2;
@@ -294,39 +293,40 @@ export async function getPythPrice(
   return (await getPythPrices(connection, [feedAddress]))[0];
 }
 
+export type FeedInfo = {
+  address: PublicKey;
+  tokens: {
+    mint: string;
+    decimals: number;
+    networkdId: NetworkIdType;
+    platformId?: string;
+  }[];
+};
+
 export async function getPythTokenPriceSources(
   connection: SolanaClient,
-  params: {
-    mint: PublicKey;
-    feed: PublicKey;
-    platformId?: string;
-  }[]
+  feedsInfo: FeedInfo[]
 ): Promise<(TokenPriceSource | null)[]> {
   const prices = await getPythPrices(
     connection,
-    params.map((p) => p.feed)
-  );
-  const decimalsMap = await getMultipleDecimalsAsMap(
-    connection,
-    params.map((p) => p.mint)
+    feedsInfo.map((feed) => feed.address)
   );
 
-  return params.map((param, i): TokenPriceSource | null => {
-    const price = prices.at(i);
-    if (price === null || price === undefined) return null;
-    const address = param.mint.toString();
-    const decimals = decimalsMap.get(address);
-    if (!decimals) return null;
+  return feedsInfo
+    .map((feedInfo, i): TokenPriceSource[] | null => {
+      const price = prices.at(i);
+      if (price === null || price === undefined) return null;
 
-    return {
-      address,
-      id: `pyth-feed-${param.feed.toString()}`,
-      decimals,
-      networkId: NetworkId.solana,
-      platformId: param.platformId || walletTokensPlatform.id,
-      price,
-      timestamp: Date.now(),
-      weight: 1,
-    };
-  });
+      return feedInfo.tokens.map((token) => ({
+        address: token.mint,
+        id: `pyth-feed-${feedInfo.address.toString()}`,
+        decimals: token.decimals,
+        networkId: token.networkdId,
+        platformId: token.platformId || walletTokensPlatform.id,
+        price,
+        timestamp: Date.now(),
+        weight: 1,
+      }));
+    })
+    .flat();
 }

@@ -10,6 +10,8 @@ export * from './getElementLendingValues';
 export * from './getElementNFTLendingValues';
 export * from './compareName';
 export * from './compareUsdValue';
+export * from './uniformAddress';
+export * from './uniformTokenAddress';
 export * from './formatTokenPrice';
 export * from './formatTokenPriceUnderlying';
 export * from './formatTokenPriceSource';
