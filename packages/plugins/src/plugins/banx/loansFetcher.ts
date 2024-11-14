@@ -78,7 +78,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           acc.bondTradeTransactionState.perpetualRefinancedActive ||
           acc.bondTradeTransactionState.perpetualManualTerminating ||
           acc.bondTradeTransactionState.active) &&
-        acc.redeemedAt === '0'
+        acc.redeemedAt === '0' &&
+        !acc.redeemResult.instantRefinanced
     );
 
   if (accounts.length === 0) return [];
