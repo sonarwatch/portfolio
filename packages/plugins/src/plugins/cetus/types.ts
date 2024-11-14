@@ -170,43 +170,45 @@ export type Vault = {
   }[];
 };
 
-export type WrappedPositionNFT = {
-  clmm_postion: {
-    fields: {
-      coin_type_a: {
-        fields: {
-          name: string;
-        };
-        type: string;
+export type LpPosition = {
+  fields: {
+    coin_type_a: {
+      fields: {
+        name: string;
       };
-      coin_type_b: {
-        fields: {
-          name: string;
-        };
-        type: string;
-      };
-      description: string;
-      id: ID;
-      index: number;
-      liquidity: string;
-      name: string;
-      pool: SuiObjectIdType;
-      tick_lower_index: {
-        fields: {
-          bits: number;
-        };
-        type: string;
-      };
-      tick_upper_index: {
-        fields: {
-          bits: number;
-        };
-        type: string;
-      };
-      url: string;
+      type: string;
     };
-    type: string;
+    coin_type_b: {
+      fields: {
+        name: string;
+      };
+      type: string;
+    };
+    description: string;
+    id: ID;
+    index: number;
+    liquidity: string;
+    name: string;
+    pool: SuiObjectIdType;
+    tick_lower_index: {
+      fields: {
+        bits: number;
+      };
+      type: string;
+    };
+    tick_upper_index: {
+      fields: {
+        bits: number;
+      };
+      type: string;
+    };
+    url: string;
   };
+  type: string;
+};
+
+export type WrappedPositionNFT = {
+  clmm_postion: LpPosition;
   id: ID;
   pool_id: string;
   url: string;

@@ -2,7 +2,7 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { clmmPoolsPrefix, farmNftType, platformId } from './constants';
+import { farmNftType, platformId } from './constants';
 import { getClientSui } from '../../utils/clients';
 import {
   WrappedPositionNFT,
@@ -17,6 +17,7 @@ import { bitsToNumber } from '../../utils/sui/bitsToNumber';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { fetchPosFeeAmount, fetchPosRewardersAmount } from './helpers';
+import { getPools } from './getPools';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -37,20 +38,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         .map((position) => position.data?.content?.fields.pool_id)
         .filter((s) => s !== null) as string[]
     ),
-    cache
-      .getItems<Pool>(
-        positions
-          .map(
-            (position) =>
-              position.data?.content?.fields.clmm_postion.fields.pool
-          )
-          .filter((s) => s !== null) as string[],
-        {
-          prefix: clmmPoolsPrefix,
-          networkId: NetworkId.sui,
-        }
-      )
-      .then((res) => res.filter((p) => p !== null) as Pool[]),
+    getPools(
+      positions
+        .map(
+          (position) => position.data?.content?.fields.clmm_postion.fields.pool
+        )
+        .filter((s) => s !== null) as string[],
+      cache
+    ).then((res) => res.filter((p) => p !== null) as Pool[]),
     fetchPosFeeAmount(
       positions
         .map((position) => {
