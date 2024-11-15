@@ -8,16 +8,19 @@ import {
 import { TokenPriceMap } from '../../TokenPriceMap';
 import { AssetBuilder } from './AssetBuilder';
 import { PortfolioAssetParams } from './PortfolioAssetParams';
+import { LiquidityParams } from './LiquidityParams';
 
 export class LiquidityBuilder {
+  private readonly params?: LiquidityParams;
   assets: AssetBuilder[];
   rewardAssets: AssetBuilder[];
   yields: Yield[];
 
-  constructor() {
+  constructor(params?: LiquidityParams) {
     this.assets = [];
     this.rewardAssets = [];
     this.yields = [];
+    this.params = params;
   }
 
   addAsset(params: PortfolioAssetParams) {
@@ -67,6 +70,7 @@ export class LiquidityBuilder {
       rewardAssetsValue,
       value,
       yields: this.yields,
+      name: this.params ? this.params.name : undefined,
     } as PortfolioLiquidity;
   }
 }
