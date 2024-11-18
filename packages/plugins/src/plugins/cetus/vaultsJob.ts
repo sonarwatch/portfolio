@@ -136,7 +136,6 @@ const executor: JobExecutor = async (cache: Cache) => {
       underlyings,
       timestamp: Date.now(),
       label: 'Vault',
-      elementName: 'Test',
     });
   }
 
