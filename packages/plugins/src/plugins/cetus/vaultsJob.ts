@@ -1,6 +1,7 @@
 import {
   formatMoveTokenAddress,
   NetworkId,
+  TokenPriceSource,
   TokenPriceUnderlying,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
@@ -44,7 +45,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     )
   ).filter((p) => p !== null) as Pool[];
 
-  const tokenPriceSources = [];
+  const tokenPriceSources: TokenPriceSource[] = [];
 
   for (const vault of vaults) {
     if (!vault.data?.content) continue;
@@ -134,6 +135,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       ),
       underlyings,
       timestamp: Date.now(),
+      label: 'Vault',
     });
   }
 

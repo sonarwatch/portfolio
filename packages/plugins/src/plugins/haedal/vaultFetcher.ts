@@ -43,14 +43,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   return [
     {
       type: 'multiple',
-      label: 'Deposit',
+      label: 'Vault',
       platformId,
       networkId: NetworkId.sui,
       data: {
         assets: [asset],
       },
       value: asset.value,
-      name: 'Random Vault',
     },
   ];
 };

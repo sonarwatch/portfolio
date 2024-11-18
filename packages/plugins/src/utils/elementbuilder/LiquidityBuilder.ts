@@ -47,7 +47,8 @@ export class LiquidityBuilder {
     tokenPrices: TokenPriceMap
   ): PortfolioLiquidity | null {
     const assets = this.assets
-      .map((a) => a.get(networkId, tokenPrices, true))
+      .map((a) => a.getUnderlyings(networkId, tokenPrices))
+      .flat()
       .filter((a) => a !== null) as PortfolioAsset[];
     const rewardAssets = this.rewardAssets
       .map((a) => a.get(networkId, tokenPrices))
