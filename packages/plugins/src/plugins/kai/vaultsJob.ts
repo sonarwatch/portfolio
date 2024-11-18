@@ -6,7 +6,7 @@ import { platformId, vaultsInfo } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { Vault } from './types';
-import getLpTokenSourceRawOld from '../../utils/misc/getLpTokenSourceRawOld';
+import { getLpTokenSourceRaw } from '../../utils/misc/getLpTokenSourceRaw';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
@@ -34,28 +34,29 @@ const executor: JobExecutor = async (cache: Cache) => {
     object.data?.content?.fields.strategies.fields.contents.forEach((c) => {
       amount = amount.plus(c.fields.value.fields.borrowed);
     });
-    const lpSource = getLpTokenSourceRawOld(
-      NetworkId.sui,
+    const lpSource = getLpTokenSourceRaw({
+      networkId: NetworkId.sui,
+      sourceId: platformId,
       platformId,
-      platformId,
-      {
+      lpDetails: {
         address: vaultInfo.lpType,
         decimals: vaultInfo.decimals,
         supplyRaw: new BigNumber(
           vault.lp_treasury.fields.total_supply.fields.value
         ),
       },
-      [
+      poolUnderlyingsRaw: [
         {
           address: vaultInfo.tType,
           decimals: vaultInfo.decimals,
           reserveAmountRaw: amount,
-          price: tokenPrice.price,
+          tokenPrice,
         },
       ],
-      'Vaults'
+    });
+    await cache.setTokenPriceSources(
+      lpSource.map((source) => ({ ...source, label: 'Vault' }))
     );
-    await cache.setTokenPriceSource({ ...lpSource, label: 'Vault' });
   }
 };
 const job: Job = {

@@ -9,14 +9,11 @@ export const platform: Platform = {
   twitter: 'https://twitter.com/tensor_hq',
   website: 'https://www.tensor.trade/',
 };
-export const cachePrefix = 'tensor';
 
 export const tensorPid = new PublicKey(
   'TSWAPaqyCSx2KABk68Shruf4rp7CxcNi8hAsbdwmHbN'
 );
 
-export const locksPid = new PublicKey(
-  'TLoCKic2wGJm7VhZKumih4Lc35fUhYqVMgA4j389Buk'
-);
 export const tnsrMint = 'TNSRxcUxoT9xBG3de7PiJyTDYu7kskLqcpddxnEJAS6';
-export const tnsrDecimals = 9;
+
+export const magmaProgramId = '3zK38YBP6u3BpLUpaa6QhRHh4VXdv3J8cmD24fFpuyqy';

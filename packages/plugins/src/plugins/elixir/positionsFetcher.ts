@@ -1,15 +1,9 @@
 import {
-  formatMoveTokenAddress,
-  getUsdValueSum,
   NetworkId,
-  PortfolioAsset,
-  PortfolioElement,
-  PortfolioLiquidity,
-  TokenPrice,
-  Yield,
   yieldFromApy,
   parseTypeString,
 } from '@sonarwatch/portfolio-core';
+import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
@@ -23,11 +17,7 @@ import { PositionField, Vault, VaultTvl } from './types';
 import { getClientSui } from '../../utils/clients';
 import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
 import { ObjectResponse } from '../../utils/sui/types';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import {
-  formatAndCleanBigInt,
-  convertDecimalStringToScaledBigInt,
-} from './helpers';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -89,32 +79,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     })
   ).then((dfs) => dfs.filter((df) => df !== null));
 
-  const coinsTypes: string[] = [];
-  activeShares.forEach((a) => {
-    if (
-      a &&
-      a.coinType &&
-      !coinsTypes.includes(formatMoveTokenAddress(a.coinType))
-    )
-      coinsTypes.push(formatMoveTokenAddress(a.coinType));
-  });
-  const tokenPrices: Map<string, TokenPrice> = await cache.getTokenPricesAsMap(
-    coinsTypes,
-    NetworkId.sui
-  );
-
-  const elements: PortfolioElement[] = [];
+  const elementRegistry = new ElementRegistry(NetworkId.sui, platformId);
 
   activeShares.forEach((a) => {
-    const assets: PortfolioAsset[] = [];
-
     if (!a) return;
 
-    const tokenPrice = tokenPrices.get(formatMoveTokenAddress(a.coinType));
-
-    if (!tokenPrice) return;
-
-    const yields: Yield[] = [];
+    const element = elementRegistry.addElementLiquidity({
+      label: 'LiquidityPool',
+    });
+    const liquidity = element.addLiquidity({
+      name: vaults.find((v) => v.address === a.vault)?.vaultName,
+    });
 
     if (a.shares) {
       let tvl: VaultTvl | undefined;
@@ -125,75 +100,39 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       });
 
       if (tvl) {
-        const userActiveAmounts = formatAndCleanBigInt(
-          (convertDecimalStringToScaledBigInt(a.shares, 6) *
-            BigInt(tvl.USDC.amount_wei)) /
-            BigInt(a.total_shares),
-          18
-        );
+        const userActiveAmounts = new BigNumber(a.shares)
+          .multipliedBy(new BigNumber(tvl.USDC.amount_wei).dividedBy(10 ** 27))
+          .dividedBy(a.total_shares);
 
-        if (Number(userActiveAmounts) > 0) {
-          assets.push(
-            tokenPriceToAssetToken(
-              a.coinType,
-              Number(userActiveAmounts) / 10 ** tokenPrice.decimals,
-              NetworkId.sui,
-              tokenPrice
-            )
-          );
-          yields.push(yieldFromApy(Number(tvl.pool_apy) / 100));
+        if (userActiveAmounts.gt(0)) {
+          liquidity.addAsset({
+            address: a.coinType,
+            amount: userActiveAmounts,
+            alreadyShifted: true,
+          });
+
+          liquidity.addYield(yieldFromApy(Number(tvl.pool_apy) / 100));
         }
       }
     }
 
-    const pendingAmount = a.pending
-      ? Number(a.pending) / 10 ** tokenPrice.decimals
-      : undefined;
+    const pendingAmount = a.pending ? Number(a.pending) : undefined;
     if (pendingAmount) {
-      assets.push(
-        tokenPriceToAssetToken(
-          a.coinType,
-          pendingAmount,
-          NetworkId.sui,
-          tokenPrice,
-          undefined,
-          { isClaimable: true }
-        )
-      );
-      yields.push({
+      liquidity.addAsset({
+        address: a.coinType,
+        amount: pendingAmount,
+        attributes: {
+          isClaimable: true,
+        },
+      });
+      liquidity.addYield({
         apr: 0,
         apy: 0,
       });
     }
-
-    const assetsValue = getUsdValueSum(assets.map((as) => as.value));
-    const value = assetsValue;
-
-    if (assets.length > 0) {
-      const liquidities: PortfolioLiquidity[] = [
-        {
-          value,
-          assets,
-          assetsValue,
-          rewardAssets: [],
-          rewardAssetsValue: null,
-          yields,
-          name: vaults.find((v) => v.address === a.vault)?.vaultName,
-        },
-      ];
-
-      elements.push({
-        type: 'liquidity',
-        data: { liquidities },
-        label: 'LiquidityPool',
-        networkId: NetworkId.sui,
-        platformId,
-        value: getUsdValueSum(liquidities.map((liq) => liq.value)),
-      });
-    }
   });
 
-  return elements;
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

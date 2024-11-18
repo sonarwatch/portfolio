@@ -9,6 +9,7 @@ import { ElementBuilder } from './ElementBuilder';
 import { ElementParams } from './ElementParams';
 import { TokenPriceMap } from '../../TokenPriceMap';
 import { LiquidityBuilder } from './LiquidityBuilder';
+import { LiquidityParams } from './LiquidityParams';
 
 export class ElementLiquidityBuilder extends ElementBuilder {
   liquidities: LiquidityBuilder[];
@@ -18,8 +19,8 @@ export class ElementLiquidityBuilder extends ElementBuilder {
     this.liquidities = [];
   }
 
-  addLiquidity() {
-    const liquidityBuilder = new LiquidityBuilder();
+  addLiquidity(params?: LiquidityParams) {
+    const liquidityBuilder = new LiquidityBuilder(params);
     this.liquidities.push(liquidityBuilder);
     return liquidityBuilder;
   }

@@ -1,38 +1,52 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
+import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, tnsrMint } from './constants';
-import { findPowerUserAllocation } from './helpers';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { magmaProgramId, platformId, tnsrMint } from './constants';
+import { getClientSolana } from '../../utils/clients';
+import { getParsedProgramAccounts } from '../../utils/solana';
+import { vestingAccountStruct } from './struct';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { ownerHasPowerUserAllocation } from './helpers';
+import { vestingFilter } from './filters';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const amount = findPowerUserAllocation(owner);
-  if (!amount) return [];
+  if (!ownerHasPowerUserAllocation(owner)) return [];
 
-  const tokenPrice = await cache.getTokenPrice(tnsrMint, NetworkId.solana);
+  const connection = getClientSolana();
 
-  const asset = tokenPriceToAssetToken(
-    tnsrMint,
-    amount,
-    NetworkId.solana,
-    tokenPrice,
-    undefined,
-    { isClaimable: false }
+  const accounts = await getParsedProgramAccounts(
+    connection,
+    vestingAccountStruct,
+    new PublicKey(magmaProgramId),
+    vestingFilter(owner),
+    1
   );
 
-  return [
-    {
-      type: 'multiple',
-      label: 'Airdrop',
-      networkId: NetworkId.solana,
-      platformId,
-      name: 'Power User',
-      data: {
-        assets: [asset],
-      },
-      value: asset.value,
-    },
-  ];
+  if (!accounts.length) return [];
+
+  const tokenAccounts = await connection.getParsedTokenAccountsByOwner(
+    accounts[0].pubkey,
+    { mint: new PublicKey(tnsrMint) }
+  );
+
+  if (!tokenAccounts.value[0]) return [];
+
+  const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
+
+  const element = elementRegistry.addElementMultiple({
+    label: 'Airdrop',
+    name: 'Power User',
+  });
+
+  element.addAsset({
+    address: tokenAccounts.value[0].account.data.parsed.info.mint,
+    amount:
+      tokenAccounts.value[0].account.data.parsed.info.tokenAmount.uiAmount,
+    alreadyShifted: true,
+  });
+
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {
