@@ -664,6 +664,11 @@ import {
   jobs as metaplexJobs,
   fetchers as metaplexFetchers,
 } from './plugins/metaplex';
+import {
+  platforms as ensofiPlatforms,
+  jobs as ensofiJobs,
+  fetchers as ensofiFetchers,
+} from './plugins/ensofi';
 
 export {
   walletTokensPlatform,
@@ -813,6 +818,7 @@ export const platforms: Platform[] = [
   ...grassPlatforms,
   ...autothorPlatforms,
   ...metaplexPlatforms,
+  ...ensofiPlatforms,
 ];
 
 // JOBS //
@@ -945,6 +951,7 @@ export const jobs: Job[] = [
   ...grassJobs,
   ...autothorJobs,
   ...metaplexJobs,
+  ...ensofiJobs,
 ];
 
 // FETCHERS //
@@ -1078,6 +1085,7 @@ export const fetchers: Fetcher[] = [
   ...grassFetchers,
   ...autothorFetchers,
   ...metaplexFetchers,
+  ...ensofiFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
