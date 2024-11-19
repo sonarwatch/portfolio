@@ -4,7 +4,8 @@ import { Job } from '../../Job';
 import { platform } from './constants';
 import suiLoansJob from './suiLoansJob';
 import suiLoansFetcher from './suiLoansFetcher';
+import solanaLoansFetcher from './solanaLoansFetcher';
 
 export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [suiLoansJob];
-export const fetchers: Fetcher[] = [suiLoansFetcher];
+export const fetchers: Fetcher[] = [suiLoansFetcher, solanaLoansFetcher];

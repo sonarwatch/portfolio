@@ -1,4 +1,6 @@
 import { Platform } from '@sonarwatch/portfolio-core';
+import { IdlItem } from '@solanafm/explorer-kit-idls';
+import { ensofiIdl } from './idl';
 
 export const platformId = 'ensofi';
 export const platform: Platform = {
@@ -19,18 +21,8 @@ export const LoanType =
 export const offersCacheKey = 'offers';
 export const loansCacheKey = 'loans';
 
-export const programId = 'KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD';
-
-/*
-[
-    {
-        "dataSize": 8624
-    },
-    {
-        "memcmp": {
-            "offset": 32,
-            "bytes": "7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF"
-        }
-    }
-]
- */
+export const ensofiIdlItem = {
+  programId: 'ensoQXKf4MvNuEC3M9xmcqUqgucFNd5UzAonDdUtgqn',
+  idl: ensofiIdl,
+  idlType: 'anchor',
+} as IdlItem;
