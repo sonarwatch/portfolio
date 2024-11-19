@@ -156,7 +156,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     elements.push({
       type: 'liquidity',
       data: { liquidities: depositedLiquidities },
-      label: 'Deposit',
+      label: 'Vault',
       networkId: NetworkId.sui,
       platformId,
       value: getUsdValueSum(depositedLiquidities.map((l) => l.value)),

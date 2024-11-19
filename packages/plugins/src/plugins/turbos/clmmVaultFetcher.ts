@@ -230,8 +230,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       type: PortfolioElementType.liquidity,
       networkId: NetworkId.sui,
       platformId,
-      label: 'LiquidityPool',
-      name: 'Vault',
+      label: 'Vault',
       value: totalLiquidityValue,
       data: {
         liquidities: assets,

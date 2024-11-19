@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import {
   NetworkIdType,
+  PortfolioElementLabel,
   TokenPriceSource,
   UniTokenList,
   UniTokenListVersion,
@@ -121,18 +122,27 @@ export function getTokensData(tokenList: UniTokenList): TokenData[] {
 
 export const lpTagSeparator = '<|>';
 
-export function getLpTag(platformId: string, elementName?: string) {
-  return `${platformId}${elementName ? `${lpTagSeparator}${elementName}` : ''}`;
+export function getLpTag(
+  platformId: string,
+  elementName?: string,
+  label?: PortfolioElementLabel
+) {
+  return `${platformId}${
+    label ? `${lpTagSeparator}${label}` : `${lpTagSeparator}`
+  }${elementName ? `${lpTagSeparator}${elementName}` : `${lpTagSeparator}`}`;
 }
 
 export function parseLpTag(tag: string): {
   platformId: string;
   elementName?: string;
+  label?: PortfolioElementLabel;
 } {
-  const split = tag.split(lpTagSeparator, 2);
+  const split = tag.split(lpTagSeparator, 3);
   if (split.length < 1) throw new Error(`Tag is not valid: ${tag}`);
   return {
     platformId: split[0],
-    elementName: split.at(1),
+    label:
+      split.at(1) === '' ? undefined : (split.at(1) as PortfolioElementLabel),
+    elementName: split.at(2) === '' ? undefined : split.at(2),
   };
 }

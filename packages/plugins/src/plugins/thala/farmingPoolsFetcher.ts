@@ -1,13 +1,4 @@
-import {
-  formatMoveTokenAddress,
-  getUsdValueSum,
-  NetworkId,
-  PortfolioAsset,
-  PortfolioElementType,
-  PortfolioLiquidity,
-  parseTypeString,
-} from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
+import { NetworkId, parseTypeString } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
@@ -24,7 +15,7 @@ import {
 } from '../../utils/aptos';
 import { getClientAptos } from '../../utils/clients';
 import { PoolInfo, StakeAndRewardAmount } from './types';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientAptos();
@@ -113,79 +104,29 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (!stakedTokens || stakedTokens.length === 0) return [];
 
-  const tokenMints = new Set<string>();
-  stakedTokens.forEach((st) => {
-    tokenMints.add(st.coinType);
-    st.rewards.forEach((r) => tokenMints.add(r.coinType));
-  });
-  const tokenPrices = await cache.getTokenPricesAsMap(
-    [...tokenMints],
-    NetworkId.aptos
-  );
+  const elementRegistry = new ElementRegistry(NetworkId.aptos, platformId);
 
-  const liquidities: PortfolioLiquidity[] = [];
+  const element = elementRegistry.addElementLiquidity({
+    label: 'Farming',
+  });
 
   stakedTokens.forEach((stakedToken) => {
-    const rewardAssets: PortfolioAsset[] = [];
-    const tokenPrice = tokenPrices.get(
-      formatMoveTokenAddress(stakedToken.coinType)
-    );
-    if (!tokenPrice) return;
+    const liquidity = element.addLiquidity();
 
-    const asset = tokenPriceToAssetToken(
-      stakedToken.coinType,
-      new BigNumber(stakedToken.amount)
-        .dividedBy(10 ** tokenPrice.decimals)
-        .toNumber(),
-      NetworkId.aptos,
-      tokenPrice
-    );
-
-    stakedToken.rewards.forEach((r) => {
-      if (r.amount === '0') return;
-      const rewardTokenPrice = tokenPrices.get(
-        formatMoveTokenAddress(r.coinType)
-      );
-      if (!rewardTokenPrice) return;
-      rewardAssets.push(
-        tokenPriceToAssetToken(
-          r.coinType,
-          new BigNumber(r.amount)
-            .dividedBy(10 ** rewardTokenPrice.decimals)
-            .toNumber(),
-          NetworkId.aptos,
-          rewardTokenPrice
-        )
-      );
+    liquidity.addAsset({
+      address: stakedToken.coinType,
+      amount: stakedToken.amount,
     });
 
-    const rewardAssetsValue = getUsdValueSum(rewardAssets.map((a) => a.value));
-    const value = (asset.value || 0) + (rewardAssetsValue || 0);
-
-    liquidities.push({
-      assets: [asset],
-      assetsValue: asset.value,
-      rewardAssets,
-      rewardAssetsValue,
-      value,
-      yields: [],
+    stakedToken.rewards.forEach((r) => {
+      liquidity.addRewardAsset({
+        address: r.coinType,
+        amount: r.amount,
+      });
     });
   });
 
-  if (liquidities.length === 0) return [];
-
-  return [
-    {
-      networkId: NetworkId.aptos,
-      label: 'Farming',
-      platformId,
-      type: PortfolioElementType.liquidity,
-      value: getUsdValueSum(liquidities.map((a) => a.value)),
-      data: {
-        liquidities,
-      },
-    },
-  ];
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

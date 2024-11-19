@@ -197,7 +197,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       platformId,
       name: 'Alpha Vault',
       value: getUsdValueSum(alphaAssets.map((a) => a.value)),
-      label: 'Deposit',
+      label: 'Vault',
       data: { assets: alphaAssets },
     });
 
