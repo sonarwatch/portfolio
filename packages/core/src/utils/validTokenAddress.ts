@@ -21,7 +21,6 @@ export function assertEvmTokenAddress(address: string): void {
     throw new TokenAddressIsNotValideError(address, AddressSystem.evm);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function isMoveTokenAddress(address: string): boolean {
   try {
     parseTypeString(address);
@@ -35,12 +34,7 @@ export function isMoveTokenAddress(address: string): boolean {
 
   const mainAddress = splitted.at(0);
   if (!mainAddress) return false;
-  if (
-    !isMoveAddress(mainAddress) &&
-    mainAddress !== '0x1' &&
-    mainAddress !== '0x2'
-  )
-    return false;
+  if (!isMoveAddress(mainAddress)) return false;
   return true;
 }
 export function assertMoveTokenAddress(address: string): void {
@@ -56,6 +50,7 @@ export function assertSolanaTokenAddress(address: string): void {
     throw new TokenAddressIsNotValideError(address, AddressSystem.solana);
 }
 
+// TODO
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function isSeiTokenAddress(address: string): boolean {
   return true;

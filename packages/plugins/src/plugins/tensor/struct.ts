@@ -189,3 +189,16 @@ export const orderStateLockStruct = new BeetStruct<OrderStateLock>(
   ],
   (args) => args as OrderStateLock
 );
+
+export type VestingAccount = {
+  padding: Buffer;
+  owner: PublicKey;
+};
+
+export const vestingAccountStruct = new BeetStruct<VestingAccount>(
+  [
+    ['padding', blob(8)],
+    ['owner', publicKey],
+  ],
+  (args) => args as VestingAccount
+);

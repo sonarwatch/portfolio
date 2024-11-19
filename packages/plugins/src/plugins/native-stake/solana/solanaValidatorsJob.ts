@@ -25,7 +25,8 @@ const executor: JobExecutor = async (cache: Cache) => {
     jitoApy: r.jito_apy,
     stakingApy: r.staking_apy,
     totalApy: r.total_apy,
-    commission: r.commission,
+    stakeCommission: r.commission / 100,
+    mevCommission: r.jito_commission_bps / 10000,
   }));
 
   await cache.setItem(validatorsKey, validators, {

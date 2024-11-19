@@ -5,6 +5,7 @@ import {
   bool,
   i32,
   u8,
+  uniformFixedSizeArray,
 } from '@metaplex-foundation/beet';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
@@ -499,6 +500,10 @@ export type FLPool = {
   flpMintBump: number;
   flpTokenAccountBump: number;
   vpVolumeFactor: number;
+  padding: number[];
+  stakingFeeBoostBps: BigNumber[];
+  compoundingMint: PublicKey;
+  compoundingLpVault: PublicKey;
 };
 
 export const flPoolStruct = new FixableBeetStruct<FLPool>(
@@ -522,6 +527,10 @@ export const flPoolStruct = new FixableBeetStruct<FLPool>(
     ['flpMintBump', u8],
     ['flpTokenAccountBump', u8],
     ['vpVolumeFactor', u8],
+    ['padding', uniformFixedSizeArray(u8, 4)],
+    ['stakingFeeBoostBps', uniformFixedSizeArray(u64, 6)],
+    ['compoundingMint', publicKey],
+    ['compoundingLpVault', publicKey],
   ],
   (args) => args as FLPool
 );

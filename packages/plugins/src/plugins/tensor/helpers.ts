@@ -3,11 +3,9 @@ import { PublicKey } from '@solana/web3.js';
 import powerUsers from './powerUsers.json';
 import { tensorPid } from './constants';
 
-export function findPowerUserAllocation(owner: string) {
+export function ownerHasPowerUserAllocation(owner: string) {
   const users: { [key: string]: number } = powerUsers;
-  const amount = users[owner];
-  if (!amount) return undefined;
-  return amount;
+  return users[owner] !== null;
 }
 
 export const findMarginPDA = (owner: string) =>

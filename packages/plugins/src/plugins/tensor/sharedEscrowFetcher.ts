@@ -1,16 +1,11 @@
-import {
-  NetworkId,
-  PortfolioElementType,
-  solanaNativeAddress,
-  solanaNetwork,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId, solanaNativeAddress } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { findMarginPDA } from './helpers';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -23,34 +18,23 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const rent = await client.getMinimumBalanceForRentExemption(8);
 
-  const solTokenPrice = await cache.getTokenPrice(
-    solanaNativeAddress,
-    NetworkId.solana
-  );
+  const amount = new BigNumber(solRawBalance).minus(rent);
 
-  const amount = new BigNumber(solRawBalance)
-    .minus(rent)
-    .dividedBy(10 ** solanaNetwork.native.decimals)
-    .toNumber();
+  if (amount.lte(1000000)) return [];
 
-  const asset = tokenPriceToAssetToken(
-    solanaNativeAddress,
+  const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
+
+  const element = elementRegistry.addElementMultiple({
+    label: 'Deposit',
+    name: 'Shared Escrow',
+  });
+
+  element.addAsset({
+    address: solanaNativeAddress,
     amount,
-    NetworkId.solana,
-    solTokenPrice
-  );
+  });
 
-  return [
-    {
-      type: PortfolioElementType.multiple,
-      label: 'Deposit',
-      networkId: NetworkId.solana,
-      platformId,
-      name: 'Shared Escrow',
-      value: asset.value,
-      data: { assets: [asset] },
-    },
-  ];
+  return elementRegistry.getElements(cache);
 };
 const fetcher: Fetcher = {
   id: `${platformId}-shared-escrow`,

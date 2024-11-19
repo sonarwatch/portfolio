@@ -6,6 +6,7 @@ import { getClientSui } from '../../utils/clients';
 import {
   clmmPoolsPrefix,
   firstPool,
+  hardCodedPools,
   platformId,
   poolParentId,
 } from './constants';
@@ -20,7 +21,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   const promises = [];
   const cacheItems = [];
 
-  const poolsAddresses: string[] = [];
+  const poolsAddresses: Set<string> = new Set(hardCodedPools);
   let poolInfo;
   let value;
   do {
@@ -39,12 +40,12 @@ const executor: JobExecutor = async (cache: Cache) => {
     });
 
     if (poolInfo.data?.content)
-      poolsAddresses.push(
+      poolsAddresses.add(
         poolInfo.data.content.fields.value.fields.value.fields.pool_id
       );
   } while (poolInfo && poolInfo.data?.content?.fields.value.fields.next);
 
-  const poolsObjects = await multiGetObjects(client, poolsAddresses);
+  const poolsObjects = await multiGetObjects(client, [...poolsAddresses]);
 
   let poolId;
   let pool;
@@ -73,6 +74,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     });
   }
 
+  // always use getPools helper to retrieve cetus pools
   await cache.setItems(cacheItems, {
     prefix: clmmPoolsPrefix,
     networkId: NetworkId.sui,

@@ -659,6 +659,16 @@ import {
   jobs as autothorJobs,
   fetchers as autothorFetchers,
 } from './plugins/cyberfrogs';
+import {
+  platforms as metaplexPlatforms,
+  jobs as metaplexJobs,
+  fetchers as metaplexFetchers,
+} from './plugins/metaplex';
+import {
+  platforms as ensofiPlatforms,
+  jobs as ensofiJobs,
+  fetchers as ensofiFetchers,
+} from './plugins/ensofi';
 
 export {
   walletTokensPlatform,
@@ -807,6 +817,8 @@ export const platforms: Platform[] = [
   ...spdrPlatforms,
   ...grassPlatforms,
   ...autothorPlatforms,
+  ...metaplexPlatforms,
+  ...ensofiPlatforms,
 ];
 
 // JOBS //
@@ -904,7 +916,7 @@ export const jobs: Job[] = [
   ...whalesmarketJobs,
   ...futarchyJobs,
   ...elixirJobs,
-  ...moonwalkJobs,
+  // ...moonwalkJobs,
   ...bluefinJobs,
   ...citrusJobs,
   ...sharkyJobs,
@@ -938,6 +950,8 @@ export const jobs: Job[] = [
   ...spdrJobs,
   ...grassJobs,
   ...autothorJobs,
+  ...metaplexJobs,
+  ...ensofiJobs,
 ];
 
 // FETCHERS //
@@ -1036,7 +1050,7 @@ export const fetchers: Fetcher[] = [
   ...whalesmarketFetchers,
   ...futarchyFetchers,
   ...elixirFetchers,
-  ...moonwalkFetchers,
+  // ...moonwalkFetchers,
   ...bluefinFetchers,
   ...citrusFetchers,
   ...sharkyFetchers,
@@ -1070,6 +1084,8 @@ export const fetchers: Fetcher[] = [
   ...spdrFetchers,
   ...grassFetchers,
   ...autothorFetchers,
+  ...metaplexFetchers,
+  ...ensofiFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 

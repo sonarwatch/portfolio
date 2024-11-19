@@ -6,6 +6,7 @@ import {
   PortfolioElement,
   PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
+import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
@@ -19,7 +20,6 @@ import { getShareData } from './safu_helpers';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import { TypusBidReceipt, Vault } from './safu_types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import BigNumber from 'bignumber.js';
 
 const vaultsMemo = new MemoizedCache<{
   [p: string]: [Vault, TypusBidReceipt | null];
@@ -57,7 +57,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const vaultIndex = vaultsIndexes[i];
     const share = shareDatas[vaultIndex];
     if (share.length > 0) {
-      const [vault, bidReceipt] = vaults[vaultIndex];
+      const [vault] = vaults[vaultIndex];
       if (!vault) continue;
 
       const amount = new BigNumber(share[0].share.active_share)
