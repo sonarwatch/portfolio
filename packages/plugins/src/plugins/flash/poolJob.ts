@@ -38,24 +38,54 @@ const executor: JobExecutor = async (cache: Cache) => {
     const pool = poolsAccounts[i];
     if (!pool) continue;
 
-    const lpPrice = await getLpTokenPrice(
-      client,
-      pool,
-      pool.custodies.map(
-        (c) =>
-          custodyAccounts.get(c.toString())?.oracle.customOracleAccount || ''
-      )
-    );
-    const decimals = await getDecimals(client, pool.flpMint);
+    const [stakedLpPrice, compoundingLpPrice] = await Promise.all([
+      getLpTokenPrice(
+        client,
+        pool,
+        pool.custodies.map(
+          (c) =>
+            custodyAccounts.get(c.toString())?.oracle.customOracleAccount || ''
+        ),
+        'getLpTokenPrice'
+      ),
+      getLpTokenPrice(
+        client,
+        pool,
+        pool.custodies.map(
+          (c) =>
+            custodyAccounts.get(c.toString())?.oracle.customOracleAccount || ''
+        ),
+        'getCompoundingTokenPrice'
+      ),
+    ]);
 
-    if (decimals && lpPrice) {
+    const [stakedDecimals, compoundingDecimals] = await Promise.all([
+      getDecimals(client, pool.flpMint),
+      getDecimals(client, pool.compoundingMint),
+    ]);
+
+    if (stakedDecimals && stakedLpPrice) {
       await cache.setTokenPriceSource({
         address: pool.flpMint.toString(),
-        decimals,
+        decimals: stakedDecimals,
         id: poolsPkeys[i].toString(),
         networkId: NetworkId.solana,
         platformId: walletTokensPlatform.id,
-        price: lpPrice,
+        price: stakedLpPrice,
+        timestamp: Date.now(),
+        weight: 1,
+        elementName: u8ArrayToString(pool.name),
+      });
+    }
+
+    if (compoundingDecimals && compoundingLpPrice) {
+      await cache.setTokenPriceSource({
+        address: pool.compoundingMint.toString(),
+        decimals: compoundingDecimals,
+        id: poolsPkeys[i].toString(),
+        networkId: NetworkId.solana,
+        platformId: walletTokensPlatform.id,
+        price: compoundingLpPrice,
         timestamp: Date.now(),
         weight: 1,
         elementName: u8ArrayToString(pool.name),
@@ -72,6 +102,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
     poolsInfo.push({
       flpMint: pool.flpMint.toString(),
+      compoundingMint: pool.compoundingMint.toString(),
       pkey: poolsPkeys[i].toString(),
       rewardPerLp,
     });
