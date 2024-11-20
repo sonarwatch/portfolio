@@ -55,8 +55,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const registry = new ElementRegistry(NetworkId.sui, platformId);
   const liquidities = registry.addElementLiquidity({
-    name: 'Vaults',
-    label: 'LiquidityPool',
+    label: 'Vault',
   });
   for (let i = 0; i < vaultsOldBalances.length; i++) {
     const liquidity = liquidities.addLiquidity();

@@ -53,9 +53,10 @@ const executor: JobExecutor = async (cache: Cache) => {
           tokenPrice,
         },
       ],
-      elementName: 'Vaults',
     });
-    await cache.setTokenPriceSources(lpSource);
+    await cache.setTokenPriceSources(
+      lpSource.map((source) => ({ ...source, label: 'Vault' }))
+    );
   }
 };
 const job: Job = {

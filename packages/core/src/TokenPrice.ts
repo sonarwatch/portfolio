@@ -1,6 +1,7 @@
 import { NetworkIdType } from './Network';
 import { deepClone } from './helpers';
 import { walletTokensPlatformId } from './constants';
+import { PortfolioElementLabel } from './Portfolio';
 
 export const coingeckoSourceId = 'coingecko';
 export const tokenPriceSourceTtl = 4 * 60 * 60 * 1000; // 4 hours
@@ -22,6 +23,7 @@ export type TokenPriceSource = {
   platformId: string;
   decimals: number;
   price: number;
+  label?: PortfolioElementLabel;
   elementName?: string;
   liquidityName?: string;
   underlyings?: TokenPriceUnderlying[];
@@ -34,6 +36,7 @@ export type TokenPrice = {
   platformId: string;
   decimals: number;
   price: number;
+  label?: PortfolioElementLabel;
   elementName?: string;
   liquidityName?: string;
   underlyings?: TokenPriceUnderlying[];
@@ -77,6 +80,7 @@ export function tokenPriceFromSources(
     price,
     underlyings: bestSource.underlyings,
     elementName: bestSource.elementName,
+    label: bestSource.label,
     liquidityName: bestSource.liquidityName,
     timestamp: Date.now(),
     sources: updatedSources,

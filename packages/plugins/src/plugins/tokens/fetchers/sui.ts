@@ -55,7 +55,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         yields: [],
         name: tokenPrice.liquidityName,
       };
-      const tag = getLpTag(tokenPrice.platformId, tokenPrice.elementName);
+      const tag = getLpTag(
+        tokenPrice.platformId,
+        tokenPrice.elementName,
+        tokenPrice.label
+      );
       if (!liquiditiesByTag[tag]) {
         liquiditiesByTag[tag] = [];
       }
@@ -82,13 +86,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     elements.push(walletTokensElement);
   }
   for (const [tag, liquidities] of Object.entries(liquiditiesByTag)) {
-    const { platformId, elementName } = parseLpTag(tag);
+    const { platformId, elementName, label } = parseLpTag(tag);
     elements.push({
       type: PortfolioElementType.liquidity,
       networkId: NetworkId.sui,
       platformId,
       name: elementName,
-      label: 'LiquidityPool',
+      label: label ?? 'LiquidityPool',
       value: getUsdValueSum(liquidities.map((a) => a.value)),
       data: {
         liquidities,
