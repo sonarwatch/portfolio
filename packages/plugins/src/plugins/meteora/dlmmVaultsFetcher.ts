@@ -17,9 +17,9 @@ import { getParsedProgramAccounts } from '../../utils/solana';
 import { escrowStruct } from './struct';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
-const slotTtl = 30000;
-let slot: number | null = null;
-let slotUpdate = 0;
+// const slotTtl = 30000;
+// const slot: number | null = null;
+// const slotUpdate = 0;
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -36,18 +36,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           bytes: owner,
         },
       },
-      // {
-      //   memcmp: {
-      //     offset: 8,
-      //     bytes: 'CGZvC5MWsu1bc3vRis619ZBEtvuPqoXrtBMeV9RrKFJp',
-      //   },
-      // },
-      // {
-      //   memcmp: {
-      //     offset: 96,
-      //     bytes: '1', // refunded === false
-      //   },
-      // },
     ]
   );
   if (accounts.length === 0) return [];
@@ -58,11 +46,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
   if (!vaults) return [];
 
-  if (!slot || Date.now() - slotTtl > slotUpdate) {
-    slot = await client.getSlot();
-    slotUpdate = Date.now();
-  }
-  if (!slot) return [];
+  const time = Date.now();
+
+  // Looks like Meteora is using timesteamp instead of slot now inside their accounts
+  // if (!slot || Date.now() - slotTtl > slotUpdate) {
+  //   slot = await client.getSlot();
+  //   slotUpdate = Date.now();
+  // }
+  // if (!slot) return [];
 
   const tokenPrices = await cache.getTokenPricesAsMap(
     accounts
@@ -76,12 +67,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const assets: PortfolioAssetToken[] = [];
   accounts.forEach((escrow) => {
-    if (!slot) return;
     const vault = vaults[escrow.dlmmVault.toString()];
     if (!vault) return;
 
+    if (time > Number(vault.endVestingTs)) return;
+
     // Vesting not started yet
-    if (slot < Number(vault.startVestingSlot)) {
+    if (Date.now() < Number(vault.startVestingTs)) {
       const tpQuote = tokenPrices.get(vault.quoteMint);
       if (!tpQuote) return;
       assets.push(
@@ -109,39 +101,41 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         if (!tpQuote) return;
         const amount = new BigNumber(escrow.totalDeposit)
           .div(10 ** tpQuote.decimals)
-          .times(1 - 1 / filledRatio)
-          .toNumber();
-        assets.push(
-          tokenPriceToAssetToken(
-            vault.quoteMint,
-            amount,
-            NetworkId.solana,
-            tpQuote,
-            undefined,
-            {
-              isClaimable: true,
-            }
-          )
-        );
+          .times(1 - 1 / filledRatio);
+
+        if (amount.isGreaterThan(0.0001))
+          assets.push(
+            tokenPriceToAssetToken(
+              vault.quoteMint,
+              amount.toNumber(),
+              NetworkId.solana,
+              tpQuote,
+              undefined,
+              {
+                isClaimable: true,
+              }
+            )
+          );
       }
       const tpBase = tokenPrices.get(vault.baseMint);
       if (!tpBase) return;
+
       const shares = new BigNumber(escrow.totalDeposit).div(vault.totalDeposit);
       const totalAmount = new BigNumber(vault.boughtToken).times(shares);
       const remainingAmount = totalAmount.minus(escrow.claimedToken);
-      if (remainingAmount.isZero()) return;
+      if (remainingAmount.isLessThan(0.0001)) return;
 
       let claimableAmount = new BigNumber(remainingAmount.toString());
-      if (slot < Number(vault.endVestingSlot)) {
-        const amountPerSlot = new BigNumber(totalAmount).div(
-          Number(vault.endVestingSlot) - Number(vault.startVestingSlot)
+      if (time < Number(vault.endVestingTs)) {
+        const amountPerSec = new BigNumber(totalAmount).div(
+          Number(vault.endVestingTs) - Number(vault.startVestingTs)
         );
-        let lastClaimedSlot = escrow.lastClaimedSlot.isZero()
-          ? Number(vault.startVestingSlot)
-          : escrow.lastClaimedSlot.toNumber();
-        if (lastClaimedSlot > slot) lastClaimedSlot = slot;
-        claimableAmount = amountPerSlot.times(
-          Math.min(slot, Number(vault.endVestingSlot)) - lastClaimedSlot
+        let lastClaimedTs = escrow.lastClaimedTs.isZero()
+          ? Number(vault.startVestingTs)
+          : escrow.lastClaimedTs.toNumber();
+        if (lastClaimedTs > time) lastClaimedTs = time;
+        claimableAmount = amountPerSec.times(
+          Math.min(time, Number(vault.endVestingTs)) - lastClaimedTs
         );
       }
       if (claimableAmount.isGreaterThan(0)) {
@@ -159,12 +153,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         );
       }
 
-      const vestingAmount = remainingAmount.minus(claimableAmount);
-      if (vestingAmount.isGreaterThan(0)) {
+      const vestingAmount = remainingAmount
+        .minus(claimableAmount)
+        .div(10 ** tpBase.decimals);
+      if (vestingAmount.isGreaterThan(0.0001)) {
         assets.push(
           tokenPriceToAssetToken(
             vault.baseMint,
-            vestingAmount.div(10 ** tpBase.decimals).toNumber(),
+            vestingAmount.toNumber(),
             NetworkId.solana,
             tpBase,
             undefined,

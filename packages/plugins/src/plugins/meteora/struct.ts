@@ -597,7 +597,7 @@ export type Escrow = {
   owner: PublicKey;
   totalDeposit: BigNumber;
   claimedToken: BigNumber;
-  lastClaimedSlot: BigNumber;
+  lastClaimedTs: BigNumber;
   refunded: number;
   padding1: number[];
   padding: BigNumber[];
@@ -610,7 +610,7 @@ export const escrowStruct = new BeetStruct<Escrow>(
     ['owner', publicKey],
     ['totalDeposit', u64],
     ['claimedToken', u64],
-    ['lastClaimedSlot', u64],
+    ['lastClaimedTs', u64],
     ['refunded', u8],
     ['padding1', uniformFixedSizeArray(u8, 7)],
     ['padding', uniformFixedSizeArray(u128, 2)],
@@ -634,8 +634,8 @@ export type DlmmVault = {
   boughtToken: string;
   totalRefund: string;
   totalClaimedToken: string;
-  startVestingSlot: string;
-  endVestingSlot: string;
+  startVestingTs: string;
+  endVestingTs: string;
   bump: number;
   padding0: number[];
   padding: Buffer;
@@ -658,8 +658,8 @@ export const dlmmVaultStruct = new BeetStruct<DlmmVault>(
     ['boughtToken', u64Str],
     ['totalRefund', u64Str],
     ['totalClaimedToken', u64Str],
-    ['startVestingSlot', u64Str],
-    ['endVestingSlot', u64Str],
+    ['startVestingTs', u64Str],
+    ['endVestingTs', u64Str],
     ['bump', u8],
     ['padding0', uniformFixedSizeArray(u8, 7)],
     ['padding', blob(160)],
