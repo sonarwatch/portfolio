@@ -124,6 +124,17 @@ const feedsToFetch: FeedInfo[] = [
       },
     ],
   },
+  // USDS
+  {
+    address: new PublicKey('95CJ8Jd54H97mBPuZnRWajUsaZnP2VFV522WYxJ5ppsz'),
+    tokens: [
+      {
+        decimals: 6,
+        mint: 'USDSwr9ApdHk5bvJKMjzff41FfuX8bSxdKcR81vTwcA',
+        networkdId: NetworkId.solana,
+      },
+    ],
+  },
 ];
 
 const executor: JobExecutor = async (cache: Cache) => {
