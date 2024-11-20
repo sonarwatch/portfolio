@@ -21,6 +21,8 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 // const slot: number | null = null;
 // const slotUpdate = 0;
 
+const dustFilter = 0.00001;
+
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
@@ -68,8 +70,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const assets: PortfolioAssetToken[] = [];
   accounts.forEach((escrow) => {
     const vault = vaults[escrow.dlmmVault.toString()];
-    if (!vault) return;
-
+    if (!vault || !vault.endVestingTs || !vault.startVestingTs) return;
     if (time > Number(vault.endVestingTs)) return;
 
     // Vesting not started yet
@@ -103,7 +104,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           .div(10 ** tpQuote.decimals)
           .times(1 - 1 / filledRatio);
 
-        if (amount.isGreaterThan(0.0001))
+        if (amount.isGreaterThan(dustFilter))
           assets.push(
             tokenPriceToAssetToken(
               vault.quoteMint,
@@ -123,7 +124,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const shares = new BigNumber(escrow.totalDeposit).div(vault.totalDeposit);
       const totalAmount = new BigNumber(vault.boughtToken).times(shares);
       const remainingAmount = totalAmount.minus(escrow.claimedToken);
-      if (remainingAmount.isLessThan(0.0001)) return;
+      if (remainingAmount.isLessThan(dustFilter)) return;
 
       let claimableAmount = new BigNumber(remainingAmount.toString());
       if (time < Number(vault.endVestingTs)) {
@@ -138,11 +139,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           Math.min(time, Number(vault.endVestingTs)) - lastClaimedTs
         );
       }
-      if (claimableAmount.isGreaterThan(0)) {
+      claimableAmount = claimableAmount.div(10 ** tpBase.decimals);
+      if (claimableAmount.isGreaterThan(dustFilter)) {
         assets.push(
           tokenPriceToAssetToken(
             vault.baseMint,
-            claimableAmount.div(10 ** tpBase.decimals).toNumber(),
+            claimableAmount.toNumber(),
             NetworkId.solana,
             tpBase,
             undefined,
@@ -156,7 +158,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const vestingAmount = remainingAmount
         .minus(claimableAmount)
         .div(10 ** tpBase.decimals);
-      if (vestingAmount.isGreaterThan(0.0001)) {
+      if (vestingAmount.isGreaterThan(dustFilter)) {
         assets.push(
           tokenPriceToAssetToken(
             vault.baseMint,
