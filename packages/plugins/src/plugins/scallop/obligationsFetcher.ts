@@ -203,6 +203,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           tokenPrices.get(address)
         )
       );
+      suppliedYields.push([]);
     }
     for (const coinType of Object.keys(debts)) {
       const metadata = ctmValues.find(
@@ -235,6 +236,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       rewardAssets.length === 0
     )
       continue;
+
     const { borrowedValue, healthRatio, suppliedValue, value, rewardValue } =
       getElementLendingValues({ suppliedAssets, borrowedAssets, rewardAssets });
     elements.push({
