@@ -108,7 +108,12 @@ export type CustodyInfo = {
   tokenAccountBump: string;
 };
 
-export type PoolInfo = { pkey: string; flpMint: string; rewardPerLp: number };
+export type PoolInfo = {
+  pkey: string;
+  flpMint: string;
+  rewardPerLp: number;
+  compoundingMint: string;
+};
 
 export type Prefix = {
   keys: any[];

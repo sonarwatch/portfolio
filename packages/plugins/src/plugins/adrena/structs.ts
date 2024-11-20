@@ -407,6 +407,51 @@ export const liquidStakeStruct = new BeetStruct<LiquidStake>(
   (args) => args as LiquidStake
 );
 
+export type Pool = {
+  buffer: number;
+  padding: Buffer;
+  bump: number;
+  lpTokenBump: number;
+  nbStableCustody: number;
+  initialized: number;
+  allowTrade: number;
+  allowSwap: number;
+  liquidityState: number;
+  registeredCustodyCount: number;
+  name: Buffer;
+  custodies: PublicKey[];
+  padding1: number[];
+  whitelistedSwapper: PublicKey;
+  ratios: Buffer;
+  padding2: number[];
+  aumUsdHigh: BigNumber;
+  aumUsdLow: BigNumber;
+};
+
+export const poolStruct = new FixableBeetStruct<Pool>(
+  [
+    // ['padding', blob(8 + 8 + 32 + 32 * 8 + 32 + 32 + 32 + 8 * 8 + 16 + 8)],
+    ['buffer', blob(8)],
+    ['bump', u8],
+    ['lpTokenBump', u8],
+    ['nbStableCustody', u8],
+    ['initialized', u8],
+    ['allowTrade', u8],
+    ['allowSwap', u8],
+    ['liquidityState', u8],
+    ['registeredCustodyCount', u8],
+    ['name', blob(32)],
+    ['custodies', uniformFixedSizeArray(publicKey, 8)],
+    ['padding1', uniformFixedSizeArray(u8, 32)],
+    ['whitelistedSwapper', publicKey],
+    ['ratios', blob(64)],
+    ['padding2', uniformFixedSizeArray(u8, 16)],
+    ['aumUsdHigh', u64],
+    ['aumUsdLow', u64],
+  ],
+  (args) => args as Pool
+);
+
 export type UserStaking = {
   bump: number;
   threadAuthorityBump: number;

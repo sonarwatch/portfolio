@@ -89,12 +89,12 @@ export async function getElementsFromObligations(
       obligation.borrowsLen
     );
     if (depositsMap.size === 0 && borrowsMap.size === 0) continue;
-
     const element = obligationAddressesRelatedToSavePlatform?.includes(
       obligation.pubkey.toString()
     )
       ? elementRegistrySave.addElementBorrowlend({
           label: 'Lending',
+          name: market.name,
         })
       : elementRegistryDumpy.addElementBorrowlend({
           label: 'Lending',

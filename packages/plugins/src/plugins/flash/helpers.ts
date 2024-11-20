@@ -36,7 +36,8 @@ export function getPdas(owner: string) {
 export async function getLpTokenPrice(
   connection: SolanaClient,
   pool: ParsedAccount<FLPool>,
-  oracles: string[]
+  oracles: string[],
+  method: 'getCompoundingTokenPrice' | 'getLpTokenPrice'
 ) {
   const keys: AccountMeta[] = [
     {
@@ -75,7 +76,7 @@ export async function getLpTokenPrice(
       isWritable: false,
     })),
   ];
-  const data = Buffer.concat([anchorSighash('global', 'getLpTokenPrice')]);
+  const data = Buffer.concat([anchorSighash('global', method)]);
   const recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
 
   const prefixResponse: AxiosResponse<Prefix> = await axios.get(
