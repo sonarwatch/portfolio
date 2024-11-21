@@ -325,7 +325,7 @@ export async function getPythTokenPriceSources(
         platformId: token.platformId || walletTokensPlatform.id,
         price,
         timestamp: Date.now(),
-        weight: 1,
+        weight: 0.5,
       }));
     })
     .flat();
