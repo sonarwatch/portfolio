@@ -69,7 +69,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       timestamp: Date.now(),
       price: solTokenPrice.price * price,
       platformId: walletTokensPlatform.id,
-      weight: 0.8,
+      weight: 1,
     };
     sources.push(source);
   });
