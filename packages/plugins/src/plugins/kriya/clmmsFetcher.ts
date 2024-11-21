@@ -1,10 +1,8 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { clmmType, platformId } from './constants';
 import { getClientSui } from '../../utils/clients';
-import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
@@ -43,32 +41,16 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const pool = poolsById.get(clmmPosition.pool_id);
     if (!pool) return;
 
-    const { tokenAmountA, tokenAmountB } = getTokenAmountsFromLiquidity(
-      new BigNumber(clmmPosition.liquidity),
-      bitsToNumber(pool.tick_index.fields.bits),
-      bitsToNumber(clmmPosition.tick_lower_index.fields.bits),
-      bitsToNumber(clmmPosition.tick_upper_index.fields.bits),
-      false
-    );
+    const element = elementRegistry.addElementConcentratedLiquidity();
 
-    const element = elementRegistry.addElementLiquidity({
-      label: 'LiquidityPool',
-      tags: ['Concentrated'],
+    element.setLiquidity({
+      addressA: pool.type_x.fields.name,
+      addressB: pool.type_y.fields.name,
+      liquidity: clmmPosition.liquidity,
+      tickCurrentIndex: bitsToNumber(pool.tick_index.fields.bits),
+      tickLowerIndex: bitsToNumber(clmmPosition.tick_lower_index.fields.bits),
+      tickUpperIndex: bitsToNumber(clmmPosition.tick_upper_index.fields.bits),
     });
-    const liquidity = element.addLiquidity();
-
-    liquidity.addAsset({
-      address: pool.type_x.fields.name,
-      amount: tokenAmountA,
-    });
-
-    liquidity.addAsset({
-      address: pool.type_y.fields.name,
-      amount: tokenAmountB,
-    });
-
-    if (tokenAmountA.isZero() || tokenAmountB.isZero())
-      element.addTag('Out Of Range');
   });
 
   return elementRegistry.getElements(cache);
