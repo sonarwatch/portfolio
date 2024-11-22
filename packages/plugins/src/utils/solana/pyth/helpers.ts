@@ -3,7 +3,7 @@ import { NetworkIdType, TokenPriceSource } from '@sonarwatch/portfolio-core';
 import { SolanaClient } from '../../clients/types';
 import { walletTokensPlatform } from '../../../plugins/tokens/constants';
 import { getParsedMultipleAccountsInfo } from '../getParsedMultipleAccountsInfo';
-import { priceUpdateV2Struct } from './structsNew';
+import { priceUpdateV2Struct } from './structs';
 
 export async function getPythPricesAsMap(
   connection: SolanaClient,
