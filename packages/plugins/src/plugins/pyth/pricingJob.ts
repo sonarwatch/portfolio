@@ -25,10 +25,11 @@ import {
 } from '../../utils/sui/constants';
 import { usdcSolanaDecimals, usdcSolanaMint } from '../../utils/solana';
 
+// https://www.pyth.network/developers/price-feed-ids#solana-price-feed-accounts
 const feedsToFetch: FeedInfo[] = [
   // SOL
   {
-    address: new PublicKey('H6ARHf6YXhGYeQfUzQNGk6rDNnLBQKrenN712K4AQJEG'),
+    address: new PublicKey('7UVimffxr9ow1uXYxsr4LHAcV58mLzhmwaeKvJ1pjLiE'),
     tokens: [
       {
         mint: solanaNativeAddress,
@@ -44,7 +45,7 @@ const feedsToFetch: FeedInfo[] = [
   },
   // SUI
   {
-    address: new PublicKey('3Qub3HaAJaa2xNY7SUqPKd3vVwTqDfDDkEUMPjXD2c1q'),
+    address: new PublicKey('GgV3a7YeVRga9prjNGEDBG9NwatSaD8rwjZ4GNjPiXTq'),
     tokens: [
       {
         mint: suiNativeAddress,
@@ -60,7 +61,7 @@ const feedsToFetch: FeedInfo[] = [
   },
   // APT
   {
-    address: new PublicKey('FNNvb1AFDnDVPkocEri8mWbJ1952HQZtFLuwPiUjSJQ'),
+    address: new PublicKey('9oR3Uh2zsp1CxLdsuFrg3QhY2eZ2e5eLjDgDfZ6oG2ev'),
     tokens: [
       {
         mint: aptosNativeAddress,
@@ -71,7 +72,7 @@ const feedsToFetch: FeedInfo[] = [
   },
   // USDC
   {
-    address: new PublicKey('Gnt27xtC473ZT2Mw5u8wZ68Z3gULkSTb5DuxJy7eJotD'),
+    address: new PublicKey('Dpw1EAVrSB1ibxiDQyTAW6Zip3J4Btk2x4SgApQCeFbX'),
     tokens: [
       {
         mint: wUsdcSuiType,
@@ -90,10 +91,9 @@ const feedsToFetch: FeedInfo[] = [
       },
     ],
   },
-
   // USDT
   {
-    address: new PublicKey('3vxLXJqLqF3JG5TCbYycbKWRBbCJQLxQmBGCkyqEEefL'),
+    address: new PublicKey('HT2PLQBcG5EiCcNSaMHAjSgd9F98ecpATbk4Sk5oYuM'),
     tokens: [
       {
         mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
@@ -102,9 +102,9 @@ const feedsToFetch: FeedInfo[] = [
       },
     ],
   },
-  // wsETH
+  // wstETH
   {
-    address: new PublicKey('8QFEAwdamHFFRnj3Swnv1CkVNZBeFiVzraC548xhmpT5'),
+    address: new PublicKey('HyoTrHkmhM8YETBagUFqtT95JpkFWtLDtL3uQHsLVT5j'),
     tokens: [
       {
         mint: 'ZScHuTtqZukUrtZS43teTKGs2VqkKL8k4QCouR2n6Uo',
@@ -115,7 +115,7 @@ const feedsToFetch: FeedInfo[] = [
   },
   // MOD
   {
-    address: new PublicKey('BNnzTdorVyW4ttRAoXvohD46Q8ycN8LCHz2CGV4pUH7S'),
+    address: new PublicKey('37MmKHDVspCyZtXkjfLD2xHiiEV1WwNNsRkJxAdvvb33'),
     tokens: [
       {
         mint: '0x6f986d146e4a90b828d8c12c14b6f4e003fdff11a8eecceceb63744363eaac01::mod_coin::MOD',
@@ -126,7 +126,7 @@ const feedsToFetch: FeedInfo[] = [
   },
   // USDS
   {
-    address: new PublicKey('95CJ8Jd54H97mBPuZnRWajUsaZnP2VFV522WYxJ5ppsz'),
+    address: new PublicKey('DyYBBWEi9xZvgNAeMDCiFnmC1U9gqgVsJDXkL5WETpoX'),
     tokens: [
       {
         decimals: 6,

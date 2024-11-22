@@ -9,7 +9,7 @@ describe('getPythPrice', () => {
       connection,
       new PublicKey('7UVimffxr9ow1uXYxsr4LHAcV58mLzhmwaeKvJ1pjLiE')
     );
-    // console.log("price:", price)
+    // console.log('price:', price);
     expect(price).not.toBeNull();
   });
 });
