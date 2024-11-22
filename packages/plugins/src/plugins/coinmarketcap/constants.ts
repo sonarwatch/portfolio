@@ -2,7 +2,6 @@ import {
   aptosNativeAddress,
   aptosNativeDecimals,
   NetworkId,
-  NetworkIdType,
   Platform,
   solanaNativeAddress,
   solanaNativeDecimals,
@@ -17,21 +16,15 @@ import {
   wUsdcSuiType,
 } from '../../utils/sui/constants';
 import { usdcSolanaDecimals, usdcSolanaMint } from '../../utils/solana';
+import { CmcToken } from './types';
 
 export const platformId = 'coinmarketcap';
 export const platform: Platform = {
   id: platformId,
   name: 'CoinMarketCap',
-  image: 'https://sonar.watch/img/platforms/coinmarketcap.webp',
-  // defiLlamaId: 'pyth-network', // from https://defillama.com/docs/api
-  website: 'https://coinmarketcap.com/',
-  // twitter: 'https://twitter.com/PythNetwork',
 };
 
-export const cmcTokens: {
-  slug: string;
-  tokens: { mint: string; decimals: number; networkId: NetworkIdType }[];
-}[] = [
+export const cmcTokens: CmcToken[] = [
   {
     slug: 'solana',
     tokens: [
@@ -97,6 +90,26 @@ export const cmcTokens: {
     tokens: [
       {
         mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+        decimals: 6,
+        networkId: NetworkId.solana,
+      },
+    ],
+  },
+  {
+    slug: 'bonk1',
+    tokens: [
+      {
+        mint: 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263',
+        decimals: 5,
+        networkId: NetworkId.solana,
+      },
+    ],
+  },
+  {
+    slug: 'dogwifhat',
+    tokens: [
+      {
+        mint: 'EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm',
         decimals: 6,
         networkId: NetworkId.solana,
       },
