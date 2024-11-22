@@ -135,6 +135,138 @@ const feedsToFetch: FeedInfo[] = [
       },
     ],
   },
+  // Wrapped BTC (Portal)
+  {
+    address: new PublicKey('4cSM2e6rvbGQUFiJbqytoVMi5GgghSMr8LwVrT9VPSPo'),
+    tokens: [
+      {
+        mint: '3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh',
+        networkdId: 'solana',
+        decimals: 8,
+      },
+    ],
+  },
+  // Wrapped Ether (Wormhole)
+  {
+    address: new PublicKey('42amVS4KgzR9rA28tkVYqVXjq9Qa8dcZQMbH5EYFX6XC'),
+    tokens: [
+      {
+        mint: '7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs',
+        networkdId: 'solana',
+        decimals: 8,
+      },
+    ],
+  },
+  // mSOL
+  {
+    address: new PublicKey('5CKzb9j4ChgLUt8Gfm5CNGLN6khXKiqMbnGAW4cgXgxK'),
+    tokens: [
+      {
+        mint: 'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So',
+        networkdId: 'solana',
+        decimals: 9,
+      },
+    ],
+  },
+  // Bonk
+  {
+    address: new PublicKey('DBE3N8uNjhKPRHfANdwGvCZghWXyLPdqdSbEW2XFwBiX'),
+    tokens: [
+      {
+        mint: 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263',
+        networkdId: 'solana',
+        decimals: 5,
+      },
+    ],
+  },
+  // Fida
+  {
+    address: new PublicKey('2cfmeuVBf7bvBJcjKBQgAwfvpUvdZV7K8NZxUEuccrub'),
+    tokens: [
+      {
+        mint: 'EchesyfXePKdLtoiZSL8pBe8Myagyy8ZRqsACNCFGnvp',
+        networkdId: 'solana',
+        decimals: 6,
+      },
+    ],
+  },
+  // Pyth
+  {
+    address: new PublicKey('8vjchtMuJNY4oFQdTi8yCe6mhCaNBFaUbktT482TpLPS'),
+    tokens: [
+      {
+        mint: 'HZ1JovNiVvGrGNiiYvEozEVgZ58xaU3RKwX8eACQBCt3',
+        networkdId: 'solana',
+        decimals: 6,
+      },
+    ],
+  },
+  // HNT
+  {
+    address: new PublicKey('4DdmDswskDxXGpwHrXUfn2CNUm9rt21ac79GHNTN3J33'),
+    tokens: [
+      {
+        mint: 'hntyVP6YFm1Hg25TN9WGLqM12b8TQmcknKrdu1oxWux',
+        networkdId: 'solana',
+        decimals: 8,
+      },
+    ],
+  },
+  // Orca
+  {
+    address: new PublicKey('4CBshVeNBEXz24GZpoj8SrqP5L7VGG3qjGd6tCST1pND'),
+    tokens: [
+      {
+        mint: 'orcaEKTdK7LKz57vaAYr9QeNsVEPfiu6QeMU1kektZE',
+        networkdId: 'solana',
+        decimals: 6,
+      },
+    ],
+  },
+  // Render
+  {
+    address: new PublicKey('HAm5DZhrgrWa12heKSxocQRyJWGCtXegC77hFQ8F5QTH'),
+    tokens: [
+      {
+        mint: 'rndrizKT3MK1iimdxRdWabcF7Zg7AR5T4nud4EkHBof',
+        networkdId: 'solana',
+        decimals: 8,
+      },
+    ],
+  },
+  // MNDE
+  {
+    address: new PublicKey('GHKcxocPyzSjy7tWApQjKRkDNuVXd4Kk624zhuaR7xhC'),
+    tokens: [
+      {
+        mint: 'MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey',
+        networkdId: 'solana',
+        decimals: 9,
+      },
+    ],
+  },
+  // WIF
+  {
+    address: new PublicKey('6B23K3tkb51vLZA14jcEQVCA1pfHptzEHFA93V5dYwbT'),
+    tokens: [
+      {
+        mint: 'EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm',
+        networkdId: 'solana',
+        decimals: 6,
+      },
+    ],
+  },
+  // WEN
+  {
+    address: new PublicKey('CsG7wXoqZKNxx4UnFtvozfwXQ9RgpKe7zSJa4LWh5MT9'),
+    tokens: [
+      {
+        mint: 'WENWENvqqNya429ubCdR81ZmD69brwQaaBYY6p3LCpk',
+        networkdId: 'solana',
+        decimals: 5,
+      },
+    ],
+  },
 ];
 
 const executor: JobExecutor = async (cache: Cache) => {
