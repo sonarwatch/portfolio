@@ -10,7 +10,7 @@ import {
   fetchPosRewardersAmount,
 } from './helpers';
 
-import { FetchPosRewardParams, Pool, Position } from './types';
+import { FetchPosRewardParams, Pool, PoolStat, Position } from './types';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { getPools } from './getPools';
@@ -41,7 +41,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (clmmPositions.length === 0) return [];
 
   const poolsIds = clmmPositions.map((position) => position.pool);
-  const poolsById: Map<string, Pool> = new Map();
+  const poolsById: Map<string, Pool & PoolStat> = new Map();
 
   const poolsObjects = await getPools([...new Set(poolsIds)], cache);
   poolsObjects.forEach((pool) => {
@@ -95,6 +95,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       tickCurrentIndex: pool.current_tick_index,
       tickLowerIndex: clmmPosition.tick_lower_index,
       tickUpperIndex: clmmPosition.tick_upper_index,
+      currentSqrtPrice: pool.current_sqrt_price,
+      feeRate: Number(pool.fee_rate) / 100,
+      swapVolume24h: pool.vol_in_usd_24h,
     });
 
     liquidity.addRewardAsset({

@@ -1,5 +1,5 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import { Pool } from './types';
+import { Pool, PoolStat } from './types';
 import { clmmPoolsPrefix } from './constants';
 import { Cache } from '../../Cache';
 import { getClientSui } from '../../utils/clients';
@@ -11,33 +11,48 @@ import { getPoolFromObject } from './helpers';
 export const getPools = async (
   poolIds: string[],
   cache: Cache
-): Promise<(Pool | null)[]> => {
+): Promise<((Pool & PoolStat) | null)[]> => {
   const pools = [];
 
-  const cachedPools = await cache.getItems<Pool>(poolIds, {
-    prefix: clmmPoolsPrefix,
-    networkId: NetworkId.sui,
-  });
+  const [cachedPools, cachedPoolsStats] = await Promise.all([
+    cache.getItems<Pool>(poolIds, {
+      prefix: clmmPoolsPrefix,
+      networkId: NetworkId.sui,
+    }),
+    cache.getItems<PoolStat>(poolIds, {
+      prefix: `${clmmPoolsPrefix}-stats`,
+      networkId: NetworkId.sui,
+    }),
+  ]);
 
   const client = getClientSui();
 
   for (const poolId of poolIds) {
     const i = poolIds.indexOf(poolId);
     const cachedPool = cachedPools[i];
+    const cachedPoolStat = cachedPoolsStats[i];
+
+    let pool;
+
     if (cachedPool) {
-      pools.push(cachedPool);
+      pool = cachedPool;
     } else {
       const poolObject = await getObject(client, poolId);
-      const pool = getPoolFromObject(poolObject);
+      pool = getPoolFromObject(poolObject);
 
       if (poolObject.data?.objectId !== poolId || !pool) {
-        pools.push(null);
+        pool = null;
       }
 
       await cache.setItem(poolId, pool, {
         prefix: clmmPoolsPrefix,
         networkId: NetworkId.sui,
       });
+    }
+
+    if (pool && cachedPoolStat) {
+      pools.push({ ...pool, ...cachedPoolStat });
+    } else {
       pools.push(pool);
     }
   }
