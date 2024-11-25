@@ -86,8 +86,8 @@ export class ElementConcentratedLiquidityBuilder extends ElementLiquidityBuilder
 
         if (feeAPR) {
           liquidityBuilder.addYield({
-            apy: aprToApy(Number(feeAPR)),
-            apr: Number(feeAPR),
+            apy: aprToApy(Number(feeAPR) / 100),
+            apr: Number(feeAPR) / 100,
           });
         }
       }

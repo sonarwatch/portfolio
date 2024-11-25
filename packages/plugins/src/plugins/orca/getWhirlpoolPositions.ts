@@ -19,6 +19,7 @@ import { Whirlpool, positionStruct } from './structs/whirlpool';
 import { NftFetcher } from '../tokens/types';
 import { calcFeesAndRewards, getTickArraysAsMap } from './helpers_fees';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { WhirlpoolStat } from './types';
 
 export const getWhirlpoolPositions = getOrcaNftFetcher(
   orcaPlatformId,
@@ -61,13 +62,19 @@ export function getOrcaNftFetcher(
       if (pos) whirlpoolAddresses.add(pos.whirlpool.toString());
     });
 
-    const allWhirlpoolsInfo = await cache.getItems<ParsedAccount<Whirlpool>>(
-      Array.from(whirlpoolAddresses),
-      {
+    const [allWhirlpoolsInfo, allWhirlpoolsStats] = await Promise.all([
+      cache.getItems<ParsedAccount<Whirlpool>>(Array.from(whirlpoolAddresses), {
         prefix: whirlpoolPrefix,
         networkId: NetworkId.solana,
-      }
-    );
+      }),
+      cache.getItems<WhirlpoolStat>(
+        Array.from(whirlpoolAddresses).map((a) => `${a}-stats`),
+        {
+          prefix: whirlpoolPrefix,
+          networkId: NetworkId.solana,
+        }
+      ),
+    ]);
 
     const whirlpoolMap: Map<string, Whirlpool> = new Map();
     allWhirlpoolsInfo.forEach((wInfo) => {
@@ -104,6 +111,11 @@ export function getOrcaNftFetcher(
         tickCurrentIndex: whirlpoolInfo.tickCurrentIndex,
         tickLowerIndex: positionInfo.tickLowerIndex,
         tickUpperIndex: positionInfo.tickUpperIndex,
+        currentSqrtPrice: whirlpoolInfo.sqrtPrice,
+        feeRate: Number(whirlpoolInfo.feeRate) / 10000,
+        swapVolume24h: allWhirlpoolsStats.find(
+          (p) => p?.address === positionInfo.whirlpool.toString()
+        )?.volumeUsdc24h,
       });
 
       const feesAndRewards = calcFeesAndRewards(
