@@ -55,6 +55,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       tickLowerIndex: bitsToNumber(clmmPosition.tick_lower_index.fields.bits),
       tickUpperIndex: bitsToNumber(clmmPosition.tick_upper_index.fields.bits),
       currentSqrtPrice: pool.sqrt_price,
+      poolLiquidity: pool.liquidity,
       feeRate: Number(pool.swap_fee_rate) / 10000,
       swapVolume24h: (poolsStats || []).find(
         (p) => p.pool_id === clmmPosition.pool_id

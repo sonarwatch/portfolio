@@ -162,4 +162,6 @@ export type PoolStat = {
   volume_24h: string;
   fee_collected_24h: string;
   fee_rate: string;
+  tvl: string;
+  apy: string;
 };

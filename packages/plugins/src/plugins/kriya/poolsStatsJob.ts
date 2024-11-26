@@ -19,6 +19,8 @@ const executor: JobExecutor = async (cache: Cache) => {
       volume_24h: pool.volume_24h,
       fee_collected_24h: pool.fee_collected_24h,
       fee_rate: pool.fee_rate,
+      apy: pool.apy,
+      tvl: pool.tvl,
     });
   }
 

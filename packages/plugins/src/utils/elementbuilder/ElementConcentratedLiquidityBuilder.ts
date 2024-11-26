@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js';
 import {
-  aprToApy,
   NetworkIdType,
   PortfolioElement,
+  yieldFromApr,
 } from '@sonarwatch/portfolio-core';
 import { ConcentratedLiquidityParams } from './ConcentratedLiquidityParams';
 import { ElementLiquidityBuilder } from './ElementLiquidityBuilder';
@@ -26,6 +26,15 @@ export class ElementConcentratedLiquidityBuilder extends ElementLiquidityBuilder
     const liquidityBuilder = new LiquidityBuilder({ name: params.name });
     this.liquidities = [liquidityBuilder];
     return liquidityBuilder;
+  }
+
+  override mints(): string[] {
+    const mints = this.liquidities.map((liquidity) => liquidity.mints()).flat();
+    if (this.concentratedLiquidityParams?.addressA)
+      mints.push(this.concentratedLiquidityParams.addressA.toString());
+    if (this.concentratedLiquidityParams?.addressB)
+      mints.push(this.concentratedLiquidityParams.addressB.toString());
+    return mints;
   }
 
   override get(
@@ -58,37 +67,41 @@ export class ElementConcentratedLiquidityBuilder extends ElementLiquidityBuilder
     if (
       this.concentratedLiquidityParams.feeRate &&
       this.concentratedLiquidityParams.currentSqrtPrice &&
-      this.concentratedLiquidityParams.swapVolume24h
+      this.concentratedLiquidityParams.swapVolume24h &&
+      this.concentratedLiquidityParams.poolLiquidity
     ) {
-      const tokenPriceA = tokenPrices.get(
-        this.concentratedLiquidityParams.addressA.toString()
-      );
-      const tokenPriceB = tokenPrices.get(
-        this.concentratedLiquidityParams.addressB.toString()
-      );
-
-      if (tokenPriceA && tokenPriceB) {
-        const { feeAPR } = estPositionAPRWithDeltaMethod(
-          Number(this.concentratedLiquidityParams.tickCurrentIndex.toString()),
-          Number(this.concentratedLiquidityParams.tickLowerIndex.toString()),
-          Number(this.concentratedLiquidityParams.tickUpperIndex.toString()),
-          toBN(this.concentratedLiquidityParams.currentSqrtPrice),
-          toBN(this.concentratedLiquidityParams.liquidity),
-          tokenPriceA.decimals,
-          tokenPriceB.decimals,
-          Number(this.concentratedLiquidityParams.feeRate.toString()),
-          `${tokenAmountA}`,
-          `${tokenAmountB}`,
-          `${this.concentratedLiquidityParams.swapVolume24h}`,
-          `${tokenPriceA.price}`,
-          `${tokenPriceB.price}`
+      if (tokenAmountA.gt(0) && tokenAmountB.gt(0)) {
+        const tokenPriceA = tokenPrices.get(
+          this.concentratedLiquidityParams.addressA.toString()
+        );
+        const tokenPriceB = tokenPrices.get(
+          this.concentratedLiquidityParams.addressB.toString()
         );
 
-        if (feeAPR) {
-          liquidityBuilder.addYield({
-            apy: aprToApy(Number(feeAPR) / 100),
-            apr: Number(feeAPR) / 100,
-          });
+        if (tokenPriceA && tokenPriceB) {
+          const { feeAPR } = estPositionAPRWithDeltaMethod(
+            Number(
+              this.concentratedLiquidityParams.tickCurrentIndex.toString()
+            ),
+            Number(this.concentratedLiquidityParams.tickLowerIndex.toString()),
+            Number(this.concentratedLiquidityParams.tickUpperIndex.toString()),
+            toBN(this.concentratedLiquidityParams.currentSqrtPrice),
+            toBN(this.concentratedLiquidityParams.poolLiquidity),
+            tokenPriceA.decimals,
+            tokenPriceB.decimals,
+            Number(this.concentratedLiquidityParams.feeRate.toString()),
+            `${tokenAmountA.dividedBy(10 ** tokenPriceA.decimals)}`,
+            `${tokenAmountB.dividedBy(10 ** tokenPriceB.decimals)}`,
+            `${this.concentratedLiquidityParams.swapVolume24h}`,
+            `${tokenPriceA.price}`,
+            `${tokenPriceB.price}`
+          );
+
+          if (feeAPR && Number(feeAPR) >= 0) {
+            liquidityBuilder.addYield(yieldFromApr(Number(feeAPR) / 100));
+          }
+        } else {
+          liquidityBuilder.addYield(yieldFromApr(0));
         }
       }
     }

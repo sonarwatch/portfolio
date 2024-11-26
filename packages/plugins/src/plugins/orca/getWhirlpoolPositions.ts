@@ -112,6 +112,7 @@ export function getOrcaNftFetcher(
         tickLowerIndex: positionInfo.tickLowerIndex,
         tickUpperIndex: positionInfo.tickUpperIndex,
         currentSqrtPrice: whirlpoolInfo.sqrtPrice,
+        poolLiquidity: whirlpoolInfo.liquidity,
         feeRate: Number(whirlpoolInfo.feeRate) / 10000,
         swapVolume24h: allWhirlpoolsStats.find(
           (p) => p?.address === positionInfo.whirlpool.toString()

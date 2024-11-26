@@ -95,8 +95,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       tickCurrentIndex: pool.current_tick_index,
       tickLowerIndex: clmmPosition.tick_lower_index,
       tickUpperIndex: clmmPosition.tick_upper_index,
+      poolLiquidity: pool.liquidity,
       currentSqrtPrice: pool.current_sqrt_price,
-      feeRate: Number(pool.fee_rate) / 100,
+      feeRate: Number(pool.fee_rate) / 10000,
       swapVolume24h: pool.vol_in_usd_24h,
     });
 

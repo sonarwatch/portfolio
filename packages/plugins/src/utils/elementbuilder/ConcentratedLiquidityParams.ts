@@ -9,8 +9,9 @@ export type ConcentratedLiquidityParams = {
   tickLowerIndex: number | BigNumber | string;
   tickUpperIndex: number | BigNumber | string;
   currentSqrtPrice?: number | BigNumber | string;
-  feeRate?: number | BigNumber | string; // 0.01
-  swapVolume24h?: number | BigNumber | string;
+  poolLiquidity?: number | BigNumber | string;
+  feeRate?: number | BigNumber | string; // 0.01 for 1%
+  swapVolume24h?: number | BigNumber | string; // in $
   roundUp?: boolean;
   name?: string;
 };

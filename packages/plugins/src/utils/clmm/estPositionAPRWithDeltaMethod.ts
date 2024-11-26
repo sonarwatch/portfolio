@@ -74,19 +74,19 @@ export function estPositionAPRWithDeltaMethod(
     .mul(coinAPrice)
     .add(deltaY.div(new Decimal(10 ** decimalsB).mul(coinBPrice)));
 
-  const feeAPR =
-    deltaLiquidity.eq(new Decimal(0)) || posValidTVL.lte(0)
-      ? new Decimal(0)
-      : new Decimal(feeRate / 10000)
-          .mul(swapVolume)
-          .mul(
-            new Decimal(deltaLiquidity.toString()).div(
-              new Decimal(poolLiquidity.toString()).add(
-                new Decimal(deltaLiquidity.toString())
-              )
+  const feeAPR = deltaLiquidity.eq(new Decimal(0))
+    ? new Decimal(0)
+    : new Decimal(feeRate)
+        .mul(swapVolume)
+        .mul(
+          new Decimal(deltaLiquidity.toString()).div(
+            new Decimal(poolLiquidity.toString()).add(
+              new Decimal(deltaLiquidity.toString())
             )
           )
-          .div(posValidTVL);
+        )
+        .div(posValidTVL)
+        .mul(365);
 
   return {
     feeAPR,
