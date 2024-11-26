@@ -156,3 +156,10 @@ export type TickBitmapFields = {
   id: ID;
   size: string;
 };
+
+export type PoolStat = {
+  pool_id: string;
+  volume_24h: string;
+  fee_collected_24h: string;
+  fee_rate: string;
+};

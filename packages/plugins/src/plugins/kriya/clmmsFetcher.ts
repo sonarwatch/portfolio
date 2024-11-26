@@ -1,13 +1,13 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { clmmType, platformId } from './constants';
+import { clmmType, farmsStatsInfoKey, platformId } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { bitsToNumber } from '../../utils/sui/bitsToNumber';
-import { ClmmPosition, ClmmPool } from './types/pools';
+import { ClmmPosition, ClmmPool, PoolStat } from './types/pools';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -26,8 +26,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const poolsIds = clmmPositions.map((position) => position.pool_id);
   const poolsById: Map<string, ClmmPool> = new Map();
 
-  const poolsObjects = await multiGetObjects<ClmmPool>(client, [
-    ...new Set(poolsIds),
+  const [poolsObjects, poolsStats] = await Promise.all([
+    multiGetObjects<ClmmPool>(client, [...new Set(poolsIds)]),
+    cache.getItem<PoolStat[]>(farmsStatsInfoKey, {
+      prefix: platformId,
+      networkId: NetworkId.sui,
+    }),
   ]);
   poolsObjects.forEach((poolObj) => {
     if (poolObj.data?.content?.fields) {
@@ -50,6 +54,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       tickCurrentIndex: bitsToNumber(pool.tick_index.fields.bits),
       tickLowerIndex: bitsToNumber(clmmPosition.tick_lower_index.fields.bits),
       tickUpperIndex: bitsToNumber(clmmPosition.tick_upper_index.fields.bits),
+      currentSqrtPrice: pool.sqrt_price,
+      feeRate: Number(pool.swap_fee_rate) / 10000,
+      swapVolume24h: (poolsStats || []).find(
+        (p) => p.pool_id === clmmPosition.pool_id
+      )?.volume_24h,
     });
   });
 

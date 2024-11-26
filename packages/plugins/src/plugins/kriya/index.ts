@@ -10,9 +10,15 @@ import leverageVaultsFetcher from './leverageVaultsFetcher';
 import leverageVaultsJob from './leverageVaultsJob';
 import clmmsFetcher from './clmmsFetcher';
 import lpFetcher from './lpFetcher';
+import poolsStatsJob from './poolsStatsJob';
 
 export const platforms: Platform[] = [platform];
-export const jobs: Job[] = [vaultsJob, leverageVaultsJob, farmsJob];
+export const jobs: Job[] = [
+  vaultsJob,
+  leverageVaultsJob,
+  farmsJob,
+  poolsStatsJob,
+];
 export const fetchers: Fetcher[] = [
   vaultsFetcher,
   leverageVaultsFetcher,
