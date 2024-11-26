@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import BN from 'bn.js';
-import { parsePriceData } from '../../../utils/solana/pyth/helpers';
+import { parsePriceData } from '../../../utils/solana/pyth/helpersOld';
 import { PRICE_PRECISION, QUOTE_PRECISION, TEN } from './constants';
 import { OraclePriceData } from './types';
 

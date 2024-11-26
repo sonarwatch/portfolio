@@ -12,6 +12,7 @@ import { walletTokensPlatform } from '../tokens/constants';
 import { getMultipleDecimalsAsMap } from '../../utils/solana/getMultipleDecimalsAsMap';
 import { getClientSolana } from '../../utils/clients';
 import { lstsKey, platformId as sanctumPlatformId } from '../sanctum/constants';
+import { usdcSolanaMint } from '../../utils/solana';
 
 const mints = [
   'xLfNTYy76B8Tiix3hA51Jyvc1kMSFV4sPdR7szTZsRu', // xLifinity
@@ -40,8 +41,17 @@ const executor: JobExecutor = async (cache: Cache) => {
     networkId: NetworkId.solana,
   });
   const connection = getClientSolana();
-  const solTokenPrice = await cache.getTokenPrice(vsToken, NetworkId.solana);
-  if (!solTokenPrice) return;
+
+  // const solTokenPrice = await cache.getTokenPrice(vsToken, NetworkId.solana);
+  const solSources = await getJupiterPrices(
+    [new PublicKey(vsToken)],
+    new PublicKey(usdcSolanaMint)
+  );
+
+  const solPrice = solSources.get(vsToken);
+  if (!solPrice) return;
+
+  const solTokenPrice = { price: solPrice };
 
   const mintsPk = mints.map((m) => new PublicKey(m));
   if (sanctumMints) mintsPk.push(...sanctumMints.map((m) => new PublicKey(m)));
@@ -59,7 +69,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       timestamp: Date.now(),
       price: solTokenPrice.price * price,
       platformId: walletTokensPlatform.id,
-      weight: 0.1,
+      weight: 1,
     };
     sources.push(source);
   });
@@ -68,6 +78,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-pricing`,
   executor,
-  label: 'coingecko',
+  label: 'realtime',
 };
 export default job;

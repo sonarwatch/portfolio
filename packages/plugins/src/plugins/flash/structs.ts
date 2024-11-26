@@ -13,6 +13,27 @@ import { publicKey } from '@metaplex-foundation/beet-solana';
 import { blob, i64, u128, u64 } from '../../utils/solana';
 import { OracleType, Side } from '../jupiter/exchange/structs';
 
+export type CustomOracle = {
+  buffer: Buffer;
+  price: BigNumber;
+  expo: number;
+  conf: BigNumber;
+  ema: BigNumber;
+  publishTime: BigNumber;
+};
+
+export const customOracleStruct = new BeetStruct<CustomOracle>(
+  [
+    ['buffer', blob(8)],
+    ['price', u64],
+    ['expo', i32],
+    ['conf', u64],
+    ['ema', u64],
+    ['publishTime', i64],
+  ],
+  (args) => args as CustomOracle
+);
+
 export type OracleParams = {
   oracleAccount: PublicKey;
   customOracleAccount: PublicKey;

@@ -12,10 +12,12 @@ import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { marketsKey, flashPid, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
-import { getParsedProgramAccounts } from '../../utils/solana';
-import { getPythPricesAsMap } from '../../utils/solana/pyth/helpers';
+import {
+  getParsedMultipleAccountsInfo,
+  getParsedProgramAccounts,
+} from '../../utils/solana';
 import { perpetualsPositionsFilter } from './filters';
-import { positionStruct } from './structs';
+import { customOracleStruct, positionStruct } from './structs';
 import { MarketInfo } from './types';
 import { Side } from '../jupiter/exchange/structs';
 
@@ -53,7 +55,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     MarketById.set(market.pubkey, market);
   });
 
-  const pythPricesByAccount = await getPythPricesAsMap(client, oraclesPubkeys);
+  // Fetch oracles prices
+  const oracleAccounts = await getParsedMultipleAccountsInfo(
+    client,
+    customOracleStruct,
+    oraclesPubkeys
+  );
+  const oraclePricesMap: Map<string, number> = new Map();
+  oracleAccounts.forEach((acc, i) => {
+    if (!acc) return;
+    oraclePricesMap.set(
+      oraclesPubkeys[i].toString(),
+      acc.price.times(10 ** acc.expo).toNumber()
+    );
+  });
 
   const elements: PortfolioElement[] = [];
   for (const position of perpetualsPositions) {
@@ -78,10 +93,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       10 ** oraclePrice.exponent
     );
 
-    const targetPrice = pythPricesByAccount.get(
-      targetCustody.oracle.oracleAccount
-    );
-    const collateralCustodyPrice = pythPricesByAccount.get(
+    const targetPrice = oraclePricesMap.get(targetCustody.oracle.oracleAccount);
+    const collateralCustodyPrice = oraclePricesMap.get(
       collateralCustody.oracle.oracleAccount
     );
     if (!targetPrice || !collateralCustodyPrice) continue;
