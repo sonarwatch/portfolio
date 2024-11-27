@@ -68,7 +68,7 @@ export async function getCoingeckoSources(
   return sources;
 }
 
-async function getPricesFromCoingeckoIds(
+export async function getPricesFromCoingeckoIds(
   coingeckoIds: Set<string>
 ): Promise<Map<string, number>> {
   const idsToFetch = [...Array.from(coingeckoIds)];
