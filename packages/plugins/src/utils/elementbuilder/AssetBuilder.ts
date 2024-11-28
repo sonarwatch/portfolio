@@ -26,10 +26,12 @@ export class AssetBuilder {
     networkId: NetworkIdType,
     tokenPrices: TokenPriceMap
   ): PortfolioAsset[] {
-    let amount = new BigNumber(this.amount);
-    if (amount.isZero()) return [];
     const tokenPrice = tokenPrices.get(this.address);
     if (!tokenPrice) return [];
+
+    let amount = new BigNumber(this.amount);
+
+    if (amount.isZero() && tokenPrice.underlyings) return [];
 
     if (!this.alreadyShifted)
       amount = amount.dividedBy(10 ** tokenPrice.decimals);

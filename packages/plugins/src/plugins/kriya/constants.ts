@@ -27,6 +27,7 @@ export const vaultStakeReceipt =
 export const vaultsInfoKey = 'vaultsInfos';
 export const leverageVaultsInfoKey = 'leverageVaultsInfos';
 export const farmsInfoKey = 'farmsInfos';
+export const farmsStatsInfoKey = 'farmsStatsInfos';
 
 export const vaultsUrl =
   'https://88ob93rfva.execute-api.ap-southeast-1.amazonaws.com/release/vaults';
@@ -34,6 +35,8 @@ export const poolsUrl =
   'https://xd0ljetd33.execute-api.ap-southeast-1.amazonaws.com/release/pools';
 export const leverageVaultsUrl =
   'https://4sacq88271.execute-api.ap-southeast-1.amazonaws.com/release/vaults';
+export const poolsStats =
+  'https://zunzoiv8l6.execute-api.ap-southeast-1.amazonaws.com/prod/pools/extended';
 
 export const vaultsInfo: VaultConfig[] = [
   {
@@ -114,3 +117,6 @@ export const dynamicFieldPositionTypeCetus =
   '0x2::dynamic_field::Field<vector<u8>, 0x1eabed72c53feb3805120a081dc15963c204dc8d091542592abaf7a35689b2fb::position::Position>';
 export const dynamicFieldPositionTypeKriya =
   '0x2::dynamic_field::Field<vector<u8>, 0xf6c05e2d9301e6e91dc6ab6c3ca918f7d55896e1f1edd64adc0e615cde27ebf1::position::Position>';
+
+export const KRIYA_V3_BASE_URL =
+  'https://zunzoiv8l6.execute-api.ap-southeast-1.amazonaws.com/prod';

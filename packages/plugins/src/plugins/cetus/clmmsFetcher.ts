@@ -1,5 +1,4 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { clmmPoolPackageId, clmmType, platformId } from './constants';
@@ -11,8 +10,7 @@ import {
   fetchPosRewardersAmount,
 } from './helpers';
 
-import { FetchPosRewardParams, Pool, Position } from './types';
-import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
+import { FetchPosRewardParams, Pool, PoolStat, Position } from './types';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { getPools } from './getPools';
@@ -43,7 +41,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (clmmPositions.length === 0) return [];
 
   const poolsIds = clmmPositions.map((position) => position.pool);
-  const poolsById: Map<string, Pool> = new Map();
+  const poolsById: Map<string, Pool & PoolStat> = new Map();
 
   const poolsObjects = await getPools([...new Set(poolsIds)], cache);
   poolsObjects.forEach((pool) => {
@@ -88,28 +86,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const fees = allFees[i];
     const rewards = allRewards[i];
 
-    const { tokenAmountA, tokenAmountB } = getTokenAmountsFromLiquidity(
-      new BigNumber(clmmPosition.liquidity),
-      pool.current_tick_index,
-      clmmPosition.tick_lower_index,
-      clmmPosition.tick_upper_index,
-      false
-    );
+    const element = elementRegistry.addElementConcentratedLiquidity();
 
-    const element = elementRegistry.addElementLiquidity({
-      label: 'LiquidityPool',
-      tags: ['Concentrated'],
-    });
-    const liquidity = element.addLiquidity();
-
-    liquidity.addAsset({
-      address: pool.coinTypeA,
-      amount: tokenAmountA,
-    });
-
-    liquidity.addAsset({
-      address: pool.coinTypeB,
-      amount: tokenAmountB,
+    const liquidity = element.setLiquidity({
+      addressA: pool.coinTypeA,
+      addressB: pool.coinTypeB,
+      liquidity: clmmPosition.liquidity,
+      tickCurrentIndex: pool.current_tick_index,
+      tickLowerIndex: clmmPosition.tick_lower_index,
+      tickUpperIndex: clmmPosition.tick_upper_index,
+      poolLiquidity: pool.liquidity,
+      currentSqrtPrice: pool.current_sqrt_price,
+      feeRate: Number(pool.fee_rate) / 10000,
+      swapVolume24h: pool.vol_in_usd_24h,
     });
 
     liquidity.addRewardAsset({
@@ -128,9 +117,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         amount: rewarderAmountOwed.amount_owed,
       });
     });
-
-    if (tokenAmountA.isZero() || tokenAmountB.isZero())
-      element.addTag('Out Of Range');
   });
 
   return elementRegistry.getElements(cache);

@@ -1,9 +1,4 @@
-import {
-  NetworkId,
-  PortfolioElementType,
-  PortfolioLiquidity,
-} from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
@@ -14,12 +9,11 @@ import {
 } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { NFTFields, Pool, PositionFields } from './types';
-import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { formatForNative } from './helper';
 import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { bitsToNumber } from '../../utils/sui/bitsToNumber';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -76,8 +70,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
   );
 
-  const assets: PortfolioLiquidity[] = [];
-  let totalLiquidityValue = 0;
+  const elementRegistry = new ElementRegistry(NetworkId.sui, platformId);
   for (let i = 0; i < clmmPositionsRes.length; i++) {
     const clmmPosition = clmmPositionsRes[i].data?.content?.fields;
     if (!clmmPosition) continue;
@@ -87,69 +80,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const pool = poolsById.get(nftPosition.pool_id);
     if (!pool) continue;
 
-    const { tokenAmountA, tokenAmountB } = getTokenAmountsFromLiquidity(
-      new BigNumber(clmmPosition.liquidity),
-      bitsToNumber(pool.tick_current_index.fields.bits),
-      bitsToNumber(clmmPosition.tick_lower_index.fields.bits),
-      bitsToNumber(clmmPosition.tick_upper_index.fields.bits),
-      false
-    );
-
     // TODO : améliorer le problème du 0x000002::sui::SUI + manque de 0x
-    const coinA = formatForNative(`0x${nftPosition.coin_type_a.fields.name}`);
-    const coinB = formatForNative(`0x${nftPosition.coin_type_b.fields.name}`);
-
-    const tokenPriceA = await cache.getTokenPrice(coinA, NetworkId.sui);
-    if (!tokenPriceA) continue;
-
-    const assetTokenA = tokenPriceToAssetToken(
-      coinA,
-      tokenAmountA.dividedBy(10 ** tokenPriceA.decimals).toNumber(),
-      NetworkId.sui,
-      tokenPriceA
-    );
-
-    const tokenPriceB = await cache.getTokenPrice(coinB, NetworkId.sui);
-    if (!tokenPriceB) continue;
-    const assetTokenB = tokenPriceToAssetToken(
-      coinB,
-      tokenAmountB.dividedBy(10 ** tokenPriceB.decimals).toNumber(),
-      NetworkId.sui,
-      tokenPriceB
-    );
-    if (
-      !assetTokenA ||
-      !assetTokenB ||
-      assetTokenA.value === null ||
-      assetTokenB.value === null
-    )
-      continue;
-    const value = assetTokenA.value + assetTokenB.value;
-    assets.push({
-      assets: [assetTokenA, assetTokenB],
-      assetsValue: value,
-      rewardAssets: [],
-      rewardAssetsValue: 0,
-      value,
-      yields: [],
+    const element = elementRegistry.addElementConcentratedLiquidity();
+    element.setLiquidity({
+      addressA: formatForNative(`0x${nftPosition.coin_type_a.fields.name}`),
+      addressB: formatForNative(`0x${nftPosition.coin_type_b.fields.name}`),
+      liquidity: clmmPosition.liquidity,
+      tickCurrentIndex: bitsToNumber(pool.tick_current_index.fields.bits),
+      tickLowerIndex: bitsToNumber(clmmPosition.tick_lower_index.fields.bits),
+      tickUpperIndex: bitsToNumber(clmmPosition.tick_upper_index.fields.bits),
     });
-    totalLiquidityValue += value;
   }
-  if (assets.length === 0) return [];
 
-  return [
-    {
-      type: PortfolioElementType.liquidity,
-      networkId: NetworkId.sui,
-      platformId,
-      label: 'LiquidityPool',
-      tags: ['Concentrated'],
-      value: totalLiquidityValue,
-      data: {
-        liquidities: assets,
-      },
-    },
-  ];
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

@@ -1,10 +1,4 @@
-import {
-  NetworkId,
-  PortfolioElementType,
-  PortfolioLiquidity,
-  formatMoveTokenAddress,
-} from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { clmmPoolsPrefix, platformId, vaultPackageId } from './constants';
@@ -18,10 +12,9 @@ import {
   Pool,
 } from './types';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
-import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { multiDynamicFieldObjects } from '../../utils/sui/multiDynamicFieldObjects';
 import { bitsToNumber } from '../../utils/sui/bitsToNumber';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -117,30 +110,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (vaultsInfoObj.length === 0) return [];
 
   const vaultInfoById: Map<string, VaultInfo> = new Map();
-  const coins: Set<string> = new Set();
   vaultsInfoObj.forEach((vault) => {
     if (vault.data?.content) {
       vaultInfoById.set(vault.data.objectId, vault.data.content.fields);
-      coins.add(
-        formatMoveTokenAddress(
-          vault.data.content.fields.value.fields.value.fields.coin_a_type_name
-            .fields.name
-        )
-      );
-      coins.add(
-        formatMoveTokenAddress(
-          vault.data.content.fields.value.fields.value.fields.coin_b_type_name
-            .fields.name
-        )
-      );
     }
   });
-
-  const tokenPriceById = await cache.getTokenPricesAsMap(
-    Array.from(coins),
-    NetworkId.sui
-  );
-
   const clmmPositions = vaultsInfoObj
     .map(
       (vault) =>
@@ -161,8 +135,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     clmmPositionById.set(vault.data?.objectId, vault.data.content.fields);
   });
 
-  const assets: PortfolioLiquidity[] = [];
-  let totalLiquidityValue = 0;
+  const elementRegistry = new ElementRegistry(NetworkId.sui, platformId);
   for (const vaultInfoObject of vaultsInfoObj) {
     if (!vaultInfoObject.data?.content) continue;
 
@@ -172,71 +145,22 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const clmmPosition = clmmPositionById.get(vaultInfo.base_clmm_position_id);
     if (!pool || !clmmPosition) continue;
 
-    const { tokenAmountA, tokenAmountB } = getTokenAmountsFromLiquidity(
-      new BigNumber(clmmPosition.liquidity),
-      bitsToNumber(vaultInfo.base_last_tick_index.fields.bits),
-      bitsToNumber(clmmPosition.tick_lower_index.fields.bits),
-      bitsToNumber(clmmPosition.tick_upper_index.fields.bits),
-      false
-    );
-
-    const coinA = formatMoveTokenAddress(
-      vaultInfo.coin_a_type_name.fields.name
-    );
-    const coinB = formatMoveTokenAddress(
-      vaultInfo.coin_b_type_name.fields.name
-    );
-
-    const tokenPriceA = tokenPriceById.get(coinA);
-    const tokenPriceB = tokenPriceById.get(coinB);
-    if (!tokenPriceA || !tokenPriceB) continue;
-
-    const assetTokenA = tokenPriceToAssetToken(
-      coinA,
-      tokenAmountA.dividedBy(10 ** tokenPriceA.decimals).toNumber(),
-      NetworkId.sui,
-      tokenPriceA
-    );
-
-    const assetTokenB = tokenPriceToAssetToken(
-      coinB,
-      tokenAmountB.dividedBy(10 ** tokenPriceB.decimals).toNumber(),
-      NetworkId.sui,
-      tokenPriceB
-    );
-    if (
-      !assetTokenA ||
-      !assetTokenB ||
-      assetTokenA.value === null ||
-      assetTokenB.value === null
-    )
-      continue;
-    const value = assetTokenA.value + assetTokenB.value;
-    assets.push({
-      assets: [assetTokenA, assetTokenB],
-      assetsValue: value,
-      rewardAssets: [],
-      rewardAssetsValue: 0,
-      value,
-      yields: [],
+    const element = elementRegistry.addElementConcentratedLiquidity({
+      label: 'Vault',
     });
-    totalLiquidityValue += value;
+    element.setLiquidity({
+      addressA: vaultInfo.coin_a_type_name.fields.name,
+      addressB: vaultInfo.coin_b_type_name.fields.name,
+      liquidity: clmmPosition.liquidity,
+      tickCurrentIndex: bitsToNumber(
+        vaultInfo.base_last_tick_index.fields.bits
+      ),
+      tickLowerIndex: bitsToNumber(clmmPosition.tick_lower_index.fields.bits),
+      tickUpperIndex: bitsToNumber(clmmPosition.tick_upper_index.fields.bits),
+    });
   }
 
-  if (assets.length === 0) return [];
-
-  return [
-    {
-      type: PortfolioElementType.liquidity,
-      networkId: NetworkId.sui,
-      platformId,
-      label: 'Vault',
-      value: totalLiquidityValue,
-      data: {
-        liquidities: assets,
-      },
-    },
-  ];
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

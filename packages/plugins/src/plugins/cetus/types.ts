@@ -39,6 +39,14 @@ export type Pool = {
   name: string;
 } & PoolImmutables;
 
+export type PoolStat = {
+  vol_in_usd?: string;
+  vol_in_usd_24h?: string;
+  apr_24h?: string;
+  apr_7day?: string;
+  apr_30day?: string;
+};
+
 export type SuiStructTag = {
   full_address: string;
   source_address: string;
