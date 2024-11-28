@@ -20,3 +20,11 @@ export const poolKey = 'pool';
 export const perpetualIdsKey = 'perpetualIdsKey';
 
 export const metaUrl = 'https://dapi.api.sui-prod.bluefin.io/meta';
+
+export const clmmsPoolsKey = 'clmms-pools';
+export const clmmPoolCreatedEventType = `0x3492c874c1e3b3e2984e8c41b589e642d4d0a5d6459e5a9cfc2d52fd7c89c267::events::PoolCreated`;
+export const clmmPoolsApiUrl = `https://swap.api.sui-prod.bluefin.io/api/v1/pools/info`;
+export const clmmPoolPositionType =
+  '0x3492c874c1e3b3e2984e8c41b589e642d4d0a5d6459e5a9cfc2d52fd7c89c267::position::Position';
+export const clmmPackage =
+  '0xa31282fc0a0ad50cf5f20908cfbb1539a143f5a38912eb8823a8dd6cbf98bc44';

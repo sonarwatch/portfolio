@@ -1,3 +1,5 @@
+import { ID } from '../../utils/sui/structs/id';
+
 export type Vault = {
   name: string;
   users: {
@@ -91,4 +93,82 @@ export type PerpetualMeta = {
     owner: string;
     dataType: string;
   };
+};
+
+export type ClmmPosition = {
+  coin_type_a: string;
+  coin_type_b: string;
+  description: string;
+  fee_growth_coin_a: string;
+  fee_growth_coin_b: string;
+  fee_rate: string;
+  id: ID;
+  liquidity: string;
+  lower_tick: {
+    fields: {
+      bits: number;
+    };
+    type: string;
+  };
+  upper_tick: {
+    fields: {
+      bits: number;
+    };
+    type: string;
+  };
+  pool_id: string;
+  position_index: string;
+  reward_infos: {
+    fields: {
+      coins_owed_reward: string;
+      reward_growth_inside_last: string;
+    };
+    type: string;
+  }[];
+  token_a_fee: string;
+  token_b_fee: string;
+};
+
+export type ClmmPool = {
+  coin_a: string;
+  coin_b: string;
+  current_sqrt_price: string;
+  current_tick_index: {
+    fields: {
+      bits: number;
+    };
+    type: string;
+  };
+  fee_growth_global_coin_a: string;
+  fee_growth_global_coin_b: string;
+  fee_rate: string;
+  id: ID;
+  is_paused: boolean;
+  liquidity: string;
+  protocol_fee_coin_a: string;
+  protocol_fee_coin_b: string;
+  protocol_fee_share: string;
+  reward_infos: {
+    fields: {
+      ended_at_seconds: string;
+      last_update_time: string;
+      reward_coin_decimals: number;
+      reward_coin_symbol: string;
+      reward_coin_type: string;
+      reward_growth_global: string;
+      reward_per_seconds: string;
+      total_reward: string;
+      total_reward_allocated: string;
+    };
+    type: string;
+  }[];
+};
+
+export type ClmmPoolStat = {
+  address: string;
+  day: {
+    volume: string;
+  };
+  feeRate: string;
+  tvl: string;
 };

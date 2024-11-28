@@ -7,7 +7,14 @@ import poolJob from './poolJob';
 import bankFetcher from './bankFetcher';
 import positionFetcher from './positionFetcher';
 import perpsJob from './perpsJob';
+import clmmsFetcher from './clmmsFetcher';
+import clmmsJob from './clmmsJob';
 
 export const platforms: Platform[] = [platform];
-export const jobs: Job[] = [poolJob, perpsJob];
-export const fetchers: Fetcher[] = [poolFetcher, bankFetcher, positionFetcher];
+export const jobs: Job[] = [poolJob, perpsJob, clmmsJob];
+export const fetchers: Fetcher[] = [
+  poolFetcher,
+  bankFetcher,
+  positionFetcher,
+  clmmsFetcher,
+];
