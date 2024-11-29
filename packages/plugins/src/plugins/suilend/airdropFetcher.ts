@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import {
   AirdropFetcher,
   AirdropFetcherExecutor,
-  airdropFetcherToFetcher,
+  // airdropFetcherToFetcher,
   getAirdropRaw,
 } from '../../AirdropFetcher';
 import {
@@ -113,12 +113,12 @@ export const airdropFetcher: AirdropFetcher = {
   executor,
 };
 
-export const fetcher = airdropFetcherToFetcher(
-  airdropFetcher,
-  platform.id,
-  'suilend-airdrop',
-  airdropStatics.claimEnd
-);
+// export const fetcher = airdropFetcherToFetcher(
+//   airdropFetcher,
+//   platform.id,
+//   'suilend-airdrop',
+//   airdropStatics.claimEnd
+// );
 
 function getEarlyUserAllocation(owner: string): number {
   if (earlyUsers.includes(owner)) return 513;
