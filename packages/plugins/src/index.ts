@@ -655,6 +655,7 @@ import {
   platforms as grassPlatforms,
   jobs as grassJobs,
   fetchers as grassFetchers,
+  airdropFetcher as grassAirdropFetcher,
 } from './plugins/grass';
 import {
   platforms as autothorPlatforms,
@@ -1110,6 +1111,7 @@ export const airdropFetchers: AirdropFetcher[] = [
   ...debridgeAirdropFetchers,
   suilendAirdropFetcher,
   bluefinAirdropFetcher,
+  grassAirdropFetcher,
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);
