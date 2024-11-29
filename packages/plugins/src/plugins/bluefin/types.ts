@@ -172,3 +172,21 @@ export type ClmmPoolStat = {
   feeRate: string;
   tvl: string;
 };
+
+export type AirdropResponse = {
+  bluefinAddress: string;
+  walletAddress: string;
+  historicalBluePoints: string;
+  lifeTimeSuiPoints: string;
+  userTagIncentives: UserTagIncentive[];
+  totalIncentives: string;
+  userLeague: string;
+  error?: {
+    code: number;
+    message: string;
+  };
+};
+
+export type UserTagIncentive = {
+  [key: string]: string;
+};

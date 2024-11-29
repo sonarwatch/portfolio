@@ -495,6 +495,7 @@ import {
   jobs as bluefinJobs,
   fetchers as bluefinFetchers,
   platforms as bluefinPlatforms,
+  airdropFetcher as bluefinAirdropFetcher,
 } from './plugins/bluefin';
 import {
   platforms as citrusPlatforms,
@@ -1108,6 +1109,7 @@ export const airdropFetchers: AirdropFetcher[] = [
   suinsAirdropFetcher,
   ...debridgeAirdropFetchers,
   suilendAirdropFetcher,
+  bluefinAirdropFetcher,
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);
