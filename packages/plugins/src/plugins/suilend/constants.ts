@@ -1,4 +1,5 @@
 import { Platform } from '@sonarwatch/portfolio-core';
+import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'suilend';
 export const platform: Platform = {
@@ -10,6 +11,19 @@ export const platform: Platform = {
   twitter: 'https://twitter.com/suilendprotocol',
 };
 
+export const airdropStatics: AirdropStatics = {
+  claimLink: 'https://suilend.fi/send',
+  emitterLink: 'https://suilend.fi',
+  emitterName: 'Suilend',
+  id: 'suilend-airdrop',
+  image: 'https://sonar.watch/img/platforms/suilend.webp',
+  claimEnd: undefined,
+  claimStart: 1733961600000,
+};
+
+export const sendMint = undefined;
+export const suilendPointsType =
+  '34fe4f3c9e450fed4d0a3c587ed842eec5313c30c3cc3c0841247c49425e246b::suilend_point::SUILEND_POINT';
 export const packageId =
   '0xf95b06141ed4a174f239417323bde3f209b972f5930d8521ea38a52aff3a6ddf';
 

@@ -1,5 +1,6 @@
 import { BorrowLendRate } from '@sonarwatch/portfolio-core';
 import { ParsedData } from '../../utils/sui/types';
+import { ID } from '../../utils/sui/structs/id';
 
 export type ObligationCapFields = {
   id: ID;
@@ -150,8 +151,10 @@ export type Value = {
 export type Name = {
   name: string;
 };
-export type ID = {
-  id: string;
-};
 
 export type RewardInfo = { poolId: string; rewardMint: string };
+
+export type SuilendCapsule = {
+  id: ID;
+  rarity: 'rare' | 'common' | 'uncommon';
+};

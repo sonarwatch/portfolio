@@ -369,6 +369,7 @@ import {
   platforms as suilendPlatforms,
   jobs as suilendJobs,
   fetchers as suilendFetchers,
+  airdropFetcher as suilendAirdropFetcher,
 } from './plugins/suilend';
 import {
   platforms as symmetryPlatforms,
@@ -1106,6 +1107,7 @@ export const airdropFetchers: AirdropFetcher[] = [
   deepbookAirdropFetcher,
   suinsAirdropFetcher,
   ...debridgeAirdropFetchers,
+  suilendAirdropFetcher,
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);
