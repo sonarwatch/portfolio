@@ -1,13 +1,13 @@
 export class PortfolioError extends Error {
-  override readonly name: string = 'PorfolioError';
-  readonly isPorfolioError = true;
-  readonly source: PorfolioErrorSource;
+  override readonly name: string = 'PortfolioError';
+  readonly isPortfolioError = true;
+  readonly source: PortfolioErrorSource;
   readonly sourceDetails?: string;
   readonly cause?: Error;
 
   constructor(
     message: string,
-    source: PorfolioErrorSource,
+    source: PortfolioErrorSource,
     sourceDetails?: string,
     cause?: Error
   ) {
@@ -25,4 +25,4 @@ export class PortfolioError extends Error {
   }
 }
 
-export type PorfolioErrorSource = 'adapter' | 'manager' | 'sdk';
+export type PortfolioErrorSource = 'adapter' | 'manager' | 'sdk';
