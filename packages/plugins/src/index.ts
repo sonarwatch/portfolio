@@ -369,6 +369,7 @@ import {
   platforms as suilendPlatforms,
   jobs as suilendJobs,
   fetchers as suilendFetchers,
+  airdropFetcher as suilendAirdropFetcher,
 } from './plugins/suilend';
 import {
   platforms as symmetryPlatforms,
@@ -494,6 +495,7 @@ import {
   jobs as bluefinJobs,
   fetchers as bluefinFetchers,
   platforms as bluefinPlatforms,
+  airdropFetcher as bluefinAirdropFetcher,
 } from './plugins/bluefin';
 import {
   platforms as citrusPlatforms,
@@ -653,6 +655,7 @@ import {
   platforms as grassPlatforms,
   jobs as grassJobs,
   fetchers as grassFetchers,
+  airdropFetcher as grassAirdropFetcher,
 } from './plugins/grass';
 import {
   platforms as autothorPlatforms,
@@ -1106,6 +1109,9 @@ export const airdropFetchers: AirdropFetcher[] = [
   deepbookAirdropFetcher,
   suinsAirdropFetcher,
   ...debridgeAirdropFetchers,
+  suilendAirdropFetcher,
+  bluefinAirdropFetcher,
+  grassAirdropFetcher,
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);

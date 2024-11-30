@@ -9,6 +9,7 @@ import positionFetcher from './positionFetcher';
 import perpsJob from './perpsJob';
 import clmmsFetcher from './clmmsFetcher';
 import clmmsJob from './clmmsJob';
+import { airdropFetcher } from './airdropFetcher';
 
 export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [poolJob, perpsJob, clmmsJob];
@@ -18,3 +19,4 @@ export const fetchers: Fetcher[] = [
   positionFetcher,
   clmmsFetcher,
 ];
+export { airdropFetcher };

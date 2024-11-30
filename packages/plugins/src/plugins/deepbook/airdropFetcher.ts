@@ -3,9 +3,10 @@ import BigNumber from 'bignumber.js';
 import {
   AirdropFetcher,
   AirdropFetcherExecutor,
+  airdropFetcherToFetcher,
   getAirdropRaw,
 } from '../../AirdropFetcher';
-import { airdropStatics, deepDecimals, deepMint } from './constants';
+import { airdropStatics, deepDecimals, deepMint, platform } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { AirdropWrapperNFT, DeepAirdropNFT } from '../../utils/sui/types';
 import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
@@ -74,9 +75,10 @@ export const airdropFetcher: AirdropFetcher = {
   networkId: NetworkId.sui,
   executor,
 };
-// export const fetcher = airdropFetcherToFetcher(
-//   airdropFetcher,
-//   platform.id,
-//   'deepbook-airdrop',
-//   airdropStatics.claimEnd
-// );
+
+export const fetcher = airdropFetcherToFetcher(
+  airdropFetcher,
+  platform.id,
+  'deepbook-airdrop',
+  airdropStatics.claimEnd
+);

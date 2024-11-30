@@ -1,6 +1,7 @@
 import {
   CollectibleAttribute,
   NetworkId,
+  parseTypeString,
   PortfolioAssetCollectible,
   PortfolioAssetType,
   PortfolioElementMultiple,
@@ -9,17 +10,14 @@ import {
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSui } from '../../../utils/clients';
 import { walletNftsPlatform } from '../constants';
-import { obKioskStructType } from '../../../utils/sui/constants';
+import { getOwnedObjects } from '../../../utils/sui/getOwnedObjects';
 import { ParsedData } from '../../../utils/sui/types';
 import { NftDisplayData, NftStruct } from '../../../utils/sui/structs/nft';
-import { KioskStruct } from '../../../utils/sui/structs/kiosk';
-import { getDynamicFieldsSafe } from '../../../utils/sui/getDynamicFieldsSafe';
-import { multiGetObjects } from '../../../utils/sui/multiGetObjects';
-import { getOwnedObjectsPreloaded } from '../../../utils/sui/getOwnedObjectsPreloaded';
+import { getKiosksObjects } from '../../../utils/sui/getKioskObjects';
 
 const executor: FetcherExecutor = async (owner: string) => {
   const client = getClientSui();
-  const ownedObjects = await getOwnedObjectsPreloaded(client, owner, {
+  const ownedObjects = await getOwnedObjects(client, owner, {
     options: {
       showDisplay: true,
     },
@@ -27,54 +25,65 @@ const executor: FetcherExecutor = async (owner: string) => {
   if (ownedObjects.length === 0) return [];
   const nftObjects = [...ownedObjects.filter((o) => o.data?.display?.data)];
 
-  const obKioskObject = ownedObjects.find(
-    (o) => o.data?.type === obKioskStructType
-  );
-  if (obKioskObject) {
-    const kioskDynamicObjects = await getDynamicFieldsSafe(
-      client,
-      (obKioskObject?.data?.content as ParsedData<KioskStruct>).fields.kiosk,
-      true
-    );
-    const ownerKioskObjects = await multiGetObjects(
-      client,
-      kioskDynamicObjects.map((o) => o.objectId)
-    );
-    nftObjects.push(...ownerKioskObjects);
-  }
+  const kioskObjects = await getKiosksObjects(ownedObjects, {
+    showContent: true,
+  });
+  nftObjects.push(...kioskObjects);
 
-  // TODO add Kiosk objects
   const assets: PortfolioAssetCollectible[] = [];
   nftObjects.forEach((object) => {
     if (!object.data) return;
-    if (object.data.type === obKioskObject) return;
+
+    if (object.data.type.includes('kiosk')) return;
 
     const display: NftDisplayData | null | undefined =
       object.data.display?.data;
     const content = object.data.content as ParsedData<NftStruct>;
 
-    let attributes: CollectibleAttribute[] | undefined;
-    if (content.fields?.attributes?.fields.map?.fields?.contents) {
-      attributes = content.fields.attributes.fields.map.fields.contents?.map(
-        (c) => ({
-          trait_type: c.fields.key,
-          value: c.fields.value,
-        })
-      );
+    let attributes: CollectibleAttribute[] = [];
+    if (content.fields?.attributes?.fields) {
+      if (content.fields.attributes.fields.map?.fields?.contents) {
+        attributes = content.fields.attributes.fields.map.fields.contents?.map(
+          (c) => ({
+            trait_type: c.fields.key,
+            value: c.fields.value,
+          })
+        );
+      } else if (content.fields.attributes.fields.contents) {
+        const objAttributes = content.fields.attributes.fields.contents;
+        for (const index in objAttributes) {
+          if (objAttributes[index]) {
+            const { value, key } = objAttributes[index].fields;
+            attributes.push({ trait_type: key, value });
+          }
+        }
+      }
     }
-
+    const collectionName = parseTypeString(object.data.type).struct;
     assets.push({
       networkId: NetworkId.sui,
       type: PortfolioAssetType.collectible,
       value: null,
       attributes: {},
-      name: display?.name || content.fields.name || content.fields.tick,
+      name:
+        display?.name ||
+        content.fields.name ||
+        content.fields.tick ||
+        (collectionName && content.fields.number)
+          ? `${collectionName} #${content.fields.number}`
+          : collectionName,
       data: {
-        address: object.data.type,
+        collection: {
+          id: object.data.type,
+          floorPrice: null,
+          name: collectionName,
+        },
+        address: object.data.objectId,
         amount: Number(content.fields.amount || 1),
         price: null,
         description: display?.description || content.fields.description,
-        imageUri: display?.image_url || content.fields.url,
+        imageUri:
+          display?.image_url || content.fields.url || content.fields.image_url,
         name: display?.name || content.fields.name || content.fields.tick,
         attributes,
       },
