@@ -19,8 +19,6 @@ export async function getOwnedObjects<K>(
     const res = await client.getOwnedObjects({
       owner,
       options: {
-        showType: true,
-        showContent: true,
         ...query?.options,
       },
       filter: query?.filter,

@@ -18,10 +18,6 @@ import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreload
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
   const nftsPositionsRes = await getOwnedObjectsPreloaded(client, owner, {
-    options: {
-      showDisplay: true,
-      showOwner: true,
-    },
     filter: { Package: packageIdOriginal },
   });
   if (nftsPositionsRes.length === 0) return [];
@@ -59,11 +55,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const clmmPositionsRes = await multiGetObjects<PositionFields>(
     client,
-    clmmPositionsIds,
-    {
-      showDisplay: true,
-      showOwner: true,
-    }
+    clmmPositionsIds
   );
 
   const elementRegistry = new ElementRegistry(NetworkId.sui, platformId);

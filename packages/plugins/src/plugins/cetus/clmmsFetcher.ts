@@ -18,10 +18,6 @@ import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreload
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
   const ownerRes = await getOwnedObjectsPreloaded(client, owner, {
-    options: {
-      showDisplay: true,
-      showOwner: true,
-    },
     filter: { Package: clmmPoolPackageId },
   });
   if (ownerRes.length === 0) return [];

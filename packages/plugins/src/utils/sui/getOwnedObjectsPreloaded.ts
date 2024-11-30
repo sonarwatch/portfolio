@@ -107,6 +107,12 @@ export async function getOwnedObjectsPreloaded<K>(
 
   if (!ownedObjectsPromise) {
     ownedObjectsPromise = getOwnedObjects(client, owner, {
+      options: {
+        showType: true,
+        showContent: true,
+        showDisplay: true,
+        showOwner: true,
+      },
       filter: {
         MatchNone: [
           {

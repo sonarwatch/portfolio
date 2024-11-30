@@ -25,13 +25,13 @@ import {
   ObligationCapFields,
 } from './types';
 import { getClientSui } from '../../utils/clients';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { Cache } from '../../Cache';
 import { getPoolsRewardsMaps } from './helpers';
 import { wadsDecimal } from '../save/constants';
 import earlyUsers from './earlyUsers.json';
 import bluefinLeagues from './bluefinLeagues.json';
 import { getKiosksObjects } from '../../utils/sui/getKioskObjects';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const eligibleCollections: Map<string, number> = new Map([
   [
@@ -135,7 +135,7 @@ async function getNftsAllocation(owner: string): Promise<{
 }> {
   const client = getClientSui();
   const eligibleCollectionsTypes = Array.from(eligibleCollections.keys());
-  const objects = await getOwnedObjects(client, owner);
+  const objects = await getOwnedObjectsPreloaded(client, owner);
 
   const kioskObjects = (await getKiosksObjects(objects)).flat();
 
@@ -165,13 +165,10 @@ async function getPointsAllocation(
   cache: Cache
 ): Promise<number> {
   const client = getClientSui();
-  const obligationsCapFields = await getOwnedObjects<ObligationCapFields>(
-    client,
-    owner,
-    {
+  const obligationsCapFields =
+    await getOwnedObjectsPreloaded<ObligationCapFields>(client, owner, {
       filter: { Package: packageId },
-    }
-  );
+    });
   if (obligationsCapFields.length === 0) return 0;
 
   const obligationsId: string[] = [];
