@@ -22,8 +22,8 @@ import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
 import { getClientSui } from '../../utils/clients';
 import { StakingPosition, UnstakingPositionObject } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { getUnlockingAt } from './helpers';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -33,12 +33,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       parentId: stakingParentObject,
       name: { type: 'address', value: owner },
     }),
-    getOwnedObjects<UnstakingPositionObject>(client, owner, {
+    getOwnedObjectsPreloaded<UnstakingPositionObject>(client, owner, {
       filter: {
         StructType: unstackStruct,
-      },
-      options: {
-        showContent: true,
       },
     }),
   ]);

@@ -56,9 +56,9 @@ import {
   UserLendingData,
   UserStakeAccounts,
 } from './types';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { getClientSui } from '../../utils/clients';
 import { ObjectResponse } from '../../utils/sui/types';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elements: PortfolioElement[] = [];
@@ -111,7 +111,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const [allOwnedObjects, marketData, spoolData, addressData] =
     await Promise.all([
-      getOwnedObjects(client, owner, { filter: filterOwnerObject }),
+      getOwnedObjectsPreloaded(client, owner, { filter: filterOwnerObject }),
       cache.getItem<MarketJobResult>(marketKey, {
         prefix,
         networkId: NetworkId.sui,

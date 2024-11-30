@@ -10,16 +10,16 @@ import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSui } from '../../../utils/clients';
 import { walletNftsPlatform } from '../constants';
 import { obKioskStructType } from '../../../utils/sui/constants';
-import { getOwnedObjects } from '../../../utils/sui/getOwnedObjects';
 import { ParsedData } from '../../../utils/sui/types';
 import { NftDisplayData, NftStruct } from '../../../utils/sui/structs/nft';
 import { KioskStruct } from '../../../utils/sui/structs/kiosk';
 import { getDynamicFieldsSafe } from '../../../utils/sui/getDynamicFieldsSafe';
 import { multiGetObjects } from '../../../utils/sui/multiGetObjects';
+import { getOwnedObjectsPreloaded } from '../../../utils/sui/getOwnedObjectsPreloaded';
 
 const executor: FetcherExecutor = async (owner: string) => {
   const client = getClientSui();
-  const ownedObjects = await getOwnedObjects(client, owner, {
+  const ownedObjects = await getOwnedObjectsPreloaded(client, owner, {
     options: {
       showDisplay: true,
     },

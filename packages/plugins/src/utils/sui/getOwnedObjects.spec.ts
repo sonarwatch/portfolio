@@ -1,6 +1,7 @@
 import { SuiObjectDataFilter } from '@mysten/sui/src/client/types/generated';
 import { getClientSui } from '../clients';
 import { getOwnedObjects } from './getOwnedObjects';
+import { getOwnedObjectsPreloaded } from './getOwnedObjectsPreloaded';
 
 describe('getOwnedObjects', () => {
   const client = getClientSui();
@@ -88,22 +89,12 @@ describe('getOwnedObjects', () => {
             ],
           };
 
-      const objectsFromRpc = await getOwnedObjects(
-        client,
-        owner,
-        {
-          filter: filterWithoutCoin,
-        },
-        true
-      );
-      const objectsFromCache = await getOwnedObjects(
-        client,
-        owner,
-        {
-          filter,
-        },
-        false
-      );
+      const objectsFromRpc = await getOwnedObjects(client, owner, {
+        filter: filterWithoutCoin,
+      });
+      const objectsFromCache = await getOwnedObjectsPreloaded(client, owner, {
+        filter,
+      });
 
       expect(objectsFromRpc.length).toEqual(objectsFromCache.length);
     }

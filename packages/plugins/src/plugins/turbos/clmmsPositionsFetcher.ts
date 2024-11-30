@@ -10,17 +10,15 @@ import {
 import { getClientSui } from '../../utils/clients';
 import { NFTFields, Pool, PositionFields } from './types';
 import { formatForNative } from './helper';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { bitsToNumber } from '../../utils/sui/bitsToNumber';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
-  const nftsPositionsRes = await getOwnedObjects(client, owner, {
+  const nftsPositionsRes = await getOwnedObjectsPreloaded(client, owner, {
     options: {
-      showType: true,
-      showContent: true,
       showDisplay: true,
       showOwner: true,
     },
@@ -63,8 +61,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     client,
     clmmPositionsIds,
     {
-      showType: true,
-      showContent: true,
       showDisplay: true,
       showOwner: true,
     }

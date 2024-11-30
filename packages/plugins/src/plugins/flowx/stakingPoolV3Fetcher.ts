@@ -4,19 +4,23 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { packageIdV3, platformId } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { PoolV3, PositionV3Object } from './types';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { bitsToNumber } from '../../utils/sui/bitsToNumber';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
-  const positions = await getOwnedObjects<PositionV3Object>(client, owner, {
-    filter: {
-      StructType: `${packageIdV3}::position::Position`,
-    },
-  });
+  const positions = await getOwnedObjectsPreloaded<PositionV3Object>(
+    client,
+    owner,
+    {
+      filter: {
+        StructType: `${packageIdV3}::position::Position`,
+      },
+    }
+  );
   if (positions.length === 0) return [];
 
   const poolsIds = new Set<string>();

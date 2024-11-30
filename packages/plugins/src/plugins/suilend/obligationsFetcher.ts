@@ -17,7 +17,6 @@ import {
   platformId,
 } from './constants';
 import { getClientSui } from '../../utils/clients';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import {
   LendingMarket,
   MarketsInfo,
@@ -28,17 +27,15 @@ import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getPoolsRewardsMaps, getRatesAsMap } from './helpers';
 import { wadsDecimal } from '../save/constants';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
-  const obligationsCapFields = await getOwnedObjects<ObligationCapFields>(
-    client,
-    owner,
-    {
+  const obligationsCapFields =
+    await getOwnedObjectsPreloaded<ObligationCapFields>(client, owner, {
       filter: { Package: packageId },
-    }
-  );
+    });
   if (obligationsCapFields.length === 0) return [];
 
   const obligationsId: string[] = [];

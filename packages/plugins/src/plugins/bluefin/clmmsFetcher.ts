@@ -4,12 +4,12 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { clmmPoolPositionType, clmmsPoolsKey, platformId } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { ClmmPool, ClmmPoolStat, ClmmPosition } from './types';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { bitsToNumber } from '../../utils/sui/bitsToNumber';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import { ObjectResponse } from '../../utils/sui/types';
 import { getAccruedFeeAndRewards } from './helpers';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const poolsMemo = new MemoizedCache<
   (ObjectResponse<ClmmPool> & { stats?: ClmmPoolStat })[]
@@ -20,7 +20,7 @@ const poolsMemo = new MemoizedCache<
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
-  const objects = await getOwnedObjects<ClmmPosition>(client, owner, {
+  const objects = await getOwnedObjectsPreloaded<ClmmPosition>(client, owner, {
     filter: {
       StructType: clmmPoolPositionType,
     },

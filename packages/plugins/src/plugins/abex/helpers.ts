@@ -5,7 +5,6 @@ import {
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { SuiClient } from '../../utils/clients/types';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import {
   abexMarket,
   corePackage,
@@ -29,20 +28,18 @@ import { getObject } from '../../utils/sui/getObject';
 import { getVaultInfo } from './getVaultInfo';
 import { parseValue } from './parseValue';
 import { Cache } from '../../Cache';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 export const getPositionCapInfoList = async (
   client: SuiClient,
   owner: string
 ): Promise<IPositionCapInfo[]> => {
-  const positionCaps = await getOwnedObjects(client, owner, {
+  const positionCaps = await getOwnedObjectsPreloaded(client, owner, {
     filter: {
       MoveModule: {
         package: corePackage,
         module: 'market',
       },
-    },
-    options: {
-      showType: true,
     },
   });
   const positionCapInfoList = [];
@@ -364,16 +361,12 @@ const parseFundingFeeModel = (raw: any): IFundingFeeModel => {
 };
 
 export const getOrderCapInfoList = async (client: SuiClient, owner: string) => {
-  const orderCaps = await getOwnedObjects(client, owner, {
+  const orderCaps = await getOwnedObjectsPreloaded(client, owner, {
     filter: {
       MoveModule: {
         package: corePackage,
         module: 'market',
       },
-    },
-    options: {
-      showType: true,
-      showContent: true,
     },
   });
   const orderCapInfoList = [];

@@ -5,14 +5,14 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { lpPositionTypeV2, platformId } from './constants';
 import { getClientSui } from '../../utils/clients';
 
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { LpTokenV2, Pool, ExtendedPool } from './types/pools';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
-  const lpObjects = await getOwnedObjects<LpTokenV2>(client, owner, {
+  const lpObjects = await getOwnedObjectsPreloaded<LpTokenV2>(client, owner, {
     filter: { StructType: lpPositionTypeV2 },
   });
   if (!lpObjects) return [];

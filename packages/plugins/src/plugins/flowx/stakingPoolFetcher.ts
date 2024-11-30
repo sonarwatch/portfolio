@@ -12,17 +12,21 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { packageId, platformId, poolsKey, poolsPrefix } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { Pool, PositionObject } from './types';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
-  const activePositions = await getOwnedObjects<PositionObject>(client, owner, {
-    filter: {
-      StructType: `${packageId}::position::Position`,
-    },
-  }).then((positions) =>
+  const activePositions = await getOwnedObjectsPreloaded<PositionObject>(
+    client,
+    owner,
+    {
+      filter: {
+        StructType: `${packageId}::position::Position`,
+      },
+    }
+  ).then((positions) =>
     positions.filter((pos) => Number(pos.data?.content?.fields.amount) > 0)
   );
   if (activePositions.length === 0) return [];

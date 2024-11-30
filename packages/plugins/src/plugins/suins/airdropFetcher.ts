@@ -12,19 +12,23 @@ import {
   platform as suinsPlatform,
 } from './constants';
 import { getClientSui } from '../../utils/clients';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { AirdropWrapperNFT } from '../../utils/sui/types';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const deepFactor = new BigNumber(10 ** nsDecimals);
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
   const client = getClientSui();
-  const nfts = await getOwnedObjects<AirdropWrapperNFT>(client, owner, {
-    filter: {
-      StructType:
-        '0x220bca2187856d09aae578e2782b2b484049a32c755d20352e01236ba5368b63::distribution::NSWrapper',
-    },
-  });
+  const nfts = await getOwnedObjectsPreloaded<AirdropWrapperNFT>(
+    client,
+    owner,
+    {
+      filter: {
+        StructType:
+          '0x220bca2187856d09aae578e2782b2b484049a32c755d20352e01236ba5368b63::distribution::NSWrapper',
+      },
+    }
+  );
 
   let amount = 0;
 
