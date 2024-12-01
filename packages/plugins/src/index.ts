@@ -678,6 +678,8 @@ import {
   fetchers as coinmarketcapFetchers,
 } from './plugins/coinmarketcap';
 
+import { jobs as usdExchangeRateJobs } from './plugins/usd-exchange-rate';
+
 export {
   walletTokensPlatform,
   walletNftsPlatform,
@@ -962,6 +964,7 @@ export const jobs: Job[] = [
   ...metaplexJobs,
   ...ensofiJobs,
   ...coinmarketcapJobs,
+  ...usdExchangeRateJobs,
 ];
 
 // FETCHERS //
