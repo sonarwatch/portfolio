@@ -3,15 +3,15 @@ import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { clmmType, farmsStatsInfoKey, platformId } from './constants';
 import { getClientSui } from '../../utils/clients';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { bitsToNumber } from '../../utils/sui/bitsToNumber';
 import { ClmmPosition, ClmmPool, PoolStat } from './types/pools';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
-  const ownerRes = await getOwnedObjects<ClmmPosition>(client, owner, {
+  const ownerRes = await getOwnedObjectsPreloaded<ClmmPosition>(client, owner, {
     filter: { StructType: clmmType },
   });
   if (ownerRes.length === 0) return [];

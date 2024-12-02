@@ -3,18 +3,16 @@ import { Cache } from '../../Cache';
 import { PACKAGE_ID, platformId, poolsCacheKey } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSui } from '../../utils/clients';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { getUserPosition } from './helpers';
 import { PoolSummary } from './types';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
-  const accountCaps = await getOwnedObjects(client, owner, {
+  const accountCaps = await getOwnedObjectsPreloaded(client, owner, {
     options: {
-      showType: true,
-      showContent: true,
       showDisplay: true,
       showOwner: true,
     },

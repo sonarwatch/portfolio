@@ -10,18 +10,14 @@ import {
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSui } from '../../../utils/clients';
 import { walletNftsPlatform } from '../constants';
-import { getOwnedObjects } from '../../../utils/sui/getOwnedObjects';
 import { ParsedData } from '../../../utils/sui/types';
 import { NftDisplayData, NftStruct } from '../../../utils/sui/structs/nft';
 import { getKiosksObjects } from '../../../utils/sui/getKioskObjects';
+import { getOwnedObjectsPreloaded } from '../../../utils/sui/getOwnedObjectsPreloaded';
 
 const executor: FetcherExecutor = async (owner: string) => {
   const client = getClientSui();
-  const ownedObjects = await getOwnedObjects(client, owner, {
-    options: {
-      showDisplay: true,
-    },
-  });
+  const ownedObjects = await getOwnedObjectsPreloaded(client, owner);
   if (ownedObjects.length === 0) return [];
   const nftObjects = [...ownedObjects.filter((o) => o.data?.display?.data)];
 

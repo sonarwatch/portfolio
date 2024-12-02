@@ -8,22 +8,22 @@ import {
 } from '../../AirdropFetcher';
 import { airdropStatics, nsDecimals, nsMint, platform } from './constants';
 import { getClientSui } from '../../utils/clients';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { AirdropWrapperNFT } from '../../utils/sui/types';
 import { NsAirdropClaimed } from './types';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const deepFactor = new BigNumber(10 ** nsDecimals);
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
   const client = getClientSui();
   const [nfts, claimed] = await Promise.all([
-    getOwnedObjects<AirdropWrapperNFT>(client, owner, {
+    getOwnedObjectsPreloaded<AirdropWrapperNFT>(client, owner, {
       filter: {
         StructType:
           '0x220bca2187856d09aae578e2782b2b484049a32c755d20352e01236ba5368b63::distribution::NSWrapper',
       },
     }),
-    getOwnedObjects<NsAirdropClaimed>(client, owner, {
+    getOwnedObjectsPreloaded<NsAirdropClaimed>(client, owner, {
       filter: {
         StructType:
           '0x3ca2fdfc90c262f5a7323cdf10f4a8960a2640a18abc0c8405b15ad7186be8f0::distribution::NSAirdrop',

@@ -9,13 +9,13 @@ import {
 } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSui } from '../../utils/clients';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { Credential } from './types';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
-  const objects = await getOwnedObjects<Credential>(client, owner, {
+  const objects = await getOwnedObjectsPreloaded<Credential>(client, owner, {
     filter: {
       MoveModule: {
         package: stakingPackage,

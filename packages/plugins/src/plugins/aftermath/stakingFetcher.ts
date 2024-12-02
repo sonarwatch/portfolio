@@ -11,27 +11,24 @@ import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId, stakingType } from './constants';
 import { getClientSui } from '../../utils/clients';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { BurnerVault, StakingPosition } from './types';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
 import { getHarvestRewards } from './helpers';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const farmFactor = new BigNumber(10 ** 9);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
-  const stakedPositions = await getOwnedObjects<StakingPosition>(
+  const stakedPositions = await getOwnedObjectsPreloaded<StakingPosition>(
     client,
     owner,
     {
       filter: {
         StructType: stakingType,
-      },
-      options: {
-        showContent: true,
       },
     }
   );
