@@ -1,5 +1,5 @@
 import { SuiEvent, SuiObjectData, SuiObjectResponse } from '@mysten/sui/client';
-import { ID } from './structs/id';
+import { ID } from './types/id';
 
 export type ParsedData<K> = {
   hasPublicTransfer: boolean;

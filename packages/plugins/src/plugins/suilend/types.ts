@@ -1,6 +1,6 @@
 import { BorrowLendRate } from '@sonarwatch/portfolio-core';
 import { ParsedData } from '../../utils/sui/types';
-import { ID } from '../../utils/sui/structs/id';
+import { ID } from '../../utils/sui/types/id';
 
 export type ObligationCapFields = {
   id: ID;

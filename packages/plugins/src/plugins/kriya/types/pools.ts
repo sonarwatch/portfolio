@@ -1,4 +1,4 @@
-import { ID } from '../../../utils/sui/structs/id';
+import { ID } from '../../../utils/sui/types/id';
 import { TickIndex, Type } from './common';
 
 // Pool V2 Object Kriya

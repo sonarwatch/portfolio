@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { ID } from '../../utils/sui/structs/id';
+import { ID } from '../../utils/sui/types/id';
 
 export type Credential = {
   acc_reward_per_share: string;

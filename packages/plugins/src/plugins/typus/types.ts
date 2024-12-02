@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ID } from '../../utils/sui/structs/id';
+import { ID } from '../../utils/sui/types/id';
 
 export type DepositShare = {
   index: string;
