@@ -30,7 +30,7 @@ import { getPoolsRewardsMaps } from './helpers';
 import { wadsDecimal } from '../save/constants';
 import earlyUsers from './earlyUsers.json';
 import bluefinLeagues from './bluefinLeagues.json';
-import { getKiosksObjects } from '../../utils/sui/getKioskObjects';
+import { getKiosksDynamicFieldsObjects } from '../../utils/sui/getKioskObjects';
 import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const eligibleCollections: Map<string, number> = new Map([
@@ -137,7 +137,7 @@ async function getNftsAllocation(owner: string): Promise<{
   const eligibleCollectionsTypes = Array.from(eligibleCollections.keys());
   const objects = await getOwnedObjectsPreloaded(client, owner);
 
-  const kioskObjects = (await getKiosksObjects(objects)).flat();
+  const kioskObjects = (await getKiosksDynamicFieldsObjects(objects)).flat();
 
   let collectionsAllocation = 0;
   let capsulesAllocation = 0;

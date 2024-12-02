@@ -14,7 +14,7 @@ import {
   SuiFrendFields,
   NftDisplayData,
 } from '../../../utils/sui/types/nft';
-import { getKiosksObjects } from '../../../utils/sui/getKioskObjects';
+import { getKiosksDynamicFieldsObjects } from '../../../utils/sui/getKioskObjects';
 import { getOwnedObjectsPreloaded } from '../../../utils/sui/getOwnedObjectsPreloaded';
 
 const suiFrendTraitMap: Map<number, string> = new Map([
@@ -29,9 +29,8 @@ const executor: FetcherExecutor = async (owner: string) => {
   const client = getClientSui();
   const ownedObjects = await getOwnedObjectsPreloaded(client, owner);
   if (ownedObjects.length === 0) return [];
-  // const nftObjects = [...ownedObjects.filter((o) => o.data?.display?.data)];
 
-  const kioskObjects = await getKiosksObjects(ownedObjects, {
+  const kioskObjects = await getKiosksDynamicFieldsObjects(ownedObjects, {
     showDisplay: true,
   });
 

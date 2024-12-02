@@ -27,11 +27,21 @@ type KioskOwnerCap = {
 };
 
 // Fonction principale pour parser les objets
-export async function getKiosksObjects(
+export async function getKiosksDynamicFieldsObjects(
   objects: ObjectResponse<unknown>[],
   options?: SuiObjectDataOptions
 ) {
   const client = getClientSui();
+  return (
+    await multipleGetDynamicFieldsObjects(
+      client,
+      getKiosksIds(objects),
+      options
+    )
+  ).flat();
+}
+
+export function getKiosksIds(objects: ObjectResponse<unknown>[]) {
   const kiosks: string[] = [];
   objects.forEach((obj) => {
     if (!obj.data?.type) return;
@@ -57,9 +67,7 @@ export async function getKiosksObjects(
     }
     if (kioskId) kiosks.push(kioskId);
   });
-  return (
-    await multipleGetDynamicFieldsObjects(client, kiosks, options)
-  ).flat();
+  return kiosks;
 }
 
 // Déclarations des types

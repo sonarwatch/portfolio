@@ -4,7 +4,7 @@ import { Cache } from '../../Cache';
 import { platformId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
-import { getKiosksObjects } from '../../utils/sui/getKioskObjects';
+import { getKiosksDynamicFieldsObjects } from '../../utils/sui/getKioskObjects';
 import { getClientSui } from '../../utils/clients';
 import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 import { ObjectResponse } from '../../utils/sui/types';
@@ -13,7 +13,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
   const ownedObjects = await getOwnedObjectsPreloaded(client, owner);
   if (ownedObjects.length === 0) return [];
-  const kiosks = await getKiosksObjects(ownedObjects);
+  const kiosks = await getKiosksDynamicFieldsObjects(ownedObjects);
   const kiosksWithProfits = kiosks
     .filter((k) => k.data?.type === '0x2::kiosk::Kiosk')
     .map(
