@@ -122,7 +122,7 @@ export const airdropFetcher: AirdropFetcher = {
 // );
 
 function getEarlyUserAllocation(owner: string): number {
-  if (earlyUsers.includes(owner)) return 513;
+  if (earlyUsers.includes(owner)) return 512;
   return 0;
 }
 
