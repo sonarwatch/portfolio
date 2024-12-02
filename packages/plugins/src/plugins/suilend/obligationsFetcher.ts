@@ -17,7 +17,6 @@ import {
   platformId,
 } from './constants';
 import { getClientSui } from '../../utils/clients';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import {
   LendingMarket,
   MarketsInfo,
@@ -28,17 +27,15 @@ import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getPoolsRewardsMaps, getRatesAsMap } from './helpers';
 import { wadsDecimal } from '../save/constants';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
-  const obligationsCapFields = await getOwnedObjects<ObligationCapFields>(
-    client,
-    owner,
-    {
+  const obligationsCapFields =
+    await getOwnedObjectsPreloaded<ObligationCapFields>(client, owner, {
       filter: { Package: packageId },
-    }
-  );
+    });
   if (obligationsCapFields.length === 0) return [];
 
   const obligationsId: string[] = [];
@@ -130,7 +127,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const tokenPrice = tokenPriceById.get(
         formatTokenAddress(fields.coin_type.fields.name, NetworkId.sui)
       );
-      if (!tokenPrice) continue;
 
       const reserveRates = ratesByReserveId.get(reserve.fields.id.id);
       if (reserveRates) {
@@ -139,14 +135,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
       const amount = new BigNumber(fields.deposited_ctoken_amount)
         .multipliedBy(cRatio)
-        .dividedBy(10 ** tokenPrice.decimals);
+        .dividedBy(10 ** reserve.fields.mint_decimals);
       const price = new BigNumber(fields.market_value.fields.value)
         .dividedBy(10 ** 18)
         .dividedBy(amount);
 
       suppliedAssets.push(
         tokenPriceToAssetToken(
-          tokenPrice.address,
+          formatTokenAddress(fields.coin_type.fields.name, NetworkId.sui),
           amount.toNumber(),
           NetworkId.sui,
           tokenPrice,
@@ -229,6 +225,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           .minus(userReward.fields.cumulative_rewards_per_share.fields.value)
           .times(share)
           .dividedBy(10 ** wadsDecimal);
+
         if (cumulativeAmount.isLessThanOrEqualTo(0)) continue;
 
         const previousAmount = rewardAmountByMint.get(rewardMint);
@@ -246,10 +243,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         const poolsRewards = poolsRewardByManagerId.get(
           userRewardManager.fields.pool_reward_manager_id
         );
+
         if (poolsRewards) {
           for (const poolReward of poolsRewards) {
             if (!poolReward) continue;
-
             const amount = new BigNumber(
               poolReward.cumulative_rewards_per_share.fields.value
             )

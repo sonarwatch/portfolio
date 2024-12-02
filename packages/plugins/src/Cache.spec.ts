@@ -1,6 +1,8 @@
 import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
-import { Cache } from './Cache';
+import { Cache, getCacheConfig } from './Cache';
 import sleep from './utils/misc/sleep';
+
+import 'dotenv/config';
 
 describe('Cache', () => {
   it('should works', async () => {
@@ -227,5 +229,35 @@ describe('Cache', () => {
     expect(tokenPrices.at(2)?.address).toBe(tokenCAddress);
     expect(tokenPrices.at(0)?.price).toBe(3);
     expect(tokenPrices.at(1)?.price).toBe(1.5);
+  });
+
+  it('should use token price config cache', async () => {
+    const config = getCacheConfig();
+    const cache = new Cache(config);
+
+    const sourceA: TokenPriceSource = {
+      address:
+        '777888899994f5be8bdae8b91ee711462c5d9e31bda232e70fd9607b523c88::XX::XX',
+      decimals: 9,
+      id: 'sourceA',
+      networkId: NetworkId.sui,
+      platformId: 'foo',
+      price: 1,
+      timestamp: Date.now(),
+      weight: 0.5,
+    };
+    await cache.setTokenPriceSource(sourceA);
+    const tokenPrice = await cache.getTokenPrice(
+      '0x777888899994f5be8bdae8b91ee711462c5d9e31bda232e70fd9607b523c88::XX::XX',
+      NetworkId.sui
+    );
+    expect(tokenPrice).toBeDefined();
+    expect(tokenPrice?.price).toBe(1);
+    const fasterTokenPrice = await cache.getTokenPrice(
+      sourceA.address,
+      NetworkId.sui
+    );
+    expect(fasterTokenPrice).toBeDefined();
+    expect(fasterTokenPrice?.price).toBe(1);
   });
 });

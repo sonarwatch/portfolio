@@ -32,7 +32,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         account.lockupDuration.toNumber()) *
       1000;
     if (account.depositAmount.isZero()) continue;
-    if (account.effectiveStake.isZero()) continue;
+
     assets.push({
       ...tokenPriceToAssetToken(
         bonkMint,

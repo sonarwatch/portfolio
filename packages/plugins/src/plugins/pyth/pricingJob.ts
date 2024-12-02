@@ -25,10 +25,11 @@ import {
 } from '../../utils/sui/constants';
 import { usdcSolanaDecimals, usdcSolanaMint } from '../../utils/solana';
 
+// https://www.pyth.network/developers/price-feed-ids#solana-price-feed-accounts
 const feedsToFetch: FeedInfo[] = [
   // SOL
   {
-    address: new PublicKey('H6ARHf6YXhGYeQfUzQNGk6rDNnLBQKrenN712K4AQJEG'),
+    address: new PublicKey('7UVimffxr9ow1uXYxsr4LHAcV58mLzhmwaeKvJ1pjLiE'),
     tokens: [
       {
         mint: solanaNativeAddress,
@@ -44,7 +45,7 @@ const feedsToFetch: FeedInfo[] = [
   },
   // SUI
   {
-    address: new PublicKey('3Qub3HaAJaa2xNY7SUqPKd3vVwTqDfDDkEUMPjXD2c1q'),
+    address: new PublicKey('GgV3a7YeVRga9prjNGEDBG9NwatSaD8rwjZ4GNjPiXTq'),
     tokens: [
       {
         mint: suiNativeAddress,
@@ -60,7 +61,7 @@ const feedsToFetch: FeedInfo[] = [
   },
   // APT
   {
-    address: new PublicKey('FNNvb1AFDnDVPkocEri8mWbJ1952HQZtFLuwPiUjSJQ'),
+    address: new PublicKey('9oR3Uh2zsp1CxLdsuFrg3QhY2eZ2e5eLjDgDfZ6oG2ev'),
     tokens: [
       {
         mint: aptosNativeAddress,
@@ -71,7 +72,7 @@ const feedsToFetch: FeedInfo[] = [
   },
   // USDC
   {
-    address: new PublicKey('Gnt27xtC473ZT2Mw5u8wZ68Z3gULkSTb5DuxJy7eJotD'),
+    address: new PublicKey('Dpw1EAVrSB1ibxiDQyTAW6Zip3J4Btk2x4SgApQCeFbX'),
     tokens: [
       {
         mint: wUsdcSuiType,
@@ -90,10 +91,9 @@ const feedsToFetch: FeedInfo[] = [
       },
     ],
   },
-
   // USDT
   {
-    address: new PublicKey('3vxLXJqLqF3JG5TCbYycbKWRBbCJQLxQmBGCkyqEEefL'),
+    address: new PublicKey('HT2PLQBcG5EiCcNSaMHAjSgd9F98ecpATbk4Sk5oYuM'),
     tokens: [
       {
         mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
@@ -102,9 +102,9 @@ const feedsToFetch: FeedInfo[] = [
       },
     ],
   },
-  // wsETH
+  // wstETH
   {
-    address: new PublicKey('8QFEAwdamHFFRnj3Swnv1CkVNZBeFiVzraC548xhmpT5'),
+    address: new PublicKey('HyoTrHkmhM8YETBagUFqtT95JpkFWtLDtL3uQHsLVT5j'),
     tokens: [
       {
         mint: 'ZScHuTtqZukUrtZS43teTKGs2VqkKL8k4QCouR2n6Uo',
@@ -115,12 +115,155 @@ const feedsToFetch: FeedInfo[] = [
   },
   // MOD
   {
-    address: new PublicKey('BNnzTdorVyW4ttRAoXvohD46Q8ycN8LCHz2CGV4pUH7S'),
+    address: new PublicKey('37MmKHDVspCyZtXkjfLD2xHiiEV1WwNNsRkJxAdvvb33'),
     tokens: [
       {
         mint: '0x6f986d146e4a90b828d8c12c14b6f4e003fdff11a8eecceceb63744363eaac01::mod_coin::MOD',
         decimals: 8,
         networkdId: NetworkId.aptos,
+      },
+    ],
+  },
+  // USDS
+  {
+    address: new PublicKey('DyYBBWEi9xZvgNAeMDCiFnmC1U9gqgVsJDXkL5WETpoX'),
+    tokens: [
+      {
+        decimals: 6,
+        mint: 'USDSwr9ApdHk5bvJKMjzff41FfuX8bSxdKcR81vTwcA',
+        networkdId: NetworkId.solana,
+      },
+    ],
+  },
+  // Wrapped BTC (Portal)
+  {
+    address: new PublicKey('4cSM2e6rvbGQUFiJbqytoVMi5GgghSMr8LwVrT9VPSPo'),
+    tokens: [
+      {
+        mint: '3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh',
+        networkdId: 'solana',
+        decimals: 8,
+      },
+    ],
+  },
+  // Wrapped Ether (Wormhole)
+  {
+    address: new PublicKey('42amVS4KgzR9rA28tkVYqVXjq9Qa8dcZQMbH5EYFX6XC'),
+    tokens: [
+      {
+        mint: '7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs',
+        networkdId: 'solana',
+        decimals: 8,
+      },
+    ],
+  },
+  // mSOL
+  {
+    address: new PublicKey('5CKzb9j4ChgLUt8Gfm5CNGLN6khXKiqMbnGAW4cgXgxK'),
+    tokens: [
+      {
+        mint: 'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So',
+        networkdId: 'solana',
+        decimals: 9,
+      },
+    ],
+  },
+  // Bonk
+  {
+    address: new PublicKey('DBE3N8uNjhKPRHfANdwGvCZghWXyLPdqdSbEW2XFwBiX'),
+    tokens: [
+      {
+        mint: 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263',
+        networkdId: 'solana',
+        decimals: 5,
+      },
+    ],
+  },
+  // Fida
+  {
+    address: new PublicKey('2cfmeuVBf7bvBJcjKBQgAwfvpUvdZV7K8NZxUEuccrub'),
+    tokens: [
+      {
+        mint: 'EchesyfXePKdLtoiZSL8pBe8Myagyy8ZRqsACNCFGnvp',
+        networkdId: 'solana',
+        decimals: 6,
+      },
+    ],
+  },
+  // Pyth
+  {
+    address: new PublicKey('8vjchtMuJNY4oFQdTi8yCe6mhCaNBFaUbktT482TpLPS'),
+    tokens: [
+      {
+        mint: 'HZ1JovNiVvGrGNiiYvEozEVgZ58xaU3RKwX8eACQBCt3',
+        networkdId: 'solana',
+        decimals: 6,
+      },
+    ],
+  },
+  // HNT
+  {
+    address: new PublicKey('4DdmDswskDxXGpwHrXUfn2CNUm9rt21ac79GHNTN3J33'),
+    tokens: [
+      {
+        mint: 'hntyVP6YFm1Hg25TN9WGLqM12b8TQmcknKrdu1oxWux',
+        networkdId: 'solana',
+        decimals: 8,
+      },
+    ],
+  },
+  // Orca
+  {
+    address: new PublicKey('4CBshVeNBEXz24GZpoj8SrqP5L7VGG3qjGd6tCST1pND'),
+    tokens: [
+      {
+        mint: 'orcaEKTdK7LKz57vaAYr9QeNsVEPfiu6QeMU1kektZE',
+        networkdId: 'solana',
+        decimals: 6,
+      },
+    ],
+  },
+  // Render
+  {
+    address: new PublicKey('HAm5DZhrgrWa12heKSxocQRyJWGCtXegC77hFQ8F5QTH'),
+    tokens: [
+      {
+        mint: 'rndrizKT3MK1iimdxRdWabcF7Zg7AR5T4nud4EkHBof',
+        networkdId: 'solana',
+        decimals: 8,
+      },
+    ],
+  },
+  // MNDE
+  {
+    address: new PublicKey('GHKcxocPyzSjy7tWApQjKRkDNuVXd4Kk624zhuaR7xhC'),
+    tokens: [
+      {
+        mint: 'MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey',
+        networkdId: 'solana',
+        decimals: 9,
+      },
+    ],
+  },
+  // WIF
+  {
+    address: new PublicKey('6B23K3tkb51vLZA14jcEQVCA1pfHptzEHFA93V5dYwbT'),
+    tokens: [
+      {
+        mint: 'EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm',
+        networkdId: 'solana',
+        decimals: 6,
+      },
+    ],
+  },
+  // WEN
+  {
+    address: new PublicKey('CsG7wXoqZKNxx4UnFtvozfwXQ9RgpKe7zSJa4LWh5MT9'),
+    tokens: [
+      {
+        mint: 'WENWENvqqNya429ubCdR81ZmD69brwQaaBYY6p3LCpk',
+        networkdId: 'solana',
+        decimals: 5,
       },
     ],
   },
@@ -134,6 +277,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-pricing`,
   executor,
-  label: 'coingecko',
+  label: 'realtime',
 };
 export default job;

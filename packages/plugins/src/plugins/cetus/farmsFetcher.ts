@@ -11,24 +11,25 @@ import {
   FetchPosFeeParams,
   FetchPosRewardParams,
 } from './types';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { bitsToNumber } from '../../utils/sui/bitsToNumber';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { fetchPosFeeAmount, fetchPosRewardersAmount } from './helpers';
 import { getPools } from './getPools';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
-  const positions = await getOwnedObjects<WrappedPositionNFT>(client, owner, {
-    options: {
-      showContent: true,
-    },
-    filter: {
-      StructType: farmNftType,
-    },
-  });
+  const positions = await getOwnedObjectsPreloaded<WrappedPositionNFT>(
+    client,
+    owner,
+    {
+      filter: {
+        StructType: farmNftType,
+      },
+    }
+  );
   if (positions.length === 0) return [];
 
   const [farms, pools, allFees] = await Promise.all([

@@ -115,7 +115,7 @@ export type PriceResponse = {
       vsToken: string;
       vsTokenSymbol: string;
       price: number;
-    }
+    } | null
   >;
   timeTaken: number;
 };

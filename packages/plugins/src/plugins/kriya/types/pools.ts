@@ -1,4 +1,4 @@
-import { ID } from '../../../utils/sui/structs/id';
+import { ID } from '../../../utils/sui/types/id';
 import { TickIndex, Type } from './common';
 
 // Pool V2 Object Kriya
@@ -155,4 +155,13 @@ export type Tick = {
 export type TickBitmapFields = {
   id: ID;
   size: string;
+};
+
+export type PoolStat = {
+  pool_id: string;
+  volume_24h: string;
+  fee_collected_24h: string;
+  fee_rate: string;
+  tvl: string;
+  apy: string;
 };

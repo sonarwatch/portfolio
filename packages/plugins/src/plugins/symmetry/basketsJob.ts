@@ -5,11 +5,10 @@ import { Job, JobExecutor } from '../../Job';
 import { basketProgramId, platformId, tokenListAddress } from './constants';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
-import { OracleType, fundStruct, tokenListStruct } from './structs';
+import { fundStruct, tokenListStruct } from './structs';
 import { fundFilters } from './filters';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 import { getSymbol } from './helpers';
-import { getPythTokenPriceSources } from '../../utils/solana/pyth/helpers';
 import {
   PoolUnderlyingRaw,
   getLpTokenSourceRaw,
@@ -28,24 +27,6 @@ const executor: JobExecutor = async (cache: Cache) => {
     0,
     tokenListRes.numTokens.toNumber()
   );
-
-  // Add tokens prices from Pyth Oracles
-  const pythSources = await getPythTokenPriceSources(
-    connection,
-    tokenSettings
-      .filter((ts) => ts.oracleType === OracleType.Pyth)
-      .map((ts) => ({
-        tokens: [
-          {
-            mint: ts.tokenMint.toString(),
-            networkdId: NetworkId.solana,
-            decimals: ts.decimals,
-          },
-        ],
-        address: ts.oracleAccount,
-      }))
-  );
-  await cache.setTokenPriceSources(pythSources);
 
   const tokenPrices = await cache.getTokenPrices(
     tokenSettings.map((ts) => ts.tokenMint.toString()),

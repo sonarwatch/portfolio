@@ -45,7 +45,7 @@ export async function getJupiterPrices(mints: PublicKey[], vsMint: PublicKey) {
   const prices: Map<string, number> = new Map();
   for (const priceData of pricesData) {
     for (const [, value] of Object.entries(priceData)) {
-      prices.set(value.id, value.price);
+      if (value) prices.set(value.id, value.price);
     }
   }
   return prices;

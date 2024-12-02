@@ -5,11 +5,10 @@ import { networks } from '../constants';
 import {
   assertBitcoinTokenAddress,
   assertEvmTokenAddress,
-  assertMoveTokenAddress,
   assertSeiTokenAddress,
   assertSolanaTokenAddress,
 } from './validTokenAddress';
-import { formatMoveAddress } from './formatAddress';
+import { uniformMoveTokenAddress } from './uniformTokenAddress';
 
 export function formatBitcoinTokenAddress(address: string) {
   assertBitcoinTokenAddress(address);
@@ -17,20 +16,7 @@ export function formatBitcoinTokenAddress(address: string) {
 }
 
 export function formatMoveTokenAddress(address: string) {
-  assertMoveTokenAddress(address);
-  let tAddress = address;
-  if (!address.startsWith('0x')) tAddress = `0x${tAddress}`;
-  tAddress = tAddress
-    .trim()
-    .replaceAll('::', '__')
-    .replaceAll(',', '-')
-    .replaceAll(/[^\w\s-]/g, '')
-    .replaceAll(/[\s_-]+/g, '-');
-
-  const splitted = tAddress.split('-');
-  splitted[0] = formatMoveAddress(splitted[0]);
-
-  return splitted.join('-');
+  return uniformMoveTokenAddress(address);
 }
 
 export function formatEvmTokenAddress(address: string) {

@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { ID } from '../../utils/sui/structs/id';
+import { ID } from '../../utils/sui/types/id';
 
 export type SuiAddressType = string;
 export type SuiObjectIdType = string;
@@ -38,6 +38,14 @@ export type Pool = {
   uri: string;
   name: string;
 } & PoolImmutables;
+
+export type PoolStat = {
+  vol_in_usd?: string;
+  vol_in_usd_24h?: string;
+  apr_24h?: string;
+  apr_7day?: string;
+  apr_30day?: string;
+};
 
 export type SuiStructTag = {
   full_address: string;

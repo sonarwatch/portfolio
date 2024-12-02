@@ -5,7 +5,7 @@ import {
   PoolCoinNames,
   SCoinNames,
 } from './coin';
-import { ID } from '../../../utils/sui/structs/id';
+import { ID } from '../../../utils/sui/types/id';
 
 export type UserLending = {
   coinType: string;

@@ -115,8 +115,11 @@ export const fundStruct = new BeetStruct<Fund>(
 );
 
 export enum OracleType {
-  Pyth,
+  PythOld,
   CustomSwitchboard,
+  CustomStakePool,
+  Pyth,
+  SwitchboardOnDemand,
 }
 
 export type TokenSettings = {

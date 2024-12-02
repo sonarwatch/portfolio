@@ -9,7 +9,7 @@ import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { extractStructTagFromType } from './helpers';
 import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
 import { getDynamicFieldsSafe } from '../../utils/sui/getDynamicFieldsSafe';
-import { ID } from '../../utils/sui/structs/id';
+import { ID } from '../../utils/sui/types/id';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();

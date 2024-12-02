@@ -13,6 +13,27 @@ import { publicKey } from '@metaplex-foundation/beet-solana';
 import { blob, i64, u128, u64 } from '../../utils/solana';
 import { OracleType, Side } from '../jupiter/exchange/structs';
 
+export type CustomOracle = {
+  buffer: Buffer;
+  price: BigNumber;
+  expo: number;
+  conf: BigNumber;
+  ema: BigNumber;
+  publishTime: BigNumber;
+};
+
+export const customOracleStruct = new BeetStruct<CustomOracle>(
+  [
+    ['buffer', blob(8)],
+    ['price', u64],
+    ['expo', i32],
+    ['conf', u64],
+    ['ema', u64],
+    ['publishTime', i64],
+  ],
+  (args) => args as CustomOracle
+);
+
 export type OracleParams = {
   oracleAccount: PublicKey;
   customOracleAccount: PublicKey;
@@ -236,7 +257,12 @@ export type Custody = {
   borrowRateState: BorrowRateState;
   bump: number;
   tokenAccountBump: number;
-  buffer2: Buffer;
+  sizeFactorForSpread: number;
+  null: number;
+  reservedAmount: BigNumber;
+  minReserveUsd: BigNumber;
+  limitPriceBufferBps: BigNumber;
+  padding: Buffer;
 };
 
 export const custodyStruct = new BeetStruct<Custody>(
@@ -261,7 +287,12 @@ export const custodyStruct = new BeetStruct<Custody>(
     ['borrowRateState', borrowRateStateStruct],
     ['bump', u8],
     ['tokenAccountBump', u8],
-    ['buffer2', blob(18)],
+    ['sizeFactorForSpread', u8],
+    ['null', u8],
+    ['reservedAmount', u64],
+    ['minReserveUsd', u64],
+    ['limitPriceBufferBps', u64],
+    ['padding', blob(16)],
   ],
   (args) => args as Custody
 );

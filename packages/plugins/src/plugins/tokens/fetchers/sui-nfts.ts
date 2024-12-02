@@ -1,84 +1,146 @@
 import {
-  CollectibleAttribute,
   NetworkId,
+  parseTypeString,
   PortfolioAssetCollectible,
-  PortfolioAssetType,
+  PortfolioAssetCollectibleData,
   PortfolioElementMultiple,
   PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSui } from '../../../utils/clients';
 import { walletNftsPlatform } from '../constants';
-import { obKioskStructType } from '../../../utils/sui/constants';
-import { getOwnedObjects } from '../../../utils/sui/getOwnedObjects';
-import { ParsedData } from '../../../utils/sui/types';
-import { NftDisplayData, NftStruct } from '../../../utils/sui/structs/nft';
-import { KioskStruct } from '../../../utils/sui/structs/kiosk';
-import { getDynamicFieldsSafe } from '../../../utils/sui/getDynamicFieldsSafe';
-import { multiGetObjects } from '../../../utils/sui/multiGetObjects';
+import {
+  NFTContentFields,
+  SuiFrendFields,
+  NftDisplayData,
+} from '../../../utils/sui/types/nft';
+import { getKiosksDynamicFieldsObjects } from '../../../utils/sui/getKioskObjects';
+import { getOwnedObjectsPreloaded } from '../../../utils/sui/getOwnedObjectsPreloaded';
+
+const suiFrendTraitMap: Map<number, string> = new Map([
+  [0, 'skin'],
+  [1, 'main_color'],
+  [2, 'secondary_colo'],
+  [3, 'expression'],
+  [4, 'ears'],
+]);
 
 const executor: FetcherExecutor = async (owner: string) => {
   const client = getClientSui();
-  const ownedObjects = await getOwnedObjects(client, owner, {
-    options: {
-      showDisplay: true,
-    },
-  });
+  const ownedObjects = await getOwnedObjectsPreloaded(client, owner);
   if (ownedObjects.length === 0) return [];
-  const nftObjects = [...ownedObjects.filter((o) => o.data?.display?.data)];
 
-  const obKioskObject = ownedObjects.find(
-    (o) => o.data?.type === obKioskStructType
-  );
-  if (obKioskObject) {
-    const kioskDynamicObjects = await getDynamicFieldsSafe(
-      client,
-      (obKioskObject?.data?.content as ParsedData<KioskStruct>).fields.kiosk,
-      true
-    );
-    const ownerKioskObjects = await multiGetObjects(
-      client,
-      kioskDynamicObjects.map((o) => o.objectId)
-    );
-    nftObjects.push(...ownerKioskObjects);
-  }
+  const kioskObjects = await getKiosksDynamicFieldsObjects(ownedObjects, {
+    showDisplay: true,
+  });
 
-  // TODO add Kiosk objects
+  ownedObjects.push(...kioskObjects);
+
   const assets: PortfolioAssetCollectible[] = [];
-  nftObjects.forEach((object) => {
-    if (!object.data) return;
-    if (object.data.type === obKioskObject) return;
+  ownedObjects.forEach((object) => {
+    // Filter non NFT object
+    if (!object.data?.display?.data) return;
 
-    const display: NftDisplayData | null | undefined =
-      object.data.display?.data;
-    const content = object.data.content as ParsedData<NftStruct>;
+    const parsedType = parseTypeString(object.data.type);
+    const collectionName = parsedType.struct;
+    const subCollectionName = parsedType.keys?.at(0)?.root;
 
-    let attributes: CollectibleAttribute[] | undefined;
-    if (content.fields?.attributes?.fields.map?.fields?.contents) {
-      attributes = content.fields.attributes.fields.map.fields.contents?.map(
-        (c) => ({
-          trait_type: c.fields.key,
-          value: c.fields.value,
-        })
-      );
-    }
-
-    assets.push({
+    const collectibleData: PortfolioAssetCollectibleData = {
+      address: object.data.objectId,
+      description: '',
+      amount: 1,
+      price: null,
+      attributes: [],
+    };
+    const collectible: PortfolioAssetCollectible = {
+      data: collectibleData,
       networkId: NetworkId.sui,
-      type: PortfolioAssetType.collectible,
+      type: 'collectible',
       value: null,
       attributes: {},
-      name: display?.name || content.fields.name || content.fields.tick,
-      data: {
-        address: object.data.type,
-        amount: Number(content.fields.amount || 1),
-        price: null,
-        description: display?.description || content.fields.description,
-        imageUri: display?.image_url || content.fields.url,
-        name: display?.name || content.fields.name || content.fields.tick,
-        attributes,
-      },
-    });
+      name: undefined,
+    };
+
+    // Find general information
+    if (object.data.display) {
+      const displayData = object.data.display.data as NftDisplayData;
+      if (displayData) {
+        collectibleData.imageUri = displayData.image_url;
+        collectible.name = displayData.name;
+        collectibleData.description = displayData.description;
+      }
+    }
+
+    if (object.data.content) {
+      const nftContentFields = object.data.content.fields as NFTContentFields;
+
+      // Find all attributes
+      if (nftContentFields.attributes) {
+        if (nftContentFields.attributes.fields) {
+          if (nftContentFields.attributes.fields.contents) {
+            nftContentFields.attributes.fields.contents.forEach((attribute) => {
+              collectibleData.attributes?.push({
+                trait_type: attribute.fields.key,
+                value: attribute.fields.value,
+              });
+            });
+          } else if (nftContentFields.attributes.fields.fields) {
+            if (nftContentFields.attributes.fields.fields.fields.contents) {
+              nftContentFields.attributes.fields.fields.fields.contents.forEach(
+                (attribute) => {
+                  collectibleData.attributes?.push({
+                    trait_type: attribute.fields.key,
+                    value: attribute.fields.value,
+                  });
+                }
+              );
+            }
+          }
+        } else if (collectionName === 'SuiFren') {
+          // Specific SuiFrens case
+          const suiFrenAttributes = object.data.content
+            .fields as SuiFrendFields;
+          suiFrenAttributes.attributes.forEach((value, index) => {
+            collectibleData.attributes?.push({
+              trait_type: suiFrendTraitMap.get(index),
+              value,
+            });
+          });
+          collectible.name = `${collectionName}:${subCollectionName}`;
+        }
+      }
+      // Find additional informations
+      if (nftContentFields.amount)
+        collectibleData.amount = Number(nftContentFields.amount);
+
+      if (nftContentFields.rarity)
+        collectibleData.attributes?.push({
+          trait_type: 'rarity',
+          value: nftContentFields.rarity,
+        });
+
+      if (nftContentFields.edition)
+        collectibleData.attributes?.push({
+          trait_type: 'edition',
+          value: nftContentFields.edition,
+        });
+
+      if (nftContentFields.tick) collectible.name = nftContentFields.tick;
+
+      const number = nftContentFields.number ?? nftContentFields.number_id;
+      if (number)
+        collectible.name = collectible.name
+          ? `${collectible.name} #${number}`
+          : undefined;
+
+      // Add Collection Information
+      collectible.data.collection = {
+        name: nftContentFields.collection_name ?? collectionName,
+        id: object.data.type,
+        floorPrice: null,
+      };
+    }
+    assets.push(collectible);
   });
 
   if (assets.length === 0) return [];

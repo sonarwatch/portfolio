@@ -2,6 +2,70 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.51](https://github.com/sonarwatch/portfolio/compare/core-0.14.50...core-0.14.51) (2024-12-02)
+
+
+
+## [0.14.50](https://github.com/sonarwatch/portfolio/compare/core-0.14.49...core-0.14.50) (2024-12-02)
+
+
+
+## [0.14.49](https://github.com/sonarwatch/portfolio/compare/core-0.14.48...core-0.14.49) (2024-11-28)
+
+
+
+## [0.14.48](https://github.com/sonarwatch/portfolio/compare/core-0.14.47...core-0.14.48) (2024-11-28)
+
+
+
+## [0.14.47](https://github.com/sonarwatch/portfolio/compare/core-0.14.46...core-0.14.47) (2024-11-25)
+
+
+
+## [0.14.46](https://github.com/sonarwatch/portfolio/compare/core-0.14.45...core-0.14.46) (2024-11-22)
+
+
+
+## [0.14.45](https://github.com/sonarwatch/portfolio/compare/core-0.14.44...core-0.14.45) (2024-11-21)
+
+
+
+## [0.14.44](https://github.com/sonarwatch/portfolio/compare/core-0.14.43...core-0.14.44) (2024-11-21)
+
+
+
+## [0.14.43](https://github.com/sonarwatch/portfolio/compare/core-0.14.41...core-0.14.43) (2024-11-21)
+
+
+
+## [0.14.41](https://github.com/sonarwatch/portfolio/compare/core-0.14.40...core-0.14.41) (2024-11-21)
+
+
+
+## [0.14.42](https://github.com/sonarwatch/portfolio/compare/core-0.14.41...core-0.14.42) (2024-11-21)
+
+
+
+## [0.14.41](https://github.com/sonarwatch/portfolio/compare/core-0.14.40...core-0.14.41) (2024-11-21)
+
+
+
+## [0.14.40](https://github.com/sonarwatch/portfolio/compare/core-0.14.39...core-0.14.40) (2024-11-20)
+
+
+
+## [0.14.39](https://github.com/sonarwatch/portfolio/compare/core-0.14.38...core-0.14.39) (2024-11-20)
+
+
+
+## [0.14.38](https://github.com/sonarwatch/portfolio/compare/core-0.14.37...core-0.14.38) (2024-11-20)
+
+
+
+## [0.14.37](https://github.com/sonarwatch/portfolio/compare/core-0.14.36...core-0.14.37) (2024-11-20)
+
+
+
 ## [0.14.36](https://github.com/sonarwatch/portfolio/compare/core-0.14.35...core-0.14.36) (2024-11-19)
 
 

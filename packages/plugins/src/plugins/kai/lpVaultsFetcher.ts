@@ -4,7 +4,6 @@ import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId, supplyPoolsCacheKey, vaults } from './constants';
 import { getClientSui } from '../../utils/clients';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { Position, PositionCap, PositionConfig, SupplyPool } from './types';
@@ -15,16 +14,21 @@ import { bitsToNumber } from '../../utils/sui/bitsToNumber';
 import { calcDebtByShares, calcEquityValues } from './helpers';
 import { ObjectResponse } from '../../utils/sui/types';
 import { getPools } from '../cetus/getPools';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
-  const positionCaps = await getOwnedObjects<PositionCap>(client, owner, {
-    filter: {
-      StructType:
-        '0x51e0ccce48f0763f98f1cb4856847c2e1531adacada99cdd7626ab999db57523::position_core_clmm::PositionCap',
-    },
-  });
+  const positionCaps = await getOwnedObjectsPreloaded<PositionCap>(
+    client,
+    owner,
+    {
+      filter: {
+        StructType:
+          '0x51e0ccce48f0763f98f1cb4856847c2e1531adacada99cdd7626ab999db57523::position_core_clmm::PositionCap',
+      },
+    }
+  );
   if (positionCaps.length === 0) return [];
 
   const positions = await multiGetObjects<Position>(

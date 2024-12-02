@@ -3,25 +3,26 @@ import BigNumber from 'bignumber.js';
 import {
   AirdropFetcher,
   AirdropFetcherExecutor,
+  airdropFetcherToFetcher,
   getAirdropRaw,
 } from '../../AirdropFetcher';
-import { airdropStatics, deepDecimals, deepMint } from './constants';
+import { airdropStatics, deepDecimals, deepMint, platform } from './constants';
 import { getClientSui } from '../../utils/clients';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { AirdropWrapperNFT, DeepAirdropNFT } from '../../utils/sui/types';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const deepFactor = new BigNumber(10 ** deepDecimals);
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
   const client = getClientSui();
   const [nfts, claimed] = await Promise.all([
-    getOwnedObjects<AirdropWrapperNFT>(client, owner, {
+    getOwnedObjectsPreloaded<AirdropWrapperNFT>(client, owner, {
       filter: {
         StructType:
           '0x61c9c39fd86185ad60d738d4e52bd08bda071d366acde07e07c3916a2d75a816::distribution::DEEPWrapper',
       },
     }),
-    getOwnedObjects<DeepAirdropNFT>(client, owner, {
+    getOwnedObjectsPreloaded<DeepAirdropNFT>(client, owner, {
       filter: {
         StructType:
           '0xc2cfa18b841df1887d931055cf41f2773c58164f719675595d020829893188a5::distribution::DEEPAirdrop',
@@ -74,9 +75,10 @@ export const airdropFetcher: AirdropFetcher = {
   networkId: NetworkId.sui,
   executor,
 };
-// export const fetcher = airdropFetcherToFetcher(
-//   airdropFetcher,
-//   platform.id,
-//   'deepbook-airdrop',
-//   airdropStatics.claimEnd
-// );
+
+export const fetcher = airdropFetcherToFetcher(
+  airdropFetcher,
+  platform.id,
+  'deepbook-airdrop',
+  airdropStatics.claimEnd
+);

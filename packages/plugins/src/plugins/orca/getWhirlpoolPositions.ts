@@ -1,10 +1,7 @@
 import {
-  getUsdValueSum,
   NetworkId,
-  PortfolioAsset,
   PortfolioAssetCollectible,
   PortfolioElement,
-  PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import {
@@ -19,14 +16,10 @@ import {
 } from '../../utils/solana';
 import { Cache } from '../../Cache';
 import { Whirlpool, positionStruct } from './structs/whirlpool';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 import { NftFetcher } from '../tokens/types';
-import {
-  calcFeesAndRewards,
-  getTickArraysAsMap,
-  isRewardInitialized,
-} from './helpers_fees';
+import { calcFeesAndRewards, getTickArraysAsMap } from './helpers_fees';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { WhirlpoolStat } from './types';
 
 export const getWhirlpoolPositions = getOrcaNftFetcher(
   orcaPlatformId,
@@ -69,42 +62,33 @@ export function getOrcaNftFetcher(
       if (pos) whirlpoolAddresses.add(pos.whirlpool.toString());
     });
 
-    const allWhirlpoolsInfo = await cache.getItems<ParsedAccount<Whirlpool>>(
-      Array.from(whirlpoolAddresses),
-      {
+    const [allWhirlpoolsInfo, allWhirlpoolsStats] = await Promise.all([
+      cache.getItems<ParsedAccount<Whirlpool>>(Array.from(whirlpoolAddresses), {
         prefix: whirlpoolPrefix,
         networkId: NetworkId.solana,
-      }
-    );
+      }),
+      cache.getItems<WhirlpoolStat>(
+        Array.from(whirlpoolAddresses).map((a) => `${a}-stats`),
+        {
+          prefix: whirlpoolPrefix,
+          networkId: NetworkId.solana,
+        }
+      ),
+    ]);
 
-    const tokensMints: Set<string> = new Set();
     const whirlpoolMap: Map<string, Whirlpool> = new Map();
     allWhirlpoolsInfo.forEach((wInfo) => {
       if (!wInfo) return;
       if (whirlpoolAddresses.has(wInfo.pubkey.toString())) {
         whirlpoolMap.set(wInfo.pubkey.toString(), wInfo);
-        tokensMints.add(wInfo.tokenMintA.toString());
-        tokensMints.add(wInfo.tokenMintB.toString());
-        if (!isRewardInitialized(wInfo.rewardInfos[0])) {
-          tokensMints.add(wInfo.rewardInfos[0]?.mint.toString());
-        }
-        if (!isRewardInitialized(wInfo.rewardInfos[1])) {
-          tokensMints.add(wInfo.rewardInfos[1]?.mint.toString());
-        }
-        if (!isRewardInitialized(wInfo.rewardInfos[2])) {
-          tokensMints.add(wInfo.rewardInfos[2]?.mint.toString());
-        }
       }
     });
 
     if (whirlpoolMap.size === 0) return [];
 
-    const [tokenPrices, tickArrays] = await Promise.all([
-      cache.getTokenPricesAsMap([...tokensMints], NetworkId.solana),
-      getTickArraysAsMap(positionsInfo, whirlpoolMap),
-    ]);
+    const tickArrays = await getTickArraysAsMap(positionsInfo, whirlpoolMap);
 
-    const elements: PortfolioElement[] = [];
+    const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
     for (let index = 0; index < positionsInfo.length; index++) {
       const positionInfo = positionsInfo[index];
       if (!positionInfo) continue;
@@ -119,37 +103,23 @@ export function getOrcaNftFetcher(
       )
         continue;
 
-      const { tokenAmountA, tokenAmountB } = getTokenAmountsFromLiquidity(
-        positionInfo.liquidity,
-        whirlpoolInfo.tickCurrentIndex,
-        positionInfo.tickLowerIndex,
-        positionInfo.tickUpperIndex,
-        false
-      );
-      const rewardAssets: PortfolioAsset[] = [];
-
-      const tokenPriceA = tokenPrices.get(whirlpoolInfo.tokenMintA.toString());
-      if (!tokenPriceA) continue;
-      const tokenPriceB = tokenPrices.get(whirlpoolInfo.tokenMintB.toString());
-      if (!tokenPriceB) continue;
-
-      const assetTokenA = tokenPriceToAssetToken(
-        whirlpoolInfo.tokenMintA.toString(),
-        tokenAmountA.dividedBy(10 ** tokenPriceA.decimals).toNumber(),
-        NetworkId.solana,
-        tokenPriceA
-      );
-
-      const assetTokenB = tokenPriceToAssetToken(
-        whirlpoolInfo.tokenMintB.toString(),
-        tokenAmountB.dividedBy(10 ** tokenPriceB.decimals).toNumber(),
-        NetworkId.solana,
-        tokenPriceB
-      );
-
-      const tags = [];
-      if (tokenAmountA.isZero() || tokenAmountB.isZero())
-        tags.push('Out Of Range');
+      const element = elementRegistry.addElementConcentratedLiquidity();
+      const liquidity = element.setLiquidity({
+        addressA: whirlpoolInfo.tokenMintA,
+        addressB: whirlpoolInfo.tokenMintB,
+        liquidity: positionInfo.liquidity,
+        tickCurrentIndex: whirlpoolInfo.tickCurrentIndex,
+        tickLowerIndex: positionInfo.tickLowerIndex,
+        tickUpperIndex: positionInfo.tickUpperIndex,
+        currentSqrtPrice: whirlpoolInfo.sqrtPrice,
+        poolLiquidity: whirlpoolInfo.liquidity,
+        feeRate:
+          (Number(whirlpoolInfo.feeRate) / 10000) *
+          (1 - whirlpoolInfo.protocolFeeRate / 10000),
+        swapVolume24h: allWhirlpoolsStats.find(
+          (p) => p?.address === positionInfo.whirlpool.toString()
+        )?.volumeUsdc24h,
+      });
 
       const feesAndRewards = calcFeesAndRewards(
         whirlpoolInfo,
@@ -158,125 +128,33 @@ export function getOrcaNftFetcher(
       );
 
       if (feesAndRewards) {
-        if (feesAndRewards.feeOwedA.isGreaterThan(0)) {
-          rewardAssets.push(
-            tokenPriceToAssetToken(
-              tokenPriceA.address,
-              feesAndRewards.feeOwedA
-                .dividedBy(10 ** tokenPriceA.decimals)
-                .toNumber(),
-              NetworkId.solana,
-              tokenPriceA
-            )
-          );
-        }
+        liquidity.addRewardAsset({
+          address: whirlpoolInfo.tokenMintA,
+          amount: feesAndRewards.feeOwedA,
+        });
 
-        if (feesAndRewards.feeOwedB.isGreaterThan(0)) {
-          rewardAssets.push(
-            tokenPriceToAssetToken(
-              tokenPriceB.address,
-              feesAndRewards.feeOwedB
-                .dividedBy(10 ** tokenPriceB.decimals)
-                .toNumber(),
-              NetworkId.solana,
-              tokenPriceB
-            )
-          );
-        }
+        liquidity.addRewardAsset({
+          address: whirlpoolInfo.tokenMintB,
+          amount: feesAndRewards.feeOwedB,
+        });
 
-        if (feesAndRewards.rewardOwedA.isGreaterThan(0)) {
-          const tokenPriceRewardA = tokenPrices.get(
-            whirlpoolInfo.rewardInfos[0].mint.toString()
-          );
-          if (tokenPriceRewardA) {
-            rewardAssets.push(
-              tokenPriceToAssetToken(
-                tokenPriceRewardA.address,
-                feesAndRewards.rewardOwedA
-                  .dividedBy(10 ** tokenPriceRewardA.decimals)
-                  .toNumber(),
-                NetworkId.solana,
-                tokenPriceRewardA
-              )
-            );
-          }
-        }
+        liquidity.addRewardAsset({
+          address: whirlpoolInfo.rewardInfos[0].mint,
+          amount: feesAndRewards.rewardOwedA,
+        });
 
-        if (feesAndRewards.rewardOwedB.isGreaterThan(0)) {
-          const tokenPriceRewardB = tokenPrices.get(
-            whirlpoolInfo.rewardInfos[1].mint.toString()
-          );
-          if (tokenPriceRewardB) {
-            rewardAssets.push(
-              tokenPriceToAssetToken(
-                tokenPriceRewardB.address,
-                feesAndRewards.rewardOwedB
-                  .dividedBy(10 ** tokenPriceRewardB.decimals)
-                  .toNumber(),
-                NetworkId.solana,
-                tokenPriceRewardB
-              )
-            );
-          }
-        }
+        liquidity.addRewardAsset({
+          address: whirlpoolInfo.rewardInfos[1].mint,
+          amount: feesAndRewards.rewardOwedB,
+        });
 
-        if (feesAndRewards.rewardOwedC.isGreaterThan(0)) {
-          const tokenPriceRewardC = tokenPrices.get(
-            whirlpoolInfo.rewardInfos[2].mint.toString()
-          );
-          if (tokenPriceRewardC) {
-            rewardAssets.push(
-              tokenPriceToAssetToken(
-                tokenPriceRewardC.address,
-                feesAndRewards.rewardOwedC
-                  .dividedBy(10 ** tokenPriceRewardC.decimals)
-                  .toNumber(),
-                NetworkId.solana,
-                tokenPriceRewardC
-              )
-            );
-          }
-        }
+        liquidity.addRewardAsset({
+          address: whirlpoolInfo.rewardInfos[2].mint,
+          amount: feesAndRewards.rewardOwedC,
+        });
       }
-
-      if (!assetTokenA || !assetTokenB) continue;
-
-      const assets = [assetTokenA, assetTokenB];
-
-      const assetsValue = getUsdValueSum([
-        assetTokenA.value,
-        assetTokenB.value,
-      ]);
-      const rewardAssetsValue = getUsdValueSum(
-        rewardAssets.map((a) => a.value)
-      );
-      const totalValue = getUsdValueSum([assetsValue, rewardAssetsValue]);
-
-      if (totalValue === 0 || totalValue === null) continue;
-
-      elements.push({
-        type: PortfolioElementType.liquidity,
-        networkId: NetworkId.solana,
-        platformId,
-        label: 'LiquidityPool',
-        name: 'Concentrated',
-        value: totalValue,
-        data: {
-          liquidities: [
-            {
-              assets,
-              assetsValue,
-              rewardAssets,
-              rewardAssetsValue,
-              value: totalValue,
-              yields: [],
-            },
-          ],
-        },
-        tags,
-      });
     }
 
-    return elements;
+    return elementRegistry.getElements(cache);
   };
 }

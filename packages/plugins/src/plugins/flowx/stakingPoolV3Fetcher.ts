@@ -1,30 +1,26 @@
-import {
-  formatMoveTokenAddress,
-  getUsdValueSum,
-  NetworkId,
-  PortfolioElementType,
-  PortfolioLiquidity,
-} from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { packageIdV3, platformId } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { PoolV3, PositionV3Object } from './types';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
-import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { bitsToNumber } from '../../utils/sui/bitsToNumber';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
-  const positions = await getOwnedObjects<PositionV3Object>(client, owner, {
-    filter: {
-      StructType: `${packageIdV3}::position::Position`,
-    },
-  });
+  const positions = await getOwnedObjectsPreloaded<PositionV3Object>(
+    client,
+    owner,
+    {
+      filter: {
+        StructType: `${packageIdV3}::position::Position`,
+      },
+    }
+  );
   if (positions.length === 0) return [];
 
   const poolsIds = new Set<string>();
@@ -38,12 +34,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       poolsIds.add(position.data?.content?.fields.pool_id);
   });
 
-  const [tokenPrices, pools] = await Promise.all([
-    cache.getTokenPricesAsMap(mints, NetworkId.sui),
-    multiGetObjects<PoolV3>(client, Array.from(poolsIds.values())),
-  ]);
+  const pools = await multiGetObjects<PoolV3>(
+    client,
+    Array.from(poolsIds.values())
+  );
 
-  const liquidities: PortfolioLiquidity[] = [];
+  const elementRegistry = new ElementRegistry(NetworkId.sui, platformId);
+
   positions.forEach((position) => {
     if (!position.data?.content?.fields.liquidity) return;
     if (!position.data?.content?.fields.pool_id) return;
@@ -52,68 +49,26 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       (p) => p.data?.objectId === position.data?.content?.fields.pool_id
     );
     if (!pool?.data?.content?.fields) return;
-    const tokenPriceX = tokenPrices.get(
-      formatMoveTokenAddress(
-        position.data.content.fields.coin_type_x.fields.name
-      )
-    );
-    const tokenPriceY = tokenPrices.get(
-      formatMoveTokenAddress(
-        position.data.content.fields.coin_type_y.fields.name
-      )
-    );
-    if (!tokenPriceX || !tokenPriceY) return;
 
-    const tokenAmounts = getTokenAmountsFromLiquidity(
-      new BigNumber(position.data?.content?.fields.liquidity),
-      bitsToNumber(pool?.data?.content?.fields.tick_index.fields.bits),
-      bitsToNumber(position.data?.content?.fields.tick_lower_index.fields.bits),
-      bitsToNumber(position.data?.content?.fields.tick_upper_index.fields.bits),
-      false
-    );
+    const element = elementRegistry.addElementConcentratedLiquidity();
 
-    const assetX = tokenPriceToAssetToken(
-      tokenPriceX.address,
-      tokenAmounts.tokenAmountA
-        .dividedBy(10 ** tokenPriceX.decimals)
-        .toNumber(),
-      NetworkId.sui,
-      tokenPriceX
-    );
-
-    const assetY = tokenPriceToAssetToken(
-      tokenPriceY.address,
-      tokenAmounts.tokenAmountB
-        .dividedBy(10 ** tokenPriceY.decimals)
-        .toNumber(),
-      NetworkId.sui,
-      tokenPriceY
-    );
-
-    const value = getUsdValueSum([assetX.value, assetY.value]);
-    liquidities.push({
-      assets: [assetX, assetY],
-      assetsValue: value,
-      rewardAssets: [],
-      rewardAssetsValue: null,
-      value,
-      yields: [],
+    element.setLiquidity({
+      addressA: position.data.content.fields.coin_type_x.fields.name,
+      addressB: position.data.content.fields.coin_type_y.fields.name,
+      liquidity: position.data?.content?.fields.liquidity,
+      tickCurrentIndex: bitsToNumber(
+        pool?.data?.content?.fields.tick_index.fields.bits
+      ),
+      tickLowerIndex: bitsToNumber(
+        position.data?.content?.fields.tick_lower_index.fields.bits
+      ),
+      tickUpperIndex: bitsToNumber(
+        position.data?.content?.fields.tick_upper_index.fields.bits
+      ),
     });
   });
 
-  if (liquidities.length === 0) return [];
-  return [
-    {
-      type: PortfolioElementType.liquidity,
-      networkId: NetworkId.sui,
-      platformId,
-      label: 'LiquidityPool',
-      value: getUsdValueSum(liquidities.map((a) => a.value)),
-      data: {
-        liquidities,
-      },
-    },
-  ];
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

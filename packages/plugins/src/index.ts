@@ -369,6 +369,7 @@ import {
   platforms as suilendPlatforms,
   jobs as suilendJobs,
   fetchers as suilendFetchers,
+  airdropFetcher as suilendAirdropFetcher,
 } from './plugins/suilend';
 import {
   platforms as symmetryPlatforms,
@@ -494,6 +495,7 @@ import {
   jobs as bluefinJobs,
   fetchers as bluefinFetchers,
   platforms as bluefinPlatforms,
+  airdropFetcher as bluefinAirdropFetcher,
 } from './plugins/bluefin';
 import {
   platforms as citrusPlatforms,
@@ -653,6 +655,7 @@ import {
   platforms as grassPlatforms,
   jobs as grassJobs,
   fetchers as grassFetchers,
+  airdropFetcher as grassAirdropFetcher,
 } from './plugins/grass';
 import {
   platforms as autothorPlatforms,
@@ -669,6 +672,11 @@ import {
   jobs as ensofiJobs,
   fetchers as ensofiFetchers,
 } from './plugins/ensofi';
+import {
+  platforms as coinmarketcapPlatforms,
+  jobs as coinmarketcapJobs,
+  fetchers as coinmarketcapFetchers,
+} from './plugins/coinmarketcap';
 
 export {
   walletTokensPlatform,
@@ -819,6 +827,7 @@ export const platforms: Platform[] = [
   ...autothorPlatforms,
   ...metaplexPlatforms,
   ...ensofiPlatforms,
+  ...coinmarketcapPlatforms,
 ];
 
 // JOBS //
@@ -952,6 +961,7 @@ export const jobs: Job[] = [
   ...autothorJobs,
   ...metaplexJobs,
   ...ensofiJobs,
+  ...coinmarketcapJobs,
 ];
 
 // FETCHERS //
@@ -1086,6 +1096,7 @@ export const fetchers: Fetcher[] = [
   ...autothorFetchers,
   ...metaplexFetchers,
   ...ensofiFetchers,
+  ...coinmarketcapFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
@@ -1098,6 +1109,9 @@ export const airdropFetchers: AirdropFetcher[] = [
   deepbookAirdropFetcher,
   suinsAirdropFetcher,
   ...debridgeAirdropFetchers,
+  suilendAirdropFetcher,
+  bluefinAirdropFetcher,
+  grassAirdropFetcher,
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);
