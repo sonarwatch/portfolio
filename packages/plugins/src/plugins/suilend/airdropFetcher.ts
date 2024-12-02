@@ -75,6 +75,7 @@ const executor: AirdropFetcherExecutor = async (
         isClaimed: false,
         label: 'SEND',
         address: sendMint,
+        imageUri: platform.image,
       },
       {
         amount: nftsAllocation.collectionsAllocation,
