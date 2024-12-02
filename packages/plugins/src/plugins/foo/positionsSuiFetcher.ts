@@ -4,13 +4,13 @@ import { platformId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSui } from '../../utils/clients';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { Receipt } from './types';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
-  const receipts = await getOwnedObjects<Receipt>(client, owner, {
+  const receipts = await getOwnedObjectsPreloaded<Receipt>(client, owner, {
     filter: {
       StructType:
         '0x9bbd650b8442abb082c20f3bc95a9434a8d47b4bef98b0832dab57c1a8ba0000::foo::Receipt',

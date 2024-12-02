@@ -20,8 +20,6 @@ export async function getOwnedObjects<K>(
       owner,
       options: {
         ...query?.options,
-        showType: true,
-        showContent: true,
       },
       filter: query?.filter,
       cursor,
@@ -31,5 +29,6 @@ export async function getOwnedObjects<K>(
     hasNextPage = res.hasNextPage;
     page += 1;
   } while (hasNextPage && page <= maxPage);
+
   return objects;
 }

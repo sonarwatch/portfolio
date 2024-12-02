@@ -13,9 +13,9 @@ import { getMultipleBalances } from '../../utils/sui/mulitpleGetBalances';
 import { VaultPositionInfo } from './types/common';
 import { getTokenAmountsFromLiquidity } from '../../utils/clmm/tokenAmountFromLiquidity';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import { VaultReceipt } from './types/vaults';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const vaultsPositionInfoMemo = new MemoizedCache<VaultPositionInfo[]>(
   vaultsInfoKey,
@@ -35,7 +35,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         owner,
         vaultsInfo.map((vault) => vault.tokenType)
       ),
-      getOwnedObjects<VaultReceipt>(client, owner, {
+      getOwnedObjectsPreloaded<VaultReceipt>(client, owner, {
         filter: { StructType: vaultStakeReceipt },
       }),
       vaultsPositionInfoMemo.getItem(cache),

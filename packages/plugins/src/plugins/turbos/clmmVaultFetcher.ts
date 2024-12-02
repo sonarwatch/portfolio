@@ -2,7 +2,6 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { clmmPoolsPrefix, platformId, vaultPackageId } from './constants';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { getClientSui } from '../../utils/clients';
 import {
   VaultStrategy,
@@ -15,23 +14,17 @@ import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { multiDynamicFieldObjects } from '../../utils/sui/multiDynamicFieldObjects';
 import { bitsToNumber } from '../../utils/sui/bitsToNumber';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
-  const vaultNftPositionObjects = await getOwnedObjects<VaultPositionNFT>(
-    client,
-    owner,
-    {
+  const vaultNftPositionObjects =
+    await getOwnedObjectsPreloaded<VaultPositionNFT>(client, owner, {
       filter: {
         Package: vaultPackageId,
       },
-      options: {
-        showContent: true,
-        showType: true,
-      },
-    }
-  );
+    });
 
   if (vaultNftPositionObjects.length === 0) return [];
 
