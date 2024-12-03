@@ -1,12 +1,13 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import { Cache } from '../../Cache';
-import { PACKAGE_ID, platformId, poolsCacheKey } from './constants';
-import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { getClientSui } from '../../utils/clients';
+import { Cache } from '../../../Cache';
+import { PACKAGE_ID, poolsCacheKey } from './constants';
+import { Fetcher, FetcherExecutor } from '../../../Fetcher';
+import { getClientSui } from '../../../utils/clients';
 import { getUserPosition } from './helpers';
-import { PoolSummary } from './types';
-import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
-import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
+import { PoolSummary } from '../types';
+import { ElementRegistry } from '../../../utils/elementbuilder/ElementRegistry';
+import { getOwnedObjectsPreloaded } from '../../../utils/sui/getOwnedObjectsPreloaded';
+import { platformId } from '../constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
@@ -56,6 +57,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const element = elementRegistry.addElementMultiple({
       label: 'Deposit',
+      name: 'V2',
     });
 
     element.addAsset({
@@ -77,7 +79,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-orders`,
+  id: `${platformId}-v2-deposits`,
   networkId: NetworkId.sui,
   executor,
 };
