@@ -58,8 +58,12 @@ const executor: JobExecutor = async (cache: Cache) => {
       const tokenPrice = tokenPrices.get(token.mint);
       if (!tokenPrice) return;
 
-      const amountPerLp = new BigNumber(token.balance)
-        .dividedBy(10 ** 9)
+      const tokenAmount = token.scalingUp
+        ? new BigNumber(token.balance).dividedBy(token.scalingFactor)
+        : new BigNumber(token.balance).times(token.scalingFactor);
+
+      const amountPerLp = tokenAmount
+        .dividedBy(10 ** Number(token.decimals))
         .dividedBy(supply);
 
       underlyings.push({
