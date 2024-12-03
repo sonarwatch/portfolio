@@ -34,7 +34,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       ]
     )
   )[0];
-
   if (!stakingAccount || stakingAccount.stakedTokens === '0') return [];
 
   const stakePoolAccount = await cache.getItem<StakingPoolAccount>(
@@ -48,43 +47,24 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (!stakePoolAccount) return [];
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
-  const element = elementRegistry.addElementBorrowlend({
+  const element = elementRegistry.addElementMultiple({
     label: 'Staked',
   });
 
-  element.addSuppliedAsset({
+  element.addAsset({
     address: stakePoolAccount.stakeTokenMint,
     amount: stakingAccount.stakedTokens,
   });
 
-  /* const m = new Date(
-    new BigNumber(stakingAccount.lastUpdateNoteTime)
-      .multipliedBy(new BigNumber(1e3))
-      .toNumber()
-  );
-  const stakedTokens = new BigNumber(stakingAccount.stakedTokens);
-  const w = new BigNumber(stakePoolAccount.increaseNoteRatePerSecond)
-    .times(stakedTokens)
-    .times(new BigNumber(Date.now()).minus(m.getTime()))
-    .div(1e3)
-    .dividedBy(10 ** 9);
-  const stakedNotes = new BigNumber(stakingAccount.stakedNotes);
-  const A = stakedTokens.multipliedBy(2).minus(stakedNotes);
-  const M = new BigNumber(stakingAccount.notes).plus(w);
+  element.addAsset({
+    address: solanaNativeAddress,
+    amount: stakingAccount.claimableReward,
+    attributes: {
+      isClaimable: true,
+    },
+  });
 
-  element.addRewardAsset({
-    address: stakePoolAccount.stakeTokenMint,
-    amount: (M.isGreaterThan(A) ? A : M).toNumber(),
-  }); */
-
-  if (new BigNumber(stakingAccount.claimableReward).isGreaterThan(0.002)) {
-    element.addRewardAsset({
-      address: solanaNativeAddress,
-      amount: stakingAccount.claimableReward,
-    });
-  }
-
-  element.addSuppliedAsset({
+  element.addAsset({
     address: stakePoolAccount.stakeTokenMint,
     amount: stakingAccount.withdrawingTokens,
     attributes: {
