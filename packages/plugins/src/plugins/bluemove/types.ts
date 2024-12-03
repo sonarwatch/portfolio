@@ -20,3 +20,28 @@ export type Pool = {
   token_x: string;
   token_y: string;
 };
+
+export type LockLpUserInfo = {
+  items: {
+    fields: {
+      contents: {
+        fields: {
+          key: string;
+          value: {
+            fields: {
+              duration: string;
+              locked_amout: string;
+              locked_until: string;
+              pool_id: string;
+              start_time: string;
+            };
+            type: string;
+          };
+        };
+        type: string;
+      }[];
+      type: string;
+    };
+    type: string;
+  };
+};
