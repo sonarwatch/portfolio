@@ -1,7 +1,16 @@
 import { suiNativeAddress } from '../constants';
-import { isMoveTokenAddress } from './validTokenAddress';
+import { isMoveTokenAddress, isSolanaTokenAddress } from './validTokenAddress';
 
 describe('validTokenAddress', () => {
+  it('should isSolanaTokenAddress', async () => {
+    expect(
+      isSolanaTokenAddress('11111111111111111111111111111111')
+    ).toBeTruthy();
+    expect(
+      isSolanaTokenAddress('So11111111111111111111111111111111111111112')
+    ).toBeTruthy();
+  });
+
   it('should isMoveTokenAddress', async () => {
     expect(
       isMoveTokenAddress(
