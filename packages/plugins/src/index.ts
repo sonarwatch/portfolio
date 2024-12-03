@@ -677,6 +677,11 @@ import {
   jobs as coinmarketcapJobs,
   fetchers as coinmarketcapFetchers,
 } from './plugins/coinmarketcap';
+import {
+  platforms as doubleupPlatforms,
+  jobs as doubleupJobs,
+  fetchers as doubleupFetchers,
+} from './plugins/doubleup';
 
 export {
   walletTokensPlatform,
@@ -828,6 +833,7 @@ export const platforms: Platform[] = [
   ...metaplexPlatforms,
   ...ensofiPlatforms,
   ...coinmarketcapPlatforms,
+  ...doubleupPlatforms,
 ];
 
 // JOBS //
@@ -962,6 +968,7 @@ export const jobs: Job[] = [
   ...metaplexJobs,
   ...ensofiJobs,
   ...coinmarketcapJobs,
+  ...doubleupJobs,
 ];
 
 // FETCHERS //
@@ -1097,6 +1104,7 @@ export const fetchers: Fetcher[] = [
   ...metaplexFetchers,
   ...ensofiFetchers,
   ...coinmarketcapFetchers,
+  ...doubleupFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
