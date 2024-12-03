@@ -1,4 +1,5 @@
 import { Platform } from '@sonarwatch/portfolio-core';
+import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'bluefin';
 export const platform: Platform = {
@@ -9,6 +10,21 @@ export const platform: Platform = {
   website: 'https://trade.bluefin.io/',
   twitter: 'https://x.com/bluefinapp',
 };
+
+export const airdropStatics: AirdropStatics = {
+  claimLink: 'https://trade.bluefin.io/airdrop',
+  emitterLink: 'https://trade.bluefin.io/',
+  emitterName: platform.name,
+  id: 'bluefin-airdrop',
+  image: 'https://sonar.watch/img/platforms/bluefin.webp',
+  claimEnd: undefined,
+  claimStart: undefined,
+};
+
+export const blueMint = undefined;
+
+export const airdropApi =
+  'https://dapi.api.sui-prod.bluefin.io/growth/airdropEligibility/allocation';
 
 export const aquaVault =
   '0x10d48e112b92c8af207c1850225284a7ca46bac1d935c4af4cf87ce29b121694';

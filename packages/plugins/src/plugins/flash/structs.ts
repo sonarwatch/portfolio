@@ -257,7 +257,12 @@ export type Custody = {
   borrowRateState: BorrowRateState;
   bump: number;
   tokenAccountBump: number;
-  buffer2: Buffer;
+  sizeFactorForSpread: number;
+  null: number;
+  reservedAmount: BigNumber;
+  minReserveUsd: BigNumber;
+  limitPriceBufferBps: BigNumber;
+  padding: Buffer;
 };
 
 export const custodyStruct = new BeetStruct<Custody>(
@@ -282,7 +287,12 @@ export const custodyStruct = new BeetStruct<Custody>(
     ['borrowRateState', borrowRateStateStruct],
     ['bump', u8],
     ['tokenAccountBump', u8],
-    ['buffer2', blob(18)],
+    ['sizeFactorForSpread', u8],
+    ['null', u8],
+    ['reservedAmount', u64],
+    ['minReserveUsd', u64],
+    ['limitPriceBufferBps', u64],
+    ['padding', blob(16)],
   ],
   (args) => args as Custody
 );

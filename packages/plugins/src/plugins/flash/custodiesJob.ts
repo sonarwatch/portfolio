@@ -33,7 +33,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   const custodyById: Map<string, Custody> = new Map();
   const custodies: CustodyEnhanced[] = [];
   custodiesAccounts.forEach((account, index) => {
-    if (account && account.data.byteLength === custodyStruct.byteSize) {
+    if (account && account.data.byteLength >= custodyStruct.byteSize) {
       const custodyAccount = custodyStruct.deserialize(account.data)[0];
       custodyById.set(custodiesPubKeys[index].toString(), custodyAccount);
       custodies.push({

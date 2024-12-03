@@ -13,7 +13,7 @@ export const platform: Platform = {
 };
 
 export const commonStatics = {
-  claimLink: 'https://debridge.foundation/',
+  claimLink: 'https://debridge.foundation/checker',
   emitterLink: 'https://debridge.finance/',
   emitterName: 'deBridge',
   image: 'https://sonar.watch/img/platforms/debridge.webp',

@@ -11,16 +11,16 @@ import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { depositReceiptType, platformId } from './constants';
 import { getClientSui } from '../../utils/clients';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { DepositReceipt, Vault } from './types';
 import { getDepositShares } from './helpers';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
-  const depositsReceipts = await getOwnedObjects<DepositReceipt>(
+  const depositsReceipts = await getOwnedObjectsPreloaded<DepositReceipt>(
     client,
     owner,
     {

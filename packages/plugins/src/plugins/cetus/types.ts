@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { ID } from '../../utils/sui/structs/id';
+import { ID } from '../../utils/sui/types/id';
 
 export type SuiAddressType = string;
 export type SuiObjectIdType = string;

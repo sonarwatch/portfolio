@@ -1,4 +1,4 @@
-import { ID } from '../../utils/sui/structs/id';
+import { ID } from '../../utils/sui/types/id';
 import { Custody } from './structs';
 
 export type Receipt = {

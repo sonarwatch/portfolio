@@ -9,14 +9,14 @@ import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId, scaAddress, scaDecimals, veScaKeyType } from './constants';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { multiDynamicFieldObjects } from '../../utils/sui/multiDynamicFieldObjects';
 import { VeSca } from './types/vesca';
 import { getClientSui } from '../../utils/clients';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
-  const veScaKeys = await getOwnedObjects(client, owner, {
+  const veScaKeys = await getOwnedObjectsPreloaded(client, owner, {
     filter: {
       StructType: veScaKeyType,
     },

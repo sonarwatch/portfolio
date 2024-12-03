@@ -15,10 +15,10 @@ import {
   receiptTypes,
 } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { getClientSui } from '../../utils/clients';
 import { AlphaPoolInfo, Receipt } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const balanceFactor = 10 ** 9;
 
@@ -26,7 +26,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
   const [receipts, alphaPoolsInfo] = await Promise.all([
-    getOwnedObjects<Receipt>(client, owner, {
+    getOwnedObjectsPreloaded<Receipt>(client, owner, {
       filter: {
         MatchAny: receiptTypes.map((t) => ({
           StructType: t,

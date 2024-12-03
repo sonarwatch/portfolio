@@ -1,6 +1,6 @@
 import { ID } from '../../utils/sui/types/id';
 
-export type Receipt = {
+export type NsAirdropClaimed = {
+  amount: string;
   id: ID;
-  amountDeposited: string;
 };

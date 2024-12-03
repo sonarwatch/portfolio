@@ -11,19 +11,13 @@ import {
 } from './helpers';
 
 import { FetchPosRewardParams, Pool, PoolStat, Position } from './types';
-import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { getPools } from './getPools';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
-  const ownerRes = await getOwnedObjects(client, owner, {
-    options: {
-      showType: true,
-      showContent: true,
-      showDisplay: true,
-      showOwner: true,
-    },
+  const ownerRes = await getOwnedObjectsPreloaded(client, owner, {
     filter: { Package: clmmPoolPackageId },
   });
   if (ownerRes.length === 0) return [];

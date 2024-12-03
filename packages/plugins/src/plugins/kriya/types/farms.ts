@@ -1,6 +1,6 @@
 // Farm
 
-import { ID } from '../../../utils/sui/structs/id';
+import { ID } from '../../../utils/sui/types/id';
 
 export type FarmInfo = {
   tokenXReserve: string;

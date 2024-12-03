@@ -42,19 +42,25 @@ const executor: JobExecutor = async (cache: Cache) => {
       getLpTokenPrice(
         client,
         pool,
-        pool.custodies.map(
-          (c) =>
-            custodyAccounts.get(c.toString())?.oracle.customOracleAccount || ''
-        ),
+        pool.custodies
+          .map(
+            (c) =>
+              custodyAccounts.get(c.toString())?.oracle.customOracleAccount ||
+              []
+          )
+          .flat(),
         'getLpTokenPrice'
       ),
       getLpTokenPrice(
         client,
         pool,
-        pool.custodies.map(
-          (c) =>
-            custodyAccounts.get(c.toString())?.oracle.customOracleAccount || ''
-        ),
+        pool.custodies
+          .map(
+            (c) =>
+              custodyAccounts.get(c.toString())?.oracle.customOracleAccount ||
+              []
+          )
+          .flat(),
         'getCompoundingTokenPrice'
       ),
     ]);
