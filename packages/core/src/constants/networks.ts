@@ -166,7 +166,7 @@ export const seiNetwork: Network = {
   native: {
     address: seiNativeAddress,
     decimals: 6,
-    coingeckoId: 'sui',
+    coingeckoId: 'sei',
   },
   nativeWrapped: null,
   isLive: true,
