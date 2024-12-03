@@ -14,8 +14,7 @@ import { PoolState, poolStateStruct } from './struct';
 import { constantPoolsFilters, stablePoolsFilters } from './filters';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import getLpTokenSourceRawOld from '../../utils/misc/getLpTokenSourceRawOld';
-import getLpUnderlyingTokenSourceOld from '../../utils/misc/getLpUnderlyingTokenSourceOld';
+import { getLpTokenSourceRaw } from '../../utils/misc/getLpTokenSourceRaw';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -96,6 +95,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   const lpSources: TokenPriceSource[] = [];
   for (let id = 0; id < poolsAccounts.length; id++) {
     const poolAccount = poolsAccounts[id];
+
     const aTokenMint = poolAccount.tokenAMint.toString();
     const bTokenMint = poolAccount.tokenBMint.toString();
     const aTokenPrice = tokenPrices.get(aTokenMint);
@@ -114,54 +114,33 @@ const executor: JobExecutor = async (cache: Cache) => {
     if (!lpMintAccount) continue;
 
     if (aMintAccount && bMintAccount) {
-      const underlyingSource = getLpUnderlyingTokenSourceOld(
-        lpMint.toString(),
-        NetworkId.solana,
-        {
-          address: aTokenMint,
-          decimals: aMintAccount.decimals,
-          reserveAmountRaw: tAccountA.amount,
-          tokenPrice: aTokenPrice,
-          weight: 0.5,
+      const tokenPriceSources = getLpTokenSourceRaw({
+        lpDetails: {
+          address: lpMint.toString(),
+          decimals: lpMintAccount.decimals,
+          supplyRaw: lpMintAccount.supply,
         },
-        {
-          address: bTokenMint,
-          decimals: bMintAccount.decimals,
-          reserveAmountRaw: tAccountB.amount,
-          tokenPrice: bTokenPrice,
-          weight: 0.5,
-        }
-      );
-      if (underlyingSource) lpSources.push(underlyingSource);
+        networkId: NetworkId.solana,
+        platformId,
+        poolUnderlyingsRaw: [
+          {
+            address: aTokenMint,
+            decimals: aMintAccount.decimals,
+            tokenPrice: aTokenPrice,
+            reserveAmountRaw: tAccountA.amount,
+          },
+          {
+            address: bTokenMint,
+            decimals: bMintAccount.decimals,
+            tokenPrice: bTokenPrice,
+            reserveAmountRaw: tAccountB.amount,
+          },
+        ],
+        sourceId: lpMint.toString(),
+        priceUnderlyings: true,
+      });
+      lpSources.push(...tokenPriceSources);
     }
-    if (!bTokenPrice || !aTokenPrice) continue;
-
-    const lpSource = getLpTokenSourceRawOld(
-      NetworkId.solana,
-      lpMint,
-      platformId,
-      {
-        address: lpMint,
-        decimals: lpMintAccount.decimals,
-        supplyRaw: lpMintAccount.supply,
-      },
-      [
-        {
-          address: aTokenPrice.address,
-          decimals: aTokenPrice.decimals,
-          price: aTokenPrice.price,
-          reserveAmountRaw: tAccountA.amount,
-        },
-        {
-          address: bTokenPrice.address,
-          decimals: bTokenPrice.decimals,
-          price: bTokenPrice.price,
-          reserveAmountRaw: tAccountB.amount,
-        },
-      ],
-      undefined
-    );
-    lpSources.push(lpSource);
   }
   await cache.setTokenPriceSources(lpSources);
 };
