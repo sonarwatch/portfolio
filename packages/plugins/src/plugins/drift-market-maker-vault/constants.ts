@@ -41,7 +41,7 @@ export const gauntletPlatform: Platform = {
 export const vectisPlatformId = 'vectis';
 export const vectisPlatform: Platform = {
   id: vectisPlatformId,
-  name: 'vectis',
+  name: 'Vectis',
   image: 'https://sonar.watch/img/platforms/vectis.webp',
   twitter: 'https://twitter.com/vectis_xyz',
   website: 'https://app.vectis.finance/',
