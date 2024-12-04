@@ -10,8 +10,6 @@ import { Games } from './types';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { usdcSolanaMint } from '../../utils/solana';
 
-const apiKey = process.env['MOONWALK_API_BEARER'];
-
 const tokenMap = new Map([
   ['usdc', usdcSolanaMint],
   ['sol', solanaNativeWrappedAddress],
@@ -19,6 +17,7 @@ const tokenMap = new Map([
 ]);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
+  const apiKey = process.env['PORTFOLIO_MOONWALK_API_BEARER'];
   if (!apiKey) return [];
 
   const apiResponse: AxiosResponse<Games> = await axios.get(newApi + owner, {
