@@ -7,6 +7,7 @@ import { apiV3, platformId } from './constants';
 import { ApiV3Response } from './types';
 import { getLpTokenSource } from '../../utils/misc/getLpTokenSource';
 import { minimumLiquidity } from '../../utils/misc/computeAndStoreLpPrice';
+import { getLpUnderlyingTokenSource } from '../../utils/misc/getLpUnderlyingTokenSource';
 
 const executor: JobExecutor = async (cache: Cache) => {
   let apiRes;
@@ -18,7 +19,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     apiRes = await axios
       .get<ApiV3Response>(`${apiV3}pools/info/list`, {
         params: {
-          poolType: 'standard',
+          poolType: 'all',
           poolSortField: 'liquidity',
           sortType: 'desc',
           pageSize: 300,
@@ -66,15 +67,18 @@ const executor: JobExecutor = async (cache: Cache) => {
 
       mintA = poolInfo.mintA.address;
       mintB = poolInfo.mintB.address;
-      lpMint = poolInfo.lpMint.address;
 
-      [decimalsA, decimalsB, lpDecimals] = [
+      if (poolInfo.lpMint) {
+        lpMint = poolInfo.lpMint.address;
+        lpDecimals = poolInfo.lpMint.decimals;
+      }
+
+      [decimalsA, decimalsB] = [
         poolInfo.mintA.decimals,
         poolInfo.mintB.decimals,
-        poolInfo.lpMint.decimals,
       ];
 
-      if (!decimalsA || !decimalsB || !lpDecimals) continue;
+      if (!decimalsA || !decimalsB) continue;
 
       tokenAmountA = poolInfo.mintAmountA;
       tokenAmountB = poolInfo.mintAmountB;
@@ -84,35 +88,61 @@ const executor: JobExecutor = async (cache: Cache) => {
         tokenPriceById.get(mintB),
       ];
 
-      tokenPriceSources.push(
-        ...getLpTokenSource({
-          networkId: NetworkId.solana,
-          sourceId: lpMint.toString(),
-          platformId,
-          priceUnderlyings: true,
-          lpDetails: {
-            address: lpMint.toString(),
-            decimals: lpDecimals,
-            supply: lpSupply.toNumber(),
-          },
-          poolUnderlyings: [
-            {
-              address: mintA,
-              decimals: decimalsA,
-              reserveAmount: tokenAmountA,
-              tokenPrice: tokenPriceA,
-              weight: 0.5,
+      if (lpMint && lpDecimals) {
+        tokenPriceSources.push(
+          ...getLpTokenSource({
+            networkId: NetworkId.solana,
+            sourceId: lpMint.toString(),
+            platformId,
+            priceUnderlyings: true,
+            lpDetails: {
+              address: lpMint.toString(),
+              decimals: lpDecimals,
+              supply: lpSupply.toNumber(),
             },
-            {
-              address: mintB,
-              decimals: decimalsB,
-              reserveAmount: tokenAmountB,
-              tokenPrice: tokenPriceB,
-              weight: 0.5,
-            },
-          ],
-        })
-      );
+            poolUnderlyings: [
+              {
+                address: mintA,
+                decimals: decimalsA,
+                reserveAmount: tokenAmountA,
+                tokenPrice: tokenPriceA,
+                weight: 0.5,
+              },
+              {
+                address: mintB,
+                decimals: decimalsB,
+                reserveAmount: tokenAmountB,
+                tokenPrice: tokenPriceB,
+                weight: 0.5,
+              },
+            ],
+          })
+        );
+      } else {
+        tokenPriceSources.push(
+          ...getLpUnderlyingTokenSource({
+            networkId: NetworkId.solana,
+            sourceId: poolInfo.id,
+            platformId,
+            poolUnderlyings: [
+              {
+                address: mintA,
+                decimals: decimalsA,
+                reserveAmount: tokenAmountA,
+                tokenPrice: tokenPriceA,
+                weight: 0.5,
+              },
+              {
+                address: mintB,
+                decimals: decimalsB,
+                reserveAmount: tokenAmountB,
+                tokenPrice: tokenPriceB,
+                weight: 0.5,
+              },
+            ],
+          })
+        );
+      }
     }
     await cache.setTokenPriceSources(tokenPriceSources);
     page += 1;
