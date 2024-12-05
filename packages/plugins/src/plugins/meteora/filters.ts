@@ -65,3 +65,17 @@ export const feeVaultFilter = (): GetProgramAccountsFilter[] => [
     dataSize: 1048,
   },
 ];
+
+export const unstakeFilter = (
+  stakeEscrow: string
+): GetProgramAccountsFilter[] => [
+  {
+    memcmp: {
+      offset: 8,
+      bytes: stakeEscrow,
+    },
+  },
+  {
+    dataSize: 304,
+  },
+];

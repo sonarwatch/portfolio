@@ -5,9 +5,9 @@ import { feeVaultsKey, stakeForFeeProgramId, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { getParsedProgramAccounts, ParsedAccount } from '../../utils/solana';
-import { FeeVault, stakeEscrowStruct } from './struct';
+import { FeeVault, stakeEscrowStruct, unstakeStruct } from './struct';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
-import { stakeEscrowFilter } from './filters';
+import { stakeEscrowFilter, unstakeFilter } from './filters';
 
 const feeVaultsMemo = new MemoizedCache<ParsedAccount<FeeVault>[]>(
   feeVaultsKey,
@@ -29,6 +29,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (!stakeEscrows) return [];
 
+  const unstakes = await Promise.all(
+    stakeEscrows.map((stakeEscrow) =>
+      getParsedProgramAccounts(
+        client,
+        unstakeStruct,
+        stakeForFeeProgramId,
+        unstakeFilter(stakeEscrow.pubkey.toString())
+      )
+    )
+  );
+
   const feeVaults = await feeVaultsMemo.getItem(cache);
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
@@ -36,7 +47,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     label: 'Staked',
   });
 
-  stakeEscrows.forEach((stakeEscrow) => {
+  stakeEscrows.forEach((stakeEscrow, i) => {
     const feeVault = feeVaults.find(
       (v) => v.pubkey.toString() === stakeEscrow.vault.toString()
     );
@@ -56,6 +67,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       address: feeVault.quoteMint,
       amount: stakeEscrow.feeBPending,
     });
+
+    if (unstakes[i]) {
+      unstakes[i].forEach((unstake) => {
+        element.addAsset({
+          address: feeVault.stakeMint,
+          amount: unstake.unstakeAmount,
+          attributes: {
+            lockedUntil: unstake.releaseAt.toNumber(),
+          },
+        });
+      });
+    }
   });
 
   return elementRegistry.getElements(cache);

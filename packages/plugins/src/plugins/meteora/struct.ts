@@ -706,6 +706,25 @@ export const stakeEscrowStruct = new BeetStruct<StakeEscrow>(
   (args) => args as StakeEscrow
 );
 
+export type Unstake = {
+  buffer: Buffer;
+  stakeEscrow: PublicKey;
+  unstakeAmount: BigNumber;
+  createdAt: BigNumber;
+  releaseAt: BigNumber;
+};
+
+export const unstakeStruct = new BeetStruct<Unstake>(
+  [
+    ['buffer', blob(8)],
+    ['stakeEscrow', publicKey],
+    ['unstakeAmount', u64],
+    ['createdAt', i64],
+    ['releaseAt', i64],
+  ],
+  (args) => args as Unstake
+);
+
 export type FeeVault = {
   buffer: Buffer;
   lockEscrow: PublicKey;

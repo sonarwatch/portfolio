@@ -10,8 +10,8 @@ import { platform } from './constants';
 import farmsFetcher from './farmsFetcher';
 import dlmmPositionFetcher from './dlmmPositionsFetcher';
 import dlmmVaultsFetcher from './dlmmVaultsFetcher';
-import stakeForFeeFetcher from './StakeForFeeFetcher';
-import stakeForFeeVaultsJob from './StakeForFeeVaultsJob';
+import stakeForFeeFetcher from './stakeForFeeFetcher';
+import stakeForFeeVaultsJob from './stakeForFeeVaultsJob';
 
 export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [
