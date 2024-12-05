@@ -1,6 +1,7 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import axios from 'axios';
 import BigNumber from 'bignumber.js';
+import { walletTokensPlatform } from '../tokens/constants';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { apiV3, platformId } from './constants';
@@ -127,7 +128,7 @@ const executor: JobExecutor = async (cache: Cache) => {
             weight: getSourceWeight(poolInfo.tvl),
             address: mintA,
             networkId: NetworkId.solana,
-            platformId,
+            platformId: walletTokensPlatform.id,
             decimals: decimalsA,
             price: new BigNumber(tokenPriceB.price)
               .multipliedBy(poolInfo.price)
@@ -140,7 +141,7 @@ const executor: JobExecutor = async (cache: Cache) => {
             weight: getSourceWeight(poolInfo.tvl),
             address: mintB,
             networkId: NetworkId.solana,
-            platformId,
+            platformId: walletTokensPlatform.id,
             decimals: decimalsB,
             price: new BigNumber(tokenPriceA.price)
               .dividedBy(poolInfo.price)
