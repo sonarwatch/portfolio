@@ -45,3 +45,23 @@ export const dlmmPositionV2AccountFilter = (
     },
   },
 ];
+
+export const stakeEscrowFilter = (
+  owner: string
+): GetProgramAccountsFilter[] => [
+  {
+    memcmp: {
+      offset: 8,
+      bytes: owner,
+    },
+  },
+  {
+    dataSize: 520,
+  },
+];
+
+export const feeVaultFilter = (): GetProgramAccountsFilter[] => [
+  {
+    dataSize: 1048,
+  },
+];
