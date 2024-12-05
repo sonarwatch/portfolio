@@ -30,7 +30,7 @@ export async function getBalance(rpcEndpoint: RpcEndpoint, owner: string) {
     {
       baseURL: rpcEndpoint.url,
       auth,
-      timeout: 20000,
+      timeout: 22000,
     }
   );
   return new BigNumber(response.data.chain_stats.funded_txo_sum)
