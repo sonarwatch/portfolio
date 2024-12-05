@@ -71,10 +71,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   accounts.forEach((escrow) => {
     const vault = vaults[escrow.dlmmVault.toString()];
     if (!vault || !vault.endVestingTs || !vault.startVestingTs) return;
-    if (time > Number(vault.endVestingTs)) return;
 
     // Vesting not started yet
-    if (Date.now() < Number(vault.startVestingTs)) {
+    if (time < Number(vault.startVestingTs)) {
       const tpQuote = tokenPrices.get(vault.quoteMint);
       if (!tpQuote) return;
       assets.push(
