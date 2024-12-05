@@ -7,7 +7,8 @@ import { apiV3, platformId } from './constants';
 import { ApiV3Response } from './types';
 import { getLpTokenSource } from '../../utils/misc/getLpTokenSource';
 import { minimumLiquidity } from '../../utils/misc/computeAndStoreLpPrice';
-import { getLpUnderlyingTokenSource } from '../../utils/misc/getLpUnderlyingTokenSource';
+import { defaultAcceptedPairs } from '../../utils/misc/getLpUnderlyingTokenSource';
+import getSourceWeight from '../../utils/misc/getSourceWeight';
 
 const executor: JobExecutor = async (cache: Cache) => {
   let apiRes;
@@ -15,6 +16,9 @@ const executor: JobExecutor = async (cache: Cache) => {
   let subPools;
   let tokenPriceById;
   let lastLiquidity;
+
+  const acceptedPairs = defaultAcceptedPairs.get(NetworkId.solana);
+
   do {
     apiRes = await axios
       .get<ApiV3Response>(`${apiV3}pools/info/list`, {
@@ -116,30 +120,34 @@ const executor: JobExecutor = async (cache: Cache) => {
             ],
           })
         );
-      } else {
-        tokenPriceSources.push(
-          ...getLpUnderlyingTokenSource({
+      } else if (acceptedPairs) {
+        if (acceptedPairs.includes(mintB) && tokenPriceB) {
+          tokenPriceSources.push({
+            id: poolInfo.id,
+            weight: getSourceWeight(poolInfo.tvl),
+            address: mintA,
             networkId: NetworkId.solana,
-            sourceId: poolInfo.id,
             platformId,
-            poolUnderlyings: [
-              {
-                address: mintA,
-                decimals: decimalsA,
-                reserveAmount: tokenAmountA,
-                tokenPrice: tokenPriceA,
-                weight: 0.5,
-              },
-              {
-                address: mintB,
-                decimals: decimalsB,
-                reserveAmount: tokenAmountB,
-                tokenPrice: tokenPriceB,
-                weight: 0.5,
-              },
-            ],
-          })
-        );
+            decimals: decimalsA,
+            price: new BigNumber(tokenPriceB.price)
+              .multipliedBy(poolInfo.price)
+              .toNumber(),
+            timestamp: Date.now(),
+          });
+        } else if (acceptedPairs.includes(mintA) && tokenPriceA) {
+          tokenPriceSources.push({
+            id: poolInfo.id,
+            weight: getSourceWeight(poolInfo.tvl),
+            address: mintB,
+            networkId: NetworkId.solana,
+            platformId,
+            decimals: decimalsB,
+            price: new BigNumber(tokenPriceA.price)
+              .dividedBy(poolInfo.price)
+              .toNumber(),
+            timestamp: Date.now(),
+          });
+        }
       }
     }
     await cache.setTokenPriceSources(tokenPriceSources);
