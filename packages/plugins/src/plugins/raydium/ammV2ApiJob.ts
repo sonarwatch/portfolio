@@ -68,10 +68,8 @@ const executor: JobExecutor = async (cache: Cache) => {
       mintA = poolInfo.mintA.address;
       mintB = poolInfo.mintB.address;
 
-      if (poolInfo.lpMint) {
-        lpMint = poolInfo.lpMint.address;
-        lpDecimals = poolInfo.lpMint.decimals;
-      }
+      lpMint = poolInfo.lpMint?.address;
+      lpDecimals = poolInfo.lpMint?.decimals;
 
       [decimalsA, decimalsB] = [
         poolInfo.mintA.decimals,
@@ -92,7 +90,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         tokenPriceSources.push(
           ...getLpTokenSource({
             networkId: NetworkId.solana,
-            sourceId: lpMint.toString(),
+            sourceId: poolInfo.id,
             platformId,
             priceUnderlyings: true,
             lpDetails: {
