@@ -94,6 +94,7 @@ export enum OracleSource {
   Pyth1KPull,
   Pyth1MPull,
   PythStableCoinPull,
+  SWITCHBOARD_ON_DEMAND,
 }
 
 export enum ContractType {
