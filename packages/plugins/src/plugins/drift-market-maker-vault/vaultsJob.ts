@@ -49,9 +49,20 @@ const executor: JobExecutor = async (cache: Cache) => {
     );
     if (!vaultPlatformId) continue;
 
+    const { totalShares, profitShare, user } = vault;
+
     cachedItems.push({
       key: pubkey,
-      value: { pubkey, platformId: vaultPlatformId, name, mint, decimals },
+      value: {
+        pubkey,
+        platformId: vaultPlatformId,
+        name,
+        mint,
+        decimals,
+        totalShares: totalShares.toString(),
+        profitShare,
+        user,
+      },
     });
   }
 
