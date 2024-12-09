@@ -1,14 +1,14 @@
-import { NetworkId, solanaNativeAddress } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { platformId } from './constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
-  const solPrice = await cache.getTokenPrice(
-    solanaNativeAddress,
+  const sSolPrice = await cache.getTokenPrice(
+    'sSo14endRuUbvQaJS3dq36Q829a3A6BEfoeeRGJywEh', // sSOL
     NetworkId.solana
   );
-  if (!solPrice) return;
+  if (!sSolPrice) return;
 
   await cache.setTokenPriceSource({
     address: '4tARAT4ssRYhrENCTxxZrmjL741eE2G23Q1zLPDW2ipf',
@@ -16,7 +16,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     id: 'adrastea',
     networkId: NetworkId.solana,
     platformId,
-    price: solPrice.price,
+    price: sSolPrice.price,
     timestamp: Date.now(),
     weight: 1,
   });
