@@ -682,6 +682,11 @@ import {
   jobs as doubleupJobs,
   fetchers as doubleupFetchers,
 } from './plugins/doubleup';
+import {
+  platforms as photofinishPlatforms,
+  jobs as photofinishJobs,
+  fetchers as photofinishFetchers,
+} from './plugins/photofinish';
 
 export {
   walletTokensPlatform,
@@ -834,6 +839,7 @@ export const platforms: Platform[] = [
   ...ensofiPlatforms,
   ...coinmarketcapPlatforms,
   ...doubleupPlatforms,
+  ...photofinishPlatforms,
 ];
 
 // JOBS //
@@ -969,6 +975,7 @@ export const jobs: Job[] = [
   ...ensofiJobs,
   ...coinmarketcapJobs,
   ...doubleupJobs,
+  ...photofinishJobs,
 ];
 
 // FETCHERS //
@@ -1105,6 +1112,7 @@ export const fetchers: Fetcher[] = [
   ...ensofiFetchers,
   ...coinmarketcapFetchers,
   ...doubleupFetchers,
+  ...photofinishFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
