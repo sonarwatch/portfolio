@@ -8,7 +8,7 @@ export const platform: Platform = {
   image: 'https://sonar.watch/img/platforms/deepbook.webp',
   website: 'https://deepbook.tech/',
   twitter: 'https://x.com/DeepBookonSui',
-  defiLlamaId: 'deepbook', // from https://defillama.com/docs/api
+  defiLlamaId: 'parent#deepbook', // from https://defillama.com/docs/api
 };
 export const airdropStatics: AirdropStatics = {
   emitterLink: 'https://deepbook.tech',

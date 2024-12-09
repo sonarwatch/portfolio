@@ -8,7 +8,7 @@ export const platform: Platform = {
   image: 'https://sonar.watch/img/platforms/adrena.webp',
   website: 'https://app.adrena.xyz/',
   twitter: 'https://x.com/AdrenaProtocol',
-  defiLlamaId: 'adrena', // from https://defillama.com/docs/api
+  defiLlamaId: 'adrena-protocol', // from https://defillama.com/docs/api
 };
 
 export const custodiesCacheKey = `custodies`;
