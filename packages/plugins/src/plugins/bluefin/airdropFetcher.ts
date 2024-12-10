@@ -13,6 +13,10 @@ import { AirdropResponse } from './types';
 const executor: AirdropFetcherExecutor = async (owner: string) => {
   const res: AxiosResponse<AirdropResponse> = await axios.get(airdropApi, {
     params: { userAddress: owner },
+    headers: {
+      Origin: 'https://trade.bluefin.io',
+      Referer: 'https://trade.bluefin.io/',
+    },
   });
 
   if (res.data.error)

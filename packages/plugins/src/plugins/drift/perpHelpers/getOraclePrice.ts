@@ -7,6 +7,7 @@ import { getPythOraclePriceDataFromBuffer } from './pyth';
 import { getSwitchboardOraclePriceDataFromBuffer } from './switchboard';
 import { getPreLaunchOraclePriceDataFromBuffer } from './prelaunchOracle';
 import { getPythPullOraclePriceDataFromBuffer } from './pythPull';
+import { getSwitchboardOnDemandOraclePriceDataFromBuffer } from './switchboard_on_demand';
 
 const oraclePrices: Map<string, OraclePriceData> = new Map();
 const lastUpdates: Map<string, number> = new Map();
@@ -85,6 +86,9 @@ export async function getOraclePrice(
           new BN(1),
           true
         );
+        break;
+      case OracleSource.SWITCHBOARD_ON_DEMAND:
+        coPriceData = getSwitchboardOnDemandOraclePriceDataFromBuffer(acc.data);
         break;
       default:
         throw new Error(`Unsupported OracleSource: ${oracleSource}`);

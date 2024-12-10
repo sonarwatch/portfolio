@@ -6,7 +6,7 @@ export const platform: Platform = {
   id: platformId,
   name: 'Bluefin',
   image: 'https://sonar.watch/img/platforms/bluefin.webp',
-  defiLlamaId: 'bluefin', // from https://defillama.com/docs/api
+  defiLlamaId: 'parent#bluefin', // from https://defillama.com/docs/api
   website: 'https://trade.bluefin.io/',
   twitter: 'https://x.com/bluefinapp',
 };

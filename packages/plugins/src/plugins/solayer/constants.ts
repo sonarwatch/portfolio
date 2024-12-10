@@ -8,7 +8,7 @@ export const platform: Platform = {
   image: 'https://sonar.watch/img/platforms/solayer.webp',
   website: 'https://solayer.org/',
   twitter: 'https://x.com/solayer_labs',
-  defiLlamaId: 'solayer',
+  defiLlamaId: 'parent#solayer',
 };
 
 export const programId = new PublicKey(

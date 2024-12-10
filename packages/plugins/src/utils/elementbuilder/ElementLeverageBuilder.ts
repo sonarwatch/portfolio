@@ -45,7 +45,7 @@ export class ElementLeverageBuilder extends ElementBuilder {
         value,
       },
       networkId,
-      platformId,
+      platformId: this.platformId || platformId,
       value,
     };
 

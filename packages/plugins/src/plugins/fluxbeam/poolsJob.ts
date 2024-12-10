@@ -1,5 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
-import { NetworkId, TokenPrice } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { fluxbeamPoolsPid, platformId } from './constants';
@@ -9,144 +9,159 @@ import {
   ParsedAccount,
   TokenAccount,
   getParsedMultipleAccountsInfo,
-  getParsedProgramAccounts,
   mintAccountStruct,
   tokenAccountStruct,
 } from '../../utils/solana';
-import { poolStruct } from './structs';
-import getLpTokenSourceRawOld from '../../utils/misc/getLpTokenSourceRawOld';
-import getLpUnderlyingTokenSourceOld from '../../utils/misc/getLpUnderlyingTokenSourceOld';
+import { Pool, poolStruct } from './structs';
+import { getLpTokenSourceRaw } from '../../utils/misc/getLpTokenSourceRaw';
+
+const tokenAccountsToExclude = [
+  'F5LQTC4G9kBsMKsXtHgf9RqR15k3JB8K3smR73VB9pzY',
+  '3zAvJPHBX42kc1htJc6RFihhpnQxP5KqpqqkrTEUhZ9S',
+];
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
-  let pools = await getParsedProgramAccounts(
-    connection,
-    poolStruct,
+
+  const allPoolsPubkeys = await connection.getProgramAccounts(
     new PublicKey(fluxbeamPoolsPid),
-    [{ dataSize: poolStruct.byteSize }]
-  );
-  pools = pools.filter((pool) => pool.isInitialized);
-
-  const reserveAccountsAddresses = pools
-    .map((pool) => [pool.tokenA, pool.tokenB])
-    .flat();
-  const tokenAccounts = await getParsedMultipleAccountsInfo(
-    connection,
-    tokenAccountStruct,
-    reserveAccountsAddresses
-  );
-  const tokenAccountsMap: Map<string, ParsedAccount<TokenAccount>> = new Map();
-  tokenAccounts.forEach((tokenAccount) => {
-    if (!tokenAccount) return;
-    tokenAccountsMap.set(tokenAccount.pubkey.toString(), tokenAccount);
-  });
-
-  const poolMints = await getParsedMultipleAccountsInfo(
-    connection,
-    mintAccountStruct,
-    pools.map((p) => p.poolMint)
-  );
-
-  const tokenMintsAddresses = [
-    ...new Set(
-      pools
-        .map((pool) => [pool.tokenAMint.toString(), pool.tokenBMint.toString()])
-        .flat()
-    ),
-  ];
-
-  const tokenMintsAccounts = await getParsedMultipleAccountsInfo(
-    connection,
-    mintAccountStruct,
-    tokenMintsAddresses.map((a) => new PublicKey(a))
-  );
-  const tokenMintsAccountsMap: Map<
-    string,
-    ParsedAccount<MintAccount>
-  > = new Map();
-  tokenMintsAccounts.forEach((tokenMintAccount) => {
-    if (!tokenMintAccount) return;
-    tokenMintsAccountsMap.set(
-      tokenMintAccount.pubkey.toString(),
-      tokenMintAccount
-    );
-  });
-
-  const tokenPriceResults = await cache.getTokenPrices(
-    tokenMintsAddresses,
-    NetworkId.solana
-  );
-  const tokenPrices: Map<string, TokenPrice> = new Map();
-  tokenPriceResults.forEach((tokenPrice) => {
-    if (!tokenPrice) return;
-    tokenPrices.set(tokenPrice.address, tokenPrice);
-  });
-
-  for (let i = 0; i < pools.length; i++) {
-    const pool = pools[i];
-    if (!pool.isInitialized) continue;
-    const poolMint = poolMints[i];
-    if (!poolMint) continue;
-
-    const tokenAccountA = tokenAccountsMap.get(pool.tokenA.toString());
-    const tokenAccountB = tokenAccountsMap.get(pool.tokenB.toString());
-    if (!tokenAccountA || !tokenAccountB) continue;
-    const mintAccountA = tokenMintsAccountsMap.get(pool.tokenAMint.toString());
-    const mintAccountB = tokenMintsAccountsMap.get(pool.tokenBMint.toString());
-    if (!mintAccountA || !mintAccountB) continue;
-    const tokenPriceA = tokenPrices.get(pool.tokenAMint.toString());
-    const tokenPriceB = tokenPrices.get(pool.tokenBMint.toString());
-
-    const underlyingsSource = getLpUnderlyingTokenSourceOld(
-      pool.poolMint.toString(),
-      NetworkId.solana,
-      {
-        address: pool.tokenAMint.toString(),
-        decimals: mintAccountA.decimals,
-        reserveAmountRaw: tokenAccountA.amount,
-        tokenPrice: tokenPriceA,
-        weight: 0.5,
-      },
-      {
-        address: pool.tokenBMint.toString(),
-        decimals: mintAccountB.decimals,
-        reserveAmountRaw: tokenAccountB.amount,
-        tokenPrice: tokenPriceB,
-        weight: 0.5,
-      }
-    );
-    if (underlyingsSource) {
-      await cache.setTokenPriceSource(underlyingsSource);
+    {
+      filters: [{ dataSize: poolStruct.byteSize }],
+      dataSlice: { length: 0, offset: 0 },
     }
+  );
 
-    if (!tokenPriceA || !tokenPriceB) continue;
-    const lpSource = getLpTokenSourceRawOld(
-      NetworkId.solana,
-      platformId,
-      platformId,
-      {
-        address: pool.poolMint.toString(),
-        decimals: poolMint.decimals,
-        supplyRaw: poolMint.supply,
-      },
-      [
-        {
-          address: tokenPriceA.address,
-          decimals: tokenPriceA.decimals,
-          price: tokenPriceA.price,
-          reserveAmountRaw: tokenAccountA.amount,
-        },
-        {
-          address: tokenPriceB.address,
-          decimals: tokenPriceB.decimals,
-          price: tokenPriceB.price,
-          reserveAmountRaw: tokenAccountB.amount,
-        },
-      ],
-      'Pools'
+  const step = 100;
+  let tempPools: (ParsedAccount<Pool> | null)[];
+  const sources = [];
+  for (let offset = 0; offset < allPoolsPubkeys.length; offset += step) {
+    const tempTokenAccountsMap: Map<
+      string,
+      ParsedAccount<TokenAccount>
+    > = new Map();
+    const tempTokenMintsAccountsMap: Map<
+      string,
+      ParsedAccount<MintAccount>
+    > = new Map();
+    const tempTokenMints: PublicKey[] = [];
+    const tempTokenAddresses: Set<string> = new Set();
+    const tempsReserveAccounts: PublicKey[] = [];
+    const tempsPoolMints: PublicKey[] = [];
+    tempPools = await getParsedMultipleAccountsInfo(
+      connection,
+      poolStruct,
+      allPoolsPubkeys.slice(offset, offset + step).map((res) => res.pubkey)
     );
-    await cache.setTokenPriceSource(lpSource);
+    tempPools = tempPools.filter((pool) => pool?.isInitialized);
+
+    tempPools.forEach((pool) => {
+      if (pool) {
+        tempTokenMints.push(...[pool.tokenAMint, pool.tokenBMint]);
+        tempTokenAddresses.add(pool.tokenAMint.toString());
+        tempTokenAddresses.add(pool.tokenBMint.toString());
+        tempsReserveAccounts.push(...[pool.tokenA, pool.tokenB]);
+        tempsPoolMints.push(...[pool.poolMint]);
+      }
+    });
+    const [
+      tokenAccounts,
+      poolMintsAccounts,
+      tokenMintsAccounts,
+      tokenPriceById,
+    ] = await Promise.all([
+      getParsedMultipleAccountsInfo(
+        connection,
+        tokenAccountStruct,
+        tempsReserveAccounts
+      ),
+      getParsedMultipleAccountsInfo(
+        connection,
+        mintAccountStruct,
+        tempsPoolMints
+      ),
+      getParsedMultipleAccountsInfo(
+        connection,
+        mintAccountStruct,
+        Array.from(tempTokenAddresses)
+          .map((t) => {
+            if (!tokenAccountsToExclude.includes(t)) {
+              return new PublicKey(t);
+            }
+            return [];
+          })
+          .flat()
+      ),
+      cache.getTokenPricesAsMap(tempTokenAddresses, NetworkId.solana),
+    ]);
+
+    if (!tokenMintsAccounts) continue;
+
+    tokenMintsAccounts.forEach((tokenMintAccount) => {
+      if (!tokenMintAccount) return;
+      tempTokenMintsAccountsMap.set(
+        tokenMintAccount.pubkey.toString(),
+        tokenMintAccount
+      );
+    });
+
+    tokenAccounts.forEach((tokenAccount) => {
+      if (!tokenAccount) return;
+      tempTokenAccountsMap.set(tokenAccount.pubkey.toString(), tokenAccount);
+    });
+
+    for (let i = 0; i < tempPools.length; i++) {
+      const pool = tempPools[i];
+      if (!pool || !pool.isInitialized) continue;
+
+      const poolMint = poolMintsAccounts[i];
+      if (!poolMint) continue;
+
+      const tokenAccountA = tempTokenAccountsMap.get(pool.tokenA.toString());
+      const tokenAccountB = tempTokenAccountsMap.get(pool.tokenB.toString());
+      if (!tokenAccountA || !tokenAccountB) continue;
+      const mintAccountA = tempTokenMintsAccountsMap.get(
+        pool.tokenAMint.toString()
+      );
+      const mintAccountB = tempTokenMintsAccountsMap.get(
+        pool.tokenBMint.toString()
+      );
+      if (!mintAccountA || !mintAccountB) continue;
+      const tokenPriceA = tokenPriceById.get(pool.tokenAMint.toString());
+      const tokenPriceB = tokenPriceById.get(pool.tokenBMint.toString());
+
+      const lpSources = getLpTokenSourceRaw({
+        lpDetails: {
+          address: pool.poolMint.toString(),
+          decimals: poolMint.decimals,
+          supplyRaw: poolMint.supply,
+        },
+        platformId,
+        sourceId: pool.pubkey.toString(),
+        networkId: NetworkId.solana,
+        poolUnderlyingsRaw: [
+          {
+            address: pool.tokenAMint.toString(),
+            decimals: mintAccountA.decimals,
+            reserveAmountRaw: tokenAccountA.amount,
+            tokenPrice: tokenPriceA,
+            weight: 0.5,
+          },
+          {
+            address: pool.tokenBMint.toString(),
+            decimals: mintAccountB.decimals,
+            reserveAmountRaw: tokenAccountB.amount,
+            tokenPrice: tokenPriceB,
+            weight: 0.5,
+          },
+        ],
+        priceUnderlyings: true,
+      });
+
+      sources.push(...lpSources);
+    }
   }
+
+  await cache.setTokenPriceSources(sources);
 };
 const job: Job = {
   id: `${platformId}-pools`,

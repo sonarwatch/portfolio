@@ -7,6 +7,7 @@ import {
   hedgyPlatform,
   moosePlatform,
   neutralPlatform,
+  vectisPlatform,
 } from './constants';
 import depositsFetcher from './depositsFetcher';
 import vaultsJob from './vaultsJob';
@@ -17,6 +18,7 @@ export const platforms: Platform[] = [
   neutralPlatform,
   gauntletPlatform,
   hedgyPlatform,
+  vectisPlatform,
 ];
 export const jobs: Job[] = [vaultsJob];
 export const fetchers: Fetcher[] = [depositsFetcher];
