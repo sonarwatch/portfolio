@@ -92,7 +92,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const tokenConfig = tokenConfigById.get(offer.tokenConfig.toString());
     if (!tokenConfig) continue;
 
-    const { id } = tokenConfig;
+    const { id, settleTime } = tokenConfig;
+    if (Date.now() > settleTime.toNumber()) continue;
 
     const tokenInfo = tokensInfoById.get(id.toString());
     if (!tokenInfo) continue;

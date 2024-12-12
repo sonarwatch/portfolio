@@ -10,6 +10,8 @@ export const stablePoolsFilters: GetProgramAccountsFilter[] = [
   { dataSize: 1387 },
 ];
 
+export const memePoolsFilters: GetProgramAccountsFilter[] = [{ dataSize: 952 }];
+
 export const farmAccountFilter = (
   owner: string
 ): GetProgramAccountsFilter[] => [
