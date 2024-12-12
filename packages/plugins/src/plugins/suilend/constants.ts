@@ -17,11 +17,12 @@ export const airdropStatics: AirdropStatics = {
   emitterName: 'Suilend',
   id: 'suilend-airdrop',
   image: 'https://sonar.watch/img/platforms/suilend.webp',
-  claimEnd: undefined,
-  claimStart: 1733961600000,
+  claimEnd: 1765512000000,
+  claimStart: 1733976000000,
 };
 
-export const sendMint = undefined;
+export const mSendMint =
+  '0xda097d57ae887fbd002fb5847dd0ab47ae7e1b183fd36832a51182c52257e1bc::msend_series_1::MSEND_SERIES_1';
 export const suilendPointsType =
   '34fe4f3c9e450fed4d0a3c587ed842eec5313c30c3cc3c0841247c49425e246b::suilend_point::SUILEND_POINT';
 export const packageId =
