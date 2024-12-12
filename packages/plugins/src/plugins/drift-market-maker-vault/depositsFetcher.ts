@@ -2,10 +2,7 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import {
-  perpMarketsIndexesKey,
-  platformId as driftPlatformId,
-} from '../drift/constants';
+import { platformId as driftPlatformId } from '../drift/constants';
 import {
   vaultsPids,
   prefixVaults,
@@ -19,8 +16,6 @@ import { vaultDepositorFilter } from './filters';
 import { VaultInfo } from './types';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { arrayToMap } from '../../utils/misc/arrayToMap';
-import { PerpMarketIndexes, SpotMarketEnhanced } from '../drift/types';
-import { spotMarketsMemo } from '../drift/depositsFetcher';
 
 export const oneDay = 1000 * 60 * 60 * 24;
 export const sevenDays = 7 * oneDay;
@@ -43,27 +38,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (depositAccounts.length === 0) return [];
 
-  const [vaultsInfo, perpMarketIndexesArr] = await Promise.all([
-    cache.getItems<VaultInfo>(
-      depositAccounts.map((deposit) => deposit.vault.toString()),
-      { prefix: prefixVaults, networkId: NetworkId.solana }
-    ),
-    cache.getItem<PerpMarketIndexes>(perpMarketsIndexesKey, {
-      prefix: driftPlatformId,
-      networkId: NetworkId.solana,
-    }),
-  ]);
-
-  const spotMarketsItems = await spotMarketsMemo.getItem(cache);
-  const spotMarketByIndex: Map<number, SpotMarketEnhanced> = new Map();
-
-  const perpMarketAddressByIndex: Map<number, string> = new Map();
-  perpMarketIndexesArr?.forEach(([index, address]) => {
-    perpMarketAddressByIndex.set(index, address);
-  });
-  for (const spotMarketItem of spotMarketsItems || []) {
-    spotMarketByIndex.set(spotMarketItem.marketIndex, spotMarketItem);
-  }
+  const vaultsInfo = await cache.getItems<VaultInfo>(
+    depositAccounts.map((deposit) => deposit.vault.toString()),
+    { prefix: prefixVaults, networkId: NetworkId.solana }
+  );
 
   const vaultById: Map<string, VaultInfo> = arrayToMap(
     vaultsInfo.filter((v) => v !== undefined) as VaultInfo[],
