@@ -1,17 +1,4 @@
-import {
-  LeverageSide,
-  NetworkId,
-  PortfolioAsset,
-  PortfolioAssetGeneric,
-  PortfolioAssetType,
-  PortfolioElement,
-  PortfolioElementType,
-  TokenPrice,
-  Yield,
-  aprToApy,
-  getElementLendingValues,
-  getUsdValueSum,
-} from '@sonarwatch/portfolio-core';
+import { LeverageSide, NetworkId, aprToApy } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
@@ -44,7 +31,6 @@ import {
   u8ArrayToString,
 } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import {
   calculatePositionPNL,
   positionCurrentDirection,
@@ -54,19 +40,24 @@ import { PositionDirection } from './perpHelpers/types';
 import { getOraclePrice } from './perpHelpers/getOraclePrice';
 import { getPerpMarket } from './perpHelpers/getPerpMarket';
 import { getMintFromOracle } from './perpHelpers/getMintFromOracle';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { MemoizedCache } from '../../utils/misc/MemoizedCache';
+
+export const spotMarketsMemo = new MemoizedCache<SpotMarketEnhanced[]>(
+  keySpotMarkets,
+  {
+    prefix: platformId,
+    networkId: NetworkId.solana,
+  }
+);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const spotMarketsItems = await cache.getItem<SpotMarketEnhanced[]>(
-    keySpotMarkets,
-    {
-      prefix: platformId,
-      networkId: NetworkId.solana,
-    }
-  );
+  const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
+
+  const spotMarketsItems = await spotMarketsMemo.getItem(cache);
   const spotMarketByIndex: Map<number, SpotMarketEnhanced> = new Map();
-  const tokensMints = [];
   const insuranceFundStakeAccountsAddresses: PublicKey[] = [];
   const insuranceVaultsPkeys: PublicKey[] = [];
   for (const spotMarketItem of spotMarketsItems || []) {
@@ -80,26 +71,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       new PublicKey(spotMarketItem.insuranceFund.vault)
     );
     spotMarketByIndex.set(spotMarketItem.marketIndex, spotMarketItem);
-    tokensMints.push(spotMarketItem.mint.toString());
   }
 
-  const [insuranceAccounts, insuranceTokenAccounts, tokensPrices] =
-    await Promise.all([
-      getParsedMultipleAccountsInfo(
-        client,
-        insuranceFundStakeStruct,
-        insuranceFundStakeAccountsAddresses
-      ),
-      getParsedMultipleAccountsInfo(
-        client,
-        tokenAccountStruct,
-        insuranceVaultsPkeys
-      ),
-      cache.getTokenPrices(tokensMints, NetworkId.solana),
-    ]);
-
-  const tokenPriceById: Map<string, TokenPrice> = new Map();
-  tokensPrices.forEach((tP) => (tP ? tokenPriceById.set(tP.address, tP) : []));
+  const [insuranceAccounts, insuranceTokenAccounts] = await Promise.all([
+    getParsedMultipleAccountsInfo(
+      client,
+      insuranceFundStakeStruct,
+      insuranceFundStakeAccountsAddresses
+    ),
+    getParsedMultipleAccountsInfo(
+      client,
+      tokenAccountStruct,
+      insuranceVaultsPkeys
+    ),
+  ]);
 
   const insuranceTokenAccountsById: Map<string, TokenAccount> = new Map();
   insuranceTokenAccounts.forEach((acc) => {
@@ -107,8 +92,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
 
   // Insurance
-  const elements: PortfolioElement[] = [];
-  const insuranceAssets: PortfolioAsset[] = [];
+  const elementInsurance = elementRegistry.addElementMultiple({
+    label: 'Staked',
+    name: 'Insurance Fund',
+  });
+
   insuranceAccounts.forEach((account, i) => {
     if (!account || account.ifShares.isZero()) return;
 
@@ -122,36 +110,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
     if (!vault) return;
 
-    const tokenPrice = tokenPriceById.get(mint.toString());
-    if (!tokenPrice) return;
-
-    const sharesAmount = account.ifShares
-      .dividedBy(insuranceFund.totalShares)
-      .times(vault.amount.dividedBy(10 ** tokenPrice.decimals))
-      .toNumber();
-
-    insuranceAssets.push(
-      tokenPriceToAssetToken(
-        mint.toString(),
-        sharesAmount,
-        NetworkId.solana,
-        tokenPrice
-      )
-    );
-  });
-  if (insuranceAssets.length > 0) {
-    elements.push({
-      networkId: NetworkId.solana,
-      label: 'Staked',
-      name: 'Insurance Fund',
-      platformId,
-      type: PortfolioElementType.multiple,
-      value: getUsdValueSum(insuranceAssets.map((a) => a.value)),
-      data: {
-        assets: insuranceAssets,
-      },
+    elementInsurance.addAsset({
+      address: mint,
+      amount: account.ifShares
+        .dividedBy(insuranceFund.totalShares)
+        .times(vault.amount),
     });
-  }
+  });
 
   // Perps part
   let id = 0;
@@ -173,7 +138,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     id += 10;
   } while (parsedAccount[parsedAccount.length]);
 
-  if (!userAccounts || userAccounts.length === 0) return elements;
+  if (!userAccounts || userAccounts.length === 0)
+    return elementRegistry.getElements(cache);
 
   const perpMarketIndexesArr = await cache.getItem<PerpMarketIndexes>(
     perpMarketsIndexesKey,
@@ -190,15 +156,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   // One user can have multiple sub-account
   for (const userAccount of userAccounts) {
     if (!userAccount) continue;
-    const borrowedAssets: PortfolioAsset[] = [];
-    const borrowedYields: Yield[][] = [];
-    const suppliedAssets: PortfolioAsset[] = [];
-    const suppliedYields: Yield[][] = [];
-    const rewardAssets: PortfolioAsset[] = [];
 
     const marketIndexRef = 0;
 
-    const unsettledAssets: PortfolioAssetGeneric[] = [];
+    const element = elementRegistry.addElementBorrowlend({
+      label: 'Lending',
+      name: u8ArrayToString(userAccount.name),
+    });
+
     for (const perpPosition of userAccount.perpPositions) {
       if (perpPosition.baseAssetAmount.isZero()) continue;
       const perpMarketAddress = perpMarketAddressByIndex.get(
@@ -227,30 +192,23 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           : LeverageSide.short;
 
       const mint = await getMintFromOracle(market.amm.oracle.toString(), cache);
-      const asset: PortfolioAssetGeneric = {
-        type: PortfolioAssetType.generic,
-        networkId: NetworkId.solana,
+
+      element.addUnsettledGenericAsset({
         value: pnl,
         name: u8ArrayToString(market.name),
-        data: {
-          address: mint || undefined,
-        },
+        address: mint || undefined,
         attributes: {
           tags: [side],
         },
-      };
-      unsettledAssets.push(asset);
+      });
     }
 
     // Each account has up to 8 SpotPositions
     for (const spotPosition of userAccount.spotPositions) {
       if (spotPosition.scaledBalance.isZero()) continue;
-      const countForBase =
-        marketIndexRef === undefined ||
-        spotPosition.marketIndex === marketIndexRef;
+      const countForBase = spotPosition.marketIndex === marketIndexRef;
 
-      const countForQuote =
-        marketIndexRef === undefined || marketIndexRef === 0;
+      const countForQuote = marketIndexRef === 0;
       if (
         isSpotPositionAvailable(spotPosition) ||
         (!countForBase && !countForQuote)
@@ -260,9 +218,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
       const spotMarket = spotMarketByIndex.get(spotPosition.marketIndex);
       if (!spotMarket) continue;
-
-      const tokenPrice = tokenPriceById.get(spotMarket.mint.toString());
-      if (!tokenPrice || tokenPrice === null) continue;
 
       let tokenAmount = new BigNumber(0);
       if (
@@ -286,33 +241,22 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       }
 
       if (spotPosition.balanceType === SpotBalanceType.Deposit) {
-        suppliedAssets.push(
-          tokenPriceToAssetToken(
-            spotMarket.mint.toString(),
-            tokenAmount.div(10 ** tokenPrice.decimals).toNumber(),
-            NetworkId.solana,
-            tokenPrice
-          )
-        );
-        suppliedYields.push([
+        element.addSuppliedAsset({
+          address: spotMarket.mint,
+          amount: tokenAmount,
+        });
+        element.addSuppliedYield([
           {
             apr: spotMarket.depositApr,
             apy: aprToApy(spotMarket.depositApr),
           },
         ]);
       } else if (spotPosition.balanceType === SpotBalanceType.Borrow) {
-        borrowedAssets.push(
-          tokenPriceToAssetToken(
-            spotMarket.mint.toString(),
-            tokenAmount
-              .div(10 ** tokenPrice.decimals)
-              .abs()
-              .toNumber(),
-            NetworkId.solana,
-            tokenPrice
-          )
-        );
-        borrowedYields.push([
+        element.addBorrowedAsset({
+          address: spotMarket.mint,
+          amount: tokenAmount.abs(),
+        });
+        element.addSuppliedYield([
           {
             apr: -spotMarket.borrowApr,
             apy: -aprToApy(spotMarket.borrowApr),
@@ -320,49 +264,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         ]);
       }
     }
-    if (suppliedAssets.length === 0 && borrowedAssets.length === 0) continue;
-
-    const {
-      borrowedValue,
-      suppliedValue,
-      value,
-      healthRatio,
-      rewardValue,
-      unsettledValue,
-    } = getElementLendingValues({
-      suppliedAssets,
-      borrowedAssets,
-      rewardAssets,
-      unsettledAssets,
-    });
-
-    elements.push({
-      type: PortfolioElementType.borrowlend,
-      networkId: NetworkId.solana,
-      platformId,
-      label: 'Lending',
-      value,
-      data: {
-        borrowedAssets,
-        borrowedValue,
-        borrowedYields,
-        suppliedAssets,
-        suppliedValue,
-        suppliedYields,
-        rewardAssets,
-        rewardValue,
-        healthRatio,
-        unsettled: {
-          assets: unsettledAssets,
-          value: unsettledValue,
-        },
-        value,
-      },
-      name: u8ArrayToString(userAccount.name),
-    });
   }
 
-  return elements;
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

@@ -1,8 +1,14 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
+import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId as driftPlatformId } from '../drift/constants';
-import { vaultsPids, prefixVaults, neutralPlatformId } from './constants';
+import {
+  vaultsPids,
+  prefixVaults,
+  neutralPlatformId,
+  hedgyPlatformId,
+} from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { vaultDepositorStruct } from './structs';
@@ -65,9 +71,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       name,
     });
 
-    let amountLeft = depositAccount.netDeposits.plus(
-      depositAccount.cumulativeProfitShareAmount
-    );
+    let amountLeft = new BigNumber(vaultInfo.totalTokens)
+      .dividedBy(vaultInfo.totalShares)
+      .multipliedBy(depositAccount.vaultShares);
 
     if (!depositAccount.lastWithdrawRequest.value.isZero()) {
       amountLeft = amountLeft.minus(depositAccount.lastWithdrawRequest.value);
@@ -77,7 +83,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         attributes: {
           lockedUntil: depositAccount.lastWithdrawRequest.ts
             .times(1000)
-            .plus(platformId === neutralPlatformId ? oneDay : sevenDays)
+            .plus(
+              [neutralPlatformId, hedgyPlatformId].includes(platformId)
+                ? oneDay
+                : sevenDays
+            )
             .toNumber(),
         },
       });
