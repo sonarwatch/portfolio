@@ -1,5 +1,3 @@
-import { PublicKey } from '@solana/web3.js';
-
 export type VaultInfo = {
   pubkey: string;
   platformId: string;
@@ -7,6 +5,6 @@ export type VaultInfo = {
   decimals: number;
   name: string;
   totalShares: string;
-  profitShare: number;
-  user: PublicKey;
+  totalTokens: string;
+  user: string;
 };

@@ -1,5 +1,5 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import { PublicKey } from '@solana/web3.js';
+import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
@@ -20,10 +20,7 @@ import { VaultInfo } from './types';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { arrayToMap } from '../../utils/misc/arrayToMap';
 import { PerpMarketIndexes, SpotMarketEnhanced } from '../drift/types';
-import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
-import { userAccountStruct } from '../drift/struct';
 import { spotMarketsMemo } from '../drift/depositsFetcher';
-import { calculateVaultEquity } from './helpers';
 
 export const oneDay = 1000 * 60 * 60 * 24;
 export const sevenDays = 7 * oneDay;
@@ -88,17 +85,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const vaultInfo = vaultById.get(depositAccount.vault.toString());
     if (!vaultInfo) continue;
 
-    const userAccount = await getParsedAccountInfo(
-      client,
-      userAccountStruct,
-      new PublicKey(vaultInfo.user)
-    );
-    if (!userAccount) continue;
-
     const { name, mint, platformId } = vaultInfo;
-
-    const tokenPrice = await cache.getTokenPrice(mint, NetworkId.solana);
-    if (!tokenPrice) continue;
 
     const element = elementRegistry.addElementMultiple({
       label: 'Deposit',
@@ -106,33 +93,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       name,
     });
 
-    // vault total TVL in dollars
-    const vaultEquity = await calculateVaultEquity(
-      client,
-      vaultInfo,
-      perpMarketAddressByIndex,
-      spotMarketByIndex,
-      cache
-    );
-
-    const vaultEquityInDepositAsset = vaultEquity.dividedBy(tokenPrice.price);
-
-    const sharesRatio = depositAccount.vaultShares.dividedBy(
-      vaultInfo.totalShares
-    );
-
-    let amountLeft = vaultEquityInDepositAsset.multipliedBy(sharesRatio);
+    let amountLeft = new BigNumber(vaultInfo.totalTokens)
+      .dividedBy(vaultInfo.totalShares)
+      .multipliedBy(depositAccount.vaultShares);
 
     if (!depositAccount.lastWithdrawRequest.value.isZero()) {
-      amountLeft = amountLeft.minus(
-        depositAccount.lastWithdrawRequest.value.dividedBy(
-          10 ** tokenPrice.decimals
-        )
-      );
+      amountLeft = amountLeft.minus(depositAccount.lastWithdrawRequest.value);
       element.addAsset({
         address: mint,
         amount: depositAccount.lastWithdrawRequest.value,
-        alreadyShifted: true,
         attributes: {
           lockedUntil: depositAccount.lastWithdrawRequest.ts
             .times(1000)
@@ -149,7 +118,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     element.addAsset({
       address: mint,
       amount: amountLeft,
-      alreadyShifted: true,
     });
   }
 
