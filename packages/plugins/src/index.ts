@@ -421,6 +421,7 @@ import {
   platforms as magicedenPlatforms,
   jobs as magicedenJobs,
   fetchers as magicedenFetchers,
+  airdropFetcher as magicedenAirdropFetcher,
 } from './plugins/magiceden';
 import {
   platforms as clonePlatforms,
@@ -1130,6 +1131,7 @@ export const airdropFetchers: AirdropFetcher[] = [
   bluefinAirdropFetcher,
   grassAirdropFetcher,
   ...streamFlowAirdropFetchers,
+  magicedenAirdropFetcher,
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);
