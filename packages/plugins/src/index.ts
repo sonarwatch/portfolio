@@ -283,6 +283,7 @@ import {
   platforms as streamflowPlatforms,
   jobs as streamflowJobs,
   fetchers as streamflowFetchers,
+  airdropFetchers as streamFlowAirdropFetchers,
 } from './plugins/streamflow';
 import {
   platforms as benqiPlatforms,
@@ -1128,6 +1129,7 @@ export const airdropFetchers: AirdropFetcher[] = [
   suilendAirdropFetcher,
   bluefinAirdropFetcher,
   grassAirdropFetcher,
+  ...streamFlowAirdropFetchers,
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);
