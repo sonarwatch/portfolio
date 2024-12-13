@@ -23,6 +23,7 @@ export const airdropStatics: AirdropStatics = {
 
 export const mSendMint =
   '0xda097d57ae887fbd002fb5847dd0ab47ae7e1b183fd36832a51182c52257e1bc::msend_series_1::MSEND_SERIES_1';
+export const mSendCoinType = `0x2::coin::Coin<${mSendMint}>`;
 export const suilendPointsType =
   '34fe4f3c9e450fed4d0a3c587ed842eec5313c30c3cc3c0841247c49425e246b::suilend_point::SUILEND_POINT';
 export const packageId =

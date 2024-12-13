@@ -16,6 +16,7 @@ import {
   platformId,
   mSendMint,
   suilendPointsType,
+  mSendCoinType,
 } from './constants';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import {
@@ -36,6 +37,7 @@ import { getKiosksDynamicFieldsObjects } from '../../utils/sui/getKioskObjects';
 import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 import { SuiClient } from '../../utils/clients/types';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
+import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
 
 const memoizedBurnEvents = new MemoizedCache<BurnEvents>('burnEvents', {
   prefix: platformId,
@@ -102,10 +104,10 @@ const executor: AirdropFetcherExecutor = async (
         imageUri: platform.image,
       },
       {
-        amount:
-          nftsAllocation.collectionsClaimed ??
+        amount: nftsAllocation.collectionsAllocation,
+        isClaimed:
+          nftsAllocation.collectionsClaimed ===
           nftsAllocation.collectionsAllocation,
-        isClaimed: !!nftsAllocation.collectionsClaimed,
         label: 'mSEND',
         address: mSendMint,
         imageUri: platform.image,
@@ -168,16 +170,19 @@ async function getNftsAllocationItems(
 }> {
   const eligibleCollectionsTypes = Array.from(eligibleCollections.keys());
   const objects = await getOwnedObjectsPreloaded(client, owner);
-
   const kioskObjects = (await getKiosksDynamicFieldsObjects(objects)).flat();
 
-  let collectionsAllocation = 0;
+  const elligibleNfts: string[] = [];
+  const collectionsAllocations: number[] = [];
   let capsulesAllocation = 0;
   [...objects, ...kioskObjects].forEach((obj) => {
     if (obj.data?.content) {
       if (eligibleCollectionsTypes.includes(obj.data.content.type)) {
         const nftAlloc = eligibleCollections.get(obj.data.content.type);
-        if (nftAlloc) collectionsAllocation += nftAlloc;
+        if (nftAlloc) {
+          elligibleNfts.push(obj.data.objectId);
+          collectionsAllocations.push(nftAlloc);
+        }
       } else if (obj.data.content.type === capsuleType) {
         const capsule = obj.data.content.fields as SuilendCapsule;
         if (capsule.rarity === 'rare') capsulesAllocation += 2000;
@@ -187,10 +192,31 @@ async function getNftsAllocationItems(
     }
   });
 
+  let totalAlloc = 0;
+  let totalClaimed = 0;
+  const nftsObjects = await Promise.all([
+    ...elligibleNfts.map((obj) =>
+      getOwnedObjects(client, obj, {
+        filter: {
+          StructType: mSendCoinType,
+        },
+      })
+    ),
+  ]);
+
+  for (let i = 0; i < elligibleNfts.length; i += 1) {
+    const claimed = nftsObjects[i];
+    const alloc = collectionsAllocations[i];
+    if (claimed.length === 0) {
+      totalClaimed += alloc;
+    }
+    totalAlloc += alloc;
+  }
+
   return {
-    collectionsAllocation,
+    collectionsAllocation: totalAlloc,
     capsulesAllocation,
-    collectionsClaimed: 0,
+    collectionsClaimed: totalClaimed,
   };
 }
 
