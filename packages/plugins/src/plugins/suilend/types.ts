@@ -158,3 +158,30 @@ export type SuilendCapsule = {
   id: ID;
   rarity: 'rare' | 'common' | 'uncommon';
 };
+
+export type BurnEvents = {
+  pointsRecord: Record<string, number>;
+  capsuleRecord: Record<string, number>;
+};
+
+export type BurnEvent = {
+  id: EventId;
+  packageId: string;
+  transactionModule: string;
+  sender: string;
+  type: string;
+  parsedJson: BurnEventJSON;
+  bcs: string;
+};
+
+export type EventId = {
+  txDigest: string;
+  eventSeq: string;
+};
+
+export type BurnEventJSON = {
+  claim_amount: string;
+  manager_id: string;
+  points_burned?: string;
+  rarity?: string;
+};

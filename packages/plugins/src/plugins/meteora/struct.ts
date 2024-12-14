@@ -99,6 +99,21 @@ export const paddingStruct = new FixableBeetStruct<Padding>(
   (args) => args as Padding
 );
 
+export type Padding2 = {
+  padding0: number[];
+  padding1: BigNumber[];
+  padding2: BigNumber[];
+};
+
+export const padding2Struct = new FixableBeetStruct<Padding2>(
+  [
+    ['padding0', uniformFixedSizeArray(u8, 6)],
+    ['padding1', uniformFixedSizeArray(u64, 21)],
+    ['padding2', uniformFixedSizeArray(u64, 21)],
+  ],
+  (args) => args as Padding2
+);
+
 export enum DepegType {
   None,
   Marinade,
@@ -180,6 +195,40 @@ export const poolFeesStruct = new BeetStruct<PoolFees>(
   (args) => args as PoolFees
 );
 
+export type Boostrapping = {
+  activationPoint: BigNumber;
+  whitelistedVault: PublicKey;
+  poolCreator: PublicKey;
+  activationType: number;
+};
+
+export const boostrappingStruct = new BeetStruct<Boostrapping>(
+  [
+    ['activationPoint', u64],
+    ['whitelistedVault', publicKey],
+    ['poolCreator', publicKey],
+    ['activationType', u8],
+  ],
+  (args) => args as Boostrapping
+);
+
+export type PartnerInfo = {
+  feeNumerator: BigNumber;
+  partnerAuthority: PublicKey;
+  pendingFeeA: BigNumber;
+  pendingFeeB: BigNumber;
+};
+
+export const partnerInfoStruct = new BeetStruct<PartnerInfo>(
+  [
+    ['feeNumerator', u64],
+    ['partnerAuthority', publicKey],
+    ['pendingFeeA', u64],
+    ['pendingFeeB', u64],
+  ],
+  (args) => args as PartnerInfo
+);
+
 export type PoolState = {
   buffer: Buffer;
   lpMint: PublicKey;
@@ -194,9 +243,15 @@ export type PoolState = {
   adminTokenAFee: PublicKey;
   adminTokenBFee: PublicKey;
   admin: PublicKey;
+  feeLastUpdatedAt?: BigNumber;
+  padding0?: number[];
   fees: PoolFees;
   poolType: PoolType;
   stake: PublicKey;
+  totalLockedLp?: BigNumber;
+  bootstrapping?: Boostrapping;
+  partnerInfo?: PartnerInfo;
+  padding2?: Padding2;
   padding: Padding;
   curveType: CurveType;
 };
@@ -220,6 +275,34 @@ export const poolStateStruct = new FixableBeetStruct<PoolState>(
     ['poolType', u8],
     ['stake', publicKey],
     ['padding', paddingStruct],
+    ['curveType', u8],
+  ],
+  (args) => args as PoolState
+);
+
+export const poolStateV2Struct = new FixableBeetStruct<PoolState>(
+  [
+    ['buffer', blob(8)],
+    ['lpMint', publicKey],
+    ['tokenAMint', publicKey],
+    ['tokenBMint', publicKey],
+    ['aVault', publicKey],
+    ['bVault', publicKey],
+    ['aVaultLp', publicKey],
+    ['bVaultLp', publicKey],
+    ['aVaultLpBump', u8],
+    ['enabled', bool],
+    ['adminTokenAFee', publicKey],
+    ['adminTokenBFee', publicKey],
+    ['feeLastUpdatedAt', u64],
+    ['padding0', uniformFixedSizeArray(u8, 24)],
+    ['fees', poolFeesStruct],
+    ['poolType', u8],
+    ['stake', publicKey],
+    ['totalLockedLp', u64],
+    ['bootstrapping', boostrappingStruct],
+    ['partnerInfo', partnerInfoStruct],
+    ['padding2', padding2Struct],
     ['curveType', u8],
   ],
   (args) => args as PoolState
@@ -352,6 +435,10 @@ export type DLMMPosition = {
   totalClaimedFeeXAmount: BigNumber;
   totalClaimedFeeYAmount: BigNumber;
   totalClaimedRewards: BigNumber[];
+  operator?: PublicKey;
+  lockReleasePoint?: BigNumber;
+  padding0?: number;
+  feeOwner?: PublicKey;
   reserved: number[];
 };
 
@@ -388,7 +475,11 @@ export const dlmmPositionV2Struct = new BeetStruct<DLMMPosition>(
     ['totalClaimedFeeXAmount', u64],
     ['totalClaimedFeeYAmount', u64],
     ['totalClaimedRewards', uniformFixedSizeArray(u64, 2)],
-    ['reserved', uniformFixedSizeArray(u8, 160)],
+    ['operator', publicKey],
+    ['lockReleasePoint', u64],
+    ['padding0', u8],
+    ['feeOwner', publicKey],
+    ['reserved', uniformFixedSizeArray(u8, 87)],
   ],
   (args) => args as DLMMPosition
 );
@@ -490,22 +581,28 @@ export type LbPair = {
   activeId: number;
   binStep: number;
   status: number;
-  padding1: number[];
+  requireBaseFactorSeed: number;
+  baseFactorSeed: number[];
+  activationType: number;
+  padding1: number;
   tokenXMint: PublicKey;
   tokenYMint: PublicKey;
   reserveX: PublicKey;
   reserveY: PublicKey;
   protocolFee: ProtocolFee;
-  feeOwner: PublicKey;
+  padding2: number[];
   rewardInfos: RewardInfo[];
   oracle: PublicKey;
   binArrayBitmap: BigNumber[];
   lastUpdatedAt: BigNumber;
-  whitelistedWallet: PublicKey[];
+  whitelistedWallet: number[];
+  preActivationSwapAddress: PublicKey;
   baseKey: PublicKey;
-  activationSlot: BigNumber;
-  swapCapDeactivateSlot: BigNumber;
-  maxSwappedAmount: BigNumber;
+  activationPoint: BigNumber;
+  preActivationDuration: BigNumber;
+  padding3: number[];
+  padding4: BigNumber;
+  creator: PublicKey;
   reserved: number[];
 };
 
@@ -520,23 +617,29 @@ export const lbPairStruct = new BeetStruct<LbPair>(
     ['activeId', i32],
     ['binStep', u16],
     ['status', u8],
-    ['padding1', uniformFixedSizeArray(u8, 5)],
+    ['requireBaseFactorSeed', u8],
+    ['baseFactorSeed', uniformFixedSizeArray(u8, 2)],
+    ['activationType', u8],
+    ['padding1', u8],
     ['tokenXMint', publicKey],
     ['tokenYMint', publicKey],
     ['reserveX', publicKey],
     ['reserveY', publicKey],
     ['protocolFee', protocolFeeStruct],
-    ['feeOwner', publicKey],
+    ['padding2', uniformFixedSizeArray(u8, 32)],
     ['rewardInfos', uniformFixedSizeArray(rewardInfoStruct, 2)],
     ['oracle', publicKey],
     ['binArrayBitmap', uniformFixedSizeArray(u64, 16)],
     ['lastUpdatedAt', i64],
-    ['whitelistedWallet', uniformFixedSizeArray(publicKey, 2)],
+    ['whitelistedWallet', uniformFixedSizeArray(u8, 32)],
+    ['preActivationSwapAddress', publicKey],
     ['baseKey', publicKey],
-    ['activationSlot', u64],
-    ['swapCapDeactivateSlot', u64],
-    ['maxSwappedAmount', u64],
-    ['reserved', uniformFixedSizeArray(u8, 64)],
+    ['activationPoint', u64],
+    ['preActivationDuration', u64],
+    ['padding3', uniformFixedSizeArray(u8, 8)],
+    ['padding4', u64],
+    ['creator', publicKey],
+    ['reserved', uniformFixedSizeArray(u8, 24)],
   ],
   (args) => args as LbPair
 );

@@ -1,20 +1,10 @@
-import {
-  NetworkId,
-  solanaNativeWrappedAddress,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
 import { Cache } from '../../Cache';
 import { platformId, newApi } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { Games } from './types';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
-import { usdcSolanaMint } from '../../utils/solana';
-
-const tokenMap = new Map([
-  ['usdc', usdcSolanaMint],
-  ['sol', solanaNativeWrappedAddress],
-  ['bonk', 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263'],
-]);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const apiKey = process.env['PORTFOLIO_MOONWALK_API_BEARER'];
@@ -34,21 +24,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       label: 'Deposit',
       name: game.game,
     });
-    const token = tokenMap.get(game.token);
-    if (token) {
-      element.addAsset({
-        address: token,
-        amount: game.claimable,
-        alreadyShifted: true,
-        attributes: { isClaimable: true },
-      });
-      element.addAsset({
-        address: token,
-        amount: game.locked,
-        alreadyShifted: true,
-        attributes: { lockedUntil: game.end * 1000 },
-      });
-    }
+    element.addAsset({
+      address: game.mint,
+      amount: game.claimable,
+      alreadyShifted: true,
+      attributes: { isClaimable: true },
+    });
+    element.addAsset({
+      address: game.mint,
+      amount: game.locked,
+      alreadyShifted: true,
+      attributes: { lockedUntil: game.end * 1000 },
+    });
     for (const sponsor of game.sponsors) {
       element.addAsset({
         address: sponsor.token,

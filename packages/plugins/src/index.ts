@@ -283,6 +283,7 @@ import {
   platforms as streamflowPlatforms,
   jobs as streamflowJobs,
   fetchers as streamflowFetchers,
+  airdropFetchers as streamFlowAirdropFetchers,
 } from './plugins/streamflow';
 import {
   platforms as benqiPlatforms,
@@ -420,6 +421,7 @@ import {
   platforms as magicedenPlatforms,
   jobs as magicedenJobs,
   fetchers as magicedenFetchers,
+  airdropFetcher as magicedenAirdropFetcher,
 } from './plugins/magiceden';
 import {
   platforms as clonePlatforms,
@@ -1128,6 +1130,8 @@ export const airdropFetchers: AirdropFetcher[] = [
   suilendAirdropFetcher,
   bluefinAirdropFetcher,
   grassAirdropFetcher,
+  ...streamFlowAirdropFetchers,
+  magicedenAirdropFetcher,
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);

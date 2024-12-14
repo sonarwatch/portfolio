@@ -1,6 +1,6 @@
 {
   "name": "@sonarwatch/portfolio-plugins",
-  "version": "0.14.61",
+  "version": "0.14.66",
   "type": "commonjs",
   "types": "./src/index.d.ts",
   "peerDependencies": {
@@ -12,6 +12,8 @@
     "@aptos-labs/ts-sdk": "^1.19.0",
     "@bonfida/spl-name-service": "^1.0.10",
     "@cosmjs/cosmwasm-stargate": "^0.31.1",
+    "@drift-labs/sdk": "^2.104.0-beta.13",
+    "@drift-labs/vaults-sdk": "^0.2.7",
     "@ethersproject/bignumber": "^5.7.0",
     "@ethersproject/constants": "^5.7.0",
     "@ethersproject/providers": "^5.7.2",
@@ -22,6 +24,7 @@
     "@mysten/bcs": "^0.11.1",
     "@mysten/sui": "^1.12.0",
     "@onsol/tldparser": "^0.6.1",
+    "@project-serum/anchor": "^0.26.0",
     "@sei-js/core": "^3.0.1",
     "@sei-js/proto": "^3.0.1",
     "@solana/web3.js": "^1.91.8",

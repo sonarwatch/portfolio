@@ -6,14 +6,14 @@ import {
   Yield,
 } from '@sonarwatch/portfolio-core';
 import { TokenPriceMap } from '../../TokenPriceMap';
-import { AssetBuilder } from './AssetBuilder';
-import { PortfolioAssetParams } from './PortfolioAssetParams';
+import { AssetTokenBuilder } from './AssetTokenBuilder';
+import { PortfolioAssetTokenParams } from './PortfolioAssetTokenParams';
 import { LiquidityParams } from './LiquidityParams';
 
 export class LiquidityBuilder {
   private readonly params?: LiquidityParams;
-  assets: AssetBuilder[];
-  rewardAssets: AssetBuilder[];
+  assets: AssetTokenBuilder[];
+  rewardAssets: AssetTokenBuilder[];
   yields: Yield[];
 
   constructor(params?: LiquidityParams) {
@@ -23,12 +23,12 @@ export class LiquidityBuilder {
     this.params = params;
   }
 
-  addAsset(params: PortfolioAssetParams) {
-    this.assets.push(new AssetBuilder(params));
+  addAsset(params: PortfolioAssetTokenParams) {
+    this.assets.push(new AssetTokenBuilder(params));
   }
 
-  addRewardAsset(params: PortfolioAssetParams) {
-    this.rewardAssets.push(new AssetBuilder(params));
+  addRewardAsset(params: PortfolioAssetTokenParams) {
+    this.rewardAssets.push(new AssetTokenBuilder(params));
   }
 
   addYield(ayield: Yield) {

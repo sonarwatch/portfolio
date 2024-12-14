@@ -2,9 +2,11 @@ import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
 import { PortfolioAssetAttributes } from '@sonarwatch/portfolio-core';
 
-export type PortfolioAssetParams = {
-  address: string | PublicKey;
-  amount: number | BigNumber | string;
+export type PortfolioAssetGenericParams = {
+  address?: string | PublicKey;
+  amount?: number | BigNumber | string;
+  price?: number | BigNumber;
   attributes?: PortfolioAssetAttributes;
-  alreadyShifted?: boolean;
+  value?: number | BigNumber;
+  name?: string;
 };

@@ -6,10 +6,13 @@ import {
   Yield,
 } from '@sonarwatch/portfolio-core';
 import { ElementBuilder } from './ElementBuilder';
-import { AssetBuilder } from './AssetBuilder';
 import { ElementParams } from './ElementParams';
-import { PortfolioAssetParams } from './PortfolioAssetParams';
 import { TokenPriceMap } from '../../TokenPriceMap';
+import { AssetBuilder } from './AssetBuilder';
+import { AssetTokenBuilder } from './AssetTokenBuilder';
+import { PortfolioAssetTokenParams } from './PortfolioAssetTokenParams';
+import { PortfolioAssetGenericParams } from './PortfolioAssetGenericParams';
+import { AssetGenericBuilder } from './AssetGenericBuilder';
 
 export class ElementBorrowlendBuilder extends ElementBuilder {
   borrowedAssets: AssetBuilder[];
@@ -33,20 +36,36 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
     this.borrowedWeights = [];
   }
 
-  addBorrowedAsset(params: PortfolioAssetParams) {
-    this.borrowedAssets.push(new AssetBuilder(params));
+  addBorrowedAsset(params: PortfolioAssetTokenParams) {
+    this.borrowedAssets.push(new AssetTokenBuilder(params));
   }
 
-  addSuppliedAsset(params: PortfolioAssetParams) {
-    this.suppliedAssets.push(new AssetBuilder(params));
+  addBorrowedGenericAsset(params: PortfolioAssetGenericParams) {
+    this.borrowedAssets.push(new AssetGenericBuilder(params));
   }
 
-  addRewardAsset(params: PortfolioAssetParams) {
-    this.rewardAssets.push(new AssetBuilder(params));
+  addSuppliedAsset(params: PortfolioAssetTokenParams) {
+    this.suppliedAssets.push(new AssetTokenBuilder(params));
   }
 
-  addUnsettledAssets(params: PortfolioAssetParams) {
-    this.unsettledAssets.push(new AssetBuilder(params));
+  addSuppliedGenericAsset(params: PortfolioAssetGenericParams) {
+    this.suppliedAssets.push(new AssetGenericBuilder(params));
+  }
+
+  addRewardAsset(params: PortfolioAssetTokenParams) {
+    this.rewardAssets.push(new AssetTokenBuilder(params));
+  }
+
+  addRewardGenericAsset(params: PortfolioAssetGenericParams) {
+    this.rewardAssets.push(new AssetGenericBuilder(params));
+  }
+
+  addUnsettledAsset(params: PortfolioAssetTokenParams) {
+    this.unsettledAssets.push(new AssetTokenBuilder(params));
+  }
+
+  addUnsettledGenericAsset(params: PortfolioAssetGenericParams) {
+    this.unsettledAssets.push(new AssetGenericBuilder(params));
   }
 
   addBorrowedYield(ayield: Yield[]) {
@@ -67,10 +86,11 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
 
   mints(): string[] {
     return [
-      ...this.borrowedAssets,
-      ...this.suppliedAssets,
-      ...this.rewardAssets,
-    ].map((a) => a.address);
+      ...this.borrowedAssets.map((a) => a.mints()),
+      ...this.suppliedAssets.map((a) => a.mints()),
+      ...this.rewardAssets.map((a) => a.mints()),
+      ...this.unsettledAssets.map((a) => a.mints()),
+    ].flat();
   }
 
   get(
