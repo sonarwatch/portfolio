@@ -64,7 +64,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     // if (time > Number(vault.endVestingTs)) return;
 
     // Vesting not started yet
-    if (time < Number(vault.startVestingTs)) {
+    if (time < Number(vault.startVestingTs) * 1000) {
       element.addAsset({
         address: vault.quoteMint,
         amount: escrow.totalDeposit,
@@ -72,7 +72,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     } else {
       // Vesting started
       // If not refunded yet
-
       const filledRatio = new BigNumber(vault.totalDeposit)
         .div(vault.maxCap)
         .toNumber();
