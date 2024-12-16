@@ -1,9 +1,9 @@
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { platformId, safuVaultsKey } from './constants';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSui } from '../../utils/clients';
 import { getVaultData } from './safu_helpers';
-import { NetworkId } from '@sonarwatch/portfolio-core';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
