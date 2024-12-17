@@ -131,13 +131,14 @@ export type Fields = {
 export type AlphaPoolInfo = {
   tokenAmountA: BigNumber;
   tokenAmountB?: BigNumber;
-  cointTypeA: string;
-  cointTypeB?: string;
+  coinTypeA: string;
+  coinTypeB?: string;
   alphaPoolId: string;
   underlyingPoolId?: string;
   xTokenSupply: BigNumber;
   tokensInvested: BigNumber;
   unlockAt?: number;
+  protocol: 'NAVI' | 'ALPHAFI' | 'CETUS' | 'BLUEFIN' | 'BUCKET';
 };
 
 export type CetusPosition = {
