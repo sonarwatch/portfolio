@@ -1,5 +1,4 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import axios, { AxiosResponse } from 'axios';
 import {
   AirdropFetcher,
   AirdropFetcherExecutor,
@@ -11,57 +10,41 @@ import { airdropApi, airdropStatics, pudgyMint, platform } from './constants';
 import { AirdropResponse } from './types';
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
-  let res: AxiosResponse<AirdropResponse>;
   try {
-    res = await axios.get(`${airdropApi + owner}?`);
-  } catch (err) {
-    return getAirdropRaw({
-      statics: airdropStatics,
-      items: [
-        {
-          amount: 0,
-          isClaimed: false,
-          label: 'PENGU',
-          address: pudgyMint,
-        },
-      ],
-    });
-  }
+    const res = await fetch(`${airdropApi + owner}?`);
+    const response: AirdropResponse = await res.json();
 
-  if (!res || !res.data)
-    return getAirdropRaw({
-      statics: airdropStatics,
-      items: [
-        {
-          amount: 0,
-          isClaimed: false,
-          label: 'PENGU',
-          address: pudgyMint,
-        },
-      ],
-    });
+    const items = response.categories
+      .map((category) => category.items.filter((i) => i.address === owner))
+      .flat();
 
-  if (res.data.total === 0)
-    return getAirdropRaw({
-      statics: airdropStatics,
-      items: [
-        {
-          amount: 0,
-          isClaimed: false,
-          label: 'PENGU',
-          address: pudgyMint,
-        },
-      ],
-    });
+    if (items.length) {
+      const amount = items.reduce(
+        (previousValue, item) => Number(item?.amount || 0) + previousValue,
+        0
+      );
+      const isClaimed = response.totalUnclaimed < amount;
 
-  const isClaimed = res.data.totalUnclaimed === 0;
+      return getAirdropRaw({
+        statics: airdropStatics,
+        items: [
+          {
+            amount,
+            isClaimed,
+            label: 'PENGU',
+            address: pudgyMint,
+          },
+        ],
+      });
+    }
+  } catch (err) {}
 
   return getAirdropRaw({
     statics: airdropStatics,
     items: [
       {
-        amount: res.data.total,
-        isClaimed,
+        amount: 0,
+        isClaimed: false,
         label: 'PENGU',
         address: pudgyMint,
       },
