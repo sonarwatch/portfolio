@@ -689,6 +689,12 @@ import {
   jobs as photofinishJobs,
   fetchers as photofinishFetchers,
 } from './plugins/photofinish';
+import {
+  platforms as pudgypenguinsPlatforms,
+  jobs as pudgypenguinsJobs,
+  fetchers as pudgypenguinsFetchers,
+  airdropFetcher as pudgypenguinsAirdropFetcher,
+} from './plugins/pudgypenguins';
 
 export {
   walletTokensPlatform,
@@ -842,6 +848,7 @@ export const platforms: Platform[] = [
   ...coinmarketcapPlatforms,
   ...doubleupPlatforms,
   ...photofinishPlatforms,
+  ...pudgypenguinsPlatforms,
 ];
 
 // JOBS //
@@ -978,6 +985,7 @@ export const jobs: Job[] = [
   ...coinmarketcapJobs,
   ...doubleupJobs,
   ...photofinishJobs,
+  ...pudgypenguinsJobs,
 ];
 
 // FETCHERS //
@@ -1115,6 +1123,7 @@ export const fetchers: Fetcher[] = [
   ...coinmarketcapFetchers,
   ...doubleupFetchers,
   ...photofinishFetchers,
+  ...pudgypenguinsFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
@@ -1132,6 +1141,7 @@ export const airdropFetchers: AirdropFetcher[] = [
   grassAirdropFetcher,
   ...streamFlowAirdropFetchers,
   magicedenAirdropFetcher,
+  pudgypenguinsAirdropFetcher,
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);
