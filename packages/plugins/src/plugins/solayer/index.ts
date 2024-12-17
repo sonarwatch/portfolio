@@ -4,7 +4,8 @@ import { Job } from '../../Job';
 import { platform } from './constants';
 import poolsJob from './poolsJob';
 import delegateJob from './delegateJob';
+import proofsFetcher from './proofsFetcher';
 
 export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [poolsJob, delegateJob];
-export const fetchers: Fetcher[] = [];
+export const fetchers: Fetcher[] = [proofsFetcher];
