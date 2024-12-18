@@ -1,13 +1,23 @@
 import { NetworkId, PortfolioAsset } from '@sonarwatch/portfolio-core';
 import request, { gql } from 'graphql-request';
-import { Cache } from '../../Cache';
-import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { distributors, graphqlApi, platformId, zexMint } from './constants';
+import { Fetcher } from '../../Fetcher';
+import {
+  airdropStatics,
+  distributors,
+  graphqlApi,
+  platform,
+  zexMint,
+} from './constants';
 import { GQLResponse } from './types';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getClientSolana } from '../../utils/clients';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 import { deriveZetaClaimStatuses } from './helpers';
+import {
+  AirdropFetcher,
+  AirdropFetcherExecutor,
+  airdropFetcherToFetcher,
+  getAirdropRaw,
+} from '../../AirdropFetcher';
 
 const query = gql`
   query GetAirdropFinalFrontend($authority: String!) {
@@ -27,7 +37,7 @@ const query = gql`
 
 const networkId = NetworkId.solana;
 
-const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
+const executor: AirdropFetcherExecutor = async (owner: string) => {
   const res = await request<GQLResponse>(
     graphqlApi,
     query,
@@ -40,10 +50,32 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       'X-Api-Key': 'da2-rrupjjccivdndc6rvltixlmsma',
     }
   ).catch(() => null);
-  if (!res || !res.getAirdropFinalFrontend) return [];
+  if (!res || !res.getAirdropFinalFrontend)
+    return getAirdropRaw({
+      statics: airdropStatics,
+      items: [
+        {
+          amount: 0,
+          isClaimed: false,
+          label: 'ZEX',
+          address: zexMint,
+        },
+      ],
+    });
 
   const amount = res.getAirdropFinalFrontend.total_allocation;
-  if (!amount || amount === 0) return [];
+  if (!amount || amount === 0)
+    return getAirdropRaw({
+      statics: airdropStatics,
+      items: [
+        {
+          amount: 0,
+          isClaimed: false,
+          label: 'ZEX',
+          address: zexMint,
+        },
+      ],
+    });
 
   const claimStatuses = deriveZetaClaimStatuses(owner, distributors);
 
@@ -52,52 +84,46 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     client,
     claimStatuses
   );
+  console.log(
+    'constexecutor:AirdropFetcherExecutor= ~ claimStatusesAccount:',
+    claimStatusesAccount
+  );
 
-  if (claimStatusesAccount.some((account) => account)) return [];
-
-  const tokenPrice = await cache.getTokenPrice(zexMint, networkId);
-  const asset: PortfolioAsset = tokenPrice
-    ? tokenPriceToAssetToken(
-        tokenPrice.address,
-        amount,
-        networkId,
-        tokenPrice,
-        undefined,
-        { lockedUntil: 1719475200000 }
-      )
-    : {
-        type: 'generic',
-        imageUri:
-          'https://raw.githubusercontent.com/sonarwatch/token-lists/main/images/solana/ZEXy1pqteRu3n13kdyh4LwPQknkFk3GzmMYMuNadWPo.webp',
-        name: 'ZEX',
-        data: {
-          address: zexMint,
+  if (claimStatusesAccount.some((account) => account))
+    return getAirdropRaw({
+      statics: airdropStatics,
+      items: [
+        {
           amount,
-          price: null,
+          isClaimed: true,
+          label: 'ZEX',
+          address: zexMint,
         },
-        value: null,
-        networkId,
-        attributes: { lockedUntil: 1719475200000 },
-      };
+      ],
+    });
 
-  return [
-    {
-      type: 'multiple',
-      label: 'Airdrop',
-      networkId,
-      platformId,
-      data: {
-        assets: [asset],
+  return getAirdropRaw({
+    statics: airdropStatics,
+    items: [
+      {
+        amount,
+        isClaimed: false,
+        label: 'ZEX',
+        address: zexMint,
       },
-      value: asset.value,
-    },
-  ];
+    ],
+  });
 };
 
-const fetcher: Fetcher = {
-  id: `${platformId}-airdrop`,
-  networkId,
+export const airdropFetcher: AirdropFetcher = {
+  id: airdropStatics.id,
+  networkId: NetworkId.solana,
   executor,
 };
 
-export default fetcher;
+export const fetcher = airdropFetcherToFetcher(
+  airdropFetcher,
+  platform.id,
+  'zeta-airdrop',
+  airdropStatics.claimEnd
+);

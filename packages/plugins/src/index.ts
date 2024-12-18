@@ -228,6 +228,7 @@ import {
   platforms as zetaPlatforms,
   jobs as zetaJobs,
   fetchers as zetaFetchers,
+  airdropFetcher as zetaAirdropFetcher,
 } from './plugins/zeta';
 import {
   platforms as venusPlatforms,
@@ -1142,6 +1143,7 @@ export const airdropFetchers: AirdropFetcher[] = [
   ...streamFlowAirdropFetchers,
   magicedenAirdropFetcher,
   pudgypenguinsAirdropFetcher,
+  zetaAirdropFetcher,
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);

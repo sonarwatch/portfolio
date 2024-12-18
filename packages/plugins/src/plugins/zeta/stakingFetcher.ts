@@ -6,7 +6,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, sharkyIdlItem, zexDecimals, zexMint } from './constants';
+import { platformId, zetaIdlItem, zexDecimals, zexMint } from './constants';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getClientSolana } from '../../utils/clients';
 import { getStakeAccountsAddresses, getTimestamp } from './helpers';
@@ -32,7 +32,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
     const stakeAccounts = await getAutoParsedMultipleAccountsInfo<StakeAccount>(
       client,
-      sharkyIdlItem,
+      zetaIdlItem,
       stakeAccountsAddresses
     );
 
