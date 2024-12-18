@@ -10,34 +10,32 @@ import { airdropApi, airdropStatics, pudgyMint, platform } from './constants';
 import { AirdropResponse } from './types';
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
-  try {
-    const res = await fetch(`${airdropApi + owner}?`);
-    const response: AirdropResponse = await res.json();
+  const res = await fetch(`${airdropApi + owner}?`);
+  const response: AirdropResponse = await res.json();
 
-    const items = response.categories
-      .map((category) => category.items.filter((i) => i.address === owner))
-      .flat();
+  const items = response.categories
+    .map((category) => category.items.filter((i) => i.address === owner))
+    .flat();
 
-    if (items.length) {
-      const amount = items.reduce(
-        (previousValue, item) => Number(item?.amount || 0) + previousValue,
-        0
-      );
-      const isClaimed = response.totalUnclaimed < amount;
+  if (items.length) {
+    const amount = items.reduce(
+      (previousValue, item) => Number(item?.amount || 0) + previousValue,
+      0
+    );
+    const isClaimed = response.totalUnclaimed < amount;
 
-      return getAirdropRaw({
-        statics: airdropStatics,
-        items: [
-          {
-            amount,
-            isClaimed,
-            label: 'PENGU',
-            address: pudgyMint,
-          },
-        ],
-      });
-    }
-  } catch (err) {}
+    return getAirdropRaw({
+      statics: airdropStatics,
+      items: [
+        {
+          amount,
+          isClaimed,
+          label: 'PENGU',
+          address: pudgyMint,
+        },
+      ],
+    });
+  }
 
   return getAirdropRaw({
     statics: airdropStatics,
