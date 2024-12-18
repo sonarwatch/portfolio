@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js';
 import { airdropApi, airdropStatics, platform, streamMint } from './constants';
 import { getAirdropRaw } from '../../AirdropFetcher';
 import { AirdropResponse } from './types';
+import { eligibleAddresses } from './airdropAddresses';
 
 export function getAirdropApiUrlFromNetworkId(
   owner: string,
@@ -23,10 +24,28 @@ export function getAirdropApiUrlFromNetworkId(
   }
 }
 
+function isElible(owner: string, networdkId: NetworkIdType) {
+  return eligibleAddresses[networdkId]?.includes(owner);
+}
+
 export async function getAirdropItems(
   owner: string,
   networdkId: NetworkIdType
 ): Promise<AirdropRaw> {
+  if (!isElible(owner, networdkId))
+    return getAirdropRaw({
+      statics: airdropStatics,
+      items: [
+        {
+          amount: 0,
+          isClaimed: false,
+          label: 'STREAM',
+          address: streamMint,
+          imageUri: platform.image,
+        },
+      ],
+    });
+
   const link = getAirdropApiUrlFromNetworkId(owner, networdkId);
 
   if (!link)
