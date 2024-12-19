@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { platformId, poolsStats, farmsStatsInfoKey } from './constants';
+import { platformId, poolsStats, poolsV3StatsInfoKey } from './constants';
 import { PoolStat } from './types/pools';
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -24,14 +24,14 @@ const executor: JobExecutor = async (cache: Cache) => {
     });
   }
 
-  await cache.setItem(farmsStatsInfoKey, poolsInfo, {
+  await cache.setItem(poolsV3StatsInfoKey, poolsInfo, {
     prefix: platformId,
     networkId: NetworkId.sui,
   });
 };
 
 const job: Job = {
-  id: `${platformId}-pools-stats`,
+  id: `${platformId}-pools-v3-stats`,
   executor,
   label: 'normal',
 };

@@ -27,7 +27,8 @@ function filterToPredicate(
 
     if (filter.StructType) {
       return (object: SuiObjectResponse) =>
-        object?.data?.type === filter.StructType;
+        object?.data?.type === filter.StructType ||
+        object?.data?.type?.startsWith(`${filter.StructType}<`);
     }
 
     if (filter.ObjectId) {

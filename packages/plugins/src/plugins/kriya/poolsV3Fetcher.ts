@@ -1,7 +1,7 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { clmmType, farmsStatsInfoKey, platformId } from './constants';
+import { clmmType, poolsV3StatsInfoKey, platformId } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
@@ -28,7 +28,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const [poolsObjects, poolsStats] = await Promise.all([
     multiGetObjects<ClmmPool>(client, [...new Set(poolsIds)]),
-    cache.getItem<PoolStat[]>(farmsStatsInfoKey, {
+    cache.getItem<PoolStat[]>(poolsV3StatsInfoKey, {
       prefix: platformId,
       networkId: NetworkId.sui,
     }),
@@ -67,7 +67,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-clmms`,
+  id: `${platformId}-pools-v3`,
   networkId: NetworkId.sui,
   executor,
 };

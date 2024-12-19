@@ -76,7 +76,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-lp`,
+  id: `${platformId}-pools-v2`,
   networkId: NetworkId.sui,
   executor,
 };

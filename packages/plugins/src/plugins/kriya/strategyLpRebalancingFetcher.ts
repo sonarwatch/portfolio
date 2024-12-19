@@ -4,9 +4,8 @@ import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
   platformId,
-  vaultsInfo,
-  vaultsInfoKey,
-  vaultStakeReceipt,
+  strategyLpRebalancingInfoKey,
+  strategyLpRebalancingStakeReceipt,
 } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { getMultipleBalances } from '../../utils/sui/mulitpleGetBalances';
@@ -16,9 +15,10 @@ import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import { VaultReceipt } from './types/vaults';
 import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
+import { arrayToMap } from '../../utils/misc/arrayToMap';
 
 const vaultsPositionInfoMemo = new MemoizedCache<VaultPositionInfo[]>(
-  vaultsInfoKey,
+  strategyLpRebalancingInfoKey,
   {
     prefix: platformId,
     networkId: NetworkId.sui,
@@ -28,35 +28,29 @@ const vaultsPositionInfoMemo = new MemoizedCache<VaultPositionInfo[]>(
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSui();
 
-  const [vaultsOldBalances, vaultBalances, vaultsPositionInfo] =
-    await Promise.all([
-      getMultipleBalances(
-        client,
-        owner,
-        vaultsInfo.map((vault) => vault.tokenType)
-      ),
-      getOwnedObjectsPreloaded<VaultReceipt>(client, owner, {
-        filter: { StructType: vaultStakeReceipt },
-      }),
-      vaultsPositionInfoMemo.getItem(cache),
-    ]);
+  const vaultsPositionInfo = await vaultsPositionInfoMemo.getItem(cache);
 
   if (!vaultsPositionInfo) return [];
 
-  const vaultsByCoinType: Map<string, VaultPositionInfo> = new Map();
-  vaultsPositionInfo.forEach((vault) =>
-    vaultsByCoinType.set(vault.coinType, vault)
-  );
+  const [vaultsOldBalances, vaultBalances] = await Promise.all([
+    getMultipleBalances(
+      client,
+      owner,
+      vaultsPositionInfo.map((v) => v.coinType)
+    ),
+    getOwnedObjectsPreloaded<VaultReceipt>(client, owner, {
+      filter: { StructType: strategyLpRebalancingStakeReceipt },
+    }),
+  ]);
 
-  const vaultsByFarmId: Map<string, VaultPositionInfo> = new Map();
-  vaultsPositionInfo.forEach((vault) =>
-    vaultsByFarmId.set(vault.farmId, vault)
-  );
+  const vaultsByCoinType = arrayToMap(vaultsPositionInfo, 'coinType');
+  const vaultsByFarmId = arrayToMap(vaultsPositionInfo, 'farmId');
 
   const registry = new ElementRegistry(NetworkId.sui, platformId);
   const liquidities = registry.addElementLiquidity({
     label: 'Vault',
   });
+
   for (let i = 0; i < vaultsOldBalances.length; i++) {
     const liquidity = liquidities.addLiquidity();
     const balance = vaultsOldBalances[i];
@@ -132,7 +126,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-vaults`,
+  id: `${platformId}-strategy-lp-rebalancing`,
   networkId: NetworkId.sui,
   executor,
 };

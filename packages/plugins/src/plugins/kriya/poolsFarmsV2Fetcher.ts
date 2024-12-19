@@ -2,7 +2,7 @@ import { apyToApr, NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, farmsInfoKey, farmsPackageId } from './constants';
+import { platformId, poolsV2InfoKey, farmsPackageId } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { arrayToMap } from '../../utils/misc/arrayToMap';
@@ -19,9 +19,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       filter: { Package: farmsPackageId },
     }
   );
+
   if (farmsObjects.length === 0) return [];
 
-  const farmsInfos = await cache.getItem<FarmInfo[]>(farmsInfoKey, {
+  const farmsInfos = await cache.getItem<FarmInfo[]>(poolsV2InfoKey, {
     prefix: platformId,
     networkId: NetworkId.sui,
   });
@@ -77,7 +78,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-farms`,
+  id: `${platformId}-pools-farms-v2`,
   networkId: NetworkId.sui,
   executor,
 };

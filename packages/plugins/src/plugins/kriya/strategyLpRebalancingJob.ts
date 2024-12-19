@@ -7,9 +7,8 @@ import {
   dynamicFieldPositionTypeCetus,
   dynamicFieldPositionTypeKriya,
   platformId,
-  vaultsInfo,
-  vaultsInfoKey,
-  vaultsUrl,
+  strategyLpRebalancingInfoKey,
+  strategyLpRebalancingUrl,
 } from './constants';
 import {
   Vault,
@@ -17,7 +16,7 @@ import {
   VaultPositionCetus,
   VaultPositionKriya,
 } from './types/vaults';
-import { Dex, VaultPositionInfo } from './types/common';
+import { VaultPositionInfo } from './types/common';
 import { ClmmPool as KriyaPool } from './types/pools';
 import { getObject } from '../../utils/sui/getObject';
 import { getDynamicFieldObjects } from '../../utils/sui/getDynamicFieldObjects';
@@ -28,21 +27,20 @@ const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
   const vaultsInfos: VaultPositionInfo[] = [];
 
-  const vaultsApiData: AxiosResponse<VaultData[]> = await axios.get(vaultsUrl);
+  const vaultsApiData: AxiosResponse<VaultData[]> = await axios.get(
+    strategyLpRebalancingUrl
+  );
 
-  for (const vaultInfo of vaultsInfo) {
+  for (const vaultData of vaultsApiData.data) {
     const [vaultOject, vaultDynamicFields] = await Promise.all([
-      getObject<Vault>(client, vaultInfo.id),
-      getDynamicFieldObjects(client, vaultInfo.id),
+      getObject<Vault>(client, vaultData.id),
+      getDynamicFieldObjects(client, vaultData.id),
     ]);
 
     const vault = vaultOject.data?.content?.fields;
     if (!vault) continue;
 
-    const vaultData = vaultsApiData.data.find((v) => v.id === vault.id.id);
-    if (!vaultData) continue;
-
-    const isCetus = vaultInfo.underlyingDex === Dex.cetus;
+    const isCetus = vaultData.vaultSource === 'Cetus';
     const dynamicFieldType = isCetus
       ? dynamicFieldPositionTypeCetus
       : dynamicFieldPositionTypeKriya;
@@ -59,7 +57,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     const vaultPositionCommon = {
       id: vault.id.id,
       farmId: vaultData.farmId,
-      coinType: vaultInfo.tokenType,
+      coinType: vaultData.pool.vaultCoinType,
       liquidity: vaultPosition.value.fields.liquidity,
       lowerTick: vault.lower_tick,
       upperTick: vault.upper_tick,
@@ -68,10 +66,10 @@ const executor: JobExecutor = async (cache: Cache) => {
       amountB: vaultData.coinB,
     };
 
-    if (vaultInfo.underlyingDex === Dex.cetus) {
+    if (isCetus) {
       const poolInfo = await getObject<CetusPool>(
         client,
-        vaultInfo.underlyingPool
+        vaultData.pool.poolId
       );
       if (poolInfo.data?.content?.fields) {
         const { keys } = parseTypeString(poolInfo.data.type);
@@ -88,10 +86,10 @@ const executor: JobExecutor = async (cache: Cache) => {
           vaultsInfos.push(vaultPositionInfo);
         }
       }
-    } else if (vaultInfo.underlyingDex === Dex.kriya) {
+    } else if (vaultData.vaultSource === 'Kriya') {
       const poolInfo = await getObject<KriyaPool>(
         client,
-        vaultInfo.underlyingPool
+        vaultData.pool.poolId
       );
       if (poolInfo.data?.content?.fields) {
         const vaultPositionInfo: VaultPositionInfo = {
@@ -107,14 +105,14 @@ const executor: JobExecutor = async (cache: Cache) => {
     }
   }
 
-  await cache.setItem(vaultsInfoKey, vaultsInfos, {
+  await cache.setItem(strategyLpRebalancingInfoKey, vaultsInfos, {
     prefix: platformId,
     networkId: NetworkId.sui,
   });
 };
 
 const job: Job = {
-  id: `${platformId}-vaults`,
+  id: `${platformId}-strategy-lp-rebalancing`,
   executor,
   label: 'realtime',
 };
