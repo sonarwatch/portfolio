@@ -696,6 +696,11 @@ import {
   fetchers as pudgypenguinsFetchers,
   airdropFetcher as pudgypenguinsAirdropFetcher,
 } from './plugins/pudgypenguins';
+import {
+  platforms as gpoolPlatforms,
+  jobs as gpoolJobs,
+  fetchers as gpoolFetchers,
+} from './plugins/gpool';
 
 export {
   walletTokensPlatform,
@@ -850,6 +855,7 @@ export const platforms: Platform[] = [
   ...doubleupPlatforms,
   ...photofinishPlatforms,
   ...pudgypenguinsPlatforms,
+  ...gpoolPlatforms,
 ];
 
 // JOBS //
@@ -987,6 +993,7 @@ export const jobs: Job[] = [
   ...doubleupJobs,
   ...photofinishJobs,
   ...pudgypenguinsJobs,
+  ...gpoolJobs,
 ];
 
 // FETCHERS //
@@ -1125,6 +1132,7 @@ export const fetchers: Fetcher[] = [
   ...doubleupFetchers,
   ...photofinishFetchers,
   ...pudgypenguinsFetchers,
+  ...gpoolFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
