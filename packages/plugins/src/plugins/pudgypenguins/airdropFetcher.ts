@@ -42,7 +42,7 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
     items: [
       {
         amount: response.total,
-        isClaimed: false,
+        isClaimed: response.totalUnclaimed === 0,
         label: 'PENGU',
         address: pudgyMint,
       },
