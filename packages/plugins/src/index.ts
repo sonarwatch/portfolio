@@ -701,6 +701,11 @@ import {
   jobs as gpoolJobs,
   fetchers as gpoolFetchers,
 } from './plugins/gpool';
+import {
+  platforms as defilandPlatforms,
+  jobs as defilandJobs,
+  fetchers as defilandFetchers,
+} from './plugins/defiland';
 
 export {
   walletTokensPlatform,
@@ -856,6 +861,7 @@ export const platforms: Platform[] = [
   ...photofinishPlatforms,
   ...pudgypenguinsPlatforms,
   ...gpoolPlatforms,
+  ...defilandPlatforms,
 ];
 
 // JOBS //
@@ -994,6 +1000,7 @@ export const jobs: Job[] = [
   ...photofinishJobs,
   ...pudgypenguinsJobs,
   ...gpoolJobs,
+  ...defilandJobs,
 ];
 
 // FETCHERS //
@@ -1133,6 +1140,7 @@ export const fetchers: Fetcher[] = [
   ...photofinishFetchers,
   ...pudgypenguinsFetchers,
   ...gpoolFetchers,
+  ...defilandFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
