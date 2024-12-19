@@ -41,7 +41,7 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
     statics: airdropStatics,
     items: [
       {
-        amount: 0,
+        amount: response.total,
         isClaimed: false,
         label: 'PENGU',
         address: pudgyMint,
