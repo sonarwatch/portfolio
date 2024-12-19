@@ -8,6 +8,12 @@ export const platform: Platform = {
   defiLlamaId: 'parent#cetus',
   website: 'https://www.cetus.zone/',
 };
+
+export const cetusMint =
+  '0x06864a6f921804860930db6ddbe2e16acdf8504495ea7481637a1c8b9a8fe54b::cetus::CETUS';
+export const xCetusMint =
+  '0x9e69acc50ca03bc943c4f7c5304c2a6002d507b51c11913b247159c60422c606::xcetus::XCETUS';
+
 export const clmmPoolsPrefix = `${platformId}-clmmPools`;
 
 export const clmmPoolPackageId =
