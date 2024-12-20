@@ -14,22 +14,22 @@ import { walletTokensPlatform } from '../tokens/constants';
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
 
-  const vaultsAccounts = await getParsedMultipleAccountsInfo(
-    client,
-    tokenAccountStruct,
-    xStakingConfigs.map((conf) => new PublicKey(conf.vault))
-  );
-
-  const tokensInfos = await getParsedMultipleAccountsInfo(
-    client,
-    mintAccountStruct,
-    xStakingConfigs.map((conf) => new PublicKey(conf.xMint))
-  );
-
-  const tokensPricesMap = await cache.getTokenPricesAsMap(
-    xStakingConfigs.map((conf) => conf.mint),
-    NetworkId.solana
-  );
+  const [vaultsAccounts, tokensInfos, tokensPricesMap] = await Promise.all([
+    getParsedMultipleAccountsInfo(
+      client,
+      tokenAccountStruct,
+      xStakingConfigs.map((conf) => new PublicKey(conf.vault))
+    ),
+    getParsedMultipleAccountsInfo(
+      client,
+      mintAccountStruct,
+      xStakingConfigs.map((conf) => new PublicKey(conf.xMint))
+    ),
+    cache.getTokenPricesAsMap(
+      xStakingConfigs.map((conf) => conf.mint),
+      NetworkId.solana
+    ),
+  ]);
 
   for (let i = 0; i < xStakingConfigs.length; i++) {
     const config = xStakingConfigs[i];

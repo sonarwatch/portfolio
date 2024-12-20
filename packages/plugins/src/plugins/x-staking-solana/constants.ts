@@ -9,6 +9,7 @@ import { platformId as hawksightPlatformId } from '../hawksight/constants';
 import { platformId as whalesMarketPlatformId } from '../whalesmarket/constants';
 import { platformId as allbridgePlatformId } from '../allbridge/constants';
 import { stepfinancePlatform, ligmaPlatform } from '../../orphanPlatforms';
+import { platformId as stramflowPlatformId } from '../streamflow/constants';
 
 export const xStakingConfigs: StakingConfig[] = [
   {
@@ -59,9 +60,17 @@ export const xStakingConfigs: StakingConfig[] = [
     xDecimals: 6,
     platformId: ligmaPlatform.id,
   },
+  {
+    mint: 'STREAMribRwybYpMmSYoCsQUdr6MZNXEqHgm7p1gu9M',
+    decimals: 6,
+    vault: '6deYtxLRSkmSgpjFWe99qeMNSgB5AqVLFtUwCXN4oRg4',
+    xMint: '8oNKiUVaHssErFLe8dDbgB6pXmXUxAvr3YFtVemBXeQP',
+    xDecimals: 6,
+    platformId: stramflowPlatformId,
+  },
 ];
 
-export type StakingConfig = {
+type StakingConfig = {
   mint: string;
   decimals: number;
   vault: string;
