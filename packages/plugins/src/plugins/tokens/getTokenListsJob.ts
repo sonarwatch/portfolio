@@ -24,7 +24,7 @@ function getTokenListsJob(networkId: NetworkIdType): Job {
 
     if (
       cachedTokenList &&
-      !isLatestVersion(cachedTokenList.version, tokenList.data.version)
+      !isLatestVersion(tokenList.data.version, cachedTokenList.version)
     ) {
       return;
     }
