@@ -26,17 +26,22 @@ export default function getWhirlpoolsJob(programId: PublicKey): JobExecutor {
       const whirlpoolInfo = whirlpoolsInfo[id];
       if (whirlpoolInfo.liquidity.isZero()) continue;
 
-      const reserveX = await client.getBalance(whirlpoolInfo.tokenVaultA);
-      const reserveY = await client.getBalance(whirlpoolInfo.tokenVaultB);
+      const [tokenBalanceX, tokenBalanceY] = await Promise.all([
+        client.getTokenAccountBalance(whirlpoolInfo.tokenVaultA),
+        client.getTokenAccountBalance(whirlpoolInfo.tokenVaultB),
+      ]);
+
       await storeTokenPricesFromSqrt(
         cache,
         NetworkId.solana,
         whirlpoolInfo.pubkey.toString(),
-        new BigNumber(reserveX),
-        new BigNumber(reserveY),
+        new BigNumber(tokenBalanceX.value.amount),
+        new BigNumber(tokenBalanceY.value.amount),
         whirlpoolInfo.sqrtPrice,
         whirlpoolInfo.tokenMintA.toString(),
-        whirlpoolInfo.tokenMintB.toString()
+        whirlpoolInfo.tokenMintB.toString(),
+        tokenBalanceX.value.decimals,
+        tokenBalanceY.value.decimals
       );
 
       items.push({
