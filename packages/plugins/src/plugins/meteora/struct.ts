@@ -571,6 +571,11 @@ export const variableParametersStruct = new BeetStruct<VariableParameters>(
   (args) => args as VariableParameters
 );
 
+enum PairStatus {
+  Enabled,
+  Disabled,
+}
+
 export type LbPair = {
   buffer: Buffer;
   parameters: StaticParameters;
@@ -580,7 +585,7 @@ export type LbPair = {
   pairType: number;
   activeId: number;
   binStep: number;
-  status: number;
+  status: PairStatus;
   requireBaseFactorSeed: number;
   baseFactorSeed: number[];
   activationType: number;
@@ -854,3 +859,27 @@ export const feeVaultStruct = new BeetStruct<FeeVault>(
   ],
   (args) => args as FeeVault
 );
+
+export type BinArrayBitmapExtension = {
+  buffer: Buffer;
+  lbPair: PublicKey;
+  positiveBinArrayBitmap: BigNumber[][];
+  negativeBinArrayBitmap: BigNumber[][];
+};
+
+export const binArrayBitmapExtensionStruct =
+  new BeetStruct<BinArrayBitmapExtension>(
+    [
+      ['buffer', blob(8)],
+      ['lbPair', publicKey],
+      [
+        'positiveBinArrayBitmap',
+        uniformFixedSizeArray(uniformFixedSizeArray(u64, 8), 12),
+      ],
+      [
+        'negativeBinArrayBitmap',
+        uniformFixedSizeArray(uniformFixedSizeArray(u64, 8), 12),
+      ],
+    ],
+    (args) => args as BinArrayBitmapExtension
+  );

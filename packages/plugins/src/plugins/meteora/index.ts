@@ -12,6 +12,7 @@ import dlmmPositionFetcher from './dlmmPositionsFetcher';
 import dlmmVaultsFetcher from './dlmmVaultsFetcher';
 import stakeForFeeFetcher from './stakeForFeeFetcher';
 import stakeForFeeVaultsJob from './stakeForFeeVaultsJob';
+import dlmmJob from './dlmmJob';
 
 export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [
@@ -21,6 +22,7 @@ export const jobs: Job[] = [
   multiTokenPoolsJob,
   dlmmVaultsJob,
   stakeForFeeVaultsJob,
+  dlmmJob,
 ];
 export const fetchers: Fetcher[] = [
   farmsFetcher,

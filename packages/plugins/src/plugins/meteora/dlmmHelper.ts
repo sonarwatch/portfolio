@@ -11,13 +11,34 @@ import {
   PositionVersion,
   SwapFee,
 } from './types';
-import { Bin, BinArray, DLMMPosition, LbPair } from './struct';
+import {
+  Bin,
+  BinArray,
+  BinArrayBitmapExtension,
+  binArrayStruct,
+  DLMMPosition,
+  LbPair,
+  StaticParameters,
+  VariableParameters,
+} from './struct';
 import { dlmmProgramId } from './constants';
 import { toBN } from '../../utils/misc/toBN';
+import {
+  getParsedMultipleAccountsInfo,
+  ParsedAccount,
+} from '../../utils/solana';
+import { getClientSolana } from '../../utils/clients';
 
 export const MAX_BIN_ARRAY_SIZE = new BN(70);
 export const SCALE_OFFSET = 64;
 export const BASIS_POINT_MAX = 10000;
+export const BIN_ARRAY_BITMAP_SIZE = new BN(512);
+export const EXTENSION_BINARRAY_BITMAP_SIZE = new BN(12);
+
+enum BitmapType {
+  U1024,
+  U512,
+}
 
 export function binIdToBinArrayIndex(binId: BigNumber): BN {
   const tempBinId = toBN(binId);
@@ -449,4 +470,676 @@ export function getTokensAmountsFromLiquidity(
     tokenAmountA: positionData.totalXAmount,
     tokenAmountB: positionData.totalYAmount,
   };
+}
+
+export async function getBinArrayForSwap(
+  lbPair: ParsedAccount<LbPair>,
+  binArrayBitmapExtension?: BinArrayBitmapExtension,
+  swapForY = false,
+  count = 4
+): Promise<ParsedAccount<BinArray>[]> {
+  const binArraysPubkey = new Set<string>();
+
+  let shouldStop = false;
+  let activeIdToLoop = lbPair.activeId;
+
+  while (!shouldStop) {
+    const binArrayIndex = findNextBinArrayIndexWithLiquidity(
+      swapForY,
+      new BN(activeIdToLoop),
+      lbPair,
+      binArrayBitmapExtension ?? null
+    );
+    if (binArrayIndex === null) shouldStop = true;
+    else {
+      const [binArrayPubKey] = deriveBinArray(
+        lbPair.pubkey,
+        binArrayIndex,
+        dlmmProgramId
+      );
+      binArraysPubkey.add(binArrayPubKey.toBase58());
+
+      const [lowerBinId, upperBinId] = getBinArrayLowerUpperBinId(
+        new BigNumber(binArrayIndex.toString())
+      );
+      activeIdToLoop = swapForY
+        ? lowerBinId.toNumber() - 1
+        : upperBinId.toNumber() + 1;
+    }
+
+    if (binArraysPubkey.size === count) shouldStop = true;
+  }
+
+  const accountsToFetch = Array.from(binArraysPubkey).map(
+    (pubkey) => new PublicKey(pubkey)
+  );
+
+  const binArrays = await getParsedMultipleAccountsInfo(
+    getClientSolana(),
+    binArrayStruct,
+    accountsToFetch
+  );
+
+  // const binArrays: BinArrayAccount[] = await Promise.all(
+  //   binArraysAccInfoBuffer.map(async (accInfo, idx) => {
+  //     const account: BinArray = this.program.coder.accounts.decode(
+  //       'binArray',
+  //       accInfo.data
+  //     );
+  //     const publicKey = accountsToFetch[idx];
+  //     return {
+  //       account,
+  //       publicKey,
+  //     };
+  //   })
+  // );
+
+  const bins = binArrays
+    .map((acc) => {
+      if (!acc) return [];
+      return acc;
+    })
+    .flat();
+
+  return bins;
+}
+
+function findNextBinArrayIndexWithLiquidity(
+  swapForY: boolean,
+  activeId: BN,
+  lbPairState: LbPair,
+  binArrayBitmapExtension: BinArrayBitmapExtension | null
+) {
+  const [lowerBinArrayIndex, upperBinArrayIndex] = internalBitmapRange();
+  let startBinArrayIndex = binIdToBinArrayIndex(
+    new BigNumber(activeId.toNumber())
+  );
+
+  while (true) {
+    if (
+      isOverflowDefaultBinArrayBitmap(BigNumber(startBinArrayIndex.toNumber()))
+    ) {
+      if (binArrayBitmapExtension === null) {
+        return null;
+      }
+      // When bin array index is negative, the MSB is smallest bin array index.
+
+      const [minBinArrayIndex, maxBinArrayIndex] = extensionBitmapRange();
+
+      if (startBinArrayIndex.isNeg()) {
+        if (swapForY) {
+          const binArrayIndex = findSetBit(
+            startBinArrayIndex.toNumber(),
+            minBinArrayIndex.toNumber(),
+            binArrayBitmapExtension
+          );
+
+          if (binArrayIndex !== null) {
+            return new BN(binArrayIndex);
+          }
+          return null;
+        }
+        const binArrayIndex = findSetBit(
+          startBinArrayIndex.toNumber(),
+          BIN_ARRAY_BITMAP_SIZE.neg().sub(new BN(1)).toNumber(),
+          binArrayBitmapExtension
+        );
+
+        if (binArrayIndex !== null) {
+          return new BN(binArrayIndex);
+        }
+        // Move to internal bitmap
+        startBinArrayIndex = BIN_ARRAY_BITMAP_SIZE.neg();
+      } else if (swapForY) {
+        const binArrayIndex = findSetBit(
+          startBinArrayIndex.toNumber(),
+          BIN_ARRAY_BITMAP_SIZE.toNumber(),
+          binArrayBitmapExtension
+        );
+
+        if (binArrayIndex !== null) {
+          return new BN(binArrayIndex);
+        }
+        // Move to internal bitmap
+        startBinArrayIndex = BIN_ARRAY_BITMAP_SIZE.sub(new BN(1));
+      } else {
+        const binArrayIndex = findSetBit(
+          startBinArrayIndex.toNumber(),
+          maxBinArrayIndex.toNumber(),
+          binArrayBitmapExtension
+        );
+
+        if (binArrayIndex !== null) {
+          return new BN(binArrayIndex);
+        }
+        return null;
+      }
+    } else {
+      // Internal bitmap
+      const bitmapType = BitmapType.U1024;
+      const bitmapDetail = bitmapTypeDetail(bitmapType);
+      const offset = startBinArrayIndex.add(BIN_ARRAY_BITMAP_SIZE);
+
+      const bitmap = buildBitmapFromU64Arrays(
+        lbPairState.binArrayBitmap.map((bN) => new BN(bN.toNumber()))
+      );
+
+      if (swapForY) {
+        const upperBitRange = new BN(bitmapDetail.bits - 1).sub(offset);
+        const croppedBitmap = bitmap.shln(upperBitRange.toNumber());
+
+        const msb = mostSignificantBit(croppedBitmap, bitmapDetail.bits);
+
+        if (msb !== null) {
+          return startBinArrayIndex.sub(new BN(msb));
+        }
+        // Move to extension
+        startBinArrayIndex = lowerBinArrayIndex.sub(new BN(1));
+      } else {
+        const lowerBitRange = offset;
+        const croppedBitmap = bitmap.shrn(lowerBitRange.toNumber());
+        const lsb = leastSignificantBit(croppedBitmap, bitmapDetail.bits);
+        if (lsb !== null) {
+          return startBinArrayIndex.add(new BN(lsb));
+        }
+        // Move to extension
+        startBinArrayIndex = upperBinArrayIndex.add(new BN(1));
+      }
+    }
+  }
+}
+
+export function isOverflowDefaultBinArrayBitmap(binArrayIndex: BigNumber) {
+  const [minBinArrayIndex, maxBinArrayIndex] = internalBitmapRange();
+  return (
+    binArrayIndex.isGreaterThan(maxBinArrayIndex.toNumber()) ||
+    binArrayIndex.isLessThan(minBinArrayIndex.toNumber())
+  );
+}
+
+function internalBitmapRange() {
+  const lowerBinArrayIndex = BIN_ARRAY_BITMAP_SIZE.neg();
+  const upperBinArrayIndex = BIN_ARRAY_BITMAP_SIZE.sub(new BN(1));
+  return [lowerBinArrayIndex, upperBinArrayIndex];
+}
+
+function extensionBitmapRange() {
+  return [
+    BIN_ARRAY_BITMAP_SIZE.neg().mul(
+      EXTENSION_BINARRAY_BITMAP_SIZE.add(new BN(1))
+    ),
+    BIN_ARRAY_BITMAP_SIZE.mul(
+      EXTENSION_BINARRAY_BITMAP_SIZE.add(new BN(1))
+    ).sub(new BN(1)),
+  ];
+}
+
+function findSetBit(
+  startIndex: number,
+  endIndex: number,
+  binArrayBitmapExtension: BinArrayBitmapExtension
+): number | null {
+  const getBinArrayOffset = (binArrayIndex: BN) =>
+    binArrayIndex.gt(new BN(0))
+      ? binArrayIndex.mod(BIN_ARRAY_BITMAP_SIZE)
+      : binArrayIndex.add(new BN(1)).neg().mod(BIN_ARRAY_BITMAP_SIZE);
+
+  const getBitmapOffset = (binArrayIndex: BN) =>
+    binArrayIndex.gt(new BN(0))
+      ? binArrayIndex.div(BIN_ARRAY_BITMAP_SIZE).sub(new BN(1))
+      : binArrayIndex
+          .add(new BN(1))
+          .neg()
+          .div(BIN_ARRAY_BITMAP_SIZE)
+          .sub(new BN(1));
+
+  if (startIndex <= endIndex) {
+    for (let i = startIndex; i <= endIndex; i++) {
+      const binArrayOffset = getBinArrayOffset(new BN(i)).toNumber();
+      const bitmapOffset = getBitmapOffset(new BN(i)).toNumber();
+      const bitmapChunks =
+        i > 0
+          ? binArrayBitmapExtension.positiveBinArrayBitmap[bitmapOffset]
+          : binArrayBitmapExtension.negativeBinArrayBitmap[bitmapOffset];
+      const bitmap = buildBitmapFromU64Arrays(
+        bitmapChunks.map((bN) => new BN(bN.toNumber()))
+      );
+      if (bitmap.testn(binArrayOffset)) {
+        return i;
+      }
+    }
+  } else {
+    for (let i = startIndex; i >= endIndex; i--) {
+      const binArrayOffset = getBinArrayOffset(new BN(i)).toNumber();
+      const bitmapOffset = getBitmapOffset(new BN(i)).toNumber();
+      const bitmapChunks =
+        i > 0
+          ? binArrayBitmapExtension.positiveBinArrayBitmap[bitmapOffset]
+          : binArrayBitmapExtension.negativeBinArrayBitmap[bitmapOffset];
+      const bitmap = buildBitmapFromU64Arrays(
+        bitmapChunks.map((bN) => new BN(bN.toNumber()))
+      );
+      if (bitmap.testn(binArrayOffset)) {
+        return i;
+      }
+    }
+  }
+
+  return null;
+}
+
+function buildBitmapFromU64Arrays(u64Arrays: BN[]) {
+  const buffer = Buffer.concat(
+    u64Arrays.map((b) => b.toArrayLike(Buffer, 'le', 8))
+  );
+
+  return new BN(buffer, 'le');
+}
+
+function bitmapTypeDetail(type: BitmapType) {
+  if (type == BitmapType.U1024) {
+    return {
+      bits: 1024,
+      bytes: 1024 / 8,
+    };
+  }
+  return {
+    bits: 512,
+    bytes: 512 / 8,
+  };
+}
+
+function mostSignificantBit(number: BN, bitLength: number) {
+  const highestIndex = bitLength - 1;
+  if (number.isZero()) {
+    return null;
+  }
+
+  for (let i = highestIndex; i >= 0; i--) {
+    if (number.testn(i)) {
+      return highestIndex - i;
+    }
+  }
+  return null;
+}
+
+function leastSignificantBit(number: BN, bitLength: number) {
+  if (number.isZero()) {
+    return null;
+  }
+  for (let i = 0; i < bitLength; i++) {
+    if (number.testn(i)) {
+      return i;
+    }
+  }
+  return null;
+}
+
+export function findNextBinArrayWithLiquidity(
+  swapForY: boolean,
+  activeBinId: BN,
+  lbPairState: LbPair,
+  binArrayBitmapExtension: BinArrayBitmapExtension | null,
+  binArrays: ParsedAccount<BinArray>[]
+): ParsedAccount<BinArray> | null {
+  const nearestBinArrayIndexWithLiquidity = findNextBinArrayIndexWithLiquidity(
+    swapForY,
+    activeBinId,
+    lbPairState,
+    binArrayBitmapExtension
+  );
+
+  if (nearestBinArrayIndexWithLiquidity == null) {
+    return null;
+  }
+
+  const binArrayAccount = binArrays.find((ba) =>
+    ba.index.eq(nearestBinArrayIndexWithLiquidity.toNumber())
+  );
+  if (!binArrayAccount) {
+    // Cached bin array couldn't cover more bins, partial quoted.
+    return null;
+  }
+
+  return binArrayAccount;
+}
+
+export function isBinIdWithinBinArray(activeId: BN, binArrayIndex: BN) {
+  const [lowerBinId, upperBinId] = getBinArrayLowerUpperBinId(
+    new BigNumber(binArrayIndex.toNumber())
+  );
+  return (
+    activeId.gte(new BN(lowerBinId.toNumber())) &&
+    activeId.lte(new BN(upperBinId.toNumber()))
+  );
+}
+
+export function getBaseFee(binStep: number, sParameter: StaticParameters) {
+  return new BN(sParameter.baseFactor).mul(new BN(binStep)).mul(new BN(10));
+}
+
+export function getVariableFee(
+  binStep: number,
+  sParameter: StaticParameters,
+  vParameter: VariableParameters
+) {
+  if (sParameter.variableFeeControl > 0) {
+    const squareVfaBin = new BN(vParameter.volatilityAccumulator)
+      .mul(new BN(binStep))
+      .pow(new BN(2));
+    const vFee = new BN(sParameter.variableFeeControl).mul(squareVfaBin);
+
+    return vFee.add(new BN(99_999_999_999)).div(new BN(100_000_000_000));
+  }
+  return new BN(0);
+}
+
+const MAX_FEE_RATE = new BN(100_000_000);
+
+export function getTotalFee(
+  binStep: number,
+  sParameter: StaticParameters,
+  vParameter: VariableParameters
+) {
+  const totalFee = getBaseFee(binStep, sParameter).add(
+    getVariableFee(binStep, sParameter, vParameter)
+  );
+  return totalFee.gt(MAX_FEE_RATE) ? MAX_FEE_RATE : totalFee;
+}
+
+const FEE_PRECISION = new BN(1_000_000_000);
+
+export function computeFee(
+  binStep: number,
+  sParameter: StaticParameters,
+  vParameter: VariableParameters,
+  inAmount: BN
+) {
+  const totalFee = getTotalFee(binStep, sParameter, vParameter);
+  const denominator = FEE_PRECISION.sub(totalFee);
+
+  return inAmount
+    .mul(totalFee)
+    .add(denominator)
+    .sub(new BN(1))
+    .div(denominator);
+}
+
+export function computeFeeFromAmount(
+  binStep: number,
+  sParameter: StaticParameters,
+  vParameter: VariableParameters,
+  inAmountWithFees: BN
+) {
+  const totalFee = getTotalFee(binStep, sParameter, vParameter);
+  return inAmountWithFees
+    .mul(totalFee)
+    .add(FEE_PRECISION.sub(new BN(1)))
+    .div(FEE_PRECISION);
+}
+
+export function computeProtocolFee(
+  feeAmount: BN,
+  sParameter: StaticParameters
+) {
+  return feeAmount
+    .mul(new BN(sParameter.protocolShare))
+    .div(new BN(BASIS_POINT_MAX));
+}
+
+export function getOutAmount(bin: Bin, inAmount: BN, swapForY: boolean) {
+  return swapForY
+    ? new BN(
+        mulShr(
+          inAmount,
+          new BN(bin.price.toNumber()),
+          SCALE_OFFSET,
+          Rounding.Down
+        ).toNumber()
+      )
+    : new BN(
+        shlDiv(
+          inAmount,
+          new BN(bin.price.toNumber()),
+          SCALE_OFFSET,
+          Rounding.Down
+        ).toNumber()
+      );
+}
+
+export function swapExactInQuoteAtBin(
+  bin: Bin,
+  binStep: number,
+  sParameter: StaticParameters,
+  vParameter: VariableParameters,
+  inAmount: BN,
+  swapForY: boolean
+): {
+  amountIn: BN;
+  amountOut: BN;
+  fee: BN;
+  protocolFee: BN;
+} {
+  if (swapForY && bin.amountY.isZero()) {
+    return {
+      amountIn: new BN(0),
+      amountOut: new BN(0),
+      fee: new BN(0),
+      protocolFee: new BN(0),
+    };
+  }
+
+  if (!swapForY && bin.amountX.isZero()) {
+    return {
+      amountIn: new BN(0),
+      amountOut: new BN(0),
+      fee: new BN(0),
+      protocolFee: new BN(0),
+    };
+  }
+
+  let maxAmountOut: BN;
+  let maxAmountIn: BN;
+
+  if (swapForY) {
+    maxAmountOut = new BN(bin.amountY.toNumber());
+    maxAmountIn = new BN(
+      shlDiv(
+        new BN(bin.amountY.toNumber()),
+        new BN(bin.price.toNumber()),
+        SCALE_OFFSET,
+        Rounding.Up
+      ).toNumber()
+    );
+  } else {
+    maxAmountOut = new BN(bin.amountX.toNumber());
+    maxAmountIn = new BN(
+      mulShr(
+        new BN(bin.amountX.toNumber()),
+        new BN(bin.price.toNumber()),
+        SCALE_OFFSET,
+        Rounding.Up
+      ).toNumber()
+    );
+  }
+
+  const maxFee = computeFee(binStep, sParameter, vParameter, maxAmountIn);
+  maxAmountIn = maxAmountIn.add(maxFee);
+
+  let amountInWithFees: BN;
+  let amountOut: BN;
+  let fee: BN;
+  let protocolFee: BN;
+
+  if (inAmount.gt(maxAmountIn)) {
+    amountInWithFees = maxAmountIn;
+    amountOut = maxAmountOut;
+    fee = maxFee;
+    protocolFee = computeProtocolFee(maxFee, sParameter);
+  } else {
+    fee = computeFeeFromAmount(binStep, sParameter, vParameter, inAmount);
+    const amountInAfterFee = inAmount.sub(fee);
+    const computedOutAmount = getOutAmount(bin, amountInAfterFee, swapForY);
+
+    amountOut = computedOutAmount.gt(maxAmountOut)
+      ? maxAmountOut
+      : computedOutAmount;
+    protocolFee = computeProtocolFee(fee, sParameter);
+    amountInWithFees = inAmount;
+  }
+
+  return {
+    amountIn: amountInWithFees,
+    amountOut,
+    fee,
+    protocolFee,
+  };
+}
+
+function getNewVolatilityAccumulator(
+  vParameter: VariableParameters,
+  sParameter: StaticParameters,
+  activeId: number
+) {
+  const deltaId = Math.abs(vParameter.indexReference - activeId);
+  const newVolatilityAccumulator =
+    vParameter.volatilityReference + deltaId * BASIS_POINT_MAX;
+
+  return Math.min(
+    newVolatilityAccumulator,
+    sParameter.maxVolatilityAccumulator
+  );
+}
+
+function getNewReference(
+  activeId: number,
+  vParameter: VariableParameters,
+  sParameter: StaticParameters,
+  currentTimestamp: number
+): { indexRef: number; volatilityRef: number } {
+  const elapsed = currentTimestamp - vParameter.lastUpdateTimestamp.toNumber();
+  let newIndexRef = vParameter.indexReference;
+  let newVolatRef = vParameter.volatilityReference;
+
+  if (elapsed >= sParameter.filterPeriod) {
+    newIndexRef = activeId;
+    if (elapsed < sParameter.decayPeriod) {
+      const decayedVolatilityReference = Math.floor(
+        (vParameter.volatilityAccumulator * sParameter.reductionFactor) /
+          BASIS_POINT_MAX
+      );
+      newVolatRef = decayedVolatilityReference;
+    } else {
+      newVolatRef = 0;
+    }
+  }
+  return {
+    indexRef: newIndexRef,
+    volatilityRef: newVolatRef,
+  };
+}
+
+export function getSwapQuote(
+  inAmount: BigNumber,
+  swapForY: boolean,
+  allowedSlippage: BigNumber,
+  lbPair: LbPair,
+  binArrays: ParsedAccount<BinArray>[],
+  binArrayBitmapExtension?: BinArrayBitmapExtension | null,
+  isPartialFill?: boolean
+): BigNumber | undefined {
+  // TODO: Should we use onchain clock ? Volatile fee rate is sensitive to time. Caching clock might causes the quoted fee off ...
+  const currentTimestamp = Date.now() / 1000;
+  let inAmountLeft = new BN(inAmount.toNumber());
+
+  const vParameterClone = { ...lbPair.vParameters };
+  let activeId = new BN(lbPair.activeId);
+
+  const { binStep } = lbPair;
+  const sParameters = lbPair.parameters;
+
+  const { indexRef, volatilityRef } = getNewReference(
+    activeId.toNumber(),
+    vParameterClone,
+    sParameters,
+    currentTimestamp
+  );
+  vParameterClone.indexReference = indexRef;
+  vParameterClone.volatilityReference = volatilityRef;
+
+  let startBin: Bin | null = null;
+  const binArraysForSwap = new Map();
+  let actualOutAmount: BN = new BN(0);
+  let feeAmount: BN = new BN(0);
+
+  while (!inAmountLeft.isZero()) {
+    const binArrayAccountToSwap = findNextBinArrayWithLiquidity(
+      swapForY,
+      activeId,
+      lbPair,
+      binArrayBitmapExtension ?? null,
+      binArrays
+    );
+
+    if (binArrayAccountToSwap == null) {
+      if (isPartialFill) {
+        break;
+      } else {
+        return undefined;
+      }
+    }
+
+    binArraysForSwap.set(binArrayAccountToSwap.pubkey, true);
+
+    vParameterClone.volatilityAccumulator = getNewVolatilityAccumulator(
+      vParameterClone,
+      sParameters,
+      activeId.toNumber()
+    );
+
+    if (
+      isBinIdWithinBinArray(
+        activeId,
+        new BN(binArrayAccountToSwap.index.toNumber())
+      )
+    ) {
+      const bin = getBinFromBinArray(
+        activeId.toNumber(),
+        binArrayAccountToSwap
+      );
+      const { amountIn, amountOut, fee } = swapExactInQuoteAtBin(
+        bin,
+        binStep,
+        sParameters,
+        vParameterClone,
+        new BN(inAmountLeft.toNumber()),
+        swapForY
+      );
+
+      if (!amountIn.isZero()) {
+        inAmountLeft = inAmountLeft.sub(amountIn);
+        actualOutAmount = actualOutAmount.add(amountOut);
+        feeAmount = feeAmount.add(fee);
+
+        if (!startBin) {
+          startBin = bin;
+        }
+      }
+    }
+
+    if (!inAmountLeft.isZero()) {
+      if (swapForY) {
+        activeId = activeId.sub(new BN(1));
+      } else {
+        activeId = activeId.add(new BN(1));
+      }
+    }
+  }
+
+  if (!startBin) {
+    // The pool insufficient liquidity
+    return undefined;
+  }
+
+  return new BigNumber(actualOutAmount.toNumber());
 }
