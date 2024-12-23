@@ -58,7 +58,7 @@ export default async function storeTokenPricesFromSqrt(
     const tvl = reserveX
       .multipliedBy(tokenPriceX.price)
       .dividedBy(10 ** decimalsX)
-      .plus(reserveY.multipliedBy(price).dividedBy(10 ** decimalsY));
+      .times(2);
     const weight = getSourceWeight(tvl);
 
     if (tvl.isLessThan(minimumLiquidity)) return undefined;
@@ -81,7 +81,7 @@ export default async function storeTokenPricesFromSqrt(
     const tvl = reserveY
       .multipliedBy(tokenPriceY.price)
       .dividedBy(10 ** decimalsY)
-      .plus(reserveX.multipliedBy(price).dividedBy(10 ** decimalsX));
+      .times(2);
     const weight = getSourceWeight(tvl);
     if (tvl.isLessThan(minimumLiquidity)) return undefined;
     const tokenPriceSource: TokenPriceSource = {
