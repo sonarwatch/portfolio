@@ -6,5 +6,7 @@ import { airdropFetcher, fetcher } from './airdropFetcher';
 
 export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [];
-export const fetchers: Fetcher[] = [fetcher];
+export const fetchers: Fetcher[] = [
+  // fetcher
+];
 export { airdropFetcher };

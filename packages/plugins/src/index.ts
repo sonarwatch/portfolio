@@ -1158,7 +1158,7 @@ export const airdropFetchers: AirdropFetcher[] = [
   grassAirdropFetcher,
   ...streamFlowAirdropFetchers,
   magicedenAirdropFetcher,
-  pudgypenguinsAirdropFetcher,
+  // pudgypenguinsAirdropFetcher,
   zetaAirdropFetcher,
 ];
 export const airdropFetchersByAddressSystem =
