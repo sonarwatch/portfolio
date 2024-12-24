@@ -6,8 +6,8 @@ export const platform: Platform = {
   id: platformId,
   name: 'Perena',
   image: 'https://sonar.watch/img/platforms/perena.webp',
-  website: 'https://perena.com/',
-  twitter: 'https://x.com/perena_finance',
+  website: 'https://perena.org/numeraire',
+  twitter: 'https://x.com/Perena__',
 };
 
 export const pid = new PublicKey('NUMERUNsFCP3kuNmWZuXtm1AaQCPj9uw6Guv2Ekoi5P');
