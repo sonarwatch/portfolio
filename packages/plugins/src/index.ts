@@ -712,6 +712,11 @@ import {
   jobs as perenaJobs,
   fetchers as perenaFetchers,
 } from './plugins/perena';
+import {
+  platforms as ratexPlatforms,
+  jobs as ratexJobs,
+  fetchers as ratexFetchers,
+} from './plugins/ratex';
 
 export {
   walletTokensPlatform,
@@ -869,6 +874,7 @@ export const platforms: Platform[] = [
   ...gpoolPlatforms,
   ...defilandPlatforms,
   ...perenaPlatforms,
+  ...ratexPlatforms,
 ];
 
 // JOBS //
@@ -1009,6 +1015,7 @@ export const jobs: Job[] = [
   ...gpoolJobs,
   ...defilandJobs,
   ...perenaJobs,
+  ...ratexJobs,
 ];
 
 // FETCHERS //
@@ -1150,6 +1157,7 @@ export const fetchers: Fetcher[] = [
   ...gpoolFetchers,
   ...defilandFetchers,
   ...perenaFetchers,
+  ...ratexFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
