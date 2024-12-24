@@ -66,6 +66,7 @@ import {
 import {
   platforms as tensorPlatforms,
   fetchers as tensorFetchers,
+  tensorAirdropFetchers,
 } from './plugins/tensor';
 import {
   platforms as ordersPlatforms,
@@ -1168,6 +1169,7 @@ export const airdropFetchers: AirdropFetcher[] = [
   magicedenAirdropFetcher,
   // pudgypenguinsAirdropFetcher,
   zetaAirdropFetcher,
+  ...tensorAirdropFetchers,
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);
