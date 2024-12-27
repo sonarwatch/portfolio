@@ -20,8 +20,8 @@ import distributions from './distributions.json';
 
 const distributionByWallet = distributions as {
   [key: string]: {
-    disOne: string | null;
-    disTwo: string | null;
+    one: number;
+    two?: number;
   };
 };
 
@@ -33,7 +33,7 @@ const executorDis1: AirdropFetcherExecutor = async (owner: string) => {
   const receipt: AccountInfo<Buffer> | null =
     await getClientSolana().getAccountInfo(pda);
 
-  if (!walletDistributions || !walletDistributions.disOne) {
+  if (!walletDistributions || !walletDistributions.one) {
     return getAirdropRaw({
       statics: firstDistribStatics,
       items: [
@@ -52,7 +52,7 @@ const executorDis1: AirdropFetcherExecutor = async (owner: string) => {
     statics: firstDistribStatics,
     items: [
       {
-        amount: Number(walletDistributions.disOne),
+        amount: walletDistributions.one,
         isClaimed: !!receipt,
         label: 'DBR',
         address: isEvm ? undefined : dbrMint,
@@ -66,7 +66,7 @@ const executorDis2: AirdropFetcherExecutor = async (owner: string) => {
   const isEvm = isEvmAddress(owner);
   const walletDistributions = distributionByWallet[owner];
 
-  if (!walletDistributions || !walletDistributions.disTwo) {
+  if (!walletDistributions || !walletDistributions.two) {
     return getAirdropRaw({
       statics: secondDistribStatics,
       items: [
@@ -85,7 +85,7 @@ const executorDis2: AirdropFetcherExecutor = async (owner: string) => {
     statics: secondDistribStatics,
     items: [
       {
-        amount: Number(walletDistributions.disTwo),
+        amount: walletDistributions.two,
         isClaimed: false,
         label: 'DBR',
         address: isEvm ? undefined : dbrMint,
