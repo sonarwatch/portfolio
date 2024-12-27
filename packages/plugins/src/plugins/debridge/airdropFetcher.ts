@@ -21,7 +21,7 @@ import distributions from './distributions.json';
 const distributionByWallet = distributions as {
   [key: string]: {
     one: number;
-    two?: number;
+    two?: number | null;
   };
 };
 
