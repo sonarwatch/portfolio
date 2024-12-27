@@ -16,7 +16,7 @@ import {
   secondDistribStatics,
 } from './constants';
 import { getClientSolana } from '../../utils/clients';
-import distributions from './renamed.json';
+import distributions from './distributions.json';
 
 const distributionByWallet = distributions as {
   [key: string]: {
