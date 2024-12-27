@@ -712,6 +712,11 @@ import {
   jobs as perenaJobs,
   fetchers as perenaFetchers,
 } from './plugins/perena';
+import {
+  platforms as fragmetricPlatforms,
+  jobs as fragmetricJobs,
+  fetchers as fragmetricFetchers,
+} from './plugins/fragmetric';
 
 export {
   walletTokensPlatform,
@@ -869,6 +874,7 @@ export const platforms: Platform[] = [
   ...gpoolPlatforms,
   ...defilandPlatforms,
   ...perenaPlatforms,
+  ...fragmetricPlatforms,
 ];
 
 // JOBS //
@@ -1009,6 +1015,7 @@ export const jobs: Job[] = [
   ...gpoolJobs,
   ...defilandJobs,
   ...perenaJobs,
+  ...fragmetricJobs,
 ];
 
 // FETCHERS //
@@ -1150,6 +1157,7 @@ export const fetchers: Fetcher[] = [
   ...gpoolFetchers,
   ...defilandFetchers,
   ...perenaFetchers,
+  ...fragmetricFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
