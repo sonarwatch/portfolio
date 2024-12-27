@@ -1,5 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
+import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'tensor';
 export const platform: Platform = {
@@ -17,3 +18,23 @@ export const tensorPid = new PublicKey(
 export const tnsrMint = 'TNSRxcUxoT9xBG3de7PiJyTDYu7kskLqcpddxnEJAS6';
 
 export const magmaProgramId = '3zK38YBP6u3BpLUpaa6QhRHh4VXdv3J8cmD24fFpuyqy';
+
+export const s4Statics: AirdropStatics = {
+  claimStart: 1738281600000,
+  claimEnd: undefined,
+  id: 'tensor-s4',
+  emitterName: 'Tensor',
+  emitterLink: 'https://www.tensor.trade/',
+  claimLink: 'https://tensor.foundation/season4',
+  image: 'https://sonar.watch/img/platforms/tensor.webp',
+};
+
+export const powerUsersStatics: AirdropStatics = {
+  claimStart: 1730851200000,
+  claimEnd: 1746489600000,
+  id: 'tensor-power-user',
+  emitterName: 'Tensor',
+  emitterLink: 'https://www.tensor.trade/',
+  claimLink: 'https://www.tensor.foundation/powerusers',
+  image: 'https://sonar.watch/img/platforms/tensor.webp',
+};

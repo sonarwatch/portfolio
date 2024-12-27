@@ -66,6 +66,7 @@ import {
 import {
   platforms as tensorPlatforms,
   fetchers as tensorFetchers,
+  tensorAirdropFetchers,
 } from './plugins/tensor';
 import {
   platforms as ordersPlatforms,
@@ -706,6 +707,11 @@ import {
   jobs as defilandJobs,
   fetchers as defilandFetchers,
 } from './plugins/defiland';
+import {
+  platforms as perenaPlatforms,
+  jobs as perenaJobs,
+  fetchers as perenaFetchers,
+} from './plugins/perena';
 
 export {
   walletTokensPlatform,
@@ -862,6 +868,7 @@ export const platforms: Platform[] = [
   ...pudgypenguinsPlatforms,
   ...gpoolPlatforms,
   ...defilandPlatforms,
+  ...perenaPlatforms,
 ];
 
 // JOBS //
@@ -1001,6 +1008,7 @@ export const jobs: Job[] = [
   ...pudgypenguinsJobs,
   ...gpoolJobs,
   ...defilandJobs,
+  ...perenaJobs,
 ];
 
 // FETCHERS //
@@ -1141,6 +1149,7 @@ export const fetchers: Fetcher[] = [
   ...pudgypenguinsFetchers,
   ...gpoolFetchers,
   ...defilandFetchers,
+  ...perenaFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
@@ -1160,6 +1169,7 @@ export const airdropFetchers: AirdropFetcher[] = [
   magicedenAirdropFetcher,
   // pudgypenguinsAirdropFetcher,
   zetaAirdropFetcher,
+  ...tensorAirdropFetchers,
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);
