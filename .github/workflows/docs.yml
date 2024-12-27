@@ -35,7 +35,7 @@ jobs:
         with:
           node-version: 20
       - run: npm ci --include=optional
-      - run: npx nx docs
+      - run: NODE_OPTIONS="--max-old-space-size=8192" npx nx docs
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
