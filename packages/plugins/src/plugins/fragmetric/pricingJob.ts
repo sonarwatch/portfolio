@@ -2,6 +2,7 @@ import {
   NetworkId,
   TokenPriceSource,
   TokenPriceUnderlying,
+  walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -96,7 +97,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       decimals: mintAccount.decimals,
       id: pool.pubkey.toString(),
       networkId: NetworkId.solana,
-      platformId,
+      platformId: walletTokensPlatformId,
       price: tvl.dividedBy(supply).toNumber(),
       timestamp: Date.now(),
       weight: 1,
@@ -120,21 +121,12 @@ const executor: JobExecutor = async (cache: Cache) => {
     sources.push({
       address: fragSOLMint.toString(),
       decimals: fragSOLMintAccount.decimals,
-      id: platformId,
+      id: walletTokensPlatformId,
       networkId: NetworkId.solana,
       platformId,
       price: fragSOLPrice.toNumber(),
       timestamp: Date.now(),
       weight: 1,
-      underlyings: [
-        {
-          address: nSOLMint,
-          amountPerLp: nSOLByfragSOL.toNumber(),
-          decimals: nSOLPrice.decimals,
-          networkId: NetworkId.solana,
-          price: nSOLPrice.price,
-        },
-      ],
     });
   }
   await cache.setTokenPriceSources(sources);
