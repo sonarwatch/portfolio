@@ -121,9 +121,9 @@ const executor: JobExecutor = async (cache: Cache) => {
     sources.push({
       address: fragSOLMint.toString(),
       decimals: fragSOLMintAccount.decimals,
-      id: walletTokensPlatformId,
+      id: platformId,
       networkId: NetworkId.solana,
-      platformId,
+      platformId: walletTokensPlatformId,
       price: fragSOLPrice.toNumber(),
       timestamp: Date.now(),
       weight: 1,
