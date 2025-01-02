@@ -10,7 +10,12 @@ import {
   mintAccountStruct,
   tokenAccountStruct,
 } from '../../utils/solana';
-import { marketsInfoKey, platformId, programId } from './constants';
+import {
+  marketsInfoKey,
+  platformId,
+  programId,
+  tokenWrappers,
+} from './constants';
 import { marketStruct } from './structs';
 import { marketAccountFilters } from './filters';
 import { MarketInfo } from './types';
@@ -38,6 +43,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   const baseMints = markets.map((market) =>
     market.tokenSyMintAddress.toString()
   );
+  baseMints.push(...Object.values(tokenWrappers));
   const baseTokenPriceById = await cache.getTokenPricesAsMap(
     baseMints,
     NetworkId.solana
@@ -57,11 +63,18 @@ const executor: JobExecutor = async (cache: Cache) => {
   const sources: TokenPriceSource[] = [];
   const marketsInfos: MarketInfo[] = [];
   for (const market of markets) {
-    const baseTokenPrice = baseTokenPriceById.get(
+    let baseTokenPrice = baseTokenPriceById.get(
       market.tokenSyMintAddress.toString()
     );
+    if (
+      !baseTokenPrice &&
+      tokenWrappers[market.tokenSyMintAddress.toString()]
+    ) {
+      baseTokenPrice = baseTokenPriceById.get(
+        tokenWrappers[market.tokenSyMintAddress.toString()]
+      );
+    }
     if (!baseTokenPrice) continue;
-
     const ptPrice = market.marketConfig.startPrice.dividedBy(
       market.marketConfig.marketEndPrice
     );

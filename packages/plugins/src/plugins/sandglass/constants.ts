@@ -1,5 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
+import { usdcSolanaMint } from '../../utils/solana';
 
 export const platformId = 'sandglass';
 export const platform: Platform = {
@@ -18,8 +19,19 @@ export const marketsInfoKey = 'markets';
 
 export const marketNameByAddress = new Map([
   ['6SbYW288Kje2WD6TRRcAmikhA76cijBi36y1wYt4RsdN', 'JLP'],
-  ['4K9VeqpZNCVHtZN9mKJpTihp4N8a9LeS35qBnqqM83Et', 'bSOL'],
+  ['4TwkkaaDHyKhqDh59JYrYCGyRf9FRwDmGgvwwXyVzwYs', 'cUSDC'],
+  ['9s19JHfKLMmw2b8yP6xdhE5jEqZYsJj6jL8SexAgLTeC', 'cUSDC'],
+  ['BSrrKn29jrEbag3QRyH7qy4pcMZ9mXEp9Sqfs9iW5fmK', 'cPYUSD'],
+  ['B4mgGx4HHYMsWYv2dbJyNHtCNFx5dfUUt1EJYicEMNPp', 'cUSDC'],
   ['Amu99crLdqbfpzrBbfrXHu1myWoCNXrSu7RRkHZJ1Ymv', 'mSOL'],
   ['5ofpU1rU4ajg3LuHKSMBBWHDubTW1XF7x6tCAXsk5Gju', 'JitoSOL'],
-  ['B8V6WVjPxW1UGwVDfxH2d2r8SyT4cqn7dQRK6XneVa7D', 'cUSDC'],
+  ['4K9VeqpZNCVHtZN9mKJpTihp4N8a9LeS35qBnqqM83Et', 'bSOL'],
 ]);
+
+export const tokenWrappers: { [key: string]: string } = {
+  B8V6WVjPxW1UGwVDfxH2d2r8SyT4cqn7dQRK6XneVa7D: usdcSolanaMint,
+  '2RxduzB4xWZRBm5PpdBZmDfVbGFiGD2BJcGSaVZ3tQ8K': usdcSolanaMint,
+  '32XLsweyeQwWgLKRVAzS72nxHGU1JmmNQQZ3C3q6fBjJ': usdcSolanaMint,
+  FboVKpN3Wbxn2h2BA6YcT43ae4pR4kRmCjDeYVr83z77:
+    '2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo', // PYUSD
+};

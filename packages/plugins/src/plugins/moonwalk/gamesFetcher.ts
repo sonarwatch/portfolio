@@ -1,16 +1,21 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
 import { Cache } from '../../Cache';
-import { platformId, api } from './constants';
+import { platformId, newApi } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { Games } from './types';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const apiResponse: AxiosResponse<Games> = await axios.get(api + owner, {
-    timeout: 3000,
-  });
+  const apiKey = process.env['PORTFOLIO_MOONWALK_API_BEARER'];
+  if (!apiKey) return [];
 
+  const apiResponse: AxiosResponse<Games> = await axios.get(newApi + owner, {
+    timeout: 3000,
+    headers: {
+      'X-API-KEY': apiKey,
+    },
+  });
   if (!apiResponse.data) return [];
 
   const registry = new ElementRegistry(NetworkId.solana, platformId);
@@ -20,17 +25,25 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       name: game.game,
     });
     element.addAsset({
-      address: game.token,
+      address: game.mint,
       amount: game.claimable,
       alreadyShifted: true,
       attributes: { isClaimable: true },
     });
     element.addAsset({
-      address: game.token,
+      address: game.mint,
       amount: game.locked,
       alreadyShifted: true,
       attributes: { lockedUntil: game.end * 1000 },
     });
+    for (const sponsor of game.sponsors) {
+      element.addAsset({
+        address: sponsor.token,
+        amount: sponsor.claimable,
+        alreadyShifted: true,
+        attributes: { isClaimable: true },
+      });
+    }
   }
   return registry.getElements(cache);
 };

@@ -9,3 +9,9 @@ export type ClaimStatus = {
   amount_locked_withdrawable: number;
   amount_locked_withdrawn: number;
 };
+
+export type RestakingVaultInfo = {
+  pubkey: string;
+  vrtMint: string;
+  platformId?: string;
+};

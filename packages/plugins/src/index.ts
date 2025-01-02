@@ -66,6 +66,7 @@ import {
 import {
   platforms as tensorPlatforms,
   fetchers as tensorFetchers,
+  tensorAirdropFetchers,
 } from './plugins/tensor';
 import {
   platforms as ordersPlatforms,
@@ -228,6 +229,7 @@ import {
   platforms as zetaPlatforms,
   jobs as zetaJobs,
   fetchers as zetaFetchers,
+  airdropFetcher as zetaAirdropFetcher,
 } from './plugins/zeta';
 import {
   platforms as venusPlatforms,
@@ -283,6 +285,7 @@ import {
   platforms as streamflowPlatforms,
   jobs as streamflowJobs,
   fetchers as streamflowFetchers,
+  airdropFetchers as streamFlowAirdropFetchers,
 } from './plugins/streamflow';
 import {
   platforms as benqiPlatforms,
@@ -420,6 +423,7 @@ import {
   platforms as magicedenPlatforms,
   jobs as magicedenJobs,
   fetchers as magicedenFetchers,
+  airdropFetcher as magicedenAirdropFetcher,
 } from './plugins/magiceden';
 import {
   platforms as clonePlatforms,
@@ -677,6 +681,42 @@ import {
   jobs as coinmarketcapJobs,
   fetchers as coinmarketcapFetchers,
 } from './plugins/coinmarketcap';
+import {
+  platforms as doubleupPlatforms,
+  jobs as doubleupJobs,
+  fetchers as doubleupFetchers,
+} from './plugins/doubleup';
+import {
+  platforms as photofinishPlatforms,
+  jobs as photofinishJobs,
+  fetchers as photofinishFetchers,
+} from './plugins/photofinish';
+import {
+  platforms as pudgypenguinsPlatforms,
+  jobs as pudgypenguinsJobs,
+  fetchers as pudgypenguinsFetchers,
+  airdropFetcher as pudgypenguinsAirdropFetcher,
+} from './plugins/pudgypenguins';
+import {
+  platforms as gpoolPlatforms,
+  jobs as gpoolJobs,
+  fetchers as gpoolFetchers,
+} from './plugins/gpool';
+import {
+  platforms as defilandPlatforms,
+  jobs as defilandJobs,
+  fetchers as defilandFetchers,
+} from './plugins/defiland';
+import {
+  platforms as perenaPlatforms,
+  jobs as perenaJobs,
+  fetchers as perenaFetchers,
+} from './plugins/perena';
+import {
+  platforms as fragmetricPlatforms,
+  jobs as fragmetricJobs,
+  fetchers as fragmetricFetchers,
+} from './plugins/fragmetric';
 
 export {
   walletTokensPlatform,
@@ -828,6 +868,13 @@ export const platforms: Platform[] = [
   ...metaplexPlatforms,
   ...ensofiPlatforms,
   ...coinmarketcapPlatforms,
+  ...doubleupPlatforms,
+  ...photofinishPlatforms,
+  ...pudgypenguinsPlatforms,
+  ...gpoolPlatforms,
+  ...defilandPlatforms,
+  ...perenaPlatforms,
+  ...fragmetricPlatforms,
 ];
 
 // JOBS //
@@ -925,7 +972,7 @@ export const jobs: Job[] = [
   ...whalesmarketJobs,
   ...futarchyJobs,
   ...elixirJobs,
-  // ...moonwalkJobs,
+  ...moonwalkJobs,
   ...bluefinJobs,
   ...citrusJobs,
   ...sharkyJobs,
@@ -962,6 +1009,13 @@ export const jobs: Job[] = [
   ...metaplexJobs,
   ...ensofiJobs,
   ...coinmarketcapJobs,
+  ...doubleupJobs,
+  ...photofinishJobs,
+  ...pudgypenguinsJobs,
+  ...gpoolJobs,
+  ...defilandJobs,
+  ...perenaJobs,
+  ...fragmetricJobs,
 ];
 
 // FETCHERS //
@@ -1060,7 +1114,7 @@ export const fetchers: Fetcher[] = [
   ...whalesmarketFetchers,
   ...futarchyFetchers,
   ...elixirFetchers,
-  // ...moonwalkFetchers,
+  ...moonwalkFetchers,
   ...bluefinFetchers,
   ...citrusFetchers,
   ...sharkyFetchers,
@@ -1097,6 +1151,13 @@ export const fetchers: Fetcher[] = [
   ...metaplexFetchers,
   ...ensofiFetchers,
   ...coinmarketcapFetchers,
+  ...doubleupFetchers,
+  ...photofinishFetchers,
+  ...pudgypenguinsFetchers,
+  ...gpoolFetchers,
+  ...defilandFetchers,
+  ...perenaFetchers,
+  ...fragmetricFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
@@ -1112,6 +1173,11 @@ export const airdropFetchers: AirdropFetcher[] = [
   suilendAirdropFetcher,
   bluefinAirdropFetcher,
   grassAirdropFetcher,
+  ...streamFlowAirdropFetchers,
+  magicedenAirdropFetcher,
+  // pudgypenguinsAirdropFetcher,
+  zetaAirdropFetcher,
+  ...tensorAirdropFetchers,
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);

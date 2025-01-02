@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js';
 import {
   AirdropFetcher,
   AirdropFetcherExecutor,
+  airdropFetcherToFetcher,
   // airdropFetcherToFetcher,
   getAirdropRaw,
 } from '../../AirdropFetcher';
@@ -13,8 +14,9 @@ import {
   packageId,
   platform,
   platformId,
-  sendMint,
+  mSendMint,
   suilendPointsType,
+  mSendCoinType,
 } from './constants';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import {
@@ -23,6 +25,7 @@ import {
   MarketsInfo,
   Obligation,
   ObligationCapFields,
+  BurnEvents,
 } from './types';
 import { getClientSui } from '../../utils/clients';
 import { Cache } from '../../Cache';
@@ -32,6 +35,14 @@ import earlyUsers from './earlyUsers.json';
 import bluefinLeagues from './bluefinLeagues.json';
 import { getKiosksDynamicFieldsObjects } from '../../utils/sui/getKioskObjects';
 import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
+import { SuiClient } from '../../utils/clients/types';
+import { MemoizedCache } from '../../utils/misc/MemoizedCache';
+import { getOwnedObjects } from '../../utils/sui/getOwnedObjects';
+
+const memoizedBurnEvents = new MemoizedCache<BurnEvents>('burnEvents', {
+  prefix: platformId,
+  networkId: NetworkId.sui,
+});
 
 const eligibleCollections: Map<string, number> = new Map([
   [
@@ -63,46 +74,65 @@ const executor: AirdropFetcherExecutor = async (
   owner: string,
   cache: Cache
 ) => {
+  const client = getClientSui();
+
+  const { capsuleRecord, pointsRecord } = await memoizedBurnEvents.getItem(
+    cache
+  );
+
+  const capsuleAmountClaimed = capsuleRecord[owner];
+  const pointsAmountClaimed = pointsRecord[owner];
+
   const [pointsAllocation, nftsAllocation] = await Promise.all([
-    getPointsAllocation(owner, cache),
-    getNftsAllocation(owner),
+    getPointsAllocationItem(owner, client, cache),
+    getNftsAllocationItems(owner, client),
   ]);
+
+  // This is because we are not able to compute the EXACT number of mSEND for the classic allocation
+  // So we expect that 95% of claimed or higher means it's claimed
+  const isPointsAllocClaimed = BigNumber(pointsAmountClaimed)
+    .dividedBy(pointsAllocation)
+    .isGreaterThan(0.95);
   return getAirdropRaw({
     statics: airdropStatics,
     items: [
       {
-        amount: pointsAllocation,
-        isClaimed: false,
-        label: 'SEND',
-        address: sendMint,
+        amount: pointsAmountClaimed ?? pointsAllocation,
+        isClaimed: isPointsAllocClaimed,
+        label: 'mSEND',
+        address: mSendMint,
         imageUri: platform.image,
       },
       {
         amount: nftsAllocation.collectionsAllocation,
-        isClaimed: false,
-        label: 'SEND',
-        address: sendMint,
+        isClaimed:
+          nftsAllocation.collectionsClaimed ===
+          nftsAllocation.collectionsAllocation,
+        label: 'mSEND',
+        address: mSendMint,
         imageUri: platform.image,
       },
       {
-        amount: nftsAllocation.capsulesAllocation,
-        isClaimed: false,
-        label: 'SEND',
-        address: sendMint,
+        amount: capsuleAmountClaimed ?? nftsAllocation.capsulesAllocation,
+        isClaimed: capsuleAmountClaimed === nftsAllocation.capsulesAllocation,
+        label: 'mSEND',
+        address: mSendMint,
         imageUri: platform.image,
       },
       {
         amount: getEarlyUserAllocation(owner),
-        isClaimed: false,
-        label: 'SEND',
-        address: sendMint,
+        // Those were airdropped directly inside the wallet
+        isClaimed: true,
+        label: 'mSEND',
+        address: mSendMint,
         imageUri: platform.image,
       },
       {
         amount: getBluefinLeagueAllocation(owner),
-        isClaimed: false,
-        label: 'SEND',
-        address: sendMint,
+        // Those were airdropped directly inside the wallet
+        isClaimed: true,
+        label: 'mSEND',
+        address: mSendMint,
         imageUri: platform.image,
       },
     ],
@@ -114,12 +144,12 @@ export const airdropFetcher: AirdropFetcher = {
   executor,
 };
 
-// export const fetcher = airdropFetcherToFetcher(
-//   airdropFetcher,
-//   platform.id,
-//   'suilend-airdrop',
-//   airdropStatics.claimEnd
-// );
+export const fetcher = airdropFetcherToFetcher(
+  airdropFetcher,
+  platform.id,
+  'suilend-airdrop',
+  airdropStatics.claimEnd
+);
 
 function getEarlyUserAllocation(owner: string): number {
   if (earlyUsers.includes(owner)) return 512;
@@ -130,23 +160,29 @@ function getBluefinLeagueAllocation(owner: string): number {
   return bluefinLeagues.includes(owner) ? 6.08 : 0;
 }
 
-async function getNftsAllocation(owner: string): Promise<{
+async function getNftsAllocationItems(
+  owner: string,
+  client: SuiClient
+): Promise<{
   capsulesAllocation: number;
   collectionsAllocation: number;
+  collectionsClaimed: number;
 }> {
-  const client = getClientSui();
   const eligibleCollectionsTypes = Array.from(eligibleCollections.keys());
   const objects = await getOwnedObjectsPreloaded(client, owner);
-
   const kioskObjects = (await getKiosksDynamicFieldsObjects(objects)).flat();
 
-  let collectionsAllocation = 0;
+  const elligibleNfts: string[] = [];
+  const collectionsAllocations: number[] = [];
   let capsulesAllocation = 0;
   [...objects, ...kioskObjects].forEach((obj) => {
     if (obj.data?.content) {
       if (eligibleCollectionsTypes.includes(obj.data.content.type)) {
         const nftAlloc = eligibleCollections.get(obj.data.content.type);
-        if (nftAlloc) collectionsAllocation += nftAlloc;
+        if (nftAlloc) {
+          elligibleNfts.push(obj.data.objectId);
+          collectionsAllocations.push(nftAlloc);
+        }
       } else if (obj.data.content.type === capsuleType) {
         const capsule = obj.data.content.fields as SuilendCapsule;
         if (capsule.rarity === 'rare') capsulesAllocation += 2000;
@@ -155,17 +191,40 @@ async function getNftsAllocation(owner: string): Promise<{
       }
     }
   });
+
+  let totalAlloc = 0;
+  let totalClaimed = 0;
+  const nftsObjects = await Promise.all([
+    ...elligibleNfts.map((obj) =>
+      getOwnedObjects(client, obj, {
+        filter: {
+          StructType: mSendCoinType,
+        },
+      })
+    ),
+  ]);
+
+  for (let i = 0; i < elligibleNfts.length; i += 1) {
+    const claimed = nftsObjects[i];
+    const alloc = collectionsAllocations[i];
+    if (claimed.length === 0) {
+      totalClaimed += alloc;
+    }
+    totalAlloc += alloc;
+  }
+
   return {
-    collectionsAllocation,
+    collectionsAllocation: totalAlloc,
     capsulesAllocation,
+    collectionsClaimed: totalClaimed,
   };
 }
 
-async function getPointsAllocation(
+async function getPointsAllocationItem(
   owner: string,
+  client: SuiClient,
   cache: Cache
 ): Promise<number> {
-  const client = getClientSui();
   const obligationsCapFields =
     await getOwnedObjectsPreloaded<ObligationCapFields>(client, owner, {
       filter: { Package: packageId },

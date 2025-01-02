@@ -157,3 +157,93 @@ export const aggregatorAccountStruct = new FixableBeetStruct<AggregatorAccount>(
   ],
   (args) => args as AggregatorAccount
 );
+
+export type PullFeedAccountDataResult = {
+  value: BigNumber;
+  std_dev: BigNumber;
+  mean: BigNumber;
+  range: BigNumber;
+  min_value: BigNumber;
+  max_value: BigNumber;
+  num_samples: number;
+  submission_idx: number;
+  padding1: number[];
+  slot: BigNumber;
+};
+
+export const pullFeedAccountDataResultStruct =
+  new BeetStruct<PullFeedAccountDataResult>(
+    [
+      ['value', i128],
+      ['std_dev', i128],
+      ['mean', i128],
+      ['range', i128],
+      ['min_value', i128],
+      ['max_value', i128],
+      ['num_samples', u8],
+      ['submission_idx', u8],
+      ['padding1', uniformFixedSizeArray(u8, 6)],
+      ['slot', u64],
+    ],
+    (args) => args as PullFeedAccountDataResult
+  );
+
+export type OracleSubmission = {
+  oracle: PublicKey;
+  slot: BigNumber;
+  landed_at: BigNumber;
+  value: BigNumber;
+};
+
+export const oracleSubmissionStruct = new BeetStruct<OracleSubmission>(
+  [
+    ['oracle', publicKey],
+    ['slot', u64],
+    ['landed_at', u64],
+    ['value', i128],
+  ],
+  (args) => args as OracleSubmission
+);
+
+export type PullFeedAccountData = {
+  buffer: Buffer;
+  submissions: OracleSubmission[];
+  authority: PublicKey;
+  queue: PublicKey;
+  feed_hash: number[];
+  initialized_at: BigNumber;
+  permissions: BigNumber;
+  max_variance: BigNumber;
+  min_responses: BigNumber;
+  name: number[];
+  padding1: number[];
+  historical_result_idx: number;
+  min_sample_size: number;
+  last_update_timestamp: BigNumber;
+  lut_slot: BigNumber;
+  _reserved1: number[];
+  result: PullFeedAccountDataResult;
+};
+
+export const pullFeedAccountDataStruct = new BeetStruct<PullFeedAccountData>(
+  [
+    ['buffer', blob(8)],
+    ['submissions', uniformFixedSizeArray(oracleSubmissionStruct, 32)],
+    ['authority', publicKey],
+    ['queue', publicKey],
+    ['feed_hash', uniformFixedSizeArray(u8, 32)],
+    ['initialized_at', i64],
+    ['permissions', u64],
+    ['max_variance', u64],
+    ['min_responses', u32],
+    ['name', uniformFixedSizeArray(u8, 32)],
+    ['padding1', uniformFixedSizeArray(u8, 2)],
+    ['historical_result_idx', u8],
+    ['min_sample_size', u8],
+    ['last_update_timestamp', i64],
+    ['lut_slot', u64],
+    ['_reserved1', uniformFixedSizeArray(u8, 32)],
+    ['result', pullFeedAccountDataResultStruct],
+  ],
+  (args) => args as PullFeedAccountData
+);

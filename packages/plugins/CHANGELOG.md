@@ -2,6 +2,134 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.81](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.80...plugins-0.14.81) (2025-01-02)
+
+
+
+## [0.14.80](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.79...plugins-0.14.80) (2024-12-31)
+
+
+
+## [0.14.79](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.78...plugins-0.14.79) (2024-12-30)
+
+
+
+## [0.14.78](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.77...plugins-0.14.78) (2024-12-24)
+
+
+
+## [0.14.77](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.76...plugins-0.14.77) (2024-12-23)
+
+
+
+## [0.14.76](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.75...plugins-0.14.76) (2024-12-20)
+
+
+
+## [0.14.75](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.74...plugins-0.14.75) (2024-12-20)
+
+
+
+## [0.14.74](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.73...plugins-0.14.74) (2024-12-20)
+
+
+
+## [0.14.73](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.72...plugins-0.14.73) (2024-12-19)
+
+
+
+## [0.14.72](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.71...plugins-0.14.72) (2024-12-19)
+
+
+
+## [0.14.71](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.70...plugins-0.14.71) (2024-12-18)
+
+
+
+## [0.14.70](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.69...plugins-0.14.70) (2024-12-17)
+
+
+
+## [0.14.69](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.68...plugins-0.14.69) (2024-12-17)
+
+
+
+## [0.14.68](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.67...plugins-0.14.68) (2024-12-17)
+
+
+
+## [0.14.67](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.66...plugins-0.14.67) (2024-12-16)
+
+
+
+## [0.14.66](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.65...plugins-0.14.66) (2024-12-13)
+
+
+
+## [0.14.65](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.64...plugins-0.14.65) (2024-12-13)
+
+
+
+## [0.14.64](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.63...plugins-0.14.64) (2024-12-12)
+
+
+
+## [0.14.63](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.62...plugins-0.14.63) (2024-12-11)
+
+
+
+## [0.14.62](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.61...plugins-0.14.62) (2024-12-10)
+
+
+
+## [0.14.61](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.60...plugins-0.14.61) (2024-12-09)
+
+
+
+## [0.14.60](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.59...plugins-0.14.60) (2024-12-09)
+
+
+
+## [0.14.59](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.58...plugins-0.14.59) (2024-12-05)
+
+
+
+## [0.14.58](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.57...plugins-0.14.58) (2024-12-05)
+
+
+
+## [0.14.57](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.56...plugins-0.14.57) (2024-12-05)
+
+
+
+## [0.14.56](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.55...plugins-0.14.56) (2024-12-05)
+
+
+
+## [0.14.55](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.54...plugins-0.14.55) (2024-12-05)
+
+
+
+## [0.14.54](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.53...plugins-0.14.54) (2024-12-05)
+
+
+
+## [0.14.53](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.52...plugins-0.14.53) (2024-12-04)
+
+
+
+## [0.14.52](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.51...plugins-0.14.52) (2024-12-04)
+
+
+
+## [0.14.51](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.50...plugins-0.14.51) (2024-12-03)
+
+
+
+## [0.14.50](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.49...plugins-0.14.50) (2024-12-03)
+
+
+
 ## [0.14.49](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.48...plugins-0.14.49) (2024-12-02)
 
 

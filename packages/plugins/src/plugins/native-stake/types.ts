@@ -1,4 +1,4 @@
-export type ValidatorInfo = {
+export type AptosValidatorInfo = {
   addr: string;
   config: {
     consensus_pubkey: string;
@@ -10,7 +10,7 @@ export type ValidatorInfo = {
 };
 
 export type ValidatorSet = {
-  active_validators: ValidatorInfo[];
+  active_validators: AptosValidatorInfo[];
   consensus_scheme: string;
   pending_active: string[];
   pending_inactive: string[];
@@ -25,4 +25,12 @@ export type DelegationResponse = {
     shares: string;
   };
   balance: { denom: string; amount: string };
+};
+
+export type SuiValidatorInfo = {
+  address: string;
+  apy?: number;
+  logoUrl?: string;
+  name?: string;
+  stakeCommission?: number;
 };

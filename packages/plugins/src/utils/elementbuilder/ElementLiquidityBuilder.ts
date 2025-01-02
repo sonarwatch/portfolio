@@ -44,7 +44,7 @@ export class ElementLiquidityBuilder extends ElementBuilder {
       type: this.type,
       label: this.label,
       networkId,
-      platformId,
+      platformId: this.platformId || platformId,
       data: {
         liquidities,
       },

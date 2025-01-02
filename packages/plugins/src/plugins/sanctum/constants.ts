@@ -25,3 +25,13 @@ export const s1AirdropStatics: AirdropStatics = {
   claimLink: 'https://lfg.jup.ag/sanctum',
   image: platformImage,
 };
+
+export const nclbAirdropStatics: AirdropStatics = {
+  id: 'sanctum-nclb',
+  claimStart: undefined,
+  claimEnd: undefined,
+  emitterName: 'Sanctum',
+  emitterLink: platformWebsite,
+  claimLink: 'https://appeal.sanctum.so/results',
+  image: platformImage,
+};

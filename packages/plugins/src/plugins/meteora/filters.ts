@@ -10,6 +10,8 @@ export const stablePoolsFilters: GetProgramAccountsFilter[] = [
   { dataSize: 1387 },
 ];
 
+export const memePoolsFilters: GetProgramAccountsFilter[] = [{ dataSize: 952 }];
+
 export const farmAccountFilter = (
   owner: string
 ): GetProgramAccountsFilter[] => [
@@ -43,5 +45,39 @@ export const dlmmPositionV2AccountFilter = (
       offset: 40,
       bytes: owner,
     },
+  },
+];
+
+export const stakeEscrowFilter = (
+  owner: string
+): GetProgramAccountsFilter[] => [
+  {
+    memcmp: {
+      offset: 8,
+      bytes: owner,
+    },
+  },
+  {
+    dataSize: 520,
+  },
+];
+
+export const feeVaultFilter = (): GetProgramAccountsFilter[] => [
+  {
+    dataSize: 1048,
+  },
+];
+
+export const unstakeFilter = (
+  stakeEscrow: string
+): GetProgramAccountsFilter[] => [
+  {
+    memcmp: {
+      offset: 8,
+      bytes: stakeEscrow,
+    },
+  },
+  {
+    dataSize: 304,
   },
 ];

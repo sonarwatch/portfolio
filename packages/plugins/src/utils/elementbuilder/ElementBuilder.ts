@@ -11,6 +11,7 @@ export abstract class ElementBuilder {
   readonly type: PortfolioElementTypeType;
   readonly label: PortfolioElementLabel;
   readonly name?: string;
+  readonly platformId?: string;
   tags?: string[];
 
   protected constructor(params: ElementParams) {
@@ -18,6 +19,7 @@ export abstract class ElementBuilder {
     this.label = params.label;
     this.name = params.name;
     this.tags = params.tags;
+    this.platformId = params.platformId;
   }
 
   addTag(tag: string) {

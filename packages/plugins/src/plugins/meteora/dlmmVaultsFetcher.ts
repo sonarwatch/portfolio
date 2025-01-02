@@ -1,12 +1,7 @@
 // DLMM Bootstrapping Pools
 // DLMM Alpha Vault
 
-import {
-  getUsdValueSum,
-  NetworkId,
-  PortfolioAssetToken,
-  PortfolioElementType,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -15,7 +10,7 @@ import { dlmmVaultProgramId, dlmmVaultsKey, platformId } from './constants';
 import { CachedDlmmVaults } from './types';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { escrowStruct } from './struct';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 // const slotTtl = 30000;
 // const slot: number | null = null;
@@ -57,69 +52,41 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   // }
   // if (!slot) return [];
 
-  const tokenPrices = await cache.getTokenPricesAsMap(
-    accounts
-      .map((a) => {
-        const v = vaults[a.dlmmVault.toString()];
-        return [v.baseMint, v.quoteMint];
-      })
-      .flat(),
-    NetworkId.solana
-  );
+  const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
+  const element = elementRegistry.addElementMultiple({
+    label: 'Vesting',
+    name: 'Alpha Vault',
+  });
 
-  const assets: PortfolioAssetToken[] = [];
   accounts.forEach((escrow) => {
     const vault = vaults[escrow.dlmmVault.toString()];
     if (!vault || !vault.endVestingTs || !vault.startVestingTs) return;
-    if (time > Number(vault.endVestingTs)) return;
+    // if (time > Number(vault.endVestingTs)) return;
 
     // Vesting not started yet
-    if (Date.now() < Number(vault.startVestingTs)) {
-      const tpQuote = tokenPrices.get(vault.quoteMint);
-      if (!tpQuote) return;
-      assets.push(
-        tokenPriceToAssetToken(
-          vault.quoteMint,
-          new BigNumber(escrow.totalDeposit)
-            .div(10 ** tpQuote.decimals)
-            .toNumber(),
-          NetworkId.solana,
-          tpQuote,
-          undefined,
-          {}
-        )
-      );
+    if (time < Number(vault.startVestingTs) * 1000) {
+      element.addAsset({
+        address: vault.quoteMint,
+        amount: escrow.totalDeposit,
+      });
     } else {
       // Vesting started
       // If not refunded yet
-
       const filledRatio = new BigNumber(vault.totalDeposit)
         .div(vault.maxCap)
         .toNumber();
 
       if (escrow.refunded === 0 && filledRatio > 1) {
-        const tpQuote = tokenPrices.get(vault.quoteMint);
-        if (!tpQuote) return;
-        const amount = new BigNumber(escrow.totalDeposit)
-          .div(10 ** tpQuote.decimals)
-          .times(1 - 1 / filledRatio);
+        const amount = new BigNumber(escrow.totalDeposit).times(
+          1 - 1 / filledRatio
+        );
 
         if (amount.isGreaterThan(dustFilter))
-          assets.push(
-            tokenPriceToAssetToken(
-              vault.quoteMint,
-              amount.toNumber(),
-              NetworkId.solana,
-              tpQuote,
-              undefined,
-              {
-                isClaimable: true,
-              }
-            )
-          );
+          element.addAsset({
+            address: vault.quoteMint,
+            amount,
+          });
       }
-      const tpBase = tokenPrices.get(vault.baseMint);
-      if (!tpBase) return;
 
       const shares = new BigNumber(escrow.totalDeposit).div(vault.totalDeposit);
       const totalAmount = new BigNumber(vault.boughtToken).times(shares);
@@ -139,56 +106,28 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           Math.min(time, Number(vault.endVestingTs)) - lastClaimedTs
         );
       }
-      claimableAmount = claimableAmount.div(10 ** tpBase.decimals);
+
       if (claimableAmount.isGreaterThan(dustFilter)) {
-        assets.push(
-          tokenPriceToAssetToken(
-            vault.baseMint,
-            claimableAmount.toNumber(),
-            NetworkId.solana,
-            tpBase,
-            undefined,
-            {
-              isClaimable: true,
-            }
-          )
-        );
+        element.addAsset({
+          address: vault.baseMint,
+          amount: claimableAmount,
+          attributes: {
+            isClaimable: true,
+          },
+        });
       }
 
-      const vestingAmount = remainingAmount
-        .minus(claimableAmount)
-        .div(10 ** tpBase.decimals);
+      const vestingAmount = remainingAmount.minus(claimableAmount);
       if (vestingAmount.isGreaterThan(dustFilter)) {
-        assets.push(
-          tokenPriceToAssetToken(
-            vault.baseMint,
-            vestingAmount.toNumber(),
-            NetworkId.solana,
-            tpBase,
-            undefined,
-            {
-              tags: ['Vesting'],
-            }
-          )
-        );
+        element.addAsset({
+          address: vault.baseMint,
+          amount: vestingAmount,
+        });
       }
     }
   });
-  if (assets.length === 0) return [];
 
-  return [
-    {
-      networkId: NetworkId.solana,
-      type: PortfolioElementType.multiple,
-      label: 'Vesting',
-      platformId,
-      name: 'Alpha Vault',
-      data: {
-        assets,
-      },
-      value: getUsdValueSum(assets.map((a) => a.value)),
-    },
-  ];
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

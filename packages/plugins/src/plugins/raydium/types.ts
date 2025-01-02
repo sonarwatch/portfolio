@@ -241,7 +241,7 @@ export type PoolInfo = {
   farmOngoingCount: number;
   farmFinishedCount: number;
   marketId: string;
-  lpMint: LpMint;
+  lpMint?: LpMint;
   lpPrice: number;
   lpAmount: number;
   burnPercent: number;

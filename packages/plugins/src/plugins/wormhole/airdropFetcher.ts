@@ -1,14 +1,10 @@
-import {
-  NetworkId,
-  NetworkIdType,
-  PortfolioElementType,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId, NetworkIdType } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId, wMint } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getAccountPubkey, getAllocation } from './helpers';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 export default function getPositionsV2Fetcher(
   networkId: NetworkIdType
@@ -22,26 +18,19 @@ export default function getPositionsV2Fetcher(
 
     if (account) return [];
 
-    const tokenPrice = await cache.getTokenPrice(wMint, NetworkId.solana);
-    const asset = tokenPriceToAssetToken(
-      wMint,
-      allocation,
-      NetworkId.solana,
-      tokenPrice
-    );
+    const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 
-    return [
-      {
-        type: PortfolioElementType.multiple,
-        label: 'Airdrop',
-        networkId: NetworkId.solana,
-        platformId,
-        data: {
-          assets: [{ ...asset, attributes: { isClaimable: true } }],
-        },
-        value: asset.value,
-      },
-    ];
+    const element = elementRegistry.addElementMultiple({
+      label: 'Airdrop',
+    });
+
+    element.addAsset({
+      address: wMint,
+      amount: allocation,
+      attributes: { isClaimable: true },
+    });
+
+    return elementRegistry.getElements(cache);
   };
 
   return {

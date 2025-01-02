@@ -9,12 +9,15 @@ import farmsFetcher from './farmsFetcher';
 import limitFetcher from './limitFetcher';
 import dcaFetcher from './dcaFetcher';
 import poolsStatsJob from './poolsStatsJob';
+import stakingFetcher from './stakingFetcher';
+import xcetusJob from './xcetusJob';
 
 export const platforms: Platform[] = [platform];
-export const jobs: Job[] = [poolsJob, poolsStatsJob, vaultsJob];
+export const jobs: Job[] = [poolsJob, poolsStatsJob, vaultsJob, xcetusJob];
 export const fetchers: Fetcher[] = [
   clmmPositionFetcher,
   farmsFetcher,
   limitFetcher,
   dcaFetcher,
+  stakingFetcher,
 ];

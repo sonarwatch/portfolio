@@ -2,7 +2,7 @@ import { BeetStruct, u8 } from '@metaplex-foundation/beet';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { blob, u64 } from '../../utils/solana';
+import { blob, i64, u64 } from '../../utils/solana';
 
 export enum AccountType {
   Uninitialized,
@@ -62,4 +62,100 @@ export const stakePoolStruct = new BeetStruct<StakePool>(
     ['lastUpdateEpoch', u64],
   ],
   (args) => args as StakePool
+);
+
+export type Proof = {
+  buffer: Buffer;
+  bump: number;
+  nonce: BigNumber;
+  from: PublicKey;
+  amount: BigNumber;
+  mint: PublicKey;
+  batchId: BigNumber;
+  userSusdVault: PublicKey;
+};
+
+export const proofStruct = new BeetStruct<Proof>(
+  [
+    ['buffer', blob(8)],
+    ['bump', u8],
+    ['nonce', u64],
+    ['from', publicKey],
+    ['amount', u64],
+    ['mint', publicKey],
+    ['batchId', u64],
+    ['userSusdVault', publicKey],
+  ],
+  (args) => args as Proof
+);
+
+enum Status {
+  Active,
+  Inactive,
+}
+
+type Fee = {
+  numerator: BigNumber;
+  denominator: BigNumber;
+  recipient: PublicKey;
+};
+
+const feeStruct = new BeetStruct<Fee>(
+  [
+    ['numerator', u64],
+    ['denominator', u64],
+    ['recipient', publicKey],
+  ],
+  (args) => args as Fee
+);
+
+export type SUSDPool = {
+  buffer: Buffer;
+  bump: number;
+  manager: PublicKey;
+  operator: PublicKey;
+  rateAuthority: PublicKey;
+  fee: Fee;
+  poolCreationTimestampSeconds: BigNumber;
+  lastFeeCollectionTimestampSeconds: BigNumber;
+  usdcMint: PublicKey;
+  poolUsdcMainVault: PublicKey;
+  susdMint: PublicKey;
+  poolSusdVault: PublicKey;
+  batchDepositStatus: Status;
+  currentDepositId: BigNumber;
+  currentDepositUsdcAmount: BigNumber;
+  batchDepositRemainingUsdcAmount: BigNumber;
+  batchWithdrawStatus: Status;
+  currentWithdrawId: BigNumber;
+  currentWithdrawSusdAmount: BigNumber;
+  batchWithdrawRemainingSusdAmount: BigNumber;
+  openedenInfo: PublicKey;
+};
+
+export const sUSDPoolStruct = new BeetStruct<SUSDPool>(
+  [
+    ['buffer', blob(8)],
+    ['bump', u8],
+    ['manager', publicKey],
+    ['operator', publicKey],
+    ['rateAuthority', publicKey],
+    ['fee', feeStruct],
+    ['poolCreationTimestampSeconds', i64],
+    ['lastFeeCollectionTimestampSeconds', i64],
+    ['usdcMint', publicKey],
+    ['poolUsdcMainVault', publicKey],
+    ['susdMint', publicKey],
+    ['poolSusdVault', publicKey],
+    ['batchDepositStatus', u8],
+    ['currentDepositId', u64],
+    ['currentDepositUsdcAmount', u64],
+    ['batchDepositRemainingUsdcAmount', u64],
+    ['batchWithdrawStatus', u8],
+    ['currentWithdrawId', u64],
+    ['currentWithdrawSusdAmount', u64],
+    ['batchWithdrawRemainingSusdAmount', u64],
+    ['openedenInfo', publicKey],
+  ],
+  (args) => args as SUSDPool
 );

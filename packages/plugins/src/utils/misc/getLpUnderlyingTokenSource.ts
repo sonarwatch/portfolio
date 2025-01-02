@@ -33,6 +33,7 @@ export const defaultAcceptedPairs = new Map<NetworkIdType, string[]>([
       solanaNativeWrappedAddress,
       usdcSolanaMint, // USDC
       'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB', // USDT
+      '2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo', // PYUSD
     ].map((a) => formatTokenAddress(a, NetworkId.solana)),
   ],
   [

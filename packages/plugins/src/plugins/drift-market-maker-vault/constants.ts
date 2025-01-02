@@ -34,6 +34,17 @@ export const gauntletPlatform: Platform = {
   name: 'Gauntlet',
   image: 'https://sonar.watch/img/platforms/gauntlet.webp',
   twitter: 'https://twitter.com/gauntlet_xyz',
+  website:
+    'https://app.drift.trade/vaults/CoHd9JpwfcA76XQGA4AYfnjvAtWKoBQ6eWBkFzR1A2ui',
+};
+
+export const vectisPlatformId = 'vectis';
+export const vectisPlatform: Platform = {
+  id: vectisPlatformId,
+  name: 'Vectis',
+  image: 'https://sonar.watch/img/platforms/vectis.webp',
+  twitter: 'https://twitter.com/vectis_xyz',
+  website: 'https://app.vectis.finance/',
 };
 
 export const hedgyPlatformId = 'hedgy';
@@ -54,12 +65,14 @@ export const vaultsPids = [
 
 export const prefixVaults = 'circuitVaults';
 
+// For each vault, find the Manager of the vault and put the pubkey here along with it's platform.
 export const platformIdByVaultManager: Map<string, string> = new Map([
   ['GT3RSBy5nS2ACpT3LCkycHWm9CVJCSuqErAgf4sE33Qu', circuitPlatformId],
   ['En8nqJqCE9D2Bsqetw4p89VgZTh8QK8SfCAn5sSyL4PM', moosePlatformId],
   ['C77bxLHWjnAVeG9HdMxu1gunFnjRCcWUDZYfa7xbacHr', neutralPlatformId],
   ['neutBqYtHqPiu89Yfuk3X3cebgBtyppzSbxJ9tt1eSB', neutralPlatformId],
   ['G6L1NE8tLYYzvMHYHbkHZqPFvfEsiRAsHSvyNQ2hut3o', gauntletPlatformId],
-  ['GcGx7VBJX9AxW2EKayVVovpPXvfjpCdjGkKXa27Ryg3a', hedgyPlatformId],
+  ['HG5SYPLJuD9xT2vdGBwzCoYCVfVs2jJFtc8BLt1J6nY8', hedgyPlatformId],
   ['86fYXDydyKKnL7gxWpVrUDnsrVyQyZkwb4YsisBHC9ab', gauntletPlatformId],
+  ['6HmPq4hU2BQqkogVuohggZwaqNFQRpRQ6MSE6bcKxCEa', vectisPlatformId],
 ]);

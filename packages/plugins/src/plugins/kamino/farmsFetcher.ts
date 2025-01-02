@@ -1,6 +1,7 @@
 import {
   NetworkId,
   PortfolioAsset,
+  PortfolioElement,
   PortfolioElementType,
   PortfolioLiquidity,
   TokenPrice,
@@ -52,7 +53,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
 
   const liquidities: PortfolioLiquidity[] = [];
-
+  const stakedAssets: PortfolioAsset[] = [];
   for (const userState of userStates) {
     const rewardAssets: PortfolioAsset[] = [];
     const assets: PortfolioAsset[] = [];
@@ -69,6 +70,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       .dividedBy(10 ** decimals)
       .toNumber();
 
+    // Handle specific KMNO Staking which uses a farm
+
     assets.push(
       ...tokenPriceToAssetTokens(
         farm.mint,
@@ -77,6 +80,24 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         tokenPrice
       )
     );
+    const assetsValue = getUsdValueSum(assets.map((a) => a.value));
+    const rewardAssetsValue = null;
+    const value = assetsValue;
+
+    if (assets.length === 1) {
+      stakedAssets.push(...assets);
+    } else {
+      const liquidity: PortfolioLiquidity = {
+        value,
+        assets,
+        assetsValue,
+        rewardAssets,
+        rewardAssetsValue,
+        yields: [],
+      };
+      liquidities.push(liquidity);
+    }
+
     // for (let i = 0; i < farm.rewardsMints.length; i++) {
     //   const rewardMint = farm.rewardsMints[i];
     //   if (rewardMint === '11111111111111111111111111111111') continue;
@@ -111,25 +132,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     //     attributes: { isClaimable: false },
     //   });
     // }
-
-    const assetsValue = getUsdValueSum(assets.map((a) => a.value));
-    const rewardAssetsValue = null;
-    const value = assetsValue;
-
-    const liquidity: PortfolioLiquidity = {
-      value,
-      assets,
-      assetsValue,
-      rewardAssets,
-      rewardAssetsValue,
-      yields: [],
-    };
-    liquidities.push(liquidity);
   }
-  if (liquidities.length === 0) return [];
 
-  return [
-    {
+  const elements: PortfolioElement[] = [];
+
+  if (liquidities.length !== 0) {
+    elements.push({
       networkId: NetworkId.solana,
       platformId,
       type: PortfolioElementType.liquidity,
@@ -138,8 +146,23 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       data: {
         liquidities,
       },
-    },
-  ];
+    });
+  }
+
+  if (stakedAssets.length !== 0) {
+    elements.push({
+      networkId: NetworkId.solana,
+      platformId,
+      type: PortfolioElementType.multiple,
+      label: 'Staked',
+      value: getUsdValueSum(stakedAssets.map((s) => s.value)),
+      data: {
+        assets: stakedAssets,
+      },
+    });
+  }
+
+  return elements;
 };
 
 const fetcher: Fetcher = {

@@ -2,6 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 import { IdlItem } from '@solanafm/explorer-kit-idls';
 import { idls as ZetaStakingID } from './idls';
+import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'zeta';
 export const platform: Platform = {
@@ -16,6 +17,17 @@ export const programId = new PublicKey(
   'ZETAxsqBRek56DhiGXrn75yj2NHU3aYUnxvHXpkf3aD'
 );
 export const graphqlApi = 'https://api-gql.zeta.markets/graphql';
+
+export const airdropStatics: AirdropStatics = {
+  claimLink: 'https://token.zeta.markets/',
+  emitterLink: 'https://www.zeta.markets/',
+  emitterName: 'Zeta',
+  id: 'zeta-airdrop',
+  image: 'https://sonar.watch/img/platforms/zeta.webp',
+  claimStart: 1719475200000,
+  claimEnd: 1727251200000,
+};
+
 export const zexMint = 'ZEXy1pqteRu3n13kdyh4LwPQknkFk3GzmMYMuNadWPo';
 export const zexDecimals = 6;
 export const distributorPid = '4JSALTb4QbipG7NNLryAFJg4y8X5C1ELErSncsVMA3gZ';
@@ -61,7 +73,7 @@ export const stakingPid = new PublicKey(
   '4DUapvWZDDCkfWJpdwvX2QjwAE9Yq4wU8792RMMv7Csg'
 );
 
-export const sharkyIdlItem = {
+export const zetaIdlItem = {
   programId: stakingPid.toString(),
   idl: ZetaStakingID,
   idlType: 'anchor',

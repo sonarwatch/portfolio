@@ -5,10 +5,13 @@ import {
   PortfolioElement,
 } from '@sonarwatch/portfolio-core';
 import { ElementBuilder } from './ElementBuilder';
-import { AssetBuilder } from './AssetBuilder';
+import { AssetTokenBuilder } from './AssetTokenBuilder';
 import { ElementParams } from './ElementParams';
-import { PortfolioAssetParams } from './PortfolioAssetParams';
+import { PortfolioAssetTokenParams } from './PortfolioAssetTokenParams';
 import { TokenPriceMap } from '../../TokenPriceMap';
+import { AssetBuilder } from './AssetBuilder';
+import { PortfolioAssetGenericParams } from './PortfolioAssetGenericParams';
+import { AssetGenericBuilder } from './AssetGenericBuilder';
 
 export class ElementMultipleBuilder extends ElementBuilder {
   assets: AssetBuilder[];
@@ -18,12 +21,16 @@ export class ElementMultipleBuilder extends ElementBuilder {
     this.assets = [];
   }
 
-  addAsset(params: PortfolioAssetParams) {
-    this.assets.push(new AssetBuilder(params));
+  addAsset(params: PortfolioAssetTokenParams) {
+    this.assets.push(new AssetTokenBuilder(params));
+  }
+
+  addGenericAsset(params: PortfolioAssetGenericParams) {
+    this.assets.push(new AssetGenericBuilder(params));
   }
 
   mints(): string[] {
-    return this.assets.map((a) => a.address);
+    return [...this.assets.map((a) => a.mints())].flat();
   }
 
   get(
@@ -41,7 +48,7 @@ export class ElementMultipleBuilder extends ElementBuilder {
       type: this.type,
       label: this.label,
       networkId,
-      platformId,
+      platformId: this.platformId || platformId,
       data: {
         assets,
       },

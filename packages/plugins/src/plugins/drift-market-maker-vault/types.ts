@@ -4,4 +4,7 @@ export type VaultInfo = {
   mint: string;
   decimals: number;
   name: string;
+  totalShares: string;
+  totalTokens: string;
+  user: string;
 };

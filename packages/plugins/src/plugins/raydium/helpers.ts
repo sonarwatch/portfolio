@@ -21,7 +21,7 @@ import {
   TickArrayState,
 } from './structs/clmms';
 import { ParsedAccount } from '../../utils/solana';
-import { PortfolioAssetParams } from '../../utils/elementbuilder/PortfolioAssetParams';
+import { PortfolioAssetTokenParams } from '../../utils/elementbuilder/PortfolioAssetTokenParams';
 
 export function isARaydiumPosition(nft: PortfolioAssetCollectible): boolean {
   return nft.name === positionsIdentifier;
@@ -280,7 +280,7 @@ export function getPendingAssetParams(
   perShare: BigNumber,
   rewardToken: TokenPrice,
   multiplier: number | BigNumber
-): PortfolioAssetParams {
+): PortfolioAssetTokenParams {
   const amount = depositBalance
     .times(perShare)
     .div(multiplier)

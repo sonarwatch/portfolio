@@ -22,24 +22,16 @@ export const commonStatics = {
 export const firstDistribStatics: AirdropStatics = {
   ...commonStatics,
   id: `${platformId}-dis1`,
-  claimEnd: undefined,
+  claimEnd: 1747440000000,
   claimStart: 1724940000000,
 };
 
-export const vestedDistributionStatics: AirdropStatics = {
+export const secondDistribStatics: AirdropStatics = {
   ...commonStatics,
-  id: `${platformId}-dis1-vested`,
-  claimEnd: undefined,
+  id: `${platformId}-dis2`,
+  claimEnd: 1747440000000,
   claimStart: 1740751200000,
 };
-
-export const staticsByTitle: Map<string, AirdropStatics> = new Map([
-  ['First Distribution', firstDistribStatics],
-  [
-    'Claim 50% vested with bonus in 6 months after TGE',
-    vestedDistributionStatics,
-  ],
-]);
 
 export const dbrMint = 'DBRiDgJAMsM95moTzJs7M9LnkGErpbv9v6CUR1DXnUu5';
 export const dbrDecimals = 6;

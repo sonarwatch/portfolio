@@ -4,12 +4,24 @@ import { Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from '../../Fetcher';
 import { platform } from './constants';
 import bidsFetcher from './bidsFetcher';
-import powerUserAirdropFetcher from './airdropPowerUsersFetcher';
+// import powerUserAirdropFetcher from './airdropPowerUsersFetcher';
 import sharedEscrowFetcher from './sharedEscrowFetcher';
+import {
+  powerUserFetcher,
+  powerUserAirdropFetcher,
+} from './powerUserAirdropFetcher';
+import { s4Fetcher, airdropS4Fetcher } from './season4AirdropFetcher';
+import { AirdropFetcher } from '../../AirdropFetcher';
 
 export const platforms: Platform[] = [platform];
 export const fetchers: Fetcher[] = [
   bidsFetcher,
-  powerUserAirdropFetcher,
+  powerUserFetcher,
+  s4Fetcher,
   sharedEscrowFetcher,
+];
+
+export const tensorAirdropFetchers: AirdropFetcher[] = [
+  powerUserAirdropFetcher,
+  airdropS4Fetcher,
 ];
