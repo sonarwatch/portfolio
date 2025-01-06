@@ -12,7 +12,7 @@ import { walletTokensPlatform } from '../tokens/constants';
 import { getSwitchboardOnDemandPrices } from './helpers/getSwitchboardOnDemandPrice';
 import { getDecimalsForToken } from '../../utils/misc/getCachedDecimalsForToken';
 import { SwitchboardTokenPricingInfo } from './types';
-import { usdcSolanaMint } from '../../utils/solana';
+import { usdcSolanaMint, crtSolanaMint } from '../../utils/solana';
 
 const feedsToFetch: SwitchboardTokenPricingInfo[] = [
   {
@@ -27,6 +27,11 @@ const feedsToFetch: SwitchboardTokenPricingInfo[] = [
   {
     feedsAddresses: ['2Dv72h14k6ynrUvQ8mhu5ihwrk1Kte6Aj2tpKhXLsHrR'],
     mintAddress: usdcSolanaMint,
+    networkId: NetworkId.solana,
+  },
+  {
+    feedsAddresses: ['GQbKvThYgyvdp8T8MoE8KKD2NngXumQ8mDkCLxmhvJKm'],
+    mintAddress: crtSolanaMint,
     networkId: NetworkId.solana,
   },
 ];
