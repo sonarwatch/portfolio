@@ -1,91 +1,113 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
-import {
-  SUI_TYPE_ARG,
-  normalizeStructTag,
-  parseStructTag,
-} from '@mysten/sui/utils';
-import { CoinMetadata } from '@mysten/sui/client';
-import { Cache } from '../../Cache';
-import { Job, JobExecutor } from '../../Job';
-import {
-  addressKey,
-  addressPrefix,
-  poolsKey,
-  poolsPrefix as prefix,
-} from './constants';
-import {
-  AddressInfo,
-  Coin,
-  PoolCoinNames,
-  Pools,
-  StructTag,
-  wormholeCoinTypeToSymbolMap,
-} from './types';
-import { getObject } from '../../utils/sui/getObject';
-import { getClientSui } from '../../utils/clients';
+// import { NetworkId } from '@sonarwatch/portfolio-core';
+// import { parseStructTag } from '@mysten/sui/utils';
+// import { CoinMetadata } from '@mysten/sui/client';
+// import { Cache } from '../../Cache';
+// import { Job, JobExecutor } from '../../Job';
+// import {
+//   addressKey,
+//   addressPrefix,
+//   poolsKey,
+//   poolsPrefix as prefix,
+// } from './constants';
+// import {
+//   AddressInfo,
+//   Coin,
+//   MetadataFields,
+//   PoolCoinNames,
+//   Pools,
+//   suiBridgeCoinTypeToSymbolMap,
+//   wormholeCoinTypeToSymbolMap,
+// } from './types';
+// import { getClientSui } from '../../utils/clients';
+// import { queryMultipleObjects } from './util';
+// import { ObjectData, ObjectResponse, ParsedData } from '../../utils/sui/types';
 
-const SUI_TYPE = normalizeStructTag(SUI_TYPE_ARG);
+// const executor: JobExecutor = async (cache: Cache) => {
+//   const addressCache = await cache.getItem<AddressInfo>(addressKey, {
+//     prefix: addressPrefix,
+//     networkId: NetworkId.sui,
+//   });
 
-const executor: JobExecutor = async (cache: Cache) => {
-  const address = await cache.getItem<AddressInfo>(addressKey, {
-    prefix: addressPrefix,
-    networkId: NetworkId.sui,
-  });
+//   if (!addressCache) return;
 
-  if (!address) return;
+//   const coinTypes: Partial<Pools> = {};
+//   const coins = new Map<string, Coin>(
+//     Object.entries(addressCache.mainnet.core.coins)
+//   );
 
-  const coinTypes: Partial<Pools> = {};
-  const coins = new Map<string, Coin>(
-    Object.entries(address.mainnet.core.coins)
-  );
-  const coinNames: PoolCoinNames[] = Array.from(
-    coins.keys()
-  ) as PoolCoinNames[];
-  const client = getClientSui();
-  for (const coinName of coinNames) {
-    const detail = coins.get(coinName);
-    if (!detail) continue;
-    if (SUI_TYPE.includes(detail.id)) {
-      coinTypes[coinName] = {
-        coinType: SUI_TYPE,
-        metadata: await client.getCoinMetadata({ coinType: SUI_TYPE }),
-      };
-    } else {
-      const object = await getObject<CoinMetadata>(client, detail.metaData);
-      const objectData = object.data;
-      if (!objectData || !objectData.type) return;
+//   const coinNames: PoolCoinNames[] = Array.from(
+//     coins.keys()
+//   ) as PoolCoinNames[];
 
-      const metadataStruct = parseStructTag(
-        normalizeStructTag(objectData.type)
-      ); // 0x2::coin::CoinMetadata<T>
-      const {
-        address: packageId,
-        module,
-        name,
-      } = metadataStruct.typeParams[0] as StructTag;
-      const objFields = objectData.content?.fields;
-      if (!objFields) return;
+//   const client = getClientSui();
+//   const metadataObjects = (
+//     await queryMultipleObjects(
+//       client,
+//       Array.from(coins.values()).map((coin) => coin.metaData)
+//     )
+//   )
+//     .filter(
+//       (
+//         t
+//       ): t is ObjectResponse<MetadataFields> & {
+//         data: ObjectData<MetadataFields> & {
+//           content: ParsedData<MetadataFields>;
+//         };
+//       } =>
+//         !!t.data &&
+//         !!t.data.content &&
+//         t.data.content.dataType === 'moveObject' &&
+//         !!t.data.content.fields
+//     )
+//     .map((objData) => ({
+//       metadata: {
+//         ...objData.data.content.fields,
+//         iconUrl: objData.data.content.fields.icon_url,
+//       },
+//       type: (() => {
+//         const { address, module, name } = parseStructTag(objData.data.type)
+//           .typeParams[0] as { address: string; name: string; module: string };
+//         return `${address}::${module}::${name}`;
+//       })(),
+//     })) as {
+//     metadata: CoinMetadata;
+//     type: string;
+//   }[];
 
-      // manually map wormhole usdc symbol into wusdc
-      const coinType = `${packageId}::${module}::${name}`;
-      objFields.symbol =
-        wormholeCoinTypeToSymbolMap[coinType] ?? objFields.symbol;
-      coinTypes[coinName] = {
-        coinType,
-        metadata: objFields,
-      };
-    }
-  }
+//   for (let i = 0; i < coinNames.length; i++) {
+//     const coinName = coinNames[i];
+//     // eslint-disable-next-line @typescript-eslint/naming-convention
+//     const {
+//       metadata: { decimals, description, iconUrl, name, symbol },
+//       type: coinType,
+//     } = metadataObjects[i];
+//     const detail = coins.get(coinName);
+//     if (!detail) continue;
 
-  await cache.setItem(poolsKey, coinTypes, {
-    prefix,
-    networkId: NetworkId.sui,
-  });
-};
+//     coinTypes[coinName] = {
+//       coinType,
+//       metadata: {
+//         decimals,
+//         description,
+//         iconUrl,
+//         name,
+//         symbol:
+//           wormholeCoinTypeToSymbolMap[coinType] ??
+//           suiBridgeCoinTypeToSymbolMap[coinType] ??
+//           symbol,
+//       },
+//     };
+//   }
 
-const job: Job = {
-  id: prefix,
-  executor,
-  label: 'normal',
-};
-export default job;
+//   await cache.setItem(poolsKey, coinTypes, {
+//     prefix,
+//     networkId: NetworkId.sui,
+//   });
+// };
+
+// const job: Job = {
+//   id: prefix,
+//   executor,
+//   label: 'normal',
+// };
+// export default job;

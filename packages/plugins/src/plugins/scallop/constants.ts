@@ -16,7 +16,7 @@ export const poolsPrefix = `${platformId}-pools`;
 export const spoolsPrefix = `${platformId}-spoolsmarket`;
 
 export const addressEndpoint =
-  'https://sui.apis.scallop.io/addresses/66f8e7ed9bb9e07fdfb86bbb';
+  'https://sui.apis.scallop.io/addresses/675c65cd301dd817ea262e76';
 export const addressKey = 'scallop-address-key';
 export const marketKey = 'scallop-market-key';
 export const poolsKey = 'scallop-pools-key';
@@ -55,6 +55,11 @@ export const scoinNames = [
   'scallop_ha_sui',
   'scallop_v_sui',
   'scallop_usdc',
+  'scallop_deep',
+  'scallop_fud',
+  'scallop_fdusd',
+  'scallop_sb_usdt',
+  'scallop_sb_eth',
 ] as const;
 
 export const coinNames = [
@@ -71,6 +76,11 @@ export const coinNames = [
   'hasui',
   'vsui',
   'usdc',
+  'deep',
+  'fud',
+  'fdusd',
+  'sbusdt',
+  'sbeth'
 ] as const;
 
 export const marketCoinNames = [
@@ -87,4 +97,9 @@ export const marketCoinNames = [
   'shasui',
   'svsui',
   'susdc',
+  'sdeep',
+  'sfud',
+  'sfdusd',
+  'ssbusdt',
+  'ssbeth'
 ] as const;

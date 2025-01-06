@@ -1,3 +1,5 @@
+import { SCoinNames } from './coin';
+
 export interface AddressInfo {
   id: string;
   mainnet: Network;
@@ -10,12 +12,62 @@ export interface AddressInfo {
 export interface Network {
   core: Core;
   spool: Spool;
+  borrowIncentive: BorrowIncentive;
+  vesca: VeSca;
+  referral: Referral;
+  loyaltyProgram: LoyaltyProgram;
+  scoin: {
+    id: string;
+    coins: Record<SCoinNames, SCoin>;
+  };
+}
+interface LoyaltyProgram {
+  id: string;
+  object: string;
+  rewardPool: string;
+  userRewardTableId: string;
 }
 
 export interface Spool {
   id: string;
   adminCap: string;
   pools: Map<string, SpoolCoin>;
+}
+
+interface BorrowIncentive {
+  id: string;
+  adminCap: string;
+  object: string;
+  query: string;
+  incentivePools: string;
+  incentiveAccounts: string;
+  config: string;
+  version: string;
+  versionCap: string;
+}
+
+interface VeSca {
+  id: string;
+  object: string;
+  adminCap: string;
+  tableId: string;
+  table: string;
+  treasury: string;
+  config: string;
+}
+
+interface Referral {
+  id: string;
+  object: string;
+  adminCap: string;
+  referralBindings: string;
+  bindingTableId: string;
+  referralRevenuePool: string;
+  revenueTableId: string;
+  referralTiers: string;
+  tiersTableId: string;
+  authorizedWitnessList: string;
+  version: string;
 }
 
 export interface Core {
@@ -35,6 +87,12 @@ export interface Coin {
   metaData: string;
   treasury: string;
   oracle: CoinOracle;
+}
+
+export interface SCoin {
+  coinType: string;
+  treasury: string;
+  metaData: string;
 }
 
 export interface SpoolCoin {

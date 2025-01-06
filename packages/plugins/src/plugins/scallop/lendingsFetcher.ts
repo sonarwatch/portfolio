@@ -14,14 +14,13 @@ import {
 import { normalizeStructTag, parseStructTag } from '@mysten/sui/utils';
 import BigNumber from 'bignumber.js';
 import {
+  CoinBalance,
   CoinMetadata,
-  CoinStruct,
   SuiObjectDataFilter,
 } from '@mysten/sui/client';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
-  marketCoinType,
   marketKey,
   platformId,
   marketPrefix as prefix,
@@ -48,8 +47,6 @@ import {
   sCoinToCoinName,
   SCoinTypeMetadata,
   sCoinTypeToCoinTypeMap,
-  SCoinTypeValue,
-  SpoolAccountFieldsType,
   SpoolJobResult,
   StructTag,
   UserLending,
@@ -86,7 +83,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     return [];
   }
 
-  const sCoinValues = Object.values(sCoins);
+  // const sCoinValues = Object.values(sCoins);
 
   // {'0x...': CoinMetaData }
   const poolValuesMetadataMap = poolValues.reduce((acc, poolValue) => {
@@ -95,23 +92,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   }, {} as { [k in string]: CoinMetadata });
 
   const client = getClientSui();
-  const filterOwnerObject: SuiObjectDataFilter = {
+  const filterSpoolAccount: SuiObjectDataFilter = {
     MatchAny: [
-      ...poolValues.map((value) => ({
-        StructType: `0x2::coin::Coin<${marketCoinType}<${value.coinType}>>`,
-      })),
-      ...sCoinValues.map(({ coinType }) => ({
-        StructType: `0x2::coin::Coin<${coinType}>`,
-      })),
       {
         StructType: sPoolAccountType,
       },
     ],
   };
 
-  const [allOwnedObjects, marketData, spoolData, addressData] =
+  const [allBalances, spoolAccounts, marketData, spoolData, addressData] =
     await Promise.all([
-      getOwnedObjectsPreloaded(client, owner, { filter: filterOwnerObject }),
+      client.getAllBalances({
+        owner,
+      }),
+      getOwnedObjectsPreloaded(client, owner, { filter: filterSpoolAccount }),
       cache.getItem<MarketJobResult>(marketKey, {
         prefix,
         networkId: NetworkId.sui,
@@ -130,7 +124,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     !marketData ||
     !spoolData ||
     !addressData ||
-    allOwnedObjects.length === 0 ||
+    // spoolAccounts.length === 0 ||
     Object.keys(marketData).length === 0 ||
     Object.keys(spoolData).length === 0 ||
     Object.keys(addressData).length === 0;
@@ -156,138 +150,73 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const lendingAssets: UserLendingData = {};
   const stakedAccounts: UserStakeAccounts = {};
 
-  const isSpoolAccount = (
-    obj: ObjectResponse<any>
-  ): obj is ObjectResponse<SpoolAccountFieldsType> => {
-    const objType = obj.data?.type;
-    if (!objType) return false;
+  spoolAccounts.forEach((obj: ObjectResponse<any>) => {
+    const spoolObj = obj.data;
+    const fields = spoolObj?.content?.fields;
+    if (!fields) return;
 
-    const { address, module, name } = parseStructTag(
-      normalizeStructTag(objType)
-    );
+    // parse market coin struct inside the spoolAccount struct
+    // 0x...::spool_account::SpoolAccount<0x..::reserve::MarketCoin<T>>
+    const marketCoinStruct = parseStructTag(normalizeStructTag(spoolObj.type))
+      .typeParams[0] as StructTag;
+    const { address, module, name } = marketCoinStruct
+      .typeParams[0] as StructTag;
+    const stakeType = `${address}::${module}::${name}`;
+    const coinName = poolValuesMetadataMap[
+      stakeType
+    ]?.symbol.toLowerCase() as PoolCoinNames;
+    if (!coinName) return;
 
-    return `${address}::${module}::${name}` === sPoolAccountType;
-  };
+    // sui -> ssui, usdc -> susdc, ...
+    const spoolName = `s${coinName}` as MarketCoinNames;
+    const { stakes, points, index } = fields;
+    if (!stakedAccounts[spoolName]) {
+      stakedAccounts[spoolName] = [];
+    }
+    stakedAccounts[spoolName]!.push({
+      stakes,
+      points,
+      index,
+    });
 
-  const isSCoin = (
-    obj: ObjectResponse<any>
-  ): obj is ObjectResponse<CoinStruct> => {
-    const objType = obj.data?.type;
-    if (!objType) return false;
+    const stakeBalance = BigNumber(stakes);
+    if (lendingAssets[coinName]) {
+      lendingAssets[coinName]!.amount =
+        lendingAssets[coinName]!.amount.plus(stakeBalance);
+    } else {
+      lendingAssets[coinName] = { coinType: stakeType, amount: stakeBalance };
+    }
+  });
 
-    const parsed = parseStructTag(objType);
-    const isCoin = parsed.name === 'Coin';
-    const sCoinTypeParsed = parsed.typeParams[0] as StructTag;
-    const isObjectSCoin =
-      !!sCoinToCoinName[sCoinTypeParsed.name.toLowerCase() as SCoinNames];
-
-    return isCoin && isObjectSCoin;
-  };
-
-  const isMarketCoin = (
-    obj: ObjectResponse<any>
-  ): obj is ObjectResponse<CoinStruct> => {
-    const objType = obj.data?.type;
-    if (!objType) return false;
-
-    const { address, module, name } = parseStructTag(objType);
-    const isCoin = name === 'Coin';
-    const isObjectMarketCoin =
+  allBalances.forEach((obj: CoinBalance) => {
+    const normalizedType = normalizeStructTag(obj.coinType);
+    const { address, module, name, typeParams } =
+      parseStructTag(normalizedType);
+    const isMarketCoin =
       address === addressData.mainnet.core.object &&
       module === 'reserve' &&
       name === 'MarketCoin';
-    return isCoin && isObjectMarketCoin;
-  };
-
-  allOwnedObjects.forEach((obj: ObjectResponse<any>) => {
-    if (isMarketCoin(obj)) {
-      const marketCoinObj = obj.data;
-      if (!marketCoinObj) return;
-
+    const isSCoin =
+      !!sCoinTypeToCoinTypeMap[normalizedType];
+    if (isMarketCoin) {
       // access underlying asset type from market coin struct
       // 0x2::coin::Coin<T>
-      const { address, module, name } = parseStructTag(
-        normalizeStructTag(marketCoinObj.type)
-      ).typeParams[0] as StructTag;
-      const coinType = `${address}::${module}::${name}`;
+      const parsedTypeParams = typeParams[0] as StructTag;
+      const coinType = `${parsedTypeParams.address}::${parsedTypeParams.module}::${parsedTypeParams.name}`;
       const coinName = poolValuesMetadataMap[
         coinType
       ]?.symbol.toLowerCase() as PoolCoinNames;
       if (!coinName) return;
 
-      const coinBalance = BigNumber(marketCoinObj.content?.fields.balance ?? 0);
-      if (!coinName) return;
-
-      if (lendingAssets[coinName]) {
-        lendingAssets[coinName]!.amount =
-          lendingAssets[coinName]!.amount.plus(coinBalance);
-      } else {
-        lendingAssets[coinName] = { coinType, amount: coinBalance };
-      }
-    } else if (isSpoolAccount(obj)) {
-      const spoolObj = obj.data;
-      const fields = spoolObj?.content?.fields;
-      if (!fields) return;
-
-      // parse market coin struct inside the spoolAccount struct
-      // 0x...::spool_account::SpoolAccount<0x..::reserve::MarketCoin<T>>
-      const marketCoinStruct = parseStructTag(normalizeStructTag(spoolObj.type))
-        .typeParams[0] as StructTag;
-      const { address, module, name } = marketCoinStruct
-        .typeParams[0] as StructTag;
-      const stakeType = `${address}::${module}::${name}`;
-      const coinName = poolValuesMetadataMap[
-        stakeType
-      ]?.symbol.toLowerCase() as PoolCoinNames;
-      if (!coinName) return;
-
-      // sui -> ssui, usdc -> susdc, ...
-      const spoolName = `s${coinName}` as MarketCoinNames;
-      const { stakes, points, index } = fields;
-      if (!stakedAccounts[spoolName]) {
-        stakedAccounts[spoolName] = [];
-      }
-      stakedAccounts[spoolName]!.push({
-        stakes,
-        points,
-        index,
-      });
-
-      const stakeBalance = BigNumber(stakes);
-      if (lendingAssets[coinName]) {
-        lendingAssets[coinName]!.amount =
-          lendingAssets[coinName]!.amount.plus(stakeBalance);
-      } else {
-        lendingAssets[coinName] = { coinType: stakeType, amount: stakeBalance };
-      }
-    } else if (isSCoin(obj)) {
-      const marketCoinObj = obj.data;
-      if (!marketCoinObj) return;
-
-      // access underlying asset type from market coin struct
-      // 0x2::coin::Coin<T>
-      const { address, module, name } = parseStructTag(
-        normalizeStructTag(marketCoinObj.type)
-      ).typeParams[0] as StructTag;
-
-      // convert sCoinType to coinType
-      const sCoinType = `${address}::${module}::${name}`;
-      const coinType = sCoinTypeToCoinTypeMap[sCoinType as SCoinTypeValue];
-      if (!coinType) return;
-
-      const coinName = poolValuesMetadataMap[
-        coinType
-      ]?.symbol.toLowerCase() as PoolCoinNames;
-      if (!coinName) return;
-
-      const coinBalance = BigNumber(marketCoinObj.content?.fields.balance ?? 0);
-
-      if (lendingAssets[coinName]) {
-        lendingAssets[coinName]!.amount =
-          lendingAssets[coinName]!.amount.plus(coinBalance);
-      } else {
-        lendingAssets[coinName] = { coinType, amount: coinBalance };
-      }
+      lendingAssets[coinName] = {
+        coinType,
+        amount: BigNumber(obj.totalBalance),
+      };
+    } else if (isSCoin) {
+      lendingAssets[sCoinToCoinName[module as SCoinNames] as PoolCoinNames] = {
+        coinType: normalizedType,
+        amount: BigNumber(obj.totalBalance),
+      };
     }
   });
 
@@ -326,6 +255,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     [...tokenAddresses, suiNetwork.native.address],
     NetworkId.sui
   );
+
+  // @TODO: add sCoin token prices
 
   if (pendingReward.isGreaterThan(0)) {
     const pendingRewardAmount = pendingReward
@@ -385,6 +316,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   ) {
     return [];
   }
+
   const { borrowedValue, healthRatio, suppliedValue, value, rewardValue } =
     getElementLendingValues({ suppliedAssets, borrowedAssets, rewardAssets });
   elements.push({

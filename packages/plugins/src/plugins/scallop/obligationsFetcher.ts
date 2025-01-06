@@ -23,7 +23,6 @@ import {
 } from './constants';
 import {
   MarketJobResult,
-  ObligationAccount,
   ObligationKeyFields,
   Pools,
   UserObligations,
@@ -31,11 +30,16 @@ import {
 import { shortenAddress } from './helpers';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import runInBatch from '../../utils/misc/runInBatch';
-import { CollateralAsset, DebtAsset } from './types/obligation';
-import { getObject } from '../../utils/sui/getObject';
+import {
+  CollateralAsset,
+  DebtAsset,
+  ObligationFields,
+} from './types/obligation';
 import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
 import { getClientSui } from '../../utils/clients';
 import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
+import { queryMultipleObjects } from './util';
+import { ObjectData, ObjectResponse, ParsedData } from '../../utils/sui/types';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elements: PortfolioElement[] = [];
@@ -71,9 +75,23 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (!marketData || ownedObligationKeys.length === 0) return [];
 
   const userObligations: UserObligations = {};
+  const obligationObjects = await queryMultipleObjects<ObligationFields>(
+    client,
+    ownedObligationKeys
+      .filter(
+        (
+          t
+        ): t is ObjectResponse<ObligationKeyFields> & {
+          data: ObjectData<ObligationKeyFields> & {
+            content: ParsedData<ObligationKeyFields>;
+          };
+        } => !!t.data
+      )
+      .map((t) => t.data.content.fields.ownership.fields.of)
+  );
 
   const debtsAndCollateralCalculationPromises = ownedObligationKeys.map(
-    (obligationKey) => async () => {
+    (obligationKey, idx) => async () => {
       const obligationKeyFields = obligationKey.data?.content?.fields;
       if (!obligationKeyFields) return;
       const obligationId = obligationKeyFields.ownership.fields.of;
@@ -83,11 +101,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           debts: {},
         };
       }
-      const getObjectRes = await getObject<ObligationAccount>(
-        client,
-        obligationId
-      );
-      const account = getObjectRes.data?.content?.fields;
+      const account = obligationObjects[idx].data?.content?.fields;
       if (!account) return;
 
       const accountCollateralsId =
@@ -182,6 +196,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   for (const account of Object.keys(userObligations)) {
     const borrowedAssets: PortfolioAsset[] = [];
+    const borrowedWeights: number[] = [];
+    const suppliedLtvs: number[] = [];
     const borrowedYields: Yield[][] = [];
     const suppliedAssets: PortfolioAsset[] = [];
     const suppliedYields: Yield[][] = [];
@@ -192,6 +208,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const metadata = ctmValues.find(
         (value) => value.coinType === normalizeStructTag(coinType)
       );
+      const coinName = metadata?.metadata?.symbol.toLowerCase() ?? '';
       const address = formatMoveTokenAddress(`0x${coinType}`);
       suppliedAssets.push(
         tokenPriceToAssetToken(
@@ -203,6 +220,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           tokenPrices.get(address)
         )
       );
+      suppliedLtvs.push(marketData[coinName].collateralFactor);
       suppliedYields.push([]);
     }
     for (const coinType of Object.keys(debts)) {
@@ -223,6 +241,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           tokenPrices.get(address)
         )
       );
+      borrowedWeights.push(marketData[coinName].borrowWeight);
       borrowedYields.push([
         {
           apr: market.borrowInterestRate,
@@ -238,7 +257,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       continue;
 
     const { borrowedValue, healthRatio, suppliedValue, value, rewardValue } =
-      getElementLendingValues({ suppliedAssets, borrowedAssets, rewardAssets });
+      getElementLendingValues({
+        suppliedAssets,
+        borrowedAssets,
+        rewardAssets,
+        suppliedLtvs,
+        borrowedWeights,
+      }); // @TODO: add supplied ltvs, borrowedWeights
     elements.push({
       type: PortfolioElementType.borrowlend,
       networkId: NetworkId.sui,

@@ -1,43 +1,111 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
-import { Job, JobExecutor } from '../../Job';
-import { scoinKey, scoinPrefix as prefix } from './constants';
-import { Cache } from '../../Cache';
-import { SCoinNames, SCoinTypeMetadata, sCoinTypesMap } from './types';
-import { getClientSui } from '../../utils/clients';
+// import { NetworkId } from '@sonarwatch/portfolio-core';
+// import { CoinMetadata } from '@mysten/sui/client';
+// import { parseStructTag } from '@mysten/sui/utils';
+// import { Job, JobExecutor } from '../../Job';
+// import {
+//   addressKey,
+//   addressPrefix,
+//   scoinKey,
+//   scoinPrefix as prefix,
+// } from './constants';
+// import { Cache } from '../../Cache';
+// import {
+//   AddressInfo,
+//   MetadataFields,
+//   SCoin,
+//   SCoinNames,
+//   SCoins,
+//   suiBridgeCoinTypeToSymbolMap,
+//   wormholeCoinTypeToSymbolMap,
+// } from './types';
+// import { getClientSui } from '../../utils/clients';
+// import { queryMultipleObjects } from './util';
+// import { ObjectData, ObjectResponse, ParsedData } from '../../utils/sui/types';
 
-const executor: JobExecutor = async (cache: Cache) => {
-  const client = getClientSui();
+// const executor: JobExecutor = async (cache: Cache) => {
+//   const addressCache = await cache.getItem<AddressInfo>(addressKey, {
+//     prefix: addressPrefix,
+//     networkId: NetworkId.sui,
+//   });
 
-  const sCoinTypes: SCoinTypeMetadata = Object.entries(sCoinTypesMap).reduce(
-    (prev, curr) => {
-      const [coinName, coinType] = curr;
-      // eslint-disable-next-line no-param-reassign
-      prev[coinName as SCoinNames] = {
-        coinType,
-        metadata: null,
-      };
-      return prev;
-    },
-    {} as SCoinTypeMetadata
-  );
+//   if (!addressCache) return;
 
-  // get metadata for each coin type
-  await Promise.all(
-    Object.entries(sCoinTypes).map(async ([coinName, coinTypeMetadata]) => {
-      const { coinType } = coinTypeMetadata;
-      const metadata = await client.getCoinMetadata({ coinType });
-      sCoinTypes[coinName as SCoinNames].metadata = metadata;
-    })
-  );
-  await cache.setItem(scoinKey, sCoinTypes, {
-    prefix,
-    networkId: NetworkId.sui,
-  });
-};
+//   const sCoinTypes: Partial<SCoins> = {};
+//   const coins = new Map<string, SCoin>(
+//     Object.entries(addressCache.mainnet.scoin.coins)
+//   );
 
-const job: Job = {
-  id: prefix,
-  executor,
-  label: 'normal',
-};
-export default job;
+//   const sCoinNames: SCoinNames[] = Array.from(coins.keys()) as SCoinNames[];
+
+//   const client = getClientSui();
+//   const metadataObjects = (
+//     await queryMultipleObjects(
+//       client,
+//       Array.from(coins.values()).map((coin) => coin.metaData)
+//     )
+//   )
+//     .filter(
+//       (
+//         t
+//       ): t is ObjectResponse<MetadataFields> & {
+//         data: ObjectData<MetadataFields> & {
+//           content: ParsedData<MetadataFields>;
+//         };
+//       } =>
+//         !!t.data &&
+//         !!t.data.content &&
+//         t.data.content.dataType === 'moveObject' &&
+//         !!t.data.content.fields
+//     )
+//     .map((objData) => ({
+//       metadata: {
+//         ...objData.data.content.fields,
+//         iconUrl: objData.data.content.fields.icon_url,
+//       },
+//       type: (() => {
+//         const { address, module, name } = parseStructTag(objData.data.type)
+//           .typeParams[0] as { address: string; name: string; module: string };
+//         return `${address}::${module}::${name}`;
+//       })(),
+//     })) as {
+//     metadata: CoinMetadata;
+//     type: string;
+//   }[];
+
+//   // get metadata for each coin type
+//   for (let i = 0; i < sCoinNames.length; i++) {
+//     const sCoinName = sCoinNames[i];
+//     // eslint-disable-next-line @typescript-eslint/naming-convention
+//     const {
+//       metadata: { decimals, description, iconUrl, name, symbol },
+//       type: coinType,
+//     } = metadataObjects[i];
+//     const detail = coins.get(sCoinName);
+//     if (!detail) continue;
+
+//     sCoinTypes[sCoinName] = {
+//       coinType,
+//       metadata: {
+//         decimals,
+//         description,
+//         iconUrl,
+//         name,
+//         symbol:
+//           wormholeCoinTypeToSymbolMap[coinType] ??
+//           suiBridgeCoinTypeToSymbolMap[coinType] ??
+//           symbol,
+//       },
+//     };
+//   }
+//   await cache.setItem(scoinKey, sCoinTypes, {
+//     prefix,
+//     networkId: NetworkId.sui,
+//   });
+// };
+
+// const job: Job = {
+//   id: prefix,
+//   executor,
+//   label: 'normal',
+// };
+// export default job;

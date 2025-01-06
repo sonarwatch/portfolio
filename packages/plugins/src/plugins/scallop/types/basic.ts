@@ -1,8 +1,8 @@
 import { ID } from '../../../utils/sui/types/id';
 
-export type BasicField = {
+export type BasicField<T = object> = {
   type: string;
-  fields: object;
+  fields: T;
 };
 
 export type IdField = ID;

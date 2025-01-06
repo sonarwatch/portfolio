@@ -15,7 +15,7 @@
       }
     },
     "serve-cache": {
-      "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/serve-cache.ts",
+      "command": "export NODE_OPTIONS=\"--max-old-space-size=4096\" && ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/serve-cache.ts",
       "dependsOn": []
     },
     "run-airdrop-fetcher": {
@@ -27,7 +27,7 @@
       "dependsOn": []
     },
     "run-fetcher": {
-      "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/run-fetcher.ts",
+      "command": "export NODE_OPTIONS=\"--max-old-space-size=4096\" && ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/run-fetcher.ts",
       "dependsOn": []
     },
     "run-fetchers-by-network-id": {
@@ -35,7 +35,7 @@
       "dependsOn": []
     },
     "run-job": {
-      "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/run-job.ts",
+      "command": "export NODE_OPTIONS=\"--max-old-space-size=4096\" && ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/run-job.ts",
       "dependsOn": []
     },
     "publish": {

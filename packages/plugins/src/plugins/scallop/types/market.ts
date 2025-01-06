@@ -16,6 +16,11 @@ export type InterestModel = {
   [k in string]?: any;
 };
 
+export type RiskModels = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [k in string]?: any;
+};
+
 export type InterestModelData = {
   base_borrow_rate_per_sec: {
     fields: {
@@ -84,6 +89,10 @@ export type BalanceSheetData = {
   revenue: string;
 };
 
+export type RiskModelData = {
+  collateral_factor: BasicField<{ value: string }>;
+};
+
 const MARKET_DATA_FIELDS = [
   'asset_active_states',
   'borrow_dynamics',
@@ -131,6 +140,8 @@ export type MarketJobData = {
   cash: number;
   marketCoinSupply: number;
   reserve: number;
+  borrowWeight: number;
+  collateralFactor: number;
 };
 
 export type SpoolJobData = {
@@ -145,11 +156,6 @@ export type SpoolJobResult = {
 
 export type MarketJobResult = {
   [T in string]: MarketJobData;
-};
-
-export type ObligationKeyFields = {
-  id: IdField;
-  ownership: BasicField & { fields: { id: IdField; of: string } };
 };
 
 type BalanceBag = BasicField & {

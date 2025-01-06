@@ -31,6 +31,10 @@ export type Pools = {
   [T in PoolCoinNames]: CoinTypeMetadata;
 };
 
+export type SCoins = {
+  [T in SCoinNames]: CoinTypeMetadata;
+}
+
 export type SCoinTypeMetadata = {
   [T in SCoinNames]: CoinTypeMetadata;
 };
