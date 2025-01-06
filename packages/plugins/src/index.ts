@@ -695,7 +695,6 @@ import {
   platforms as pudgypenguinsPlatforms,
   jobs as pudgypenguinsJobs,
   fetchers as pudgypenguinsFetchers,
-  airdropFetcher as pudgypenguinsAirdropFetcher,
 } from './plugins/pudgypenguins';
 import {
   platforms as gpoolPlatforms,
