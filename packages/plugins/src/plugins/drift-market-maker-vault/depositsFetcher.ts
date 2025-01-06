@@ -8,6 +8,7 @@ import {
   prefixVaults,
   neutralPlatformId,
   hedgyPlatformId,
+  vectisPlatformId,
 } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
@@ -84,7 +85,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           lockedUntil: depositAccount.lastWithdrawRequest.ts
             .times(1000)
             .plus(
-              [neutralPlatformId, hedgyPlatformId].includes(platformId)
+              [neutralPlatformId, hedgyPlatformId, vectisPlatformId].includes(
+                platformId
+              )
                 ? oneDay
                 : sevenDays
             )
