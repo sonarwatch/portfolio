@@ -717,6 +717,11 @@ import {
   jobs as fragmetricJobs,
   fetchers as fragmetricFetchers,
 } from './plugins/fragmetric';
+import {
+  platforms as divvyPlatforms,
+  jobs as divvyJobs,
+  fetchers as divvyFetchers,
+} from './plugins/divvy';
 
 export {
   walletTokensPlatform,
@@ -875,6 +880,7 @@ export const platforms: Platform[] = [
   ...defilandPlatforms,
   ...perenaPlatforms,
   ...fragmetricPlatforms,
+  ...divvyPlatforms,
 ];
 
 // JOBS //
@@ -1016,6 +1022,7 @@ export const jobs: Job[] = [
   ...defilandJobs,
   ...perenaJobs,
   ...fragmetricJobs,
+  ...divvyJobs,
 ];
 
 // FETCHERS //
@@ -1158,6 +1165,7 @@ export const fetchers: Fetcher[] = [
   ...defilandFetchers,
   ...perenaFetchers,
   ...fragmetricFetchers,
+  ...divvyFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
