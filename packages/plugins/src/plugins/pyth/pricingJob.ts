@@ -267,6 +267,28 @@ const feedsToFetch: FeedInfo[] = [
       },
     ],
   },
+  // USDe
+  {
+    address: new PublicKey('Cr8vurLth4b7CFNdvoXDpxuRi21CWvbQFLKy8BTwN4Wf'),
+    tokens: [
+      {
+        mint: 'DEkqHyPN7GMRJ5cArtQFAWefqbZb33Hyf6s5iCwjEonT',
+        networkdId: 'solana',
+        decimals: 9,
+      },
+    ],
+  },
+  // sUSDe
+  {
+    address: new PublicKey('BjU7ZbbjJD2TinunF4AeEUhgJnRLwxMNqTcJesBFFm2m'),
+    tokens: [
+      {
+        mint: 'Eh6XEPhSwoLv5wFApukmnaVSHQ6sAnoD9BmgmwQoN2sN',
+        networkdId: 'solana',
+        decimals: 9,
+      },
+    ],
+  },
 ];
 
 const executor: JobExecutor = async (cache: Cache) => {
