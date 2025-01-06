@@ -29,6 +29,8 @@ export async function getPythPrices(
   );
   return accounts.map((acc) => {
     if (!acc) return null;
+    if (Number(acc.priceMessage.publishTime) < Date.now() / 1000 - 3600)
+      return null;
     return acc.priceMessage.price
       .times(10 ** acc.priceMessage.exponent)
       .toNumber();

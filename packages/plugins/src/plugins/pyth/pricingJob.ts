@@ -294,7 +294,7 @@ const feedsToFetch: FeedInfo[] = [
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
   const sources = await getPythTokenPriceSources(connection, feedsToFetch);
-  await cache.setTokenPriceSources(sources);
+  await cache.setTokenPriceSources(sources.filter((s) => s !== null));
 };
 const job: Job = {
   id: `${platformId}-pricing`,
