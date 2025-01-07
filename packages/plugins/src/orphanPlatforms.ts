@@ -80,6 +80,13 @@ const orphanPlatforms: Platform[] = [
     image: 'https://sonar.watch/img/platforms/ondo-finance.webp',
     website: 'https://ondo.finance/',
   },
+  {
+    id: 'carrot',
+    defiLlamaId: 'carrot',
+    name: 'Carrot',
+    image: 'https://sonar.watch/img/platforms/carrot.webp',
+    website: 'https://use.deficarrot.com/',
+  },
   stepfinancePlatform,
   ligmaPlatform,
 ];
