@@ -69,7 +69,6 @@ const queryPools = async (
 
   for (let i = 0; i < coinNames.length; i++) {
     const coinName = coinNames[i];
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const {
       metadata: { decimals, description, iconUrl, name, symbol },
       type: coinType,

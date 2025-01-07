@@ -1,1 +1,1 @@
-// @TODO: add christmast airdrop fetcher
+// @TODO: add christmas airdrop fetcher

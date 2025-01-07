@@ -67,7 +67,6 @@ const querySCoins = async (
   // get metadata for each coin type
   for (let i = 0; i < sCoinNames.length; i++) {
     const sCoinName = sCoinNames[i];
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const {
       metadata: { decimals, description, iconUrl, name, symbol },
       type: coinType,
