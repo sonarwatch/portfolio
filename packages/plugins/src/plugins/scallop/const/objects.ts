@@ -1,7 +1,7 @@
-import { PoolCoinNames } from "../types";
+import { PoolCoinName } from "../types";
 
 export const POOL_ADDRESSES: Record<
-  PoolCoinNames,
+  PoolCoinName,
   {
     coinType?: string;
     lendingPoolAddress: string;

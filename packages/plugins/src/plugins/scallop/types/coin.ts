@@ -1,17 +1,17 @@
 import { CoinMetadata } from '@mysten/sui/client';
-import { coinNames, marketCoinNames, scoinNames } from '../constants';
+import { COIN_NAMES, MARKET_COIN_NAMES, SCOIN_NAMES } from '../constants';
 
-export type MarketCoinNames = (typeof marketCoinNames)[number];
-export type PoolCoinNames = (typeof coinNames)[number];
-export type SCoinNames = (typeof scoinNames)[number];
+export type MarketCoinName = (typeof MARKET_COIN_NAMES)[number];
+export type PoolCoinName = (typeof COIN_NAMES)[number];
+export type SCoinName = (typeof SCOIN_NAMES)[number];
 
 export type CoinTypeMetadata = {
   coinType: string;
   metadata: CoinMetadata | null;
 };
 
-type SCoinToCoinNameType = { [T in SCoinNames]: PoolCoinNames };
-type SCoinTypesMapType = { [T in SCoinNames]: string };
+type SCoinToCoinNameType = { [T in SCoinName]: PoolCoinName };
+type SCoinTypesMapType = { [T in SCoinName]: string };
 
 export const sCoinToCoinName: SCoinToCoinNameType = {
   scallop_sui: 'sui',
@@ -105,6 +105,8 @@ export const sCoinTypeToCoinTypeMap: { [T in string]: string } = {
     '0xd0e89b2af5e4910726fbcd8b8dd37bb79b29e5f83f7491bca830e94f7f226d29::eth::ETH',
   [sCoinTypesMap.scallop_sb_usdt]:
     '0x375f70cf2ae4c00bf37117d0c85a2c71545e6ee05c4a5c7d282cd66a4504b068::usdt::USDT',
+  [sCoinTypesMap.scallop_fdusd]:
+    '0xf16e6b723f242ec745dfd7634ad072c42d5c1d9ac9d62a39c381303eaa57693a::fdusd::FDUSD',
 } as const;
 
 export const wormholeCoinTypeToSymbolMap: Record<string, string> = {

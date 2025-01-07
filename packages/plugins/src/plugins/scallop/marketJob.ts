@@ -18,11 +18,11 @@ const executor: JobExecutor = async (cache: Cache) => {
   if (!address) return;
 
   const pools = (await queryPools(client, address, cache)) as Required<Pools>;
-  await Promise.all([
+  await Promise.allSettled([
     queryMarkets(client, pools, cache),
     querySCoins(client, address, cache),
     querySpools(client, address, cache),
-  ]);
+  ])
 };
 
 const job: Job = {

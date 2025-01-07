@@ -9,7 +9,7 @@ import {
 import { poolsKey, poolsPrefix } from '../constants';
 import {
   Pools,
-  PoolCoinNames,
+  PoolCoinName,
   MetadataFields,
   wormholeCoinTypeToSymbolMap,
   suiBridgeCoinTypeToSymbolMap,
@@ -29,9 +29,9 @@ const queryPools = async (
     Object.entries(addressData.mainnet.core.coins)
   );
 
-  const coinNames: PoolCoinNames[] = Array.from(
+  const coinNames: PoolCoinName[] = Array.from(
     coins.keys()
-  ) as PoolCoinNames[];
+  ) as PoolCoinName[];
 
   const metadataObjects = (
     await queryMultipleObjects(

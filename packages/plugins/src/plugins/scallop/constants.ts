@@ -42,7 +42,7 @@ export const cnyTableId =
 export const airdropUrl =
   'https://airdrop.apis.scallop.io/cny-campaign/claim-signature/';
 
-export const scoinNames = [
+export const SCOIN_NAMES = [
   'scallop_sui',
   'scallop_cetus',
   'scallop_sca',
@@ -62,7 +62,7 @@ export const scoinNames = [
   'scallop_sb_eth',
 ] as const;
 
-export const coinNames = [
+export const COIN_NAMES = [
   'weth',
   'wbtc',
   'wusdc',
@@ -83,7 +83,7 @@ export const coinNames = [
   'sbeth'
 ] as const;
 
-export const marketCoinNames = [
+export const MARKET_COIN_NAMES = [
   'sweth',
   'swbtc',
   'swusdc',

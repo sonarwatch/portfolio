@@ -1,4 +1,4 @@
-import { ExtendedBasicField, IdField, NameField } from './basic';
+import { BasicField, IdField, NameField } from './basic';
 
 type VeScaValueType = {
   locked_sca_amount: string;
@@ -6,5 +6,5 @@ type VeScaValueType = {
 };
 export type VeSca = {
   id: IdField;
-  value: ExtendedBasicField<VeScaValueType>;
+  value: BasicField<VeScaValueType>;
 } & NameField;

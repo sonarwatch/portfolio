@@ -5,7 +5,7 @@ import {
   AddressInfo,
   MetadataFields,
   SCoin,
-  SCoinNames,
+  SCoinName,
   SCoins,
   suiBridgeCoinTypeToSymbolMap,
   wormholeCoinTypeToSymbolMap,
@@ -29,7 +29,7 @@ const querySCoins = async (
     Object.entries(addressData.mainnet.scoin.coins)
   );
 
-  const sCoinNames: SCoinNames[] = Array.from(coins.keys()) as SCoinNames[];
+  const sCoinNames: SCoinName[] = Array.from(coins.keys()) as SCoinName[];
   const metadataObjects = (
     await queryMultipleObjects(
       client,

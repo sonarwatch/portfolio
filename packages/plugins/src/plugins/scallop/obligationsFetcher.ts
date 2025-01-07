@@ -169,11 +169,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             });
             const asset = rAsset.data?.content?.fields;
             if (!asset) return;
+
+            const accountBorrowIndex = Number(
+              asset.value.fields.borrow_index ?? 0
+            );
+            const debIncreaseRate =
+              accountBorrowIndex > 0
+                ? marketData[coinName].borrowIndex / (accountBorrowIndex - 1)
+                : 0;
             userObligations[obligationId].debts[fields.name] = userObligations[
               obligationId
             ].debts[fields.name].plus(
               BigNumber(asset.value.fields.amount ?? 0).multipliedBy(
-                market.growthInterest + 1
+                debIncreaseRate
               )
             );
           }

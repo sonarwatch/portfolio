@@ -1,6 +1,6 @@
 import { ID } from '../../../utils/sui/types/id';
 
-export type BasicField<T = object> = {
+export type BasicField<T = string> = {
   type: string;
   fields: T;
 };
@@ -25,9 +25,4 @@ export type WitTable = {
     };
     with_keys: boolean;
   };
-};
-
-export type ExtendedBasicField<T> = {
-  type: string;
-  fields: T;
 };

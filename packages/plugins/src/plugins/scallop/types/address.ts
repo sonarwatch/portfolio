@@ -1,4 +1,4 @@
-import { SCoinNames } from './coin';
+import { SCoinName } from './coin';
 
 export interface AddressInfo {
   id: string;
@@ -18,7 +18,7 @@ export interface Network {
   loyaltyProgram: LoyaltyProgram;
   scoin: {
     id: string;
-    coins: Record<SCoinNames, SCoin>;
+    coins: Record<SCoinName, SCoin>;
   };
 }
 interface LoyaltyProgram {

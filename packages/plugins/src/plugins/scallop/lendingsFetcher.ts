@@ -34,19 +34,21 @@ import {
   addressKey,
   addressPrefix,
   sPoolAccountType,
-  marketCoinNames,
+  MARKET_COIN_NAMES,
 } from './constants';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import {
   AddressInfo,
-  MarketCoinNames,
+  MarketCoinName,
   MarketJobResult,
-  PoolCoinNames,
+  PoolCoinName,
   Pools,
-  SCoinNames,
+  SCoinName,
   sCoinToCoinName,
   SCoinTypeMetadata,
+  // sCoinTypesMap,
   sCoinTypeToCoinTypeMap,
+  SpoolAccountFieldsType,
   SpoolJobResult,
   StructTag,
   UserLending,
@@ -83,8 +85,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     return [];
   }
 
-  // const sCoinValues = Object.values(sCoins);
-
   // {'0x...': CoinMetaData }
   const poolValuesMetadataMap = poolValues.reduce((acc, poolValue) => {
     if (poolValue.metadata) acc[poolValue.coinType] = poolValue.metadata;
@@ -105,7 +105,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       client.getAllBalances({
         owner,
       }),
-      getOwnedObjectsPreloaded(client, owner, { filter: filterSpoolAccount }),
+      getOwnedObjectsPreloaded<SpoolAccountFieldsType>(client, owner, {
+        filter: filterSpoolAccount,
+      }),
       cache.getItem<MarketJobResult>(marketKey, {
         prefix,
         networkId: NetworkId.sui,
@@ -150,7 +152,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const lendingAssets: UserLendingData = {};
   const stakedAccounts: UserStakeAccounts = {};
 
-  spoolAccounts.forEach((obj: ObjectResponse<any>) => {
+  spoolAccounts.forEach((obj: ObjectResponse<SpoolAccountFieldsType>) => {
     const spoolObj = obj.data;
     const fields = spoolObj?.content?.fields;
     if (!fields) return;
@@ -164,11 +166,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const stakeType = `${address}::${module}::${name}`;
     const coinName = poolValuesMetadataMap[
       stakeType
-    ]?.symbol.toLowerCase() as PoolCoinNames;
+    ]?.symbol.toLowerCase() as PoolCoinName;
     if (!coinName) return;
 
     // sui -> ssui, usdc -> susdc, ...
-    const spoolName = `s${coinName}` as MarketCoinNames;
+    const spoolName = `s${coinName}` as MarketCoinName;
     const { stakes, points, index } = fields;
     if (!stakedAccounts[spoolName]) {
       stakedAccounts[spoolName] = [];
@@ -192,29 +194,34 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const normalizedType = normalizeStructTag(obj.coinType);
     const { address, module, name, typeParams } =
       parseStructTag(normalizedType);
+
     const isMarketCoin =
       address === addressData.mainnet.core.object &&
       module === 'reserve' &&
       name === 'MarketCoin';
-    const isSCoin =
-      !!sCoinTypeToCoinTypeMap[normalizedType];
+
+    // Get the coin type pair if the coin is a sCoin
+    const coinTypePair = sCoinTypeToCoinTypeMap[normalizedType];
+
     if (isMarketCoin) {
       // access underlying asset type from market coin struct
       // 0x2::coin::Coin<T>
-      const parsedTypeParams = typeParams[0] as StructTag;
-      const coinType = `${parsedTypeParams.address}::${parsedTypeParams.module}::${parsedTypeParams.name}`;
+      const underlyingStruct = typeParams[0] as StructTag;
+      const coinType = `${underlyingStruct.address}::${underlyingStruct.module}::${underlyingStruct.name}`;
       const coinName = poolValuesMetadataMap[
         coinType
-      ]?.symbol.toLowerCase() as PoolCoinNames;
+      ]?.symbol.toLowerCase() as PoolCoinName;
       if (!coinName) return;
 
       lendingAssets[coinName] = {
         coinType,
         amount: BigNumber(obj.totalBalance),
       };
-    } else if (isSCoin) {
-      lendingAssets[sCoinToCoinName[module as SCoinNames] as PoolCoinNames] = {
-        coinType: normalizedType,
+    } else if (coinTypePair) {
+      const coinNamePair = sCoinToCoinName[module as SCoinName];
+
+      lendingAssets[coinNamePair] = {
+        coinType: coinTypePair,
         amount: BigNumber(obj.totalBalance),
       };
     }
@@ -222,29 +229,28 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   let pendingReward = BigNumber(0);
 
-  marketCoinNames.forEach((marketCoin) => {
+  MARKET_COIN_NAMES.forEach((marketCoin) => {
     if (!stakedAccounts[marketCoin]) return;
 
     stakedAccounts[marketCoin]!.forEach(({ points, index, stakes }) => {
-      if (spoolData[marketCoin]) {
-        const {
-          currentPointIndex,
-          exchangeRateNumerator,
-          exchangeRateDenominator,
-        } = spoolData[marketCoin];
-        const increasedPointRate = currentPointIndex
-          ? BigNumber(BigNumber(currentPointIndex).minus(index)).dividedBy(
-              baseIndexRate
-            )
-          : 0;
-        pendingReward = pendingReward.plus(
-          BigNumber(stakes)
-            .multipliedBy(increasedPointRate)
-            .plus(points)
-            .multipliedBy(exchangeRateNumerator)
-            .dividedBy(exchangeRateDenominator)
-        );
-      }
+      if (!spoolData[marketCoin]) return;
+      const {
+        currentPointIndex,
+        exchangeRateNumerator,
+        exchangeRateDenominator,
+      } = spoolData[marketCoin];
+      const increasedPointRate = currentPointIndex
+        ? BigNumber(BigNumber(currentPointIndex).minus(index)).dividedBy(
+            baseIndexRate
+          )
+        : 0;
+      pendingReward = pendingReward.plus(
+        BigNumber(stakes)
+          .multipliedBy(increasedPointRate)
+          .plus(points)
+          .multipliedBy(exchangeRateNumerator)
+          .dividedBy(exchangeRateDenominator)
+      );
     });
   });
 
@@ -255,8 +261,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     [...tokenAddresses, suiNetwork.native.address],
     NetworkId.sui
   );
-
-  // @TODO: add sCoin token prices
 
   if (pendingReward.isGreaterThan(0)) {
     const pendingRewardAmount = pendingReward
@@ -291,7 +295,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const lendingAmount = assetValue.amount
         .multipliedBy(lendingRate.get(assetName) ?? 0)
         .shiftedBy(
-          -1 * (pools[assetName as PoolCoinNames]?.metadata?.decimals ?? 0)
+          -1 * (pools[assetName as PoolCoinName]?.metadata?.decimals ?? 0)
         )
         .toNumber();
       const assetToken = tokenPriceToAssetToken(

@@ -13,7 +13,7 @@
 //   AddressInfo,
 //   MetadataFields,
 //   SCoin,
-//   SCoinNames,
+//   SCoinName,
 //   SCoins,
 //   suiBridgeCoinTypeToSymbolMap,
 //   wormholeCoinTypeToSymbolMap,
@@ -35,7 +35,7 @@
 //     Object.entries(addressCache.mainnet.scoin.coins)
 //   );
 
-//   const sCoinNames: SCoinNames[] = Array.from(coins.keys()) as SCoinNames[];
+//   const sCoinNames: SCoinName[] = Array.from(coins.keys()) as SCoinName[];
 
 //   const client = getClientSui();
 //   const metadataObjects = (

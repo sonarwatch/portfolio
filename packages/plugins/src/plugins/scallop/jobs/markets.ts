@@ -9,7 +9,7 @@ import {
   InterestModel,
   InterestModelData,
   MarketJobResult,
-  PoolCoinNames,
+  PoolCoinName,
   Pools,
   RiskModelData,
   RiskModels,
@@ -20,7 +20,7 @@ import { marketKey, marketPrefix } from '../constants';
 import { Cache } from '../../../Cache';
 
 const queryMarkets = async (client: SuiClient, pools: Pools, cache: Cache) => {
-  const poolCoinNames = Object.keys(pools) as PoolCoinNames[];
+  const poolCoinNames = Object.keys(pools) as PoolCoinName[];
   const balanceSheetObjects = await queryMultipleObjects(
     client,
     poolCoinNames.map((coinName) => POOL_ADDRESSES[coinName].lendingPoolAddress)
@@ -160,10 +160,11 @@ const queryMarkets = async (client: SuiClient, pools: Pools, cache: Cache) => {
     const collateralFactor =
       Number(cRiskModelData.collateral_factor.fields.value) / DENOMINATOR;
     const marketCoinSupply = Number(cBalanceSheet.market_coin_supply);
+
     // calculated  data
     const calculatedBorrowRate =
       (borrowRate * borrowYearFactor) / borrowRateScale;
-    const timeDelta = Math.floor(new Date().getTime() / 1000) - lastUpdated;
+    const timeDelta = Math.floor(Date.now() / 1000) - lastUpdated;
     const borrowIndexDelta = BigNumber(borrowIndex)
       .multipliedBy(BigNumber(timeDelta).multipliedBy(borrowRate))
       .dividedBy(borrowRateScale);
@@ -194,8 +195,8 @@ const queryMarkets = async (client: SuiClient, pools: Pools, cache: Cache) => {
 
     market[asset] = {
       coin: asset,
-      decimal: pools[asset as PoolCoinNames].metadata?.decimals ?? 0,
-      coinType: pools[asset as PoolCoinNames].coinType,
+      decimal: pools[asset as PoolCoinName].metadata?.decimals ?? 0,
+      coinType: pools[asset as PoolCoinName].coinType,
       growthInterest: growthInterest.toNumber(),
       borrowInterestRate: Math.min(
         calculatedBorrowRate,
@@ -206,9 +207,9 @@ const queryMarkets = async (client: SuiClient, pools: Pools, cache: Cache) => {
       cash,
       marketCoinSupply,
       reserve,
+      borrowIndex,
       borrowWeight,
       collateralFactor,
-      // @TODO: add conversion rate
     };
   }
 

@@ -140,6 +140,7 @@ export type MarketJobData = {
   cash: number;
   marketCoinSupply: number;
   reserve: number;
+  borrowIndex: number;
   borrowWeight: number;
   collateralFactor: number;
 };
