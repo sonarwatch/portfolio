@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
@@ -10,29 +10,20 @@ import { House } from './types';
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
 
-  const houses = (
-    await Promise.all([
-      getAutoParsedProgramAccounts<House>(connection, divvyIdlItem, [
-        {
-          dataSize: 302,
-        },
-      ]),
-      getAutoParsedProgramAccounts<House>(connection, divvyIdlItem, [
-        {
-          dataSize: 294,
-        },
-      ]),
-    ])
-  ).flat();
+  const houses = await getAutoParsedProgramAccounts<House>(
+    connection,
+    divvyIdlItem,
+    [{ memcmp: { offset: 0, bytes: '4cEdzVs6LUe' } }]
+  );
 
   const tokenPrices = await cache.getTokenPricesAsMap(
-    houses.map((m) => m.currency),
+    houses.map((h) => h.currency),
     NetworkId.solana
   );
 
-  const tokenPriceSources = [];
+  const tokenPriceSources: TokenPriceSource[] = [];
 
-  for (const house of houses) {
+  houses.forEach((house) => {
     const tokenPrice = tokenPrices.get(house.currency.toString());
     if (!tokenPrice) return;
 
@@ -59,7 +50,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       timestamp: Date.now(),
       weight: 1,
     });
-  }
+  });
 
   await Promise.all([
     cache.setTokenPriceSources(tokenPriceSources),

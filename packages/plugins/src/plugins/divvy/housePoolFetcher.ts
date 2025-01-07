@@ -25,9 +25,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     connection,
     divvyIdlItem,
     [
-      {
-        dataSize: 93,
-      },
+      { memcmp: { offset: 0, bytes: 'VZMoMoKgZQb' } },
       {
         memcmp: {
           bytes: owner,
