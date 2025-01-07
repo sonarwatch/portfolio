@@ -263,7 +263,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         rewardAssets,
         suppliedLtvs,
         borrowedWeights,
-      }); // @TODO: add supplied ltvs, borrowedWeights
+      });
     elements.push({
       type: PortfolioElementType.borrowlend,
       networkId: NetworkId.sui,
