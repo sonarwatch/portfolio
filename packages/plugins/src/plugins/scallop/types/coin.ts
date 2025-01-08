@@ -13,6 +13,7 @@ export type CoinTypeMetadata = {
 type SCoinToCoinNameType = { [T in SCoinName]: PoolCoinName };
 type SCoinTypesMapType = { [T in SCoinName]: string };
 
+// @TODO: generate this map dynamically from pool addresses
 export const sCoinToCoinName: SCoinToCoinNameType = {
   scallop_sui: 'sui',
   scallop_cetus: 'cetus',
@@ -33,6 +34,7 @@ export const sCoinToCoinName: SCoinToCoinNameType = {
   scallop_sb_usdt: 'sbusdt',
 };
 
+// @TODO: generate this map dynamically from pool addresses
 export const sCoinTypesMap: SCoinTypesMapType = {
   scallop_sui:
     '0xaafc4f740de0dd0dde642a31148fb94517087052f19afb0f7bed1dc41a50c77b::scallop_sui::SCALLOP_SUI',
@@ -70,6 +72,7 @@ export const sCoinTypesMap: SCoinTypesMapType = {
     '0xb1d7df34829d1513b73ba17cb7ad90c88d1e104bb65ab8f62f13e0cc103783d3::scallop_sb_usdt::SCALLOP_SB_USDT',
 } as const;
 
+// @TODO: generate this map dynamically from pool addresses
 export const sCoinTypeToCoinTypeMap: { [T in string]: string } = {
   [sCoinTypesMap.scallop_sui]:
     '0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI',

@@ -1,44 +1,44 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
-  NetworkId,
-  PortfolioAsset,
-  PortfolioElement,
-  PortfolioElementType,
-  Yield,
-  aprToApy,
-  formatMoveTokenAddress,
-  getElementLendingValues,
-  suiNetwork,
-} from '@sonarwatch/portfolio-core';
-import { normalizeStructTag, parseStructTag } from '@mysten/sui/utils';
-import BigNumber from 'bignumber.js';
-import {
   CoinBalance,
   CoinMetadata,
   SuiObjectDataFilter,
 } from '@mysten/sui/client';
+import { normalizeStructTag, parseStructTag } from '@mysten/sui/utils';
+import {
+  aprToApy,
+  formatMoveTokenAddress,
+  getElementLendingValues,
+  NetworkId,
+  PortfolioAsset,
+  PortfolioElement,
+  PortfolioElementType,
+  suiNetwork,
+  Yield,
+} from '@sonarwatch/portfolio-core';
+import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
+import { getClientSui } from '../../utils/clients';
+import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
+import { ObjectResponse } from '../../utils/sui/types';
 import {
+  baseIndexRate,
+  MARKET_COIN_NAMES,
   marketKey,
   platformId,
-  marketPrefix as prefix,
   poolsKey,
   poolsPrefix,
-  spoolsKey,
-  spoolsPrefix,
-  baseIndexRate,
+  marketPrefix as prefix,
   scoinKey,
   scoinPrefix,
-  addressKey,
-  addressPrefix,
   sPoolAccountType,
-  MARKET_COIN_NAMES,
+  spoolsKey,
+  spoolsPrefix,
 } from './constants';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import {
-  AddressInfo,
   MarketCoinName,
   MarketJobResult,
   PoolCoinName,
@@ -55,9 +55,6 @@ import {
   UserLendingData,
   UserStakeAccounts,
 } from './types';
-import { getClientSui } from '../../utils/clients';
-import { ObjectResponse } from '../../utils/sui/types';
-import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elements: PortfolioElement[] = [];
@@ -100,8 +97,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     ],
   };
 
-  const [allBalances, spoolAccounts, marketData, spoolData, addressData] =
-    await Promise.all([
+  const [allBalances, spoolAccounts, marketData, spoolData] = await Promise.all(
+    [
       client.getAllBalances({
         owner,
       }),
@@ -116,20 +113,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         prefix: spoolsPrefix,
         networkId: NetworkId.sui,
       }),
-      cache.getItem<AddressInfo>(addressKey, {
-        prefix: addressPrefix,
-        networkId: NetworkId.sui,
-      }),
-    ]);
+    ]
+  );
 
   const fetchedDataIncomplete =
     !marketData ||
     !spoolData ||
-    !addressData ||
     // spoolAccounts.length === 0 ||
     Object.keys(marketData).length === 0 ||
-    Object.keys(spoolData).length === 0 ||
-    Object.keys(addressData).length === 0;
+    Object.keys(spoolData).length === 0;
   if (fetchedDataIncomplete) {
     return [];
   }
@@ -196,7 +188,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       parseStructTag(normalizedType);
 
     const isMarketCoin =
-      address === addressData.mainnet.core.object &&
+      address ===
+        '0xefe8b36d5b2e43728cc323298626b83177803521d195cfb11e15b910e892fddf' &&
       module === 'reserve' &&
       name === 'MarketCoin';
 

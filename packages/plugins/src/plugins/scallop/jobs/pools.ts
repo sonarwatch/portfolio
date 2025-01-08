@@ -13,30 +13,26 @@ import {
   MetadataFields,
   wormholeCoinTypeToSymbolMap,
   suiBridgeCoinTypeToSymbolMap,
-  AddressInfo,
-  Coin,
+  PoolAddress,
 } from '../types';
 import { queryMultipleObjects } from '../util';
 import { Cache } from '../../../Cache';
 
 const queryPools = async (
   client: SuiClient,
-  addressData: AddressInfo,
+  addressData: PoolAddress,
   cache: Cache
 ) => {
   const coinTypes: Partial<Pools> = {};
-  const coins = new Map<string, Coin>(
-    Object.entries(addressData.mainnet.core.coins)
-  );
 
   const coinNames: PoolCoinName[] = Array.from(
-    coins.keys()
+    Object.keys(addressData)
   ) as PoolCoinName[];
 
   const metadataObjects = (
     await queryMultipleObjects(
       client,
-      Array.from(coins.values()).map((coin) => coin.metaData)
+      Array.from(Object.values(addressData)).map((coin) => coin.coinMetadataId)
     )
   )
     .filter(
@@ -73,8 +69,6 @@ const queryPools = async (
       metadata: { decimals, description, iconUrl, name, symbol },
       type: coinType,
     } = metadataObjects[i];
-    const detail = coins.get(coinName);
-    if (!detail) continue;
 
     coinTypes[coinName] = {
       coinType,

@@ -5,8 +5,8 @@ import { marketPrefix as prefix } from './constants';
 import type { Pools } from './types';
 
 import {
-  queryAddress,
   queryMarkets,
+  queryPoolAddress,
   queryPools,
   querySCoins,
   querySpools,
@@ -14,15 +14,19 @@ import {
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
-  const address = await queryAddress(cache);
-  if (!address) return;
+  const addressData = (await queryPoolAddress(cache));
+  if (!addressData) return;
 
-  const pools = (await queryPools(client, address, cache)) as Required<Pools>;
+  const pools = (await queryPools(
+    client,
+    addressData,
+    cache
+  )) as Required<Pools>;
   await Promise.allSettled([
-    queryMarkets(client, pools, cache),
-    querySCoins(client, address, cache),
-    querySpools(client, address, cache),
-  ])
+    queryMarkets(client, pools, addressData, cache),
+    querySCoins(client, addressData, cache),
+    querySpools(client, addressData, cache),
+  ]);
 };
 
 const job: Job = {

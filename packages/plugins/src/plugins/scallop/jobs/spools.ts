@@ -2,20 +2,30 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { SuiClient } from '@mysten/sui/client';
 import { baseIndexRate, spoolsKey, spoolsPrefix } from '../constants';
-import { AddressInfo, SpoolCoin, SpoolJobResult } from '../types';
+import { PoolAddress, SpoolJobResult } from '../types';
 import { queryMultipleObjects } from '../util';
 import { Cache } from '../../../Cache';
 
-const querySpools = async (client: SuiClient, addressData: AddressInfo, cache: Cache) => {
-  const spoolCoin = new Map<string, SpoolCoin>(
-    Object.entries(addressData.mainnet.spool.pools)
+const querySpools = async (
+  client: SuiClient,
+  addressData: PoolAddress,
+  cache: Cache
+) => {
+  const spoolAddresses = Object.values(addressData).filter(
+    (
+      t
+    ): t is typeof t & {
+      spool: string;
+      spoolReward: string;
+      spoolName: string;
+    } => !!t.spool && !!t.spoolReward
   );
-  const spoolCoinNames: string[] = Array.from(spoolCoin.keys());
+  const spoolCoinNames: string[] = spoolAddresses.map((t) => t.spoolName);
   const spoolMarketData: SpoolJobResult = {};
 
-  const poolIds = Array.from(spoolCoin.values()).map((spool) => spool.id);
-  const rewardPoolIds = Array.from(spoolCoin.values()).map(
-    (spool) => spool.rewardPoolId
+  const poolIds = spoolAddresses.map((t) => t.spool);
+  const rewardPoolIds = spoolAddresses.map(
+    (t) => t.spoolReward
   );
 
   const poolObjects = await queryMultipleObjects(client, poolIds);

@@ -1,25 +1,15 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 import { Job } from '../../Job';
 import { Fetcher } from '../../Fetcher';
-import marketJob from './marketJob';
-// import poolsJob from './poolsJob';
-// import addressJob from './addressJob';
-// import spoolsMarketJob from './spoolsMarketJob';
-// import sCoinJob from './sCoinJob';
+import { platform } from './constants';
 
+import marketJob from './scallopJob';
 import lendingsFetcher from './lendingsFetcher';
 import veScaFetcher from './veScaFetcher';
 import obligationsFetcher from './obligationsFetcher';
 import cnyAidropFetcher from './cnyAirdropFetcher';
-import { platform } from './constants';
 
-export const jobs: Job[] = [
-  // addressJob,
-  // sCoinJob,
-  // poolsJob,
-  marketJob,
-  // spoolsMarketJob,
-];
+export const jobs: Job[] = [marketJob];
 export const fetchers: Fetcher[] = [
   lendingsFetcher,
   obligationsFetcher,

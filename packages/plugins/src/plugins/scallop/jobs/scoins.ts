@@ -2,9 +2,8 @@ import { CoinMetadata, SuiClient } from '@mysten/sui/client';
 import { parseStructTag } from '@mysten/sui/utils';
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import {
-  AddressInfo,
   MetadataFields,
-  SCoin,
+  PoolAddress,
   SCoinName,
   SCoins,
   suiBridgeCoinTypeToSymbolMap,
@@ -21,19 +20,23 @@ import { Cache } from '../../../Cache';
 
 const querySCoins = async (
   client: SuiClient,
-  addressData: AddressInfo,
+  addressData: PoolAddress,
   cache: Cache
 ) => {
   const sCoinTypes: Partial<SCoins> = {};
-  const coins = new Map<string, SCoin>(
-    Object.entries(addressData.mainnet.scoin.coins)
+  const sCoinAddresses = Object.values(addressData).filter(
+    (t): t is typeof t & { sCoinType: string; sCoinMetadataId: string } =>
+      !!t.sCoinType && !!t.sCoinMetadataId
   );
 
-  const sCoinNames: SCoinName[] = Array.from(coins.keys()) as SCoinName[];
+  const sCoinNames: SCoinName[] = sCoinAddresses.map(
+    ({ sCoinType }) => parseStructTag(sCoinType).module
+  ) as SCoinName[];
+
   const metadataObjects = (
     await queryMultipleObjects(
       client,
-      Array.from(coins.values()).map((coin) => coin.metaData)
+      sCoinAddresses.map((coin) => coin.sCoinMetadataId)
     )
   )
     .filter(
@@ -71,8 +74,6 @@ const querySCoins = async (
       metadata: { decimals, description, iconUrl, name, symbol },
       type: coinType,
     } = metadataObjects[i];
-    const detail = coins.get(sCoinName);
-    if (!detail) continue;
 
     sCoinTypes[sCoinName] = {
       coinType,

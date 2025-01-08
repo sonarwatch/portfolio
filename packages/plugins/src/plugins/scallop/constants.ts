@@ -9,7 +9,8 @@ export const platform: Platform = {
   website: 'https://app.scallop.io/',
 };
 
-export const addressPrefix = `${platformId}-address`;
+// export const addressPrefix = `${platformId}-address`;
+export const poolAddressPrefix = `${platformId}-pool-address`;
 export const marketPrefix = `${platformId}-market`;
 export const scoinPrefix = `${platformId}-scoin`;
 export const poolsPrefix = `${platformId}-pools`;
@@ -17,7 +18,11 @@ export const spoolsPrefix = `${platformId}-spoolsmarket`;
 
 export const addressEndpoint =
   'https://sui.apis.scallop.io/addresses/675c65cd301dd817ea262e76';
-export const addressKey = 'scallop-address-key';
+export const poolAddressEndpoint =
+  'https://sdk.api.scallop.io/api/market/addresses';
+
+// export const addressKey = 'scallop-address-key';
+export const poolAddressKey = 'scallop-pool-address-key';
 export const marketKey = 'scallop-market-key';
 export const poolsKey = 'scallop-pools-key';
 export const scoinKey = 'scallop-scoin-key';

@@ -9,21 +9,26 @@ import {
   InterestModel,
   InterestModelData,
   MarketJobResult,
+  PoolAddress,
   PoolCoinName,
   Pools,
   RiskModelData,
   RiskModels,
 } from '../types';
 import { queryMultipleObjects } from '../util';
-import { POOL_ADDRESSES } from '../const/objects';
 import { marketKey, marketPrefix } from '../constants';
 import { Cache } from '../../../Cache';
 
-const queryMarkets = async (client: SuiClient, pools: Pools, cache: Cache) => {
+const queryMarkets = async (
+  client: SuiClient,
+  pools: Pools,
+  poolAddress: PoolAddress,
+  cache: Cache
+) => {
   const poolCoinNames = Object.keys(pools) as PoolCoinName[];
   const balanceSheetObjects = await queryMultipleObjects(
     client,
-    poolCoinNames.map((coinName) => POOL_ADDRESSES[coinName].lendingPoolAddress)
+    poolCoinNames.map((coinName) => poolAddress[coinName].lendingPoolAddress)
   );
   // get balance sheet
   const balanceSheets: BalanceSheet = poolCoinNames.reduce(
@@ -45,7 +50,7 @@ const queryMarkets = async (client: SuiClient, pools: Pools, cache: Cache) => {
   // get borrow indexes
   const borrowIndexObjects = await queryMultipleObjects(
     client,
-    poolCoinNames.map((coinName) => POOL_ADDRESSES[coinName].borrowDynamic)
+    poolCoinNames.map((coinName) => poolAddress[coinName].borrowDynamic)
   );
   const borrowIndexes: BorrowIndexes = poolCoinNames.reduce(
     (acc, coinName, idx) => {
@@ -66,7 +71,7 @@ const queryMarkets = async (client: SuiClient, pools: Pools, cache: Cache) => {
   // get risk models
   const riskModelCoinNameToObjectId = poolCoinNames.reduce(
     (acc, coinName) => {
-      const { riskModel } = POOL_ADDRESSES[coinName];
+      const { riskModel } = poolAddress[coinName];
       if (!riskModel) return acc;
       acc[coinName] = riskModel;
       return acc;
@@ -99,7 +104,7 @@ const queryMarkets = async (client: SuiClient, pools: Pools, cache: Cache) => {
   // get interest models
   const interestModelObjects = await queryMultipleObjects(
     client,
-    poolCoinNames.map((coinName) => POOL_ADDRESSES[coinName].interestModel)
+    poolCoinNames.map((coinName) => poolAddress[coinName].interestModel)
   );
   const interestModels: InterestModel = poolCoinNames.reduce(
     (acc, coinName, idx) => {

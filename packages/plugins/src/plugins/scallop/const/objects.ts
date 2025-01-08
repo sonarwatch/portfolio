@@ -1,23 +1,24 @@
-import { PoolCoinName } from "../types";
+import { PoolCoinName } from '../types';
 
 export const POOL_ADDRESSES: Record<
   PoolCoinName,
   {
-    coinType?: string;
+    coinType: string;
     lendingPoolAddress: string;
-    collateralPoolAddress?: string; // not all pool has collateral
-    spool?: string;
-    spoolReward?: string;
-    sCoinTreasury?: string;
     borrowDynamic: string;
     interestModel: string;
+    borrowFeeKey: string;
+    coinMetadataId: string;
+    // optional keys
+    collateralPoolAddress?: string; // not all pool has collateral
     riskModel?: string;
-    borrowFeeKey?: string;
     supplyLimitKey?: string;
     borrowLimitKey?: string;
-    isolatedAssetKey?: string;
-    coinMetadataId: string;
     sCoinType?: string;
+    sCoinTreasury?: string;
+    isolatedAssetKey?: string;
+    spool?: string;
+    spoolReward?: string;
   }
 > = {
   usdc: {
