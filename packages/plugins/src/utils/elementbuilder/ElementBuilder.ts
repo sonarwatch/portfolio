@@ -10,7 +10,7 @@ import { TokenPriceMap } from '../../TokenPriceMap';
 export abstract class ElementBuilder {
   readonly type: PortfolioElementTypeType;
   readonly label: PortfolioElementLabel;
-  readonly name?: string;
+  name?: string;
   readonly platformId?: string;
   tags?: string[];
 
@@ -25,6 +25,10 @@ export abstract class ElementBuilder {
   addTag(tag: string) {
     if (!this.tags) this.tags = [];
     this.tags.push(tag);
+  }
+
+  setName(name: string) {
+    this.name = name;
   }
 
   abstract mints(): string[];

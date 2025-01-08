@@ -20,36 +20,47 @@ import {
 } from './helpers/pdas';
 import { getCumulativeBorrowRate, sfToValue } from './helpers/common';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { MemoizedCache } from '../../utils/misc/MemoizedCache';
+import { arrayToMap } from '../../utils/misc/arrayToMap';
 
 const zeroAdressValue = '11111111111111111111111111111111';
 
+const marketsMemo = new MemoizedCache<string[]>(marketsKey, {
+  prefix: platformId,
+  networkId: NetworkId.solana,
+});
+
+const elevationGroupsAccountsMemo = new MemoizedCache<
+  ElevationGroup[],
+  Map<number, ElevationGroup>
+>(
+  elevationGroupsKey,
+  {
+    prefix: platformId,
+    networkId: NetworkId.solana,
+  },
+  (arr) => arrayToMap<ElevationGroup, number>(arr || [], 'id')
+);
+
+const reservesMemo = new MemoizedCache<Record<string, ReserveDataEnhanced>>(
+  reservesKey,
+  {
+    prefix: platformId,
+    networkId: NetworkId.solana,
+  }
+);
+
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
-  const networkId = NetworkId.solana;
 
-  const [markets, elevationGroupsAccounts] = await Promise.all([
-    cache.getItem<string[]>(marketsKey, {
-      prefix: platformId,
-      networkId: NetworkId.solana,
-    }),
-    cache.getItem<ElevationGroup[]>(elevationGroupsKey, {
-      prefix: platformId,
-      networkId: NetworkId.solana,
-    }),
-  ]);
-
+  const markets = await marketsMemo.getItem(cache);
   if (!markets) return [];
 
-  const elevationGroups: Map<number, ElevationGroup> = new Map();
-  elevationGroupsAccounts?.forEach((group) =>
-    elevationGroups.set(group.id, group)
-  );
-
-  const [lendingPdas, multiplyPdas] = markets
-    ? [getLendingPda(owner, markets), getMultiplyPdas(owner, markets)]
-    : [[], []];
-
-  const leveragePdas = getLeveragePdas(owner);
+  const [lendingPdas, multiplyPdas, leveragePdas] = [
+    getLendingPda(owner, markets),
+    getMultiplyPdas(owner, markets),
+    getLeveragePdas(owner),
+  ];
 
   const obligations = await getParsedMultipleAccountsInfo(
     client,
@@ -57,197 +68,73 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     [...lendingPdas, ...multiplyPdas, ...leveragePdas]
   );
 
-  if (!obligations.some((obli) => obli !== null)) return [];
+  if (!obligations.some((obligation) => obligation !== null)) return [];
 
-  const lendingAccounts = obligations.slice(0, lendingPdas.length);
-
-  const multiplyAccounts = obligations.slice(
-    lendingPdas.length,
-    lendingPdas.length + multiplyPdas.length
-  );
-
-  const leverageAccounts = obligations.slice(
-    lendingPdas.length + multiplyPdas.length,
-    obligations.length
-  );
-
-  if (!lendingAccounts && !multiplyAccounts && !leverageAccounts) return [];
-
-  const reserves = await cache.getItem<Record<string, ReserveDataEnhanced>>(
-    reservesKey,
-    {
-      prefix: platformId,
-      networkId,
-    }
-  );
+  const reserves = await reservesMemo.getItem(cache);
   if (!reserves) return [];
+
+  const elevationGroups = await elevationGroupsAccountsMemo.getItem(cache);
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 
-  // *************
-  // KLend : https://app.kamino.finance/lending
-  // *************
+  const tokens = new Set<string>();
+  for (let index = 0; index < obligations.length; index++) {
+    const obligation = obligations[index];
+    if (!obligation) continue;
+    for (const deposit of obligation.deposits) {
+      if (
+        deposit.depositReserve.toString() === zeroAdressValue ||
+        deposit.depositedAmount.isLessThanOrEqualTo(0)
+      )
+        continue;
 
-  if (lendingAccounts) {
-    for (const lendingAccount of lendingAccounts) {
-      if (!lendingAccount) continue;
-      const lendingConfig = lendingConfigs.get(
-        lendingAccount.lendingMarket.toString()
-      );
+      const reserve = reserves[deposit.depositReserve.toString()];
+      if (!reserve) continue;
+      tokens.add(reserve.liquidity.mintPubkey);
+    }
+    for (const borrow of obligation.borrows) {
+      if (
+        borrow.borrowReserve.toString() === zeroAdressValue ||
+        borrow.borrowedAmountSf.isLessThanOrEqualTo(0)
+      )
+        continue;
 
-      const element = elementRegistry.addElementBorrowlend({
-        label: 'Lending',
-        name: lendingConfig?.name,
-      });
-
-      for (const deposit of lendingAccount.deposits) {
-        if (
-          deposit.depositReserve.toString() === zeroAdressValue ||
-          deposit.depositedAmount.isLessThanOrEqualTo(0)
-        )
-          continue;
-
-        const amountRaw = deposit.depositedAmount;
-        const reserve = reserves[deposit.depositReserve.toString()];
-        if (!reserve) continue;
-
-        element.addSuppliedAsset({
-          address: reserve.liquidity.mintPubkey,
-          amount: amountRaw
-            .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
-            .dividedBy(reserve.exchangeRate),
-          alreadyShifted: true,
-        });
-        element.addSuppliedLtv(reserve.config.liquidationThresholdPct / 100);
-        element.addSuppliedYield([
-          { apr: reserve.supplyApr, apy: aprToApy(reserve.supplyApr) },
-        ]);
-      }
-
-      for (const borrow of lendingAccount.borrows) {
-        if (
-          borrow.borrowReserve.toString() === zeroAdressValue ||
-          borrow.borrowedAmountSf.isLessThanOrEqualTo(0)
-        )
-          continue;
-
-        const reserve = reserves[borrow.borrowReserve.toString()];
-        if (!reserve) continue;
-
-        const { cumulativeBorrowRate } = reserve;
-        const obligationCumulativeBorrowRate = getCumulativeBorrowRate(
-          borrow.cumulativeBorrowRateBsf
-        );
-        const amountRaw = sfToValue(
-          borrow.borrowedAmountSf
-            .multipliedBy(cumulativeBorrowRate)
-            .dividedBy(obligationCumulativeBorrowRate)
-        );
-        element.addBorrowedAsset({
-          address: reserve.liquidity.mintPubkey,
-          amount: amountRaw.dividedBy(
-            new BigNumber(10).pow(reserve.liquidity.mintDecimals)
-          ),
-          alreadyShifted: true,
-        });
-        element.addBorrowedWeight(Number(reserve.config.borrowFactorPct) / 100);
-        element.addBorrowedYield([
-          { apr: -reserve.borrowApr, apy: -aprToApy(reserve.borrowApr) },
-        ]);
-      }
+      const reserve = reserves[borrow.borrowReserve.toString()];
+      if (!reserve) continue;
+      tokens.add(reserve.liquidity.mintPubkey);
     }
   }
 
-  // ******
-  // Multiply :  https://app.kamino.finance/lending/multiply
-  // ******
+  const tokenPrices = await cache.getTokenPricesAsMap(tokens, NetworkId.solana);
 
-  if (multiplyAccounts)
-    for (const multiplyAccount of multiplyAccounts) {
-      if (!multiplyAccount) continue;
+  for (let index = 0; index < obligations.length; index++) {
+    const obligation = obligations[index];
+    if (!obligation) continue;
 
-      const lendingConfig = lendingConfigs.get(
-        multiplyAccount.lendingMarket.toString()
-      );
-      const name = lendingConfig
-        ? `Multiply ${lendingConfig.name}`
-        : 'Multiply';
+    const lendingConfig = lendingConfigs.get(
+      obligation.lendingMarket.toString()
+    );
 
-      const elevationGroup = elevationGroups.get(
-        multiplyAccount.elevationGroup
-      );
-
-      const element = elementRegistry.addElementBorrowlend({
-        label: 'Lending',
-        name,
-      });
-
-      for (const deposit of multiplyAccount.deposits) {
-        if (
-          deposit.depositReserve.toString() === zeroAdressValue ||
-          deposit.depositedAmount.isLessThanOrEqualTo(0)
-        )
-          continue;
-
-        const amountRaw = deposit.depositedAmount;
-        const reserve = reserves[deposit.depositReserve.toString()];
-        if (!reserve) continue;
-
-        element.addSuppliedAsset({
-          address: reserve.liquidity.mintPubkey,
-          amount: amountRaw
-            .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
-            .dividedBy(reserve.exchangeRate),
-          alreadyShifted: true,
-        });
-
-        if (elevationGroup)
-          element.addSuppliedLtv(elevationGroup.liquidationThresholdPct / 100);
-        else {
-          element.addSuppliedLtv(0);
-        }
-        element.addSuppliedYield([
-          { apr: reserve.supplyApr, apy: aprToApy(reserve.supplyApr) },
-        ]);
-      }
-      for (const borrow of multiplyAccount.borrows) {
-        if (
-          borrow.borrowReserve.toString() === zeroAdressValue ||
-          borrow.borrowedAmountSf.isLessThanOrEqualTo(0)
-        )
-          continue;
-
-        const amountRaw = borrow.borrowedAmountSf.dividedBy(2 ** 60);
-        const reserve = reserves[borrow.borrowReserve.toString()];
-        if (!reserve) continue;
-
-        element.addBorrowedAsset({
-          address: reserve.liquidity.mintPubkey,
-          amount: amountRaw.dividedBy(
-            new BigNumber(10).pow(reserve.liquidity.mintDecimals)
-          ),
-          alreadyShifted: true,
-        });
-        element.addBorrowedWeight(Number(reserve.config.borrowFactorPct) / 100);
-        element.addBorrowedYield([
-          { apr: -reserve.borrowApr, apy: -aprToApy(reserve.borrowApr) },
-        ]);
-      }
+    let name;
+    let type = 'lending';
+    if (index < lendingPdas.length) {
+      name = lendingConfig?.name;
+    } else if (index < lendingPdas.length + multiplyPdas.length) {
+      name = lendingConfig ? `Multiply ${lendingConfig.name}` : 'Multiply';
+      type = 'multiply';
+    } else {
+      name = 'Leverage';
+      type = 'leverage';
     }
-
-  // ******
-  // Leverage :  https://app.kamino.finance/lending/leverage
-  // ******
-
-  for (const leverageAccount of leverageAccounts) {
-    if (!leverageAccount) continue;
 
     const element = elementRegistry.addElementBorrowlend({
       label: 'Lending',
-      name: 'Leverage',
+      name,
     });
 
-    for (const deposit of leverageAccount.deposits) {
+    let userTotalDeposit = new BigNumber(0);
+
+    for (const deposit of obligation.deposits) {
       if (
         deposit.depositReserve.toString() === zeroAdressValue ||
         deposit.depositedAmount.isLessThanOrEqualTo(0)
@@ -258,6 +145,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const reserve = reserves[deposit.depositReserve.toString()];
       if (!reserve) continue;
 
+      const priceX = tokenPrices.get(reserve.liquidity.mintPubkey);
+      if (priceX) {
+        const depositValueUsd = amountRaw
+          .dividedBy(reserve.exchangeRate)
+          .multipliedBy(priceX.price)
+          .div(new BigNumber(10).pow(reserve.liquidity.mintDecimals));
+        userTotalDeposit = userTotalDeposit.plus(depositValueUsd);
+      }
+
       element.addSuppliedAsset({
         address: reserve.liquidity.mintPubkey,
         amount: amountRaw
@@ -265,24 +161,52 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           .dividedBy(reserve.exchangeRate),
         alreadyShifted: true,
       });
-      element.addSuppliedLtv(reserve.config.liquidationThresholdPct / 100);
+
+      if (type === 'multiply') {
+        const elevationGroup = elevationGroups.get(obligation.elevationGroup);
+        if (elevationGroup)
+          element.addSuppliedLtv(elevationGroup.liquidationThresholdPct / 100);
+        else {
+          element.addSuppliedLtv(0);
+        }
+      } else {
+        element.addSuppliedLtv(reserve.config.liquidationThresholdPct / 100);
+      }
+
       element.addSuppliedYield([
         { apr: reserve.supplyApr, apy: aprToApy(reserve.supplyApr) },
       ]);
     }
-    for (const borrow of leverageAccount.borrows) {
+
+    let userTotalBorrow = new BigNumber(0);
+
+    for (const borrow of obligation.borrows) {
       if (
         borrow.borrowReserve.toString() === zeroAdressValue ||
         borrow.borrowedAmountSf.isLessThanOrEqualTo(0)
       )
         continue;
 
-      const amountRaw = borrow.borrowedAmountSf.dividedBy(
-        borrow.cumulativeBorrowRateBsf.value0
-      );
       const reserve = reserves[borrow.borrowReserve.toString()];
       if (!reserve) continue;
 
+      const { cumulativeBorrowRate } = reserve;
+      const obligationCumulativeBorrowRate = getCumulativeBorrowRate(
+        borrow.cumulativeBorrowRateBsf
+      );
+      const amountRaw = sfToValue(
+        borrow.borrowedAmountSf
+          .multipliedBy(cumulativeBorrowRate)
+          .dividedBy(obligationCumulativeBorrowRate)
+      );
+
+      const priceX = tokenPrices.get(reserve.liquidity.mintPubkey);
+      if (priceX) {
+        const borrowValueUsd = amountRaw
+          .multipliedBy(priceX.price)
+          .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals));
+        userTotalBorrow = userTotalBorrow.plus(borrowValueUsd);
+      }
       element.addBorrowedAsset({
         address: reserve.liquidity.mintPubkey,
         amount: amountRaw.dividedBy(
@@ -294,6 +218,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       element.addBorrowedYield([
         { apr: -reserve.borrowApr, apy: -aprToApy(reserve.borrowApr) },
       ]);
+    }
+
+    if (['multiply', 'leverage'].includes(type)) {
+      const netAccountValue = userTotalDeposit.minus(userTotalBorrow);
+      const leverage = userTotalDeposit.dividedBy(netAccountValue);
+
+      element.setName(
+        `${element.name} ${leverage.decimalPlaces(2).toString()}x`
+      );
     }
   }
 
