@@ -9,9 +9,7 @@ import {
   InterestModel,
   InterestModelData,
   MarketJobResult,
-  PoolAddress,
-  PoolCoinName,
-  Pools,
+  PoolAddressMap,
   RiskModelData,
   RiskModels,
 } from '../types';
@@ -21,18 +19,18 @@ import { Cache } from '../../../Cache';
 
 const queryMarkets = async (
   client: SuiClient,
-  pools: Pools,
-  poolAddress: PoolAddress,
+  poolAddress: PoolAddressMap,
   cache: Cache
 ) => {
-  const poolCoinNames = Object.keys(pools) as PoolCoinName[];
-  const balanceSheetObjects = await queryMultipleObjects(
+  const poolAddressValues = Object.values(poolAddress);
+  const balanceSheetObjects = await queryMultipleObjects<BalanceSheetData>(
     client,
-    poolCoinNames.map((coinName) => poolAddress[coinName].lendingPoolAddress)
+    poolAddressValues.map((t) => t.lendingPoolAddress)
   );
+
   // get balance sheet
-  const balanceSheets: BalanceSheet = poolCoinNames.reduce(
-    (acc, coinName, idx) => {
+  const balanceSheets: BalanceSheet = poolAddressValues.reduce(
+    (acc, { coinName }, idx) => {
       const balanceSheetObject = balanceSheetObjects[idx];
       if (!balanceSheetObject) return acc;
       if (
@@ -43,17 +41,16 @@ const queryMarkets = async (
       }
       return acc;
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    {} as Record<string, any>
+    {} as Record<string, BalanceSheetData>
   );
 
   // get borrow indexes
-  const borrowIndexObjects = await queryMultipleObjects(
+  const borrowIndexObjects = await queryMultipleObjects<BorrowIndexData>(
     client,
-    poolCoinNames.map((coinName) => poolAddress[coinName].borrowDynamic)
+    poolAddressValues.map((t) => t.borrowDynamic)
   );
-  const borrowIndexes: BorrowIndexes = poolCoinNames.reduce(
-    (acc, coinName, idx) => {
+  const borrowIndexes: BorrowIndexes = poolAddressValues.reduce(
+    (acc, { coinName }, idx) => {
       const borrowIndexObject = borrowIndexObjects[idx];
       if (!borrowIndexObject) return acc;
       if (
@@ -64,13 +61,12 @@ const queryMarkets = async (
       }
       return acc;
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    {} as Record<string, any>
+    {} as Record<string, BorrowIndexData>
   );
 
   // get risk models
-  const riskModelCoinNameToObjectId = poolCoinNames.reduce(
-    (acc, coinName) => {
+  const riskModelCoinNameToObjectId = poolAddressValues.reduce(
+    (acc, { coinName }) => {
       const { riskModel } = poolAddress[coinName];
       if (!riskModel) return acc;
       acc[coinName] = riskModel;
@@ -79,35 +75,31 @@ const queryMarkets = async (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     {} as Record<string, string>
   );
-  const riskModelObjects = await queryMultipleObjects(
+  const riskModelObjects = await queryMultipleObjects<RiskModelData>(
     client,
     Object.values(riskModelCoinNameToObjectId)
   );
   const riskModels: RiskModels = Object.keys(
     riskModelCoinNameToObjectId
-  ).reduce(
-    (acc, coinName, idx) => {
-      const riskModelObject = riskModelObjects[idx];
-      if (!riskModelObject) return acc;
-      if (
-        riskModelObject.data?.content &&
-        riskModelObject.data?.content.dataType === 'moveObject'
-      ) {
-        acc[coinName] = riskModelObject.data?.content.fields;
-      }
-      return acc;
-    },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    {} as Record<string, any>
-  );
+  ).reduce((acc, coinName, idx) => {
+    const riskModelObject = riskModelObjects[idx];
+    if (!riskModelObject) return acc;
+    if (
+      riskModelObject.data?.content &&
+      riskModelObject.data?.content.dataType === 'moveObject'
+    ) {
+      acc[coinName] = riskModelObject.data?.content.fields;
+    }
+    return acc;
+  }, {} as Record<string, RiskModelData>);
 
   // get interest models
   const interestModelObjects = await queryMultipleObjects(
     client,
-    poolCoinNames.map((coinName) => poolAddress[coinName].interestModel)
+    poolAddressValues.map((t) => t.interestModel)
   );
-  const interestModels: InterestModel = poolCoinNames.reduce(
-    (acc, coinName, idx) => {
+  const interestModels: InterestModel = poolAddressValues.reduce(
+    (acc, { coinName }, idx) => {
       const interestModelObject = interestModelObjects[idx];
       if (!interestModelObject) return acc;
       if (
@@ -125,7 +117,8 @@ const queryMarkets = async (
   const market: MarketJobResult = {};
   const borrowYearFactor = 24 * 365 * 3600;
   const DENOMINATOR = 2 ** 32;
-  for (const asset of Object.keys(pools)) {
+  for (const data of poolAddressValues) {
+    const { coinName: asset, decimals, coinType } = data;
     const interestModelData = interestModels[asset];
     const borrowIndexData = borrowIndexes[asset];
     const balanceSheetData = balanceSheets[asset];
@@ -200,9 +193,9 @@ const queryMarkets = async (
 
     market[asset] = {
       coin: asset,
-      decimal: pools[asset as PoolCoinName].metadata?.decimals ?? 0,
-      coinType: pools[asset as PoolCoinName].coinType,
-      growthInterest: growthInterest.toNumber(),
+      decimals,
+      coinType,
+      // growthInterest: growthInterest.toNumber(),
       borrowInterestRate: Math.min(
         calculatedBorrowRate,
         calculatedMaxBorrowRate

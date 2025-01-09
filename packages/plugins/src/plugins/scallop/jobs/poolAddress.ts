@@ -1,28 +1,39 @@
-import axios from 'axios';
+// import axios from 'axios';
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import { PoolAddress } from '../types';
-import { poolAddressEndpoint, poolAddressKey, poolAddressPrefix } from '../constants';
+import { PoolAddressMap } from '../types';
+import {
+  // poolAddressEndpoint,
+  poolAddressKey,
+  poolAddressPrefix,
+} from '../constants';
 import { Cache } from '../../../Cache';
+import { POOL_ADDRESSES } from '../const/poolAddress';
 
 const queryPoolAddress = async (
   cache: Cache
-): Promise<PoolAddress | undefined> => {
-  const resp = await axios.get(poolAddressEndpoint);
+): Promise<PoolAddressMap | undefined> => {
+  // @TODO: enable on prod
+  // const resp = await axios.get(poolAddressEndpoint);
+  // if (!resp.data) return undefined;
 
-  if (!resp.data) return undefined;
+  // temporary solution
+  const resp = { data: POOL_ADDRESSES };
 
-  await cache.setItem(
-    poolAddressPrefix,
-    {
-      ...resp.data,
+  // modify so that instead of Record<coinName, PoolInfoAddresses>, it's Record<coinType, PoolInfoAddresses>
+  const modifiedPoolAddress = Object.values(resp.data as PoolAddressMap).reduce(
+    (acc, poolAddress) => {
+      acc[poolAddress.coinType] = poolAddress;
+      return acc;
     },
-    {
-      prefix: poolAddressKey,
-      networkId: NetworkId.sui,
-    }
+    {} as PoolAddressMap
   );
 
-  return resp.data;
+  await cache.setItem(poolAddressKey, modifiedPoolAddress, {
+    prefix: poolAddressPrefix,
+    networkId: NetworkId.sui,
+  });
+
+  return modifiedPoolAddress;
 };
 
 export default queryPoolAddress;

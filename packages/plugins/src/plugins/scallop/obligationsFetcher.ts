@@ -17,14 +17,14 @@ import {
   marketKey,
   obligationKeyType,
   platformId,
-  poolsKey,
-  poolsPrefix,
+  poolAddressKey,
+  poolAddressPrefix,
   marketPrefix as prefix,
 } from './constants';
 import {
   MarketJobResult,
   ObligationKeyFields,
-  Pools,
+  PoolAddressMap,
   UserObligations,
 } from './types';
 import { shortenAddress } from './helpers';
@@ -45,14 +45,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elements: PortfolioElement[] = [];
   const rewardAssets: PortfolioAsset[] = [];
 
-  const coinTypeMetadata = await cache.getItem<Pools>(poolsKey, {
-    prefix: poolsPrefix,
+  const poolAddress = await cache.getItem<PoolAddressMap>(poolAddressKey, {
+    prefix: poolAddressPrefix,
     networkId: NetworkId.sui,
   });
-  if (!coinTypeMetadata) return [];
+  if (!poolAddress) return [];
 
-  const ctmValues = Object.values(coinTypeMetadata);
-  if (ctmValues.length === 0) return [];
+  const poolAddressValues = Object.values(poolAddress);
+  if (poolAddressValues.length === 0) return [];
 
   const filterOwnerObject: SuiObjectDataFilter = {
     MatchAny: [
@@ -145,11 +145,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const accountDebtsAssetsPromises = accountDebtsAssets.map(
         ({ fields }) =>
           async () => {
-            const coinName = ctmValues
-              .find(
-                (value) => value.coinType === normalizeStructTag(fields.name)
-              )
-              ?.metadata?.symbol.toLowerCase();
+            const { coinName } = poolAddress[normalizeStructTag(fields.name)];
             if (!coinName) return;
 
             const market = marketData[coinName];
@@ -196,13 +192,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   await runInBatch(debtsAndCollateralCalculationPromises, 5); // run in batch of size 2, calculate 5 obligation account per batch
 
-  const tokenAddresses = ctmValues.map((value) => value.coinType);
+  const tokenAddresses = Object.keys(poolAddress);
   const tokenPrices = await cache.getTokenPricesAsMap(
     tokenAddresses,
     NetworkId.sui
   );
 
-  for (const account of Object.keys(userObligations)) {
+  for (const [obligationId, account] of Object.entries(userObligations)) {
     const borrowedAssets: PortfolioAsset[] = [];
     const borrowedWeights: number[] = [];
     const suppliedLtvs: number[] = [];
@@ -210,53 +206,64 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const suppliedAssets: PortfolioAsset[] = [];
     const suppliedYields: Yield[][] = [];
 
-    const { collaterals, debts } = userObligations[account];
+    const { collaterals, debts } = account;
 
     for (const coinType of Object.keys(collaterals)) {
-      const metadata = ctmValues.find(
-        (value) => value.coinType === normalizeStructTag(coinType)
-      );
-      const coinName = metadata?.metadata?.symbol.toLowerCase() ?? '';
+      const poolData = poolAddress[normalizeStructTag(coinType)];
+      if (!poolData) continue;
+
+      const { decimals, coinName } = poolData;
+
+
+      const market = marketData[coinName];
+      if (!market) continue;
+
+      const { collateralFactor } = market;
+
       const address = formatMoveTokenAddress(`0x${coinType}`);
       suppliedAssets.push(
         tokenPriceToAssetToken(
           address,
-          collaterals[coinType]
-            .shiftedBy(-1 * (metadata?.metadata?.decimals ?? 0))
-            .toNumber(),
+          collaterals[coinType].shiftedBy(-1 * (decimals ?? 0)).toNumber(),
           NetworkId.sui,
           tokenPrices.get(address)
         )
       );
-      suppliedLtvs.push(marketData[coinName].collateralFactor);
+      suppliedLtvs.push(collateralFactor);
       suppliedYields.push([]);
     }
+
     for (const coinType of Object.keys(debts)) {
-      const metadata = ctmValues.find(
-        (value) => value.coinType === normalizeStructTag(coinType)
-      );
-      const coinName = metadata?.metadata?.symbol.toLowerCase() ?? '';
+      const poolData = poolAddress[normalizeStructTag(coinType)];
+      if (!poolData) continue;
+
+      const { decimals, coinName } = poolData;
+      
       const market = marketData[coinName];
       if (!market) continue;
+
+      const { borrowWeight, borrowInterestRate } = market;
+
       const address = formatMoveTokenAddress(`0x${coinType}`);
       borrowedAssets.push(
         tokenPriceToAssetToken(
           address,
-          debts[coinType]
-            .shiftedBy(-1 * (metadata?.metadata?.decimals ?? 0))
-            .toNumber(),
+          debts[coinType].shiftedBy(-1 * (decimals ?? 0)).toNumber(),
           NetworkId.sui,
           tokenPrices.get(address)
         )
       );
-      borrowedWeights.push(marketData[coinName].borrowWeight);
+      borrowedWeights.push(borrowWeight);
       borrowedYields.push([
         {
-          apr: market.borrowInterestRate,
-          apy: aprToApy(market.borrowInterestRate),
+          apr: borrowInterestRate,
+          apy: aprToApy(borrowInterestRate),
         },
       ]);
     }
+
+    // Query borrow incentive accounts for the obligation
+
     if (
       suppliedAssets.length === 0 &&
       borrowedAssets.length === 0 &&
@@ -277,7 +284,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       networkId: NetworkId.sui,
       platformId,
       label: 'Lending',
-      name: `Obligation ID: ${shortenAddress(account, 5, 3)}`,
+      name: `Obligation ID: ${shortenAddress(obligationId, 5, 3)}`,
       value,
       data: {
         borrowedAssets,

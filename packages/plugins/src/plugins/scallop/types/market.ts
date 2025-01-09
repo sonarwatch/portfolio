@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { BasicField, IdField, WitTable } from './basic';
+import { BasicField, WitTable } from './basic';
 
 export type BalanceSheet = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -122,18 +122,18 @@ export type MarketData = {
   vault: {
     type: string;
     fields: {
-      [l in VaultFieldsName]: BasicField & WitTable;
+      [l in VaultFieldsName]: BasicField<WitTable>;
     };
   };
-  borrow_dynamics: BasicField & WitTable;
-  interest_models: BasicField & WitTable;
+  borrow_dynamics: BasicField<WitTable>;
+  interest_models: BasicField<WitTable>;
 };
 
 export type MarketJobData = {
   coin: string;
-  decimal: number;
+  decimals: number;
   coinType: string;
-  growthInterest: number;
+  // growthInterest: number;
   borrowInterestRate: number;
   supplyInterestRate: number;
   debt: number;
@@ -157,25 +157,4 @@ export type SpoolJobResult = {
 
 export type MarketJobResult = {
   [T in string]: MarketJobData;
-};
-
-type BalanceBag = BasicField & {
-  fields: {
-    id: IdField;
-    bag: BasicField & { fields: { id: IdField; size: string } };
-  };
-};
-
-export type ObligationAccount = {
-  balances: BalanceBag;
-  borrow_locked: boolean;
-  collaterals: WitTable;
-  debts: WitTable;
-  deposit_collateral_locked: boolean;
-  id: IdField;
-  liquidate_locked: boolean;
-  lock_key: string | null;
-  repay_locked: boolean;
-  rewards_point: string;
-  withdraw_collateral_locked: boolean;
 };

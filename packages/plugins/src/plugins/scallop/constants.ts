@@ -9,24 +9,23 @@ export const platform: Platform = {
   website: 'https://app.scallop.io/',
 };
 
-// export const addressPrefix = `${platformId}-address`;
+export const addressPrefix = `${platformId}-address`;
 export const poolAddressPrefix = `${platformId}-pool-address`;
 export const marketPrefix = `${platformId}-market`;
-export const scoinPrefix = `${platformId}-scoin`;
-export const poolsPrefix = `${platformId}-pools`;
 export const spoolsPrefix = `${platformId}-spoolsmarket`;
+export const sCoinNamePrefix = `${platformId}-scoin-names`;
+export const marketCoinNamePrefix = `${platformId}-market-coin-names`;
 
 export const addressEndpoint =
   'https://sui.apis.scallop.io/addresses/675c65cd301dd817ea262e76';
 export const poolAddressEndpoint =
-  'https://sdk.api.scallop.io/api/market/addresses';
+  'https://sdk.api.scallop.io/api/market/coinPoolInfo';
 
-// export const addressKey = 'scallop-address-key';
-export const poolAddressKey = 'scallop-pool-address-key';
-export const marketKey = 'scallop-market-key';
-export const poolsKey = 'scallop-pools-key';
-export const scoinKey = 'scallop-scoin-key';
-export const spoolsKey = 'scallop-spoolsmarket-key';
+export const addressKey = `${platformId}-address-key`;
+export const poolAddressKey = `${platformId}-pool-address-key`;
+export const marketKey = `${platformId}-market-key`;
+export const spoolsKey = `${platformId}-spoolsmarket-key`;
+export const marketCoinNameKey = `${platformId}-market-coin-names-key`;
 
 export const sPoolAccountType = `0xe87f1b2d498106a2c61421cec75b7b5c5e348512b0dc263949a0e7a3c256571a::spool_account::SpoolAccount`;
 export const veScaKeyType =
@@ -46,65 +45,3 @@ export const cnyTableId =
   '0xbfbbbdf1fe9b70cdd1ebd1444ca273000177f81a405935f6007b7727d2ff90c2';
 export const airdropUrl =
   'https://airdrop.apis.scallop.io/cny-campaign/claim-signature/';
-
-export const SCOIN_NAMES = [
-  'scallop_sui',
-  'scallop_cetus',
-  'scallop_sca',
-  'scallop_wormhole_usdc',
-  'scallop_wormhole_usdt',
-  'scallop_wormhole_eth',
-  'scallop_wormhole_btc',
-  'scallop_wormhole_sol',
-  'scallop_af_sui',
-  'scallop_ha_sui',
-  'scallop_v_sui',
-  'scallop_usdc',
-  'scallop_deep',
-  'scallop_fud',
-  'scallop_fdusd',
-  'scallop_sb_usdt',
-  'scallop_sb_eth',
-] as const;
-
-export const COIN_NAMES = [
-  'weth',
-  'wbtc',
-  'wusdc',
-  'wusdt',
-  'sui',
-  'wapt',
-  'wsol',
-  'cetus',
-  'sca',
-  'afsui',
-  'hasui',
-  'vsui',
-  'usdc',
-  'deep',
-  'fud',
-  'fdusd',
-  'sbusdt',
-  'sbeth'
-] as const;
-
-export const MARKET_COIN_NAMES = [
-  'sweth',
-  'swbtc',
-  'swusdc',
-  'swusdt',
-  'ssui',
-  'swapt',
-  'swsol',
-  'scetus',
-  'ssca',
-  'safsui',
-  'shasui',
-  'svsui',
-  'susdc',
-  'sdeep',
-  'sfud',
-  'sfdusd',
-  'ssbusdt',
-  'ssbeth'
-] as const;
