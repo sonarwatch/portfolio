@@ -8,6 +8,7 @@ import {
   prefixVaults,
   neutralPlatformId,
   hedgyPlatformId,
+  vectisPlatformId,
 } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
@@ -71,23 +72,31 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       name,
     });
 
-    let amountLeft = new BigNumber(vaultInfo.totalTokens)
-      .dividedBy(vaultInfo.totalShares)
-      .multipliedBy(depositAccount.vaultShares);
+    const pricePerShare = new BigNumber(vaultInfo.totalTokens).dividedBy(
+      vaultInfo.totalShares
+    );
+    const userSharesValue =
+      depositAccount.vaultShares.multipliedBy(pricePerShare);
+    const netDeposits = new BigNumber(depositAccount.netDeposits);
+    const userPnL = userSharesValue.minus(netDeposits);
+    const profitShare = new BigNumber(vaultInfo.profitShare).dividedBy(10 ** 6);
 
-    if (!depositAccount.lastWithdrawRequest.value.isZero()) {
-      amountLeft = amountLeft.minus(depositAccount.lastWithdrawRequest.value);
+    if (!depositAccount.lastWithdrawRequest?.value.isZero()) {
+      const withdrawCooldown = [
+        neutralPlatformId,
+        hedgyPlatformId,
+        vectisPlatformId,
+      ].includes(platformId)
+        ? oneDay
+        : sevenDays;
+
       element.addAsset({
         address: mint,
         amount: depositAccount.lastWithdrawRequest.value,
         attributes: {
           lockedUntil: depositAccount.lastWithdrawRequest.ts
             .times(1000)
-            .plus(
-              [neutralPlatformId, hedgyPlatformId].includes(platformId)
-                ? oneDay
-                : sevenDays
-            )
+            .plus(withdrawCooldown)
             .toNumber(),
         },
       });
@@ -95,8 +104,25 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     element.addAsset({
       address: mint,
-      amount: amountLeft,
+      amount: netDeposits.minus(depositAccount.lastWithdrawRequest?.value || 0),
     });
+
+    element.addAsset({
+      address: mint,
+      amount: userPnL,
+      attributes: {
+        tags: ['PnL'],
+      },
+    });
+
+    if (userPnL.isPositive())
+      element.addAsset({
+        address: mint,
+        amount: userPnL.multipliedBy(profitShare).negated(),
+        attributes: {
+          tags: ['Performance Fee'],
+        },
+      });
   }
 
   return elementRegistry.getElements(cache);

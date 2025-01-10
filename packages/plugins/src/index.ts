@@ -695,7 +695,6 @@ import {
   platforms as pudgypenguinsPlatforms,
   jobs as pudgypenguinsJobs,
   fetchers as pudgypenguinsFetchers,
-  airdropFetcher as pudgypenguinsAirdropFetcher,
 } from './plugins/pudgypenguins';
 import {
   platforms as gpoolPlatforms,
@@ -712,6 +711,20 @@ import {
   jobs as perenaJobs,
   fetchers as perenaFetchers,
 } from './plugins/perena';
+  platforms as fragmetricPlatforms,
+  jobs as fragmetricJobs,
+  fetchers as fragmetricFetchers,
+} from './plugins/fragmetric';
+import {
+  platforms as divvyPlatforms,
+  jobs as divvyJobs,
+  fetchers as divvyFetchers,
+} from './plugins/divvy';
+import {
+  platforms as exponentPlatforms,
+  jobs as exponentJobs,
+  fetchers as exponentFetchers,
+} from './plugins/exponent';
 import {
   platforms as ratexPlatforms,
   jobs as ratexJobs,
@@ -874,6 +887,9 @@ export const platforms: Platform[] = [
   ...gpoolPlatforms,
   ...defilandPlatforms,
   ...perenaPlatforms,
+  ...fragmetricPlatforms,
+  ...divvyPlatforms,
+  ...exponentPlatforms,
   ...ratexPlatforms,
 ];
 
@@ -1015,6 +1031,9 @@ export const jobs: Job[] = [
   ...gpoolJobs,
   ...defilandJobs,
   ...perenaJobs,
+  ...fragmetricJobs,
+  ...divvyJobs,
+  ...exponentJobs,
   ...ratexJobs,
 ];
 
@@ -1157,6 +1176,9 @@ export const fetchers: Fetcher[] = [
   ...gpoolFetchers,
   ...defilandFetchers,
   ...perenaFetchers,
+  ...fragmetricFetchers,
+  ...divvyFetchers,
+  ...exponentFetchers,
   ...ratexFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);

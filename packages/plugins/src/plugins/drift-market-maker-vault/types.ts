@@ -7,4 +7,5 @@ export type VaultInfo = {
   totalShares: string;
   totalTokens: string;
   user: string;
+  profitShare: number;
 };

@@ -1,6 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
-import axios, { AxiosResponse } from 'axios';
+import { isEvmAddress, NetworkId } from '@sonarwatch/portfolio-core';
 import { AccountInfo, PublicKey } from '@solana/web3.js';
 import {
   AirdropFetcher,
@@ -10,34 +8,32 @@ import {
 } from '../../AirdropFetcher';
 import {
   firstDistribStatics,
-  apiUrl,
-  dbrDecimals,
   dbrMint,
   platform as dbrPlatform,
   platform,
   distributorPid,
   receiptBuffer,
+  secondDistribStatics,
 } from './constants';
-import { ApiResponse } from './types';
 import { getClientSolana } from '../../utils/clients';
+import distributions from './distributions.json';
 
-const dbrFactor = new BigNumber(10 ** dbrDecimals);
-const realDistributions = [
-  'First distribution',
-  'Claim 50% vested with bonus in 6 months after TGE',
-];
-const executorSolana: AirdropFetcherExecutor = async (owner: string) => {
-  const [apiRes, receipt]: [
-    AxiosResponse<ApiResponse>,
-    AccountInfo<Buffer> | null
-  ] = await Promise.all([
-    axios.get(apiUrl + owner, {
-      timeout: 3000,
-    }),
-    getClientSolana().getAccountInfo(getSolPda(owner, 1)),
-  ]);
+const distributionByWallet = distributions as {
+  [key: string]: {
+    one: number | null;
+    two?: number | null;
+  };
+};
 
-  if (!apiRes.data.distributions || apiRes.data.distributions.length === 0) {
+const executorDis1: AirdropFetcherExecutor = async (owner: string) => {
+  const isEvm = isEvmAddress(owner);
+  const walletDistributions = distributionByWallet[owner];
+  const pda = isEvm ? getEvmPda(owner, 1) : getSolPda(owner, 1);
+
+  const receipt: AccountInfo<Buffer> | null =
+    await getClientSolana().getAccountInfo(pda);
+
+  if (!walletDistributions || !walletDistributions.one) {
     return getAirdropRaw({
       statics: firstDistribStatics,
       items: [
@@ -45,100 +41,59 @@ const executorSolana: AirdropFetcherExecutor = async (owner: string) => {
           amount: 0,
           isClaimed: false,
           label: 'DBR',
-          address: dbrMint,
-          imageUri: dbrMint ? undefined : dbrPlatform.image,
+          address: isEvm ? undefined : dbrMint,
+          imageUri: isEvm ? dbrPlatform.image : undefined,
         },
       ],
     });
   }
 
-  const items = [];
-  for (const distribution of apiRes.data.distributions) {
-    if (!realDistributions.includes(distribution.title)) continue;
-
-    const isFirstDis = distribution.title === realDistributions[0];
-    const tokens = new BigNumber(distribution.tokens).div(dbrFactor);
-
-    items.push({
-      amount: tokens.toNumber(),
-      isClaimed: isFirstDis ? !!receipt : false,
-      label: isFirstDis ? 'DBR' : 'DBR Vested(50%)',
-      address: dbrMint,
-      imageUri: dbrMint ? undefined : dbrPlatform.image,
-    });
-  }
-
   return getAirdropRaw({
     statics: firstDistribStatics,
-    items,
+    items: [
+      {
+        amount: walletDistributions.one,
+        isClaimed: !!receipt,
+        label: 'DBR',
+        address: isEvm ? undefined : dbrMint,
+        imageUri: isEvm ? dbrPlatform.image : undefined,
+      },
+    ],
   });
 };
 
-const executorEvm: AirdropFetcherExecutor = async (owner: string) => {
-  const [apiRes, receipt]: [
-    AxiosResponse<ApiResponse>,
-    AccountInfo<Buffer> | null
-  ] = await Promise.all([
-    axios.get(apiUrl + owner, {
-      timeout: 3000,
-    }),
-    getClientSolana().getAccountInfo(getEvmPda(owner, 1)),
-  ]);
+const executorDis2: AirdropFetcherExecutor = async (owner: string) => {
+  const isEvm = isEvmAddress(owner);
+  const walletDistributions = distributionByWallet[owner];
 
-  if (!apiRes.data.distributions || apiRes.data.distributions.length === 0) {
+  if (!walletDistributions || !walletDistributions.two) {
     return getAirdropRaw({
-      statics: firstDistribStatics,
+      statics: secondDistribStatics,
       items: [
         {
           amount: 0,
           isClaimed: false,
           label: 'DBR',
-          address: undefined,
-          imageUri: dbrMint ? undefined : dbrPlatform.image,
+          address: isEvm ? undefined : dbrMint,
+          imageUri: isEvm ? dbrPlatform.image : undefined,
         },
       ],
     });
   }
 
-  const items = [];
-  for (const distribution of apiRes.data.distributions) {
-    if (!realDistributions.includes(distribution.title)) continue;
-
-    const isFirstDis = distribution.title === realDistributions[0];
-    const tokens = new BigNumber(distribution.tokens).div(dbrFactor);
-
-    items.push({
-      amount: tokens.toNumber(),
-      isClaimed: isFirstDis ? !!receipt : false,
-      label: isFirstDis ? 'DBR' : 'DBR Vested(50%)',
-      address: undefined,
-      imageUri: dbrMint ? undefined : dbrPlatform.image,
-    });
-  }
-
   return getAirdropRaw({
-    statics: firstDistribStatics,
-    items,
+    statics: secondDistribStatics,
+    items: [
+      {
+        amount: walletDistributions.two,
+        isClaimed: false,
+        label: 'DBR',
+        address: isEvm ? undefined : dbrMint,
+        imageUri: isEvm ? dbrPlatform.image : undefined,
+      },
+    ],
   });
 };
-
-export const airdropFetcherEvm: AirdropFetcher = {
-  id: `${firstDistribStatics.id}-evm`,
-  networkId: NetworkId.ethereum,
-  executor: executorEvm,
-};
-
-export const airdropFetcherSolana: AirdropFetcher = {
-  id: `${firstDistribStatics.id}-solana`,
-  networkId: NetworkId.solana,
-  executor: executorSolana,
-};
-export const fetcher = airdropFetcherToFetcher(
-  airdropFetcherSolana,
-  platform.id,
-  'debridge-airdrop',
-  firstDistribStatics.claimEnd
-);
 
 function getEvmPda(owner: string, season: number): PublicKey {
   return PublicKey.findProgramAddressSync(
@@ -157,3 +112,41 @@ function getSolPda(owner: string, season: number): PublicKey {
     distributorPid
   )[0];
 }
+
+export const dis1AirdropFetcherEvm: AirdropFetcher = {
+  id: `${firstDistribStatics.id}-evm`,
+  networkId: NetworkId.ethereum,
+  executor: executorDis1,
+};
+
+export const dis1AirdropFetcherSolana: AirdropFetcher = {
+  id: `${firstDistribStatics.id}-solana`,
+  networkId: NetworkId.solana,
+  executor: executorDis1,
+};
+
+export const dis2AirdropFetcherEvm: AirdropFetcher = {
+  id: `${secondDistribStatics.id}-evm`,
+  networkId: NetworkId.ethereum,
+  executor: executorDis2,
+};
+
+export const dis2AirdropFetcherSolana: AirdropFetcher = {
+  id: `${secondDistribStatics.id}-solana`,
+  networkId: NetworkId.solana,
+  executor: executorDis2,
+};
+
+export const dis1Fetcher = airdropFetcherToFetcher(
+  dis1AirdropFetcherSolana,
+  platform.id,
+  'dis1-debridge-airdrop',
+  firstDistribStatics.claimEnd
+);
+
+export const dis2Fetcher = airdropFetcherToFetcher(
+  dis2AirdropFetcherSolana,
+  platform.id,
+  'dis2-debridge-airdrop',
+  secondDistribStatics.claimEnd
+);
