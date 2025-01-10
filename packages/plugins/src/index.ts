@@ -721,6 +721,11 @@ import {
   jobs as divvyJobs,
   fetchers as divvyFetchers,
 } from './plugins/divvy';
+import {
+  platforms as exponentPlatforms,
+  jobs as exponentJobs,
+  fetchers as exponentFetchers,
+} from './plugins/exponent';
 
 export {
   walletTokensPlatform,
@@ -880,6 +885,7 @@ export const platforms: Platform[] = [
   ...perenaPlatforms,
   ...fragmetricPlatforms,
   ...divvyPlatforms,
+  ...exponentPlatforms,
 ];
 
 // JOBS //
@@ -1022,6 +1028,7 @@ export const jobs: Job[] = [
   ...perenaJobs,
   ...fragmetricJobs,
   ...divvyJobs,
+  ...exponentJobs,
 ];
 
 // FETCHERS //
@@ -1165,6 +1172,7 @@ export const fetchers: Fetcher[] = [
   ...perenaFetchers,
   ...fragmetricFetchers,
   ...divvyFetchers,
+  ...exponentFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
