@@ -28,6 +28,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       price: ptToken.priceInUsd,
       timestamp: Date.now(),
       weight: 1,
+      elementName: 'Income',
     };
     if (baseTokenPrice) {
       tokenPriceSource.underlyings = [
