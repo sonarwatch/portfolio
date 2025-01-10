@@ -28,9 +28,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 
+  const tokenPrices = await cache.getTokenPricesAsMap(
+    markets.map((market) => market.vault.mintPt),
+    NetworkId.solana
+  );
+
   accounts.forEach((account) => {
     const market = markets.find((m) => m.id === account.market.toString());
     if (!market) return;
+    const tokenPricePt = tokenPrices.get(market.vault.mintPt);
+    if (!tokenPricePt || !tokenPricePt.underlyings) return;
+    const ptUnderlying = tokenPricePt.underlyings[0];
 
     const element = elementRegistry.addElementLiquidity({
       label: 'Vault',
@@ -39,9 +47,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const liquidity = element.addLiquidity();
 
+    const baseAssetAmount = account.lp_balance
+      .multipliedBy(market.stats.syPriceInAsset)
+      .multipliedBy(market.stats.syAmountPerLpShare)
+      .plus(
+        account.lp_balance
+          .multipliedBy(ptUnderlying.amountPerLp)
+          .multipliedBy(market.stats.ptAmountPerLpShare)
+      );
+
     liquidity.addAsset({
-      address: account.market,
-      amount: account.lp_balance,
+      address: market.vault.mintAsset,
+      amount: baseAssetAmount,
     });
 
     const apy = calculateWeightedAPY(market.stats);

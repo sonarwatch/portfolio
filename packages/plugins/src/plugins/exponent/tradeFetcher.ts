@@ -31,15 +31,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const market = markets.find((m) => m.vault.id === account.vault.toString());
     if (!market) return;
 
-    const element = elementRegistry.addElementLiquidity({
+    const element = elementRegistry.addElementMultiple({
       label: 'Deposit',
       name: `${market.vault.platform} ${market.vault.niceName}`,
     });
-    const liquidity = element.addLiquidity();
 
-    liquidity.addAsset({
-      address: market.vault.mintYt,
-      amount: account.yt_balance,
+    element.addAsset({
+      address: market.vault.mintAsset,
+      amount: account.yt_balance.multipliedBy(1 - market.stats.ptPriceInAsset),
     });
   });
 
