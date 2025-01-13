@@ -10,6 +10,9 @@ import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { RewardStat } from './types';
 
+/**
+ * @deprecated
+ */
 const executor: JobExecutor = async (cache: Cache) => {
   const rewardStatsRes = await axios.get<RewardStat[]>(
     externalRewardStatsEndpoint

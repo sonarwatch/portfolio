@@ -34,6 +34,10 @@ import {
 } from './structs';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
+/**
+ * @deprecated
+ * this fetcher has been deprecated because use of an external API
+ */
 const getClaimData = async (owner: string) => {
   const obligationAddress = await PublicKey.createWithSeed(
     new PublicKey(owner),

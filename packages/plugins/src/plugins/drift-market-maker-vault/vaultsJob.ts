@@ -71,6 +71,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         totalShares: vault.totalShares.toString(),
         totalTokens: totalTokens.toString(),
         user: vault.user.toString(),
+        profitShare: vault.profitShare,
       },
     });
   }

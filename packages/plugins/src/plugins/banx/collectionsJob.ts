@@ -10,6 +10,10 @@ import {
 } from './constants';
 import { Collection } from './types';
 
+/**
+ * @deprecated
+ * this job has been deprecated following protocol changes
+ */
 const executor: JobExecutor = async (cache: Cache) => {
   const res = await axios
     .get<{ data: Collection[] }>(banxApiCollectionsUrl, {

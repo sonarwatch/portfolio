@@ -38,6 +38,10 @@ const collectionsMemo = new MemoizedCache<
   (arr) => arrayToMap(arr || [], 'marketPubkey')
 );
 
+/**
+ * @deprecated
+ * this fetcher has been deprecated following protocol changes
+ */
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
 
