@@ -5,11 +5,15 @@ export const platformId = 'ratex';
 export const platform: Platform = {
   id: platformId,
   name: 'RateX',
-  image: 'https://static.rate-x.io/img/v1/26f59f/ratex-logo.png',
+  image: 'https://sonar.watch/img/platforms/ratex.webp',
   website: 'https://rate-x.io/',
   twitter: 'https://x.com/RateX_Dex',
   defiLlamaId: 'ratex',
 };
 
+export const programIdLookupTable = new PublicKey(
+  'Es56bH1dokFwohpWS8XYSfTXavvSEuyob2FnUYzF6pCL'
+);
 
-export const programIdLookupTable = new PublicKey('Es56bH1dokFwohpWS8XYSfTXavvSEuyob2FnUYzF6pCL');
+export const programsCacheKey = 'programs';
+export const poolPrefix = `${platformId}-pool`;

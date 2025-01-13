@@ -711,6 +711,7 @@ import {
   jobs as perenaJobs,
   fetchers as perenaFetchers,
 } from './plugins/perena';
+import {
   platforms as fragmetricPlatforms,
   jobs as fragmetricJobs,
   fetchers as fragmetricFetchers,
