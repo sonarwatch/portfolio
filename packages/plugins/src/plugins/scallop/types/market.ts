@@ -143,6 +143,7 @@ export type MarketJobData = {
   borrowIndex: number;
   borrowWeight: number;
   collateralFactor: number;
+  conversionRate: number;
 };
 
 export type SpoolJobData = {

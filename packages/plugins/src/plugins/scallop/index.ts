@@ -8,6 +8,7 @@ import lendingsFetcher from './lendingsFetcher';
 import veScaFetcher from './veScaFetcher';
 import obligationsFetcher from './obligationsFetcher';
 import cnyAidropFetcher from './cnyAirdropFetcher';
+import christmasAirdropFetcher from './christmasAirdropFetcher';
 
 export const jobs: Job[] = [marketJob];
 export const fetchers: Fetcher[] = [
@@ -15,5 +16,6 @@ export const fetchers: Fetcher[] = [
   obligationsFetcher,
   veScaFetcher,
   cnyAidropFetcher,
+  christmasAirdropFetcher,
 ];
 export const platforms: Platform[] = [platform];

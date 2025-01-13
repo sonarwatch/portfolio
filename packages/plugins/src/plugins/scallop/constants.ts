@@ -41,7 +41,13 @@ export const scaAddress =
   '0x7016aae72cfc67f2fadf55769c0a7dd54291a583b63051a5ed71081cce836ac6::sca::SCA';
 export const scaDecimals = 9;
 
+export const sscaAddress =
+  '0x5ca17430c1d046fae9edeaa8fd76c7b4193a00d764a0ecfa9418d733ad27bc1e::scallop_sca::SCALLOP_SCA';
+export const sscaDecimals = 9;
+
 export const cnyTableId =
   '0xbfbbbdf1fe9b70cdd1ebd1444ca273000177f81a405935f6007b7727d2ff90c2';
+export const christmasTableId =
+  '0x93f3f6fbd6da68e1ddf09a81553af0f4e87de2efddd1e3ec32a53c00f90c1cfd';
 export const airdropUrl =
   'https://airdrop.apis.scallop.io/cny-campaign/claim-signature/';
