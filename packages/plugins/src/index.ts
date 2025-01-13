@@ -726,6 +726,11 @@ import {
   jobs as exponentJobs,
   fetchers as exponentFetchers,
 } from './plugins/exponent';
+import {
+  platforms as ratexPlatforms,
+  jobs as ratexJobs,
+  fetchers as ratexFetchers,
+} from './plugins/ratex';
 
 export {
   walletTokensPlatform,
@@ -886,6 +891,7 @@ export const platforms: Platform[] = [
   ...fragmetricPlatforms,
   ...divvyPlatforms,
   ...exponentPlatforms,
+  ...ratexPlatforms,
 ];
 
 // JOBS //
@@ -1029,6 +1035,7 @@ export const jobs: Job[] = [
   ...fragmetricJobs,
   ...divvyJobs,
   ...exponentJobs,
+  ...ratexJobs,
 ];
 
 // FETCHERS //
@@ -1173,6 +1180,7 @@ export const fetchers: Fetcher[] = [
   ...fragmetricFetchers,
   ...divvyFetchers,
   ...exponentFetchers,
+  ...ratexFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
