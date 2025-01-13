@@ -1,5 +1,3 @@
-import { ParsedAccount } from '../../utils/solana';
-
 export type State = {
   marketIndexStart: number;
 };
