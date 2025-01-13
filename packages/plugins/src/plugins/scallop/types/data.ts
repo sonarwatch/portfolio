@@ -42,3 +42,7 @@ export type ApiResponse = {
   signature: { [key: string]: number };
   data: string;
 };
+
+export type ChristmasReward = {
+  value: string;
+};

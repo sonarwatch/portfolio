@@ -66,8 +66,7 @@ const queryMarkets = async (
 
   // get risk models
   const riskModelCoinNameToObjectId = poolAddressValues.reduce(
-    (acc, { coinName }) => {
-      const { riskModel } = poolAddress[coinName];
+    (acc, { coinName, riskModel }) => {
       if (!riskModel) return acc;
       acc[coinName] = riskModel;
       return acc;
@@ -190,6 +189,11 @@ const queryMarkets = async (
       .multipliedBy(utilizationRate)
       .multipliedBy(1 - reserveFactor);
     supplyRate = supplyRate.isFinite() ? supplyRate : BigNumber(0);
+    let conversionRate = currentTotalSupply.dividedBy(marketCoinSupply || 1);
+    conversionRate =
+      conversionRate.isFinite() && !conversionRate.isNaN()
+        ? conversionRate
+        : BigNumber(1);
 
     market[asset] = {
       coin: asset,
@@ -208,6 +212,7 @@ const queryMarkets = async (
       borrowIndex,
       borrowWeight,
       collateralFactor,
+      conversionRate: conversionRate.toNumber(),
     };
   }
 
