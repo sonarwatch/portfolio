@@ -1,53 +1,52 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
-import { Cache } from '../../Cache';
-import { Job, JobExecutor } from '../../Job';
-import {
-  addressKey,
-  addressPrefix,
-  spoolsKey,
-  spoolsPrefix as prefix,
-  baseIndexRate,
-} from './constants';
-import { AddressInfo, SpoolCoin, SpoolJobResult } from './types';
-import { getObject } from '../../utils/sui/getObject';
-import { getClientSui } from '../../utils/clients';
+import { SuiClient } from '@mysten/sui/client';
+import { baseIndexRate, spoolsKey, spoolsPrefix } from '../constants';
+import { PoolAddressMap, SpoolDataFieldsType, SpoolJobResult, SpoolRewardFieldsType } from '../types';
+import { queryMultipleObjects } from '../util';
+import { Cache } from '../../../Cache';
+import { hasSpoolPredicate } from '../helpers';
 
-const executor: JobExecutor = async (cache: Cache) => {
-  const address = await cache.getItem<AddressInfo>(addressKey, {
-    prefix: addressPrefix,
-    networkId: NetworkId.sui,
-  });
-
-  if (!address) return;
-
-  const spoolCoin = new Map<string, SpoolCoin>(
-    Object.entries(address.mainnet.spool.pools)
-  );
-  const spoolCoinNames: string[] = Array.from(spoolCoin.keys());
+const querySpools = async (
+  client: SuiClient,
+  poolAddress: PoolAddressMap,
+  cache: Cache
+) => {
+  const spoolAddresses = Object.values(poolAddress).filter(hasSpoolPredicate);
+  const spoolCoinNames: string[] = spoolAddresses.map((t) => t.spoolName);
   const spoolMarketData: SpoolJobResult = {};
-  const client = getClientSui();
-  for (const coinName of spoolCoinNames) {
-    const detail = spoolCoin.get(coinName);
-    if (!detail) continue;
-    const { id: poolId, rewardPoolId } = detail;
 
-    const [stakeObjectResponse, rewardObjectResponse] = await Promise.all([
-      getObject(client, poolId),
-      getObject(client, rewardPoolId),
-    ]);
+  const spoolIds = spoolAddresses.map((t) => t.spool);
+  const spoolrewardPoolIds = spoolAddresses.map((t) => t.spoolReward);
+
+  const spoolObjects = await queryMultipleObjects<SpoolDataFieldsType>(
+    client,
+    spoolIds
+  );
+  const spoolRewardObjects = await queryMultipleObjects<SpoolRewardFieldsType>(
+    client,
+    spoolrewardPoolIds
+  );
+
+  for (let i = 0; i < spoolCoinNames.length; i++) {
+    const coinName = spoolCoinNames[i];
+
+    const stakeObjectResponse = spoolObjects[i];
+    const rewardObjectResponse = spoolRewardObjects[i];
+    // const [stakeObjectResponse, rewardObjectResponse] = await Promise.all([
+    //   getObject(client, poolId),
+    //   getObject(client, rewardPoolId),
+    // ]);
 
     if (stakeObjectResponse.data && rewardObjectResponse.data) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const stakeFields = stakeObjectResponse.data.content?.fields as any;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const stakeFields = stakeObjectResponse.data.content?.fields;
       const rewardFields = rewardObjectResponse.data.content?.fields as any;
 
       if (!stakeFields || !rewardFields) continue;
       const staked = stakeFields['stakes'];
-      const lastUpdate = stakeFields['last_update'];
+      const lastUpdate = Number(stakeFields['last_update']);
       const period = stakeFields['point_distribution_time'];
-      const maxPoint = stakeFields['max_distribution_point'];
+      const maxPoint = stakeFields['max_distributed_point'];
       const distributedPoint = stakeFields['distributed_point'];
       const pointPerPeriod = stakeFields['distributed_point_per_period'];
       const { index } = stakeFields;
@@ -90,14 +89,9 @@ const executor: JobExecutor = async (cache: Cache) => {
   }
 
   await cache.setItem(spoolsKey, spoolMarketData, {
-    prefix,
+    prefix: spoolsPrefix,
     networkId: NetworkId.sui,
   });
 };
 
-const job: Job = {
-  id: prefix,
-  executor,
-  label: 'normal',
-};
-export default job;
+export default querySpools;

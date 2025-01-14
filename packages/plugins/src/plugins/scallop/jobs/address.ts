@@ -1,18 +1,18 @@
 import axios from 'axios';
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import { Cache } from '../../Cache';
-import { Job, JobExecutor } from '../../Job';
+import { Cache } from '../../../Cache';
 import {
   addressEndpoint,
   addressPrefix as prefix,
   addressKey,
-} from './constants';
+} from '../constants';
+import { AddressInfo } from '../types';
 
-const executor: JobExecutor = async (cache: Cache) => {
+const queryAddress = async (cache: Cache): Promise<AddressInfo | undefined> => {
   const resp = await axios.get(addressEndpoint);
 
-  if (!resp.data) return;
-
+  if (!resp.data) return undefined;
+  const addressData = resp.data as AddressInfo;
   await cache.setItem(
     addressKey,
     {
@@ -23,11 +23,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       networkId: NetworkId.sui,
     }
   );
-};
 
-const job: Job = {
-  id: prefix,
-  executor,
-  label: 'normal',
+  return addressData;
 };
-export default job;
+export default queryAddress;

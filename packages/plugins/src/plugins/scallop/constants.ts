@@ -10,18 +10,24 @@ export const platform: Platform = {
 };
 
 export const addressPrefix = `${platformId}-address`;
+export const poolAddressPrefix = `${platformId}-pool-address`;
 export const marketPrefix = `${platformId}-market`;
-export const scoinPrefix = `${platformId}-scoin`;
-export const poolsPrefix = `${platformId}-pools`;
 export const spoolsPrefix = `${platformId}-spoolsmarket`;
+export const sCoinNamePrefix = `${platformId}-scoin-names`;
+export const marketCoinNamePrefix = `${platformId}-market-coin-names`;
+export const borrowIncentivePoolsPrefix = `${platformId}-borrow-incentive-pools`;
 
 export const addressEndpoint =
-  'https://sui.apis.scallop.io/addresses/66f8e7ed9bb9e07fdfb86bbb';
-export const addressKey = 'scallop-address-key';
-export const marketKey = 'scallop-market-key';
-export const poolsKey = 'scallop-pools-key';
-export const scoinKey = 'scallop-scoin-key';
-export const spoolsKey = 'scallop-spoolsmarket-key';
+  'https://sui.apis.scallop.io/addresses/675c65cd301dd817ea262e76';
+export const poolAddressEndpoint =
+  'https://sdk.api.scallop.io/api/market/coinPoolInfo';
+
+export const addressKey = `${platformId}-address-key`;
+export const poolAddressKey = `${platformId}-pool-address-key`;
+export const marketKey = `${platformId}-market-key`;
+export const spoolsKey = `${platformId}-spoolsmarket-key`;
+export const marketCoinNameKey = `${platformId}-market-coin-names-key`;
+export const borrowIncentivePoolsKey = `${platformId}-borrow-incentive-pools-key`;
 
 export const sPoolAccountType = `0xe87f1b2d498106a2c61421cec75b7b5c5e348512b0dc263949a0e7a3c256571a::spool_account::SpoolAccount`;
 export const veScaKeyType =
@@ -37,54 +43,13 @@ export const scaAddress =
   '0x7016aae72cfc67f2fadf55769c0a7dd54291a583b63051a5ed71081cce836ac6::sca::SCA';
 export const scaDecimals = 9;
 
+export const sscaAddress =
+  '0x5ca17430c1d046fae9edeaa8fd76c7b4193a00d764a0ecfa9418d733ad27bc1e::scallop_sca::SCALLOP_SCA';
+export const sscaDecimals = 9;
+
 export const cnyTableId =
   '0xbfbbbdf1fe9b70cdd1ebd1444ca273000177f81a405935f6007b7727d2ff90c2';
+export const christmasTableId =
+  '0x93f3f6fbd6da68e1ddf09a81553af0f4e87de2efddd1e3ec32a53c00f90c1cfd';
 export const airdropUrl =
   'https://airdrop.apis.scallop.io/cny-campaign/claim-signature/';
-
-export const scoinNames = [
-  'scallop_sui',
-  'scallop_cetus',
-  'scallop_sca',
-  'scallop_wormhole_usdc',
-  'scallop_wormhole_usdt',
-  'scallop_wormhole_eth',
-  'scallop_wormhole_btc',
-  'scallop_wormhole_sol',
-  'scallop_af_sui',
-  'scallop_ha_sui',
-  'scallop_v_sui',
-  'scallop_usdc',
-] as const;
-
-export const coinNames = [
-  'weth',
-  'wbtc',
-  'wusdc',
-  'wusdt',
-  'sui',
-  'wapt',
-  'wsol',
-  'cetus',
-  'sca',
-  'afsui',
-  'hasui',
-  'vsui',
-  'usdc',
-] as const;
-
-export const marketCoinNames = [
-  'sweth',
-  'swbtc',
-  'swusdc',
-  'swusdt',
-  'ssui',
-  'swapt',
-  'swsol',
-  'scetus',
-  'ssca',
-  'safsui',
-  'shasui',
-  'svsui',
-  'susdc',
-] as const;

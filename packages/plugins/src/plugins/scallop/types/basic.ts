@@ -1,33 +1,26 @@
 import { ID } from '../../../utils/sui/types/id';
 
-export type BasicField = {
+export type BasicField<T = string> = {
   type: string;
-  fields: object;
+  fields: T;
 };
-
-export type IdField = ID;
 
 export type NameField = {
   name: string;
 };
 
-export type ContentFields = {
-  contents: (BasicField & { fields: NameField })[];
-};
-
 export type WitTable = {
-  fields: {
-    id: IdField;
-    keys: BasicField & { fields: ContentFields };
-    table: BasicField & {
-      fields: { id: IdField };
-      size: string;
-    };
-    with_keys: boolean;
+  id: ID;
+  keys: BasicField<{ contents: Array<BasicField<NameField>> }>;
+  table: BasicField<{ id: ID }> & {
+    size: string;
   };
+  with_keys: boolean;
 };
 
-export type ExtendedBasicField<T> = {
-  type: string;
-  fields: T;
-};
+export type BalanceBag = BasicField<{
+  id: ID;
+  bag: BasicField<{ id: ID; size: string }>;
+}>;
+
+export type Ownership = BasicField<{ id: ID; of: string }>;

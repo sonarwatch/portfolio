@@ -7,18 +7,69 @@ export interface AddressInfo {
   memo: string;
 }
 
-export interface Network {
+interface Network {
   core: Core;
   spool: Spool;
+  borrowIncentive: BorrowIncentive;
+  vesca: VeSca;
+  referral: Referral;
+  loyaltyProgram: LoyaltyProgram;
+  scoin: {
+    id: string;
+    coins: Record<string, SCoin>;
+  };
 }
 
-export interface Spool {
+interface LoyaltyProgram {
+  id: string;
+  object: string;
+  rewardPool: string;
+  userRewardTableId: string;
+}
+
+interface Spool {
   id: string;
   adminCap: string;
   pools: Map<string, SpoolCoin>;
 }
 
-export interface Core {
+interface BorrowIncentive {
+  id: string;
+  adminCap: string;
+  object: string;
+  query: string;
+  incentivePools: string;
+  incentiveAccounts: string;
+  config: string;
+  version: string;
+  versionCap: string;
+}
+
+interface VeSca {
+  id: string;
+  object: string;
+  adminCap: string;
+  tableId: string;
+  table: string;
+  treasury: string;
+  config: string;
+}
+
+interface Referral {
+  id: string;
+  object: string;
+  adminCap: string;
+  referralBindings: string;
+  bindingTableId: string;
+  referralRevenuePool: string;
+  revenueTableId: string;
+  referralTiers: string;
+  tiersTableId: string;
+  authorizedWitnessList: string;
+  version: string;
+}
+
+interface Core {
   version: string;
   versionCap: string;
   market: string;
@@ -30,30 +81,36 @@ export interface Core {
   object: string;
 }
 
-export interface Coin {
+interface Coin {
   id: string;
   metaData: string;
   treasury: string;
   oracle: CoinOracle;
 }
 
-export interface SpoolCoin {
+interface SCoin {
+  coinType: string;
+  treasury: string;
+  metaData: string;
+}
+
+interface SpoolCoin {
   id: string;
   rewardPoolId: string;
 }
 
-export interface CoinOracle {
+interface CoinOracle {
   supra: string;
   switchboard: string;
   pyth: CoinOraclePyth;
 }
 
-export interface CoinOraclePyth {
+interface CoinOraclePyth {
   feed: string;
   feedObject: string;
 }
 
-export interface Oracle {
+interface Oracle {
   xOracle?: string;
   xOracleCap?: string;
   supra?: Supra;
@@ -61,13 +118,13 @@ export interface Oracle {
   switchboard?: Switchboard;
 }
 
-export interface Supra {
+interface Supra {
   registry: string;
   registryCap: string;
   holder: string;
 }
 
-export interface Pyth {
+interface Pyth {
   registry: string;
   registryCap: string;
   state: string;
@@ -75,12 +132,12 @@ export interface Pyth {
   wormholeState: string;
 }
 
-export interface Switchboard {
+interface Switchboard {
   registry: string;
   registryCap: string;
 }
 
-export interface Package {
+interface Package {
   id: string;
   upgradeCap: string;
 }
