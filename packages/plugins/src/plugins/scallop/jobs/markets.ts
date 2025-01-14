@@ -30,14 +30,14 @@ const queryMarkets = async (
 
   // get balance sheet
   const balanceSheets: BalanceSheet = poolAddressValues.reduce(
-    (acc, { coinName }, idx) => {
+    (acc, { coinType }, idx) => {
       const balanceSheetObject = balanceSheetObjects[idx];
       if (!balanceSheetObject) return acc;
       if (
         balanceSheetObject.data?.content &&
         balanceSheetObject.data?.content.dataType === 'moveObject'
       ) {
-        acc[coinName] = balanceSheetObject.data.content.fields;
+        acc[coinType] = balanceSheetObject.data.content.fields;
       }
       return acc;
     },
@@ -50,14 +50,14 @@ const queryMarkets = async (
     poolAddressValues.map((t) => t.borrowDynamic)
   );
   const borrowIndexes: BorrowIndexes = poolAddressValues.reduce(
-    (acc, { coinName }, idx) => {
+    (acc, { coinType }, idx) => {
       const borrowIndexObject = borrowIndexObjects[idx];
       if (!borrowIndexObject) return acc;
       if (
         borrowIndexObject.data?.content &&
         borrowIndexObject.data?.content.dataType === 'moveObject'
       ) {
-        acc[coinName] = borrowIndexObject.data?.content.fields;
+        acc[coinType] = borrowIndexObject.data?.content.fields;
       }
       return acc;
     },
@@ -66,9 +66,11 @@ const queryMarkets = async (
 
   // get risk models
   const riskModelCoinNameToObjectId = poolAddressValues.reduce(
-    (acc, { coinName, riskModel }) => {
+    (acc, { coinType }) => {
+      const { riskModel } = poolAddress[coinType];
       if (!riskModel) return acc;
-      acc[coinName] = riskModel;
+
+      acc[coinType] = riskModel;
       return acc;
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -80,14 +82,14 @@ const queryMarkets = async (
   );
   const riskModels: RiskModels = Object.keys(
     riskModelCoinNameToObjectId
-  ).reduce((acc, coinName, idx) => {
+  ).reduce((acc, coinType, idx) => {
     const riskModelObject = riskModelObjects[idx];
     if (!riskModelObject) return acc;
     if (
       riskModelObject.data?.content &&
       riskModelObject.data?.content.dataType === 'moveObject'
     ) {
-      acc[coinName] = riskModelObject.data?.content.fields;
+      acc[coinType] = riskModelObject.data?.content.fields;
     }
     return acc;
   }, {} as Record<string, RiskModelData>);
@@ -98,14 +100,14 @@ const queryMarkets = async (
     poolAddressValues.map((t) => t.interestModel)
   );
   const interestModels: InterestModel = poolAddressValues.reduce(
-    (acc, { coinName }, idx) => {
+    (acc, { coinType }, idx) => {
       const interestModelObject = interestModelObjects[idx];
       if (!interestModelObject) return acc;
       if (
         interestModelObject.data?.content &&
         interestModelObject.data?.content.dataType === 'moveObject'
       ) {
-        acc[coinName] = interestModelObject.data?.content.fields;
+        acc[coinType] = interestModelObject.data?.content.fields;
       }
       return acc;
     },
@@ -116,12 +118,13 @@ const queryMarkets = async (
   const market: MarketJobResult = {};
   const borrowYearFactor = 24 * 365 * 3600;
   const DENOMINATOR = 2 ** 32;
+
   for (const data of poolAddressValues) {
     const { coinName: asset, decimals, coinType } = data;
-    const interestModelData = interestModels[asset];
-    const borrowIndexData = borrowIndexes[asset];
-    const balanceSheetData = balanceSheets[asset];
-    const riskModelData = riskModels[asset]; // no risk model = asset cannot be collateralized
+    const interestModelData = interestModels[coinType];
+    const borrowIndexData = borrowIndexes[coinType];
+    const balanceSheetData = balanceSheets[coinType];
+    const riskModelData = riskModels[coinType]; // no risk model = asset cannot be collateralized
     if (!interestModelData || !borrowIndexData || !balanceSheetData) continue;
 
     const cInterestModel = interestModelData['value']
@@ -220,6 +223,8 @@ const queryMarkets = async (
     prefix: marketPrefix,
     networkId: NetworkId.sui,
   });
+
+  return market;
 };
 
 export default queryMarkets;

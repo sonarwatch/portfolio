@@ -15,6 +15,7 @@ export const marketPrefix = `${platformId}-market`;
 export const spoolsPrefix = `${platformId}-spoolsmarket`;
 export const sCoinNamePrefix = `${platformId}-scoin-names`;
 export const marketCoinNamePrefix = `${platformId}-market-coin-names`;
+export const borrowIncentivePoolsPrefix = `${platformId}-borrow-incentive-pools`;
 
 export const addressEndpoint =
   'https://sui.apis.scallop.io/addresses/675c65cd301dd817ea262e76';
@@ -26,6 +27,7 @@ export const poolAddressKey = `${platformId}-pool-address-key`;
 export const marketKey = `${platformId}-market-key`;
 export const spoolsKey = `${platformId}-spoolsmarket-key`;
 export const marketCoinNameKey = `${platformId}-market-coin-names-key`;
+export const borrowIncentivePoolsKey = `${platformId}-borrow-incentive-pools-key`;
 
 export const sPoolAccountType = `0xe87f1b2d498106a2c61421cec75b7b5c5e348512b0dc263949a0e7a3c256571a::spool_account::SpoolAccount`;
 export const veScaKeyType =

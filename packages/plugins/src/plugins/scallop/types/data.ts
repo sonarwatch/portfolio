@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { SuiObjectRef } from '@mysten/sui/client';
 import { ID } from '../../../utils/sui/types/id';
 import { BasicField } from './basic';
 
@@ -11,6 +12,7 @@ export type UserObligations = {
   [T in string]: {
     collaterals: { [K in string]: BigNumber };
     debts: { [K in string]: BigNumber };
+    obligation: SuiObjectRef;
   };
 };
 

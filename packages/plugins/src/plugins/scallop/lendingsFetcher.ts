@@ -109,20 +109,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     return [];
   }
 
-  const lendingRate: Map<string, number> = new Map();
-
-  poolAddressValues.forEach(({ coinName }) => {
-    const market = marketData[coinName];
-    if (!market) {
-      return;
-    }
-    lendingRate.set(
-      coinName,
-      (Number(market.debt) + Number(market.cash) - Number(market.reserve)) /
-        Number(market.marketCoinSupply)
-    );
-  });
-
   // get user lending assets
   const lendingAssets: UserLendingData = {};
   const stakedAccounts: UserStakeAccounts = {};
@@ -264,11 +250,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         amount.isGreaterThan(0) && marketData[assetName]
     )
     .forEach(([assetName, { coinType, amount }]) => {
-      const { supplyInterestRate } = marketData[assetName]!;
+      const { supplyInterestRate, conversionRate } = marketData[assetName]!;
       const addressMove = formatMoveTokenAddress(coinType);
       const tokenPrice = tokenPrices.get(addressMove);
       const lendingAmount = amount
-        .multipliedBy(lendingRate.get(assetName) ?? 0)
+        // conversion rate from sCoin or market coin to its pair coin or underlying coin
+        .multipliedBy(conversionRate ?? 1)
         .shiftedBy(-1 * (poolAddress[coinType]?.decimals ?? 0))
         .toNumber();
       const assetToken = tokenPriceToAssetToken(

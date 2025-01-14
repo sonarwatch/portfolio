@@ -9,18 +9,25 @@ import {
   queryPoolAddress,
   querySpools,
 } from './jobs';
+import { queryBorrowIncentivePools } from './queries';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
-  const [addressData, poolAddressData] = await Promise.all([
+  const [addressInfo, poolAddress] = await Promise.all([
     queryAddress(cache),
     queryPoolAddress(cache),
   ]);
-  if (!addressData || !poolAddressData) return;
+  if (!addressInfo || !poolAddress) return;
 
-  await Promise.allSettled([
-    queryMarkets(client, poolAddressData, cache),
-    querySpools(client, poolAddressData, cache),
+  const market = await queryMarkets(client, poolAddress, cache);
+
+  await Promise.all([
+    querySpools(client, poolAddress, cache),
+    queryBorrowIncentivePools(
+      client,
+      { addressInfo, poolAddress, market },
+      cache
+    ),
   ]);
 };
 

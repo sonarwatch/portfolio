@@ -6,7 +6,7 @@ export type SCoinPoolAddress = {
   sCoinTreasury: string;
 };
 
-type PoolAddress = {
+export type PoolAddress = {
   coinName: string;
   symbol: string;
   coinType: string;
