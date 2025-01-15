@@ -1,5 +1,4 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import axios from 'axios';
 import {
   AirdropFetcher,
   AirdropFetcherExecutor,
