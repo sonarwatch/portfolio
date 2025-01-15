@@ -20,6 +20,7 @@ import {
   asr2AirdropFetcher,
   asr2Fetcher,
 } from './governance';
+import { airdropFetcher as jupuaryAirdropFetcher } from './governance/JupuaryAirdropFetcher';
 import { lfgAirdropFetchers, lfgFetchers } from './launchpad';
 
 export const platforms: Platform[] = [
@@ -43,4 +44,5 @@ export const airdropFetchers: AirdropFetcher[] = [
   asr1AirdropFetcher,
   asr2AirdropFetcher,
   ...lfgAirdropFetchers,
+  // jupuaryAirdropFetcher,
 ];
