@@ -31,9 +31,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const market = markets.find((m) => m.vault.id === account.vault.toString());
     if (!market) return;
 
+    const maturity = new Date(
+      (market.vault.start + market.vault.duration) * 1000
+    );
+
     const element = elementRegistry.addElementMultiple({
       label: 'Deposit',
-      name: `${market.vault.platform} ${market.vault.niceName}`,
+      name: `${market.vault.platform} ${maturity.toLocaleString('en-US', {
+        month: 'short',
+      })} ${maturity.getDate()} ${maturity.getFullYear().toString()}`,
     });
 
     element.addAsset({
