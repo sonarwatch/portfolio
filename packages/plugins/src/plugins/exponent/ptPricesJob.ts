@@ -10,15 +10,15 @@ const executor: JobExecutor = async (cache: Cache) => {
     data: PtToken[];
   }> = await axios.get(ptTokensApiUrl);
 
-  const tokenPrices = await cache.getTokenPricesAsMap(
+  /* const tokenPrices = await cache.getTokenPricesAsMap(
     res.data.data.map((ptToken) => ptToken.baseAssetMint),
     NetworkId.solana
-  );
+  ); */
 
   const tokenPriceSources: TokenPriceSource[] = [];
 
   res.data.data.forEach((ptToken) => {
-    const baseTokenPrice = tokenPrices.get(ptToken.baseAssetMint);
+    // const baseTokenPrice = tokenPrices.get(ptToken.baseAssetMint);
     const tokenPriceSource: TokenPriceSource = {
       address: ptToken.mint,
       decimals: ptToken.decimals,
@@ -30,7 +30,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       weight: 1,
       elementName: 'Income',
     };
-    if (baseTokenPrice) {
+    /* if (baseTokenPrice) {
       tokenPriceSource.underlyings = [
         {
           address: ptToken.baseAssetMint,
@@ -40,7 +40,7 @@ const executor: JobExecutor = async (cache: Cache) => {
           price: baseTokenPrice.price,
         },
       ];
-    }
+    } */
 
     tokenPriceSources.push(tokenPriceSource);
   });
