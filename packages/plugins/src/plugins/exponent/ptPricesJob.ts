@@ -29,6 +29,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       timestamp: Date.now(),
       weight: 1,
       elementName: 'Income',
+      label: 'Staked',
     };
     /* if (baseTokenPrice) {
       tokenPriceSource.underlyings = [
