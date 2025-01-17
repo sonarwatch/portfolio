@@ -36,12 +36,12 @@ jobs:
           node-version: 20
       - run: npm ci --include=optional
       - run: NODE_OPTIONS="--max-old-space-size=8192" npx nx docs
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
+
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
+          name: docs-artifact
           path: './docs'
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v3
+        uses: actions/deploy-pages@v4
