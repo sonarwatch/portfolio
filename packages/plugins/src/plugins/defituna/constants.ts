@@ -7,6 +7,7 @@ export const platform: Platform = {
   name: 'DefiTuna',
   image: 'https://sonar.watch/img/platforms/defituna.webp',
   website: 'https://defituna.com',
+  twitter: 'https://x.com/DeFiTuna',
 };
 
 export const defiTunaProgram = new PublicKey(

@@ -47,19 +47,21 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const pool = pools.find(
       (p) => p.mint.toString() === account.poolMint.toString()
     );
+    if (!pool) return;
 
     element.addSuppliedAsset({
       address: account.poolMint,
-      amount: account.depositedFunds,
+      amount: account.depositedShares
+        .multipliedBy(pool.depositedFunds)
+        .dividedBy(pool.depositedShares),
     });
 
-    if (pool?.supplyApy)
-      element.addSuppliedYield([
-        {
-          apy: new BigNumber(pool.supplyApy).toNumber(),
-          apr: apyToApr(new BigNumber(pool.supplyApy).toNumber()),
-        },
-      ]);
+    element.addSuppliedYield([
+      {
+        apy: new BigNumber(pool.supplyApy).toNumber(),
+        apr: apyToApr(new BigNumber(pool.supplyApy).toNumber()),
+      },
+    ]);
   });
 
   return elementRegistry.getElements(cache);

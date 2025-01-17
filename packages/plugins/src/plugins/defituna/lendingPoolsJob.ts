@@ -13,11 +13,6 @@ const SECONDS_IN_YEAR = 31536000;
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
 
-  /* const acc = await getMultipleAccountsInfoSafe(connection, [
-    new PublicKey('HdUWtRL9YvUs4UtmjeSNufNGUc3Vr22ys4uBENm5ZxbY'),
-  ]);
-  if (acc[0]) console.log(bs58.encode(acc[0].data.slice(0, 8))); */
-
   const pools = await getParsedProgramAccounts(
     connection,
     lendingPoolStruct,

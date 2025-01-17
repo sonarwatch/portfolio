@@ -45,8 +45,8 @@ export type LendingPool = {
   interestRate: BigNumber;
   lastUpdateTimestamp: BigNumber;
   supplyLimit: BigNumber;
-  supplyApy?: BigNumber;
-  borrowApy?: BigNumber;
+  supplyApy: BigNumber;
+  borrowApy: BigNumber;
 };
 
 export const lendingPoolStruct = new BeetStruct<LendingPool>(
