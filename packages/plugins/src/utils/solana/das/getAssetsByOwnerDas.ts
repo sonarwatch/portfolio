@@ -5,7 +5,7 @@ import { getBasicAuthHeaders } from '../../misc/getBasicAuthHeaders';
 import { getDisplayOptions } from './getDisplayOptions';
 
 const limit = 1000;
-const maxPage = 5;
+const maxPage = 10;
 
 export async function getAssetsByOwnerDas(
   dasEndpoint: RpcEndpoint,
