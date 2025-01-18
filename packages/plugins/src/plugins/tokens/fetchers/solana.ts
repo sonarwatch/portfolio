@@ -93,7 +93,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       label: 'Wallet',
       value: null,
       data: {
-        assets: nftAssets,
+        assets: nftAssets.slice(0, 1000),
       },
     });
   }
