@@ -30,11 +30,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     connection,
     normalizedTokenPoolStruct,
     fragmetricPid,
-    [
-      {
-        dataSize: 1887,
-      },
-    ]
+    [{ memcmp: { offset: 0, bytes: '2FE5mca9qhy' } }]
   );
 
   const [tokenPriceById, tokenMintsAccounts, nSOLReserveAccount] =

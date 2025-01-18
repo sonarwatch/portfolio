@@ -32,16 +32,27 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const market = markets.find((m) => m.id === account.market.toString());
     if (!market) return;
 
+    const maturity = new Date(
+      (market.vault.start + market.vault.duration) * 1000
+    );
+
     const element = elementRegistry.addElementLiquidity({
       label: 'Vault',
-      name: `${market.vault.platform} ${market.vault.niceName}`,
+      name: `${market.vault.platform} ${maturity.toLocaleString('en-US', {
+        month: 'short',
+      })} ${maturity.getDate()} ${maturity.getFullYear().toString()}`,
     });
 
     const liquidity = element.addLiquidity();
 
     liquidity.addAsset({
-      address: market.vault.mintAsset,
-      amount: account.lp_balance.multipliedBy(market.stats.lpPriceInAsset),
+      address: market.vault.mintSy,
+      amount: account.lp_balance.multipliedBy(market.stats.syAmountPerLpShare),
+    });
+
+    liquidity.addAsset({
+      address: market.vault.mintPt,
+      amount: account.lp_balance.multipliedBy(market.stats.ptAmountPerLpShare),
     });
 
     const apy = calculateWeightedAPY(market.stats);

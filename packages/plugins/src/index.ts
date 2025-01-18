@@ -731,6 +731,11 @@ import {
   jobs as ratexJobs,
   fetchers as ratexFetchers,
 } from './plugins/ratex';
+import {
+  platforms as defitunaPlatforms,
+  jobs as defitunaJobs,
+  fetchers as defitunaFetchers,
+} from './plugins/defituna';
 
 export {
   walletTokensPlatform,
@@ -892,6 +897,7 @@ export const platforms: Platform[] = [
   ...divvyPlatforms,
   ...exponentPlatforms,
   ...ratexPlatforms,
+  ...defitunaPlatforms,
 ];
 
 // JOBS //
@@ -1036,6 +1042,7 @@ export const jobs: Job[] = [
   ...divvyJobs,
   ...exponentJobs,
   ...ratexJobs,
+  ...defitunaJobs,
 ];
 
 // FETCHERS //
@@ -1181,6 +1188,7 @@ export const fetchers: Fetcher[] = [
   ...divvyFetchers,
   ...exponentFetchers,
   ...ratexFetchers,
+  ...defitunaFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
