@@ -14,8 +14,6 @@ const executor: JobExecutor = async (cache: Cache) => {
     content: {},
   });
 
-  console.log(res.data);
-
   const tokenPriceSources: TokenPriceSource[] = [];
 
   res.data.data.forEach((ptToken) => {
