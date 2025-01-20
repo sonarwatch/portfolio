@@ -5,7 +5,7 @@ import { Job, JobExecutor } from '../../Job';
 import { defiTunaProgram, lendingPoolsCacheKey, platformId } from './constants';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
-import { lendingPoolStruct } from './structs';
+import { vaultStruct } from './structs';
 import { rateFactor } from './helpers';
 
 const SECONDS_IN_YEAR = 31536000;
@@ -15,7 +15,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   const pools = await getParsedProgramAccounts(
     connection,
-    lendingPoolStruct,
+    vaultStruct,
     defiTunaProgram,
     [
       {

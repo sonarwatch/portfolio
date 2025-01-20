@@ -1,18 +1,12 @@
 import { apyToApr, NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
-import { defiTunaProgram, lendingPoolsCacheKey, platformId } from './constants';
+import { defiTunaProgram, platformId, poolsMemo } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
-import { LendingPool, lendingStruct } from './structs';
-import { MemoizedCache } from '../../utils/misc/MemoizedCache';
-
-const poolsMemo = new MemoizedCache<LendingPool[]>(lendingPoolsCacheKey, {
-  prefix: platformId,
-  networkId: NetworkId.solana,
-});
+import { lendingStruct } from './structs';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
@@ -22,6 +16,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     lendingStruct,
     defiTunaProgram,
     [
+      {
+        memcmp: {
+          offset: 0,
+          bytes: '92fFkBB3XNA',
+        },
+      },
       {
         memcmp: {
           offset: 11,

@@ -1,0 +1,2594 @@
+{
+  "address": "tuna4uSQZncNeeiAMKbstuxA9CUkHH6HmC64wgmnogD",
+  "metadata": {
+    "name": "tuna",
+    "version": "1.0.38",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "add_liquidity_orca",
+      "discriminator": [
+        185,
+        68,
+        41,
+        204,
+        33,
+        179,
+        12,
+        78
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "",
+            "TUNA accounts",
+            ""
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tuna_config"
+        },
+        {
+          "name": "market"
+        },
+        {
+          "name": "vault_a",
+          "writable": true
+        },
+        {
+          "name": "vault_b",
+          "writable": true
+        },
+        {
+          "name": "vault_a_ata",
+          "writable": true
+        },
+        {
+          "name": "vault_b_ata",
+          "writable": true
+        },
+        {
+          "name": "tuna_position",
+          "writable": true
+        },
+        {
+          "name": "tuna_position_ata",
+          "writable": true
+        },
+        {
+          "name": "tuna_position_ata_a",
+          "writable": true
+        },
+        {
+          "name": "tuna_position_ata_b",
+          "writable": true
+        },
+        {
+          "name": "tuna_position_owner_ata_a",
+          "writable": true
+        },
+        {
+          "name": "tuna_position_owner_ata_b",
+          "writable": true
+        },
+        {
+          "name": "fee_recipient_ata_a",
+          "writable": true
+        },
+        {
+          "name": "fee_recipient_ata_b",
+          "writable": true
+        },
+        {
+          "name": "whirlpool_program",
+          "docs": [
+            "",
+            "ORCA accounts",
+            ""
+          ]
+        },
+        {
+          "name": "whirlpool",
+          "writable": true
+        },
+        {
+          "name": "pool_vault_ata_a",
+          "writable": true
+        },
+        {
+          "name": "pool_vault_ata_b",
+          "writable": true
+        },
+        {
+          "name": "orca_position",
+          "writable": true
+        },
+        {
+          "name": "tick_array_lower",
+          "writable": true
+        },
+        {
+          "name": "tick_array_upper",
+          "writable": true
+        },
+        {
+          "name": "pyth_oracle",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "",
+            "Other accounts",
+            ""
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "collateral_a",
+          "type": "u64"
+        },
+        {
+          "name": "collateral_b",
+          "type": "u64"
+        },
+        {
+          "name": "borrow_a",
+          "type": "u64"
+        },
+        {
+          "name": "borrow_b",
+          "type": "u64"
+        },
+        {
+          "name": "min_added_amount_a",
+          "type": "u64"
+        },
+        {
+          "name": "min_added_amount_b",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "close_position_orca",
+      "discriminator": [
+        253,
+        98,
+        90,
+        239,
+        191,
+        36,
+        161,
+        26
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "",
+            "TUNA accounts",
+            ""
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tuna_config"
+        },
+        {
+          "name": "tuna_position",
+          "writable": true
+        },
+        {
+          "name": "tuna_position_mint",
+          "writable": true
+        },
+        {
+          "name": "tuna_position_ata",
+          "writable": true
+        },
+        {
+          "name": "tuna_position_ata_a",
+          "writable": true
+        },
+        {
+          "name": "tuna_position_ata_b",
+          "writable": true
+        },
+        {
+          "name": "tuna_position_owner_ata_a",
+          "writable": true
+        },
+        {
+          "name": "tuna_position_owner_ata_b",
+          "writable": true
+        },
+        {
+          "name": "whirlpool_program",
+          "docs": [
+            "",
+            "ORCA accounts",
+            ""
+          ]
+        },
+        {
+          "name": "whirlpool"
+        },
+        {
+          "name": "orca_position",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "",
+            "Other accounts",
+            ""
+          ]
+        },
+        {
+          "name": "token_2022_program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "collect_fees_orca",
+      "discriminator": [
+        147,
+        188,
+        191,
+        37,
+        255,
+        10,
+        239,
+        76
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "",
+            "TUNA accounts",
+            ""
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tuna_config"
+        },
+        {
+          "name": "tuna_position",
+          "writable": true
+        },
+        {
+          "name": "tuna_position_ata"
+        },
+        {
+          "name": "tuna_position_ata_a",
+          "writable": true
+        },
+        {
+          "name": "tuna_position_ata_b",
+          "writable": true
+        },
+        {
+          "name": "tuna_position_owner_ata_a",
+          "writable": true
+        },
+        {
+          "name": "tuna_position_owner_ata_b",
+          "writable": true
+        },
+        {
+          "name": "whirlpool_program",
+          "docs": [
+            "",
+            "ORCA accounts",
+            ""
+          ]
+        },
+        {
+          "name": "whirlpool",
+          "writable": true
+        },
+        {
+          "name": "pool_vault_ata_a",
+          "writable": true
+        },
+        {
+          "name": "pool_vault_ata_b",
+          "writable": true
+        },
+        {
+          "name": "orca_position",
+          "writable": true
+        },
+        {
+          "name": "tick_array_lower",
+          "writable": true
+        },
+        {
+          "name": "tick_array_upper",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "",
+            "Other accounts",
+            ""
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "collect_reward_orca",
+      "discriminator": [
+        99,
+        253,
+        84,
+        63,
+        250,
+        243,
+        165,
+        191
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "",
+            "TUNA accounts",
+            ""
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tuna_config"
+        },
+        {
+          "name": "tuna_position",
+          "writable": true
+        },
+        {
+          "name": "tuna_position_ata"
+        },
+        {
+          "name": "whirlpool_program",
+          "docs": [
+            "",
+            "ORCA accounts",
+            ""
+          ]
+        },
+        {
+          "name": "whirlpool"
+        },
+        {
+          "name": "orca_position",
+          "writable": true
+        },
+        {
+          "name": "reward_vault",
+          "writable": true
+        },
+        {
+          "name": "tick_array_lower",
+          "writable": true
+        },
+        {
+          "name": "tick_array_upper",
+          "writable": true
+        },
+        {
+          "name": "reward_owner_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "",
+            "Other accounts",
+            ""
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "reward_index",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "create_lending_position",
+      "discriminator": [
+        129,
+        187,
+        56,
+        84,
+        108,
+        205,
+        25,
+        80
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tuna_config"
+        },
+        {
+          "name": "vault"
+        },
+        {
+          "name": "lending_position",
+          "writable": true
+        },
+        {
+          "name": "pool_mint"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "rent"
+        },
+        {
+          "name": "associated_token_program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_market",
+      "discriminator": [
+        103,
+        226,
+        97,
+        235,
+        200,
+        188,
+        251,
+        254
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tuna_config"
+        },
+        {
+          "name": "market",
+          "writable": true
+        },
+        {
+          "name": "pool"
+        },
+        {
+          "name": "system_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "liquidity_provider",
+          "type": "u8"
+        },
+        {
+          "name": "address_lookup_table",
+          "type": "pubkey"
+        },
+        {
+          "name": "max_leverage",
+          "type": "u32"
+        },
+        {
+          "name": "protocol_fee",
+          "type": "u32"
+        },
+        {
+          "name": "liquidation_fee",
+          "type": "u32"
+        },
+        {
+          "name": "liquidation_ratio",
+          "type": "u32"
+        },
+        {
+          "name": "limit_order_execution_fee",
+          "type": "u32"
+        }
+      ]
+    },
+    {
+      "name": "create_tuna_config",
+      "discriminator": [
+        79,
+        78,
+        175,
+        62,
+        234,
+        68,
+        202,
+        241
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tuna_config",
+          "writable": true
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "rent"
+        }
+      ],
+      "args": [
+        {
+          "name": "owner_authority",
+          "type": "pubkey"
+        },
+        {
+          "name": "admin_authority",
+          "type": "pubkey"
+        },
+        {
+          "name": "fee_recipient",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "create_vault",
+      "discriminator": [
+        29,
+        237,
+        247,
+        208,
+        193,
+        82,
+        54,
+        135
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tuna_config"
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "vault_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "associated_token_program"
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "rent"
+        }
+      ],
+      "args": [
+        {
+          "name": "interest_rate",
+          "type": "u64"
+        },
+        {
+          "name": "supply_limit",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "deposit",
+      "discriminator": [
+        242,
+        35,
+        198,
+        137,
+        82,
+        225,
+        242,
+        182
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "tuna_config"
+        },
+        {
+          "name": "lending_position",
+          "writable": true
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "vault_ata",
+          "writable": true
+        },
+        {
+          "name": "authority_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "associated_token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "liquidate_position_orca",
+      "discriminator": [
+        62,
+        92,
+        176,
+        35,
+        164,
+        100,
+        46,
+        141
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "",
+            "TUNA accounts",
+            ""
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tuna_config"
+        },
+        {
+          "name": "market"
+        },
+        {
+          "name": "vault_a",
+          "writable": true
+        },
+        {
+          "name": "vault_b",
+          "writable": true
+        },
+        {
+          "name": "vault_a_ata",
+          "writable": true
+        },
+        {
+          "name": "vault_b_ata",
+          "writable": true
+        },
+        {
+          "name": "tuna_position",
+          "writable": true
+        },
+        {
+          "name": "tuna_position_ata",
+          "writable": true
+        },
+        {
+          "name": "tuna_position_ata_a",
+          "writable": true
+        },
+        {
+          "name": "tuna_position_ata_b",
+          "writable": true
+        },
+        {
+          "name": "liquidation_fee_recipient_ata_a",
+          "writable": true
+        },
+        {
+          "name": "liquidation_fee_recipient_ata_b",
+          "writable": true
+        },
+        {
+          "name": "whirlpool_program",
+          "docs": [
+            "",
+            "ORCA accounts",
+            ""
+          ]
+        },
+        {
+          "name": "whirlpool",
+          "writable": true
+        },
+        {
+          "name": "pool_vault_ata_a",
+          "writable": true
+        },
+        {
+          "name": "pool_vault_ata_b",
+          "writable": true
+        },
+        {
+          "name": "orca_position",
+          "writable": true
+        },
+        {
+          "name": "tick_array_lower",
+          "writable": true
+        },
+        {
+          "name": "tick_array_upper",
+          "writable": true
+        },
+        {
+          "name": "pyth_oracle",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "",
+            "Other accounts",
+            ""
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "open_position_orca",
+      "discriminator": [
+        201,
+        85,
+        45,
+        226,
+        182,
+        208,
+        246,
+        115
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "",
+            "TUNA accounts",
+            ""
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "market"
+        },
+        {
+          "name": "tuna_position",
+          "writable": true
+        },
+        {
+          "name": "tuna_position_mint",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tuna_position_ata",
+          "writable": true
+        },
+        {
+          "name": "whirlpool_program",
+          "docs": [
+            "",
+            "ORCA accounts",
+            ""
+          ]
+        },
+        {
+          "name": "whirlpool"
+        },
+        {
+          "name": "orca_position",
+          "writable": true
+        },
+        {
+          "name": "metadata_update_auth"
+        },
+        {
+          "name": "token_2022_program",
+          "docs": [
+            "",
+            "Other accounts",
+            ""
+          ]
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "associated_token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "tick_lower_index",
+          "type": "i32"
+        },
+        {
+          "name": "tick_upper_index",
+          "type": "i32"
+        },
+        {
+          "name": "tick_stop_loss_index",
+          "type": "i32"
+        },
+        {
+          "name": "tick_take_profit_index",
+          "type": "i32"
+        },
+        {
+          "name": "swap_to_token_on_limit_order",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "remove_liquidity_orca",
+      "discriminator": [
+        30,
+        69,
+        45,
+        170,
+        183,
+        195,
+        12,
+        119
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "",
+            "TUNA accounts",
+            ""
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tuna_config"
+        },
+        {
+          "name": "market"
+        },
+        {
+          "name": "vault_a",
+          "writable": true
+        },
+        {
+          "name": "vault_b",
+          "writable": true
+        },
+        {
+          "name": "vault_a_ata",
+          "writable": true
+        },
+        {
+          "name": "vault_b_ata",
+          "writable": true
+        },
+        {
+          "name": "tuna_position",
+          "writable": true
+        },
+        {
+          "name": "tuna_position_ata",
+          "writable": true
+        },
+        {
+          "name": "tuna_position_ata_a",
+          "writable": true
+        },
+        {
+          "name": "tuna_position_ata_b",
+          "writable": true
+        },
+        {
+          "name": "tuna_position_owner_ata_a",
+          "writable": true
+        },
+        {
+          "name": "tuna_position_owner_ata_b",
+          "writable": true
+        },
+        {
+          "name": "whirlpool_program",
+          "docs": [
+            "",
+            "ORCA accounts",
+            ""
+          ]
+        },
+        {
+          "name": "whirlpool",
+          "writable": true
+        },
+        {
+          "name": "pool_vault_ata_a",
+          "writable": true
+        },
+        {
+          "name": "pool_vault_ata_b",
+          "writable": true
+        },
+        {
+          "name": "orca_position",
+          "writable": true
+        },
+        {
+          "name": "tick_array_lower",
+          "writable": true
+        },
+        {
+          "name": "tick_array_upper",
+          "writable": true
+        },
+        {
+          "name": "pyth_oracle",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "",
+            "Other accounts",
+            ""
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "withdraw_percent",
+          "type": "u32"
+        },
+        {
+          "name": "min_removed_amount_a",
+          "type": "u64"
+        },
+        {
+          "name": "min_removed_amount_b",
+          "type": "u64"
+        },
+        {
+          "name": "swap_to_token",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "repay_bad_debt",
+      "discriminator": [
+        112,
+        144,
+        188,
+        157,
+        43,
+        106,
+        141,
+        34
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "tuna_config"
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "vault_ata",
+          "writable": true
+        },
+        {
+          "name": "user_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "funds",
+          "type": "u64"
+        },
+        {
+          "name": "shares",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "set_admin_authority",
+      "discriminator": [
+        72,
+        49,
+        37,
+        167,
+        149,
+        98,
+        49,
+        174
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tuna_config",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "admin_authority",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "set_fee_recipient",
+      "discriminator": [
+        227,
+        18,
+        215,
+        42,
+        237,
+        246,
+        151,
+        66
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tuna_config",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "fee_recipient",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "set_limit_orders",
+      "discriminator": [
+        65,
+        128,
+        90,
+        161,
+        171,
+        133,
+        122,
+        255
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "tuna_position",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "tick_stop_loss_index",
+          "type": "i32"
+        },
+        {
+          "name": "tick_take_profit_index",
+          "type": "i32"
+        },
+        {
+          "name": "swap_to_token_on_limit_order",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "set_max_percentage_of_leftovers",
+      "discriminator": [
+        85,
+        205,
+        61,
+        112,
+        36,
+        79,
+        60,
+        1
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "tuna_config",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "max_percentage_of_leftovers",
+          "type": "u32"
+        }
+      ]
+    },
+    {
+      "name": "set_max_swap_slippage",
+      "discriminator": [
+        122,
+        42,
+        61,
+        99,
+        35,
+        230,
+        50,
+        154
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "tuna_config",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "max_swap_slippage",
+          "type": "u32"
+        }
+      ]
+    },
+    {
+      "name": "set_owner_authority",
+      "discriminator": [
+        128,
+        171,
+        210,
+        21,
+        103,
+        179,
+        80,
+        117
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tuna_config",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "owner_authority",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "set_suspended_state",
+      "discriminator": [
+        145,
+        13,
+        20,
+        161,
+        30,
+        62,
+        226,
+        32
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tuna_config",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "suspend_lending_deposits",
+          "type": "bool"
+        },
+        {
+          "name": "suspend_lending_withdrawals",
+          "type": "bool"
+        },
+        {
+          "name": "suspend_add_liquidity",
+          "type": "bool"
+        },
+        {
+          "name": "suspend_remove_liquidity",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "update_market",
+      "discriminator": [
+        153,
+        39,
+        2,
+        197,
+        179,
+        50,
+        199,
+        217
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tuna_config"
+        },
+        {
+          "name": "market",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "address_lookup_table",
+          "type": "pubkey"
+        },
+        {
+          "name": "max_leverage",
+          "type": "u32"
+        },
+        {
+          "name": "protocol_fee",
+          "type": "u32"
+        },
+        {
+          "name": "liquidation_fee",
+          "type": "u32"
+        },
+        {
+          "name": "liquidation_ratio",
+          "type": "u32"
+        },
+        {
+          "name": "limit_order_execution_fee",
+          "type": "u32"
+        }
+      ]
+    },
+    {
+      "name": "update_vault",
+      "discriminator": [
+        67,
+        229,
+        185,
+        188,
+        226,
+        11,
+        210,
+        60
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tuna_config"
+        },
+        {
+          "name": "vault",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "interest_rate",
+          "type": "u64"
+        },
+        {
+          "name": "supply_limit",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "withdraw",
+      "discriminator": [
+        183,
+        18,
+        70,
+        156,
+        148,
+        109,
+        161,
+        34
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "mint",
+          "writable": true
+        },
+        {
+          "name": "tuna_config"
+        },
+        {
+          "name": "lending_position",
+          "writable": true
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "vault_ata",
+          "writable": true
+        },
+        {
+          "name": "authority_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "associated_token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "funds",
+          "type": "u64"
+        },
+        {
+          "name": "shares",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "LendingPosition",
+      "discriminator": [
+        47,
+        255,
+        252,
+        35,
+        20,
+        245,
+        157,
+        243
+      ]
+    },
+    {
+      "name": "Market",
+      "discriminator": [
+        219,
+        190,
+        213,
+        55,
+        0,
+        227,
+        198,
+        154
+      ]
+    },
+    {
+      "name": "Position",
+      "discriminator": [
+        170,
+        188,
+        143,
+        228,
+        122,
+        64,
+        247,
+        208
+      ]
+    },
+    {
+      "name": "TickArray",
+      "discriminator": [
+        69,
+        97,
+        189,
+        190,
+        110,
+        7,
+        66,
+        187
+      ]
+    },
+    {
+      "name": "TunaConfig",
+      "discriminator": [
+        124,
+        149,
+        24,
+        7,
+        195,
+        168,
+        153,
+        58
+      ]
+    },
+    {
+      "name": "TunaPosition",
+      "discriminator": [
+        76,
+        197,
+        161,
+        51,
+        232,
+        15,
+        137,
+        220
+      ]
+    },
+    {
+      "name": "Vault",
+      "discriminator": [
+        211,
+        8,
+        232,
+        43,
+        2,
+        152,
+        117,
+        119
+      ]
+    },
+    {
+      "name": "Whirlpool",
+      "discriminator": [
+        63,
+        149,
+        209,
+        12,
+        225,
+        128,
+        99,
+        9
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "AmountSlippageExceeded",
+      "msg": "AmountSlippageExceeded"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidRemainingAccountsLength",
+      "msg": "InvalidRemainingAccountsLength"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidTickArrayAccounts",
+      "msg": "InvalidAccounts"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidAccountOwner",
+      "msg": "InvalidAccountOwner"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidInstructionArguments",
+      "msg": "InvalidInstructionArguments"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidSqrtPriceLimitDirection",
+      "msg": "Provided SqrtPriceLimit not in the same direction as the swap."
+    },
+    {
+      "code": 6006,
+      "name": "InvalidTickArraySequence",
+      "msg": "InvalidTickArraySequence"
+    },
+    {
+      "code": 6007,
+      "name": "InsufficientLiquidity",
+      "msg": "InsufficientLiquidity"
+    },
+    {
+      "code": 6008,
+      "name": "InterestRateIsOutOfRange",
+      "msg": "InterestRateIsOutOfRange"
+    },
+    {
+      "code": 6009,
+      "name": "LeverageIsOutOfRange",
+      "msg": "LeverageIsOutOfRange"
+    },
+    {
+      "code": 6010,
+      "name": "LeftoversExceeded",
+      "msg": "LeftoversExceeded"
+    },
+    {
+      "code": 6011,
+      "name": "LimitOrderExecutionFeeIsOutOfRange",
+      "msg": "LimitOrderExecutionFeeIsOutOfRange"
+    },
+    {
+      "code": 6012,
+      "name": "LiquidationFeeIsOutOfRange",
+      "msg": "LiquidationFeeIsOutOfRange"
+    },
+    {
+      "code": 6013,
+      "name": "LiquidationThresholdIsOutOfRange",
+      "msg": "LiquidationThresholdIsOutOfRange"
+    },
+    {
+      "code": 6014,
+      "name": "LiquidityZero",
+      "msg": "Liquidity amount must be greater than zero."
+    },
+    {
+      "code": 6015,
+      "name": "MathOverflow",
+      "msg": "MathOverflow"
+    },
+    {
+      "code": 6016,
+      "name": "MathUnderflow",
+      "msg": "MathUnderflow"
+    },
+    {
+      "code": 6017,
+      "name": "PartialFillError",
+      "msg": "Trade resulted in partial fill"
+    },
+    {
+      "code": 6018,
+      "name": "PositionIsHealthy",
+      "msg": "PositionIsHealthy"
+    },
+    {
+      "code": 6019,
+      "name": "PositionIsLiquidated",
+      "msg": "PositionIsLiquidated"
+    },
+    {
+      "code": 6020,
+      "name": "PositionIsUnhealthy",
+      "msg": "PositionIsUnhealthy"
+    },
+    {
+      "code": 6021,
+      "name": "ProtocolFeeIsOutOfRange",
+      "msg": "ProtocolFeeIsOutOfRange"
+    },
+    {
+      "code": 6022,
+      "name": "SqrtPriceOutOfBounds",
+      "msg": "SqrtPriceOutOfBounds"
+    },
+    {
+      "code": 6023,
+      "name": "SupplyLimitExceeded",
+      "msg": "SupplyLimitExceeded"
+    },
+    {
+      "code": 6024,
+      "name": "Suspended",
+      "msg": "Suspended"
+    },
+    {
+      "code": 6025,
+      "name": "SwapSlippageExceeded",
+      "msg": "SwapSlippageExceeded"
+    },
+    {
+      "code": 6026,
+      "name": "TickIndexOfBounds",
+      "msg": "TickIndexOfBounds"
+    },
+    {
+      "code": 6027,
+      "name": "TypeCastOverflow",
+      "msg": "TypeCastOverflow"
+    },
+    {
+      "code": 6028,
+      "name": "UnexpectedValue",
+      "msg": "UnexpectedValue"
+    },
+    {
+      "code": 6029,
+      "name": "VaultNotInitialized",
+      "msg": "VaultNotInitialized"
+    },
+    {
+      "code": 6030,
+      "name": "WithdrawRequestExceedsUserBalance",
+      "msg": "WithdrawRequestExceedsUserBalance"
+    },
+    {
+      "code": 6031,
+      "name": "ZeroPriceRange",
+      "msg": "ZeroPriceRange"
+    },
+    {
+      "code": 6032,
+      "name": "ZeroTradableAmount",
+      "msg": "There are no tradable amount to swap."
+    },
+    {
+      "code": 6033,
+      "name": "RaydiumInvalidFirstTickArrayAccount",
+      "msg": "RaydiumInvalidFirstTickArrayAccount"
+    },
+    {
+      "code": 6034,
+      "name": "RaydiumInvalidTickArray",
+      "msg": "RaydiumInvalidTickArray"
+    },
+    {
+      "code": 6035,
+      "name": "RaydiumInvaildTickIndex",
+      "msg": "RaydiumInvaildTickIndex"
+    },
+    {
+      "code": 6036,
+      "name": "RaydiumMaxTokenOverflow",
+      "msg": "RaydiumMaxTokenOverflow"
+    },
+    {
+      "code": 6037,
+      "name": "RaydiumNotEnoughTickArrayAccount",
+      "msg": "RaydiumNotEnoughTickArrayAccount"
+    },
+    {
+      "code": 6038,
+      "name": "RaydiumSqrtPriceLimitOverflow",
+      "msg": "RaydiumSqrtPriceLimitOverflow"
+    },
+    {
+      "code": 6039,
+      "name": "RaydiumZeroAmountSpecified",
+      "msg": "RaydiumZeroAmountSpecified"
+    }
+  ],
+  "types": [
+    {
+      "name": "LendingPosition",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "docs": [
+              "Struct version"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed for the lending position account"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                1
+              ]
+            }
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "Authority address used for managing the position"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "pool_mint",
+            "docs": [
+              "Mint address of the token in the vault"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "deposited_funds",
+            "docs": [
+              "The amount of funds provided by user. Used to compute earned amount."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "deposited_shares",
+            "docs": [
+              "The amount of funds provided by user to the vault as shares"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "reserved",
+            "docs": [
+              "Reserved"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Market",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "docs": [
+              "Struct version"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed for the market account"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                1
+              ]
+            }
+          },
+          {
+            "name": "liquidity_provider",
+            "docs": [
+              "Liquidity provider: Orca, Raydium, etc..."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "pool",
+            "docs": [
+              "Liquidity pool address"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "address_lookup_table",
+            "docs": [
+              "Address Lookup Table address for this market"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "max_leverage",
+            "docs": [
+              "Maximum allowed leverage for this market"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "protocol_fee",
+            "docs": [
+              "Protocol fee denominated in hundredths of a bip. (Value of 100 is equal to 0.01%)"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "liquidation_fee",
+            "docs": [
+              "Liquidation fee denominated in hundredths of a bip. (Value of 100 is equal to 0.01%)"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "liquidation_threshold",
+            "docs": [
+              "Liquidation threshold. The position is treated as unhealthy if debt > balance * (liquidation_threshold / HUNDRED_PERCENT)."
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "limit_order_execution_fee",
+            "docs": [
+              "Limit order execution fee denominated in hundredths of a bip. (Value of 100 is equal to 0.01%)"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "reserved",
+            "docs": [
+              "Reserved"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                252
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Position",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "whirlpool",
+            "type": "pubkey"
+          },
+          {
+            "name": "position_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "liquidity",
+            "type": "u128"
+          },
+          {
+            "name": "tick_lower_index",
+            "type": "i32"
+          },
+          {
+            "name": "tick_upper_index",
+            "type": "i32"
+          },
+          {
+            "name": "fee_growth_checkpoint_a",
+            "type": "u128"
+          },
+          {
+            "name": "fee_owed_a",
+            "type": "u64"
+          },
+          {
+            "name": "fee_growth_checkpoint_b",
+            "type": "u128"
+          },
+          {
+            "name": "fee_owed_b",
+            "type": "u64"
+          },
+          {
+            "name": "reward_infos",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "PositionRewardInfo"
+                  }
+                },
+                3
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "PositionRewardInfo",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "growth_inside_checkpoint",
+            "type": "u128"
+          },
+          {
+            "name": "amount_owed",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tick",
+      "serialization": "bytemuckunsafe",
+      "repr": {
+        "kind": "c",
+        "packed": true
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "initialized",
+            "type": "bool"
+          },
+          {
+            "name": "liquidity_net",
+            "type": "i128"
+          },
+          {
+            "name": "liquidity_gross",
+            "type": "u128"
+          },
+          {
+            "name": "fee_growth_outside_a",
+            "type": "u128"
+          },
+          {
+            "name": "fee_growth_outside_b",
+            "type": "u128"
+          },
+          {
+            "name": "reward_growths_outside",
+            "type": {
+              "array": [
+                "u128",
+                3
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TickArray",
+      "serialization": "bytemuckunsafe",
+      "repr": {
+        "kind": "c",
+        "packed": true
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "start_tick_index",
+            "type": "i32"
+          },
+          {
+            "name": "ticks",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "Tick"
+                  }
+                },
+                88
+              ]
+            }
+          },
+          {
+            "name": "whirlpool",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TunaConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "docs": [
+              "Struct version"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed for the vaults config account"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "admin_authority",
+            "docs": [
+              "Current update authority address for both the tunaConfig and the Vault PDAs themselves - can be updated"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_recipient",
+            "docs": [
+              "Fee recipient address"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "owner_authority",
+            "docs": [
+              "Owner of the program. Can change ownership and set the admin of the program."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "max_swap_slippage",
+            "docs": [
+              "Maximum allowed swap slippage percentage. If it's set to zero, the DEFAULT_MAX_SWAP_SLIPPAGE is used."
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "max_percentage_of_leftovers",
+            "docs": [
+              "Maximum allowed percentage of leftovers. If it's set to zero, the DEFAULT_MAX_LEFTOVERS is used."
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "suspend_lending_deposits",
+            "docs": [
+              "Suspends lending deposits in case of emergency"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "suspend_lending_withdrawals",
+            "docs": [
+              "Suspends lending withdrawals in case of emergency"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "suspend_add_liquidity",
+            "docs": [
+              "Suspends adding liquidity to positions in case of emergency"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "suspend_remove_liquidity",
+            "docs": [
+              "Suspends removing liquidity, claiming fees and closing positions in case of emergency"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "reserved",
+            "docs": [
+              "Reserved"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                212
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TunaPosition",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "docs": [
+              "Struct version"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed for the tuna position account"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                1
+              ]
+            }
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "The authority address used for managing the position"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "pool",
+            "docs": [
+              "Liquidity pool address this position belongs to"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "mint_a",
+            "docs": [
+              "The mint address for token A"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "mint_b",
+            "docs": [
+              "The mint address for token B"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "position_mint",
+            "docs": [
+              "The mint address for the position token (minted and used in Orca/Raydium)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "liquidity",
+            "docs": [
+              "Total minted liquidity"
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "tick_lower_index",
+            "docs": [
+              "Position lower tick"
+            ],
+            "type": "i32"
+          },
+          {
+            "name": "tick_upper_index",
+            "docs": [
+              "Position upper tick"
+            ],
+            "type": "i32"
+          },
+          {
+            "name": "loan_shares_a",
+            "docs": [
+              "The amount of shares borrowed by user from vault A."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "loan_shares_b",
+            "docs": [
+              "The amount of shares borrowed by user from vault B."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "loan_funds_a",
+            "docs": [
+              "The amount of funds (without accrued interest) borrowed by user from vault A. Only used to compute the interest a user owes."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "loan_funds_b",
+            "docs": [
+              "The amount of funds (without accrued interest) borrowed by user from vault B. Only used to compute the interest a user owes."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "leftovers_a",
+            "docs": [
+              "The leftovers are funds that couldn't be added to a pool as liquidity. They remain in the position token account."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "leftovers_b",
+            "docs": [
+              "The leftovers are funds that couldn't be added to a pool as liquidity. They remain in the position token account."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "tick_entry_index",
+            "docs": [
+              "Position entry tick index."
+            ],
+            "type": "i32"
+          },
+          {
+            "name": "tick_stop_loss_index",
+            "docs": [
+              "Position stop loss tick index."
+            ],
+            "type": "i32"
+          },
+          {
+            "name": "tick_take_profit_index",
+            "docs": [
+              "Position stop loss tick index."
+            ],
+            "type": "i32"
+          },
+          {
+            "name": "state",
+            "docs": [
+              "Position state: normal, liquidated, closed by limit order"
+            ],
+            "type": {
+              "defined": {
+                "name": "TunaPositionState"
+              }
+            }
+          },
+          {
+            "name": "swap_to_token_on_limit_order",
+            "docs": [
+              "Which token to swap collateral to when a limit order is executed.",
+              "bits 0..1: Stop loss swap. 0 - no swap, 1 - swap to token A, 2 - swap to token B",
+              "bits 2..3: Take profit swap. 0 - no swap, 1 - swap to token A, 2 - swap to token B"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "reserved",
+            "docs": [
+              "Reserved"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                82
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TunaPositionState",
+      "repr": {
+        "kind": "rust"
+      },
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Normal"
+          },
+          {
+            "name": "Liquidated"
+          },
+          {
+            "name": "ClosedByLimitOrder"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Vault",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "docs": [
+              "Struct version"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed for the vault account"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                1
+              ]
+            }
+          },
+          {
+            "name": "mint",
+            "docs": [
+              "The mint of the token that this vault holds"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "deposited_funds",
+            "docs": [
+              "The amount of funds deposited in the vault - takes into account accrued interest"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "deposited_shares",
+            "docs": [
+              "The amount of shares deposited in the vault"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "borrowed_funds",
+            "docs": [
+              "The amount of funds borrowed from the vault - takes into account accrued interest"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "borrowed_shares",
+            "docs": [
+              "The amount of shares borrowed from the vault"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "unpaid_debt_shares",
+            "docs": [
+              "Bad dept may appear on a position liquidation if not enough funds to repay the debt to a lending pool."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "interest_rate",
+            "docs": [
+              "The interest rate of the vault per seconds. (1<<60) / 31536000 = 1152921504606846976 / 31536000 = 100% annually."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "last_update_timestamp",
+            "docs": [
+              "The last time the vault was updated."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "supply_limit",
+            "docs": [
+              "The maximum allowed supply for this pool. The default value 0 is unlimited supply."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "reserved",
+            "docs": [
+              "Reserved"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                248
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Whirlpool",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "whirlpools_config",
+            "type": "pubkey"
+          },
+          {
+            "name": "whirlpool_bump",
+            "type": {
+              "array": [
+                "u8",
+                1
+              ]
+            }
+          },
+          {
+            "name": "tick_spacing",
+            "type": "u16"
+          },
+          {
+            "name": "tick_spacing_seed",
+            "type": {
+              "array": [
+                "u8",
+                2
+              ]
+            }
+          },
+          {
+            "name": "fee_rate",
+            "type": "u16"
+          },
+          {
+            "name": "protocol_fee_rate",
+            "type": "u16"
+          },
+          {
+            "name": "liquidity",
+            "type": "u128"
+          },
+          {
+            "name": "sqrt_price",
+            "type": "u128"
+          },
+          {
+            "name": "tick_current_index",
+            "type": "i32"
+          },
+          {
+            "name": "protocol_fee_owed_a",
+            "type": "u64"
+          },
+          {
+            "name": "protocol_fee_owed_b",
+            "type": "u64"
+          },
+          {
+            "name": "token_mint_a",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_vault_a",
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_growth_global_a",
+            "type": "u128"
+          },
+          {
+            "name": "token_mint_b",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_vault_b",
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_growth_global_b",
+            "type": "u128"
+          },
+          {
+            "name": "reward_last_updated_timestamp",
+            "type": "u64"
+          },
+          {
+            "name": "reward_infos",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "WhirlpoolRewardInfo"
+                  }
+                },
+                3
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "WhirlpoolRewardInfo",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "emissions_per_second_x64",
+            "type": "u128"
+          },
+          {
+            "name": "growth_global_x64",
+            "type": "u128"
+          }
+        ]
+      }
+    }
+  ]
+}
