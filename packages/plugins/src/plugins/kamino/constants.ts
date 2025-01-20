@@ -66,7 +66,7 @@ export const lendingConfigs: Map<string, LendingMarketConfig> = new Map([
           'So11111111111111111111111111111111111111112',
         ],
         [
-          'HHL4v12VxirRs8Vkj8J37jLLDdVD3Fc3gLJVSxeMFcVA',
+          'BNso1VUJnh4zcfpZa6986Ea66P6TCp59hvtNJ8b1X85',
           'So11111111111111111111111111111111111111112',
         ],
       ],
