@@ -38,6 +38,10 @@
       "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/run-job.ts",
       "dependsOn": []
     },
+    "run-activity": {
+      "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/run-activity.ts",
+      "dependsOn": []
+    },
     "publish": {
       "command": "node tools/scripts/publish.mjs plugins {args.ver} {args.tag}",
       "dependsOn": ["build"]

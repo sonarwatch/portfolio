@@ -1,4 +1,4 @@
-import { Platform } from '@sonarwatch/portfolio-core';
+import { Platform, Service } from '@sonarwatch/portfolio-core';
 import { Fetcher } from './Fetcher';
 import { AirdropFetcher } from './AirdropFetcher';
 import { Job } from './Job';
@@ -735,6 +735,7 @@ import {
   platforms as defitunaPlatforms,
   jobs as defitunaJobs,
   fetchers as defitunaFetchers,
+  services as defitunaServices,
 } from './plugins/defituna';
 
 export {
@@ -1212,3 +1213,5 @@ export const airdropFetchers: AirdropFetcher[] = [
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);
+
+export const services: Service[] = [...defitunaServices];

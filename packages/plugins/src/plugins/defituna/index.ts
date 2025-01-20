@@ -1,7 +1,11 @@
-import { Platform } from '@sonarwatch/portfolio-core';
+import { Platform, Service } from '@sonarwatch/portfolio-core';
 import { Fetcher } from '../../Fetcher';
 import { Job } from '../../Job';
-import { platform } from './constants';
+import {
+  defiTunaLendingService,
+  defiTunaLiquidityService,
+  platform,
+} from './constants';
 import lendingFetcher from './lendingFetcher';
 import lendingPoolsJob from './lendingPoolsJob';
 import positionsFetcher from './positionsFetcher';
@@ -9,3 +13,7 @@ import positionsFetcher from './positionsFetcher';
 export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [lendingPoolsJob];
 export const fetchers: Fetcher[] = [lendingFetcher, positionsFetcher];
+export const services: Service[] = [
+  defiTunaLendingService,
+  defiTunaLiquidityService,
+];
