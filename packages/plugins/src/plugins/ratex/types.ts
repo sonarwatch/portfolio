@@ -52,3 +52,11 @@ export type Oracle = {
   rate: number;
 };
 export type YieldMarketWithOracle = YieldMarket & Oracle;
+
+export type PtToken = {
+  pt_mint: string;
+  pt_price: number;
+  pt_u_price: number;
+  pt_yield: number;
+  security_id: string;
+};
