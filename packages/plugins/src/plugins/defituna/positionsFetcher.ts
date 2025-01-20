@@ -67,7 +67,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (!lendingPoolA || !lendingPoolB) return;
 
     const element = elementRegistry.addElementBorrowlend({
-      label: 'Leverage',
+      label: 'LiquidityPool',
     });
 
     const { tokenAmountA, tokenAmountB } = getTokenAmountsFromLiquidity(
