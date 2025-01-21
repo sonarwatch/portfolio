@@ -6,6 +6,9 @@ export type DisplayOptions = {
   showCollectionMetadata?: boolean;
   showGrandTotal?: boolean;
 };
+export type GetAssetsByOwnerDasParams = DisplayOptions & {
+  limit?: number;
+};
 export type GetAssetsByOwnerOutput = {
   jsonrpc: string;
   result: HeliusAssetList;
