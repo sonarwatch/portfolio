@@ -51,6 +51,13 @@ export type PortfolioAssetAttributes = {
    * Represents the tags of the asset.
    */
   tags?: string[];
+  /**
+   * Represents the metadatas of the validator.
+   */
+  validator?: {
+    name?: string;
+    imageUri?: string;
+  };
 };
 
 /**
@@ -75,6 +82,7 @@ export type PortfolioAssetCommon = {
   attributes: PortfolioAssetAttributes;
   name?: string;
   imageUri?: string;
+  id?: string;
 };
 
 /**

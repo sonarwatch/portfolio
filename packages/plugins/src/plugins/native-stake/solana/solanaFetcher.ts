@@ -121,10 +121,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         {
           tags,
           lockedUntil,
+          validator: {
+            name: validator?.name,
+            imageUri: validator?.imageUri,
+          },
         }
       ),
-      name: validator?.name,
-      imageUri: validator?.imageUri,
+      id: stakeAccount.pubkey.toString(),
     });
   }
 
@@ -200,6 +203,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   }
   return elements;
 };
+
 const fetcher: Fetcher = {
   id: `${platformId}-solana`,
   networkId: NetworkId.solana,

@@ -71,13 +71,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         NetworkId.sui,
         suiTokenPrice,
         undefined,
-        { tags: [stakeInfo.status] }
+        {
+          tags: [stakeInfo.status],
+          validator: {
+            imageUri: validatorInfo?.logoUrl,
+            name: validatorInfo?.name,
+          },
+        }
       );
-      assets.push({
-        ...stakedAsset,
-        imageUri: validatorInfo?.logoUrl,
-        name: validatorInfo?.name,
-      });
+      assets.push(stakedAsset);
 
       value += stakedAsset.value !== null ? stakedAsset.value : 0;
       elements.push({
