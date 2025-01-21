@@ -1,8 +1,8 @@
 import {
+  getUsdValueSum,
   NetworkIdType,
   PortfolioLiquidity,
   TokenPrice,
-  getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import tokenPriceToAssetTokens from './tokenPriceToAssetTokens';
 
@@ -18,7 +18,7 @@ export default function tokenPriceToLiquidity(
     networkId,
     tokenPrice
   );
-  const liquidity: PortfolioLiquidity = {
+  return {
     assets,
     assetsValue: getUsdValueSum(assets.map((a) => a.value)),
     rewardAssets: [],
@@ -26,6 +26,6 @@ export default function tokenPriceToLiquidity(
     value: getUsdValueSum(assets.map((a) => a.value)),
     yields: [],
     name: tokenPrice.liquidityName,
+    pool: address,
   };
-  return liquidity;
 }

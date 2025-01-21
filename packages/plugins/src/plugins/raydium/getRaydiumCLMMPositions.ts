@@ -93,7 +93,10 @@ export async function getRaydiumCLMMPositions(
     )
       continue;
 
-    const element = elementRegistry.addElementConcentratedLiquidity();
+    const element = elementRegistry.addElementConcentratedLiquidity({
+      id: personalPositionInfo.pubkey,
+      pool: poolStateInfo.pubkey,
+    });
     const liquidity = element.setLiquidity({
       addressA: poolStateInfo.tokenMint0,
       addressB: poolStateInfo.tokenMint1,

@@ -208,6 +208,8 @@ export type PortfolioElementCommon = {
   tags?: string[];
   proxyInfo?: ProxyInfo;
   service?: Service;
+  id?: string;
+  pool?: string;
 };
 
 /**
@@ -236,6 +238,8 @@ export type PortfolioLiquidity = {
   value: UsdValue;
   yields: Yield[];
   name?: string;
+  id?: string;
+  pool?: string;
 };
 
 /**

@@ -4,6 +4,7 @@ import {
   PortfolioElementLabel,
   PortfolioElementTypeType,
 } from '@sonarwatch/portfolio-core';
+import { PublicKey } from '@solana/web3.js';
 import { ElementParams } from './ElementParams';
 import { TokenPriceMap } from '../../TokenPriceMap';
 
@@ -13,6 +14,8 @@ export abstract class ElementBuilder {
   name?: string;
   readonly platformId?: string;
   tags?: string[];
+  pool?: string | PublicKey;
+  id?: string | PublicKey;
 
   protected constructor(params: ElementParams) {
     this.type = params.type;
@@ -20,6 +23,8 @@ export abstract class ElementBuilder {
     this.name = params.name;
     this.tags = params.tags;
     this.platformId = params.platformId;
+    this.pool = params.pool;
+    this.id = params.id;
   }
 
   addTag(tag: string) {

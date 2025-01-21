@@ -299,6 +299,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           liquidities,
         },
         tags,
+        pool: lbPair.toString(),
+        id: account.pubkey.toString(),
       });
     }
   }

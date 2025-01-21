@@ -47,8 +47,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     elementRegistry.addElementLiquidity({
       label: 'Farming',
     });
-  const liquidityOfUniqueElement =
-    uniqueElementForFarmsWithoutRewards.addLiquidity();
 
   for (let i = 0; i < userFarmAccounts.length; i += 1) {
     const userFarmAccount: ParsedAccount<UserFarmAccount> = userFarmAccounts[i];
@@ -60,14 +58,25 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const farmAccount = farmInfo.account;
 
+    const liquidityOfUniqueElement =
+      uniqueElementForFarmsWithoutRewards.addLiquidity({
+        pool: userFarmAccount.poolId,
+        id: userFarmAccount.pubkey,
+      });
+
     const element = elementRegistry.addElementLiquidity({
       label:
         userFarmAccount.pubkey.toString() === rayStakingPubkey
           ? 'Staked'
           : 'Farming',
+      pool: userFarmAccount.poolId,
+      id: userFarmAccount.pubkey,
     });
 
-    const liquidity = element.addLiquidity();
+    const liquidity = element.addLiquidity({
+      pool: userFarmAccount.poolId,
+      id: userFarmAccount.pubkey,
+    });
 
     // Farm pending reward A
     if (farmInfo.rewardTokenA) {
