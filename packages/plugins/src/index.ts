@@ -133,6 +133,7 @@ import {
   fetchers as kaminoFetchers,
   platforms as kaminoPlatforms,
   airdropFetchers as kaminoAirdropFetchers,
+  services as kaminoServices,
 } from './plugins/kamino';
 import {
   jobs as bucketJobs,
@@ -225,6 +226,7 @@ import {
   jobs as jupiterJobs,
   fetchers as jupiterFetchers,
   airdropFetchers as jupiterAirdropFetchers,
+  services as jupiterServices,
 } from './plugins/jupiter';
 import {
   platforms as zetaPlatforms,
@@ -1215,9 +1217,12 @@ export const airdropFetchers: AirdropFetcher[] = [
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);
 
-export const services: Service[] = [...defitunaServices];
+export const services: Service[] = [
+  ...defitunaServices,
+  ...kaminoServices,
+  ...jupiterServices,
+];
+
 export const contracts: Contract[] = services
-  .map((s) => s.configs.map((c) => c.contracts))
-  .flat()
   .flat()
   .filter((c) => c !== undefined) as unknown as Contract[];

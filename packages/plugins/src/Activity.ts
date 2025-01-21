@@ -15,24 +15,13 @@ import { services } from './index';
 const runActivityTimeout = 60000;
 
 const parseVersionedTransaction = (
-  txn: VersionedTransactionResponse | null
+  txn: VersionedTransactionResponse | null,
+  sortedServices: Service[]
 ) => {
   if (!txn) return null;
-  const { compiledInstructions, staticAccountKeys } = txn.transaction.message;
+  const { staticAccountKeys } = txn.transaction.message;
 
   // console.log(JSON.stringify(txn));
-
-  const txnContracts = compiledInstructions.map((i) =>
-    staticAccountKeys[i.programIdIndex].toString()
-  );
-
-  const candidatesServices = services.filter((service) =>
-    service.configs.find((config) =>
-      config.contracts?.find((contract) =>
-        txnContracts.includes(contract.address)
-      )
-    )
-  );
 
   const changes: BalanceChange[] = [];
   if (txn.meta) {
@@ -85,38 +74,54 @@ const parseVersionedTransaction = (
   return {
     signature: txn.transaction.signatures[0],
     blockTime: txn.blockTime,
-    services: applyServicesRules(candidatesServices, txn),
+    service: getService(txn, sortedServices),
     balanceChanges: changes,
   } as Transaction;
 };
 
-const applyServicesRules = (
-  candidatesServices: Service[],
-  txn: VersionedTransactionResponse
-) => {
-  if (candidatesServices.length < 2) return candidatesServices;
+const getService = (
+  txn: VersionedTransactionResponse,
+  sortedServices: Service[]
+): Service | undefined => {
+  const { compiledInstructions, staticAccountKeys } = txn.transaction.message;
 
-  const serviceIds = candidatesServices.map((c) => c.id);
+  const txnContractAddresses = compiledInstructions
+    .map((i) => staticAccountKeys[i.programIdIndex].toString())
+    .filter((value, index, self) => self.indexOf(value) === index);
 
-  // DefiTuna
-  if (serviceIds.includes('defituna-liquidity')) {
-    return [candidatesServices.find((s) => s.id === 'defituna-liquidity')];
-  }
+  console.log(txnContractAddresses);
 
-  return candidatesServices;
+  // We keep the first service with all contract addresses in txn
+  return sortedServices.find((service) =>
+    service.contracts?.every((contract) =>
+      txnContractAddresses.includes(contract.address)
+    )
+  );
 };
+
+const testTxns = [
+  'JBEufKsoiAgJUTa1u9iUqVuRRq43pDhLmMD1QtkXEdqDYgRrR7kKzFuGS1FaZ93cNmnvbtDp2Yf9uDRZ9815B3f', // defituna deposit
+  'PUaJ8qmoN6r4XdE3Jir4PWZQ16xmi7J6uQATigcjU6ujLX1A44vjQsUSXL8mMMbYBoDKJCu2GtdxWLjW7aAXu4n', // kamino lend deposit
+  '29Jp6GY7PKMmTsuGAG664Qf2Uu9p1Z8QmA9jyepBkcbR2QuviNw3hna9qPs7HWEs4jNWPim4by55hbHWdDht1tHD', // kamino multiply withdraw
+  'EFa91iksec28yrN1XxjWb22u5zn1U3DTB57B4KTwiR5swNubpU1X4ryjQHccVAfmFtY1PzQmryUneSKmeKm3wkf', // kamino farms
+];
 
 export async function runActivity(owner: string, cache: Cache) {
   const client = getClientSolana();
 
-  const activityPromise = client
-    .getTransaction(
-      'JBEufKsoiAgJUTa1u9iUqVuRRq43pDhLmMD1QtkXEdqDYgRrR7kKzFuGS1FaZ93cNmnvbtDp2Yf9uDRZ9815B3f', // defituna
-      {
-        maxSupportedTransactionVersion: 1,
-      }
+  const sortedServices = services.sort(
+    (a, b) => (b.contracts?.length || 0) - (a.contracts?.length || 0)
+  );
+
+  const activityPromise = Promise.all(
+    testTxns.map(async (txn) =>
+      client
+        .getTransaction(txn, {
+          maxSupportedTransactionVersion: 1,
+        })
+        .then((t) => parseVersionedTransaction(t, sortedServices))
     )
-    .then(parseVersionedTransaction);
+  );
 
   return promiseTimeout(
     activityPromise,

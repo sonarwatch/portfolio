@@ -172,17 +172,7 @@ export type ProxyInfo = {
 export type Contract = {
   name: string;
   address: string;
-  network: NetworkIdType;
-};
-
-/**
- * Represents the different configurations of a service
- */
-export type ServiceConfig = {
-  networkId: NetworkIdType;
-  integratedOn: number;
-  contracts?: Contract[];
-  link?: string;
+  platformId?: string;
 };
 
 /**
@@ -192,7 +182,9 @@ export type Service = {
   id: string;
   name: string;
   platformId: string;
-  configs: ServiceConfig[];
+  networkId: NetworkIdType;
+  contracts?: Contract[];
+  link?: string;
 };
 
 /**
@@ -208,7 +200,7 @@ export type BalanceChange = {
 export type Transaction = {
   signature: string;
   blockTime: number;
-  services: Service[];
+  service?: Service;
   balanceChanges: BalanceChange[];
 };
 

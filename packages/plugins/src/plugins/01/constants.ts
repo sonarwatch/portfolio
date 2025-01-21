@@ -4,7 +4,6 @@ import {
   NetworkId,
   Platform,
   Service,
-  ServiceConfig,
 } from '@sonarwatch/portfolio-core';
 import { usdcSolanaMint } from '../../utils/solana';
 
@@ -25,20 +24,14 @@ export const programId = new PublicKey(
 export const contract: Contract = {
   address: programId.toString(),
   name: 'Lending',
-  network: NetworkId.solana,
-};
-
-export const config: ServiceConfig = {
-  integratedOn: 1700784000000,
-  networkId: NetworkId.solana,
-  contracts: [contract],
 };
 
 export const service: Service = {
   id: `${platformId}_lending`,
   platformId,
   name: 'Lending',
-  configs: [config],
+  networkId: NetworkId.solana,
+  contracts: [contract],
 };
 
 export const mints = [

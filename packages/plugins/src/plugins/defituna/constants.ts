@@ -1,9 +1,4 @@
-import {
-  Contract,
-  NetworkId,
-  NetworkIdType,
-  Platform,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId, Platform, Service } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import { Vault } from './structs';
@@ -30,22 +25,12 @@ export const poolsMemo = new MemoizedCache<Vault[]>(lendingPoolsCacheKey, {
 const defiTunaContract = {
   name: 'DefiTuna',
   address: defiTunaProgram.toString(),
-  network: NetworkId.solana,
 };
-const defiTunaServiceConfig = {
-  networkId: NetworkId.solana,
-  integratedOn: 1737381128000,
-  contracts: [defiTunaContract],
-};
-export const defiTunaLendingService = {
-  id: `${platformId}-lending`,
+
+export const defiTunaService: Service = {
+  id: `${platformId}`,
   name: 'Lending',
   platformId,
-  configs: [defiTunaServiceConfig],
-};
-export const defiTunaLiquidityService = {
-  id: `${platformId}-liquidity`,
-  name: 'Liquidity Pools',
-  platformId,
-  configs: [defiTunaServiceConfig],
+  networkId: NetworkId.solana,
+  contracts: [defiTunaContract],
 };

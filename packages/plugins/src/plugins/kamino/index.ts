@@ -1,8 +1,13 @@
-import { Platform } from '@sonarwatch/portfolio-core';
+import { Platform, Service } from '@sonarwatch/portfolio-core';
 import { Fetcher } from '../../Fetcher';
 import { AirdropFetcher } from '../../AirdropFetcher';
 import { Job } from '../../Job';
-import { platform } from './constants';
+import {
+  kaminoFarmService,
+  kaminoLendingService,
+  kaminoMultiplyService,
+  platform,
+} from './constants';
 import poolsJob from './poolsJob';
 import farmsJob from './farmsJob';
 import reservesJob from './reservesJob';
@@ -18,3 +23,8 @@ export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [poolsJob, reservesJob, farmsJob, marketsJob];
 export const fetchers: Fetcher[] = [lendsFetcher, farmsFetcher, s1Fetcher];
 export const airdropFetchers: AirdropFetcher[] = [s1AirdropFetcher];
+export const services: Service[] = [
+  kaminoLendingService,
+  kaminoFarmService,
+  kaminoMultiplyService,
+];
