@@ -3,7 +3,7 @@ import { AirdropStatics } from '../../../AirdropFetcher';
 import { jupMint } from '../launchpad/constants';
 
 export const platformId = 'jupiter-governance';
-const platformName = 'Jupiter Governance';
+const platformName = 'Jupiter DAO';
 const platformImage = 'https://sonar.watch/img/platforms/jupiter.webp';
 const platformWebsite = 'https://vote.jup.ag/';
 
