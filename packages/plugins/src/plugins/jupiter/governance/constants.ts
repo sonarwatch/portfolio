@@ -4,7 +4,7 @@ import { jupMint } from '../launchpad/constants';
 
 export const platformId = 'jupiter-governance';
 const platformName = 'Jupiter DAO';
-const platformImage = 'https://sonar.watch/img/platforms/jupiter.webp';
+const platformImage = 'https://sonar.watch/img/platforms/jupiterdao.webp';
 const platformWebsite = 'https://vote.jup.ag/';
 
 export const jupDisProgram = 'Dis2TfkFnXFkrtvAktEkw37sdb7qwJgY6H7YZJwk51wK';
