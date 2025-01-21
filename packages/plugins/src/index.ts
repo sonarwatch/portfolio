@@ -1,4 +1,5 @@
 import { Platform, Service } from '@sonarwatch/portfolio-core';
+import { Contract } from 'ethers';
 import { Fetcher } from './Fetcher';
 import { AirdropFetcher } from './AirdropFetcher';
 import { Job } from './Job';
@@ -1215,3 +1216,8 @@ export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);
 
 export const services: Service[] = [...defitunaServices];
+export const contracts: Contract[] = services
+  .map((s) => s.configs.map((c) => c.contracts))
+  .flat()
+  .flat()
+  .filter((c) => c !== undefined) as unknown as Contract[];

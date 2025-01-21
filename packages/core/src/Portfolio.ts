@@ -196,6 +196,23 @@ export type Service = {
 };
 
 /**
+ * Represents a transaction
+ */
+export type BalanceChange = {
+  address: string;
+  preBalance: number;
+  postBalance: number;
+  change: number;
+};
+
+export type Transaction = {
+  signature: string;
+  blockTime: number;
+  services: Service[];
+  balanceChanges: BalanceChange[];
+};
+
+/**
  * Represents the common properties of a portfolio element.
  */
 export type PortfolioElementCommon = {
