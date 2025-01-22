@@ -1,14 +1,20 @@
 import { solanaNativeAddress } from '@sonarwatch/portfolio-core';
 import { nameService as ensNameService } from './services/ens';
 import { nameService as aptosNameService } from './services/aptos';
+import { nameService as bonfidaNameService } from './services/bonfida';
 import { nameService as suiNameService } from './services/sui';
 import { nameService as allDomainsNameService } from './services/allDomains';
 import { getOwner } from './getOwner';
 
 describe('name-service', () => {
-  it('should getOwner', async () => {
+  it('should getOwner with eth address', async () => {
     const owner = await getOwner('vitalik.eth');
     expect(owner?.address).toBe('0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045');
+  });
+
+  it('should getOwner with solana address', async () => {
+    const owner = await getOwner('defichecker.sol');
+    expect(owner?.address).toBe('tEsT1vjsJeKHw9GH5HpnQszn2LWmjR6q1AVCDCj51nd');
   });
 
   it('should getOwner for ethereum', async () => {
@@ -48,20 +54,25 @@ describe('name-service', () => {
   });
 
   it('should getOwner for allDomains', async () => {
-    const owner = await allDomainsNameService.getOwner('miester.all');
-    expect(owner).toBe('2EGGxj2qbNAJNgLCPKca8sxZYetyTjnoRspTPjzN2D67');
+    const owner = await allDomainsNameService.getOwner('portoflio.solana');
+    expect(owner).toBe('tEsT1vjsJeKHw9GH5HpnQszn2LWmjR6q1AVCDCj51nd');
 
-    const owner2 = await allDomainsNameService.getOwner('miaster.all');
+    const owner2 = await allDomainsNameService.getOwner(
+      'doesnotexist123456789.letsbonk'
+    );
+    console.log('owner2', owner2);
     expect(owner2).toBe(null);
   });
 
   it('should getNames for allDomains', async () => {
     const names = await allDomainsNameService.getNames(
-      '2EGGxj2qbNAJNgLCPKca8sxZYetyTjnoRspTPjzN2D67'
+      'tEsT1vjsJeKHw9GH5HpnQszn2LWmjR6q1AVCDCj51nd'
     );
+    console.log('names', names);
     expect(names.length).toBeGreaterThan(1);
 
-    const names2 = await aptosNameService.getNames(solanaNativeAddress);
+    const names2 = await allDomainsNameService.getNames(solanaNativeAddress);
+    console.log('names2', names2);
     expect(names2.length).toBe(0);
   });
 
@@ -85,6 +96,28 @@ describe('name-service', () => {
 
     const names2 = await aptosNameService.getNames(
       '0xf821d3483fc7725ebafaa5a3d12373d49901bdfce1484f219daa7066a30df77d'
+    );
+    expect(names2.length).toBe(0);
+  });
+
+  it('should getOwner for solana', async () => {
+    const owner = await bonfidaNameService.getOwner('defichecker.sol');
+    expect(owner).toBe('tEsT1vjsJeKHw9GH5HpnQszn2LWmjR6q1AVCDCj51nd');
+
+    const owner2 = await bonfidaNameService.getOwner(
+      '53ahj74NffQ3CrFS2YRVgLhgFZtCewjM7eY19jS6Nr6m'
+    );
+    expect(owner2).toBe(null);
+  });
+
+  it('should getNames for solana', async () => {
+    const names = await bonfidaNameService.getNames(
+      'tEsT1vjsJeKHw9GH5HpnQszn2LWmjR6q1AVCDCj51nd'
+    );
+    expect(names.some((name) => name === 'defichecker.sol')).toBe(true);
+
+    const names2 = await bonfidaNameService.getNames(
+      '53ahj74NffQ3CrFS2YRVgLhgFZtCewjM7eY19jS6Nr6m'
     );
     expect(names2.length).toBe(0);
   });

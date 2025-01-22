@@ -5,13 +5,13 @@ export async function getNames(
   address: string,
   addressSystem: AddressSystemType
 ): Promise<string[]> {
-  const names: string[] = [];
-  for (let i = 0; i < nameServices.length; i++) {
-    const nameService = nameServices[i];
-    if (nameService.checker.addressSystem !== addressSystem) continue;
+  return (
+    await Promise.all(
+      nameServices.map((nameService) => {
+        if (nameService.checker.addressSystem !== addressSystem) return [];
 
-    const cNames = await nameService.getNames(address);
-    names.push(...cNames);
-  }
-  return names;
+        return nameService.getNames(address);
+      })
+    )
+  ).flat();
 }
