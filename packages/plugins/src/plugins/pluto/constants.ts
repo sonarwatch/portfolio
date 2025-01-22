@@ -1,23 +1,18 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 import { AirdropStatics } from '../../AirdropFetcher';
 
-export const platformId = 'foo';
+export const platformId = 'pluto';
 export const platform: Platform = {
   id: platformId,
-  name: 'Foo Finance',
-  image: 'https://sonar.watch/img/platforms/foo.webp',
-  website: 'https://foo.com/',
-  twitter: 'https://x.com/foo_finance',
-  defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
+  name: 'Pluto',
+  image: 'https://risk.pluto.so/images/pluto.svg',
+  website: 'https://pluto.so/',
+  twitter: 'https://x.com/plutoleverage',
+  discord: 'https://discord.com/invite/plutoleverage'
 };
-export const marketsCacheKey = `markets`;
 
-export const airdropStatics: AirdropStatics = {
-  claimLink: 'https://foo.com/claim',
-  emitterLink: 'https://foo.com',
-  emitterName: 'Foo Protocol',
-  id: 'foo-s1',
-  image: 'https://sonar.watch/img/platforms/foo.webp',
-  claimEnd: undefined,
-  claimStart: 1722672000000,
-};
+export const plutoServer = 'https://pluto-sonarwatch-service-259181308485.asia-southeast1.run.app/';
+export const leverageVaultJson = 'https://storage.googleapis.com/plutoso/accounts.json';
+
+export const earnVaultsKey = 'pluto-earn-vaults';
+export const leverageVaultKey = 'pluto-leverage-vaults';
