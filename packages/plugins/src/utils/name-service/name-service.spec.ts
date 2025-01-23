@@ -60,7 +60,6 @@ describe('name-service', () => {
     const owner2 = await allDomainsNameService.getOwner(
       'doesnotexist123456789.letsbonk'
     );
-    console.log('owner2', owner2);
     expect(owner2).toBe(null);
   });
 
@@ -68,11 +67,9 @@ describe('name-service', () => {
     const names = await allDomainsNameService.getNames(
       'tEsT1vjsJeKHw9GH5HpnQszn2LWmjR6q1AVCDCj51nd'
     );
-    console.log('names', names);
     expect(names.length).toBeGreaterThan(1);
 
     const names2 = await allDomainsNameService.getNames(solanaNativeAddress);
-    console.log('names2', names2);
     expect(names2.length).toBe(0);
   });
 
