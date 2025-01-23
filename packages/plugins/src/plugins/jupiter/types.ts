@@ -119,3 +119,12 @@ export type PriceResponse = {
   >;
   timeTaken: number;
 };
+
+export type TokenResponse = {
+  address: string;
+  daily_volume: number;
+  symbol: string;
+  extensions: {
+    coingeckoId?: string;
+  };
+};
