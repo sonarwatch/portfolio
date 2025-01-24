@@ -736,6 +736,11 @@ import {
   jobs as defitunaJobs,
   fetchers as defitunaFetchers,
 } from './plugins/defituna';
+import {
+  platforms as plutoPlatforms,
+  jobs as plutoJobs,
+  fetchers as plutoFetchers,
+} from './plugins/pluto';
 
 export {
   walletTokensPlatform,
@@ -898,6 +903,7 @@ export const platforms: Platform[] = [
   ...exponentPlatforms,
   ...ratexPlatforms,
   ...defitunaPlatforms,
+  ...plutoPlatforms,
 ];
 
 // JOBS //
@@ -1043,6 +1049,7 @@ export const jobs: Job[] = [
   ...exponentJobs,
   ...ratexJobs,
   ...defitunaJobs,
+  ...plutoJobs,
 ];
 
 // FETCHERS //
@@ -1189,6 +1196,7 @@ export const fetchers: Fetcher[] = [
   ...exponentFetchers,
   ...ratexFetchers,
   ...defitunaFetchers,
+  ...plutoFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
