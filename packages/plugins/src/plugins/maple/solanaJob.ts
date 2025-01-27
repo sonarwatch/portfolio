@@ -1,12 +1,12 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import { USDC_MINT } from '@bonfida/spl-name-service';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { solanaLoanToken, platformId } from './constants';
+import { usdcSolanaMint } from '../../utils/solana';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const usdcPrice = await cache.getTokenPrice(
-    USDC_MINT.toString(),
+    usdcSolanaMint.toString(),
     NetworkId.solana
   );
 

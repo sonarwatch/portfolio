@@ -1,16 +1,20 @@
 import { RpcEndpoint } from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
-import { DisplayOptions, GetAssetsByOwnerOutput, HeliusAsset } from './types';
+import {
+  GetAssetsByOwnerDasParams,
+  GetAssetsByOwnerOutput,
+  HeliusAsset,
+} from './types';
 import { getBasicAuthHeaders } from '../../misc/getBasicAuthHeaders';
 import { getDisplayOptions } from './getDisplayOptions';
 
-const limit = 1000;
-const maxPage = 10;
+const LIMIT = 1000;
+const DEFAULT_MAX_PAGE = 25;
 
 export async function getAssetsByOwnerDas(
   dasEndpoint: RpcEndpoint,
   owner: string,
-  displayOptions?: DisplayOptions
+  params?: GetAssetsByOwnerDasParams
 ): Promise<HeliusAsset[]> {
   const httpHeaders = dasEndpoint.basicAuth
     ? getBasicAuthHeaders(
@@ -20,6 +24,11 @@ export async function getAssetsByOwnerDas(
     : undefined;
 
   const items: HeliusAsset[] = [];
+
+  const maxPage = params?.limit
+    ? Math.ceil(params.limit / LIMIT)
+    : DEFAULT_MAX_PAGE;
+
   let page = 0;
   while (page < maxPage) {
     page += 1;
@@ -36,12 +45,12 @@ export async function getAssetsByOwnerDas(
         params: {
           ownerAddress: owner,
           page,
-          limit,
+          limit: LIMIT,
           sortBy: {
             sortBy: 'id',
             sortDirection: 'asc',
           },
-          displayOptions: getDisplayOptions(displayOptions),
+          displayOptions: getDisplayOptions(params),
         },
       },
       {
@@ -52,7 +61,7 @@ export async function getAssetsByOwnerDas(
       }
     );
     items.push(...res.data.result.items);
-    if (res.data.result.total !== limit) break;
+    if (res.data.result.total !== LIMIT) break;
   }
   return items;
 }

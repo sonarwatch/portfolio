@@ -3,8 +3,8 @@ import { AirdropStatics } from '../../../AirdropFetcher';
 import { jupMint } from '../launchpad/constants';
 
 export const platformId = 'jupiter-governance';
-const platformName = 'Jupiter Governance';
-const platformImage = 'https://sonar.watch/img/platforms/jupiter.webp';
+const platformName = 'Jupiter DAO';
+const platformImage = 'https://sonar.watch/img/platforms/jupiterdao.webp';
 const platformWebsite = 'https://vote.jup.ag/';
 
 export const jupDisProgram = 'Dis2TfkFnXFkrtvAktEkw37sdb7qwJgY6H7YZJwk51wK';
@@ -35,6 +35,14 @@ export const asr2Statics: AirdropStatics = {
   claimStart: 1729512000000,
   claimEnd: 1732190400000,
   name: 'ASR #2',
+};
+export const jupuaryStatics: AirdropStatics = {
+  id: 'jup-jupuary',
+  claimLink: 'https://jupuary.jup.ag',
+  image: platformImage,
+  emitterLink: platformWebsite,
+  emitterName: 'Jupiter',
+  name: 'Jupuary 2025',
 };
 
 export type AsrItems = Map<
