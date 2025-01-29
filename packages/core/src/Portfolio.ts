@@ -55,7 +55,7 @@ export type PortfolioAssetAttributes = {
    * Represents the metadatas of the validator.
    */
   validator?: {
-    address?: string; // or voter ?
+    address?: string;
     name?: string;
     imageUri?: string;
   };
@@ -206,7 +206,12 @@ export type Service = {
   configs: ServiceConfig[];
 };
 
-export type SourceRefName = 'Pool' | 'Farm' | 'Market' | 'Vault';
+export type SourceRefName =
+  | 'Pool'
+  | 'Farm'
+  | 'Market'
+  | 'Vault'
+  | 'Lending Market';
 
 /**
  * Represents references to on-chain accounts.
