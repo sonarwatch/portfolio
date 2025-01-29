@@ -5,5 +5,7 @@ export enum RegistryId {
   factorycrypto = 'factory-crypto',
   factorycrvusd = 'factory-crvusd',
   factorytricrypto = 'factory-tricrypto',
+  factorytwocrypto = 'factory-twocrypto',
   factoryeywa = 'factory-eywa',
+  factorystableng = 'factory-stable-ng',
 }

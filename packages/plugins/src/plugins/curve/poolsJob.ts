@@ -1,4 +1,8 @@
-import { TokenPrice, formatTokenAddress } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  TokenPrice,
+  formatTokenAddress,
+} from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import {
@@ -17,6 +21,10 @@ const executor: JobExecutor = async (cache: Cache) => {
     const networkId = crvNetworkIdBySwNetworkId[crvNetworkId];
 
     const pools = await getPoolsData(crvNetworkId);
+
+    console.log('hello');
+    console.log({ crvNetworkId, poolsL: pools.length });
+
     const coinsAddresses = [
       ...new Set(
         pools

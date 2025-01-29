@@ -39,5 +39,5 @@ export const crvNetworkIdBySwNetworkId: Record<CrvNetworkId, EvmNetworkIdType> =
     [CrvNetworkId.ethereum]: NetworkId.ethereum,
     [CrvNetworkId.polygon]: NetworkId.polygon,
     [CrvNetworkId.avalanche]: NetworkId.avalanche,
-    [CrvNetworkId.fraxtal]: NetworkId.fraxtal, // TODO: Add fraxtal network ID when available.
+    [CrvNetworkId.fraxtal]: NetworkId.fraxtal,
   };

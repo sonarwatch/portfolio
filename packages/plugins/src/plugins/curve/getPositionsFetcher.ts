@@ -31,6 +31,7 @@ export function getPositionsFetcher(crvNetworkId: CrvNetworkId): Fetcher {
       networkId,
       prefix: poolsByAddressPrefix,
     });
+
     if (!poolsByAddress) return [];
 
     const addresses = Object.keys(poolsByAddress);
@@ -43,8 +44,11 @@ export function getPositionsFetcher(crvNetworkId: CrvNetworkId): Fetcher {
           args: [owner],
         } as const)
     );
+
     const client = getEvmClient(networkId);
     const balanceOfResults = await client.multicall({ contracts });
+
+    console.log({ balanceOfResults });
 
     const poolAddresses: Set<string> = new Set();
     const balanceOfByAddress: Map<string, BigNumber> = new Map();

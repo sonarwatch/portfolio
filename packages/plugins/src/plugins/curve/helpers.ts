@@ -22,9 +22,14 @@ export async function getPoolsData(
   const endpoints = getPoolsEndpoints(crvNetworkId);
   for (let i = 0; i < endpoints.length; i++) {
     const endpoint = endpoints[i];
+    console.log(endpoint);
     const getPoolsRes: AxiosResponse<GetPoolsResponse> | null = await axios
       .get(endpoint)
       .catch(() => null);
+
+    if (crvNetworkId === 'fraxtal') {
+      console.log(getPoolsRes?.data.data);
+    }
     if (!getPoolsRes || !getPoolsRes.data.success) continue;
     const { poolData } = getPoolsRes.data.data;
     const fPoolData = poolData.filter((pData) => {

@@ -14,6 +14,7 @@ export const fetchers: Fetcher[] = [
   getPositionsFetcher(CrvNetworkId.ethereum),
   getPositionsFetcher(CrvNetworkId.polygon),
   getPositionsFetcher(CrvNetworkId.avalanche),
+  getPositionsFetcher(CrvNetworkId.fraxtal),
   votingEscrowFetcher,
   vestingEscrowFetcher,
 ];
