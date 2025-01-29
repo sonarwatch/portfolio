@@ -74,6 +74,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         {
           tags: [stakeInfo.status],
           validator: {
+            address: validatorAddress,
             imageUri: validatorInfo?.logoUrl,
             name: validatorInfo?.name,
           },

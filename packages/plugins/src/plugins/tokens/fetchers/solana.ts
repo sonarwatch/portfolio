@@ -81,7 +81,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           NetworkId.solana,
           tokenPrice
         ),
-        id: asset.token_info?.associated_token_address,
+        ref: asset.token_info?.associated_token_address,
       });
     }
     // If it's a NFT

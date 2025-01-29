@@ -1,6 +1,7 @@
 import {
   PortfolioElementLabel,
   PortfolioElementTypeType,
+  SourceRef,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 
@@ -10,6 +11,6 @@ export type ElementParams = {
   name?: string;
   tags?: string[];
   platformId?: string;
-  pool?: string | PublicKey;
-  id?: string | PublicKey;
+  sourceRefs?: SourceRef[];
+  ref?: string | PublicKey;
 };

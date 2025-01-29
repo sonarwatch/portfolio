@@ -130,8 +130,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const element = elementRegistry.addElementBorrowlend({
       label: 'Lending',
       name,
-      pool: obligation.lendingMarket,
-      id: obligation.pubkey,
+      ref: obligation.pubkey,
+      sourceRefs: [
+        { name: 'Pool', address: obligation.lendingMarket.toString() },
+      ],
     });
 
     let userTotalDeposit = new BigNumber(0);

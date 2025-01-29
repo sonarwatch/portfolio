@@ -51,8 +51,8 @@ export class ElementLiquidityBuilder extends ElementBuilder {
       value: getUsdValueSum(liquidities.map((asset) => asset.value)),
       name: this.name,
       tags: this.tags,
-      id: this.id?.toString(),
-      pool: this.pool?.toString(),
+      ref: this.ref?.toString(),
+      sourceRefs: this.sourceRefs,
     };
 
     return element as PortfolioElementLiquidity;

@@ -94,8 +94,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         rewardAssets,
         rewardAssetsValue,
         yields: [],
-        id: userState.pubkey.toString(),
-        pool: userState.farmState.toString(),
+        ref: userState.pubkey.toString(),
+        sourceRefs: [{ name: 'Pool', address: userState.farmState.toString() }],
       };
       liquidities.push(liquidity);
     }

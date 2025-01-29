@@ -55,6 +55,7 @@ export type PortfolioAssetAttributes = {
    * Represents the metadatas of the validator.
    */
   validator?: {
+    address?: string; // or voter ?
     name?: string;
     imageUri?: string;
   };
@@ -82,7 +83,9 @@ export type PortfolioAssetCommon = {
   attributes: PortfolioAssetAttributes;
   name?: string;
   imageUri?: string;
-  id?: string;
+  ref?: string;
+  sourceRefs?: SourceRef[];
+  link?: string;
 };
 
 /**
@@ -203,6 +206,16 @@ export type Service = {
   configs: ServiceConfig[];
 };
 
+export type SourceRefName = 'Pool' | 'Farm' | 'Market' | 'Vault';
+
+/**
+ * Represents references to on-chain accounts.
+ */
+export type SourceRef = {
+  address: string;
+  name: SourceRefName;
+};
+
 /**
  * Represents the common properties of a portfolio element.
  */
@@ -216,8 +229,9 @@ export type PortfolioElementCommon = {
   tags?: string[];
   proxyInfo?: ProxyInfo;
   service?: Service;
-  id?: string;
-  pool?: string;
+  ref?: string;
+  sourceRefs?: SourceRef[];
+  link?: string;
 };
 
 /**
@@ -246,8 +260,9 @@ export type PortfolioLiquidity = {
   value: UsdValue;
   yields: Yield[];
   name?: string;
-  id?: string;
-  pool?: string;
+  ref?: string;
+  sourceRefs?: SourceRef[];
+  link?: string;
 };
 
 /**

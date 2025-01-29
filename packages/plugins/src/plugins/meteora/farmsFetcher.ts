@@ -48,8 +48,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const { stakingMint, rewardAMint, rewardBMint } = farmInfo;
 
     const liquidity = element.addLiquidity({
-      pool: farmInfo.pubkey,
-      id: farmingAccount.pubkey,
+      ref: farmingAccount.pubkey,
+      sourceRefs: [{ name: 'Pool', address: farmInfo.pubkey.toString() }],
     });
 
     liquidity.addAsset({

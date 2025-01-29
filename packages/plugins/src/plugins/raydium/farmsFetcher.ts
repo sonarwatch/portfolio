@@ -60,8 +60,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const liquidityOfUniqueElement =
       uniqueElementForFarmsWithoutRewards.addLiquidity({
-        pool: userFarmAccount.poolId,
-        id: userFarmAccount.pubkey,
+        ref: userFarmAccount.pubkey,
+        sourceRefs: [
+          { name: 'Pool', address: userFarmAccount.poolId.toString() },
+        ],
       });
 
     const element = elementRegistry.addElementLiquidity({
@@ -69,13 +71,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         userFarmAccount.pubkey.toString() === rayStakingPubkey
           ? 'Staked'
           : 'Farming',
-      pool: userFarmAccount.poolId,
-      id: userFarmAccount.pubkey,
+      ref: userFarmAccount.pubkey,
+      sourceRefs: [
+        { name: 'Pool', address: userFarmAccount.poolId.toString() },
+      ],
     });
 
     const liquidity = element.addLiquidity({
-      pool: userFarmAccount.poolId,
-      id: userFarmAccount.pubkey,
+      ref: userFarmAccount.pubkey,
+      sourceRefs: [
+        { name: 'Pool', address: userFarmAccount.poolId.toString() },
+      ],
     });
 
     // Farm pending reward A

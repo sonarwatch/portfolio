@@ -122,12 +122,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           tags,
           lockedUntil,
           validator: {
+            address: validator?.voter,
             name: validator?.name,
             imageUri: validator?.imageUri,
           },
         }
       ),
-      id: stakeAccount.pubkey.toString(),
+      ref: stakeAccount.pubkey.toString(),
     });
   }
 
