@@ -8,5 +8,6 @@ export default function getEvmClients(): Record<EvmNetworkIdType, EvmClient> {
     ethereum: getEvmClient(NetworkId.ethereum),
     polygon: getEvmClient(NetworkId.polygon),
     bnb: getEvmClient(NetworkId.bnb),
+    fraxtal: getEvmClient(NetworkId.fraxtal), // Add custom chains here as needed
   };
 }

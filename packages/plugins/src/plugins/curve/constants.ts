@@ -27,6 +27,7 @@ export enum CrvNetworkId {
   ethereum = 'ethereum',
   polygon = 'polygon',
   avalanche = 'avalanche',
+  fraxtal = 'fraxtal',
 }
 
 export const crvAddress = '0xD533a949740bb3306d119CC777fa900bA034cd52';
@@ -38,4 +39,5 @@ export const crvNetworkIdBySwNetworkId: Record<CrvNetworkId, EvmNetworkIdType> =
     [CrvNetworkId.ethereum]: NetworkId.ethereum,
     [CrvNetworkId.polygon]: NetworkId.polygon,
     [CrvNetworkId.avalanche]: NetworkId.avalanche,
+    [CrvNetworkId.fraxtal]: NetworkId.fraxtal, // TODO: Add fraxtal network ID when available.
   };

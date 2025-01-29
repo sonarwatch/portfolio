@@ -5,12 +5,14 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { Chain, avalanche, mainnet, polygon, bsc } from 'viem/chains';
 import urlToRpcEndpoint from './urlToRpcEndpoint';
+import { fraxtal } from './customViemChains';
 
 export const viemChainsByNetworkId: Record<EvmNetworkIdType, Chain> = {
   ethereum: mainnet,
   avalanche,
   polygon,
   bnb: bsc,
+  fraxtal,
 };
 
 export function getUrlEndpoints(): Record<NetworkIdType, string> {
@@ -32,6 +34,7 @@ export function getUrlEndpoints(): Record<NetworkIdType, string> {
       process.env['PORTFOLIO_APTOS_RPC'] ||
       'https://api.mainnet.aptoslabs.com/v1',
     sui: process.env['PORTFOLIO_SUI_RPC'] || 'https://sui-rpc.publicnode.com',
+    fraxtal: process.env['PORTFOLIO_FRAXTAL_RPC'] || 'https://rpc.frax.com',
   };
 }
 
