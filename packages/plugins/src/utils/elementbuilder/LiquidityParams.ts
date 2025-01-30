@@ -5,4 +5,5 @@ export type LiquidityParams = {
   name?: string;
   sourceRefs?: SourceRef[];
   ref?: string | PublicKey;
+  link?: string;
 };

@@ -53,6 +53,7 @@ export class ElementLiquidityBuilder extends ElementBuilder {
       tags: this.tags,
       ref: this.ref?.toString(),
       sourceRefs: this.sourceRefs,
+      link: this.link,
     };
 
     return element as PortfolioElementLiquidity;

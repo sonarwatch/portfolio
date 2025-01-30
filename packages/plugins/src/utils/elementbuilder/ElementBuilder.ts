@@ -17,6 +17,7 @@ export abstract class ElementBuilder {
   tags?: string[];
   sourceRefs?: SourceRef[];
   ref?: string | PublicKey;
+  link?: string;
 
   protected constructor(params: ElementParams) {
     this.type = params.type;
@@ -26,6 +27,7 @@ export abstract class ElementBuilder {
     this.platformId = params.platformId;
     this.sourceRefs = params.sourceRefs;
     this.ref = params.ref;
+    this.link = params.link;
   }
 
   addTag(tag: string) {

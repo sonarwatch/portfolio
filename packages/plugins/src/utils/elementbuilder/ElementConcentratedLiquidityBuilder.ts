@@ -23,7 +23,12 @@ export class ElementConcentratedLiquidityBuilder extends ElementLiquidityBuilder
 
   setLiquidity(params: ConcentratedLiquidityParams) {
     this.concentratedLiquidityParams = params;
-    const liquidityBuilder = new LiquidityBuilder({ name: params.name });
+    const liquidityBuilder = new LiquidityBuilder({
+      name: params.name,
+      ref: params.ref,
+      sourceRefs: params.sourceRefs,
+      link: params.link,
+    });
     this.liquidities = [liquidityBuilder];
     return liquidityBuilder;
   }

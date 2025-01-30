@@ -13,4 +13,5 @@ export type ElementParams = {
   platformId?: string;
   sourceRefs?: SourceRef[];
   ref?: string | PublicKey;
+  link?: string;
 };

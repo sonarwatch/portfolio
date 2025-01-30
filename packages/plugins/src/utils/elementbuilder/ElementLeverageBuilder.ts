@@ -47,6 +47,9 @@ export class ElementLeverageBuilder extends ElementBuilder {
       networkId,
       platformId: this.platformId || platformId,
       value,
+      ref: this.ref?.toString(),
+      sourceRefs: this.sourceRefs,
+      link: this.link,
     };
 
     return element as PortfolioElementLeverage;

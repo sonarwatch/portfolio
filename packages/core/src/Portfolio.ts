@@ -211,7 +211,8 @@ export type SourceRefName =
   | 'Farm'
   | 'Market'
   | 'Vault'
-  | 'Lending Market';
+  | 'Lending Market'
+  | 'Strategy';
 
 /**
  * Represents references to on-chain accounts.
