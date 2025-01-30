@@ -1,5 +1,4 @@
 import {
-  NetworkId,
   TokenPrice,
   TokenPriceSource,
   TokenPriceUnderlying,
@@ -8,50 +7,25 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { platformId, poolsAndGaugesV2CacheKey } from './constants';
-import { getBalancerPoolsV2FromGraph } from './helpers/pools';
+import {
+  platformId,
+  poolsAndGaugesV2CacheKey,
+  theGraphPoolConfig,
+} from './constants';
+import { getBalancerPoolsV2FromAPI } from './helpers/pools';
 import { getBalancerGaugesV2 } from './helpers/gauges';
 import { GaugesByPool } from './types';
 
-/* 
-  WARNING:
-  All the urls here are now dev urls which are rate limited
-  In production we should switch them out for the production subgraph
-  This requires a paid api key and can be found here
-  @see https://docs-v2.balancer.fi/reference/subgraph/
-*/
-const poolConfigs = [
-  {
-    poolsUrl:
-      'https://api.studio.thegraph.com/query/75376/balancer-v2/version/latest',
-    gaugesUrl:
-      'https://api.studio.thegraph.com/query/75376/balancer-gauges/version/latest',
-    networkId: NetworkId.ethereum,
-  },
-  // {
-  //   poolsUrl:
-  //     'https://api.studio.thegraph.com/query/75376/balancer-avalanche-v2/version/latest',
-  //   gaugesUrl:
-  //     'https://api.studio.thegraph.com/query/75376/balancer-gauges-avalanche/version/latest',
-  //   networkId: NetworkId.avalanche,
-  // },
-  // {
-  //   poolsUrl:
-  //     'https://api.studio.thegraph.com/query/75376/balancer-polygon-v2/version/latest',
-  //   gaugesUrl:
-  //     'https://api.studio.thegraph.com/query/75376/balancer-gauges-polygon/version/latest',
-  //   networkId: NetworkId.polygon,
-  // },
-];
-
 const executor: JobExecutor = async (cache: Cache) => {
-  for (let k = 0; k < poolConfigs.length; k++) {
-    const poolConfig = poolConfigs[k];
-    const { networkId, poolsUrl, gaugesUrl } = poolConfig;
+  for (let k = 0; k < theGraphPoolConfig.length; k++) {
+    const poolConfig = theGraphPoolConfig[k];
+    const { networkId, gaugesUrl } = poolConfig;
 
-    const pools = await getBalancerPoolsV2FromGraph(poolsUrl);
+    const pools = await getBalancerPoolsV2FromAPI(networkId);
 
-    const gaugesByPool = await getBalancerGaugesV2(gaugesUrl, networkId);
+    const gaugesByPool = gaugesUrl
+      ? await getBalancerGaugesV2(gaugesUrl, networkId)
+      : {};
     const underlyingAddresses = [
       ...new Set(pools.map((p) => p.tokens.map((t) => t.address)).flat()),
     ];

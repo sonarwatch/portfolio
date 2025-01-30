@@ -1,6 +1,9 @@
 import request, { gql } from 'graphql-request';
 import { Pool, PoolApiResponse } from '../types';
-import { deepLog } from '../../../utils/misc/logging';
+import {
+  BalancerSupportedEvmNetworkIdType,
+  balancerApiNetworkByNetworkId,
+} from '../constants';
 
 const balancerApiUrl = 'https://api-v3.balancer.fi';
 
@@ -34,11 +37,14 @@ export async function getBalancerPoolsV2FromGraph(
   if (!pools || !pools.length) return [];
   return pools;
 }
-export async function getBalancerPoolsV2FromAPI(): Promise<Pool[]> {
+export async function getBalancerPoolsV2FromAPI(
+  networkId: BalancerSupportedEvmNetworkIdType
+): Promise<Pool[]> {
+  const balancerApiNetwork = balancerApiNetworkByNetworkId[networkId];
   const query = gql`
     query {
       poolGetPools(
-        where: { chainIn: [MAINNET], minTvl: 500 }
+        where: { chainIn: [${balancerApiNetwork}], minTvl: 500 }
         orderBy: totalLiquidity
         first: 1000
         orderDirection: desc
@@ -76,6 +82,8 @@ export async function getBalancerPoolsV2FromAPI(): Promise<Pool[]> {
       totalShares: pool.dynamicData.totalShares,
       tokens: pool.tokens,
     }));
+
+    console.log(networkId, fPools.length);
 
     return fPools;
   } catch (error) {
