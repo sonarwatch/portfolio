@@ -11,4 +11,5 @@ export const fetchers: Fetcher[] = [
   getV2Fetcher(NetworkId.ethereum),
   getV2Fetcher(NetworkId.avalanche),
   getV2Fetcher(NetworkId.polygon),
+  getV2Fetcher(NetworkId.fraxtal),
 ];

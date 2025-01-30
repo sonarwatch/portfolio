@@ -23,6 +23,10 @@ const executor: JobExecutor = async (cache: Cache) => {
 
     const pools = await getBalancerPoolsV2FromAPI(networkId);
 
+    if (networkId === 'fraxtal') {
+      console.log(pools);
+    }
+
     const gaugesByPool = gaugesUrl
       ? await getBalancerGaugesV2(gaugesUrl, networkId)
       : {};
