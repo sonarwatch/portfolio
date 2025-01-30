@@ -212,7 +212,8 @@ export type SourceRefName =
   | 'Market'
   | 'Vault'
   | 'Lending Market'
-  | 'Strategy';
+  | 'Strategy'
+  | 'NFT Mint';
 
 /**
  * Represents references to on-chain accounts.

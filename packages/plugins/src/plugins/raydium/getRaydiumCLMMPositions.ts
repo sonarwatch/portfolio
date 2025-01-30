@@ -104,6 +104,18 @@ export async function getRaydiumCLMMPositions(
       tickCurrentIndex: poolStateInfo.tickCurrent,
       tickLowerIndex: personalPositionInfo.tickLowerIndex,
       tickUpperIndex: personalPositionInfo.tickUpperIndex,
+      ref: personalPositionInfo.pubkey,
+      sourceRefs: [
+        {
+          name: 'Pool',
+          address: personalPositionInfo.poolId.toString(),
+        },
+        {
+          name: 'NFT Mint',
+          address: personalPositionInfo.nftMint.toString(),
+        },
+      ],
+      link: 'https://raydium.io/portfolio/?position_tab=concentrated',
     });
 
     const feesAndRewardsBalances = getFeesAndRewardsBalance(

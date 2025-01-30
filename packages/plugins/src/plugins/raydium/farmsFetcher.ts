@@ -46,6 +46,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const uniqueElementForFarmsWithoutRewards =
     elementRegistry.addElementLiquidity({
       label: 'Farming',
+      link: 'https://raydium.io/portfolio/?position_tab=standard',
     });
 
   for (let i = 0; i < userFarmAccounts.length; i += 1) {
@@ -62,7 +63,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       uniqueElementForFarmsWithoutRewards.addLiquidity({
         ref: userFarmAccount.pubkey,
         sourceRefs: [
-          { name: 'Pool', address: userFarmAccount.poolId.toString() },
+          { name: 'Farm', address: userFarmAccount.poolId.toString() },
         ],
       });
 
@@ -73,14 +74,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           : 'Farming',
       ref: userFarmAccount.pubkey,
       sourceRefs: [
-        { name: 'Pool', address: userFarmAccount.poolId.toString() },
+        { name: 'Farm', address: userFarmAccount.poolId.toString() },
       ],
+      link:
+        userFarmAccount.pubkey.toString() === rayStakingPubkey
+          ? 'https://raydium.io/staking/'
+          : 'https://raydium.io/portfolio/?position_tab=standard',
     });
 
     const liquidity = element.addLiquidity({
       ref: userFarmAccount.pubkey,
       sourceRefs: [
-        { name: 'Pool', address: userFarmAccount.poolId.toString() },
+        { name: 'Farm', address: userFarmAccount.poolId.toString() },
       ],
     });
 
