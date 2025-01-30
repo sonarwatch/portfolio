@@ -14,4 +14,15 @@ export type PoolToken = {
   balance: string;
 };
 
+export type PoolApiResponse = {
+  id: string;
+  address: string;
+  symbol: string;
+  tokens: PoolToken[];
+  dynamicData: {
+    totalLiquidity: string;
+    totalShares: string;
+  };
+};
+
 export type GaugesByPool = Record<string, string[]>;

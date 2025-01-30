@@ -9,6 +9,7 @@ if (!jobId || jobId === '') {
 
 async function runJob() {
   const job = allJobs.find((f) => f.id === jobId);
+
   if (!job) {
     console.error(`Job cannot be found: ${jobId}`);
     process.exit(1);

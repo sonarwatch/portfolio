@@ -9,32 +9,39 @@ import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { platformId, poolsAndGaugesV2CacheKey } from './constants';
-import { getBalancerPoolsV2 } from './helpers/pools';
+import { getBalancerPoolsV2FromGraph } from './helpers/pools';
 import { getBalancerGaugesV2 } from './helpers/gauges';
 import { GaugesByPool } from './types';
 
+/* 
+  WARNING:
+  All the urls here are now dev urls which are rate limited
+  In production we should switch them out for the production subgraph
+  This requires a paid api key and can be found here
+  @see https://docs-v2.balancer.fi/reference/subgraph/
+*/
 const poolConfigs = [
   {
     poolsUrl:
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2',
+      'https://api.studio.thegraph.com/query/75376/balancer-v2/version/latest',
     gaugesUrl:
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges',
+      'https://api.studio.thegraph.com/query/75376/balancer-gauges/version/latest',
     networkId: NetworkId.ethereum,
   },
-  {
-    poolsUrl:
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-avalanche-v2',
-    gaugesUrl:
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-avalanche',
-    networkId: NetworkId.avalanche,
-  },
-  {
-    poolsUrl:
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2',
-    gaugesUrl:
-      'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-polygon',
-    networkId: NetworkId.polygon,
-  },
+  // {
+  //   poolsUrl:
+  //     'https://api.studio.thegraph.com/query/75376/balancer-avalanche-v2/version/latest',
+  //   gaugesUrl:
+  //     'https://api.studio.thegraph.com/query/75376/balancer-gauges-avalanche/version/latest',
+  //   networkId: NetworkId.avalanche,
+  // },
+  // {
+  //   poolsUrl:
+  //     'https://api.studio.thegraph.com/query/75376/balancer-polygon-v2/version/latest',
+  //   gaugesUrl:
+  //     'https://api.studio.thegraph.com/query/75376/balancer-gauges-polygon/version/latest',
+  //   networkId: NetworkId.polygon,
+  // },
 ];
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -42,7 +49,8 @@ const executor: JobExecutor = async (cache: Cache) => {
     const poolConfig = poolConfigs[k];
     const { networkId, poolsUrl, gaugesUrl } = poolConfig;
 
-    const pools = await getBalancerPoolsV2(poolsUrl);
+    const pools = await getBalancerPoolsV2FromGraph(poolsUrl);
+
     const gaugesByPool = await getBalancerGaugesV2(gaugesUrl, networkId);
     const underlyingAddresses = [
       ...new Set(pools.map((p) => p.tokens.map((t) => t.address)).flat()),
