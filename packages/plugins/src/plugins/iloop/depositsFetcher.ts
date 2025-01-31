@@ -39,6 +39,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     [
       {
         memcmp: {
+          offset: 0,
+          bytes: 'VEdzkJnDweW',
+        },
+      },
+      {
+        memcmp: {
           offset: 8,
           bytes: owner,
         },
