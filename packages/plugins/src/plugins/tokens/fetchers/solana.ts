@@ -99,6 +99,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       label: 'Wallet',
       value: null,
       data: {
+        // Limit NFTs to 1K, to avoid fetcherResult to be too big
         assets: nftAssets.slice(0, 1000),
       },
     });

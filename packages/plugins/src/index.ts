@@ -736,6 +736,11 @@ import {
   jobs as defitunaJobs,
   fetchers as defitunaFetchers,
 } from './plugins/defituna';
+import {
+  platforms as iloopPlatforms,
+  jobs as iloopJobs,
+  fetchers as iloopFetchers,
+} from './plugins/iloop';
 
 export {
   walletTokensPlatform,
@@ -898,6 +903,7 @@ export const platforms: Platform[] = [
   ...exponentPlatforms,
   ...ratexPlatforms,
   ...defitunaPlatforms,
+  ...iloopPlatforms,
 ];
 
 // JOBS //
@@ -1043,6 +1049,7 @@ export const jobs: Job[] = [
   ...exponentJobs,
   ...ratexJobs,
   ...defitunaJobs,
+  ...iloopJobs,
 ];
 
 // FETCHERS //
@@ -1189,6 +1196,7 @@ export const fetchers: Fetcher[] = [
   ...exponentFetchers,
   ...ratexFetchers,
   ...defitunaFetchers,
+  ...iloopFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
