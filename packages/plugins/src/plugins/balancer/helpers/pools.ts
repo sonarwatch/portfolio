@@ -1,11 +1,10 @@
 import request, { gql } from 'graphql-request';
-import { Pool, PoolApiResponse } from '../types';
+import { OwnerPoolApiResponse, Pool, PoolApiResponse } from '../types';
 import {
   BalancerSupportedEvmNetworkIdType,
   balancerApiNetworkByNetworkId,
+  balancerApiUrl,
 } from '../constants';
-
-const balancerApiUrl = 'https://api-v3.balancer.fi';
 
 export async function getBalancerPoolsV2FromGraph(
   url: string
@@ -83,9 +82,55 @@ export async function getBalancerPoolsV2FromAPI(
       tokens: pool.tokens,
     }));
 
-    console.log(networkId, fPools.length);
-
     return fPools;
+  } catch (error) {
+    console.error('Error fetching Balancer pools:', error);
+    return [];
+  }
+}
+export async function getV2PoolPositionsV2(
+  owner: string,
+  networkId: BalancerSupportedEvmNetworkIdType
+): Promise<OwnerPoolApiResponse[]> {
+  const balancerApiNetwork = balancerApiNetworkByNetworkId[networkId];
+  const query = gql`
+    query {
+      poolGetPools(
+        where: {
+          chainIn: [${balancerApiNetwork}],
+          userAddress: "${owner}"
+        }
+      ) {
+        address
+        name
+        symbol
+        dynamicData {
+          totalShares
+        }
+        poolTokens {
+          address
+          symbol
+          name
+          balance
+          logoURI
+          decimals
+        }
+        userBalance {
+          totalBalance
+        }
+      }
+    }
+  `;
+
+  try {
+    const res = await request<{ poolGetPools: OwnerPoolApiResponse[] }>(
+      balancerApiUrl,
+      query
+    );
+    const pools = res.poolGetPools;
+    if (!pools || !pools.length) return [];
+
+    return pools;
   } catch (error) {
     console.error('Error fetching Balancer pools:', error);
     return [];

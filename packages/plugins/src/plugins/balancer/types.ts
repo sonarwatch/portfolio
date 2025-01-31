@@ -26,3 +26,24 @@ export type PoolApiResponse = {
 };
 
 export type GaugesByPool = Record<string, string[]>;
+
+export type OwnerPoolApiResponse = {
+  address: string;
+  name: string;
+  symbol: string;
+  dynamicData: {
+    totalShares: string;
+  };
+  poolTokens: {
+    address: string;
+    symbol: string;
+    name: string;
+    balance: string;
+    logoURI: string;
+    decimals: number;
+  }[];
+  userBalance: {
+    walletBalance: string;
+    totalBalance: string;
+  };
+};

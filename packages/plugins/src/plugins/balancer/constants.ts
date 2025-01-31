@@ -71,3 +71,5 @@ export const theGraphPoolConfig = [
     networkId: NetworkId.fraxtal,
   },
 ];
+
+export const balancerApiUrl = 'https://api-v3.balancer.fi';
