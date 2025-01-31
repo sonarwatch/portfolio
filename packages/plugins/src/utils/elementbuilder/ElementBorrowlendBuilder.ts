@@ -168,6 +168,9 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
       value,
       name: this.name,
       tags: this.tags,
+      ref: this.ref?.toString(),
+      sourceRefs: this.sourceRefs,
+      link: this.link,
     };
 
     return element as PortfolioElement;

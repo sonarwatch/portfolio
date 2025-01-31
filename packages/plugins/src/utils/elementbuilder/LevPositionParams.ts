@@ -1,5 +1,6 @@
-import { LeverageSide, UsdValue } from '@sonarwatch/portfolio-core';
+import { LeverageSide, SourceRef, UsdValue } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
+import { PublicKey } from '@solana/web3.js';
 
 export type LevPositionParams = {
   address: string;
@@ -12,4 +13,7 @@ export type LevPositionParams = {
   name?: string;
   imageUri?: string;
   leverage?: number;
+  sourceRefs?: SourceRef[];
+  ref?: string | PublicKey;
+  link?: string;
 };

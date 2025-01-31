@@ -46,9 +46,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const uniqueElementForFarmsWithoutRewards =
     elementRegistry.addElementLiquidity({
       label: 'Farming',
+      link: 'https://raydium.io/portfolio/?position_tab=standard',
     });
-  const liquidityOfUniqueElement =
-    uniqueElementForFarmsWithoutRewards.addLiquidity();
 
   for (let i = 0; i < userFarmAccounts.length; i += 1) {
     const userFarmAccount: ParsedAccount<UserFarmAccount> = userFarmAccounts[i];
@@ -60,14 +59,35 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const farmAccount = farmInfo.account;
 
+    const liquidityOfUniqueElement =
+      uniqueElementForFarmsWithoutRewards.addLiquidity({
+        ref: userFarmAccount.pubkey,
+        sourceRefs: [
+          { name: 'Farm', address: userFarmAccount.poolId.toString() },
+        ],
+      });
+
     const element = elementRegistry.addElementLiquidity({
       label:
         userFarmAccount.pubkey.toString() === rayStakingPubkey
           ? 'Staked'
           : 'Farming',
+      ref: userFarmAccount.pubkey,
+      sourceRefs: [
+        { name: 'Farm', address: userFarmAccount.poolId.toString() },
+      ],
+      link:
+        userFarmAccount.pubkey.toString() === rayStakingPubkey
+          ? 'https://raydium.io/staking/'
+          : 'https://raydium.io/portfolio/?position_tab=standard',
     });
 
-    const liquidity = element.addLiquidity();
+    const liquidity = element.addLiquidity({
+      ref: userFarmAccount.pubkey,
+      sourceRefs: [
+        { name: 'Farm', address: userFarmAccount.poolId.toString() },
+      ],
+    });
 
     // Farm pending reward A
     if (farmInfo.rewardTokenA) {

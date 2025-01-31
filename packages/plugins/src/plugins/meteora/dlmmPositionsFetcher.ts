@@ -299,6 +299,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           liquidities,
         },
         tags,
+        ref: account.pubkey.toString(),
+        sourceRefs: [{ name: 'Pool', address: lbPair.toString() }],
+        link: `https://app.meteora.ag/dlmm/${lbPair.toString()}`,
       });
     }
   }

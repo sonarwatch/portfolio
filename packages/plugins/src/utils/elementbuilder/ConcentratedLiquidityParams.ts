@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
+import { SourceRef } from '@sonarwatch/portfolio-core';
 
 export type ConcentratedLiquidityParams = {
   addressA: string | PublicKey;
@@ -14,4 +15,7 @@ export type ConcentratedLiquidityParams = {
   swapVolume24h?: number | BigNumber | string; // in $
   roundUp?: boolean;
   name?: string;
+  sourceRefs?: SourceRef[];
+  ref?: string | PublicKey;
+  link?: string;
 };

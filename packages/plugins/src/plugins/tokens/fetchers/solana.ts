@@ -74,9 +74,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
     // If it's a regular token
     else if (tokenPrice && tokenPrice.platformId === walletTokensPlatform.id) {
-      tokenAssets.push(
-        tokenPriceToAssetToken(address, amount, NetworkId.solana, tokenPrice)
-      );
+      tokenAssets.push({
+        ...tokenPriceToAssetToken(
+          address,
+          amount,
+          NetworkId.solana,
+          tokenPrice
+        ),
+        ref: asset.token_info?.associated_token_address,
+      });
     }
     // If it's a NFT
     else {

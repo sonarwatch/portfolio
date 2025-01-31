@@ -55,6 +55,9 @@ export class ElementMultipleBuilder extends ElementBuilder {
       value: getUsdValueSum(assets.map((asset) => asset.value)),
       name: this.name,
       tags: this.tags,
+      ref: this.ref?.toString(),
+      sourceRefs: this.sourceRefs,
+      link: this.link,
     };
 
     return element as PortfolioElement;

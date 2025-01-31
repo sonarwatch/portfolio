@@ -117,19 +117,31 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     let name;
     let type = 'lending';
+    let link;
     if (index < lendingPdas.length) {
       name = lendingConfig?.name;
+      link = `https://app.kamino.finance/lending/dashboard/${obligation.lendingMarket.toString()}/${obligation.pubkey.toString()}`;
     } else if (index < lendingPdas.length + multiplyPdas.length) {
       name = lendingConfig ? `Multiply ${lendingConfig.name}` : 'Multiply';
       type = 'multiply';
+      link = `https://app.kamino.finance/lending/multiply/${obligation.lendingMarket.toString()}/${obligation.deposits[0].depositReserve.toString()}/${obligation.borrows[0].borrowReserve.toString()}`;
     } else {
       name = 'Leverage';
       type = 'leverage';
+      link = `https://app.kamino.finance/lending/leverage/${obligation.lendingMarket.toString()}/${obligation.deposits[0].depositReserve.toString()}/${obligation.borrows[0].borrowReserve.toString()}`;
     }
 
     const element = elementRegistry.addElementBorrowlend({
       label: 'Lending',
       name,
+      ref: obligation.pubkey,
+      sourceRefs: [
+        {
+          name: 'Lending Market',
+          address: obligation.lendingMarket.toString(),
+        },
+      ],
+      link,
     });
 
     let userTotalDeposit = new BigNumber(0);

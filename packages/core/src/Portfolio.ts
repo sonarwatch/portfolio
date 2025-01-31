@@ -51,6 +51,14 @@ export type PortfolioAssetAttributes = {
    * Represents the tags of the asset.
    */
   tags?: string[];
+  /**
+   * Represents the metadatas of the validator.
+   */
+  validator?: {
+    address?: string;
+    name?: string;
+    imageUri?: string;
+  };
 };
 
 /**
@@ -75,6 +83,9 @@ export type PortfolioAssetCommon = {
   attributes: PortfolioAssetAttributes;
   name?: string;
   imageUri?: string;
+  ref?: string;
+  sourceRefs?: SourceRef[];
+  link?: string;
 };
 
 /**
@@ -195,6 +206,23 @@ export type Service = {
   configs: ServiceConfig[];
 };
 
+export type SourceRefName =
+  | 'Pool'
+  | 'Farm'
+  | 'Market'
+  | 'Vault'
+  | 'Lending Market'
+  | 'Strategy'
+  | 'NFT Mint';
+
+/**
+ * Represents references to on-chain accounts.
+ */
+export type SourceRef = {
+  address: string;
+  name: SourceRefName;
+};
+
 /**
  * Represents the common properties of a portfolio element.
  */
@@ -208,6 +236,9 @@ export type PortfolioElementCommon = {
   tags?: string[];
   proxyInfo?: ProxyInfo;
   service?: Service;
+  ref?: string;
+  sourceRefs?: SourceRef[];
+  link?: string;
 };
 
 /**
@@ -236,6 +267,9 @@ export type PortfolioLiquidity = {
   value: UsdValue;
   yields: Yield[];
   name?: string;
+  ref?: string;
+  sourceRefs?: SourceRef[];
+  link?: string;
 };
 
 /**

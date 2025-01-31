@@ -93,7 +93,10 @@ export async function getRaydiumCLMMPositions(
     )
       continue;
 
-    const element = elementRegistry.addElementConcentratedLiquidity();
+    const element = elementRegistry.addElementConcentratedLiquidity({
+      ref: personalPositionInfo.pubkey,
+      sourceRefs: [{ name: 'Pool', address: poolStateInfo.pubkey.toString() }],
+    });
     const liquidity = element.setLiquidity({
       addressA: poolStateInfo.tokenMint0,
       addressB: poolStateInfo.tokenMint1,
@@ -101,6 +104,18 @@ export async function getRaydiumCLMMPositions(
       tickCurrentIndex: poolStateInfo.tickCurrent,
       tickLowerIndex: personalPositionInfo.tickLowerIndex,
       tickUpperIndex: personalPositionInfo.tickUpperIndex,
+      ref: personalPositionInfo.pubkey,
+      sourceRefs: [
+        {
+          name: 'Pool',
+          address: personalPositionInfo.poolId.toString(),
+        },
+        {
+          name: 'NFT Mint',
+          address: personalPositionInfo.nftMint.toString(),
+        },
+      ],
+      link: 'https://raydium.io/portfolio/?position_tab=concentrated',
     });
 
     const feesAndRewardsBalances = getFeesAndRewardsBalance(

@@ -35,6 +35,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
   const element = elementRegistry.addElementLiquidity({
     label: 'Farming',
+    link: 'https://app.meteora.ag/farms',
   });
 
   for (const farmingAccount of farmingAccounts) {
@@ -47,7 +48,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const { stakingMint, rewardAMint, rewardBMint } = farmInfo;
 
-    const liquidity = element.addLiquidity();
+    const liquidity = element.addLiquidity({
+      ref: farmingAccount.pubkey,
+      sourceRefs: [{ name: 'Farm', address: farmInfo.pubkey.toString() }],
+    });
 
     liquidity.addAsset({
       address: stakingMint,

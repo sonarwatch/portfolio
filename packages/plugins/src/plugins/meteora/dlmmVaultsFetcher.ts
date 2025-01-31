@@ -53,15 +53,28 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   // if (!slot) return [];
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
-  const element = elementRegistry.addElementMultiple({
-    label: 'Vesting',
-    name: 'Alpha Vault',
-  });
 
   accounts.forEach((escrow) => {
     const vault = vaults[escrow.dlmmVault.toString()];
     if (!vault || !vault.endVestingTs || !vault.startVestingTs) return;
     // if (time > Number(vault.endVestingTs)) return;
+
+    const element = elementRegistry.addElementMultiple({
+      label: 'Vesting',
+      name: 'Alpha Vault',
+      ref: escrow.pubkey,
+      sourceRefs: [
+        {
+          name: 'Vault',
+          address: vault.pubkey.toString(),
+        },
+        {
+          name: 'Pool',
+          address: vault.lbPair.toString(),
+        },
+      ],
+      link: `https://app.meteora.ag/dlmm/${vault.lbPair}`,
+    });
 
     // Vesting not started yet
     if (time < Number(vault.startVestingTs) * 1000) {

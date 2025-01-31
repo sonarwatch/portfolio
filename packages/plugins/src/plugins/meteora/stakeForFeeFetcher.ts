@@ -43,15 +43,24 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const feeVaults = await feeVaultsMemo.getItem(cache);
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
-  const element = elementRegistry.addElementMultiple({
-    label: 'Staked',
-  });
 
   stakeEscrows.forEach((stakeEscrow, i) => {
     const feeVault = feeVaults.find(
       (v) => v.pubkey.toString() === stakeEscrow.vault.toString()
     );
     if (!feeVault) return;
+
+    const element = elementRegistry.addElementMultiple({
+      label: 'Staked',
+      ref: stakeEscrow.pubkey,
+      sourceRefs: [
+        {
+          name: 'Vault',
+          address: feeVault.pool.toString(),
+        },
+      ],
+      link: `https://app.meteora.ag/pools/${feeVault.pool.toString()}`,
+    });
 
     element.addAsset({
       address: feeVault.stakeMint,
