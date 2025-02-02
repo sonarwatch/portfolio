@@ -43,12 +43,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const rayStakingPubkey = getStakePubKey(owner).toString();
 
-  const uniqueElementForFarmsWithoutRewards =
-    elementRegistry.addElementLiquidity({
-      label: 'Farming',
-      link: 'https://raydium.io/portfolio/?position_tab=standard',
-    });
-
   for (let i = 0; i < userFarmAccounts.length; i += 1) {
     const userFarmAccount: ParsedAccount<UserFarmAccount> = userFarmAccounts[i];
     const farmInfo = farmsInfoMap.get(userFarmAccount.poolId.toString());
@@ -58,14 +52,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (!lpTokenPrice) continue;
 
     const farmAccount = farmInfo.account;
-
-    const liquidityOfUniqueElement =
-      uniqueElementForFarmsWithoutRewards.addLiquidity({
-        ref: userFarmAccount.pubkey,
-        sourceRefs: [
-          { name: 'Farm', address: userFarmAccount.poolId.toString() },
-        ],
-      });
 
     const element = elementRegistry.addElementLiquidity({
       label:
@@ -82,12 +68,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           : 'https://raydium.io/portfolio/?position_tab=standard',
     });
 
-    const liquidity = element.addLiquidity({
-      ref: userFarmAccount.pubkey,
-      sourceRefs: [
-        { name: 'Farm', address: userFarmAccount.poolId.toString() },
-      ],
-    });
+    const liquidity = element.addLiquidity();
 
     // Farm pending reward A
     if (farmInfo.rewardTokenA) {
@@ -124,22 +105,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       10 ** farmInfo.lpToken.decimals
     );
 
-    if (
-      liquidity.rewardAssets.length > 0 ||
-      userFarmAccount.pubkey.toString() === rayStakingPubkey
-    ) {
-      liquidity.addAsset({
-        address: lpTokenPrice.address,
-        amount,
-        alreadyShifted: true,
-      });
-    } else {
-      liquidityOfUniqueElement.addAsset({
-        address: lpTokenPrice.address,
-        amount,
-        alreadyShifted: true,
-      });
-    }
+    liquidity.addAsset({
+      address: lpTokenPrice.address,
+      amount,
+      alreadyShifted: true,
+    });
   }
 
   return elementRegistry.getElements(cache);

@@ -72,9 +72,6 @@ export class LiquidityBuilder {
       value,
       yields: this.yields,
       name: this.params ? this.params.name : undefined,
-      ref: this.params ? this.params.ref?.toString() : undefined,
-      sourceRefs: this.params ? this.params.sourceRefs : undefined,
-      link: this.params ? this.params.link : undefined,
     } as PortfolioLiquidity;
   }
 }
