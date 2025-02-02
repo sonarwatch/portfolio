@@ -7,7 +7,7 @@ export function mergePortfolioElementMultiples(
 ): PortfolioElementMultiple[] {
   const elementsByTag: Record<string, PortfolioElementMultiple[]> = {};
   elements.forEach((element) => {
-    const tag = `${element.networkId}_${element.platformId}_${element.type}_${element.label}`;
+    const tag = `${element.networkId}_${element.platformId}_${element.type}_${element.label}_${element.ref}_${element.link}`;
     if (!elementsByTag[tag]) elementsByTag[tag] = [];
     elementsByTag[tag].push(element);
   });
