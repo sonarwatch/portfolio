@@ -51,14 +51,6 @@ export type PortfolioAssetAttributes = {
    * Represents the tags of the asset.
    */
   tags?: string[];
-  /**
-   * Represents the metadatas of the validator.
-   */
-  validator?: {
-    address?: string;
-    name?: string;
-    imageUri?: string;
-  };
 };
 
 /**

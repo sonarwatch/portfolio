@@ -73,14 +73,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         undefined,
         {
           tags: [stakeInfo.status],
-          validator: {
-            address: validatorAddress,
-            imageUri: validatorInfo?.logoUrl,
-            name: validatorInfo?.name,
-          },
         }
       );
-      assets.push(stakedAsset);
+      assets.push({
+        ...stakedAsset,
+        imageUri: validatorInfo?.logoUrl,
+        name: validatorInfo?.name,
+      });
 
       value += stakedAsset.value !== null ? stakedAsset.value : 0;
       elements.push({
