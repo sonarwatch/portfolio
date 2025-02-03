@@ -218,6 +218,8 @@ export type VestingEscrow = {
   base: PublicKey;
   escrowBump: number;
   updateRecipientMode: number;
+  cancelMode: number;
+  tokenProgramFlag: number;
   padding0: number[];
   cliffTime: BigNumber;
   frequency: BigNumber;
@@ -238,7 +240,9 @@ export const vestingEscrowStruct = new BeetStruct<VestingEscrow>(
     ['base', publicKey],
     ['escrowBump', u8],
     ['updateRecipientMode', u8],
-    ['padding0', uniformFixedSizeArray(u8, 6)],
+    ['cancelMode', u8],
+    ['tokenProgramFlag', u8],
+    ['padding0', uniformFixedSizeArray(u8, 4)],
     ['cliffTime', u64],
     ['frequency', u64],
     ['cliffUnlockAmount', u64],
