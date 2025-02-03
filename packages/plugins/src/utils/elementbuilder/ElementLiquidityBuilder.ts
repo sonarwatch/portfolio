@@ -39,7 +39,7 @@ export class ElementLiquidityBuilder extends ElementBuilder {
 
     if (liquidities.length === 0) return null;
 
-    const element = {
+    return {
       type: this.type,
       label: this.label,
       networkId,
@@ -50,11 +50,6 @@ export class ElementLiquidityBuilder extends ElementBuilder {
       value: getUsdValueSum(liquidities.map((asset) => asset.value)),
       name: this.name,
       tags: this.tags,
-      ref: this.ref?.toString(),
-      sourceRefs: this.sourceRefs,
-      link: this.link,
-    };
-
-    return element as PortfolioElementLiquidity;
+    } as PortfolioElementLiquidity;
   }
 }

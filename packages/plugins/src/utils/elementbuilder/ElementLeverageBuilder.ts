@@ -36,21 +36,19 @@ export class ElementLeverageBuilder extends ElementBuilder {
       .map((p) => p.get(networkId, tokenPrices))
       .filter((p) => p !== null) as LevPosition[];
     const value = getUsdValueSum(positions.map((a) => a.value));
-    const element = {
+    return {
       type: this.type,
       label: this.label,
       data: {
         positions,
         value,
+        ref: this.ref?.toString(),
+        sourceRefs: this.sourceRefs,
+        link: this.link,
       },
       networkId,
       platformId: this.platformId || platformId,
       value,
-      ref: this.ref?.toString(),
-      sourceRefs: this.sourceRefs,
-      link: this.link,
-    };
-
-    return element as PortfolioElementLeverage;
+    } as PortfolioElementLeverage;
   }
 }

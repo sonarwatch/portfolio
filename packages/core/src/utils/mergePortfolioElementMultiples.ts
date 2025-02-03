@@ -7,7 +7,7 @@ export function mergePortfolioElementMultiples(
 ): PortfolioElementMultiple[] {
   const elementsByTag: Record<string, PortfolioElementMultiple[]> = {};
   elements.forEach((element) => {
-    const tag = `${element.networkId}_${element.platformId}_${element.type}_${element.label}_${element.ref}_${element.link}`;
+    const tag = `${element.networkId}_${element.platformId}_${element.type}_${element.label}_${element.data.ref}_${element.data.link}`;
     if (!elementsByTag[tag]) elementsByTag[tag] = [];
     elementsByTag[tag].push(element);
   });
@@ -29,6 +29,11 @@ function unsafeMergePortfolioElementMultiples(
     value: getUsdValueSum(elements.map((e) => e.value)),
     data: {
       assets: elements.map((e) => e.data.assets).flat(1),
+      /* eslint-disable @typescript-eslint/no-non-null-assertion */
+      ref: elements.at(0)!.data.ref,
+      sourceRefs: elements.at(0)!.data.sourceRefs,
+      link: elements.at(0)!.data.link,
+      /* eslint-enable @typescript-eslint/no-non-null-assertion */
     },
   };
   return sortElementMultiple(element);
