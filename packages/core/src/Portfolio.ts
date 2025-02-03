@@ -259,6 +259,9 @@ export type PortfolioLiquidity = {
   value: UsdValue;
   yields: Yield[];
   name?: string;
+  ref?: string;
+  sourceRefs?: SourceRef[];
+  link?: string;
 };
 
 /**

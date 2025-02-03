@@ -6,7 +6,7 @@ import {
   SourceRef,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
-import { ElementParams } from './ElementParams';
+import { Params } from './Params';
 import { TokenPriceMap } from '../../TokenPriceMap';
 
 export abstract class ElementBuilder {
@@ -19,7 +19,7 @@ export abstract class ElementBuilder {
   ref?: string | PublicKey;
   link?: string;
 
-  protected constructor(params: ElementParams) {
+  protected constructor(params: Params) {
     this.type = params.type;
     this.label = params.label;
     this.name = params.name;

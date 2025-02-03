@@ -62,7 +62,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         ref: userState.pubkey.toString(),
         sourceRefs: [
           { name: 'Farm', address: userState.farmState.toString() },
-          { name: 'Strategy', address: farm.strategyId.toString() },
+          { name: 'Strategy', address: farm.strategyId?.toString() },
         ],
         link: `https://app.kamino.finance/liquidity/${farm.strategyId.toString()}`,
       });

@@ -4,14 +4,13 @@ import {
   PortfolioElement,
   yieldFromApr,
 } from '@sonarwatch/portfolio-core';
-import { ConcentratedLiquidityParams } from './ConcentratedLiquidityParams';
 import { ElementLiquidityBuilder } from './ElementLiquidityBuilder';
-import { LiquidityParams } from './LiquidityParams';
 import { LiquidityBuilder } from './LiquidityBuilder';
 import { getTokenAmountsFromLiquidity } from '../clmm/tokenAmountFromLiquidity';
 import { estPositionAPRWithDeltaMethod } from '../clmm/estPositionAPRWithDeltaMethod';
 import { toBN } from '../misc/toBN';
 import { TokenPriceMap } from '../../TokenPriceMap';
+import { ConcentratedLiquidityParams, LiquidityParams } from './Params';
 
 export class ElementConcentratedLiquidityBuilder extends ElementLiquidityBuilder {
   concentratedLiquidityParams?: ConcentratedLiquidityParams;
@@ -25,6 +24,9 @@ export class ElementConcentratedLiquidityBuilder extends ElementLiquidityBuilder
     this.concentratedLiquidityParams = params;
     const liquidityBuilder = new LiquidityBuilder({
       name: params.name,
+      ref: params.ref,
+      sourceRefs: params.sourceRefs,
+      link: params.link,
     });
     this.liquidities = [liquidityBuilder];
     return liquidityBuilder;

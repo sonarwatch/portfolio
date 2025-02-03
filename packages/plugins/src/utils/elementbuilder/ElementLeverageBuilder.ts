@@ -5,15 +5,14 @@ import {
   PortfolioElementLeverage,
 } from '@sonarwatch/portfolio-core';
 import { ElementBuilder } from './ElementBuilder';
-import { ElementParams } from './ElementParams';
+import { LevPositionParams, Params } from './Params';
 import { TokenPriceMap } from '../../TokenPriceMap';
 import { LevPositionBuilder } from './LevPositionBuilder';
-import { LevPositionParams } from './LevPositionParams';
 
 export class ElementLeverageBuilder extends ElementBuilder {
   positions: LevPositionBuilder[];
 
-  constructor(params: ElementParams) {
+  constructor(params: Params) {
     super(params);
     this.positions = [];
   }

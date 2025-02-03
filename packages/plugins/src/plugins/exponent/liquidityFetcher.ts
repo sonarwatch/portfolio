@@ -41,8 +41,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       name: `${market.vault.platform} ${maturity.toLocaleString('en-US', {
         month: 'short',
       })} ${maturity.getDate()} ${maturity.getFullYear().toString()}`,
-      ref: account.pubkey,
-      sourceRefs: [{ name: 'Pool', address: market.id.toString() }],
     });
 
     const liquidity = element.addLiquidity({

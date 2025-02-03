@@ -5,7 +5,7 @@ import {
   PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
 import { ElementBuilder } from './ElementBuilder';
-import { ElementParams } from './ElementParams';
+import { Params } from './Params';
 import { Cache } from '../../Cache';
 import { ElementMultipleBuilder } from './ElementMultipleBuilder';
 import { ElementLiquidityBuilder } from './ElementLiquidityBuilder';
@@ -24,9 +24,7 @@ export class ElementRegistry {
     this.elements = [];
   }
 
-  addElementMultiple(
-    params: Omit<ElementParams, 'type'>
-  ): ElementMultipleBuilder {
+  addElementMultiple(params: Omit<Params, 'type'>): ElementMultipleBuilder {
     const elementBuilder = new ElementMultipleBuilder({
       ...params,
       type: PortfolioElementType.multiple,
@@ -35,9 +33,7 @@ export class ElementRegistry {
     return elementBuilder;
   }
 
-  addElementLiquidity(
-    params: Omit<ElementParams, 'type'>
-  ): ElementLiquidityBuilder {
+  addElementLiquidity(params: Omit<Params, 'type'>): ElementLiquidityBuilder {
     const elementBuilder = new ElementLiquidityBuilder({
       ...params,
       type: PortfolioElementType.liquidity,
@@ -47,7 +43,7 @@ export class ElementRegistry {
   }
 
   addElementConcentratedLiquidity(
-    elementParams?: Omit<ElementParams, 'type' | 'label'> & {
+    elementParams?: Omit<Params, 'type' | 'label'> & {
       label?: PortfolioElementLabel;
     }
   ): ElementConcentratedLiquidityBuilder {
@@ -61,9 +57,7 @@ export class ElementRegistry {
     return elementBuilder;
   }
 
-  addElementBorrowlend(
-    params: Omit<ElementParams, 'type'>
-  ): ElementBorrowlendBuilder {
+  addElementBorrowlend(params: Omit<Params, 'type'>): ElementBorrowlendBuilder {
     const elementBuilder = new ElementBorrowlendBuilder({
       ...params,
       type: PortfolioElementType.borrowlend,
@@ -72,9 +66,7 @@ export class ElementRegistry {
     return elementBuilder;
   }
 
-  addElementLeverage(
-    params: Omit<ElementParams, 'type'>
-  ): ElementLeverageBuilder {
+  addElementLeverage(params: Omit<Params, 'type'>): ElementLeverageBuilder {
     const elementBuilder = new ElementLeverageBuilder({
       ...params,
       type: PortfolioElementType.leverage,

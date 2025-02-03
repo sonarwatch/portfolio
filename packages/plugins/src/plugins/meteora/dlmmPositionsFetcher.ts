@@ -278,6 +278,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             [...assets, ...rewardAssets].map((asset) => asset.value)
           ),
           yields: [],
+          ref: account.pubkey.toString(),
+          sourceRefs: [{ name: 'Pool', address: lbPair.toString() }],
+          link: `https://app.meteora.ag/dlmm/${lbPair.toString()}`,
         },
       ];
 
@@ -299,9 +302,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           liquidities,
         },
         tags,
-        ref: account.pubkey.toString(),
-        sourceRefs: [{ name: 'Pool', address: lbPair.toString() }],
-        link: `https://app.meteora.ag/dlmm/${lbPair.toString()}`,
       });
     }
   }

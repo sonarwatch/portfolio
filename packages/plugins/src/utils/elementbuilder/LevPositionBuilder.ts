@@ -5,7 +5,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { TokenPriceMap } from '../../TokenPriceMap';
-import { LevPositionParams } from './LevPositionParams';
+import { LevPositionParams } from './Params';
 
 export class LevPositionBuilder {
   private params: LevPositionParams;

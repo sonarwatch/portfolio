@@ -6,15 +6,14 @@ import {
   PortfolioLiquidity,
 } from '@sonarwatch/portfolio-core';
 import { ElementBuilder } from './ElementBuilder';
-import { ElementParams } from './ElementParams';
+import { LiquidityParams, Params } from './Params';
 import { TokenPriceMap } from '../../TokenPriceMap';
 import { LiquidityBuilder } from './LiquidityBuilder';
-import { LiquidityParams } from './LiquidityParams';
 
 export class ElementLiquidityBuilder extends ElementBuilder {
   liquidities: LiquidityBuilder[];
 
-  constructor(params: ElementParams) {
+  constructor(params: Params) {
     super(params);
     this.liquidities = [];
   }
