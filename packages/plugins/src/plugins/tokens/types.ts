@@ -3,6 +3,7 @@ import {
   PortfolioElement,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
+import { HeliusAsset } from '../../utils/solana/das/types';
 
 export type TokenData = {
   address: string;
@@ -49,4 +50,9 @@ export type Token = {
 export type NftFetcher = (
   cache: Cache,
   nfts: PortfolioAssetCollectible[]
+) => Promise<PortfolioElement[]>;
+
+export type HeliusAssetFetcher = (
+  cache: Cache,
+  nfts: HeliusAsset[]
 ) => Promise<PortfolioElement[]>;

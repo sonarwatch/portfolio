@@ -19,9 +19,9 @@ import {
 } from '../../daos/helpers';
 import getSolanaDasEndpoint from '../../../utils/clients/getSolanaDasEndpoint';
 import { getAssetsByOwnerDas } from '../../../utils/solana/das/getAssetsByOwnerDas';
-import { DisplayOptions } from '../../../utils/solana/das/types';
+import { DisplayOptions, HeliusAsset } from '../../../utils/solana/das/types';
 import { heliusAssetToAssetCollectible } from '../../../utils/solana/das/heliusAssetToAssetCollectible';
-import { NftFetcher } from '../types';
+import { HeliusAssetFetcher, NftFetcher } from '../types';
 import {
   platformId as orcaPlatformId,
   whirlpoolProgram,
@@ -34,8 +34,10 @@ import {
   getPicassoElementsFromNFTs,
   isPicassoPosition,
 } from '../../picasso/helpers';
+import { getWalletTokensSolana } from './solana';
 
 type NftChecker = (nft: PortfolioAssetCollectible) => boolean;
+type HeliusAssetChecker = (asset: HeliusAsset) => boolean;
 
 const nftsUnderlyingsMap: Map<
   string,
@@ -75,6 +77,19 @@ const nftsUnderlyingsMap: Map<
   ],
 ]);
 
+const heliusAssetsUnderlyingsMap: Map<
+  string,
+  { checker: HeliusAssetChecker; fetcher: HeliusAssetFetcher }
+> = new Map([
+  [
+    'wallet-tokens',
+    {
+      checker: () => true,
+      fetcher: getWalletTokensSolana,
+    },
+  ],
+]);
+
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const dasEndpoint = getSolanaDasEndpoint();
   const displayOptions: DisplayOptions = {
@@ -86,6 +101,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     showFungible: true,
   };
   const assets = await getAssetsByOwnerDas(dasEndpoint, owner, displayOptions);
+
+  const assetsByIdentifier: Map<string, HeliusAsset[]> = new Map();
+  for (let n = 0; n < assets.length; n += 1) {
+    const asset = assets[n];
+    for (const [key, { checker }] of heliusAssetsUnderlyingsMap.entries()) {
+      if (!checker(asset)) continue;
+      if (!assetsByIdentifier.get(key)) {
+        assetsByIdentifier.set(key, []);
+      }
+      assetsByIdentifier.get(key)?.push(asset);
+    }
+  }
 
   const nftsByIndentifier: Map<string, PortfolioAssetCollectible[]> = new Map();
   for (let n = 0; n < assets.length; n += 1) {
@@ -99,7 +126,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         nftsByIndentifier.set(key, []);
       }
       nftsByIndentifier.get(key)?.push(nft);
-      break;
+      break; // 1 NFT can only be used by 1 fetcher with this break (we'll might need to remove it)
     }
   }
 
@@ -107,6 +134,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   for (const [key, { fetcher }] of nftsUnderlyingsMap) {
     const nfts = nftsByIndentifier.get(key);
     if (nfts) results.push(fetcher(cache, nfts));
+  }
+  for (const [key, { fetcher }] of heliusAssetsUnderlyingsMap) {
+    const cAssets = assetsByIdentifier.get(key);
+    if (cAssets) results.push(fetcher(cache, cAssets));
   }
   const result = await Promise.allSettled(results);
 

@@ -9,25 +9,20 @@ import {
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
-import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { walletNftsPlatform, walletTokensPlatform } from '../constants';
 import { Cache } from '../../../Cache';
 import { getLpTag, parseLpTag } from '../helpers';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import tokenPriceToLiquidity from '../../../utils/misc/tokenPriceToLiquidity';
 import { heliusAssetToAssetCollectible } from '../../../utils/solana/das/heliusAssetToAssetCollectible';
-import { getAssetsByOwnerDas } from '../../../utils/solana/das/getAssetsByOwnerDas';
 import { isHeliusFungibleAsset } from '../../../utils/solana/das/isHeliusFungibleAsset';
-import getSolanaDasEndpoint from '../../../utils/clients/getSolanaDasEndpoint';
+import { HeliusAssetFetcher } from '../types';
+import { HeliusAsset } from '../../../utils/solana/das/types';
 
-const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const dasEndpoint = getSolanaDasEndpoint();
-  const items = await getAssetsByOwnerDas(dasEndpoint, owner, {
-    showNativeBalance: false,
-    showGrandTotal: false,
-    showInscription: false,
-  });
-
+export const getWalletTokensSolana: HeliusAssetFetcher = async (
+  cache: Cache,
+  items: HeliusAsset[]
+) => {
   const fungibleAddresses = items.reduce((addresses: string[], curr) => {
     if (isHeliusFungibleAsset(curr)) addresses.push(curr.id);
     return addresses;
@@ -126,11 +121,3 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   }
   return elements;
 };
-
-const fetcher: Fetcher = {
-  id: `${walletTokensPlatform.id}-solana`,
-  networkId: NetworkId.solana,
-  executor,
-};
-
-export default fetcher;
