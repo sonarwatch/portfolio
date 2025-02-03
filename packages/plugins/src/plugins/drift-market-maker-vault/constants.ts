@@ -56,6 +56,32 @@ export const hedgyPlatform: Platform = {
   website: 'https://hedgy.market/',
 };
 
+export const m1CapitalPlatformId = 'm1capital';
+export const m1CapitalPlatform: Platform = {
+  id: m1CapitalPlatformId,
+  name: 'M1 Capital',
+  image: 'https://sonar.watch/img/platforms/m1capital.webp',
+  twitter: 'https://x.com/M1Capital_',
+  website: 'https://m1-capital.com/',
+};
+
+export const knightradePlatformId = 'knightrade';
+export const knightradePlatform: Platform = {
+  id: knightradePlatformId,
+  name: 'Knightrade',
+  image: 'https://sonar.watch/img/platforms/knightrade.webp',
+  twitter: 'https://x.com/KnightradeTeam',
+  website: 'https://app.knightrade.io/',
+};
+
+export const luckyperpPlatformId = 'luckyperp';
+export const luckyperpPlatform: Platform = {
+  id: luckyperpPlatformId,
+  name: 'Lucky Perp',
+  image: 'https://sonar.watch/img/platforms/luckyperp.webp',
+  twitter: 'https://x.com/LuckyPerp_com',
+};
+
 export const vaultsPids = [
   new PublicKey('vAuLTsyrvSfZRuRB3XgvkPwNGgYSs9YRYymVebLKoxR'), // from Drift
   new PublicKey('9Fcn3Fd4d5ocrb12xCUtEvezxcjFEAyHBPfrZDiPt9Qj'), // from Neutral
@@ -71,8 +97,12 @@ export const platformIdByVaultManager: Map<string, string> = new Map([
   ['En8nqJqCE9D2Bsqetw4p89VgZTh8QK8SfCAn5sSyL4PM', moosePlatformId],
   ['C77bxLHWjnAVeG9HdMxu1gunFnjRCcWUDZYfa7xbacHr', neutralPlatformId],
   ['neutBqYtHqPiu89Yfuk3X3cebgBtyppzSbxJ9tt1eSB', neutralPlatformId],
+  ['bu2YJQZCcJzpUQZTine5rBZHwTNVWznGEMRnUHPTMRv', neutralPlatformId],
   ['G6L1NE8tLYYzvMHYHbkHZqPFvfEsiRAsHSvyNQ2hut3o', gauntletPlatformId],
   ['HG5SYPLJuD9xT2vdGBwzCoYCVfVs2jJFtc8BLt1J6nY8', hedgyPlatformId],
   ['86fYXDydyKKnL7gxWpVrUDnsrVyQyZkwb4YsisBHC9ab', gauntletPlatformId],
   ['6HmPq4hU2BQqkogVuohggZwaqNFQRpRQ6MSE6bcKxCEa', vectisPlatformId],
+  ['B8okK4ttA1w18JvPXPLecUZxsBbo1LNESuh3G31hm4Mf', m1CapitalPlatformId],
+  ['ESRL2Rj2z7UTUzzRQQEGQbnHyJxcBEqP4BXxjBvZkzjR', knightradePlatformId],
+  ['7n1eiWbLWRC3a7cggUcnM9gnudtwVJc8Xrs41ELGwGbE', luckyperpPlatformId],
 ]);

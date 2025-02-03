@@ -22,6 +22,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const registry = new ElementRegistry(NetworkId.solana, platformId);
 
   for (const lock of vestingEscrowAccounts) {
+    if (lock.cancelMode === 1) continue;
+
     const element = registry.addElementMultiple({
       label: 'Vesting',
       name: 'Lock',
