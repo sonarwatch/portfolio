@@ -2,14 +2,19 @@ import BigNumber from 'bignumber.js';
 
 import { BalancerSupportedEvmNetworkIdType, platformId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { getV2PoolPositionsV2 } from './helpers/pools';
+import { getPoolPositionsForOwnerV2 } from './helpers/pools';
 import { deepLog } from '../../utils/misc/logging';
 
 function getPoolsV2Fetcher(
   networkId: BalancerSupportedEvmNetworkIdType
 ): Fetcher {
   const executor: FetcherExecutor = async (owner: string) => {
-    const ownerPoolPositions = await getV2PoolPositionsV2(owner, networkId);
+    const ownerPoolPositions = await getPoolPositionsForOwnerV2(
+      owner,
+      networkId
+    );
+
+    console.log(ownerPoolPositions);
 
     const poolPositionsWithUserBalance = ownerPoolPositions.map(
       (poolPositions) => {

@@ -1,5 +1,5 @@
 import request, { gql } from 'graphql-request';
-import { OwnerPoolApiResponse, Pool, PoolApiResponse } from '../types';
+import { OwnerPoolApiResponse, Pool } from '../types';
 import {
   BalancerSupportedEvmNetworkIdType,
   balancerApiNetworkByNetworkId,
@@ -36,59 +36,59 @@ export async function getBalancerPoolsV2FromGraph(
   if (!pools || !pools.length) return [];
   return pools;
 }
-export async function getBalancerPoolsV2FromAPI(
-  networkId: BalancerSupportedEvmNetworkIdType
-): Promise<Pool[]> {
-  const balancerApiNetwork = balancerApiNetworkByNetworkId[networkId];
-  const query = gql`
-    query {
-      poolGetPools(
-        where: { chainIn: [${balancerApiNetwork}], minTvl: 500 }
-        orderBy: totalLiquidity
-        first: 1000
-        orderDirection: desc
-      ) {
-        id
-        address
-        symbol
-        dynamicData {
-          totalLiquidity
-          totalShares
-        }
-        tokens: poolTokens {
-          balance
-          decimals
-          symbol
-          address
-        }
-      }
-    }
-  `;
+// export async function getBalancerPoolsV2FromAPI(
+//   networkId: BalancerSupportedEvmNetworkIdType
+// ): Promise<Pool[]> {
+//   const balancerApiNetwork = balancerApiNetworkByNetworkId[networkId];
+//   const query = gql`
+//     query {
+//       poolGetPools(
+//         where: { chainIn: [${balancerApiNetwork}], minTvl: 500 }
+//         orderBy: totalLiquidity
+//         first: 1000
+//         orderDirection: desc
+//       ) {
+//         id
+//         address
+//         symbol
+//         dynamicData {
+//           totalLiquidity
+//           totalShares
+//         }
+//         tokens: poolTokens {
+//           balance
+//           decimals
+//           symbol
+//           address
+//         }
+//       }
+//     }
+//   `;
 
-  try {
-    const res = await request<{ poolGetPools: PoolApiResponse[] }>(
-      balancerApiUrl,
-      query
-    );
-    const pools = res.poolGetPools;
-    if (!pools || !pools.length) return [];
+//   try {
+//     const res = await request<{ poolGetPools: PoolApiResponse[] }>(
+//       balancerApiUrl,
+//       query
+//     );
+//     const pools = res.poolGetPools;
+//     if (!pools || !pools.length) return [];
 
-    const fPools = pools.map((pool) => ({
-      id: pool.id,
-      address: pool.address,
-      symbol: pool.symbol,
-      totalLiquidity: pool.dynamicData.totalLiquidity,
-      totalShares: pool.dynamicData.totalShares,
-      tokens: pool.tokens,
-    }));
+//     const fPools = pools.map((pool) => ({
+//       id: pool.id,
+//       address: pool.address,
+//       symbol: pool.symbol,
+//       totalLiquidity: pool.dynamicData.totalLiquidity,
+//       totalShares: pool.dynamicData.totalShares,
+//       tokens: pool.tokens,
+//     }));
 
-    return fPools;
-  } catch (error) {
-    console.error('Error fetching Balancer pools:', error);
-    return [];
-  }
-}
-export async function getV2PoolPositionsV2(
+//     return fPools;
+//   } catch (error) {
+//     console.error('Error fetching Balancer pools:', error);
+//     return [];
+//   }
+// }
+export async function getPoolPositionsForOwnerV2(
   owner: string,
   networkId: BalancerSupportedEvmNetworkIdType
 ): Promise<OwnerPoolApiResponse[]> {
@@ -114,6 +114,7 @@ export async function getV2PoolPositionsV2(
           balance
           logoURI
           decimals
+          balanceUSD
         }
         userBalance {
           totalBalance
