@@ -6,6 +6,8 @@ import {
   LendingPool,
   MarginAccount,
   MarginPool,
+  SolayerPool,
+  SolayerUser,
   VSolPositionAccount,
 } from './types';
 import {
@@ -200,6 +202,29 @@ export const getVSolPositionAccounts = (
       )[0]
   );
   return getAutoParsedMultipleAccountsInfo<VSolPositionAccount>(
+    getClientSolana(),
+    nxfinanceLendIdlItem,
+    pdas
+  );
+};
+
+export const getSolayerUserAccounts = (
+  solayerPools: ParsedAccount<SolayerPool>[],
+  owner: string
+) => {
+  const pdas = solayerPools.map(
+    (solayerPool) =>
+      PublicKey.findProgramAddressSync(
+        [
+          Buffer.from('solayer_user'),
+          new PublicKey(solayerPool.nxMarket).toBuffer(),
+          new PublicKey(solayerPool.lrtMint).toBuffer(),
+          new PublicKey(owner).toBuffer(),
+        ],
+        lendProgramId
+      )[0]
+  );
+  return getAutoParsedMultipleAccountsInfo<SolayerUser>(
     getClientSolana(),
     nxfinanceLendIdlItem,
     pdas

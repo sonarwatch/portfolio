@@ -1,10 +1,19 @@
-import { aprToApy, NetworkId } from '@sonarwatch/portfolio-core';
+import {
+  aprToApy,
+  NetworkId,
+  solanaNativeWrappedAddress,
+} from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
-import { lendingPoolKey, leverageVaultsMints, platformId } from './constants';
+import {
+  lendingPoolKey,
+  leverageVaultsMints,
+  platformId,
+  solayerPoolKey,
+} from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { ParsedAccount } from '../../utils/solana';
-import { LendingPool } from './types';
+import { LendingPool, SolayerPool } from './types';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import {
   formatLendingPool,
@@ -12,6 +21,7 @@ import {
   getLendingAccounts,
   getMarginAccount,
   getMarginPools,
+  getSolayerUserAccounts,
   getSupplyNoteRate,
   getVSolPositionAccounts,
 } from './helpers';
@@ -24,22 +34,38 @@ const lendingPoolsMemo = new MemoizedCache<ParsedAccount<LendingPool>[]>(
     networkId: NetworkId.solana,
   }
 );
+const solayerPoolsMemo = new MemoizedCache<ParsedAccount<SolayerPool>[]>(
+  solayerPoolKey,
+  {
+    prefix: platformId,
+    networkId: NetworkId.solana,
+  }
+);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const lendingPools = await lendingPoolsMemo.getItem(cache);
+  const [lendingPools, solayerPools] = await Promise.all([
+    lendingPoolsMemo.getItem(cache),
+    solayerPoolsMemo.getItem(cache),
+  ]);
   if (!lendingPools) return [];
 
-  const [lendingAccounts, vSolPositionsAccounts, marginAccount] =
-    await Promise.all([
-      getLendingAccounts(lendingPools, owner),
-      getVSolPositionAccounts(lendingPools, owner),
-      getMarginAccount(owner),
-    ]);
+  const [
+    lendingAccounts,
+    vSolPositionsAccounts,
+    marginAccount,
+    solayerUserAccounts,
+  ] = await Promise.all([
+    getLendingAccounts(lendingPools, owner), // JLP
+    getVSolPositionAccounts(lendingPools, owner), // vSOL
+    getMarginAccount(owner), // Fulcrum Lending Pool
+    getSolayerUserAccounts(solayerPools, owner), // Solayer
+  ]);
 
   if (
     lendingAccounts.length === 0 &&
     vSolPositionsAccounts.length === 0 &&
-    !marginAccount
+    !marginAccount &&
+    solayerUserAccounts.length === 0
   )
     return [];
 
@@ -208,6 +234,24 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       });
     });
   }
+
+  solayerUserAccounts.forEach((solayerUserAccount) => {
+    if (!solayerUserAccount) return;
+    const element = elementRegistry.addElementMultiple({
+      label: 'Leverage',
+    });
+    element.addAsset({
+      address: solayerUserAccount.lrtMint,
+      amount: solayerUserAccount.amount,
+    });
+    solayerUserAccount.withdrawals.forEach((withdrawal) => {
+      if (withdrawal[0])
+        element.addAsset({
+          address: solanaNativeWrappedAddress,
+          amount: withdrawal[0].solAmount,
+        });
+    });
+  });
 
   return elementRegistry.getElements(cache);
 };

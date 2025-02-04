@@ -124,3 +124,25 @@ export type FormattedLendingPool = {
   depositInterest: number;
   borrowInterest: number;
 };
+
+export type StakePoolWithdrawal = {
+  stakeAccount: string;
+  solAmount: string;
+};
+
+export type SolayerUser = {
+  nxMarket: string;
+  lrtMint: string;
+  amount: string;
+  nxSolayerPoints: string;
+  lastUpdateTime: string;
+  withdrawals: StakePoolWithdrawal[][];
+};
+
+export type SolayerPool = {
+  nxMarket: string;
+  lrtMint: string;
+  amount: string;
+  totalNxSolayerPoints: string;
+  lastUpdateTime: string;
+};

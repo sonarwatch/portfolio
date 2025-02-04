@@ -49,6 +49,7 @@ export const nxfinanceLendIdlItem = {
 
 export const lendingPoolKey = 'lending-pools';
 export const stakingPoolKey = 'staking-pool';
+export const solayerPoolKey = 'solayer-pools';
 
 export const lendingPools = [
   new PublicKey('HVn3F2wq2Fvr8T5yX7VS9yWaNxX5PMgxTyHb4aKAX8z3'),
