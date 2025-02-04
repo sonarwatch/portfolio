@@ -7,23 +7,36 @@ import {
   airdropFetcherToFetcher,
   getAirdropRaw,
 } from '../../AirdropFetcher';
+import { deriveClaimStatus } from '../../utils/solana/jupiter/deriveClaimStatus';
+import { getClientSolana } from '../../utils/clients';
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
   const baseAlloc = season4Allocations[owner];
   const vectorAlloc = vectorBonusAllocations[owner];
+
+  const claimPda = deriveClaimStatus(
+    owner,
+    '5qJtp1rTEnW3qUi7SaQpsscqNnvCSo91WFYYbfNJBPDv',
+    'Td1ST8yc9Vt7vsBY7rZzrCjkXeGnr4ECMtso9ueLhyQ'
+  );
+
+  const client = getClientSolana();
+  const claimAccount = await client.getAccountInfo(claimPda);
+
+  const isClaimed = !!claimAccount;
 
   return getAirdropRaw({
     statics: s4Statics,
     items: [
       {
         amount: baseAlloc ?? 0,
-        isClaimed: false,
+        isClaimed,
         label: 'TNSR',
         address: tnsrMint,
       },
       {
         amount: vectorAlloc ?? 0,
-        isClaimed: false,
+        isClaimed,
         label: 'TNSR',
         address: tnsrMint,
       },
