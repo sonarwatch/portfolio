@@ -21,7 +21,7 @@ export const magmaProgramId = '3zK38YBP6u3BpLUpaa6QhRHh4VXdv3J8cmD24fFpuyqy';
 
 export const s4Statics: AirdropStatics = {
   claimStart: 1738281600000,
-  claimEnd: undefined,
+  claimEnd: 1753963200000,
   id: 'tensor-s4',
   emitterName: 'Tensor',
   emitterLink: 'https://www.tensor.trade/',
