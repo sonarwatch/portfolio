@@ -1,5 +1,25 @@
 import BigNumber from 'bignumber.js';
-import { LendingPool, MarginPool } from './types';
+import { PublicKey } from '@solana/web3.js';
+import {
+  FormattedLendingPool,
+  LendingAccount,
+  LendingPool,
+  MarginAccount,
+  MarginPool,
+  VSolPositionAccount,
+} from './types';
+import {
+  getAutoParsedMultipleAccountsInfo,
+  ParsedAccount,
+} from '../../utils/solana';
+import {
+  ID,
+  lendProgramId,
+  leverageFiProgramID,
+  nxfinanceLendIdlItem,
+  nxfinanceLeverageIdlItem,
+} from './constants';
+import { getClientSolana } from '../../utils/clients';
 
 const getBorrowApr = (utilization: BigNumber) => {
   if (utilization.isLessThanOrEqualTo(0.8)) {
@@ -64,7 +84,10 @@ export const getBorrowNoteRate = (marginPool: MarginPool) => {
   return borrowedTokens.plus(loanInterest).dividedBy(loanNotes);
 };
 
-export const formatLendingPool = (t: LendingPool, decimals: number) => {
+export const formatLendingPool = (
+  t: LendingPool,
+  decimals: number
+): FormattedLendingPool => {
   const o = new BigNumber(t.depositNotes);
   const n = new BigNumber(t.depositTokens);
   const i = new BigNumber(t.borrowNotes);
@@ -128,4 +151,100 @@ export const formatLendingPool = (t: LendingPool, decimals: number) => {
     depositInterest: parseFloat(k),
     borrowInterest: parseFloat(y),
   };
+};
+
+export const getLendingAccounts = (
+  lendingPools: ParsedAccount<LendingPool>[],
+  owner: string
+) => {
+  const pdas = lendingPools.map((lendingPool) => {
+    const lendingPoolPda = PublicKey.findProgramAddressSync(
+      [
+        Buffer.from('lending_pool'),
+        new PublicKey(lendingPool.nxMarket).toBuffer(),
+        new PublicKey(lendingPool.tokenMint).toBuffer(),
+      ],
+      lendProgramId
+    )[0];
+
+    return PublicKey.findProgramAddressSync(
+      [
+        Buffer.from('lending_account'),
+        new PublicKey(lendingPool.nxMarket).toBuffer(),
+        lendingPoolPda.toBuffer(),
+        new PublicKey(owner).toBuffer(),
+      ],
+      lendProgramId
+    )[0];
+  });
+  return getAutoParsedMultipleAccountsInfo<LendingAccount>(
+    getClientSolana(),
+    nxfinanceLendIdlItem,
+    pdas
+  );
+};
+
+export const getVSolPositionAccounts = (
+  lendingPools: ParsedAccount<LendingPool>[],
+  owner: string
+) => {
+  const pdas = lendingPools.map(
+    (lendingPool) =>
+      PublicKey.findProgramAddressSync(
+        [
+          Buffer.from('v_sol_position_account'),
+          new PublicKey(lendingPool.nxMarket).toBuffer(),
+          new PublicKey(owner).toBuffer(),
+        ],
+        lendProgramId
+      )[0]
+  );
+  return getAutoParsedMultipleAccountsInfo<VSolPositionAccount>(
+    getClientSolana(),
+    nxfinanceLendIdlItem,
+    pdas
+  );
+};
+
+export const getMarginAccount = async (owner: string) => {
+  const pdas = PublicKey.findProgramAddressSync(
+    [
+      PublicKey.findProgramAddressSync(
+        [ID.toBuffer()],
+        leverageFiProgramID
+      )[0].toBuffer(),
+      new PublicKey(owner).toBuffer(),
+      Buffer.from('account'),
+    ],
+    leverageFiProgramID
+  )[0];
+  return (
+    await getAutoParsedMultipleAccountsInfo<MarginAccount>(
+      getClientSolana(),
+      nxfinanceLeverageIdlItem,
+      [pdas]
+    )
+  )[0];
+};
+
+export const getMarginPools = async (mints: Set<string>) => {
+  const marginPoolsPublicKeys = [...mints].map(
+    (mint) =>
+      PublicKey.findProgramAddressSync(
+        [
+          PublicKey.findProgramAddressSync(
+            [ID.toBuffer()],
+            leverageFiProgramID
+          )[0].toBuffer(),
+          new PublicKey(mint).toBuffer(),
+        ],
+        leverageFiProgramID
+      )[0]
+  );
+
+  return getAutoParsedMultipleAccountsInfo<MarginPool>(
+    getClientSolana(),
+    nxfinanceLeverageIdlItem,
+    marginPoolsPublicKeys
+  );
 };

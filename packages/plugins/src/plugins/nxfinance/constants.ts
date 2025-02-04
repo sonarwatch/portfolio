@@ -12,8 +12,10 @@ export const platform: Platform = {
   image: 'https://sonar.watch/img/platforms/nxfinance.webp',
   website: 'https://nxfinance.io/',
   twitter: 'https://twitter.com/NX_Finance',
-  defiLlamaId: 'nx-finance', // from https://defillama.com/docs/api
+  defiLlamaId: 'nx-finance',
 };
+
+// https://nxfinance.io/nx-data/doc
 
 export const ID = new PublicKey('RaXcyfW8jK295UAU1XN2uLMTHnTWEaeCcNWLeDB4iD6');
 
