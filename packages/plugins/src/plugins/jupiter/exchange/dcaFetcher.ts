@@ -1,15 +1,15 @@
 import {
   NetworkId,
-  PortfolioAsset,
+  PortfolioElementTrade,
+  PortfolioElementType,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSolana } from '../../../utils/clients';
 import { getParsedProgramAccounts } from '../../../utils/solana';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import { platform, platformId, dcaProgramId } from './constants';
+import { platformId, dcaProgramId } from './constants';
 import { dcaStruct } from './structs';
 import { DCAFilters } from './filters';
 
@@ -22,60 +22,82 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     dcaProgramId,
     DCAFilters(owner)
   );
-
   if (accounts.length === 0) return [];
 
-  const amountByToken: Map<string, BigNumber> = new Map();
-
-  for (const account of accounts) {
-    const inputMint = account.inputMint.toString();
-    const lastAmount = amountByToken.get(inputMint);
-    const amountToAdd = account.inDeposited.minus(account.inUsed);
-    if (!amountToAdd.isZero()) {
-      if (!lastAmount) {
-        amountByToken.set(inputMint, amountToAdd);
-      } else {
-        const newAmount = lastAmount.plus(amountToAdd);
-        amountByToken.set(inputMint, newAmount);
-      }
-    }
-  }
-
-  if (amountByToken.size === 0) return [];
-
-  const tokenPriceById = await cache.getTokenPricesAsMap(
-    Array.from(amountByToken.keys()),
+  const pricesMap = await cache.getTokenPricesAsMap(
+    accounts
+      .map((account) => [
+        account.inputMint.toString(),
+        account.outputMint.toString(),
+      ])
+      .flat(),
     NetworkId.solana
   );
 
-  const assets: PortfolioAsset[] = [];
-  for (const token of amountByToken.keys()) {
-    const tokenPrice = tokenPriceById.get(token);
-    if (!tokenPrice) continue;
-    const amount = amountByToken.get(token);
-    if (!amount || amount.isZero()) continue;
-    const asset = tokenPriceToAssetToken(
-      tokenPrice.address,
-      amount.dividedBy(10 ** tokenPrice.decimals).toNumber(),
+  const elements: PortfolioElementTrade[] = [];
+  for (let i = 0; i < accounts.length; i++) {
+    const account = accounts[i];
+
+    const inputMint = account.inputMint.toString();
+    const inputTokenPrice = pricesMap.get(inputMint);
+    if (!inputTokenPrice) continue;
+
+    const outputMint = account.outputMint.toString();
+    const outputTokenPrice = pricesMap.get(outputMint);
+    if (!outputTokenPrice) continue;
+    const inputDecimals = inputTokenPrice.decimals;
+    const outputDecimals = outputTokenPrice.decimals;
+
+    const inputAsset = tokenPriceToAssetToken(
+      inputMint,
+      account.inDeposited
+        .minus(account.inUsed)
+        .div(10 ** inputDecimals)
+        .toNumber(),
       NetworkId.solana,
-      tokenPrice
+      inputTokenPrice
     );
-    assets.push(asset);
+
+    const outputAmount = account.outReceived
+      .minus(account.outWithdrawn)
+      .div(10 ** outputDecimals)
+      .toNumber();
+    const outputAsset =
+      outputAmount === 0
+        ? null
+        : tokenPriceToAssetToken(
+            outputMint,
+            outputAmount,
+            NetworkId.solana,
+            outputTokenPrice
+          );
+
+    const initialInputAmount = account.inDeposited
+      .div(10 ** inputDecimals)
+      .toNumber();
+    const element: PortfolioElementTrade = {
+      networkId: NetworkId.solana,
+      label: 'DCA',
+      platformId,
+      type: PortfolioElementType.trade,
+      data: {
+        assets: {
+          input: inputAsset,
+          output: outputAsset,
+        },
+        inputAddress: inputMint,
+        outputAddress: outputMint,
+        initialInputAmount,
+        filledPercentage: 1 - inputAsset.data.amount / initialInputAmount,
+        inputPrice: inputTokenPrice.price,
+        outputPrice: outputTokenPrice.price,
+      },
+      value: getUsdValueSum([inputAsset.value, outputAsset?.value || 0]),
+    };
+    elements.push(element);
   }
 
-  if (assets.length === 0) return [];
-
-  return [
-    {
-      type: 'multiple',
-      networkId: NetworkId.solana,
-      platformId: platform.id,
-      value: getUsdValueSum(assets.map((asset) => asset.value)),
-      label: 'Deposit',
-      name: `DCA Orders (${accounts.length})`,
-      data: { assets },
-    },
-  ];
+  return elements;
 };
 
 const fetcher: Fetcher = {
