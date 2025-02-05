@@ -1,51 +1,219 @@
 import BigNumber from 'bignumber.js';
+import {
+  PortfolioAssetToken,
+  PortfolioElementLiquidity,
+  PortfolioElementType,
+  PortfolioLiquidity,
+  getUsdValueSum,
+} from '@sonarwatch/portfolio-core';
+import { getAddress } from 'viem';
 
 import { BalancerSupportedEvmNetworkIdType, platformId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getPoolPositionsForOwnerV2 } from './helpers/pools';
-import { deepLog } from '../../utils/misc/logging';
+import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
+import { getEvmClient } from '../../utils/clients';
+
+import { liquidityGaugeAbi } from './abi';
+import { Cache } from '../../Cache';
 
 function getPoolsV2Fetcher(
   networkId: BalancerSupportedEvmNetworkIdType
 ): Fetcher {
-  const executor: FetcherExecutor = async (owner: string) => {
+  const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const ownerPoolPositions = await getPoolPositionsForOwnerV2(
       owner,
       networkId
     );
+    const poolLiquidities: PortfolioLiquidity[] = [];
+    const gaugeLiquidities: PortfolioLiquidity[] = [];
 
-    console.log(ownerPoolPositions);
+    for (const poolPosition of ownerPoolPositions) {
+      const ownerShares = new BigNumber(poolPosition.userBalance.totalBalance);
+      const totalPoolShares = new BigNumber(
+        poolPosition.dynamicData.totalShares
+      );
 
-    const poolPositionsWithUserBalance = ownerPoolPositions.map(
-      (poolPositions) => {
-        const ownerShares = new BigNumber(
-          poolPositions.userBalance.totalBalance
-        );
-        const totalPoolShares = new BigNumber(
-          poolPositions.dynamicData.totalShares
-        );
-
-        const updatedPoolTokens = poolPositions.poolTokens.map((poolToken) => {
+      const assets: PortfolioAssetToken[] = poolPosition.poolTokens
+        .flatMap((poolToken) => {
           const poolTokenBalance = new BigNumber(poolToken.balance);
+          const poolTokenBalanceUSD = new BigNumber(poolToken.balanceUSD);
+          const poolTokenPrice =
+            poolTokenBalanceUSD.dividedBy(poolTokenBalance);
+
           const usersShareOfPoolToken = ownerShares
             .dividedBy(totalPoolShares)
             .multipliedBy(poolTokenBalance);
 
-          return {
-            ...poolToken,
-            balance: usersShareOfPoolToken.toString(),
-          };
-        });
+          return tokenPriceToAssetTokens(
+            poolToken.address,
+            usersShareOfPoolToken.toNumber(),
+            networkId,
+            null,
+            poolTokenPrice.toNumber()
+          );
+        })
+        /**
+         * @see https://balancer.gitbook.io/balancer-v2/products/balancer-pools/composable-stable-pools
+         * Balancer's composable stable pools include the BPT tokens in the poolTokens array.
+         * When doing the calculations they are needed, but they are not displayed on the UI
+         * So we are removing them from the poolTokens array, after all the calculations are done
+         * The BPT tokens have the same address as the pool, and the type of the pool will be 'COMPOSABLE_STABLE'
+         */
+        .filter((asset) => asset.data.address !== poolPosition.address);
+      const summedValue = getUsdValueSum(assets.map((a) => a.value));
 
-        return {
-          ...poolPositions,
-          poolTokens: updatedPoolTokens,
+      const stackedBalance = poolPosition.userBalance.stakedBalances[0];
+
+      // Liquidity Pool Position
+      if (!stackedBalance) {
+        const liquidity: PortfolioLiquidity = {
+          assets,
+          assetsValue: summedValue,
+          value: summedValue,
+          yields: [],
+          rewardAssets: [],
+          rewardAssetsValue: null,
         };
+        poolLiquidities.push(liquidity);
+        continue;
       }
-    );
 
-    console.log(deepLog(poolPositionsWithUserBalance));
-    return [];
+      // Farming Position
+      if (stackedBalance.stakingType === 'GAUGE') {
+        const gaugeAddress = stackedBalance.stakingId;
+
+        const client = getEvmClient(networkId);
+        const numRewardsTokens = Number(
+          await client.readContract({
+            address: getAddress(gaugeAddress),
+            abi: liquidityGaugeAbi,
+            functionName: 'reward_count',
+          })
+        );
+
+        const rewardTokenCalls = Array.from(
+          { length: numRewardsTokens },
+          (_, index) => ({
+            address: getAddress(gaugeAddress),
+            abi: liquidityGaugeAbi,
+            functionName: 'reward_tokens',
+            args: [index],
+          })
+        );
+
+        const rewardTokenAddresses = (
+          await client.multicall({
+            contracts: rewardTokenCalls,
+          })
+        ).map((result) => result.result);
+
+        const ownerRewardTokenBalanceCalls = rewardTokenAddresses.map(
+          (rewardTokenAddress) => ({
+            address: getAddress(gaugeAddress),
+            abi: liquidityGaugeAbi,
+            functionName: 'claimable_reward',
+            args: [owner, rewardTokenAddress],
+          })
+        );
+
+        const ownerRewardTokenBalances = (
+          await client.multicall({
+            contracts: ownerRewardTokenBalanceCalls,
+          })
+        )
+          .map((result, index) => ({
+            rewardTokenAddress: ownerRewardTokenBalanceCalls[index]
+              .args[1] as string,
+            rawBalance: BigInt(result.result as bigint),
+          }))
+          .filter((balance) => balance.rawBalance > 0);
+
+        const ownerRewardTokenBalancesWithPrice = await Promise.all(
+          ownerRewardTokenBalances.map(async (balance) => {
+            const tokenPrice = await cache.getTokenPrice(
+              balance.rewardTokenAddress,
+              networkId
+            );
+            console.log({ tokenPrice });
+            return {
+              ...balance,
+              tokenPrice,
+            };
+          })
+        );
+
+        const rewardAssets: PortfolioAssetToken[] =
+          ownerRewardTokenBalancesWithPrice.flatMap((rewardAsset) => {
+            return tokenPriceToAssetTokens(
+              rewardAsset.rewardTokenAddress,
+              usersShareOfPoolToken.toNumber(),
+              networkId,
+              null,
+              poolTokenPrice.toNumber()
+            );
+          });
+
+        // Use rewardTokenAddresses as needed
+        console.log({
+          gaugeAddress,
+          numRewardsTokens,
+          rewardTokenAddresses,
+          ownerRewardTokenBalances,
+          ownerRewardTokenBalancesWithPrice,
+        });
+        const liquidity: PortfolioLiquidity = {
+          assets,
+          assetsValue: summedValue,
+          value: summedValue,
+          yields: [],
+          rewardAssets,
+          rewardAssetsValue: null,
+        };
+        gaugeLiquidities.push(liquidity);
+        continue;
+      }
+
+      // TODO suuport locked positions
+      // if (stackedBalance.stakingType === 'VEBAL') {
+      // need to query contract for unlock time
+      // }
+
+      // TODO aura staking - they appear under aura finance on debank?
+      // if (stackedBalance.stakingType === 'AURA') {
+      // need to query contract for unlock time
+      // }
+    }
+
+    const elements: PortfolioElementLiquidity[] = [];
+    if (poolLiquidities.length !== 0) {
+      const element: PortfolioElementLiquidity = {
+        networkId,
+        platformId,
+        label: 'LiquidityPool',
+        type: PortfolioElementType.liquidity,
+        data: {
+          liquidities: poolLiquidities,
+        },
+        value: getUsdValueSum(poolLiquidities.map((a) => a.value)),
+      };
+      elements.push(element);
+    }
+    if (gaugeLiquidities.length !== 0) {
+      const element: PortfolioElementLiquidity = {
+        networkId,
+        platformId,
+        label: 'Farming',
+        type: PortfolioElementType.liquidity,
+        data: {
+          liquidities: gaugeLiquidities,
+        },
+        value: getUsdValueSum(gaugeLiquidities.map((a) => a.value)),
+      };
+      elements.push(element);
+    }
+
+    return elements;
   };
 
   return {

@@ -48,8 +48,6 @@ export function getPositionsFetcher(crvNetworkId: CrvNetworkId): Fetcher {
     const client = getEvmClient(networkId);
     const balanceOfResults = await client.multicall({ contracts });
 
-    console.log({ balanceOfResults });
-
     const poolAddresses: Set<string> = new Set();
     const balanceOfByAddress: Map<string, BigNumber> = new Map();
     balanceOfResults.forEach((r, i) => {

@@ -1,4 +1,5 @@
 import request, { gql } from 'graphql-request';
+import BigNumber from 'bignumber.js';
 import { OwnerPoolApiResponse, Pool } from '../types';
 import {
   BalancerSupportedEvmNetworkIdType,
@@ -104,8 +105,10 @@ export async function getPoolPositionsForOwnerV2(
         address
         name
         symbol
+        type
         dynamicData {
           totalShares
+          totalLiquidity
         }
         poolTokens {
           address
@@ -117,6 +120,12 @@ export async function getPoolPositionsForOwnerV2(
           balanceUSD
         }
         userBalance {
+          stakedBalances {
+            stakingType
+            stakingId
+            balance
+            balanceUsd
+          }
           totalBalance
         }
       }
@@ -131,7 +140,13 @@ export async function getPoolPositionsForOwnerV2(
     const pools = res.poolGetPools;
     if (!pools || !pools.length) return [];
 
-    return pools;
+    const sortedPools = pools.sort((a, b) => {
+      const liquidityA = new BigNumber(a.dynamicData.totalLiquidity);
+      const liquidityB = new BigNumber(b.dynamicData.totalLiquidity);
+      return liquidityB.minus(liquidityA).toNumber(); // Sort high to low
+    });
+
+    return sortedPools;
   } catch (error) {
     console.error('Error fetching Balancer pools:', error);
     return [];
