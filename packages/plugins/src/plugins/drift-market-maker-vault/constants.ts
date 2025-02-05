@@ -1,5 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
+import { platformId as nxFinancePlatformId } from '../nxfinance/constants';
 
 export const circuitPlatformId = 'circuit';
 export const circuitPlatform: Platform = {
@@ -87,6 +88,7 @@ export const vaultsPids = [
   new PublicKey('9Fcn3Fd4d5ocrb12xCUtEvezxcjFEAyHBPfrZDiPt9Qj'), // from Neutral
   new PublicKey('EuSLjg23BrtwYAk1t4TFe5ArYSXCVXLBqrHRBfWQiTeJ'), // from Neutral
   new PublicKey('BVddkVtFJLCihbVrtLo8e3iEd9NftuLunaznAxFFW8vf'), // from Neutral
+  new PublicKey('HYHnL9BB3tqSPxkVbdcAn9CAa4hyqNYUh1FwDc4he7aD'), // from NXFinance
 ];
 
 export const prefixVaults = 'circuitVaults';
@@ -105,4 +107,5 @@ export const platformIdByVaultManager: Map<string, string> = new Map([
   ['B8okK4ttA1w18JvPXPLecUZxsBbo1LNESuh3G31hm4Mf', m1CapitalPlatformId],
   ['ESRL2Rj2z7UTUzzRQQEGQbnHyJxcBEqP4BXxjBvZkzjR', knightradePlatformId],
   ['7n1eiWbLWRC3a7cggUcnM9gnudtwVJc8Xrs41ELGwGbE', luckyperpPlatformId],
+  ['8KX7LUPnn94R2nXguftRJwyiDHFob4AS8DrNDYx7H3o5', nxFinancePlatformId],
 ]);
