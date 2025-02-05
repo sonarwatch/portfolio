@@ -18,7 +18,7 @@ export const perpsProgramId = new PublicKey(
 export const valueAverageProgramId = new PublicKey(
   'VALaaymxQh2mNy2trH9jUqHT1mTow76wpTcGmSWSwJe'
 );
-export const limitProgramId = new PublicKey(
+export const limitV1ProgramId = new PublicKey(
   'jupoNjAxXgZ4rjzxzPMP4oxduvQsQtZzyknqvzYNrNu'
 );
 export const limitV2ProgramId = new PublicKey(

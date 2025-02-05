@@ -1,89 +1,123 @@
 import {
+  getUsdValueSum,
   NetworkId,
-  PortfolioAsset,
-  PortfolioElementMultiple,
+  PortfolioElementTrade,
+  PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSolana } from '../../../utils/clients';
 import { getParsedProgramAccounts } from '../../../utils/solana';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import { platformId, limitProgramId, limitV2ProgramId } from './constants';
+import { platformId, limitV1ProgramId, limitV2ProgramId } from './constants';
 import { limitOrderStruct, limitOrderV2Struct } from './structs';
 import { limitFilters } from './filters';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const allAccounts = (
-    await Promise.all([
-      getParsedProgramAccounts(
-        client,
-        limitOrderStruct,
-        limitProgramId,
-        limitFilters(owner)
-      ),
-      getParsedProgramAccounts(
-        client,
-        limitOrderV2Struct,
-        limitV2ProgramId,
-        limitFilters(owner)
-      ),
+  const accountsRes = await Promise.all([
+    // V1
+    getParsedProgramAccounts(
+      client,
+      limitOrderStruct,
+      limitV1ProgramId,
+      limitFilters(owner)
+    ),
+    // V2
+    getParsedProgramAccounts(
+      client,
+      limitOrderV2Struct,
+      limitV2ProgramId,
+      limitFilters(owner)
+    ),
+  ]);
+  const v1Lenght = accountsRes[0].length;
+  const accounts = accountsRes.flat();
+  if (accounts.length === 0) return [];
+
+  const mints = accounts
+    .map((account) => [
+      account.inputMint.toString(),
+      account.outputMint.toString(),
     ])
-  ).flat();
-  if (allAccounts.length === 0) return [];
-
-  const mints: Set<string> = new Set();
-  allAccounts.forEach((account) => mints.add(account.inputMint.toString()));
-
-  const tokenPriceById = await cache.getTokenPricesAsMap(
+    .flat();
+  const pricesMap = await cache.getTokenPricesAsMap(
     Array.from(mints),
     NetworkId.solana
   );
 
-  const rawAmountByMint: Map<string, BigNumber> = new Map();
-  for (let i = 0; i < allAccounts.length; i += 1) {
-    const limOrder = allAccounts[i];
-    const mint = limOrder.inputMint.toString();
+  const elements: PortfolioElementTrade[] = [];
+  for (let i = 0; i < accounts.length; i++) {
+    const account = accounts[i];
 
-    const amountLeftInOrder = limOrder.makingAmount;
-    const totalAmount = rawAmountByMint.get(mint);
-    rawAmountByMint.set(mint, amountLeftInOrder.plus(totalAmount || 0));
-  }
+    const inputMint = account.inputMint.toString();
+    const inputTokenPrice = pricesMap.get(inputMint);
+    if (!inputTokenPrice) continue;
 
-  let value = 0;
-  const assets: PortfolioAsset[] = [];
-  for (const [mint, rawAmount] of rawAmountByMint) {
-    if (rawAmount.isZero()) continue;
+    const outputMint = account.outputMint.toString();
+    const outputTokenPrice = pricesMap.get(outputMint);
+    if (!outputTokenPrice) continue;
 
-    const tokenPrice = tokenPriceById.get(mint);
-    if (!tokenPrice) continue;
+    const inputDecimals = inputTokenPrice.decimals;
+    const outputDecimals = outputTokenPrice.decimals;
 
-    const amount = rawAmount.dividedBy(10 ** tokenPrice.decimals).toNumber();
-    const asset = tokenPriceToAssetToken(
-      mint,
-      amount,
+    const inputAsset = tokenPriceToAssetToken(
+      inputMint,
+      account.makingAmount.div(10 ** inputDecimals).toNumber(),
       NetworkId.solana,
-      tokenPrice
+      inputTokenPrice
     );
-    assets.push(asset);
-    value += asset.value ? asset.value : 0;
+
+    const outputAmount = account.oriTakingAmount
+      .minus(account.takingAmount)
+      .div(10 ** outputDecimals)
+      .toNumber();
+    const outputAsset =
+      outputAmount === 0
+        ? null
+        : tokenPriceToAssetToken(
+            outputMint,
+            outputAmount,
+            NetworkId.solana,
+            outputTokenPrice
+          );
+
+    const initialInputAmount = account.oriMakingAmount
+      .div(10 ** inputDecimals)
+      .toNumber();
+    const expectedOutputAmount = account.oriTakingAmount
+      .div(10 ** outputDecimals)
+      .toNumber();
+
+    const isV1 = i <= v1Lenght - 1;
+    const tags = isV1 ? ['deprecated'] : undefined;
+
+    const element: PortfolioElementTrade = {
+      networkId: NetworkId.solana,
+      label: 'LimitOrder',
+      platformId,
+      type: PortfolioElementType.trade,
+      tags,
+      data: {
+        assets: {
+          input: inputAsset,
+          output: outputAsset,
+        },
+        inputAddress: inputMint,
+        outputAddress: outputMint,
+        initialInputAmount,
+        expectedOutputAmount,
+        filledPercentage: 1 - inputAsset.data.amount / initialInputAmount,
+        inputPrice: inputTokenPrice.price,
+        outputPrice: outputTokenPrice.price,
+      },
+      value: getUsdValueSum([inputAsset.value, outputAsset?.value || 0]),
+    };
+    elements.push(element);
   }
 
-  if (assets.length === 0) return [];
-
-  const element: PortfolioElementMultiple = {
-    type: 'multiple',
-    networkId: NetworkId.solana,
-    platformId,
-    value,
-    label: 'Deposit',
-    name: `Limit Orders (${allAccounts.length})`,
-    data: { assets },
-  };
-
-  return [element];
+  return elements;
 };
 
 const fetcher: Fetcher = {
