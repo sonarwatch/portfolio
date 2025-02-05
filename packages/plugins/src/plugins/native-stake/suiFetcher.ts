@@ -71,7 +71,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         NetworkId.sui,
         suiTokenPrice,
         undefined,
-        { tags: [stakeInfo.status] }
+        {
+          tags: [stakeInfo.status],
+        }
       );
       assets.push({
         ...stakedAsset,
