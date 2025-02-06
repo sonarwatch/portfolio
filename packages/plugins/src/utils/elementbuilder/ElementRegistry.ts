@@ -12,6 +12,7 @@ import { ElementLiquidityBuilder } from './ElementLiquidityBuilder';
 import { ElementBorrowlendBuilder } from './ElementBorrowlendBuilder';
 import { ElementLeverageBuilder } from './ElementLeverageBuilder';
 import { ElementConcentratedLiquidityBuilder } from './ElementConcentratedLiquidityBuilder';
+import { ElementTradeBuilder } from './ElementTradeBuilder';
 
 export class ElementRegistry {
   readonly networkId: NetworkIdType;
@@ -70,6 +71,19 @@ export class ElementRegistry {
     const elementBuilder = new ElementLeverageBuilder({
       ...params,
       type: PortfolioElementType.leverage,
+    });
+    this.elements.push(elementBuilder);
+    return elementBuilder;
+  }
+
+  addElementTrade(
+    elementParams?: Omit<Params, 'type' | 'label'> & {
+      label?: PortfolioElementLabel;
+    }
+  ): ElementTradeBuilder {
+    const elementBuilder = new ElementTradeBuilder({
+      type: PortfolioElementType.trade,
+      label: elementParams?.label || 'LimitOrder',
     });
     this.elements.push(elementBuilder);
     return elementBuilder;

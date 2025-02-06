@@ -1,17 +1,12 @@
-import {
-  getUsdValueSum,
-  NetworkId,
-  PortfolioElementTrade,
-  PortfolioElementType,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSolana } from '../../../utils/clients';
 import { getParsedProgramAccounts } from '../../../utils/solana';
-import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import { platformId, limitV1ProgramId, limitV2ProgramId } from './constants';
-import { limitOrderStruct, limitOrderV2Struct } from './structs';
 import { limitFilters } from './filters';
+import { ElementRegistry } from '../../../utils/elementbuilder/ElementRegistry';
+import { limitOrderStruct, limitOrderV2Struct } from './structs';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -32,92 +27,35 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       limitFilters(owner)
     ),
   ]);
-  const v1Lenght = accountsRes[0].length;
+  const v1Length = accountsRes[0].length;
   const accounts = accountsRes.flat();
   if (accounts.length === 0) return [];
 
-  const mints = accounts
-    .map((account) => [
-      account.inputMint.toString(),
-      account.outputMint.toString(),
-    ])
-    .flat();
-  const pricesMap = await cache.getTokenPricesAsMap(
-    Array.from(mints),
-    NetworkId.solana
-  );
+  const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 
-  const elements: PortfolioElementTrade[] = [];
   for (let i = 0; i < accounts.length; i++) {
     const account = accounts[i];
 
-    const inputMint = account.inputMint.toString();
-    const inputTokenPrice = pricesMap.get(inputMint);
-    if (!inputTokenPrice) continue;
+    const isV1 = i <= v1Length - 1;
 
-    const outputMint = account.outputMint.toString();
-    const outputTokenPrice = pricesMap.get(outputMint);
-    if (!outputTokenPrice) continue;
+    const element = elementRegistry.addElementTrade({
+      tags: isV1 ? ['deprecated'] : undefined,
+    });
 
-    const inputDecimals = inputTokenPrice.decimals;
-    const outputDecimals = outputTokenPrice.decimals;
-
-    const inputAsset = tokenPriceToAssetToken(
-      inputMint,
-      account.makingAmount.div(10 ** inputDecimals).toNumber(),
-      NetworkId.solana,
-      inputTokenPrice
-    );
-
-    const outputAmount = account.oriTakingAmount
-      .minus(account.takingAmount)
-      .div(10 ** outputDecimals)
-      .toNumber();
-    const outputAsset =
-      outputAmount === 0
-        ? null
-        : tokenPriceToAssetToken(
-            outputMint,
-            outputAmount,
-            NetworkId.solana,
-            outputTokenPrice
-          );
-
-    const initialInputAmount = account.oriMakingAmount
-      .div(10 ** inputDecimals)
-      .toNumber();
-    const expectedOutputAmount = account.oriTakingAmount
-      .div(10 ** outputDecimals)
-      .toNumber();
-
-    const isV1 = i <= v1Lenght - 1;
-    const tags = isV1 ? ['deprecated'] : undefined;
-
-    const element: PortfolioElementTrade = {
-      networkId: NetworkId.solana,
-      label: 'LimitOrder',
-      platformId,
-      type: PortfolioElementType.trade,
-      tags,
-      data: {
-        assets: {
-          input: inputAsset,
-          output: outputAsset,
-        },
-        inputAddress: inputMint,
-        outputAddress: outputMint,
-        initialInputAmount,
-        expectedOutputAmount,
-        filledPercentage: 1 - inputAsset.data.amount / initialInputAmount,
-        inputPrice: inputTokenPrice.price,
-        outputPrice: outputTokenPrice.price,
+    element.setTrade({
+      inputAsset: {
+        address: account.inputMint,
+        amount: account.makingAmount,
       },
-      value: getUsdValueSum([inputAsset.value, outputAsset?.value || 0]),
-    };
-    elements.push(element);
+      outputAsset: {
+        address: account.outputMint,
+      },
+      initialInputAmount: account.oriMakingAmount,
+      expectedOutputAmount: account.oriTakingAmount,
+    });
   }
 
-  return elements;
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

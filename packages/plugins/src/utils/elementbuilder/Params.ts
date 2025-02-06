@@ -73,3 +73,12 @@ export type PortfolioAssetTokenParams = {
   attributes?: PortfolioAssetAttributes;
   alreadyShifted?: boolean;
 };
+
+export type TradeParams = {
+  inputAsset: PortfolioAssetTokenParams;
+  outputAsset: {
+    address: string | PublicKey;
+  };
+  initialInputAmount: number | BigNumber | string;
+  expectedOutputAmount?: number | BigNumber | string;
+};
