@@ -78,6 +78,9 @@ export type PortfolioAssetCommon = {
   attributes: PortfolioAssetAttributes;
   name?: string;
   imageUri?: string;
+  ref?: string;
+  sourceRefs?: SourceRef[];
+  link?: string;
 };
 
 /**
@@ -198,6 +201,23 @@ export type Service = {
   configs: ServiceConfig[];
 };
 
+export type SourceRefName =
+  | 'Pool'
+  | 'Farm'
+  | 'Market'
+  | 'Vault'
+  | 'Lending Market'
+  | 'Strategy'
+  | 'NFT Mint';
+
+/**
+ * Represents references to on-chain accounts.
+ */
+export type SourceRef = {
+  address: string;
+  name: SourceRefName;
+};
+
 /**
  * Represents the common properties of a portfolio element.
  */
@@ -218,6 +238,9 @@ export type PortfolioElementCommon = {
  */
 export type PortfolioElementMultipleData = {
   assets: PortfolioAsset[];
+  ref?: string;
+  sourceRefs?: SourceRef[];
+  link?: string;
 };
 
 /**
@@ -277,6 +300,9 @@ export type PortfolioLiquidity = {
   value: UsdValue;
   yields: Yield[];
   name?: string;
+  ref?: string;
+  sourceRefs?: SourceRef[];
+  link?: string;
 };
 
 /**
@@ -319,6 +345,9 @@ export type LevPosition = {
 export type PortfolioElementLeverageData = {
   positions: LevPosition[];
   value: UsdValue;
+  ref?: string;
+  sourceRefs?: SourceRef[];
+  link?: string;
 };
 
 /**
@@ -406,6 +435,10 @@ export type PortfolioElementBorrowLendData = {
    * undefined means the loan has no expiration.
    */
   expireOn?: number;
+
+  ref?: string;
+  sourceRefs?: SourceRef[];
+  link?: string;
 };
 
 /**
