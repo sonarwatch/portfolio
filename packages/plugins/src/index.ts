@@ -747,6 +747,7 @@ import {
   fetchers as sonicFetchers,
   airdropFetcher as sonicAirdropFetcher,
 } from './plugins/sonic';
+import { jobs as coingeckoJobs } from './plugins/coingecko';
 
 export {
   walletTokensPlatform,
@@ -1058,6 +1059,7 @@ export const jobs: Job[] = [
   ...defitunaJobs,
   ...iloopJobs,
   ...sonicJobs,
+  ...coingeckoJobs,
 ];
 
 // FETCHERS //
