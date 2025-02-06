@@ -27,6 +27,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const element = registry.addElementMultiple({
       label: 'Vesting',
       name: 'Lock',
+      link: `https://lock.jup.ag/token/${lock.tokenMint}`,
+      ref: lock.pubkey.toString(),
     });
     const endTime = lock.cliffTime
       .plus(lock.numberOfPeriod.times(lock.frequency))
