@@ -1,8 +1,22 @@
 import axios from 'axios';
 import crypto from 'crypto';
-import { leverageVaultJson, plutoServer } from './constants';
+import { leverageVaultJson, plutoProgramId, plutoServer } from './constants';
 import { GetEarn, GetLeverage } from './types';
 import { getUsdValueSumStrict, PortfolioAsset, UsdValue } from '@sonarwatch/portfolio-core';
+import { Connection } from '@solana/web3.js';
+import { getParsedProgramAccounts, getProgramAccounts } from '../../utils/solana';
+import { vaultFilter } from './structs';
+
+
+export async function getAllEarn(conn: Connection): Promise<any> {
+  const accounts = await getProgramAccounts(conn, plutoProgramId)
+
+  
+  console.log("Return dari ini apa",accounts)
+
+  return accounts
+}
+
 
 export const getEarnVaults = () => {
   const url = `${plutoServer}/vaults`;
