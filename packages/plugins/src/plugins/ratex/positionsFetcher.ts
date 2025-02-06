@@ -46,6 +46,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           if (marginPosition.balance !== 0) {
             const element = elementRegistry.addElementMultiple({
               label: 'Margin',
+              ref: user.pubkey,
             });
             element.addAsset({
               address: program.mint,
@@ -85,6 +86,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
         const element = elementRegistry.addElementMultiple({
           label: 'LiquidityPool',
+          ref: lpData.pubkey,
+          sourceRefs: [
+            {
+              name: 'Pool',
+              address: ammpool.pubkey.toString(),
+            },
+          ],
         });
         element.addAsset({
           address: program.mint,
