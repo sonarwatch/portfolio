@@ -5,8 +5,10 @@ import { Job, JobExecutor } from '../../Job';
 import { coingeckoExchangeRatesUrl } from '../../utils/coingecko/constants';
 import { CoingeckoExchangeRatesResponse } from '../../utils/coingecko/types';
 import { pricedCurrenciesKey, pricedCurrenciesPrefix } from './constants';
+import sleep from '../../utils/misc/sleep';
 
 const executor: JobExecutor = async (cache: Cache) => {
+  await sleep(90000);
   const res = await axios.get<CoingeckoExchangeRatesResponse>(
     coingeckoExchangeRatesUrl
   );
