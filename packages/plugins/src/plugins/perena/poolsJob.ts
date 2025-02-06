@@ -81,7 +81,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
     sources.push(...lpSources);
   }
-  console.log(sources);
+
   await cache.setTokenPriceSources(sources);
 };
 const job: Job = {
