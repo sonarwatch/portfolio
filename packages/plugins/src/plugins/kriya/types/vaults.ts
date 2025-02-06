@@ -229,7 +229,7 @@ export type UserPointsInfoFields = {
 
 // API Data
 
-export type VaultData = {
+export type VaultDataOld = {
   lpPriceHigh: string;
   apr: string;
   createdAt: Date;
@@ -247,10 +247,10 @@ export type VaultData = {
   currentLpPrice: string;
   id: string;
   rebalanceCap: string;
-  pool: Pool;
+  pool: PoolOld;
 };
 
-export type Pool = {
+export type PoolOld = {
   tokenYDecimals: number;
   vaultCoinType: string;
   vaultType: string;
@@ -258,4 +258,76 @@ export type Pool = {
   tokenYType: string;
   poolId: string;
   tokenXDecimals: number;
+};
+
+export type APIResponseVault = {
+  status: number;
+  message: string;
+  data: VaultData[];
+  timestamp: Date;
+};
+
+export type VaultData = {
+  vaultId: string;
+  vaultType: string;
+  vaultName: string;
+  vaultSource: string;
+  vtType: string;
+  performanceFee: string;
+  withdrawalFee: string;
+  info: Info;
+  stats: Stats;
+  farm: Farm | null;
+};
+
+export type Farm = {
+  id: string;
+  vaultId: string;
+  rewardTypes: string[];
+  apr: string;
+  isActive: boolean;
+  vtType: string;
+};
+
+export type Info = {
+  pool?: Pool;
+  type?: string;
+  adapter?: string;
+  lpPriceLow?: string;
+  lpPriceHigh?: string;
+  depositLimit: string;
+  tokenXAmount?: string;
+  tokenYAmount?: string;
+  lastRebalance?: string;
+  currentLpPrice?: string;
+  depositLimitUsd: string;
+  depositedX?: number;
+  tokenXType?: string;
+  depositedXUsd?: number;
+  aumInBaseToken?: number;
+  targetLeverage?: number;
+  tokenXDecimals?: number;
+  borrowedY?: number;
+  tokenYType?: string;
+  borrowedYUsd?: number;
+  legacyFarmId?: string;
+  tokenYDecimals?: number;
+  legacyStakeReceiptType?: string;
+};
+
+export type Pool = {
+  poolId: string;
+  tokenXType: string;
+  tokenYType: string;
+  tokenXDecimals: number;
+  tokenYDecimals: number;
+  poolTickSpacing: number;
+};
+
+export type Stats = {
+  vaultId: string;
+  vtSupply: string;
+  apr: string;
+  tvl: string;
+  timestamp: Date;
 };
