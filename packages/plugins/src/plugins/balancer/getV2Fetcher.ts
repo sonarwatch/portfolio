@@ -123,21 +123,19 @@ function getPoolsV2Fetcher(
           })
         )
           .map((result, index) => ({
-            rewardTokenAddress: ownerRewardTokenBalanceCalls[index]
-              .args[1] as string,
-            rawBalance: BigInt(result.result as bigint),
+            address: ownerRewardTokenBalanceCalls[index].args[1] as string,
+            balance: new BigNumber((result.result as bigint).toString()),
           }))
-          .filter((balance) => balance.rawBalance > 0);
+          .filter((token) => token.balance.isGreaterThan(0));
 
         const ownerRewardTokenBalancesWithPrice = await Promise.all(
-          ownerRewardTokenBalances.map(async (balance) => {
+          ownerRewardTokenBalances.map(async (token) => {
             const tokenPrice = await cache.getTokenPrice(
-              balance.rewardTokenAddress,
+              token.address,
               networkId
             );
-            console.log({ tokenPrice });
             return {
-              ...balance,
+              ...token,
               tokenPrice,
             };
           })
@@ -145,30 +143,30 @@ function getPoolsV2Fetcher(
 
         const rewardAssets: PortfolioAssetToken[] =
           ownerRewardTokenBalancesWithPrice.flatMap((rewardAsset) => {
+            // maybe could add a safety check here so if the token price doesn't exist we fetch the decimal from the contract
+            const balance = rewardAsset.balance.dividedBy(
+              new BigNumber(10).pow(rewardAsset?.tokenPrice?.decimals || 18)
+            );
             return tokenPriceToAssetTokens(
-              rewardAsset.rewardTokenAddress,
-              usersShareOfPoolToken.toNumber(),
+              rewardAsset.address,
+              balance.toNumber(),
               networkId,
-              null,
-              poolTokenPrice.toNumber()
+              rewardAsset.tokenPrice,
+              rewardAsset.tokenPrice?.price || undefined
             );
           });
 
-        // Use rewardTokenAddresses as needed
-        console.log({
-          gaugeAddress,
-          numRewardsTokens,
-          rewardTokenAddresses,
-          ownerRewardTokenBalances,
-          ownerRewardTokenBalancesWithPrice,
-        });
+        const rewardAssetsValue = getUsdValueSum(
+          rewardAssets.map((a) => a.value)
+        );
+
         const liquidity: PortfolioLiquidity = {
           assets,
           assetsValue: summedValue,
           value: summedValue,
           yields: [],
           rewardAssets,
-          rewardAssetsValue: null,
+          rewardAssetsValue,
         };
         gaugeLiquidities.push(liquidity);
         continue;
