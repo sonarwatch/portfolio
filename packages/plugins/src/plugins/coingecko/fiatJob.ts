@@ -14,22 +14,24 @@ const executor: JobExecutor = async (cache: Cache) => {
   );
 
   const { rates } = res.data;
-  const btcToUsd = rates['usd'].value;
-  if (!btcToUsd || btcToUsd <= 0) return;
+  const btcPriceUsd = rates['usd'].value;
+  if (!btcPriceUsd || btcPriceUsd <= 0) return;
 
-  const pricedCurrencies: PricedCurrency[] = fiatCurrencies.map((fiat) => {
-    const btcRate = rates[fiat.name.toLowerCase()].value;
-    if (!btcRate || btcRate <= 0) {
-      return fiat;
+  const pricedCurrencies: PricedCurrency[] = fiatCurrencies.map(
+    (fiat): PricedCurrency => {
+      const btcRate = rates[fiat.name.toLowerCase()].value;
+      if (!btcRate || btcRate <= 0) {
+        return fiat;
+      }
+      return {
+        ...fiat,
+        rateToUsd: 1 / (btcPriceUsd / btcRate),
+        rateToBtc: btcRate,
+        priceUsd: btcPriceUsd / btcRate,
+        priceBtc: 1 / btcRate,
+      };
     }
-    return {
-      ...fiat,
-      usdRate: 1 / (btcToUsd / btcRate),
-      btcRate,
-      usdPrice: btcToUsd / btcRate,
-      btcPrice: 1 / btcRate,
-    };
-  });
+  );
 
   await cache.setItem(pricedCurrenciesKey, pricedCurrencies, {
     prefix: pricedCurrenciesPrefix,
