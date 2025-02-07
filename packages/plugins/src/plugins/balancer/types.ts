@@ -45,6 +45,12 @@ export type OwnerPoolApiResponse = {
     decimals: number;
     balanceUSD: string;
   }[];
+  staking: {
+    address: string;
+    gauge: {
+      gaugeAddress: string;
+    };
+  };
   userBalance: {
     stakedBalances: {
       stakingType: string;

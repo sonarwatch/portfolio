@@ -6,16 +6,14 @@ import {
   PortfolioLiquidity,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
-import { getAddress } from 'viem';
 
 import { BalancerSupportedEvmNetworkIdType, platformId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getPoolPositionsForOwnerV2 } from './helpers/pools';
 import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
-import { getEvmClient } from '../../utils/clients';
 
-import { liquidityGaugeAbi } from './abi';
 import { Cache } from '../../Cache';
+import { getOwnerBalRewardsV2, getOwnerGaugeRewardsV2 } from './helpers/gauges';
 
 function getPoolsV2Fetcher(
   networkId: BalancerSupportedEvmNetworkIdType
@@ -25,9 +23,9 @@ function getPoolsV2Fetcher(
       owner,
       networkId
     );
+
     const poolLiquidities: PortfolioLiquidity[] = [];
     const gaugeLiquidities: PortfolioLiquidity[] = [];
-
     for (const poolPosition of ownerPoolPositions) {
       const ownerShares = new BigNumber(poolPosition.userBalance.totalBalance);
       const totalPoolShares = new BigNumber(
@@ -60,7 +58,12 @@ function getPoolsV2Fetcher(
          * So we are removing them from the poolTokens array, after all the calculations are done
          * The BPT tokens have the same address as the pool, and the type of the pool will be 'COMPOSABLE_STABLE'
          */
-        .filter((asset) => asset.data.address !== poolPosition.address);
+        .filter(
+          (asset) =>
+            asset.data.address.toLowerCase() !==
+            poolPosition.address.toLowerCase() // pool address is not check summed
+        );
+
       const summedValue = getUsdValueSum(assets.map((a) => a.value));
 
       const stackedBalance = poolPosition.userBalance.stakedBalances[0];
@@ -81,55 +84,20 @@ function getPoolsV2Fetcher(
 
       // Farming Position
       if (stackedBalance.stakingType === 'GAUGE') {
-        const gaugeAddress = stackedBalance.stakingId;
+        const { gaugeAddress } = poolPosition.staking.gauge;
 
-        const client = getEvmClient(networkId);
-        const numRewardsTokens = Number(
-          await client.readContract({
-            address: getAddress(gaugeAddress),
-            abi: liquidityGaugeAbi,
-            functionName: 'reward_count',
-          })
-        );
+        const [balRewardsRaw, rewardTokensRaw] = await Promise.all([
+          getOwnerBalRewardsV2(networkId, owner, gaugeAddress),
+          getOwnerGaugeRewardsV2(networkId, owner, gaugeAddress),
+        ]);
 
-        const rewardTokenCalls = Array.from(
-          { length: numRewardsTokens },
-          (_, index) => ({
-            address: getAddress(gaugeAddress),
-            abi: liquidityGaugeAbi,
-            functionName: 'reward_tokens',
-            args: [index],
-          })
-        );
+        const allRewardTokensWithBalance = [
+          balRewardsRaw,
+          ...rewardTokensRaw,
+        ].filter((token) => token.balance.isGreaterThan(0));
 
-        const rewardTokenAddresses = (
-          await client.multicall({
-            contracts: rewardTokenCalls,
-          })
-        ).map((result) => result.result);
-
-        const ownerRewardTokenBalanceCalls = rewardTokenAddresses.map(
-          (rewardTokenAddress) => ({
-            address: getAddress(gaugeAddress),
-            abi: liquidityGaugeAbi,
-            functionName: 'claimable_reward',
-            args: [owner, rewardTokenAddress],
-          })
-        );
-
-        const ownerRewardTokenBalances = (
-          await client.multicall({
-            contracts: ownerRewardTokenBalanceCalls,
-          })
-        )
-          .map((result, index) => ({
-            address: ownerRewardTokenBalanceCalls[index].args[1] as string,
-            balance: new BigNumber((result.result as bigint).toString()),
-          }))
-          .filter((token) => token.balance.isGreaterThan(0));
-
-        const ownerRewardTokenBalancesWithPrice = await Promise.all(
-          ownerRewardTokenBalances.map(async (token) => {
+        const allRewardTokenWithBalanceAndPrice = await Promise.all(
+          allRewardTokensWithBalance.map(async (token) => {
             const tokenPrice = await cache.getTokenPrice(
               token.address,
               networkId
@@ -142,8 +110,8 @@ function getPoolsV2Fetcher(
         );
 
         const rewardAssets: PortfolioAssetToken[] =
-          ownerRewardTokenBalancesWithPrice.flatMap((rewardAsset) => {
-            // maybe could add a safety check here so if the token price doesn't exist we fetch the decimal from the contract
+          allRewardTokenWithBalanceAndPrice.flatMap((rewardAsset) => {
+            // maybe could add a safety check here so if the token price doesn't exist we fetch the decimal from the contract?
             const balance = rewardAsset.balance.dividedBy(
               new BigNumber(10).pow(rewardAsset?.tokenPrice?.decimals || 18)
             );
