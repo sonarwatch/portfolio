@@ -1,32 +1,3 @@
-export type Pool = {
-  id: string;
-  address: string;
-  symbol: string;
-  tokens: PoolToken[];
-  totalLiquidity: string;
-  totalShares: string;
-};
-
-export type PoolToken = {
-  decimals: number;
-  symbol: string;
-  address: string;
-  balance: string;
-};
-
-export type PoolApiResponse = {
-  id: string;
-  address: string;
-  symbol: string;
-  tokens: PoolToken[];
-  dynamicData: {
-    totalLiquidity: string;
-    totalShares: string;
-  };
-};
-
-export type GaugesByPool = Record<string, string[]>;
-
 export type OwnerPoolApiResponse = {
   address: string;
   name: string;

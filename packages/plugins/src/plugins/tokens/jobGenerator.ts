@@ -7,7 +7,6 @@ import axios, { AxiosResponse } from 'axios';
 import { getCoingeckoSources, getTokensData } from './helpers';
 import { Cache } from '../../Cache';
 import { Job } from '../../Job';
-import sleep from '../../utils/misc/sleep';
 import { walletTokensPlatform } from './constants';
 import shuffleArray from '../../utils/misc/shuffleArray';
 

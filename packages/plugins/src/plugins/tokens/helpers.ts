@@ -37,10 +37,8 @@ export async function getCoingeckoSources(
   tokensData: TokenData[]
 ): Promise<TokenPriceSource[]> {
   const coingeckoIds = new Set(tokensData.map((t) => t.coingeckoId));
-  console.log(coingeckoIds);
   const pricesByCoingeckoId = await getPricesFromCoingeckoIds(coingeckoIds);
 
-  console.log('pricesByCoingeckoId', pricesByCoingeckoId);
   const sources: TokenPriceSource[] = [];
 
   const tdsByCoingeckoId: Record<string, TokenData[]> = {};

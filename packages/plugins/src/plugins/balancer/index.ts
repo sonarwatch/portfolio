@@ -2,8 +2,8 @@ import { NetworkId, Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from '../../Fetcher';
 import { Job } from '../../Job';
 import { platform } from './constants';
-import getBalancerPoolTokensJob from './getBalancerPoolTokensJob';
-import getV2Fetcher from './getV2Fetcher';
+import getBalancerPoolTokensJob from './getPoolTokensJobV2';
+import getV2Fetcher from './getFetcherV2';
 
 export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [getBalancerPoolTokensJob];
