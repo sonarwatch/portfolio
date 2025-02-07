@@ -222,7 +222,7 @@ export const fraxtalNetwork: Network = {
   llamaId: 'Fraxtal',
   // TODO
   tokenListUrl:
-    'https://github.com/sonarwatch/token-lists/releases/latest/download/sonarwatch.bnb.tokenlist.json',
+    'https://gist.githubusercontent.com/jtardioli/f0b857cbebf6d7f1be20eae612b9aa00/raw/e36c76a1078a5ad8c09c4310aa4cb211e4044609/sonarwatch.fraxtal.tokenlist.json',
 };
 
 export const networks: Record<NetworkIdType, Network> = {

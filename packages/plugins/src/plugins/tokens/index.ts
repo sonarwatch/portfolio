@@ -31,6 +31,7 @@ export const jobs: Job[] = [
   jobGenerator(NetworkId.sui),
   jobGenerator(NetworkId.sei),
   jobGenerator(NetworkId.bnb),
+  jobGenerator(NetworkId.fraxtal),
   ...networksAsArray.map((network) => getTokenListsJob(network.id)),
 ];
 

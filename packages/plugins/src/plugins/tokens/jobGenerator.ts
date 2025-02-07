@@ -10,21 +10,23 @@ import { Job } from '../../Job';
 import sleep from '../../utils/misc/sleep';
 import { walletTokensPlatform } from './constants';
 import shuffleArray from '../../utils/misc/shuffleArray';
+import { token } from '@project-serum/anchor/dist/cjs/utils';
 
 export default function jobGenerator(networkId: NetworkIdType): Job {
   const network = networks[networkId];
   const executor = async (cache: Cache) => {
     console.log('starting');
-    await sleep(60000);
+    // await sleep(60000);
     console.log('sleep over');
 
     const tokenListResponse: AxiosResponse<UniTokenList> | null = await axios
       .get(network.tokenListUrl)
       .catch(() => null);
-    console.log('got token list resp');
+    console.log('got token list resp', tokenListResponse?.data.tokens);
     if (!tokenListResponse) return;
-    console.log('it wasny empyu');
     const tokensData = getTokensData(tokenListResponse.data);
+
+    console.log({ tokensData });
     console.log('fetched tokens data');
     tokenListResponse.data.tokens = []; // Free some RAM
     console.log('start shuffle');
