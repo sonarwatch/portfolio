@@ -10,7 +10,6 @@ import { Job } from '../../Job';
 import sleep from '../../utils/misc/sleep';
 import { walletTokensPlatform } from './constants';
 import shuffleArray from '../../utils/misc/shuffleArray';
-import { token } from '@project-serum/anchor/dist/cjs/utils';
 
 export default function jobGenerator(networkId: NetworkIdType): Job {
   const network = networks[networkId];
