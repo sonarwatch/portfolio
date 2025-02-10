@@ -140,6 +140,10 @@ npm install
 cp .env.example .env
 # Set your RPCs
 
+
+#####
+# WARNING - the generate commands are broken, you need to create them manually
+#########
 # Generate a plugin
 npx nx generate @sonarwatch/portfolio-plugins:plugin my-super-protocol
 
