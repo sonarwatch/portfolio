@@ -48,7 +48,7 @@ export class ElementTradeBuilder extends ElementBuilder {
 
     const outputAsset = new BigNumber(this.params.outputAsset.amount || 0).gt(0)
       ? new AssetTokenBuilder({
-          address: this.params.outputAsset.toString(),
+          address: this.params.outputAsset.address.toString(),
           amount: new BigNumber(this.params.outputAsset.amount || 0).toNumber(),
         }).get(networkId, tokenPrices)
       : null;
