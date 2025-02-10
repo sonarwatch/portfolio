@@ -44,6 +44,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     prefix: sanctumPlatformId,
     networkId: NetworkId.solana,
   });
+  if (sanctumMints) mints.push(...sanctumMints);
   const connection = getClientSolana();
 
   const [solSources, verifiedTokens] = await Promise.all([
@@ -54,19 +55,24 @@ const executor: JobExecutor = async (cache: Cache) => {
   const solPrice = solSources.get(vsToken);
   if (!solPrice) return;
 
+  const mintsPk: Set<PublicKey> = new Set([
+    ...mints.map((m) => new PublicKey(m)),
+  ]);
+
+  const decimalsMap = await getMultipleDecimalsAsMap(connection, [...mintsPk]);
+
   verifiedTokens.data
     .sort((a, b) => b.daily_volume - a.daily_volume)
     .slice(0, 250)
     .forEach((token) => {
-      mints.push(token.address);
+      mintsPk.add(new PublicKey(token.address));
+      decimalsMap.set(token.address, Number(token.decimals));
     });
 
   const solTokenPrice = { price: solPrice };
 
-  const mintsPk = mints.map((m) => new PublicKey(m));
-  if (sanctumMints) mintsPk.push(...sanctumMints.map((m) => new PublicKey(m)));
-  const prices = await getJupiterPrices(mintsPk, new PublicKey(vsToken));
-  const decimalsMap = await getMultipleDecimalsAsMap(connection, mintsPk);
+  const prices = await getJupiterPrices([...mintsPk], new PublicKey(vsToken));
+
   const sources: TokenPriceSource[] = [];
   prices.forEach((price, mint) => {
     const decimals = decimalsMap.get(mint);

@@ -43,7 +43,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       })} ${maturity.getDate()} ${maturity.getFullYear().toString()}`,
     });
 
-    const liquidity = element.addLiquidity();
+    const liquidity = element.addLiquidity({
+      sourceRefs: [
+        {
+          address: market.id.toString(),
+          name: 'Pool',
+        },
+      ],
+      ref: account.pubkey,
+    });
 
     liquidity.addAsset({
       address: market.vault.mintSy,

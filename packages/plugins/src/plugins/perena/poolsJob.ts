@@ -3,6 +3,7 @@ import {
   solanaNativeAddress,
   TokenPriceSource,
 } from '@sonarwatch/portfolio-core';
+import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { pid, platformId } from './constants';
@@ -56,7 +57,9 @@ const executor: JobExecutor = async (cache: Cache) => {
         return {
           address: pair.x_mint.toString(),
           reserveAmountRaw: pair.x_reserve_amount,
-          weight: lpAccount.weights[index] / 10000,
+          weight: new BigNumber(lpAccount.weights[index])
+            .dividedBy(lpAccount.total_weight)
+            .toNumber(),
           decimals: pair.decimals,
           tokenPrice,
         };
