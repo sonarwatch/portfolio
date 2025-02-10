@@ -1,5 +1,5 @@
 export const PlutoIDL = {
-    address: "  ",
+    address: "5UFYdXHgXLMsDzHyv6pQW9zv3fNkRSNqHwhR7UPnkhzy",
     metadata: {
         name: "pluto",
         version: "0.1.0",

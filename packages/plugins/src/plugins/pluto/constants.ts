@@ -14,15 +14,19 @@ export const platform: Platform = {
 };
 
 export const plutoProgramId = new PublicKey(
-  '8n3FHwYxFgQCQc2FNFkwDUf9mcqupxXcCvgfHbApMLv3'
+  '5UFYdXHgXLMsDzHyv6pQW9zv3fNkRSNqHwhR7UPnkhzy'
 );
 
 export const plutoProgramIdl = {
-  programId: plutoProgramId.toString(),
+  programId: PlutoIDL.address,
   idl: PlutoIDL,
   idlType: 'anchor',
 } as IdlItem;
 
+export const earnVaultDataSize = 1128;
+export const leverageVaultDataSize = 1496;
+export const earnLenderDataSize = 304;
+export const lender_seed = "lender_v01"
 
 export const plutoServer = 'https://pluto-sonarwatch-service-259181308485.asia-southeast1.run.app/';
 export const leverageVaultJson = 'https://storage.googleapis.com/plutoso/accounts.json';

@@ -1,22 +1,80 @@
 import axios from 'axios';
 import crypto from 'crypto';
-import { leverageVaultJson, plutoProgramId, plutoServer } from './constants';
+import { earnLenderDataSize, earnVaultDataSize, lender_seed, leverageVaultJson, plutoProgramId, plutoProgramIdl, plutoServer } from './constants';
 import { GetEarn, GetLeverage } from './types';
 import { getUsdValueSumStrict, PortfolioAsset, UsdValue } from '@sonarwatch/portfolio-core';
-import { Connection } from '@solana/web3.js';
-import { getParsedProgramAccounts, getProgramAccounts } from '../../utils/solana';
-import { vaultFilter } from './structs';
+import { Connection, GetProgramAccountsFilter } from '@solana/web3.js';
+import { getAutoParsedMultipleAccountsInfo, getAutoParsedProgramAccounts, getParsedProgramAccounts, getProgramAccounts } from '../../utils/solana';
+import { EarnLender, earnLenderBeet, VaultEarn, vaultEarnBeet } from './structs';
+import { PublicKey } from '@solana/web3.js';
+import { Buffer } from 'buffer';
 
 
-export async function getAllEarn(conn: Connection): Promise<any> {
-  const accounts = await getProgramAccounts(conn, plutoProgramId)
+export async function getAllEarn(conn: Connection): Promise<VaultEarn[]> {
+  const account = await getParsedProgramAccounts(
+    conn,
+    vaultEarnBeet,
+    plutoProgramId,
+    [
+      {
+        dataSize: earnVaultDataSize
+      }
+    ]
+  )
 
-  
-  console.log("Return dari ini apa",accounts)
-
-  return accounts
+  return account
 }
 
+export async function getAllEarnLender(conn: Connection): Promise<EarnLender[]> {
+  const account = await getParsedProgramAccounts(
+    conn,
+    earnLenderBeet,
+    plutoProgramId,
+    [
+      {
+        dataSize: earnLenderDataSize
+      }
+    ]
+  )
+
+  return account
+}
+
+export async function calculateLenderPDA(
+  programId: PublicKey,
+  vaultPubkey: PublicKey,
+  tokenMintPubkey: PublicKey,
+  userPubkey: PublicKey
+): Promise<[PublicKey, number]> {
+  const seeds = lender_seed;
+  // Replace with the actual value of seeds::LENDER
+  return PublicKey.findProgramAddressSync(
+    [
+      Buffer.from(seeds),
+      vaultPubkey.toBuffer(),
+      tokenMintPubkey.toBuffer(),
+      userPubkey.toBuffer(),
+    ],
+    programId
+  );
+}
+
+export async function testing(conn: Connection) {
+  const account = await getProgramAccounts(
+    conn,
+    plutoProgramId,
+  )
+
+  console.log(account)
+  const fill: any = []
+  account.forEach((acc) => {
+    if (acc.account.data.length > 200 && acc.account.data.length < 400) {
+      fill.push({acc, length: acc.account.data.length})
+    }
+  })
+  console.log(fill)
+
+}
 
 export const getEarnVaults = () => {
   const url = `${plutoServer}/vaults`;
