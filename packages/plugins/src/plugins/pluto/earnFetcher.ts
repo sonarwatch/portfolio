@@ -39,7 +39,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       name: `Earn`,
     });
 
-    const apy = Number(vault.apy.ema7d / 1e3);
+    const apy = Number(vault.apy.ema7d / 1e5);
     element.addSuppliedYield([{ apy, apr: apyToApr(apy) }]);
 
     const earnUnit = new BigNumber(acc.unit).dividedBy(10 ** 8); // Convert BigNumber to JS number (losing precision)

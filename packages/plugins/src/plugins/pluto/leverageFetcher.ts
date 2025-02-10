@@ -49,7 +49,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const index = vault.index / 1e12;
       const amount = unit * index;
 
-      const apy = Number(vault.apy.ema7d / 1e3);
+      const apy = Number(vault.apy.ema7d / 1e5);
       element.addSuppliedYield([
         {
           apy,
@@ -63,7 +63,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         alreadyShifted: true,
       });
 
-      const borrowingApy = Number(vault.borrowingApy.ema7d / 1e3);
+      const borrowingApy = Number(vault.borrowingApy.ema7d / 1e5);
       element.addBorrowedYield([
         {
           apy: borrowingApy,
