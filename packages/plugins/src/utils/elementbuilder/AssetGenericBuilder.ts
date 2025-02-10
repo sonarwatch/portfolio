@@ -17,7 +17,7 @@ export class AssetGenericBuilder extends AssetBuilder {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  mints(): string[] {
+  tokenAddresses(): string[] {
     return [];
   }
 

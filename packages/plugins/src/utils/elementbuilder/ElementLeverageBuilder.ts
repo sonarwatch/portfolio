@@ -23,7 +23,7 @@ export class ElementLeverageBuilder extends ElementBuilder {
     return levPositionBuilder;
   }
 
-  mints(): string[] {
+  tokenAddresses(): string[] {
     return this.positions.map((position) => position.mints()).flat();
   }
 

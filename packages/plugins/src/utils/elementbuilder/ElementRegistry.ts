@@ -90,7 +90,7 @@ export class ElementRegistry {
   }
 
   async getElements(cache: Cache): Promise<PortfolioElement[]> {
-    const mints = this.elements.map((e) => e.mints()).flat();
+    const mints = this.elements.map((e) => e.tokenAddresses()).flat();
     const tokenPrices = await cache.getTokenPricesAsMap(mints, this.networkId);
 
     return this.elements

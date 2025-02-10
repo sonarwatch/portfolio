@@ -86,12 +86,12 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
     this.borrowedWeights.push(borrowedWeight);
   }
 
-  mints(): string[] {
+  tokenAddresses(): string[] {
     return [
-      ...this.borrowedAssets.map((a) => a.mints()),
-      ...this.suppliedAssets.map((a) => a.mints()),
-      ...this.rewardAssets.map((a) => a.mints()),
-      ...this.unsettledAssets.map((a) => a.mints()),
+      ...this.borrowedAssets.map((a) => a.tokenAddresses()),
+      ...this.suppliedAssets.map((a) => a.tokenAddresses()),
+      ...this.rewardAssets.map((a) => a.tokenAddresses()),
+      ...this.unsettledAssets.map((a) => a.tokenAddresses()),
     ].flat();
   }
 

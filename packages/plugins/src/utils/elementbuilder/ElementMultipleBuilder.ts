@@ -31,8 +31,8 @@ export class ElementMultipleBuilder extends ElementBuilder {
     this.assets.push(new AssetGenericBuilder(params));
   }
 
-  mints(): string[] {
-    return [...this.assets.map((a) => a.mints())].flat();
+  tokenAddresses(): string[] {
+    return [...this.assets.map((a) => a.tokenAddresses())].flat();
   }
 
   get(

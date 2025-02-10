@@ -22,10 +22,12 @@ export class ElementTradeBuilder extends ElementBuilder {
     this.params = params;
   }
 
-  mints(): string[] {
+  tokenAddresses(): string[] {
     const mints = [];
     if (this.params?.inputAsset)
-      mints.push(...new AssetTokenBuilder(this.params.inputAsset).mints());
+      mints.push(
+        ...new AssetTokenBuilder(this.params.inputAsset).tokenAddresses()
+      );
     if (this.params?.outputAsset)
       mints.push(this.params.outputAsset.address.toString());
     return mints;

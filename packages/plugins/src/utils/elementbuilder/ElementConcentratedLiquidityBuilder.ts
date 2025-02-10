@@ -32,7 +32,7 @@ export class ElementConcentratedLiquidityBuilder extends ElementLiquidityBuilder
     return liquidityBuilder;
   }
 
-  override mints(): string[] {
+  override tokenAddresses(): string[] {
     const mints = this.liquidities.map((liquidity) => liquidity.mints()).flat();
     if (this.concentratedLiquidityParams?.addressA)
       mints.push(this.concentratedLiquidityParams.addressA.toString());

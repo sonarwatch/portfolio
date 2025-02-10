@@ -24,7 +24,7 @@ export class ElementLiquidityBuilder extends ElementBuilder {
     return liquidityBuilder;
   }
 
-  mints(): string[] {
+  tokenAddresses(): string[] {
     return this.liquidities.map((liquidity) => liquidity.mints()).flat();
   }
 
