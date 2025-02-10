@@ -1,15 +1,11 @@
-import { LeverageSide, UsdValue } from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
+import {
+  CrossLevPosition,
+  IsoLevPosition,
+  UsdValue,
+} from '@sonarwatch/portfolio-core';
 
-export type LevPositionParams = {
-  address: string;
-  collateralAmount?: BigNumber;
-  collateralValue?: UsdValue; // collateralAmount or collateralValue is required
-  side: LeverageSide;
-  sizeValue: BigNumber;
-  liquidationPrice?: BigNumber;
-  pnlValue?: BigNumber;
-  name?: string;
-  imageUri?: string;
-  leverage?: number;
+export type IsoLevPositionParams = Omit<IsoLevPosition, 'value'> & {
+  value?: UsdValue;
 };
+
+export type CrossLevPositionParams = CrossLevPosition;

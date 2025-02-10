@@ -246,12 +246,10 @@ export type PortfolioElementTradeData = {
    * Filled percentage between 0 and 1.
    */
   filledPercentage: number;
-
   /**
    * Created at timestamp in ms
    */
   createdAt?: number;
-
   /**
    * Expire at timestamp in ms
    */
@@ -299,25 +297,65 @@ export enum LeverageSide {
   short = 'short',
 }
 
-export type LevPosition = {
+export type IsoLevPosition = {
+  /**
+   * Address of the levareged asset if it exist
+   */
+  address?: string;
   name?: string;
   imageUri?: string;
-  address?: string;
-  size?: number;
-  sizeValue: UsdValue;
   collateralValue: UsdValue;
-  value: UsdValue;
-  liquidationPrice: UsdValue;
-  pnlValue: UsdValue;
-  leverage?: number;
   side: LeverageSide;
+  entryPrice: UsdValue;
+  markPrice: UsdValue;
+  size: number;
+  sizeValue: UsdValue;
+  pnlValue: UsdValue;
+  liquidationPrice: UsdValue;
+  leverage?: number;
+  tp?: {
+    gain: UsdValue;
+    price: UsdValue;
+  };
+  sl?: {
+    loss: UsdValue;
+    price: UsdValue;
+  };
+  value: UsdValue;
 };
+
+export type CrossLevPosition = Omit<IsoLevPosition, 'collateralValue'>;
 
 /**
  * Represents the data of a leverage portfolio element.
  */
 export type PortfolioElementLeverageData = {
-  positions: LevPosition[];
+  /**
+   * Isolated positions
+   */
+  isolated?: {
+    positions: IsoLevPosition[];
+    value: UsdValue;
+  };
+  /**
+   * Cross positions
+   */
+  cross?: {
+    /**
+     * Sum of positions sizeValue / cross value
+     */
+    leverage?: number;
+    /**
+     * If it reach 1, positions will be liquidated
+     */
+    collateralAssets?: PortfolioAsset[];
+    collateralValue: UsdValue;
+    positions: CrossLevPosition[];
+    value: UsdValue;
+  };
+  /**
+   * Total value (total equity)
+   */
   value: UsdValue;
 };
 

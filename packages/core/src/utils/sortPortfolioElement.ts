@@ -90,7 +90,10 @@ export function sortElementLeverage(
   element: PortfolioElementLeverage
 ): PortfolioElementLeverage {
   const sortedElement: PortfolioElementLeverage = { ...element };
-  sortedElement.data.positions.sort((a, b) =>
+  sortedElement.data.isolated?.positions.sort((a, b) =>
+    compareUsdValue(a.value, b.value)
+  );
+  sortedElement.data.cross?.positions.sort((a, b) =>
     compareUsdValue(a.value, b.value)
   );
   return sortedElement;

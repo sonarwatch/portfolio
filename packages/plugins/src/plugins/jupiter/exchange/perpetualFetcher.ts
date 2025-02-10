@@ -1,5 +1,5 @@
 import {
-  LevPosition,
+  IsoLevPosition,
   LeverageSide,
   NetworkId,
   PortfolioElementLeverage,
@@ -74,7 +74,7 @@ const executor: FetcherExecutor = async (
 
   // const pythPricesByAccount = await getPythPricesAsMap(client, oraclesPubkeys);
 
-  const levPositions: LevPosition[] = [];
+  const levPositions: IsoLevPosition[] = [];
   for (const position of positionAccounts) {
     const { collateralUsd, sizeUsd, price, side, cumulativeInterestSnapshot } =
       position;
@@ -107,6 +107,12 @@ const executor: FetcherExecutor = async (
     const openFees = entryPrice.times(size).times(increaseFees);
     const closeFees = sizeValue.times(decreaseFees);
 
+    // const fee = getFeeAmount(
+    //   new BN(perpPool.fees.increasePositionBps),
+    //   new BN(sizeUsd.toString()),
+    //   new BN(custody.pricing.tradeSpreadLong)
+    // );
+
     const openAndCloseFees = openFees.plus(closeFees);
     const borrowFee = sizeUsd
       .times(
@@ -136,6 +142,8 @@ const executor: FetcherExecutor = async (
       sizeValue: sizeValue.toNumber(),
       pnlValue: rawPnlValue.toNumber(),
       value: value.toNumber(),
+      markPrice: currentPrice,
+      entryPrice: entryPrice.toNumber(),
     });
   }
 
@@ -145,7 +153,10 @@ const executor: FetcherExecutor = async (
     {
       type: PortfolioElementType.leverage,
       data: {
-        positions: levPositions,
+        isolated: {
+          positions: levPositions,
+          value,
+        },
         value,
       },
       label: 'Leverage',
