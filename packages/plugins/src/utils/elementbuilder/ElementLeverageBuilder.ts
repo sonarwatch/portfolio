@@ -7,7 +7,7 @@ import {
   PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
 import { ElementBuilder } from './ElementBuilder';
-import { ElementParams } from './ElementParams';
+import { LevPositionParams, Params } from './Params';
 import { TokenPriceMap } from '../../TokenPriceMap';
 import {
   CrossLevPositionBuilder,
@@ -25,7 +25,7 @@ export class ElementLeverageBuilder extends ElementBuilder {
   crossPositions: CrossLevPositionBuilder[];
   crossCollateralAssets: AssetTokenBuilder[];
 
-  constructor(params: ElementParams) {
+  constructor(params: Params) {
     super(params);
     this.isoPositions = [];
     this.crossPositions = [];
@@ -98,6 +98,9 @@ export class ElementLeverageBuilder extends ElementBuilder {
           leverage: crossLeverage,
         },
         value,
+        ref: this.ref?.toString(),
+        sourceRefs: this.sourceRefs,
+        link: this.link,
       },
       networkId,
       platformId: this.platformId || platformId,

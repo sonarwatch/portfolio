@@ -6,12 +6,14 @@ import {
   Yield,
 } from '@sonarwatch/portfolio-core';
 import { ElementBuilder } from './ElementBuilder';
-import { ElementParams } from './ElementParams';
+import {
+  Params,
+  PortfolioAssetGenericParams,
+  PortfolioAssetTokenParams,
+} from './Params';
 import { TokenPriceMap } from '../../TokenPriceMap';
 import { AssetBuilder } from './AssetBuilder';
 import { AssetTokenBuilder } from './AssetTokenBuilder';
-import { PortfolioAssetTokenParams } from './PortfolioAssetTokenParams';
-import { PortfolioAssetGenericParams } from './PortfolioAssetGenericParams';
 import { AssetGenericBuilder } from './AssetGenericBuilder';
 
 export class ElementBorrowlendBuilder extends ElementBuilder {
@@ -24,7 +26,7 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
   suppliedLtvs: number[];
   borrowedWeights: number[];
 
-  constructor(params: ElementParams) {
+  constructor(params: Params) {
     super(params);
     this.borrowedAssets = [];
     this.suppliedAssets = [];
@@ -84,12 +86,12 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
     this.borrowedWeights.push(borrowedWeight);
   }
 
-  mints(): string[] {
+  tokenAddresses(): string[] {
     return [
-      ...this.borrowedAssets.map((a) => a.mints()),
-      ...this.suppliedAssets.map((a) => a.mints()),
-      ...this.rewardAssets.map((a) => a.mints()),
-      ...this.unsettledAssets.map((a) => a.mints()),
+      ...this.borrowedAssets.map((a) => a.tokenAddresses()),
+      ...this.suppliedAssets.map((a) => a.tokenAddresses()),
+      ...this.rewardAssets.map((a) => a.tokenAddresses()),
+      ...this.unsettledAssets.map((a) => a.tokenAddresses()),
     ].flat();
   }
 
@@ -164,6 +166,9 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
           value: unsettledValue,
         },
         value,
+        ref: this.ref?.toString(),
+        sourceRefs: this.sourceRefs,
+        link: this.link,
       },
       value,
       name: this.name,

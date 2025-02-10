@@ -5,8 +5,8 @@ import {
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { TokenPriceMap } from '../../TokenPriceMap';
-import { PortfolioAssetGenericParams } from './PortfolioAssetGenericParams';
 import { AssetBuilder } from './AssetBuilder';
+import { PortfolioAssetGenericParams } from './Params';
 
 export class AssetGenericBuilder extends AssetBuilder {
   params: PortfolioAssetGenericParams;
@@ -17,7 +17,7 @@ export class AssetGenericBuilder extends AssetBuilder {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  mints(): string[] {
+  tokenAddresses(): string[] {
     return [];
   }
 

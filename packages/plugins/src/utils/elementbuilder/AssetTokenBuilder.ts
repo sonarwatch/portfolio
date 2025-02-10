@@ -4,11 +4,11 @@ import {
   PortfolioAssetAttributes,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
-import { PortfolioAssetTokenParams } from './PortfolioAssetTokenParams';
 import tokenPriceToAssetToken from '../misc/tokenPriceToAssetToken';
 import { TokenPriceMap } from '../../TokenPriceMap';
 import tokenPriceToAssetTokens from '../misc/tokenPriceToAssetTokens';
 import { AssetBuilder } from './AssetBuilder';
+import { PortfolioAssetTokenParams } from './Params';
 
 export class AssetTokenBuilder extends AssetBuilder {
   address: string;
@@ -24,7 +24,7 @@ export class AssetTokenBuilder extends AssetBuilder {
     this.alreadyShifted = params.alreadyShifted || false;
   }
 
-  mints(): string[] {
+  tokenAddresses(): string[] {
     return [this.address];
   }
 

@@ -9,6 +9,7 @@ import { userFarmConfigs } from './farmsJob';
 import { FarmInfo } from './types';
 import { UserFarmAccount } from './structs/farms';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { LiquidityParams } from '../../utils/elementbuilder/Params';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -43,13 +44,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const rayStakingPubkey = getStakePubKey(owner).toString();
 
-  const uniqueElementForFarmsWithoutRewards =
-    elementRegistry.addElementLiquidity({
-      label: 'Farming',
-    });
-  const liquidityOfUniqueElement =
-    uniqueElementForFarmsWithoutRewards.addLiquidity();
-
   for (let i = 0; i < userFarmAccounts.length; i += 1) {
     const userFarmAccount: ParsedAccount<UserFarmAccount> = userFarmAccounts[i];
     const farmInfo = farmsInfoMap.get(userFarmAccount.poolId.toString());
@@ -65,9 +59,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         userFarmAccount.pubkey.toString() === rayStakingPubkey
           ? 'Staked'
           : 'Farming',
+      link:
+        userFarmAccount.pubkey.toString() === rayStakingPubkey
+          ? 'https://raydium.io/staking/'
+          : 'https://raydium.io/portfolio/?position_tab=standard',
     });
 
-    const liquidity = element.addLiquidity();
+    const liquidityParams: LiquidityParams = {
+      ref: userFarmAccount.pubkey,
+      sourceRefs: [
+        { name: 'Farm', address: userFarmAccount.poolId.toString() },
+      ],
+    };
+
+    const liquidity = element.addLiquidity(liquidityParams);
 
     // Farm pending reward A
     if (farmInfo.rewardTokenA) {
@@ -104,22 +109,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       10 ** farmInfo.lpToken.decimals
     );
 
-    if (
-      liquidity.rewardAssets.length > 0 ||
-      userFarmAccount.pubkey.toString() === rayStakingPubkey
-    ) {
-      liquidity.addAsset({
-        address: lpTokenPrice.address,
-        amount,
-        alreadyShifted: true,
-      });
-    } else {
-      liquidityOfUniqueElement.addAsset({
-        address: lpTokenPrice.address,
-        amount,
-        alreadyShifted: true,
-      });
-    }
+    liquidity.addAsset({
+      address: lpTokenPrice.address,
+      amount,
+      alreadyShifted: true,
+    });
   }
 
   return elementRegistry.getElements(cache);
