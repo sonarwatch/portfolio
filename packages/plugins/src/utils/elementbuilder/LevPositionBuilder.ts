@@ -6,10 +6,7 @@ import {
   IsoLevPosition,
   NetworkIdType,
 } from '@sonarwatch/portfolio-core';
-import {
-  CrossLevPositionParams,
-  IsoLevPositionParams,
-} from './LevPositionParams';
+import { CrossLevPositionParams, IsoLevPositionParams } from './Params';
 
 export class IsoLevPositionBuilder {
   private params: IsoLevPositionParams;
@@ -29,6 +26,10 @@ export class IsoLevPositionBuilder {
         getUsdValueSum([this.params.collateralValue, this.params.pnlValue]),
     };
   }
+
+  get tokenAddress(): string | undefined {
+    return this.params.address;
+  }
 }
 
 export class CrossLevPositionBuilder {
@@ -45,5 +46,9 @@ export class CrossLevPositionBuilder {
         ? formatTokenAddress(this.params.address, networkId)
         : undefined,
     };
+  }
+
+  get tokenAddress(): string | undefined {
+    return this.params.address;
   }
 }

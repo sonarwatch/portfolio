@@ -7,17 +7,17 @@ import {
   PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
 import { ElementBuilder } from './ElementBuilder';
-import { LevPositionParams, Params } from './Params';
+import {
+  CrossLevPositionParams,
+  IsoLevPositionParams,
+  Params,
+  PortfolioAssetTokenParams,
+} from './Params';
 import { TokenPriceMap } from '../../TokenPriceMap';
 import {
   CrossLevPositionBuilder,
   IsoLevPositionBuilder,
 } from './LevPositionBuilder';
-import {
-  CrossLevPositionParams,
-  IsoLevPositionParams,
-} from './LevPositionParams';
-import { PortfolioAssetTokenParams } from './PortfolioAssetTokenParams';
 import { AssetTokenBuilder } from './AssetTokenBuilder';
 
 export class ElementLeverageBuilder extends ElementBuilder {
@@ -32,9 +32,18 @@ export class ElementLeverageBuilder extends ElementBuilder {
     this.crossCollateralAssets = [];
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  override mints(): string[] {
-    return [];
+  override tokenAddresses(): string[] {
+    const addresses: string[] = [];
+    this.isoPositions.forEach((p) => {
+      if (p.tokenAddress) addresses.push(p.tokenAddress);
+    });
+    this.crossPositions.forEach((p) => {
+      if (p.tokenAddress) addresses.push(p.tokenAddress);
+    });
+    this.crossCollateralAssets.forEach((p) => {
+      addresses.push(p.address);
+    });
+    return addresses;
   }
 
   addIsoPosition(params: IsoLevPositionParams) {
