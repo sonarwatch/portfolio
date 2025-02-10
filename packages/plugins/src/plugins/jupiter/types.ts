@@ -60,7 +60,7 @@ type OracleParams = {
 };
 
 type PricingParams = {
-  tradeSpreadLong: string;
+  tradeSpreadLong: string; // tradeImpactFeeScalar
   tradeSpreadShort: string;
   swapSpread: string;
   maxLeverage: string;

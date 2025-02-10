@@ -367,7 +367,7 @@ export const oracleParamsStruct = new BeetStruct<OracleParams>(
 );
 
 export type PricingParams = {
-  tradeSpreadLong: BigNumber;
+  tradeSpreadLong: BigNumber; // tradeImpactFeeScalar
   tradeSpreadShort: BigNumber;
   swapSpread: BigNumber;
   maxLeverage: BigNumber;
@@ -377,7 +377,7 @@ export type PricingParams = {
 
 export const pricingParamsStruct = new BeetStruct<PricingParams>(
   [
-    ['tradeSpreadLong', u64],
+    ['tradeSpreadLong', u64], // tradeImpactFeeScalar
     ['tradeSpreadShort', u64],
     ['swapSpread', u64],
     ['maxLeverage', u64],
