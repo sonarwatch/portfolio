@@ -13,3 +13,13 @@ export type CoingeckoCoinMarket = {
   platforms: { [key: string]: string };
 };
 export type CoingeckoCoinsMarketsResponse = CoingeckoCoinMarket[];
+
+export type CoingeckoRate = {
+  name: string;
+  unit: string;
+  value: number;
+  type: 'crypto' | 'fiat';
+};
+export type CoingeckoExchangeRatesResponse = {
+  rates: Record<string, CoingeckoRate>;
+};

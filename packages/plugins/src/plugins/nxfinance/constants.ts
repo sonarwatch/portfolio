@@ -12,8 +12,10 @@ export const platform: Platform = {
   image: 'https://sonar.watch/img/platforms/nxfinance.webp',
   website: 'https://nxfinance.io/',
   twitter: 'https://twitter.com/NX_Finance',
-  defiLlamaId: 'nx-finance', // from https://defillama.com/docs/api
+  defiLlamaId: 'nx-finance',
 };
+
+// https://nxfinance.io/nx-data/doc
 
 export const ID = new PublicKey('RaXcyfW8jK295UAU1XN2uLMTHnTWEaeCcNWLeDB4iD6');
 
@@ -47,6 +49,7 @@ export const nxfinanceLendIdlItem = {
 
 export const lendingPoolKey = 'lending-pools';
 export const stakingPoolKey = 'staking-pool';
+export const solayerPoolKey = 'solayer-pools';
 
 export const lendingPools = [
   new PublicKey('HVn3F2wq2Fvr8T5yX7VS9yWaNxX5PMgxTyHb4aKAX8z3'),

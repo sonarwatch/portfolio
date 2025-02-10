@@ -21,7 +21,7 @@ import {
   TickArrayState,
 } from './structs/clmms';
 import { ParsedAccount } from '../../utils/solana';
-import { PortfolioAssetTokenParams } from '../../utils/elementbuilder/PortfolioAssetTokenParams';
+import { PortfolioAssetTokenParams } from '../../utils/elementbuilder/Params';
 
 export function isARaydiumPosition(nft: PortfolioAssetCollectible): boolean {
   return nft.name === positionsIdentifier;

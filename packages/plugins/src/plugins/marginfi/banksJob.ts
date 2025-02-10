@@ -1,18 +1,27 @@
 import {
   BorrowLendRate,
   NetworkId,
+  TokenPriceSource,
   aprToApy,
   borrowLendRatesPrefix,
+  solanaNativeAddress,
+  walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
+import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { MarginfiProgram, platformId, banksKey } from './constants';
 import { bankStruct } from './structs/Bank';
 import { banksFilters } from './filters';
 import { computeInterestRates, wrappedI80F48toBigNumber } from './helpers';
-import { getParsedProgramAccounts } from '../../utils/solana';
+import {
+  getParsedProgramAccounts,
+  mintAccountStruct,
+} from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { BankInfo } from './types';
+import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
+import { stakeAccountStruct } from '../native-stake/solana/structs';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
@@ -26,6 +35,11 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   const banks: BankInfo[] = [];
   const rateItems = [];
+  const sources: TokenPriceSource[] = [];
+  const solPrice = await cache.getTokenPrice(
+    solanaNativeAddress,
+    NetworkId.solana
+  );
   for (let index = 0; index < banksRawData.length; index += 1) {
     const bank = banksRawData[index];
     const { lendingApr, borrowingApr } = computeInterestRates(bank);
@@ -70,6 +84,41 @@ const executor: JobExecutor = async (cache: Cache) => {
 
     const tokenAddress = bank.mint.toString();
 
+    // Price the SPL generated for Native Stake Collateral : https://docs.marginfi.com/staked-collateral
+    // Each validator has it's own Stake Account, in which Marginfi deposit the Native Stake deposited by the user
+    // Margingi then mint a SPL token which represent the deposit
+
+    if (bank.config.assetTag === 2) {
+      const stakeAccountAddress = bank.config.oracleKeys_3;
+      const [mintAccount, stakeAccount] = await Promise.all([
+        getParsedAccountInfo(connection, mintAccountStruct, bank.mint),
+        getParsedAccountInfo(
+          connection,
+          stakeAccountStruct,
+          stakeAccountAddress
+        ),
+      ]);
+      if (mintAccount && solPrice && stakeAccount) {
+        const { supply } = mintAccount;
+        const price = stakeAccount.stake
+          .minus(LAMPORTS_PER_SOL)
+          .times(solPrice.price)
+          .dividedBy(supply)
+          .toNumber();
+        sources.push({
+          address: tokenAddress,
+          decimals: mintAccount.decimals,
+          id: bank.pubkey.toString(),
+          networkId: NetworkId.solana,
+          platformId: walletTokensPlatformId,
+          price,
+          timestamp: Date.now(),
+          weight: 1,
+          liquidityName: 'Native Stake (SOL)',
+        });
+      }
+    }
+
     const poolName =
       bank.config.riskTier === 0 ? 'Global Pool' : 'Isolated Pool';
 
@@ -102,6 +151,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     prefix: borrowLendRatesPrefix,
     networkId: NetworkId.solana,
   });
+  await cache.setTokenPriceSources(sources);
 };
 
 const job: Job = {
