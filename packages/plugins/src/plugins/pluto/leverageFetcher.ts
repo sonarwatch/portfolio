@@ -1,110 +1,90 @@
-import { NetworkId, PortfolioAsset, PortfolioElement, PortfolioElementType, Yield } from "@sonarwatch/portfolio-core";
-import { Fetcher, FetcherExecutor } from "../../Fetcher";
-import { earnVaultsKey, leverageVaultKey, platformId } from "./constants";
-import { getClientSolana } from "../../utils/clients";
+import { apyToApr, NetworkId } from '@sonarwatch/portfolio-core';
+import { Fetcher, FetcherExecutor } from '../../Fetcher';
+import { leveragesVaultKey, platformId } from './constants';
+import { getClientSolana } from '../../utils/clients';
 import { Cache } from '../../Cache';
-import { getAllLeverage, getAllLeverageObligation, getElementLendingValues } from "./helper";
-import tokenPriceToAssetToken from "../../utils/misc/tokenPriceToAssetToken";
-import { EarnVault, LeverageData, LeverageVault, Position } from "./types";
+import { getLeverageObligations } from './helper';
+import { MemoizedCache } from '../../utils/misc/MemoizedCache';
+import { ParsedAccount } from '../../utils/solana';
+import { VaultLeverage } from './structs';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+
+const leverageVaultsMemo = new MemoizedCache<ParsedAccount<VaultLeverage>[]>(
+  leveragesVaultKey,
+  {
+    prefix: platformId,
+    networkId: NetworkId.solana,
+  }
+);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-    const client = getClientSolana();  
-    const leverage = await getAllLeverage(client);
-    const elements: PortfolioElement[] = [];
+  const client = getClientSolana();
 
-    const dataLeverage = leverage;
-    
-    for (const item of dataLeverage) {
-        const suppliedAssets: PortfolioAsset[] = [];
-        const borrowedAssets: PortfolioAsset[] = [];
-        const suppliedLtvs: number[] = [];
-        const borrowedWeights: number[] = [];
-        const rewardAssets: PortfolioAsset[] = [];
-        const borrowedYields: Yield[][] = [];
-        const suppliedYields: Yield[][] = [];
+  const accounts = await getLeverageObligations(client, owner);
+  if (!accounts.length) return [];
 
-        const obligations = await getAllLeverageObligation(client, owner, item.pubkey.toString());
-        if (obligations.length == 0) {
-          continue;
-        }
-        const obligation = obligations[0]
+  const vaults = await leverageVaultsMemo.getItem(cache);
+  if (!vaults.length) return [];
 
-        const tokenPrice = await cache.getTokenPrice(item.tokenCollateralTokenMint.toString(), NetworkId.solana)
+  const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
+  accounts.forEach((acc) => {
+    const vault = vaults.find(
+      (v) => v.protocol.toString() === acc.protocol.toString()
+    );
+    if (!vault) return;
+    const element = elementRegistry.addElementBorrowlend({
+      name: `Leverage`,
+      label: 'Leverage',
+    });
 
-        for (const position of obligation.positions) {
-            if (position.unit.toString() === '0') {
-              continue;
-            }
+    for (const position of acc.positions) {
+      if (position.unit.toString() === '0') {
+        continue;
+      }
 
-            const pos = position.number;
-            const unit = position.unit.toNumber() / 1e8;
-            const tokenCollateralAmount = position.token_collateral_amount.shiftedBy(-position.token_collateral_price_exponent).toNumber()
-            const borrowingUnit = position.borrowing_unit.toNumber() / 1e8;
-            const borrowingIndex = item.borrowingIndex / 1e12;
-            const borrowingAmount = borrowingUnit * borrowingIndex;
-            const index = item.index / 1e12;
-            const amount = unit * index;
-            // console.log(pos, unit, tokenCollateralAmount, borrowingUnit, borrowingAmount, index, amount);
+      const unit = position.unit.toNumber() / 1e8;
+      const borrowingUnit = position.borrowing_unit.toNumber() / 1e8;
+      const borrowingIndex = vault.borrowingIndex / 1e12;
+      const borrowingAmount = borrowingUnit * borrowingIndex;
+      const index = vault.index / 1e12;
+      const amount = unit * index;
 
-            suppliedYields.push([{apy: Number(item.apy.ema7d / 1e3), apr: Number(item.apy.ema7d / 1e3)}]);
-            suppliedAssets.push(
-                tokenPriceToAssetToken(
-                    item.tokenCollateralTokenMint.toString(),
-                    Number(amount),
-                    NetworkId.solana,
-                    tokenPrice,
-                )
-            )
+      const apy = Number(vault.apy.ema7d / 1e3);
+      element.addSuppliedYield([
+        {
+          apy,
+          apr: apyToApr(apy),
+        },
+      ]);
 
-            borrowedYields.push([{apy: Number(item.borrowingApy.ema7d / 1e3), apr: Number(item.borrowingApy.ema7d / 1e3)}]);
-            borrowedAssets.push(
-                tokenPriceToAssetToken(
-                    item.tokenCollateralTokenMint.toString(),
-                    Number(borrowingAmount),
-                    NetworkId.solana,
-                    tokenPrice,
-                )
-            )
-        }
-        
-        if (suppliedAssets.length === 0 && borrowedAssets.length === 0) break;
-        
-        let { borrowedValue, suppliedValue, value, rewardValue } =
-        getElementLendingValues({
-            suppliedAssets,
-            borrowedAssets,
-            rewardAssets,
-        });
+      element.addSuppliedAsset({
+        address: vault.nativeCollateralTokenMint.toString(),
+        amount,
+        alreadyShifted: true,
+      });
 
-        elements.push({
-            name: `Leveraged`,
-            type: PortfolioElementType.borrowlend,
-            networkId: NetworkId.solana,
-            platformId,
-            label: 'Leverage',
-            value,
-            data: {
-                borrowedAssets,
-                borrowedValue,
-                borrowedYields,
-                suppliedAssets,
-                suppliedValue,
-                suppliedYields,
-                healthRatio: null,
-                rewardAssets,
-                rewardValue,
-                value,
-            }
-        })
+      const borrowingApy = Number(vault.borrowingApy.ema7d / 1e3);
+      element.addBorrowedYield([
+        {
+          apy: borrowingApy,
+          apr: apyToApr(borrowingApy),
+        },
+      ]);
+      element.addBorrowedAsset({
+        address: vault.tokenCollateralTokenMint.toString(),
+        amount: borrowingAmount,
+        alreadyShifted: true,
+      });
     }
+  });
 
-    return elements;
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {
-    id: `${platformId}-leverage`,
-    networkId: NetworkId.solana,
-    executor,
-}
+  id: `${platformId}-leverage`,
+  networkId: NetworkId.solana,
+  executor,
+};
 
 export default fetcher;
