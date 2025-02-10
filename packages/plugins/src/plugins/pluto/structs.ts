@@ -7,11 +7,11 @@ import { u64, u128, i64 } from '../../utils/solana'; // Assuming custom utility 
 // Define the VaultEarn struct using BeetStruct
 export const vaultEarnBeet = new BeetStruct<VaultEarn>(
   [
+    ['discriminator', uniformFixedSizeArray(u8, 8)],
     ['isInitialized', bool], // bool is 1 byte
     ['version', u8], // u8 is 1 byte
     ['bump', u8], // u8 is 1 byte
     ['align0', uniformFixedSizeArray(u8, 5)], // array of 5 u8, 5 bytes
-    ['pubkey', publicKey], // publicKey is 32 bytes
     ['protocol', publicKey], // publicKey is 32 bytes
     ['earnStats', publicKey], // publicKey is 32 bytes
     ['creator', publicKey], // publicKey is 32 bytes
@@ -39,11 +39,11 @@ export const vaultEarnBeet = new BeetStruct<VaultEarn>(
 
 // Define the VaultEarn interface to match the struct
 export interface VaultEarn {
+  discriminator: number[];
   isInitialized: boolean;
   version: number;
   bump: number;
   align0: number[];
-  pubkey: PublicKey;
   protocol: PublicKey;
   earnStats: PublicKey;
   creator: PublicKey;
@@ -61,14 +61,15 @@ export interface VaultEarn {
   unitBorrowed: string; // u128
   unitLent: string; // u128
   unitLeverage: string; // u128
-  index: string; // u128
+  index: BigNumber; // u128
   lastIndexUpdated: number;
-  apy: string; // u128
+  apy: BigNumber; // u128
   padding1: Buffer[];
 }
 
 export const earnLenderBeet = new BeetStruct<EarnLender>(
   [
+    ['discriminator', uniformFixedSizeArray(u8, 8)],
     ['is_initialized', bool], // bool is 1 byte
     ['version', u8], // u8 is 1 byte
     ['bump', u8], // u8 is 1 byte
@@ -91,6 +92,7 @@ export const earnLenderBeet = new BeetStruct<EarnLender>(
 );
 
 export interface EarnLender {
+  discriminator: number[];
   is_initialized: boolean;
   version: number;
   bump: number;

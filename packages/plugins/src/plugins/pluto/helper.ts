@@ -4,13 +4,13 @@ import { earnLenderDataSize, earnVaultDataSize, lender_seed, leverageVaultJson, 
 import { GetEarn, GetLeverage } from './types';
 import { getUsdValueSumStrict, PortfolioAsset, UsdValue } from '@sonarwatch/portfolio-core';
 import { Connection, GetProgramAccountsFilter } from '@solana/web3.js';
-import { getAutoParsedMultipleAccountsInfo, getAutoParsedProgramAccounts, getParsedProgramAccounts, getProgramAccounts } from '../../utils/solana';
+import { getAutoParsedMultipleAccountsInfo, getAutoParsedProgramAccounts, getParsedProgramAccounts, getProgramAccounts, ParsedAccount } from '../../utils/solana';
 import { EarnLender, earnLenderBeet, VaultEarn, vaultEarnBeet } from './structs';
 import { PublicKey } from '@solana/web3.js';
 import { Buffer } from 'buffer';
 
 
-export async function getAllEarn(conn: Connection): Promise<VaultEarn[]> {
+export async function getAllEarn(conn: Connection): Promise<ParsedAccount<VaultEarn>[]> {
   const account = await getParsedProgramAccounts(
     conn,
     vaultEarnBeet,
@@ -25,7 +25,7 @@ export async function getAllEarn(conn: Connection): Promise<VaultEarn[]> {
   return account
 }
 
-export async function getAllEarnLender(conn: Connection): Promise<EarnLender[]> {
+export async function getAllEarnLender(conn: Connection, owner: string, protocol: string): Promise<ParsedAccount<EarnLender>[]> {
   const account = await getParsedProgramAccounts(
     conn,
     earnLenderBeet,
@@ -33,10 +33,21 @@ export async function getAllEarnLender(conn: Connection): Promise<EarnLender[]> 
     [
       {
         dataSize: earnLenderDataSize
+      },
+      {
+        memcmp: {
+          offset: 16, 
+          bytes: owner,
+        },
+      },
+      {
+        memcmp: {
+          offset: 48,
+          bytes: protocol,
+        }
       }
     ]
   )
-
   return account
 }
 
