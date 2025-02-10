@@ -78,7 +78,10 @@ export type TradeParams = {
   inputAsset: PortfolioAssetTokenParams;
   outputAsset: {
     address: string | PublicKey;
+    amount?: number | BigNumber | string;
   };
   initialInputAmount: number | BigNumber | string;
   expectedOutputAmount?: number | BigNumber | string;
+  createdAt?: number;
+  expireAt?: number;
 };

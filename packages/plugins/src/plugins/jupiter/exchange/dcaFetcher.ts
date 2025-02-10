@@ -33,6 +33,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       },
       outputAsset: {
         address: account.outputMint,
+        amount: account.outReceived.minus(account.outWithdrawn),
       },
       initialInputAmount: account.inDeposited,
     });

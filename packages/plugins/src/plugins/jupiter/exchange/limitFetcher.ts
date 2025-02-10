@@ -49,6 +49,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       },
       outputAsset: {
         address: account.outputMint,
+        amount: account.oriTakingAmount.minus(account.takingAmount),
       },
       initialInputAmount: account.oriMakingAmount,
       expectedOutputAmount: account.oriTakingAmount,

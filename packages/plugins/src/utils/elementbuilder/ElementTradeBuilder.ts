@@ -44,13 +44,10 @@ export class ElementTradeBuilder extends ElementBuilder {
 
     if (!inputAsset?.data.amount) return null;
 
-    const outputAmount = new BigNumber(this.params.initialInputAmount).minus(
-      this.params.expectedOutputAmount || 0
-    );
-    const outputAsset = outputAmount.gt(0)
+    const outputAsset = new BigNumber(this.params.outputAsset.amount || 0).gt(0)
       ? new AssetTokenBuilder({
           address: this.params.outputAsset.toString(),
-          amount: outputAmount,
+          amount: new BigNumber(this.params.outputAsset.amount || 0).toNumber(),
         }).get(networkId, tokenPrices)
       : null;
 
@@ -95,6 +92,8 @@ export class ElementTradeBuilder extends ElementBuilder {
           .toNumber(),
         inputPrice: inputPrice?.price,
         outputPrice: outputPrice?.price,
+        createdAt: this.params?.createdAt,
+        expireAt: this.params?.expireAt,
       },
       value: getUsdValueSum([inputAsset.value, outputAsset?.value || 0]),
       ref: this.ref?.toString(),
