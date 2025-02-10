@@ -1,11 +1,11 @@
 import axios from 'axios';
 import crypto from 'crypto';
-import { earnLenderDataSize, earnVaultDataSize, lender_seed, leverageVaultJson, plutoProgramId, plutoProgramIdl, plutoServer } from './constants';
+import { earnLenderDataSize, earnVaultDataSize, lender_seed, leverageObligationDataSize, leverageVaultDataSize, leverageVaultJson, plutoProgramId, plutoProgramIdl, plutoServer } from './constants';
 import { GetEarn, GetLeverage } from './types';
 import { getUsdValueSumStrict, PortfolioAsset, UsdValue } from '@sonarwatch/portfolio-core';
 import { Connection, GetProgramAccountsFilter } from '@solana/web3.js';
 import { getAutoParsedMultipleAccountsInfo, getAutoParsedProgramAccounts, getParsedProgramAccounts, getProgramAccounts, ParsedAccount } from '../../utils/solana';
-import { EarnLender, earnLenderBeet, VaultEarn, vaultEarnBeet } from './structs';
+import { EarnLender, earnLenderBeet, LeverageObligation, leverageObligationBeet, VaultEarn, vaultEarnBeet, VaultLeverage, vaultLeverageBeet } from './structs';
 import { PublicKey } from '@solana/web3.js';
 import { Buffer } from 'buffer';
 
@@ -70,64 +70,46 @@ export async function calculateLenderPDA(
   );
 }
 
-export async function testing(conn: Connection) {
-  const account = await getProgramAccounts(
+export async function getAllLeverage(conn: Connection): Promise<ParsedAccount<VaultLeverage>[]> {
+  const account = await getParsedProgramAccounts(
     conn,
+    vaultLeverageBeet,
     plutoProgramId,
+    [
+      {
+        dataSize: leverageVaultDataSize
+      }
+    ]
   )
 
-  console.log(account)
-  const fill: any = []
-  account.forEach((acc) => {
-    if (acc.account.data.length > 200 && acc.account.data.length < 400) {
-      fill.push({acc, length: acc.account.data.length})
-    }
-  })
-  console.log(fill)
-
+  return account
 }
 
-export const getEarnVaults = () => {
-  const url = `${plutoServer}/vaults`;
-
-  return axios.get(url, {}).then((response) => {
-      return response.data;
-  }).catch((error) => {
-      console.error("Error:", error.response ? error.response.data : error.message);
-      return {};
-  })
+export async function getAllLeverageObligation(conn: Connection, owner: string, protocol: string): Promise<ParsedAccount<LeverageObligation>[]> {
+  const account = await getParsedProgramAccounts(
+    conn,
+    leverageObligationBeet,
+    plutoProgramId,
+    [
+      {
+        dataSize: leverageObligationDataSize
+      },
+      {
+        memcmp: {
+          offset: 16, 
+          bytes: owner,
+        },
+      },
+      {
+        memcmp: {
+          offset: 80,
+          bytes: protocol,
+        }
+      }
+    ]
+  )
+  return account
 }
-
-export const getLeverageVaults = () => {
-  const url = leverageVaultJson;
-
-  return axios.get(url, {}).then((response) => {
-      return response.data;
-  })
-}
-
-export const getEarn = (address: string):Promise<GetEarn> => {
-  const url = `${plutoServer}/earn?address=${address}`;
-
-  return axios.get(url, {}).then((response) => {
-    return response.data;
-  }).catch((error) => {
-    console.error("Error:", error.response ? error.response.data : error.message);
-    return {}
-  })
-}
-
-export const getLeverage = (address: string):Promise<GetLeverage> => {
-  const url = `${plutoServer}/leverage?address=${address}`;
-
-  return axios.get(url, {}).then((response) => {
-      return response.data;
-  }).catch((error) => {
-      console.error("Error:", error.response ? error.response.data : error.message);
-      return {};
-  })
-}
-
 
 export function getElementLendingValues(params: {
   suppliedAssets: PortfolioAsset[];
