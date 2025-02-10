@@ -5,7 +5,6 @@ import {
   PortfolioElement,
   PortfolioElementType,
   PortfolioLiquidity,
-  TokenPrice,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
@@ -33,14 +32,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     return addresses;
   }, []);
 
-  const tokenPricesArray = await cache.getTokenPrices(
+  const tokenPrices = await cache.getTokenPricesAsMap(
     fungibleAddresses,
     NetworkId.solana
   );
-  const tokenPrices: Map<string, TokenPrice> = new Map();
-  tokenPricesArray.forEach((tokenPrice) => {
-    if (tokenPrice) tokenPrices.set(tokenPrice.address, tokenPrice);
-  });
 
   const nftAssets: PortfolioAssetCollectible[] = [];
   const tokenAssets: PortfolioAssetToken[] = [];
@@ -82,6 +77,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           tokenPrice
         ),
         ref: asset.token_info?.associated_token_address,
+        link: tokenPrice.link,
+        sourceRefs: tokenPrice.sourceRefs,
       });
     }
     // If it's a NFT

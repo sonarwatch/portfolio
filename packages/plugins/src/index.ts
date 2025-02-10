@@ -747,6 +747,11 @@ import {
   fetchers as sonicFetchers,
   airdropFetcher as sonicAirdropFetcher,
 } from './plugins/sonic';
+import {
+  platforms as basktPlatforms,
+  jobs as basktJobs,
+  fetchers as basktFetchers,
+} from './plugins/baskt';
 import { jobs as coingeckoJobs } from './plugins/coingecko';
 
 export {
@@ -912,6 +917,7 @@ export const platforms: Platform[] = [
   ...defitunaPlatforms,
   ...iloopPlatforms,
   ...sonicPlatforms,
+  ...basktPlatforms,
 ];
 
 // JOBS //
@@ -1059,6 +1065,7 @@ export const jobs: Job[] = [
   ...defitunaJobs,
   ...iloopJobs,
   ...sonicJobs,
+  ...basktJobs,
   ...coingeckoJobs,
 ];
 
@@ -1208,6 +1215,7 @@ export const fetchers: Fetcher[] = [
   ...defitunaFetchers,
   ...iloopFetchers,
   ...sonicFetchers,
+  ...basktFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
