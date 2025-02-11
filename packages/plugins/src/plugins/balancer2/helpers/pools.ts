@@ -7,7 +7,7 @@ import {
   balancerApiUrl,
 } from '../constants';
 
-export async function getPoolPositionsForOwnerV2(
+export async function getPoolPositionsForOwner(
   owner: string,
   networkId: BalancerSupportedEvmNetworkIdType
 ): Promise<OwnerPoolApiResponse[]> {
