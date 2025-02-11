@@ -85,14 +85,11 @@ const executor: FetcherExecutor = async (
 
     const isLong = side === Side.Long;
     const custody = custodyById.get(position.custody.toString());
-    console.log('custody:', custody);
     const collateralCustody = custodyById.get(
       position.collateralCustody.toString()
     );
     if (!custody || !collateralCustody) continue;
     const perpPool = perpPools.get(custody.pool);
-    console.log('perpPool:', perpPool);
-    console.log('position:', position);
     if (!perpPool) continue;
 
     const entryPrice = price.dividedBy(usdFactor);
@@ -106,27 +103,21 @@ const executor: FetcherExecutor = async (
     const size = sizeValue.div(entryPrice);
     const leverage = sizeUsd.dividedBy(collateralUsd);
     const collateralValue = collateralUsd.dividedBy(usdFactor);
-    const { increasePositionBps, decreasePositionBps } = perpPool.fees;
-    const increaseFees = new BigNumber(increasePositionBps).div(10000);
-    const decreaseFees = new BigNumber(decreasePositionBps).div(10000);
-    const openFees = entryPrice.times(size).times(increaseFees);
-    const closeFees = sizeValue.times(decreaseFees);
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const openFee = getFeeAmount(
-      new BN(perpPool.fees.increasePositionBps),
+      new BN(custody.increasePositionBps),
       new BN(sizeUsd.toString()),
       new BN(custody.pricing.tradeSpreadLong)
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const closeFee = getFeeAmount(
-      new BN(perpPool.fees.increasePositionBps),
+      new BN(custody.increasePositionBps),
       new BN(sizeUsd.toString()),
       new BN(custody.pricing.tradeSpreadLong)
     );
 
-    const openAndCloseFees = openFees.plus(closeFees);
+    const openAndCloseFees = openFee.add(closeFee).div(new BN(1000000));
+    console.log('openAndCloseFees:', openAndCloseFees.toNumber());
     const borrowFee = sizeUsd
       .times(
         new BigNumber(
@@ -135,7 +126,7 @@ const executor: FetcherExecutor = async (
       )
       .dividedBy(10 ** 15)
       .absoluteValue();
-    const fees = borrowFee.plus(openAndCloseFees).toNumber();
+    const fees = borrowFee.plus(openAndCloseFees.toNumber()).toNumber();
 
     const priceDelta = isLong
       ? new BigNumber(currentPrice).minus(entryPrice)

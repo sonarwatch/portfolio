@@ -448,6 +448,22 @@ export const fundingRateStateStruct = new BeetStruct<FundingRateState>(
   (args) => args as FundingRateState
 );
 
+export type JumpRateState = {
+  minRateBps: BigNumber;
+  maxRateBps: BigNumber;
+  targetRateBps: BigNumber;
+  targetUtilizationRate: BigNumber;
+};
+export const jumpRateStateStruct = new BeetStruct<JumpRateState>(
+  [
+    ['minRateBps', u64],
+    ['maxRateBps', u64],
+    ['targetRateBps', u64],
+    ['targetUtilizationRate', u64],
+  ],
+  (args) => args as JumpRateState
+);
+
 export type Custody = {
   buffer: Buffer;
   pool: PublicKey;
@@ -463,7 +479,11 @@ export type Custody = {
   fundingRateState: FundingRateState;
   bump: number;
   tokenAccountBump: number;
-  buffer1: Buffer;
+  increasePositionBps: BigNumber;
+  decreasePositionBps: BigNumber;
+  maxPositionSizeUsd: BigNumber;
+  dovesOracle: PublicKey;
+  jumpRateState: JumpRateState;
 };
 export const custodyStruct = new BeetStruct<Custody>(
   [
@@ -481,7 +501,11 @@ export const custodyStruct = new BeetStruct<Custody>(
     ['fundingRateState', fundingRateStateStruct],
     ['bump', u8],
     ['tokenAccountBump', u8],
-    ['buffer1', blob(8)],
+    ['increasePositionBps', u64],
+    ['decreasePositionBps', u64],
+    ['maxPositionSizeUsd', u64],
+    ['dovesOracle', publicKey],
+    ['jumpRateState', jumpRateStateStruct],
   ],
   (args) => args as Custody
 );
