@@ -8,6 +8,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
+import { BN } from 'bn.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSolana } from '../../../utils/clients';
@@ -21,6 +22,7 @@ import {
   platformId,
 } from './constants';
 import { Side, positionStruct } from './structs';
+import { getFeeAmount } from './helpers';
 
 const usdFactor = new BigNumber(10 ** 6);
 const executor: FetcherExecutor = async (
@@ -83,11 +85,14 @@ const executor: FetcherExecutor = async (
 
     const isLong = side === Side.Long;
     const custody = custodyById.get(position.custody.toString());
+    console.log('custody:', custody);
     const collateralCustody = custodyById.get(
       position.collateralCustody.toString()
     );
     if (!custody || !collateralCustody) continue;
     const perpPool = perpPools.get(custody.pool);
+    console.log('perpPool:', perpPool);
+    console.log('position:', position);
     if (!perpPool) continue;
 
     const entryPrice = price.dividedBy(usdFactor);
@@ -107,11 +112,19 @@ const executor: FetcherExecutor = async (
     const openFees = entryPrice.times(size).times(increaseFees);
     const closeFees = sizeValue.times(decreaseFees);
 
-    // const fee = getFeeAmount(
-    //   new BN(perpPool.fees.increasePositionBps),
-    //   new BN(sizeUsd.toString()),
-    //   new BN(custody.pricing.tradeSpreadLong)
-    // );
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const openFee = getFeeAmount(
+      new BN(perpPool.fees.increasePositionBps),
+      new BN(sizeUsd.toString()),
+      new BN(custody.pricing.tradeSpreadLong)
+    );
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const closeFee = getFeeAmount(
+      new BN(perpPool.fees.increasePositionBps),
+      new BN(sizeUsd.toString()),
+      new BN(custody.pricing.tradeSpreadLong)
+    );
 
     const openAndCloseFees = openFees.plus(closeFees);
     const borrowFee = sizeUsd

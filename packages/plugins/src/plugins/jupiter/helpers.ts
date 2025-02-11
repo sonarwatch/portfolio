@@ -37,6 +37,7 @@ export async function getJupiterPrices(mints: PublicKey[], vsMint: PublicKey) {
         vsToken: vsMint.toString(),
       },
     });
+    console.log('res:', res.request);
     start += maxIdsPerRequest;
     end += maxIdsPerRequest;
     pricesData.push(res.data.data);
