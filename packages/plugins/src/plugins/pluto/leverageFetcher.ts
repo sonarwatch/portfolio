@@ -44,9 +44,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             const borrowingAmount = borrowingUnit * borrowingIndex;
             const index = item.index / 1e12;
             const amount = unit * index;
-            // console.log(pos, unit, tokenCollateralAmount, borrowingUnit, borrowingAmount, index, amount);
-
-            suppliedYields.push([{apy: Number(item.apy.ema7d / 1e3), apr: Number(item.apy.ema7d / 1e3)}]);
+            suppliedYields.push([{apy: Number(item.apy.ema7d / 1e5), apr: Number(item.apy.ema7d / 1e5)}]);
             suppliedAssets.push(
                 tokenPriceToAssetToken(
                     item.tokenCollateralTokenMint.toString(),
@@ -56,7 +54,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
                 )
             )
 
-            borrowedYields.push([{apy: Number(item.borrowingApy.ema7d / 1e3), apr: Number(item.borrowingApy.ema7d / 1e3)}]);
+            borrowedYields.push([{apy: Number(item.borrowingApy.ema7d / 1e5), apr: Number(item.borrowingApy.ema7d / 1e5)}]);
             borrowedAssets.push(
                 tokenPriceToAssetToken(
                     item.tokenCollateralTokenMint.toString(),

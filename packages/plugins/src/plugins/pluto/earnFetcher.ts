@@ -26,7 +26,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         }
 
         const tokenPrice = await cache.getTokenPrice(item.tokenMint.toString(), NetworkId.solana);
-        const apy = Number(item.apy.ema7d / 1e3)
+        const apy = Number(item.apy.ema7d / 1e5)
         suppliedYields.push([{apy: apy, apr: apy}]);
 
         const earnLender = earnLenders[0];
