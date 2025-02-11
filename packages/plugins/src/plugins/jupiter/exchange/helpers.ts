@@ -1,6 +1,7 @@
 import BN from 'bn.js';
 
 const BPS_POWER = new BN(10_000);
+
 const divCeil = (a: BN, b: BN) => {
   const dm = a.divmod(b);
   // Fast case - exact division
@@ -8,6 +9,7 @@ const divCeil = (a: BN, b: BN) => {
   // Round up
   return dm.div.ltn(0) ? dm.div.isubn(1) : dm.div.iaddn(1);
 };
+
 const getImpactFeeBps = (amount: BN, tradeImpactFeeScalar: BN) =>
   tradeImpactFeeScalar.eqn(0)
     ? new BN(0)
@@ -26,3 +28,17 @@ export const getFeeAmount = (
 
   return amount.mul(totalFeeBps).div(BPS_POWER);
 };
+
+export function BNToUSDRepresentation(
+  value: BN,
+  decimalPlaces = 6,
+  displayDecimals = 2
+): string {
+  const usd = Number(value.toString()) / 10 ** decimalPlaces;
+
+  return usd.toLocaleString('en-US', {
+    maximumFractionDigits: displayDecimals,
+    minimumFractionDigits: displayDecimals,
+    useGrouping: false,
+  });
+}
