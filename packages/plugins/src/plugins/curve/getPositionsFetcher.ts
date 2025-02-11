@@ -44,7 +44,6 @@ export function getPositionsFetcher(crvNetworkId: CrvNetworkId): Fetcher {
           args: [owner],
         } as const)
     );
-
     const client = getEvmClient(networkId);
     const balanceOfResults = await client.multicall({ contracts });
 

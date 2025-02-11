@@ -9,20 +9,17 @@ import {
 
 import { BalancerSupportedEvmNetworkIdType, platformId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { getPoolPositionsForOwnerV2 } from './helpers/pools';
+import { getPoolPositionsForOwner } from './helpers/pools';
 import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
 
 import { Cache } from '../../Cache';
-import { getOwnerBalRewardsV2, getOwnerGaugeRewardsV2 } from './helpers/gauges';
+import { getOwnerBalRewards, getOwnerGaugeRewards } from './helpers/gauges';
 
 function getPoolPositionsFetcher(
   networkId: BalancerSupportedEvmNetworkIdType
 ): Fetcher {
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-    const ownerPoolPositions = await getPoolPositionsForOwnerV2(
-      owner,
-      networkId
-    );
+    const ownerPoolPositions = await getPoolPositionsForOwner(owner, networkId);
 
     const poolLiquidities: PortfolioLiquidity[] = [];
     const gaugeLiquidities: PortfolioLiquidity[] = [];
@@ -87,8 +84,8 @@ function getPoolPositionsFetcher(
         const { gaugeAddress } = poolPosition.staking.gauge;
 
         const [balRewardsRaw, rewardTokensRaw] = await Promise.all([
-          getOwnerBalRewardsV2(networkId, owner, gaugeAddress),
-          getOwnerGaugeRewardsV2(networkId, owner, gaugeAddress),
+          getOwnerBalRewards(networkId, owner, gaugeAddress),
+          getOwnerGaugeRewards(networkId, owner, gaugeAddress),
         ]);
 
         const allRewardTokensWithBalance = [
@@ -184,7 +181,7 @@ function getPoolPositionsFetcher(
   };
 
   return {
-    id: `${platformId}-${networkId}-v2`,
+    id: `${platformId}-${networkId}`,
     networkId,
     executor,
   };

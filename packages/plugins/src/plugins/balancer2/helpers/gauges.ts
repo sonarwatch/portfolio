@@ -4,7 +4,7 @@ import { getAddress } from 'viem';
 import { getEvmClient } from '../../../utils/clients';
 import { liquidityGaugeAbi } from '../abi';
 
-export async function getOwnerBalRewardsV2(
+export async function getOwnerBalRewards(
   networkId: EvmNetworkIdType,
   owner: string,
   gaugeAddress: string
@@ -39,7 +39,7 @@ export async function getOwnerBalRewardsV2(
   };
 }
 
-export async function getOwnerGaugeRewardsV2(
+export async function getOwnerGaugeRewards(
   networkId: EvmNetworkIdType,
   owner: string,
   gaugeAddress: string

@@ -45,7 +45,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   }
 };
 const job: Job = {
-  id: `${platformId}-pool-tokens-v2`,
+  id: `${platformId}-token-metadata`,
   executor,
   label: 'normal',
 };

@@ -17,7 +17,6 @@ const executor: JobExecutor = async (cache: Cache) => {
     const networkId = crvNetworkIdBySwNetworkId[crvNetworkId];
 
     const pools = await getPoolsData(crvNetworkId);
-
     const coinsAddresses = [
       ...new Set(
         pools
