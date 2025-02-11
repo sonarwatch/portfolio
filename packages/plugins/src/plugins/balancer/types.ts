@@ -32,3 +32,14 @@ export type OwnerPoolApiResponse = {
     totalBalance: string;
   };
 };
+
+export type PoolTokenApiResponse = {
+  poolTokens: {
+    address: string;
+    symbol: string;
+    name: string;
+    logoURI: string | null;
+    decimals: number;
+    coingeckoId: string | null;
+  }[];
+};

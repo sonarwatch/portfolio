@@ -1,6 +1,6 @@
 import request, { gql } from 'graphql-request';
 import BigNumber from 'bignumber.js';
-import { OwnerPoolApiResponse } from '../types';
+import { OwnerPoolApiResponse, PoolTokenApiResponse } from '../types';
 import {
   BalancerSupportedEvmNetworkIdType,
   balancerApiNetworkByNetworkId,
@@ -73,6 +73,44 @@ export async function getPoolPositionsForOwnerV2(
     return sortedPools;
   } catch (error) {
     console.error('Error fetching Balancer pools:', error);
+    return [];
+  }
+}
+export async function getBalancerPoolTokens(
+  networkId: BalancerSupportedEvmNetworkIdType
+): Promise<PoolTokenApiResponse[]> {
+  const balancerApiNetwork = balancerApiNetworkByNetworkId[networkId];
+  const query = gql`
+    query {
+      poolGetPools(
+        where: {
+          chainIn: [${balancerApiNetwork}],
+        },
+        orderBy: totalLiquidity,
+        first: 1000
+      ) {
+        poolTokens {
+          address
+          symbol
+          name
+          logoURI
+          decimals
+          coingeckoId
+        }
+      }
+    }
+  `;
+
+  try {
+    const res = await request<{ poolGetPools: PoolTokenApiResponse[] }>(
+      balancerApiUrl,
+      query
+    );
+    const pools = res.poolGetPools;
+
+    return pools;
+  } catch (error) {
+    console.error('Error fetching Balancer pool tokens:', error);
     return [];
   }
 }
