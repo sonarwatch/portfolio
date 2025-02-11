@@ -220,7 +220,7 @@ export const fraxtalNetwork: Network = {
   isLive: true,
   geckoId: 'fraxtal-ecosystem',
   llamaId: 'Fraxtal',
-  // TODO
+  // TODO: change this to octavs token list once available
   tokenListUrl:
     'https://gist.githubusercontent.com/jtardioli/f0b857cbebf6d7f1be20eae612b9aa00/raw/e36c76a1078a5ad8c09c4310aa4cb211e4044609/sonarwatch.fraxtal.tokenlist.json',
 };
