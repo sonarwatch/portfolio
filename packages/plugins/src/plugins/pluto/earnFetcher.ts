@@ -1,10 +1,9 @@
 import { NetworkId, PortfolioAsset, PortfolioElement, PortfolioElementType, Yield } from "@sonarwatch/portfolio-core";
 import { Fetcher, FetcherExecutor } from "../../Fetcher";
-import { earnVaultsKey, leverageVaultKey, platformId } from "./constants";
+import { leverageVaultKey, platformId } from "./constants";
 import { getClientSolana } from "../../utils/clients";
 import { Cache } from '../../Cache';
 import { getAllEarn, getAllEarnLender, getElementLendingValues } from "./helper";
-import { EarnVault, LeverageVault } from "./types";
 import tokenPriceToAssetToken from "../../utils/misc/tokenPriceToAssetToken";
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
@@ -26,7 +25,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         }
 
         const tokenPrice = await cache.getTokenPrice(item.tokenMint.toString(), NetworkId.solana);
-        const apy = Number(item.apy.ema7d / 1e5)
+        const apy = Number(item.apy.ema7d / 1e3)
         suppliedYields.push([{apy: apy, apr: apy}]);
 
         const earnLender = earnLenders[0];

@@ -1,11 +1,11 @@
 import { NetworkId, PortfolioAsset, PortfolioElement, PortfolioElementType, Yield } from "@sonarwatch/portfolio-core";
 import { Fetcher, FetcherExecutor } from "../../Fetcher";
-import { earnVaultsKey, leverageVaultKey, platformId } from "./constants";
+import { leverageVaultKey, platformId } from "./constants";
 import { getClientSolana } from "../../utils/clients";
 import { Cache } from '../../Cache';
 import { getAllLeverage, getAllLeverageObligation, getElementLendingValues } from "./helper";
 import tokenPriceToAssetToken from "../../utils/misc/tokenPriceToAssetToken";
-import { EarnVault, LeverageData, LeverageVault, Position } from "./types";
+import { LeverageVault } from "./types";
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const client = getClientSolana();  
@@ -29,6 +29,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         }
         const obligation = obligations[0]
 
+        let symbol = '';
+        const leverageVault = await cache.getItem<LeverageVault>(item.pubkey.toString(), {
+          prefix: leverageVaultKey,
+          networkId: NetworkId.solana,
+        })
+        if (leverageVault) {
+          symbol = leverageVault.leverageName.replace("-", "/");
+        }
+
         const tokenPrice = await cache.getTokenPrice(item.tokenCollateralTokenMint.toString(), NetworkId.solana)
 
         for (const position of obligation.positions) {
@@ -44,7 +53,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             const borrowingAmount = borrowingUnit * borrowingIndex;
             const index = item.index / 1e12;
             const amount = unit * index;
-            suppliedYields.push([{apy: Number(item.apy.ema7d / 1e5), apr: Number(item.apy.ema7d / 1e5)}]);
+            suppliedYields.push([{apy: Number(item.apy.ema7d / 1e3), apr: Number(item.apy.ema7d / 1e3)}]);
             suppliedAssets.push(
                 tokenPriceToAssetToken(
                     item.tokenCollateralTokenMint.toString(),
@@ -54,7 +63,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
                 )
             )
 
-            borrowedYields.push([{apy: Number(item.borrowingApy.ema7d / 1e5), apr: Number(item.borrowingApy.ema7d / 1e5)}]);
+            borrowedYields.push([{apy: Number(item.borrowingApy.ema7d / 1e3), apr: Number(item.borrowingApy.ema7d / 1e3)}]);
             borrowedAssets.push(
                 tokenPriceToAssetToken(
                     item.tokenCollateralTokenMint.toString(),
@@ -75,7 +84,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         });
 
         elements.push({
-            name: `Leveraged`,
+            name: `Leveraged ${symbol}`,
             type: PortfolioElementType.borrowlend,
             networkId: NetworkId.solana,
             platformId,

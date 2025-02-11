@@ -27,12 +27,8 @@ export const earnVaultDataSize = 1128;
 export const earnLenderDataSize = 304;
 export const leverageVaultDataSize = 1496;
 export const leverageObligationDataSize = 6696;
-export const lender_seed = "lender_v01"
 
-export const plutoServer = 'https://pluto-sonarwatch-service-259181308485.asia-southeast1.run.app/';
 export const leverageVaultJson = 'https://storage.googleapis.com/plutoso/accounts.json';
 
-
-export const earnVaultsKey = 'pluto-earn-vaults';
 export const leverageVaultKey = 'pluto-leverage-vaults';
 
