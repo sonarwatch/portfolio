@@ -37,6 +37,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const element = elementRegistry.addElementBorrowlend({
       label: 'Lending',
       name: `Earn`,
+      ref: acc.pubkey,
+      sourceRefs: [
+        {
+          name: 'Vault',
+          address: vault.pubkey.toString(),
+        },
+      ],
+      link: 'https://app.pluto.so/earn',
     });
 
     const apy = Number(vault.apy.ema7d / 1e5);

@@ -35,6 +35,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const element = elementRegistry.addElementBorrowlend({
       name: `Leverage`,
       label: 'Leverage',
+      ref: acc.pubkey,
+      sourceRefs: [
+        {
+          name: 'Vault',
+          address: vault.pubkey.toString(),
+        },
+      ],
+      link: 'https://app.pluto.so/leverage',
     });
 
     for (const position of acc.positions) {
