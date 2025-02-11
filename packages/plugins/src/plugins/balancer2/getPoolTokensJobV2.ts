@@ -7,11 +7,7 @@ import { Job, JobExecutor } from '../../Job';
 import { platformId } from './constants';
 import { getBalancerPoolTokens } from './helpers/pools';
 import { Cache } from '../../Cache';
-
-const CACHE_KEYS = {
-  TOKEN_LIST_INFO_PREFIX: 'tokenlistinfo',
-  TOKEN_PRICE_SOURCE_PREFIX: 'tokenpricesource',
-} as const;
+import { tokenListInfoPrefix } from '../tokens/constants';
 
 const ttl = 1000 * 60 * 60 * 24 * 7; // 7 days
 
@@ -42,15 +38,11 @@ const executor: JobExecutor = async (cache: Cache) => {
     };
 
     await cache.setItem(address, fToken, {
-      prefix: CACHE_KEYS.TOKEN_LIST_INFO_PREFIX,
+      prefix: tokenListInfoPrefix,
       networkId: NetworkId.fraxtal,
       ttl,
     });
   }
-  // await cache.setItem(NetworkId.fraxtal, tokenList.data, {
-  //   prefix: tokenListsPrefix,
-  //   ttl,
-  // });
 };
 const job: Job = {
   id: `${platformId}-pool-tokens-v2`,

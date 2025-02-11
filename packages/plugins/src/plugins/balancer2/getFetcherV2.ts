@@ -111,7 +111,7 @@ function getPoolPositionsFetcher(
 
         const rewardAssets: PortfolioAssetToken[] =
           allRewardTokenWithBalanceAndPrice.flatMap((rewardAsset) => {
-            // maybe could add a safety check here so if the token price doesn't exist we fetch the decimal from the contract?
+            // Could add a safety check here so if the token price doesn't exist we fetch the decimal from the contract?
             const balance = rewardAsset.balance.dividedBy(
               new BigNumber(10).pow(rewardAsset?.tokenPrice?.decimals || 18)
             );
@@ -142,6 +142,7 @@ function getPoolPositionsFetcher(
 
       // TODO suuport locked positions
       // if (stackedBalance.stakingType === 'VEBAL') {
+      // This is not available on fraxtal
       // need to query contract for unlock time
       // }
 
