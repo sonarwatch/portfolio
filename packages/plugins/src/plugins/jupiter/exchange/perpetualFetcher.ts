@@ -117,7 +117,6 @@ const executor: FetcherExecutor = async (
     );
 
     const openAndCloseFees = openFee.add(closeFee).div(new BN(1000000));
-    console.log('openAndCloseFees:', openAndCloseFees.toNumber());
     const borrowFee = sizeUsd
       .times(
         new BigNumber(
