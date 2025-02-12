@@ -1,7 +1,13 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformByMint, platformId, poolsKey, stakePid } from './constants';
+import {
+  armadaPlatformId,
+  platformByMint,
+  platformId,
+  poolsKey,
+  stakePid,
+} from './constants';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { StakeDepositReceiptStruct } from './structs';
 import { stakeFilters } from './filters';
@@ -37,7 +43,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const mint = mintByPool.get(stakeAccount.stakePool.toString());
     if (!mint) continue;
 
-    const platform = platformByMint.get(mint);
+    const platform = platformByMint.get(mint) || armadaPlatformId;
     if (!platform) continue;
 
     const element = elementRegistry.addElementMultiple({
