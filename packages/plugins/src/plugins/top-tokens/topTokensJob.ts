@@ -13,6 +13,7 @@ const networkIds = [
   NetworkId.polygon,
   NetworkId.ethereum,
   NetworkId.bnb,
+  NetworkId.fraxtal,
 ];
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -25,20 +26,25 @@ const executor: JobExecutor = async (cache: Cache) => {
         timeout: 8000,
       })
       .catch(async () => {
-        await sleep(300000);
+        // await sleep(300000);
         return null;
       });
-  await sleep(60000);
+  // await sleep(60000);
   if (!coingeckoCoinsListRes || !coingeckoCoinsListRes.data) return;
 
   for (let i = 0; i < networkIds.length; i++) {
-    await sleep(60000);
+    // await sleep(60000);
     const networkId = networkIds[i];
+    if (networkId !== NetworkId.fraxtal) continue;
+    console.log(`Fetching top addresses for networkId: ${networkId}`);
+    console.log(coingeckoCoinsListRes?.data);
+
     try {
       const topTokens = await getTopAddresses(
         networkId,
         coingeckoCoinsListRes.data
       );
+      console.log({ topTokens });
       await cache.setItem(networkId, topTokens, {
         prefix: topTokensPrefix,
       });
@@ -46,7 +52,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       //
     }
   }
-  await sleep(60000);
+  // await sleep(60000);
 };
 
 const job: Job = {

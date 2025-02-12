@@ -7,12 +7,14 @@ import { walletTokensPlatform } from '../../constants';
 const evmNativeNetworksIds: EvmNetworkIdType[] = [
   NetworkId.ethereum,
   NetworkId.avalanche,
+  NetworkId.fraxtal,
 ];
 const evmNetworksIds: EvmNetworkIdType[] = [
   NetworkId.ethereum,
   NetworkId.bnb,
   NetworkId.avalanche,
   NetworkId.polygon,
+  NetworkId.fraxtal,
 ];
 
 export const fetchers: Fetcher[] = [
