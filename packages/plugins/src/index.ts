@@ -189,7 +189,7 @@ import {
   platforms as balancerPlatforms,
   jobs as balancerJobs,
   fetchers as balancerFetchers,
-} from './plugins/balancer';
+} from './plugins/balancer2';
 import {
   platforms as paraswapPlatforms,
   jobs as paraswapJobs,
