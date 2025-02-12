@@ -752,6 +752,11 @@ import {
   jobs as plutoJobs,
   fetchers as plutoFetchers,
 } from './plugins/pluto';
+import {
+  platforms as layer3Platforms,
+  jobs as layer3Jobs,
+  fetchers as layer3Fetchers,
+} from './plugins/layer3';
 import { jobs as coingeckoJobs } from './plugins/coingecko';
 
 export {
@@ -918,6 +923,7 @@ export const platforms: Platform[] = [
   ...iloopPlatforms,
   ...sonicPlatforms,
   ...plutoPlatforms,
+  ...layer3Platforms,
 ];
 
 // JOBS //
@@ -1067,6 +1073,7 @@ export const jobs: Job[] = [
   ...sonicJobs,
   ...coingeckoJobs,
   ...plutoJobs,
+  ...layer3Jobs,
 ];
 
 // FETCHERS //
@@ -1216,6 +1223,7 @@ export const fetchers: Fetcher[] = [
   ...iloopFetchers,
   ...sonicFetchers,
   ...plutoFetchers,
+  ...layer3Fetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
