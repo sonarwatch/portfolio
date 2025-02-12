@@ -1,5 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
+import { platformId as sharkyPlatformId } from '../sharky/constants';
 
 export const platformId = 'armada-staking-program';
 export const stakePid = new PublicKey(
@@ -88,4 +89,5 @@ export const platformByMint = new Map([
   ['oreoN2tQbHXVaZsr3pf66A48miqcBXCDJozganhEJgz', orePlatformId],
   ['8c71AvjQeKKeWRe8jtTGG1bJ2WiYXQdbjqFbUfhHgSVk', garyPlatformId],
   ['6CNHDCzD5RkvBWxxyokQQNQPjFWgoHF94D7BmC73X6ZK', geckoPlatformId],
+  ['SHARKSYJjqaNyxVfrpnBN9pjgkhwDhatnMyicWPnr1s', sharkyPlatformId],
 ]);

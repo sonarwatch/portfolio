@@ -1,10 +1,4 @@
-import {
-  NetworkId,
-  PortfolioAsset,
-  PortfolioElement,
-  PortfolioElementType,
-  getUsdValueSum,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformByMint, platformId, poolsKey, stakePid } from './constants';
@@ -12,8 +6,8 @@ import { getParsedProgramAccounts } from '../../utils/solana';
 import { StakeDepositReceiptStruct } from './structs';
 import { stakeFilters } from './filters';
 import { getClientSolana } from '../../utils/clients';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { PoolInfo } from './types';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -27,13 +21,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const mintByPool: Map<string, string> = new Map();
   pools.forEach((pool) => mintByPool.set(pool.pubkey, pool.mint));
 
-  const mints = pools.map((pool) => pool.mint);
-
-  const tokenPricesById = await cache.getTokenPricesAsMap(
-    mints,
-    NetworkId.solana
-  );
-
   const stakeAccounts = await getParsedProgramAccounts(
     client,
     StakeDepositReceiptStruct,
@@ -42,18 +29,22 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
   if (stakeAccounts.length === 0) return [];
 
-  const assetsByPlatform: Map<string, PortfolioAsset[]> = new Map();
+  const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
+
   for (const stakeAccount of stakeAccounts) {
     if (stakeAccount.depositAmount.isZero()) continue;
 
     const mint = mintByPool.get(stakeAccount.stakePool.toString());
     if (!mint) continue;
 
-    const tokenPrice = tokenPricesById.get(mint);
-    if (!tokenPrice) continue;
-
     const platform = platformByMint.get(mint);
     if (!platform) continue;
+
+    const element = elementRegistry.addElementMultiple({
+      label: 'Staked',
+      platformId: platform,
+      ref: stakeAccount.pubkey,
+    });
 
     const lockedUntil = new Date(
       stakeAccount.depositTimestamp
@@ -62,42 +53,16 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         .toNumber()
     ).getTime();
 
-    const asset = {
-      ...tokenPriceToAssetToken(
-        mint,
-        stakeAccount.depositAmount
-          .dividedBy(10 ** tokenPrice.decimals)
-          .toNumber(),
-        NetworkId.solana,
-        tokenPrice
-      ),
+    element.addAsset({
+      address: mint,
+      amount: stakeAccount.depositAmount,
       attributes: {
         lockedUntil,
       },
-    };
-
-    const assetsOfPlatform = assetsByPlatform.get(platform);
-    if (assetsOfPlatform) {
-      assetsOfPlatform.push(asset);
-      assetsByPlatform.set(platform, assetsOfPlatform);
-    } else {
-      assetsByPlatform.set(platform, [asset]);
-    }
+    });
   }
 
-  const elements: PortfolioElement[] = [];
-  assetsByPlatform.forEach((assets, platform) =>
-    elements.push({
-      type: PortfolioElementType.multiple,
-      label: 'Staked',
-      networkId: NetworkId.solana,
-      platformId: platform,
-      data: { assets },
-      value: getUsdValueSum(assets.map((asset) => asset.value)),
-    })
-  );
-
-  return elements;
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {
