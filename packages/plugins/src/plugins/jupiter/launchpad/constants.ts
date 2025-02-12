@@ -136,4 +136,23 @@ export const airdropConfigs: AirdropConfig[] = [
       name: 'S2',
     },
   },
+  {
+    mint: 'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN',
+    decimals: 6,
+    distributorProgram: 'DiS3nNjFVMieMgmiQFm6wgJL7nevk4NrhXKLbtEH1Z2R',
+    label: 'JUP',
+    platformId,
+    getApiPath: (owner: string) =>
+      `https://jupuary-api.jup.ag/claim-proof-2025/${owner}`,
+    statics: {
+      claimStart: 1737547200000,
+      claimEnd: 1745323200000,
+      id: 'jupuary-2025',
+      emitterName: 'Jupiter',
+      emitterLink: 'https://jup.ag/',
+      claimLink: 'https://jupuary.jup.ag/',
+      image: platformImage,
+      name: 'Jupuary 2025',
+    },
+  },
 ];

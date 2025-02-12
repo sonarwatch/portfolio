@@ -23,6 +23,7 @@ export type MarginPosition = {
 export type LP = {
   ammPosition: AmmPosition;
   reserveQuoteAmount: number;
+  reserveBaseAmount: number;
 };
 export type AmmPosition = {
   ammpool: string;
@@ -43,11 +44,37 @@ export type YieldMarket = {
   lpMarginIndex: number;
   lpMarginDecimals: number;
 };
-export type Ammpool = {
-  sqrtPrice: number;
-  liquidity: number;
-  tickCurrentIndex: number;
+export type AmmpoolRewardInfo = {
+  mint: string;
+  vault: string;
+  authority: string;
+  emissionsPerSecondX64: number;
+  growthGlobalX64: number;
 };
+export type Ammpool = {
+  ammpoolsConfig: string;
+  liquidity: number;
+  sqrtPrice: number;
+  protocolFeeOwedA: number;
+  protocolFeeOwedB: number;
+  tokenMintBase: string;
+  tokenVaultBase: string;
+  feeGrowthGlobalA: number;
+  tokenMintQuote: string;
+  tokenVaultQuote: string;
+  feeGrowthGlobalB: number;
+  rewardLastUpdatedTimestamp: number;
+  rewardInfos: AmmpoolRewardInfo[];
+  oracle: string;
+  tickCurrentIndex: number;
+  observationIndex: number;
+  observationUpdateDuration: number;
+  tickSpacing: number;
+  tickSpacingSeed: number[];
+  feeRate: number;
+  protocolFeeRate: number;
+};
+
 export type Oracle = {
   rate: number;
 };

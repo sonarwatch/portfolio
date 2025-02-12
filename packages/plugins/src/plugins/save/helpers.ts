@@ -95,9 +95,14 @@ export async function getElementsFromObligations(
       ? elementRegistrySave.addElementBorrowlend({
           label: 'Lending',
           name: market.name,
+          ref: obligation.pubkey.toString(),
+          sourceRefs: [{ name: 'Lending Market', address: market.address }],
+          link: `https://save.finance/dashboard?pool=${market.address}`,
         })
       : elementRegistryDumpy.addElementBorrowlend({
           label: 'Lending',
+          ref: obligation.pubkey.toString(),
+          sourceRefs: [{ name: 'Lending Market', address: market.address }],
         });
 
     for (let j = 0; j < market.reserves.length; j += 1) {

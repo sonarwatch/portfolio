@@ -7,8 +7,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { TokenPriceMap } from '../../TokenPriceMap';
 import { AssetTokenBuilder } from './AssetTokenBuilder';
-import { PortfolioAssetTokenParams } from './PortfolioAssetTokenParams';
-import { LiquidityParams } from './LiquidityParams';
+import { LiquidityParams, PortfolioAssetTokenParams } from './Params';
 
 export class LiquidityBuilder {
   private readonly params?: LiquidityParams;
@@ -72,6 +71,9 @@ export class LiquidityBuilder {
       value,
       yields: this.yields,
       name: this.params ? this.params.name : undefined,
+      ref: this.params ? this.params.ref?.toString() : undefined,
+      sourceRefs: this.params ? this.params.sourceRefs : undefined,
+      link: this.params ? this.params.link : undefined,
     } as PortfolioLiquidity;
   }
 }
