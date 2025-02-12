@@ -116,20 +116,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     element.addAsset({
       address: mint,
-      amount: userPnL,
+      amount: userPnL.minus(depositAccount.profitShareFeePaid),
       attributes: {
         tags: ['PnL'],
       },
     });
-
-    if (depositAccount.profitShareFeePaid.isPositive())
-      element.addAsset({
-        address: mint,
-        amount: depositAccount.profitShareFeePaid.negated(),
-        attributes: {
-          tags: ['Fees Paid'],
-        },
-      });
   }
 
   return elementRegistry.getElements(cache);
