@@ -47,7 +47,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
             const pos = position.number;
             const unit = position.unit.toNumber() / 1e8;
-            const tokenCollateralAmount = position.token_collateral_amount.shiftedBy(-position.token_collateral_price_exponent).toNumber()
+            const tokenCollateralAmount = position.token_collateral_amount.shiftedBy(-item.tokenCollateralTokenDecimal).toNumber()
             const borrowingUnit = position.borrowing_unit.toNumber() / 1e8;
             const borrowingIndex = item.borrowingIndex / 1e12;
             const borrowingAmount = borrowingUnit * borrowingIndex;
@@ -57,7 +57,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             suppliedAssets.push(
                 tokenPriceToAssetToken(
                     item.tokenCollateralTokenMint.toString(),
-                    Number(amount),
+                    Number(tokenCollateralAmount),
                     NetworkId.solana,
                     tokenPrice,
                 )
