@@ -49,8 +49,8 @@ export function getLeveragePdas(owner: string): PublicKey[] {
   const { leveragePairs } = mainMarketConfig;
   if (!leveragePairs) return [];
 
-  return leveragePairs.map(
-    (tokens) =>
+  return leveragePairs
+    .map((tokens) => [
       PublicKey.findProgramAddressSync(
         [
           Buffer.from([3]),
@@ -61,6 +61,18 @@ export function getLeveragePdas(owner: string): PublicKey[] {
           new PublicKey(tokens[1]).toBuffer(),
         ],
         klendProgramId
-      )[0]
-  );
+      )[0],
+      PublicKey.findProgramAddressSync(
+        [
+          Buffer.from([3]),
+          Buffer.from([0]),
+          new PublicKey(owner).toBuffer(),
+          new PublicKey(mainMarket).toBuffer(),
+          new PublicKey(tokens[1]).toBuffer(),
+          new PublicKey(tokens[0]).toBuffer(),
+        ],
+        klendProgramId
+      )[0],
+    ])
+    .flat();
 }

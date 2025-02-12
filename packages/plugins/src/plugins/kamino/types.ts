@@ -101,6 +101,7 @@ export type FarmInfo = {
   rewardsMints: string[];
   lockingStart: number;
   lockingDuration: number;
+  strategyId: string;
 };
 
 export type LendingMarketConfig = {

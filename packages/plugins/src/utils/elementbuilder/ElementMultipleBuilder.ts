@@ -6,17 +6,19 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { ElementBuilder } from './ElementBuilder';
 import { AssetTokenBuilder } from './AssetTokenBuilder';
-import { ElementParams } from './ElementParams';
-import { PortfolioAssetTokenParams } from './PortfolioAssetTokenParams';
+import {
+  Params,
+  PortfolioAssetGenericParams,
+  PortfolioAssetTokenParams,
+} from './Params';
 import { TokenPriceMap } from '../../TokenPriceMap';
 import { AssetBuilder } from './AssetBuilder';
-import { PortfolioAssetGenericParams } from './PortfolioAssetGenericParams';
 import { AssetGenericBuilder } from './AssetGenericBuilder';
 
 export class ElementMultipleBuilder extends ElementBuilder {
   assets: AssetBuilder[];
 
-  constructor(params: ElementParams) {
+  constructor(params: Params) {
     super(params);
     this.assets = [];
   }
@@ -44,19 +46,20 @@ export class ElementMultipleBuilder extends ElementBuilder {
 
     if (assets.length === 0) return null;
 
-    const element = {
+    return {
       type: this.type,
       label: this.label,
       networkId,
       platformId: this.platformId || platformId,
       data: {
         assets,
+        ref: this.ref?.toString(),
+        sourceRefs: this.sourceRefs,
+        link: this.link,
       },
       value: getUsdValueSum(assets.map((asset) => asset.value)),
       name: this.name,
       tags: this.tags,
-    };
-
-    return element as PortfolioElement;
+    } as PortfolioElement;
   }
 }

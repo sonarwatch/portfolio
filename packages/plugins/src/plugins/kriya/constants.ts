@@ -12,7 +12,7 @@ export const platform: Platform = {
 
 // strategies / lp rebalancing
 export const strategyLpRebalancingUrl =
-  'https://88ob93rfva.execute-api.ap-southeast-1.amazonaws.com/release/vaults';
+  'https://api-service-81678480858.asia-northeast1.run.app/vaults/';
 export const strategyLpRebalancingInfoKey = 'strategyLpRebalancingInfos';
 export const strategyLpRebalancingStakeReceipt =
   '0xba0dd78bdd5d1b5f02a689444522ea9a79e1bc4cd4d8e6a57b59f3fbcae5e978::farm::StakeReceipt';

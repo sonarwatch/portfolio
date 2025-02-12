@@ -60,9 +60,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const liquidities: PortfolioLiquidity[] = [];
   for (let i = 0; i < accounts.length; i++) {
+    const seatAcc = accounts.at(i);
     const marketAcc = marketsAccounts.at(i);
     const marketHeader = marketHeaders.at(i);
-    if (!marketAcc || !marketHeader) continue;
+    if (!marketAcc || !marketHeader || !seatAcc) continue;
     const traderState = getTraderState(marketAcc.data, owner);
     if (!traderState) continue;
     const baseMint = marketHeader.baseParams.mintKey.toString();
@@ -104,6 +105,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       rewardAssetsValue: 0,
       value,
       yields: [],
+      link: `https://app.phoenix.trade/market/${seatAcc.market.toString()}`,
+      ref: seatAcc.toString(),
+      sourceRefs: [
+        {
+          name: 'Market',
+          address: seatAcc.market.toString(),
+        },
+      ],
     };
     liquidities.push(liquidity);
   }

@@ -89,5 +89,11 @@ const orphanPlatforms: Platform[] = [
   },
   stepfinancePlatform,
   ligmaPlatform,
+  {
+    id: 'asgardfi',
+    name: 'Asgard',
+    image: 'https://sonar.watch/img/platforms/asgard.webp',
+    website: 'https://asgardfi.com/',
+  },
 ];
 export default orphanPlatforms;

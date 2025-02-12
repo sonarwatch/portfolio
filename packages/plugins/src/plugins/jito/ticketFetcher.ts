@@ -40,6 +40,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const element = registry.addElementMultiple({
       platformId: vault.platformId,
       label: 'Deposit',
+      ref: ticket.pubkey.toString(),
+      sourceRefs: [
+        {
+          name: 'Vault',
+          address: vault.pubkey.toString(),
+        },
+      ],
+      link: `https://www.jito.network/restaking/vaults/${vault.pubkey.toString()}/`,
     });
 
     element.addAsset({

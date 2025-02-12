@@ -5,15 +5,14 @@ import {
   PortfolioElementLeverage,
 } from '@sonarwatch/portfolio-core';
 import { ElementBuilder } from './ElementBuilder';
-import { ElementParams } from './ElementParams';
+import { LevPositionParams, Params } from './Params';
 import { TokenPriceMap } from '../../TokenPriceMap';
 import { LevPositionBuilder } from './LevPositionBuilder';
-import { LevPositionParams } from './LevPositionParams';
 
 export class ElementLeverageBuilder extends ElementBuilder {
   positions: LevPositionBuilder[];
 
-  constructor(params: ElementParams) {
+  constructor(params: Params) {
     super(params);
     this.positions = [];
   }
@@ -37,18 +36,19 @@ export class ElementLeverageBuilder extends ElementBuilder {
       .map((p) => p.get(networkId, tokenPrices))
       .filter((p) => p !== null) as LevPosition[];
     const value = getUsdValueSum(positions.map((a) => a.value));
-    const element = {
+    return {
       type: this.type,
       label: this.label,
       data: {
         positions,
         value,
+        ref: this.ref?.toString(),
+        sourceRefs: this.sourceRefs,
+        link: this.link,
       },
       networkId,
       platformId: this.platformId || platformId,
       value,
-    };
-
-    return element as PortfolioElementLeverage;
+    } as PortfolioElementLeverage;
   }
 }

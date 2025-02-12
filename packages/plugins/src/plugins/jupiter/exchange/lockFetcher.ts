@@ -22,9 +22,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const registry = new ElementRegistry(NetworkId.solana, platformId);
 
   for (const lock of vestingEscrowAccounts) {
+    if (!lock.cancelledAt.isZero()) continue;
+
     const element = registry.addElementMultiple({
       label: 'Vesting',
       name: 'Lock',
+      link: `https://lock.jup.ag/token/${lock.tokenMint}`,
+      ref: lock.pubkey.toString(),
     });
     const endTime = lock.cliffTime
       .plus(lock.numberOfPeriod.times(lock.frequency))

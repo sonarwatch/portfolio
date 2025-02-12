@@ -122,8 +122,10 @@ export type PriceResponse = {
 
 export type TokenResponse = {
   address: string;
-  daily_volume: number;
+  name: string;
   symbol: string;
+  decimals: string;
+  daily_volume: number;
   extensions: {
     coingeckoId?: string;
   };
