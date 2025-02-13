@@ -1,4 +1,5 @@
 import { Connection } from '@solana/web3.js';
+import axios from 'axios';
 import {
   earnLenderDataSize,
   earnVaultDataSize,
@@ -19,7 +20,6 @@ import {
   vaultLeverageBeet,
 } from './structs';
 import { getClientSolana } from '../../utils/clients';
-import axios from 'axios';
 
 export async function getVaultEarns(): Promise<ParsedAccount<VaultEarn>[]> {
   return getParsedProgramAccounts(
@@ -115,7 +115,5 @@ export async function getLeverageObligations(
 export const getLeverageVaults = () => {
   const url = leverageVaultJson;
 
-  return axios.get(url, {}).then((response) => {
-      return response.data;
-  })
+  return axios.get(url, {}).then((response) => response.data)
 }

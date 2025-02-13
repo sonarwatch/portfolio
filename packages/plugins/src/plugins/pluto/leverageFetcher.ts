@@ -38,14 +38,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (!vaultAddresses.length) return [];
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
-  accounts.forEach((acc) => {
+  accounts.forEach((acc) => {    
     const vault = vaults.find(
-      (v) => v.protocol.toString() === acc.protocol.toString()
+      (v) => v.pubkey.toString() === acc.vault.toString()
     );
     if (!vault) return;
 
     const vaultAddress = vaultAddresses.find(
-      (v) => v.leverageVault === acc.pubkey.toString()
+      (v) => v.leverageVault === vault.pubkey.toString()
     )
     if (!vaultAddress) return;
 
@@ -83,7 +83,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       ]);
 
       element.addSuppliedAsset({
-        address: vault.nativeCollateralTokenMint.toString(),
+        address: vault.tokenCollateralTokenMint.toString(),
         amount: tokenCollateralAmount,
         alreadyShifted: true,
       });
