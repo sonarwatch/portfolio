@@ -20,7 +20,7 @@ const executor: JobExecutor = async (cache: Cache) => {
           leverageVaultAddressesKey,
           items,
           {
-            prefix: leverageVaultAddressesKey,
+            prefix: platformId,
             networkId: NetworkId.solana,
           }
         )
