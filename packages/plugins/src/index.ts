@@ -762,6 +762,11 @@ import {
   jobs as puffcoinJobs,
   fetchers as puffcoinFetchers,
 } from './plugins/puffcoin';
+import {
+  platforms as triadPlatforms,
+  jobs as triadJobs,
+  fetchers as triadFetchers,
+} from './plugins/triad';
 import { jobs as coingeckoJobs } from './plugins/coingecko';
 
 export {
@@ -930,6 +935,7 @@ export const platforms: Platform[] = [
   ...plutoPlatforms,
   ...layer3Platforms,
   ...puffcoinPlatforms,
+  ...triadPlatforms,
 ];
 
 // JOBS //
@@ -1081,6 +1087,7 @@ export const jobs: Job[] = [
   ...plutoJobs,
   ...layer3Jobs,
   ...puffcoinJobs,
+  ...triadJobs,
 ];
 
 // FETCHERS //
@@ -1232,6 +1239,7 @@ export const fetchers: Fetcher[] = [
   ...plutoFetchers,
   ...layer3Fetchers,
   ...puffcoinFetchers,
+  ...triadFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
