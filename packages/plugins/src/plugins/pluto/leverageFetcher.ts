@@ -1,21 +1,29 @@
 import { apyToApr, NetworkId } from '@sonarwatch/portfolio-core';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { leveragesVaultKey, platformId } from './constants';
+import { leverageVaultAddressesKey, leverageVaultKey, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { Cache } from '../../Cache';
 import { getLeverageObligations } from './helper';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import { ParsedAccount } from '../../utils/solana';
-import { VaultLeverage } from './structs';
+import { LeverageVaultAddress, VaultLeverage } from './structs';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const leverageVaultsMemo = new MemoizedCache<ParsedAccount<VaultLeverage>[]>(
-  leveragesVaultKey,
+  leverageVaultKey,
   {
     prefix: platformId,
     networkId: NetworkId.solana,
   }
 );
+
+const leverageAddressesMemo = new MemoizedCache<LeverageVaultAddress[]>(
+  leverageVaultAddressesKey,
+  {
+    prefix: platformId,
+    networkId: NetworkId.solana,
+  }
+)
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -26,14 +34,25 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const vaults = await leverageVaultsMemo.getItem(cache);
   if (!vaults.length) return [];
 
+  const vaultAddresses = await leverageAddressesMemo.getItem(cache);
+  if (!vaultAddresses.length) return [];
+
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
   accounts.forEach((acc) => {
     const vault = vaults.find(
       (v) => v.protocol.toString() === acc.protocol.toString()
     );
     if (!vault) return;
+
+    const vaultAddress = vaultAddresses.find(
+      (v) => v.leverageVault === acc.pubkey.toString()
+    )
+    if (!vaultAddress) return;
+
     const element = elementRegistry.addElementBorrowlend({
-      name: `Leverage`,
+      name: `Leverage ${vaultAddress.leverageName.replace(
+        "-", "/"
+      )}`,
       label: 'Leverage',
       ref: acc.pubkey,
       sourceRefs: [
@@ -50,12 +69,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         continue;
       }
 
-      const unit = position.unit.toNumber() / 1e8;
       const borrowingUnit = position.borrowing_unit.toNumber() / 1e8;
       const borrowingIndex = vault.borrowingIndex / 1e12;
       const borrowingAmount = borrowingUnit * borrowingIndex;
-      const index = vault.index / 1e12;
-      const amount = unit * index;
+      const tokenCollateralAmount = position.token_collateral_amount.shiftedBy(-vault.tokenCollateralTokenDecimal).toNumber()
 
       const apy = Number(vault.apy.ema7d / 1e5);
       element.addSuppliedYield([
@@ -67,7 +84,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
       element.addSuppliedAsset({
         address: vault.nativeCollateralTokenMint.toString(),
-        amount,
+        amount: tokenCollateralAmount,
         alreadyShifted: true,
       });
 

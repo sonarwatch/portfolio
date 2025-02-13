@@ -466,3 +466,36 @@ export interface LeverageObligation {
   positions: LeveragePosition[];
   padding1: BigNumber[];
 }
+
+export interface LeverageVaultAddress {
+  earnName: string
+  leverageName: string
+  programId: string
+  protocol: string
+  indexer: string
+  keeper: string
+  feeVault: string
+  tokenProgramA: string
+  tokenMintA: string
+  tokenDecimalA: number
+  tokenCollateralPriceOracle: string
+  tokenCollateralPriceFeed: string
+  tokenProgramB: string
+  tokenMintB: string
+  tokenDecimalB: number
+  nativeCollateralPriceOracle: string
+  nativeCollateralPriceFeed: string
+  earnConfig: string
+  earnStats: string
+  earnVaultAuthority: string
+  earnVault: string
+  earnVaultLiquidity: string
+  leverageConfig: string
+  leverageStats: string
+  leverageVaultAuthority: string
+  leverageVault: string
+  leverageVaultTokenCollateralLiquidity: string
+  leverageVaultNativeCollateralLiquidity: string
+  lookupTable: string
+  lookupTableGeneric: string
+}

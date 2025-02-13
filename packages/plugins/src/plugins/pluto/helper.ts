@@ -4,6 +4,7 @@ import {
   earnVaultDataSize,
   leverageObligationDataSize,
   leverageVaultDataSize,
+  leverageVaultJson,
   plutoProgramId,
 } from './constants';
 import { getParsedProgramAccounts, ParsedAccount } from '../../utils/solana';
@@ -18,6 +19,7 @@ import {
   vaultLeverageBeet,
 } from './structs';
 import { getClientSolana } from '../../utils/clients';
+import axios from 'axios';
 
 export async function getVaultEarns(): Promise<ParsedAccount<VaultEarn>[]> {
   return getParsedProgramAccounts(
@@ -108,4 +110,12 @@ export async function getLeverageObligations(
       },
     ]
   );
+}
+
+export const getLeverageVaults = () => {
+  const url = leverageVaultJson;
+
+  return axios.get(url, {}).then((response) => {
+      return response.data;
+  })
 }
