@@ -34,11 +34,11 @@ export const fetchers: Fetcher[] = [
         networkId,
         executor: getEvmFetcherExecutor(networkId, true),
       },
-      {
-        id: `${walletTokensPlatform.id}-${networkId}-bottom`,
-        networkId,
-        executor: getEvmFetcherExecutor(networkId, false),
-      },
+      // {
+      //   id: `${walletTokensPlatform.id}-${networkId}-bottom`,
+      //   networkId,
+      //   executor: getEvmFetcherExecutor(networkId, false),
+      // },
     ])
     .flat(),
 ];

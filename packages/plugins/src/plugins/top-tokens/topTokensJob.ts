@@ -35,16 +35,11 @@ const executor: JobExecutor = async (cache: Cache) => {
   for (let i = 0; i < networkIds.length; i++) {
     // await sleep(60000);
     const networkId = networkIds[i];
-    if (networkId !== NetworkId.fraxtal) continue;
-    console.log(`Fetching top addresses for networkId: ${networkId}`);
-    console.log(coingeckoCoinsListRes?.data);
-
     try {
       const topTokens = await getTopAddresses(
         networkId,
         coingeckoCoinsListRes.data
       );
-      console.log({ topTokens });
       await cache.setItem(networkId, topTokens, {
         prefix: topTokensPrefix,
       });
