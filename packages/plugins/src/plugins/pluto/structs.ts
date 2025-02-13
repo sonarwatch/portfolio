@@ -1,10 +1,17 @@
-import { BeetStruct, u8, u64 as u64beet, array, bool, u32, uniformFixedSizeArray, i8 } from '@metaplex-foundation/beet';
+import {
+  BeetStruct,
+  u8,
+  bool,
+  u32,
+  uniformFixedSizeArray,
+  i8,
+} from '@metaplex-foundation/beet';
 import { publicKey } from '@metaplex-foundation/beet-solana';
-import { GetProgramAccountsFilter, PublicKey } from '@solana/web3.js';
+import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { u64, u128, i64 } from '../../utils/solana'; // Assuming custom utility for blob
 
-const rateBeet = new BeetStruct<rate>(
+const rateBeet = new BeetStruct<Rate>(
   [
     ['lastUpdated', i64],
     ['lastValue', u32],
@@ -23,10 +30,10 @@ const rateBeet = new BeetStruct<rate>(
     ['align2', uniformFixedSizeArray(u8, 4)],
     ['padding1', uniformFixedSizeArray(u64, 7)], // array of 64 u64, 64 * 8 = 512 bytes
   ],
-  (args) => args as rate
-)
+  (args) => args as Rate
+);
 
-interface rate {
+interface Rate {
   lastUpdated: number;
   lastValue: BigNumber;
   align0: number[];
@@ -104,7 +111,7 @@ export interface VaultEarn {
   unitLeverage: string; // u128
   index: BigNumber; // u128
   lastIndexUpdated: number;
-  apy: rate; // u128
+  apy: Rate; // u128
   padding1: Buffer[];
 }
 
@@ -128,7 +135,7 @@ export const earnLenderBeet = new BeetStruct<EarnLender>(
     ['unit', u64], // i64 is 8 bytes
     ['index', u128], // i64 is 8 bytes
     ['padding1', uniformFixedSizeArray(u64, 10)], // array of 64 u64, 64 * 8 = 512 bytes
-  ], 
+  ],
   (args) => args as EarnLender
 );
 
@@ -225,11 +232,10 @@ export interface VaultLeverage {
   unitSupply: number;
   index: number;
   lastIndexUpdated: BigNumber;
-  borrowingApy: rate,
-  apy: rate,
+  borrowingApy: Rate;
+  apy: Rate;
   padding1: BigNumber[];
 }
-
 
 export enum LeverageAction {
   Idle = 0,
@@ -355,7 +361,6 @@ export interface LeveragePositionState {
   padding1: BigNumber[];
 }
 
-
 export const leveragePositionBeet = new BeetStruct<LeveragePosition>(
   [
     ['owner', publicKey],
@@ -443,7 +448,7 @@ export const leverageObligationBeet = new BeetStruct<LeverageObligation>(
     ['last_updated', i64], // i64 is 8 bytes
     ['positions', uniformFixedSizeArray(leveragePositionBeet, 3)],
     ['padding1', uniformFixedSizeArray(u64, 64)], // array of 64 u64, 64 * 8 = 512 bytes
-  ], 
+  ],
   (args) => args as LeverageObligation
 );
 

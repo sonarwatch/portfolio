@@ -1,5 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
+import { platformId as sharkyPlatformId } from '../sharky/constants';
 
 export const platformId = 'armada-staking-program';
 export const stakePid = new PublicKey(
@@ -13,8 +14,6 @@ export const armadaPlatform: Platform = {
   name: 'Armada',
   defiLlamaId: 'armada-staking',
   image: 'https://sonar.watch/img/platforms/armada.webp',
-  website: 'https://www.armadafi.so/',
-  twitter: 'https://twitter.com/ArmadaFi',
 };
 
 export const flowmaticPlatformId = 'flowmatic';
@@ -80,6 +79,30 @@ export const geckoPlatform: Platform = {
   twitter: 'https://twitter.com/GeckCoin',
 };
 
+export const brawlPlatformId = 'brawl';
+export const brawlPlatform: Platform = {
+  id: brawlPlatformId,
+  name: 'Brawl AI',
+  image: 'https://sonar.watch/img/platforms/brawl.webp',
+  website: 'https://staking.brawlailayer.org/',
+};
+
+export const akumaPlatformId = 'akuma';
+export const akumaPlatform: Platform = {
+  id: akumaPlatformId,
+  name: 'Akuma',
+  image: 'https://sonar.watch/img/platforms/akuma.webp',
+  website: 'https://staking.theakuma.xyz',
+};
+
+export const gofursPlatformId = 'gofurs';
+export const gofurslatform: Platform = {
+  id: gofursPlatformId,
+  name: 'Gofurs',
+  image: 'https://sonar.watch/img/platforms/gofurs.webp',
+  website: 'https://stake.gofursdelsol.com/',
+};
+
 export const platformByMint = new Map([
   ['BDssJun8XSPmWq7VkoahyozsvJwKEZBkWE6YBrFHjbii', kishuPlatformId],
   ['AqEHVh8J2nXH9saV2ciZyYwPpqWFRfD2ffcq5Z8xxqm5', yakuPlatformId],
@@ -88,4 +111,8 @@ export const platformByMint = new Map([
   ['oreoN2tQbHXVaZsr3pf66A48miqcBXCDJozganhEJgz', orePlatformId],
   ['8c71AvjQeKKeWRe8jtTGG1bJ2WiYXQdbjqFbUfhHgSVk', garyPlatformId],
   ['6CNHDCzD5RkvBWxxyokQQNQPjFWgoHF94D7BmC73X6ZK', geckoPlatformId],
+  ['SHARKSYJjqaNyxVfrpnBN9pjgkhwDhatnMyicWPnr1s', sharkyPlatformId],
+  ['5mdBkZ4dTP94SE7PyiuWseTDAd1kYxSk6oYaWB7186s7', brawlPlatformId],
+  ['AKUjRM9ZcE8t4mQWGX8ToroNjrTSYvNR3bBfFMzY7ahb', akumaPlatformId],
+  ['4xnxNjLkeVoJEAUFjj5xTvkdTLGYHtrdyyXThGDFhwmr', gofursPlatformId],
 ]);

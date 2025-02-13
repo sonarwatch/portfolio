@@ -1,83 +1,72 @@
-import { NetworkId, PortfolioAsset, PortfolioElement, PortfolioElementType, Yield } from "@sonarwatch/portfolio-core";
-import { Fetcher, FetcherExecutor } from "../../Fetcher";
-import { leverageVaultKey, platformId } from "./constants";
-import { getClientSolana } from "../../utils/clients";
+import { apyToApr, NetworkId } from '@sonarwatch/portfolio-core';
+import BigNumber from 'bignumber.js';
+import { Fetcher, FetcherExecutor } from '../../Fetcher';
+import { earnVaultsKey, platformId } from './constants';
+import { getClientSolana } from '../../utils/clients';
 import { Cache } from '../../Cache';
-import { getAllEarn, getAllEarnLender, getElementLendingValues } from "./helper";
-import tokenPriceToAssetToken from "../../utils/misc/tokenPriceToAssetToken";
+import { getLenders } from './helper';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { MemoizedCache } from '../../utils/misc/MemoizedCache';
+import { ParsedAccount } from '../../utils/solana';
+import { VaultEarn } from './structs';
+
+const earnVaultsMemo = new MemoizedCache<ParsedAccount<VaultEarn>[]>(
+  earnVaultsKey,
+  {
+    prefix: platformId,
+    networkId: NetworkId.solana,
+  }
+);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-    const client = getClientSolana();  
-    const earn = await getAllEarn(client)
-    const elements: PortfolioElement[] = [];
+  const client = getClientSolana();
 
-    const suppliedAssets: PortfolioAsset[] = [];
-    const borrowedAssets: PortfolioAsset[] = [];
-    const suppliedLtvs: number[] = [];
-    const borrowedWeights: number[] = [];
-    const rewardAssets: PortfolioAsset[] = [];
-    const borrowedYields: Yield[][] = [];
-    const suppliedYields: Yield[][] = [];
-    for (const item of earn) {
-        const earnLenders = await getAllEarnLender(client, owner, item.pubkey.toString())
-        if (earnLenders.length == 0) {
-          continue;
-        }
+  const accounts = await getLenders(client, owner);
+  if (!accounts) return [];
 
-        const tokenPrice = await cache.getTokenPrice(item.tokenMint.toString(), NetworkId.solana);
-        const apy = Number(item.apy.ema7d / 1e3)
-        suppliedYields.push([{apy: apy, apr: apy}]);
+  const vaults = await earnVaultsMemo.getItem(cache);
+  if (!vaults.length) return [];
 
-        const earnLender = earnLenders[0];
-        const earnUnit = earnLender.unit.toNumber() / 1e8; // Convert BigNumber to JS number (losing precision)
-        const earnIndex = item.index.toNumber() / 1e12; // Convert index to JS number
-        const earnAmount = earnUnit * earnIndex; // Use regular JS math
-        suppliedAssets.push(
-            tokenPriceToAssetToken(
-                item.tokenMint.toString(),
-                earnAmount,
-                NetworkId.solana,
-                tokenPrice,
-            )
-        )
-    }
-    
-    let { borrowedValue, suppliedValue, value, rewardValue } =
-    getElementLendingValues({
-        suppliedAssets,
-        borrowedAssets,
-        rewardAssets,
+  const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
+  accounts.forEach((acc) => {
+    const vault = vaults.find(
+      (v) => v.pubkey.toString() === acc.protocol.toString()
+    );
+    if (!vault) return;
+
+    const element = elementRegistry.addElementBorrowlend({
+      label: 'Lending',
+      name: `Earn`,
+      ref: acc.pubkey,
+      sourceRefs: [
+        {
+          name: 'Vault',
+          address: vault.pubkey.toString(),
+        },
+      ],
+      link: 'https://app.pluto.so/earn',
     });
 
-    
-    elements.push({
-        name: `Earn`,
-        type: PortfolioElementType.borrowlend,
-        networkId: NetworkId.solana,
-        platformId,
-        label: 'Lending',
-        value,
-        data: {
-            borrowedAssets,
-            borrowedValue,
-            borrowedYields,
-            suppliedAssets,
-            suppliedValue,
-            suppliedYields,
-            healthRatio: null,
-            rewardAssets,
-            rewardValue,
-            value,
-        }
-    })
+    const apy = Number(vault.apy.ema7d / 1e5);
+    element.addSuppliedYield([{ apy, apr: apyToApr(apy) }]);
 
-    return elements;
+    const earnUnit = new BigNumber(acc.unit).dividedBy(10 ** 8); // Convert BigNumber to JS number (losing precision)
+    const earnIndex = new BigNumber(vault.index).dividedBy(10 ** 12); // Convert index to JS number
+
+    element.addSuppliedAsset({
+      address: vault.tokenMint.toString(),
+      amount: earnUnit.multipliedBy(earnIndex),
+      alreadyShifted: true,
+    });
+  });
+
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {
-    id: `${platformId}-earn`,
-    networkId: NetworkId.solana,
-    executor,
-}
+  id: `${platformId}-earn`,
+  networkId: NetworkId.solana,
+  executor,
+};
 
 export default fetcher;

@@ -96,6 +96,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const element = elementRegistry.addElementBorrowlend({
       label: 'Lending',
       name: Object.keys(borrowerLoanValues[i]).length > 0 ? 'Borrow' : 'Lend',
+      ref: escrowAccount.pubkey.toString(),
+      link: 'https://app.loopscale.com/portfolio',
     });
 
     escrowMarginfiElements[i].forEach((marginfiElement) => {
