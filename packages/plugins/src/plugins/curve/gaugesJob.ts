@@ -1,4 +1,4 @@
-import { NetworkIdType } from '@sonarwatch/portfolio-core';
+import { NetworkId, NetworkIdType } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import {
@@ -12,6 +12,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   const allGauges = await getAllGaugesData();
 
   for (const [networkId, gauges] of Object.entries(allGauges)) {
+    if (networkId !== NetworkId.fraxtal) continue;
     for (let i = 0; i < gauges.length; i++) {
       const gauge = gauges[i];
       await cache.setItem(gauge.gauge, gauge, {
