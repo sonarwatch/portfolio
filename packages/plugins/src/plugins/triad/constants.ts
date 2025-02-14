@@ -13,3 +13,5 @@ export const platform: Platform = {
 export const programId = new PublicKey(
   'TRDwq3BN4mP3m9KsuNUWSN6QDff93VKGSwE95Jbr9Ss'
 );
+
+export const marketsCacheKey = 'markets';
