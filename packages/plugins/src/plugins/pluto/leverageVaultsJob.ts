@@ -1,13 +1,13 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { leveragesVaultKey, platformId } from './constants';
+import { leverageVaultKey, platformId } from './constants';
 import { getAllLeverage } from './helper';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const vaults = await getAllLeverage();
 
-  await cache.setItem(leveragesVaultKey, vaults, {
+  await cache.setItem(leverageVaultKey, vaults, {
     prefix: platformId,
     networkId: NetworkId.solana,
   });

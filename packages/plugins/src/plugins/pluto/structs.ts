@@ -28,7 +28,7 @@ const rateBeet = new BeetStruct<Rate>(
     ['ema180d', u32],
     ['ema365d', u32],
     ['align2', uniformFixedSizeArray(u8, 4)],
-    ['padding1', uniformFixedSizeArray(u32, 10)], // array of 64 u64, 64 * 8 = 512 bytes
+    ['padding1', uniformFixedSizeArray(u64, 7)], // array of 64 u64, 64 * 8 = 512 bytes
   ],
   (args) => args as Rate
 );
@@ -49,7 +49,7 @@ interface Rate {
   ema180d: number;
   ema365d: number;
   align2: number[];
-  padding1: number[];
+  padding1: any[];
 }
 
 // Define the VaultEarn struct using BeetStruct
@@ -465,4 +465,37 @@ export interface LeverageObligation {
   last_updated: BigNumber;
   positions: LeveragePosition[];
   padding1: BigNumber[];
+}
+
+export interface LeverageVaultAddress {
+  earnName: string
+  leverageName: string
+  programId: string
+  protocol: string
+  indexer: string
+  keeper: string
+  feeVault: string
+  tokenProgramA: string
+  tokenMintA: string
+  tokenDecimalA: number
+  tokenCollateralPriceOracle: string
+  tokenCollateralPriceFeed: string
+  tokenProgramB: string
+  tokenMintB: string
+  tokenDecimalB: number
+  nativeCollateralPriceOracle: string
+  nativeCollateralPriceFeed: string
+  earnConfig: string
+  earnStats: string
+  earnVaultAuthority: string
+  earnVault: string
+  earnVaultLiquidity: string
+  leverageConfig: string
+  leverageStats: string
+  leverageVaultAuthority: string
+  leverageVault: string
+  leverageVaultTokenCollateralLiquidity: string
+  leverageVaultNativeCollateralLiquidity: string
+  lookupTable: string
+  lookupTableGeneric: string
 }

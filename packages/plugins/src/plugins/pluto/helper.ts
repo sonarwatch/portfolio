@@ -1,9 +1,11 @@
 import { Connection } from '@solana/web3.js';
+import axios from 'axios';
 import {
   earnLenderDataSize,
   earnVaultDataSize,
   leverageObligationDataSize,
   leverageVaultDataSize,
+  leverageVaultJson,
   plutoProgramId,
 } from './constants';
 import { getParsedProgramAccounts, ParsedAccount } from '../../utils/solana';
@@ -108,4 +110,10 @@ export async function getLeverageObligations(
       },
     ]
   );
+}
+
+export const getLeverageVaults = () => {
+  const url = leverageVaultJson;
+
+  return axios.get(url, {}).then((response) => response.data)
 }
