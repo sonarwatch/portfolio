@@ -21,6 +21,7 @@ import { PoolDatum } from './getPoolsTypes';
 import { balanceOfAbI } from './abis';
 import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
 import { zeroBigInt } from '../../utils/misc/constants';
+import { getOwnerCRVRewards, getOwnerGaugeRewards } from './helpers/gauges';
 
 export function getPositionsFetcher(crvNetworkId: CrvNetworkId): Fetcher {
   const networkId = crvNetworkIdBySwNetworkId[crvNetworkId];
@@ -104,17 +105,78 @@ export function getPositionsFetcher(crvNetworkId: CrvNetworkId): Fetcher {
         .flat();
 
       const value = getUsdValueSum(assets.map((a) => a.value));
+
+      const isGauge = pool.gaugeAddress === address;
+
+      // Liquidity Pool Position
+      if (!isGauge) {
+        const liquidity: PortfolioLiquidity = {
+          assets,
+          assetsValue: value,
+          value,
+          yields: [],
+          rewardAssets: [],
+          rewardAssetsValue: null,
+        };
+
+        poolLiquidities.push(liquidity);
+        continue;
+      }
+
+      const { gaugeAddress } = pool as { gaugeAddress: string };
+
+      const [balRewardsRaw, rewardTokensRaw] = await Promise.all([
+        getOwnerCRVRewards(networkId, owner, gaugeAddress),
+        getOwnerGaugeRewards(networkId, owner, gaugeAddress),
+      ]);
+
+      const allRewardTokensWithBalance = [
+        balRewardsRaw,
+        ...rewardTokensRaw,
+      ].filter((token) => token.balance.isGreaterThan(0));
+
+      const allRewardTokenWithBalanceAndPrice = await Promise.all(
+        allRewardTokensWithBalance.map(async (token) => {
+          const tokenPrice = await cache.getTokenPrice(
+            token.address,
+            networkId
+          );
+          return {
+            ...token,
+            tokenPrice,
+          };
+        })
+      );
+
+      const rewardAssets: PortfolioAssetToken[] =
+        allRewardTokenWithBalanceAndPrice.flatMap((rewardAsset) => {
+          // Could add a safety check here so if the token price doesn't exist we fetch the decimal from the contract?
+          const rewardBalance = rewardAsset.balance.dividedBy(
+            new BigNumber(10).pow(rewardAsset?.tokenPrice?.decimals || 18)
+          );
+          return tokenPriceToAssetTokens(
+            rewardAsset.address,
+            rewardBalance.toNumber(),
+            networkId,
+            rewardAsset.tokenPrice,
+            rewardAsset.tokenPrice?.price || undefined
+          );
+        });
+
+      const rewardAssetsValue = getUsdValueSum(
+        rewardAssets.map((a) => a.value)
+      );
+
       const liquidity: PortfolioLiquidity = {
         assets,
         assetsValue: value,
         value,
         yields: [],
-        rewardAssets: [],
-        rewardAssetsValue: null,
+        rewardAssets,
+        rewardAssetsValue,
       };
-      const isGauge = pool.gaugeAddress === address;
-      if (isGauge) gaugeLiquidities.push(liquidity);
-      else poolLiquidities.push(liquidity);
+
+      gaugeLiquidities.push(liquidity);
     }
 
     const elements: PortfolioElementLiquidity[] = [];
