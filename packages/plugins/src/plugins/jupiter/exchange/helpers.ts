@@ -28,17 +28,3 @@ export const getFeeAmount = (
 
   return amount.mul(totalFeeBps).div(BPS_POWER);
 };
-
-export function BNToUSDRepresentation(
-  value: BN,
-  decimalPlaces = 6,
-  displayDecimals = 2
-): string {
-  const usd = Number(value.toString()) / 10 ** decimalPlaces;
-
-  return usd.toLocaleString('en-US', {
-    maximumFractionDigits: displayDecimals,
-    minimumFractionDigits: displayDecimals,
-    useGrouping: false,
-  });
-}
