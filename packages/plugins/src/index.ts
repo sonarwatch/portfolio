@@ -748,6 +748,11 @@ import {
   airdropFetcher as sonicAirdropFetcher,
 } from './plugins/sonic';
 import { jobs as coingeckoJobs } from './plugins/coingecko';
+import {
+  platforms as convexPlatforms,
+  jobs as convexJobs,
+  fetchers as convexFetchers,
+} from './plugins/convex';
 
 export {
   walletTokensPlatform,
@@ -912,6 +917,7 @@ export const platforms: Platform[] = [
   ...defitunaPlatforms,
   ...iloopPlatforms,
   ...sonicPlatforms,
+  ...convexPlatforms,
 ];
 
 // JOBS //
@@ -1060,6 +1066,7 @@ export const jobs: Job[] = [
   ...iloopJobs,
   ...sonicJobs,
   ...coingeckoJobs,
+  ...convexJobs,
 ];
 
 // FETCHERS //
@@ -1208,6 +1215,7 @@ export const fetchers: Fetcher[] = [
   ...defitunaFetchers,
   ...iloopFetchers,
   ...sonicFetchers,
+  ...convexFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
