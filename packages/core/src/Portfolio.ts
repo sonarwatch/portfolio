@@ -262,6 +262,7 @@ export type PortfolioElementTradeData = {
   inputAddress: string;
   outputAddress: string;
   initialInputAmount: number;
+  withdrawnOutputAmount: number;
   expectedOutputAmount?: number;
   inputPrice: UsdValue;
   outputPrice: UsdValue;
@@ -277,6 +278,9 @@ export type PortfolioElementTradeData = {
    * Expire at timestamp in ms
    */
   expireAt?: number;
+  ref?: string;
+  sourceRefs?: SourceRef[];
+  link?: string;
 };
 
 /**

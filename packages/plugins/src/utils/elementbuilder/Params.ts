@@ -70,6 +70,7 @@ export type TradeParams = {
   };
   initialInputAmount: number | BigNumber | string;
   expectedOutputAmount?: number | BigNumber | string;
+  withdrawnOutputAmount: number | BigNumber | string;
   createdAt?: number;
   expireAt?: number;
 };

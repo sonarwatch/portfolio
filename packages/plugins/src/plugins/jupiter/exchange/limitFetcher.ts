@@ -53,6 +53,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       },
       initialInputAmount: account.oriMakingAmount,
       expectedOutputAmount: account.oriTakingAmount,
+      withdrawnOutputAmount: 0,
     });
   }
 

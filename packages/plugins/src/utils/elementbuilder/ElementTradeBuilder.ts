@@ -1,8 +1,8 @@
 import {
   getUsdValueSum,
   NetworkIdType,
-  PortfolioElement,
   PortfolioElementTrade,
+  PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { ElementBuilder } from './ElementBuilder';
@@ -37,7 +37,7 @@ export class ElementTradeBuilder extends ElementBuilder {
     networkId: NetworkIdType,
     platformId: string,
     tokenPrices: TokenPriceMap
-  ): PortfolioElement | null {
+  ): PortfolioElementTrade | null {
     if (!this.params) return null;
     const inputAsset = new AssetTokenBuilder(this.params.inputAsset).get(
       networkId,
@@ -70,7 +70,7 @@ export class ElementTradeBuilder extends ElementBuilder {
       networkId,
       label: this.label,
       platformId,
-      type: this.type,
+      type: PortfolioElementType.trade,
       name: this.name,
       tags: this.tags,
       data: {
@@ -78,29 +78,35 @@ export class ElementTradeBuilder extends ElementBuilder {
           input: inputAsset,
           output: outputAsset,
         },
-        inputAddress: inputAsset.data.address,
+        inputAddress: this.params.inputAsset.address.toString(),
         outputAddress: this.params.outputAsset.address.toString(),
         initialInputAmount: initialInputAmount.toNumber(),
+        withdrawnOutputAmount:
+          this.params.withdrawnOutputAmount && outputPrice
+            ? new BigNumber(this.params.withdrawnOutputAmount)
+                .dividedBy(10 ** outputPrice.decimals)
+                .toNumber()
+            : 0,
         expectedOutputAmount:
           this.params.expectedOutputAmount && outputPrice
             ? new BigNumber(this.params.expectedOutputAmount)
                 .dividedBy(10 ** outputPrice.decimals)
                 .toNumber()
-            : null,
+            : undefined,
         filledPercentage: new BigNumber(1)
           .minus(
             new BigNumber(inputAsset.data.amount).dividedBy(initialInputAmount)
           )
           .toNumber(),
-        inputPrice: inputPrice?.price,
-        outputPrice: outputPrice?.price,
+        inputPrice: inputPrice.price,
+        outputPrice: outputPrice?.price || null,
         createdAt: this.params?.createdAt,
         expireAt: this.params?.expireAt,
+        ref: this.ref?.toString(),
+        sourceRefs: this.sourceRefs,
+        link: this.link,
       },
       value: getUsdValueSum([inputAsset.value, outputAsset?.value || 0]),
-      ref: this.ref?.toString(),
-      sourceRefs: this.sourceRefs,
-      link: this.link,
-    } as PortfolioElementTrade;
+    };
   }
 }
