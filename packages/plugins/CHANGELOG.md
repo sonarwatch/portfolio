@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.114](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.113...plugins-0.14.114) (2025-02-17)
+
+
+### Reverts
+
+* Revert "add link to airdropFetcher" ([0407ce5](https://github.com/sonarwatch/portfolio/commit/0407ce5bf9d0fe361b91f99ed714b4885dab329d))
+
+
+
 ## [0.14.113](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.112...plugins-0.14.113) (2025-02-17)
 
 
