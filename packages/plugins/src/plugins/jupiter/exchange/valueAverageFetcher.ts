@@ -1,10 +1,8 @@
 import {
   NetworkId,
-  PortfolioElement,
   PortfolioElementTrade,
   PortfolioElementType,
   getUsdValueSum,
-  portfolioElementTradeToMultiple,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
@@ -33,7 +31,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     NetworkId.solana
   );
 
-  const elements: PortfolioElement[] = [];
+  const elements: PortfolioElementTrade[] = [];
   for (const account of accounts) {
     const inputAddress = account.inputMint.toString();
     const outputAddress = account.outputMint.toString();
@@ -92,7 +90,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       },
       value: getUsdValueSum([inputAsset.value, outputAsset?.value || 0]),
     };
-    elements.push(portfolioElementTradeToMultiple(element));
+    elements.push(element);
   }
   return elements;
 };

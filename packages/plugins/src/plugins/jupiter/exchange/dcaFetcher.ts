@@ -1,7 +1,4 @@
-import {
-  NetworkId,
-  portfolioElementTradeToMultiple,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSolana } from '../../../utils/clients';
@@ -43,10 +40,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     });
   }
 
-  const elements = await elementRegistry.getElements(cache);
-  return elements.map((e) =>
-    e.type === 'trade' ? portfolioElementTradeToMultiple(e) : e
-  );
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {
