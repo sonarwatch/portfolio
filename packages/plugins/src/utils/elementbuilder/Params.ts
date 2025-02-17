@@ -1,5 +1,6 @@
 import {
-  LeverageSide,
+  CrossLevPosition,
+  IsoLevPosition,
   PortfolioAssetAttributes,
   PortfolioElementLabel,
   PortfolioElementTypeType,
@@ -45,19 +46,6 @@ export type ConcentratedLiquidityParams = {
   link?: string;
 };
 
-export type LevPositionParams = {
-  address: string;
-  collateralAmount?: BigNumber;
-  collateralValue?: UsdValue; // collateralAmount or collateralValue is required
-  side: LeverageSide;
-  sizeValue: BigNumber;
-  liquidationPrice?: BigNumber;
-  pnlValue?: BigNumber;
-  name?: string;
-  imageUri?: string;
-  leverage?: number;
-};
-
 export type PortfolioAssetGenericParams = {
   address?: string | PublicKey;
   amount?: number | BigNumber | string;
@@ -73,3 +61,22 @@ export type PortfolioAssetTokenParams = {
   attributes?: PortfolioAssetAttributes;
   alreadyShifted?: boolean;
 };
+
+export type TradeParams = {
+  inputAsset: PortfolioAssetTokenParams;
+  outputAsset: {
+    address: string | PublicKey;
+    amount?: number | BigNumber | string;
+  };
+  initialInputAmount: number | BigNumber | string;
+  expectedOutputAmount?: number | BigNumber | string;
+  withdrawnOutputAmount: number | BigNumber | string;
+  createdAt?: number;
+  expireAt?: number;
+};
+
+export type IsoLevPositionParams = Omit<IsoLevPosition, 'value'> & {
+  value?: UsdValue;
+};
+
+export type CrossLevPositionParams = CrossLevPosition;

@@ -12,7 +12,7 @@ import {
   perpsProgramId,
   platformId,
 } from './constants';
-import { Custody, custodyStruct, perpetualPoolStruct } from './structs';
+import { custodyStruct, perpetualPoolStruct } from './structs';
 import { custodiesFilters } from './filters';
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -25,9 +25,10 @@ const executor: JobExecutor = async (cache: Cache) => {
     custodiesFilters()
   );
   if (custodiesAccs.length === 0) return;
+
   const custodyAccsInfo = custodiesAccs.map((acc) => ({
+    ...acc,
     pubkey: acc.pubkey.toString(),
-    ...(acc as Custody),
   }));
 
   const pools = (

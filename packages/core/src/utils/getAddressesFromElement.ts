@@ -7,9 +7,14 @@ export function getAddressesFromElement(
   tokenOnly = true
 ): string[] {
   if (element.type === PortfolioElementType.leverage) {
-    return element.data.positions
-      .map((p) => p.address)
-      .filter((v) => v !== null) as string[];
+    return [
+      ...((element.data.isolated?.positions
+        .map((p) => p.address)
+        .filter((v) => v !== undefined) || []) as string[]),
+      ...((element.data.cross?.positions
+        .map((p) => p.address)
+        .filter((v) => v !== undefined) || []) as string[]),
+    ];
   }
   const assets = getAssetsFromElement(element);
   return getAddressesFromAssets(assets, tokenOnly);
