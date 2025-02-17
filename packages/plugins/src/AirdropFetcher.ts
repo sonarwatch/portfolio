@@ -392,7 +392,8 @@ export function airdropFetcherToFetcher(
               airdropFetcher.networkId,
               undefined,
               item.price || undefined,
-              { isClaimable: true, lockedUntil: airdrop.claimStart }
+              { isClaimable: true, lockedUntil: airdrop.claimStart },
+              airdrop.claimLink
             )
           : {
               type: PortfolioAssetType.generic,
