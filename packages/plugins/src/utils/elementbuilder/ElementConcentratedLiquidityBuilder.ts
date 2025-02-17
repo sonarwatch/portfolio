@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import {
   NetworkIdType,
-  PortfolioElement,
+  PortfolioElementLiquidity,
   yieldFromApr,
 } from '@sonarwatch/portfolio-core';
 import { ElementLiquidityBuilder } from './ElementLiquidityBuilder';
@@ -45,7 +45,7 @@ export class ElementConcentratedLiquidityBuilder extends ElementLiquidityBuilder
     networkId: NetworkIdType,
     platformId: string,
     tokenPrices: TokenPriceMap
-  ): PortfolioElement | null {
+  ): PortfolioElementLiquidity | null {
     if (!this.liquidities[0] || !this.concentratedLiquidityParams) return null;
 
     const { tokenAmountA, tokenAmountB } = getTokenAmountsFromLiquidity(

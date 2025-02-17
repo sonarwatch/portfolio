@@ -2,7 +2,9 @@ import {
   getElementLendingValues,
   NetworkIdType,
   PortfolioAsset,
-  PortfolioElement,
+  PortfolioAssetGeneric,
+  PortfolioElementBorrowLend,
+  PortfolioElementType,
   Yield,
 } from '@sonarwatch/portfolio-core';
 import { ElementBuilder } from './ElementBuilder';
@@ -20,7 +22,7 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
   borrowedAssets: AssetBuilder[];
   suppliedAssets: AssetBuilder[];
   rewardAssets: AssetBuilder[];
-  unsettledAssets: AssetBuilder[];
+  unsettledAssets: AssetGenericBuilder[];
   borrowedYields: Yield[][];
   suppliedYields: Yield[][];
   suppliedLtvs: number[];
@@ -61,11 +63,6 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
   addRewardGenericAsset(params: PortfolioAssetGenericParams) {
     this.rewardAssets.push(new AssetGenericBuilder(params));
   }
-
-  addUnsettledAsset(params: PortfolioAssetTokenParams) {
-    this.unsettledAssets.push(new AssetTokenBuilder(params));
-  }
-
   addUnsettledGenericAsset(params: PortfolioAssetGenericParams) {
     this.unsettledAssets.push(new AssetGenericBuilder(params));
   }
@@ -99,7 +96,7 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
     networkId: NetworkIdType,
     platformId: string,
     tokenPrices: TokenPriceMap
-  ): PortfolioElement | null {
+  ): PortfolioElementBorrowLend | null {
     const suppliedAssets = this.suppliedAssets
       .map((a) => a.get(networkId, tokenPrices))
       .filter((a) => a !== null) as PortfolioAsset[];
@@ -113,7 +110,7 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
       .filter((a) => a !== null) as PortfolioAsset[];
     const unsettledAssets = this.unsettledAssets
       .map((a) => a.get(networkId, tokenPrices))
-      .filter((a) => a !== null) as PortfolioAsset[];
+      .filter((a) => a !== null) as PortfolioAssetGeneric[];
 
     if (
       suppliedAssets.length === 0 &&
@@ -146,8 +143,8 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
 
     if (!suppliedValue && !borrowedValue && !rewardValue) return null;
 
-    const element = {
-      type: this.type,
+    return {
+      type: PortfolioElementType.borrowlend,
       label: this.label,
       networkId,
       platformId: this.platformId || platformId,
@@ -174,7 +171,5 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
       name: this.name,
       tags: this.tags,
     };
-
-    return element as PortfolioElement;
   }
 }

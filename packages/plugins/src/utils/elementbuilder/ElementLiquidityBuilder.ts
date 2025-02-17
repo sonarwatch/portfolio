@@ -1,8 +1,8 @@
 import {
   getUsdValueSum,
   NetworkIdType,
-  PortfolioElement,
   PortfolioElementLiquidity,
+  PortfolioElementType,
   PortfolioLiquidity,
 } from '@sonarwatch/portfolio-core';
 import { ElementBuilder } from './ElementBuilder';
@@ -32,7 +32,7 @@ export class ElementLiquidityBuilder extends ElementBuilder {
     networkId: NetworkIdType,
     platformId: string,
     tokenPrices: TokenPriceMap
-  ): PortfolioElement | null {
+  ): PortfolioElementLiquidity | null {
     const liquidities = this.liquidities
       .map((l) => l.get(networkId, tokenPrices))
       .filter((a) => a !== null) as PortfolioLiquidity[];
@@ -40,7 +40,7 @@ export class ElementLiquidityBuilder extends ElementBuilder {
     if (liquidities.length === 0) return null;
 
     return {
-      type: this.type,
+      type: PortfolioElementType.liquidity,
       label: this.label,
       networkId,
       platformId: this.platformId || platformId,
@@ -50,6 +50,6 @@ export class ElementLiquidityBuilder extends ElementBuilder {
       value: getUsdValueSum(liquidities.map((asset) => asset.value)),
       name: this.name,
       tags: this.tags,
-    } as PortfolioElementLiquidity;
+    };
   }
 }

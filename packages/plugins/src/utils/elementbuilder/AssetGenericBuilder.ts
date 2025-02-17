@@ -1,6 +1,6 @@
 import {
   NetworkIdType,
-  PortfolioAsset,
+  PortfolioAssetGeneric,
   PortfolioAssetType,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
@@ -25,7 +25,7 @@ export class AssetGenericBuilder extends AssetBuilder {
     networkId: NetworkIdType,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     tokenPrices: TokenPriceMap
-  ): PortfolioAsset | null {
+  ): PortfolioAssetGeneric | null {
     let value = new BigNumber(0);
     if (this.params.value) {
       value = new BigNumber(this.params.value);

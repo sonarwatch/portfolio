@@ -2,7 +2,8 @@ import {
   getUsdValueSum,
   NetworkIdType,
   PortfolioAsset,
-  PortfolioElement,
+  PortfolioElementMultiple,
+  PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
 import { ElementBuilder } from './ElementBuilder';
 import { AssetTokenBuilder } from './AssetTokenBuilder';
@@ -39,7 +40,7 @@ export class ElementMultipleBuilder extends ElementBuilder {
     networkId: NetworkIdType,
     platformId: string,
     tokenPrices: TokenPriceMap
-  ): PortfolioElement | null {
+  ): PortfolioElementMultiple | null {
     const assets = this.assets
       .map((a) => a.get(networkId, tokenPrices))
       .filter((a) => a !== null) as PortfolioAsset[];
@@ -47,7 +48,7 @@ export class ElementMultipleBuilder extends ElementBuilder {
     if (assets.length === 0) return null;
 
     return {
-      type: this.type,
+      type: PortfolioElementType.multiple,
       label: this.label,
       networkId,
       platformId: this.platformId || platformId,
@@ -60,6 +61,6 @@ export class ElementMultipleBuilder extends ElementBuilder {
       value: getUsdValueSum(assets.map((asset) => asset.value)),
       name: this.name,
       tags: this.tags,
-    } as PortfolioElement;
+    };
   }
 }

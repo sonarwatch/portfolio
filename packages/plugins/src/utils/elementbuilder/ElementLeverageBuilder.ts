@@ -87,7 +87,7 @@ export class ElementLeverageBuilder extends ElementBuilder {
 
     const value = getUsdValueSum([crossValue, isoValue]);
 
-    const element: PortfolioElementLeverage = {
+    return {
       type: PortfolioElementType.leverage,
       name: this.name,
       tags: this.tags,
@@ -115,6 +115,5 @@ export class ElementLeverageBuilder extends ElementBuilder {
       platformId: this.platformId || platformId,
       value,
     };
-    return element;
   }
 }
