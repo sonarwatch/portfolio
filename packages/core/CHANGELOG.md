@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.121](https://github.com/sonarwatch/portfolio/compare/core-0.14.120...core-0.14.121) (2025-02-17)
+
+
+### Reverts
+
+* Revert "tmp to multiple" ([9512357](https://github.com/sonarwatch/portfolio/commit/9512357d6583a16107082bb29ef84c9f78fecebf))
+
+
+
 ## [0.14.120](https://github.com/sonarwatch/portfolio/compare/core-0.14.119...core-0.14.120) (2025-02-17)
 
 
