@@ -408,6 +408,7 @@ export function airdropFetcherToFetcher(
               },
               value: item.value,
               imageUri: item.imageUri,
+              link: airdrop.claimLink,
             };
         assets.push(asset);
       });
