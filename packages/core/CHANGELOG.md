@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.120](https://github.com/sonarwatch/portfolio/compare/core-0.14.119...core-0.14.120) (2025-02-17)
+
+
+### Reverts
+
+* Revert "chore(core): release version 0.14.112" ([6451b73](https://github.com/sonarwatch/portfolio/commit/6451b734a659ccedfc18a0e02c3601d1e31af0b3))
+
+
+
 ## [0.14.119](https://github.com/sonarwatch/portfolio/compare/core-0.14.118...core-0.14.119) (2025-02-17)
 
 
