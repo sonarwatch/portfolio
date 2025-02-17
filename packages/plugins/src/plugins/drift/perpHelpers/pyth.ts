@@ -3,6 +3,7 @@ import BN from 'bn.js';
 import { parsePriceData } from '../../../utils/solana/pyth/helpersOld';
 import { PRICE_PRECISION, QUOTE_PRECISION, TEN } from './constants';
 import { OraclePriceData } from './types';
+import { pythLazerOracleStruct } from '../struct';
 
 export function getPythOraclePriceDataFromBuffer(
   buffer: Buffer,
@@ -59,4 +60,17 @@ function getStableCoinPrice(price: BN, confidence: BN): BN {
     return QUOTE_PRECISION;
   }
   return price;
+}
+
+export function pythLazerPriceToOraclePrice(buffer: Buffer): OraclePriceData {
+  const pythLazer = pythLazerOracleStruct.deserialize(buffer)[0];
+
+  return {
+    price: new BN(
+      pythLazer.price.dividedBy(10 ** -pythLazer.exponent).toNumber()
+    ),
+    slot: new BN(pythLazer.postedSlot.toNumber()),
+    confidence: new BN(pythLazer.conf.toNumber()),
+    hasSufficientNumberOfDataPoints: true,
+  };
 }

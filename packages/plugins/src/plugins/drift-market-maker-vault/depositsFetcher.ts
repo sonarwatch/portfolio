@@ -70,6 +70,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       label: 'Deposit',
       platformId,
       name,
+      // link: `https://app.drift.trade/vaults/${vaultInfo.pubkey.toString()}`,
+      sourceRefs: [
+        {
+          name: 'Vault',
+          address: vaultInfo.pubkey.toString(),
+        },
+      ],
+      ref: depositAccount.pubkey,
     });
 
     const pricePerShare = new BigNumber(vaultInfo.totalTokens).dividedBy(
@@ -79,7 +87,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       depositAccount.vaultShares.multipliedBy(pricePerShare);
     const netDeposits = new BigNumber(depositAccount.netDeposits);
     const userPnL = userSharesValue.minus(netDeposits);
-    const profitShare = new BigNumber(vaultInfo.profitShare).dividedBy(10 ** 6);
 
     if (!depositAccount.lastWithdrawRequest?.value.isZero()) {
       const withdrawCooldown = [
@@ -109,20 +116,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     element.addAsset({
       address: mint,
-      amount: userPnL,
+      amount: userPnL.minus(depositAccount.profitShareFeePaid),
       attributes: {
         tags: ['PnL'],
       },
     });
-
-    if (userPnL.isPositive())
-      element.addAsset({
-        address: mint,
-        amount: userPnL.multipliedBy(profitShare).negated(),
-        attributes: {
-          tags: ['Performance Fee'],
-        },
-      });
   }
 
   return elementRegistry.getElements(cache);
