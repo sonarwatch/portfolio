@@ -16,7 +16,7 @@ export default function tokenPriceToAssetToken(
   tokenPrice?: TokenPrice | TokenPriceUnderlying | null,
   price?: number,
   attributes?: PortfolioAssetAttributes,
-  ref?: string
+  link?: string
 ): PortfolioAssetToken {
   const fPrice: UsdValue = tokenPrice?.price || price || null;
   return {
@@ -29,6 +29,6 @@ export default function tokenPriceToAssetToken(
       price: fPrice,
     },
     attributes: attributes || {},
-    ref,
+    link,
   };
 }
