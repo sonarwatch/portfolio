@@ -85,8 +85,43 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
     const userSharesValue =
       depositAccount.vaultShares.multipliedBy(pricePerShare);
-    const netDeposits = new BigNumber(depositAccount.netDeposits);
-    const userPnL = userSharesValue.minus(netDeposits);
+    const { netDeposits } = depositAccount;
+    const performanceFee = new BigNumber(vaultInfo.profitShare).shiftedBy(-6);
+
+    const PnL = userSharesValue.minus(netDeposits);
+    const unrealizedFees = PnL.isPositive()
+      ? PnL.multipliedBy(performanceFee).negated()
+      : 0;
+    const alreadyPaidFees = depositAccount.profitShareFeePaid;
+
+    element.addAsset({
+      address: mint,
+      amount: netDeposits.minus(depositAccount.lastWithdrawRequest?.value || 0),
+    });
+
+    element.addAsset({
+      address: mint,
+      amount: PnL,
+      attributes: {
+        tags: ['PnL'],
+      },
+    });
+
+    element.addAsset({
+      address: mint,
+      amount: unrealizedFees,
+      attributes: {
+        tags: [`${performanceFee.shiftedBy(2)}% Performance Fee on PnL`],
+      },
+    });
+
+    element.addAsset({
+      address: mint,
+      amount: alreadyPaidFees,
+      attributes: {
+        tags: ['Fees Paid'],
+      },
+    });
 
     if (!depositAccount.lastWithdrawRequest?.value.isZero()) {
       const withdrawCooldown = [
@@ -108,19 +143,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         },
       });
     }
-
-    element.addAsset({
-      address: mint,
-      amount: netDeposits.minus(depositAccount.lastWithdrawRequest?.value || 0),
-    });
-
-    element.addAsset({
-      address: mint,
-      amount: userPnL.minus(depositAccount.profitShareFeePaid),
-      attributes: {
-        tags: ['PnL'],
-      },
-    });
   }
 
   return elementRegistry.getElements(cache);
