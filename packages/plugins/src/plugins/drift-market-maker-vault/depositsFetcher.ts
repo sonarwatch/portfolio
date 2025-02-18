@@ -89,37 +89,34 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const performanceFee = new BigNumber(vaultInfo.profitShare).shiftedBy(-6);
 
     const PnL = userSharesValue.minus(netDeposits);
-    const unrealizedFees = PnL.isPositive()
-      ? PnL.multipliedBy(performanceFee).negated()
-      : 0;
-    const alreadyPaidFees = depositAccount.profitShareFeePaid;
 
     element.addAsset({
       address: mint,
       amount: netDeposits.minus(depositAccount.lastWithdrawRequest?.value || 0),
     });
 
+    let hasPendingFees = false;
+    if (PnL.isPositive()) {
+      const profitShareFees = PnL.multipliedBy(performanceFee).minus(
+        depositAccount.profitShareFeePaid
+      );
+      if (profitShareFees.isPositive()) {
+        hasPendingFees = true;
+        element.addAsset({
+          address: mint,
+          amount: profitShareFees.negated(),
+          attributes: {
+            tags: [`Pending ${performanceFee.shiftedBy(2)}% Performance Fee`],
+          },
+        });
+      }
+    }
+
     element.addAsset({
       address: mint,
       amount: PnL,
       attributes: {
-        tags: ['PnL'],
-      },
-    });
-
-    element.addAsset({
-      address: mint,
-      amount: unrealizedFees,
-      attributes: {
-        tags: [`${performanceFee.shiftedBy(2)}% Performance Fee on PnL`],
-      },
-    });
-
-    element.addAsset({
-      address: mint,
-      amount: alreadyPaidFees,
-      attributes: {
-        tags: ['Fees Paid'],
+        tags: [hasPendingFees ? 'PnL before Fees' : 'PnL'],
       },
     });
 
