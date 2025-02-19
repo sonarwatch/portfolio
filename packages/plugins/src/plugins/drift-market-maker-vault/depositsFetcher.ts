@@ -4,7 +4,7 @@ import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId as driftPlatformId } from '../drift/constants';
 import {
-  vaultsPids,
+  vaultsProgramIds,
   prefixVaults,
   neutralPlatformId,
   hedgyPlatformId,
@@ -26,7 +26,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const depositAccounts = (
     await Promise.all(
-      vaultsPids.map((vaultsPid) =>
+      vaultsProgramIds.map((vaultsPid) =>
         getParsedProgramAccounts(
           client,
           vaultDepositorStruct,
