@@ -2,7 +2,7 @@ import { NetworkId, Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from '../../Fetcher';
 import { Job } from '../../Job';
 import { platform } from './constants';
-import fetcher from './fetcher';
+import fetcher from './getStackedCvxFxsFetcher';
 import job from './job';
 
 export const platforms: Platform[] = [platform];
