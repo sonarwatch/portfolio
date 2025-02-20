@@ -22,34 +22,34 @@ const executor: JobExecutor = async (cache: Cache) => {
       params: { take: lastCount || minToTake, chain_id: 666666 },
     })
     .catch(() => null);
-  if (!apiRes)
-    console.log('WhalesMarket Job : unable to reach the API :', whalesApi);
+  if (!apiRes || !apiRes.data.data)
+    throw new Error(
+      `WhalesMarket Job : unable to reach the API : ${whalesApi}`
+    );
 
-  if (apiRes?.data.data) {
-    const tokens = apiRes.data.data.list;
-    await cache.setItem(tokensKey, tokens, {
-      prefix: platformId,
-      networkId: NetworkId.solana,
-    });
-    await cache.setItem(lastCountKey, apiRes.data.data.count, {
-      prefix: platformId,
-      networkId: NetworkId.solana,
-    });
+  const tokens = apiRes.data.data.list;
+  await cache.setItem(tokensKey, tokens, {
+    prefix: platformId,
+    networkId: NetworkId.solana,
+  });
+  await cache.setItem(lastCountKey, apiRes.data.data.count, {
+    prefix: platformId,
+    networkId: NetworkId.solana,
+  });
 
-    for (const [symbol, value] of Object.entries(tokensToPrice)) {
-      const token = tokens.find((t) => t.symbol === symbol);
-      if (token) {
-        await cache.setTokenPriceSource({
-          address: value.mint,
-          decimals: value.decimals,
-          weight: 0.001,
-          id: platformId,
-          networkId: NetworkId.solana,
-          platformId: walletTokensPlatform.id,
-          price: token.last_price,
-          timestamp: Date.now(),
-        });
-      }
+  for (const [symbol, value] of Object.entries(tokensToPrice)) {
+    const token = tokens.find((t) => t.symbol === symbol);
+    if (token) {
+      await cache.setTokenPriceSource({
+        address: value.mint,
+        decimals: value.decimals,
+        weight: 0.001,
+        id: platformId,
+        networkId: NetworkId.solana,
+        platformId: walletTokensPlatform.id,
+        price: token.last_price,
+        timestamp: Date.now(),
+      });
     }
   }
 };
