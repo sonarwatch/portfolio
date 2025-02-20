@@ -46,7 +46,7 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
 
     const element: PortfolioElement = {
       networkId: NetworkId.ethereum,
-      label: 'Vesting', // not sure what to put here
+      label: 'Deposit',
       platformId,
       type: PortfolioElementType.multiple,
       value: asset.value,
