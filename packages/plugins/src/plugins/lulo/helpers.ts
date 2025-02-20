@@ -14,3 +14,24 @@ export function isLiftEmpty(authoritySeed: number[]) {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0].toString()
   );
 }
+
+export function getDerivedPendingWithdraws(
+  owner: string,
+  ids: number[]
+): PublicKey[] {
+  return ids
+    .map((id) => {
+      if (id === 0) return [];
+      const withdrawalIdBuffer = Buffer.alloc(2);
+      withdrawalIdBuffer.writeUInt16LE(id);
+      return PublicKey.findProgramAddressSync(
+        [
+          Buffer.from('withdrawal'),
+          new PublicKey(owner).toBuffer(),
+          withdrawalIdBuffer,
+        ],
+        luloProgramId
+      )[0];
+    })
+    .flat();
+}
