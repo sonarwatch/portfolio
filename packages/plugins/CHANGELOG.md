@@ -2,6 +2,36 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.118](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.117...plugins-0.14.118) (2025-02-20)
+
+
+
+## [0.14.117](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.116...plugins-0.14.117) (2025-02-20)
+
+
+
+## [0.14.116](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.115...plugins-0.14.116) (2025-02-19)
+
+
+
+## [0.14.115](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.114...plugins-0.14.115) (2025-02-17)
+
+
+### Reverts
+
+* Revert "tmp to multiple" ([9512357](https://github.com/sonarwatch/portfolio/commit/9512357d6583a16107082bb29ef84c9f78fecebf))
+
+
+
+## [0.14.114](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.113...plugins-0.14.114) (2025-02-17)
+
+
+### Reverts
+
+* Revert "add link to airdropFetcher" ([0407ce5](https://github.com/sonarwatch/portfolio/commit/0407ce5bf9d0fe361b91f99ed714b4885dab329d))
+
+
+
 ## [0.14.113](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.112...plugins-0.14.113) (2025-02-17)
 
 

@@ -24,7 +24,7 @@ export class AssetTokenBuilder extends AssetBuilder {
     this.alreadyShifted = params.alreadyShifted || false;
   }
 
-  mints(): string[] {
+  tokenAddresses(): string[] {
     return [this.address];
   }
 

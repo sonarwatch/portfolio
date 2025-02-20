@@ -65,6 +65,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-token2002wrapper`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;

@@ -1,5 +1,5 @@
 import {
-  LevPosition,
+  IsoLevPosition,
   LeverageSide,
   NetworkId,
   PortfolioElementLeverage,
@@ -8,6 +8,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
+import { BN } from 'bn.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSolana } from '../../../utils/clients';
@@ -21,6 +22,13 @@ import {
   platformId,
 } from './constants';
 import { Side, positionStruct } from './structs';
+import {
+  custodyToBN,
+  getFeeAmount,
+  getLiquidationPrice,
+  positionToBn,
+  USD_POWER,
+} from './helpersPerps';
 
 const usdFactor = new BigNumber(10 ** 6);
 const executor: FetcherExecutor = async (
@@ -74,7 +82,7 @@ const executor: FetcherExecutor = async (
 
   // const pythPricesByAccount = await getPythPricesAsMap(client, oraclesPubkeys);
 
-  const levPositions: LevPosition[] = [];
+  const levPositions: IsoLevPosition[] = [];
   for (const position of positionAccounts) {
     const { collateralUsd, sizeUsd, price, side, cumulativeInterestSnapshot } =
       position;
@@ -101,13 +109,31 @@ const executor: FetcherExecutor = async (
     const size = sizeValue.div(entryPrice);
     const leverage = sizeUsd.dividedBy(collateralUsd);
     const collateralValue = collateralUsd.dividedBy(usdFactor);
-    const { increasePositionBps, decreasePositionBps } = perpPool.fees;
-    const increaseFees = new BigNumber(increasePositionBps).div(10000);
-    const decreaseFees = new BigNumber(decreasePositionBps).div(10000);
-    const openFees = entryPrice.times(size).times(increaseFees);
-    const closeFees = sizeValue.times(decreaseFees);
 
-    const openAndCloseFees = openFees.plus(closeFees);
+    const openFee = getFeeAmount(
+      new BN(custody.increasePositionBps),
+      new BN(sizeUsd.toString()),
+      new BN(custody.pricing.tradeSpreadLong)
+    );
+
+    const closeFee = getFeeAmount(
+      new BN(custody.increasePositionBps),
+      new BN(sizeUsd.toString()),
+      new BN(custody.pricing.tradeSpreadLong)
+    );
+
+    const curtime = new BN(Number(new Date()) / 1000);
+    const liquidationPriceBn = getLiquidationPrice(
+      positionToBn(position),
+      custodyToBN(custody),
+      custodyToBN(collateralCustody),
+      curtime
+    );
+    const liquidationPrice = new BigNumber(liquidationPriceBn.toString())
+      .div(usdFactor)
+      .toNumber();
+
+    const openAndCloseFees = openFee.add(closeFee).div(USD_POWER);
     const borrowFee = sizeUsd
       .times(
         new BigNumber(
@@ -116,7 +142,7 @@ const executor: FetcherExecutor = async (
       )
       .dividedBy(10 ** 15)
       .absoluteValue();
-    const fees = borrowFee.plus(openAndCloseFees).toNumber();
+    const fees = borrowFee.plus(openAndCloseFees.toNumber()).toNumber();
 
     const priceDelta = isLong
       ? new BigNumber(currentPrice).minus(entryPrice)
@@ -130,12 +156,14 @@ const executor: FetcherExecutor = async (
       address: custody.mint,
       side: isLong ? LeverageSide.long : LeverageSide.short,
       leverage: leverage.toNumber(),
-      liquidationPrice: null,
+      liquidationPrice,
       collateralValue: collateralValue.toNumber(),
       size: size.toNumber(),
       sizeValue: sizeValue.toNumber(),
       pnlValue: rawPnlValue.toNumber(),
       value: value.toNumber(),
+      markPrice: currentPrice,
+      entryPrice: entryPrice.toNumber(),
     });
   }
 
@@ -145,7 +173,10 @@ const executor: FetcherExecutor = async (
     {
       type: PortfolioElementType.leverage,
       data: {
-        positions: levPositions,
+        isolated: {
+          positions: levPositions,
+          value,
+        },
         value,
       },
       label: 'Leverage',

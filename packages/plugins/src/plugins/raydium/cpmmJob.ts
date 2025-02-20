@@ -127,6 +127,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-cpmm`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;
