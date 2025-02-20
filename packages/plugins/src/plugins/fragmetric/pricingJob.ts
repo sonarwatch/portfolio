@@ -7,9 +7,13 @@ import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { platformId, vaults } from './constants';
-import { normalizedTokenPoolStruct } from './structs';
-import { mintAccountStruct, tokenAccountStruct } from '../../utils/solana';
+import { fragmetricPid, platformId, vaults } from './constants';
+import { FundAccountStruct, normalizedTokenPoolStruct } from './structs';
+import {
+  getParsedProgramAccounts,
+  mintAccountStruct,
+  tokenAccountStruct,
+} from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 
@@ -42,11 +46,10 @@ const executor: JobExecutor = async (cache: Cache) => {
 
       if (!mintAccount) continue;
 
-      const supply = mintAccount.supply.dividedBy(10 ** mintAccount.decimals);
+      const tpSupply = mintAccount.supply.dividedBy(10 ** mintAccount.decimals);
 
       let tvl = new BigNumber(0);
       let missingToken = false;
-
       for (const token of normalizedPool.supported_tokens) {
         if (token.locked_amount.isZero()) continue;
         const tokenPrice = tokenPrices.get(token.mint.toString());
@@ -62,12 +65,11 @@ const executor: JobExecutor = async (cache: Cache) => {
             .times(tokenPrice.price)
         );
       }
-
       if (missingToken) continue;
 
       tokenMintPrice = {
         decimals: mintAccount.decimals,
-        price: tvl.dividedBy(supply).toNumber(),
+        price: tvl.dividedBy(tpSupply).toNumber(),
       };
     } else if (vault.tokenMint) {
       tokenMintPrice = await cache.getTokenPrice(
@@ -75,7 +77,6 @@ const executor: JobExecutor = async (cache: Cache) => {
         NetworkId.solana
       );
     }
-
     if (!tokenMintPrice) continue;
 
     const [reserveAccount, receiptTokenMintAccount] = await Promise.all([
@@ -107,6 +108,55 @@ const executor: JobExecutor = async (cache: Cache) => {
       platformId: walletTokensPlatformId,
       price: new BigNumber(tokenMintPrice.price)
         .multipliedBy(receiptTokensInTokenMint)
+        .toNumber(),
+      timestamp: Date.now(),
+      weight: 1,
+    });
+  }
+
+  const fundsAccounts = await getParsedProgramAccounts(
+    connection,
+    FundAccountStruct,
+    fragmetricPid,
+    [{ memcmp: { offset: 0, bytes: '9GKzjVzZPww' } }]
+  );
+
+  for (const fundAccount of fundsAccounts) {
+    const receiptTokenPriceSource = sources.find(
+      (source) => source.address === fundAccount.receipt_token_mint.toString()
+    );
+    if (!receiptTokenPriceSource) continue;
+
+    // Retrieve balances of the receipt token inside the wrap reserve account
+    const wrapTokensBalances = await connection.getTokenAccountsByOwner(
+      fundAccount.wrap_account,
+      {
+        mint: fundAccount.receipt_token_mint,
+      }
+    );
+
+    const wrapReceiptReserve = wrapTokensBalances.value
+      .map(
+        (balance) =>
+          tokenAccountStruct.deserialize(balance.account.data)[0].amount
+      )
+      .reduce((a, b) => a.plus(b), new BigNumber(0))
+      .dividedBy(10 ** fundAccount.receipt_token_decimals);
+
+    const wrapSupply = fundAccount.wrapped_token.supply.dividedBy(
+      10 ** fundAccount.wrapped_token.decimals
+    );
+
+    // Price source for the Wrapped Token (i.e wfragSOL)
+    sources.push({
+      address: fundAccount.wrapped_token.mint.toString(),
+      decimals: fundAccount.wrapped_token.decimals,
+      id: platformId,
+      networkId: NetworkId.solana,
+      platformId: walletTokensPlatformId,
+      price: wrapSupply
+        .dividedBy(wrapReceiptReserve)
+        .times(receiptTokenPriceSource.price)
         .toNumber(),
       timestamp: Date.now(),
       weight: 1,
