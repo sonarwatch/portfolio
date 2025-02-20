@@ -28,7 +28,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     },
   });
 
-  const { close: closePrice, time } = data.data[data.data.length - 1];
+  const { close: closePrice } = data.data[data.data.length - 1];
 
   await cache.setTokenPriceSource({
     address: FXB20291231Address,
@@ -37,7 +37,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     networkId: NetworkId.fraxtal,
     platformId,
     price: closePrice,
-    timestamp: time,
+    timestamp: Date.now(),
     weight: 1,
   });
   await cache.setTokenPriceSource({
@@ -47,15 +47,13 @@ const executor: JobExecutor = async (cache: Cache) => {
     networkId: NetworkId.fraxtal,
     platformId,
     price: closePrice,
-    timestamp: time,
+    timestamp: Date.now(),
     weight: 1,
   });
-
-  console.log(`Price set for ${wFXBAddress}: ${closePrice}`);
 };
 
 const job: Job = {
-  id: `${platformId}-job`,
+  id: `${platformId}-fraxtal-wfxb`,
   executor,
   label: 'normal',
 };

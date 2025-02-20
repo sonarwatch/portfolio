@@ -7,7 +7,7 @@ import axios, { AxiosResponse } from 'axios';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { tokenListsPrefix } from './constants';
-import { isLatestVersion } from './helpers';
+// import { isLatestVersion } from './helpers';
 
 const ttl = 1000 * 60 * 60 * 24 * 7; // 7 days
 
@@ -18,9 +18,9 @@ function getTokenListsJob(networkId: NetworkIdType): Job {
       .get(network.tokenListUrl)
       .catch(() => null);
     if (!tokenList) return;
-    const cachedTokenList = await cache.getItem<UniTokenList>(networkId, {
-      prefix: tokenListsPrefix,
-    });
+    // const cachedTokenList = await cache.getItem<UniTokenList>(networkId, {
+    //   prefix: tokenListsPrefix,
+    // });
 
     // if (
     //   cachedTokenList &&
