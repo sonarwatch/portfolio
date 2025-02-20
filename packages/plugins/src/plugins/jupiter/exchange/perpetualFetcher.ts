@@ -22,7 +22,13 @@ import {
   platformId,
 } from './constants';
 import { Side, positionStruct } from './structs';
-import { getFeeAmount } from './helpers';
+import {
+  custodyToBN,
+  getFeeAmount,
+  getLiquidationPrice,
+  positionToBn,
+  USD_POWER,
+} from './helpersPerps';
 
 const usdFactor = new BigNumber(10 ** 6);
 const executor: FetcherExecutor = async (
@@ -116,7 +122,18 @@ const executor: FetcherExecutor = async (
       new BN(custody.pricing.tradeSpreadLong)
     );
 
-    const openAndCloseFees = openFee.add(closeFee).div(new BN(1000000));
+    const curtime = new BN(Number(new Date()) / 1000);
+    const liquidationPriceBn = getLiquidationPrice(
+      positionToBn(position),
+      custodyToBN(custody),
+      custodyToBN(collateralCustody),
+      curtime
+    );
+    const liquidationPrice = new BigNumber(liquidationPriceBn.toString())
+      .div(usdFactor)
+      .toNumber();
+
+    const openAndCloseFees = openFee.add(closeFee).div(USD_POWER);
     const borrowFee = sizeUsd
       .times(
         new BigNumber(
@@ -139,7 +156,7 @@ const executor: FetcherExecutor = async (
       address: custody.mint,
       side: isLong ? LeverageSide.long : LeverageSide.short,
       leverage: leverage.toNumber(),
-      liquidationPrice: null,
+      liquidationPrice,
       collateralValue: collateralValue.toNumber(),
       size: size.toNumber(),
       sizeValue: sizeValue.toNumber(),
