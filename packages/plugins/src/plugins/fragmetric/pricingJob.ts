@@ -46,7 +46,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
       if (!mintAccount) continue;
 
-      const tpSupply = mintAccount.supply.dividedBy(10 ** mintAccount.decimals);
+      const supply = mintAccount.supply.dividedBy(10 ** mintAccount.decimals);
 
       let tvl = new BigNumber(0);
       let missingToken = false;
@@ -69,7 +69,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
       tokenMintPrice = {
         decimals: mintAccount.decimals,
-        price: tvl.dividedBy(tpSupply).toNumber(),
+        price: tvl.dividedBy(supply).toNumber(),
       };
     } else if (vault.tokenMint) {
       tokenMintPrice = await cache.getTokenPrice(
