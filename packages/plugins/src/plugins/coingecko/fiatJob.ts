@@ -41,6 +41,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `coingecko-fiat`,
   executor,
-  label: 'coingecko',
+  labels: ['coingecko'],
 };
 export default job;
