@@ -1,16 +1,13 @@
-import { NetworkId, PortfolioElementType } from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { nosDecimals, nosMint, platformId } from './constants';
+import { nosMint, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { stakeStruct } from './structs';
 import { getStakePubKey } from './helpers';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 import { tokenAccountStruct } from '../../utils/solana';
-
-const nosFactor = new BigNumber(10 ** nosDecimals);
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -22,11 +19,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
   if (!stakeAccount || stakeAccount.amount.isZero()) return [];
 
-  const [vaultAccount, tokenPrice] = await Promise.all([
-    getParsedAccountInfo(client, tokenAccountStruct, stakeAccount.vault),
-    cache.getTokenPrice(nosMint, NetworkId.solana),
-  ]);
+  const vaultAccount = await getParsedAccountInfo(
+    client,
+    tokenAccountStruct,
+    stakeAccount.vault
+  );
   if (!vaultAccount || vaultAccount.amount.isZero()) return [];
+
+  const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
+  const stakingElement = elementRegistry.addElementMultiple({
+    label: 'Staked',
+    ref: stakeAccount.pubkey.toString(),
+    link: 'https://dashboard.nosana.com/stake',
+    sourceRefs: [{ name: 'Vault', address: vaultAccount.pubkey.toString() }],
+  });
 
   const lockedUntil = stakeAccount.timeUnstake.isZero()
     ? undefined
@@ -35,27 +41,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         .times(1000)
         .toNumber();
 
-  const asset = tokenPriceToAssetToken(
-    nosMint,
-    vaultAccount.amount.dividedBy(nosFactor).toNumber(),
-    NetworkId.solana,
-    tokenPrice,
-    undefined,
-    { lockedUntil }
-  );
-
-  return [
-    {
-      networkId: NetworkId.solana,
-      platformId,
-      type: PortfolioElementType.multiple,
-      label: 'Staked',
-      value: asset.value,
-      data: {
-        assets: [asset],
-      },
+  stakingElement.addAsset({
+    address: nosMint,
+    amount: stakeAccount.amount,
+    attributes: {
+      lockedUntil,
     },
-  ];
+  });
+
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

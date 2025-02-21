@@ -1,13 +1,11 @@
 import {
   NetworkId,
   PortfolioAssetAttributes,
-  PortfolioElement,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId, zetaIdlItem, zexDecimals, zexMint } from './constants';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getClientSolana } from '../../utils/clients';
 import { getStakeAccountsAddresses, getTimestamp } from './helpers';
 import {
@@ -15,6 +13,7 @@ import {
   u8ArrayToString,
 } from '../../utils/solana';
 import { StakeAccount } from './types';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const networkId = NetworkId.solana;
 
@@ -24,6 +23,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   let index = 0;
   const step = 5;
   const accounts = [];
+
   do {
     const stakeAccountsAddresses = getStakeAccountsAddresses(
       owner,
@@ -40,9 +40,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     accounts.push(...stakeAccounts);
   } while (!accounts.some((acc) => !acc));
 
-  const tokenPrice = await cache.getTokenPrice(zexMint, networkId);
+  const registry = new ElementRegistry(networkId, platformId);
+  const stakingElement = registry.addElementMultiple({
+    label: 'Staked',
+    link: 'https://dex.zeta.markets/staking',
+  });
 
-  const elements: PortfolioElement[] = [];
   for (const account of accounts) {
     if (!account) continue;
     const name = u8ArrayToString(account.name);
@@ -58,31 +61,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             account.stakeState.vesting.stakeStartEpoch
           )
         : -1,
+      tags: [name],
     };
 
-    const asset = tokenPriceToAssetToken(
-      zexMint,
+    stakingElement.addAsset({
+      address: zexMint,
       amount,
-      networkId,
-      tokenPrice,
-      undefined,
-      attributes
-    );
-
-    elements.push({
-      type: 'multiple',
-      label: 'Staked',
-      networkId,
-      platformId,
-      name,
-      data: {
-        assets: [asset],
-      },
-      value: asset.value,
+      attributes,
+      ref: account.pubkey.toString(),
     });
   }
 
-  return elements;
+  return registry.getElements(cache);
 };
 
 const fetcher: Fetcher = {
