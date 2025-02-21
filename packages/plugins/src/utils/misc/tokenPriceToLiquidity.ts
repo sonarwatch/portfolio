@@ -26,6 +26,7 @@ export default function tokenPriceToLiquidity(
     value: getUsdValueSum(assets.map((a) => a.value)),
     yields: [],
     name: tokenPrice.liquidityName,
+    link: tokenPrice.link,
     sourceRefs: [
       {
         address,
