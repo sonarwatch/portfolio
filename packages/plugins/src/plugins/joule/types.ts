@@ -48,14 +48,46 @@ export type LendPositionsDatum = {
 };
 
 export type MarketsResponse = {
-  res: Market[];
+  data: MarketDatum[];
+  status: string;
+  timestamp: string;
 };
 
-export type Market = {
-  assetsName: string;
+export type MarketDatum = {
+  asset: {
+    assetName: string;
+    pythId: string;
+    resource?: string;
+    efficiencyMode: number;
+    efficiencyLtv: number;
+    ltv: number;
+    icon: string;
+    decimals: number;
+    liquidationFactor: number;
+    efficientLiquidationFactor: number;
+    type: string;
+    provider: string;
+    displayName: string;
+    isFungible: boolean;
+    coingeckoId: string;
+    faAddress?: string;
+  };
   ltv: string;
   marketSize: string;
   totalBorrowed: string;
   depositApy: number;
   borrowApy: number;
+  priceInfo: {
+    price: number;
+    currency: string;
+    tokenAddress: string;
+    chain: string;
+    timestamp: string;
+    cached: boolean;
+  };
+  extraAPY: {
+    depositAPY: string;
+    borrowAPY: string;
+    stakingAPY: string;
+  };
 };

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError, isAxiosError } from 'axios';
 import { fiatCurrencies, PricedCurrency } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
@@ -8,10 +8,16 @@ import { pricedCurrenciesKey, pricedCurrenciesPrefix } from './constants';
 import sleep from '../../utils/misc/sleep';
 
 const executor: JobExecutor = async (cache: Cache) => {
-  await sleep(90000);
-  const res = await axios.get<CoingeckoExchangeRatesResponse>(
-    coingeckoExchangeRatesUrl
-  );
+  await sleep(180000);
+  const res = await axios
+    .get<CoingeckoExchangeRatesResponse>(coingeckoExchangeRatesUrl)
+    .catch(async (error) => {
+      if (isAxiosError(error)) {
+        const axiosError = error as AxiosError;
+        if (axiosError.status === 429) await sleep(360000);
+      }
+      throw error;
+    });
 
   const { rates } = res.data;
   const btcPriceUsd = rates['usd'].value;

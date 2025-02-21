@@ -114,7 +114,7 @@ const executor: JobExecutor = async (cache: Cache) => {
           price,
           timestamp: Date.now(),
           weight: 1,
-          liquidityName: 'Native Stake (SOL)',
+          elementName: 'Stake Collateral',
         });
       }
     }

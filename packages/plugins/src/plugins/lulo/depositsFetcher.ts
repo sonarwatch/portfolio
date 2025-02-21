@@ -1,35 +1,46 @@
-import { NetworkId, PortfolioElement } from '@sonarwatch/portfolio-core';
+import {
+  getUsdValueSum,
+  NetworkId,
+  PortfolioAsset,
+  PortfolioElement,
+} from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId } from './constants';
-import { getDerivedAccount } from './helpers';
+import { platformId, poolsKey } from './constants';
+import { getDerivedAccount, getDerivedPendingWithdraws } from './helpers';
 import driftDepositsFetcher from '../drift/depositsFetcher';
 import kaminoLendDepositFetcher from '../kamino/lendsFetcher';
 import mangoDepositFetcher from '../mango/collateralFetcher';
 import { walletTokensPlatform } from '../tokens/constants';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 import { getClientSolana } from '../../utils/clients';
-import { userAccountStruct } from './struct';
+import { pendingWithdrawalStruct, userAccountStruct } from './struct';
 import { obligationStruct } from '../save/structs';
 import { mainMarket, marketsPrefix, reservesPrefix } from '../save/constants';
 import { MarketInfo, ReserveInfo, ReserveInfoExtended } from '../save/types';
 import { getElementsFromObligations } from '../save/helpers';
 import { marginfiAccountStruct } from '../marginfi/structs/MarginfiAccount';
-import { ParsedAccount } from '../../utils/solana';
+import {
+  getParsedMultipleAccountsInfo,
+  ParsedAccount,
+} from '../../utils/solana';
 import { BankInfo } from '../marginfi/types';
 import { banksKey, platform } from '../marginfi/constants';
 import { getElementFromAccount } from '../marginfi/helpers';
+import { AllocationInfo } from './poolsJob';
+import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
   const pda = getDerivedAccount(owner);
 
-  const userAccount = await getParsedAccountInfo(
-    client,
-    userAccountStruct,
-    new PublicKey(pda)
-  );
+  const [userAccount, allocationsInfo] = await Promise.all([
+    getParsedAccountInfo(client, userAccountStruct, new PublicKey(pda)),
+    cache.getItem<AllocationInfo[]>(poolsKey, {
+      prefix: platformId,
+    }),
+  ]);
   if (!userAccount) return [];
 
   const isSolendActivated =
@@ -153,6 +164,89 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     tmpElement.platformId = platformId;
     elements.push({
       ...tmpElement,
+    });
+  }
+
+  if (allocationsInfo) {
+    const assets: PortfolioAsset[] = [];
+
+    if (userAccount.activeWithdraws.some((w) => w !== 0)) {
+      const pdas = getDerivedPendingWithdraws(
+        owner,
+        userAccount.activeWithdraws
+      );
+
+      const withdraws = await getParsedMultipleAccountsInfo(
+        client,
+        pendingWithdrawalStruct,
+        pdas
+      );
+
+      for (const withdraw of withdraws) {
+        if (!withdraw) continue;
+        const allocation = allocationsInfo[withdraw.allocationIndex];
+        if (!allocation) continue;
+
+        const asset = tokenPriceToAssetToken(
+          allocation.mint,
+          withdraw.nativeAmount.dividedBy(10 ** 6).toNumber(),
+          NetworkId.solana,
+          undefined,
+          allocation.lPrice,
+          {
+            tags: ['Withdraw'],
+            lockedUntil: withdraw.createdTimestamp
+              .plus(withdraw.cooldownSeconds)
+              .times(1000)
+              .toNumber(),
+          }
+        );
+        assets.push(asset);
+      }
+    }
+    for (let i = 0; i < userAccount.regularAllocations.length; i++) {
+      const allocationInfo = allocationsInfo?.at(i);
+      if (!allocationInfo) continue;
+
+      const userBoostedAllocation = userAccount.regularAllocations[i];
+      if (!userBoostedAllocation.isZero()) {
+        const boostedAsset = tokenPriceToAssetToken(
+          allocationInfo.mint,
+          userBoostedAllocation.dividedBy(10 ** 6).toNumber(),
+          NetworkId.solana,
+          undefined,
+          allocationInfo.lPrice,
+          {
+            tags: ['Boosted'],
+          }
+        );
+        assets.push(boostedAsset);
+      }
+
+      const userProtectedAllocation = userAccount.protectedAllocations[i];
+      if (!userProtectedAllocation.isZero()) {
+        const protectedAsset = tokenPriceToAssetToken(
+          allocationInfo.mint,
+          userProtectedAllocation.dividedBy(10 ** 6).toNumber(),
+          NetworkId.solana,
+          undefined,
+          allocationInfo.lPrice,
+          {
+            tags: ['Protected'],
+          }
+        );
+        assets.push(protectedAsset);
+      }
+    }
+    elements.push({
+      platformId,
+      type: 'multiple',
+      label: 'Deposit',
+      data: {
+        assets,
+      },
+      networkId: NetworkId.solana,
+      value: getUsdValueSum(assets.map((asset) => asset.value)),
     });
   }
   return elements;
