@@ -15,8 +15,11 @@
       }
     },
     "publish": {
-      "command": "node tools/scripts/publish.mjs core {args.ver} {args.tag}",
-      "dependsOn": ["build"]
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "npm publish --access restricted --tag={args.tag}"
+      }
     },
     "lint": {
       "executor": "@nx/linter:eslint",
@@ -51,12 +54,6 @@
         "trackDeps": true
       }
     },
-    "npm": {
-      "executor": "ngx-deploy-npm:deploy",
-      "options": {
-        "access": "public"
-      }
-    }
   },
   "tags": []
 }
