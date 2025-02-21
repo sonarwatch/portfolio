@@ -2,12 +2,14 @@ import { zeroAddress } from 'viem';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getEvmClient } from '../../utils/clients';
-import { platformId, poolsKey, stargateNetworksConfigs } from './constants';
+import { platformId, poolsKey } from './constants';
 import { allPoolsAbi, allPoolsLengthAbi, decimalsAbi, tokenAbi } from './abis';
+import { StgConfig } from './types';
 
-const executor: JobExecutor = async (cache: Cache) => {
-  for (const config of stargateNetworksConfigs) {
-    const { poolsContract: address, networkId } = config;
+export function getPoolsJob(config: StgConfig) {
+  const { poolsContract: address, networkId } = config;
+
+  const executor: JobExecutor = async (cache: Cache) => {
     const client = getEvmClient(networkId);
     const contract = {
       address,
@@ -104,12 +106,12 @@ const executor: JobExecutor = async (cache: Cache) => {
       prefix: platformId,
       networkId,
     });
-  }
-};
+  };
 
-const job: Job = {
-  id: `${platformId}-pools`,
-  executor,
-  labels: ['normal'],
-};
-export default job;
+  const job: Job = {
+    id: `${platformId}-${networkId}-pools`,
+    executor,
+    labels: ['normal', 'evm', networkId],
+  };
+  return job;
+}
