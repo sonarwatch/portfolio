@@ -1,7 +1,6 @@
 import {
-  getUsdValueSum,
+  apyToApr,
   NetworkId,
-  PortfolioAsset,
   PortfolioElement,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
@@ -29,7 +28,7 @@ import { BankInfo } from '../marginfi/types';
 import { banksKey, platform } from '../marginfi/constants';
 import { getElementFromAccount } from '../marginfi/helpers';
 import { AllocationInfo } from './poolsJob';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -168,8 +167,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   }
 
   if (allocationsInfo) {
-    const assets: PortfolioAsset[] = [];
-
+    const registry = new ElementRegistry(NetworkId.solana, platformId);
+    const lendingElement = registry.addElementBorrowlend({
+      label: 'Lending',
+      ref: pda,
+    });
+    const withdrawElement = registry.addElementMultiple({
+      label: 'Deposit',
+      name: 'Boosted Withdraws',
+    });
     if (userAccount.activeWithdraws.some((w) => w !== 0)) {
       const pdas = getDerivedPendingWithdraws(
         owner,
@@ -187,67 +193,57 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         const allocation = allocationsInfo[withdraw.allocationIndex];
         if (!allocation) continue;
 
-        const asset = tokenPriceToAssetToken(
-          allocation.mint,
-          withdraw.nativeAmount.dividedBy(10 ** 6).toNumber(),
-          NetworkId.solana,
-          undefined,
-          allocation.lPrice,
-          {
-            tags: ['Withdraw'],
+        withdrawElement.addAsset({
+          address: allocation.mint,
+          amount: withdraw.nativeAmount.toNumber(),
+          ref: withdraw.pubkey.toString(),
+          attributes: {
             lockedUntil: withdraw.createdTimestamp
               .plus(withdraw.cooldownSeconds)
               .times(1000)
               .toNumber(),
-          }
-        );
-        assets.push(asset);
+          },
+        });
       }
     }
+
     for (let i = 0; i < userAccount.regularAllocations.length; i++) {
       const allocationInfo = allocationsInfo?.at(i);
       if (!allocationInfo) continue;
 
       const userBoostedAllocation = userAccount.regularAllocations[i];
-      if (!userBoostedAllocation.isZero()) {
-        const boostedAsset = tokenPriceToAssetToken(
-          allocationInfo.mint,
-          userBoostedAllocation.dividedBy(10 ** 6).toNumber(),
-          NetworkId.solana,
-          undefined,
-          allocationInfo.lPrice,
-          {
-            tags: ['Boosted'],
-          }
-        );
-        assets.push(boostedAsset);
-      }
+      lendingElement.addSuppliedAsset({
+        address: allocationInfo.mint,
+        amount: userBoostedAllocation.toNumber(),
+        attributes: {
+          tags: ['Boosted'],
+        },
+      });
+      lendingElement.addSuppliedYield([
+        {
+          apy: allocationInfo.lApy,
+          apr: apyToApr(allocationInfo.lApy),
+        },
+      ]);
 
       const userProtectedAllocation = userAccount.protectedAllocations[i];
-      if (!userProtectedAllocation.isZero()) {
-        const protectedAsset = tokenPriceToAssetToken(
-          allocationInfo.mint,
-          userProtectedAllocation.dividedBy(10 ** 6).toNumber(),
-          NetworkId.solana,
-          undefined,
-          allocationInfo.lPrice,
-          {
-            tags: ['Protected'],
-          }
-        );
-        assets.push(protectedAsset);
-      }
+
+      lendingElement.addSuppliedAsset({
+        address: allocationInfo.mint,
+        amount: userProtectedAllocation.toNumber(),
+        attributes: {
+          tags: ['Protected'],
+        },
+      });
+      lendingElement.addSuppliedYield([
+        {
+          apy: allocationInfo.pApy,
+          apr: apyToApr(allocationInfo.pApy),
+        },
+      ]);
     }
-    elements.push({
-      platformId,
-      type: 'multiple',
-      label: 'Deposit',
-      data: {
-        assets,
-      },
-      networkId: NetworkId.solana,
-      value: getUsdValueSum(assets.map((asset) => asset.value)),
-    });
+    const newElements = await registry.getElements(cache);
+    elements.push(...newElements);
   }
   return elements;
 };
