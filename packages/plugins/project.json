@@ -79,6 +79,12 @@
         "trackDeps": true
       }
     },
+    "npm": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'Skipping npm publish'"
+      }
+    }
   },
   "tags": []
 }
