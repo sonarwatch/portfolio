@@ -51,6 +51,9 @@ export class AssetGenericBuilder extends AssetBuilder {
           : undefined,
       },
       attributes: this.params.attributes || {},
+      link: this.params.link,
+      sourceRefs: this.params.sourceRefs,
+      ref: this.params.ref?.toString(),
     };
   }
 }

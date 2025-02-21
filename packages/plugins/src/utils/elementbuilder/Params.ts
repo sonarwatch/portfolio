@@ -53,6 +53,9 @@ export type PortfolioAssetGenericParams = {
   attributes?: PortfolioAssetAttributes;
   value?: number | BigNumber;
   name?: string;
+  sourceRefs?: SourceRef[];
+  ref?: string | PublicKey;
+  link?: string;
 };
 
 export type PortfolioAssetTokenParams = {
@@ -60,6 +63,9 @@ export type PortfolioAssetTokenParams = {
   amount: number | BigNumber | string;
   attributes?: PortfolioAssetAttributes;
   alreadyShifted?: boolean;
+  sourceRefs?: SourceRef[];
+  ref?: string | PublicKey;
+  link?: string;
 };
 
 export type TradeParams = {
