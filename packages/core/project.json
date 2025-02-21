@@ -18,7 +18,7 @@
       "executor": "nx:run-commands",
       "dependsOn": ["build"],
       "options": {
-        "command": "npm publish --access restricted --tag={args.tag}"
+        "command": "cd {options.outputPath} && npm publish --access restricted --tag={args.tag}"
       }
     },
     "lint": {
