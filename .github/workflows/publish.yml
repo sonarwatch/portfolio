@@ -1,0 +1,61 @@
+name: Publish to NPM
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Publish Packages
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Ensure all tags are fetched
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Authenticate with NPM
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+
+      - name: Build all packages
+        run: pnpx nx run-many --target=build --all
+
+      - name: Determine tags
+        run: |
+          CORE_VERSION=$(node -p "require('./packages/core/package.json').version")
+          PLUGINS_VERSION=$(node -p "require('./packages/plugins/package.json').version")
+
+          CORE_TAG="core-${CORE_VERSION}"
+          PLUGINS_TAG="plugins-${PLUGINS_VERSION}"
+
+          echo "CORE_TAG=$CORE_TAG" >> $GITHUB_ENV
+          echo "PLUGINS_TAG=$PLUGINS_TAG" >> $GITHUB_ENV
+
+      - name: Publish core package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx nx run core:publish --tag=$CORE_TAG
+
+      - name: Publish plugins package
+        run: npx nx run plugins:publish --tag=$PLUGINS_TAG
