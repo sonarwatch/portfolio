@@ -40,7 +40,7 @@ jobs:
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
       - name: Build all packages
-        run: pnpx nx run-many --target=build --all
+        run: npx nx run-many --target=build --all
 
       - name: Determine tags
         run: |
