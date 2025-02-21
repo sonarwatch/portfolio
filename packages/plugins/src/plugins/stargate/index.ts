@@ -3,14 +3,14 @@ import { Fetcher } from '../../Fetcher';
 import { Job } from '../../Job';
 import { getPoolsPositionsFetcher } from './gePoolPositionsFetcher';
 import { getPoolsJob } from './getPoolsJob';
-import farmsJob from './farmsJob';
+import { getFarmsJob } from './farmsJob';
 import { platform, stargateNetworksConfigs } from './constants';
 import { getFarmsPositionsFetcher } from './getFarmPositionsFetcher';
 import { getVoteTokensFetcher } from './getVoteTokensFetcher';
 
 export const jobs: Job[] = [
   ...stargateNetworksConfigs.map((config) => getPoolsJob(config)),
-  farmsJob,
+  ...stargateNetworksConfigs.map((config) => getFarmsJob(config)),
 ];
 export const fetchers: Fetcher[] = [
   ...stargateNetworksConfigs

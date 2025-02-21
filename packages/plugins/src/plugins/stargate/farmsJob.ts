@@ -3,11 +3,13 @@ import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getEvmClient } from '../../utils/clients';
 import { poolInfoAbi, poolLengthAbi } from './abis';
-import { farmsKey, platformId, stargateNetworksConfigs } from './constants';
+import { farmsKey, platformId } from './constants';
+import { StgConfig } from './types';
 
-const executor: JobExecutor = async (cache: Cache) => {
-  for (const info of stargateNetworksConfigs) {
-    const { farmsContract: address, networkId } = info;
+export function getFarmsJob(config: StgConfig) {
+  const { farmsContract: address, networkId } = config;
+
+  const executor: JobExecutor = async (cache: Cache) => {
     const client = getEvmClient(networkId);
     const contract = {
       address,
@@ -33,12 +35,12 @@ const executor: JobExecutor = async (cache: Cache) => {
       prefix: platformId,
       networkId,
     });
-  }
-};
+  };
 
-const job: Job = {
-  id: `${platformId}-farms`,
-  executor,
-  labels: ['normal'],
-};
-export default job;
+  const job: Job = {
+    id: `${platformId}-${networkId}-farms`,
+    executor,
+    labels: ['normal', 'evm', networkId],
+  };
+  return job;
+}
