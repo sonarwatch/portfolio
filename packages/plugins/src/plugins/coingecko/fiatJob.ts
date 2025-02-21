@@ -8,7 +8,7 @@ import { pricedCurrenciesKey, pricedCurrenciesPrefix } from './constants';
 import sleep from '../../utils/misc/sleep';
 
 const executor: JobExecutor = async (cache: Cache) => {
-  await sleep(90000);
+  await sleep(120000);
   const res = await axios.get<CoingeckoExchangeRatesResponse>(
     coingeckoExchangeRatesUrl
   );
