@@ -186,3 +186,21 @@ npx nx run plugins:version --releaseAs=minor
 
 npm run nx:version
 ```
+
+## Development & Release Flow
+
+- Create a feature branch
+  ```bash
+  git checkout -b feature/my-new-feature
+  ```
+- Make changes and commits
+- Run corresponding script to create tags and version bump
+```bash
+npx nx run core:version --releaseAs=patch
+```
+- Push changes with tags
+```bash
+git push origin feature/my-new-feature --follow-tags
+```
+
+When merging into `main` branch, the release will be automatically published.
