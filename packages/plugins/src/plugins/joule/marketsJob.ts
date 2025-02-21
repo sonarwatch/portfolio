@@ -10,7 +10,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   if (!markets.data) return;
 
-  await cache.setItem(marketsCacheKey, markets.data.res, {
+  await cache.setItem(marketsCacheKey, markets.data.data, {
     prefix: platformId,
     networkId: NetworkId.aptos,
   });
