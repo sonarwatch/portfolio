@@ -787,6 +787,7 @@ export * from './Job';
 export * from './utils/name-service';
 export * from './utils/blank';
 export { getLlamaProtocolsJob } from './plugins/llama-protocols';
+export { jupFetcherIds } from './plugins/jupiter';
 
 // PLATFORMS //
 export const platforms: Platform[] = [

@@ -48,3 +48,10 @@ export const airdropFetchers: AirdropFetcher[] = [
   asr3AirdropFetcher,
   ...lfgAirdropFetchers,
 ];
+
+export const jupFetcherIds = [
+  perpetualFetcher.id,
+  valueAverageFetcher.id,
+  limitFetcher.id,
+  dcaFetcher.id,
+];
