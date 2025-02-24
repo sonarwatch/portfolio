@@ -49,32 +49,38 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     )
     if (!vaultAddress) return;
 
-    const element = elementRegistry.addElementBorrowlend({
-      name: `Leverage ${vaultAddress.leverageName.replace(
-        "-", "/"
-      )}`,
-      label: 'Leverage',
-      ref: acc.pubkey,
-      sourceRefs: [
-        {
-          name: 'Vault',
-          address: vault.pubkey.toString(),
-        },
-      ],
-      link: 'https://app.pluto.so/leverage',
-    });
-
     for (const position of acc.positions) {
       if (position.unit.toString() === '0') {
         continue;
       }
 
+      const amount = (position.unit.toNumber() / 1e8) * (vault.index / 1e12);
       const borrowingUnit = position.borrowing_unit.toNumber() / 1e8;
       const borrowingIndex = vault.borrowingIndex / 1e12;
       const borrowingAmount = borrowingUnit * borrowingIndex;
-      const tokenCollateralAmount = position.token_collateral_amount.shiftedBy(-vault.tokenCollateralTokenDecimal).toNumber()
-
       const apy = Number(vault.apy.ema7d / 1e5);
+      
+      const tokenCollateralAmount = position.token_collateral_amount.shiftedBy(-vaultAddress.tokenDecimalA).toNumber();
+      const tokenCollateralPrice = position.token_collateral_price.shiftedBy(-position.token_collateral_price_exponent).toNumber();
+      const borrowAmount = borrowingUnit * position.avg_borrowing_index.shiftedBy(-12).toNumber();
+      const borrowUSD = borrowAmount * tokenCollateralPrice;
+      const openLV = borrowUSD / tokenCollateralAmount + 1;
+
+      const element = elementRegistry.addElementBorrowlend({
+        name: `Leverage ${vaultAddress.leverageName.replace(
+          "-", "/"
+        )} ${parseFloat(openLV.toFixed(2))}x`,
+        label: 'Leverage',
+        ref: acc.pubkey,
+        sourceRefs: [
+          {
+            name: 'Vault',
+            address: vault.pubkey.toString(),
+          },
+        ],
+        link: 'https://app.pluto.so/leverage',
+      });
+
       element.addSuppliedYield([
         {
           apy,
@@ -83,8 +89,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       ]);
 
       element.addSuppliedAsset({
-        address: vault.tokenCollateralTokenMint.toString(),
-        amount: tokenCollateralAmount,
+        address: vault.nativeCollateralTokenMint.toString(),
+        amount,
         alreadyShifted: true,
       });
 
