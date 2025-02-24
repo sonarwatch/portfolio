@@ -21,7 +21,8 @@ export const leverageVaultDataSize = 1496;
 export const leverageObligationDataSize = 6696;
 
 export const earnVaultsKey = 'earn-vaults';
-export const leverageVaultKey = 'leverage-vaults';
-export const leverageVaultAddressesKey = 'leverage-vault-addresses';
+export const leveragesVaultKey = 'leverage-vaults';
+export const leveragesVaultApiKey = 'leverage-vaults-api';
 
-export const leverageVaultJson = 'https://storage.googleapis.com/plutoso/accounts.json';
+export const leverageVaultsApiUrl =
+  'https://storage.googleapis.com/plutoso/accounts.json';

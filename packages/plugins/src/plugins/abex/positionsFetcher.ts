@@ -68,16 +68,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       }
     }
 
-    element.addPosition({
+    element.addIsoPosition({
       address: positionInfo.indexToken,
       collateralValue: new BigNumber(positionInfo.collateralAmount)
         .multipliedBy(tokenPriceCollateral.price)
         .dividedBy(10 ** tokenPriceCollateral.decimals)
         .toNumber(),
       side: positionInfo.long ? LeverageSide.long : LeverageSide.short,
-      sizeValue: new BigNumber(positionInfo.positionSize),
-      pnlValue,
+      sizeValue: positionInfo.positionSize,
+      pnlValue: pnlValue?.toNumber() || null,
       leverage,
+      markPrice: tokenPriceCollateral.price,
+      size: positionInfo.positionSize / tokenPriceCollateral.price,
+      entryPrice: null,
+      liquidationPrice: null,
     });
   }
 

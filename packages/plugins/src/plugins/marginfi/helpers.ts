@@ -113,6 +113,7 @@ export function getElementFromAccount(
   const suppliedLtvs: number[] = [];
   const borrowedWeights: number[] = [];
 
+  let name;
   for (let index = 0; index < balances.length; index += 1) {
     const balance = balances[index];
     if (balance.bankPk.toString() === '11111111111111111111111111111111')
@@ -126,6 +127,10 @@ export function getElementFromAccount(
       const suppliedAmount = wrappedI80F48toBigNumber(balance.assetShares)
         .times(bankInfo.dividedAssetShareValue)
         .toNumber();
+
+      // If one of the deposited asset is a stake collateral, show it inside the element name
+      if (tokenPrice?.elementName === 'Stake Collateral')
+        name = 'Stake Collateral';
 
       suppliedAssets.push(
         tokenPriceToAssetToken(
@@ -185,5 +190,6 @@ export function getElementFromAccount(
       rewardValue,
       value,
     },
+    name,
   };
 }

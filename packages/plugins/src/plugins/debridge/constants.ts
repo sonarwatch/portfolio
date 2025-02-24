@@ -22,15 +22,15 @@ export const commonStatics = {
 export const firstDistribStatics: AirdropStatics = {
   ...commonStatics,
   id: `${platformId}-dis1`,
-  claimEnd: 1747440000000,
   claimStart: 1724940000000,
+  claimEnd: 1747440000000,
 };
 
 export const secondDistribStatics: AirdropStatics = {
   ...commonStatics,
   id: `${platformId}-dis2`,
+  claimStart: 1744876800000,
   claimEnd: 1747440000000,
-  claimStart: 1740751200000,
 };
 
 export const dbrMint = 'DBRiDgJAMsM95moTzJs7M9LnkGErpbv9v6CUR1DXnUu5';

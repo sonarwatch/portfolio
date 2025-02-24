@@ -762,6 +762,16 @@ import {
   jobs as puffcoinJobs,
   fetchers as puffcoinFetchers,
 } from './plugins/puffcoin';
+import {
+  platforms as triadPlatforms,
+  jobs as triadJobs,
+  fetchers as triadFetchers,
+} from './plugins/triad';
+import {
+  platforms as basktPlatforms,
+  jobs as basktJobs,
+  fetchers as basktFetchers,
+} from './plugins/baskt';
 import { jobs as coingeckoJobs } from './plugins/coingecko';
 
 export {
@@ -777,6 +787,7 @@ export * from './Job';
 export * from './utils/name-service';
 export * from './utils/blank';
 export { getLlamaProtocolsJob } from './plugins/llama-protocols';
+export { jupFetcherIds } from './plugins/jupiter';
 
 // PLATFORMS //
 export const platforms: Platform[] = [
@@ -930,6 +941,8 @@ export const platforms: Platform[] = [
   ...plutoPlatforms,
   ...layer3Platforms,
   ...puffcoinPlatforms,
+  ...triadPlatforms,
+  ...basktPlatforms,
 ];
 
 // JOBS //
@@ -1077,10 +1090,12 @@ export const jobs: Job[] = [
   ...defitunaJobs,
   ...iloopJobs,
   ...sonicJobs,
+  ...basktJobs,
   ...coingeckoJobs,
   ...plutoJobs,
   ...layer3Jobs,
   ...puffcoinJobs,
+  ...triadJobs,
 ];
 
 // FETCHERS //
@@ -1232,6 +1247,8 @@ export const fetchers: Fetcher[] = [
   ...plutoFetchers,
   ...layer3Fetchers,
   ...puffcoinFetchers,
+  ...triadFetchers,
+  ...basktFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 

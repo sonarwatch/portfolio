@@ -2,8 +2,10 @@ import {
   NetworkIdType,
   PortfolioAsset,
   PortfolioAssetAttributes,
+  SourceRef,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
+import { PublicKey } from '@solana/web3.js';
 import tokenPriceToAssetToken from '../misc/tokenPriceToAssetToken';
 import { TokenPriceMap } from '../../TokenPriceMap';
 import tokenPriceToAssetTokens from '../misc/tokenPriceToAssetTokens';
@@ -15,6 +17,9 @@ export class AssetTokenBuilder extends AssetBuilder {
   amount: number | BigNumber | string;
   attributes: PortfolioAssetAttributes;
   alreadyShifted: boolean;
+  sourceRefs?: SourceRef[];
+  ref?: string | PublicKey;
+  link?: string;
 
   constructor(params: PortfolioAssetTokenParams) {
     super();
@@ -22,9 +27,12 @@ export class AssetTokenBuilder extends AssetBuilder {
     this.amount = params.amount;
     this.attributes = params.attributes || {};
     this.alreadyShifted = params.alreadyShifted || false;
+    this.ref = params.ref;
+    this.sourceRefs = params.sourceRefs;
+    this.link = params.link;
   }
 
-  mints(): string[] {
+  tokenAddresses(): string[] {
     return [this.address];
   }
 
@@ -64,13 +72,18 @@ export class AssetTokenBuilder extends AssetBuilder {
     if (!this.alreadyShifted)
       amount = amount.dividedBy(10 ** tokenPrice.decimals);
 
-    return tokenPriceToAssetToken(
-      tokenPrice.address,
-      amount.toNumber(),
-      networkId,
-      tokenPrice,
-      undefined,
-      this.attributes
-    );
+    return {
+      ...tokenPriceToAssetToken(
+        tokenPrice.address,
+        amount.toNumber(),
+        networkId,
+        tokenPrice,
+        undefined,
+        this.attributes,
+        this.link
+      ),
+      sourceRefs: this.sourceRefs,
+      ref: this.ref?.toString(),
+    };
   }
 }

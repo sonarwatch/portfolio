@@ -179,6 +179,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         market.amm.oracleSource,
         client
       );
+      if (!oraclePriceData) continue;
 
       const pnl = new BigNumber(
         calculatePositionPNL(market, perpPosition, oraclePriceData).toString()

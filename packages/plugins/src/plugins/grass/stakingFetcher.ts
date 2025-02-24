@@ -20,6 +20,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
   const element = elementRegistry.addElementMultiple({
     label: 'Staked',
+    ref: userStakeAccount.pubkey.toString(),
+    link: 'https://www.grassfoundation.io/stake',
   });
 
   userStakeAccount.unstake_requests.forEach((req) => {

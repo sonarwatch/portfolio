@@ -73,6 +73,6 @@ export function getLlamaProtocolsJob(platforms: Platform[]): Job {
   return {
     id: 'llama-protocols',
     executor,
-    label: 'coingecko',
+    labels: ['coingecko'],
   };
 }

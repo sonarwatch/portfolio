@@ -1,6 +1,10 @@
 import { apyToApr, NetworkId } from '@sonarwatch/portfolio-core';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { leverageVaultAddressesKey, leverageVaultKey, platformId } from './constants';
+import {
+  leveragesVaultApiKey,
+  leveragesVaultKey,
+  platformId,
+} from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { Cache } from '../../Cache';
 import { getLeverageObligations } from './helper';
@@ -10,20 +14,20 @@ import { LeverageVaultAddress, VaultLeverage } from './structs';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const leverageVaultsMemo = new MemoizedCache<ParsedAccount<VaultLeverage>[]>(
-  leverageVaultKey,
+  leveragesVaultKey,
   {
     prefix: platformId,
     networkId: NetworkId.solana,
   }
 );
 
-const leverageAddressesMemo = new MemoizedCache<LeverageVaultAddress[]>(
-  leverageVaultAddressesKey,
+const leverageVaultsApiMemo = new MemoizedCache<LeverageVaultAddress[]>(
+  leveragesVaultApiKey,
   {
     prefix: platformId,
     networkId: NetworkId.solana,
   }
-)
+);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -34,8 +38,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const vaults = await leverageVaultsMemo.getItem(cache);
   if (!vaults.length) return [];
 
-  const vaultAddresses = await leverageAddressesMemo.getItem(cache);
-  if (!vaultAddresses.length) return [];
+  // used only for vault name, non necessary
+  const vaultsApi = await leverageVaultsApiMemo.getItem(cache);
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
   accounts.forEach((acc) => {    
@@ -44,10 +48,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
     if (!vault) return;
 
-    const vaultAddress = vaultAddresses.find(
+    const vaultFromApi = vaultsApi.find(
       (v) => v.leverageVault === vault.pubkey.toString()
-    )
-    if (!vaultAddress) return;
+    );
 
     for (const position of acc.positions) {
       if (position.unit.toString() === '0') {
@@ -55,21 +58,23 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       }
 
       const amount = (position.unit.toNumber() / 1e8) * (vault.index / 1e12);
+
+
+      const apy = Number(vault.apy.ema7d / 1e5);
       const borrowingUnit = position.borrowing_unit.toNumber() / 1e8;
       const borrowingIndex = vault.borrowingIndex / 1e12;
       const borrowingAmount = borrowingUnit * borrowingIndex;
-      const apy = Number(vault.apy.ema7d / 1e5);
-      
-      const tokenCollateralAmount = position.token_collateral_amount.shiftedBy(-vaultAddress.tokenDecimalA).toNumber();
+      const borrowingApy = Number(vault.borrowingApy.ema7d / 1e5);
+      const tokenCollateralAmount = position.token_collateral_amount.shiftedBy(-(vaultFromApi ? vaultFromApi.tokenDecimalA : 1e6)).toNumber();
       const tokenCollateralPrice = position.token_collateral_price.shiftedBy(-position.token_collateral_price_exponent).toNumber();
       const borrowAmount = borrowingUnit * position.avg_borrowing_index.shiftedBy(-12).toNumber();
       const borrowUSD = borrowAmount * tokenCollateralPrice;
       const openLV = borrowUSD / tokenCollateralAmount + 1;
 
       const element = elementRegistry.addElementBorrowlend({
-        name: `Leverage ${vaultAddress.leverageName.replace(
-          "-", "/"
-        )} ${parseFloat(openLV.toFixed(2))}x`,
+        name: `Leverage ${
+          vaultFromApi ? vaultFromApi.leverageName.replace('-', '/') : ''
+        } ${parseFloat(openLV.toFixed(2))}x`,
         label: 'Leverage',
         ref: acc.pubkey,
         sourceRefs: [
@@ -81,6 +86,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         link: 'https://app.pluto.so/leverage',
       });
 
+      element.addSuppliedAsset({
+        address: vault.nativeCollateralTokenMint.toString(),
+        amount,
+        alreadyShifted: true,
+      });
+
       element.addSuppliedYield([
         {
           apy,
@@ -88,24 +99,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         },
       ]);
 
-      element.addSuppliedAsset({
-        address: vault.nativeCollateralTokenMint.toString(),
-        amount,
+      element.addBorrowedAsset({
+        address: vault.tokenCollateralTokenMint.toString(),
+        amount: borrowingAmount,
         alreadyShifted: true,
       });
 
-      const borrowingApy = Number(vault.borrowingApy.ema7d / 1e5);
       element.addBorrowedYield([
         {
           apy: borrowingApy,
           apr: apyToApr(borrowingApy),
         },
       ]);
-      element.addBorrowedAsset({
-        address: vault.tokenCollateralTokenMint.toString(),
-        amount: borrowingAmount,
-        alreadyShifted: true,
-      });
     }
   });
 

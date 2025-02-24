@@ -10,7 +10,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   if (!markets.data) return;
 
-  await cache.setItem(marketsCacheKey, markets.data.res, {
+  await cache.setItem(marketsCacheKey, markets.data.data, {
     prefix: platformId,
     networkId: NetworkId.aptos,
   });
@@ -18,6 +18,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-markets`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;

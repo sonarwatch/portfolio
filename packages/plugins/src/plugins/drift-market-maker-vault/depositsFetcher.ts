@@ -4,7 +4,7 @@ import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId as driftPlatformId } from '../drift/constants';
 import {
-  vaultsPids,
+  vaultsProgramIds,
   prefixVaults,
   neutralPlatformId,
   hedgyPlatformId,
@@ -26,7 +26,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const depositAccounts = (
     await Promise.all(
-      vaultsPids.map((vaultsPid) =>
+      vaultsProgramIds.map((vaultsPid) =>
         getParsedProgramAccounts(
           client,
           vaultDepositorStruct,
@@ -85,8 +85,40 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
     const userSharesValue =
       depositAccount.vaultShares.multipliedBy(pricePerShare);
-    const netDeposits = new BigNumber(depositAccount.netDeposits);
-    const userPnL = userSharesValue.minus(netDeposits);
+    const { netDeposits } = depositAccount;
+    const performanceFee = new BigNumber(vaultInfo.profitShare).shiftedBy(-6);
+
+    const PnL = userSharesValue.minus(netDeposits);
+
+    element.addAsset({
+      address: mint,
+      amount: netDeposits.minus(depositAccount.lastWithdrawRequest?.value || 0),
+    });
+
+    let hasPendingFees = false;
+    if (PnL.isPositive()) {
+      const profitShareFees = PnL.multipliedBy(performanceFee).minus(
+        depositAccount.profitShareFeePaid
+      );
+      if (profitShareFees.isPositive()) {
+        hasPendingFees = true;
+        element.addAsset({
+          address: mint,
+          amount: profitShareFees.negated(),
+          attributes: {
+            tags: [`Pending ${performanceFee.shiftedBy(2)}% Performance Fee`],
+          },
+        });
+      }
+    }
+
+    element.addAsset({
+      address: mint,
+      amount: PnL,
+      attributes: {
+        tags: [hasPendingFees ? 'PnL before Fees' : 'PnL'],
+      },
+    });
 
     if (!depositAccount.lastWithdrawRequest?.value.isZero()) {
       const withdrawCooldown = [
@@ -108,19 +140,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         },
       });
     }
-
-    element.addAsset({
-      address: mint,
-      amount: netDeposits.minus(depositAccount.lastWithdrawRequest?.value || 0),
-    });
-
-    element.addAsset({
-      address: mint,
-      amount: userPnL.minus(depositAccount.profitShareFeePaid),
-      attributes: {
-        tags: ['PnL'],
-      },
-    });
   }
 
   return elementRegistry.getElements(cache);

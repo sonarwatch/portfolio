@@ -38,6 +38,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-pools-farms-v2`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;
