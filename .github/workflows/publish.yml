@@ -55,8 +55,10 @@ jobs:
 
       - name: Publish core package
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npx nx run core:publish --tag=$CORE_TAG
 
       - name: Publish plugins package
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npx nx run plugins:publish --tag=$PLUGINS_TAG
