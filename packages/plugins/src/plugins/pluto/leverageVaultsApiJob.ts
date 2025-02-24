@@ -7,7 +7,7 @@ import {
   leverageVaultsApiUrl,
   platformId,
 } from './constants';
-import { LeverageVaultAddress } from './types';
+import { LeverageVaultAddress } from './structs';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const vaults = await axios
