@@ -42,7 +42,7 @@
       "executor": "nx:run-commands",
       "dependsOn": ["build"],
       "options": {
-        "command": "cd dist/packages/plugins && npm publish --access restricted --tag={args.tag}"
+        "command": "node tools/scripts/publish-rewrite-name.mjs core"
       }
     },
     "lint": {
