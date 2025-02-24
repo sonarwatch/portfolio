@@ -5,6 +5,6 @@ import getWhirlpoolsJob from './getWhirlpoolsJob';
 const job: Job = {
   id: `${platformId}-whirlpools`,
   executor: getWhirlpoolsJob(whirlpoolProgram),
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;

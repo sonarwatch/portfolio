@@ -83,6 +83,7 @@ export type StakingAccount = {
 };
 
 export type StakingPoolAccount = {
+  pubkey: string;
   stakeTokenMint: string;
   stakedTokens: string;
   stakedNotes: string;
