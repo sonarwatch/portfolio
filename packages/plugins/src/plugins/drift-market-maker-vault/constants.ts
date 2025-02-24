@@ -1,6 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 import { platformId as nxFinancePlatformId } from '../nxfinance/constants';
+import { VectisInsuranceIDL } from './vectis_insurance_drift_vaults';
 
 export const circuitPlatformId = 'circuit';
 export const circuitPlatform: Platform = {
@@ -83,13 +84,19 @@ export const luckyperpPlatform: Platform = {
   twitter: 'https://x.com/LuckyPerp_com',
 };
 
-export const vaultsPids = [
+export const vaultsProgramIds = [
   new PublicKey('vAuLTsyrvSfZRuRB3XgvkPwNGgYSs9YRYymVebLKoxR'), // from Drift
   new PublicKey('9Fcn3Fd4d5ocrb12xCUtEvezxcjFEAyHBPfrZDiPt9Qj'), // from Neutral
   new PublicKey('EuSLjg23BrtwYAk1t4TFe5ArYSXCVXLBqrHRBfWQiTeJ'), // from Neutral
   new PublicKey('BVddkVtFJLCihbVrtLo8e3iEd9NftuLunaznAxFFW8vf'), // from Neutral
   new PublicKey('HYHnL9BB3tqSPxkVbdcAn9CAa4hyqNYUh1FwDc4he7aD'), // from NXFinance
+  new PublicKey('EDnxACbdY1GeXnadh5gRuCJnivP7oQSAHGGAHCma4VzG'), // from Vectis
 ];
+
+// when we need to pass a specific IDL for a vault
+export const vaultIdls = {
+  EDnxACbdY1GeXnadh5gRuCJnivP7oQSAHGGAHCma4VzG: VectisInsuranceIDL,
+};
 
 export const prefixVaults = 'circuitVaults';
 

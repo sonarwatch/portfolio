@@ -12,6 +12,7 @@ import { ElementLiquidityBuilder } from './ElementLiquidityBuilder';
 import { ElementBorrowlendBuilder } from './ElementBorrowlendBuilder';
 import { ElementLeverageBuilder } from './ElementLeverageBuilder';
 import { ElementConcentratedLiquidityBuilder } from './ElementConcentratedLiquidityBuilder';
+import { ElementTradeBuilder } from './ElementTradeBuilder';
 
 export class ElementRegistry {
   readonly networkId: NetworkIdType;
@@ -75,8 +76,21 @@ export class ElementRegistry {
     return elementBuilder;
   }
 
+  addElementTrade(
+    elementParams?: Omit<Params, 'type' | 'label'> & {
+      label?: PortfolioElementLabel;
+    }
+  ): ElementTradeBuilder {
+    const elementBuilder = new ElementTradeBuilder({
+      type: PortfolioElementType.trade,
+      label: elementParams?.label || 'LimitOrder',
+    });
+    this.elements.push(elementBuilder);
+    return elementBuilder;
+  }
+
   async getElements(cache: Cache): Promise<PortfolioElement[]> {
-    const mints = this.elements.map((e) => e.mints()).flat();
+    const mints = this.elements.map((e) => e.tokenAddresses()).flat();
     const tokenPrices = await cache.getTokenPricesAsMap(mints, this.networkId);
 
     return this.elements

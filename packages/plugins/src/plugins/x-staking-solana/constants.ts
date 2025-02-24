@@ -10,6 +10,7 @@ import { platformId as whalesMarketPlatformId } from '../whalesmarket/constants'
 import { platformId as allbridgePlatformId } from '../allbridge/constants';
 import { stepfinancePlatform, ligmaPlatform } from '../../orphanPlatforms';
 import { platformId as stramflowPlatformId } from '../streamflow/constants';
+import { platformId as sanctumPlatformId } from '../sanctum/constants';
 
 export const xStakingConfigs: StakingConfig[] = [
   {
@@ -67,6 +68,14 @@ export const xStakingConfigs: StakingConfig[] = [
     xMint: '8oNKiUVaHssErFLe8dDbgB6pXmXUxAvr3YFtVemBXeQP',
     xDecimals: 6,
     platformId: stramflowPlatformId,
+  },
+  {
+    mint: 'CLoUDKc4Ane7HeQcPpE3YHnznRxhMimJ4MyaUqyHFzAu',
+    decimals: 9,
+    vault: '5jbzpJeGZFpPFrwXAdeWn25UJiParK8rayQYJY3r14cv',
+    xMint: 'sc1dNAxRBj5CNWaGC26AR7PEW75R36Umzt1V8vuP8kZ',
+    xDecimals: 9,
+    platformId: sanctumPlatformId,
   },
 ];
 

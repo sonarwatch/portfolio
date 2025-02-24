@@ -69,6 +69,10 @@ export const lendingConfigs: Map<string, LendingMarketConfig> = new Map([
           'BNso1VUJnh4zcfpZa6986Ea66P6TCp59hvtNJ8b1X85',
           'So11111111111111111111111111111111111111112',
         ],
+        [
+          'picobAEvs6w7QEknPce34wAE4gknZA9v5tTonnmHYdX',
+          'So11111111111111111111111111111111111111112',
+        ],
       ],
       leveragePairs: [
         [
@@ -164,3 +168,7 @@ export const airdropStaticsS2: AirdropStatics = {
   image: 'https://sonar.watch/img/platforms/kamino.webp',
   name: 'S2',
 };
+
+export const limitOrderProgramId = new PublicKey(
+  'LiMoM9rMhrdYrfzUCxQppvxCSG1FcrUK9G8uLq4A1GF'
+);

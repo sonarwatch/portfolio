@@ -28,7 +28,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-perps`,
   executor,
-  label: 'realtime',
+  labels: ['realtime'],
 };
 
 export default job;

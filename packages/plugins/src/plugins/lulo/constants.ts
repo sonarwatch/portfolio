@@ -18,3 +18,5 @@ export const luloProgramId = new PublicKey(
 export const AUTOMATION_PUBLIC_KEY = new PublicKey(
   '8PWR75ppAGonv9dXStjficjXmdsuDKmDoVNcy4oYhAMs'
 );
+
+export const poolsKey = 'allocations';

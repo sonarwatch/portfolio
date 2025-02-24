@@ -32,6 +32,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-deposits`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;

@@ -1,4 +1,5 @@
 import { Platform } from '@sonarwatch/portfolio-core';
+import { PublicKey } from '@solana/web3.js';
 import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'sanctum';
@@ -35,3 +36,7 @@ export const nclbAirdropStatics: AirdropStatics = {
   claimLink: 'https://appeal.sanctum.so/results',
   image: platformImage,
 };
+
+export const stakingPid = new PublicKey(
+  'bon4Kh3x1uQK16w9b9DKgz3Aw4AP1pZxBJk55Q6Sosb'
+);

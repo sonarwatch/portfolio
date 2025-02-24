@@ -747,6 +747,31 @@ import {
   fetchers as sonicFetchers,
   airdropFetcher as sonicAirdropFetcher,
 } from './plugins/sonic';
+import {
+  platforms as plutoPlatforms,
+  jobs as plutoJobs,
+  fetchers as plutoFetchers,
+} from './plugins/pluto';
+import {
+  platforms as layer3Platforms,
+  jobs as layer3Jobs,
+  fetchers as layer3Fetchers,
+} from './plugins/layer3';
+import {
+  platforms as puffcoinPlatforms,
+  jobs as puffcoinJobs,
+  fetchers as puffcoinFetchers,
+} from './plugins/puffcoin';
+import {
+  platforms as triadPlatforms,
+  jobs as triadJobs,
+  fetchers as triadFetchers,
+} from './plugins/triad';
+import {
+  platforms as basktPlatforms,
+  jobs as basktJobs,
+  fetchers as basktFetchers,
+} from './plugins/baskt';
 import { jobs as coingeckoJobs } from './plugins/coingecko';
 
 export {
@@ -762,6 +787,7 @@ export * from './Job';
 export * from './utils/name-service';
 export * from './utils/blank';
 export { getLlamaProtocolsJob } from './plugins/llama-protocols';
+export { jupFetcherIds } from './plugins/jupiter';
 
 // PLATFORMS //
 export const platforms: Platform[] = [
@@ -912,6 +938,11 @@ export const platforms: Platform[] = [
   ...defitunaPlatforms,
   ...iloopPlatforms,
   ...sonicPlatforms,
+  ...plutoPlatforms,
+  ...layer3Platforms,
+  ...puffcoinPlatforms,
+  ...triadPlatforms,
+  ...basktPlatforms,
 ];
 
 // JOBS //
@@ -1059,7 +1090,12 @@ export const jobs: Job[] = [
   ...defitunaJobs,
   ...iloopJobs,
   ...sonicJobs,
+  ...basktJobs,
   ...coingeckoJobs,
+  ...plutoJobs,
+  ...layer3Jobs,
+  ...puffcoinJobs,
+  ...triadJobs,
 ];
 
 // FETCHERS //
@@ -1208,6 +1244,11 @@ export const fetchers: Fetcher[] = [
   ...defitunaFetchers,
   ...iloopFetchers,
   ...sonicFetchers,
+  ...plutoFetchers,
+  ...layer3Fetchers,
+  ...puffcoinFetchers,
+  ...triadFetchers,
+  ...basktFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 

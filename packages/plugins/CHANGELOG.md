@@ -2,6 +2,100 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.127](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.126...plugins-0.14.127) (2025-02-24)
+
+
+
+## [0.14.126](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.125...plugins-0.14.126) (2025-02-24)
+
+
+
+## [0.14.125](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.124...plugins-0.14.125) (2025-02-21)
+
+
+
+## [0.14.124](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.123...plugins-0.14.124) (2025-02-21)
+
+
+
+## [0.14.123](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.122...plugins-0.14.123) (2025-02-21)
+
+
+
+## [0.14.122](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.121...plugins-0.14.122) (2025-02-21)
+
+
+
+## [0.14.121](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.120...plugins-0.14.121) (2025-02-21)
+
+
+
+## [0.14.120](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.119...plugins-0.14.120) (2025-02-21)
+
+
+
+## [0.14.119](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.118...plugins-0.14.119) (2025-02-21)
+
+
+
+## [0.14.118](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.117...plugins-0.14.118) (2025-02-20)
+
+
+
+## [0.14.117](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.116...plugins-0.14.117) (2025-02-20)
+
+
+
+## [0.14.116](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.115...plugins-0.14.116) (2025-02-19)
+
+
+
+## [0.14.115](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.114...plugins-0.14.115) (2025-02-17)
+
+
+### Reverts
+
+* Revert "tmp to multiple" ([9512357](https://github.com/sonarwatch/portfolio/commit/9512357d6583a16107082bb29ef84c9f78fecebf))
+
+
+
+## [0.14.114](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.113...plugins-0.14.114) (2025-02-17)
+
+
+### Reverts
+
+* Revert "add link to airdropFetcher" ([0407ce5](https://github.com/sonarwatch/portfolio/commit/0407ce5bf9d0fe361b91f99ed714b4885dab329d))
+
+
+
+## [0.14.113](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.112...plugins-0.14.113) (2025-02-17)
+
+
+
+## [0.14.112](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.111...plugins-0.14.112) (2025-02-17)
+
+
+
+## [0.14.111](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.110...plugins-0.14.111) (2025-02-17)
+
+
+
+## [0.14.110](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.109...plugins-0.14.110) (2025-02-14)
+
+
+
+## [0.14.109](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.108...plugins-0.14.109) (2025-02-13)
+
+
+
+## [0.14.108](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.107...plugins-0.14.108) (2025-02-12)
+
+
+
+## [0.14.107](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.106...plugins-0.14.107) (2025-02-10)
+
+
+
 ## [0.14.106](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.105...plugins-0.14.106) (2025-02-07)
 
 

@@ -1,42 +1,55 @@
-import { NetworkId, solanaNativeAddress } from '@sonarwatch/portfolio-core';
-import { PublicKey } from '@solana/web3.js';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
-import { platformId } from './constants';
+import { platformId, programId, puffMint } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
-import { liquidityStruct } from './structs';
+import { userInfoStruct } from './structs';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
+
   const accounts = await getParsedProgramAccounts(
     connection,
-    liquidityStruct,
-    new PublicKey('pid'),
+    userInfoStruct,
+    programId,
     [
-      {
-        dataSize: liquidityStruct.byteSize,
-      },
       {
         memcmp: {
           bytes: owner,
-          offset: 40,
+          offset: 8,
         },
+      },
+      {
+        memcmp: {
+          bytes: 'EyK5FU8iAff',
+          offset: 0,
+        },
+      },
+      {
+        dataSize: 112,
       },
     ]
   );
   if (accounts.length === 0) return [];
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
-  const element = elementRegistry.addElementMultiple({
-    label: 'Deposit',
-  });
 
   accounts.forEach((acc) => {
+    const element = elementRegistry.addElementMultiple({
+      label: 'Staked',
+      ref: acc.pubkey,
+      link: 'https://staking.puffcoin.fun/',
+    });
+
     element.addAsset({
-      address: solanaNativeAddress,
-      amount: acc.amountDeposited,
+      address: puffMint,
+      amount: acc.amount.toNumber(),
+    });
+    element.addAsset({
+      address: puffMint,
+      amount: acc.claimableAmount.toNumber(),
     });
   });
 
@@ -44,7 +57,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-positions-solana`,
+  id: `${platformId}-staking`,
   networkId: NetworkId.solana,
   executor,
 };
