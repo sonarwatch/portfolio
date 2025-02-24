@@ -1,7 +1,4 @@
-import {
-  NetworkId,
-  PortfolioAssetAttributes,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { marketsCacheKey, platformId, programId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -16,6 +13,7 @@ import {
   OrderDirection,
   OrderStatus,
   userTradeV2Struct,
+  WinningDirection,
 } from './structs';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
@@ -57,7 +55,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (accounts.length === 0) return [];
 
   const markets = await marketsMemo.getItem(cache);
-  if (!markets) return [];
+  if (!markets) throw new Error('Markets not cached');
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 
@@ -86,21 +84,38 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         }`,
       });
 
-      const attributes: PortfolioAssetAttributes = {};
+      // bet is over
+      if (market.winning_direction !== WinningDirection.None) {
+        if (
+          (market.winning_direction === WinningDirection.Hype &&
+            order.direction === OrderDirection.Hype) ||
+          (market.winning_direction === WinningDirection.Flop &&
+            order.direction === OrderDirection.Flop)
+        ) {
+          // win
+          element.addAsset({
+            address: market.mint,
+            amount: order.total_shares,
+            attributes: {
+              isClaimable: true,
+            },
+          });
+        }
+      } else {
+        // bet is running
+        element.addAsset({
+          address: market.mint,
+          amount: order.total_amount,
+        });
 
-      element.addAsset({
-        address: market.mint,
-        amount: order.total_amount,
-        attributes,
-      });
-
-      element.addAsset({
-        address: market.mint,
-        amount: calculatePnL(market, order),
-        attributes: {
-          tags: ['PnL'],
-        },
-      });
+        element.addAsset({
+          address: market.mint,
+          amount: calculatePnL(market, order),
+          attributes: {
+            tags: ['PnL'],
+          },
+        });
+      }
     });
   });
 

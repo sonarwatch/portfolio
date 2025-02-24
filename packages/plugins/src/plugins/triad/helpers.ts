@@ -8,28 +8,31 @@ export const calculatePnL = (
 ) => {
   if (!market || order.price.isZero()) return 0;
 
-  let currentLiquidity;
-  let currentPrice;
+  const marketPrice = new BigNumber(
+    order.direction === OrderDirection.Hype
+      ? market.hype_price
+      : market.flop_price
+  );
 
-  if (order.direction === OrderDirection.Hype) {
-    currentLiquidity = new BigNumber(market.hype_liquidity).shiftedBy(-6);
-    currentPrice = new BigNumber(market.hype_price);
-  } else {
-    currentLiquidity = new BigNumber(market.flop_liquidity).shiftedBy(-6);
-    currentPrice = new BigNumber(market.flop_price);
-  }
+  const currentLiquidity = new BigNumber(
+    order.direction === OrderDirection.Hype
+      ? market.hype_liquidity
+      : market.flop_liquidity
+  ).shiftedBy(-6);
 
-  const shares = order.total_shares.shiftedBy(-6);
+  const payout = order.total_shares.shiftedBy(-6).multipliedBy(marketPrice);
 
-  const currentPayout = shares.multipliedBy(currentPrice);
-  /* const impactFactor = currentPayout.dividedBy(currentLiquidity.plus(1));
-  const priceImpact = Math.min(impactFactor.multipliedBy(0.16).toNumber(), 0.5); */
-  const priceImpact = 0;
+  const impactFactor = payout.dividedBy(currentLiquidity.shiftedBy(6).plus(1));
+  const priceImpact = Math.min(impactFactor.multipliedBy(0.16).toNumber(), 0.5);
 
   const takerFee = 1.042;
 
-  return currentPayout
+  const orderPriceWithImpact = marketPrice
     .multipliedBy(1 - priceImpact)
-    .dividedBy(takerFee)
+    .dividedBy(takerFee);
+
+  return order.total_shares
+    .shiftedBy(-6)
+    .multipliedBy(orderPriceWithImpact)
     .minus(order.total_amount);
 };
