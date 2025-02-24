@@ -42,7 +42,7 @@
       "executor": "nx:run-commands",
       "dependsOn": ["build"],
       "options": {
-        "command": "node tools/scripts/publish-rewrite-name.mjs core"
+        "command": "node tools/scripts/publish-rewrite-name.mjs plugins"
       }
     },
     "lint": {

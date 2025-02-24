@@ -30,18 +30,29 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
+          node-version: '18'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Authenticate with NPM
+      - name: DEBUG
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+          npm whoami
+          npm org ls octavlabs
+          cat /home/runner/work/_temp/.npmrc
+          npx nx run core:check-npm-identity
+
+      # - name: Authenticate with NPM
+      #   run: |
+      #     echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
       - name: Build all packages
         run: npx nx run-many --target=build --all
 
+        # TODO: Remove tags logic
       - name: Determine tags
         run: |
           CORE_VERSION=$(node -p "require('./packages/core/package.json').version")
@@ -53,12 +64,14 @@ jobs:
           echo "CORE_TAG=$CORE_TAG" >> $GITHUB_ENV
           echo "PLUGINS_TAG=$PLUGINS_TAG" >> $GITHUB_ENV
 
+        # TODO: Remove tags logic; important on Github but not for npm
       - name: Publish core package
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx nx run core:publish --tag=$CORE_TAG
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: node ./tools/scripts/publish-rewrite-name.mjs core
+        # run: npx nx run core:publish --tag=$CORE_TAG
 
       - name: Publish plugins package
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npx nx run plugins:publish --tag=$PLUGINS_TAG
