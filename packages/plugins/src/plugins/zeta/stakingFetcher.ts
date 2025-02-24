@@ -5,7 +5,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, zetaIdlItem, zexDecimals, zexMint } from './constants';
+import { platformId, zetaIdlItem, zexMint } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getStakeAccountsAddresses, getTimestamp } from './helpers';
 import {
@@ -50,9 +50,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (!account) continue;
     const name = u8ArrayToString(account.name);
 
-    const amount = new BigNumber(account.amountStillStaked)
-      .dividedBy(10 ** zexDecimals)
-      .toNumber();
+    const amount = new BigNumber(account.amountStillStaked).toNumber();
 
     const attributes: PortfolioAssetAttributes = {
       lockedUntil: account.stakeState.vesting
