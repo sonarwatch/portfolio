@@ -190,15 +190,20 @@ npm run nx:version
 ## Development & Release Flow
 
 - Create a feature branch
-  ```bash
-  git checkout -b feature/my-new-feature
-  ```
+```bash
+git checkout -b feature/my-new-feature
+```
 - Make changes and commits
 - Run corresponding script to create tags and version bump
 ```bash
+# Per package
 npx nx run core:version --releaseAs=patch
+npx nx run plugins:version --releaseAs=patch
+
+# For all packages
+npx nx run-many --target=version --all --releaseAs=patch
 ```
-- Push changes with tags
+- Push changes **with tags**
 ```bash
 git push origin feature/my-new-feature --follow-tags
 ```

@@ -39,12 +39,7 @@ jobs:
       - name: Build all packages
         run: npx nx run-many --target=build --all
 
-      - name: Publish core package
+      - name: Publish packages
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx nx run core:publish
-
-      - name: Publish plugins package
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx nx run plugins:publish
+        run: npx nx run-many --target=publish --all
