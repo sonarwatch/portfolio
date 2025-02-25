@@ -1,4 +1,5 @@
 import { apyToApr, NetworkId } from '@sonarwatch/portfolio-core';
+import BigNumber from 'bignumber.js';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
   leveragesVaultApiKey,
@@ -37,7 +38,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (!accounts.length) return [];
 
   const vaults = await leverageVaultsMemo.getItem(cache);
-  if (!vaults.length) return [];
+  if (!vaults.length) throw new Error('Vaults not cached');
 
   // used only for vault name, non necessary
   const vaultsApi = await leverageVaultsApiMemo.getItem(cache);
@@ -53,37 +54,57 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       (v) => v.leverageVault === vault.pubkey.toString()
     );
 
-    const element = elementRegistry.addElementBorrowlend({
-      name: `Leverage ${
-        vaultFromApi ? vaultFromApi.leverageName.replace('-', '/') : ''
-      }`,
-      label: 'Leverage',
-      ref: acc.pubkey,
-      sourceRefs: [
-        {
-          name: 'Vault',
-          address: vault.pubkey.toString(),
-        },
-      ],
-      link: 'https://app.pluto.so/leverage',
-    });
-
-    for (const position of acc.positions) {
-      if (position.unit.toString() === '0') {
-        continue;
+    acc.positions.forEach((position) => {
+      if (position.unit.isZero()) {
+        return;
       }
 
-      const amount = position.token_collateral_amount
-        .shiftedBy(-vault.tokenCollateralTokenDecimal)
+      const amount = position.unit
+        .shiftedBy(-8)
+        .multipliedBy(new BigNumber(vault.index).shiftedBy(-12));
+      const apy = new BigNumber(vault.apy.ema7d).shiftedBy(-5).toNumber();
+      const borrowingUnit = position.borrowing_unit.shiftedBy(-8);
+      const borrowingIndex = new BigNumber(vault.borrowingIndex).shiftedBy(-12);
+      const borrowingAmount = borrowingUnit.multipliedBy(borrowingIndex);
+      const borrowingApy = new BigNumber(vault.borrowingApy.ema7d)
+        .shiftedBy(-5)
         .toNumber();
 
+      const tokenCollateralAmount = position.token_collateral_amount.shiftedBy(
+        -vault.tokenCollateralTokenDecimal
+      );
+
+      const tokenCollateralPrice = position.token_collateral_price.shiftedBy(
+        -position.token_collateral_price_exponent
+      );
+
+      const borrowAmount = borrowingUnit.multipliedBy(
+        position.avg_borrowing_index.shiftedBy(-12)
+      );
+      const borrowUSD = borrowAmount.multipliedBy(tokenCollateralPrice);
+      const openLV = borrowUSD.dividedBy(tokenCollateralAmount).plus(1);
+
+      const element = elementRegistry.addElementBorrowlend({
+        name: `Leverage ${
+          vaultFromApi ? vaultFromApi.leverageName.replace('-', '/') : ''
+        } ${parseFloat(openLV.toFixed(2))}x`,
+        label: 'Leverage',
+        ref: acc.pubkey,
+        sourceRefs: [
+          {
+            name: 'Vault',
+            address: vault.pubkey.toString(),
+          },
+        ],
+        link: 'https://app.pluto.so/leverage',
+      });
+
       element.addSuppliedAsset({
-        address: vault.tokenCollateralTokenMint.toString(),
+        address: vault.nativeCollateralTokenMint,
         amount,
         alreadyShifted: true,
       });
 
-      const apy = Number(vault.apy.ema7d / 1e5);
       element.addSuppliedYield([
         {
           apy,
@@ -91,13 +112,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         },
       ]);
 
-      const borrowingUnit = position.borrowing_unit.toNumber() / 1e8;
-      const borrowingIndex = vault.borrowingIndex / 1e12;
-      const borrowingAmount = borrowingUnit * borrowingIndex;
-      const borrowingApy = Number(vault.borrowingApy.ema7d / 1e5);
-
       element.addBorrowedAsset({
-        address: vault.tokenCollateralTokenMint.toString(),
+        address: vault.tokenCollateralTokenMint,
         amount: borrowingAmount,
         alreadyShifted: true,
       });
@@ -108,7 +124,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           apr: apyToApr(borrowingApy),
         },
       ]);
-    }
+    });
   });
 
   return elementRegistry.getElements(cache);

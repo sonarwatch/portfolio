@@ -28,7 +28,7 @@ const rateBeet = new BeetStruct<Rate>(
     ['ema180d', u32],
     ['ema365d', u32],
     ['align2', uniformFixedSizeArray(u8, 4)],
-    ['padding1', uniformFixedSizeArray(u32, 10)], // array of 64 u64, 64 * 8 = 512 bytes
+    ['padding1', uniformFixedSizeArray(u64, 7)], // array of 64 u64, 64 * 8 = 512 bytes
   ],
   (args) => args as Rate
 );
