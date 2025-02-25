@@ -35,8 +35,10 @@ export class ParsedGpa<T> {
     return this;
   }
 
-  dataSize(size: number) {
-    this.gpaBuilder.dataSize(size);
+  addDataSizeFilter(size?: number) {
+    this.gpaBuilder.dataSize(
+      !size && 'byteSize' in this.beets ? this.beets.byteSize : size
+    );
     return this;
   }
 

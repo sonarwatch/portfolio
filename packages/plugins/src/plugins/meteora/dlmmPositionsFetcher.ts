@@ -42,11 +42,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const [positionsV1, positionsV2] = await Promise.all([
     ParsedGpa.build(client, dlmmPositionV1Struct, dlmmProgramId)
       .addFilter('owner', userPubKey)
-      .dataSize(7560)
+      .addDataSizeFilter(7560)
       .run(),
     ParsedGpa.build(client, dlmmPositionV2Struct, dlmmProgramId)
       .addFilter('owner', userPubKey)
-      .dataSize(8120)
+      .addDataSizeFilter(8120)
       .run(),
   ]);
   const positions = [...positionsV1, ...positionsV2];
