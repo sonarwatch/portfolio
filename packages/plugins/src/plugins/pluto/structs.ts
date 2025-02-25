@@ -49,7 +49,7 @@ interface Rate {
   ema180d: number;
   ema365d: number;
   align2: number[];
-  padding1: any[];
+  padding1: number[];
 }
 
 // Define the VaultEarn struct using BeetStruct
