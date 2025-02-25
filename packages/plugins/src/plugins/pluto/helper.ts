@@ -1,5 +1,4 @@
 import { Connection } from '@solana/web3.js';
-import axios from 'axios';
 import {
   earnLenderDataSize,
   earnVaultDataSize,
