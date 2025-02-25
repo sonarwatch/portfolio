@@ -14,12 +14,6 @@
         "assets": ["packages/core/*.md"]
       }
     },
-    "check-npm-identity": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "npm whoami"
-      }
-    },
     "publish": {
       "executor": "nx:run-commands",
       "dependsOn": ["build"],
