@@ -2,6 +2,7 @@ import {
   getUsdValueSum,
   NetworkId,
   PortfolioAssetToken,
+  PortfolioElementMultiple,
   PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
 
@@ -39,34 +40,34 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const tokenAssets: PortfolioAssetToken[] = [];
   accounts.forEach((acc) => {
     const { mint, tokenAmount } = acc.account.data.parsed.info;
-    const { amount } = tokenAmount;
+    const { uiAmount: amount, decimals } = tokenAmount;
+    if (decimals === 0) return;
+
     const tokenPrice = tokenPrices.get(mint);
 
-    if (!tokenPrice || tokenPrice.platformId !== walletTokensPlatform.id)
-      return;
+    if (tokenPrice && tokenPrice.platformId !== walletTokensPlatform.id) return;
 
     tokenAssets.push({
       ...tokenPriceToAssetToken(mint, amount, NetworkId.solana, tokenPrice),
       ref: acc.pubkey.toString(),
-      link: tokenPrice.link,
-      sourceRefs: tokenPrice.sourceRefs,
+      link: tokenPrice?.link,
+      sourceRefs: tokenPrice?.sourceRefs,
     });
   });
 
   if (tokenAssets.length === 0) return [];
 
-  return [
-    {
-      type: PortfolioElementType.multiple,
-      networkId: NetworkId.solana,
-      platformId: walletTokensPlatform.id,
-      label: 'Wallet',
-      value: getUsdValueSum(tokenAssets.map((a) => a.value)),
-      data: {
-        assets: tokenAssets,
-      },
+  const element: PortfolioElementMultiple = {
+    type: PortfolioElementType.multiple,
+    networkId: NetworkId.solana,
+    platformId: walletTokensPlatform.id,
+    label: 'Wallet',
+    value: getUsdValueSum(tokenAssets.map((a) => a.value)),
+    data: {
+      assets: tokenAssets,
     },
-  ];
+  };
+  return [element];
 };
 
 const fetcher: Fetcher = {
