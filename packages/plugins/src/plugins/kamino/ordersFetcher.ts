@@ -40,6 +40,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const element = elementRegistry.addElementTrade({
       label: 'LimitOrder',
       ref: account.pubkey,
+      name: 'Swap Tips',
     });
 
     element.setTrade({

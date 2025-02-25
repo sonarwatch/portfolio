@@ -25,7 +25,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (!accounts) return [];
 
   const vaults = await earnVaultsMemo.getItem(cache);
-  if (!vaults.length) return [];
+  if (!vaults.length) throw new Error('Vaults not cached');
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
   accounts.forEach((acc) => {
