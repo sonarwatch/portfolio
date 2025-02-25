@@ -788,6 +788,7 @@ export * from './utils/name-service';
 export * from './utils/blank';
 export { getLlamaProtocolsJob } from './plugins/llama-protocols';
 export { jupFetcherIds } from './plugins/jupiter';
+export { solanaSimpleFetcher } from './plugins/tokens';
 
 // PLATFORMS //
 export const platforms: Platform[] = [
