@@ -27,8 +27,6 @@ const rateBeet = new BeetStruct<Rate>(
     ['ema90d', u32],
     ['ema180d', u32],
     ['ema365d', u32],
-    ['align2', uniformFixedSizeArray(u8, 4)],
-    ['padding1', uniformFixedSizeArray(u64, 7)], // array of 64 u64, 64 * 8 = 512 bytes
   ],
   (args) => args as Rate
 );
@@ -48,8 +46,6 @@ interface Rate {
   ema90d: number;
   ema180d: number;
   ema365d: number;
-  align2: number[];
-  padding1: number[];
 }
 
 // Define the VaultEarn struct using BeetStruct
