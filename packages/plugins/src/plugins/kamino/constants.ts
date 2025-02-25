@@ -168,3 +168,7 @@ export const airdropStaticsS2: AirdropStatics = {
   image: 'https://sonar.watch/img/platforms/kamino.webp',
   name: 'S2',
 };
+
+export const limitOrderProgramId = new PublicKey(
+  'LiMoM9rMhrdYrfzUCxQppvxCSG1FcrUK9G8uLq4A1GF'
+);

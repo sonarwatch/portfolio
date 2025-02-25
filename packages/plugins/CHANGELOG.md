@@ -2,6 +2,24 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.128](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.127...plugins-0.14.128) (2025-02-25)
+
+
+### Bug Fixes
+
+* **driftPlatforms:** add missing platforms export ([777adbe](https://github.com/sonarwatch/portfolio/commit/777adbecbe0ed6a51587acdec6715672bbcdb16a))
+* **tokenList:** isLatestVersion-version-check ([f9e0c0b](https://github.com/sonarwatch/portfolio/commit/f9e0c0b8a716a3577abfc691eb7413fc4c72f2fa))
+
+
+
+## [0.14.127](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.126...plugins-0.14.127) (2025-02-24)
+
+
+
+## [0.14.126](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.125...plugins-0.14.126) (2025-02-24)
+
+
+
 ## [0.14.125](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.124...plugins-0.14.125) (2025-02-21)
 
 

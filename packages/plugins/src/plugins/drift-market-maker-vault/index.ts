@@ -5,6 +5,9 @@ import {
   circuitPlatform,
   gauntletPlatform,
   hedgyPlatform,
+  knightradePlatform,
+  luckyperpPlatform,
+  m1CapitalPlatform,
   moosePlatform,
   neutralPlatform,
   vectisPlatform,
@@ -14,10 +17,13 @@ import vaultsJob from './vaultsJob';
 
 export const platforms: Platform[] = [
   circuitPlatform,
-  moosePlatform,
-  neutralPlatform,
   gauntletPlatform,
   hedgyPlatform,
+  knightradePlatform,
+  luckyperpPlatform,
+  m1CapitalPlatform,
+  moosePlatform,
+  neutralPlatform,
   vectisPlatform,
 ];
 export const jobs: Job[] = [vaultsJob];
