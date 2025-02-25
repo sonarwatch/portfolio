@@ -3,10 +3,6 @@
   "version": "0.14.113",
   "type": "commonjs",
   "types": "./src/index.d.ts",
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:Octav-Labs/sonarwatch-portfolio.git"
-  },
   "dependencies": {
     "@ethersproject/address": "^5.7.0",
     "@ethersproject/bytes": "^5.7.0",

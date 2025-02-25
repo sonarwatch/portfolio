@@ -36,42 +36,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # - name: DEBUG
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      #   run: |
-      #     npm whoami
-      #     npm org ls octavlabs
-      #     cat /home/runner/work/_temp/.npmrc
-      #     npx nx run core:check-npm-identity
-
-      # - name: Authenticate with NPM
-      #   run: |
-      #     echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-
       - name: Build all packages
         run: npx nx run-many --target=build --all
 
-        # TODO: Remove tags logic
-      - name: Determine tags
-        run: |
-          CORE_VERSION=$(node -p "require('./packages/core/package.json').version")
-          PLUGINS_VERSION=$(node -p "require('./packages/plugins/package.json').version")
-
-          CORE_TAG="core-${CORE_VERSION}"
-          PLUGINS_TAG="plugins-${PLUGINS_VERSION}"
-
-          echo "CORE_TAG=$CORE_TAG" >> $GITHUB_ENV
-          echo "PLUGINS_TAG=$PLUGINS_TAG" >> $GITHUB_ENV
-
-        # TODO: Remove tags logic; important on Github but not for npm
       - name: Publish core package
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: node ./tools/scripts/publish-rewrite-name.mjs core
-        # run: npx nx run core:publish --tag=$CORE_TAG
+        run: npx nx run core:publish
 
       - name: Publish plugins package
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx nx run plugins:publish --tag=$PLUGINS_TAG
+        run: npx nx run plugins:publish
