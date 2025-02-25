@@ -772,6 +772,11 @@ import {
   jobs as basktJobs,
   fetchers as basktFetchers,
 } from './plugins/baskt';
+import {
+  platforms as guanoPlatforms,
+  jobs as guanoJobs,
+  fetchers as guanoFetchers,
+} from './plugins/guano';
 import { jobs as coingeckoJobs } from './plugins/coingecko';
 
 export {
@@ -942,6 +947,7 @@ export const platforms: Platform[] = [
   ...puffcoinPlatforms,
   ...triadPlatforms,
   ...basktPlatforms,
+  ...guanoPlatforms,
 ];
 
 // JOBS //
@@ -1095,6 +1101,7 @@ export const jobs: Job[] = [
   ...layer3Jobs,
   ...puffcoinJobs,
   ...triadJobs,
+  ...guanoJobs,
 ];
 
 // FETCHERS //
@@ -1248,6 +1255,7 @@ export const fetchers: Fetcher[] = [
   ...puffcoinFetchers,
   ...triadFetchers,
   ...basktFetchers,
+  ...guanoFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
