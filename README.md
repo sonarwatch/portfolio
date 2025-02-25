@@ -193,7 +193,9 @@ npm run nx:version
 ```bash
 git checkout -b feature/my-new-feature
 ```
-- Make changes and commits
+- Make changes, commits and pushes
+### Last action before merging feature branch in merging into `main`
+
 - Run corresponding script to create tags and version bump
 ```bash
 # Per package

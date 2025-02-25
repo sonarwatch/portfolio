@@ -3,8 +3,7 @@ name: Publish to NPM
 on:
   push:
     branches:
-      # - main
-      - task/OF-5248/Publish-forked-sonarwatch-repo-to-octav-registry
+      - main
 
 permissions:
   contents: read
