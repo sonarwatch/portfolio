@@ -36,14 +36,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: DEBUG
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          npm whoami
-          npm org ls octavlabs
-          cat /home/runner/work/_temp/.npmrc
-          npx nx run core:check-npm-identity
+      # - name: DEBUG
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #   run: |
+      #     npm whoami
+      #     npm org ls octavlabs
+      #     cat /home/runner/work/_temp/.npmrc
+      #     npx nx run core:check-npm-identity
 
       # - name: Authenticate with NPM
       #   run: |
