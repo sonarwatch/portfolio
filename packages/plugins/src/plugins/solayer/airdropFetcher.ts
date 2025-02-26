@@ -1,0 +1,63 @@
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import axios, { AxiosResponse } from 'axios';
+import BigNumber from 'bignumber.js';
+import {
+  AirdropFetcher,
+  AirdropFetcherExecutor,
+  airdropFetcherToFetcher,
+  getAirdropRaw,
+} from '../../AirdropFetcher';
+import {
+  airdropApi,
+  airdropStatics,
+  layerDecimals,
+  layerMint,
+  platform,
+} from './constants';
+import { AirdropResponse } from './types';
+
+const executor: AirdropFetcherExecutor = async (owner: string) => {
+  const res: AxiosResponse<AirdropResponse> = await axios.get(
+    airdropApi + owner
+  );
+
+  if (!res.data || res.data.totalAmount === '0')
+    return getAirdropRaw({
+      statics: airdropStatics,
+      items: [
+        {
+          amount: 0,
+          isClaimed: false,
+          label: 'LAYER',
+          address: layerMint,
+        },
+      ],
+    });
+
+  const amount = BigNumber(res.data.totalAmount);
+  const isClaimed = amount.isEqualTo(Number(res.data.claimedAmount));
+
+  return getAirdropRaw({
+    statics: airdropStatics,
+    items: [
+      {
+        amount: amount.dividedBy(10 ** layerDecimals).toNumber(),
+        isClaimed,
+        label: 'LAYER',
+        address: layerMint,
+      },
+    ],
+  });
+};
+
+export const airdropFetcher: AirdropFetcher = {
+  id: airdropStatics.id,
+  networkId: NetworkId.solana,
+  executor,
+};
+export const fetcher = airdropFetcherToFetcher(
+  airdropFetcher,
+  platform.id,
+  'solayer-airdrop',
+  airdropStatics.claimEnd
+);

@@ -541,6 +541,7 @@ import {
   platforms as solayerPlatforms,
   jobs as solayerJobs,
   fetchers as solayerFetchers,
+  airdropFetcher as solayerAirdropFetcher,
 } from './plugins/solayer';
 import {
   platforms as picassoPlatforms,
@@ -1279,6 +1280,7 @@ export const airdropFetchers: AirdropFetcher[] = [
   zetaAirdropFetcher,
   ...tensorAirdropFetchers,
   sonicAirdropFetcher,
+  solayerAirdropFetcher,
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);
