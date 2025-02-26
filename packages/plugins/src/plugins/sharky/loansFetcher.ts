@@ -163,6 +163,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         rewardValue,
         healthRatio: null,
         value,
+        ref: acc.pubkey.toString(),
         expireOn: acc.loanState.taken
           ? (Number(acc.loanState.taken.taken.terms.time.start) +
               Number(acc.loanState.taken.taken.terms.time.duration)) *

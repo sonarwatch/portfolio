@@ -24,7 +24,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   for (let i = 0; i < accounts.length; i++) {
     const account = accounts[i];
 
-    const element = elementRegistry.addElementTrade({ label: 'DCA' });
+    const element = elementRegistry.addElementTrade({
+      label: 'DCA',
+      ref: account.pubkey.toString(),
+      link: 'https://jup.ag/recurring/',
+    });
 
     element.setTrade({
       inputAsset: {

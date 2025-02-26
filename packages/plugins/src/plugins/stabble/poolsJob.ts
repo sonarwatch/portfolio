@@ -88,6 +88,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       timestamp: Date.now(),
       weight: 1,
       underlyings,
+      sourceRefs: [{ address: pool.pubkey.toString(), name: 'Pool' }],
     });
   });
 

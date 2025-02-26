@@ -115,6 +115,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       price: lpTokenPrice.toNumber(),
       underlyings,
       timestamp: Date.now(),
+      sourceRefs: [{ address: swap.addresses.swapAccount, name: 'Pool' }],
     });
   }
 };

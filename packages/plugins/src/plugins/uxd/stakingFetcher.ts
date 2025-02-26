@@ -44,8 +44,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         tokenPrice?.price,
         {
           lockedUntil,
+          tags: ['Deprecated'],
         }
       ),
+      ref: stakingAccount.pubkey.toString(),
     });
   });
   if (assets.length === 0) return [];
@@ -56,7 +58,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       label: 'Staked',
       networkId: NetworkId.solana,
       platformId,
-      data: { assets },
+      data: { assets, link: 'https://stake.uxd.fi/' },
       value: getUsdValueSum(assets.map((asset) => asset.value)),
     },
   ];

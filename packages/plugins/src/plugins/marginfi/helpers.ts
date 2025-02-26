@@ -14,6 +14,7 @@ import { MarginfiAccount } from './structs/MarginfiAccount';
 import { BankInfo } from './types';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { platformId } from './constants';
+import { ParsedAccount } from '../../utils/solana';
 
 export function wrappedI80F48toBigNumber(
   { value }: { value: BigNumber },
@@ -98,7 +99,7 @@ export function computeInterestRates(bank: Bank): {
 }
 
 export function getElementFromAccount(
-  marginfiAccount: MarginfiAccount,
+  marginfiAccount: ParsedAccount<MarginfiAccount>,
   banksInfoByAddress: Map<string, BankInfo>,
   tokenPriceById: Map<string, TokenPrice>
 ): PortfolioElement | null {
@@ -132,14 +133,17 @@ export function getElementFromAccount(
       if (tokenPrice?.elementName === 'Stake Collateral')
         name = 'Stake Collateral';
 
-      suppliedAssets.push(
-        tokenPriceToAssetToken(
+      suppliedAssets.push({
+        ...tokenPriceToAssetToken(
           bankInfo.mint.toString(),
           suppliedAmount,
           NetworkId.solana,
           tokenPrice
-        )
-      );
+        ),
+        sourceRefs: [
+          { name: 'Lending Market', address: balance.bankPk.toString() },
+        ],
+      });
       suppliedYields.push(bankInfo.suppliedYields);
     }
 
@@ -149,14 +153,17 @@ export function getElementFromAccount(
         .times(bankInfo.dividedLiabilityShareValue)
         .toNumber();
 
-      borrowedAssets.push(
-        tokenPriceToAssetToken(
+      borrowedAssets.push({
+        ...tokenPriceToAssetToken(
           bankInfo.mint.toString(),
           borrowedAmount,
           NetworkId.solana,
           tokenPrice
-        )
-      );
+        ),
+        sourceRefs: [
+          { name: 'Lending Market', address: balance.bankPk.toString() },
+        ],
+      });
       borrowedYields.push(bankInfo.borrowedYields);
     }
   }
@@ -189,6 +196,8 @@ export function getElementFromAccount(
       rewardAssets,
       rewardValue,
       value,
+      ref: marginfiAccount.pubkey.toString(),
+      link: 'https://app.marginfi.com/portfolio',
     },
     name,
   };

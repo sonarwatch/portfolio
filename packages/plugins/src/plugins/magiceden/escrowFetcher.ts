@@ -1,16 +1,10 @@
-import {
-  NetworkId,
-  PortfolioElementType,
-  solanaNativeAddress,
-  solanaNativeDecimals,
-} from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
+import { NetworkId, solanaNativeAddress } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId } from './constants';
 import { getEscrowAccount } from './helpers';
 import { getClientSolana } from '../../utils/clients';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const pda = getEscrowAccount(owner);
@@ -19,29 +13,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const amount = await client.getBalance(pda);
   if (!amount) return [];
 
-  const solTokenPrice = await cache.getTokenPrice(
-    solanaNativeAddress,
-    NetworkId.solana
-  );
+  const registry = new ElementRegistry(NetworkId.solana, platformId);
+  const element = registry.addElementMultiple({
+    label: 'Deposit',
+    ref: pda,
+    name: 'Escrow',
+  });
+  element.addAsset({
+    address: solanaNativeAddress,
+    amount,
+  });
 
-  const asset = tokenPriceToAssetToken(
-    solanaNativeAddress,
-    new BigNumber(amount).dividedBy(10 ** solanaNativeDecimals).toNumber(),
-    NetworkId.solana,
-    solTokenPrice
-  );
-
-  return [
-    {
-      type: PortfolioElementType.multiple,
-      label: 'Deposit',
-      networkId: NetworkId.solana,
-      platformId,
-      name: 'Escrow',
-      value: asset.value,
-      data: { assets: [asset] },
-    },
-  ];
+  return registry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

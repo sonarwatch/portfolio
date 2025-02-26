@@ -70,7 +70,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       label: 'Deposit',
       platformId,
       name,
-      // link: `https://app.drift.trade/vaults/${vaultInfo.pubkey.toString()}`,
+      // Link can fail for some vaults
+      link: `https://app.drift.trade/vaults/${vaultInfo.pubkey.toString()}`,
       sourceRefs: [
         {
           name: 'Vault',

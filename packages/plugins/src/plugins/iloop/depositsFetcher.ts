@@ -61,6 +61,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   accounts.forEach((account) => {
     const element = elementRegistry.addElementBorrowlend({
       label: 'Lending',
+      link: 'https://app.iloop.finance/',
+      ref: account.pubkey,
     });
     const depositMarket = markets.get(
       account.deposit_position.reserve.toString()
@@ -70,6 +72,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       element.addSuppliedAsset({
         address: depositMarket.owner_cached,
         amount: account.deposit_position.collateral_amount,
+        sourceRefs: [
+          { name: 'Lending Market', address: depositMarket.pubkey.toString() },
+        ],
       });
     }
 
@@ -81,6 +86,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         element.addBorrowedAsset({
           address: borrowMarket.owner_cached,
           amount: account.borrow_position.borrowed_amount,
+          sourceRefs: [
+            { name: 'Lending Market', address: borrowMarket.pubkey.toString() },
+          ],
         });
       }
     }

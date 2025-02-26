@@ -40,7 +40,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const element = elementRegistry.addElementTrade({
       label: 'LimitOrder',
       ref: account.pubkey,
-      name: 'Swap Tips',
+      link: `https://swap.kamino.finance/swap`,
     });
 
     element.setTrade({
@@ -60,6 +60,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (account.tipAmount.isPositive()) {
       const tipElement = elementRegistry.addElementMultiple({
         label: 'Rewards',
+        name: 'Swap Tips',
         ref: account.pubkey,
         link: `https://swap.kamino.finance/swap`,
       });
