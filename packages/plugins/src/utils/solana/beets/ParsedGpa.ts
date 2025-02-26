@@ -53,4 +53,9 @@ export class ParsedGpa<T> {
         } as ParsedAccount<T>)
     );
   }
+
+  debug() {
+    console.log(this.gpaBuilder.config.filters);
+    return this;
+  }
 }
