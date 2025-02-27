@@ -1,12 +1,7 @@
 // DLMM Bootstrapping Pools
 // DLMM Alpha Vault
 
-import {
-  getUsdValueSum,
-  NetworkId,
-  PortfolioAssetToken,
-  PortfolioElementType,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
@@ -68,7 +63,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     label: 'Vesting',
     link: 'https://debridge.foundation/lfg',
   });
-  const assets: PortfolioAssetToken[] = [];
   for (const escrow of accounts) {
     const vault = vaults[escrow.dlmmVault.toString()];
     if (!vault) continue;
@@ -96,21 +90,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     });
   }
 
-  if (assets.length === 0) return [];
-
-  return [
-    {
-      networkId: NetworkId.solana,
-      type: PortfolioElementType.multiple,
-      label: 'Vesting',
-      platformId,
-      name: 'LFG Vault',
-      data: {
-        assets,
-      },
-      value: getUsdValueSum(assets.map((a) => a.value)),
-    },
-  ];
+  return registry.getElements(cache);
 };
 
 const fetcher: Fetcher = {
