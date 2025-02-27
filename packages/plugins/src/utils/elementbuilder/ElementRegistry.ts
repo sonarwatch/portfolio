@@ -76,14 +76,10 @@ export class ElementRegistry {
     return elementBuilder;
   }
 
-  addElementTrade(
-    elementParams?: Omit<Params, 'type' | 'label'> & {
-      label?: PortfolioElementLabel;
-    }
-  ): ElementTradeBuilder {
+  addElementTrade(params: Omit<Params, 'type'>): ElementTradeBuilder {
     const elementBuilder = new ElementTradeBuilder({
+      ...params,
       type: PortfolioElementType.trade,
-      label: elementParams?.label || 'LimitOrder',
     });
     this.elements.push(elementBuilder);
     return elementBuilder;
