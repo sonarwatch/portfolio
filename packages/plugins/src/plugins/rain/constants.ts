@@ -11,14 +11,12 @@ export const platform: Platform = {
   twitter: 'https://twitter.com/RainFi_',
 };
 
-export const programId = new PublicKey(
-  'RainEraPU5yDoJmTrHdYynK9739GkEfDsE4ffqce2BR'
-);
-
-export const programIdV3 = new PublicKey(
+export const defiLendingProgramId = new PublicKey(
   'rDeFiHPjHZRLiz4iBzMw3zv6unZs4VwdU6qQcVd3NSK'
 );
+export const bankProgramId = new PublicKey(
+  'rain2M5b9GeFCk792swkwUu51ZihHJb3SUQ8uHxSRJf'
+);
 
-export const rainApi = 'https://api-v2.rain.fi';
 export const rainApiV3 = 'https://api-v3.rain.fi/api/';
 export const collectionsKey = 'collections';

@@ -194,7 +194,7 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
           assets: unsettledAssets,
           value: unsettledValue,
         },
-        value,
+        value: this.fixedTerms ? fixedTermsValue : value,
         ref: this.ref?.toString(),
         sourceRefs: this.sourceRefs,
         link: this.link,
