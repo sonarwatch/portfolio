@@ -150,8 +150,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
   }
 
-  if (portfolioElements.length === 0) return [];
-
   const elements: PortfolioElement[] = [];
   for (const element of portfolioElements) {
     const tmpElement = element;
