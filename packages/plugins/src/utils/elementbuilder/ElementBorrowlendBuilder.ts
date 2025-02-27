@@ -5,8 +5,10 @@ import {
   PortfolioAssetGeneric,
   PortfolioElementBorrowLend,
   PortfolioElementType,
+  UsdValue,
   Yield,
 } from '@sonarwatch/portfolio-core';
+import BigNumber from 'bignumber.js';
 import { ElementBuilder } from './ElementBuilder';
 import {
   Params,
@@ -27,6 +29,10 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
   suppliedYields: Yield[][];
   suppliedLtvs: number[];
   borrowedWeights: number[];
+  fixedTerms?: {
+    expireOn: number;
+    isLender: boolean;
+  };
 
   constructor(params: Params) {
     super(params);
@@ -81,6 +87,13 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
 
   addBorrowedWeight(borrowedWeight: number) {
     this.borrowedWeights.push(borrowedWeight);
+  }
+
+  setFixedTerms(expireOn: number | BigNumber, isLender: boolean) {
+    this.fixedTerms = {
+      expireOn: new BigNumber(expireOn).toNumber(),
+      isLender,
+    };
   }
 
   tokenAddresses(): string[] {
@@ -141,6 +154,25 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
       unsettledAssets,
     });
 
+    let fixedTermsValue: UsdValue = 0;
+    if (this.fixedTerms) {
+      // Total value
+      if (borrowedValue === null || borrowedValue === 0) {
+        // it's an offer
+        fixedTermsValue = suppliedValue;
+      } else if (suppliedValue !== null && suppliedValue !== 0) {
+        if (this.fixedTerms.isLender) {
+          // supplied sol, nft as collat
+          fixedTermsValue = Math.min(suppliedValue, borrowedValue);
+        } else {
+          // supplied nft as collat, borrow sol
+          fixedTermsValue = Math.max(suppliedValue - borrowedValue, 0);
+        }
+      }
+      if (rewardValue !== null && value !== null)
+        fixedTermsValue = (fixedTermsValue || 0) + rewardValue;
+    }
+
     if (!suppliedValue && !borrowedValue && !rewardValue) return null;
 
     return {
@@ -166,8 +198,9 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
         ref: this.ref?.toString(),
         sourceRefs: this.sourceRefs,
         link: this.link,
+        expireOn: this.fixedTerms?.expireOn,
       },
-      value,
+      value: this.fixedTerms ? fixedTermsValue : value,
       name: this.name,
       tags: this.tags,
     };

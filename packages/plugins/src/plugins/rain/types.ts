@@ -78,34 +78,31 @@ export type Curve = {
 
 export type Collection = {
   collectionId: number;
-  pubkey: string;
-  slug: string;
   name: string;
-  thumbnail: string;
-  banner: string;
-  nftLocked: string;
-  supply: string;
-  floorPrice: string;
-  isLocked: boolean;
-  offChainData: {
-    collectionNameMe: string;
-    collectionNameTensor: string;
-    collectionName: string;
-    image: string;
-    collectionSolanart: string;
-    isMortgageEnabled: boolean;
-    isPnft: boolean;
-    isClaimable: boolean;
-    collectionHyperspace: string;
-    sharkyApy: number;
-    _id: string;
+  whitelistType: {
+    __t: 'CreatorWhitelist' | 'CollectionWhitelist';
+    pubkey: string;
   };
+  floorPrice: string;
+  supply: string;
+  currentLoan: string;
+  maxLoan: string;
+  isLocked: boolean;
   createdAt: string;
   updatedAt: string;
-  deletedAt: string;
-  version: number;
-  mintIn: string;
-  isDefi: boolean;
+  pubkey: string;
+  metadata: {
+    tensorSlug: string;
+    collectionName: string;
+    collectionNameMe: string;
+    collectionNameTensor: string;
+    banner: string;
+    thumbnail: string;
+    lookupTable: string;
+    isMortgageEnabled: boolean;
+    url: string;
+    magicEdenSlug: string;
+  };
 };
 
 export type PickedCollection = Pick<

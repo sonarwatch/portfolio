@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { programId, rainApi } from './constants';
+import { programId, rainApi, rainApiV3 } from './constants';
 import {
   Collection,
   CollectionResponse,
@@ -22,7 +22,7 @@ export async function getPool(pool: string): Promise<Pool | undefined> {
 
 export async function getCollections(): Promise<Collection[]> {
   const getCollectionsRes: AxiosResponse<CollectionResponse> | null =
-    await axios.get(`${rainApi}/collections`).catch(() => null);
+    await axios.get(`${rainApiV3}/collection/collections`).catch(() => null);
   if (!getCollectionsRes || !getCollectionsRes.data) return [];
   return getCollectionsRes.data.collections;
 }

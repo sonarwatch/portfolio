@@ -8,11 +8,9 @@ import { PickedCollection } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const collections = await getCollections();
-  const filteredCollections = collections
-    .filter((c) => !c.isDefi)
-    .map(
-      (c) => pick(c, ['collectionId', 'name', 'floorPrice']) as PickedCollection
-    );
+  const filteredCollections = collections.map(
+    (c) => pick(c, ['collectionId', 'name', 'floorPrice']) as PickedCollection
+  );
 
   await cache.setItem(collectionsKey, filteredCollections, {
     prefix: platformId,

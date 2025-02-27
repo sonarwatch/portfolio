@@ -15,5 +15,10 @@ export const programId = new PublicKey(
   'RainEraPU5yDoJmTrHdYynK9739GkEfDsE4ffqce2BR'
 );
 
+export const programIdV3 = new PublicKey(
+  'rDeFiHPjHZRLiz4iBzMw3zv6unZs4VwdU6qQcVd3NSK'
+);
+
 export const rainApi = 'https://api-v2.rain.fi';
+export const rainApiV3 = 'https://api-v3.rain.fi/api/';
 export const collectionsKey = 'collections';
