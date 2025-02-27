@@ -62,6 +62,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const vestingElement = registry.addElementMultiple({
     label: 'Vesting',
     link: 'https://debridge.foundation/lfg',
+    name: 'Alpha Vault',
   });
   for (const escrow of accounts) {
     const vault = vaults[escrow.dlmmVault.toString()];
