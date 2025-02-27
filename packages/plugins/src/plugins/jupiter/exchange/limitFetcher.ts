@@ -42,6 +42,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       tags: isV1 ? ['deprecated'] : undefined,
       ref: account.pubkey.toString(),
       link: 'https://jup.ag/trigger/',
+      label: 'LimitOrder',
     });
 
     element.setTrade({
