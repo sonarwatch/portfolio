@@ -1,13 +1,7 @@
 import {
   NetworkId,
-  PortfolioElementType,
   solanaNativeAddress,
-  solanaNativeDecimals,
-  PortfolioAsset,
-  PortfolioElement,
-  PortfolioAssetCollectible,
   collectibleFreezedTag,
-  getElementNFTLendingValues,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -21,13 +15,11 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
 import { Collection, Loan } from './types';
 import { getAutoParsedProgramAccounts } from '../../utils/solana';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { getAssetBatchDasAsMap } from '../../utils/solana/das/getAssetBatchDas';
-import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
-import { heliusAssetToAssetCollectible } from '../../utils/solana/das/heliusAssetToAssetCollectible';
 import { getLoanFilters } from './filters';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import { arrayToMap } from '../../utils/misc/arrayToMap';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { PortfolioAssetCollectibleParams } from '../../utils/elementbuilder/Params';
 
 const collectionsMemo = new MemoizedCache<
   Collection[],
@@ -43,7 +35,6 @@ const collectionsMemo = new MemoizedCache<
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
-  const dasUrl = getSolanaDasEndpoint();
 
   const [filterA, filterB] = getLoanFilters(owner);
   const allAccounts = (
@@ -59,63 +50,51 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (accounts.length === 0) return [];
 
-  const [solTokenPrice, heliusAssets, collections] = await Promise.all([
+  const [solTokenPrice, collections] = await Promise.all([
     cache.getTokenPrice(solanaNativeAddress, NetworkId.solana),
-    getAssetBatchDasAsMap(
-      dasUrl,
-      accounts
-        .map((acc) => acc.mint)
-        .filter(
-          (mint) => mint && mint !== '11111111111111111111111111111111'
-        ) as string[]
-    ),
     collectionsMemo.getItem(cache),
   ]);
-  if (!solTokenPrice || !collections) return [];
 
-  const elements: PortfolioElement[] = [];
+  if (!collections) throw new Error('Collections not cached');
+  if (!solTokenPrice) throw new Error('Sol price not cached');
+
+  const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 
   accounts.forEach((acc) => {
     const collection = collections.get(acc.collectionConfig);
     if (!collection) return;
 
-    const borrowedAssets: PortfolioAsset[] = [];
-    const suppliedAssets: PortfolioAsset[] = [];
+    const element = elementRegistry.addElementBorrowlend({
+      label: 'Lending',
+      ref: acc.pubkey,
+    });
 
-    let mintAsset: PortfolioAssetCollectible | null = null;
+    let mintAsset: PortfolioAssetCollectibleParams | null = null;
     if (acc.mint && acc.mint !== '11111111111111111111111111111111') {
-      const heliusAsset = heliusAssets.get(acc.mint);
-
-      if (heliusAsset) {
-        const assetValue = new BigNumber(collection.floor)
-          .multipliedBy(solTokenPrice.price)
-          .toNumber();
-        mintAsset = heliusAssetToAssetCollectible(heliusAsset, {
-          tags: [collectibleFreezedTag],
-          collection: {
-            name: collection.name,
-            floorPrice: assetValue,
-          },
-        });
-      }
+      mintAsset = {
+        address: acc.mint,
+        collection: {
+          name: collection.name,
+          floorPrice: new BigNumber(collection.floor).multipliedBy(
+            solTokenPrice.price
+          ),
+        },
+        attributes: { tags: [collectibleFreezedTag] },
+      };
     }
 
-    const solAsset = tokenPriceToAssetToken(
-      solanaNativeAddress,
-      new BigNumber(
+    const solAsset = {
+      address: solanaNativeAddress,
+      amount: new BigNumber(
         acc.ltvTerms ? acc.ltvTerms.maxOffer : acc.loanTerms.principal
-      )
-        .dividedBy(10 ** solanaNativeDecimals)
-        .toNumber(),
-      NetworkId.solana,
-      solTokenPrice
-    );
+      ),
+    };
 
     let name;
     if (acc.lender === owner.toString()) {
       // LENDER
-      suppliedAssets.push(solAsset);
-      if (mintAsset) borrowedAssets.push(mintAsset);
+      element.addSuppliedAsset(solAsset);
+      if (mintAsset) element.addBorrowedCollectibleAsset(mintAsset);
 
       if (acc.status.waitingForBorrower) {
         name = `Lend Offer on ${collection.name}`;
@@ -126,11 +105,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       }
     } else {
       // BORROWER
-      if (mintAsset) {
-        suppliedAssets.push(mintAsset);
-      }
-
-      borrowedAssets.push(solAsset);
+      element.addBorrowedAsset(solAsset);
+      if (mintAsset) element.addSuppliedCollectibleAsset(mintAsset);
 
       if (acc.status.waitingForLender) {
         name = `Borrow Offer`;
@@ -141,43 +117,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       }
     }
 
-    if (suppliedAssets.length > 0) {
-      const { borrowedValue, suppliedValue, rewardValue, value } =
-        getElementNFTLendingValues({
-          suppliedAssets,
-          borrowedAssets,
-          rewardAssets: [],
-          lender: acc.lender === owner.toString(),
-        });
+    if (name) element.setName(name);
 
-      elements.push({
-        networkId: NetworkId.solana,
-        label: 'Lending',
-        platformId,
-        type: PortfolioElementType.borrowlend,
-        value,
-        name,
-        data: {
-          borrowedAssets,
-          borrowedValue,
-          borrowedYields: [],
-          suppliedAssets,
-          suppliedValue,
-          suppliedYields: [],
-          rewardAssets: [],
-          rewardValue,
-          healthRatio: null,
-          value,
-          expireOn:
-            acc.status.active || acc.status.onSale
-              ? (Number(acc.startTime) + Number(acc.loanTerms.duration)) * 1000
-              : undefined,
-        },
-      });
-    }
+    element.setFixedTerms(
+      acc.lender === owner.toString(),
+      acc.status.active || acc.status.onSale
+        ? (Number(acc.startTime) + Number(acc.loanTerms.duration)) * 1000
+        : undefined
+    );
   });
 
-  return elements;
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

@@ -24,6 +24,7 @@ export const bankProgramId = new PublicKey(
 );
 
 export const rainApiV3 = 'https://api-v3.rain.fi/api/';
+
 export const collectionsKey = 'collections';
 
 export const collectionsMemo = new MemoizedCache<Collection[]>(collectionsKey, {

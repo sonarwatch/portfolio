@@ -1,4 +1,8 @@
-import { NetworkId, solanaNativeAddress } from '@sonarwatch/portfolio-core';
+import {
+  collectibleFreezedTag,
+  NetworkId,
+  solanaNativeAddress,
+} from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -47,7 +51,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       link: `https://app.rain.fi/dashboard/loans?address=${loan.pubkey}`,
     });
 
-    element.setFixedTerms(loan.expiredAt.multipliedBy(1000), false);
+    element.setFixedTerms(false, loan.expiredAt.multipliedBy(1000));
 
     element.addSuppliedCollectibleAsset({
       address: loan.collateral.toString(),
@@ -58,6 +62,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           .multipliedBy(solTokenPrice.price),
         imageUri: collection.metadata.thumbnail,
       },
+      attributes: { tags: [collectibleFreezedTag] },
     });
 
     element.addBorrowedAsset({

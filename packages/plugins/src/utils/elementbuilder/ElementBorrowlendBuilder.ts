@@ -32,7 +32,7 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
   suppliedLtvs: number[];
   borrowedWeights: number[];
   fixedTerms?: {
-    expireOn: number;
+    expireOn?: number;
     isLender: boolean;
   };
 
@@ -99,9 +99,9 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
     this.borrowedWeights.push(borrowedWeight);
   }
 
-  setFixedTerms(expireOn: number | BigNumber, isLender: boolean) {
+  setFixedTerms(isLender: boolean, expireOn?: number | BigNumber) {
     this.fixedTerms = {
-      expireOn: new BigNumber(expireOn).toNumber(),
+      expireOn: expireOn ? new BigNumber(expireOn).toNumber() : undefined,
       isLender,
     };
   }

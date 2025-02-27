@@ -31,7 +31,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       link: `https://app.rain.fi/dashboard/loans?address=${loan.pubkey}`,
     });
 
-    element.setFixedTerms(loan.expiredAt.multipliedBy(1000), false);
+    element.setFixedTerms(false, loan.expiredAt.multipliedBy(1000));
 
     element.addSuppliedAsset({
       address: loan.collateral,

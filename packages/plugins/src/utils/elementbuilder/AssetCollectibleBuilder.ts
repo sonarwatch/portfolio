@@ -50,7 +50,9 @@ export class AssetCollectibleBuilder extends AssetBuilder {
       },
       imageUri: this.params.collection.imageUri,
       attributes: this.params.attributes || {},
-      link: this.params.link,
+      link:
+        this.params.link ||
+        `https://www.tensor.trade/item/${this.params.address}`,
       sourceRefs: this.params.sourceRefs,
       ref: this.params.ref?.toString(),
     };

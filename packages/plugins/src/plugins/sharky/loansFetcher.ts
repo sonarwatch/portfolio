@@ -1,13 +1,7 @@
 import {
   collectibleFreezedTag,
-  getElementNFTLendingValues,
   NetworkId,
-  PortfolioAsset,
-  PortfolioAssetCollectible,
-  PortfolioElement,
-  PortfolioElementType,
   solanaNativeAddress,
-  solanaNativeDecimals,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -24,13 +18,11 @@ import {
   ParsedAccount,
 } from '../../utils/solana';
 import { Collection, Loan } from './types';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { getAssetBatchDasAsMap } from '../../utils/solana/das/getAssetBatchDas';
-import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
-import { heliusAssetToAssetCollectible } from '../../utils/solana/das/heliusAssetToAssetCollectible';
 import { getLoanFilters } from './filters';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import { arrayToMap } from '../../utils/misc/arrayToMap';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { PortfolioAssetCollectibleParams } from '../../utils/elementbuilder/Params';
 
 const collectionsMemo = new MemoizedCache<
   ParsedAccount<Collection>[],
@@ -45,7 +37,6 @@ const collectionsMemo = new MemoizedCache<
 );
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const dasUrl = getSolanaDasEndpoint();
   const connection = getClientSolana();
 
   const [filterA, filterB, filterC] = getLoanFilters(owner);
@@ -58,122 +49,80 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   ).flat();
   if (accounts.length === 0) return [];
 
-  const [solTokenPrice, heliusAssets, collections] = await Promise.all([
+  const [solTokenPrice, collections] = await Promise.all([
     cache.getTokenPrice(solanaNativeAddress, NetworkId.solana),
-    getAssetBatchDasAsMap(
-      dasUrl,
-      accounts
-        .map((acc) => acc.loanState.taken?.taken.nftCollateralMint)
-        .filter((mint) => mint) as string[]
-    ),
     collectionsMemo.getItem(cache),
   ]);
 
-  if (!solTokenPrice || !collections) return [];
+  if (!collections) throw new Error('Collections not cached');
+  if (!solTokenPrice) throw new Error('Sol price not cached');
 
-  const elements: PortfolioElement[] = [];
+  const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
   accounts.forEach((acc) => {
     const collection = collections.get(acc.orderBook);
     if (!collection) return;
 
-    const borrowedAssets: PortfolioAsset[] = [];
-    const suppliedAssets: PortfolioAsset[] = [];
+    const element = elementRegistry.addElementBorrowlend({
+      label: 'Lending',
+    });
 
-    let mintAsset: PortfolioAssetCollectible | null = null;
+    let mintAsset: PortfolioAssetCollectibleParams | null = null;
     if (acc.loanState.taken?.taken.nftCollateralMint) {
-      const heliusAsset = heliusAssets.get(
-        acc.loanState.taken.taken.nftCollateralMint
-      );
-
-      if (heliusAsset) {
-        const assetValue = new BigNumber(collection.floor)
-          .multipliedBy(solTokenPrice.price)
-          .toNumber();
-
-        mintAsset = heliusAssetToAssetCollectible(heliusAsset, {
-          tags: [collectibleFreezedTag],
-          collection: {
-            name: collection.name,
-            floorPrice: assetValue,
-          },
-        });
-      }
+      mintAsset = {
+        address: acc.loanState.taken.taken.nftCollateralMint,
+        collection: {
+          name: collection.name,
+          floorPrice: new BigNumber(collection.floor).multipliedBy(
+            solTokenPrice.price
+          ),
+        },
+        attributes: { tags: [collectibleFreezedTag] },
+      };
     }
 
-    const solAsset = tokenPriceToAssetToken(
-      solanaNativeAddress,
-      new BigNumber(acc.principalLamports)
-        .dividedBy(10 ** solanaNativeDecimals)
-        .toNumber(),
-      NetworkId.solana,
-      solTokenPrice
-    );
+    const solAsset = {
+      address: solanaNativeAddress,
+      amount: acc.principalLamports,
+    };
 
     let name;
 
     if (acc.loanState.offer) {
       // LENDER
-      suppliedAssets.push(solAsset);
+      element.addSuppliedAsset(solAsset);
       name = `Lend Offer on ${collection.name}`;
     } else if (acc.loanState.taken) {
       if (acc.loanState.taken.taken.lenderNoteMint === owner.toString()) {
         // LENDER
-        suppliedAssets.push(solAsset);
-        if (mintAsset) borrowedAssets.push(mintAsset);
+        element.addSuppliedAsset(solAsset);
+        if (mintAsset) element.addBorrowedCollectibleAsset(mintAsset);
         name = `Active Loan`;
       } else {
         // BORROWER
         if (mintAsset) {
-          suppliedAssets.push(mintAsset);
+          element.addSuppliedCollectibleAsset(mintAsset);
         }
-        borrowedAssets.push(solAsset);
+        element.addBorrowedAsset(solAsset);
         name = `Active Loan`;
       }
     }
 
-    if (suppliedAssets.length === 0) return;
+    if (name) element.setName(name);
 
-    const { borrowedValue, suppliedValue, rewardValue, value } =
-      getElementNFTLendingValues({
-        suppliedAssets,
-        borrowedAssets,
-        rewardAssets: [],
-        lender:
-          acc.loanState.offer !== undefined ||
-          (acc.loanState.taken
-            ? acc.loanState.taken.taken.lenderNoteMint === owner.toString()
-            : false),
-      });
-
-    elements.push({
-      networkId: NetworkId.solana,
-      label: 'Lending',
-      platformId,
-      type: PortfolioElementType.borrowlend,
-      value,
-      name,
-      data: {
-        borrowedAssets,
-        borrowedValue,
-        borrowedYields: [],
-        suppliedAssets,
-        suppliedValue,
-        suppliedYields: [],
-        rewardAssets: [],
-        rewardValue,
-        healthRatio: null,
-        value,
-        ref: acc.pubkey.toString(),
-        expireOn: acc.loanState.taken
-          ? (Number(acc.loanState.taken.taken.terms.time.start) +
-              Number(acc.loanState.taken.taken.terms.time.duration)) *
+    element.setFixedTerms(
+      acc.loanState.offer !== undefined ||
+        (acc.loanState.taken
+          ? acc.loanState.taken.taken.lenderNoteMint === owner.toString()
+          : false),
+      acc.loanState.taken
+        ? (Number(acc.loanState.taken.taken.terms.time.start) +
+            Number(acc.loanState.taken.taken.terms.time.duration)) *
             1000
-          : undefined,
-      },
-    });
+        : undefined
+    );
   });
 
-  return elements;
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {
