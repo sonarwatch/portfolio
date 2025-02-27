@@ -17,6 +17,7 @@ import {
 } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import distributions from './distributions.json';
+import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 
 const distributionByWallet = distributions as {
   [key: string]: {
@@ -65,6 +66,14 @@ const executorDis1: AirdropFetcherExecutor = async (owner: string) => {
 const executorDis2: AirdropFetcherExecutor = async (owner: string) => {
   const isEvm = isEvmAddress(owner);
   const walletDistributions = distributionByWallet[owner];
+  const pdas = isEvm
+    ? [getEvmPda(owner, 2), getEvmPda(owner, 3)]
+    : [getSolPda(owner, 2), getSolPda(owner, 3)];
+
+  const receipts: (AccountInfo<Buffer> | null)[] =
+    await getMultipleAccountsInfoSafe(getClientSolana(), pdas);
+
+  const isClaimed = receipts.some((receipt) => !!receipt);
 
   if (!walletDistributions || !walletDistributions.two) {
     return getAirdropRaw({
@@ -86,7 +95,7 @@ const executorDis2: AirdropFetcherExecutor = async (owner: string) => {
     items: [
       {
         amount: walletDistributions.two,
-        isClaimed: false,
+        isClaimed,
         label: 'DBR',
         address: isEvm ? undefined : dbrMint,
         imageUri: isEvm ? dbrPlatform.image : undefined,
