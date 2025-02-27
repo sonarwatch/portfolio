@@ -35,14 +35,19 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
     });
 
   const amount = BigNumber(res.data.totalAmount);
-  const isClaimed = amount.isEqualTo(Number(res.data.claimedAmount));
+  const isFullyClaimed = amount.isEqualTo(Number(res.data.claimedAmount));
 
   return getAirdropRaw({
     statics: airdropStatics,
     items: [
       {
-        amount: amount.dividedBy(10 ** layerDecimals).toNumber(),
-        isClaimed,
+        amount: isFullyClaimed
+          ? amount.dividedBy(10 ** layerDecimals).toNumber()
+          : amount
+              .minus(res.data.claimedAmount)
+              .dividedBy(10 ** layerDecimals)
+              .toNumber(),
+        isClaimed: isFullyClaimed,
         label: 'LAYER',
         address: layerMint,
       },
