@@ -125,10 +125,6 @@ export type PortfolioAssetCollectibleData = {
   address: string;
   amount: number;
   price: UsdValue;
-  /**
-   * @deprecated
-   * This params has been deprecated. Use name from PortfolioAssetCommon instead.
-   */
   name?: string;
   description?: string;
   imageUri?: string;
@@ -138,7 +134,7 @@ export type PortfolioAssetCollectibleData = {
 };
 
 export type CollectibleCollection = {
-  id: string;
+  id?: string;
   floorPrice: UsdValue;
   name?: string;
 };

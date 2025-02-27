@@ -58,6 +58,21 @@ export type PortfolioAssetGenericParams = {
   link?: string;
 };
 
+export type PortfolioAssetCollectibleParams = {
+  address: string | PublicKey;
+  amount?: number | BigNumber | string;
+  collection: {
+    name: string;
+    floorPrice: number | BigNumber | string; // in $, already shifted
+    imageUri?: string;
+  };
+  attributes?: PortfolioAssetAttributes;
+  name?: string;
+  sourceRefs?: SourceRef[];
+  ref?: string | PublicKey;
+  link?: string;
+};
+
 export type PortfolioAssetTokenParams = {
   address: string | PublicKey;
   amount: number | BigNumber | string;

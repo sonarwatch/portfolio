@@ -91,8 +91,16 @@ export class ElementRegistry {
 
     return this.elements
       .map((e) => e.get(this.networkId, this.platformId, tokenPrices))
-      .filter(
-        (e) => e !== null && e.value && e.value > 0
-      ) as PortfolioElement[];
+      .filter((e) => e !== null)
+      .filter((e) => {
+        if (
+          e &&
+          e.type === PortfolioElementType.borrowlend &&
+          e.data.expireOn
+        ) {
+          return true;
+        }
+        return e && e.value && e.value > 0;
+      }) as PortfolioElement[];
   }
 }

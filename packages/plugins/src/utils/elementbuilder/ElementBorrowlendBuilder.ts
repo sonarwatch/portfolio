@@ -5,11 +5,14 @@ import {
   PortfolioAssetGeneric,
   PortfolioElementBorrowLend,
   PortfolioElementType,
+  UsdValue,
   Yield,
 } from '@sonarwatch/portfolio-core';
+import BigNumber from 'bignumber.js';
 import { ElementBuilder } from './ElementBuilder';
 import {
   Params,
+  PortfolioAssetCollectibleParams,
   PortfolioAssetGenericParams,
   PortfolioAssetTokenParams,
 } from './Params';
@@ -17,6 +20,7 @@ import { TokenPriceMap } from '../../TokenPriceMap';
 import { AssetBuilder } from './AssetBuilder';
 import { AssetTokenBuilder } from './AssetTokenBuilder';
 import { AssetGenericBuilder } from './AssetGenericBuilder';
+import { AssetCollectibleBuilder } from './AssetCollectibleBuilder';
 
 export class ElementBorrowlendBuilder extends ElementBuilder {
   borrowedAssets: AssetBuilder[];
@@ -27,6 +31,10 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
   suppliedYields: Yield[][];
   suppliedLtvs: number[];
   borrowedWeights: number[];
+  fixedTerms?: {
+    expireOn: number;
+    isLender: boolean;
+  };
 
   constructor(params: Params) {
     super(params);
@@ -48,12 +56,20 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
     this.borrowedAssets.push(new AssetGenericBuilder(params));
   }
 
+  addBorrowedCollectibleAsset(params: PortfolioAssetCollectibleParams) {
+    this.borrowedAssets.push(new AssetCollectibleBuilder(params));
+  }
+
   addSuppliedAsset(params: PortfolioAssetTokenParams) {
     this.suppliedAssets.push(new AssetTokenBuilder(params));
   }
 
   addSuppliedGenericAsset(params: PortfolioAssetGenericParams) {
     this.suppliedAssets.push(new AssetGenericBuilder(params));
+  }
+
+  addSuppliedCollectibleAsset(params: PortfolioAssetCollectibleParams) {
+    this.suppliedAssets.push(new AssetCollectibleBuilder(params));
   }
 
   addRewardAsset(params: PortfolioAssetTokenParams) {
@@ -81,6 +97,13 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
 
   addBorrowedWeight(borrowedWeight: number) {
     this.borrowedWeights.push(borrowedWeight);
+  }
+
+  setFixedTerms(expireOn: number | BigNumber, isLender: boolean) {
+    this.fixedTerms = {
+      expireOn: new BigNumber(expireOn).toNumber(),
+      isLender,
+    };
   }
 
   tokenAddresses(): string[] {
@@ -157,6 +180,25 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
       unsettledAssets,
     });
 
+    let fixedTermsValue: UsdValue = 0;
+    if (this.fixedTerms) {
+      // Total value
+      if (borrowedValue === null || borrowedValue === 0) {
+        // it's an offer
+        fixedTermsValue = suppliedValue;
+      } else if (suppliedValue !== null && suppliedValue !== 0) {
+        if (this.fixedTerms.isLender) {
+          // supplied sol, nft as collat
+          fixedTermsValue = Math.min(suppliedValue, borrowedValue);
+        } else {
+          // supplied nft as collat, borrow sol
+          fixedTermsValue = Math.max(suppliedValue - borrowedValue, 0);
+        }
+      }
+      if (rewardValue !== null && value !== null)
+        fixedTermsValue = (fixedTermsValue || 0) + rewardValue;
+    }
+
     if (!suppliedValue && !borrowedValue && !rewardValue) return null;
 
     return {
@@ -178,12 +220,13 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
           assets: unsettledAssets,
           value: unsettledValue,
         },
-        value,
+        value: this.fixedTerms ? fixedTermsValue : value,
         ref: this.ref?.toString(),
         sourceRefs: this.sourceRefs,
         link: this.link,
+        expireOn: this.fixedTerms?.expireOn,
       },
-      value,
+      value: this.fixedTerms ? fixedTermsValue : value,
       name: this.name,
       tags: this.tags,
     };

@@ -82,6 +82,7 @@ async function main() {
           numbers: Array.from(acc.data.slice(0, 8)),
         },
         dataSize: acc.data.length,
+        owner: acc.owner.toString(),
       });
 
       if (search?.length) {
