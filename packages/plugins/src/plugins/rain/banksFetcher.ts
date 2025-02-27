@@ -5,8 +5,8 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId, bankProgramId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
-import { bankStruct } from './defi_lending_structs';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { bankStruct } from './structs';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();

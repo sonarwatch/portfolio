@@ -277,7 +277,7 @@ export const currencyStruct = new FixableBeetStruct<Currency>(
   (args) => args as Currency
 );
 
-export type Loan = {
+export type DefiLoan = {
   accountDiscriminator: number[];
   kind: LoanKind;
   kindDetail: number[];
@@ -305,7 +305,7 @@ export type Loan = {
   reserved: BigNumber[];
 };
 
-export const loanStruct = new FixableBeetStruct<Loan>(
+export const defiLoanStruct = new FixableBeetStruct<DefiLoan>(
   [
     ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
     ['kind', u8],
@@ -333,7 +333,7 @@ export const loanStruct = new FixableBeetStruct<Loan>(
     ['soldAmount', u64],
     ['reserved', uniformFixedSizeArray(u64, 9)],
   ],
-  (args) => args as Loan
+  (args) => args as DefiLoan
 );
 
 export type Pool = {
@@ -885,4 +885,59 @@ export const switchboardOracleStruct = new FixableBeetStruct<SwitchboardOracle>(
     ['reserved2', uniformFixedSizeArray(u8, 24)],
   ],
   (args) => args as SwitchboardOracle
+);
+
+export type NftLoan = {
+  accountDiscriminator: number[];
+  kind: LoanKind;
+  kindDetail: number[];
+  status: LoanStatus;
+  isCustom: number;
+  padding1: number[];
+  borrower: PublicKey;
+  bank: PublicKey;
+  pool: PublicKey;
+  collateral: PublicKey;
+  principal: PublicKey;
+  referrer: PublicKey;
+  interest: BigNumber;
+  borrowedAmount: BigNumber;
+  duration: number;
+  collection: number;
+  liquidation: number;
+  padding2: number[];
+  createdAt: BigNumber;
+  expiredAt: BigNumber;
+  repaidAt: BigNumber;
+  liquidatedAt: BigNumber;
+  reserved: BigNumber[];
+};
+
+export const nftLoanStruct = new FixableBeetStruct<NftLoan>(
+  [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+    ['kind', u8],
+    ['kind', uniformFixedSizeArray(u8, 64)],
+    ['status', u8],
+    ['isCustom', u8],
+    ['padding1', uniformFixedSizeArray(u8, 6)],
+    ['borrower', publicKey],
+    ['bank', publicKey],
+    ['pool', publicKey],
+    ['collateral', publicKey],
+    ['principal', publicKey],
+    ['referrer', publicKey],
+    ['interest', u64],
+    ['borrowedAmount', u64],
+    ['duration', u32],
+    ['collection', u32],
+    ['liquidation', u16],
+    ['padding2', uniformFixedSizeArray(u8, 6)],
+    ['createdAt', u64],
+    ['expiredAt', u64],
+    ['repaidAt', u64],
+    ['liquidatedAt', u64],
+    ['reserved', uniformFixedSizeArray(u64, 10)],
+  ],
+  (args) => args as NftLoan
 );

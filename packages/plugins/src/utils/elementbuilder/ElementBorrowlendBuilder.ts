@@ -12,6 +12,7 @@ import BigNumber from 'bignumber.js';
 import { ElementBuilder } from './ElementBuilder';
 import {
   Params,
+  PortfolioAssetCollectibleParams,
   PortfolioAssetGenericParams,
   PortfolioAssetTokenParams,
 } from './Params';
@@ -19,6 +20,7 @@ import { TokenPriceMap } from '../../TokenPriceMap';
 import { AssetBuilder } from './AssetBuilder';
 import { AssetTokenBuilder } from './AssetTokenBuilder';
 import { AssetGenericBuilder } from './AssetGenericBuilder';
+import { AssetCollectibleBuilder } from './AssetCollectibleBuilder';
 
 export class ElementBorrowlendBuilder extends ElementBuilder {
   borrowedAssets: AssetBuilder[];
@@ -54,12 +56,20 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
     this.borrowedAssets.push(new AssetGenericBuilder(params));
   }
 
+  addBorrowedCollectibleAsset(params: PortfolioAssetCollectibleParams) {
+    this.borrowedAssets.push(new AssetCollectibleBuilder(params));
+  }
+
   addSuppliedAsset(params: PortfolioAssetTokenParams) {
     this.suppliedAssets.push(new AssetTokenBuilder(params));
   }
 
   addSuppliedGenericAsset(params: PortfolioAssetGenericParams) {
     this.suppliedAssets.push(new AssetGenericBuilder(params));
+  }
+
+  addSuppliedCollectibleAsset(params: PortfolioAssetCollectibleParams) {
+    this.suppliedAssets.push(new AssetCollectibleBuilder(params));
   }
 
   addRewardAsset(params: PortfolioAssetTokenParams) {

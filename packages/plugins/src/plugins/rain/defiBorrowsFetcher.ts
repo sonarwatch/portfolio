@@ -6,14 +6,14 @@ import { platformId, defiLendingProgramId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
-import { LoanStatus, loanStruct } from './defi_lending_structs';
+import { defiLoanStruct, LoanStatus } from './structs';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const accounts = await ParsedGpa.build(
+  const loans = await ParsedGpa.build(
     client,
-    loanStruct,
+    defiLoanStruct,
     defiLendingProgramId
   )
     .addFilter('accountDiscriminator', [20, 195, 70, 117, 165, 227, 182, 1])
@@ -22,25 +22,25 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 
-  accounts.forEach((account) => {
-    if (account.status !== LoanStatus.Ongoing) return;
+  loans.forEach((loan) => {
+    if (loan.status !== LoanStatus.Ongoing) return;
 
     const element = elementRegistry.addElementBorrowlend({
       label: 'Lending',
-      ref: account.pubkey,
-      link: `https://app.rain.fi/dashboard/loans?address=${account.pubkey}`,
+      ref: loan.pubkey,
+      link: `https://app.rain.fi/dashboard/loans?address=${loan.pubkey}`,
     });
 
-    element.setFixedTerms(account.expiredAt.multipliedBy(1000), false);
+    element.setFixedTerms(loan.expiredAt.multipliedBy(1000), false);
 
     element.addSuppliedAsset({
-      address: account.collateral,
-      amount: account.collateralAmount,
+      address: loan.collateral,
+      amount: loan.collateralAmount,
     });
 
     element.addBorrowedAsset({
-      address: account.principal,
-      amount: account.borrowedAmount,
+      address: loan.principal,
+      amount: loan.borrowedAmount,
     });
   });
 
@@ -48,7 +48,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-defi-loans`,
+  id: `${platformId}-defi-borrows`,
   networkId: NetworkId.solana,
   executor,
 };

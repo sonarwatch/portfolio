@@ -1,18 +1,18 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
+import axios, { AxiosResponse } from 'axios';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { collectionsKey, platformId } from './constants';
-import { getCollections } from './helpers';
-import { pick } from '../../utils/misc/pick';
-import { PickedCollection } from './types';
+import { collectionsKey, platformId, rainApiV3 } from './constants';
+import { CollectionResponse } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {
-  const collections = await getCollections();
-  const filteredCollections = collections.map(
-    (c) => pick(c, ['collectionId', 'name', 'floorPrice']) as PickedCollection
-  );
+  const getCollectionsRes: AxiosResponse<CollectionResponse> | null =
+    await axios.get(`${rainApiV3}collection/collections`);
+  if (!getCollectionsRes || !getCollectionsRes.data)
+    throw new Error('No collections');
+  const { collections } = getCollectionsRes.data;
 
-  await cache.setItem(collectionsKey, filteredCollections, {
+  await cache.setItem(collectionsKey, collections, {
     prefix: platformId,
     networkId: NetworkId.solana,
   });
