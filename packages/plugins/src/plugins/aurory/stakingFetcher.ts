@@ -37,7 +37,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       label: 'Staked',
       networkId: NetworkId.solana,
       platformId,
-      data: { assets: [asset] },
+      data: {
+        assets: [asset],
+        ref: stakingAccount.pubkey.toString(),
+        link: 'https://app.aurory.io/staking',
+      },
       value: asset.value,
     },
   ];

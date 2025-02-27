@@ -22,7 +22,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     prefix: platformId,
     networkId: NetworkId.solana,
   });
-  if (!pools) return [];
+  if (!pools) throw new Error('No pools cached');
 
   const mintByPool: Map<string, string> = new Map();
   pools.forEach((pool) => mintByPool.set(pool.pubkey, pool.mint));
@@ -50,6 +50,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       label: 'Staked',
       platformId: platform,
       ref: stakeAccount.pubkey,
+      sourceRefs: [
+        { name: 'Pool', address: stakeAccount.stakePool.toString() },
+      ],
     });
 
     const lockedUntil = new Date(

@@ -41,6 +41,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
   const element = elementRegistry.addElementBorrowlend({
     label: 'Lending',
+    link: 'https://defituna.com/lending',
   });
 
   accounts.forEach((account) => {
@@ -54,6 +55,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       amount: account.depositedShares
         .multipliedBy(pool.depositedFunds)
         .dividedBy(pool.depositedShares),
+      ref: account.pubkey,
+      sourceRefs: [{ name: 'Lending Market', address: pool.pubkey.toString() }],
     });
 
     element.addSuppliedYield([

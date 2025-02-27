@@ -3,6 +3,7 @@ import {
   PortfolioAsset,
   PortfolioElement,
   PortfolioElementType,
+  SourceRefName,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
@@ -13,6 +14,7 @@ import { getClientSolana } from '../../utils/clients';
 import {
   getParsedMultipleAccountsInfo,
   getParsedProgramAccounts,
+  ParsedAccount,
 } from '../../utils/solana';
 import {
   Offer,
@@ -50,7 +52,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     offerStruct,
     orders.map((order) => order.offer)
   );
-  const offerById: Map<string, Offer> = new Map();
+  const offerById: Map<string, ParsedAccount<Offer>> = new Map();
   const mints: Set<string> = new Set();
   const tokenConfigs: Set<string> = new Set();
   sideOffers.forEach((sideOffer) => {
@@ -117,19 +119,22 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     if (fill === 0 && offer.status === OfferStatus.Closed) continue;
 
-    const collatAsset = tokenPriceToAssetToken(
-      mint,
-      collateral,
-      NetworkId.solana,
-      tokenPrice,
-      undefined,
-      {
-        tags: isEnded
-          ? undefined
-          : [`${OfferType[offer.offerType]} Offer`, `${fill}% Filled`],
-        isClaimable: isEnded ? true : undefined,
-      }
-    );
+    const collatAsset = {
+      ...tokenPriceToAssetToken(
+        mint,
+        collateral,
+        NetworkId.solana,
+        tokenPrice,
+        undefined,
+        {
+          tags: isEnded
+            ? undefined
+            : [`${OfferType[offer.offerType]} Offer`, `${fill}% Filled`],
+          isClaimable: isEnded ? true : undefined,
+        }
+      ),
+      ref: offer.pubkey.toString(),
+    };
 
     const existingAssets = assetsById.get(id);
     if (!existingAssets) {
@@ -167,16 +172,22 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const side = offer.offerType === OfferType.Buy ? 'Sell Order' : 'Buy Order';
 
-    const collatAsset = tokenPriceToAssetToken(
-      mint,
-      amount,
-      NetworkId.solana,
-      tokenPrice,
-      undefined,
-      {
-        tags: [side],
-      }
-    );
+    const collatAsset = {
+      ...tokenPriceToAssetToken(
+        mint,
+        amount,
+        NetworkId.solana,
+        tokenPrice,
+        undefined,
+        {
+          tags: [side],
+        }
+      ),
+      ref: order.pubkey.toString(),
+      sourceRefs: [
+        { name: 'Pool' as SourceRefName, address: offer.pubkey.toString() },
+      ],
+    };
 
     const existingAssets = assetsById.get(id);
     if (!existingAssets) {
@@ -208,7 +219,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       name: `${type} : ${info.symbol} (${info.status})`,
       networkId: NetworkId.solana,
       platformId,
-      data: { assets },
+      data: { assets, link: 'https://pro.whales.market/dashboard' },
       value: getUsdValueSum(assets.map((asset) => asset.value)),
     });
   }

@@ -40,6 +40,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const element = elementRegistry.addElementTrade({
       tags: isV1 ? ['deprecated'] : undefined,
+      ref: account.pubkey.toString(),
+      link: 'https://jup.ag/trigger/',
     });
 
     element.setTrade({

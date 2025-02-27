@@ -4,7 +4,7 @@ import { Cache } from '../../Cache';
 import { platformId, strategies, strategiesCacheKey } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
-import { getParsedProgramAccounts } from '../../utils/solana';
+import { getParsedProgramAccounts, ParsedAccount } from '../../utils/solana';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import {
   LstPositionInfo,
@@ -37,13 +37,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (!positionInfos || positionInfos.filter((u) => u !== null).length === 0)
     return [];
 
-  const strategiesInfo = await cache.getItem<(Strategy | LstStrategy)[]>(
-    strategiesCacheKey,
-    {
-      prefix: platformId,
-      networkId: NetworkId.solana,
-    }
-  );
+  const strategiesInfo = await cache.getItem<
+    ParsedAccount<Strategy | LstStrategy>[]
+  >(strategiesCacheKey, {
+    prefix: platformId,
+    networkId: NetworkId.solana,
+  });
 
   if (!strategiesInfo) return [];
 
@@ -59,6 +58,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
       const element = elementRegistry.addElementBorrowlend({
         label: 'Leverage',
+        link: 'https://solana.vaultka.com/leverage',
+        ref: positionInfo[0].pubkey,
+        sourceRefs: [{ name: 'Strategy', address: strategy.pubkey.toString() }],
       });
 
       let borrowMint;

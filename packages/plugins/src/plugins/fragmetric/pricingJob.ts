@@ -111,6 +111,8 @@ const executor: JobExecutor = async (cache: Cache) => {
         .toNumber(),
       timestamp: Date.now(),
       weight: 1,
+      link: 'https://app.fragmetric.xyz/restake/',
+      sourceRefs: [{ address: vault.reserveAccount, name: 'Vault' }],
     });
   }
 
@@ -160,6 +162,10 @@ const executor: JobExecutor = async (cache: Cache) => {
         .toNumber(),
       timestamp: Date.now(),
       weight: 1,
+      link: 'https://app.fragmetric.xyz/wrap/',
+      sourceRefs: [
+        { address: fundAccount.wrap_account.toString(), name: 'Vault' },
+      ],
     });
   }
 

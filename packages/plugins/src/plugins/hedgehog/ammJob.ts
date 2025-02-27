@@ -160,6 +160,10 @@ const executor: JobExecutor = async (cache: Cache) => {
           price: usdcTokenPrice.price,
         },
       ],
+      sourceRefs: [
+        { name: 'Pool', address: acc.pubkey.toString() },
+        { name: 'Market', address: marketAcc.pubkey.toString() },
+      ],
     };
 
     const liquidityNameB =
@@ -185,6 +189,10 @@ const executor: JobExecutor = async (cache: Cache) => {
           networkId: NetworkId.solana,
           price: usdcTokenPrice.price,
         },
+      ],
+      sourceRefs: [
+        { name: 'Pool', address: acc.pubkey.toString() },
+        { name: 'Market', address: marketAcc.pubkey.toString() },
       ],
     };
     sources.push(sourceA, sourceB);

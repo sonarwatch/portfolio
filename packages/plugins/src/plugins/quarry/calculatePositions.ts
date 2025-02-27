@@ -52,11 +52,13 @@ export const calculatePositions = (
     );
     if (!primaryQuarryAccount) return;
 
+    let minerAccount;
     if (isMinerAccount(account)) {
+      minerAccount = account;
       rewardsTokenInfo.push(primaryRewarder.rewardsTokenInfo);
       rewardsBalance.push(getClaimableRewards(primaryQuarryAccount, account));
     } else {
-      const minerAccount = replicaMinerAccounts[i].find(
+      minerAccount = replicaMinerAccounts[i].find(
         (a) => a.quarry === primaryQuarryAccount.pubkey.toString()
       );
       if (!minerAccount) return;
@@ -91,6 +93,10 @@ export const calculatePositions = (
     }
 
     positions.push({
+      ref: minerAccount.pubkey.toString(),
+      sourceRefs: [
+        { name: 'Pool', address: primaryQuarryAccount.pubkey.toString() },
+      ],
       primaryRewarder: {
         slug: primaryRewarder.slug,
         name: primaryRewarder.info?.name,
