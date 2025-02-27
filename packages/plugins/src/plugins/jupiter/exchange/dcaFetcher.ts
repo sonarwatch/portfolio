@@ -41,6 +41,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       },
       initialInputAmount: account.inDeposited,
       withdrawnOutputAmount: account.outWithdrawn,
+      createdAt: account.createdAt.toNumber() * 1000,
     });
   }
 
