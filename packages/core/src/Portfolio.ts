@@ -32,6 +32,7 @@ export type PortfolioElementLabel =
   | 'Margin'
   | 'LimitOrder'
   | 'DCA'
+  | 'SmartDCA'
   | 'Leverage';
 
 export type PortfolioAssetAttributes = {
@@ -345,14 +346,8 @@ export type IsoLevPosition = {
   pnlValue: UsdValue;
   liquidationPrice: UsdValue;
   leverage?: number;
-  tp?: {
-    gain: UsdValue;
-    price: UsdValue;
-  };
-  sl?: {
-    loss: UsdValue;
-    price: UsdValue;
-  };
+  tp?: number;
+  sl?: number;
   value: UsdValue;
 };
 
