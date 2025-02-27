@@ -1,8 +1,10 @@
 import BN from 'bn.js';
+import BigNumber from 'bignumber.js';
 import { CustodyInfo } from '../types';
 import { Position, Side } from './structs';
 
 export const USD_POWER = new BN(1_000_000);
+export const USD_POWER_BIGN = new BigNumber(1_000_000);
 const BPS_POWER = new BN(10_000);
 const DBPS_POWER = new BN(100_000);
 const RATE_POWER = new BN(1_000_000_000);

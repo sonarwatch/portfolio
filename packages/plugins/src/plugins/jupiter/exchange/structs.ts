@@ -1,7 +1,9 @@
 import {
   BeetStruct,
+  COption,
   FixableBeetStruct,
   bool,
+  coption,
   u16,
   u32,
   u8,
@@ -257,6 +259,69 @@ export const vestingEscrowStruct = new BeetStruct<VestingEscrow>(
     ['padding', uniformFixedSizeArray(u128, 5)],
   ],
   (args) => args as VestingEscrow
+);
+
+export enum RequestChange {
+  None,
+  Increase,
+  Decrease,
+}
+export enum RequestType {
+  Market,
+  Trigger,
+}
+
+export type PositionRequest = {
+  buffer: Buffer;
+  owner: PublicKey;
+  pool: PublicKey;
+  custody: PublicKey;
+  position: PublicKey;
+  mint: PublicKey;
+  openTime: BigNumber;
+  updateTime: BigNumber;
+  sizeUsdDelta: BigNumber;
+  collateralDelta: BigNumber;
+  requestChange: RequestChange;
+  requestType: RequestType;
+  side: Side;
+  priceSlippage: COption<BigNumber>;
+  jupiterMinimumOut: COption<BigNumber>;
+  preSwapAmount: COption<BigNumber>;
+  triggerPrice: COption<BigNumber>;
+  triggerAboveThreshold: COption<boolean>;
+  entirePosition: COption<boolean>;
+  executed: boolean;
+  counter: BigNumber;
+  bump: number;
+};
+
+export const positionRequestStruct = new FixableBeetStruct<PositionRequest>(
+  [
+    ['buffer', blob(8)],
+    ['owner', publicKey],
+    ['pool', publicKey],
+    ['custody', publicKey],
+    ['position', publicKey],
+    ['mint', publicKey],
+    ['openTime', i64],
+    ['updateTime', i64],
+    ['sizeUsdDelta', u64],
+    ['collateralDelta', u64],
+    ['requestChange', u8],
+    ['requestType', u8],
+    ['side', u8],
+    ['priceSlippage', coption(u64)],
+    ['jupiterMinimumOut', coption(u64)],
+    ['preSwapAmount', coption(u64)],
+    ['triggerPrice', coption(u64)],
+    ['triggerAboveThreshold', coption(bool)],
+    ['entirePosition', coption(bool)],
+    ['executed', bool],
+    ['counter', u64],
+    ['bump', u8],
+  ],
+  (args) => args as PositionRequest
 );
 
 export type Limit = {

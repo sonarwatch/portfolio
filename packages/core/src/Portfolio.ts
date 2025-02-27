@@ -345,14 +345,8 @@ export type IsoLevPosition = {
   pnlValue: UsdValue;
   liquidationPrice: UsdValue;
   leverage?: number;
-  tp?: {
-    gain: UsdValue;
-    price: UsdValue;
-  };
-  sl?: {
-    loss: UsdValue;
-    price: UsdValue;
-  };
+  tp?: number;
+  sl?: number;
   value: UsdValue;
 };
 
