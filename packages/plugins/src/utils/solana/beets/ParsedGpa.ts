@@ -16,7 +16,7 @@ export class ParsedGpa<T> {
 
   private constructor(
     protected readonly connection: Connection,
-    programId: PublicKey,
+    protected programId: PublicKey,
     protected beets: GlobalBeetStruct<T>
   ) {
     this.gpaBuilder = GpaBuilder.fromStruct<T>(
@@ -55,6 +55,7 @@ export class ParsedGpa<T> {
   }
 
   debug() {
+    console.log(this.programId.toString());
     console.log(this.gpaBuilder.config.filters);
     return this;
   }
