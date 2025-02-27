@@ -32,6 +32,7 @@ export type PortfolioElementLabel =
   | 'Margin'
   | 'LimitOrder'
   | 'DCA'
+  | 'SmartDCA'
   | 'Leverage';
 
 export type PortfolioAssetAttributes = {

@@ -70,7 +70,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       type: PortfolioElementType.trade,
       networkId: NetworkId.solana,
       platformId,
-      label: 'DCA',
+      label: 'SmartDCA',
       data: {
         assets: {
           input: inputAsset,
