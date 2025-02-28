@@ -32,7 +32,8 @@ export function getLongAssetsFromElement(
     }
 
     case PortfolioElementType.trade: {
-      const assets: PortfolioAsset[] = [element.data.assets.input];
+      const assets: PortfolioAsset[] = [];
+      if (element.data.assets.input) assets.push(element.data.assets.input);
       if (element.data.assets.output) assets.push(element.data.assets.output);
       return assets;
     }

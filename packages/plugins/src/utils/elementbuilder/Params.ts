@@ -85,11 +85,13 @@ export type PortfolioAssetTokenParams = {
 };
 
 export type TradeParams = {
-  inputAsset: PortfolioAssetTokenParams;
-  outputAsset: {
-    address: string | PublicKey;
+  inputAsset: Omit<PortfolioAssetTokenParams, 'amount'> & {
     amount?: number | BigNumber | string;
   };
+  outputAsset: Omit<PortfolioAssetTokenParams, 'amount'> & {
+    amount?: number | BigNumber | string;
+  };
+
   initialInputAmount: number | BigNumber | string;
   expectedOutputAmount?: number | BigNumber | string;
   withdrawnOutputAmount: number | BigNumber | string;

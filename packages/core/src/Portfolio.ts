@@ -255,7 +255,7 @@ export type PortfolioElementMultiple = PortfolioElementCommon & {
  */
 export type PortfolioElementTradeData = {
   assets: {
-    input: PortfolioAsset;
+    input: PortfolioAsset | null;
     output: PortfolioAsset | null;
   };
   inputAddress: string;
