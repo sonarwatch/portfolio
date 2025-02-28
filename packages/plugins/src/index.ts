@@ -533,11 +533,6 @@ import {
   fetchers as nxfinanceFetchers,
 } from './plugins/nxfinance';
 import {
-  platforms as echelonPlatforms,
-  jobs as echelonJobs,
-  fetchers as echelonFetchers,
-} from './plugins/echelon';
-import {
   platforms as solayerPlatforms,
   jobs as solayerJobs,
   fetchers as solayerFetchers,
@@ -903,7 +898,6 @@ export const platforms: Platform[] = [
   ...allbridgePlatforms,
   ...famousfoxfederationPlatforms,
   ...nxfinancePlatforms,
-  ...echelonPlatforms,
   ...solayerPlatforms,
   ...picassoPlatforms,
   ...quarryPlatforms,
@@ -1056,7 +1050,6 @@ export const jobs: Job[] = [
   ...allbridgeJobs,
   ...famousfoxfederationJobs,
   ...nxfinanceJobs,
-  ...echelonJobs,
   ...solayerJobs,
   ...picassoJobs,
   ...quarryJobs,
@@ -1211,7 +1204,6 @@ export const fetchers: Fetcher[] = [
   ...allbridgeFetchers,
   ...famousfoxfederationFetchers,
   ...nxfinanceFetchers,
-  ...echelonFetchers,
   ...solayerFetchers,
   ...picassoFetchers,
   ...quarryFetchers,
