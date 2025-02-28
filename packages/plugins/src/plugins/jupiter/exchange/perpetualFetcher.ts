@@ -216,6 +216,7 @@ const executor: FetcherExecutor = async (
           value,
         },
         value,
+        contract: perpsProgramId.toString(),
       },
       label: 'Leverage',
       networkId: NetworkId.solana,

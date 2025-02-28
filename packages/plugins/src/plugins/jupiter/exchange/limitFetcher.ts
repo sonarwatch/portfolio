@@ -43,6 +43,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       ref: account.pubkey.toString(),
       link: 'https://jup.ag/trigger/',
       label: 'LimitOrder',
+      contract: isV1
+        ? limitV1ProgramId.toString()
+        : limitV2ProgramId.toString(),
     });
 
     element.setTrade({

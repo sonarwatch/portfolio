@@ -255,7 +255,7 @@ export type PortfolioElementMultiple = PortfolioElementCommon & {
  */
 export type PortfolioElementTradeData = {
   assets: {
-    input: PortfolioAsset;
+    input: PortfolioAsset | null;
     output: PortfolioAsset | null;
   };
   inputAddress: string;
@@ -277,6 +277,8 @@ export type PortfolioElementTradeData = {
    * Expire at timestamp in ms
    */
   expireAt?: number;
+
+  contract?: string;
   ref?: string;
   sourceRefs?: SourceRef[];
   link?: string;
@@ -301,6 +303,8 @@ export type PortfolioLiquidity = {
   value: UsdValue;
   yields: Yield[];
   name?: string;
+
+  contract?: string;
   ref?: string;
   sourceRefs?: SourceRef[];
   link?: string;
@@ -380,6 +384,8 @@ export type PortfolioElementLeverageData = {
    * Total value (total equity)
    */
   value: UsdValue;
+
+  contract?: string;
   ref?: string;
   sourceRefs?: SourceRef[];
   link?: string;
@@ -471,6 +477,7 @@ export type PortfolioElementBorrowLendData = {
    */
   expireOn?: number;
 
+  contract?: string;
   ref?: string;
   sourceRefs?: SourceRef[];
   link?: string;

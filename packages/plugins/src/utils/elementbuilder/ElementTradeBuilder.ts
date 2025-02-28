@@ -23,12 +23,12 @@ export class ElementTradeBuilder extends ElementBuilder {
   }
 
   tokenAddresses(): string[] {
+    if (!this.params) return [];
+
     const mints = [];
-    if (this.params?.inputAsset)
-      mints.push(
-        ...new AssetTokenBuilder(this.params.inputAsset).tokenAddresses()
-      );
-    if (this.params?.outputAsset)
+    if (this.params.inputAsset)
+      mints.push(this.params.inputAsset.address.toString());
+    if (this.params.outputAsset)
       mints.push(this.params.outputAsset.address.toString());
     return mints;
   }
@@ -39,19 +39,27 @@ export class ElementTradeBuilder extends ElementBuilder {
     tokenPrices: TokenPriceMap
   ): PortfolioElementTrade | null {
     if (!this.params) return null;
-    const inputAsset = new AssetTokenBuilder(this.params.inputAsset).get(
-      networkId,
-      tokenPrices
-    );
 
-    if (!inputAsset?.data.amount) return null;
+    if (
+      (!this.params.inputAsset.amount ||
+        this.params.inputAsset.amount?.toString() === '0') &&
+      (!this.params.outputAsset.amount ||
+        this.params.outputAsset.amount?.toString() === '0')
+    )
+      return null;
 
-    const outputAsset = new BigNumber(this.params.outputAsset.amount || 0).gt(0)
-      ? new AssetTokenBuilder({
-          address: this.params.outputAsset.address.toString(),
-          amount: new BigNumber(this.params.outputAsset.amount || 0).toNumber(),
-        }).get(networkId, tokenPrices)
-      : null;
+    const inputAmount = new BigNumber(this.params.inputAsset?.amount || 0);
+    const outputAmount = new BigNumber(this.params.outputAsset?.amount || 0);
+
+    const inputAsset = new AssetTokenBuilder({
+      address: this.params.inputAsset.address.toString(),
+      amount: inputAmount.toNumber(),
+    }).get(networkId, tokenPrices);
+
+    const outputAsset = new AssetTokenBuilder({
+      address: this.params.outputAsset.address.toString(),
+      amount: outputAmount.toNumber(),
+    }).get(networkId, tokenPrices);
 
     const inputPrice = tokenPrices.get(
       this.params.inputAsset.address.toString()
@@ -95,7 +103,9 @@ export class ElementTradeBuilder extends ElementBuilder {
             : undefined,
         filledPercentage: new BigNumber(1)
           .minus(
-            new BigNumber(inputAsset.data.amount).dividedBy(initialInputAmount)
+            new BigNumber(inputAsset?.data.amount || 0).dividedBy(
+              initialInputAmount
+            )
           )
           .toNumber(),
         inputPrice: inputPrice.price,
@@ -106,7 +116,7 @@ export class ElementTradeBuilder extends ElementBuilder {
         sourceRefs: this.sourceRefs,
         link: this.link,
       },
-      value: getUsdValueSum([inputAsset.value, outputAsset?.value || 0]),
+      value: getUsdValueSum([inputAsset?.value || 0, outputAsset?.value || 0]),
     };
   }
 }
