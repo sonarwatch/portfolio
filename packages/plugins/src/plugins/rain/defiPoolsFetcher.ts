@@ -1,8 +1,8 @@
-import { NetworkId, solanaNativeAddress } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, defiLendingProgramId, collectionsMemo } from './constants';
+import { platformId, defiLendingProgramId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
