@@ -76,7 +76,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           input: inputAsset,
           output: outputAsset,
         },
-        filledPercentage: account.inUsed.div(initialInputAmount).toNumber(),
+        filledPercentage: account.inUsed
+          .div(10 ** inputTokenPrice.decimals)
+          .div(initialInputAmount)
+          .toNumber(),
         initialInputAmount,
         inputAddress,
         outputAddress,
