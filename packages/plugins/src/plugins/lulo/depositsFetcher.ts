@@ -193,7 +193,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
         withdrawElement.addAsset({
           address: allocation.mint,
-          amount: withdraw.nativeAmount.times(allocation.lPrice).toNumber(),
+          amount: withdraw.nativeAmount.toNumber(),
           ref: withdraw.pubkey.toString(),
           attributes: {
             lockedUntil: withdraw.createdTimestamp
