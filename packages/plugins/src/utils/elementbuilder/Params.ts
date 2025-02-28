@@ -16,6 +16,7 @@ export type Params = {
   name?: string;
   tags?: string[];
   platformId?: string;
+  contract?: string;
   sourceRefs?: SourceRef[];
   ref?: string | PublicKey;
   link?: string;

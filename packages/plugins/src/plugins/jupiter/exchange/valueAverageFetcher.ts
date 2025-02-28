@@ -87,6 +87,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           .div(10 ** outputTokenPrice.decimals)
           .toNumber(),
         ref: account.pubkey.toString(),
+        contract: valueAverageProgramId.toString(),
         link: 'https://jup.ag/recurring/',
       },
       value: getUsdValueSum([inputAsset.value, outputAsset?.value || 0]),

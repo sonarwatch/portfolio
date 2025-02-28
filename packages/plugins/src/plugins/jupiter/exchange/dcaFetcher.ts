@@ -28,6 +28,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       label: 'DCA',
       ref: account.pubkey.toString(),
       link: 'https://jup.ag/recurring/',
+      contract: dcaProgramId.toString(),
     });
 
     element.setTrade({
