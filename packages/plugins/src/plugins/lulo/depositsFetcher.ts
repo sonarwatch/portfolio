@@ -193,7 +193,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
         withdrawElement.addAsset({
           address: allocation.mint,
-          amount: withdraw.nativeAmount.toNumber(),
+          amount: withdraw.nativeAmount.times(allocation.lPrice).toNumber(),
           ref: withdraw.pubkey.toString(),
           attributes: {
             lockedUntil: withdraw.createdTimestamp
@@ -212,7 +212,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const userBoostedAllocation = userAccount.regularAllocations[i];
       lendingElement.addSuppliedAsset({
         address: allocationInfo.mint,
-        amount: userBoostedAllocation.toNumber(),
+        amount: userBoostedAllocation.times(allocationInfo.lPrice).toNumber(),
         attributes: {
           tags: ['Boosted'],
         },
@@ -228,7 +228,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
       lendingElement.addSuppliedAsset({
         address: allocationInfo.mint,
-        amount: userProtectedAllocation.toNumber(),
+        amount: userProtectedAllocation.times(allocationInfo.pPrice).toNumber(),
         attributes: {
           tags: ['Protected'],
         },
