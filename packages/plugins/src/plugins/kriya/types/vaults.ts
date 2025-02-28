@@ -131,10 +131,12 @@ export type LeverageVaultInfo = {
   depositedA: string;
   apr: string;
   borrowedBUsd: string;
-  farmStakeReceiptType: string;
+  farm: {
+    id: string;
+    vtType: string;
+  };
   decimalA: string;
   createdAt: string;
-  farmSource: string;
   coinB: string;
   decimalB: string;
   tvl: string;
@@ -144,11 +146,10 @@ export type LeverageVaultInfo = {
   depositedAUsd: string;
   lpSupply: string;
   vaultSource: string;
-  farmId: string;
   fees: string;
   coinA: string;
   updatedAt: string;
-  id: string;
+  vaultId: string;
 };
 
 // Vault dynamic field object of the position
