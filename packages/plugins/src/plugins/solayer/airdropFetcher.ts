@@ -17,9 +17,22 @@ import {
 import { AirdropResponse } from './types';
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
-  const res: AxiosResponse<AirdropResponse> = await axios.get(
-    airdropApi + owner
-  );
+  let res: AxiosResponse<AirdropResponse>;
+  try {
+    res = await axios.get(airdropApi + owner);
+  } catch (err) {
+    return getAirdropRaw({
+      statics: airdropStatics,
+      items: [
+        {
+          amount: 0,
+          isClaimed: false,
+          label: 'LAYER',
+          address: layerMint,
+        },
+      ],
+    });
+  }
 
   if (!res.data || res.data.totalAmount === '0')
     return getAirdropRaw({
