@@ -8,6 +8,12 @@ import {
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { blob, u64 } from '../../../utils/solana';
 
+export enum Status {
+  Active,
+  Filled,
+  Canceled,
+}
+
 export type Order = {
   buffer: Buffer;
   globalConfig: PublicKey;
@@ -23,7 +29,7 @@ export type Order = {
   tipAmount: BigNumber;
   numberOfFills: BigNumber;
   orderType: number;
-  status: number;
+  status: Status;
   inVaultBump: number;
   flashIxLock: number;
   padding0: number[];

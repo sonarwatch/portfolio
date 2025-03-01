@@ -5,7 +5,7 @@ import { limitOrderProgramId, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
-import { orderStruct } from './structs/order';
+import { orderStruct, Status } from './structs/order';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -43,19 +43,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       link: `https://swap.kamino.finance/swap`,
     });
 
-    element.setTrade({
-      inputAsset: {
-        address: account.inputMint,
-        amount: account.remainingInputAmount,
-      },
-      outputAsset: {
-        address: account.outputMint,
-        amount: account.filledOutputAmount,
-      },
-      initialInputAmount: account.initialInputAmount,
-      expectedOutputAmount: account.expectedOutputAmount,
-      withdrawnOutputAmount: 0,
-    });
+    if (account.status === Status.Active)
+      element.setTrade({
+        inputAsset: {
+          address: account.inputMint,
+          amount: account.remainingInputAmount,
+        },
+        outputAsset: {
+          address: account.outputMint,
+          amount: account.filledOutputAmount,
+        },
+        initialInputAmount: account.initialInputAmount,
+        expectedOutputAmount: account.expectedOutputAmount,
+        withdrawnOutputAmount: 0,
+      });
 
     if (account.tipAmount.isPositive()) {
       const tipElement = elementRegistry.addElementMultiple({
