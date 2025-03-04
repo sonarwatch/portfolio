@@ -4,12 +4,8 @@ import { Job, JobExecutor } from '../../Job';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { dataSizeFilter } from '../../utils/solana/filters';
-import {
-  elevationGroupsKey,
-  klendProgramId,
-  marketsKey,
-  platformId,
-} from './constants';
+import { elevationGroupsKey, klendProgramId, marketsKey } from './constants';
+import { platformId } from './constants_platform';
 import { lendingMarketStruct } from './structs/klend';
 
 const executor: JobExecutor = async (cache: Cache) => {

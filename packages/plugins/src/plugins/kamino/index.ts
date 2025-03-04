@@ -6,8 +6,8 @@ import {
   kaminoFarmService,
   kaminoLendingService,
   kaminoMultiplyService,
-  platform,
 } from './constants';
+import { platform } from './constants_platform';
 import poolsJob from './poolsJob';
 import farmsJob from './farmsJob';
 import reservesJob from './reservesJob';

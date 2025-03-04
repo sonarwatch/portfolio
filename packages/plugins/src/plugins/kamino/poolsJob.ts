@@ -6,7 +6,8 @@ import {
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSolana } from '../../utils/clients';
-import { platformId, programId } from './constants';
+import { programId } from './constants';
+import { platformId } from './constants_platform';
 import {
   getParsedMultipleAccountsInfo,
   getParsedProgramAccounts,

@@ -4,8 +4,10 @@ import {
   BalanceChange,
   solanaNativeWrappedAddress,
   solanaNativeDecimals,
+  NetworkIdType,
+  NetworkId,
 } from '@sonarwatch/portfolio-core';
-import { VersionedTransactionResponse } from '@solana/web3.js';
+import { ParsedTransactionWithMeta, PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from './Cache';
 import promiseTimeout from './utils/misc/promiseTimeout';
@@ -15,58 +17,62 @@ import { services } from './index';
 const runActivityTimeout = 60000;
 
 const parseVersionedTransaction = (
-  txn: VersionedTransactionResponse | null,
+  txn: ParsedTransactionWithMeta | null,
+  owner: string,
   sortedServices: Service[]
-) => {
+): Transaction | null => {
   if (!txn) return null;
-  const { staticAccountKeys } = txn.transaction.message;
+  if (txn.meta?.err) return null;
 
-  // console.log(JSON.stringify(txn));
+  const { accountKeys } = txn.transaction.message;
 
   const changes: BalanceChange[] = [];
   if (txn.meta) {
     const { preTokenBalances, postTokenBalances, preBalances, postBalances } =
       txn.meta;
-    if (preTokenBalances && postTokenBalances) {
+
+    const ownerIndex = accountKeys.findIndex(
+      (accountKey) => accountKey.pubkey.toString() === owner
+    );
+
+    if (postBalances[ownerIndex] !== preBalances[ownerIndex]) {
       changes.push({
         address: solanaNativeWrappedAddress,
-        preBalance: new BigNumber(preBalances[0])
-          .dividedBy(10 ** solanaNativeDecimals)
+        preBalance: new BigNumber(preBalances[ownerIndex])
+          .shiftedBy(-solanaNativeDecimals)
           .toNumber(),
-        postBalance: new BigNumber(postBalances[0])
-          .dividedBy(10 ** solanaNativeDecimals)
+        postBalance: new BigNumber(postBalances[ownerIndex])
+          .shiftedBy(-solanaNativeDecimals)
           .toNumber(),
-        change: new BigNumber(postBalances[0])
-          .minus(preBalances[0])
-          .dividedBy(10 ** solanaNativeDecimals)
+        change: new BigNumber(postBalances[ownerIndex])
+          .minus(preBalances[ownerIndex])
+          .shiftedBy(-solanaNativeDecimals)
           .toNumber(),
       });
+    }
 
-      const maxAccountIndex = Math.max(
-        preTokenBalances[preTokenBalances.length - 1].accountIndex,
-        postTokenBalances[postTokenBalances.length - 1].accountIndex
-      );
-
-      for (let i = 0; i <= maxAccountIndex; i++) {
-        const preTokenBalance = preTokenBalances.find(
-          (balance) =>
-            balance.accountIndex === i &&
-            balance.owner === staticAccountKeys[0].toString()
-        );
-        const postTokenBalance = postTokenBalances.find(
-          (balance) =>
-            balance.accountIndex === i &&
-            balance.owner === staticAccountKeys[0].toString()
-        );
-        if (!preTokenBalance || !postTokenBalance) continue;
-        const preBalance = preTokenBalance.uiTokenAmount.uiAmount || 0;
-        const postBalance = postTokenBalance.uiTokenAmount.uiAmount || 0;
-        changes.push({
-          address: postTokenBalance.mint,
-          preBalance,
-          postBalance,
-          change: postBalance - preBalance,
-        });
+    if (preTokenBalances && postTokenBalances) {
+      const preTokenBalance = preTokenBalances.find((b) => b.owner === owner);
+      const postTokenBalance = postTokenBalances.find((b) => b.owner === owner);
+      if (preTokenBalance && postTokenBalance) {
+        const preBalanceAmount = preTokenBalance
+          ? new BigNumber(preTokenBalance.uiTokenAmount.amount).shiftedBy(
+              -preTokenBalance.uiTokenAmount.decimals
+            )
+          : new BigNumber(0);
+        const postBalanceAmount = postTokenBalance
+          ? new BigNumber(postTokenBalance.uiTokenAmount.amount).shiftedBy(
+              -postTokenBalance.uiTokenAmount.decimals
+            )
+          : new BigNumber(0);
+        if (!postBalanceAmount.isEqualTo(preBalanceAmount)) {
+          changes.push({
+            address: postTokenBalance.mint,
+            preBalance: preBalanceAmount.toNumber(),
+            postBalance: postBalanceAmount.toNumber(),
+            change: postBalanceAmount.minus(preBalanceAmount).toNumber(),
+          });
+        }
       }
     }
   }
@@ -76,20 +82,22 @@ const parseVersionedTransaction = (
     blockTime: txn.blockTime,
     service: getService(txn, sortedServices),
     balanceChanges: changes,
-  } as Transaction;
+    isSigner: accountKeys.some(
+      (accountKey) =>
+        accountKey.pubkey.toString() === owner && accountKey.signer
+    ),
+  };
 };
 
 const getService = (
-  txn: VersionedTransactionResponse,
+  txn: ParsedTransactionWithMeta,
   sortedServices: Service[]
 ): Service | undefined => {
-  const { compiledInstructions, staticAccountKeys } = txn.transaction.message;
+  const { instructions } = txn.transaction.message;
 
-  const txnContractAddresses = compiledInstructions
-    .map((i) => staticAccountKeys[i.programIdIndex].toString())
+  const txnContractAddresses = instructions
+    .map((i) => i.programId.toString())
     .filter((value, index, self) => self.indexOf(value) === index);
-
-  console.log(txnContractAddresses);
 
   // We keep the first service with all contract addresses in txn
   return sortedServices.find((service) =>
@@ -99,29 +107,47 @@ const getService = (
   );
 };
 
-const testTxns = [
+/* const testTxns = [
   'JBEufKsoiAgJUTa1u9iUqVuRRq43pDhLmMD1QtkXEdqDYgRrR7kKzFuGS1FaZ93cNmnvbtDp2Yf9uDRZ9815B3f', // defituna deposit
   'PUaJ8qmoN6r4XdE3Jir4PWZQ16xmi7J6uQATigcjU6ujLX1A44vjQsUSXL8mMMbYBoDKJCu2GtdxWLjW7aAXu4n', // kamino lend deposit
   '29Jp6GY7PKMmTsuGAG664Qf2Uu9p1Z8QmA9jyepBkcbR2QuviNw3hna9qPs7HWEs4jNWPim4by55hbHWdDht1tHD', // kamino multiply withdraw
   'EFa91iksec28yrN1XxjWb22u5zn1U3DTB57B4KTwiR5swNubpU1X4ryjQHccVAfmFtY1PzQmryUneSKmeKm3wkf', // kamino farms
-];
+]; */
 
-export async function runActivity(owner: string, cache: Cache) {
+export async function runActivity(
+  cache: Cache,
+  network: NetworkIdType,
+  owner: string,
+  account?: string
+) {
+  if (network !== NetworkId.solana) {
+    throw new Error(`Unsupported Network ${network}`);
+  }
   const client = getClientSolana();
 
   const sortedServices = services.sort(
     (a, b) => (b.contracts?.length || 0) - (a.contracts?.length || 0)
   );
 
-  const activityPromise = Promise.all(
-    testTxns.map(async (txn) =>
-      client
-        .getTransaction(txn, {
-          maxSupportedTransactionVersion: 1,
-        })
-        .then((t) => parseVersionedTransaction(t, sortedServices))
+  const activityPromise = client
+    .getSignaturesForAddress(
+      new PublicKey(account || owner),
+      { limit: 10 },
+      'confirmed'
     )
-  );
+    .then((signatures) =>
+      client.getParsedTransactions(
+        signatures.map((s) => s.signature),
+        {
+          maxSupportedTransactionVersion: 0,
+        }
+      )
+    )
+    .then((parsedTransactions) =>
+      parsedTransactions.map((t) =>
+        parseVersionedTransaction(t, owner, sortedServices)
+      )
+    );
 
   return promiseTimeout(
     activityPromise,

@@ -202,9 +202,10 @@ export type BalanceChange = {
 
 export type Transaction = {
   signature: string;
-  blockTime: number;
+  blockTime?: number | null;
   service?: Service;
   balanceChanges: BalanceChange[];
+  isSigner: boolean;
 };
 
 export type SourceRefName =

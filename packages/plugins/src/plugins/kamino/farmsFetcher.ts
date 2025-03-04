@@ -1,7 +1,8 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { farmProgramId, farmsKey, kmnoMint, platformId } from './constants';
+import { farmProgramId, farmsKey, kmnoMint } from './constants';
+import { platformId } from './constants_platform';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { userStateStruct } from './structs/vaults';

@@ -4,9 +4,9 @@ import {
   elevationGroupsKey,
   lendingConfigs,
   marketsKey,
-  platformId,
   reservesKey,
 } from './constants';
+import { platformId } from './constants_platform';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { Cache } from '../../Cache';
 import { getClientSolana } from '../../utils/clients';

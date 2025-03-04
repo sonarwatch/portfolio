@@ -1,7 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 import { AirdropConfig } from './types';
-import { platformId as kaminoPlatformId } from '../../kamino/constants';
+import { platformId as kaminoPlatformId } from '../../kamino/constants_platform';
 
 export const platformId = 'jupiter-launchpad';
 const platformImage = 'https://sonar.watch/img/platforms/jupiter.webp';
