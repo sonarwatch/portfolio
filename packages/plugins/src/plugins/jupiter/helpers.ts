@@ -1,9 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
 import axios, { AxiosResponse } from 'axios';
-import {
-  PortfolioAssetToken,
-  getUsdValueSum,
-} from '@sonarwatch/portfolio-core';
 import { PriceResponse } from './types';
 import { lockerPubkey, voteProgramId } from './launchpad/constants';
 
@@ -21,6 +17,9 @@ export function getVotePda(owner: string): PublicKey {
 const maxIdsPerRequest = 100;
 
 export async function getJupiterPrices(mints: PublicKey[], vsMint: PublicKey) {
+  const endpoint =
+    process.env['PORTFOLIO_JUP_PRICE_API_URL'] || 'https://api.jup.ag/price/v2';
+
   let res;
   const pricesData = [];
   let subMints;
@@ -28,15 +27,12 @@ export async function getJupiterPrices(mints: PublicKey[], vsMint: PublicKey) {
   let end = maxIdsPerRequest - 1;
   do {
     subMints = mints.slice(start, end);
-    res = await axios.get<unknown, AxiosResponse<PriceResponse>>(
-      'https://api.jup.ag/price/v2',
-      {
-        params: {
-          ids: subMints.map((m) => m.toString()).join(','),
-          vsToken: vsMint.toString(),
-        },
-      }
-    );
+    res = await axios.get<unknown, AxiosResponse<PriceResponse>>(endpoint, {
+      params: {
+        ids: subMints.map((m) => m.toString()).join(','),
+        vsToken: vsMint.toString(),
+      },
+    });
     start += maxIdsPerRequest;
     end += maxIdsPerRequest;
     pricesData.push(res.data.data);
@@ -49,25 +45,4 @@ export async function getJupiterPrices(mints: PublicKey[], vsMint: PublicKey) {
     }
   }
   return prices;
-}
-
-export function getMergedAssets(assets: PortfolioAssetToken[]) {
-  const assetByMint: Map<string, PortfolioAssetToken> = new Map();
-  for (const asset of assets) {
-    if (asset.type !== 'token') continue;
-
-    const { address } = asset.data;
-    const amountToAdd = asset.data.amount;
-    const valueToAdd = asset.value;
-    const existingAsset = assetByMint.get(address);
-    if (!existingAsset) {
-      assetByMint.set(address, asset);
-    } else {
-      existingAsset.data.amount += amountToAdd;
-      existingAsset.value = getUsdValueSum([valueToAdd, existingAsset.value]);
-      assetByMint.set(address, existingAsset);
-    }
-  }
-
-  return Array.from(assetByMint.values());
 }

@@ -4,7 +4,8 @@ export const platformId = 'typus';
 export const platform: Platform = {
   id: platformId,
   name: 'Typus',
-  image: 'https://sonar.watch/img/platforms/typus.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/typus.webp',
   defiLlamaId: 'parent#typus-finance', // from https://defillama.com/docs/api
   website: 'https://typus.finance/',
   twitter: 'https://twitter.com/TypusFinance',

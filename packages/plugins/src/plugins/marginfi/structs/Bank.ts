@@ -72,7 +72,8 @@ export type BankConfig = {
   auto_padding_0: number[];
   borrowLimit: BigNumber;
   riskTier: RiskTier;
-  auto_padding_1: BigNumber[];
+  assetTag: number;
+  auto_padding_1: number[];
   totalAssetValueInitLimit: BigNumber;
   padding: BigNumber[];
 };
@@ -95,7 +96,8 @@ export const bankConfigStruct = new BeetStruct<BankConfig>(
     ['auto_padding_0', uniformFixedSizeArray(u8, 6)],
     ['borrowLimit', u64],
     ['riskTier', u8],
-    ['auto_padding_1', uniformFixedSizeArray(u8, 7)],
+    ['assetTag', u8],
+    ['auto_padding_1', uniformFixedSizeArray(u8, 6)],
     ['totalAssetValueInitLimit', u64],
     ['padding', uniformFixedSizeArray(u64, 5)],
   ],

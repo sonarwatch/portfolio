@@ -5,7 +5,8 @@ export const platformId = 'nosana';
 export const platform: Platform = {
   id: platformId,
   name: 'Nosana',
-  image: 'https://sonar.watch/img/platforms/nosana.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/nosana.webp',
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
   website: 'https://app.nosana.io/',
   twitter: 'https://twitter.com/nosana_ci',

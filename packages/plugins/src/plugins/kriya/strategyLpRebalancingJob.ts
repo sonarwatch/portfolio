@@ -11,8 +11,8 @@ import {
   strategyLpRebalancingUrl,
 } from './constants';
 import {
+  APIResponseVault,
   Vault,
-  VaultData,
   VaultPositionCetus,
   VaultPositionKriya,
 } from './types/vaults';
@@ -27,14 +27,14 @@ const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSui();
   const vaultsInfos: VaultPositionInfo[] = [];
 
-  const vaultsApiData: AxiosResponse<VaultData[]> = await axios.get(
+  const vaultsApiData: AxiosResponse<APIResponseVault> = await axios.get(
     strategyLpRebalancingUrl
   );
 
-  for (const vaultData of vaultsApiData.data) {
+  for (const vaultData of vaultsApiData.data.data) {
     const [vaultOject, vaultDynamicFields] = await Promise.all([
-      getObject<Vault>(client, vaultData.id),
-      getDynamicFieldObjects(client, vaultData.id),
+      getObject<Vault>(client, vaultData.vaultId),
+      getDynamicFieldObjects(client, vaultData.vaultId),
     ]);
 
     const vault = vaultOject.data?.content?.fields;
@@ -52,55 +52,63 @@ const executor: JobExecutor = async (cache: Cache) => {
           : (fields.data.content?.fields as VaultPositionKriya);
       }
     }
-    if (!vaultPosition) continue;
+    if (
+      !vaultPosition ||
+      !vaultData.farm ||
+      !vaultData.info.type ||
+      !vaultData.info.tokenXAmount ||
+      !vaultData.info.tokenYAmount
+    )
+      continue;
 
     const vaultPositionCommon = {
       id: vault.id.id,
-      farmId: vaultData.farmId,
-      coinType: vaultData.pool.vaultCoinType,
+      farmId: vaultData.farm.id,
+      coinType: vaultData.info.type,
       liquidity: vaultPosition.value.fields.liquidity,
       lowerTick: vault.lower_tick,
       upperTick: vault.upper_tick,
       totalSupply: vault.treasury_cap.fields.total_supply.fields.value,
-      amountA: vaultData.coinA,
-      amountB: vaultData.coinB,
+      amountA: vaultData.info.tokenXAmount,
+      amountB: vaultData.info.tokenYAmount,
     };
+    if (vaultData.info.pool?.poolId) {
+      if (isCetus) {
+        const poolInfo = await getObject<CetusPool>(
+          client,
+          vaultData.info.pool.poolId
+        );
+        if (poolInfo.data?.content?.fields) {
+          const { keys } = parseTypeString(poolInfo.data.type);
 
-    if (isCetus) {
-      const poolInfo = await getObject<CetusPool>(
-        client,
-        vaultData.pool.poolId
-      );
-      if (poolInfo.data?.content?.fields) {
-        const { keys } = parseTypeString(poolInfo.data.type);
-
-        if (keys && keys.at(0) && keys.at(1)) {
+          if (keys && keys.at(0) && keys.at(1)) {
+            const vaultPositionInfo: VaultPositionInfo = {
+              ...vaultPositionCommon,
+              currentTickIndex: bitsToNumber(
+                poolInfo.data.content.fields.current_tick_index.fields.bits
+              ),
+              mintA: keys[0].type,
+              mintB: keys[1].type,
+            };
+            vaultsInfos.push(vaultPositionInfo);
+          }
+        }
+      } else if (vaultData.vaultSource === 'Kriya') {
+        const poolInfo = await getObject<KriyaPool>(
+          client,
+          vaultData.info.pool.poolId
+        );
+        if (poolInfo.data?.content?.fields) {
           const vaultPositionInfo: VaultPositionInfo = {
             ...vaultPositionCommon,
             currentTickIndex: bitsToNumber(
-              poolInfo.data.content.fields.current_tick_index.fields.bits
+              poolInfo.data.content.fields.tick_index.fields.bits
             ),
-            mintA: keys[0].type,
-            mintB: keys[1].type,
+            mintA: poolInfo.data.content.fields.type_x.fields.name,
+            mintB: poolInfo.data.content.fields.type_y.fields.name,
           };
           vaultsInfos.push(vaultPositionInfo);
         }
-      }
-    } else if (vaultData.vaultSource === 'Kriya') {
-      const poolInfo = await getObject<KriyaPool>(
-        client,
-        vaultData.pool.poolId
-      );
-      if (poolInfo.data?.content?.fields) {
-        const vaultPositionInfo: VaultPositionInfo = {
-          ...vaultPositionCommon,
-          currentTickIndex: bitsToNumber(
-            poolInfo.data.content.fields.tick_index.fields.bits
-          ),
-          mintA: poolInfo.data.content.fields.type_x.fields.name,
-          mintB: poolInfo.data.content.fields.type_y.fields.name,
-        };
-        vaultsInfos.push(vaultPositionInfo);
       }
     }
   }
@@ -114,6 +122,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-strategy-lp-rebalancing`,
   executor,
-  label: 'realtime',
+  labels: ['realtime'],
 };
 export default job;

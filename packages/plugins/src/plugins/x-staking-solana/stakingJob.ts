@@ -62,6 +62,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `x-staking-solana`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;

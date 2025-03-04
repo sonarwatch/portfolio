@@ -3,8 +3,10 @@ import {
   PortfolioElement,
   PortfolioElementLabel,
   PortfolioElementTypeType,
+  SourceRef,
 } from '@sonarwatch/portfolio-core';
-import { ElementParams } from './ElementParams';
+import { PublicKey } from '@solana/web3.js';
+import { Params } from './Params';
 import { TokenPriceMap } from '../../TokenPriceMap';
 
 export abstract class ElementBuilder {
@@ -13,13 +15,19 @@ export abstract class ElementBuilder {
   name?: string;
   readonly platformId?: string;
   tags?: string[];
+  sourceRefs?: SourceRef[];
+  ref?: string | PublicKey;
+  link?: string;
 
-  protected constructor(params: ElementParams) {
+  protected constructor(params: Params) {
     this.type = params.type;
     this.label = params.label;
     this.name = params.name;
     this.tags = params.tags;
     this.platformId = params.platformId;
+    this.sourceRefs = params.sourceRefs;
+    this.ref = params.ref;
+    this.link = params.link;
   }
 
   addTag(tag: string) {
@@ -31,7 +39,7 @@ export abstract class ElementBuilder {
     this.name = name;
   }
 
-  abstract mints(): string[];
+  abstract tokenAddresses(): string[];
 
   abstract get(
     networkId: NetworkIdType,

@@ -1,10 +1,11 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 import { AirdropStatics } from '../../../AirdropFetcher';
-import { jupMint } from '../launchpad/constants';
+import { jupDecimals, jupMint } from '../launchpad/constants';
+import { dbrDecimals, dbrMint } from '../../debridge/constants';
 
 export const platformId = 'jupiter-governance';
-const platformName = 'Jupiter Governance';
-const platformImage = 'https://sonar.watch/img/platforms/jupiter.webp';
+const platformName = 'Jupiter DAO';
+const platformImage = 'https://sonar.watch/img/platforms/jupiterdao.webp';
 const platformWebsite = 'https://vote.jup.ag/';
 
 export const jupDisProgram = 'Dis2TfkFnXFkrtvAktEkw37sdb7qwJgY6H7YZJwk51wK';
@@ -35,6 +36,16 @@ export const asr2Statics: AirdropStatics = {
   claimStart: 1729512000000,
   claimEnd: 1732190400000,
   name: 'ASR #2',
+};
+export const asr3Statics: AirdropStatics = {
+  id: 'jup-asr-3',
+  claimLink: 'https://vote.jup.ag/asr',
+  image: platformImage,
+  emitterLink: platformWebsite,
+  emitterName: 'Jupiter',
+  claimStart: 1739466000000,
+  claimEnd: 1743465600000,
+  name: 'ASR #3',
 };
 export const jupuaryStatics: AirdropStatics = {
   id: 'jup-jupuary',
@@ -94,4 +105,14 @@ export const asr2Config: AsrConfig = {
   ]),
   api: (owner: string) =>
     `https://worker.jup.ag/asr-claim-proof/${owner}?asrTimeline=oct-2024&mints=JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN%2CCLoUDKc4Ane7HeQcPpE3YHnznRxhMimJ4MyaUqyHFzAu`,
+};
+
+export const asr3Config: AsrConfig = {
+  statics: asr3Statics,
+  items: new Map([
+    [jupMint, { label: 'JUP', decimals: jupDecimals }],
+    [dbrMint, { label: 'DBR', decimals: dbrDecimals }],
+  ]),
+  api: (owner: string) =>
+    `https://worker.jup.ag/asr-claim-proof/${owner}?asrTimeline=jan-2025&mints=JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN%2CDBRiDgJAMsM95moTzJs7M9LnkGErpbv9v6CUR1DXnUu5`,
 };

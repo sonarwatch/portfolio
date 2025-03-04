@@ -58,6 +58,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const element = elementRegistry.addElementMultiple({
     label: 'Rewards',
     name: 'Resize Program',
+    link: 'https://resize.metaplex.com',
   });
 
   element.addAsset({

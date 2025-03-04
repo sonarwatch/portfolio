@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js';
+
 export type MarginAccount = {
   leveragefi: string;
   owner: string;
@@ -81,10 +83,67 @@ export type StakingAccount = {
 };
 
 export type StakingPoolAccount = {
+  pubkey: string;
   stakeTokenMint: string;
   stakedTokens: string;
   stakedNotes: string;
   withdrawingTokens: string;
   increaseNoteRatePerSecond: string;
   maxMultipleOfNote: string;
+};
+
+export type VSolPositionAccount = {
+  nxMarket: string;
+  owner: string;
+  positions: VSolPositionDetail[];
+};
+
+export type VSolPositionDetail = {
+  collateralMint: string;
+  borrowMint: string;
+  leverageMint: string;
+  collateralNote: string;
+  collateralTokens: string;
+  borrowNote: string;
+  borrowTokens: string;
+  leverageNote: string;
+  leverageTokens: string;
+  leverageMultiples: string;
+  lastPointsAndLeverageNotesRate: string;
+  pointReward: string;
+};
+
+export type FormattedLendingPool = {
+  APR: number;
+  borrowAPR: number;
+  depositNoteNum: BigNumber;
+  depositedTokenNum: BigNumber;
+  depositNoteRate: number;
+  borrowNoteNum: BigNumber;
+  borrowedTokenNum: BigNumber;
+  borrowNoteRate: number;
+  depositInterest: number;
+  borrowInterest: number;
+};
+
+export type StakePoolWithdrawal = {
+  stakeAccount: string;
+  solAmount: string;
+};
+
+export type SolayerUser = {
+  nxMarket: string;
+  lrtMint: string;
+  amount: string;
+  nxSolayerPoints: string;
+  lastUpdateTime: string;
+  withdrawals: StakePoolWithdrawal[][];
+};
+
+export type SolayerPool = {
+  nxMarket: string;
+  lrtMint: string;
+  amount: string;
+  totalNxSolayerPoints: string;
+  lastUpdateTime: string;
 };

@@ -1,12 +1,12 @@
 import {
   NetworkIdType,
-  PortfolioAsset,
+  PortfolioAssetGeneric,
   PortfolioAssetType,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { TokenPriceMap } from '../../TokenPriceMap';
-import { PortfolioAssetGenericParams } from './PortfolioAssetGenericParams';
 import { AssetBuilder } from './AssetBuilder';
+import { PortfolioAssetGenericParams } from './Params';
 
 export class AssetGenericBuilder extends AssetBuilder {
   params: PortfolioAssetGenericParams;
@@ -17,7 +17,7 @@ export class AssetGenericBuilder extends AssetBuilder {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  mints(): string[] {
+  tokenAddresses(): string[] {
     return [];
   }
 
@@ -25,7 +25,7 @@ export class AssetGenericBuilder extends AssetBuilder {
     networkId: NetworkIdType,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     tokenPrices: TokenPriceMap
-  ): PortfolioAsset | null {
+  ): PortfolioAssetGeneric | null {
     let value = new BigNumber(0);
     if (this.params.value) {
       value = new BigNumber(this.params.value);
@@ -51,6 +51,9 @@ export class AssetGenericBuilder extends AssetBuilder {
           : undefined,
       },
       attributes: this.params.attributes || {},
+      link: this.params.link,
+      sourceRefs: this.params.sourceRefs,
+      ref: this.params.ref?.toString(),
     };
   }
 }

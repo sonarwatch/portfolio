@@ -58,8 +58,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       poolLiquidity: pool.liquidity,
       feeRate: Number(pool.swap_fee_rate) / 10000,
       swapVolume24h: (poolsStats || []).find(
-        (p) => p.pool_id === clmmPosition.pool_id
-      )?.volume_24h,
+        (p) => p.poolId === clmmPosition.pool_id
+      )?.volume24h,
     });
   });
 

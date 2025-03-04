@@ -12,7 +12,8 @@ export const platformId = 'vaultka';
 export const platform: Platform = {
   id: platformId,
   name: 'Vaultka',
-  image: 'https://sonar.watch/img/platforms/vaultka.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/vaultka.webp',
   website: 'https://solana.vaultka.com/',
   twitter: 'https://x.com/Vaultkaofficial',
   defiLlamaId: 'vaultka', // from https://defillama.com/docs/api

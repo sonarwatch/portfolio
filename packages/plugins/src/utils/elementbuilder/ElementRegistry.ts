@@ -5,13 +5,14 @@ import {
   PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
 import { ElementBuilder } from './ElementBuilder';
-import { ElementParams } from './ElementParams';
+import { Params } from './Params';
 import { Cache } from '../../Cache';
 import { ElementMultipleBuilder } from './ElementMultipleBuilder';
 import { ElementLiquidityBuilder } from './ElementLiquidityBuilder';
 import { ElementBorrowlendBuilder } from './ElementBorrowlendBuilder';
 import { ElementLeverageBuilder } from './ElementLeverageBuilder';
 import { ElementConcentratedLiquidityBuilder } from './ElementConcentratedLiquidityBuilder';
+import { ElementTradeBuilder } from './ElementTradeBuilder';
 
 export class ElementRegistry {
   readonly networkId: NetworkIdType;
@@ -24,9 +25,7 @@ export class ElementRegistry {
     this.elements = [];
   }
 
-  addElementMultiple(
-    params: Omit<ElementParams, 'type'>
-  ): ElementMultipleBuilder {
+  addElementMultiple(params: Omit<Params, 'type'>): ElementMultipleBuilder {
     const elementBuilder = new ElementMultipleBuilder({
       ...params,
       type: PortfolioElementType.multiple,
@@ -35,9 +34,7 @@ export class ElementRegistry {
     return elementBuilder;
   }
 
-  addElementLiquidity(
-    params: Omit<ElementParams, 'type'>
-  ): ElementLiquidityBuilder {
+  addElementLiquidity(params: Omit<Params, 'type'>): ElementLiquidityBuilder {
     const elementBuilder = new ElementLiquidityBuilder({
       ...params,
       type: PortfolioElementType.liquidity,
@@ -47,7 +44,7 @@ export class ElementRegistry {
   }
 
   addElementConcentratedLiquidity(
-    elementParams?: Omit<ElementParams, 'type' | 'label'> & {
+    elementParams?: Omit<Params, 'type' | 'label'> & {
       label?: PortfolioElementLabel;
     }
   ): ElementConcentratedLiquidityBuilder {
@@ -61,9 +58,7 @@ export class ElementRegistry {
     return elementBuilder;
   }
 
-  addElementBorrowlend(
-    params: Omit<ElementParams, 'type'>
-  ): ElementBorrowlendBuilder {
+  addElementBorrowlend(params: Omit<Params, 'type'>): ElementBorrowlendBuilder {
     const elementBuilder = new ElementBorrowlendBuilder({
       ...params,
       type: PortfolioElementType.borrowlend,
@@ -72,9 +67,7 @@ export class ElementRegistry {
     return elementBuilder;
   }
 
-  addElementLeverage(
-    params: Omit<ElementParams, 'type'>
-  ): ElementLeverageBuilder {
+  addElementLeverage(params: Omit<Params, 'type'>): ElementLeverageBuilder {
     const elementBuilder = new ElementLeverageBuilder({
       ...params,
       type: PortfolioElementType.leverage,
@@ -83,14 +76,31 @@ export class ElementRegistry {
     return elementBuilder;
   }
 
+  addElementTrade(params: Omit<Params, 'type'>): ElementTradeBuilder {
+    const elementBuilder = new ElementTradeBuilder({
+      ...params,
+      type: PortfolioElementType.trade,
+    });
+    this.elements.push(elementBuilder);
+    return elementBuilder;
+  }
+
   async getElements(cache: Cache): Promise<PortfolioElement[]> {
-    const mints = this.elements.map((e) => e.mints()).flat();
+    const mints = this.elements.map((e) => e.tokenAddresses()).flat();
     const tokenPrices = await cache.getTokenPricesAsMap(mints, this.networkId);
 
     return this.elements
       .map((e) => e.get(this.networkId, this.platformId, tokenPrices))
-      .filter(
-        (e) => e !== null && e.value && e.value > 0
-      ) as PortfolioElement[];
+      .filter((e) => e !== null)
+      .filter((e) => {
+        if (
+          e &&
+          e.type === PortfolioElementType.borrowlend &&
+          e.data.expireOn
+        ) {
+          return true;
+        }
+        return e && e.value && e.value > 0;
+      }) as PortfolioElement[];
   }
 }

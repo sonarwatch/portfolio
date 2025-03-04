@@ -5,7 +5,8 @@ export const platformId = 'metaplex';
 export const platform: Platform = {
   id: platformId,
   name: 'Metaplex',
-  image: 'https://sonar.watch/img/platforms/metaplex.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/metaplex.webp',
   website: 'https://resize.metaplex.com',
   twitter: 'https://x.com/metaplex',
   // defiLlamaId: 'metaplex', // from https://defillama.com/docs/api

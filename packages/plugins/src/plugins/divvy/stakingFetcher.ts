@@ -1,6 +1,6 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
-import { divvyIdlItem, platformId } from './constants';
+import { divvyIdlItem, dvyMint, platformId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
 import { Miner } from './types';
@@ -31,12 +31,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
   const element = elementRegistry.addElementMultiple({
     label: 'Staked',
+    link: 'https://app.divvy.bet/staking/?house=SOL',
   });
 
   accounts.forEach((account) => {
     element.addAsset({
-      address: '8fdi18UQNGg8mFEzjf79GUkzTg9YHSeojzCcarVxCX2y',
+      address: dvyMint,
       amount: account.amount,
+      ref: account.pubkey,
     });
   });
 

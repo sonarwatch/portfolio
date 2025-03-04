@@ -86,6 +86,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         lockedUntil: unlockingAt.getTime(),
         tags: ['depreciated'],
       },
+      ref: oldLpAccount.pubkey.toString(),
     };
     assets.push(asset);
   }
@@ -104,6 +105,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       attributes: {
         lockedUntil: unlockingAt.getTime(),
       },
+      ref: lpPosition.pubkey.toString(),
     };
     assets.push(asset);
   }
@@ -127,6 +129,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         lockedUntil: unlockingAt.getTime(),
         tags: ['Pending Withdraw'],
       },
+      ref: settlementRequest.pubkey.toString(),
     };
 
     assets.push(asset);
@@ -140,7 +143,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       label: 'Deposit',
       networkId: NetworkId.solana,
       platformId,
-      data: { assets },
+      data: { assets, link: 'https://app.parcl.co/lp' },
       value: getUsdValueSum(assets.map((asset) => asset.value)),
     },
   ];

@@ -26,7 +26,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 
   if (alpStakingAccount) {
-    const alpElement = elementRegistry.addElementMultiple({ label: 'Staked' });
+    const alpElement = elementRegistry.addElementMultiple({
+      label: 'Staked',
+      link: 'https://app.adrena.xyz/stake',
+      ref: alpStakingAccount.pubkey.toString(),
+    });
     for (const lockStake of alpStakingAccount.lockedStakes) {
       alpElement.addAsset({
         address: alpMint,
@@ -39,7 +43,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   }
 
   if (adxStakingAccount) {
-    const adxElement = elementRegistry.addElementMultiple({ label: 'Staked' });
+    const adxElement = elementRegistry.addElementMultiple({
+      label: 'Staked',
+      link: 'https://app.adrena.xyz/stake',
+      ref: adxStakingAccount.pubkey.toString(),
+    });
     for (const lockStake of adxStakingAccount.lockedStakes) {
       adxElement.addAsset({
         address: adxMint,

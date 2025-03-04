@@ -1,17 +1,12 @@
-import { NetworkId, PortfolioElementType } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import {
-  LifinityLockerProgramId,
-  platformId,
-  lfntyDecimals,
-  lfntyMint,
-} from './constants';
+import { LifinityLockerProgramId, platformId, lfntyMint } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { escrowStruct } from './structs';
 import { escrowFilter } from './filters';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -30,11 +25,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (amount.isZero()) return [];
 
-  const lfntyTokenPrice = await cache.getTokenPrice(
-    lfntyMint,
-    NetworkId.solana
-  );
-
   const yearsLocked = duration.dividedBy(60 * 60 * 24 * 365).decimalPlaces(0);
   let name = 'Locked';
   if (escrowEndsAt.isZero()) {
@@ -42,29 +32,23 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       yearsLocked.isGreaterThan(1) ? 's' : ''
     })`;
   }
+  const registry = new ElementRegistry(NetworkId.solana, platformId);
+  const element = registry.addElementMultiple({
+    label: 'Vesting',
+    link: 'https://lifinity.io/reward',
+    ref: escrowAccount.pubkey,
+    name,
+  });
 
-  const asset = tokenPriceToAssetToken(
-    lfntyMint,
-    amount.dividedBy(10 ** lfntyDecimals).toNumber(),
-    NetworkId.solana,
-    lfntyTokenPrice,
-    undefined,
-    {
+  element.addAsset({
+    address: lfntyMint,
+    amount,
+    attributes: {
       lockedUntil: escrowEndsAt.times(1000).toNumber() || undefined,
-    }
-  );
-
-  return [
-    {
-      label: 'Vesting',
-      type: PortfolioElementType.multiple,
-      data: { assets: [asset] },
-      networkId: NetworkId.solana,
-      platformId,
-      value: asset.value,
-      name,
     },
-  ];
+  });
+
+  return registry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

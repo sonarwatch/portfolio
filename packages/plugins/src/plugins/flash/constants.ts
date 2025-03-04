@@ -5,7 +5,8 @@ export const platformId = 'flash';
 export const platform: Platform = {
   id: platformId,
   name: 'FlashTrade',
-  image: 'https://sonar.watch/img/platforms/flash.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/flash.webp',
   defiLlamaId: 'flashtrade', // from https://defillama.com/docs/api
   website: 'https://beast.flash.trade/',
   twitter: 'https://twitter.com/FlashTrade_',
@@ -24,6 +25,8 @@ export const poolsPkeys = [
   new PublicKey('D6bfytnxoZBSzJM7fcixg5sgWJ2hj8SbwkPvb2r8XpbH'),
   new PublicKey('6HukhSeVVLQekKaGJYkwztBacjhKLKywVPrmcvccaYMz'),
   new PublicKey('DP1FnZjWzDjSMQA64BcMzUdpDpyAQ6723d5fpX4yTk5G'),
+  new PublicKey('F8qWvHm5F288VodQ7zGLhnrbbRR3zDbae6aNE53HQ98f'),
+  new PublicKey('Crk3yzGpPCt9thXmV9wCkBM9nBq8EHhBct71ArkKY9wA'),
 ];
 
 export const custodiesKey = 'custodies';

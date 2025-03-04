@@ -4,7 +4,8 @@ export const platformId = 'bluemove';
 export const platform: Platform = {
   id: platformId,
   name: 'BlueMove',
-  image: 'https://sonar.watch/img/platforms/bluemove.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/bluemove.webp',
   website: 'https://dex.bluemove.net/',
   twitter: 'https://x.com/BlueMove_OA',
   defiLlamaId: 'parent#bluemove', // from https://defillama.com/docs/api

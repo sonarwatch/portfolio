@@ -5,7 +5,8 @@ export const platformId = 'bluefin';
 export const platform: Platform = {
   id: platformId,
   name: 'Bluefin',
-  image: 'https://sonar.watch/img/platforms/bluefin.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/bluefin.webp',
   defiLlamaId: 'parent#bluefin', // from https://defillama.com/docs/api
   website: 'https://trade.bluefin.io/',
   twitter: 'https://x.com/bluefinapp',
@@ -16,7 +17,8 @@ export const airdropStatics: AirdropStatics = {
   emitterLink: 'https://trade.bluefin.io/',
   emitterName: platform.name,
   id: 'bluefin-airdrop',
-  image: 'https://sonar.watch/img/platforms/bluefin.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/bluefin.webp',
   claimEnd: undefined,
   claimStart: undefined,
 };

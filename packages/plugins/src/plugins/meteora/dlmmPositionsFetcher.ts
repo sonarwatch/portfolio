@@ -14,7 +14,6 @@ import { dlmmProgramId, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import {
   getParsedMultipleAccountsInfo,
-  getParsedProgramAccounts,
   tokenAccountStruct,
 } from '../../utils/solana';
 import {
@@ -26,10 +25,6 @@ import {
   lbPairStruct,
 } from './struct';
 import {
-  dlmmPositionAccountFilter,
-  dlmmPositionV2AccountFilter,
-} from './filters';
-import {
   binIdToBinArrayIndex,
   deriveBinArray,
   processPosition,
@@ -37,6 +32,7 @@ import {
 import { PositionVersion } from './types';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -44,18 +40,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const userPubKey = new PublicKey(owner);
 
   const [positionsV1, positionsV2] = await Promise.all([
-    getParsedProgramAccounts(
-      client,
-      dlmmPositionV1Struct,
-      dlmmProgramId,
-      dlmmPositionAccountFilter(userPubKey.toString())
-    ),
-    getParsedProgramAccounts(
-      client,
-      dlmmPositionV2Struct,
-      dlmmProgramId,
-      dlmmPositionV2AccountFilter(userPubKey.toString())
-    ),
+    ParsedGpa.build(client, dlmmPositionV1Struct, dlmmProgramId)
+      .addFilter('owner', userPubKey)
+      .addDataSizeFilter(7560)
+      .run(),
+    ParsedGpa.build(client, dlmmPositionV2Struct, dlmmProgramId)
+      .addFilter('owner', userPubKey)
+      .addDataSizeFilter(8120)
+      .run(),
   ]);
   const positions = [...positionsV1, ...positionsV2];
   if (positions.length === 0) return [];
@@ -278,6 +270,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             [...assets, ...rewardAssets].map((asset) => asset.value)
           ),
           yields: [],
+          ref: account.pubkey.toString(),
+          sourceRefs: [{ name: 'Pool', address: lbPair.toString() }],
+          link: `https://app.meteora.ag/dlmm/${lbPair.toString()}`,
         },
       ];
 

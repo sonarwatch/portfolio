@@ -6,7 +6,8 @@ export const platformId = 'grass';
 export const platform: Platform = {
   id: platformId,
   name: 'Grass',
-  image: 'https://sonar.watch/img/platforms/grass.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/grass.webp',
   website: 'https://www.grassfoundation.io/stake',
   twitter: 'https://twitter.com/getgrass_io',
 };
@@ -16,7 +17,8 @@ export const airdropStatics: AirdropStatics = {
   emitterLink: 'https://www.grassfoundation.io/',
   emitterName: platform.name,
   id: 'grass-airdrop',
-  image: 'https://sonar.watch/img/platforms/grass.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/grass.webp',
   claimEnd: undefined,
   claimStart: 1730073600000,
 };

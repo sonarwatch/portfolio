@@ -6,7 +6,8 @@ export const platformId = 'magiceden';
 export const platform: Platform = {
   id: platformId,
   name: 'MagicEden',
-  image: 'https://sonar.watch/img/platforms/magiceden.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/magiceden.webp',
   website: 'https://magiceden.io/',
   twitter: 'https://twitter.com/MagicEden',
 };
@@ -30,7 +31,8 @@ export const airdropStatics: AirdropStatics = {
   emitterLink: 'https://mefoundation.com/',
   emitterName: 'MagicEden',
   id: 'magiceden-airdrop',
-  image: 'https://sonar.watch/img/platforms/magiceden.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/magiceden.webp',
   claimStart: 1733839200000,
   claimEnd: 1738368000000,
 };

@@ -5,7 +5,8 @@ export const platformId = 'defiland';
 export const platform: Platform = {
   id: platformId,
   name: 'Defiland',
-  image: 'https://sonar.watch/img/platforms/defiland.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/defiland.webp',
   website: 'https://staking.defiland.app/',
   twitter: 'https://x.com/DeFi_Land',
 };

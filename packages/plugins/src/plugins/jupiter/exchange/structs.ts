@@ -1,7 +1,9 @@
 import {
   BeetStruct,
+  COption,
   FixableBeetStruct,
   bool,
+  coption,
   u16,
   u32,
   u8,
@@ -218,6 +220,8 @@ export type VestingEscrow = {
   base: PublicKey;
   escrowBump: number;
   updateRecipientMode: number;
+  cancelMode: number;
+  tokenProgramFlag: number;
   padding0: number[];
   cliffTime: BigNumber;
   frequency: BigNumber;
@@ -226,6 +230,8 @@ export type VestingEscrow = {
   numberOfPeriod: BigNumber;
   totalClaimedAmount: BigNumber;
   vestingStartTime: BigNumber;
+  cancelledAt: BigNumber;
+  padding1: BigNumber;
   padding: BigNumber[];
 };
 
@@ -238,7 +244,9 @@ export const vestingEscrowStruct = new BeetStruct<VestingEscrow>(
     ['base', publicKey],
     ['escrowBump', u8],
     ['updateRecipientMode', u8],
-    ['padding0', uniformFixedSizeArray(u8, 6)],
+    ['cancelMode', u8],
+    ['tokenProgramFlag', u8],
+    ['padding0', uniformFixedSizeArray(u8, 4)],
     ['cliffTime', u64],
     ['frequency', u64],
     ['cliffUnlockAmount', u64],
@@ -246,9 +254,74 @@ export const vestingEscrowStruct = new BeetStruct<VestingEscrow>(
     ['numberOfPeriod', u64],
     ['totalClaimedAmount', u64],
     ['vestingStartTime', u64],
-    ['padding', uniformFixedSizeArray(u128, 6)],
+    ['cancelledAt', u64],
+    ['padding1', u64],
+    ['padding', uniformFixedSizeArray(u128, 5)],
   ],
   (args) => args as VestingEscrow
+);
+
+export enum RequestChange {
+  None,
+  Increase,
+  Decrease,
+}
+export enum RequestType {
+  Market,
+  Trigger,
+}
+
+export type PositionRequest = {
+  buffer: Buffer;
+  owner: PublicKey;
+  pool: PublicKey;
+  custody: PublicKey;
+  position: PublicKey;
+  mint: PublicKey;
+  openTime: BigNumber;
+  updateTime: BigNumber;
+  sizeUsdDelta: BigNumber;
+  collateralDelta: BigNumber;
+  requestChange: RequestChange;
+  requestType: RequestType;
+  side: Side;
+  priceSlippage: COption<BigNumber>;
+  jupiterMinimumOut: COption<BigNumber>;
+  preSwapAmount: COption<BigNumber>;
+  triggerPrice: COption<BigNumber>;
+  triggerAboveThreshold: COption<boolean>;
+  entirePosition: COption<boolean>;
+  executed: boolean;
+  counter: BigNumber;
+  bump: number;
+};
+
+export const positionRequestStruct = new FixableBeetStruct<PositionRequest>(
+  [
+    ['buffer', blob(8)],
+    ['owner', publicKey],
+    ['pool', publicKey],
+    ['custody', publicKey],
+    ['position', publicKey],
+    ['mint', publicKey],
+    ['openTime', i64],
+    ['updateTime', i64],
+    ['sizeUsdDelta', u64],
+    ['collateralDelta', u64],
+    ['requestChange', u8],
+    ['requestType', u8],
+    ['side', u8],
+    ['priceSlippage', coption(u64)],
+    ['jupiterMinimumOut', coption(u64)],
+    ['preSwapAmount', coption(u64)],
+    ['triggerPrice', coption(u64)],
+    ['triggerAboveThreshold', coption(bool)],
+    ['entirePosition', coption(bool)],
+    ['executed', bool],
+    ['counter', u64],
+    ['bump', u8],
+  ],
+  (args) => args as PositionRequest
 );
 
 export type Limit = {
@@ -363,7 +436,7 @@ export const oracleParamsStruct = new BeetStruct<OracleParams>(
 );
 
 export type PricingParams = {
-  tradeSpreadLong: BigNumber;
+  tradeSpreadLong: BigNumber; // tradeImpactFeeScalar
   tradeSpreadShort: BigNumber;
   swapSpread: BigNumber;
   maxLeverage: BigNumber;
@@ -373,7 +446,7 @@ export type PricingParams = {
 
 export const pricingParamsStruct = new BeetStruct<PricingParams>(
   [
-    ['tradeSpreadLong', u64],
+    ['tradeSpreadLong', u64], // tradeImpactFeeScalar
     ['tradeSpreadShort', u64],
     ['swapSpread', u64],
     ['maxLeverage', u64],
@@ -440,6 +513,22 @@ export const fundingRateStateStruct = new BeetStruct<FundingRateState>(
   (args) => args as FundingRateState
 );
 
+export type JumpRateState = {
+  minRateBps: BigNumber;
+  maxRateBps: BigNumber;
+  targetRateBps: BigNumber;
+  targetUtilizationRate: BigNumber;
+};
+export const jumpRateStateStruct = new BeetStruct<JumpRateState>(
+  [
+    ['minRateBps', u64],
+    ['maxRateBps', u64],
+    ['targetRateBps', u64],
+    ['targetUtilizationRate', u64],
+  ],
+  (args) => args as JumpRateState
+);
+
 export type Custody = {
   buffer: Buffer;
   pool: PublicKey;
@@ -455,7 +544,11 @@ export type Custody = {
   fundingRateState: FundingRateState;
   bump: number;
   tokenAccountBump: number;
-  buffer1: Buffer;
+  increasePositionBps: BigNumber;
+  decreasePositionBps: BigNumber;
+  maxPositionSizeUsd: BigNumber;
+  dovesOracle: PublicKey;
+  jumpRateState: JumpRateState;
 };
 export const custodyStruct = new BeetStruct<Custody>(
   [
@@ -473,7 +566,11 @@ export const custodyStruct = new BeetStruct<Custody>(
     ['fundingRateState', fundingRateStateStruct],
     ['bump', u8],
     ['tokenAccountBump', u8],
-    ['buffer1', blob(8)],
+    ['increasePositionBps', u64],
+    ['decreasePositionBps', u64],
+    ['maxPositionSizeUsd', u64],
+    ['dovesOracle', publicKey],
+    ['jumpRateState', jumpRateStateStruct],
   ],
   (args) => args as Custody
 );

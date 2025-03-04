@@ -37,6 +37,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (jlpPosition) {
     const element = elementRegistry.addElementMultiple({
       label: 'Leverage',
+      link: 'https://app.adrastea.fi/leverage-jlp',
     });
     element.addAsset({
       address: jlpToken.toString(),
@@ -47,6 +48,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (usdcPosition) {
     const element = elementRegistry.addElementMultiple({
       label: 'Lending',
+      link: 'https://app.adrastea.fi/passive-usdc',
     });
     element.addAsset({
       address: usdcSolanaMint.toString(),

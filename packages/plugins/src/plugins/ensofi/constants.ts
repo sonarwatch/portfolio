@@ -6,7 +6,8 @@ export const platformId = 'ensofi';
 export const platform: Platform = {
   id: platformId,
   name: 'EnsoFi',
-  image: 'https://sonar.watch/img/platforms/ensofi.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/ensofi.webp',
   website: 'https://app.ensofi.xyz',
   twitter: 'https://twitter.com/Ensofi_xyz',
 };

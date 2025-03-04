@@ -5,7 +5,8 @@ export const platformId = 'hxro';
 export const platform: Platform = {
   id: platformId,
   name: 'Hxro',
-  image: 'https://sonar.watch/img/platforms/hxro.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/hxro.webp',
   website: 'https://app.hxro.finance/',
   twitter: 'https://twitter.com/HxroNetwork',
   defiLlamaId: 'hxro-network', // from https://defillama.com/docs/api

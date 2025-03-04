@@ -3,15 +3,15 @@ import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSolana } from '../../utils/clients';
-import { AMM_PROGRAM_ID_V4, AMM_PROGRAM_ID_V5, platformId } from './constants';
-import { ammInfoV4Struct, ammInfoV5Struct } from './structs/amms';
+import { AMM_PROGRAM_ID_V4, platformId } from './constants';
+import { ammInfoV4Struct } from './structs/amms';
 import {
   MintAccount,
   TokenAccount,
   mintAccountStruct,
   tokenAccountStruct,
 } from '../../utils/solana';
-import { ammV4Filter, ammV5Filter } from './filters';
+import { ammV4Filter } from './filters';
 import { LiquidityPoolStatus } from './types';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 import { CLOBOrderStruct } from '../orders/clobs-solana/structs';
@@ -225,6 +225,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-lp-tokens`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;

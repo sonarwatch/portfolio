@@ -88,6 +88,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       timestamp: Date.now(),
       weight: 1,
       underlyings,
+      sourceRefs: [{ address: pool.pubkey.toString(), name: 'Pool' }],
     });
   });
 
@@ -96,6 +97,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-pools`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;

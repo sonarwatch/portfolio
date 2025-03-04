@@ -7,7 +7,8 @@ export const platformId = 'defituna';
 export const platform: Platform = {
   id: platformId,
   name: 'DefiTuna',
-  image: 'https://sonar.watch/img/platforms/defituna.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/defituna.webp',
   website: 'https://defituna.com',
   twitter: 'https://x.com/DeFiTuna',
 };

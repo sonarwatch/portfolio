@@ -5,7 +5,8 @@ export const platformId = 'goosefx';
 export const platform: Platform = {
   id: platformId,
   name: 'GooseFX',
-  image: 'https://sonar.watch/img/platforms/goosefx.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/goosefx.webp',
   defiLlamaId: 'goosefx', // from https://defillama.com/docs/api
   website: 'https://app.goosefx.io/farm',
   // twitter: 'https://twitter.com/myplatform',

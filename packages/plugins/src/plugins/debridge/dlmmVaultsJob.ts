@@ -39,6 +39,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-dlmm-vaults`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;

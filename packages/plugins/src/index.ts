@@ -536,14 +536,10 @@ import {
   fetchers as nxfinanceFetchers,
 } from './plugins/nxfinance';
 import {
-  platforms as echelonPlatforms,
-  jobs as echelonJobs,
-  fetchers as echelonFetchers,
-} from './plugins/echelon';
-import {
   platforms as solayerPlatforms,
   jobs as solayerJobs,
   fetchers as solayerFetchers,
+  airdropFetcher as solayerAirdropFetcher,
 } from './plugins/solayer';
 import {
   platforms as picassoPlatforms,
@@ -740,6 +736,48 @@ import {
   fetchers as defitunaFetchers,
   services as defitunaServices,
 } from './plugins/defituna';
+import {
+  platforms as iloopPlatforms,
+  jobs as iloopJobs,
+  fetchers as iloopFetchers,
+} from './plugins/iloop';
+import {
+  platforms as sonicPlatforms,
+  jobs as sonicJobs,
+  fetchers as sonicFetchers,
+  airdropFetcher as sonicAirdropFetcher,
+} from './plugins/sonic';
+import {
+  platforms as plutoPlatforms,
+  jobs as plutoJobs,
+  fetchers as plutoFetchers,
+} from './plugins/pluto';
+import {
+  platforms as layer3Platforms,
+  jobs as layer3Jobs,
+  fetchers as layer3Fetchers,
+} from './plugins/layer3';
+import {
+  platforms as puffcoinPlatforms,
+  jobs as puffcoinJobs,
+  fetchers as puffcoinFetchers,
+} from './plugins/puffcoin';
+import {
+  platforms as triadPlatforms,
+  jobs as triadJobs,
+  fetchers as triadFetchers,
+} from './plugins/triad';
+import {
+  platforms as basktPlatforms,
+  jobs as basktJobs,
+  fetchers as basktFetchers,
+} from './plugins/baskt';
+import {
+  platforms as guanoPlatforms,
+  jobs as guanoJobs,
+  fetchers as guanoFetchers,
+} from './plugins/guano';
+import { jobs as coingeckoJobs } from './plugins/coingecko';
 
 export {
   walletTokensPlatform,
@@ -754,6 +792,8 @@ export * from './Job';
 export * from './utils/name-service';
 export * from './utils/blank';
 export { getLlamaProtocolsJob } from './plugins/llama-protocols';
+export { jupFetcherIds } from './plugins/jupiter';
+export { solanaSimpleFetcher } from './plugins/tokens';
 
 // PLATFORMS //
 export const platforms: Platform[] = [
@@ -862,7 +902,6 @@ export const platforms: Platform[] = [
   ...allbridgePlatforms,
   ...famousfoxfederationPlatforms,
   ...nxfinancePlatforms,
-  ...echelonPlatforms,
   ...solayerPlatforms,
   ...picassoPlatforms,
   ...quarryPlatforms,
@@ -902,6 +941,14 @@ export const platforms: Platform[] = [
   ...exponentPlatforms,
   ...ratexPlatforms,
   ...defitunaPlatforms,
+  ...iloopPlatforms,
+  ...sonicPlatforms,
+  ...plutoPlatforms,
+  ...layer3Platforms,
+  ...puffcoinPlatforms,
+  ...triadPlatforms,
+  ...basktPlatforms,
+  ...guanoPlatforms,
 ];
 
 // JOBS //
@@ -1007,7 +1054,6 @@ export const jobs: Job[] = [
   ...allbridgeJobs,
   ...famousfoxfederationJobs,
   ...nxfinanceJobs,
-  ...echelonJobs,
   ...solayerJobs,
   ...picassoJobs,
   ...quarryJobs,
@@ -1047,6 +1093,15 @@ export const jobs: Job[] = [
   ...exponentJobs,
   ...ratexJobs,
   ...defitunaJobs,
+  ...iloopJobs,
+  ...sonicJobs,
+  ...basktJobs,
+  ...coingeckoJobs,
+  ...plutoJobs,
+  ...layer3Jobs,
+  ...puffcoinJobs,
+  ...triadJobs,
+  ...guanoJobs,
 ];
 
 // FETCHERS //
@@ -1153,7 +1208,6 @@ export const fetchers: Fetcher[] = [
   ...allbridgeFetchers,
   ...famousfoxfederationFetchers,
   ...nxfinanceFetchers,
-  ...echelonFetchers,
   ...solayerFetchers,
   ...picassoFetchers,
   ...quarryFetchers,
@@ -1193,6 +1247,14 @@ export const fetchers: Fetcher[] = [
   ...exponentFetchers,
   ...ratexFetchers,
   ...defitunaFetchers,
+  ...iloopFetchers,
+  ...sonicFetchers,
+  ...plutoFetchers,
+  ...layer3Fetchers,
+  ...puffcoinFetchers,
+  ...triadFetchers,
+  ...basktFetchers,
+  ...guanoFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
@@ -1213,6 +1275,8 @@ export const airdropFetchers: AirdropFetcher[] = [
   // pudgypenguinsAirdropFetcher,
   zetaAirdropFetcher,
   ...tensorAirdropFetchers,
+  sonicAirdropFetcher,
+  solayerAirdropFetcher,
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);

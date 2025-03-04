@@ -1,17 +1,16 @@
 import BigNumber from 'bignumber.js';
 import {
   NetworkIdType,
-  PortfolioElement,
+  PortfolioElementLiquidity,
   yieldFromApr,
 } from '@sonarwatch/portfolio-core';
-import { ConcentratedLiquidityParams } from './ConcentratedLiquidityParams';
 import { ElementLiquidityBuilder } from './ElementLiquidityBuilder';
-import { LiquidityParams } from './LiquidityParams';
 import { LiquidityBuilder } from './LiquidityBuilder';
 import { getTokenAmountsFromLiquidity } from '../clmm/tokenAmountFromLiquidity';
 import { estPositionAPRWithDeltaMethod } from '../clmm/estPositionAPRWithDeltaMethod';
 import { toBN } from '../misc/toBN';
 import { TokenPriceMap } from '../../TokenPriceMap';
+import { ConcentratedLiquidityParams, LiquidityParams } from './Params';
 
 export class ElementConcentratedLiquidityBuilder extends ElementLiquidityBuilder {
   concentratedLiquidityParams?: ConcentratedLiquidityParams;
@@ -23,12 +22,17 @@ export class ElementConcentratedLiquidityBuilder extends ElementLiquidityBuilder
 
   setLiquidity(params: ConcentratedLiquidityParams) {
     this.concentratedLiquidityParams = params;
-    const liquidityBuilder = new LiquidityBuilder({ name: params.name });
+    const liquidityBuilder = new LiquidityBuilder({
+      name: params.name,
+      ref: params.ref,
+      sourceRefs: params.sourceRefs,
+      link: params.link,
+    });
     this.liquidities = [liquidityBuilder];
     return liquidityBuilder;
   }
 
-  override mints(): string[] {
+  override tokenAddresses(): string[] {
     const mints = this.liquidities.map((liquidity) => liquidity.mints()).flat();
     if (this.concentratedLiquidityParams?.addressA)
       mints.push(this.concentratedLiquidityParams.addressA.toString());
@@ -41,7 +45,7 @@ export class ElementConcentratedLiquidityBuilder extends ElementLiquidityBuilder
     networkId: NetworkIdType,
     platformId: string,
     tokenPrices: TokenPriceMap
-  ): PortfolioElement | null {
+  ): PortfolioElementLiquidity | null {
     if (!this.liquidities[0] || !this.concentratedLiquidityParams) return null;
 
     const { tokenAmountA, tokenAmountB } = getTokenAmountsFromLiquidity(

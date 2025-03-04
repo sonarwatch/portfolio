@@ -76,7 +76,7 @@ export function getOrcaNftFetcher(
       ),
     ]);
 
-    const whirlpoolMap: Map<string, Whirlpool> = new Map();
+    const whirlpoolMap: Map<string, ParsedAccount<Whirlpool>> = new Map();
     allWhirlpoolsInfo.forEach((wInfo) => {
       if (!wInfo) return;
       if (whirlpoolAddresses.has(wInfo.pubkey.toString())) {
@@ -103,7 +103,16 @@ export function getOrcaNftFetcher(
       )
         continue;
 
-      const element = elementRegistry.addElementConcentratedLiquidity();
+      const element = elementRegistry.addElementConcentratedLiquidity({
+        link: 'https://www.orca.so/portfolio',
+        ref: positionInfo.pubkey.toString(),
+        sourceRefs: [
+          {
+            name: 'Pool',
+            address: whirlpoolInfo.pubkey.toString(),
+          },
+        ],
+      });
       const liquidity = element.setLiquidity({
         addressA: whirlpoolInfo.tokenMintA,
         addressB: whirlpoolInfo.tokenMintB,

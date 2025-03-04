@@ -27,12 +27,16 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (!lockupAccounts) return [];
 
   const registry = new ElementRegistry(NetworkId.solana, platformId);
-  const element = registry.addElementMultiple({ label: 'Staked' });
+  const element = registry.addElementMultiple({
+    label: 'Staked',
+    link: 'https://stake.gpool.cloud/',
+  });
 
   for (const lockupAccount of lockupAccounts) {
     element.addAsset({
       address: lockupAccount.mint,
       amount: lockupAccount.balance,
+      ref: lockupAccount.pubkey,
     });
   }
   return registry.getElements(cache);

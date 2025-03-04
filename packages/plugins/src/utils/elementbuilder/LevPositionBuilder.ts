@@ -1,52 +1,54 @@
+/* eslint-disable max-classes-per-file */
 import {
+  CrossLevPosition,
   formatTokenAddress,
-  LevPosition,
+  getUsdValueSum,
+  IsoLevPosition,
   NetworkIdType,
 } from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
-import { TokenPriceMap } from '../../TokenPriceMap';
-import { LevPositionParams } from './LevPositionParams';
+import { CrossLevPositionParams, IsoLevPositionParams } from './Params';
 
-export class LevPositionBuilder {
-  private params: LevPositionParams;
+export class IsoLevPositionBuilder {
+  private params: IsoLevPositionParams;
 
-  constructor(params: LevPositionParams) {
+  constructor(params: IsoLevPositionParams) {
     this.params = params;
   }
 
-  mints(): string[] {
-    if (this.params.collateralAmount) return [this.params.address];
-    return [];
+  get(networkId: NetworkIdType): IsoLevPosition {
+    return {
+      ...this.params,
+      address: this.params.address
+        ? formatTokenAddress(this.params.address, networkId)
+        : undefined,
+      value:
+        this.params.value ||
+        getUsdValueSum([this.params.collateralValue, this.params.pnlValue]),
+    };
   }
 
-  get(
-    networkId: NetworkIdType,
-    tokenPrices: TokenPriceMap
-  ): LevPosition | null {
-    let collateralValue;
-    if (this.params.collateralAmount) {
-      const collateralTokenPrice = tokenPrices.get(this.params.address);
-      if (!collateralTokenPrice) return null;
-      collateralValue = this.params.collateralAmount
-        .dividedBy(10 ** collateralTokenPrice.decimals)
-        .multipliedBy(collateralTokenPrice.price);
-    } else if (!this.params.collateralValue) {
-      return null;
-    } else {
-      collateralValue = new BigNumber(this.params.collateralValue);
-    }
+  get tokenAddress(): string | undefined {
+    return this.params.address;
+  }
+}
 
+export class CrossLevPositionBuilder {
+  private params: CrossLevPositionParams;
+
+  constructor(params: CrossLevPositionParams) {
+    this.params = params;
+  }
+
+  get(networkId: NetworkIdType): CrossLevPosition {
     return {
-      address: formatTokenAddress(this.params.address, networkId),
-      side: this.params.side,
-      liquidationPrice: this.params.liquidationPrice || null,
-      collateralValue: collateralValue.toNumber(),
-      sizeValue: this.params.sizeValue.toNumber(),
-      pnlValue: this.params.pnlValue?.toNumber(),
-      value: collateralValue.plus(this.params.pnlValue || 0).toNumber(),
-      name: this.params.name,
-      imageUri: this.params.imageUri,
-      leverage: this.params.leverage,
-    } as LevPosition;
+      ...this.params,
+      address: this.params.address
+        ? formatTokenAddress(this.params.address, networkId)
+        : undefined,
+    };
+  }
+
+  get tokenAddress(): string | undefined {
+    return this.params.address;
   }
 }

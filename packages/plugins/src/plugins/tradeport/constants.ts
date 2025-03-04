@@ -4,7 +4,8 @@ export const platformId = 'tradeport';
 export const platform: Platform = {
   id: platformId,
   name: 'Tradeport',
-  image: 'https://sonar.watch/img/platforms/tradeport.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/tradeport.webp',
   website: 'https://www.tradeport.xyz/',
   twitter: 'https://x.com/tradeportxyz',
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api

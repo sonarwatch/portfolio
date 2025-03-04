@@ -13,6 +13,7 @@ import {
   getUsersByProgram,
   getUserStatsByProgram,
 } from './helpers';
+import { sqrtPriceX64ToPrice } from '../../utils/clmm/tokenPricesFromSqrt';
 
 const programsMemo = new MemoizedCache<Program[]>(programsCacheKey, {
   prefix: platformId,
@@ -45,6 +46,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           if (marginPosition.balance !== 0) {
             const element = elementRegistry.addElementMultiple({
               label: 'Margin',
+              link: 'https://app.rate-x.io/trade',
+              ref: user.pubkey,
             });
             element.addAsset({
               address: program.mint,
@@ -62,7 +65,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         const ammpool = pools.get(lpData.ammPosition.ammpool);
         if (!ammpool) return;
 
-        const { tokenAmountB } = getTokenAmountsFromLiquidity(
+        const { tokenAmountA, tokenAmountB } = getTokenAmountsFromLiquidity(
           new BigNumber(lpData.ammPosition.liquidity),
           ammpool.pool.tickCurrentIndex,
           lpData.ammPosition.tickLowerIndex,
@@ -70,18 +73,36 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           true
         );
 
-        const amount = new BigNumber(lpData.reserveQuoteAmount)
-          .plus(tokenAmountB)
-          .multipliedBy(10 ** ammpool.lpMarginDecimals)
-          .div(ammpool.rate);
+        const baseAssetAmount = new BigNumber(lpData.reserveBaseAmount).plus(
+          tokenAmountA
+        );
+        const quoteAssetAmount = new BigNumber(lpData.reserveQuoteAmount).plus(
+          tokenAmountB
+        );
+        const o = sqrtPriceX64ToPrice(
+          new BigNumber(ammpool.pool.sqrtPrice),
+          9,
+          9
+        );
 
         const element = elementRegistry.addElementMultiple({
           label: 'LiquidityPool',
+          link: 'https://app.rate-x.io/liquidity',
+          ref: lpData.pubkey,
+          sourceRefs: [
+            {
+              name: 'Pool',
+              address: ammpool.pubkey.toString(),
+            },
+          ],
         });
-
         element.addAsset({
           address: program.mint,
-          amount,
+          amount: baseAssetAmount
+            .times(o.toString())
+            .plus(quoteAssetAmount)
+            .dividedBy(ammpool.rate),
+          alreadyShifted: true,
         });
       });
     }

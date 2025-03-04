@@ -24,8 +24,9 @@ import {
   asr1Fetcher,
   asr2AirdropFetcher,
   asr2Fetcher,
+  asr3AirdropFetcher,
+  asr3Fetcher,
 } from './governance';
-import { airdropFetcher as jupuaryAirdropFetcher } from './governance/jupuary2025AirdropFetcher';
 import { lfgAirdropFetchers, lfgFetchers } from './launchpad';
 
 export const platforms: Platform[] = [
@@ -43,13 +44,21 @@ export const fetchers: Fetcher[] = [
   voteFetcher,
   asr1Fetcher,
   asr2Fetcher,
+  asr3Fetcher,
   ...lfgFetchers,
 ];
 export const airdropFetchers: AirdropFetcher[] = [
   asr1AirdropFetcher,
   asr2AirdropFetcher,
+  asr3AirdropFetcher,
   ...lfgAirdropFetchers,
-  jupuaryAirdropFetcher,
+];
+
+export const jupFetcherIds = [
+  perpetualFetcher.id,
+  valueAverageFetcher.id,
+  limitFetcher.id,
+  dcaFetcher.id,
 ];
 export const jupiterSwapContract: Contract = {
   name: 'Jupiter Swap',

@@ -1,21 +1,16 @@
 // DLMM Bootstrapping Pools
 // DLMM Alpha Vault
 
-import {
-  getUsdValueSum,
-  NetworkId,
-  PortfolioAssetToken,
-  PortfolioElementType,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
 import { dbrDecimals, dlmmVaultProgramId, platformId } from './constants';
 import { getParsedProgramAccounts } from '../../utils/solana';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { escrowStruct } from '../meteora/struct';
 import { CachedDlmmVaults } from '../meteora/types';
 import { dlmmVaultsKey } from '../meteora/constants';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const slotTtl = 30000;
 let slot: number | null = null;
@@ -29,7 +24,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     prefix: platformId,
     networkId: NetworkId.solana,
   });
-  if (!vaults) return [];
+  if (!vaults) throw new Error('No vaults cached');
 
   if (!slot || Date.now() - slotTtl > slotUpdate) {
     slot = await client.getSlot();
@@ -63,16 +58,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     NetworkId.solana
   );
 
-  const assets: PortfolioAssetToken[] = [];
+  const registry = new ElementRegistry(NetworkId.solana, platformId);
+  const vestingElement = registry.addElementMultiple({
+    label: 'Vesting',
+    link: 'https://debridge.foundation/lfg',
+    name: 'Alpha Vault',
+  });
   for (const escrow of accounts) {
     const vault = vaults[escrow.dlmmVault.toString()];
     if (!vault) continue;
 
-    const [quoteTokenPrice, baseTokenPrice] = [
-      tokenPrices.get(vault.quoteMint),
-      tokenPrices.get(vault.baseMint),
-    ];
-
+    const quoteTokenPrice = tokenPrices.get(vault.quoteMint);
     if (!quoteTokenPrice) continue;
 
     const totalTokenEligible = escrow.totalDeposit
@@ -84,33 +80,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
 
     if (remainingClaimableTokens.isLessThanOrEqualTo(0)) continue;
-    assets.push(
-      tokenPriceToAssetToken(
-        vault.baseMint,
-        remainingClaimableTokens.toNumber(),
-        NetworkId.solana,
-        baseTokenPrice,
-        undefined,
-        { lockedUntil: 1744876800000 }
-      )
-    );
+
+    vestingElement.addAsset({
+      address: vault.baseMint,
+      amount: remainingClaimableTokens,
+      alreadyShifted: true,
+      ref: escrow.pubkey,
+      sourceRefs: [{ name: 'Vault', address: vault.pubkey }],
+      attributes: { lockedUntil: 1744876800000 },
+    });
   }
 
-  if (assets.length === 0) return [];
-
-  return [
-    {
-      networkId: NetworkId.solana,
-      type: PortfolioElementType.multiple,
-      label: 'Vesting',
-      platformId,
-      name: 'LFG Vault',
-      data: {
-        assets,
-      },
-      value: getUsdValueSum(assets.map((a) => a.value)),
-    },
-  ];
+  return registry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

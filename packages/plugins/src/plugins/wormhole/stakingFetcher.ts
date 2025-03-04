@@ -27,6 +27,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
   const element = elementRegistry.addElementMultiple({
     label: 'Staked',
+    link: 'https://w.wormhole.com/',
   });
 
   tokenBalances.forEach((tokenBalance) => {
@@ -34,6 +35,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     element.addAsset({
       address: wMint,
       amount: tokenBalance?.balance,
+      ref: tokenBalance.pubkey.toString(),
     });
   });
 

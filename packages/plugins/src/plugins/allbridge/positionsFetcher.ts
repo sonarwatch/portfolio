@@ -35,7 +35,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const poolInfo = await poolInfoMemo.getItem(cache);
 
-  if (!poolInfo) return [];
+  if (!poolInfo) throw new Error('Pool info not cached');
 
   const userDepositPublicKeys = getUserDepositPublicKeys(poolInfo, owner);
 
@@ -123,6 +123,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
                 apr: Number(tokenPool.apr),
               },
             ],
+            ref: userDeposit.pubkey.toString(),
+            sourceRefs: [
+              {
+                address: tokenPool.poolAddress,
+                name: 'Pool',
+              },
+            ],
+            link: 'https://core.allbridge.io/pools?chain=SOL',
           },
         ],
       },

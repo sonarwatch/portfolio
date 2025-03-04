@@ -1,8 +1,4 @@
-import {
-  formatTokenAddress,
-  NetworkId,
-  PortfolioElementType,
-} from '@sonarwatch/portfolio-core';
+import { formatTokenAddress, NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import {
   platformId,
@@ -15,8 +11,8 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
 import { getAutoParsedProgramAccounts } from '../../utils/solana';
 import { StakingAccount, StakingConfig } from './types';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { calcEarnings } from './helpers';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
@@ -47,34 +43,26 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (!tokenPrice || !configAccount) return [];
 
-  const earnings = accounts.reduce((sum: number, stakingAccount) => {
-    const earningForThisOne = calcEarnings(stakingAccount, configAccount);
-    return earningForThisOne !== null ? sum + earningForThisOne : sum;
-  }, 0);
+  const registry = new ElementRegistry(NetworkId.solana, platformId);
+  const element = registry.addElementMultiple({
+    label: 'Staked',
+    link: 'https://famousfoxes.com/stake',
+  });
 
-  if (earnings === 0) return [];
-
-  const asset = tokenPriceToAssetToken(
-    foxyMint,
-    earnings,
-    NetworkId.solana,
-    tokenPrice,
-    undefined,
-    { isClaimable: true }
-  );
-
-  return [
-    {
-      type: PortfolioElementType.multiple,
-      networkId: NetworkId.solana,
-      platformId,
-      label: 'Rewards',
-      value: asset.value,
-      data: {
-        assets: [asset],
+  accounts.forEach((stakingAccount) => {
+    const amount = calcEarnings(stakingAccount, configAccount);
+    element.addAsset({
+      address: foxyMint,
+      amount,
+      alreadyShifted: true,
+      ref: stakingAccount.pubkey.toString(),
+      attributes: {
+        isClaimable: true,
       },
-    },
-  ];
+    });
+  });
+
+  return registry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

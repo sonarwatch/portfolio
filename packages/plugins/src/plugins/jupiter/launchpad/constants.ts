@@ -60,7 +60,8 @@ export const airdropConfigs: AirdropConfig[] = [
       emitterName: 'Zeus',
       emitterLink: 'https://zeusnetwork.xyz/',
       claimLink: 'https://lfg.jup.ag/zeus',
-      image: 'https://sonar.watch/img/platforms/zeus.webp',
+      image:
+        'https://sonarwatch.github.io/portfolio/assets/images/platforms/zeus.webp',
     },
   },
   {
@@ -78,7 +79,8 @@ export const airdropConfigs: AirdropConfig[] = [
       emitterName: 'Tensor',
       emitterLink: 'https://www.tensor.trade/',
       claimLink: 'https://claim.jup.ag/tnsr',
-      image: 'https://sonar.watch/img/platforms/tensor.webp',
+      image:
+        'https://sonarwatch.github.io/portfolio/assets/images/platforms/tensor.webp',
     },
   },
   {
@@ -96,7 +98,8 @@ export const airdropConfigs: AirdropConfig[] = [
       emitterName: 'Sharky',
       emitterLink: 'https://sharky.fi/',
       claimLink: 'https://lfg.jup.ag/sharky',
-      image: 'https://sonar.watch/img/platforms/sharky.webp',
+      image:
+        'https://sonarwatch.github.io/portfolio/assets/images/platforms/sharky.webp',
     },
   },
   {
@@ -114,7 +117,8 @@ export const airdropConfigs: AirdropConfig[] = [
       emitterName: 'Uprock',
       emitterLink: 'https://uprock.com/',
       claimLink: 'https://lfg.jup.ag/uprock',
-      image: 'https://sonar.watch/img/platforms/uprock.webp',
+      image:
+        'https://sonarwatch.github.io/portfolio/assets/images/platforms/uprock.webp',
     },
   },
   {
@@ -132,8 +136,28 @@ export const airdropConfigs: AirdropConfig[] = [
       emitterName: 'Kamino',
       emitterLink: 'https://app.kamino.finance/',
       claimLink: 'https://app.kamino.finance/season-2-airdrop',
-      image: 'https://sonar.watch/img/platforms/kamino.webp',
+      image:
+        'https://sonarwatch.github.io/portfolio/assets/images/platforms/kamino.webp',
       name: 'S2',
+    },
+  },
+  {
+    mint: 'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN',
+    decimals: 6,
+    distributorProgram: 'DiS3nNjFVMieMgmiQFm6wgJL7nevk4NrhXKLbtEH1Z2R',
+    label: 'JUP',
+    platformId,
+    getApiPath: (owner: string) =>
+      `https://jupuary-api.jup.ag/claim-proof-2025/${owner}`,
+    statics: {
+      claimStart: 1737547200000,
+      claimEnd: 1745323200000,
+      id: 'jupuary-2025',
+      emitterName: 'Jupiter',
+      emitterLink: 'https://jup.ag/',
+      claimLink: 'https://jupuary.jup.ag/',
+      image: platformImage,
+      name: 'Jupuary 2025',
     },
   },
 ];

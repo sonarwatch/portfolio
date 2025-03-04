@@ -36,6 +36,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         acsTokenPrice
       ),
       attributes: {},
+      link: `https://hub.accessprotocol.co/en/creators/${account.stakePool.toString()}`,
+      ref: account.pubkey.toString(),
     });
   }
 

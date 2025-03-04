@@ -147,6 +147,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: 'sei-liquiditypools',
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;

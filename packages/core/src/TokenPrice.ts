@@ -1,9 +1,10 @@
 import { NetworkIdType } from './Network';
 import { deepClone } from './helpers';
 import { walletTokensPlatformId } from './constants';
-import { PortfolioElementLabel } from './Portfolio';
+import { PortfolioElementLabel, SourceRef } from './Portfolio';
 
 export const coingeckoSourceId = 'coingecko';
+export const jupiterSourceId = 'jupiter-api';
 export const tokenPriceSourceTtl = 4 * 60 * 60 * 1000; // 4 hours
 const MAX_N_SOURCES = 10;
 
@@ -28,6 +29,8 @@ export type TokenPriceSource = {
   liquidityName?: string;
   underlyings?: TokenPriceUnderlying[];
   timestamp: number; // in ms
+  sourceRefs?: SourceRef[];
+  link?: string;
 };
 
 export type TokenPrice = {
@@ -42,6 +45,8 @@ export type TokenPrice = {
   underlyings?: TokenPriceUnderlying[];
   sources: TokenPriceSource[];
   timestamp: number; // in ms
+  sourceRefs?: SourceRef[];
+  link?: string;
 };
 
 export function tokenPriceFromSources(
@@ -58,11 +63,18 @@ export function tokenPriceFromSources(
   });
 
   let price: number;
+
+  const jupiterSource = updatedSources.find(
+    (source) => source.id === jupiterSourceId
+  );
   const coingeckoSource = updatedSources.find(
     (source) => source.id === coingeckoSourceId
   );
-  if (coingeckoSource) price = coingeckoSource.price;
-  else {
+  if (jupiterSource) {
+    price = jupiterSource.price;
+  } else if (coingeckoSource) {
+    price = coingeckoSource.price;
+  } else {
     const [priceSum, weightSum] = updatedSources.reduce(
       ([cPriceSum, cWeightSum], source) => [
         cPriceSum + source.price * source.weight,
@@ -84,6 +96,8 @@ export function tokenPriceFromSources(
     liquidityName: bestSource.liquidityName,
     timestamp: Date.now(),
     sources: updatedSources,
+    link: bestSource.link,
+    sourceRefs: bestSource.sourceRefs,
   };
 }
 

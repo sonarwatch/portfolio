@@ -5,7 +5,8 @@ export const platformId = 'bonfida';
 export const platform: Platform = {
   id: platformId,
   name: 'Bonfida (SNS)',
-  image: 'https://sonar.watch/img/platforms/bonfida.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/bonfida.webp',
   website: 'https://www.sns.id/',
   twitter: 'https://twitter.com/bonfida',
   defiLlamaId: 'solana-name-service', // from https://defillama.com/docs/api

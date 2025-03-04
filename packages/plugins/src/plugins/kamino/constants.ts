@@ -70,6 +70,10 @@ export const lendingConfigs: Map<string, LendingMarketConfig> = new Map([
           'BNso1VUJnh4zcfpZa6986Ea66P6TCp59hvtNJ8b1X85',
           'So11111111111111111111111111111111111111112',
         ],
+        [
+          'picobAEvs6w7QEknPce34wAE4gknZA9v5tTonnmHYdX',
+          'So11111111111111111111111111111111111111112',
+        ],
       ],
       leveragePairs: [
         [
@@ -152,7 +156,8 @@ export const airdropStaticsS1: AirdropStatics = {
   emitterName: 'Kamino',
   emitterLink: 'https://app.kamino.finance/',
   claimLink: 'https://app.kamino.finance/genesis',
-  image: 'https://sonar.watch/img/platforms/kamino.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/kamino.webp',
   name: 'S1',
 };
 export const airdropStaticsS2: AirdropStatics = {
@@ -162,7 +167,8 @@ export const airdropStaticsS2: AirdropStatics = {
   emitterName: 'Kamino',
   emitterLink: 'https://app.kamino.finance/',
   claimLink: 'https://app.kamino.finance/season-2-airdrop',
-  image: 'https://sonar.watch/img/platforms/kamino.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/kamino.webp',
   name: 'S2',
 };
 
@@ -195,3 +201,7 @@ export const kaminoMultiplyService: Service = {
   networkId: NetworkId.solana,
   contracts: [kaminoLendContract, jupiterSwapContract],
 };
+
+export const limitOrderProgramId = new PublicKey(
+  'LiMoM9rMhrdYrfzUCxQppvxCSG1FcrUK9G8uLq4A1GF'
+);

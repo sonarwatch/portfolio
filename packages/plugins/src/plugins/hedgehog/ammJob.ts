@@ -160,6 +160,10 @@ const executor: JobExecutor = async (cache: Cache) => {
           price: usdcTokenPrice.price,
         },
       ],
+      sourceRefs: [
+        { name: 'Pool', address: acc.pubkey.toString() },
+        { name: 'Market', address: marketAcc.pubkey.toString() },
+      ],
     };
 
     const liquidityNameB =
@@ -186,6 +190,10 @@ const executor: JobExecutor = async (cache: Cache) => {
           price: usdcTokenPrice.price,
         },
       ],
+      sourceRefs: [
+        { name: 'Pool', address: acc.pubkey.toString() },
+        { name: 'Market', address: marketAcc.pubkey.toString() },
+      ],
     };
     sources.push(sourceA, sourceB);
   }
@@ -195,6 +203,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-amm`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;

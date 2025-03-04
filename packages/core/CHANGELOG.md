@@ -2,6 +2,208 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.147](https://github.com/sonarwatch/portfolio/compare/core-0.14.146...core-0.14.147) (2025-03-04)
+
+
+
+## [0.14.146](https://github.com/sonarwatch/portfolio/compare/core-0.14.145...core-0.14.146) (2025-03-04)
+
+
+
+## [0.14.145](https://github.com/sonarwatch/portfolio/compare/core-0.14.144...core-0.14.145) (2025-02-28)
+
+
+
+## [0.14.144](https://github.com/sonarwatch/portfolio/compare/core-0.14.143...core-0.14.144) (2025-02-28)
+
+
+
+## [0.14.143](https://github.com/sonarwatch/portfolio/compare/core-0.14.142...core-0.14.143) (2025-02-28)
+
+
+
+## [0.14.142](https://github.com/sonarwatch/portfolio/compare/core-0.14.141...core-0.14.142) (2025-02-28)
+
+
+
+## [0.14.141](https://github.com/sonarwatch/portfolio/compare/core-0.14.140...core-0.14.141) (2025-02-28)
+
+
+
+## [0.14.140](https://github.com/sonarwatch/portfolio/compare/core-0.14.139...core-0.14.140) (2025-02-27)
+
+
+
+## [0.14.139](https://github.com/sonarwatch/portfolio/compare/core-0.14.138...core-0.14.139) (2025-02-27)
+
+
+
+## [0.14.138](https://github.com/sonarwatch/portfolio/compare/core-0.14.137...core-0.14.138) (2025-02-27)
+
+
+
+## [0.14.137](https://github.com/sonarwatch/portfolio/compare/core-0.14.136...core-0.14.137) (2025-02-27)
+
+
+
+## [0.14.136](https://github.com/sonarwatch/portfolio/compare/core-0.14.135...core-0.14.136) (2025-02-26)
+
+
+
+## [0.14.135](https://github.com/sonarwatch/portfolio/compare/core-0.14.134...core-0.14.135) (2025-02-25)
+
+
+
+## [0.14.134](https://github.com/sonarwatch/portfolio/compare/core-0.14.133...core-0.14.134) (2025-02-24)
+
+
+
+## [0.14.133](https://github.com/sonarwatch/portfolio/compare/core-0.14.132...core-0.14.133) (2025-02-24)
+
+
+
+## [0.14.132](https://github.com/sonarwatch/portfolio/compare/core-0.14.131...core-0.14.132) (2025-02-24)
+
+
+
+## [0.14.131](https://github.com/sonarwatch/portfolio/compare/core-0.14.130...core-0.14.131) (2025-02-21)
+
+
+
+## [0.14.130](https://github.com/sonarwatch/portfolio/compare/core-0.14.129...core-0.14.130) (2025-02-21)
+
+
+
+## [0.14.129](https://github.com/sonarwatch/portfolio/compare/core-0.14.128...core-0.14.129) (2025-02-21)
+
+
+
+## [0.14.128](https://github.com/sonarwatch/portfolio/compare/core-0.14.127...core-0.14.128) (2025-02-21)
+
+
+
+## [0.14.127](https://github.com/sonarwatch/portfolio/compare/core-0.14.126...core-0.14.127) (2025-02-21)
+
+
+
+## [0.14.126](https://github.com/sonarwatch/portfolio/compare/core-0.14.125...core-0.14.126) (2025-02-21)
+
+
+
+## [0.14.125](https://github.com/sonarwatch/portfolio/compare/core-0.14.124...core-0.14.125) (2025-02-21)
+
+
+
+## [0.14.124](https://github.com/sonarwatch/portfolio/compare/core-0.14.123...core-0.14.124) (2025-02-20)
+
+
+
+## [0.14.123](https://github.com/sonarwatch/portfolio/compare/core-0.14.122...core-0.14.123) (2025-02-20)
+
+
+
+## [0.14.122](https://github.com/sonarwatch/portfolio/compare/core-0.14.121...core-0.14.122) (2025-02-19)
+
+
+
+## [0.14.121](https://github.com/sonarwatch/portfolio/compare/core-0.14.120...core-0.14.121) (2025-02-17)
+
+
+### Reverts
+
+* Revert "tmp to multiple" ([9512357](https://github.com/sonarwatch/portfolio/commit/9512357d6583a16107082bb29ef84c9f78fecebf))
+
+
+
+## [0.14.120](https://github.com/sonarwatch/portfolio/compare/core-0.14.119...core-0.14.120) (2025-02-17)
+
+
+### Reverts
+
+* Revert "chore(core): release version 0.14.112" ([6451b73](https://github.com/sonarwatch/portfolio/commit/6451b734a659ccedfc18a0e02c3601d1e31af0b3))
+
+
+
+## [0.14.119](https://github.com/sonarwatch/portfolio/compare/core-0.14.118...core-0.14.119) (2025-02-17)
+
+
+
+## [0.14.118](https://github.com/sonarwatch/portfolio/compare/core-0.14.117...core-0.14.118) (2025-02-17)
+
+
+
+## [0.14.117](https://github.com/sonarwatch/portfolio/compare/core-0.14.116...core-0.14.117) (2025-02-17)
+
+
+
+## [0.14.116](https://github.com/sonarwatch/portfolio/compare/core-0.14.115...core-0.14.116) (2025-02-14)
+
+
+
+## [0.14.115](https://github.com/sonarwatch/portfolio/compare/core-0.14.114...core-0.14.115) (2025-02-13)
+
+
+
+## [0.14.114](https://github.com/sonarwatch/portfolio/compare/core-0.14.113...core-0.14.114) (2025-02-12)
+
+
+
+## [0.14.113](https://github.com/sonarwatch/portfolio/compare/core-0.14.112...core-0.14.113) (2025-02-10)
+
+
+
+## [0.14.112](https://github.com/sonarwatch/portfolio/compare/core-0.14.111...core-0.14.112) (2025-02-07)
+
+
+
+## [0.14.111](https://github.com/sonarwatch/portfolio/compare/core-0.14.110...core-0.14.111) (2025-02-06)
+
+
+
+## [0.14.110](https://github.com/sonarwatch/portfolio/compare/core-0.14.109...core-0.14.110) (2025-02-06)
+
+
+
+## [0.14.109](https://github.com/sonarwatch/portfolio/compare/core-0.14.108...core-0.14.109) (2025-02-06)
+
+
+
+## [0.14.108](https://github.com/sonarwatch/portfolio/compare/core-0.14.107...core-0.14.108) (2025-02-05)
+
+
+
+## [0.14.107](https://github.com/sonarwatch/portfolio/compare/core-0.14.106...core-0.14.107) (2025-02-05)
+
+
+
+## [0.14.106](https://github.com/sonarwatch/portfolio/compare/core-0.14.105...core-0.14.106) (2025-02-04)
+
+
+
+## [0.14.105](https://github.com/sonarwatch/portfolio/compare/core-0.14.104...core-0.14.105) (2025-02-04)
+
+
+
+## [0.14.104](https://github.com/sonarwatch/portfolio/compare/core-0.14.103...core-0.14.104) (2025-02-04)
+
+
+
+## [0.14.103](https://github.com/sonarwatch/portfolio/compare/core-0.14.102...core-0.14.103) (2025-01-23)
+
+
+
+## [0.14.102](https://github.com/sonarwatch/portfolio/compare/core-0.14.101...core-0.14.102) (2025-01-23)
+
+
+
+## [0.14.101](https://github.com/sonarwatch/portfolio/compare/core-0.14.100...core-0.14.101) (2025-01-21)
+
+
+
+## [0.14.100](https://github.com/sonarwatch/portfolio/compare/core-0.14.99...core-0.14.100) (2025-01-21)
+
+
+
 ## [0.14.99](https://github.com/sonarwatch/portfolio/compare/core-0.14.98...core-0.14.99) (2025-01-20)
 
 

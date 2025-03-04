@@ -1,22 +1,15 @@
 import {
   NetworkId,
   TokenPriceSource,
-  TokenPriceUnderlying,
   walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
+import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
+import { fragmetricPid, platformId, vaults } from './constants';
+import { FundAccountStruct, normalizedTokenPoolStruct } from './structs';
 import {
-  fragmetricPid,
-  fragSOLMint,
-  nSOLMint,
-  nSOLReserve,
-  platformId,
-} from './constants';
-import { normalizedTokenPoolStruct } from './structs';
-import {
-  getParsedMultipleAccountsInfo,
   getParsedProgramAccounts,
   mintAccountStruct,
   tokenAccountStruct,
@@ -26,111 +19,162 @@ import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
-  const normalizedPools = await getParsedProgramAccounts(
-    connection,
-    normalizedTokenPoolStruct,
-    fragmetricPid,
-    [{ memcmp: { offset: 0, bytes: '2FE5mca9qhy' } }]
-  );
-
-  const [tokenPriceById, tokenMintsAccounts, nSOLReserveAccount] =
-    await Promise.all([
-      cache.getTokenPricesAsMap(
-        normalizedPools
-          .map((pool) => pool.supported_tokens.map((t) => t.mint.toString()))
-          .flat(),
-        NetworkId.solana
-      ),
-      getParsedMultipleAccountsInfo(connection, mintAccountStruct, [
-        ...normalizedPools.map((pool) => pool.normalized_token_mint),
-        fragSOLMint,
-      ]),
-      getParsedAccountInfo(connection, tokenAccountStruct, nSOLReserve),
-    ]);
 
   const sources: TokenPriceSource[] = [];
-  for (const pool of normalizedPools) {
-    const address = pool.normalized_token_mint.toString();
-    const mintAccount = tokenMintsAccounts.find(
-      (acc) => acc?.pubkey === pool.normalized_token_mint
-    );
 
-    if (!mintAccount) continue;
-    const supply = mintAccount.supply.dividedBy(10 ** mintAccount.decimals);
+  for (const vault of vaults) {
+    let tokenMintPrice;
+    if (vault.normalizedTokenPoolAccount) {
+      const normalizedPool = await getParsedAccountInfo(
+        connection,
+        normalizedTokenPoolStruct,
+        new PublicKey(vault.normalizedTokenPoolAccount)
+      );
+      if (!normalizedPool) continue;
 
-    let tvl = new BigNumber(0);
-    let missingToken = false;
-    const underlyings: TokenPriceUnderlying[] = [];
-    for (const token of pool.supported_tokens) {
-      const tokenPrice = tokenPriceById.get(token.mint.toString());
-      if (token.locked_amount.isZero()) continue;
+      const [mintAccount, tokenPrices] = await Promise.all([
+        getParsedAccountInfo(
+          connection,
+          mintAccountStruct,
+          normalizedPool.normalized_token_mint
+        ),
+        cache.getTokenPricesAsMap(
+          normalizedPool.supported_tokens.map((token) => token.mint.toString()),
+          NetworkId.solana
+        ),
+      ]);
 
-      if (!tokenPrice) {
-        missingToken = true;
-        continue;
+      if (!mintAccount) continue;
+
+      const supply = mintAccount.supply.dividedBy(10 ** mintAccount.decimals);
+
+      let tvl = new BigNumber(0);
+      let missingToken = false;
+      for (const token of normalizedPool.supported_tokens) {
+        if (token.locked_amount.isZero()) continue;
+        const tokenPrice = tokenPrices.get(token.mint.toString());
+
+        if (!tokenPrice) {
+          missingToken = true;
+          continue;
+        }
+
+        tvl = tvl.plus(
+          token.locked_amount
+            .dividedBy(10 ** tokenPrice.decimals)
+            .times(tokenPrice.price)
+        );
       }
+      if (missingToken) continue;
 
-      tvl = tvl.plus(
-        token.locked_amount
-          .dividedBy(10 ** tokenPrice.decimals)
-          .times(tokenPrice.price)
+      tokenMintPrice = {
+        decimals: mintAccount.decimals,
+        price: tvl.dividedBy(supply).toNumber(),
+      };
+    } else if (vault.tokenMint) {
+      tokenMintPrice = await cache.getTokenPrice(
+        vault.tokenMint,
+        NetworkId.solana
       );
-      underlyings.push({
-        address: token.mint.toString(),
-        amountPerLp: token.locked_amount
-          .dividedBy(10 ** tokenPrice.decimals)
-          .dividedBy(supply)
-          .toNumber(),
-        decimals: tokenPrice.decimals,
-        networkId: NetworkId.solana,
-        price: tokenPrice.price,
-      });
     }
-    if (missingToken) continue;
+    if (!tokenMintPrice) continue;
 
-    sources.push({
-      address,
-      decimals: mintAccount.decimals,
-      id: pool.pubkey.toString(),
-      networkId: NetworkId.solana,
-      platformId: walletTokensPlatformId,
-      price: tvl.dividedBy(supply).toNumber(),
-      timestamp: Date.now(),
-      weight: 1,
-      underlyings,
-    });
-  }
+    const [reserveAccount, receiptTokenMintAccount] = await Promise.all([
+      getParsedAccountInfo(
+        connection,
+        tokenAccountStruct,
+        new PublicKey(vault.reserveAccount)
+      ),
+      getParsedAccountInfo(
+        connection,
+        mintAccountStruct,
+        new PublicKey(vault.receiptToken)
+      ),
+    ]);
 
-  // Price the fragSOL token which represent the nSOL deposit in jito vault
-  const nSOLPrice = sources.find((tP) => tP.address === nSOLMint);
-  const fragSOLMintAccount = tokenMintsAccounts.find(
-    (acc) => acc?.pubkey.toString() === fragSOLMint.toString()
-  );
-  if (nSOLPrice && fragSOLMintAccount && nSOLReserveAccount) {
-    const nSOLByfragSOL = nSOLReserveAccount.amount
-      .dividedBy(10 ** nSOLPrice.decimals)
+    if (!reserveAccount || !receiptTokenMintAccount) continue;
+
+    const receiptTokensInTokenMint = receiptTokenMintAccount.supply
+      .dividedBy(10 ** receiptTokenMintAccount.decimals)
       .dividedBy(
-        fragSOLMintAccount.supply.dividedBy(10 ** fragSOLMintAccount.decimals)
+        reserveAccount.amount.dividedBy(10 ** tokenMintPrice.decimals)
       );
-    const fragSOLPrice = nSOLByfragSOL.times(nSOLPrice.price);
 
     sources.push({
-      address: fragSOLMint.toString(),
-      decimals: fragSOLMintAccount.decimals,
+      address: vault.receiptToken,
+      decimals: receiptTokenMintAccount.decimals,
       id: platformId,
       networkId: NetworkId.solana,
       platformId: walletTokensPlatformId,
-      price: fragSOLPrice.toNumber(),
+      price: new BigNumber(tokenMintPrice.price)
+        .multipliedBy(receiptTokensInTokenMint)
+        .toNumber(),
       timestamp: Date.now(),
       weight: 1,
+      link: 'https://app.fragmetric.xyz/restake/',
+      sourceRefs: [{ address: vault.reserveAccount, name: 'Vault' }],
     });
   }
+
+  const fundsAccounts = await getParsedProgramAccounts(
+    connection,
+    FundAccountStruct,
+    fragmetricPid,
+    [{ memcmp: { offset: 0, bytes: '9GKzjVzZPww' } }]
+  );
+
+  for (const fundAccount of fundsAccounts) {
+    const receiptTokenPriceSource = sources.find(
+      (source) => source.address === fundAccount.receipt_token_mint.toString()
+    );
+    if (!receiptTokenPriceSource) continue;
+
+    // Retrieve balances of the receipt token inside the wrap reserve account
+    const wrapTokensBalances = await connection.getTokenAccountsByOwner(
+      fundAccount.wrap_account,
+      {
+        mint: fundAccount.receipt_token_mint,
+      }
+    );
+
+    const wrapReceiptReserve = wrapTokensBalances.value
+      .map(
+        (balance) =>
+          tokenAccountStruct.deserialize(balance.account.data)[0].amount
+      )
+      .reduce((a, b) => a.plus(b), new BigNumber(0))
+      .dividedBy(10 ** fundAccount.receipt_token_decimals);
+
+    const wrapSupply = fundAccount.wrapped_token.supply.dividedBy(
+      10 ** fundAccount.wrapped_token.decimals
+    );
+
+    // Price source for the Wrapped Token (i.e wfragSOL)
+    sources.push({
+      address: fundAccount.wrapped_token.mint.toString(),
+      decimals: fundAccount.wrapped_token.decimals,
+      id: platformId,
+      networkId: NetworkId.solana,
+      platformId: walletTokensPlatformId,
+      price: wrapSupply
+        .dividedBy(wrapReceiptReserve)
+        .times(receiptTokenPriceSource.price)
+        .toNumber(),
+      timestamp: Date.now(),
+      weight: 1,
+      link: 'https://app.fragmetric.xyz/wrap/',
+      sourceRefs: [
+        { address: fundAccount.wrap_account.toString(), name: 'Vault' },
+      ],
+    });
+  }
+
   await cache.setTokenPriceSources(sources);
 };
 
 const job: Job = {
   id: `${platformId}-pricing`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;

@@ -8,7 +8,8 @@ export const platformId = 'francium';
 export const platform: Platform = {
   id: platformId,
   name: 'Francium',
-  image: 'https://sonar.watch/img/platforms/francium.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/francium.webp',
   website: 'https://francium.io/',
   twitter: 'https://x.com/Francium_Defi',
   defiLlamaId: 'francium', // from https://defillama.com/docs/api

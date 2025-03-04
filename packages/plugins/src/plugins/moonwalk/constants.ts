@@ -5,7 +5,8 @@ export const platformId = 'moonwalk';
 export const platform: Platform = {
   id: platformId,
   name: 'Moonwalk',
-  image: 'https://sonar.watch/img/platforms/moonwalk.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/moonwalk.webp',
   website: 'https://app.moonwalk.fit/',
   twitter: 'https://twitter.com/moonwalkfitness',
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api

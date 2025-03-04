@@ -7,7 +7,8 @@ import { MeeiroStakeData, StakeConfig, StakeInfo } from './types';
 export const meeiroPlatform: Platform = {
   id: 'meeiro',
   name: 'Meeiro',
-  image: 'https://sonar.watch/img/platforms/meeiro.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/meeiro.webp',
   website: 'https://meeiro.xyz/',
   twitter: 'https://twitter.com/Meeiro_xyz',
 };

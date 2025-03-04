@@ -5,7 +5,8 @@ export const platformId = 'mango';
 export const platform: Platform = {
   id: platformId,
   name: 'Mango',
-  image: 'https://sonar.watch/img/platforms/mango.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/mango.webp',
   defiLlamaId: 'parent#mango-markets',
   website: 'https://mango.markets/',
 };
@@ -14,7 +15,8 @@ export const yieldFanPlatformId = 'yieldfan';
 export const yieldFanPlatform: Platform = {
   id: yieldFanPlatformId,
   name: 'Yieldfan',
-  image: 'https://sonar.watch/img/platforms/yieldfan.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/yieldfan.webp',
   website: 'https://yield.fan/',
 };
 export const banksKey = `banks`;

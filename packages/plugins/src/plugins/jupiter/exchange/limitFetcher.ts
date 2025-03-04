@@ -1,89 +1,69 @@
-import {
-  NetworkId,
-  PortfolioAsset,
-  PortfolioElementMultiple,
-} from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSolana } from '../../../utils/clients';
 import { getParsedProgramAccounts } from '../../../utils/solana';
-import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import { platformId, limitProgramId, limitV2ProgramId } from './constants';
-import { limitOrderStruct, limitOrderV2Struct } from './structs';
+import { platformId, limitV1ProgramId, limitV2ProgramId } from './constants';
 import { limitFilters } from './filters';
+import { ElementRegistry } from '../../../utils/elementbuilder/ElementRegistry';
+import { limitOrderStruct, limitOrderV2Struct } from './structs';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const allAccounts = (
-    await Promise.all([
-      getParsedProgramAccounts(
-        client,
-        limitOrderStruct,
-        limitProgramId,
-        limitFilters(owner)
-      ),
-      getParsedProgramAccounts(
-        client,
-        limitOrderV2Struct,
-        limitV2ProgramId,
-        limitFilters(owner)
-      ),
-    ])
-  ).flat();
-  if (allAccounts.length === 0) return [];
+  const accountsRes = await Promise.all([
+    // V1
+    getParsedProgramAccounts(
+      client,
+      limitOrderStruct,
+      limitV1ProgramId,
+      limitFilters(owner)
+    ),
+    // V2
+    getParsedProgramAccounts(
+      client,
+      limitOrderV2Struct,
+      limitV2ProgramId,
+      limitFilters(owner)
+    ),
+  ]);
+  const v1Length = accountsRes[0].length;
+  const accounts = accountsRes.flat();
+  if (accounts.length === 0) return [];
 
-  const mints: Set<string> = new Set();
-  allAccounts.forEach((account) => mints.add(account.inputMint.toString()));
+  const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 
-  const tokenPriceById = await cache.getTokenPricesAsMap(
-    Array.from(mints),
-    NetworkId.solana
-  );
+  for (let i = 0; i < accounts.length; i++) {
+    const account = accounts[i];
 
-  const rawAmountByMint: Map<string, BigNumber> = new Map();
-  for (let i = 0; i < allAccounts.length; i += 1) {
-    const limOrder = allAccounts[i];
-    const mint = limOrder.inputMint.toString();
+    const isV1 = i <= v1Length - 1;
 
-    const amountLeftInOrder = limOrder.makingAmount;
-    const totalAmount = rawAmountByMint.get(mint);
-    rawAmountByMint.set(mint, amountLeftInOrder.plus(totalAmount || 0));
+    const element = elementRegistry.addElementTrade({
+      tags: isV1 ? ['deprecated'] : undefined,
+      ref: account.pubkey.toString(),
+      link: 'https://jup.ag/trigger/',
+      label: 'LimitOrder',
+      contract: isV1
+        ? limitV1ProgramId.toString()
+        : limitV2ProgramId.toString(),
+    });
+
+    element.setTrade({
+      inputAsset: {
+        address: account.inputMint,
+        amount: account.makingAmount,
+      },
+      outputAsset: {
+        address: account.outputMint,
+        amount: account.oriTakingAmount.minus(account.takingAmount),
+      },
+      initialInputAmount: account.oriMakingAmount,
+      expectedOutputAmount: account.oriTakingAmount,
+      withdrawnOutputAmount: 0,
+    });
   }
 
-  let value = 0;
-  const assets: PortfolioAsset[] = [];
-  for (const [mint, rawAmount] of rawAmountByMint) {
-    if (rawAmount.isZero()) continue;
-
-    const tokenPrice = tokenPriceById.get(mint);
-    if (!tokenPrice) continue;
-
-    const amount = rawAmount.dividedBy(10 ** tokenPrice.decimals).toNumber();
-    const asset = tokenPriceToAssetToken(
-      mint,
-      amount,
-      NetworkId.solana,
-      tokenPrice
-    );
-    assets.push(asset);
-    value += asset.value ? asset.value : 0;
-  }
-
-  if (assets.length === 0) return [];
-
-  const element: PortfolioElementMultiple = {
-    type: 'multiple',
-    networkId: NetworkId.solana,
-    platformId,
-    value,
-    label: 'Deposit',
-    name: `Limit Orders (${allAccounts.length})`,
-    data: { assets },
-  };
-
-  return [element];
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

@@ -42,6 +42,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       rewardsMints: farm.rewardInfos.map((r) => r.token.mint.toString()),
       lockingDuration: farm.lockingDuration.toNumber(),
       lockingStart: farm.lockingStartTimestamp.toNumber(),
+      strategyId: farm.strategyId.toString(),
     };
     farmsInfo.push(farmInfo);
   });
@@ -55,6 +56,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-farms`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;
