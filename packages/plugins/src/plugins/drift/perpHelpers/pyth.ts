@@ -65,10 +65,9 @@ function getStableCoinPrice(price: BN, confidence: BN): BN {
 export function pythLazerPriceToOraclePrice(buffer: Buffer): OraclePriceData {
   const pythLazer = pythLazerOracleStruct.deserialize(buffer)[0];
 
+  const adjustedExp = pythLazer.exponent + 6;
   return {
-    price: new BN(
-      pythLazer.price.dividedBy(10 ** -pythLazer.exponent).toNumber()
-    ),
+    price: new BN(pythLazer.price.shiftedBy(adjustedExp).toNumber()),
     slot: new BN(pythLazer.postedSlot.toNumber()),
     confidence: new BN(pythLazer.conf.toNumber()),
     hasSufficientNumberOfDataPoints: true,
