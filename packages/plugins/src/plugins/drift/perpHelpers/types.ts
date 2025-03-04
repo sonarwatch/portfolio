@@ -3,6 +3,7 @@ import BN from 'bn.js';
 
 export type OraclePriceData = {
   price: BN;
+  precision?: BN;
   slot: BN;
   confidence: BN;
   hasSufficientNumberOfDataPoints: boolean;

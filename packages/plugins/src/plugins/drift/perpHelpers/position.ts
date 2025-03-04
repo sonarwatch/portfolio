@@ -109,6 +109,7 @@ export function calculatePositionPNL(
     : new BN(1);
   let pnl = baseAssetValue
     .mul(baseAssetValueSign)
+    .mul(PRICE_PRECISION)
     .add(perpPosition.quoteAssetAmount);
 
   if (withFunding) {

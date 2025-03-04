@@ -13,7 +13,8 @@ export function getSwitchboardOnDemandOraclePriceDataFromBuffer(
   const [pullFeedAccountData] = pullFeedAccountDataStruct.deserialize(buffer);
 
   return {
-    price: toBN(pullFeedAccountData.result.value).div(SB_PRECISION),
+    price: new BN(pullFeedAccountData.result.value.toString()),
+    precision: SB_PRECISION,
     slot: toBN(pullFeedAccountData.result.slot),
     confidence: toBN(pullFeedAccountData.result.range).div(SB_PRECISION),
     hasSufficientNumberOfDataPoints: true,
