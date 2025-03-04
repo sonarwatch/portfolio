@@ -7,7 +7,8 @@ export const platformId = 'banx';
 export const platform: Platform = {
   id: platformId,
   name: 'Banx',
-  image: 'https://sonar.watch/img/platforms/banx.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/banx.webp',
   defiLlamaId: 'banx', // from https://defillama.com/docs/api
   website: 'https://banx.gg/',
   twitter: 'https://twitter.com/banx_gg',

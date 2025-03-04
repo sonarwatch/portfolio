@@ -5,7 +5,8 @@ export const platformId = 'puffcoin';
 export const platform: Platform = {
   id: platformId,
   name: 'Puff',
-  image: 'https://sonar.watch/img/platforms/puffcoin.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/puffcoin.webp',
   website: 'https://staking.puffcoin.fun/',
 };
 

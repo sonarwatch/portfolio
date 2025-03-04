@@ -7,7 +7,8 @@ export const platformId = 'allbridge';
 export const platform: Platform = {
   id: platformId,
   name: 'Allbridge',
-  image: 'https://sonar.watch/img/platforms/allbridge.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/allbridge.webp',
   website: 'https://core.allbridge.io/pools',
   twitter: 'https://twitter.com/Allbridge_io',
   defiLlamaId: 'allbridge-core', // from https://defillama.com/docs/api

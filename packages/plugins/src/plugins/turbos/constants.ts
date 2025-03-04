@@ -4,7 +4,8 @@ export const platformId = 'turbos';
 export const platform: Platform = {
   id: platformId,
   name: 'Turbos',
-  image: 'https://sonar.watch/img/platforms/turbos.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/turbos.webp',
   defiLlamaId: 'turbos',
   website: 'https://app.turbos.finance/',
 };

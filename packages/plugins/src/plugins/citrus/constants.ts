@@ -7,7 +7,8 @@ export const platformId = 'citrus';
 export const platform: Platform = {
   id: platformId,
   name: 'Citrus',
-  image: 'https://sonar.watch/img/platforms/citrus.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/citrus.webp',
   website: 'https://citrus.famousfoxes.com/',
   twitter: 'https://twitter.com/FamousFoxFed',
   defiLlamaId: 'citrus', // from https://defillama.com/docs/api

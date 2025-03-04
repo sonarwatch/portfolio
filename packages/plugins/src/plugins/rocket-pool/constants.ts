@@ -6,7 +6,8 @@ export const platform: Platform = {
   id: platformId,
   name: 'Rocket Pool',
   defiLlamaId: 'rocket-pool',
-  image: 'https://sonar.watch/img/platforms/rocketpool.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/rocketpool.webp',
   website: 'https://rocketpool.net/',
 };
 export const marketsCachePrefix = `${platformId}-markets`;

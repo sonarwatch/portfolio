@@ -6,7 +6,8 @@ export const platformId = 'stargate';
 export const platform: Platform = {
   id: platformId,
   name: 'Stargate',
-  image: 'https://sonar.watch/img/platforms/stargate.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/stargate.webp',
   defiLlamaId: 'stargate-v1',
   website: 'https://stargate.finance/',
 };

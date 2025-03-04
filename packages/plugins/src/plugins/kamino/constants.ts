@@ -155,7 +155,8 @@ export const airdropStaticsS1: AirdropStatics = {
   emitterName: 'Kamino',
   emitterLink: 'https://app.kamino.finance/',
   claimLink: 'https://app.kamino.finance/genesis',
-  image: 'https://sonar.watch/img/platforms/kamino.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/kamino.webp',
   name: 'S1',
 };
 export const airdropStaticsS2: AirdropStatics = {
@@ -165,7 +166,8 @@ export const airdropStaticsS2: AirdropStatics = {
   emitterName: 'Kamino',
   emitterLink: 'https://app.kamino.finance/',
   claimLink: 'https://app.kamino.finance/season-2-airdrop',
-  image: 'https://sonar.watch/img/platforms/kamino.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/kamino.webp',
   name: 'S2',
 };
 

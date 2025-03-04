@@ -5,7 +5,8 @@ export const platformId = 'staratlas';
 export const platform: Platform = {
   id: platformId,
   name: 'Star Atlas',
-  image: 'https://sonar.watch/img/platforms/staratlas.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/staratlas.webp',
   website: 'https://staratlas.com/',
   twitter: 'https://twitter.com/staratlas',
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api

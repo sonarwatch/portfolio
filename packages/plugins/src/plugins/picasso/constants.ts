@@ -7,7 +7,8 @@ export const platformId = 'picasso';
 export const platform: Platform = {
   id: platformId,
   name: 'Picasso',
-  image: 'https://sonar.watch/img/platforms/picasso.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/picasso.webp',
   website: 'https://app.picasso.network/solana-staking/',
   twitter: 'https://x.com/picasso_network',
   // defiLlamaId: 'composable-finance', // from https://defillama.com/docs/api

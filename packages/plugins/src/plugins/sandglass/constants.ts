@@ -6,7 +6,8 @@ export const platformId = 'sandglass';
 export const platform: Platform = {
   id: platformId,
   name: 'Sandglass',
-  image: 'https://sonar.watch/img/platforms/sandglass.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/sandglass.webp',
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
   website: 'https://sandglass.so/',
   twitter: 'https://twitter.com/sandglass_so',

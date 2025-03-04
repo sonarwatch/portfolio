@@ -5,7 +5,8 @@ export const platformId = 'flexlend';
 export const platform: Platform = {
   id: platformId,
   name: 'LuLo',
-  image: 'https://sonar.watch/img/platforms/lulo.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/lulo.webp',
   defiLlamaId: 'lulo',
   website: 'https://www.lulo.fi',
   twitter: 'https://twitter.com/uselulo',

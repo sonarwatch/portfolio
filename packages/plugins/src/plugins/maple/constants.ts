@@ -5,7 +5,8 @@ export const platformId = 'maple';
 export const platform: Platform = {
   id: platformId,
   name: 'Maple',
-  image: 'https://sonar.watch/img/platforms/maple.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/maple.webp',
   defiLlamaId: 'parent#maple-finance',
   website: 'https://www.maple.finance/',
 };

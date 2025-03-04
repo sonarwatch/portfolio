@@ -4,7 +4,8 @@ export const platformId = 'benqi';
 export const platform: Platform = {
   id: platformId,
   name: 'Benqi',
-  image: 'https://sonar.watch/img/platforms/benqi.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/benqi.webp',
   defiLlamaId: 'benqi-lending', // from https://defillama.com/docs/api
   website: 'https://benqi.fi/',
   twitter: 'https://twitter.com/BenqiFinance',

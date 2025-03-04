@@ -5,7 +5,8 @@ export const platformId = 'baskt';
 export const platform: Platform = {
   id: platformId,
   name: 'baskt',
-  image: 'https://sonar.watch/img/platforms/baskt.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/baskt.webp',
   website: 'https://www.baskt.fun/',
   twitter: 'https://x.com/basktdotfun',
 };

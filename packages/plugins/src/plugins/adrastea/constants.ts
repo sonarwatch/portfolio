@@ -5,7 +5,8 @@ export const platformId = 'adrastea';
 export const platform: Platform = {
   id: platformId,
   name: 'Adrastea',
-  image: 'https://sonar.watch/img/platforms/adrastea.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/adrastea.webp',
   website: 'https://app.adrastea.fi/',
   twitter: 'https://x.com/AdrasteaFinance',
   defiLlamaId: 'adrastea', // from https://defillama.com/docs/api

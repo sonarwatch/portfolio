@@ -5,7 +5,8 @@ export const platformId = 'symmetry';
 export const platform: Platform = {
   id: platformId,
   name: 'Symmetry',
-  image: 'https://sonar.watch/img/platforms/symmetry.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/symmetry.webp',
   website: 'https://www.symmetry.fi/',
   twitter: 'https://twitter.com/symmetry_fi',
   defiLlamaId: 'symmetry', // from https://defillama.com/docs/api

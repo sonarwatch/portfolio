@@ -5,7 +5,8 @@ export const platformId = 'loopscale';
 export const platform: Platform = {
   id: platformId,
   name: 'Loopscale',
-  image: 'https://sonar.watch/img/platforms/loopscale.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/loopscale.webp',
   website: 'https://app.loopscale.com/',
   twitter: 'https://x.com/LoopscaleLabs',
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api

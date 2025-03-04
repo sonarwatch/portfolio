@@ -5,7 +5,8 @@ export const platformId = 'futarchy';
 export const platform: Platform = {
   id: platformId,
   name: 'Futarchy',
-  image: 'https://sonar.watch/img/platforms/metadao.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/metadao.webp',
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
   website: 'https://futarchy.metadao.fi/',
   twitter: 'https://x.com/MetaDAOProject',
