@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.138](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.137...plugins-0.14.138) (2025-03-04)
+
+
+### Reverts
+
+* Revert "fix drift" ([b1318fa](https://github.com/sonarwatch/portfolio/commit/b1318fa453a4d1a723f47791051942fba2e98d13))
+
+
+
 ## [0.14.137](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.136...plugins-0.14.137) (2025-03-04)
 
 
