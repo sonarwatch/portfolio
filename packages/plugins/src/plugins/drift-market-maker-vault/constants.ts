@@ -7,7 +7,8 @@ export const circuitPlatformId = 'circuit';
 export const circuitPlatform: Platform = {
   id: circuitPlatformId,
   name: 'Circuit',
-  image: 'https://sonar.watch/img/platforms/circuit.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/circuit.webp',
   website: 'https://app.circuit.trade/',
   twitter: 'https://twitter.com/CircuitTrading_',
 };
@@ -16,7 +17,8 @@ export const moosePlatformId = 'moose';
 export const moosePlatform: Platform = {
   id: moosePlatformId,
   name: 'Moose Market',
-  image: 'https://sonar.watch/img/platforms/moose.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/moose.webp',
   website: 'https://moose.market/',
   twitter: 'https://twitter.com/moose_market',
 };
@@ -25,7 +27,8 @@ export const neutralPlatformId = 'neutral';
 export const neutralPlatform: Platform = {
   id: neutralPlatformId,
   name: 'Neutral',
-  image: 'https://sonar.watch/img/platforms/neutral.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/neutral.webp',
   website: 'https://www.app.neutral.trade/',
   twitter: 'https://twitter.com/TradeNeutral',
 };
@@ -34,7 +37,8 @@ export const gauntletPlatformId = 'gauntlet';
 export const gauntletPlatform: Platform = {
   id: gauntletPlatformId,
   name: 'Gauntlet',
-  image: 'https://sonar.watch/img/platforms/gauntlet.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/gauntlet.webp',
   twitter: 'https://twitter.com/gauntlet_xyz',
   website:
     'https://app.drift.trade/vaults/CoHd9JpwfcA76XQGA4AYfnjvAtWKoBQ6eWBkFzR1A2ui',
@@ -44,7 +48,8 @@ export const vectisPlatformId = 'vectis';
 export const vectisPlatform: Platform = {
   id: vectisPlatformId,
   name: 'Vectis',
-  image: 'https://sonar.watch/img/platforms/vectis.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/vectis.webp',
   twitter: 'https://twitter.com/vectis_xyz',
   website: 'https://app.vectis.finance/',
 };
@@ -53,7 +58,8 @@ export const hedgyPlatformId = 'hedgy';
 export const hedgyPlatform: Platform = {
   id: hedgyPlatformId,
   name: 'Hedgy',
-  image: 'https://sonar.watch/img/platforms/hedgy.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/hedgy.webp',
   twitter: 'https://x.com/HedgyMarket',
   website: 'https://hedgy.market/',
 };
@@ -62,7 +68,8 @@ export const m1CapitalPlatformId = 'm1capital';
 export const m1CapitalPlatform: Platform = {
   id: m1CapitalPlatformId,
   name: 'M1 Capital',
-  image: 'https://sonar.watch/img/platforms/m1capital.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/m1capital.webp',
   twitter: 'https://x.com/M1Capital_',
   website: 'https://m1-capital.com/',
 };
@@ -71,7 +78,8 @@ export const knightradePlatformId = 'knightrade';
 export const knightradePlatform: Platform = {
   id: knightradePlatformId,
   name: 'Knightrade',
-  image: 'https://sonar.watch/img/platforms/knightrade.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/knightrade.webp',
   twitter: 'https://x.com/KnightradeTeam',
   website: 'https://app.knightrade.io/',
 };
@@ -80,7 +88,8 @@ export const luckyperpPlatformId = 'luckyperp';
 export const luckyperpPlatform: Platform = {
   id: luckyperpPlatformId,
   name: 'Lucky Perp',
-  image: 'https://sonar.watch/img/platforms/luckyperp.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/luckyperp.webp',
   twitter: 'https://x.com/LuckyPerp_com',
 };
 

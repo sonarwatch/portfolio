@@ -6,7 +6,8 @@ export const platformId = 'elemental';
 export const platform: Platform = {
   id: platformId,
   name: 'Elemental',
-  image: 'https://sonar.watch/img/platforms/elemental.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/elemental.webp',
   website: 'https://elemental.fund/',
   twitter: 'https://twitter.com/elementaldefi',
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api

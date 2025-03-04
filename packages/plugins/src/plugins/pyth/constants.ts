@@ -5,7 +5,8 @@ export const platformId = 'pyth';
 export const platform: Platform = {
   id: platformId,
   name: 'Pyth',
-  image: 'https://sonar.watch/img/platforms/pyth.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/pyth.webp',
   defiLlamaId: 'pyth-network', // from https://defillama.com/docs/api
   website: 'https://staking.pyth.network/',
   twitter: 'https://twitter.com/PythNetwork',

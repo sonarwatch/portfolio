@@ -6,7 +6,8 @@ export const platformId = 'solayer';
 export const platform: Platform = {
   id: platformId,
   name: 'Solayer',
-  image: 'https://sonar.watch/img/platforms/solayer.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/solayer.webp',
   website: 'https://solayer.org/',
   twitter: 'https://x.com/solayer_labs',
   defiLlamaId: 'parent#solayer',
@@ -28,7 +29,8 @@ export const airdropStatics: AirdropStatics = {
   emitterLink: 'https://solayer.foundation/',
   emitterName: platform.name,
   id: 'solayer-airdrop',
-  image: 'https://sonar.watch/img/platforms/solayer.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/solayer.webp',
   claimStart: 1739275200000,
   claimEnd: 1741089600000,
 };

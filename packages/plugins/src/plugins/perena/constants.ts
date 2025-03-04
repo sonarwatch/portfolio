@@ -5,7 +5,8 @@ export const platformId = 'perena';
 export const platform: Platform = {
   id: platformId,
   name: 'Perena',
-  image: 'https://sonar.watch/img/platforms/perena.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/perena.webp',
   website: 'https://perena.org/numeraire',
   twitter: 'https://x.com/Perena__',
 };

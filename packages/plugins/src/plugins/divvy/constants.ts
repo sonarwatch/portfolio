@@ -7,7 +7,8 @@ export const platformId = 'divvy';
 export const platform: Platform = {
   id: platformId,
   name: 'Divvy',
-  image: 'https://sonar.watch/img/platforms/divvy.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/divvy.webp',
   defiLlamaId: 'divvy.bet',
   website: 'https://app.divvy.bet/',
 };

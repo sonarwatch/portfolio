@@ -7,7 +7,8 @@ export const platformId = 'pancakeswap';
 export const platform: Platform = {
   id: platformId,
   name: 'PancakeSwap',
-  image: 'https://sonar.watch/img/platforms/pancakeswap.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/pancakeswap.webp',
   defiLlamaId: 'parent#pancakeswap',
   website: 'https://pancakeswap.finance/',
 };

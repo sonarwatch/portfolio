@@ -6,7 +6,8 @@ export const platformId = 'jito';
 export const platform: Platform = {
   id: platformId,
   name: 'Jito',
-  image: 'https://sonar.watch/img/platforms/jito.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/jito.webp',
   defiLlamaId: 'jito',
   website: 'https://jito.network/harvest',
   twitter: 'https://twitter.com/jito_sol',
@@ -16,7 +17,8 @@ export const renzoPlatformId = 'renzo';
 export const renzoPlatform: Platform = {
   id: renzoPlatformId,
   name: 'Renzo',
-  image: 'https://sonar.watch/img/platforms/renzo.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/renzo.webp',
   website: 'https://app.renzoprotocol.com/discover',
   twitter: 'https://x.com/RenzoProtocol',
 };
@@ -25,7 +27,8 @@ export const kyrosPlatformId = 'kyros';
 export const kyrosPlatform: Platform = {
   id: kyrosPlatformId,
   name: 'Kyros',
-  image: 'https://sonar.watch/img/platforms/kyros.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/kyros.webp',
   website: 'https://app.kyros.fi/',
   twitter: 'https://x.com/kyrosfi',
 };

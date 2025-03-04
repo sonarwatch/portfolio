@@ -4,7 +4,8 @@ export const platformId = 'bucket';
 export const platform: Platform = {
   id: platformId,
   name: 'Bucket',
-  image: 'https://sonar.watch/img/platforms/bucket.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/bucket.webp',
   defiLlamaId: 'bucket-protocol',
   website: 'https://bucketprotocol.io/',
 };

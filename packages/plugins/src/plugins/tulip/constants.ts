@@ -5,7 +5,8 @@ export const platformId = 'tulip';
 export const platform: Platform = {
   id: platformId,
   name: 'Tulip',
-  image: 'https://sonar.watch/img/platforms/tulip.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/tulip.webp',
   defiLlamaId: 'tulip-protocol',
   website: 'https://tulip.garden/',
   twitter: 'https://twitter.com/TulipProtocol',

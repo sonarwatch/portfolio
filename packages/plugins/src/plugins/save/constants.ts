@@ -7,7 +7,8 @@ export const platformDumpyId = 'dumpy';
 export const platform: Platform = {
   id: platformId,
   name: 'Save',
-  image: 'https://sonar.watch/img/platforms/save.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/save.webp',
   defiLlamaId: 'save',
   website: 'https://save.finance/',
 };
@@ -15,7 +16,8 @@ export const platform: Platform = {
 export const platformDumpy: Platform = {
   id: platformDumpyId,
   name: 'Dumpy',
-  image: 'https://sonar.watch/img/platforms/dumpy.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/dumpy.webp',
   // defiLlamaId: 'dumpy',
   website: 'https://dumpy.fun/',
 };

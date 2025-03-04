@@ -5,7 +5,8 @@ export const platformId = 'lifinity';
 export const platform: Platform = {
   id: platformId,
   name: 'Lifinity',
-  image: 'https://sonar.watch/img/platforms/lifinity.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/lifinity.webp',
   defiLlamaId: 'parent#lifinity', // from https://defillama.com/docs/api
   website: 'https://ido.lifinity.io/rewards',
   // twitter: 'https://twitter.com/myplatform',

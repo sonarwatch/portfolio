@@ -7,7 +7,8 @@ export const platformId = 'rain';
 export const platform: Platform = {
   id: platformId,
   name: 'Rain',
-  image: 'https://sonar.watch/img/platforms/rain.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/rain.webp',
   defiLlamaId: 'rain.fi', // from https://defillama.com/docs/api
   website: 'https://rain.fi/',
   twitter: 'https://twitter.com/RainFi_',

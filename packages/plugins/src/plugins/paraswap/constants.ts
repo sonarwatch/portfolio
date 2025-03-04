@@ -7,7 +7,8 @@ export const platform: Platform = {
   id: platformId,
   name: 'Paraswap',
   defiLlamaId: 'paraswap',
-  image: 'https://sonar.watch/img/platforms/paraswap.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/paraswap.webp',
   website: 'https://paraswap.io/',
 };
 

@@ -4,7 +4,8 @@ export const platformId = 'joule';
 export const platform: Platform = {
   id: platformId,
   name: 'Joule',
-  image: 'https://sonar.watch/img/platforms/joule.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/joule.webp',
   website: 'https://app.joule.finance/',
   twitter: 'https://twitter.com/JouleFinance',
   defiLlamaId: 'joule-finance', // from https://defillama.com/docs/api

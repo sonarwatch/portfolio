@@ -5,7 +5,8 @@ export const platformId = 'pluto';
 export const platform: Platform = {
   id: platformId,
   name: 'Pluto',
-  image: 'https://sonar.watch/img/platforms/pluto.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/pluto.webp',
   website: 'https://pluto.so/',
   twitter: 'https://x.com/plutoleverage',
   discord: 'https://discord.com/invite/plutoleverage',

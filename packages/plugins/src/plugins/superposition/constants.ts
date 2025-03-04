@@ -4,7 +4,8 @@ export const platformId = 'superposition';
 export const platform: Platform = {
   id: platformId,
   name: 'Superposition',
-  image: 'https://sonar.watch/img/platforms/superposition.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/superposition.webp',
   website: 'https://www.superposition.finance/',
   twitter: 'https://x.com/superpositionfi',
   defiLlamaId: 'superposition', // from https://defillama.com/docs/api

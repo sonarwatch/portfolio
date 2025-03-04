@@ -6,7 +6,8 @@ export const platformId = 'debridge';
 export const platform: Platform = {
   id: platformId,
   name: 'deBridge',
-  image: 'https://sonar.watch/img/platforms/debridge.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/debridge.webp',
   website: 'https://debridge.finance/',
   twitter: 'https://x.com/deBridgeFinance',
   defiLlamaId: 'debridge', // from https://defillama.com/docs/api
@@ -16,7 +17,8 @@ export const commonStatics = {
   claimLink: 'https://debridge.foundation/checker',
   emitterLink: 'https://debridge.finance/',
   emitterName: 'deBridge',
-  image: 'https://sonar.watch/img/platforms/debridge.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/debridge.webp',
 };
 
 export const firstDistribStatics: AirdropStatics = {

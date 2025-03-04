@@ -5,7 +5,8 @@ export const platformId = 'accessprotocol';
 export const platform: Platform = {
   id: platformId,
   name: 'Access Protocol',
-  image: 'https://sonar.watch/img/platforms/accessprotocol.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/accessprotocol.webp',
   twitter: 'https://twitter.com/AccessProtocol',
   website: 'https://hub.accessprotocol.co',
   // defiLlamaId: 'nothing yet',

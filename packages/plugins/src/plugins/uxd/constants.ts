@@ -6,7 +6,8 @@ export const platformId = 'uxd';
 export const platform: Platform = {
   id: platformId,
   name: 'UXD',
-  image: 'https://sonar.watch/img/platforms/uxd.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/uxd.webp',
   defiLlamaId: 'uxd', // from https://defillama.com/docs/api
   website: 'https://uxd.fi/',
   twitter: 'https://twitter.com/UXDProtocol',

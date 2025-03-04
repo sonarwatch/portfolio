@@ -4,7 +4,8 @@ export const platformId = 'photofinish';
 export const platform: Platform = {
   id: platformId,
   name: 'Photo Finish',
-  image: 'https://sonar.watch/img/platforms/photofinish.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/photofinish.webp',
   website: 'https://photofinish.live/',
   twitter: 'https://x.com/photofinishgame',
 };

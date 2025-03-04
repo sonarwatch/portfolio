@@ -6,7 +6,8 @@ export const platformId = 'marginfi';
 export const platform: Platform = {
   id: platformId,
   name: 'Marginfi',
-  image: 'https://sonar.watch/img/platforms/marginfi.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/marginfi.webp',
   defiLlamaId: 'parent#marginfi',
   website: 'https://www.marginfi.com/',
 };

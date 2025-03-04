@@ -4,7 +4,8 @@ export const platformId = 'abex';
 export const platform: Platform = {
   id: platformId,
   name: 'ABEx Finance',
-  image: 'https://sonar.watch/img/platforms/abex.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/abex.webp',
   website: 'https://abex.fi/',
   twitter: 'https://twitter.com/ABExFinance',
   defiLlamaId: 'abex-finance', // from https://defillama.com/docs/api

@@ -5,7 +5,8 @@ export const platformId = 'raydium';
 export const platform: Platform = {
   id: platformId,
   name: 'Raydium',
-  image: 'https://sonar.watch/img/platforms/raydium.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/raydium.webp',
   defiLlamaId: 'raydium',
   website: 'https://raydium.io/',
 };

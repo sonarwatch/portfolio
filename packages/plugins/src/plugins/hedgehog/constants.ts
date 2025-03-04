@@ -5,7 +5,8 @@ export const platformId = 'hedgehog';
 export const platform: Platform = {
   id: platformId,
   name: 'Hedgehog Markets',
-  image: 'https://sonar.watch/img/platforms/hedgehog.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/hedgehog.webp',
   website: 'https://hedgehog.markets',
   twitter: 'https://twitter.com/HedgehogMarket',
   defiLlamaId: 'hedgehog-markets', // from https://defillama.com/docs/api

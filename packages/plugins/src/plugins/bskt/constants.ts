@@ -5,7 +5,8 @@ export const platformId = 'bskt';
 export const platform: Platform = {
   id: platformId,
   name: 'BSKT',
-  image: 'https://sonar.watch/img/platforms/bskt.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/bskt.webp',
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
   website: 'https://claim.bskt.fi/',
   twitter: 'https://twitter.com/bsktfi',

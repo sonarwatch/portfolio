@@ -5,7 +5,8 @@ export const platformId = 'guano';
 export const platform: Platform = {
   id: platformId,
   name: 'Guano',
-  image: 'https://sonar.watch/img/platforms/guano.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/guano.webp',
   website: 'https://www.guanocoin.com/',
   twitter: 'https://x.com/guanocoin',
 };

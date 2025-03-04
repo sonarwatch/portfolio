@@ -9,7 +9,8 @@ export const platformId = 'famousfoxfederation';
 export const platform: Platform = {
   id: platformId,
   name: 'Famous Fox Federation',
-  image: 'https://sonar.watch/img/platforms/famousfoxfederation.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/famousfoxfederation.webp',
   website: 'https://famousfoxes.com',
   twitter: 'https://twitter.com/famousfoxfed',
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
