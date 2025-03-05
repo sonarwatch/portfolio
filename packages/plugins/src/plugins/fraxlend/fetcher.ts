@@ -11,6 +11,8 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId } from './constants';
 import { PoolTokenOther, getPairsContracts } from './getPairs';
 import { getEvmClient } from '../../utils/clients';
+import { Cache } from '../../Cache';
+import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 const abi = {
   getUserSnapshot: {
@@ -88,19 +90,19 @@ export async function getLendBorrowBalances(
   });
 
   // Define the LTV calls for each contract
-  const ltvCalls = contracts.map(
-    (contract) =>
-      ({
-        address: contract.pairAddress as `0x${string}`,
-        functionName: 'maxLTV',
-        abi: [abi.maxLTV],
-      } as const)
-  );
+  // const ltvCalls = contracts.map(
+  //   (contract) =>
+  //     ({
+  //       address: contract.pairAddress as `0x${string}`,
+  //       functionName: 'maxLTV',
+  //       abi: [abi.maxLTV],
+  //     } as const)
+  // );
 
   // Fetch LTV values using Viewn multicall
-  const ltvResponses = await client.multicall({
-    contracts: ltvCalls,
-  });
+  // const ltvResponses = await client.multicall({
+  //   contracts: ltvCalls,
+  // });
 
   // Define the total borrow calls for each contract
   const totalBorrowCalls = contracts.map(
@@ -127,7 +129,7 @@ export async function getLendBorrowBalances(
       } as const)
   );
 
-  // Fetch total asset values using Viewn multicall
+  // Fetch total asset values using viem multicall
   const totalAssetResponses = await client.multicall({
     contracts: totalAssetCalls,
   });
@@ -137,14 +139,14 @@ export async function getLendBorrowBalances(
   for (let i = 0; i < contracts.length; i++) {
     const contract = contracts[i];
     const snapshot = userSnapshots[i];
-    const ltv = ltvResponses[i];
+    // const ltv = ltvResponses[i];
     const borrow = totalBorrowResponses[i];
     const asset = totalAssetResponses[i];
 
     // Check if all responses are successful
     if (
       snapshot.status !== 'success' ||
-      ltv.status !== 'success' ||
+      // ltv.status !== 'success' ||
       borrow.status !== 'success' ||
       asset.status !== 'success'
     ) {
@@ -156,14 +158,14 @@ export async function getLendBorrowBalances(
 
       // Convert snapshot.result to the expected type
       const snapshotResult = snapshot.result as bigint[];
-      const ltvResult = ltv.result as bigint;
+      // const ltvResult = ltv.result as bigint;
       const borrowResult = borrow.result as [bigint, bigint];
       const assetResult = asset.result as [bigint, bigint];
 
       // Convert responses to BigNumber
       const [userAssetShares, userBorrowShares, userCollateralBalance] =
         snapshotResult.map((value) => BigNumber(value.toString()));
-      const maxLtv = BigNumber(ltvResult.toString());
+      // const maxLtv = BigNumber(ltvResult.toString());
       const [amountBorrow, sharesBorrow] = borrowResult.map((value) =>
         BigNumber(value.toString())
       );
@@ -190,13 +192,12 @@ export async function getLendBorrowBalances(
 
       // Create balance object
       const balance = {
-        contract: contract.pairAddress,
-        asset: contract.suppliedAssetAddress,
-        borrow: contract.borrowedAssetAddress,
-        userAsset: userAsset.toString(),
-        userBorrow: userBorrow.toString(),
-        userCollateral: userCollateralBalance.toString(),
-        ltv: maxLtv.div(1e13).toString(), // Convert LTV to decimal format
+        contractAddress: contract.pairAddress,
+        supplyAssetAddress: contract.suppliedAssetAddress,
+        borrowAssetAddress: contract.borrowedAssetAddress,
+        supplyAssetBalance: userAsset.toString(),
+        borrowAssetBalance: userBorrow.toString(),
+        collateralBalance: userCollateralBalance.toString(),
       };
 
       balances.push(balance);
@@ -212,7 +213,7 @@ export async function getLendBorrowBalances(
 }
 
 function fetcher(networkId: EvmNetworkIdType): Fetcher {
-  const executor: FetcherExecutor = async (owner: string) => {
+  const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const fraxtalRegistry = '0x4C3B0e85CD8C12E049E07D9a4d68C441196E6a12'; // Replace with your Fraxtal registry address
     const contracts = await getPairsContracts(
       NetworkId.fraxtal,
@@ -223,15 +224,59 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
 
     const elements: PortfolioElementBorrowLend[] = [];
 
-    positions.forEach((position) => {
-      console.log(position);
+    const promises = positions.map(async (position) => {
+      const supplyTokenPricePromise = cache.getTokenPrice(
+        position.supplyAssetAddress,
+        NetworkId.fraxtal
+      );
+      const borrowTokenPricePromise = cache.getTokenPrice(
+        position.borrowAssetAddress,
+        NetworkId.fraxtal
+      );
+
+      const [supplyTokenPrice, borrowTokenPrice] = await Promise.all([
+        supplyTokenPricePromise,
+        borrowTokenPricePromise,
+      ]);
+
+      const supplyTokenBalance = new BigNumber(position.collateralBalance)
+        .div(10 ** (supplyTokenPrice?.decimals ?? 18))
+        .toNumber();
+
+      const borrowTokenBalance = new BigNumber(position.borrowAssetBalance)
+        .div(10 ** (borrowTokenPrice?.decimals ?? 18))
+        .toNumber();
+
+      const supplyAsset = tokenPriceToAssetToken(
+        position.supplyAssetAddress,
+        supplyTokenBalance,
+        NetworkId.fraxtal,
+        supplyTokenPrice
+      );
+
+      const borrowAsset = tokenPriceToAssetToken(
+        position.borrowAssetAddress,
+        borrowTokenBalance,
+        NetworkId.fraxtal,
+        borrowTokenPrice
+      );
+
+      let totalValue: number | null = null;
+
+      if (supplyAsset?.value != null && borrowAsset?.value != null) {
+        const supplyAssetValue = new BigNumber(supplyAsset.value);
+        const borrowAssetValue = new BigNumber(borrowAsset.value);
+
+        totalValue = supplyAssetValue.minus(borrowAssetValue).toNumber();
+      }
+
       const elementData: PortfolioElementBorrowLendData = {
-        borrowedAssets: [],
-        borrowedValue: 0,
-        healthRatio: 1,
-        suppliedAssets: [],
-        suppliedValue: 0,
-        value: 0,
+        borrowedAssets: [borrowAsset],
+        borrowedValue: borrowAsset.value,
+        healthRatio: 0,
+        suppliedAssets: [supplyAsset],
+        suppliedValue: supplyAsset.value,
+        value: totalValue,
         // unused
         rewardAssets: [],
         rewardValue: 0,
@@ -247,8 +292,11 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
         value: elementData.value,
         data: elementData,
       };
+
       elements.push(element);
     });
+
+    await Promise.all(promises);
 
     return elements;
   };

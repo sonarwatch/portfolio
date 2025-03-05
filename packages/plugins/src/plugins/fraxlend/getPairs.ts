@@ -4,7 +4,6 @@ import { Job, JobExecutor } from '../../Job';
 import { platformId } from './constants';
 
 import { getEvmClient } from '../../utils/clients';
-import { deepLog } from '../../utils/misc/logging';
 
 const abi = {
   collateralContract: {
@@ -114,7 +113,6 @@ export async function getPairsContracts(
 
     contracts.push(poolToken);
   }
-  console.log(deepLog(contracts));
   return contracts;
 }
 const executor: JobExecutor = async () => {
