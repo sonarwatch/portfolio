@@ -1,4 +1,5 @@
 import { Platform } from '@sonarwatch/portfolio-core';
+import { AirdropFetcher } from '../../AirdropFetcher';
 import { Fetcher } from '../../Fetcher';
 import { Job } from '../../Job';
 import { platform } from './constants';
@@ -19,4 +20,5 @@ export const fetchers: Fetcher[] = [
   positionFetcher,
   clmmsFetcher,
 ];
-export { airdropFetcher };
+
+export const airdropFetchers: AirdropFetcher[] = [airdropFetcher];

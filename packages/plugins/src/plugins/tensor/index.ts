@@ -1,6 +1,7 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 // import tensorFetcher from './singleListingFetcher';
 
+import { Job } from '../../Job';
 import { Fetcher } from '../../Fetcher';
 import { platform } from './constants';
 import bidsFetcher from './bidsFetcher';
@@ -21,7 +22,9 @@ export const fetchers: Fetcher[] = [
   sharedEscrowFetcher,
 ];
 
-export const tensorAirdropFetchers: AirdropFetcher[] = [
+export const airdropFetchers: AirdropFetcher[] = [
   powerUserAirdropFetcher,
   airdropS4Fetcher,
 ];
+
+export const jobs: Job[] = [];
