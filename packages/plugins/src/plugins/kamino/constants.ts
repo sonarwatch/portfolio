@@ -1,9 +1,16 @@
 import { PublicKey } from '@solana/web3.js';
-import { Contract, NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { Platform } from '@sonarwatch/portfolio-core';
 import { LendingMarketConfig } from './types';
 import { AirdropStatics } from '../../AirdropFetcher';
-import { jupiterSwapContract } from '../jupiter';
-import { platformId } from './constants_platform';
+
+export const platformId = 'kamino';
+export const platform: Platform = {
+  id: platformId,
+  name: 'Kamino',
+  image: `https://sonar.watch/img/platforms/${platformId}.webp`,
+  website: 'https://kamino.finance/',
+  defiLlamaId: 'parent#kamino-finance',
+};
 
 export const kmnoMint = 'KMNo3nJsBXfcpJTVhZcXLW7RmTwTt4GVFE7suUBo9sS';
 export const kmnoDecimals = 6;
@@ -162,38 +169,6 @@ export const airdropStaticsS2: AirdropStatics = {
   image:
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/kamino.webp',
   name: 'S2',
-};
-
-const kaminoLendContract: Contract = {
-  name: 'Kamino Lend',
-  address: klendProgramId.toString(),
-  platformId,
-};
-const kaminoFarmContract = {
-  name: 'Kamino Farm',
-  address: farmProgramId.toString(),
-  platformId,
-};
-export const kaminoLendingService: Service = {
-  id: `${platformId}-lend`,
-  name: 'Lending',
-  platformId,
-  networkId: NetworkId.solana,
-  contracts: [kaminoLendContract],
-};
-export const kaminoFarmService = {
-  id: `${platformId}-farm`,
-  name: 'Farm',
-  platformId,
-  networkId: NetworkId.solana,
-  contracts: [kaminoFarmContract],
-};
-export const kaminoMultiplyService: Service = {
-  id: `${platformId}-multiply`,
-  name: 'Multiply',
-  platformId,
-  networkId: NetworkId.solana,
-  contracts: [kaminoLendContract, jupiterSwapContract],
 };
 
 export const limitOrderProgramId = new PublicKey(

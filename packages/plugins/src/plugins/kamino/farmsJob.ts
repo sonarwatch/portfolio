@@ -4,8 +4,7 @@ import { Job, JobExecutor } from '../../Job';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { dataSizeFilter } from '../../utils/solana/filters';
-import { farmProgramId, farmsKey } from './constants';
-import { platformId } from './constants_platform';
+import { farmProgramId, farmsKey, platformId } from './constants';
 import { farmStateStruct } from './structs/vaults';
 import { FarmInfo } from './types';
 

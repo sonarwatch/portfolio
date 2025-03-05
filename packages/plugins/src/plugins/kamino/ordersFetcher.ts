@@ -1,8 +1,7 @@
 import { NetworkId, solanaNativeAddress } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { limitOrderProgramId } from './constants';
-import { platformId } from './constants_platform';
+import { limitOrderProgramId, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';

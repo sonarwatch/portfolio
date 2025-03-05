@@ -1,9 +1,4 @@
-import {
-  Contract,
-  NetworkId,
-  Platform,
-  Service,
-} from '@sonarwatch/portfolio-core';
+import { Platform, Service } from '@sonarwatch/portfolio-core';
 import { Fetcher } from '../../Fetcher';
 import { Job } from '../../Job';
 import perpetualFetcher from './exchange/perpetualFetcher';
@@ -28,6 +23,7 @@ import {
   asr3Fetcher,
 } from './governance';
 import { lfgAirdropFetchers, lfgFetchers } from './launchpad';
+import { jupiterSwapContract, swapService } from './services';
 
 export const platforms: Platform[] = [
   launchpadPlatform,
@@ -53,24 +49,11 @@ export const airdropFetchers: AirdropFetcher[] = [
   asr3AirdropFetcher,
   ...lfgAirdropFetchers,
 ];
+export const services: Service[] = [swapService];
 
 export const jupFetcherIds = [
   perpetualFetcher.id,
   valueAverageFetcher.id,
   limitFetcher.id,
   dcaFetcher.id,
-];
-export const jupiterSwapContract: Contract = {
-  name: 'Jupiter Swap',
-  address: 'JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4',
-  platformId: exchangePlatform.id,
-};
-export const services: Service[] = [
-  {
-    id: `${exchangePlatform.id}-swap`,
-    name: 'Swap',
-    platformId: exchangePlatform.id,
-    networkId: NetworkId.solana,
-    contracts: [jupiterSwapContract],
-  },
 ];
