@@ -1,47 +1,17 @@
 import { Address, getAddress } from 'viem';
 import { EvmNetworkIdType, NetworkId } from '@sonarwatch/portfolio-core';
 import { Job, JobExecutor } from '../../Job';
-import { platformId } from './constants';
+import {
+  fraxtalPoolRegistry,
+  pairAddressesCachePrefix,
+  platformId,
+} from './constants';
 
 import { getEvmClient } from '../../utils/clients';
+import { pairsAbi } from './abis';
+import { Cache } from '../../Cache';
 
-const abi = {
-  collateralContract: {
-    stateMutability: 'view',
-    type: 'function',
-    name: 'collateralContract',
-    inputs: [],
-    outputs: [{ name: '', type: 'address' }],
-  },
-  assetAddress: {
-    stateMutability: 'view',
-    type: 'function',
-    name: 'asset',
-    inputs: [], // Add this line
-    outputs: [{ name: '', type: 'address' }], // Add this line
-  },
-  getAllPairAddresses: {
-    inputs: [],
-    name: 'getAllPairAddresses',
-    outputs: [
-      {
-        internalType: 'address[]',
-        name: '_deployedPairsArray',
-        type: 'address[]',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-} as const;
-
-export type PoolToken = {
-  chain: EvmNetworkIdType;
-  address: `0x${string}`;
-  borrowed: `0x${string}`;
-  underlyings: string[];
-};
-export type PoolTokenOther = {
+export type PoolTokenPairs = {
   chain: EvmNetworkIdType;
   pairAddress: `0x${string}`;
   borrowedAssetAddress: `0x${string}`;
@@ -56,41 +26,39 @@ export async function getPairsContracts(
 
   const pairs = await client.readContract({
     address: getAddress(registry),
-    abi: [abi.getAllPairAddresses],
+    abi: [pairsAbi.getAllPairAddresses],
     functionName: 'getAllPairAddresses',
   } as const);
 
-  // Define the collateral contract calls for each pair
+  // get collateral token address for each pool
   const collateralCalls = pairs.map(
     (pair: string) =>
       ({
         address: getAddress(pair),
-        abi: [abi.collateralContract],
+        abi: [pairsAbi.collateralContract],
         functionName: 'collateralContract',
         args: [],
       } as const)
   );
 
+  // get borrowed token address for each pool
   const borrowedCalls = pairs.map(
     (pair: string) =>
       ({
         address: getAddress(pair),
-        abi: [abi.assetAddress],
+        abi: [pairsAbi.assetAddress],
         functionName: 'asset',
       } as const)
   );
 
-  // Fetch collateral contracts using Viewn multicall
   const collateralResponses = await client.multicall({
     contracts: collateralCalls,
   });
 
-  // Fetch collateral contracts using Viewn multicall
   const borrowedResponses = await client.multicall({
     contracts: borrowedCalls,
   });
 
-  // Process the responses to construct the contracts array
   const contracts = [];
   for (let i = 0; i < pairs.length; i++) {
     const pair = pairs[i];
@@ -115,9 +83,18 @@ export async function getPairsContracts(
   }
   return contracts;
 }
-const executor: JobExecutor = async () => {
-  const fraxtalRegistry = '0x4C3B0e85CD8C12E049E07D9a4d68C441196E6a12'; // Replace with your Fraxtal registry address
-  await getPairsContracts(NetworkId.fraxtal, fraxtalRegistry);
+const executor: JobExecutor = async (cache: Cache) => {
+  const networkId = NetworkId.fraxtal;
+
+  const pairsContracts = await getPairsContracts(
+    networkId,
+    fraxtalPoolRegistry
+  );
+
+  await cache.setItem(pairAddressesCachePrefix, pairsContracts, {
+    prefix: pairAddressesCachePrefix,
+    networkId,
+  });
 };
 
 const job: Job = {

@@ -8,56 +8,12 @@ import {
 import BigNumber from 'bignumber.js';
 import { getAddress } from '@ethersproject/address';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId } from './constants';
-import { PoolTokenOther, getPairsContracts } from './getPairs';
+import { pairAddressesCachePrefix, platformId } from './constants';
+import { PoolTokenPairs } from './pairsJob';
 import { getEvmClient } from '../../utils/clients';
 import { Cache } from '../../Cache';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-
-const abi = {
-  getUserSnapshot: {
-    inputs: [{ internalType: 'address', name: '_address', type: 'address' }],
-    name: 'getUserSnapshot',
-    outputs: [
-      { internalType: 'uint256', name: '_userAssetShares', type: 'uint256' },
-      { internalType: 'uint256', name: '_userBorrowShares', type: 'uint256' },
-      {
-        internalType: 'uint256',
-        name: '_userCollateralBalance',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  maxLTV: {
-    inputs: [],
-    name: 'maxLTV',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  totalBorrow: {
-    inputs: [],
-    name: 'totalBorrow',
-    outputs: [
-      { internalType: 'uint128', name: 'amount', type: 'uint128' },
-      { internalType: 'uint128', name: 'shares', type: 'uint128' },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  totalAsset: {
-    inputs: [],
-    name: 'totalAsset',
-    outputs: [
-      { internalType: 'uint128', name: 'amount', type: 'uint128' },
-      { internalType: 'uint128', name: 'shares', type: 'uint128' },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-} as const;
+import { lendingAbi } from './abis';
 
 export type LendBorrowBalance = {
   userAsset: string;
@@ -69,7 +25,7 @@ export type LendBorrowBalance = {
 export async function getLendBorrowBalances(
   networkId: EvmNetworkIdType,
   owner: string,
-  contracts: PoolTokenOther[]
+  contracts: PoolTokenPairs[]
 ) {
   const client = getEvmClient(networkId);
 
@@ -79,7 +35,7 @@ export async function getLendBorrowBalances(
       ({
         address: contract.pairAddress as `0x${string}`,
         functionName: 'getUserSnapshot',
-        abi: [abi.getUserSnapshot],
+        abi: [lendingAbi.getUserSnapshot],
         args: [getAddress(owner)],
       } as const)
   );
@@ -110,7 +66,7 @@ export async function getLendBorrowBalances(
       ({
         address: contract.pairAddress as `0x${string}`,
         functionName: 'totalBorrow',
-        abi: [abi.totalBorrow],
+        abi: [lendingAbi.totalBorrow],
       } as const)
   );
 
@@ -125,7 +81,7 @@ export async function getLendBorrowBalances(
       ({
         address: contract.pairAddress as `0x${string}`,
         functionName: 'totalAsset',
-        abi: [abi.totalAsset],
+        abi: [lendingAbi.totalAsset],
       } as const)
   );
 
@@ -173,6 +129,8 @@ export async function getLendBorrowBalances(
         BigNumber(value.toString())
       );
 
+      console.log(userAssetShares, userBorrowShares, userCollateralBalance);
+
       // Avoid division by zero
       if (sharesBorrow.isZero() || sharesAsset.isZero()) {
         continue;
@@ -186,9 +144,15 @@ export async function getLendBorrowBalances(
       const userBorrow = userBorrowShares.times(pricePerFullShareBorrow);
       const userAsset = userAssetShares.times(pricePerFullShareAsset);
 
-      if (userAsset.isZero && userBorrow.isZero()) {
+      if (
+        userAsset.isZero &&
+        userBorrow.isZero() &&
+        userCollateralBalance.isZero()
+      ) {
         continue;
       }
+
+      console.log('hey');
 
       // Create balance object
       const balance = {
@@ -214,17 +178,28 @@ export async function getLendBorrowBalances(
 
 function fetcher(networkId: EvmNetworkIdType): Fetcher {
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-    const fraxtalRegistry = '0x4C3B0e85CD8C12E049E07D9a4d68C441196E6a12'; // Replace with your Fraxtal registry address
-    const contracts = await getPairsContracts(
-      NetworkId.fraxtal,
-      fraxtalRegistry
+    const contracts = await cache.getItem<PoolTokenPairs[]>(
+      pairAddressesCachePrefix,
+      {
+        networkId,
+        prefix: pairAddressesCachePrefix,
+      }
     );
 
+    if (!contracts) {
+      return [];
+    }
+
     const positions = await getLendBorrowBalances(networkId, owner, contracts);
+
+    console.log({ positions });
 
     const elements: PortfolioElementBorrowLend[] = [];
 
     const promises = positions.map(async (position) => {
+      /* 
+        Most of these prices come from plugins/curve/poolTokenPricesJob.ts
+      */
       const supplyTokenPricePromise = cache.getTokenPrice(
         position.supplyAssetAddress,
         NetworkId.fraxtal
@@ -271,8 +246,8 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
       }
 
       const elementData: PortfolioElementBorrowLendData = {
-        borrowedAssets: [borrowAsset],
-        borrowedValue: borrowAsset.value,
+        borrowedAssets: borrowTokenBalance > 0 ? [borrowAsset] : [],
+        borrowedValue: borrowTokenBalance > 0 ? borrowAsset.value : 0,
         healthRatio: 0,
         suppliedAssets: [supplyAsset],
         suppliedValue: supplyAsset.value,
@@ -302,7 +277,7 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
   };
 
   return {
-    id: `${platformId}-${networkId}`,
+    id: `${platformId}-${networkId}-lending`,
     networkId,
     executor,
   };
