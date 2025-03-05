@@ -1,6 +1,7 @@
 import { Contract, NetworkId, Service } from '@sonarwatch/portfolio-core';
 import { farmProgramId, klendProgramId, platformId } from './constants';
 import { jupiterSwapContract } from '../jupiter/services';
+import { ServiceDirectory } from '../../utils/directories/serviceDirectory';
 
 const kaminoLendContract: Contract = {
   name: 'Kamino Lend',
@@ -33,3 +34,9 @@ export const kaminoMultiplyService: Service = {
   networkId: NetworkId.solana,
   contracts: [kaminoLendContract, jupiterSwapContract],
 };
+
+ServiceDirectory.addServices([
+  kaminoLendingService,
+  kaminoFarmService,
+  kaminoMultiplyService,
+]);

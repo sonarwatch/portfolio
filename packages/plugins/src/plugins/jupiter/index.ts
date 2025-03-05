@@ -23,7 +23,6 @@ import {
   asr3Fetcher,
 } from './governance';
 import { lfgAirdropFetchers, lfgFetchers } from './launchpad';
-import { jupiterSwapContract, swapService } from './services';
 
 export const platforms: Platform[] = [
   launchpadPlatform,
@@ -49,7 +48,6 @@ export const airdropFetchers: AirdropFetcher[] = [
   asr3AirdropFetcher,
   ...lfgAirdropFetchers,
 ];
-export const services: Service[] = [swapService];
 
 export const jupFetcherIds = [
   perpetualFetcher.id,

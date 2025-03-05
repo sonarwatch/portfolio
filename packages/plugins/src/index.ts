@@ -1,10 +1,10 @@
-import { Platform, Service } from '@sonarwatch/portfolio-core';
-import { Contract } from 'ethers';
+import { Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from './Fetcher';
 import { AirdropFetcher } from './AirdropFetcher';
 import { Job } from './Job';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 import orphanPlatforms from './orphanPlatforms';
+
 import {
   platforms as tokensPlatforms,
   jobs as tokensJobs,
@@ -133,7 +133,6 @@ import {
   fetchers as kaminoFetchers,
   platforms as kaminoPlatforms,
   airdropFetchers as kaminoAirdropFetchers,
-  services as kaminoServices,
 } from './plugins/kamino';
 import {
   jobs as bucketJobs,
@@ -226,7 +225,6 @@ import {
   jobs as jupiterJobs,
   fetchers as jupiterFetchers,
   airdropFetchers as jupiterAirdropFetchers,
-  services as jupiterServices,
 } from './plugins/jupiter';
 import {
   platforms as zetaPlatforms,
@@ -734,7 +732,6 @@ import {
   platforms as defitunaPlatforms,
   jobs as defitunaJobs,
   fetchers as defitunaFetchers,
-  services as defitunaServices,
 } from './plugins/defituna';
 import {
   platforms as iloopPlatforms,
@@ -1280,13 +1277,3 @@ export const airdropFetchers: AirdropFetcher[] = [
 ];
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);
-
-export const services: Service[] = [
-  ...defitunaServices,
-  ...kaminoServices,
-  ...jupiterServices,
-];
-
-export const contracts: Contract[] = services
-  .flat()
-  .filter((c) => c !== undefined) as unknown as Contract[];

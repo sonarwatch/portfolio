@@ -12,7 +12,7 @@ import BigNumber from 'bignumber.js';
 import { Cache } from './Cache';
 import promiseTimeout from './utils/misc/promiseTimeout';
 import { getClientSolana } from './utils/clients';
-import { services } from './index';
+import { ServiceDirectory } from './utils/directories/serviceDirectory';
 
 const runActivityTimeout = 60000;
 
@@ -125,9 +125,7 @@ export async function runActivity(
   }
   const client = getClientSolana();
 
-  const sortedServices = services.sort(
-    (a, b) => (b.contracts?.length || 0) - (a.contracts?.length || 0)
-  );
+  const sortedServices = await ServiceDirectory.getServices();
 
   const activityPromise = client
     .getSignaturesForAddress(
