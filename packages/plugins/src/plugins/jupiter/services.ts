@@ -1,6 +1,5 @@
 import { Contract, NetworkId, Service } from '@sonarwatch/portfolio-core';
 import { platform as exchangePlatform } from './exchange/constants';
-import { ServiceDirectory } from '../../utils/directories/serviceDirectory';
 
 export const jupiterSwapContract: Contract = {
   name: 'Jupiter Swap',
@@ -16,4 +15,4 @@ const swapService: Service = {
   contracts: [jupiterSwapContract],
 };
 
-ServiceDirectory.addService(swapService);
+export const services = [swapService];

@@ -1,6 +1,5 @@
 import { NetworkId, Service } from '@sonarwatch/portfolio-core';
 import { defiTunaProgram, platformId } from './constants';
-import { ServiceDirectory } from '../../utils/directories/serviceDirectory';
 
 const defiTunaContract = {
   name: 'DefiTuna',
@@ -15,4 +14,4 @@ export const defiTunaService: Service = {
   contracts: [defiTunaContract],
 };
 
-ServiceDirectory.addService(defiTunaService);
+export const services = [defiTunaService];

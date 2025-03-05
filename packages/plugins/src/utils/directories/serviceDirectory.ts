@@ -9,7 +9,7 @@ export class ServiceDirectory {
   private services: Service[];
   private loaded = false;
 
-  public static getSingleton(): ServiceDirectory {
+  private static getSingleton(): ServiceDirectory {
     if (!ServiceDirectory.singleton) {
       ServiceDirectory.singleton = new ServiceDirectory();
     }
@@ -20,33 +20,38 @@ export class ServiceDirectory {
     this.services = [];
   }
 
-  static async load() {
-    if (!this.getSingleton().loaded) {
+  private static async load() {
+    const singleton = this.getSingleton();
+    if (!singleton.loaded) {
       try {
         const serviceFiles = await this.findServiceFiles(PLUGINS_DIR);
 
         const imports = serviceFiles.map(async (file) => {
           const module = await import(file);
-          console.log(`Loaded: ${file}`, module);
+          if (module.services) {
+            singleton.addServices(module.services);
+            const split = file.split('/');
+            console.log(
+              `Loaded ${module.services.length} ${
+                split[split.length - 2]
+              } services`
+            );
+          }
           return module;
         });
 
         await Promise.all(imports);
-        this.getSingleton().loaded = true;
+        singleton.loaded = true;
       } catch (error) {
         console.error('Error loading services:', error);
       }
     }
 
-    return this.getSingleton();
+    return singleton;
   }
 
-  static addService(service: Service) {
-    this.getSingleton().services.push(service);
-  }
-
-  static addServices(services: Service[]) {
-    this.getSingleton().services.push(...services);
+  addServices(services: Service[]) {
+    this.services.push(...services);
   }
 
   static async getServices() {
@@ -61,7 +66,7 @@ export class ServiceDirectory {
       .filter((c) => c !== undefined) as unknown as Contract[];
   }
 
-  static async findServiceFiles(dir: string): Promise<string[]> {
+  private static async findServiceFiles(dir: string): Promise<string[]> {
     const serviceFiles: string[] = [];
 
     try {

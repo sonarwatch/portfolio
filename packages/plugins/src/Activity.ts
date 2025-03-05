@@ -125,7 +125,7 @@ export async function runActivity(
   }
   const client = getClientSolana();
 
-  const sortedServices = await ServiceDirectory.getServices();
+  const services = await ServiceDirectory.getServices();
 
   const activityPromise = client
     .getSignaturesForAddress(
@@ -143,7 +143,7 @@ export async function runActivity(
     )
     .then((parsedTransactions) =>
       parsedTransactions.map((t) =>
-        parseVersionedTransaction(t, owner, sortedServices)
+        parseVersionedTransaction(t, owner, services)
       )
     );
 
