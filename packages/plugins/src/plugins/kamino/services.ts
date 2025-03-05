@@ -34,7 +34,7 @@ export const kaminoMultiplyService: Service = {
   contracts: [kaminoLendContract, jupiterSwapContract],
 };
 
-export const services = [
+export const services: Service[] = [
   kaminoLendingService,
   kaminoFarmService,
   kaminoMultiplyService,

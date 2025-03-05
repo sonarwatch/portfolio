@@ -15,4 +15,4 @@ const swapService: Service = {
   contracts: [jupiterSwapContract],
 };
 
-export const services = [swapService];
+export const services: Service[] = [swapService];

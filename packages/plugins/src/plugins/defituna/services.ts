@@ -14,4 +14,4 @@ export const defiTunaService: Service = {
   contracts: [defiTunaContract],
 };
 
-export const services = [defiTunaService];
+export const services: Service[] = [defiTunaService];

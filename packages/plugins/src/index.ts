@@ -1,4 +1,4 @@
-import { Platform } from '@sonarwatch/portfolio-core';
+import { Platform, Service } from '@sonarwatch/portfolio-core';
 import { Fetcher } from './Fetcher';
 import { AirdropFetcher } from './AirdropFetcher';
 import { Job } from './Job';
@@ -775,6 +775,18 @@ import {
   fetchers as guanoFetchers,
 } from './plugins/guano';
 import { jobs as coingeckoJobs } from './plugins/coingecko';
+
+import * as defitunaServices from './plugins/defituna/services';
+import * as jupiterServices from './plugins/jupiter/services';
+import * as kaminoServices from './plugins/kamino/services';
+
+export const services: Service[] = [
+  defitunaServices,
+  jupiterServices,
+  kaminoServices,
+]
+  .map((module) => module.services)
+  .flat();
 
 export {
   walletTokensPlatform,

@@ -15,12 +15,6 @@
       "rules": {}
     },
     {
-      "files": ["**/services.ts"],
-      "rules": {
-        "@typescript-eslint/no-unused-vars": ["warn", { "varsIgnorePattern": "^services$" }]
-      }
-    },
-    {
       "files": ["./package.json", "./generators.json"],
       "parser": "jsonc-eslint-parser",
       "rules": {
