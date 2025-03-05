@@ -1,13 +1,15 @@
-export interface PriceData {
-  time: number;
-  open: number;
-  close: number;
-  high: number;
-  low: number;
+export interface Token {
+  address: string;
+  decimals: number;
+  symbol: string;
+  name: string;
+  usdPrice: number;
 }
 
 export interface CurveTokenPriceResponse {
-  chain: string;
-  address: string;
-  data: PriceData[];
+  success: boolean;
+  data: {
+    tokens: Token[];
+  };
+  generatedTimeMs: number;
 }

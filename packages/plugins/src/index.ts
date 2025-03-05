@@ -753,6 +753,11 @@ import {
   jobs as convexJobs,
   fetchers as convexFetchers,
 } from './plugins/convex';
+import {
+  platforms as fraxlendPlatforms,
+  jobs as fraxlendJobs,
+  fetchers as fraxlendFetchers,
+} from './plugins/fraxlend';
 
 export {
   walletTokensPlatform,
@@ -918,6 +923,7 @@ export const platforms: Platform[] = [
   ...iloopPlatforms,
   ...sonicPlatforms,
   ...convexPlatforms,
+  ...fraxlendPlatforms,
 ];
 
 // JOBS //
@@ -1067,6 +1073,7 @@ export const jobs: Job[] = [
   ...sonicJobs,
   ...coingeckoJobs,
   ...convexJobs,
+  ...fraxlendJobs,
 ];
 
 // FETCHERS //
@@ -1216,6 +1223,7 @@ export const fetchers: Fetcher[] = [
   ...iloopFetchers,
   ...sonicFetchers,
   ...convexFetchers,
+  ...fraxlendFetchers,
 ];
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
