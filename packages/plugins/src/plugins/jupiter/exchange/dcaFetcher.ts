@@ -9,7 +9,7 @@ import { DCAFilters } from './filters';
 import { ElementRegistry } from '../../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({ commitment: 'processed' });
 
   const accounts = await getParsedProgramAccounts(
     client,

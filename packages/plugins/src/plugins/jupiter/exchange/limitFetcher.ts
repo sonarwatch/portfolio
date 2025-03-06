@@ -9,7 +9,7 @@ import { ElementRegistry } from '../../../utils/elementbuilder/ElementRegistry';
 import { limitOrderStruct, limitOrderV2Struct } from './structs';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({ commitment: 'processed' });
 
   const accountsRes = await Promise.all([
     // V1

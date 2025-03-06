@@ -109,4 +109,5 @@ const orphanPlatforms: Platform[] = [
     website: 'https://asgardfi.com/',
   },
 ];
+export const platforms = orphanPlatforms;
 export default orphanPlatforms;
