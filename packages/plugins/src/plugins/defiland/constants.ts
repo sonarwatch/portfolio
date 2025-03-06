@@ -9,6 +9,11 @@ export const platform: Platform = {
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/defiland.webp',
   website: 'https://staking.defiland.app/',
   twitter: 'https://x.com/DeFi_Land',
+  documentation: 'https://docs.defiland.app/',
+  discord: 'https://discord.gg/defiland',
+  telegram: 'https://t.me/official_defiland',
+  description:
+    ' multi-chain agriculture-simulation game created to gamify Decentralized Finance',
 };
 export const dflMint = 'DFL1zNkaGPWm1BqAVqRjCZvHmwTFrEaJtbzJWgseoNJh';
 export const stakingPid = new PublicKey(

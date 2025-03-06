@@ -11,6 +11,10 @@ export const platform: Platform = {
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/save.webp',
   defiLlamaId: 'save',
   website: 'https://save.finance/',
+  discord: 'https://discord.com/invite/J7m48UUPkJ',
+  description: "Solana's permissionless savings account.",
+  twitter: 'https://x.com/save_finance',
+  documentation: 'https://docs.save.finance/',
 };
 
 export const platformDumpy: Platform = {

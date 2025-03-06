@@ -9,7 +9,12 @@ export const platform: Platform = {
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/accessprotocol.webp',
   twitter: 'https://twitter.com/AccessProtocol',
   website: 'https://hub.accessprotocol.co',
-  // defiLlamaId: 'nothing yet',
+  defiLlamaId: 'access-protocol',
+  description:
+    'Access is a content and service monetization protocol offering incentivized subscriptions by staking the native ACS token.',
+  discord: 'https://discord.com/invite/access-protocol-1001837380044587118',
+  documentation: 'https://docs.accessprotocol.co/guide',
+  github: 'https://github.com/Access-Labs-Inc',
 };
 export const stakePid = new PublicKey(
   '6HW8dXjtiTGkD4jzXs7igdFmZExPpmwUrRN5195xGup'

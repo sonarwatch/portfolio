@@ -11,6 +11,11 @@ export const realmsPlatform: Platform = {
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/realms.webp',
   defiLlamaId: 'spl-governance',
   website: 'https://app.realms.today/',
+  github: 'https://github.com/Mythic-Project',
+  description:
+    'The home for on-chain communities in the Solana ecosystem. Helping ~3K Web3 organizations and their members thrive.',
+  documentation: 'https://docs.realms.today/',
+  discord: 'https://discord.gg/6UZHcNJFr8',
 };
 
 export const heliumPlatformId = 'helium';

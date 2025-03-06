@@ -10,6 +10,11 @@ export const platform: Platform = {
   website: 'https://app.adrastea.fi/',
   twitter: 'https://x.com/AdrasteaFinance',
   defiLlamaId: 'adrastea', // from https://defillama.com/docs/api
+  discord: 'https://discord.gg/adrasteafinance',
+  description:
+    'Adrastea is a composable leverage protocol that facilitates isolated boosting, with a primary mission to simplify the process and amplify the yield.',
+  documentation: 'https://docs.adrastea.fi/',
+  github: 'https://github.com/adrasteafinance',
 };
 
 export const usdcLedgerPk = new PublicKey(

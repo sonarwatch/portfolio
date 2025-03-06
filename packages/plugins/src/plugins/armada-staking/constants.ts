@@ -15,6 +15,12 @@ export const armadaPlatform: Platform = {
   defiLlamaId: 'armada-staking',
   image:
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/armada.webp',
+  website: 'https://armada-alliance.com/',
+  twitter: 'https://x.com/armadafi',
+  github: 'https://github.com/mithraiclabs',
+  description:
+    'No code token staking setup on solana. Professionally managed and non custodial token liquidity strategies.',
+  isActive: false,
 };
 
 export const flowmaticPlatformId = 'flowmatic';
@@ -25,6 +31,8 @@ export const flowmaticPlatform: Platform = {
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/flowmatic.webp',
   website: 'https://www.flowmatic.xyz/',
   twitter: 'https://twitter.com/FlowmaticXYZ',
+  discord: 'https://discord.gg/flowmatic',
+  documentation: 'https://docs.flowmatic.xyz/',
 };
 
 export const kishuPlatformId = 'kishu';

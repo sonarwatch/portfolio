@@ -11,6 +11,9 @@ export const platform: Platform = {
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/defituna.webp',
   website: 'https://defituna.com',
   twitter: 'https://x.com/DeFiTuna',
+  discord: 'https://discord.gg/vNWwVWbnzs',
+  documentation: 'https://defituna.gitbook.io/defituna-docs',
+  description: 'A comprehensive toolkit for Liquidity Providers',
 };
 
 export const defiTunaProgram = new PublicKey(

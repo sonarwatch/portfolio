@@ -10,6 +10,11 @@ export const platform: Platform = {
   website: 'https://www.sns.id/',
   twitter: 'https://twitter.com/bonfida',
   defiLlamaId: 'solana-name-service', // from https://defillama.com/docs/api
+  description: 'Web3 Identity for Everyone',
+  github: 'https://github.com/Bonfida',
+  discord: 'https://discord.com/invite/bonfida-778660171265474572',
+  documentation: 'https://docs.sns.id/collection',
+  telegram: 'https://t.me/snsdotsol',
 };
 
 export const offerPid = new PublicKey(
