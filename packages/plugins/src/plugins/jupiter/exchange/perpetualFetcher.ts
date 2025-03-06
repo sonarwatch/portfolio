@@ -36,7 +36,7 @@ const executor: FetcherExecutor = async (
   owner: string,
   cache: Cache
 ): Promise<PortfolioElementLeverage[]> => {
-  const client = getClientSolana();
+  const client = getClientSolana({ commitment: 'processed' });
 
   const positionAccounts = await getParsedProgramAccounts(
     client,
