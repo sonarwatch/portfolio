@@ -165,14 +165,6 @@ import * as defitunaServices from './plugins/defituna/services';
 import * as jupiterServices from './plugins/jupiter/services';
 import * as kaminoServices from './plugins/kamino/services';
 
-export const services: Service[] = [
-  defitunaServices,
-  jupiterServices,
-  kaminoServices,
-]
-  .map((module) => module.services)
-  .flat();
-
 export {
   walletTokensPlatform,
   walletNftsPlatform,
@@ -347,6 +339,7 @@ const modules = [
   coingecko,
   orphanPlatforms,
 ];
+const servicesModules = [defitunaServices, jupiterServices, kaminoServices];
 
 // PLATFORMS //
 export const platforms: Platform[] = modules
@@ -384,3 +377,8 @@ export const airdropFetchers: AirdropFetcher[] = modules
   .flat();
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);
+
+// SERVICES //
+export const services: Service[] = servicesModules
+  .map((module) => module.services)
+  .flat();

@@ -188,6 +188,7 @@ export type Service = {
   networkId: NetworkIdType;
   contracts?: Contract[];
   link?: string;
+  description?: string;
 };
 
 /**
