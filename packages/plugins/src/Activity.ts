@@ -107,13 +107,6 @@ const getService = (
   );
 };
 
-/* const testTxns = [
-  'JBEufKsoiAgJUTa1u9iUqVuRRq43pDhLmMD1QtkXEdqDYgRrR7kKzFuGS1FaZ93cNmnvbtDp2Yf9uDRZ9815B3f', // defituna deposit
-  'PUaJ8qmoN6r4XdE3Jir4PWZQ16xmi7J6uQATigcjU6ujLX1A44vjQsUSXL8mMMbYBoDKJCu2GtdxWLjW7aAXu4n', // kamino lend deposit
-  '29Jp6GY7PKMmTsuGAG664Qf2Uu9p1Z8QmA9jyepBkcbR2QuviNw3hna9qPs7HWEs4jNWPim4by55hbHWdDht1tHD', // kamino multiply withdraw
-  'EFa91iksec28yrN1XxjWb22u5zn1U3DTB57B4KTwiR5swNubpU1X4ryjQHccVAfmFtY1PzQmryUneSKmeKm3wkf', // kamino farms
-]; */
-
 export async function runActivity(
   cache: Cache,
   network: NetworkIdType,

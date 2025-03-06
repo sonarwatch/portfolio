@@ -159,42 +159,42 @@ export const platformIdByVaultManager: Map<string, string> = new Map([
 
 export const pluginServices: Service[] = [
   {
-    id: `${platformId}`,
+    id: `${platformId}-vaults`,
     name: 'Vault',
     platformId,
     networkId: NetworkId.solana,
     contracts: [driftVaultsContrat],
   },
   {
-    id: `${platformId}`,
+    id: `${neutralPlatformId}-vaults-1`,
     name: 'Vault',
     platformId: neutralPlatformId,
     networkId: NetworkId.solana,
     contracts: [neutral1VaultsContrat],
   },
   {
-    id: `${platformId}`,
+    id: `${neutralPlatformId}-vaults-2`,
     name: 'Vault',
     platformId: neutralPlatformId,
     networkId: NetworkId.solana,
     contracts: [neutral2VaultsContrat],
   },
   {
-    id: `${platformId}`,
+    id: `${neutralPlatformId}-vaults-3`,
     name: 'Vault',
     platformId: neutralPlatformId,
     networkId: NetworkId.solana,
     contracts: [neutral3VaultsContrat],
   },
   {
-    id: `${platformId}`,
+    id: `${nxFinancePlatformId}-vaults`,
     name: 'Vault',
     platformId: nxFinancePlatformId,
     networkId: NetworkId.solana,
     contracts: [nxfinanceVaultsContrat],
   },
   {
-    id: `${platformId}`,
+    id: `${vectisPlatformId}-vaults`,
     name: 'Vault',
     platformId: vectisPlatformId,
     networkId: NetworkId.solana,
