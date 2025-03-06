@@ -1,4 +1,4 @@
-import { Platform, Service } from '@sonarwatch/portfolio-core';
+import { Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from '../../Fetcher';
 import { Job } from '../../Job';
 import perpetualFetcher from './exchange/perpetualFetcher';
@@ -12,7 +12,10 @@ import { platform as launchpadPlatform } from './launchpad/constants';
 import voteFetcher from './governance/voteFetcher';
 import { platform as governancePlatform } from './governance/constants';
 import pricingJob from './pricingJob';
-import { platform as exchangePlatform } from './exchange/constants';
+import {
+  platform as exchangePlatform,
+  pluginServices as exchangeServices,
+} from './exchange/constants';
 import { AirdropFetcher } from '../../AirdropFetcher';
 import {
   asr1AirdropFetcher,
@@ -55,3 +58,5 @@ export const jupFetcherIds = [
   limitFetcher.id,
   dcaFetcher.id,
 ];
+
+export const services = [exchangeServices].flat();

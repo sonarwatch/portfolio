@@ -161,10 +161,6 @@ import * as baskt from './plugins/baskt';
 import * as guano from './plugins/guano';
 import * as coingecko from './plugins/coingecko';
 
-import * as defitunaServices from './plugins/defituna/services';
-import * as jupiterServices from './plugins/jupiter/services';
-import * as kaminoServices from './plugins/kamino/services';
-
 export {
   walletTokensPlatform,
   walletNftsPlatform,
@@ -339,7 +335,6 @@ const modules = [
   coingecko,
   orphanPlatforms,
 ];
-const servicesModules = [defitunaServices, jupiterServices, kaminoServices];
 
 // PLATFORMS //
 export const platforms: Platform[] = modules
@@ -379,6 +374,11 @@ export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);
 
 // SERVICES //
-export const services: Service[] = servicesModules
-  .map((module) => module.services)
+export const services: Service[] = modules
+  .map((module): Service[] => {
+    if ('services' in module) {
+      return module.services as Service[];
+    }
+    return [];
+  })
   .flat();

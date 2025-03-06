@@ -1,8 +1,8 @@
-import { Platform, Service } from '@sonarwatch/portfolio-core';
+import { Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from '../../Fetcher';
 import { AirdropFetcher } from '../../AirdropFetcher';
 import { Job } from '../../Job';
-import { platform } from './constants';
+import { platform, pluginServices } from './constants';
 import poolsJob from './poolsJob';
 import farmsJob from './farmsJob';
 import reservesJob from './reservesJob';
@@ -24,3 +24,5 @@ export const fetchers: Fetcher[] = [
   ordersFetcher,
 ];
 export const airdropFetchers: AirdropFetcher[] = [s1AirdropFetcher];
+
+export const services = pluginServices;

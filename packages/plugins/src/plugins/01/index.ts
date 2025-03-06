@@ -3,7 +3,10 @@ import { Fetcher } from '../../Fetcher';
 import { Job } from '../../Job';
 import { platform } from './constants';
 import depositFectcher from './depostisFetcher';
+import { pluginServices } from '../drift/constants';
 
 export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [];
 export const fetchers: Fetcher[] = [depositFectcher];
+
+export const services = pluginServices;

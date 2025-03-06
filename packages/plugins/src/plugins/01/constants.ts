@@ -18,16 +18,14 @@ export const platform: Platform = {
   // twitter: 'https://twitter.com/myplatform',
 };
 
-export const programId = new PublicKey(
-  'Zo1ggzTUKMY5bYnDvT5mtVeZxzf2FaLTbKkmvGUhUQk'
-);
-
-export const contract: Contract = {
-  address: programId.toString(),
-  name: 'Lending',
+const contract: Contract = {
+  address: 'Zo1ggzTUKMY5bYnDvT5mtVeZxzf2FaLTbKkmvGUhUQk',
+  name: '01 Lending',
 };
 
-export const service: Service = {
+export const programId = new PublicKey(contract.address);
+
+export const pluginServices: Service = {
   id: `${platformId}_lending`,
   platformId,
   name: 'Lending',
