@@ -99,43 +99,43 @@ export const luckyperpPlatform: Platform = {
   twitter: 'https://x.com/LuckyPerp_com',
 };
 
-const driftVaultsContrat: Contract = {
+const driftVaultsContract: Contract = {
   name: 'Drift Vaults',
   address: 'vAuLTsyrvSfZRuRB3XgvkPwNGgYSs9YRYymVebLKoxR',
 };
-const neutral1VaultsContrat: Contract = {
+const neutral1VaultsContract: Contract = {
   name: 'Neutral Vaults',
   address: '9Fcn3Fd4d5ocrb12xCUtEvezxcjFEAyHBPfrZDiPt9Qj',
 };
-const neutral2VaultsContrat: Contract = {
+const neutral2VaultsContract: Contract = {
   name: 'Neutral Vaults',
   address: '9Fcn3Fd4d5ocrb12xCUtEvezxcjFEAyHBPfrZDiPt9Qj',
 };
-const neutral3VaultsContrat: Contract = {
+const neutral3VaultsContract: Contract = {
   name: 'Neutral Vaults',
   address: '9Fcn3Fd4d5ocrb12xCUtEvezxcjFEAyHBPfrZDiPt9Qj',
 };
-const nxfinanceVaultsContrat: Contract = {
+const nxfinanceVaultsContract: Contract = {
   name: 'NX Finance Vaults',
   address: 'HYHnL9BB3tqSPxkVbdcAn9CAa4hyqNYUh1FwDc4he7aD',
 };
-const vectisVaultsContrat: Contract = {
+const vectisVaultsContract: Contract = {
   name: 'Vectis Vaults',
   address: 'EDnxACbdY1GeXnadh5gRuCJnivP7oQSAHGGAHCma4VzG',
 };
 
 export const vaultsProgramIds = [
-  new PublicKey(driftVaultsContrat.address),
-  new PublicKey(neutral1VaultsContrat.address),
-  new PublicKey(neutral2VaultsContrat.address),
-  new PublicKey(neutral3VaultsContrat.address),
-  new PublicKey(nxfinanceVaultsContrat.address),
-  new PublicKey(vectisVaultsContrat.address),
+  new PublicKey(driftVaultsContract.address),
+  new PublicKey(neutral1VaultsContract.address),
+  new PublicKey(neutral2VaultsContract.address),
+  new PublicKey(neutral3VaultsContract.address),
+  new PublicKey(nxfinanceVaultsContract.address),
+  new PublicKey(vectisVaultsContract.address),
 ];
 
 // when we need to pass a specific IDL for a vault
 export const vaultIdls = {
-  [vectisVaultsContrat.address]: VectisInsuranceIDL,
+  [vectisVaultsContract.address]: VectisInsuranceIDL,
 };
 
 export const prefixVaults = 'circuitVaults';
@@ -163,41 +163,41 @@ export const pluginServices: Service[] = [
     name: 'Vault',
     platformId,
     networkId: NetworkId.solana,
-    contracts: [driftVaultsContrat],
+    contracts: [driftVaultsContract],
   },
   {
     id: `${neutralPlatformId}-vaults-1`,
     name: 'Vault',
     platformId: neutralPlatformId,
     networkId: NetworkId.solana,
-    contracts: [neutral1VaultsContrat],
+    contracts: [neutral1VaultsContract],
   },
   {
     id: `${neutralPlatformId}-vaults-2`,
     name: 'Vault',
     platformId: neutralPlatformId,
     networkId: NetworkId.solana,
-    contracts: [neutral2VaultsContrat],
+    contracts: [neutral2VaultsContract],
   },
   {
     id: `${neutralPlatformId}-vaults-3`,
     name: 'Vault',
     platformId: neutralPlatformId,
     networkId: NetworkId.solana,
-    contracts: [neutral3VaultsContrat],
+    contracts: [neutral3VaultsContract],
   },
   {
     id: `${nxFinancePlatformId}-vaults`,
     name: 'Vault',
     platformId: nxFinancePlatformId,
     networkId: NetworkId.solana,
-    contracts: [nxfinanceVaultsContrat],
+    contracts: [nxfinanceVaultsContract],
   },
   {
     id: `${vectisPlatformId}-vaults`,
     name: 'Vault',
     platformId: vectisPlatformId,
     networkId: NetworkId.solana,
-    contracts: [vectisVaultsContrat],
+    contracts: [vectisVaultsContract],
   },
 ];
