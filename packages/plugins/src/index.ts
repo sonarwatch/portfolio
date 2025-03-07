@@ -3,756 +3,170 @@ import { Fetcher } from './Fetcher';
 import { AirdropFetcher } from './AirdropFetcher';
 import { Job } from './Job';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
-import orphanPlatforms from './orphanPlatforms';
-import {
-  platforms as tokensPlatforms,
-  jobs as tokensJobs,
-  fetchers as tokensFetchers,
-} from './plugins/tokens';
-import {
-  platforms as nativeStakePlatforms,
-  fetchers as nativeStakeFetchers,
-  jobs as nativeStakeJobs,
-} from './plugins/native-stake';
-import { jobs as switchboardJobs } from './plugins/switchboard';
-import {
-  platforms as marinadePlatforms,
-  fetchers as marinadeFetchers,
-} from './plugins/marinade';
-import {
-  platforms as marginfiPlatforms,
-  jobs as marginfiJobs,
-  fetchers as marginfiFetchers,
-} from './plugins/marginfi';
-import {
-  platforms as saberPlatforms,
-  jobs as saberJobs,
-} from './plugins/saber';
-import {
-  platforms as savePlatforms,
-  jobs as saveJobs,
-  fetchers as saveFetchers,
-} from './plugins/save';
-import {
-  platforms as raydiumPlatforms,
-  jobs as raydiumJobs,
-  fetchers as raydiumFetchers,
-} from './plugins/raydium';
-import {
-  platforms as orcaPlatforms,
-  jobs as orcaJobs,
-  fetchers as orcaFetchers,
-} from './plugins/orca';
-import {
-  platforms as meteoraPlatforms,
-  jobs as meteoraJobs,
-  fetchers as meteoraFetchers,
-} from './plugins/meteora';
-import {
-  platforms as cetusPlatforms,
-  jobs as cetusJobs,
-  fetchers as cetusFetchers,
-} from './plugins/cetus';
-import {
-  platforms as turbosPlatforms,
-  jobs as turbosJobs,
-  fetchers as turbosFetchers,
-} from './plugins/turbos';
-import {
-  platforms as thalaPlatforms,
-  jobs as thalaJobs,
-  fetchers as thalaFetchers,
-} from './plugins/thala';
-import {
-  platforms as tensorPlatforms,
-  fetchers as tensorFetchers,
-  tensorAirdropFetchers,
-} from './plugins/tensor';
-import {
-  platforms as ordersPlatforms,
-  fetchers as ordersFetchers,
-  jobs as ordersJobs,
-} from './plugins/orders';
-import {
-  platforms as aavePlatforms,
-  fetchers as aaveFetchers,
-  jobs as aaveJobs,
-} from './plugins/aave';
-import {
-  platforms as stakingAptosPlatforms,
-  fetchers as stakingAptosFetchers,
-} from './plugins/staking-aptos';
-import {
-  platforms as morphoPlatforms,
-  fetchers as morphoFetchers,
-  jobs as morphoJobs,
-} from './plugins/morpho';
-import {
-  platforms as driftPlatforms,
-  jobs as driftJobs,
-  fetchers as driftFetchers,
-  airdropFetcher as driftAirdropFetcher,
-} from './plugins/drift';
-import {
-  platforms as mangoPlatforms,
-  jobs as mangoJobs,
-  fetchers as mangoFetchers,
-} from './plugins/mango';
-import { jobs as topTokensJobs } from './plugins/top-tokens';
-import {
-  platforms as liquidityPoolsSeiPlatforms,
-  jobs as liquidityPoolsSeiJobs,
-  fetchers as liquidityPoolsSeiFetchers,
-} from './plugins/liquiditypools-sei';
-import {
-  platforms as pancakeswapPlatforms,
-  jobs as pancakeswapJobs,
-  fetchers as pancakeswapFetchers,
-} from './plugins/pancakeswap';
-import {
-  platforms as aftermathPlatforms,
-  jobs as aftermathJobs,
-  fetchers as aftermathFetchers,
-} from './plugins/aftermath';
-import {
-  platforms as liquidswapPlatforms,
-  jobs as liquidswapJobs,
-} from './plugins/liquidswap';
-import {
-  platforms as auxexchangePlatforms,
-  jobs as auxexchangeJobs,
-} from './plugins/auxexchange';
-import {
-  jobs as makerJobs,
-  platforms as makerPlatforms,
-  fetchers as makerFetchers,
-} from './plugins/maker';
-import {
-  jobs as kaminoJobs,
-  fetchers as kaminoFetchers,
-  platforms as kaminoPlatforms,
-  airdropFetchers as kaminoAirdropFetchers,
-} from './plugins/kamino';
-import {
-  jobs as bucketJobs,
-  fetchers as bucketFetchers,
-  platforms as bucketPlatforms,
-} from './plugins/bucket';
-import {
-  jobs as naviJobs,
-  fetchers as naviFetchers,
-  platforms as naviPlatforms,
-} from './plugins/navi';
-import {
-  fetchers as scallopFetchers,
-  jobs as scallopJobs,
-  platforms as scallopPlatforms,
-} from './plugins/scallop';
-import {
-  fetchers as rocketpoolFetchers,
-  platforms as rocketpoolPlatforms,
-} from './plugins/rocket-pool';
-import {
-  platforms as lidoPlatforms,
-  fetchers as lidoFetchers,
-} from './plugins/lido';
-import {
-  jobs as curveJobs,
-  fetchers as curveFetchers,
-  platforms as curvePlatforms,
-} from './plugins/curve';
-import {
-  jobs as compoundJobs,
-  fetchers as compoundFetchers,
-  platforms as compoundPlatforms,
-} from './plugins/compound';
-import {
-  jobs as stargateJobs,
-  fetchers as stargateFetchers,
-  platforms as stargatePlatforms,
-} from './plugins/stargate';
-import {
-  platforms as staderPlatforms,
-  jobs as staderJobs,
-  fetchers as staderFetchers,
-} from './plugins/stader';
-import {
-  platforms as uniswapPlatforms,
-  jobs as uniswapJobs,
-  fetchers as uniswapFetchers,
-} from './plugins/uniswap';
-import {
-  jobs as uniswapV2Jobs,
-  fetchers as uniswapV2Fetchers,
-} from './plugins/uniswap-v2';
-import {
-  platforms as balancerPlatforms,
-  jobs as balancerJobs,
-  fetchers as balancerFetchers,
-} from './plugins/balancer';
-import {
-  platforms as paraswapPlatforms,
-  jobs as paraswapJobs,
-  fetchers as paraswapFetchers,
-} from './plugins/paraswap';
-import {
-  platforms as hawksightPlatforms,
-  fetchers as hawksightFetchers,
-} from './plugins/hawksight';
-import {
-  platforms as realmsPlatforms,
-  jobs as realmsJobs,
-  fetchers as realmsFetchers,
-} from './plugins/daos';
-import {
-  platforms as maplePlatforms,
-  jobs as mapleJobs,
-  fetchers as mapleFetchers,
-} from './plugins/maple';
-import {
-  platforms as luloPlatforms,
-  jobs as luloJobs,
-  fetchers as luloFetchers,
-} from './plugins/lulo';
-import {
-  platforms as fluxbeamPlatforms,
-  jobs as fluxbeamJobs,
-  fetchers as fluxbeamFetchers,
-} from './plugins/fluxbeam';
-import {
-  platforms as jupiterPlatforms,
-  jobs as jupiterJobs,
-  fetchers as jupiterFetchers,
-  airdropFetchers as jupiterAirdropFetchers,
-} from './plugins/jupiter';
-import {
-  platforms as zetaPlatforms,
-  jobs as zetaJobs,
-  fetchers as zetaFetchers,
-  airdropFetcher as zetaAirdropFetcher,
-} from './plugins/zeta';
-import {
-  platforms as venusPlatforms,
-  jobs as venusJobs,
-  fetchers as venusFetchers,
-} from './plugins/venus';
-import {
-  platforms as sushiswapPlatforms,
-  jobs as sushiswapJobs,
-  fetchers as sushiswapFetchers,
-} from './plugins/sushiswap';
-import {
-  platforms as yearnPlatforms,
-  jobs as yearnJobs,
-  fetchers as yearnFetchers,
-} from './plugins/yearn';
-import {
-  platforms as atrixPlatforms,
-  jobs as atrixJobs,
-  fetchers as atrixFetchers,
-} from './plugins/atrix';
-import {
-  platforms as zeroOnePlatforms,
-  jobs as zeroOneJobs,
-  fetchers as zeroOneFetchers,
-} from './plugins/01';
-import {
-  platforms as gooseFXPlatforms,
-  jobs as gooseFXJobs,
-  fetchers as gooseFXFetchers,
-} from './plugins/goosefx';
-import {
-  platforms as rainPlatforms,
-  jobs as rainJobs,
-  fetchers as rainFetchers,
-} from './plugins/rain';
-import {
-  platforms as lifinityPlatforms,
-  jobs as lifinityJobs,
-  fetchers as lifinityFetchers,
-} from './plugins/lifinity';
-import {
-  platforms as portPlatforms,
-  jobs as portJobs,
-  fetchers as portFetchers,
-} from './plugins/port';
-import {
-  platforms as instadappPlatforms,
-  jobs as instadappJobs,
-  fetchers as instadappFetchers,
-} from './plugins/instadapp';
-import {
-  platforms as streamflowPlatforms,
-  jobs as streamflowJobs,
-  fetchers as streamflowFetchers,
-  airdropFetchers as streamFlowAirdropFetchers,
-} from './plugins/streamflow';
-import {
-  platforms as benqiPlatforms,
-  jobs as benqiJobs,
-  fetchers as benqiFetchers,
-} from './plugins/benqi';
-import {
-  platforms as parclPlatforms,
-  jobs as parclJobs,
-  fetchers as parclFetchers,
-  airdropFetcher as parclAirdropFetcher,
-} from './plugins/parcl';
-import {
-  platforms as pythPlatforms,
-  jobs as pythJobs,
-  fetchers as pythFetchers,
-} from './plugins/pyth';
-import {
-  platforms as driftMMPlatforms,
-  jobs as driftMMJobs,
-  fetchers as driftMMFetchers,
-} from './plugins/drift-market-maker-vault';
-import {
-  platforms as ariesPlatforms,
-  jobs as ariesJobs,
-  fetchers as ariesFetchers,
-} from './plugins/aries';
-import {
-  platforms as flashPlatforms,
-  jobs as flashJobs,
-  fetchers as flashFetchers,
-} from './plugins/flash';
-import {
-  platforms as bonkrewardsPlatforms,
-  jobs as bonkrewardsJobs,
-  fetchers as bonkrewardsFetchers,
-} from './plugins/bonkrewards';
-import {
-  platforms as accessprotocolPlatforms,
-  jobs as accessprotocolJobs,
-  fetchers as accessprotocolFetchers,
-} from './plugins/accessprotocol';
-import {
-  platforms as aptinPlatforms,
-  jobs as aptinJobs,
-  fetchers as aptinFetchers,
-} from './plugins/aptin';
-import {
-  platforms as bsktPlatforms,
-  jobs as bsktJobs,
-  fetchers as bsktFetchers,
-} from './plugins/bskt';
-import {
-  platforms as genesysgoPlatforms,
-  jobs as genesysgoJobs,
-  fetchers as genesysgoFetchers,
-} from './plugins/genesysgo';
-import {
-  platforms as auroryPlatforms,
-  jobs as auroryJobs,
-  fetchers as auroryFetchers,
-} from './plugins/aurory';
-import {
-  platforms as xStakingSolanaPlatforms,
-  jobs as xStakingSolanaJobs,
-  fetchers as xStakingSolanaFetchers,
-} from './plugins/x-staking-solana';
-import {
-  platforms as splStakingPlatforms,
-  jobs as splStakingJobs,
-  fetchers as splStakingFetchers,
-} from './plugins/armada-staking';
-import {
-  platforms as abexPlatforms,
-  jobs as abexJobs,
-  fetchers as abexFetchers,
-} from './plugins/abex';
-import {
-  platforms as kaiPlatforms,
-  jobs as kaiJobs,
-  fetchers as kaiFetchers,
-} from './plugins/kai';
-import {
-  platforms as suilendPlatforms,
-  jobs as suilendJobs,
-  fetchers as suilendFetchers,
-  airdropFetcher as suilendAirdropFetcher,
-} from './plugins/suilend';
-import {
-  platforms as symmetryPlatforms,
-  jobs as symmetryJobs,
-  fetchers as symmetryFetchers,
-} from './plugins/symmetry';
-import {
-  platforms as staratlasPlatforms,
-  jobs as staratlasJobs,
-  fetchers as staratlasFetchers,
-} from './plugins/staratlas';
-import {
-  platforms as tulipPlatforms,
-  jobs as tulipJobs,
-  fetchers as tulipFetchers,
-} from './plugins/tulip';
-import {
-  platforms as phoenixPlatforms,
-  jobs as phoenixJobs,
-  fetchers as phoenixFetchers,
-} from './plugins/phoenix';
-import {
-  platforms as uxdPlatforms,
-  jobs as uxdJobs,
-  fetchers as uxdFetchers,
-} from './plugins/uxd';
-import {
-  platforms as wormholePlatforms,
-  jobs as wormholeJobs,
-  fetchers as wormholeFetchers,
-} from './plugins/wormhole';
-import {
-  platforms as banxPlatforms,
-  jobs as banxJobs,
-  fetchers as banxFetchers,
-} from './plugins/banx';
-import {
-  platforms as nosanaPlatforms,
-  jobs as nosanaJobs,
-  fetchers as nosanaFetchers,
-} from './plugins/nosana';
-import {
-  platforms as jitoPlatforms,
-  jobs as jitoJobs,
-  fetchers as jitoFetchers,
-} from './plugins/jito';
-import {
-  platforms as magicedenPlatforms,
-  jobs as magicedenJobs,
-  fetchers as magicedenFetchers,
-  airdropFetcher as magicedenAirdropFetcher,
-} from './plugins/magiceden';
-import {
-  platforms as clonePlatforms,
-  jobs as cloneJobs,
-  fetchers as cloneFetchers,
-} from './plugins/clone';
-import {
-  platforms as sandglassPlatforms,
-  jobs as sandglassJobs,
-  fetchers as sandglassFetchers,
-} from './plugins/sandglass';
-import {
-  platforms as kriyaPlatforms,
-  jobs as kriyaJobs,
-  fetchers as kriyaFetchers,
-} from './plugins/kriya';
-import {
-  platforms as haedalPlatforms,
-  jobs as haedalJobs,
-  fetchers as haedalFetchers,
-} from './plugins/haedal';
-import {
-  platforms as flowxPlatforms,
-  jobs as flowxJobs,
-  fetchers as flowxFetchers,
-} from './plugins/flowx';
-import {
-  platforms as typusPlatforms,
-  jobs as typusJobs,
-  fetchers as typusFetchers,
-} from './plugins/typus';
-import {
-  jobs as moleJobs,
-  fetchers as moleFetchers,
-  platforms as molePlatforms,
-} from './plugins/mole';
-import {
-  jobs as bonfidaJobs,
-  fetchers as bonfidaFetchers,
-  platforms as bonfidaPlatforms,
-} from './plugins/bonfida';
-import {
-  jobs as cropperJobs,
-  fetchers as cropperFetchers,
-  platforms as cropperPlatforms,
-} from './plugins/cropper';
-import {
-  jobs as hedgehogJobs,
-  fetchers as hedgehogFetchers,
-  platforms as hedgehogPlatforms,
-} from './plugins/hedgehog';
-import {
-  jobs as whalesmarketJobs,
-  fetchers as whalesmarketFetchers,
-  platforms as whalesmarketPlatforms,
-} from './plugins/whalesmarket';
-import {
-  jobs as futarchyJobs,
-  fetchers as futarchyFetchers,
-  platforms as futarchyPlatforms,
-} from './plugins/futarchy';
-import {
-  platforms as elixirPlatforms,
-  jobs as elixirJobs,
-  fetchers as elixirFetchers,
-} from './plugins/elixir';
-import {
-  platforms as moonwalkPlatforms,
-  jobs as moonwalkJobs,
-  fetchers as moonwalkFetchers,
-} from './plugins/moonwalk';
-import {
-  jobs as bluefinJobs,
-  fetchers as bluefinFetchers,
-  platforms as bluefinPlatforms,
-  airdropFetcher as bluefinAirdropFetcher,
-} from './plugins/bluefin';
-import {
-  platforms as citrusPlatforms,
-  jobs as citrusJobs,
-  fetchers as citrusFetchers,
-} from './plugins/citrus';
-import {
-  platforms as sharkyPlatforms,
-  jobs as sharkyJobs,
-  fetchers as sharkyFetchers,
-} from './plugins/sharky';
-import {
-  platforms as sanctumPlatforms,
-  jobs as sanctumJobs,
-  fetchers as sanctumFetchers,
-  airdropFetchers as sanctumAirdropFetchers,
-} from './plugins/sanctum';
-import {
-  platforms as allbridgePlatforms,
-  jobs as allbridgeJobs,
-  fetchers as allbridgeFetchers,
-} from './plugins/allbridge';
-import {
-  platforms as famousfoxfederationPlatforms,
-  jobs as famousfoxfederationJobs,
-  fetchers as famousfoxfederationFetchers,
-} from './plugins/famousfoxfederation';
-import {
-  platforms as nxfinancePlatforms,
-  jobs as nxfinanceJobs,
-  fetchers as nxfinanceFetchers,
-} from './plugins/nxfinance';
-import {
-  platforms as echelonPlatforms,
-  jobs as echelonJobs,
-  fetchers as echelonFetchers,
-} from './plugins/echelon';
-import {
-  platforms as solayerPlatforms,
-  jobs as solayerJobs,
-  fetchers as solayerFetchers,
-} from './plugins/solayer';
-import {
-  platforms as picassoPlatforms,
-  jobs as picassoJobs,
-  fetchers as picassoFetchers,
-} from './plugins/picasso';
-import {
-  platforms as quarryPlatforms,
-  jobs as quarryJobs,
-  fetchers as quarryFetchers,
-} from './plugins/quarry';
-import {
-  platforms as thevaultPlatforms,
-  jobs as thevaultJobs,
-  fetchers as thevaultFetchers,
-} from './plugins/thevault';
-import {
-  platforms as deepbookPlatforms,
-  jobs as deepbookJobs,
-  fetchers as deepbookFetchers,
-  airdropFetcher as deepbookAirdropFetcher,
-} from './plugins/deepbook';
-import {
-  platforms as suinsPlatforms,
-  jobs as suinsJobs,
-  fetchers as suinsFetchers,
-  airdropFetcher as suinsAirdropFetcher,
-} from './plugins/suins';
-import {
-  platforms as debridgePlatforms,
-  jobs as debridgeJobs,
-  fetchers as debridgeFetchers,
-  airdropFetchers as debridgeAirdropFetchers,
-} from './plugins/debridge';
-import {
-  platforms as alphafiPlatforms,
-  jobs as alphafiJobs,
-  fetchers as alphafiFetchers,
-} from './plugins/alphafi';
-import {
-  platforms as jewelPlatforms,
-  jobs as jewelJobs,
-  fetchers as jewelFetchers,
-} from './plugins/jewel';
-import {
-  platforms as tradeportPlatforms,
-  jobs as tradeportJobs,
-  fetchers as tradeportFetchers,
-} from './plugins/tradeport';
-import {
-  platforms as bluemovePlatforms,
-  jobs as bluemoveJobs,
-  fetchers as bluemoveFetchers,
-} from './plugins/bluemove';
-import {
-  platforms as stabblePlatforms,
-  jobs as stabbleJobs,
-  fetchers as stabbleFetchers,
-} from './plugins/stabble';
-import {
-  platforms as franciumPlatforms,
-  jobs as franciumJobs,
-  fetchers as franciumFetchers,
-} from './plugins/francium';
-import {
-  platforms as adrasteaPlatforms,
-  jobs as adrasteaJobs,
-  fetchers as adrasteaFetchers,
-} from './plugins/adrastea';
-import {
-  platforms as elementalPlatforms,
-  jobs as elementalJobs,
-  fetchers as elementalFetchers,
-} from './plugins/elemental';
-import {
-  platforms as adrenaPlatforms,
-  jobs as adrenaJobs,
-  fetchers as adrenaFetchers,
-} from './plugins/adrena';
-import {
-  platforms as joulePlatforms,
-  jobs as jouleJobs,
-  fetchers as jouleFetchers,
-} from './plugins/joule';
-import {
-  platforms as mesoPlatforms,
-  jobs as mesoJobs,
-  fetchers as mesoFetchers,
-} from './plugins/meso';
-import {
-  platforms as loopscalePlatforms,
-  jobs as loopscaleJobs,
-  fetchers as loopscaleFetchers,
-} from './plugins/loopscale';
-import {
-  platforms as vaultkaPlatforms,
-  jobs as vaultkaJobs,
-  fetchers as vaultkaFetchers,
-} from './plugins/vaultka';
-import {
-  platforms as zeloPlatforms,
-  jobs as zeloJobs,
-  fetchers as zeloFetchers,
-} from './plugins/zelo';
-import {
-  platforms as hxroPlatforms,
-  jobs as hxroJobs,
-  fetchers as hxroFetchers,
-} from './plugins/hxro';
-import {
-  platforms as spdrPlatforms,
-  jobs as spdrJobs,
-  fetchers as spdrFetchers,
-} from './plugins/spdr';
-import {
-  platforms as grassPlatforms,
-  jobs as grassJobs,
-  fetchers as grassFetchers,
-  airdropFetcher as grassAirdropFetcher,
-} from './plugins/grass';
-import {
-  platforms as autothorPlatforms,
-  jobs as autothorJobs,
-  fetchers as autothorFetchers,
-} from './plugins/cyberfrogs';
-import {
-  platforms as metaplexPlatforms,
-  jobs as metaplexJobs,
-  fetchers as metaplexFetchers,
-} from './plugins/metaplex';
-import {
-  platforms as ensofiPlatforms,
-  jobs as ensofiJobs,
-  fetchers as ensofiFetchers,
-} from './plugins/ensofi';
-import {
-  platforms as coinmarketcapPlatforms,
-  jobs as coinmarketcapJobs,
-  fetchers as coinmarketcapFetchers,
-} from './plugins/coinmarketcap';
-import {
-  platforms as doubleupPlatforms,
-  jobs as doubleupJobs,
-  fetchers as doubleupFetchers,
-} from './plugins/doubleup';
-import {
-  platforms as photofinishPlatforms,
-  jobs as photofinishJobs,
-  fetchers as photofinishFetchers,
-} from './plugins/photofinish';
-import {
-  platforms as pudgypenguinsPlatforms,
-  jobs as pudgypenguinsJobs,
-  fetchers as pudgypenguinsFetchers,
-} from './plugins/pudgypenguins';
-import {
-  platforms as gpoolPlatforms,
-  jobs as gpoolJobs,
-  fetchers as gpoolFetchers,
-} from './plugins/gpool';
-import {
-  platforms as defilandPlatforms,
-  jobs as defilandJobs,
-  fetchers as defilandFetchers,
-} from './plugins/defiland';
-import {
-  platforms as perenaPlatforms,
-  jobs as perenaJobs,
-  fetchers as perenaFetchers,
-} from './plugins/perena';
-import {
-  platforms as fragmetricPlatforms,
-  jobs as fragmetricJobs,
-  fetchers as fragmetricFetchers,
-} from './plugins/fragmetric';
-import {
-  platforms as divvyPlatforms,
-  jobs as divvyJobs,
-  fetchers as divvyFetchers,
-} from './plugins/divvy';
-import {
-  platforms as exponentPlatforms,
-  jobs as exponentJobs,
-  fetchers as exponentFetchers,
-} from './plugins/exponent';
-import {
-  platforms as ratexPlatforms,
-  jobs as ratexJobs,
-  fetchers as ratexFetchers,
-} from './plugins/ratex';
-import {
-  platforms as defitunaPlatforms,
-  jobs as defitunaJobs,
-  fetchers as defitunaFetchers,
-} from './plugins/defituna';
-import {
-  platforms as iloopPlatforms,
-  jobs as iloopJobs,
-  fetchers as iloopFetchers,
-} from './plugins/iloop';
-import {
-  platforms as sonicPlatforms,
-  jobs as sonicJobs,
-  fetchers as sonicFetchers,
-  airdropFetcher as sonicAirdropFetcher,
-} from './plugins/sonic';
-import { jobs as coingeckoJobs } from './plugins/coingecko';
+import * as orphanPlatforms from './orphanPlatforms';
+
+// PLUGINS
+import * as tokens from './plugins/tokens';
+import * as nativeStake from './plugins/native-stake';
+import * as switchboard from './plugins/switchboard';
+import * as marinade from './plugins/marinade';
+import * as marginfi from './plugins/marginfi';
+import * as saber from './plugins/saber';
+import * as save from './plugins/save';
+import * as raydium from './plugins/raydium';
+import * as orca from './plugins/orca';
+import * as meteora from './plugins/meteora';
+import * as cetus from './plugins/cetus';
+import * as turbos from './plugins/turbos';
+import * as thala from './plugins/thala';
+import * as tensor from './plugins/tensor';
+import * as orders from './plugins/orders';
+import * as aave from './plugins/aave';
+import * as stakingAptos from './plugins/staking-aptos';
+import * as morpho from './plugins/morpho';
+import * as drift from './plugins/drift';
+import * as mango from './plugins/mango';
+import * as topTokens from './plugins/top-tokens';
+import * as liquidityPoolsSei from './plugins/liquiditypools-sei';
+import * as pancakeswap from './plugins/pancakeswap';
+import * as aftermath from './plugins/aftermath';
+import * as liquidswap from './plugins/liquidswap';
+import * as auxexchange from './plugins/auxexchange';
+import * as maker from './plugins/maker';
+import * as kamino from './plugins/kamino';
+import * as bucket from './plugins/bucket';
+import * as navi from './plugins/navi';
+import * as scallop from './plugins/scallop';
+import * as rocketpool from './plugins/rocket-pool';
+import * as lido from './plugins/lido';
+import * as curve from './plugins/curve';
+import * as compound from './plugins/compound';
+import * as stargate from './plugins/stargate';
+import * as stader from './plugins/stader';
+import * as uniswap from './plugins/uniswap';
+import * as balancer from './plugins/balancer';
+import * as paraswap from './plugins/paraswap';
+import * as hawksight from './plugins/hawksight';
+import * as daos from './plugins/daos';
+import * as maple from './plugins/maple';
+import * as lulo from './plugins/lulo';
+import * as fluxbeam from './plugins/fluxbeam';
+import * as jupiter from './plugins/jupiter';
+import * as zeta from './plugins/zeta';
+import * as venus from './plugins/venus';
+import * as sushiswap from './plugins/sushiswap';
+import * as yearn from './plugins/yearn';
+import * as atrix from './plugins/atrix';
+import * as zeroOne01 from './plugins/01';
+import * as goosefx from './plugins/goosefx';
+import * as rain from './plugins/rain';
+import * as lifinity from './plugins/lifinity';
+import * as port from './plugins/port';
+import * as instadapp from './plugins/instadapp';
+import * as streamflow from './plugins/streamflow';
+import * as benqi from './plugins/benqi';
+import * as parcl from './plugins/parcl';
+import * as pyth from './plugins/pyth';
+import * as driftMM from './plugins/drift-market-maker-vault';
+import * as aries from './plugins/aries';
+import * as flash from './plugins/flash';
+import * as bonkrewards from './plugins/bonkrewards';
+import * as accessprotocol from './plugins/accessprotocol';
+import * as aptin from './plugins/aptin';
+import * as bskt from './plugins/bskt';
+import * as genesysgo from './plugins/genesysgo';
+import * as aurory from './plugins/aurory';
+import * as xStakingSolana from './plugins/x-staking-solana';
+import * as splStaking from './plugins/armada-staking';
+import * as abex from './plugins/abex';
+import * as kai from './plugins/kai';
+import * as suilend from './plugins/suilend';
+import * as symmetry from './plugins/symmetry';
+import * as staratlas from './plugins/staratlas';
+import * as tulip from './plugins/tulip';
+import * as phoenix from './plugins/phoenix';
+import * as uxd from './plugins/uxd';
+import * as wormhole from './plugins/wormhole';
+import * as banx from './plugins/banx';
+import * as nosana from './plugins/nosana';
+import * as jito from './plugins/jito';
+import * as magiceden from './plugins/magiceden';
+import * as clone from './plugins/clone';
+import * as sandglass from './plugins/sandglass';
+import * as kriya from './plugins/kriya';
+import * as haedal from './plugins/haedal';
+import * as flowx from './plugins/flowx';
+import * as typus from './plugins/typus';
+import * as mole from './plugins/mole';
+import * as bonfida from './plugins/bonfida';
+import * as cropper from './plugins/cropper';
+import * as hedgehog from './plugins/hedgehog';
+import * as whalesmarket from './plugins/whalesmarket';
+import * as futarchy from './plugins/futarchy';
+import * as elixir from './plugins/elixir';
+import * as moonwalk from './plugins/moonwalk';
+import * as bluefin from './plugins/bluefin';
+import * as citrus from './plugins/citrus';
+import * as sharky from './plugins/sharky';
+import * as sanctum from './plugins/sanctum';
+import * as allbridge from './plugins/allbridge';
+import * as famousfoxfederation from './plugins/famousfoxfederation';
+import * as nxfinance from './plugins/nxfinance';
+import * as solayer from './plugins/solayer';
+import * as picasso from './plugins/picasso';
+import * as quarry from './plugins/quarry';
+import * as thevault from './plugins/thevault';
+import * as deepbook from './plugins/deepbook';
+import * as suins from './plugins/suins';
+import * as debridge from './plugins/debridge';
+import * as alphafi from './plugins/alphafi';
+import * as jewel from './plugins/jewel';
+import * as tradeport from './plugins/tradeport';
+import * as bluemove from './plugins/bluemove';
+import * as stabble from './plugins/stabble';
+import * as francium from './plugins/francium';
+import * as adrastea from './plugins/adrastea';
+import * as elemental from './plugins/elemental';
+import * as adrena from './plugins/adrena';
+import * as joule from './plugins/joule';
+import * as meso from './plugins/meso';
+import * as loopscale from './plugins/loopscale';
+import * as vaultka from './plugins/vaultka';
+import * as zelo from './plugins/zelo';
+import * as hxro from './plugins/hxro';
+import * as spdr from './plugins/spdr';
+import * as grass from './plugins/grass';
+import * as cyberfrogs from './plugins/cyberfrogs';
+import * as metaplex from './plugins/metaplex';
+import * as ensofi from './plugins/ensofi';
+import * as coinmarketcap from './plugins/coinmarketcap';
+import * as doubleup from './plugins/doubleup';
+import * as photofinish from './plugins/photofinish';
+import * as pudgypenguins from './plugins/pudgypenguins';
+import * as gpool from './plugins/gpool';
+import * as defiland from './plugins/defiland';
+import * as perena from './plugins/perena';
+import * as fragmetric from './plugins/fragmetric';
+import * as divvy from './plugins/divvy';
+import * as exponent from './plugins/exponent';
+import * as ratex from './plugins/ratex';
+import * as defituna from './plugins/defituna';
+import * as iloop from './plugins/iloop';
+import * as sonic from './plugins/sonic';
+import * as pluto from './plugins/pluto';
+import * as layer3 from './plugins/layer3';
+import * as puffcoin from './plugins/puffcoin';
+import * as triad from './plugins/triad';
+import * as baskt from './plugins/baskt';
+import * as guano from './plugins/guano';
+import * as coingecko from './plugins/coingecko';
+import * as zeusnode from './plugins/zeusnode';
 
 export {
   walletTokensPlatform,
   walletNftsPlatform,
 } from './plugins/tokens/constants';
+
 export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
 export * from './Cache';
@@ -762,473 +176,201 @@ export * from './Job';
 export * from './utils/name-service';
 export * from './utils/blank';
 export { getLlamaProtocolsJob } from './plugins/llama-protocols';
+export { jupFetcherIds } from './plugins/jupiter';
+export { solanaSimpleFetcher } from './plugins/tokens';
+
+const modules = [
+  tokens,
+  nativeStake,
+  switchboard,
+  marinade,
+  marginfi,
+  saber,
+  save,
+  raydium,
+  orca,
+  meteora,
+  cetus,
+  turbos,
+  thala,
+  tensor,
+  orders,
+  aave,
+  stakingAptos,
+  morpho,
+  drift,
+  mango,
+  topTokens,
+  liquidityPoolsSei,
+  pancakeswap,
+  aftermath,
+  liquidswap,
+  auxexchange,
+  maker,
+  kamino,
+  bucket,
+  navi,
+  scallop,
+  rocketpool,
+  lido,
+  curve,
+  compound,
+  stargate,
+  stader,
+  uniswap,
+  balancer,
+  paraswap,
+  hawksight,
+  daos,
+  maple,
+  lulo,
+  fluxbeam,
+  jupiter,
+  zeta,
+  venus,
+  sushiswap,
+  yearn,
+  atrix,
+  zeroOne01,
+  goosefx,
+  rain,
+  lifinity,
+  port,
+  instadapp,
+  streamflow,
+  benqi,
+  parcl,
+  pyth,
+  driftMM,
+  aries,
+  flash,
+  bonkrewards,
+  accessprotocol,
+  aptin,
+  bskt,
+  genesysgo,
+  aurory,
+  xStakingSolana,
+  splStaking,
+  abex,
+  kai,
+  suilend,
+  symmetry,
+  staratlas,
+  tulip,
+  phoenix,
+  uxd,
+  wormhole,
+  banx,
+  nosana,
+  jito,
+  magiceden,
+  clone,
+  sandglass,
+  kriya,
+  haedal,
+  flowx,
+  typus,
+  mole,
+  bonfida,
+  cropper,
+  hedgehog,
+  whalesmarket,
+  futarchy,
+  elixir,
+  moonwalk,
+  bluefin,
+  citrus,
+  sharky,
+  sanctum,
+  allbridge,
+  famousfoxfederation,
+  nxfinance,
+  solayer,
+  picasso,
+  quarry,
+  thevault,
+  deepbook,
+  suins,
+  debridge,
+  alphafi,
+  jewel,
+  tradeport,
+  bluemove,
+  stabble,
+  francium,
+  adrastea,
+  elemental,
+  adrena,
+  joule,
+  meso,
+  loopscale,
+  vaultka,
+  zelo,
+  hxro,
+  spdr,
+  grass,
+  cyberfrogs,
+  metaplex,
+  ensofi,
+  coinmarketcap,
+  doubleup,
+  photofinish,
+  pudgypenguins,
+  gpool,
+  defiland,
+  perena,
+  fragmetric,
+  divvy,
+  exponent,
+  ratex,
+  defituna,
+  iloop,
+  sonic,
+  pluto,
+  layer3,
+  puffcoin,
+  triad,
+  baskt,
+  guano,
+  coingecko,
+  orphanPlatforms,
+  zeusnode,
+];
 
 // PLATFORMS //
-export const platforms: Platform[] = [
-  ...orphanPlatforms,
-  ...aavePlatforms,
-  ...orcaPlatforms,
-  ...cetusPlatforms,
-  ...driftPlatforms,
-  ...auxexchangePlatforms,
-  ...liquidityPoolsSeiPlatforms,
-  ...liquidswapPlatforms,
-  ...aftermathPlatforms,
-  ...pancakeswapPlatforms,
-  ...tokensPlatforms,
-  ...nativeStakePlatforms,
-  ...marinadePlatforms,
-  ...saberPlatforms,
-  ...savePlatforms,
-  ...marginfiPlatforms,
-  ...raydiumPlatforms,
-  ...meteoraPlatforms,
-  ...turbosPlatforms,
-  ...thalaPlatforms,
-  ...tensorPlatforms,
-  ...ordersPlatforms,
-  ...stakingAptosPlatforms,
-  ...morphoPlatforms,
-  ...mangoPlatforms,
-  ...kaminoPlatforms,
-  ...bucketPlatforms,
-  ...naviPlatforms,
-  ...scallopPlatforms,
-  ...makerPlatforms,
-  ...rocketpoolPlatforms,
-  ...lidoPlatforms,
-  ...curvePlatforms,
-  ...compoundPlatforms,
-  ...stargatePlatforms,
-  ...staderPlatforms,
-  ...uniswapPlatforms,
-  ...balancerPlatforms,
-  ...paraswapPlatforms,
-  ...hawksightPlatforms,
-  ...realmsPlatforms,
-  ...maplePlatforms,
-  ...luloPlatforms,
-  ...fluxbeamPlatforms,
-  ...zetaPlatforms,
-  ...venusPlatforms,
-  ...sushiswapPlatforms,
-  ...yearnPlatforms,
-  ...atrixPlatforms,
-  ...zeroOnePlatforms,
-  ...gooseFXPlatforms,
-  ...rainPlatforms,
-  ...lifinityPlatforms,
-  ...portPlatforms,
-  ...instadappPlatforms,
-  ...streamflowPlatforms,
-  ...benqiPlatforms,
-  ...parclPlatforms,
-  ...pythPlatforms,
-  ...jupiterPlatforms,
-  ...driftMMPlatforms,
-  ...ariesPlatforms,
-  ...flashPlatforms,
-  ...bonkrewardsPlatforms,
-  ...accessprotocolPlatforms,
-  ...aptinPlatforms,
-  ...bsktPlatforms,
-  ...genesysgoPlatforms,
-  ...auroryPlatforms,
-  ...xStakingSolanaPlatforms,
-  ...splStakingPlatforms,
-  ...abexPlatforms,
-  ...kaiPlatforms,
-  ...suilendPlatforms,
-  ...symmetryPlatforms,
-  ...staratlasPlatforms,
-  ...tulipPlatforms,
-  ...phoenixPlatforms,
-  ...uxdPlatforms,
-  ...wormholePlatforms,
-  ...banxPlatforms,
-  ...nosanaPlatforms,
-  ...jitoPlatforms,
-  ...magicedenPlatforms,
-  ...flowxPlatforms,
-  ...clonePlatforms,
-  ...sandglassPlatforms,
-  ...kriyaPlatforms,
-  ...haedalPlatforms,
-  ...typusPlatforms,
-  ...molePlatforms,
-  ...bonfidaPlatforms,
-  ...cropperPlatforms,
-  ...hedgehogPlatforms,
-  ...whalesmarketPlatforms,
-  ...futarchyPlatforms,
-  ...elixirPlatforms,
-  ...moonwalkPlatforms,
-  ...bluefinPlatforms,
-  ...citrusPlatforms,
-  ...sharkyPlatforms,
-  ...sanctumPlatforms,
-  ...allbridgePlatforms,
-  ...famousfoxfederationPlatforms,
-  ...nxfinancePlatforms,
-  ...echelonPlatforms,
-  ...solayerPlatforms,
-  ...picassoPlatforms,
-  ...quarryPlatforms,
-  ...thevaultPlatforms,
-  ...deepbookPlatforms,
-  ...suinsPlatforms,
-  ...debridgePlatforms,
-  ...alphafiPlatforms,
-  ...jewelPlatforms,
-  ...tradeportPlatforms,
-  ...bluemovePlatforms,
-  ...stabblePlatforms,
-  ...franciumPlatforms,
-  ...adrasteaPlatforms,
-  ...elementalPlatforms,
-  ...adrenaPlatforms,
-  ...joulePlatforms,
-  ...mesoPlatforms,
-  ...loopscalePlatforms,
-  ...vaultkaPlatforms,
-  ...zeloPlatforms,
-  ...hxroPlatforms,
-  ...spdrPlatforms,
-  ...grassPlatforms,
-  ...autothorPlatforms,
-  ...metaplexPlatforms,
-  ...ensofiPlatforms,
-  ...coinmarketcapPlatforms,
-  ...doubleupPlatforms,
-  ...photofinishPlatforms,
-  ...pudgypenguinsPlatforms,
-  ...gpoolPlatforms,
-  ...defilandPlatforms,
-  ...perenaPlatforms,
-  ...fragmetricPlatforms,
-  ...divvyPlatforms,
-  ...exponentPlatforms,
-  ...ratexPlatforms,
-  ...defitunaPlatforms,
-  ...iloopPlatforms,
-  ...sonicPlatforms,
-];
+export const platforms: Platform[] = modules
+  .map((module) => module.platforms)
+  .flat();
 
 // JOBS //
-export const jobs: Job[] = [
-  ...tokensJobs,
-  ...nativeStakeJobs,
-  ...thalaJobs,
-  ...marginfiJobs,
-  ...raydiumJobs,
-  ...saveJobs,
-  ...meteoraJobs,
-  ...orcaJobs,
-  ...driftJobs,
-  ...mangoJobs,
-  ...cetusJobs,
-  ...turbosJobs,
-  ...topTokensJobs,
-  ...pancakeswapJobs,
-  ...auxexchangeJobs,
-  ...saberJobs,
-  ...aaveJobs,
-  ...ordersJobs,
-  ...morphoJobs,
-  ...makerJobs,
-  ...liquidityPoolsSeiJobs,
-  ...aftermathJobs,
-  ...liquidswapJobs,
-  ...kaminoJobs,
-  ...bucketJobs,
-  ...naviJobs,
-  ...scallopJobs,
-  ...curveJobs,
-  ...compoundJobs,
-  ...stargateJobs,
-  ...staderJobs,
-  ...uniswapV2Jobs,
-  ...uniswapJobs,
-  ...balancerJobs,
-  ...paraswapJobs,
-  ...realmsJobs,
-  ...mapleJobs,
-  ...luloJobs,
-  ...fluxbeamJobs,
-  ...jupiterJobs,
-  ...zetaJobs,
-  ...venusJobs,
-  ...sushiswapJobs,
-  ...yearnJobs,
-  ...atrixJobs,
-  ...zeroOneJobs,
-  ...gooseFXJobs,
-  ...rainJobs,
-  ...lifinityJobs,
-  ...portJobs,
-  ...instadappJobs,
-  ...streamflowJobs,
-  ...benqiJobs,
-  ...parclJobs,
-  ...pythJobs,
-  ...driftMMJobs,
-  ...ariesJobs,
-  ...flashJobs,
-  ...bonkrewardsJobs,
-  ...accessprotocolJobs,
-  ...aptinJobs,
-  ...bsktJobs,
-  ...genesysgoJobs,
-  ...auroryJobs,
-  ...xStakingSolanaJobs,
-  ...splStakingJobs,
-  ...abexJobs,
-  ...kaiJobs,
-  ...suilendJobs,
-  ...symmetryJobs,
-  ...staratlasJobs,
-  ...tulipJobs,
-  ...phoenixJobs,
-  ...uxdJobs,
-  ...wormholeJobs,
-  ...banxJobs,
-  ...nosanaJobs,
-  ...jitoJobs,
-  ...magicedenJobs,
-  ...cloneJobs,
-  ...switchboardJobs,
-  ...sandglassJobs,
-  ...kriyaJobs,
-  ...haedalJobs,
-  ...typusJobs,
-  ...flowxJobs,
-  ...moleJobs,
-  ...bonfidaJobs,
-  ...cropperJobs,
-  ...hedgehogJobs,
-  ...whalesmarketJobs,
-  ...futarchyJobs,
-  ...elixirJobs,
-  ...moonwalkJobs,
-  ...bluefinJobs,
-  ...citrusJobs,
-  ...sharkyJobs,
-  ...sanctumJobs,
-  ...allbridgeJobs,
-  ...famousfoxfederationJobs,
-  ...nxfinanceJobs,
-  ...echelonJobs,
-  ...solayerJobs,
-  ...picassoJobs,
-  ...quarryJobs,
-  ...thevaultJobs,
-  ...deepbookJobs,
-  ...suinsJobs,
-  ...debridgeJobs,
-  ...alphafiJobs,
-  ...jewelJobs,
-  ...tradeportJobs,
-  ...bluemoveJobs,
-  ...stabbleJobs,
-  ...franciumJobs,
-  ...adrasteaJobs,
-  ...elementalJobs,
-  ...adrenaJobs,
-  ...jouleJobs,
-  ...mesoJobs,
-  ...loopscaleJobs,
-  ...vaultkaJobs,
-  ...zeloJobs,
-  ...hxroJobs,
-  ...spdrJobs,
-  ...grassJobs,
-  ...autothorJobs,
-  ...metaplexJobs,
-  ...ensofiJobs,
-  ...coinmarketcapJobs,
-  ...doubleupJobs,
-  ...photofinishJobs,
-  ...pudgypenguinsJobs,
-  ...gpoolJobs,
-  ...defilandJobs,
-  ...perenaJobs,
-  ...fragmetricJobs,
-  ...divvyJobs,
-  ...exponentJobs,
-  ...ratexJobs,
-  ...defitunaJobs,
-  ...iloopJobs,
-  ...sonicJobs,
-  ...coingeckoJobs,
-];
+export const jobs: Job[] = modules
+  .map((module): Job[] => {
+    if ('jobs' in module) {
+      return module.jobs as Job[];
+    }
+    return [];
+  })
+  .flat();
 
 // FETCHERS //
-export const fetchers: Fetcher[] = [
-  ...tokensFetchers,
-  ...nativeStakeFetchers,
-  ...tensorFetchers,
-  ...marginfiFetchers,
-  ...marinadeFetchers,
-  ...saveFetchers,
-  ...thalaFetchers,
-  ...raydiumFetchers,
-  ...orcaFetchers,
-  ...driftFetchers,
-  ...mangoFetchers,
-  ...kaminoFetchers,
-  ...cetusFetchers,
-  ...turbosFetchers,
-  ...stakingAptosFetchers,
-  ...pancakeswapFetchers,
-  ...aftermathFetchers,
-  ...aaveFetchers,
-  ...ordersFetchers,
-  ...morphoFetchers,
-  ...liquidityPoolsSeiFetchers,
-  ...bucketFetchers,
-  ...naviFetchers,
-  ...scallopFetchers,
-  ...rocketpoolFetchers,
-  ...curveFetchers,
-  ...stargateFetchers,
-  ...makerFetchers,
-  ...compoundFetchers,
-  ...lidoFetchers,
-  ...staderFetchers,
-  ...uniswapV2Fetchers,
-  ...uniswapFetchers,
-  ...balancerFetchers,
-  ...paraswapFetchers,
-  ...hawksightFetchers,
-  ...realmsFetchers,
-  ...mapleFetchers,
-  ...luloFetchers,
-  ...fluxbeamFetchers,
-  ...jupiterFetchers,
-  ...zetaFetchers,
-  ...venusFetchers,
-  ...sushiswapFetchers,
-  ...yearnFetchers,
-  ...atrixFetchers,
-  ...zeroOneFetchers,
-  ...gooseFXFetchers,
-  ...rainFetchers,
-  ...lifinityFetchers,
-  ...portFetchers,
-  ...instadappFetchers,
-  ...meteoraFetchers,
-  ...streamflowFetchers,
-  ...benqiFetchers,
-  ...parclFetchers,
-  ...pythFetchers,
-  ...driftMMFetchers,
-  ...ariesFetchers,
-  ...flashFetchers,
-  ...bonkrewardsFetchers,
-  ...accessprotocolFetchers,
-  ...aptinFetchers,
-  ...bsktFetchers,
-  ...genesysgoFetchers,
-  ...auroryFetchers,
-  ...xStakingSolanaFetchers,
-  ...splStakingFetchers,
-  ...abexFetchers,
-  ...kaiFetchers,
-  ...suilendFetchers,
-  ...symmetryFetchers,
-  ...staratlasFetchers,
-  ...tulipFetchers,
-  ...phoenixFetchers,
-  ...uxdFetchers,
-  ...wormholeFetchers,
-  ...banxFetchers,
-  ...nosanaFetchers,
-  ...jitoFetchers,
-  ...magicedenFetchers,
-  ...cloneFetchers,
-  ...sandglassFetchers,
-  ...kriyaFetchers,
-  ...haedalFetchers,
-  ...typusFetchers,
-  ...flowxFetchers,
-  ...moleFetchers,
-  ...bonfidaFetchers,
-  ...cropperFetchers,
-  ...hedgehogFetchers,
-  ...whalesmarketFetchers,
-  ...futarchyFetchers,
-  ...elixirFetchers,
-  ...moonwalkFetchers,
-  ...bluefinFetchers,
-  ...citrusFetchers,
-  ...sharkyFetchers,
-  ...sanctumFetchers,
-  ...allbridgeFetchers,
-  ...famousfoxfederationFetchers,
-  ...nxfinanceFetchers,
-  ...echelonFetchers,
-  ...solayerFetchers,
-  ...picassoFetchers,
-  ...quarryFetchers,
-  ...thevaultFetchers,
-  ...deepbookFetchers,
-  ...suinsFetchers,
-  ...debridgeFetchers,
-  ...alphafiFetchers,
-  ...jewelFetchers,
-  ...tradeportFetchers,
-  ...bluemoveFetchers,
-  ...stabbleFetchers,
-  ...franciumFetchers,
-  ...adrasteaFetchers,
-  ...elementalFetchers,
-  ...adrenaFetchers,
-  ...jouleFetchers,
-  ...mesoFetchers,
-  ...loopscaleFetchers,
-  ...vaultkaFetchers,
-  ...zeloFetchers,
-  ...hxroFetchers,
-  ...spdrFetchers,
-  ...grassFetchers,
-  ...autothorFetchers,
-  ...metaplexFetchers,
-  ...ensofiFetchers,
-  ...coinmarketcapFetchers,
-  ...doubleupFetchers,
-  ...photofinishFetchers,
-  ...pudgypenguinsFetchers,
-  ...gpoolFetchers,
-  ...defilandFetchers,
-  ...perenaFetchers,
-  ...fragmetricFetchers,
-  ...divvyFetchers,
-  ...exponentFetchers,
-  ...ratexFetchers,
-  ...defitunaFetchers,
-  ...iloopFetchers,
-  ...sonicFetchers,
-];
+export const fetchers: Fetcher[] = modules
+  .map((module): Fetcher[] => {
+    if ('fetchers' in module) {
+      return module.fetchers as Fetcher[];
+    }
+    return [];
+  })
+  .flat();
 export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
 
-export const airdropFetchers: AirdropFetcher[] = [
-  ...jupiterAirdropFetchers,
-  ...kaminoAirdropFetchers,
-  ...sanctumAirdropFetchers,
-  driftAirdropFetcher,
-  parclAirdropFetcher,
-  deepbookAirdropFetcher,
-  suinsAirdropFetcher,
-  ...debridgeAirdropFetchers,
-  suilendAirdropFetcher,
-  bluefinAirdropFetcher,
-  grassAirdropFetcher,
-  ...streamFlowAirdropFetchers,
-  magicedenAirdropFetcher,
-  // pudgypenguinsAirdropFetcher,
-  zetaAirdropFetcher,
-  ...tensorAirdropFetchers,
-  sonicAirdropFetcher,
-];
+export const airdropFetchers: AirdropFetcher[] = modules
+  .map((module): AirdropFetcher[] => {
+    if ('airdropFetchers' in module) {
+      return module.airdropFetchers as AirdropFetcher[];
+    }
+    return [];
+  })
+  .flat();
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);

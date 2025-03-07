@@ -5,7 +5,8 @@ export const platformId = 'spdr';
 export const platform: Platform = {
   id: platformId,
   name: 'Spiderswap',
-  image: 'https://sonar.watch/img/platforms/spdr.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/spdr.webp',
   website: 'https://www.spiderswap.io/staking',
   twitter: 'https://twitter.com/spdrswap',
   // defiLlamaId: 'spdr-finance', // from https://defillama.com/docs/api

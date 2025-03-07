@@ -1,5 +1,5 @@
 import { GetProgramAccountsFilter } from '@solana/web3.js';
-import { vaultDepositorStruct, vaultStruct } from './structs';
+import { vaultDepositorStruct } from './structs';
 
 export const vaultDepositorFilter = (
   owner: string
@@ -14,5 +14,10 @@ export const vaultDepositorFilter = (
 ];
 
 export const vaultFilter: GetProgramAccountsFilter[] = [
-  { dataSize: vaultStruct.byteSize },
+  {
+    memcmp: {
+      offset: 0,
+      bytes: 'cJJWPqNMczr',
+    },
+  },
 ];

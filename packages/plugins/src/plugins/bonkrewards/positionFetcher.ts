@@ -1,17 +1,12 @@
-import {
-  NetworkId,
-  PortfolioAsset,
-  PortfolioElementType,
-  getUsdValueSum,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
-import { bonkDecimals, bonkMint, platformId, stakePid } from './constants';
+import { bonkMint, platformId, stakePid } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { stakeDepositReceiptStruct } from './structs';
 import { stakeDepositReceiptFilter } from './filters';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -24,39 +19,31 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
   if (accounts.length === 0) return [];
 
-  const bonkTokenPrice = await cache.getTokenPrice(bonkMint, NetworkId.solana);
-  const assets: PortfolioAsset[] = [];
+  const registry = new ElementRegistry(NetworkId.solana, platformId);
+  const stakeElement = registry.addElementMultiple({
+    label: 'Staked',
+    link: 'https://bonkrewards.com/',
+  });
+
   for (const account of accounts) {
+    if (account.depositAmount.isZero()) continue;
+
     const lockedUntil =
       (account.depositTimestamp.toNumber() +
         account.lockupDuration.toNumber()) *
       1000;
-    if (account.depositAmount.isZero()) continue;
 
-    assets.push({
-      ...tokenPriceToAssetToken(
-        bonkMint,
-        account.depositAmount.dividedBy(10 ** bonkDecimals).toNumber(),
-        NetworkId.solana,
-        bonkTokenPrice
-      ),
+    stakeElement.addAsset({
+      address: bonkMint,
+      amount: account.depositAmount,
+      ref: account.pubkey,
       attributes: {
         lockedUntil,
       },
     });
   }
 
-  if (assets.length === 0) return [];
-  return [
-    {
-      type: PortfolioElementType.multiple,
-      label: 'Staked',
-      networkId: NetworkId.solana,
-      platformId,
-      data: { assets },
-      value: getUsdValueSum(assets.map((asset) => asset.value)),
-    },
-  ];
+  return registry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

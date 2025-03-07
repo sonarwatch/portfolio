@@ -7,10 +7,16 @@ export const platformId = 'banx';
 export const platform: Platform = {
   id: platformId,
   name: 'Banx',
-  image: 'https://sonar.watch/img/platforms/banx.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/banx.webp',
   defiLlamaId: 'banx', // from https://defillama.com/docs/api
   website: 'https://banx.gg/',
   twitter: 'https://twitter.com/banx_gg',
+  description:
+    'Borrow, Lend, Multiply, Hedge Solana tokens and NFTs with no expiration, no price liquidation.',
+  documentation: 'https://docs.banx.gg/',
+  discord: 'https://discord.com/invite/banxfromfrakt',
+  github: 'https://github.com/frakt-solana',
 };
 
 export const banxPid = new PublicKey(

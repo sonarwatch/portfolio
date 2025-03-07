@@ -61,6 +61,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
   const element = elementRegistry.addElementBorrowlend({
     label: 'Lending',
+    link: 'https://francium.io/app/lend',
   });
 
   assets.forEach((asset) => asset && element.addSuppliedAsset(asset));

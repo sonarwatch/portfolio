@@ -10,7 +10,8 @@ export const platformId = 'aave';
 export const platform: Platform = {
   id: platformId,
   name: 'AAVE',
-  image: 'https://sonar.watch/img/platforms/aave.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/aave.webp',
   defiLlamaId: 'parent#aave',
   website: 'https://aave.com/',
 };

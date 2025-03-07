@@ -5,7 +5,8 @@ export const platformId = 'deepbook';
 export const platform: Platform = {
   id: platformId,
   name: 'DeepBook',
-  image: 'https://sonar.watch/img/platforms/deepbook.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/deepbook.webp',
   website: 'https://deepbook.tech/',
   twitter: 'https://x.com/DeepBookonSui',
   defiLlamaId: 'parent#deepbook', // from https://defillama.com/docs/api
@@ -15,7 +16,8 @@ export const airdropStatics: AirdropStatics = {
   claimLink: 'https://claim.deepbook.tech/',
   emitterName: 'DeepBook',
   id: `${platformId}-token-launch`,
-  image: 'https://sonar.watch/img/platforms/deepbook.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/deepbook.webp',
   claimEnd: undefined,
   claimStart: 1728907200000,
 };

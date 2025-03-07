@@ -52,7 +52,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       NetworkId.solana,
       solTokenPrice
     );
-    assets.push(asset);
+    assets.push({ ...asset, ref: acc.pubkey.toString() });
   });
   if (assets.length === 0) return [];
 
@@ -64,6 +64,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     value: getUsdValueSum(assets.map((a) => a.value)),
     data: {
       assets,
+      link: 'https://texture.finance/lendy/my_loans',
     },
   };
   return [element];

@@ -1,10 +1,4 @@
-import {
-  NetworkId,
-  PortfolioAsset,
-  PortfolioElement,
-  TokenPrice,
-  getUsdValueSum,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -16,9 +10,9 @@ import {
 } from '../../utils/solana';
 import { voteStruct, voterStruct } from './structs/realms';
 import { voteFilters } from './filters';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getLockedUntil, getVoterPda } from './helpers';
-import { RealmData } from './types';
+import { RealmData, RegistrarInfo } from './types';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -27,10 +21,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     networkId: NetworkId.solana,
   });
 
-  if (!realmData) return [];
+  if (!realmData) throw new Error('Realm data not cached');
 
   const splGovPrograms = realmData.govPrograms;
-  const registrarById: Map<string, string> = new Map();
+  const registrarById: Map<string, RegistrarInfo> = new Map();
   const mintsSet: Set<string> = new Set();
 
   const voterAccountsPubKeys: PublicKey[] = [];
@@ -39,14 +33,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       getVoterPda(owner, registrarInfo.pubkey, registrarInfo.vsr)
     );
     mintsSet.add(registrarInfo.mint);
-    registrarById.set(registrarInfo.pubkey, registrarInfo.mint);
+    registrarById.set(registrarInfo.pubkey, registrarInfo);
   });
-
-  const tempVoterAccounts = await getParsedMultipleAccountsInfo(
-    client,
-    voterStruct,
-    voterAccountsPubKeys
-  );
 
   const getAccountSplGovPromises = [];
   if (splGovPrograms) {
@@ -61,37 +49,29 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       );
     }
   }
-  const splGovAccounts = (await Promise.all(getAccountSplGovPromises)).flat();
+
+  const [splGovAccounts, tempVoterAccounts] = await Promise.all([
+    (await Promise.all(getAccountSplGovPromises)).flat(),
+    getParsedMultipleAccountsInfo(client, voterStruct, voterAccountsPubKeys),
+  ]);
 
   const voterAccounts = tempVoterAccounts;
   if (tempVoterAccounts.length === 0 && splGovAccounts.length === 0) return [];
 
   splGovAccounts.forEach((account) => mintsSet.add(account.mint.toString()));
 
-  const mints = Array.from(mintsSet);
-
-  const tokenPrices = await cache.getTokenPrices(mints, NetworkId.solana);
-  if (!tokenPrices) return [];
-
-  const tokenPriceByMint: Map<string, TokenPrice> = new Map();
-  tokenPrices.forEach((tP) => (tP ? tokenPriceByMint.set(tP.address, tP) : []));
-
-  const realmsAssets: PortfolioAsset[] = [];
-  for (const voteAccount of splGovAccounts) {
+  const registry = new ElementRegistry(NetworkId.solana, platformId);
+  const depositElement = registry.addElementMultiple({
+    label: 'Deposit',
+    link: 'https://app.realms.today/realms',
+  });
+  for (const voteAccount of splGovAccounts.flat()) {
     if (voteAccount.amount.isZero()) continue;
-    const tokenMint = voteAccount.mint.toString();
-    const tokenPrice = tokenPriceByMint.get(tokenMint);
-    if (!tokenPrice) continue;
-
-    const amount = voteAccount.amount.div(10 ** tokenPrice.decimals).toNumber();
-
-    const asset = tokenPriceToAssetToken(
-      tokenMint,
-      amount,
-      NetworkId.solana,
-      tokenPrice
-    );
-    realmsAssets.push(asset);
+    depositElement.addAsset({
+      address: voteAccount.mint.toString(),
+      amount: voteAccount.amount,
+      ref: voteAccount.pubkey.toString(),
+    });
   }
 
   for (const voterAccount of voterAccounts) {
@@ -99,45 +79,29 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const registrar = registrarById.get(voterAccount.registrar.toString());
     if (!registrar) continue;
 
-    const mint = registrar;
-    const tP = tokenPriceByMint.get(mint);
-    if (!tP) continue;
+    const { mint } = registrar;
     for (const deposit of voterAccount.deposits) {
       if (!deposit.amountDepositedNative.isZero()) {
-        const asset = tokenPriceToAssetToken(
-          mint,
-          deposit.amountDepositedNative.dividedBy(10 ** tP.decimals).toNumber(),
-          NetworkId.solana,
-          tP
-        );
         const lockedUntil = getLockedUntil(
           deposit.lockup.startTs,
           deposit.lockup.endTs,
           deposit.lockup.kind
         );
 
-        realmsAssets.push(
-          lockedUntil ? { ...asset, attributes: { lockedUntil } } : asset
-        );
+        depositElement.addAsset({
+          address: mint,
+          amount: deposit.amountDepositedNative,
+          ref: voterAccount.pubkey.toString(),
+          attributes: {
+            lockedUntil,
+          },
+          sourceRefs: [{ name: 'Vault', address: registrar.pubkey }],
+        });
       }
     }
   }
 
-  const elements: PortfolioElement[] = [];
-  if (realmsAssets.length > 0) {
-    elements.push({
-      networkId: NetworkId.solana,
-      platformId,
-      type: 'multiple',
-      label: 'Deposit',
-      value: getUsdValueSum(realmsAssets.map((a) => a.value)),
-      data: {
-        assets: realmsAssets,
-      },
-    });
-  }
-
-  return elements;
+  return registry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

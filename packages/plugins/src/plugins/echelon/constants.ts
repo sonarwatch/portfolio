@@ -4,7 +4,8 @@ export const platformId = 'echelon';
 export const platform: Platform = {
   id: platformId,
   name: 'Echelon',
-  image: 'https://sonar.watch/img/platforms/echelon.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/echelon.webp',
   defiLlamaId: 'echelon-market', // from https://defillama.com/docs/api
   website: 'https://app.echelon.market',
   twitter: 'https://twitter.com/EchelonMarket',

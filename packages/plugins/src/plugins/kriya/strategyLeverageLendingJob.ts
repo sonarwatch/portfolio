@@ -10,15 +10,15 @@ import {
 import { LeverageVaultInfo } from './types/vaults';
 
 const executor: JobExecutor = async (cache: Cache) => {
-  const [leverageLendingVaults] = await Promise.all([
-    axios.get<LeverageVaultInfo[]>(leverageLendingVaultsUrl).catch(() => null),
-  ]);
+  const leverageLendingVaults = await axios.get<{ data: LeverageVaultInfo[] }>(
+    leverageLendingVaultsUrl
+  );
 
   if (!leverageLendingVaults) return;
 
   await cache.setItem(
     leverageLendingVaultsInfoKey,
-    leverageLendingVaults.data,
+    leverageLendingVaults.data.data,
     {
       prefix: platformId,
       networkId: NetworkId.sui,
@@ -29,6 +29,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-strategy-leverage-lending`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;

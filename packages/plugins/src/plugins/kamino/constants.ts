@@ -10,6 +10,11 @@ export const platform: Platform = {
   image: `https://sonar.watch/img/platforms/${platformId}.webp`,
   website: 'https://kamino.finance/',
   defiLlamaId: 'parent#kamino-finance',
+  description: 'Borrow, Earn and Leverage on Solana',
+  discord: 'https://discord.com/invite/kaminofinance',
+  twitter: 'https://x.com/KaminoFinance',
+  documentation: 'https://docs.kamino.finance/',
+  github: 'https://github.com/Kamino-Finance',
 };
 
 export const kmnoMint = 'KMNo3nJsBXfcpJTVhZcXLW7RmTwTt4GVFE7suUBo9sS';
@@ -67,6 +72,10 @@ export const lendingConfigs: Map<string, LendingMarketConfig> = new Map([
         ],
         [
           'BNso1VUJnh4zcfpZa6986Ea66P6TCp59hvtNJ8b1X85',
+          'So11111111111111111111111111111111111111112',
+        ],
+        [
+          'picobAEvs6w7QEknPce34wAE4gknZA9v5tTonnmHYdX',
           'So11111111111111111111111111111111111111112',
         ],
       ],
@@ -151,7 +160,8 @@ export const airdropStaticsS1: AirdropStatics = {
   emitterName: 'Kamino',
   emitterLink: 'https://app.kamino.finance/',
   claimLink: 'https://app.kamino.finance/genesis',
-  image: 'https://sonar.watch/img/platforms/kamino.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/kamino.webp',
   name: 'S1',
 };
 export const airdropStaticsS2: AirdropStatics = {
@@ -161,6 +171,11 @@ export const airdropStaticsS2: AirdropStatics = {
   emitterName: 'Kamino',
   emitterLink: 'https://app.kamino.finance/',
   claimLink: 'https://app.kamino.finance/season-2-airdrop',
-  image: 'https://sonar.watch/img/platforms/kamino.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/kamino.webp',
   name: 'S2',
 };
+
+export const limitOrderProgramId = new PublicKey(
+  'LiMoM9rMhrdYrfzUCxQppvxCSG1FcrUK9G8uLq4A1GF'
+);

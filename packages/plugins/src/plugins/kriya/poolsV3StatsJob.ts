@@ -6,19 +6,18 @@ import { platformId, poolsStats, poolsV3StatsInfoKey } from './constants';
 import { PoolStat } from './types/pools';
 
 const executor: JobExecutor = async (cache: Cache) => {
-  const apiRes: AxiosResponse<PoolStat[]> | null = await axios
-    .get(poolsStats)
-    .catch(() => null);
+  const apiRes: AxiosResponse<{ data: PoolStat[] }> | null = await axios.get(
+    poolsStats
+  );
 
   if (!apiRes) return;
 
   const poolsInfo: PoolStat[] = [];
-  for (const pool of apiRes.data) {
+  for (const pool of apiRes.data.data) {
     poolsInfo.push({
-      pool_id: pool.pool_id,
-      volume_24h: pool.volume_24h,
-      fee_collected_24h: pool.fee_collected_24h,
-      fee_rate: pool.fee_rate,
+      poolId: pool.poolId,
+      volume24h: pool.volume24h,
+      fees24h: pool.fees24h,
       apy: pool.apy,
       tvl: pool.tvl,
     });
@@ -33,6 +32,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-pools-v3-stats`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;

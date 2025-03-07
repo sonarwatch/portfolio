@@ -198,6 +198,10 @@ const executor: JobExecutor = async (cache: Cache) => {
         ],
         liquidityName: symbol ? `f${symbol}` : 'fUSD',
         elementName,
+        sourceRefs: [
+          { name: 'Pool', address: proposal.pubkey.toString() },
+          { name: 'Vault', address: proposal.quoteVault.toString() },
+        ],
       };
 
       const pUSDSource: TokenPriceSource = {
@@ -220,6 +224,10 @@ const executor: JobExecutor = async (cache: Cache) => {
         ],
         liquidityName: symbol ? `p${symbol}` : 'pUSD',
         elementName,
+        sourceRefs: [
+          { name: 'Pool', address: proposal.pubkey.toString() },
+          { name: 'Vault', address: proposal.quoteVault.toString() },
+        ],
       };
       // If the Proposal has passed, fUSD will not be redeemable (price = 0)
       if (proposal.state === ProposalState.Passed) {
@@ -283,6 +291,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         underlyings: [{ ...baseUnderlyingTokenPrice, amountPerLp: 1 }],
         liquidityName: baseLiquidityName,
         elementName,
+        sourceRefs: [{ name: 'Pool', address: amm.pubkey.toString() }],
       };
 
       // If it's the amm handling the Pass LP and the Proposal has failed, pToken will not be redeemable (price = 0)
@@ -353,6 +362,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-daos`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;

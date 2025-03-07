@@ -83,6 +83,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       attributes: {
         lockedUntil: vestingAccount.endTime.multipliedBy(1000).toNumber(),
       },
+      ref: vestingAccount.pubkey.toString(),
+      link: `https://app.streamflow.finance/contract/solana/mainnet/${vestingAccount.pubkey.toString()}`,
     });
   }
 

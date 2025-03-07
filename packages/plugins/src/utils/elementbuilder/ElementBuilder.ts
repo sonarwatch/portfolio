@@ -39,7 +39,7 @@ export abstract class ElementBuilder {
     this.name = name;
   }
 
-  abstract mints(): string[];
+  abstract tokenAddresses(): string[];
 
   abstract get(
     networkId: NetworkIdType,

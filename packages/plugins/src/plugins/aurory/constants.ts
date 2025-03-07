@@ -5,10 +5,15 @@ export const platformId = 'aurory';
 export const platform: Platform = {
   id: platformId,
   name: 'Aurory',
-  image: 'https://sonar.watch/img/platforms/aurory.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/aurory.webp',
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
   website: 'https://app.aurory.io',
   twitter: 'https://twitter.com/AuroryProject',
+  description:
+    'Seekers of Tokane by Aurory, is a free-to-play, immersive JRPG built by a team of +60 gaming industry veterans.',
+  discord: 'https://discord.gg/aurory',
+  documentation: 'https://docs.aurory.io/',
 };
 
 export const programId = new PublicKey(

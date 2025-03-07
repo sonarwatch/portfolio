@@ -4,7 +4,8 @@ export const platformId = 'aries';
 export const platform: Platform = {
   id: platformId,
   name: 'Aries',
-  image: 'https://sonar.watch/img/platforms/aries.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/aries.webp',
   defiLlamaId: 'aries-markets',
   website: 'https://app.ariesmarkets.xyz/',
   twitter: 'https://twitter.com/AriesMarkets',

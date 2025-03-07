@@ -62,12 +62,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       (p) => p.mint.toString() === account.mint_a.toString()
     );
     const lendingPoolB = lendingPools.find(
-      (p) => p.mint.toString() === account.mint_a.toString()
+      (p) => p.mint.toString() === account.mint_b.toString()
     );
     if (!lendingPoolA || !lendingPoolB) return;
 
     const element = elementRegistry.addElementBorrowlend({
       label: 'LiquidityPool',
+      ref: account.pubkey,
+      link: 'https://defituna.com/trade',
+      sourceRefs: [
+        { name: 'Lending Market', address: lendingPoolA.pubkey.toString() },
+        { name: 'Lending Market', address: lendingPoolB.pubkey.toString() },
+      ],
     });
 
     const { tokenAmountA, tokenAmountB } = getTokenAmountsFromLiquidity(

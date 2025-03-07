@@ -40,6 +40,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       name: `${market.vault.platform} ${maturity.toLocaleString('en-US', {
         month: 'short',
       })} ${maturity.getDate()} ${maturity.getFullYear().toString()}`,
+      link: 'https://www.exponent.finance/farm',
     });
 
     element.addAsset({

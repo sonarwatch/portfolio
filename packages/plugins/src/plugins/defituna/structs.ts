@@ -34,6 +34,7 @@ export const lendingStruct = new BeetStruct<Lending>(
 );
 
 export type Vault = {
+  pubkey: PublicKey;
   buffer: Buffer;
   version: number;
   bump: number[];

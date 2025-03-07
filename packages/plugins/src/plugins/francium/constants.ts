@@ -8,10 +8,18 @@ export const platformId = 'francium';
 export const platform: Platform = {
   id: platformId,
   name: 'Francium',
-  image: 'https://sonar.watch/img/platforms/francium.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/francium.webp',
   website: 'https://francium.io/',
   twitter: 'https://x.com/Francium_Defi',
   defiLlamaId: 'francium', // from https://defillama.com/docs/api
+  isDeprecated: true,
+  discord: 'discord.gg/francium',
+  github: 'https://github.com/Francium-DeFi',
+  telegram: 'https://t.me/franciumprotocol',
+  medium: 'https://francium-defi.medium.com/',
+  description:
+    'Francium is a DeFi yield strategy Platform on Solana, providing leveraged/hedged farming, DeFi strategies & on-chain trading strategies.',
 };
 
 export const lendingPoolsCacheKey = 'lending_pools';

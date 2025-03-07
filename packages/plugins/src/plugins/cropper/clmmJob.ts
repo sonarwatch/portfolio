@@ -6,6 +6,6 @@ import { clmmPid, platformId } from './constants';
 const job: Job = {
   id: `${platformId}-clmm`,
   executor: getWhirlpoolsJob(clmmPid),
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;

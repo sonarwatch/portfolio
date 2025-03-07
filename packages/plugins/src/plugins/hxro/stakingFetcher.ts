@@ -30,6 +30,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
   const element = elementRegistry.addElementMultiple({
     label: 'Staked',
+    link: 'https://app.hxro.finance/stake',
   });
 
   accounts.forEach((acc) => {
@@ -42,6 +43,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           .times(1000)
           .toNumber(),
       },
+      ref: acc.pubkey,
     });
   });
 

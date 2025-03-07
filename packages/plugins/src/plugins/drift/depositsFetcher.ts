@@ -95,6 +95,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elementInsurance = elementRegistry.addElementMultiple({
     label: 'Staked',
     name: 'Insurance Fund',
+    link: 'https://app.drift.trade/vaults/insurance-fund-vaults',
   });
 
   insuranceAccounts.forEach((account, i) => {
@@ -115,6 +116,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       amount: account.ifShares
         .dividedBy(insuranceFund.totalShares)
         .times(vault.amount),
+      ref: account.pubkey,
+      sourceRefs: [
+        { name: 'Vault', address: insuranceFund.vault.toString() },
+        { name: 'Market', address: spotMarket.pubkey.toString() },
+      ],
     });
   });
 
@@ -162,6 +168,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const element = elementRegistry.addElementBorrowlend({
       label: 'Lending',
       name: u8ArrayToString(userAccount.name),
+      ref: userAccount.pubkey,
+      link: 'https://app.drift.trade/',
     });
 
     for (const perpPosition of userAccount.perpPositions) {
@@ -179,6 +187,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         market.amm.oracleSource,
         client
       );
+      if (!oraclePriceData || oraclePriceData.price.isZero()) continue;
 
       const pnl = new BigNumber(
         calculatePositionPNL(market, perpPosition, oraclePriceData).toString()
@@ -200,6 +209,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         attributes: {
           tags: [side],
         },
+        sourceRefs: [{ name: 'Lending Market', address: perpMarketAddress }],
       });
     }
 
@@ -244,6 +254,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         element.addSuppliedAsset({
           address: spotMarket.mint,
           amount: tokenAmount,
+          sourceRefs: [
+            { name: 'Lending Market', address: spotMarket.pubkey.toString() },
+          ],
         });
         element.addSuppliedYield([
           {
@@ -255,6 +268,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         element.addBorrowedAsset({
           address: spotMarket.mint,
           amount: tokenAmount.abs(),
+          sourceRefs: [
+            { name: 'Lending Market', address: spotMarket.pubkey.toString() },
+          ],
         });
         element.addSuppliedYield([
           {

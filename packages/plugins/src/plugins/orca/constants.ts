@@ -5,16 +5,25 @@ export const platformId = 'orca';
 export const platform: Platform = {
   id: platformId,
   name: 'Orca',
-  image: 'https://sonar.watch/img/platforms/orca.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/orca.webp',
   defiLlamaId: 'orca',
   website: 'https://www.orca.so/',
+  discord: 'https://discord.orca.so/',
+  github: 'https://github.com/orca-so',
+  twitter: 'https://twitter.com/orca_so',
+  medium: 'https://orca-so.medium.com/',
+  documentation: 'https://docs.orca.so/',
+  description:
+    'Orca is the go-to place to trade tokens and provide liquidity on Solana',
 };
 
 export const orcaStakingPlatformId = 'orca-staking';
 export const orcaStakingPlatform: Platform = {
   id: orcaStakingPlatformId,
   name: 'Orca Staking',
-  image: 'https://sonar.watch/img/platforms/orca.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/orca.webp',
   website: 'https://v1.orca.so/staking',
 };
 

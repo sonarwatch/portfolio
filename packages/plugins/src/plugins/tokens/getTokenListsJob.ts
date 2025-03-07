@@ -24,7 +24,7 @@ function getTokenListsJob(networkId: NetworkIdType): Job {
 
     if (
       cachedTokenList &&
-      !isLatestVersion(cachedTokenList.version, tokenList.data.version)
+      !isLatestVersion(tokenList.data.version, cachedTokenList.version)
     ) {
       return;
     }
@@ -50,7 +50,7 @@ function getTokenListsJob(networkId: NetworkIdType): Job {
   const job: Job = {
     id: `token-lists-${networkId}`,
     executor,
-    label: 'normal',
+    labels: ['normal'],
   };
   return job;
 }
