@@ -2,7 +2,7 @@ import util from 'node:util';
 import { isAddress, NetworkIdType, networks } from '@sonarwatch/portfolio-core';
 import { getCache } from '../src';
 import sleep from '../src/utils/misc/sleep';
-import { runActivity } from '../src/Activity';
+import { runTransactions } from '../src/Transactions';
 
 const argNetwork = process.argv.at(2);
 if (!argNetwork || argNetwork === '') {
@@ -38,13 +38,13 @@ async function main(networkArg: string, owner: string, account?: string) {
   const cache = getCache();
 
   console.log('Fetching...');
-  const activityResult = await runActivity(
+  const transactionsResult = await runTransactions(
     cache,
     networkArg as NetworkIdType,
     owner,
     account
   );
-  console.log(util.inspect(activityResult, false, null, true));
+  console.log(util.inspect(transactionsResult, false, null, true));
   await cache.dispose();
   await sleep(100);
   process.exit(0);

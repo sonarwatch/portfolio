@@ -1,22 +1,32 @@
+import { ParsedTransactionWithMeta } from '@solana/web3.js';
 import {
-  Service,
-  Transaction,
   BalanceChange,
-  solanaNativeWrappedAddress,
+  Service,
   solanaNativeDecimals,
-  NetworkIdType,
-  NetworkId,
+  solanaNativeWrappedAddress,
+  Transaction,
 } from '@sonarwatch/portfolio-core';
-import { ParsedTransactionWithMeta, PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { Cache } from './Cache';
-import promiseTimeout from './utils/misc/promiseTimeout';
-import { getClientSolana } from './utils/clients';
-import { services } from './index';
 
-const runActivityTimeout = 60000;
+const findTransactionService = (
+  txn: ParsedTransactionWithMeta,
+  sortedServices: Service[]
+): Service | undefined => {
+  const { instructions } = txn.transaction.message;
 
-const parseVersionedTransaction = (
+  const txnContractAddresses = instructions
+    .map((i) => i.programId.toString())
+    .filter((value, index, self) => self.indexOf(value) === index);
+
+  // We keep the first service with all contract addresses in txn
+  return sortedServices.find((service) =>
+    service.contracts?.every((contract) =>
+      txnContractAddresses.includes(contract.address)
+    )
+  );
+};
+
+export const parseTransaction = (
   txn: ParsedTransactionWithMeta | null,
   owner: string,
   sortedServices: Service[]
@@ -80,7 +90,7 @@ const parseVersionedTransaction = (
   return {
     signature: txn.transaction.signatures[0],
     blockTime: txn.blockTime,
-    service: getService(txn, sortedServices),
+    service: findTransactionService(txn, sortedServices),
     balanceChanges: changes,
     isSigner: accountKeys.some(
       (accountKey) =>
@@ -88,63 +98,3 @@ const parseVersionedTransaction = (
     ),
   };
 };
-
-const getService = (
-  txn: ParsedTransactionWithMeta,
-  sortedServices: Service[]
-): Service | undefined => {
-  const { instructions } = txn.transaction.message;
-
-  const txnContractAddresses = instructions
-    .map((i) => i.programId.toString())
-    .filter((value, index, self) => self.indexOf(value) === index);
-
-  // We keep the first service with all contract addresses in txn
-  return sortedServices.find((service) =>
-    service.contracts?.every((contract) =>
-      txnContractAddresses.includes(contract.address)
-    )
-  );
-};
-
-export async function runActivity(
-  cache: Cache,
-  network: NetworkIdType,
-  owner: string,
-  account?: string
-) {
-  if (network !== NetworkId.solana) {
-    throw new Error(`Unsupported Network ${network}`);
-  }
-  const client = getClientSolana();
-
-  const sortedServices = services.sort(
-    (a, b) => (b.contracts?.length || 0) - (a.contracts?.length || 0)
-  );
-
-  const activityPromise = client
-    .getSignaturesForAddress(
-      new PublicKey(account || owner),
-      { limit: 10 },
-      'confirmed'
-    )
-    .then((signatures) =>
-      client.getParsedTransactions(
-        signatures.map((s) => s.signature),
-        {
-          maxSupportedTransactionVersion: 0,
-        }
-      )
-    )
-    .then((parsedTransactions) =>
-      parsedTransactions.map((t) =>
-        parseVersionedTransaction(t, owner, sortedServices)
-      )
-    );
-
-  return promiseTimeout(
-    activityPromise,
-    runActivityTimeout,
-    `Activity timed out`
-  );
-}

@@ -546,3 +546,15 @@ export type FetchersResult = {
   duration: number;
   tokenInfo?: Partial<Record<NetworkIdType, Record<string, TokenInfo>>>;
 };
+
+/**
+ * Represents the result of transactions.
+ */
+export type TransactionsResult = {
+  owner: string;
+  account: string;
+  networkId: NetworkIdType;
+  duration: number;
+  transactions: Transaction[];
+  tokenInfo?: Partial<Record<NetworkIdType, Record<string, TokenInfo>>>;
+};

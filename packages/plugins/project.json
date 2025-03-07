@@ -38,8 +38,8 @@
       "command": "ts-node -P packages/plugins/tsconfig.script.json --swc packages/plugins/scripts/run-job.ts",
       "dependsOn": []
     },
-    "run-activity": {
-      "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/run-activity.ts",
+    "run-transactions": {
+      "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/run-transactions.ts",
       "dependsOn": []
     },
     "publish": {
