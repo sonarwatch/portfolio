@@ -6,7 +6,7 @@ import farmsJob from './farmsJob';
 import dlmmVaultsJob from './dlmmVaultsJob';
 import { Job } from '../../Job';
 import { Fetcher } from '../../Fetcher';
-import { platform } from './constants';
+import { platform, pluginServices } from './constants';
 import farmsFetcher from './farmsFetcher';
 import dlmmPositionFetcher from './dlmmPositionsFetcher';
 import dlmmVaultsFetcher from './dlmmVaultsFetcher';
@@ -28,3 +28,5 @@ export const fetchers: Fetcher[] = [
   dlmmVaultsFetcher,
   stakeForFeeFetcher,
 ];
+
+export const services = pluginServices;

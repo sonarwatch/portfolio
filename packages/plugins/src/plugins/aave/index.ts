@@ -1,13 +1,11 @@
-import { Platform, Service } from '@sonarwatch/portfolio-core';
+import { Platform } from '@sonarwatch/portfolio-core';
 import { Job } from '../../Job';
 import { Fetcher } from '../../Fetcher';
 // import lendingPoolsJob from './lendingPoolsJob';
 import stakingFetcher from './stakingFetcher';
 import { platform } from './constants';
-import { lendingV2, lendingV3 } from './services';
 
 export const platforms: Platform[] = [platform];
-export const services: Service[] = [lendingV2, lendingV3];
 export const jobs: Job[] = [
   // lendingPoolsJob,
 ];

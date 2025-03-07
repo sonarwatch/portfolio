@@ -1,4 +1,4 @@
-import { Platform } from '@sonarwatch/portfolio-core';
+import { Platform, Service } from '@sonarwatch/portfolio-core';
 import { Fetcher } from './Fetcher';
 import { AirdropFetcher } from './AirdropFetcher';
 import { Job } from './Job';
@@ -374,3 +374,13 @@ export const airdropFetchers: AirdropFetcher[] = modules
   .flat();
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);
+
+// SERVICES //
+export const services: Service[] = modules
+  .map((module): Service[] => {
+    if ('services' in module) {
+      return module.services as Service[];
+    }
+    return [];
+  })
+  .flat();
