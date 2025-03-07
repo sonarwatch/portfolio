@@ -4,7 +4,7 @@
   "type": "commonjs",
   "types": "./src/index.d.ts",
   "peerDependencies": {
-    "@sonarwatch/portfolio-core": "^0.14.0"
+    "@sonarwatch/portfolio-core": "npm:@octavlabs/portfolio-core@^0.14.113"
   },
   "dependencies": {
     "@aave/contract-helpers": "^1.28.2",
