@@ -10,6 +10,12 @@ export const platform: Platform = {
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/marinade.webp',
   defiLlamaId: 'parent#marinade-finance',
   website: 'https://marinade.finance/',
+  description:
+    'Marinade connects SOL holders with the best staking rates on Solana.',
+  discord: 'https://discord.gg/yTdH8YkYKg',
+  twitter: 'https://twitter.com/MarinadeFinance',
+  documentation: 'https://docs.marinade.finance/',
+  github: 'https://github.com/marinade-finance',
 };
 
 export const cachePrefix = 'marinade';

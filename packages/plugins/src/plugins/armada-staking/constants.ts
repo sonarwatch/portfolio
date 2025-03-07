@@ -20,7 +20,7 @@ export const armadaPlatform: Platform = {
   github: 'https://github.com/mithraiclabs',
   description:
     'No code token staking setup on solana. Professionally managed and non custodial token liquidity strategies.',
-  isActive: false,
+  isDeprecated: true,
 };
 
 export const flowmaticPlatformId = 'flowmatic';

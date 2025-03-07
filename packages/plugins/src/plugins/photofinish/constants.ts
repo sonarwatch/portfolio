@@ -8,6 +8,9 @@ export const platform: Platform = {
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/photofinish.webp',
   website: 'https://photofinish.live/',
   twitter: 'https://x.com/photofinishgame',
+  discord: 'https://discord.com/invite/AsEMTAnJaS',
+  description:
+    'Experience the thrill of owning a race horse without any of the hassle.',
 };
 
 export const apiUrl =

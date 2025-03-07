@@ -12,9 +12,11 @@ export const platform: Platform = {
   defiLlamaId: 'save',
   website: 'https://save.finance/',
   discord: 'https://discord.com/invite/J7m48UUPkJ',
-  description: "Solana's permissionless savings account.",
+  description:
+    'Solend is an algorithmic, decentralized protocol for lending and borrowing on Solana. ',
   twitter: 'https://x.com/save_finance',
   documentation: 'https://docs.save.finance/',
+  github: 'https://github.com/solendprotocol',
 };
 
 export const platformDumpy: Platform = {

@@ -10,6 +10,11 @@ export const platform: Platform = {
   defiLlamaId: 'pyth-network', // from https://defillama.com/docs/api
   website: 'https://staking.pyth.network/',
   twitter: 'https://twitter.com/PythNetwork',
+  github: 'https://github.com/pyth-network',
+  discord: 'https://discord.com/invite/pythnetwork',
+  documentation: 'https://docs.pyth.network/home',
+  description:
+    'Secure your smart contracts with reliable, low-latency market data from institutional sources. Build apps with high-fidelity oracle feeds designed for mission-critical systems.',
 };
 
 export const stakingProgramId = new PublicKey(

@@ -14,6 +14,7 @@ export const platform: Platform = {
   website: 'https://nxfinance.io/',
   twitter: 'https://twitter.com/NX_Finance',
   defiLlamaId: 'nx-finance',
+  discord: 'https://discord.com/invite/nxfinance',
 };
 
 // https://nxfinance.io/nx-data/doc

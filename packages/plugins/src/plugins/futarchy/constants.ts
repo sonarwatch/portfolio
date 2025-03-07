@@ -10,6 +10,11 @@ export const platform: Platform = {
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
   website: 'https://futarchy.metadao.fi/',
   twitter: 'https://x.com/MetaDAOProject',
+  github: 'https://github.com/metaDAOproject',
+  documentation: 'https://docs.metadao.fi/',
+  discord: 'https://discord.com/invite/metadao',
+  description:
+    'Futarchy is a DAO that uses prediction markets to make decisions.',
 };
 
 export const daoPid = new PublicKey(

@@ -11,6 +11,7 @@ export const platform: Platform = {
   image: platformImage,
   website: 'https://lfg.jup.ag/',
   twitter: 'https://twitter.com/JupiterExchange',
+  description: 'Ultimate decentralised distribution stack',
 };
 
 export const voteProgramId = new PublicKey(

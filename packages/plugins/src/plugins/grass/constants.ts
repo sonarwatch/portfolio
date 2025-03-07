@@ -10,6 +10,9 @@ export const platform: Platform = {
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/grass.webp',
   website: 'https://www.grassfoundation.io/stake',
   twitter: 'https://twitter.com/getgrass_io',
+  documentation: 'https://grass-foundation.gitbook.io/grass-docs',
+  discord: 'https://discord.com/invite/getgrass',
+  description: 'Get rewarded for your unused internet',
 };
 
 export const airdropStatics: AirdropStatics = {

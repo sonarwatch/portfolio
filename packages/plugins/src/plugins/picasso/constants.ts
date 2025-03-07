@@ -12,6 +12,13 @@ export const platform: Platform = {
   website: 'https://app.picasso.network/solana-staking/',
   twitter: 'https://x.com/picasso_network',
   // defiLlamaId: 'composable-finance', // from https://defillama.com/docs/api
+  discord: 'https://discord.com/invite/composable',
+  telegram: 'https://t.me/composablechat',
+  github: 'https://github.com/ComposableFi',
+  documentation: 'https://docs.picasso.network/',
+  medium: 'https://medium.com/@Picasso_Network',
+  description:
+    'Picasso L1 Protocol enables secure bridging and multi-asset restaking through cross-chain Inter-Blockchain-Communication (IBC).',
 };
 
 export const unstakingNftsCacheKey = `unstaking-nfts`;

@@ -10,6 +10,10 @@ export const platform: Platform = {
   website: 'https://resize.metaplex.com',
   twitter: 'https://x.com/metaplex',
   // defiLlamaId: 'metaplex', // from https://defillama.com/docs/api
+  discord: 'discord.gg/metaplex',
+  github: 'https://github.com/metaplex-foundation',
+  documentation: 'https://www.metaplex.com/guides',
+  description: 'Build decentralizedapplications on Solana and the SVM',
 };
 
 export const amountPerMasterEdition = 0.00232464;

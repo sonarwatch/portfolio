@@ -15,11 +15,11 @@ export const platform: Platform = {
   image:
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/01.webp',
   defiLlamaId: '01', // from https://defillama.com/docs/api
-  website: 'https://01.xyz/',
+  website: 'https://01-prod-git-main-monkeylanding.vercel.app/',
   twitter: 'https://x.com/01_exchange',
   discord: 'https://discord.gg/JZwrrgMhGT',
   documentation: 'https://01.xyz/docs',
-  isActive: false,
+  isDeprecated: true,
   description:
     '01 Exchange is a next-gen trading experience with the speed of centralized exchanges and the integrity of decentralized finance, powered by Nord Engine.',
 };

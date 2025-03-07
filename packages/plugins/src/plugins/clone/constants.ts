@@ -10,7 +10,7 @@ export const platform: Platform = {
   defiLlamaId: 'clone-protocol', // from https://defillama.com/docs/api
   website: 'https://clone.so/',
   twitter: 'https://twitter.com/CloneProtocol',
-  isActive: false,
+  isDeprecated: false,
   documentation: 'https://docs.clone.so/',
 };
 

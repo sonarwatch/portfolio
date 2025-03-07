@@ -14,6 +14,7 @@ export const platform: Platform = {
   discord: 'https://discord.com/invite/kaminofinance',
   twitter: 'https://x.com/KaminoFinance',
   documentation: 'https://docs.kamino.finance/',
+  github: 'https://github.com/Kamino-Finance',
 };
 
 export const kmnoMint = 'KMNo3nJsBXfcpJTVhZcXLW7RmTwTt4GVFE7suUBo9sS';

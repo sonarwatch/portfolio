@@ -9,6 +9,13 @@ export const platform: Platform = {
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/orca.webp',
   defiLlamaId: 'orca',
   website: 'https://www.orca.so/',
+  discord: 'https://discord.orca.so/',
+  github: 'https://github.com/orca-so',
+  twitter: 'https://twitter.com/orca_so',
+  medium: 'https://orca-so.medium.com/',
+  documentation: 'https://docs.orca.so/',
+  description:
+    'Orca is the go-to place to trade tokens and provide liquidity on Solana',
 };
 
 export const orcaStakingPlatformId = 'orca-staking';

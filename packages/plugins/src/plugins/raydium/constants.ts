@@ -9,6 +9,12 @@ export const platform: Platform = {
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/raydium.webp',
   defiLlamaId: 'raydium',
   website: 'https://raydium.io/',
+  documentation: 'https://docs.raydium.io/raydium/',
+  discord: 'https://discord.com/invite/raydium',
+  telegram: 'https://t.me/raydiumprotocol',
+  github: 'https://github.com/raydium-io',
+  description:
+    'Raydium is an automated market maker (AMM) built on the Solana blockchain which enables lightning-fast trades, permissionless pool creation, and new features for earning yield',
 };
 
 export const apiV3 = 'https://api-v3.raydium.io/';

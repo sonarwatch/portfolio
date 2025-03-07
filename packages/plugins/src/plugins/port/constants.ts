@@ -10,6 +10,8 @@ export const platform: Platform = {
   defiLlamaId: 'port-finance', // from https://defillama.com/docs/api
   website: 'https://mainnet.port.finance/lending',
   // twitter: 'https://twitter.com/myplatform',
+  github: 'https://github.com/port-finance',
+  isDeprecated: true,
 };
 
 export const portApi = 'https://api-v1.port.finance';
