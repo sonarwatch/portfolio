@@ -8,7 +8,6 @@ import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { tokenListsPrefix } from './constants';
 import { isLatestVersion } from './helpers';
-// import { isLatestVersion } from './helpers';
 
 const ttl = 1000 * 60 * 60 * 24 * 7; // 7 days
 
