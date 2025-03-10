@@ -2,6 +2,7 @@ import {
   NetworkId,
   PortfolioAsset,
   PortfolioElementType,
+  SourceRefName,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
@@ -56,13 +57,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       .div(10 ** lpTokenPrice.decimals)
       .toNumber();
 
+    const name: SourceRefName = 'Vault';
     assets.push(
       ...tokenPriceToAssetTokens(
         lpTokenPrice.address,
         amount,
         NetworkId.solana,
         lpTokenPrice
-      )
+      ).map((asset) => ({
+        ...asset,
+        ref: userVaultsAccount.pubkey.toString(),
+        sourceRefs: [{ name, address: userVaultsAccount.vault.toString() }],
+      }))
     );
   }
   if (assets.length === 0) return [];
@@ -75,6 +81,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       label: 'Deposit',
       data: {
         assets,
+        link: 'https://tulip.garden/your-positions',
       },
     },
   ];

@@ -36,6 +36,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-rewarders`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;

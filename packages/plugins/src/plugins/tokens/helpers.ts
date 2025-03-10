@@ -38,7 +38,6 @@ export async function getCoingeckoSources(
 ): Promise<TokenPriceSource[]> {
   const coingeckoIds = new Set(tokensData.map((t) => t.coingeckoId));
   const pricesByCoingeckoId = await getPricesFromCoingeckoIds(coingeckoIds);
-  console.log({ pricesByCoingeckoId });
   const sources: TokenPriceSource[] = [];
 
   const tdsByCoingeckoId: Record<string, TokenData[]> = {};
@@ -75,8 +74,6 @@ async function getPricesFromCoingeckoIds(
   const idsToFetch = [...Array.from(coingeckoIds)];
   shuffleArray(idsToFetch);
 
-  console.log('idTofetch', idsToFetch.length);
-
   const priceByCoingeckoId = new Map<string, number>();
   while (idsToFetch.length !== 0) {
     await sleep(10000);
@@ -94,8 +91,6 @@ async function getPricesFromCoingeckoIds(
       await sleep(60000);
       continue;
     }
-
-    console.log(coingeckoSimpleRes.data);
 
     for (let i = 0; i < currIdsToFetch.length; i += 1) {
       const id = currIdsToFetch[i];

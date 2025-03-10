@@ -48,7 +48,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       label: 'Staked',
       networkId: NetworkId.solana,
       platformId,
-      data: { assets: [asset] },
+      data: {
+        assets: [asset],
+        ref: stakingAccounts[0].pubkey.toString(),
+        link: 'https://staking.pyth.network/',
+      },
       value: asset.value,
     },
   ];

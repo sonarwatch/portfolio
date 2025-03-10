@@ -21,6 +21,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
   const element = elementRegistry.addElementMultiple({
     label: 'Airdrop',
+    ref: claim.pubkey,
   });
   element.addAsset({
     address: claim.mintAddress.toString(),

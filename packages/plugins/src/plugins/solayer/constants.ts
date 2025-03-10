@@ -1,11 +1,13 @@
 import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
+import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'solayer';
 export const platform: Platform = {
   id: platformId,
   name: 'Solayer',
-  image: 'https://sonar.watch/img/platforms/solayer.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/solayer.webp',
   website: 'https://solayer.org/',
   twitter: 'https://x.com/solayer_labs',
   defiLlamaId: 'parent#solayer',
@@ -17,6 +19,21 @@ export const programId = new PublicKey(
 export const solayersUSDCPid = new PublicKey(
   's1aysqpEyZyijPybUV89oBGeooXrR22wMNLjnG2SWJA'
 );
+
+export const airdropApi =
+  'https://airdrop-apis-101797961016.us-central1.run.app/airdrop?walletAddr=';
+export const layerMint = 'LAYER4xPpTCb3QL8S9u41EAhAX7mhBn8Q6xMTwY2Yzc';
+export const layerDecimals = 9;
+export const airdropStatics: AirdropStatics = {
+  claimLink: 'https://claim.solayer.foundation/',
+  emitterLink: 'https://solayer.foundation/',
+  emitterName: platform.name,
+  id: 'solayer-airdrop',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/solayer.webp',
+  claimStart: 1739275200000,
+  claimEnd: undefined,
+};
 
 // export const stakePoolProgramId = 'SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy'
 export const solayerLstPool = 'po1osKDWYF9oiVEGmzKA4eTs8eMveFRMox3bUKazGN2';

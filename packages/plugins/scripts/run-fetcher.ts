@@ -1,6 +1,6 @@
 import util from 'node:util';
 import { isAddress, networks } from '@sonarwatch/portfolio-core';
-import { fetchers, getCache } from '../src';
+import { fetchers, getCache, solanaSimpleFetcher } from '../src';
 import durationForHumans from '../src/utils/misc/durationForHumans';
 import { runFetcher } from '../src/Fetcher';
 import sleep from '../src/utils/misc/sleep';
@@ -19,7 +19,9 @@ if (!argOwner || argOwner === '') {
 
 async function main(owner: string, fetcherId: string) {
   let fOwner = owner;
-  const fetcher = fetchers.find((f) => f.id === fetcherId);
+  const fetcher = [...fetchers, solanaSimpleFetcher].find(
+    (f) => f.id === fetcherId
+  );
   if (!fetcher) {
     console.error(`Fetcher cannot be found: ${fetcherId}`);
     process.exit(1);
@@ -29,7 +31,6 @@ async function main(owner: string, fetcherId: string) {
   if (!isAddress(fOwner, network.addressSystem)) {
     fOwner = `0x${fOwner}`;
   }
-  console.log(`Owner: ${fOwner}`);
   if (!isAddress(fOwner, network.addressSystem)) {
     console.error(`Owner address is not valid: ${owner}`);
     process.exit(1);
@@ -41,7 +42,7 @@ async function main(owner: string, fetcherId: string) {
   const fetcherResult = await runFetcher(fOwner, fetcher, cache);
   console.log(util.inspect(fetcherResult.elements, false, null, true));
   console.log(`Finished in: ${durationForHumans(fetcherResult.duration)}s`);
-  // await cache.dispose();
+  await cache.dispose();
   await sleep(100);
   process.exit(0);
 }

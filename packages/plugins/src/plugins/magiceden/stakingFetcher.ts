@@ -19,7 +19,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (!lockupAccount) return [];
 
   const registry = new ElementRegistry(NetworkId.solana, platformId);
-  const element = registry.addElementMultiple({ label: 'Staked' });
+  const element = registry.addElementMultiple({
+    label: 'Staked',
+    link: 'https://magiceden.io/earn',
+    ref: lockupAccount.pubkey.toString(),
+  });
 
   element.addAsset({
     address: meMint,

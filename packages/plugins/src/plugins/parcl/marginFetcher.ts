@@ -40,7 +40,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         NetworkId.solana,
         usdcTokenPrice
       ),
-      attributes: {},
+      ref: account.pubkey.toString(),
     });
   }
   if (assets.length === 0) return [];

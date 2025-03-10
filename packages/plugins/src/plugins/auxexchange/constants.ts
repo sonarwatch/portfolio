@@ -5,7 +5,8 @@ export const platformId = 'auxexchange';
 export const platform: Platform = {
   id: platformId,
   name: 'Aux Exchange',
-  image: 'https://sonar.watch/img/platforms/auxexchange.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/auxexchange.webp',
   defiLlamaId: 'aux-exchange',
   website: 'https://aux.exchange/',
 };

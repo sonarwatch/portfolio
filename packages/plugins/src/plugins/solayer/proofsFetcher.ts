@@ -39,25 +39,21 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const element = registry.addElementMultiple({
     label: 'Deposit',
     name: 'sUSD Restaking',
+    link: 'https://app.solayer.org/',
   });
   accounts.forEach((account) => {
     const isDeposit = account.mint.toString() === usdcSolanaMint;
+    if (!pool) return;
 
     // If batchId of the pool is greater than batchId from account and it's a deposit
     // It means the deposits have all been processed and user receive it's sUSD in the wallet
-    if (
-      pool &&
-      isDeposit &&
-      pool.currentDepositId.isGreaterThan(account.batchId)
-    )
+    if (isDeposit && pool.currentDepositId.isGreaterThan(account.batchId))
       return;
 
     // If batchId of the pool is greater than batchId from account and it's a withdraw
     // It means the user can claim it's USDC
     const isClaimable = !!(
-      pool &&
-      !isDeposit &&
-      pool.currentWithdrawId.isGreaterThan(account.batchId)
+      !isDeposit && pool.currentWithdrawId.isGreaterThan(account.batchId)
     );
 
     element.addAsset({
@@ -67,6 +63,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         isClaimable,
         tags: [isDeposit ? 'Deposit' : 'Withdraw'],
       },
+      ref: account.pubkey,
+      sourceRefs: [{ name: 'Pool', address: pool.pubkey.toString() }],
     });
   });
 

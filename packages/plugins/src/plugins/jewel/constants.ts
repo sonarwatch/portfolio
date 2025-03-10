@@ -4,7 +4,8 @@ export const platformId = 'jewel-swap';
 export const platform: Platform = {
   id: platformId,
   name: 'Jewel Swap',
-  image: 'https://sonar.watch/img/platforms/jewel.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/jewel.webp',
   website: 'https://sui.jewelswap.io/',
   defiLlamaId: 'parent#jewelswap',
   twitter: 'https://twitter.com/JewelSwapX',

@@ -62,6 +62,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-unstaking-nfts`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;

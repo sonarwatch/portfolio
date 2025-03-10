@@ -6,10 +6,16 @@ export const platformId = 'jupiter-exchange';
 export const platform: Platform = {
   id: platformId,
   name: 'Jupiter Exchange',
-  image: 'https://sonar.watch/img/platforms/jupiter.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/jupiter.webp',
   defiLlamaId: 'parent#jupiter',
   website: 'https://jup.ag/',
   twitter: 'https://twitter.com/JupiterExchange',
+  discord: 'https://discord.gg/jup',
+  documentation: 'https://station.jup.ag/',
+  github: 'https://github.com/jup-ag',
+  description:
+    'The best decentralized liquidity platform, largest DAO & best community in crypto.',
 };
 
 export const perpsProgramId = new PublicKey(
@@ -18,7 +24,7 @@ export const perpsProgramId = new PublicKey(
 export const valueAverageProgramId = new PublicKey(
   'VALaaymxQh2mNy2trH9jUqHT1mTow76wpTcGmSWSwJe'
 );
-export const limitProgramId = new PublicKey(
+export const limitV1ProgramId = new PublicKey(
   'jupoNjAxXgZ4rjzxzPMP4oxduvQsQtZzyknqvzYNrNu'
 );
 export const limitV2ProgramId = new PublicKey(

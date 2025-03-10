@@ -59,6 +59,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const openOffersElement = elementRegistry.addElementBorrowlend({
     label: 'Lending',
     name: 'Open Offers',
+    link: 'https://app.ensofi.xyz/contract/lend',
   });
   offersAsLender.forEach((offer) => {
     if (!offer.status.created) return;
@@ -66,12 +67,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     openOffersElement.addSuppliedAsset({
       address: offer.lendMintToken,
       amount: offer.amount,
+      ref: offer.pubkey,
     });
   });
 
   const lenderActiveElement = elementRegistry.addElementBorrowlend({
     label: 'Lending',
     name: 'Active Contracts',
+    link: 'https://app.ensofi.xyz/contract/lend',
   });
   loansAsLender.forEach((loan) => {
     if (!loan.status.fundTransferred && !loan.status.liquidating) return;
@@ -83,6 +86,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           .plus(loan.duration)
           .toNumber(),
       },
+      ref: loan.pubkey,
     });
   });
 
@@ -92,6 +96,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const borrowerActiveElement = elementRegistry.addElementBorrowlend({
       label: 'Lending',
       name: 'Active Contract',
+      ref: loan.pubkey,
+      link: 'https://app.ensofi.xyz/contract/loan',
     });
     borrowerActiveElement.addSuppliedAsset({
       address: loan.collateralMintToken,

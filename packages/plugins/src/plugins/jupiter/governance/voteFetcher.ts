@@ -31,7 +31,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const registry = new ElementRegistry(NetworkId.solana, platformId);
 
-  const element = registry.addElementMultiple({ label: 'Staked' });
+  const element = registry.addElementMultiple({
+    label: 'Staked',
+    link: 'https://vote.jup.ag',
+  });
 
   element.addAsset({
     address: jupMint,
@@ -41,6 +44,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         ? undefined
         : escrowAccount.escrowEndsAt.times(1000).toNumber(),
     },
+    ref: escrowAccount.pubkey.toString(),
   });
 
   partialUnstakingAccounts.forEach((account) => {
@@ -48,6 +52,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       address: jupMint,
       amount: account.amount,
       attributes: { lockedUntil: account.expiration.times(1000).toNumber() },
+      ref: account.pubkey.toString(),
     });
   });
 

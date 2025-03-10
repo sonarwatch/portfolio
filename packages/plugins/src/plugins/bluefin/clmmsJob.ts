@@ -46,7 +46,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-clmms`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 
 export default job;

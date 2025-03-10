@@ -11,6 +11,9 @@ export const platform: Platform = {
   website: platformWebsite,
   twitter: 'https://twitter.com/holdiumxyz',
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
+  telegram: 'https://t.me/holdium',
+  description:
+    'Holdium is a token designed exclusively for the diehard hodlers of the Solana Ecosystem—the ones with diamond hands, unwavering conviction, and nerves of steel. The real champions of the crypto community.',
 };
 
 export const airdropStatics: AirdropStatics = {

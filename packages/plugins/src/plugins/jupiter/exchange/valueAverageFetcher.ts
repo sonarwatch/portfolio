@@ -1,8 +1,7 @@
 import {
   NetworkId,
-  PortfolioAsset,
-  PortfolioAssetToken,
-  PortfolioElement,
+  PortfolioElementTrade,
+  PortfolioElementType,
   getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../../Cache';
@@ -11,104 +10,92 @@ import { platformId, valueAverageProgramId } from './constants';
 import { getClientSolana } from '../../../utils/clients';
 import { getParsedProgramAccounts } from '../../../utils/solana';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import { getMergedAssets } from '../helpers';
 import { valueAverageStruct } from './structs';
 import { valueAverageFilters } from './filters';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const valueAverageAccounts = await getParsedProgramAccounts(
+  const accounts = await getParsedProgramAccounts(
     client,
     valueAverageStruct,
     valueAverageProgramId,
     valueAverageFilters(owner)
   );
-  if (valueAverageAccounts.length === 0) return [];
+  if (accounts.length === 0) return [];
 
-  const mints: Set<string> = new Set();
-  valueAverageAccounts.forEach((vA) => {
-    mints.add(vA.inputMint.toString());
-    mints.add(vA.outputMint.toString());
-  });
-
-  const tokenPriceById = await cache.getTokenPricesAsMap(
-    Array.from(mints),
+  const tokenPrices = await cache.getTokenPricesAsMap(
+    accounts
+      .map((a) => [a.inputMint.toString(), a.outputMint.toString()])
+      .flat(),
     NetworkId.solana
   );
 
-  const allAssets: PortfolioAssetToken[] = [];
-  const elements: PortfolioElement[] = [];
-  for (const valueAverageOrder of valueAverageAccounts) {
-    const accountAssets: PortfolioAsset[] = [];
-    const inputMint = valueAverageOrder.inputMint.toString();
-    const outputMint = valueAverageOrder.outputMint.toString();
-    const inputTokenPrice = tokenPriceById.get(inputMint);
-    const outputTokenPrice = tokenPriceById.get(outputMint);
+  const elements: PortfolioElementTrade[] = [];
+  for (const account of accounts) {
+    const inputAddress = account.inputMint.toString();
+    const outputAddress = account.outputMint.toString();
+    const inputTokenPrice = tokenPrices.get(inputAddress);
+    const outputTokenPrice = tokenPrices.get(outputAddress);
+    if (!inputTokenPrice || !outputTokenPrice) continue;
 
-    if (inputTokenPrice && !valueAverageOrder.inLeft.isZero()) {
-      const amount = valueAverageOrder.inLeft.dividedBy(
-        10 ** inputTokenPrice.decimals
-      );
-      const asset = tokenPriceToAssetToken(
-        inputTokenPrice.address,
-        amount.toNumber(),
-        NetworkId.solana,
-        inputTokenPrice
-      );
-      allAssets.push(asset);
-      accountAssets.push(asset);
-    }
+    const outputAmount = account.outReceived
+      .minus(account.outWithdrawn)
+      .div(10 ** outputTokenPrice.decimals)
+      .toNumber();
 
-    if (
-      !valueAverageOrder.autoWithdraw &&
-      !valueAverageOrder.outReceived
-        .minus(valueAverageOrder.outWithdrawn)
-        .isZero() &&
-      outputTokenPrice
-    ) {
-      const amountToClaim = valueAverageOrder.outReceived
-        .minus(valueAverageOrder.outWithdrawn)
-        .dividedBy(10 ** outputTokenPrice.decimals);
-      const assetToClaim: PortfolioAsset = tokenPriceToAssetToken(
-        outputTokenPrice.address,
-        amountToClaim.toNumber(),
-        NetworkId.solana,
-        outputTokenPrice
-      );
-      allAssets.push(assetToClaim);
-      accountAssets.push({
-        ...assetToClaim,
-        attributes: { isClaimable: true },
-      });
-    }
+    const outputAsset =
+      outputAmount === 0
+        ? null
+        : tokenPriceToAssetToken(
+            outputAddress,
+            outputAmount,
+            NetworkId.solana,
+            outputTokenPrice
+          );
 
-    elements.push({
-      type: 'multiple',
+    const inputAsset = tokenPriceToAssetToken(
+      inputAddress,
+      account.inLeft.div(10 ** inputTokenPrice.decimals).toNumber(),
+      NetworkId.solana,
+      inputTokenPrice
+    );
+
+    const initialInputAmount = account.inDeposited
+      .minus(account.inWithdrawn)
+      .div(10 ** inputTokenPrice.decimals)
+      .toNumber();
+
+    const element: PortfolioElementTrade = {
+      type: PortfolioElementType.trade,
       networkId: NetworkId.solana,
       platformId,
-      value: getUsdValueSum(accountAssets.map((a) => a.value)),
-      label: 'Deposit',
-      name: `VA Order`,
-      data: { assets: accountAssets },
-    });
-  }
-
-  if (allAssets.length === 0) return [];
-
-  if (allAssets.length > 20) {
-    const assets = getMergedAssets(allAssets);
-    return [
-      {
-        type: 'multiple',
-        networkId: NetworkId.solana,
-        platformId,
-        value: getUsdValueSum(assets.map((asset) => asset.value)),
-        label: 'Deposit',
-        name: `VA Orders (${elements.length})`,
-        data: { assets },
+      label: 'SmartDCA',
+      data: {
+        assets: {
+          input: inputAsset,
+          output: outputAsset,
+        },
+        filledPercentage: account.inUsed
+          .div(10 ** inputTokenPrice.decimals)
+          .div(initialInputAmount)
+          .toNumber(),
+        initialInputAmount,
+        inputAddress,
+        outputAddress,
+        inputPrice: inputTokenPrice.price,
+        outputPrice: outputTokenPrice.price,
+        createdAt: account.createdAt.times(1000).toNumber(),
+        withdrawnOutputAmount: account.outWithdrawn
+          .div(10 ** outputTokenPrice.decimals)
+          .toNumber(),
+        ref: account.pubkey.toString(),
+        contract: valueAverageProgramId.toString(),
+        link: 'https://jup.ag/recurring/',
       },
-    ];
+      value: getUsdValueSum([inputAsset.value, outputAsset?.value || 0]),
+    };
+    elements.push(element);
   }
   return elements;
 };

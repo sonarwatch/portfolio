@@ -5,10 +5,16 @@ export const platformId = 'bonfida';
 export const platform: Platform = {
   id: platformId,
   name: 'Bonfida (SNS)',
-  image: 'https://sonar.watch/img/platforms/bonfida.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/bonfida.webp',
   website: 'https://www.sns.id/',
   twitter: 'https://twitter.com/bonfida',
   defiLlamaId: 'solana-name-service', // from https://defillama.com/docs/api
+  description: 'Web3 Identity for Everyone',
+  github: 'https://github.com/Bonfida',
+  discord: 'https://discord.com/invite/bonfida-778660171265474572',
+  documentation: 'https://docs.sns.id/collection',
+  telegram: 'https://t.me/snsdotsol',
 };
 
 export const offerPid = new PublicKey(

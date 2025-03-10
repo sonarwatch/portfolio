@@ -9,18 +9,18 @@ import { Cache } from '../../Cache';
 import { Job } from '../../Job';
 import { walletTokensPlatform } from './constants';
 import shuffleArray from '../../utils/misc/shuffleArray';
+import sleep from '../../utils/misc/sleep';
 
 export default function jobGenerator(networkId: NetworkIdType): Job {
   const network = networks[networkId];
   const executor = async (cache: Cache) => {
-    // await sleep(60000);
+    await sleep(60000);
 
     const tokenListResponse: AxiosResponse<UniTokenList> | null = await axios
       .get(network.tokenListUrl)
       .catch(() => null);
     if (!tokenListResponse) return;
     const tokensData = getTokensData(tokenListResponse.data);
-
     tokenListResponse.data.tokens = []; // Free some RAM
     shuffleArray(tokensData);
 
@@ -31,7 +31,6 @@ export default function jobGenerator(networkId: NetworkIdType): Job {
       );
       const currTokensDate = tokensData.splice(0, 100);
       const sources = await getCoingeckoSources(networkId, currTokensDate);
-      console.log(sources.length);
       setSourcesPromises.push(cache.setTokenPriceSources(sources));
     }
     await Promise.all(setSourcesPromises);
@@ -39,6 +38,6 @@ export default function jobGenerator(networkId: NetworkIdType): Job {
   return {
     executor,
     id: `${walletTokensPlatform.id}-${networkId}`,
-    label: 'coingecko',
+    labels: ['coingecko'],
   };
 }

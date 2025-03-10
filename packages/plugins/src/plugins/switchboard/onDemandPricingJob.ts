@@ -74,6 +74,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-ondemand-pricing`,
   executor,
-  label: 'realtime',
+  labels: ['realtime'],
 };
 export default job;

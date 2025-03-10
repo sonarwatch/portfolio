@@ -42,6 +42,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const element = elementRegistry.addElementMultiple({
       label: 'Deposit',
+      ref: position.pubkey,
+      link: `https://elemental.fund/?address=${pool.pubkey.toString()}`,
+      sourceRefs: [{ name: 'Pool', address: pool.pubkey }],
     });
 
     element.addAsset({

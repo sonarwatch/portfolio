@@ -27,12 +27,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (!lockupAccounts) return [];
 
   const registry = new ElementRegistry(NetworkId.solana, platformId);
-  const element = registry.addElementMultiple({ label: 'Staked' });
+  const element = registry.addElementMultiple({
+    label: 'Staked',
+    link: 'https://staking.defiland.app/',
+  });
 
   for (const lockupAccount of lockupAccounts) {
     element.addAsset({
       address: dflMint,
       amount: lockupAccount.stakedTokenBalance,
+      ref: lockupAccount.pubkey,
+      sourceRefs: [
+        { name: 'Pool', address: lockupAccount.poolAddress.toString() },
+      ],
     });
   }
   return registry.getElements(cache);

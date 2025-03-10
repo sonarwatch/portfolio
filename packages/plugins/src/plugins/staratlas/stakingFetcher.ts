@@ -46,7 +46,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       asset.attributes = { isClaimable: true };
     }
 
-    assets.push(asset);
+    assets.push({ ...asset, ref: account.pubkey.toString() });
   });
 
   if (assets.length === 0) return [];
@@ -58,6 +58,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       platformId,
       data: {
         assets,
+        link: 'https://govern.staratlas.com/lockers/atlas',
       },
       value: getUsdValueSum(assets.map((a) => a.value)),
     },

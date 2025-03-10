@@ -2,13 +2,13 @@ import { apyToApr, NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { marketsCacheKey, platformId, userPositionMapType } from './constants';
-import { Market, UserPositionMap } from './types';
+import { MarketDatum, UserPositionMap } from './types';
 import { getAccountResource } from '../../utils/aptos';
 import { getClientAptos } from '../../utils/clients';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 
-const marketsMemo = new MemoizedCache<Market[]>(marketsCacheKey, {
+const marketsMemo = new MemoizedCache<MarketDatum[]>(marketsCacheKey, {
   prefix: platformId,
   networkId: NetworkId.aptos,
 });
@@ -34,7 +34,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       name: position.value.position_name,
     });
     for (const lendingPos of position.value.lend_positions.data) {
-      const market = markets.find((m) => lendingPos.key.includes(m.assetsName));
+      const market = markets.find((m) =>
+        lendingPos.key.includes(m.asset.assetName)
+      );
       element.addSuppliedAsset({
         address: lendingPos.key,
         amount: Number(lendingPos.value),
@@ -49,7 +51,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
 
     for (const borrowPos of position.value.borrow_positions.data) {
-      const market = markets.find((m) => borrowPos.key.includes(m.assetsName));
+      const market = markets.find((m) =>
+        borrowPos.key.includes(m.asset.assetName)
+      );
       element.addBorrowedAsset({
         address: borrowPos.key,
         amount: Number(borrowPos.value.borrow_amount),

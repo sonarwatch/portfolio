@@ -63,7 +63,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       platformId,
       name: `N° ${account.subaccountIndex.toString()}`,
       type: PortfolioElementType.multiple,
-      data: { assets: [asset] },
+      data: {
+        assets: [asset],
+        ref: account.pubkey.toString(),
+        link: 'https://dex.zeta.markets/portfolio',
+      },
       value: asset.value,
     });
   }

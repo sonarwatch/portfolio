@@ -5,7 +5,8 @@ export const platformId = 'atrix';
 export const platform: Platform = {
   id: platformId,
   name: 'Atrix',
-  image: 'https://sonar.watch/img/platforms/atrix.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/atrix.webp',
   defiLlamaId: 'atrix', // from https://defillama.com/docs/api
   website: 'https://app.atrix.finance/liquidity',
   // twitter: 'https://twitter.com/myplatform',

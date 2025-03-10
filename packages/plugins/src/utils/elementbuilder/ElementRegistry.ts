@@ -12,6 +12,7 @@ import { ElementLiquidityBuilder } from './ElementLiquidityBuilder';
 import { ElementBorrowlendBuilder } from './ElementBorrowlendBuilder';
 import { ElementLeverageBuilder } from './ElementLeverageBuilder';
 import { ElementConcentratedLiquidityBuilder } from './ElementConcentratedLiquidityBuilder';
+import { ElementTradeBuilder } from './ElementTradeBuilder';
 
 export class ElementRegistry {
   readonly networkId: NetworkIdType;
@@ -75,14 +76,31 @@ export class ElementRegistry {
     return elementBuilder;
   }
 
+  addElementTrade(params: Omit<Params, 'type'>): ElementTradeBuilder {
+    const elementBuilder = new ElementTradeBuilder({
+      ...params,
+      type: PortfolioElementType.trade,
+    });
+    this.elements.push(elementBuilder);
+    return elementBuilder;
+  }
+
   async getElements(cache: Cache): Promise<PortfolioElement[]> {
-    const mints = this.elements.map((e) => e.mints()).flat();
+    const mints = this.elements.map((e) => e.tokenAddresses()).flat();
     const tokenPrices = await cache.getTokenPricesAsMap(mints, this.networkId);
 
     return this.elements
       .map((e) => e.get(this.networkId, this.platformId, tokenPrices))
-      .filter(
-        (e) => e !== null && e.value && e.value > 0
-      ) as PortfolioElement[];
+      .filter((e) => e !== null)
+      .filter((e) => {
+        if (
+          e &&
+          e.type === PortfolioElementType.borrowlend &&
+          e.data.expireOn
+        ) {
+          return true;
+        }
+        return e && e.value && e.value > 0;
+      }) as PortfolioElement[];
   }
 }

@@ -25,9 +25,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const receipts = await getOwnedObjectsPreloaded(client, owner, {
     filter: {
-      MatchAny: Array.from(
-        new Set(leverageVaults.map((v) => v.farmStakeReceiptType))
-      )
+      MatchAny: Array.from(new Set(leverageVaults.map((v) => v.farm?.vtType)))
         .map((s) =>
           s
             ? {
@@ -58,7 +56,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }>;
 
     const vault = leverageVaults.find(
-      (v) => v.farmId === receiptContent.fields.farm_id
+      (v) => v.farm.id === receiptContent.fields.farm_id
     );
     if (!vault) return;
 

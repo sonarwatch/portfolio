@@ -233,6 +233,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             rewardAssetsValue,
             value,
             yields: [],
+            ref: position.ref,
+            sourceRefs: position.sourceRefs,
           },
         ],
       },

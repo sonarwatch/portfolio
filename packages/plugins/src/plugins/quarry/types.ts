@@ -1,4 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
+import { SourceRef } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 
 export type TokenInfo = {
@@ -96,6 +97,8 @@ export type Redeemer = {
 };
 
 export type Position = {
+  ref: string;
+  sourceRefs: SourceRef[];
   primaryRewarder: {
     slug: string;
     name?: string;

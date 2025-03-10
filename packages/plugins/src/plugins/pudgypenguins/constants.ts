@@ -5,9 +5,11 @@ export const platformId = 'pudgy';
 export const platform: Platform = {
   id: platformId,
   name: 'Pudgy Penguins',
-  image: 'https://sonar.watch/img/platforms/pudgypenguins.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/pudgypenguins.webp',
   website: 'https://pudgypenguins.com/',
   twitter: 'https://x.com/pudgypenguins',
+  discord: 'discord.gg/pudgypenguins',
 };
 
 export const pudgyMint = '2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv';
@@ -19,7 +21,8 @@ export const airdropStatics: AirdropStatics = {
   emitterLink: 'https://pudgypenguins.com/',
   emitterName: 'Pudgy Penguins',
   id: 'pudgy-airdrop',
-  image: 'https://sonar.watch/img/platforms/pudgypenguins.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/pudgypenguins.webp',
   claimStart: 1734440400000,
   claimEnd: 1742043600000,
 };

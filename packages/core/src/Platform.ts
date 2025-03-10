@@ -6,10 +6,14 @@ export type Platform = {
   name: string;
   description?: string;
   defiLlamaId?: string;
+  website?: string;
   image?: string;
   discord?: string;
+  telegram?: string;
   twitter?: string;
-  website?: string;
+  github?: string;
   referral?: string;
   medium?: string;
+  documentation?: string;
+  isDeprecated?: boolean;
 };

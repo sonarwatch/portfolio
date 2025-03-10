@@ -31,6 +31,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const element = elementRegistry.addElementMultiple({
     label: 'Deposit',
     name: 'Thor V3',
+    link: 'https://legacy.cyberfrogs.io/faction-contracts-v3',
   });
 
   accounts.forEach((deposit) => {
@@ -40,6 +41,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       attributes: {
         lockedUntil: deposit.endTs.times(1000).toNumber(),
       },
+      ref: deposit.pubkey,
     });
   });
 
