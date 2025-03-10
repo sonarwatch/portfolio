@@ -7,7 +7,8 @@ export const platformId = 'stabble';
 export const platform: Platform = {
   id: platformId,
   name: 'stabble',
-  image: 'https://sonar.watch/img/platforms/stabble.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/stabble.webp',
   website: 'https://app.stabble.org/',
   twitter: 'https://x.com/stabbleorg',
   defiLlamaId: 'stabble',

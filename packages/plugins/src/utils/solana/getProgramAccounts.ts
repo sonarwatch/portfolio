@@ -12,7 +12,6 @@ export async function getProgramAccounts(
   maxAccounts = 0
 ) {
   const config: GetProgramAccountsConfig = {
-    commitment: 'confirmed',
     encoding: 'base64',
     filters,
   };

@@ -4,7 +4,8 @@ export const platformId = 'elixir';
 export const platform: Platform = {
   id: platformId,
   name: 'Elixir',
-  image: 'https://sonar.watch/img/platforms/elixir.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/elixir.webp',
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
   website: 'https://agg.elixir.xyz/',
   twitter: 'https://x.com/elixir',

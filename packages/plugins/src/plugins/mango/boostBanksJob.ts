@@ -35,6 +35,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-boost-banks`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;

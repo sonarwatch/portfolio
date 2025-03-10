@@ -5,10 +5,16 @@ export const platformId = 'adrastea';
 export const platform: Platform = {
   id: platformId,
   name: 'Adrastea',
-  image: 'https://sonar.watch/img/platforms/adrastea.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/adrastea.webp',
   website: 'https://app.adrastea.fi/',
   twitter: 'https://x.com/AdrasteaFinance',
   defiLlamaId: 'adrastea', // from https://defillama.com/docs/api
+  discord: 'https://discord.gg/adrasteafinance',
+  description:
+    'Adrastea is a composable leverage protocol that facilitates isolated boosting, with a primary mission to simplify the process and amplify the yield.',
+  documentation: 'https://docs.adrastea.fi/',
+  github: 'https://github.com/adrasteafinance',
 };
 
 export const usdcLedgerPk = new PublicKey(

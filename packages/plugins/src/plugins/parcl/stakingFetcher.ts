@@ -48,9 +48,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     link: 'https://stake.parcllimited.com/',
   });
 
-  element.addAsset({
-    address: prclMint,
-    amount: tokenBalances.reduce((sum, current) => sum + current, 0),
+  accs.forEach((acc, i) => {
+    element.addAsset({
+      address: prclMint,
+      amount: tokenBalances[i],
+      ref: acc.pubkey.toString(),
+    });
   });
 
   return elementRegistry.getElements(cache);

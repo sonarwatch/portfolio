@@ -26,6 +26,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-stake-for-fee-vaults`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;

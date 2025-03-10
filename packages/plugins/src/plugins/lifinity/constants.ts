@@ -5,10 +5,17 @@ export const platformId = 'lifinity';
 export const platform: Platform = {
   id: platformId,
   name: 'Lifinity',
-  image: 'https://sonar.watch/img/platforms/lifinity.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/lifinity.webp',
   defiLlamaId: 'parent#lifinity', // from https://defillama.com/docs/api
   website: 'https://ido.lifinity.io/rewards',
-  // twitter: 'https://twitter.com/myplatform',
+  twitter: 'https://x.com/Lifinity_io',
+  documentation: 'https://docs.lifinity.io/',
+  medium: 'https://medium.com/@lifinity.io',
+  discord: 'http://discord.gg/K2tvfcXwWr',
+  github: 'https://github.com/Lifinity-Labs',
+  description:
+    "Solana's oracle-based DEX, designed to improve capital efficiency and reverse impermanent loss.",
 };
 
 export const LifinityLockerProgramId = new PublicKey(

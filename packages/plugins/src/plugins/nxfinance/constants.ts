@@ -9,10 +9,12 @@ export const platformId = 'nxfinance';
 export const platform: Platform = {
   id: platformId,
   name: 'NX Finance',
-  image: 'https://sonar.watch/img/platforms/nxfinance.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/nxfinance.webp',
   website: 'https://nxfinance.io/',
   twitter: 'https://twitter.com/NX_Finance',
   defiLlamaId: 'nx-finance',
+  discord: 'https://discord.com/invite/nxfinance',
 };
 
 // https://nxfinance.io/nx-data/doc

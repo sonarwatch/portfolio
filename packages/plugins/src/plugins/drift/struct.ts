@@ -95,6 +95,7 @@ export enum OracleSource {
   Pyth1MPull,
   PythStableCoinPull,
   SWITCHBOARD_ON_DEMAND,
+  pythLazer,
 }
 
 export enum ContractType {
@@ -811,4 +812,27 @@ export const preLaunchOracleStruct = new BeetStruct<PreLaunchOracle>(
     ['padding', uniformFixedSizeArray(u8, 70)],
   ],
   (args) => args as PreLaunchOracle
+);
+
+export type PythLazerOracle = {
+  buffer: Buffer;
+  price: BigNumber;
+  publishTime: BigNumber;
+  postedSlot: BigNumber;
+  exponent: number;
+  padding: number[];
+  conf: BigNumber;
+};
+
+export const pythLazerOracleStruct = new BeetStruct<PythLazerOracle>(
+  [
+    ['buffer', blob(8)],
+    ['price', i64],
+    ['publishTime', u64],
+    ['postedSlot', u64],
+    ['exponent', i32],
+    ['padding', uniformFixedSizeArray(u8, 4)],
+    ['conf', u64],
+  ],
+  (args) => args as PythLazerOracle
 );

@@ -5,7 +5,8 @@ export const platformId = 'zelo';
 export const platform: Platform = {
   id: platformId,
   name: 'Zelo Finance',
-  image: 'https://sonar.watch/img/platforms/zelo.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/zelo.webp',
   website: 'https://www.zelofi.io/',
   twitter: 'https://x.com/zelofinance',
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api

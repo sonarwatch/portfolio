@@ -5,7 +5,8 @@ export const platformId = 'gpool';
 export const platform: Platform = {
   id: platformId,
   name: 'GPool',
-  image: 'https://sonar.watch/img/platforms/gpool.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/gpool.webp',
   website: 'https://stake.gpool.cloud/',
 };
 

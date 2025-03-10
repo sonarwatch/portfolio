@@ -1,17 +1,12 @@
-import {
-  NetworkId,
-  PortfolioAsset,
-  PortfolioElementType,
-  getUsdValueSum,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, programId, shadowDecimals, shadowMint } from './constants';
+import { platformId, programId, shadowMint } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { userStateStruct } from '../kamino/structs/vaults';
 import { userStateFilter } from '../kamino/filters';
-import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -24,38 +19,21 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
   if (userStateAccounts.length === 0) return [];
 
-  const tokenPrice = await cache.getTokenPrice(shadowMint, NetworkId.solana);
+  const registry = new ElementRegistry(NetworkId.solana, platformId);
+  const element = registry.addElementMultiple({
+    label: 'Staked',
+    link: 'https://testnet.shdwdrive.com/',
+  });
 
-  const assets: PortfolioAsset[] = [];
   for (const userState of userStateAccounts) {
-    if (userState.activeStakeScaled.isZero()) continue;
-    const amount = userState.activeStakeScaled
-      .dividedBy(10 ** 18)
-      .dividedBy(10 ** shadowDecimals)
-      .toNumber();
-
-    assets.push(
-      ...tokenPriceToAssetTokens(
-        shadowMint,
-        amount,
-        NetworkId.solana,
-        tokenPrice
-      )
-    );
+    element.addAsset({
+      address: shadowMint,
+      amount: userState.activeStakeScaled.dividedBy(10 ** 18),
+      ref: userState.pubkey,
+    });
   }
 
-  if (assets.length === 0) return [];
-
-  return [
-    {
-      type: PortfolioElementType.multiple,
-      label: 'Staked',
-      networkId: NetworkId.solana,
-      platformId,
-      data: { assets },
-      value: getUsdValueSum(assets.map((asset) => asset.value)),
-    },
-  ];
+  return registry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

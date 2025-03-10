@@ -5,7 +5,8 @@ export const platformId = 'suilend';
 export const platform: Platform = {
   id: platformId,
   name: 'Suilend',
-  image: 'https://sonar.watch/img/platforms/suilend.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/suilend.webp',
   defiLlamaId: 'suilend', // from https://defillama.com/docs/api
   website: 'https://www.suilend.fi/',
   twitter: 'https://twitter.com/suilendprotocol',
@@ -16,7 +17,8 @@ export const airdropStatics: AirdropStatics = {
   emitterLink: 'https://suilend.fi',
   emitterName: 'Suilend',
   id: 'suilend-airdrop',
-  image: 'https://sonar.watch/img/platforms/suilend.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/suilend.webp',
   claimEnd: 1765512000000,
   claimStart: 1733976000000,
 };

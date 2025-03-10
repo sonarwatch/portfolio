@@ -48,6 +48,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       platformId,
       data: {
         assets: [asset],
+        ref: account.pubkey.toString(),
+        link: 'https://govern.staratlas.com/lockers/polis',
       },
       value: asset.value,
     },

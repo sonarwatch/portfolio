@@ -115,6 +115,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       price: lpTokenPrice.toNumber(),
       underlyings,
       timestamp: Date.now(),
+      sourceRefs: [{ address: swap.addresses.swapAccount, name: 'Pool' }],
     });
   }
 };
@@ -122,6 +123,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-lp-tokens`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;

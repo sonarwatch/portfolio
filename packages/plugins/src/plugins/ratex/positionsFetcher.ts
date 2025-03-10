@@ -46,6 +46,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           if (marginPosition.balance !== 0) {
             const element = elementRegistry.addElementMultiple({
               label: 'Margin',
+              link: 'https://app.rate-x.io/trade',
               ref: user.pubkey,
             });
             element.addAsset({
@@ -86,6 +87,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
         const element = elementRegistry.addElementMultiple({
           label: 'LiquidityPool',
+          link: 'https://app.rate-x.io/liquidity',
           ref: lpData.pubkey,
           sourceRefs: [
             {

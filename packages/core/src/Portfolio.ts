@@ -30,6 +30,9 @@ export type PortfolioElementLabel =
   | 'Rewards'
   | 'Airdrop'
   | 'Margin'
+  | 'LimitOrder'
+  | 'DCA'
+  | 'SmartDCA'
   | 'Leverage';
 
 export type PortfolioAssetAttributes = {
@@ -61,6 +64,7 @@ export const PortfolioElementType = {
   liquidity: 'liquidity',
   borrowlend: 'borrowlend',
   leverage: 'leverage',
+  trade: 'trade',
 } as const;
 export type PortfolioElementTypeType =
   (typeof PortfolioElementType)[keyof typeof PortfolioElementType];
@@ -121,10 +125,6 @@ export type PortfolioAssetCollectibleData = {
   address: string;
   amount: number;
   price: UsdValue;
-  /**
-   * @deprecated
-   * This params has been deprecated. Use name from PortfolioAssetCommon instead.
-   */
   name?: string;
   description?: string;
   imageUri?: string;
@@ -134,7 +134,7 @@ export type PortfolioAssetCollectibleData = {
 };
 
 export type CollectibleCollection = {
-  id: string;
+  id?: string;
   floorPrice: UsdValue;
   name?: string;
 };
@@ -205,7 +205,9 @@ export type SourceRefName =
   | 'Vault'
   | 'Lending Market'
   | 'Strategy'
-  | 'NFT Mint';
+  | 'NFT Mint'
+  | 'Reserve'
+  | 'Proposal';
 
 /**
  * Represents references to on-chain accounts.
@@ -249,6 +251,48 @@ export type PortfolioElementMultiple = PortfolioElementCommon & {
 };
 
 /**
+ * Represents the data of a trade portfolio element.
+ */
+export type PortfolioElementTradeData = {
+  assets: {
+    input: PortfolioAsset | null;
+    output: PortfolioAsset | null;
+  };
+  inputAddress: string;
+  outputAddress: string;
+  initialInputAmount: number;
+  withdrawnOutputAmount: number;
+  expectedOutputAmount?: number;
+  inputPrice: UsdValue;
+  outputPrice: UsdValue;
+  /**
+   * Filled percentage between 0 and 1.
+   */
+  filledPercentage: number;
+  /**
+   * Created at timestamp in ms
+   */
+  createdAt?: number;
+  /**
+   * Expire at timestamp in ms
+   */
+  expireAt?: number;
+
+  contract?: string;
+  ref?: string;
+  sourceRefs?: SourceRef[];
+  link?: string;
+};
+
+/**
+ * Represents a trade portfolio element.
+ */
+export type PortfolioElementTrade = PortfolioElementCommon & {
+  type: 'trade';
+  data: PortfolioElementTradeData;
+};
+
+/**
  * Represents a liquidity.
  */
 export type PortfolioLiquidity = {
@@ -259,6 +303,8 @@ export type PortfolioLiquidity = {
   value: UsdValue;
   yields: Yield[];
   name?: string;
+
+  contract?: string;
   ref?: string;
   sourceRefs?: SourceRef[];
   link?: string;
@@ -284,26 +330,62 @@ export enum LeverageSide {
   short = 'short',
 }
 
-export type LevPosition = {
+export type IsoLevPosition = {
+  /**
+   * Address of the levareged asset if it exist
+   */
+  address?: string;
   name?: string;
   imageUri?: string;
-  address?: string;
-  size?: number;
-  sizeValue: UsdValue;
   collateralValue: UsdValue;
-  value: UsdValue;
-  liquidationPrice: UsdValue;
-  pnlValue: UsdValue;
-  leverage?: number;
   side: LeverageSide;
+  entryPrice: UsdValue;
+  markPrice: UsdValue;
+  size: number;
+  sizeValue: UsdValue;
+  pnlValue: UsdValue;
+  liquidationPrice: UsdValue;
+  leverage?: number;
+  tp?: number;
+  sl?: number;
+  value: UsdValue;
 };
+
+export type CrossLevPosition = Omit<IsoLevPosition, 'collateralValue'>;
 
 /**
  * Represents the data of a leverage portfolio element.
  */
 export type PortfolioElementLeverageData = {
-  positions: LevPosition[];
+  /**
+   * Isolated positions
+   */
+  isolated?: {
+    positions: IsoLevPosition[];
+    value: UsdValue;
+  };
+  /**
+   * Cross positions
+   */
+  cross?: {
+    /**
+     * Sum of positions sizeValue / cross value
+     */
+    leverage?: number;
+    /**
+     * If it reach 1, positions will be liquidated
+     */
+    collateralAssets?: PortfolioAsset[];
+    collateralValue: UsdValue;
+    positions: CrossLevPosition[];
+    value: UsdValue;
+  };
+  /**
+   * Total value (total equity)
+   */
   value: UsdValue;
+
+  contract?: string;
   ref?: string;
   sourceRefs?: SourceRef[];
   link?: string;
@@ -395,6 +477,7 @@ export type PortfolioElementBorrowLendData = {
    */
   expireOn?: number;
 
+  contract?: string;
   ref?: string;
   sourceRefs?: SourceRef[];
   link?: string;
@@ -415,7 +498,8 @@ export type PortfolioElement =
   | PortfolioElementMultiple
   | PortfolioElementLiquidity
   | PortfolioElementLeverage
-  | PortfolioElementBorrowLend;
+  | PortfolioElementBorrowLend
+  | PortfolioElementTrade;
 
 /**
  * Represents the result of a fetcher.

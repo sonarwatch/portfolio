@@ -20,11 +20,15 @@ describe('toBN', () => {
     expect(bn.toString()).toBe('9221804033236374421200126');
   });
 
-  it('should throw an error for unsupported types', () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore: Suppression de l'erreur de type pour le test
-    expect(() => toBN('12345')).toThrow(
-      'Unsupported type for conversion to BN'
-    );
+  it('should convert a string to BN', () => {
+    const inputString = '12345';
+    const bn = toBN(inputString);
+    expect(bn.toString()).toBe(inputString);
+  });
+
+  it('should convert a BigNumber with decimals to BN fixed (without decimals)', () => {
+    const inputBigNumber = new BigNumber('9.22180403323');
+    const bn = toBN(inputBigNumber);
+    expect(bn.toString()).toBe('9');
   });
 });

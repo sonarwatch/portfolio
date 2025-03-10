@@ -1,9 +1,4 @@
-import {
-  NetworkId,
-  PortfolioAsset,
-  PortfolioElementType,
-  getUsdValueSum,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { gofxMint, platformId, stakerProgramId } from './constants';
@@ -11,7 +6,7 @@ import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { userMetadataStruct } from './structs';
 import { stakingAccountFilter } from './filters';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 export const sevenDays = 7 * 1000 * 60 * 60 * 24;
 
@@ -28,48 +23,34 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (accounts.length === 0 || accounts.length > 1) return [];
   const stakingAccount = accounts[0];
 
-  const gofxTokenPrice = await cache.getTokenPrice(gofxMint, NetworkId.solana);
-  if (!gofxTokenPrice) return [];
-  const { decimals } = gofxTokenPrice;
+  const registry = new ElementRegistry(NetworkId.solana, platformId);
+  const element = registry.addElementMultiple({
+    label: 'Staked',
+    link: 'https://app.goosefx.io',
+    ref: stakingAccount.pubkey.toString(),
+  });
 
-  const assets: PortfolioAsset[] = [];
   for (const ticket of stakingAccount.unstakingTickets) {
     if (ticket.totalUnstaked.isZero()) continue;
+
     const unlockStartedAt = new Date(ticket.createdAt.times(1000).toNumber());
     const unlockingAt = new Date(unlockStartedAt.getTime() + sevenDays);
-    assets.push({
-      ...tokenPriceToAssetToken(
-        gofxMint,
-        ticket.totalUnstaked.dividedBy(10 ** decimals).toNumber(),
-        NetworkId.solana,
-        gofxTokenPrice
-      ),
+    element.addAsset({
+      address: gofxMint,
+      amount: ticket.totalUnstaked,
       attributes: {
         lockedUntil: unlockingAt.getTime(),
       },
     });
   }
   if (stakingAccount.totalStaked.isGreaterThan(0)) {
-    const amount = stakingAccount.totalStaked
-      .dividedBy(10 ** decimals)
-      .toNumber();
-    assets.push(
-      tokenPriceToAssetToken(gofxMint, amount, NetworkId.solana, gofxTokenPrice)
-    );
+    element.addAsset({
+      address: gofxMint,
+      amount: stakingAccount.totalStaked,
+    });
   }
 
-  if (assets.length === 0) return [];
-
-  return [
-    {
-      type: PortfolioElementType.multiple,
-      label: 'Staked',
-      networkId: NetworkId.solana,
-      platformId,
-      data: { assets },
-      value: getUsdValueSum(assets.map((asset) => asset.value)),
-    },
-  ];
+  return registry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

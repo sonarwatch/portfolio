@@ -4,7 +4,8 @@ export const platformId = 'meso';
 export const platform: Platform = {
   id: platformId,
   name: 'Meso',
-  image: 'https://sonar.watch/img/platforms/meso.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/meso.webp',
   website: 'https://app.meso.finance/',
   twitter: 'https://x.com/Meso_Finance',
   defiLlamaId: 'meso-finance', // from https://defillama.com/docs/api

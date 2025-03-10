@@ -5,9 +5,15 @@ export const platformId = 'meteora';
 export const platform: Platform = {
   id: 'meteora',
   name: 'Meteora',
-  image: 'https://sonar.watch/img/platforms/meteora.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/meteora.webp',
   defiLlamaId: 'parent#meteora',
   website: 'https://meteora.ag/',
+  github: 'https://github.com/MeteoraAg',
+  documentation: 'https://docs.meteora.ag/',
+  discord: 'https://discord.gg/WwFwsVtvpH',
+  description: 'Building the most dynamic liquidity protocols in DeFi.',
+  twitter: 'https://x.com/MeteoraAG',
 };
 
 export const prefixVaults = `${platformId}-vaults`;

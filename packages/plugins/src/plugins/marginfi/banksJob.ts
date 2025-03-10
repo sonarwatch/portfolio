@@ -114,7 +114,7 @@ const executor: JobExecutor = async (cache: Cache) => {
           price,
           timestamp: Date.now(),
           weight: 1,
-          liquidityName: 'Native Stake (SOL)',
+          elementName: 'Stake Collateral',
         });
       }
     }
@@ -157,6 +157,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-banks`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;

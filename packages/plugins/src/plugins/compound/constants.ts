@@ -9,7 +9,8 @@ export const platformId = 'compound';
 export const platform: Platform = {
   id: platformId,
   name: 'Compound',
-  image: 'https://sonar.watch/img/platforms/compound.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/compound.webp',
   defiLlamaId: 'parent#compound-finance', // from https://defillama.com/docs/api
   website: 'https://compound.finance/',
 };

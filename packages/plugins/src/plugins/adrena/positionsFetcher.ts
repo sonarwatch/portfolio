@@ -40,6 +40,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     element.addAsset({
       address: custodie.mint.toString(),
       amount: position.collateralAmount,
+      ref: position.pubkey,
     });
   }
 

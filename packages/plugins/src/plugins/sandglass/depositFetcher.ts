@@ -46,6 +46,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const element = registry.addElementMultiple({
       label: 'Staked',
       name: marketName,
+      ref: account.pubkey,
+      link: 'https://sandglass.so/markets',
+      sourceRefs: [{ name: 'Market', address: market.pubkey }],
     });
     const { stakePtAmount, stakeYtAmount, stakeLpAmount } = account.stakeInfo;
     element.addAsset({ address: market.ptMint, amount: stakePtAmount });

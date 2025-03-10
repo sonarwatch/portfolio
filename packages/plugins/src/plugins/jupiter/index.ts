@@ -19,6 +19,8 @@ import {
   asr1Fetcher,
   asr2AirdropFetcher,
   asr2Fetcher,
+  asr3AirdropFetcher,
+  asr3Fetcher,
 } from './governance';
 import { lfgAirdropFetchers, lfgFetchers } from './launchpad';
 
@@ -37,10 +39,19 @@ export const fetchers: Fetcher[] = [
   voteFetcher,
   asr1Fetcher,
   asr2Fetcher,
+  asr3Fetcher,
   ...lfgFetchers,
 ];
 export const airdropFetchers: AirdropFetcher[] = [
   asr1AirdropFetcher,
   asr2AirdropFetcher,
+  asr3AirdropFetcher,
   ...lfgAirdropFetchers,
+];
+
+export const jupFetcherIds = [
+  perpetualFetcher.id,
+  valueAverageFetcher.id,
+  limitFetcher.id,
+  dcaFetcher.id,
 ];

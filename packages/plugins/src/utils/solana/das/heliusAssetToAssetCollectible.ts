@@ -85,6 +85,7 @@ export function heliusAssetToAssetCollectible(
       collection,
     },
     networkId: NetworkId.solana,
+    imageUri: asset.content.links?.image,
     value: props?.collection?.floorPrice ?? null,
   };
 }

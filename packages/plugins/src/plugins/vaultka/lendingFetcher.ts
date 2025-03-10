@@ -5,7 +5,10 @@ import { Cache } from '../../Cache';
 import { lendingProgramIds, lendingsCacheKey, platformId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
-import { getParsedMultipleAccountsInfo } from '../../utils/solana';
+import {
+  getParsedMultipleAccountsInfo,
+  ParsedAccount,
+} from '../../utils/solana';
 import { Lending, userInfoStruct } from './structs';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
@@ -26,16 +29,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (!userInfos || userInfos.filter((u) => u !== null).length === 0) return [];
 
-  const lendings = await cache.getItem<Lending[]>(lendingsCacheKey, {
-    prefix: platformId,
-    networkId: NetworkId.solana,
-  });
+  const lendings = await cache.getItem<ParsedAccount<Lending>[]>(
+    lendingsCacheKey,
+    {
+      prefix: platformId,
+      networkId: NetworkId.solana,
+    }
+  );
 
   if (!lendings) return [];
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
   const element = elementRegistry.addElementMultiple({
     label: 'Lending',
+    link: 'https://solana.vaultka.com/',
   });
 
   userInfos.forEach((userInfo, i) => {
@@ -48,6 +55,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           .plus(lendings[i].borrowed_amount)
           .multipliedBy(userInfo.shares)
           .dividedBy(lendings[i].total_shares),
+        ref: userInfo.pubkey.toString(),
+        sourceRefs: [
+          { name: 'Lending Market', address: lendings[i].pubkey.toString() },
+        ],
       });
   });
 
