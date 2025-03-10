@@ -31,7 +31,6 @@ export default function jobGenerator(networkId: NetworkIdType): Job {
       );
       const currTokensDate = tokensData.splice(0, 100);
       const sources = await getCoingeckoSources(networkId, currTokensDate);
-      console.log(sources.length);
       setSourcesPromises.push(cache.setTokenPriceSources(sources));
     }
     await Promise.all(setSourcesPromises);

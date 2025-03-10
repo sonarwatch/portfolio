@@ -24,7 +24,6 @@ export default function getEvmFetcherExecutor(
 ): FetcherExecutor {
   return async (owner: string, cache: Cache) => {
     if (!topTokens) return [];
-    console.log('hello');
 
     // tokenListAddresses
     const tokenList = await cache.getItem<TokenList>(networkId, {
@@ -33,9 +32,8 @@ export default function getEvmFetcherExecutor(
     if (!tokenList || tokenList.tokens.length === 0) return [];
     const { tokens } = tokenList;
 
-    console.log({ tokens });
 
-    // // topAddresses
+    // Just want to get all tokens
     // const topAddresses: string[] | undefined = (
     //   await cache.getItem<string[]>(networkId, {
     //     prefix: topTokensPrefix,
@@ -43,7 +41,6 @@ export default function getEvmFetcherExecutor(
     // )?.slice(0, maxTopTokens);
     // if (!topAddresses) return [];
 
-    // addresses = tokenListAddresses ∩ topAddresses
     const addresses = tokens.map((t) => t.address);
 
     const tokenPrices = await cache.getTokenPrices(addresses, networkId);

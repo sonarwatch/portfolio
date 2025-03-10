@@ -31,7 +31,6 @@ async function main(owner: string, fetcherId: string) {
   if (!isAddress(fOwner, network.addressSystem)) {
     fOwner = `0x${fOwner}`;
   }
-  console.log(`Owner: ${fOwner}`);
   if (!isAddress(fOwner, network.addressSystem)) {
     console.error(`Owner address is not valid: ${owner}`);
     process.exit(1);

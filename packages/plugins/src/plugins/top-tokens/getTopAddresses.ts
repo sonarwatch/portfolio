@@ -28,7 +28,6 @@ export default async function getTopAddresses(
     if (!address) return;
     addressById.set(gCoin.id, formatTokenAddress(address, networkId));
   });
-  console.log(1);
 
   const addresses: Set<string> = new Set();
   addresses.add(network.native.address);
@@ -45,7 +44,7 @@ export default async function getTopAddresses(
   let page = 0;
   while (addresses.size < topAddressesMaxSize && page < 20) {
     page += 1;
-    console.log(page);
+
     const coinsMarketsRes = await axios
       .get<unknown, AxiosResponse<CoingeckoCoinsMarketsResponse>, unknown>(
         coingeckoCoinsMarketsUrl,

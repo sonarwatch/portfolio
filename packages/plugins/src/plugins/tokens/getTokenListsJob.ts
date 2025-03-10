@@ -43,7 +43,6 @@ function getTokenListsJob(networkId: NetworkIdType): Job {
     //   });
     // }
 
-    console.log(tokenList.data.tokens);
     await cache.setItem(networkId, tokenList.data, {
       prefix: tokenListsPrefix,
       ttl,

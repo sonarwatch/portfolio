@@ -25,10 +25,10 @@ const executor: JobExecutor = async (cache: Cache) => {
         },
         timeout: 8000,
       })
-      .catch(async () => {
+      .catch(async () => 
         // await sleep(300000);
-        return null;
-      });
+         null
+      );
   // await sleep(60000);
   if (!coingeckoCoinsListRes || !coingeckoCoinsListRes.data) return;
 
