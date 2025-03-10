@@ -92,7 +92,6 @@ async function getPricesFromCoingeckoIds(
       continue;
     }
 
-
     for (let i = 0; i < currIdsToFetch.length; i += 1) {
       const id = currIdsToFetch[i];
       const usd = coingeckoSimpleRes.data[id]?.usd;

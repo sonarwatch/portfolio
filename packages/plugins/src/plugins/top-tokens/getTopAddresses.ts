@@ -44,7 +44,6 @@ export default async function getTopAddresses(
   let page = 0;
   while (addresses.size < topAddressesMaxSize && page < 20) {
     page += 1;
-
     const coinsMarketsRes = await axios
       .get<unknown, AxiosResponse<CoingeckoCoinsMarketsResponse>, unknown>(
         coingeckoCoinsMarketsUrl,
