@@ -65,7 +65,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       platformId,
       name: 'Bids',
       value: asset.value,
-      data: { assets: [asset] },
+      data: { assets: [asset], link: 'https://www.tensor.trade/portfolio' },
     },
   ];
 };

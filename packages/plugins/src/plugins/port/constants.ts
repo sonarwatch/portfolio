@@ -5,10 +5,13 @@ export const platformId = 'port';
 export const platform: Platform = {
   id: platformId,
   name: 'Port',
-  image: 'https://sonar.watch/img/platforms/port.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/port.webp',
   defiLlamaId: 'port-finance', // from https://defillama.com/docs/api
   website: 'https://mainnet.port.finance/lending',
   // twitter: 'https://twitter.com/myplatform',
+  github: 'https://github.com/port-finance',
+  isDeprecated: true,
 };
 
 export const portApi = 'https://api-v1.port.finance';

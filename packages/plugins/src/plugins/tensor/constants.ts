@@ -6,7 +6,8 @@ export const platformId = 'tensor';
 export const platform: Platform = {
   id: platformId,
   name: 'Tensor',
-  image: 'https://sonar.watch/img/platforms/tensor.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/tensor.webp',
   twitter: 'https://twitter.com/tensor_hq',
   website: 'https://www.tensor.trade/',
 };
@@ -26,7 +27,8 @@ export const s4Statics: AirdropStatics = {
   emitterName: 'Tensor',
   emitterLink: 'https://www.tensor.trade/',
   claimLink: 'https://tensor.foundation/season4',
-  image: 'https://sonar.watch/img/platforms/tensor.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/tensor.webp',
 };
 
 export const powerUsersStatics: AirdropStatics = {
@@ -36,5 +38,6 @@ export const powerUsersStatics: AirdropStatics = {
   emitterName: 'Tensor',
   emitterLink: 'https://www.tensor.trade/',
   claimLink: 'https://www.tensor.foundation/powerusers',
-  image: 'https://sonar.watch/img/platforms/tensor.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/tensor.webp',
 };

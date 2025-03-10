@@ -5,7 +5,8 @@ export const platformId = 'yearn';
 export const platform: Platform = {
   id: platformId,
   name: 'Yearn',
-  image: 'https://sonar.watch/img/platforms/yearn.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/yearn.webp',
   website: 'https://yearn.fi/',
   defiLlamaId: 'yearn-finance', // from https://defillama.com/docs/api
   // twitter: 'https://twitter.com/myplatform',

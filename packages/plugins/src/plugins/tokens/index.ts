@@ -20,6 +20,8 @@ import solanaNftsUnderlyingsFetcher from './fetchers/solana-nfts-underlyings';
 import { fetchers as evmFetchers } from './fetchers/evms';
 import getTokenListsJob from './getTokenListsJob';
 
+import solanaSimpleFetcher from './fetchers/solana-simple';
+
 export const platforms: Platform[] = [walletTokensPlatform, walletNftsPlatform];
 export const jobs: Job[] = [
   jobGenerator(NetworkId.bitcoin),
@@ -46,3 +48,5 @@ export const fetchers: Fetcher[] = [
   bitcoinFetcher,
   ...evmFetchers,
 ];
+
+export { solanaSimpleFetcher };

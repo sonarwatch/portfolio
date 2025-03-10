@@ -5,7 +5,8 @@ export const platformId = 'whalesmarket';
 export const platform: Platform = {
   id: platformId,
   name: 'Whales Market',
-  image: 'https://sonar.watch/img/platforms/whalesmarket.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/whalesmarket.webp',
   defiLlamaId: 'whales-market', // from https://defillama.com/docs/api
   website: 'https://app.whales.market/',
   twitter: 'https://twitter.com/WhalesMarket',

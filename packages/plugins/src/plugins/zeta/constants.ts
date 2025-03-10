@@ -8,7 +8,8 @@ export const platformId = 'zeta';
 export const platform: Platform = {
   id: platformId,
   name: 'Zeta',
-  image: 'https://sonar.watch/img/platforms/zeta.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/zeta.webp',
   defiLlamaId: 'zeta',
   website: 'https://www.zeta.markets/',
 };
@@ -23,7 +24,8 @@ export const airdropStatics: AirdropStatics = {
   emitterLink: 'https://www.zeta.markets/',
   emitterName: 'Zeta',
   id: 'zeta-airdrop',
-  image: 'https://sonar.watch/img/platforms/zeta.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/zeta.webp',
   claimStart: 1719475200000,
   claimEnd: 1727251200000,
 };

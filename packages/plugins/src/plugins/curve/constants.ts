@@ -8,7 +8,8 @@ export const platformId = 'curve';
 export const platform: Platform = {
   id: platformId,
   name: 'Curve Finance',
-  image: 'https://sonar.watch/img/platforms/curve.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/curve.webp',
   defiLlamaId: 'parent#curve-finance',
   website: 'https://curve.fi/',
 };
@@ -24,9 +25,9 @@ export const vestingEscrowAddress =
   '0xd2D43555134dC575BF7279F4bA18809645dB0F1D';
 
 export enum CrvNetworkId {
-  ethereum = 'ethereum',
-  polygon = 'polygon',
-  avalanche = 'avalanche',
+  // ethereum = 'ethereum',
+  // polygon = 'polygon',
+  // avalanche = 'avalanche',
   fraxtal = 'fraxtal',
 }
 
@@ -36,9 +37,9 @@ export const crvNetworkIds = Object.values(CrvNetworkId);
 
 export const crvNetworkIdBySwNetworkId: Record<CrvNetworkId, EvmNetworkIdType> =
   {
-    [CrvNetworkId.ethereum]: NetworkId.ethereum,
-    [CrvNetworkId.polygon]: NetworkId.polygon,
-    [CrvNetworkId.avalanche]: NetworkId.avalanche,
+    // [CrvNetworkId.ethereum]: NetworkId.ethereum,
+    // [CrvNetworkId.polygon]: NetworkId.polygon,
+    // [CrvNetworkId.avalanche]: NetworkId.avalanche,
     [CrvNetworkId.fraxtal]: NetworkId.fraxtal,
   };
 

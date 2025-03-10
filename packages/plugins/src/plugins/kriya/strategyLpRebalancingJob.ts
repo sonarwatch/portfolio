@@ -122,6 +122,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-strategy-lp-rebalancing`,
   executor,
-  label: 'realtime',
+  labels: ['realtime'],
 };
 export default job;

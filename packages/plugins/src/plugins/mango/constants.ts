@@ -5,17 +5,25 @@ export const platformId = 'mango';
 export const platform: Platform = {
   id: platformId,
   name: 'Mango',
-  image: 'https://sonar.watch/img/platforms/mango.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/mango.webp',
   defiLlamaId: 'parent#mango-markets',
-  website: 'https://mango.markets/',
+  website: 'mango-v4-ui.vercel.app ',
+  isDeprecated: true,
+  github: 'https://discord.gg/pcSkP3yJMUs',
+  discord: 'https://discord.com/invite/pcSkP3yJMU',
+  twitter: 'https://twitter.com/mangomarkets',
+  description: 'Perps and spot trading on Solana',
 };
 
 export const yieldFanPlatformId = 'yieldfan';
 export const yieldFanPlatform: Platform = {
   id: yieldFanPlatformId,
   name: 'Yieldfan',
-  image: 'https://sonar.watch/img/platforms/yieldfan.webp',
-  website: 'https://yield.fan/',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/yieldfan.webp',
+  website: 'https://yield.fan/dashboard',
+  isDeprecated: true,
 };
 export const banksKey = `banks`;
 export const rootBankPrefix = `${platformId}-rootBank`;

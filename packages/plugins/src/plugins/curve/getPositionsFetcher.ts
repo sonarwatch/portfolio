@@ -32,7 +32,6 @@ export function getPositionsFetcher(crvNetworkId: CrvNetworkId): Fetcher {
       networkId,
       prefix: poolsByAddressPrefix,
     });
-
     if (!poolsByAddress) return [];
 
     const addresses = Object.keys(poolsByAddress);

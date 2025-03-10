@@ -30,6 +30,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
   const element = elementRegistry.addElementMultiple({
     label: 'Staked',
+    link: 'https://stake.sonic.game/',
   });
 
   userStakeAccount.forEach((acc) => {
@@ -40,6 +41,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       attributes: {
         lockedUntil,
       },
+      ref: acc.pubkey.toString(),
     });
   });
 

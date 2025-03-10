@@ -25,6 +25,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-supply-pools`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;

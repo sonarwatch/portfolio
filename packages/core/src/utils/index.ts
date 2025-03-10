@@ -28,6 +28,7 @@ export * from './getCollectiblesFromAssets';
 export * from './getUsdValueSum';
 export * from './getUsdValueSumStrict';
 export * from './mergePortfolioElementMultiples';
+export * from './portfolioElementTradeToMultiple';
 export * from './sortAssets';
 export * from './sortPortfolioElement';
 export * from './sortPortfolioElements';

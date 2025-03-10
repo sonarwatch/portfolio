@@ -5,7 +5,8 @@ export const platformId = 'wormhole';
 export const platform: Platform = {
   id: platformId,
   name: 'Wormhole',
-  image: 'https://sonar.watch/img/platforms/wormhole.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/wormhole.webp',
   website: 'https://w.wormhole.com/',
   twitter: 'https://twitter.com/wormhole',
 };

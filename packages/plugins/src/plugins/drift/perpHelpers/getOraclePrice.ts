@@ -3,7 +3,10 @@ import { BN } from 'bn.js';
 import { SolanaClient } from '../../../utils/clients/types';
 import { OracleSource } from '../struct';
 import { OraclePriceData } from './types';
-import { getPythOraclePriceDataFromBuffer } from './pyth';
+import {
+  getPythOraclePriceDataFromBuffer,
+  pythLazerPriceToOraclePrice,
+} from './pyth';
 import { getSwitchboardOraclePriceDataFromBuffer } from './switchboard';
 import { getPreLaunchOraclePriceDataFromBuffer } from './prelaunchOracle';
 import { getPythPullOraclePriceDataFromBuffer } from './pythPull';
@@ -17,13 +20,13 @@ export async function getOraclePrice(
   oracle: string,
   oracleSource: OracleSource,
   connection: SolanaClient
-): Promise<OraclePriceData> {
+): Promise<OraclePriceData | undefined> {
   const lastUpdate = lastUpdates.get(oracle);
   const oPriceData = oraclePrices.get(oracle);
   if (!oPriceData || !lastUpdate || lastUpdate < Date.now() - oraclePriceTtl) {
     const acc = await connection.getAccountInfo(new PublicKey(oracle));
     if (!acc) throw new Error('Unable to fetch oracle data');
-    let coPriceData: OraclePriceData;
+    let coPriceData: OraclePriceData | undefined;
     switch (oracleSource) {
       case OracleSource.Pyth:
         coPriceData = getPythOraclePriceDataFromBuffer(
@@ -90,12 +93,18 @@ export async function getOraclePrice(
       case OracleSource.SWITCHBOARD_ON_DEMAND:
         coPriceData = getSwitchboardOnDemandOraclePriceDataFromBuffer(acc.data);
         break;
+      case OracleSource.pythLazer:
+        coPriceData = pythLazerPriceToOraclePrice(acc.data);
+        break;
       default:
-        throw new Error(`Unsupported OracleSource: ${oracleSource}`);
+        coPriceData = undefined;
+        console.warn(`Unsupported OracleSource: ${oracleSource}`);
     }
 
-    oraclePrices.set(oracle, coPriceData);
-    lastUpdates.set(oracle, Date.now());
+    if (coPriceData) {
+      oraclePrices.set(oracle, coPriceData);
+      lastUpdates.set(oracle, Date.now());
+    }
     return coPriceData;
   }
   return oPriceData;

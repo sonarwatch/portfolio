@@ -1,6 +1,10 @@
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { BeetStruct } from '@metaplex-foundation/beet';
+import {
+  BeetStruct,
+  u8,
+  uniformFixedSizeArray,
+} from '@metaplex-foundation/beet';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { blob, i64, u64 } from '../../utils/solana';
 
@@ -56,7 +60,7 @@ export const borrowPositionStruct = new BeetStruct<BorrowPosition>(
 );
 
 export type Obligation = {
-  buffer: Buffer;
+  accountDiscriminator: number[];
   owner: PublicKey;
   lending_market: PublicKey;
   tag: BigNumber;
@@ -66,7 +70,7 @@ export type Obligation = {
 
 export const obligationStruct = new BeetStruct<Obligation>(
   [
-    ['buffer', blob(8)],
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
     ['owner', publicKey],
     ['lending_market', publicKey],
     ['tag', u64],

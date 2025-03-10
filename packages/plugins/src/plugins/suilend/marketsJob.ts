@@ -94,6 +94,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-markets`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;

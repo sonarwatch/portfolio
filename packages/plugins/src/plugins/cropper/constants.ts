@@ -5,7 +5,8 @@ export const platformId = 'cropper';
 export const platform: Platform = {
   id: platformId,
   name: 'Cropper',
-  image: 'https://sonar.watch/img/platforms/cropper.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/cropper.webp',
   website: 'https://cropper.finance/',
   twitter: 'https://twitter.com/CropperFinance',
   defiLlamaId: 'cropper-clmm', // from https://defillama.com/docs/api

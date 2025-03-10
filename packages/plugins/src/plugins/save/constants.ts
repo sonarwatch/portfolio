@@ -7,15 +7,23 @@ export const platformDumpyId = 'dumpy';
 export const platform: Platform = {
   id: platformId,
   name: 'Save',
-  image: 'https://sonar.watch/img/platforms/save.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/save.webp',
   defiLlamaId: 'save',
   website: 'https://save.finance/',
+  discord: 'https://discord.com/invite/J7m48UUPkJ',
+  description:
+    'Solend is an algorithmic, decentralized protocol for lending and borrowing on Solana. ',
+  twitter: 'https://x.com/save_finance',
+  documentation: 'https://docs.save.finance/',
+  github: 'https://github.com/solendprotocol',
 };
 
 export const platformDumpy: Platform = {
   id: platformDumpyId,
   name: 'Dumpy',
-  image: 'https://sonar.watch/img/platforms/dumpy.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/dumpy.webp',
   // defiLlamaId: 'dumpy',
   website: 'https://dumpy.fun/',
 };

@@ -43,6 +43,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const element = elementRegistry.addElementMultiple({
     label: 'Deposit',
     name: 'House Pool',
+    link: 'https://app.divvy.bet/housepool/?house=SOL',
   });
 
   accounts.forEach((account) => {
@@ -51,6 +52,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     element.addAsset({
       address: house.currency,
       amount: account.amount,
+      ref: account.pubkey,
+      sourceRefs: [{ name: 'Pool', address: house.pubkey.toString() }],
     });
   });
 

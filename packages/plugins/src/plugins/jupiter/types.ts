@@ -17,6 +17,18 @@ type ParsedCustody = {
   fundingRateState: FundingRateState;
   bump: number;
   tokenAccountBump: number;
+  increasePositionBps: string;
+  decreasePositionBps: string;
+  maxPositionSizeUsd: string;
+  dovesOracle: string;
+  jumpRateState: JumpRateState;
+};
+
+type JumpRateState = {
+  minRateBps: string;
+  maxRateBps: string;
+  targetRateBps: string;
+  targetUtilizationRate: string;
 };
 
 export type PerpetualPoolInfo = ParsedPerpetualPool & {
@@ -60,7 +72,7 @@ type OracleParams = {
 };
 
 type PricingParams = {
-  tradeSpreadLong: string;
+  tradeSpreadLong: string; // tradeImpactFeeScalar
   tradeSpreadShort: string;
   swapSpread: string;
   maxLeverage: string;
