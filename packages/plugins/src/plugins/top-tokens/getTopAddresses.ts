@@ -12,7 +12,7 @@ import {
   CoingeckoCoinsMarketsResponse,
 } from '../../utils/coingecko/types';
 import { topAddressesMaxSize } from './constants';
-import sleep from '../../utils/misc/sleep';
+// import sleep from '../../utils/misc/sleep';
 import ignoredAddresses from './ignoredAddresses';
 
 export default async function getTopAddresses(
