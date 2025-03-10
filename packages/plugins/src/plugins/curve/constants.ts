@@ -25,9 +25,9 @@ export const vestingEscrowAddress =
   '0xd2D43555134dC575BF7279F4bA18809645dB0F1D';
 
 export enum CrvNetworkId {
-  ethereum = 'ethereum',
-  polygon = 'polygon',
-  avalanche = 'avalanche',
+  // ethereum = 'ethereum',
+  // polygon = 'polygon',
+  // avalanche = 'avalanche',
   fraxtal = 'fraxtal',
 }
 
@@ -37,8 +37,8 @@ export const crvNetworkIds = Object.values(CrvNetworkId);
 
 export const crvNetworkIdBySwNetworkId: Record<CrvNetworkId, EvmNetworkIdType> =
   {
-    [CrvNetworkId.ethereum]: NetworkId.ethereum,
-    [CrvNetworkId.polygon]: NetworkId.polygon,
-    [CrvNetworkId.avalanche]: NetworkId.avalanche,
+    // [CrvNetworkId.ethereum]: NetworkId.ethereum,
+    // [CrvNetworkId.polygon]: NetworkId.polygon,
+    // [CrvNetworkId.avalanche]: NetworkId.avalanche,
     [CrvNetworkId.fraxtal]: NetworkId.fraxtal,
   };
