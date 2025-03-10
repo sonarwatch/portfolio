@@ -45,7 +45,7 @@ export const crvNetworkIdBySwNetworkId: Record<CrvNetworkId, EvmNetworkIdType> =
 
 export const networkIdToCRVTokenAddress: Record<CrvNetworkId, string> = {
   [NetworkId.fraxtal]: '0x331b9182088e2a7d6d3fe4742aba1fb231aecc56',
-  [NetworkId.avalanche]: '',
-  [NetworkId.polygon]: '',
-  [NetworkId.ethereum]: '',
+  // [NetworkId.avalanche]: '',
+  // [NetworkId.polygon]: '',
+  // [NetworkId.ethereum]: '',
 };
