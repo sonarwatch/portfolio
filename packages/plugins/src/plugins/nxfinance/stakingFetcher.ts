@@ -34,7 +34,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       ]
     )
   )[0];
-  if (!stakingAccount || stakingAccount.stakedTokens === '0') return [];
+  if (!stakingAccount) return [];
 
   const stakePoolAccount = await cache.getItem<StakingPoolAccount>(
     stakingPoolKey,
@@ -44,11 +44,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
   );
 
-  if (!stakePoolAccount) return [];
+  if (!stakePoolAccount) throw new Error('Stake pool not found in cache.');
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
   const element = elementRegistry.addElementMultiple({
     label: 'Staked',
+    link: 'https://nxfinance.io/stake',
+    ref: stakingAccount.pubkey.toString(),
+    sourceRefs: [{ name: 'Pool', address: stakePoolAccount.pubkey }],
   });
 
   element.addAsset({

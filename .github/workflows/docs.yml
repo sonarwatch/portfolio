@@ -36,6 +36,7 @@ jobs:
           node-version: 20
       - run: npm ci --include=optional
       - run: NODE_OPTIONS="--max-old-space-size=8192" npx nx docs
+      - run: mkdir docs/assets/images && cp -r packages/plugins/img/platforms docs/assets/images && cp -r packages/plugins/img/networks docs/assets/images
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

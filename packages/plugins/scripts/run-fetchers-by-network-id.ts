@@ -34,7 +34,7 @@ async function main() {
   const duration = ((Date.now() - startDate) / 1000).toFixed(2);
   console.log(util.inspect(result, false, null, true));
   console.log(`Finished (${duration}s)`);
-  // await cache.dispose();
+  await cache.dispose();
   await sleep(100);
   process.exit(0);
 }

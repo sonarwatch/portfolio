@@ -25,6 +25,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
   const element = elementRegistry.addElementMultiple({
     label: 'Deposit',
+    ref: userAccount.pubkey,
+    link: 'https://www.zelofi.io/dapp',
   });
 
   element.addAsset({

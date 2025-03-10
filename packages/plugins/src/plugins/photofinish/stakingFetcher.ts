@@ -17,11 +17,16 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const registry = new ElementRegistry(NetworkId.solana, platformId);
 
-  registry.addElementMultiple({ label: 'Staked' }).addAsset({
-    address: crownMint,
-    amount: res.data,
-    alreadyShifted: true,
-  });
+  registry
+    .addElementMultiple({
+      label: 'Staked',
+      link: 'https://photofinish.live/crown',
+    })
+    .addAsset({
+      address: crownMint,
+      amount: res.data,
+      alreadyShifted: true,
+    });
 
   return registry.getElements(cache);
 };

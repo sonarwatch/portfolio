@@ -34,6 +34,7 @@ export const fetchers: Fetcher[] = [
         networkId,
         executor: getEvmFetcherExecutor(networkId, true),
       },
+      // These are not used
       // {
       //   id: `${walletTokensPlatform.id}-${networkId}-bottom`,
       //   networkId,

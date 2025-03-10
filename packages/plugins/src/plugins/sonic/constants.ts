@@ -6,7 +6,8 @@ export const platformId = 'sonic';
 export const platform: Platform = {
   id: platformId,
   name: 'Sonic',
-  image: 'https://sonar.watch/img/platforms/sonic.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/sonic.webp',
   website: 'https://www.sonic.game/',
   twitter: 'https://x.com/SonicSVM',
 };
@@ -16,7 +17,8 @@ export const airdropStatics: AirdropStatics = {
   emitterLink: 'https://www.sonic.game/',
   emitterName: platform.name,
   id: 'sonic-airdrop',
-  image: 'https://sonar.watch/img/platforms/sonic.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/sonic.webp',
   claimStart: 1736251200000,
   claimEnd: 1738929600000,
 };

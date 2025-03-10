@@ -4,7 +4,8 @@ export const platformId = 'haedal';
 export const platform: Platform = {
   id: platformId,
   name: 'Haedal',
-  image: 'https://sonar.watch/img/platforms/haedal.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/haedal.webp',
   defiLlamaId: 'haedal-protocol', // from https://defillama.com/docs/api
   website: 'https://haedal.xyz/stake',
   twitter: 'https://twitter.com/HaedalProtocol',

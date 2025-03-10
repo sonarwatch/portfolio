@@ -47,7 +47,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     lendingPoolsMemo.getItem(cache),
     solayerPoolsMemo.getItem(cache),
   ]);
-  if (!lendingPools) return [];
+  if (!lendingPools) throw new Error('Lending pools missing in cache.');
 
   const [
     lendingAccounts,
@@ -106,6 +106,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const element = elementRegistry.addElementLiquidity({
       label: 'Lending',
       name: 'GMS Lending Pool',
+      link: 'https://nxfinance.io/lend',
     });
 
     const formattedLendingPool = formatLendingPool(
@@ -113,7 +114,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       tokenPrice.decimals
     );
 
-    const liquidity = element.addLiquidity({});
+    const liquidity = element.addLiquidity({
+      ref: lendingAccount.pubkey.toString(),
+      sourceRefs: [
+        { name: 'Lending Market', address: lendingPool.pubkey.toString() },
+      ],
+    });
     liquidity.addAsset({
       address: lendingPool.tokenMint,
       amount: new BigNumber(lendingAccount.depositNotes).multipliedBy(
@@ -157,6 +163,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         name: `vSOL Leverage x${new BigNumber(position.leverageMultiples)
           .dividedBy(1000000)
           .decimalPlaces(2)}`,
+        link: 'https://nxfinance.io/leverage',
+        ref: vSolPositionsAccount.pubkey.toString(),
+        sourceRefs: [
+          { name: 'Lending Market', address: lendingPool.pubkey.toString() },
+        ],
       });
 
       const amount = new BigNumber(
@@ -184,12 +195,16 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const elementMultiple = elementRegistry.addElementMultiple({
       label: 'Lending',
       name: 'Fulcrum Lending Pool',
+      link: 'https://nxfinance.io/lend',
+      ref: marginAccount.pubkey,
     });
     const elementBorrowlend = elementRegistry.addElementBorrowlend({
       label: 'Leverage',
       name: `JLP Leverage x${new BigNumber(marginAccount.leverage)
         .dividedBy(100)
         .decimalPlaces(2)}`,
+      link: 'https://nxfinance.io/leverage',
+      ref: marginAccount.pubkey,
     });
 
     marginAccount.deposits.forEach((deposit) => {
@@ -239,6 +254,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (!solayerUserAccount) return;
     const element = elementRegistry.addElementMultiple({
       label: 'Leverage',
+      link: 'https://nxfinance.io/leverage',
+      ref: solayerUserAccount.pubkey,
     });
     element.addAsset({
       address: solayerUserAccount.lrtMint,

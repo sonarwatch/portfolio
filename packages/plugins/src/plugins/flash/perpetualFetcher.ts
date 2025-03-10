@@ -41,7 +41,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     prefix: platformId,
     networkId: NetworkId.solana,
   });
-  if (!marketsInfos) return [];
+  if (!marketsInfos) throw new Error('No markets in cache.');
 
   const oraclesPubkeys: PublicKey[] = [];
   const MarketById: Map<string, MarketInfo> = new Map();

@@ -143,7 +143,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       label: 'Deposit',
       networkId: NetworkId.solana,
       platformId,
-      data: { assets },
+      data: { assets, link: 'https://app.parcl.co/lp' },
       value: getUsdValueSum(assets.map((asset) => asset.value)),
     },
   ];

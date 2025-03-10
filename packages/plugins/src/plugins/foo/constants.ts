@@ -5,7 +5,8 @@ export const platformId = 'foo';
 export const platform: Platform = {
   id: platformId,
   name: 'Foo Finance',
-  image: 'https://sonar.watch/img/platforms/foo.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/foo.webp',
   website: 'https://foo.com/',
   twitter: 'https://x.com/foo_finance',
   defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
@@ -17,7 +18,8 @@ export const airdropStatics: AirdropStatics = {
   emitterLink: 'https://foo.com',
   emitterName: 'Foo Protocol',
   id: 'foo-s1',
-  image: 'https://sonar.watch/img/platforms/foo.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/foo.webp',
   claimEnd: undefined,
   claimStart: 1722672000000,
 };

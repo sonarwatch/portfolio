@@ -5,7 +5,7 @@ import { Job, JobExecutor } from '../../Job';
 import { topTokensPrefix } from './constants';
 import { coingeckoCoinsListUrl } from '../../utils/coingecko/constants';
 import { CoingeckoCoinsListResponse } from '../../utils/coingecko/types';
-import sleep from '../../utils/misc/sleep';
+// import sleep from '../../utils/misc/sleep';
 import getTopAddresses from './getTopAddresses';
 
 const networkIds = [
@@ -25,10 +25,10 @@ const executor: JobExecutor = async (cache: Cache) => {
         },
         timeout: 8000,
       })
-      .catch(async () => {
+      .catch(async () => 
         // await sleep(300000);
-        return null;
-      });
+         null
+      );
   // await sleep(60000);
   if (!coingeckoCoinsListRes || !coingeckoCoinsListRes.data) return;
 
@@ -53,6 +53,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: 'top-tokens',
   executor,
-  label: 'coingecko',
+  labels: ['coingecko'],
 };
 export default job;

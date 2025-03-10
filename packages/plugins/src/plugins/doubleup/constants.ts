@@ -4,7 +4,8 @@ export const platformId = 'doubleup';
 export const platform: Platform = {
   id: platformId,
   name: 'DoubleUp',
-  image: 'https://sonar.watch/img/platforms/doubleup.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/doubleup.webp',
   website: 'https://www.doubleup.fun/',
   twitter: 'https://x.com/doubleup_app',
   defiLlamaId: 'doubleup', // from https://defillama.com/docs/api

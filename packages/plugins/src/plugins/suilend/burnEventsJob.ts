@@ -68,6 +68,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-burn-events`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;

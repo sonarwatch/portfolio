@@ -5,7 +5,7 @@ import { getClientSolana } from '../../utils/clients';
 import { u8ArrayToString } from '../../utils/solana';
 import { keySpotMarkets, platformId } from '../drift/constants';
 import {
-  vaultsPids,
+  vaultsProgramIds,
   platformIdByVaultManager,
   prefixVaults,
 } from './constants';
@@ -17,17 +17,15 @@ import { VaultInfo } from './types';
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
 
-  const [vaultIds, spotMarkets] = await Promise.all([
-    (
-      await Promise.all(
-        vaultsPids.map((vaultsPid) =>
-          client.getProgramAccounts(vaultsPid, {
-            filters: vaultFilter,
-            dataSlice: { offset: 0, length: 0 },
-          })
-        )
+  const [vaultIdsByProgram, spotMarkets] = await Promise.all([
+    Promise.all(
+      vaultsProgramIds.map((vaultsPid) =>
+        client.getProgramAccounts(vaultsPid, {
+          filters: vaultFilter,
+          dataSlice: { offset: 0, length: 0 },
+        })
       )
-    ).flat(),
+    ),
     cache.getItem<SpotMarketEnhanced[]>(keySpotMarkets, {
       prefix: platformId,
       networkId: NetworkId.solana,
@@ -36,33 +34,34 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   if (!spotMarkets) return;
 
-  const vaultClient = await getVaultClient();
-
-  const vaults = await Promise.all(
-    vaultIds.map((vaultId) => vaultClient.getVault(vaultId.pubkey))
-  );
-
   const cachedItems = [];
 
-  for (const vault of vaults) {
-    const spotMarket = spotMarkets.find(
-      (sm) => sm.marketIndex === vault.spotMarketIndex
-    );
-    if (!spotMarket) continue;
-    const pubkey = vault.pubkey.toString();
-    const vaultPlatformId = platformIdByVaultManager.get(
-      vault.manager.toString()
-    );
-    if (!vaultPlatformId) continue;
+  for (const vaultIds of vaultIdsByProgram) {
+    const i = vaultIdsByProgram.indexOf(vaultIds);
+    const programId = vaultsProgramIds[i];
 
-    const totalTokens = await vaultClient.calculateVaultEquityInDepositAsset({
-      vault,
-      factorUnrealizedPNL: true,
-    });
+    const vaultClient = await getVaultClient(programId.toString());
+    const vaults = await Promise.all(
+      vaultIds.map((vaultId) => vaultClient.getVault(vaultId.pubkey))
+    );
 
-    cachedItems.push({
-      key: pubkey,
-      value: {
+    for (const vault of vaults) {
+      const spotMarket = spotMarkets.find(
+        (sm) => sm.marketIndex === vault.spotMarketIndex
+      );
+      if (!spotMarket) continue;
+      const pubkey = vault.pubkey.toString();
+      const vaultPlatformId = platformIdByVaultManager.get(
+        vault.manager.toString()
+      );
+      if (!vaultPlatformId) continue;
+
+      const totalTokens = await vaultClient.calculateVaultEquityInDepositAsset({
+        vault,
+        factorUnrealizedPNL: true,
+      });
+
+      const vaultInfo: VaultInfo = {
         pubkey,
         platformId: vaultPlatformId,
         name: u8ArrayToString(vault.name),
@@ -72,21 +71,26 @@ const executor: JobExecutor = async (cache: Cache) => {
         totalTokens: totalTokens.toString(),
         user: vault.user.toString(),
         profitShare: vault.profitShare,
-      },
-    });
+      };
+
+      cachedItems.push({
+        key: pubkey,
+        value: vaultInfo,
+      });
+    }
+
+    await vaultClient.driftClient.unsubscribe();
   }
 
   await cache.setItems<VaultInfo>(cachedItems, {
     prefix: prefixVaults,
     networkId: NetworkId.solana,
   });
-
-  await vaultClient.driftClient.unsubscribe();
 };
 
 const job: Job = {
   id: `${platformId}-market-maker-vaults`,
   executor,
-  label: 'realtime',
+  labels: ['realtime'],
 };
 export default job;

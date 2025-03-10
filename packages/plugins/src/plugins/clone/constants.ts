@@ -5,10 +5,13 @@ export const platformId = 'clone';
 export const platform: Platform = {
   id: platformId,
   name: 'Clone',
-  image: 'https://sonar.watch/img/platforms/clone.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/clone.webp',
   defiLlamaId: 'clone-protocol', // from https://defillama.com/docs/api
   website: 'https://clone.so/',
   twitter: 'https://twitter.com/CloneProtocol',
+  isDeprecated: false,
+  documentation: 'https://docs.clone.so/',
 };
 
 export const clonePid = new PublicKey(

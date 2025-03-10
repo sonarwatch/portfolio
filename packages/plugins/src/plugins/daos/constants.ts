@@ -7,16 +7,23 @@ export const platformId = 'realms';
 export const realmsPlatform: Platform = {
   id: platformId,
   name: 'Realms',
-  image: 'https://sonar.watch/img/platforms/realms.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/realms.webp',
   defiLlamaId: 'spl-governance',
   website: 'https://app.realms.today/',
+  github: 'https://github.com/Mythic-Project',
+  description:
+    'The home for on-chain communities in the Solana ecosystem. Helping ~3K Web3 organizations and their members thrive.',
+  documentation: 'https://docs.realms.today/',
+  discord: 'https://discord.gg/6UZHcNJFr8',
 };
 
 export const heliumPlatformId = 'helium';
 export const heliumPlatform: Platform = {
   id: heliumPlatformId,
   name: 'Helium',
-  image: 'https://sonar.watch/img/platforms/helium.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/helium.webp',
   website: 'https://heliumvote.com/',
   twitter: 'https://twitter.com/helium',
 };

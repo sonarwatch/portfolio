@@ -1,30 +1,65 @@
 import {
   getUsdValueSum,
-  LevPosition,
+  getUsdValueSumStrict,
   NetworkIdType,
+  PortfolioAsset,
   PortfolioElementLeverage,
+  PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
 import { ElementBuilder } from './ElementBuilder';
-import { LevPositionParams, Params } from './Params';
+import {
+  CrossLevPositionParams,
+  IsoLevPositionParams,
+  Params,
+  PortfolioAssetTokenParams,
+} from './Params';
 import { TokenPriceMap } from '../../TokenPriceMap';
-import { LevPositionBuilder } from './LevPositionBuilder';
+import {
+  CrossLevPositionBuilder,
+  IsoLevPositionBuilder,
+} from './LevPositionBuilder';
+import { AssetTokenBuilder } from './AssetTokenBuilder';
 
 export class ElementLeverageBuilder extends ElementBuilder {
-  positions: LevPositionBuilder[];
+  isoPositions: IsoLevPositionBuilder[];
+  crossPositions: CrossLevPositionBuilder[];
+  crossCollateralAssets: AssetTokenBuilder[];
 
   constructor(params: Params) {
     super(params);
-    this.positions = [];
+    this.isoPositions = [];
+    this.crossPositions = [];
+    this.crossCollateralAssets = [];
   }
 
-  addPosition(params: LevPositionParams) {
-    const levPositionBuilder = new LevPositionBuilder(params);
-    this.positions.push(levPositionBuilder);
-    return levPositionBuilder;
+  override tokenAddresses(): string[] {
+    const addresses: string[] = [];
+    this.isoPositions.forEach((p) => {
+      if (p.tokenAddress) addresses.push(p.tokenAddress);
+    });
+    this.crossPositions.forEach((p) => {
+      if (p.tokenAddress) addresses.push(p.tokenAddress);
+    });
+    this.crossCollateralAssets.forEach((p) => {
+      addresses.push(p.address);
+    });
+    return addresses;
   }
 
-  mints(): string[] {
-    return this.positions.map((position) => position.mints()).flat();
+  addIsoPosition(params: IsoLevPositionParams) {
+    const isoPositionBuilder = new IsoLevPositionBuilder(params);
+    this.isoPositions.push(isoPositionBuilder);
+    return isoPositionBuilder;
+  }
+
+  addCrossPosition(params: CrossLevPositionParams) {
+    const crossPositionBuilder = new CrossLevPositionBuilder(params);
+    this.crossPositions.push(crossPositionBuilder);
+    return crossPositionBuilder;
+  }
+
+  addCrossCollateral(params: PortfolioAssetTokenParams) {
+    this.crossCollateralAssets.push(new AssetTokenBuilder(params));
   }
 
   get(
@@ -32,15 +67,45 @@ export class ElementLeverageBuilder extends ElementBuilder {
     platformId: string,
     tokenPrices: TokenPriceMap
   ): PortfolioElementLeverage | null {
-    const positions = this.positions
+    const isoPositions = this.isoPositions.map((p) => p.get(networkId));
+    const isoValue = getUsdValueSum([...isoPositions.map((a) => a.value)]);
+    const crossPositions = this.crossPositions.map((p) => p.get(networkId));
+    const crossCollateralAssets = this.crossCollateralAssets
       .map((p) => p.get(networkId, tokenPrices))
-      .filter((p) => p !== null) as LevPosition[];
-    const value = getUsdValueSum(positions.map((a) => a.value));
+      .filter((a) => a !== null) as PortfolioAsset[];
+    const crossValue = getUsdValueSum([
+      ...crossCollateralAssets.map((a) => a.value),
+      ...crossPositions.map((p) => p.pnlValue),
+    ]);
+    const crossSizeValueTotal = getUsdValueSumStrict(
+      crossPositions.map((p) => p.sizeValue)
+    );
+    const crossLeverage =
+      crossSizeValueTotal && crossValue
+        ? crossSizeValueTotal / crossValue
+        : undefined;
+
+    const value = getUsdValueSum([crossValue, isoValue]);
+
     return {
-      type: this.type,
+      type: PortfolioElementType.leverage,
+      name: this.name,
+      tags: this.tags,
       label: this.label,
       data: {
-        positions,
+        isolated: {
+          positions: isoPositions,
+          value: isoValue,
+        },
+        cross: {
+          positions: crossPositions,
+          collateralAssets: crossCollateralAssets,
+          collateralValue: getUsdValueSum(
+            crossCollateralAssets.map((a) => a.value)
+          ),
+          value: crossValue,
+          leverage: crossLeverage,
+        },
         value,
         ref: this.ref?.toString(),
         sourceRefs: this.sourceRefs,
@@ -49,6 +114,6 @@ export class ElementLeverageBuilder extends ElementBuilder {
       networkId,
       platformId: this.platformId || platformId,
       value,
-    } as PortfolioElementLeverage;
+    };
   }
 }

@@ -15,8 +15,11 @@
       }
     },
     "publish": {
-      "command": "node tools/scripts/publish.mjs core {args.ver} {args.tag}",
-      "dependsOn": ["build"]
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "node tools/scripts/publish-rewrite-name.mjs core"
+      }
     },
     "lint": {
       "executor": "@nx/linter:eslint",
@@ -52,9 +55,9 @@
       }
     },
     "npm": {
-      "executor": "ngx-deploy-npm:deploy",
+      "executor": "nx:run-commands",
       "options": {
-        "access": "public"
+        "command": "echo 'Skipping npm publish'"
       }
     }
   },

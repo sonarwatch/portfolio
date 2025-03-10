@@ -5,10 +5,15 @@ export const platformId = 'bonkrewards';
 export const platform: Platform = {
   id: platformId,
   name: 'Bonk Rewards',
-  image: 'https://sonar.watch/img/platforms/bonk.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/bonk.webp',
   twitter: 'https://twitter.com/bonk_inu',
   website: 'https://bonkrewards.com/',
   defiLlamaId: 'bonkswap',
+  discord: 'https://discord.com/invite/qaQa6M6mN2',
+  telegram: 'https://t.me/Official_Bonk_Inu',
+  medium: 'https://medium.com/@bonk_inu',
+  description: 'Social layer and community meme coin of Solana.',
 };
 export const stakePid = new PublicKey(
   'STAKEkKzbdeKkqzKpLkNQD3SUuLgshDKCD7U8duxAbB'

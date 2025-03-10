@@ -1,10 +1,16 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import { Connection, FetchMiddleware } from '@solana/web3.js';
+import { Connection, FetchMiddleware, Commitment } from '@solana/web3.js';
 import { getBasicAuthHeaders } from '../misc/getBasicAuthHeaders';
 import { getRpcEndpoint } from './constants';
 import { SolanaClient } from './types';
 
-export default function getClientSolana(): SolanaClient {
+export type SolanaClientParams = {
+  commitment?: Commitment;
+};
+
+export default function getClientSolana(
+  params?: SolanaClientParams
+): SolanaClient {
   const rpcEndpoint = getRpcEndpoint(NetworkId.solana);
   const httpHeaders = rpcEndpoint.basicAuth
     ? getBasicAuthHeaders(
@@ -33,6 +39,7 @@ export default function getClientSolana(): SolanaClient {
   }
 
   return new Connection(rpcEndpoint.url, {
+    commitment: params?.commitment || 'confirmed',
     httpHeaders,
     fetchMiddleware,
   });

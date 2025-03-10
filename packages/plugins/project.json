@@ -15,32 +15,35 @@
       }
     },
     "serve-cache": {
-      "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/serve-cache.ts",
+      "command": "ts-node -P packages/plugins/tsconfig.script.json --swc packages/plugins/scripts/serve-cache.ts",
       "dependsOn": []
     },
     "run-airdrop-fetcher": {
-      "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/run-airdrop-fetcher.ts",
+      "command": "ts-node -P packages/plugins/tsconfig.script.json --swc packages/plugins/scripts/run-airdrop-fetcher.ts",
       "dependsOn": []
     },
     "run-airdrop-fetchers": {
-      "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/run-airdrop-fetchers.ts",
+      "command": "ts-node -P packages/plugins/tsconfig.script.json --swc packages/plugins/scripts/run-airdrop-fetchers.ts",
       "dependsOn": []
     },
     "run-fetcher": {
-      "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/run-fetcher.ts",
+      "command": "ts-node -P packages/plugins/tsconfig.script.json --swc packages/plugins/scripts/run-fetcher.ts",
       "dependsOn": []
     },
     "run-fetchers-by-network-id": {
-      "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/run-fetchers-by-network-id.ts",
+      "command": "ts-node -P packages/plugins/tsconfig.script.json --swc packages/plugins/scripts/run-fetchers-by-network-id.ts",
       "dependsOn": []
     },
     "run-job": {
-      "command": "ts-node -P packages/plugins/tsconfig.script.json packages/plugins/scripts/run-job.ts",
+      "command": "ts-node -P packages/plugins/tsconfig.script.json --swc packages/plugins/scripts/run-job.ts",
       "dependsOn": []
     },
     "publish": {
-      "command": "node tools/scripts/publish.mjs plugins {args.ver} {args.tag}",
-      "dependsOn": ["build"]
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "node tools/scripts/publish-rewrite-name.mjs plugins"
+      }
     },
     "lint": {
       "executor": "@nx/linter:eslint",
@@ -77,9 +80,9 @@
       }
     },
     "npm": {
-      "executor": "ngx-deploy-npm:deploy",
+      "executor": "nx:run-commands",
       "options": {
-        "access": "public"
+        "command": "echo 'Skipping npm publish'"
       }
     }
   },

@@ -2,6 +2,31 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.109](https://github.com/Octav-Labs/sonarwatch-portfolio/compare/plugins-0.14.108...plugins-0.14.109) (2025-03-10)
+
+
+
+## [0.14.108](https://github.com/Octav-Labs/sonarwatch-portfolio/compare/plugins-0.14.107...plugins-0.14.108) (2025-03-07)
+
+
+### Bug Fixes
+
+* **driftPlatforms:** add missing platforms export ([777adbe](https://github.com/Octav-Labs/sonarwatch-portfolio/commit/777adbecbe0ed6a51587acdec6715672bbcdb16a))
+* **tokenList:** isLatestVersion-version-check ([f9e0c0b](https://github.com/Octav-Labs/sonarwatch-portfolio/commit/f9e0c0b8a716a3577abfc691eb7413fc4c72f2fa))
+
+
+### Reverts
+
+* Revert "fix drift" ([b1318fa](https://github.com/Octav-Labs/sonarwatch-portfolio/commit/b1318fa453a4d1a723f47791051942fba2e98d13))
+* Revert "tmp to multiple" ([9512357](https://github.com/Octav-Labs/sonarwatch-portfolio/commit/9512357d6583a16107082bb29ef84c9f78fecebf))
+* Revert "add link to airdropFetcher" ([0407ce5](https://github.com/Octav-Labs/sonarwatch-portfolio/commit/0407ce5bf9d0fe361b91f99ed714b4885dab329d))
+
+
+
+## [0.14.107](https://github.com/Octav-Labs/sonarwatch-portfolio/compare/plugins-0.14.106...plugins-0.14.107) (2025-02-25)
+
+
+
 ## [0.14.106](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.105...plugins-0.14.106) (2025-02-07)
 
 
@@ -20,6 +45,8 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 ## [0.14.102](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.101...plugins-0.14.102) (2025-02-05)
 
+HELOO
+HELOO
 
 
 ## [0.14.101](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.100...plugins-0.14.101) (2025-02-04)

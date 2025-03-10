@@ -172,6 +172,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           .dividedBy(new BigNumber(10).pow(reserve.liquidity.mintDecimals))
           .dividedBy(reserve.exchangeRate),
         alreadyShifted: true,
+        sourceRefs: [
+          { name: 'Reserve', address: deposit.depositReserve.toString() },
+        ],
       });
 
       if (type === 'multiply') {
@@ -225,6 +228,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           new BigNumber(10).pow(reserve.liquidity.mintDecimals)
         ),
         alreadyShifted: true,
+        sourceRefs: [
+          { name: 'Reserve', address: borrow.borrowReserve.toString() },
+        ],
       });
       element.addBorrowedWeight(Number(reserve.config.borrowFactorPct) / 100);
       element.addBorrowedYield([

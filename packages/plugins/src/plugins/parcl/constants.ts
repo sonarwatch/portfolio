@@ -13,6 +13,10 @@ export const platform: Platform = {
   defiLlamaId: 'parent#parcl', // from https://defillama.com/docs/api
   website: platformWebsite,
   twitter: 'https://twitter.com/Parcl',
+  description: 'Making investing in real estate faster, simpler, and smarter. ',
+  discord: 'https://discord.gg/parcl',
+  documentation: 'https://docs.parcl.co/',
+  github: 'https://github.com/ParclFinance',
 };
 
 export const programId = new PublicKey(

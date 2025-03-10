@@ -29,6 +29,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const alpElement = elementRegistry.addElementMultiple({
       label: 'Staked',
       link: 'https://app.adrena.xyz/stake',
+      ref: alpStakingAccount.pubkey.toString(),
     });
     for (const lockStake of alpStakingAccount.lockedStakes) {
       alpElement.addAsset({
@@ -45,6 +46,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const adxElement = elementRegistry.addElementMultiple({
       label: 'Staked',
       link: 'https://app.adrena.xyz/stake',
+      ref: adxStakingAccount.pubkey.toString(),
     });
     for (const lockStake of adxStakingAccount.lockedStakes) {
       adxElement.addAsset({

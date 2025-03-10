@@ -1,4 +1,5 @@
 import { Platform } from '@sonarwatch/portfolio-core';
+import { PublicKey } from '@solana/web3.js';
 import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'sanctum';
@@ -11,6 +12,11 @@ export const platform: Platform = {
   image: platformImage,
   website: platformWebsite,
   twitter: 'https://twitter.com/sanctumso',
+  discord: 'discord.gg/sanctumso',
+  documentation: 'https://learn.sanctum.so/docs',
+  github: 'https://github.com/igneous-labs',
+  description:
+    'Sanctum is a new primitive built on Solana to power liquid staking and bring Solana into an infinite-LST future. Sanctum enables users that stake SOL natively or with a liquid staking token (LST) to tap into a powerful unified liquidity layer.',
 };
 export const lstsKey = 'lsts';
 
@@ -35,3 +41,7 @@ export const nclbAirdropStatics: AirdropStatics = {
   claimLink: 'https://appeal.sanctum.so/results',
   image: platformImage,
 };
+
+export const stakingPid = new PublicKey(
+  'bon4Kh3x1uQK16w9b9DKgz3Aw4AP1pZxBJk55Q6Sosb'
+);

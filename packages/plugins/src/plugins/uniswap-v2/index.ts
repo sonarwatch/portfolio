@@ -1,3 +1,4 @@
+import { Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from '../../Fetcher';
 import { Job } from '../../Job';
 // import { NetworkId } from '@sonarwatch/portfolio-core';
@@ -12,3 +13,5 @@ export const jobs: Job[] = [
 export const fetchers: Fetcher[] = [
   // getPositionsV2Fetcher(NetworkId.ethereum, platformId, 'V2'),
 ];
+
+export const platforms: Platform[] = [];

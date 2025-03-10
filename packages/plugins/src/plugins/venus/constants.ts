@@ -4,7 +4,8 @@ export const platformId = 'venus';
 export const platform: Platform = {
   id: platformId,
   name: 'Venus',
-  image: 'https://sonar.watch/img/platforms/venus.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/venus.webp',
   defiLlamaId: 'venus-core-pool',
   website: 'https://app.venus.io/',
 };

@@ -4,7 +4,8 @@ export const platformId = 'flowx';
 export const platform: Platform = {
   id: platformId,
   name: 'FlowX Finance',
-  image: 'https://sonar.watch/img/platforms/flowx.webp',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/flowx.webp',
   defiLlamaId: 'flowx-v2',
   website: 'https://flowx.finance',
   twitter: 'https://twitter.com/FlowX_finance',
