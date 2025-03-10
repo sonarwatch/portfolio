@@ -1,50 +1,57 @@
 import {
   collectibleFreezedTag,
-  getElementNFTLendingValues,
   NetworkId,
-  PortfolioAsset,
-  PortfolioAssetCollectible,
-  PortfolioElement,
-  PortfolioElementType,
   solanaNativeAddress,
+  solanaNativeDecimals,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
-import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
 import {
-  getAutoParsedProgramAccounts,
-  getAutoParsedMultipleAccountsInfo,
-  ParsedAccount,
-  usdcSolanaMint,
-} from '../../utils/solana';
-import { getAssetBatchDasAsMap } from '../../utils/solana/das/getAssetBatchDas';
-import { heliusAssetToAssetCollectible } from '../../utils/solana/das/heliusAssetToAssetCollectible';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import {
-  banxIdlItem,
+  banxPid,
+  banxSolMint,
   cachePrefix,
-  collectionsCacheKey,
+  splMarketsCacheKey,
   platformId,
+  nftMarketsCacheKey,
 } from './constants';
-import {
-  BondOfferV2,
-  BondTradeTransactionV3,
-  Collection,
-  FraktBond,
-} from './types';
-import { calculateLoanRepayValue, calculateDebtValue } from './helpers';
-import { loanFiltersA, loanFiltersB } from './filters';
+import { Collection, SplAssetMarket } from './types';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import { arrayToMap } from '../../utils/misc/arrayToMap';
+import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
+import {
+  Bondofferv3Struct,
+  BondtradeTransactionv2State,
+  Bondtradetransactionv3Struct,
+  FraktbondStruct,
+  LendingTokenType,
+  RedeemResult,
+} from './structs';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import {
+  getParsedMultipleAccountsInfo,
+  usdcSolanaMint,
+} from '../../utils/solana';
+import {
+  PortfolioAssetCollectibleParams,
+  PortfolioAssetTokenParams,
+} from '../../utils/elementbuilder/Params';
 
-const collectionsMemo = new MemoizedCache<
-  Collection[],
-  Map<string, Collection>
+const splMarketsMemo = new MemoizedCache<
+  SplAssetMarket[],
+  Map<string, SplAssetMarket>
 >(
-  collectionsCacheKey,
+  splMarketsCacheKey,
+  {
+    prefix: cachePrefix,
+    networkId: NetworkId.solana,
+  },
+  (arr) => arrayToMap(arr || [], 'marketPubkey')
+);
+const nftMarketsMemo = new MemoizedCache<Collection[], Map<string, Collection>>(
+  nftMarketsCacheKey,
   {
     prefix: cachePrefix,
     networkId: NetworkId.solana,
@@ -52,193 +59,148 @@ const collectionsMemo = new MemoizedCache<
   (arr) => arrayToMap(arr || [], 'marketPubkey')
 );
 
-/**
- * @deprecated
- * this fetcher has been deprecated following protocol changes
- */
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
-  const dasUrl = getSolanaDasEndpoint();
 
   const accounts = (
     await Promise.all([
-      getAutoParsedProgramAccounts<BondTradeTransactionV3>(
-        connection,
-        banxIdlItem,
-        loanFiltersA(owner)
-      ),
-      getAutoParsedProgramAccounts<BondTradeTransactionV3>(
-        connection,
-        banxIdlItem,
-        loanFiltersB(owner)
-      ),
+      ParsedGpa.build(connection, Bondtradetransactionv3Struct, banxPid)
+        .addFilter(
+          'accountDiscriminator',
+          [203, 220, 99, 58, 119, 173, 245, 89]
+        )
+        .addFilter('user', new PublicKey(owner))
+        .run(),
+      ParsedGpa.build(connection, Bondtradetransactionv3Struct, banxPid)
+        .addFilter(
+          'accountDiscriminator',
+          [203, 220, 99, 58, 119, 173, 245, 89]
+        )
+        .addFilter('seller', new PublicKey(owner))
+        .run(),
     ])
   )
     .flat()
     .filter(
       (acc) =>
-        (acc.bondTradeTransactionState.perpetualActive ||
-          acc.bondTradeTransactionState.perpetualPartialRepaid ||
-          acc.bondTradeTransactionState.perpetualRefinancedActive ||
-          acc.bondTradeTransactionState.perpetualManualTerminating ||
-          acc.bondTradeTransactionState.active) &&
-        acc.redeemedAt === '0' &&
-        !acc.redeemResult.instantRefinanced
+        (acc.bondTradeTransactionState ===
+          BondtradeTransactionv2State.Perpetualactive ||
+          acc.bondTradeTransactionState ===
+            BondtradeTransactionv2State.Perpetualpartialrepaid ||
+          acc.bondTradeTransactionState ===
+            BondtradeTransactionv2State.Perpetualrefinancedactive ||
+          acc.bondTradeTransactionState ===
+            BondtradeTransactionv2State.Perpetualmanualterminating ||
+          acc.bondTradeTransactionState ===
+            BondtradeTransactionv2State.Active) &&
+        acc.redeemedAt.isZero() &&
+        acc.redeemResult !== RedeemResult.Instantrefinanced
     );
 
   if (accounts.length === 0) return [];
 
-  const [tokenPrices, fbondTokenMints, bondOffers, collections] =
+  const [solTokenPrice, splMarkets, nftMarkets, fraktBonds, bondOffers] =
     await Promise.all([
-      cache.getTokenPricesAsMap(
-        [usdcSolanaMint, solanaNativeAddress],
-        NetworkId.solana
-      ),
-      getAutoParsedMultipleAccountsInfo<FraktBond>(
+      cache.getTokenPrice(solanaNativeAddress, NetworkId.solana),
+      splMarketsMemo.getItem(cache),
+      nftMarketsMemo.getItem(cache),
+      getParsedMultipleAccountsInfo(
         connection,
-        banxIdlItem,
-        accounts.map((acc) => new PublicKey(acc.fbondTokenMint))
+        FraktbondStruct,
+        accounts.map((a) => a.fbondTokenMint)
       ),
-      getAutoParsedMultipleAccountsInfo<BondOfferV2>(
+      getParsedMultipleAccountsInfo(
         connection,
-        banxIdlItem,
-        accounts.map((acc) => new PublicKey(acc.bondOffer))
+        Bondofferv3Struct,
+        accounts.map((a) => a.bondOffer)
       ),
-      collectionsMemo.getItem(cache),
     ]);
 
-  if (!collections) return [];
+  if (!splMarkets) throw new Error('SPL Markets not cached');
+  if (!nftMarkets) throw new Error('NFT Markets not cached');
+  if (!solTokenPrice) throw new Error('SOL Price not cached');
 
-  const solTokenPrice = tokenPrices.get(solanaNativeAddress);
-  if (!solTokenPrice) return [];
-
-  const fbondTokenMintsMap: Map<string, ParsedAccount<FraktBond>> = new Map();
-  fbondTokenMints.forEach((fbondTokenMint) => {
-    if (!fbondTokenMint) return;
-    fbondTokenMintsMap.set(fbondTokenMint.pubkey.toString(), fbondTokenMint);
-  });
-
-  const bondOffersMap: Map<string, ParsedAccount<BondOfferV2>> = new Map();
-  bondOffers.forEach((bondOffer) => {
+  const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
+  accounts.forEach((account, i) => {
+    const bondOffer = bondOffers[i];
     if (!bondOffer) return;
-    bondOffersMap.set(bondOffer.pubkey.toString(), bondOffer);
-  });
-
-  const heliusAssets = await getAssetBatchDasAsMap(
-    dasUrl,
-    fbondTokenMints.map((acc) => acc && acc.fbondTokenMint) as string[]
-  );
-
-  const elements: PortfolioElement[] = [];
-
-  accounts.forEach((acc) => {
-    const fbondTokenMint = fbondTokenMintsMap.get(acc.fbondTokenMint);
-    const bondOffer = bondOffersMap.get(acc.bondOffer);
-
-    if (!fbondTokenMint) return;
-
-    if (
-      !fbondTokenMint.fraktBondState.perpetualActive &&
-      !fbondTokenMint.fraktBondState.active
-    )
+    const fraktBond = fraktBonds[i];
+    if (!fraktBond) return;
+    const splMarket = splMarkets.get(bondOffer.hadoMarket.toString());
+    const nftMarket = nftMarkets.get(bondOffer.hadoMarket.toString());
+    if (!splMarket && !nftMarket) {
       return;
-
-    const collection =
-      bondOffer && bondOffer.hadoMarket
-        ? collections.get(bondOffer.hadoMarket)
-        : undefined;
-
-    const tokenPrice = acc.lendingToken.usdc
-      ? tokenPrices.get(usdcSolanaMint)
-      : tokenPrices.get(solanaNativeAddress);
-
-    if (!tokenPrice) return;
-
-    const borrowedAssets: PortfolioAsset[] = [];
-    const suppliedAssets: PortfolioAsset[] = [];
-
-    let mintAsset: PortfolioAssetCollectible | null = null;
-    if (acc.fbondTokenMint) {
-      const heliusAsset = heliusAssets.get(fbondTokenMint.fbondTokenMint);
-
-      if (heliusAsset) {
-        mintAsset = heliusAssetToAssetCollectible(heliusAsset, {
-          tags: [collectibleFreezedTag],
-          collection: collection
-            ? {
-                name: collection.collectionName,
-                floorPrice: new BigNumber(collection.collectionFloor)
-                  .dividedBy(10 ** 9)
-                  .multipliedBy(solTokenPrice.price)
-                  .toNumber(),
-              }
-            : undefined,
-        });
-      }
     }
 
-    const name = `Active Loan`;
-    if (acc.user === owner.toString()) {
-      // LENDER
-      suppliedAssets.push(
-        tokenPriceToAssetToken(
-          tokenPrice.address,
-          calculateLoanRepayValue(acc)
-            .dividedBy(10 ** tokenPrice.decimals)
-            .toNumber(),
-          NetworkId.solana,
-          tokenPrice
-        )
-      );
-      if (mintAsset) borrowedAssets.push(mintAsset);
-    } else {
-      // BORROWER
-      if (mintAsset) suppliedAssets.push(mintAsset);
-      borrowedAssets.push(
-        tokenPriceToAssetToken(
-          tokenPrice.address,
-          calculateDebtValue(acc)
-            .dividedBy(10 ** tokenPrice.decimals)
-            .toNumber(),
-          NetworkId.solana,
-          tokenPrice
-        )
-      );
+    const isLender = account.user.toString() === owner;
+    const element = elementRegistry.addElementBorrowlend({
+      label: 'Lending',
+      name: `Active Loan`,
+    });
+    element.setFixedTerms(isLender);
+
+    let mint;
+    switch (account.lendingToken) {
+      case LendingTokenType.Usdc:
+        mint = usdcSolanaMint;
+        break;
+      case LendingTokenType.Banxsol:
+        mint = banxSolMint;
+        break;
+      case LendingTokenType.Nativesol:
+      default:
+        mint = solanaNativeAddress;
+        break;
     }
 
-    if (suppliedAssets.length > 0) {
-      const { borrowedValue, suppliedValue, rewardValue, value } =
-        getElementNFTLendingValues({
-          suppliedAssets,
-          borrowedAssets,
-          rewardAssets: [],
-          lender: acc.user === owner.toString(),
-        });
-
-      elements.push({
-        networkId: NetworkId.solana,
-        label: 'Lending',
-        platformId,
-        type: PortfolioElementType.borrowlend,
-        value,
-        name,
-        data: {
-          borrowedAssets,
-          borrowedValue,
-          borrowedYields: [],
-          suppliedAssets,
-          suppliedValue,
-          suppliedYields: [],
-          rewardAssets: [],
-          rewardValue,
-          healthRatio: null,
-          value,
+    let collateral;
+    if (splMarket) {
+      collateral = {
+        address: splMarket.collateral.mint,
+        amount: fraktBond.fbondTokenSupply,
+      };
+    } else if (nftMarket) {
+      collateral = {
+        address: fraktBond.fbondTokenMint,
+        collection: {
+          name: nftMarket.collectionName,
+          floorPrice: new BigNumber(nftMarket.collectionFloor)
+            .shiftedBy(-solanaNativeDecimals)
+            .multipliedBy(solTokenPrice.price),
+          imageUri: nftMarket.collectionImage,
         },
-      });
+        attributes: { tags: [collectibleFreezedTag] },
+      };
+    } else {
+      return;
+    }
+
+    const borrowed: PortfolioAssetTokenParams = {
+      address: mint,
+      amount: account.solAmount,
+    };
+
+    if (isLender) {
+      if (splMarket)
+        element.addBorrowedAsset(collateral as PortfolioAssetTokenParams);
+      else {
+        element.addBorrowedCollectibleAsset(
+          collateral as PortfolioAssetCollectibleParams
+        );
+      }
+      element.addSuppliedAsset(borrowed);
+    } else {
+      if (splMarket)
+        element.addSuppliedAsset(collateral as PortfolioAssetTokenParams);
+      else
+        element.addSuppliedCollectibleAsset(
+          collateral as PortfolioAssetCollectibleParams
+        );
+      element.addBorrowedAsset(borrowed);
     }
   });
 
-  return elements;
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

@@ -1,5 +1,4 @@
 import { GetProgramAccountsFilter } from '@solana/web3.js';
-import { bondTradeTransactionV3DataSize } from './constants';
 
 export const stakeFilters = (owner: string): GetProgramAccountsFilter[] => [
   {
@@ -9,28 +8,4 @@ export const stakeFilters = (owner: string): GetProgramAccountsFilter[] => [
     },
   },
   { dataSize: 160 },
-];
-
-export const loanFiltersA = (owner: string): GetProgramAccountsFilter[] => [
-  {
-    dataSize: bondTradeTransactionV3DataSize,
-  },
-  {
-    memcmp: {
-      bytes: owner,
-      offset: 41,
-    },
-  },
-];
-
-export const loanFiltersB = (owner: string): GetProgramAccountsFilter[] => [
-  {
-    dataSize: bondTradeTransactionV3DataSize,
-  },
-  {
-    memcmp: {
-      bytes: owner,
-      offset: 147,
-    },
-  },
 ];

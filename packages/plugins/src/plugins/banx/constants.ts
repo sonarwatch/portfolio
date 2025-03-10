@@ -25,15 +25,18 @@ export const banxPid = new PublicKey(
 export const banxMint = 'BANXbTpN8U2cU41FjPxe2Ti37PiT5cCxLUKDQZuJeMMR';
 export const banxDecimals = 9;
 export const banxApiUrl = 'https://api.banx.gg/staking/v2/info?walletPubkey=';
+export const banxSolMint = 'BANXyWgPpa519e2MtQF1ecRbKYKKDMXPF1dyBxUq9NQG';
 
 export const banxApiCollectionsUrl =
-  'https://api.banx.gg/bonds/preview?isPrivate=false&getAll=true';
+  'https://api.banx.gg/bonds/preview?getAll=true&marketType=banxSol&isPrivate=false';
+export const banxApiMarketsUrl =
+  'https://api.banx.gg/spl-assets/undefined?isPrivate=false&marketType=usdc';
 
-export const collectionsCacheKey = `${platformId}-collections`;
+export const nftMarketsCacheKey = `${platformId}-nft-markets`;
+export const splMarketsCacheKey = `${platformId}-spl-markets`;
 export const cachePrefix = `${platformId}`;
 
 export const bondOfferDataSize = 208;
-export const bondTradeTransactionV3DataSize = 336;
 
 export const banxIdlItem = {
   programId: banxPid.toString(),
