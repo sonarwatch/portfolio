@@ -12,7 +12,6 @@
   "engines": {
     "node": ">18"
   },
-  "private": true,
   "devDependencies": {
     "@jscutlery/semver": "3.4.1",
     "@nx/devkit": "16.8.1",
