@@ -36,6 +36,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-fraxtal-token-prices`,
   executor,
-  label: 'normal',
+  labels: ['normal'],
 };
 export default job;
