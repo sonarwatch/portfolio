@@ -1,0 +1,7 @@
+{
+  "name": "@sonarwatch/tx-parser",
+  "version": "0.0.3",
+  "type": "commonjs",
+  "types": "./src/index.d.ts",
+  "dependencies": {}
+}
