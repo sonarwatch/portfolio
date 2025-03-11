@@ -2,7 +2,7 @@ import { Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from '../../Fetcher';
 import { AirdropFetcher } from '../../AirdropFetcher';
 import { Job } from '../../Job';
-import { platform, pluginServices } from './constants';
+import { platform } from './constants';
 import poolsJob from './poolsJob';
 import farmsJob from './farmsJob';
 import reservesJob from './reservesJob';

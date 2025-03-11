@@ -1,5 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
-import { NetworkId, Platform, Service } from '@sonarwatch/portfolio-core';
+import { Platform } from '@sonarwatch/portfolio-core';
 import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'drift';
@@ -21,6 +21,10 @@ export const platform: Platform = {
 };
 export const keySpotMarkets = `spotMarkets`;
 
+export const driftProgram = new PublicKey(
+  'dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH'
+);
+
 export const preMarketPriceKey = 'premarketPrice';
 export const perpMarketsIndexesKey = 'perp-markets-indexes';
 export const oracleToMintKey = 'oracle-to-mint';
@@ -39,7 +43,3 @@ export const airdropStatics: AirdropStatics = {
   claimStart: 1715860800000,
   claimEnd: 1723831200000,
 };
-
-export const driftProgram = new PublicKey(
-  'dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH'
-);

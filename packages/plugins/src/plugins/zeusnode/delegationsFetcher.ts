@@ -3,7 +3,12 @@ import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, zeusMint, zeusNodeDelegateContract } from './constants';
+import {
+  platformId,
+  programId,
+  zeusMint,
+  zeusNodeDelegateContract,
+} from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 import { delegationStruct } from './structs';
@@ -17,7 +22,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const accounts = await ParsedGpa.build(
     client,
     delegationStruct,
-    new PublicKey(zeusNodeDelegateContract.address)
+    new PublicKey(programId)
   )
     .addFilter('accountDiscriminator', [47, 21, 138, 89, 209, 154, 59, 130])
     .addFilter('delegator', new PublicKey(owner))

@@ -1,4 +1,4 @@
-import { Contract, Platform } from '@sonarwatch/portfolio-core';
+import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'zeusnode';
 export const platform: Platform = {
@@ -9,9 +9,6 @@ export const platform: Platform = {
   website: 'https://app.zeusguardian.io/',
 };
 
-export const zeusNodeDelegateContract: Contract = {
-  name: `${platform.name} Delegate`,
-  address: 'ZPLt7XEyRvRxEZcGFGnRKGLBymFjQbwmgTZhMAMfGAU',
-};
+export const programId = 'ZPLt7XEyRvRxEZcGFGnRKGLBymFjQbwmgTZhMAMfGAU';
 
 export const zeusMint = 'ZEUS1aR7aX8DFFJf5QjWj2ftDDdNTroMNGo8YoQm3Gq';
