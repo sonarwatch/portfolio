@@ -173,6 +173,7 @@ npx nx run plugins:run-airdrop-fetcher drift-airdrop-1 DemoSX9F2zXfQLtBr56Yr5he1
 ```bash
 npx nx run core:build
 npx nx run plugins:build
+npx nx run tx-parser:build
 ```
 
 ## Deploy
@@ -180,9 +181,11 @@ npx nx run plugins:build
 ```bash
 npx nx run core:version --releaseAs=patch
 npx nx run plugins:version --releaseAs=patch
+npx nx run tx-parser:version --releaseAs=patch
 
 npx nx run core:version --releaseAs=minor
 npx nx run plugins:version --releaseAs=minor
+npx nx run tx-parser:version --releaseAs=minor
 
 npm run nx:version
 ```
