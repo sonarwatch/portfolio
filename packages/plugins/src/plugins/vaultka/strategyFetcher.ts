@@ -43,8 +43,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     prefix: platformId,
     networkId: NetworkId.solana,
   });
-
-  if (!strategiesInfo) return [];
+  if (!strategiesInfo) throw new Error('Strategies not cached');
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 

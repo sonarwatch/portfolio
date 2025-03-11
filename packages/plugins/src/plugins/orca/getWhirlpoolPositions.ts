@@ -75,6 +75,8 @@ export function getOrcaNftFetcher(
         }
       ),
     ]);
+    if (!allWhirlpoolsInfo)
+      throw new Error('Whirlpool info not found in cache.');
 
     const whirlpoolMap: Map<string, ParsedAccount<Whirlpool>> = new Map();
     allWhirlpoolsInfo.forEach((wInfo) => {

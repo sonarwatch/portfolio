@@ -38,6 +38,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (accounts.length === 0) return [];
 
   const houses = await housesMemo.getItem(cache);
+  if (!houses) throw new Error('Houses not cached');
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
   const element = elementRegistry.addElementMultiple({

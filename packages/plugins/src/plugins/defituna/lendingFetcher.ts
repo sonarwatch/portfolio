@@ -38,6 +38,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const pools = await poolsMemo.getItem(cache);
 
+  if (!pools) throw new Error('Pools not cached');
+
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
   const element = elementRegistry.addElementBorrowlend({
     label: 'Lending',

@@ -29,7 +29,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     client.getSlot(),
   ]);
 
-  if (ticketsAccounts.length === 0 || !vaultsInfo) return [];
+  if (ticketsAccounts.length === 0) return [];
+  if (!vaultsInfo) throw new Error('Vaults not cached');
 
   const registry = new ElementRegistry(NetworkId.solana, platformId);
 

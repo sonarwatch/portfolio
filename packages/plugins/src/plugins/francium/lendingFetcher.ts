@@ -35,7 +35,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     networkId: NetworkId.solana,
   });
 
-  if (!lendingPoolInfos) return [];
+  if (!lendingPoolInfos) throw new Error('Lending pools not cached');
 
   const assets = lendingPoolInfos
     .map((info) => {

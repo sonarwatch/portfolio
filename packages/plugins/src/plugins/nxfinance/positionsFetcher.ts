@@ -48,6 +48,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     solayerPoolsMemo.getItem(cache),
   ]);
   if (!lendingPools) throw new Error('Lending pools missing in cache.');
+  if (!solayerPools) throw new Error('Solayer pools missing in cache.');
 
   const [
     lendingAccounts,
