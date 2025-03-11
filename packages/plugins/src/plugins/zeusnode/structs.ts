@@ -44,7 +44,7 @@ export const delegationStruct = new BeetStruct<Delegation>(
     ['lockDays', u16],
     ['amount', u64],
     ['claimableAmount', u64],
-    ['claimedReward', i64],
+    ['claimedReward', u64],
     ['baseRewardRate', u32],
     ['derivedRewardRate', u32],
     ['previousAccumulatedAmount', u64],
