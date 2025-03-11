@@ -3,12 +3,7 @@ import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import {
-  platformId,
-  programId,
-  zeusMint,
-  zeusNodeDelegateContract,
-} from './constants';
+import { platformId, programId, zeusMint } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 import { delegationStruct } from './structs';

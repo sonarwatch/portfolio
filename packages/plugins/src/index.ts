@@ -1,4 +1,4 @@
-import { Platform, Service } from '@sonarwatch/portfolio-core';
+import { Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from './Fetcher';
 import { AirdropFetcher } from './AirdropFetcher';
 import { Job } from './Job';
