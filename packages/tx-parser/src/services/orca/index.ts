@@ -5,14 +5,17 @@ const platformId = 'orca';
 const poolsContract: Contract = {
   name: `Orca Pools`,
   address: '9W959DqEETiGZocYWCQPaJ6sBmUzgfxXfqGeTEdp3aQP',
+  platformId,
 };
 const aquaFarmsContract: Contract = {
   name: `Orca Aqua Farms`,
   address: '82yxjeMsvaURa4MbZZ7WZZHfobirZYkH1zF8fmeGtyaQ',
+  platformId,
 };
 const whirlpoolContract: Contract = {
   name: `Orca Whirlpool`,
   address: 'whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc',
+  platformId,
 };
 
 export const services: Service[] = [

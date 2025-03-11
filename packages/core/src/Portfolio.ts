@@ -175,7 +175,7 @@ export type ProxyInfo = {
 export type Contract = {
   name: string;
   address: string;
-  platformId?: string;
+  platformId: string;
 };
 
 /**
