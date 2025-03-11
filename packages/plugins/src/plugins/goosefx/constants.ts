@@ -8,8 +8,12 @@ export const platform: Platform = {
   image:
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/goosefx.webp',
   defiLlamaId: 'goosefx', // from https://defillama.com/docs/api
-  website: 'https://app.goosefx.io/farm',
-  // twitter: 'https://twitter.com/myplatform',
+  website: 'https://app.goosefx.io/',
+  twitter: 'https://x.com/GooseFX1',
+  discord: 'https://discord.com/invite/cDEPXpY26q',
+  telegram: 'https://www.t.me/goosefx',
+  description:
+    'The best place to earn and farm yield on your assets with our AMMs. Simple, fast, and efficient.  ',
 };
 
 export const programId = new PublicKey(

@@ -11,6 +11,12 @@ export const platform: Platform = {
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/divvy.webp',
   defiLlamaId: 'divvy.bet',
   website: 'https://app.divvy.bet/',
+  discord: 'https://discord.com/invite/divvybet',
+  documentation:
+    'https://divvy.bet/wp-content/uploads/2022/12/Divvy_Knowledge_Hub_06.pdf',
+  twitter: 'https://twitter.com/DivvyBet',
+  description:
+    'Frictionless betting experience powered by Solana with no signups or deposits',
 };
 
 export const divvyProgram = new PublicKey(

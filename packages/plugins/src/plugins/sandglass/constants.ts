@@ -11,6 +11,9 @@ export const platform: Platform = {
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
   website: 'https://sandglass.so/',
   twitter: 'https://twitter.com/sandglass_so',
+  discord: 'https://discord.gg/jSNe84QZ67',
+  medium:
+    'https://medium.com/@lifinity.io/introducing-sandglass-a-yield-trading-protocol-on-solana-9b5ee5b33aff',
 };
 
 export const programId = new PublicKey(

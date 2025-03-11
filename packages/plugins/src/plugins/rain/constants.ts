@@ -12,6 +12,12 @@ export const platform: Platform = {
   defiLlamaId: 'rain.fi', // from https://defillama.com/docs/api
   website: 'https://rain.fi/',
   twitter: 'https://twitter.com/RainFi_',
+  discord: 'discord.gg/rainfi',
+  medium: 'https://medium.com/@rainfi_',
+  documentation: 'https://docs.rain.fi/',
+  github: 'https://github.com/rain-foundation',
+  description:
+    'RainFi is a peer-to-peer (P2P) lending protocol built on the Solana blockchain, offering innovative ways for users to access and utilize financial resources.',
 };
 
 export const nftLendingProgramId = new PublicKey(

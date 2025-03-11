@@ -11,6 +11,12 @@ export const platform: Platform = {
   website: 'https://debridge.finance/',
   twitter: 'https://x.com/deBridgeFinance',
   defiLlamaId: 'debridge', // from https://defillama.com/docs/api
+  github: 'https://github.com/debridge-finance/',
+  discord: 'https://discord.gg/debridge',
+  description:
+    'Cross-chain interoperability and liquidity transfer protocol that allows the decentralized transfer of arbitrary data and assets between various blockchains.',
+  documentation: 'https://docs.debridge.finance/',
+  telegram: 'https://t.me/deBridge_finance',
 };
 
 export const commonStatics = {

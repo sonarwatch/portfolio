@@ -10,6 +10,12 @@ export const platform: Platform = {
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/marginfi.webp',
   defiLlamaId: 'parent#marginfi',
   website: 'https://www.marginfi.com/',
+  github: 'https://github.com/mrgnlabs/',
+  documentation: 'https://docs.marginfi.com/',
+  twitter: 'https://twitter.com/marginfi',
+  telegram: 'https://t.me/mrgnteam',
+  description:
+    'A liquidity layer built for finance. Access native yield, embedded risk systems, and off-chain data plug-ins.',
 };
 export const MarginfiProgram = new PublicKey(
   'MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA'

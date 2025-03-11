@@ -12,6 +12,11 @@ export const platform: Platform = {
   website: 'https://core.allbridge.io/pools',
   twitter: 'https://twitter.com/Allbridge_io',
   defiLlamaId: 'allbridge-core', // from https://defillama.com/docs/api
+  discord: 'https://discord.com/invite/ASuPY8d3E6',
+  description:
+    'Allbridge is a cross-chain bridge that enables seamless asset transfers between different blockchains.',
+  documentation: 'https://docs-core.allbridge.io/',
+  github: 'https://github.com/allbridge-io',
 };
 
 export const apiPoolInfoUrl = `https://core.api.allbridgecoreapi.net/token-info`;

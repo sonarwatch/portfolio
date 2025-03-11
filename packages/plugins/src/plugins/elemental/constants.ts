@@ -11,6 +11,11 @@ export const platform: Platform = {
   website: 'https://elemental.fund/',
   twitter: 'https://twitter.com/elementaldefi',
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
+  documentation: 'https://docs.elemental.fund/',
+  telegram: 'https://tg.elemental.fund',
+  description:
+    'Solana-based crypto fund dedicated to making DeFi investing simple',
+  github: 'https://github.com/elementalfund',
 };
 export const poolsCacheKey = `pools`;
 

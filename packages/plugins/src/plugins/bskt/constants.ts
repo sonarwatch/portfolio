@@ -10,6 +10,11 @@ export const platform: Platform = {
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
   website: 'https://claim.bskt.fi/',
   twitter: 'https://twitter.com/bsktfi',
+  discord: 'https://discord.gg/VdSdWqpqQ6',
+  telegram: 't.me/BSKT_FI',
+  description:
+    'Baskets of assets in a portfolio, bridging liquidity cross-chain.',
+  documentation: 'https://www.bskt.fi/bskt-whitepaper.pdf',
 };
 
 export const bsktPid = new PublicKey(

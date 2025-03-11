@@ -10,6 +10,12 @@ export const platform: Platform = {
   defiLlamaId: 'lulo',
   website: 'https://www.lulo.fi',
   twitter: 'https://twitter.com/uselulo',
+  github: 'https://github.com/lulo-labs',
+  documentation: 'https://docs.lulo.fi/',
+  discord: 'https://discord.com/invite/lulo',
+  telegram: 'https://t.me/uselulo',
+  description:
+    'Lulo is a decentralized lending aggregator, which automatically optimizes users deposits by migrating their deposits to the lending pool with the best yield, while allowing for personalized risk settings',
 };
 
 export const luloProgramId = new PublicKey(

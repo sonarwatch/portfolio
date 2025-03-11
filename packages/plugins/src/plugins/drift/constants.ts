@@ -12,6 +12,12 @@ export const platform: Platform = {
   image: platformImage,
   defiLlamaId: 'parent#drift',
   website: platformWebsite,
+  description:
+    'Drift brings on-chain, cross-margined perpetual futures to Solana. Making futures DEXs the best way to trade.',
+  discord: 'https://discord.com/invite/fMcZBH8ErM',
+  twitter: 'https://twitter.com/DriftProtocol',
+  documentation: 'https://docs.drift.trade/',
+  github: 'https://github.com/drift-labs',
 };
 export const keySpotMarkets = `spotMarkets`;
 

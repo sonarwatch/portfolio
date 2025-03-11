@@ -8,8 +8,12 @@ export const platform: Platform = {
   name: 'MagicEden',
   image:
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/magiceden.webp',
-  website: 'https://magiceden.io/',
+  website: 'https://magiceden.io/solana',
   twitter: 'https://twitter.com/MagicEden',
+  discord: 'https://discord.gg/magiceden',
+  documentation: 'https://community.magiceden.io/learn',
+  github: 'https://github.com/magiceden',
+  description: 'The NFT Marketplace.',
 };
 
 export const m2Prefix = 'm2';

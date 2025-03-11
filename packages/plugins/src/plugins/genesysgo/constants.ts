@@ -10,6 +10,11 @@ export const platform: Platform = {
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
   website: 'https://testnet.shdwdrive.com/',
   twitter: 'https://twitter.com/genesysgo',
+  github: 'https://github.com/GenesysGo',
+  documentation: 'https://docs.shdwdrive.com/',
+  discord: 'https://discord.com/invite/shdwdrive',
+  description:
+    'The first & only decentralized data storage network powered exclusively by mobile devices. Scalable, secure, trustless.',
 };
 
 // https://github.com/chainsona/genesysgo-dagger-dashboard/blob/main/src/app/utils/shdw_reward_staking_pool.idl.json

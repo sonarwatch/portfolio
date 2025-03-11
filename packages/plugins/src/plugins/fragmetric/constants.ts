@@ -9,6 +9,12 @@ export const platform: Platform = {
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/fragmetric.webp',
   website: 'https://fragmetric.xyz/',
   twitter: 'https://x.com/fragmetric',
+  defiLlamaId: 'fragmetric',
+  description:
+    'Fragmetric is a native liquid restaking protocol on Solana that aims to improve the economic potential and security of the Solana ecosystem.',
+  discord: 'https://discord.gg/fragmetric',
+  documentation: 'https://docs.fragmetric.xyz/',
+  github: 'https://github.com/fragmetric-labs',
 };
 
 export const fragmetricPid = new PublicKey(

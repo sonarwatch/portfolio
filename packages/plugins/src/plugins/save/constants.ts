@@ -11,6 +11,12 @@ export const platform: Platform = {
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/save.webp',
   defiLlamaId: 'save',
   website: 'https://save.finance/',
+  discord: 'https://discord.com/invite/J7m48UUPkJ',
+  description:
+    'Solend is an algorithmic, decentralized protocol for lending and borrowing on Solana. ',
+  twitter: 'https://x.com/save_finance',
+  documentation: 'https://docs.save.finance/',
+  github: 'https://github.com/solendprotocol',
 };
 
 export const platformDumpy: Platform = {

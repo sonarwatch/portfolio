@@ -16,6 +16,11 @@ export const platform: Platform = {
   image: `https://sonar.watch/img/platforms/${platformId}.webp`,
   website: 'https://kamino.finance/',
   defiLlamaId: 'parent#kamino-finance',
+  description: 'Borrow, Earn and Leverage on Solana',
+  discord: 'https://discord.com/invite/kaminofinance',
+  twitter: 'https://x.com/KaminoFinance',
+  documentation: 'https://docs.kamino.finance/',
+  github: 'https://github.com/Kamino-Finance',
 };
 
 export const kmnoMint = 'KMNo3nJsBXfcpJTVhZcXLW7RmTwTt4GVFE7suUBo9sS';

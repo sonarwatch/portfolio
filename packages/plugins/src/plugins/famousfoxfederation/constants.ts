@@ -14,6 +14,7 @@ export const platform: Platform = {
   website: 'https://famousfoxes.com',
   twitter: 'https://twitter.com/famousfoxfed',
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
+  discord: 'https://discord.com/invite/famousfoxes',
 };
 
 export const tokenMarketProgram = new PublicKey(

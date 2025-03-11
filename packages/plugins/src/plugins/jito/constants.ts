@@ -11,6 +11,11 @@ export const platform: Platform = {
   defiLlamaId: 'jito',
   website: 'https://jito.network/harvest',
   twitter: 'https://twitter.com/jito_sol',
+  documentation: 'https://www.jito.network/docs/jitosol/overview/',
+  github: 'https://github.com/jito-foundation',
+  description: "Earn MEV rewards through Jito's Solana Liquid Staking pool.",
+  medium: 'https://medium.com/@Jito-Foundation',
+  discord: 'https://discord.gg/jito',
 };
 
 export const renzoPlatformId = 'renzo';
@@ -21,6 +26,13 @@ export const renzoPlatform: Platform = {
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/renzo.webp',
   website: 'https://app.renzoprotocol.com/discover',
   twitter: 'https://x.com/RenzoProtocol',
+  github: 'https://github.com/Renzo-Protocol',
+  discord: 'https://discord.gg/renzoprotocol',
+  telegram: 'https://t.me/RenzoProtocolChat',
+  documentation: 'https://docs.renzoprotocol.com/docs/',
+  defiLlamaId: 'renzo',
+  description:
+    'Renzo is a restaking protocol that abstracts and manages AVS strategies for Liquid Restaking Tokens (LRTs), making Ethereum and Solana restaking ezpz and accessible to everyone.',
 };
 
 export const kyrosPlatformId = 'kyros';

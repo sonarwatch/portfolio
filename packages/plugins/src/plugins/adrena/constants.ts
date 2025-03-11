@@ -10,6 +10,11 @@ export const platform: Platform = {
   website: 'https://app.adrena.xyz/',
   twitter: 'https://x.com/AdrenaProtocol',
   defiLlamaId: 'adrena-protocol', // from https://defillama.com/docs/api
+  discord: 'https://discord.gg/adrena',
+  description:
+    'Adrena is a decentralized protocol for borrowing and lending on Solana.',
+  documentation: 'https://docs.adrena.xyz/',
+  github: 'https://github.com/orgs/AdrenaFoundation',
 };
 
 export const custodiesCacheKey = `custodies`;

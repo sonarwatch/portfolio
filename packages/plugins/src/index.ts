@@ -160,6 +160,7 @@ import * as triad from './plugins/triad';
 import * as baskt from './plugins/baskt';
 import * as guano from './plugins/guano';
 import * as coingecko from './plugins/coingecko';
+import * as zeusnode from './plugins/zeusnode';
 
 export {
   walletTokensPlatform,
@@ -334,6 +335,7 @@ const modules = [
   guano,
   coingecko,
   orphanPlatforms,
+  zeusnode,
 ];
 
 // PLATFORMS //

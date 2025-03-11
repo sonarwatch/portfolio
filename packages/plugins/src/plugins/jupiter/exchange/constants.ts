@@ -16,6 +16,11 @@ export const platform: Platform = {
   defiLlamaId: 'parent#jupiter',
   website: 'https://jup.ag/',
   twitter: 'https://twitter.com/JupiterExchange',
+  discord: 'https://discord.gg/jup',
+  documentation: 'https://station.jup.ag/',
+  github: 'https://github.com/jup-ag',
+  description:
+    'The best decentralized liquidity platform, largest DAO & best community in crypto.',
 };
 
 export const jupiterSwapContract: Contract = {

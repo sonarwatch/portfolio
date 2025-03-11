@@ -14,7 +14,8 @@ export const platform: Platform = {
   name: platformName,
   image: platformImage,
   website: platformWebsite,
-  twitter: 'https://twitter.com/JupiterExchange',
+  twitter: 'https://x.com/jup_dao',
+  description: 'The first voting platform for Cats in history.',
 };
 
 export const asr1Statics: AirdropStatics = {

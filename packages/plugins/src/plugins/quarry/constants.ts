@@ -15,6 +15,8 @@ export const platform: Platform = {
   website: 'https://app.quarry.so/',
   // twitter: 'https://x.com/QuarryProtocol',
   defiLlamaId: 'quarry', // from https://defillama.com/docs/api
+  github: 'https://github.com/QuarryProtocol',
+  isDeprecated: true,
 };
 
 export const IOUTokensElementName = 'IOU Tokens';
