@@ -1,13 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
-import {
-  Contract,
-  NetworkId,
-  Platform,
-  Service,
-} from '@sonarwatch/portfolio-core';
+import { Platform } from '@sonarwatch/portfolio-core';
 import { LendingMarketConfig } from './types';
 import { AirdropStatics } from '../../AirdropFetcher';
-import { jupiterSwapContract } from '../jupiter/exchange/constants';
 
 export const platformId = 'kamino';
 export const platform: Platform = {
@@ -32,19 +26,12 @@ export const programId = new PublicKey(
 export const allocationApiUrl =
   'https://api.hubbleprotocol.io/v2/airdrop/users/';
 
-const kaminoLendContract: Contract = {
-  name: 'Kamino Lend',
-  address: 'KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD',
-  platformId,
-};
-const kaminoFarmContract = {
-  name: 'Kamino Farm',
-  address: 'FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr',
-  platformId,
-};
-
-export const klendProgramId = new PublicKey(kaminoLendContract.address);
-export const farmProgramId = new PublicKey(kaminoFarmContract.address);
+export const klendProgramId = new PublicKey(
+  'KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD'
+);
+export const farmProgramId = new PublicKey(
+  'FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr'
+);
 export const farmsKey = 'farms';
 export const elevationGroupsKey = 'elevatorGroups';
 export const mainMarket = '7u3HeHxYDLhnCoErrtycNokbQYbWGzLs6JSDqGAv5PfF';
@@ -192,31 +179,3 @@ export const airdropStaticsS2: AirdropStatics = {
 export const limitOrderProgramId = new PublicKey(
   'LiMoM9rMhrdYrfzUCxQppvxCSG1FcrUK9G8uLq4A1GF'
 );
-
-const kaminoLendingService: Service = {
-  id: `${platformId}-lend`,
-  name: 'Lending',
-  platformId,
-  networkId: NetworkId.solana,
-  contracts: [kaminoLendContract],
-};
-const kaminoFarmService = {
-  id: `${platformId}-farm`,
-  name: 'Farm',
-  platformId,
-  networkId: NetworkId.solana,
-  contracts: [kaminoFarmContract],
-};
-const kaminoMultiplyService: Service = {
-  id: `${platformId}-multiply`,
-  name: 'Multiply',
-  platformId,
-  networkId: NetworkId.solana,
-  contracts: [kaminoLendContract, jupiterSwapContract],
-};
-
-export const pluginServices: Service[] = [
-  kaminoLendingService,
-  kaminoFarmService,
-  kaminoMultiplyService,
-];

@@ -1,13 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
-import {
-  Contract,
-  NetworkId,
-  Platform,
-  Service,
-} from '@sonarwatch/portfolio-core';
+import { Platform } from '@sonarwatch/portfolio-core';
 import { platformId as nxFinancePlatformId } from '../nxfinance/constants';
 import { VectisInsuranceIDL } from './vectis_insurance_drift_vaults';
-import { platformId } from '../drift/constants';
 
 export const circuitPlatformId = 'circuit';
 export const circuitPlatform: Platform = {
@@ -127,43 +121,18 @@ export const luckyperpPlatform: Platform = {
   twitter: 'https://x.com/LuckyPerp_com',
 };
 
-const driftVaultsContract: Contract = {
-  name: 'Drift Vaults',
-  address: 'vAuLTsyrvSfZRuRB3XgvkPwNGgYSs9YRYymVebLKoxR',
-};
-const neutral1VaultsContract: Contract = {
-  name: 'Neutral Vaults',
-  address: '9Fcn3Fd4d5ocrb12xCUtEvezxcjFEAyHBPfrZDiPt9Qj',
-};
-const neutral2VaultsContract: Contract = {
-  name: 'Neutral Vaults',
-  address: '9Fcn3Fd4d5ocrb12xCUtEvezxcjFEAyHBPfrZDiPt9Qj',
-};
-const neutral3VaultsContract: Contract = {
-  name: 'Neutral Vaults',
-  address: '9Fcn3Fd4d5ocrb12xCUtEvezxcjFEAyHBPfrZDiPt9Qj',
-};
-const nxfinanceVaultsContract: Contract = {
-  name: 'NX Finance Vaults',
-  address: 'HYHnL9BB3tqSPxkVbdcAn9CAa4hyqNYUh1FwDc4he7aD',
-};
-const vectisVaultsContract: Contract = {
-  name: 'Vectis Vaults',
-  address: 'EDnxACbdY1GeXnadh5gRuCJnivP7oQSAHGGAHCma4VzG',
-};
-
 export const vaultsProgramIds = [
-  new PublicKey(driftVaultsContract.address),
-  new PublicKey(neutral1VaultsContract.address),
-  new PublicKey(neutral2VaultsContract.address),
-  new PublicKey(neutral3VaultsContract.address),
-  new PublicKey(nxfinanceVaultsContract.address),
-  new PublicKey(vectisVaultsContract.address),
+  new PublicKey('vAuLTsyrvSfZRuRB3XgvkPwNGgYSs9YRYymVebLKoxR'),
+  new PublicKey('9Fcn3Fd4d5ocrb12xCUtEvezxcjFEAyHBPfrZDiPt9Qj'),
+  new PublicKey('EuSLjg23BrtwYAk1t4TFe5ArYSXCVXLBqrHRBfWQiTeJ'),
+  new PublicKey('BVddkVtFJLCihbVrtLo8e3iEd9NftuLunaznAxFFW8vf'),
+  new PublicKey('HYHnL9BB3tqSPxkVbdcAn9CAa4hyqNYUh1FwDc4he7aD'),
+  new PublicKey('EDnxACbdY1GeXnadh5gRuCJnivP7oQSAHGGAHCma4VzG'),
 ];
 
 // when we need to pass a specific IDL for a vault
 export const vaultIdls = {
-  [vectisVaultsContract.address]: VectisInsuranceIDL,
+  EDnxACbdY1GeXnadh5gRuCJnivP7oQSAHGGAHCma4VzG: VectisInsuranceIDL,
 };
 
 export const prefixVaults = 'circuitVaults';
@@ -184,48 +153,3 @@ export const platformIdByVaultManager: Map<string, string> = new Map([
   ['7n1eiWbLWRC3a7cggUcnM9gnudtwVJc8Xrs41ELGwGbE', luckyperpPlatformId],
   ['8KX7LUPnn94R2nXguftRJwyiDHFob4AS8DrNDYx7H3o5', nxFinancePlatformId],
 ]);
-
-export const pluginServices: Service[] = [
-  {
-    id: `${platformId}-vaults`,
-    name: 'Vault',
-    platformId,
-    networkId: NetworkId.solana,
-    contracts: [driftVaultsContract],
-  },
-  {
-    id: `${neutralPlatformId}-vaults-1`,
-    name: 'Vault',
-    platformId: neutralPlatformId,
-    networkId: NetworkId.solana,
-    contracts: [neutral1VaultsContract],
-  },
-  {
-    id: `${neutralPlatformId}-vaults-2`,
-    name: 'Vault',
-    platformId: neutralPlatformId,
-    networkId: NetworkId.solana,
-    contracts: [neutral2VaultsContract],
-  },
-  {
-    id: `${neutralPlatformId}-vaults-3`,
-    name: 'Vault',
-    platformId: neutralPlatformId,
-    networkId: NetworkId.solana,
-    contracts: [neutral3VaultsContract],
-  },
-  {
-    id: `${nxFinancePlatformId}-vaults`,
-    name: 'Vault',
-    platformId: nxFinancePlatformId,
-    networkId: NetworkId.solana,
-    contracts: [nxfinanceVaultsContract],
-  },
-  {
-    id: `${vectisPlatformId}-vaults`,
-    name: 'Vault',
-    platformId: vectisPlatformId,
-    networkId: NetworkId.solana,
-    contracts: [vectisVaultsContract],
-  },
-];

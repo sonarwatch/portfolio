@@ -374,13 +374,3 @@ export const airdropFetchers: AirdropFetcher[] = modules
   .flat();
 export const airdropFetchersByAddressSystem =
   getFetchersByAddressSystem(airdropFetchers);
-
-// SERVICES //
-export const services: Service[] = modules
-  .map((module): Service[] => {
-    if ('services' in module) {
-      return module.services as Service[];
-    }
-    return [];
-  })
-  .flat();

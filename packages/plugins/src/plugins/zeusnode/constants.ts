@@ -1,4 +1,4 @@
-import { Contract, NetworkId, Platform } from '@sonarwatch/portfolio-core';
+import { Contract, Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'zeusnode';
 export const platform: Platform = {
@@ -12,7 +12,6 @@ export const platform: Platform = {
 export const zeusNodeDelegateContract: Contract = {
   name: `${platform.name} Delegate`,
   address: 'ZPLt7XEyRvRxEZcGFGnRKGLBymFjQbwmgTZhMAMfGAU',
-  network: NetworkId.solana,
 };
 
 export const zeusMint = 'ZEUS1aR7aX8DFFJf5QjWj2ftDDdNTroMNGo8YoQm3Gq';

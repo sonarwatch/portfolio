@@ -11,7 +11,6 @@ import {
   moosePlatform,
   neutralPlatform,
   vectisPlatform,
-  pluginServices,
 } from './constants';
 import depositsFetcher from './depositsFetcher';
 import vaultsJob from './vaultsJob';
@@ -29,4 +28,3 @@ export const platforms: Platform[] = [
 ];
 export const jobs: Job[] = [vaultsJob];
 export const fetchers: Fetcher[] = [depositsFetcher];
-export const services = pluginServices;

@@ -1,10 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
-import {
-  Contract,
-  NetworkId,
-  Platform,
-  Service,
-} from '@sonarwatch/portfolio-core';
+import { Platform } from '@sonarwatch/portfolio-core';
 import { usdcSolanaMint } from '../../utils/solana';
 
 export const platformId = '01';
@@ -23,20 +18,9 @@ export const platform: Platform = {
     '01 Exchange is a next-gen trading experience with the speed of centralized exchanges and the integrity of decentralized finance, powered by Nord Engine.',
 };
 
-const contract: Contract = {
-  address: 'Zo1ggzTUKMY5bYnDvT5mtVeZxzf2FaLTbKkmvGUhUQk',
-  name: '01 Lending',
-};
-
-export const programId = new PublicKey(contract.address);
-
-export const pluginServices: Service = {
-  id: `${platformId}_lending`,
-  platformId,
-  name: 'Lending',
-  networkId: NetworkId.solana,
-  contracts: [contract],
-};
+export const programId = new PublicKey(
+  'Zo1ggzTUKMY5bYnDvT5mtVeZxzf2FaLTbKkmvGUhUQk'
+);
 
 export const mints = [
   usdcSolanaMint,

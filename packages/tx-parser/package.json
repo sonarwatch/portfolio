@@ -3,5 +3,7 @@
   "version": "0.0.3",
   "type": "commonjs",
   "types": "./src/index.d.ts",
-  "dependencies": {}
+  "dependencies": {
+    "@solana/web3.js": "^1.98.0"
+  }
 }

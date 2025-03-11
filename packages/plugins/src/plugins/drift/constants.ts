@@ -40,19 +40,6 @@ export const airdropStatics: AirdropStatics = {
   claimEnd: 1723831200000,
 };
 
-const contract = {
-  name: 'Drift',
-  address: 'dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH',
-};
-
-export const driftProgram = new PublicKey(contract.address);
-
-const service: Service = {
-  id: `${platformId}`,
-  name: 'Perps',
-  platformId,
-  networkId: NetworkId.solana,
-  contracts: [contract],
-};
-
-export const pluginServices: Service[] = [service];
+export const driftProgram = new PublicKey(
+  'dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH'
+);

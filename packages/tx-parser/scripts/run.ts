@@ -1,8 +1,6 @@
-import util from 'node:util';
 import { isAddress, NetworkIdType, networks } from '@sonarwatch/portfolio-core';
-import { getCache } from '../src';
-import sleep from '../src/utils/misc/sleep';
-import { runTransactions } from '../src/Transactions';
+import * as util from 'node:util';
+import { run } from '../src';
 
 const argNetwork = process.argv.at(2);
 if (!argNetwork || argNetwork === '') {
@@ -35,18 +33,13 @@ async function main(networkArg: string, owner: string, account?: string) {
     process.exit(1);
   }
 
-  const cache = getCache();
-
   console.log('Fetching...');
-  const transactionsResult = await runTransactions(
-    cache,
+  const transactionsResult = await run(
     networkArg as NetworkIdType,
     owner,
     account
   );
   console.log(util.inspect(transactionsResult, false, null, true));
-  await cache.dispose();
-  await sleep(100);
   process.exit(0);
 }
 

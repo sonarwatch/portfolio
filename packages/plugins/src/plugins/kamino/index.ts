@@ -24,5 +24,3 @@ export const fetchers: Fetcher[] = [
   ordersFetcher,
 ];
 export const airdropFetchers: AirdropFetcher[] = [s1AirdropFetcher];
-
-export const services = pluginServices;

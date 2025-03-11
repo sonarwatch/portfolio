@@ -6,7 +6,7 @@ import {
   solanaNativeWrappedAddress,
   Transaction,
 } from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
+import { unshift } from '../unshift';
 
 const findTransactionService = (
   txn: ParsedTransactionWithMeta,
@@ -48,16 +48,12 @@ export const parseTransaction = (
     if (postBalances[ownerIndex] !== preBalances[ownerIndex]) {
       changes.push({
         address: solanaNativeWrappedAddress,
-        preBalance: new BigNumber(preBalances[ownerIndex])
-          .shiftedBy(-solanaNativeDecimals)
-          .toNumber(),
-        postBalance: new BigNumber(postBalances[ownerIndex])
-          .shiftedBy(-solanaNativeDecimals)
-          .toNumber(),
-        change: new BigNumber(postBalances[ownerIndex])
-          .minus(preBalances[ownerIndex])
-          .shiftedBy(-solanaNativeDecimals)
-          .toNumber(),
+        preBalance: unshift(preBalances[ownerIndex], solanaNativeDecimals),
+        postBalance: unshift(postBalances[ownerIndex], solanaNativeDecimals),
+        change: unshift(
+          Number(postBalances[ownerIndex]) - Number(preBalances[ownerIndex]),
+          solanaNativeDecimals
+        ),
       });
     }
 
@@ -66,21 +62,23 @@ export const parseTransaction = (
       const postTokenBalance = postTokenBalances.find((b) => b.owner === owner);
       if (preTokenBalance && postTokenBalance) {
         const preBalanceAmount = preTokenBalance
-          ? new BigNumber(preTokenBalance.uiTokenAmount.amount).shiftedBy(
-              -preTokenBalance.uiTokenAmount.decimals
+          ? unshift(
+              preTokenBalance.uiTokenAmount.amount,
+              preTokenBalance.uiTokenAmount.decimals
             )
-          : new BigNumber(0);
+          : 0;
         const postBalanceAmount = postTokenBalance
-          ? new BigNumber(postTokenBalance.uiTokenAmount.amount).shiftedBy(
-              -postTokenBalance.uiTokenAmount.decimals
+          ? unshift(
+              postTokenBalance.uiTokenAmount.amount,
+              postTokenBalance.uiTokenAmount.decimals
             )
-          : new BigNumber(0);
-        if (!postBalanceAmount.isEqualTo(preBalanceAmount)) {
+          : 0;
+        if (postBalanceAmount !== preBalanceAmount) {
           changes.push({
             address: postTokenBalance.mint,
-            preBalance: preBalanceAmount.toNumber(),
-            postBalance: postBalanceAmount.toNumber(),
-            change: postBalanceAmount.minus(preBalanceAmount).toNumber(),
+            preBalance: preBalanceAmount,
+            postBalance: postBalanceAmount,
+            change: postBalanceAmount - preBalanceAmount,
           });
         }
       }
