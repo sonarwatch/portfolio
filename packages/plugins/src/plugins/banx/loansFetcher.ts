@@ -12,17 +12,13 @@ import { getClientSolana } from '../../utils/clients';
 import {
   banxPid,
   banxSolMint,
-  cachePrefix,
-  splMarketsCacheKey,
+  nftMarketsMemo,
   platformId,
-  nftMarketsCacheKey,
+  splMarketsMemo,
 } from './constants';
-import { Collection, SplAssetMarket } from './types';
-import { MemoizedCache } from '../../utils/misc/MemoizedCache';
-import { arrayToMap } from '../../utils/misc/arrayToMap';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 import {
-  Bondofferv3Struct,
+  bondOfferv3Struct,
   BondtradeTransactionv2State,
   Bondtradetransactionv3Struct,
   FraktbondStruct,
@@ -38,26 +34,6 @@ import {
   PortfolioAssetCollectibleParams,
   PortfolioAssetTokenParams,
 } from '../../utils/elementbuilder/Params';
-
-const splMarketsMemo = new MemoizedCache<
-  SplAssetMarket[],
-  Map<string, SplAssetMarket>
->(
-  splMarketsCacheKey,
-  {
-    prefix: cachePrefix,
-    networkId: NetworkId.solana,
-  },
-  (arr) => arrayToMap(arr || [], 'marketPubkey')
-);
-const nftMarketsMemo = new MemoizedCache<Collection[], Map<string, Collection>>(
-  nftMarketsCacheKey,
-  {
-    prefix: cachePrefix,
-    networkId: NetworkId.solana,
-  },
-  (arr) => arrayToMap(arr || [], 'marketPubkey')
-);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
@@ -111,7 +87,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       ),
       getParsedMultipleAccountsInfo(
         connection,
-        Bondofferv3Struct,
+        bondOfferv3Struct,
         accounts.map((a) => a.bondOffer)
       ),
     ]);

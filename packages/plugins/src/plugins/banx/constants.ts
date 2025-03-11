@@ -1,7 +1,8 @@
 import { PublicKey } from '@solana/web3.js';
-import { Platform } from '@sonarwatch/portfolio-core';
-import { IdlItem } from '@solanafm/explorer-kit-idls';
-import { BanxIDL } from './idl';
+import { NetworkId, Platform } from '@sonarwatch/portfolio-core';
+import { MemoizedCache } from '../../utils/misc/MemoizedCache';
+import { Collection, SplAssetMarket } from './types';
+import { arrayToMap } from '../../utils/misc/arrayToMap';
 
 export const platformId = 'banx';
 export const platform: Platform = {
@@ -24,7 +25,6 @@ export const banxPid = new PublicKey(
 );
 export const banxMint = 'BANXbTpN8U2cU41FjPxe2Ti37PiT5cCxLUKDQZuJeMMR';
 export const banxDecimals = 9;
-export const banxApiUrl = 'https://api.banx.gg/staking/v2/info?walletPubkey=';
 export const banxSolMint = 'BANXyWgPpa519e2MtQF1ecRbKYKKDMXPF1dyBxUq9NQG';
 
 export const banxApiCollectionsUrl =
@@ -36,10 +36,25 @@ export const nftMarketsCacheKey = `${platformId}-nft-markets`;
 export const splMarketsCacheKey = `${platformId}-spl-markets`;
 export const cachePrefix = `${platformId}`;
 
-export const bondOfferDataSize = 208;
-
-export const banxIdlItem = {
-  programId: banxPid.toString(),
-  idl: BanxIDL,
-  idlType: 'anchor',
-} as IdlItem;
+export const splMarketsMemo = new MemoizedCache<
+  SplAssetMarket[],
+  Map<string, SplAssetMarket>
+>(
+  splMarketsCacheKey,
+  {
+    prefix: cachePrefix,
+    networkId: NetworkId.solana,
+  },
+  (arr) => arrayToMap(arr || [], 'marketPubkey')
+);
+export const nftMarketsMemo = new MemoizedCache<
+  Collection[],
+  Map<string, Collection>
+>(
+  nftMarketsCacheKey,
+  {
+    prefix: cachePrefix,
+    networkId: NetworkId.solana,
+  },
+  (arr) => arrayToMap(arr || [], 'marketPubkey')
+);

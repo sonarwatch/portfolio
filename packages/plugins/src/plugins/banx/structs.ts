@@ -8,7 +8,7 @@ import {
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { blob, i64, u64 } from '../../utils/solana';
+import { i64, u64 } from '../../utils/solana';
 
 export enum BanxTokenStakeState {
   None,
@@ -17,7 +17,7 @@ export enum BanxTokenStakeState {
 }
 
 export type BanxTokenStake = {
-  buffer: Buffer;
+  accountDiscriminator: number[];
   banxStakeState: BanxTokenStakeState;
   user: PublicKey;
   adventureSubscriptionsQuantity: BigNumber;
@@ -135,7 +135,7 @@ export type BondOfferValidation = {
 
 export const banxTokenStakeStruct = new BeetStruct<BanxTokenStake>(
   [
-    ['buffer', blob(8)],
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
     ['banxStakeState', u8],
     ['user', publicKey],
     ['adventureSubscriptionsQuantity', u64],
@@ -235,7 +235,7 @@ export const Bondtradetransactionv3Struct =
     (args) => args as BondTradeTransactionv3
   );
 
-export type Bondofferv3 = {
+export type BondOfferv3 = {
   accountDiscriminator: number[];
   hadoMarket: PublicKey;
   pairState: PairState;
@@ -262,12 +262,21 @@ export type Bondofferv3 = {
   placeholder7: PublicKey;
 };
 
-export const Bondofferv3Struct = new BeetStruct<Bondofferv3>(
+export const bondOfferBondingCurveStruct =
+  new BeetStruct<BondOfferBondingCurve>(
+    [
+      ['delta', u64],
+      ['bondingType', u8],
+    ],
+    (args) => args as BondOfferBondingCurve
+  );
+
+export const bondOfferv3Struct = new BeetStruct<BondOfferv3>(
   [
     ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
     ['hadoMarket', publicKey],
     ['pairState', u8],
-    ['bondingCurve', u8],
+    ['bondingCurve', bondOfferBondingCurveStruct],
     ['baseSpotPrice', u64],
     ['mathCounter', i64],
     ['currentSpotPrice', u64],
@@ -289,7 +298,7 @@ export const Bondofferv3Struct = new BeetStruct<Bondofferv3>(
     ['loanApr', u64],
     ['placeholder7', publicKey],
   ],
-  (args) => args as Bondofferv3
+  (args) => args as BondOfferv3
 );
 
 export enum Fraktbondstate {
