@@ -57,7 +57,7 @@ export const airdropConfigs: AirdropConfig[] = [
     statics: {
       claimStart: 1712235600000,
       claimEnd: 1713445200000,
-      id: 'zeusnode-lfg',
+      id: 'zeus-lfg',
       emitterName: 'Zeus',
       emitterLink: 'https://zeusnetwork.xyz/',
       claimLink: 'https://lfg.jup.ag/zeus',

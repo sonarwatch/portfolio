@@ -16,4 +16,5 @@ export type Platform = {
   medium?: string;
   documentation?: string;
   isDeprecated?: boolean;
+  token?: string;
 };

@@ -10,6 +10,12 @@ export const platform: Platform = {
   defiLlamaId: 'whales-market', // from https://defillama.com/docs/api
   website: 'https://app.whales.market/',
   twitter: 'https://twitter.com/WhalesMarket',
+  token: 'GTH3wG3NErjwcf7VGCoXEXkgXSHvYhx5gtATeeM5JAS1',
+  discord: 'https://discord.com/invite/whalesmarket',
+  documentation: 'https://docs.whales.market/',
+  github: 'https://github.com/Whales-Market/',
+  description:
+    'Trade like a pro with advanced tools and features at your fingertips',
 };
 
 export const pid = new PublicKey('stPdYNaJNsV3ytS9Xtx4GXXXRcVqVS6x66ZFa26K39S');

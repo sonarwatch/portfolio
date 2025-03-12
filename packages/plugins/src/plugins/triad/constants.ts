@@ -9,6 +9,13 @@ export const platform: Platform = {
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/triad.webp',
   website: 'https://app.triadfi.co/',
   twitter: 'https://x.com/triadfi',
+  documentation: 'https://docs.triadfi.co/',
+  telegram: 'https://t.me/triad369',
+  github: 'https://github.com/triadxyz',
+  discord: 'http://discord.gg/triadfi',
+  description:
+    'Prediction markets on Solana. Trade politics, crypto, sports & culture.',
+  token: 't3DohmswhKk94PPbPYwA6ZKACyY3y5kbcqeQerAJjmV',
 };
 
 export const programId = new PublicKey(

@@ -9,7 +9,10 @@ export const platform: Platform = {
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/zelo.webp',
   website: 'https://www.zelofi.io/',
   twitter: 'https://x.com/zelofinance',
-  // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
+  documentation: 'https://blocksmithlabs-1.gitbook.io/zelo-docs',
+  discord: 'https://discord.gg/blocksmithlabs',
+  github: 'https://github.com/Blocksmith-Labs',
+  description: "Solana's Lossless Lottery Savings Protocol ",
 };
 
 export const programId = new PublicKey(

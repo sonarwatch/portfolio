@@ -2,6 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 import { AirdropStatics } from '../../AirdropFetcher';
 
+export const layerMint = 'LAYER4xPpTCb3QL8S9u41EAhAX7mhBn8Q6xMTwY2Yzc';
 export const platformId = 'solayer';
 export const platform: Platform = {
   id: platformId,
@@ -11,6 +12,14 @@ export const platform: Platform = {
   website: 'https://solayer.org/',
   twitter: 'https://x.com/solayer_labs',
   defiLlamaId: 'parent#solayer',
+  github: 'https://github.com/solayer-labs',
+  discord: 'https://discord.com/invite/solayerlabs',
+  telegram: 'https://t.me/solayer_discussion',
+  documentation:
+    'https://docs.solayer.org/documentation/get-started/introduction',
+  token: layerMint,
+  description:
+    'Solayer is the restaking protocol on Solana, securing both endogenous AVS (dApps) through stake-weighted quality of service and exogenous AVS via Solana-based POS primitives',
 };
 
 export const programId = new PublicKey(
@@ -22,7 +31,6 @@ export const solayersUSDCPid = new PublicKey(
 
 export const airdropApi =
   'https://airdrop-apis-101797961016.us-central1.run.app/airdrop?walletAddr=';
-export const layerMint = 'LAYER4xPpTCb3QL8S9u41EAhAX7mhBn8Q6xMTwY2Yzc';
 export const layerDecimals = 9;
 export const airdropStatics: AirdropStatics = {
   claimLink: 'https://claim.solayer.foundation/',

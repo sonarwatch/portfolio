@@ -2,6 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 import { AirdropStatics } from '../../AirdropFetcher';
 
+export const tnsrMint = 'TNSRxcUxoT9xBG3de7PiJyTDYu7kskLqcpddxnEJAS6';
 export const platformId = 'tensor';
 export const platform: Platform = {
   id: platformId,
@@ -10,13 +11,16 @@ export const platform: Platform = {
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/tensor.webp',
   twitter: 'https://twitter.com/tensor_hq',
   website: 'https://www.tensor.trade/',
+  token: tnsrMint,
+  documentation: 'https://docs.tensor.trade/',
+  discord: 'https://discord.gg/tensor',
+  github: 'https://github.com/tensor-hq',
+  description: "Solana's Leading NFT Marketplace",
 };
 
 export const tensorPid = new PublicKey(
   'TSWAPaqyCSx2KABk68Shruf4rp7CxcNi8hAsbdwmHbN'
 );
-
-export const tnsrMint = 'TNSRxcUxoT9xBG3de7PiJyTDYu7kskLqcpddxnEJAS6';
 
 export const magmaProgramId = '3zK38YBP6u3BpLUpaa6QhRHh4VXdv3J8cmD24fFpuyqy';
 

@@ -1,6 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
+export const tulipMint = 'TuLipcqtGVXP9XR62wM8WWCm6a9vhLs7T1uoWBk6FDs';
 export const platformId = 'tulip';
 export const platform: Platform = {
   id: platformId,
@@ -10,6 +11,14 @@ export const platform: Platform = {
   defiLlamaId: 'tulip-protocol',
   website: 'https://tulip.garden/',
   twitter: 'https://twitter.com/TulipProtocol',
+  isDeprecated: true,
+  documentation: 'https://tulip-protocol.gitbook.io/tulip-protocol',
+  discord: 'https://discord.gg/tulipgarden',
+  telegram: 'https://t.me/TulipProtocol',
+  medium: 'https://medium.com/tulipprotocol',
+  github: 'https://github.com/sol-farm',
+  token: tulipMint,
+  description: 'The Efficient Solana Yield Aggregator',
 };
 
 export const tulipV2ProgramId = new PublicKey(
@@ -23,6 +32,5 @@ export const leverageProgramId = new PublicKey(
   'Bt2WPMmbwHPk36i4CRucNDyLcmoGdC7xEdrVuxgJaNE6'
 );
 
-export const tulipMint = 'TuLipcqtGVXP9XR62wM8WWCm6a9vhLs7T1uoWBk6FDs';
 export const tulipDecimals = 6;
 export const vaultsKey = 'vaults';
