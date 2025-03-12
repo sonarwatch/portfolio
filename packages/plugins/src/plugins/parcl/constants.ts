@@ -6,6 +6,7 @@ export const platformId = 'parcl';
 export const platformImage = 'https://sonar.watch/img/platforms/parcl.webp';
 export const platformWebsite = 'https://app.parcl.co/';
 export const platformName = 'Parcl';
+export const prclMint = '4LLbsb5ReP3yEtYzmXewyGjcir5uXtKFURtaEUVC2AHs';
 export const platform: Platform = {
   id: platformId,
   name: platformName,
@@ -17,6 +18,7 @@ export const platform: Platform = {
   discord: 'https://discord.gg/parcl',
   documentation: 'https://docs.parcl.co/',
   github: 'https://github.com/ParclFinance',
+  tokens: [prclMint],
 };
 
 export const programId = new PublicKey(
@@ -29,7 +31,6 @@ export const stakingProgramId = new PublicKey(
 
 export const airdropApi = 'https://gnome-api-mainnet.fly.dev/user/';
 export const allocationPrefix = `${platformId}-allocation`;
-export const prclMint = '4LLbsb5ReP3yEtYzmXewyGjcir5uXtKFURtaEUVC2AHs';
 export const prclDecimals = 6;
 export const merkleApi = 'https://worker.jup.ag/jup-claim-proof';
 export const merkleTree = '5nRBuSmpA98JgrznGYEAFTvQAA7hCdFkVKS9e41N8mBQ';

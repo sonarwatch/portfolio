@@ -10,7 +10,7 @@ export const platform: Platform = {
   website: 'https://app.zeusguardian.io/',
   twitter: 'https://x.com/ZeusNetworkHQ',
   documentation: 'https://docs.zeusnetwork.xyz/',
-  token: zeusMint,
+  tokens: [zeusMint],
   github: 'https://github.com/ZeusNetworkHQ',
   discord: 'https://discord.com/invite/zeusnetwork',
   medium: 'https://medium.com/@zeus-network',

@@ -13,6 +13,7 @@ export const platform: Platform = {
   discord: 'discord.gg/metaplex',
   github: 'https://github.com/metaplex-foundation',
   documentation: 'https://www.metaplex.com/guides',
+  tokens: ['METAewgxyPbgwsseH8T16a39CQ5VyVxZi9zXiDPY18m'],
   description: 'Build decentralizedapplications on Solana and the SVM',
 };
 

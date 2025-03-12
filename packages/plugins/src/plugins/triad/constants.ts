@@ -15,7 +15,7 @@ export const platform: Platform = {
   discord: 'http://discord.gg/triadfi',
   description:
     'Prediction markets on Solana. Trade politics, crypto, sports & culture.',
-  token: 't3DohmswhKk94PPbPYwA6ZKACyY3y5kbcqeQerAJjmV',
+  tokens: ['t3DohmswhKk94PPbPYwA6ZKACyY3y5kbcqeQerAJjmV'],
 };
 
 export const programId = new PublicKey(

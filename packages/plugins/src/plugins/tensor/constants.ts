@@ -11,7 +11,7 @@ export const platform: Platform = {
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/tensor.webp',
   twitter: 'https://twitter.com/tensor_hq',
   website: 'https://www.tensor.trade/',
-  token: tnsrMint,
+  tokens: [tnsrMint],
   documentation: 'https://docs.tensor.trade/',
   discord: 'https://discord.gg/tensor',
   github: 'https://github.com/tensor-hq',

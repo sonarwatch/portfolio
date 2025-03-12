@@ -17,7 +17,7 @@ export const platform: Platform = {
   telegram: 'https://t.me/TulipProtocol',
   medium: 'https://medium.com/tulipprotocol',
   github: 'https://github.com/sol-farm',
-  token: tulipMint,
+  tokens: [tulipMint],
   description: 'The Efficient Solana Yield Aggregator',
 };
 

@@ -12,7 +12,7 @@ export const platform: Platform = {
   defiLlamaId: 'streamflow', // from https://defillama.com/docs/api
   website: 'https://app.streamflow.finance/',
   twitter: 'https://twitter.com/streamflow_fi',
-  token: streamMint,
+  tokens: [streamMint],
   documentation: 'https://docs.streamflow.finance/en/',
   discord: 'https://discord.com/invite/streamflow-851921970169511976',
   github: 'https://github.com/streamflow-finance',

@@ -16,6 +16,7 @@ export const platform: Platform = {
   website: platformWebsite,
   twitter: 'https://x.com/jup_dao',
   description: 'The first voting platform for Cats in history.',
+  tokens: [jupMint],
 };
 
 export const asr1Statics: AirdropStatics = {

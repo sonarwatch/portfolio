@@ -15,7 +15,7 @@ export const platform: Platform = {
   website: 'https://www.zeta.markets/',
   twitter: 'https://x.com/ZetaMarkets',
   documentation: 'https://docs.zeta.markets/',
-  token: zexMint,
+  tokens: [zexMint],
   telegram: 'https://t.me/realzetamarkets',
   discord: 'https://discord.gg/Xn9HCJaDZd',
   github: 'https://github.com/zetamarkets',

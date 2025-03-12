@@ -16,7 +16,7 @@ export const platform: Platform = {
   documentation: 'https://docs.stabble.org/',
   discord: 'https://discord.com/invite/SfkybtttdC',
   github: 'https://github.com/stabbleorg',
-  token: 'STBuyENwJ1GP4yNZCjwavn92wYLEY3t5S1kVS5kwyS1',
+  tokens: ['STBuyENwJ1GP4yNZCjwavn92wYLEY3t5S1kVS5kwyS1'],
   description: "Solana's first frictionless liquidity and trading layer",
 };
 

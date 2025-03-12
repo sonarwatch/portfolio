@@ -3,6 +3,8 @@ import { Platform, solanaNetwork } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 
 export const platformId = 'marinade';
+export const mndeMint = 'MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey';
+export const mSOLMint = 'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So';
 export const platform: Platform = {
   id: platformId,
   name: 'Marinade',
@@ -16,6 +18,7 @@ export const platform: Platform = {
   twitter: 'https://twitter.com/MarinadeFinance',
   documentation: 'https://docs.marinade.finance/',
   github: 'https://github.com/marinade-finance',
+  tokens: [mndeMint, mSOLMint],
 };
 
 export const cachePrefix = 'marinade';
@@ -26,7 +29,6 @@ export const marinadeTicketProgramId = new PublicKey(
 export const claimProgram = new PublicKey(
   'indiXdKbsC4QSLQQnn6ngZvkqfywn6KgEeQbkGSpk1V'
 );
-export const mndeMint = 'MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey';
 export const mndeDecimals = 9;
 export const solFactor = new BigNumber(10 ** solanaNetwork.native.decimals);
 export const baseRewardsUrl =

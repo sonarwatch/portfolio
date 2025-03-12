@@ -15,7 +15,7 @@ export const platform: Platform = {
   documentation: 'https://webpaper.spiderswap.io/whitepaper',
   discord: 'https://discord.com/invite/spiderswap',
   telegram: 'https://t.me/Tolysspider',
-  token: spdrMint,
+  tokens: [spdrMint],
   description: 'Aggregator for Everyone',
   github: 'https://github.com/itsmodsiw/spidy',
 };

@@ -11,7 +11,7 @@ export const platform: Platform = {
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/sonic.webp',
   website: 'https://www.sonic.game/',
   twitter: 'https://x.com/SonicSVM',
-  token: sonicMint,
+  tokens: [sonicMint, 'sonickAJFiVLcYXx25X9vpF293udaWqDMUCiGtk7dg2'],
   discord: 'https://discord.com/invite/joinmirrorworld',
   documentation: 'https://docs.sonic.game/',
   github: 'https://github.com/mirrorworld-universe',

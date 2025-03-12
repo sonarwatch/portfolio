@@ -14,7 +14,7 @@ export const platform: Platform = {
   defiLlamaId: 'sharky', // from https://defillama.com/docs/api
   discord: 'https://discord.gg/sharkyfi',
   github: 'https://github.com/SharkyFi',
-  token: 'SHARKSYJjqaNyxVfrpnBN9pjgkhwDhatnMyicWPnr1s',
+  tokens: ['SHARKSYJjqaNyxVfrpnBN9pjgkhwDhatnMyicWPnr1s'],
   description:
     'Sharky is the first escrowless NFT lending and borrowing protocol on Solana. Users can borrow SOL against their NFTs or Lend SOL and earn a high % APY.',
 };

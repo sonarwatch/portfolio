@@ -16,7 +16,7 @@ export const platform: Platform = {
   documentation: 'https://wormhole.com/docs/',
   description:
     'Future-proof, permissionless tooling to empower multichain builders',
-  token: wMint,
+  tokens: [wMint],
 };
 
 export const apiUrl = 'https://prod-flat-files-min.wormhole.com/';

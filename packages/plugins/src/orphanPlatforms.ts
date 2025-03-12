@@ -8,6 +8,12 @@ export const stepfinancePlatform: Platform = {
   website: 'https://app.step.finance/',
   twitter: 'https://twitter.com/StepFinance_',
   defiLlamaId: 'step-finance',
+  tokens: [
+    'StepAscQoEioFxxWGnh2sLBDFp9d8rvKz2Yp39iDpyT',
+    'xStpgUCss9piqeFUk2iLVcvJEGhAdJxJQuwLkXP555G',
+    'StPsoHokZryePePFV8N7iXvfEmgUoJ87rivABX7gaW6',
+  ],
+  github: 'https://github.com/step-finance',
 };
 export const ligmaPlatform: Platform = {
   id: 'ligma',
@@ -63,6 +69,7 @@ const orphanPlatforms: Platform[] = [
     id: 'blaze',
     defiLlamaId: 'blazestake',
     name: 'Blaze Staked SOL',
+    tokens: ['bSo13r4TkiE4KumL71LsHTPpL2euBYLFx6h9HP3piy1'],
     image:
       'https://sonarwatch.github.io/portfolio/assets/images/platforms/blaze.webp',
     website: 'https://stake.solblaze.org/',
@@ -82,6 +89,8 @@ const orphanPlatforms: Platform[] = [
     image:
       'https://sonarwatch.github.io/portfolio/assets/images/platforms/stakewise.webp',
     website: 'https://stakewise.io/',
+    github: 'https://github.com/laine-sa',
+    tokens: ['LAinEtNLgpmCP9Rvsf5Hn8W6EhNiKLZQti1xfWMLy6X'],
   },
   {
     id: 'ondo-finance',
@@ -98,6 +107,7 @@ const orphanPlatforms: Platform[] = [
     image:
       'https://sonarwatch.github.io/portfolio/assets/images/platforms/carrot.webp',
     website: 'https://use.deficarrot.com/',
+    tokens: ['CRTx1JouZhzSU6XytsE42UQraoGqiHgxabocVfARTy2s'],
   },
   stepfinancePlatform,
   ligmaPlatform,

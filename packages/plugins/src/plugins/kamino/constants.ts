@@ -2,8 +2,12 @@ import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 import { LendingMarketConfig } from './types';
 import { AirdropStatics } from '../../AirdropFetcher';
+import { mSOLMint } from '../marinade/constants';
+import { usdcSolanaMint } from '../../utils/solana';
+import { jitoSOLMint } from '../jito/constants';
 
 export const platformId = 'kamino';
+export const kmnoMint = 'KMNo3nJsBXfcpJTVhZcXLW7RmTwTt4GVFE7suUBo9sS';
 export const platform: Platform = {
   id: platformId,
   name: 'Kamino',
@@ -15,9 +19,9 @@ export const platform: Platform = {
   twitter: 'https://x.com/KaminoFinance',
   documentation: 'https://docs.kamino.finance/',
   github: 'https://github.com/Kamino-Finance',
+  tokens: [kmnoMint],
 };
 
-export const kmnoMint = 'KMNo3nJsBXfcpJTVhZcXLW7RmTwTt4GVFE7suUBo9sS';
 export const kmnoDecimals = 6;
 export const programId = new PublicKey(
   '6LtLpnUFNByNXLyCoK9wA2MykKAmQNZKBdY8s47dehDc'
@@ -42,10 +46,7 @@ export const lendingConfigs: Map<string, LendingMarketConfig> = new Map([
     {
       name: 'Main Market',
       multiplyPairs: [
-        [
-          'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So',
-          'So11111111111111111111111111111111111111112',
-        ],
+        [mSOLMint, 'So11111111111111111111111111111111111111112'],
         [
           'J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn',
           'So11111111111111111111111111111111111111112',
@@ -80,38 +81,14 @@ export const lendingConfigs: Map<string, LendingMarketConfig> = new Map([
         ],
       ],
       leveragePairs: [
-        [
-          '6DNSN2BJsaPFdFFc1zP37kkeNe4Usc1Sqkzr9C9vPWcU',
-          'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-        ],
-        [
-          'J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn',
-          'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-        ],
-        [
-          'bSo13r4TkiE4KumL71LsHTPpL2euBYLFx6h9HP3piy1',
-          'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-        ],
-        [
-          'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So',
-          'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-        ],
-        [
-          'So11111111111111111111111111111111111111112',
-          'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-        ],
-        [
-          '7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs',
-          'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-        ],
-        [
-          'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
-          'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-        ],
-        [
-          '3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh',
-          'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-        ],
+        ['6DNSN2BJsaPFdFFc1zP37kkeNe4Usc1Sqkzr9C9vPWcU', usdcSolanaMint],
+        [jitoSOLMint, usdcSolanaMint],
+        ['bSo13r4TkiE4KumL71LsHTPpL2euBYLFx6h9HP3piy1', usdcSolanaMint],
+        [mSOLMint, usdcSolanaMint],
+        ['So11111111111111111111111111111111111111112', usdcSolanaMint],
+        ['7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs', usdcSolanaMint],
+        ['Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB', usdcSolanaMint],
+        ['3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh', usdcSolanaMint],
       ],
     },
   ],

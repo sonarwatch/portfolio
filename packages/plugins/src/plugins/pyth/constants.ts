@@ -2,6 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'pyth';
+export const pythMint = 'HZ1JovNiVvGrGNiiYvEozEVgZ58xaU3RKwX8eACQBCt3';
 export const platform: Platform = {
   id: platformId,
   name: 'Pyth',
@@ -13,6 +14,7 @@ export const platform: Platform = {
   github: 'https://github.com/pyth-network',
   discord: 'https://discord.com/invite/pythnetwork',
   documentation: 'https://docs.pyth.network/home',
+  tokens: [pythMint],
   description:
     'Secure your smart contracts with reliable, low-latency market data from institutional sources. Build apps with high-fidelity oracle feeds designed for mission-critical systems.',
 };
@@ -20,4 +22,3 @@ export const platform: Platform = {
 export const stakingProgramId = new PublicKey(
   'pytS9TjG1qyAZypk7n8rw8gfW9sUaqqYyMhJQ4E7JCQ'
 );
-export const pythMint = 'HZ1JovNiVvGrGNiiYvEozEVgZ58xaU3RKwX8eACQBCt3';

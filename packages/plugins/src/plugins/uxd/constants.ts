@@ -13,7 +13,7 @@ export const platform: Platform = {
   website: 'https://uxd.fi/',
   twitter: 'https://twitter.com/UXDProtocol',
   isDeprecated: true,
-  token: uxpMint,
+  tokens: [uxpMint, '7kbnvuGBxxj8AG9qp8Scn56muWGaRaFqxg1FsRp3PaFT'],
   github: 'https://github.com/uxdprotocol',
   medium: 'https://uxdprotocol.medium.com/',
   documentation: 'https://docs.uxd.fi/uxdprotocol',
