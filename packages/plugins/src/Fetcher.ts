@@ -11,8 +11,10 @@ import {
   networks,
   sortPortfolioElement,
 } from '@sonarwatch/portfolio-core';
+import { PublicKey } from '@solana/web3.js';
 import { Cache } from './Cache';
 import promiseTimeout from './utils/misc/promiseTimeout';
+import { getClientSolana } from './utils/clients';
 
 const runFetcherTimeout = 60000;
 
@@ -43,6 +45,24 @@ export async function runFetchers(
     );
 
   const startDate = Date.now();
+  if (!(await isAddressActive(fOwner, addressSystem))) {
+    return {
+      owner: fOwner,
+      addressSystem,
+      fetcherReports: [
+        {
+          id: 'is-active',
+          status: 'failed',
+          duration: Date.now() - startDate,
+          error: 'Address is not active',
+        },
+      ],
+      value: 0,
+      elements: [],
+      duration: Date.now() - startDate,
+      date: Date.now(),
+    };
+  }
   const promises = fetchers.map((f) => runFetcher(fOwner, f, cache));
   const result = await Promise.allSettled(promises);
 
@@ -115,4 +135,18 @@ export async function runFetcher(
     runFetcherTimeout,
     `Fetcher timed out: ${fetcher.id}`
   );
+}
+
+export async function isAddressActive(
+  owner: string,
+  addressSystem: AddressSystemType
+): Promise<boolean> {
+  if (addressSystem === 'solana') {
+    const client = getClientSolana();
+    const tx = await client.getSignaturesForAddress(new PublicKey(owner), {
+      limit: 1,
+    });
+    if (tx.length === 0) return false;
+  }
+  return true;
 }
