@@ -10,9 +10,9 @@ import {
   getUsdValueSum,
   networks,
   sortPortfolioElement,
+  promiseTimeout,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from './Cache';
-import promiseTimeout from './utils/misc/promiseTimeout';
 
 const runFetcherTimeout = 60000;
 

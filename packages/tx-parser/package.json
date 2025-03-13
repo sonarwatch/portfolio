@@ -3,5 +3,10 @@
   "version": "0.0.3",
   "type": "commonjs",
   "types": "./src/index.d.ts",
-  "dependencies": {}
+  "peerDependencies": {
+    "@sonarwatch/portfolio-core": "^0.14.0"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.98.0"
+  }
 }

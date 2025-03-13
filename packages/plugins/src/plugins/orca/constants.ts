@@ -34,9 +34,9 @@ export const poolsProgram = new PublicKey(
 export const aquafarmsProgram = new PublicKey(
   '82yxjeMsvaURa4MbZZ7WZZHfobirZYkH1zF8fmeGtyaQ'
 );
-
-export const positionsIdentifiers = ['Orca Whirlpool Position', 'OWP'];
-export const whirlpoolPrefix = `${platformId}-whirlpool`;
 export const whirlpoolProgram = new PublicKey(
   'whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc'
 );
+
+export const positionsIdentifiers = ['Orca Whirlpool Position', 'OWP'];
+export const whirlpoolPrefix = `${platformId}-whirlpool`;

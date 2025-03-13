@@ -26,9 +26,9 @@ import {
   networks,
   compareName,
   formatTokenAddress,
+  promiseTimeout,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from './Cache';
-import promiseTimeout from './utils/misc/promiseTimeout';
 import { Fetcher } from './Fetcher';
 import tokenPriceToAssetToken from './utils/misc/tokenPriceToAssetToken';
 import runInParallel from './utils/misc/runInParallel';
