@@ -54,7 +54,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
   const markets = await marketsMemo.getItem(cache);
-  if (!markets) return [];
+  if (!markets) throw new Error('Markets not cached');
 
   const [lendingPdas, multiplyPdas, leveragePdas] = [
     getLendingPda(owner, markets),
@@ -71,7 +71,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (!obligations.some((obligation) => obligation !== null)) return [];
 
   const reserves = await reservesMemo.getItem(cache);
-  if (!reserves) return [];
+  if (!reserves) throw new Error('Reserves not cached');
 
   const elevationGroups = await elevationGroupsAccountsMemo.getItem(cache);
 

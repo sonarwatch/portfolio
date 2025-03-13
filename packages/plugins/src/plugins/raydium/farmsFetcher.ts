@@ -26,13 +26,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     .flat(1)
     .map((result) => (result.status === 'fulfilled' ? result.value : []))
     .flat();
-
   if (userFarmAccounts.length === 0) return [];
 
   const farmsInfo = await cache.getItems<FarmInfo>(
     userFarmAccounts.map((acc) => acc.poolId.toString()),
     { prefix: `${platformId}/farm`, networkId: NetworkId.solana }
   );
+  if (!farmsInfo) throw new Error('Farms info not cached');
+
   const farmsInfoMap: Map<string, FarmInfo> = new Map();
   farmsInfo.forEach((farmInfo) =>
     farmInfo

@@ -1,6 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 import { usdcSolanaMint } from '../../utils/solana';
+import { mSOLMint } from '../marinade/constants';
 
 export const platformId = '01';
 export const platform: Platform = {
@@ -29,7 +30,7 @@ export const mints = [
   'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
   '2FPyTwcZLUg1MDrwsyoP4D6s1tM7hAkHYRjkNb5w6Pxk',
   '9vMJfxuKxXBoEa7rM12mYLMwTacLMLDJqHozw96WQL8i',
-  'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So',
+  mSOLMint,
   '1111111111111111111111111111111111111111111',
   '1111111111111111111111111111111111111111111',
   '1111111111111111111111111111111111111111111',

@@ -2,6 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'raydium';
+export const rayMint = '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R';
 export const platform: Platform = {
   id: platformId,
   name: 'Raydium',
@@ -13,6 +14,7 @@ export const platform: Platform = {
   discord: 'https://discord.com/invite/raydium',
   telegram: 'https://t.me/raydiumprotocol',
   github: 'https://github.com/raydium-io',
+  tokens: [rayMint],
   description:
     'Raydium is an automated market maker (AMM) built on the Solana blockchain which enables lightning-fast trades, permissionless pool creation, and new features for earning yield',
 };
@@ -40,5 +42,4 @@ export const cpmmProgramId = new PublicKey(
 
 export const positionsIdentifier = 'Raydium Concentrated Liquidity';
 
-export const rayMint = '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R';
 export const rayDecimals = 6;

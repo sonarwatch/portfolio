@@ -38,6 +38,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       networkId: NetworkId.solana,
     }
   );
+  if (!reservesInfo) throw new Error('Reserves not cached');
 
   const allReserves = reservesInfo.flat();
   const reservesByMarket: Map<string, ReserveEnhanced[]> = new Map();

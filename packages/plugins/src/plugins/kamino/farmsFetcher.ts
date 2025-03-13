@@ -25,7 +25,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     prefix: platformId,
     networkId: NetworkId.solana,
   });
-  if (!farmsInfo) return [];
+  if (!farmsInfo) throw new Error('Farms not cached.');
 
   const farmsById = arrayToMap(farmsInfo, 'pubkey');
 

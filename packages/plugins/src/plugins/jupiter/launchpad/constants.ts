@@ -38,7 +38,7 @@ export const airdropConfigs: AirdropConfig[] = [
     statics: {
       claimStart: 1706659200000,
       claimEnd: 1722430800000,
-      id: 'lfg-jup-s1',
+      id: `jupiter-exchange-s1`,
       name: 'S1',
       emitterName: 'Jupiter',
       emitterLink: 'https://jup.ag/',
@@ -57,7 +57,7 @@ export const airdropConfigs: AirdropConfig[] = [
     statics: {
       claimStart: 1712235600000,
       claimEnd: 1713445200000,
-      id: 'lfg-zeus',
+      id: 'zeus-lfg',
       emitterName: 'Zeus',
       emitterLink: 'https://zeusnetwork.xyz/',
       claimLink: 'https://lfg.jup.ag/zeus',
@@ -76,7 +76,7 @@ export const airdropConfigs: AirdropConfig[] = [
     statics: {
       claimStart: 1712534400000,
       claimEnd: 1728086400000,
-      id: 'lfg-tensor',
+      id: 'tensor-lfg',
       emitterName: 'Tensor',
       emitterLink: 'https://www.tensor.trade/',
       claimLink: 'https://claim.jup.ag/tnsr',
@@ -95,7 +95,7 @@ export const airdropConfigs: AirdropConfig[] = [
     statics: {
       claimStart: 1713225600000,
       claimEnd: 1714435200000,
-      id: 'lfg-sharky',
+      id: 'sharky-lfg',
       emitterName: 'Sharky',
       emitterLink: 'https://sharky.fi/',
       claimLink: 'https://lfg.jup.ag/sharky',
@@ -114,7 +114,7 @@ export const airdropConfigs: AirdropConfig[] = [
     statics: {
       claimStart: 1717077600000,
       claimEnd: 1719878400000,
-      id: 'lfg-uprock',
+      id: 'uprock-lfg',
       emitterName: 'Uprock',
       emitterLink: 'https://uprock.com/',
       claimLink: 'https://lfg.jup.ag/uprock',
@@ -153,7 +153,7 @@ export const airdropConfigs: AirdropConfig[] = [
     statics: {
       claimStart: 1737547200000,
       claimEnd: 1745323200000,
-      id: 'jupuary-2025',
+      id: 'jupiter-governance-jupuary-2025',
       emitterName: 'Jupiter',
       emitterLink: 'https://jup.ag/',
       claimLink: 'https://jupuary.jup.ag/',

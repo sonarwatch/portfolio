@@ -50,6 +50,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     poolsMemo.getItem(cache),
   ]);
 
+  if (!lendingPools) throw new Error('Lending pools not cached');
+
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 
   accounts.forEach((account) => {

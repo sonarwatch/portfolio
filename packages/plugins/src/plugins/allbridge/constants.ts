@@ -17,6 +17,8 @@ export const platform: Platform = {
     'Allbridge is a cross-chain bridge that enables seamless asset transfers between different blockchains.',
   documentation: 'https://docs-core.allbridge.io/',
   github: 'https://github.com/allbridge-io',
+  medium: 'https://allbridge.medium.com/',
+  telegram: 'https://t.me/allbridge_official',
 };
 
 export const apiPoolInfoUrl = `https://core.api.allbridgecoreapi.net/token-info`;

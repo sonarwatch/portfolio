@@ -68,7 +68,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         ) as ParsedAccount<Miner>[]
     ),
   ]);
-
   if (mergeMinerAccounts.length === 0 && minerAccounts.length === 0) return [];
 
   const replicaMinerAccounts = await Promise.all(
@@ -92,7 +91,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
 
   const allRewarders = await rewardersMemo.getItem(cache);
-  if (!allRewarders) return [];
+  if (!allRewarders) throw new Error('Rewarders not cached');
 
   const positions = calculatePositions(
     mergeMinerAccounts,

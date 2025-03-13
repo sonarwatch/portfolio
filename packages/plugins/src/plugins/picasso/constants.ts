@@ -17,6 +17,7 @@ export const platform: Platform = {
   github: 'https://github.com/ComposableFi',
   documentation: 'https://docs.picasso.network/',
   medium: 'https://medium.com/@Picasso_Network',
+  tokens: ['966vsqwoS3ZBrHesTyAvE7esFV2kaHaDFLLXs4asPdLJ'],
   description:
     'Picasso L1 Protocol enables secure bridging and multi-asset restaking through cross-chain Inter-Blockchain-Communication (IBC).',
 };

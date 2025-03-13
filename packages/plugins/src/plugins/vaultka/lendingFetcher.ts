@@ -36,8 +36,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       networkId: NetworkId.solana,
     }
   );
-
-  if (!lendings) return [];
+  if (!lendings) throw new Error('Lendings not cached');
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
   const element = elementRegistry.addElementMultiple({

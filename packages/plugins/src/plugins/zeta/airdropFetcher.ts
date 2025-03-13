@@ -1,6 +1,5 @@
-import { NetworkId, PortfolioAsset } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import request, { gql } from 'graphql-request';
-import { Fetcher } from '../../Fetcher';
 import {
   airdropStatics,
   distributors,
@@ -34,8 +33,6 @@ const query = gql`
     }
   }
 `;
-
-const networkId = NetworkId.solana;
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
   const res = await request<GQLResponse>(
@@ -83,10 +80,6 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
   const claimStatusesAccount = await getMultipleAccountsInfoSafe(
     client,
     claimStatuses
-  );
-  console.log(
-    'constexecutor:AirdropFetcherExecutor= ~ claimStatusesAccount:',
-    claimStatusesAccount
   );
 
   if (claimStatusesAccount.some((account) => account))

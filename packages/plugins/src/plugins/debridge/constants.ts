@@ -3,6 +3,7 @@ import { PublicKey } from '@solana/web3.js';
 import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'debridge';
+export const dbrMint = 'DBRiDgJAMsM95moTzJs7M9LnkGErpbv9v6CUR1DXnUu5';
 export const platform: Platform = {
   id: platformId,
   name: 'deBridge',
@@ -17,6 +18,7 @@ export const platform: Platform = {
     'Cross-chain interoperability and liquidity transfer protocol that allows the decentralized transfer of arbitrary data and assets between various blockchains.',
   documentation: 'https://docs.debridge.finance/',
   telegram: 'https://t.me/deBridge_finance',
+  tokens: [dbrMint],
 };
 
 export const commonStatics = {
@@ -41,7 +43,6 @@ export const secondDistribStatics: AirdropStatics = {
   claimEnd: 1747440000000,
 };
 
-export const dbrMint = 'DBRiDgJAMsM95moTzJs7M9LnkGErpbv9v6CUR1DXnUu5';
 export const dbrDecimals = 6;
 export const apiUrl =
   'https://points-api.debridge.foundation/api/TokenDistribution/';

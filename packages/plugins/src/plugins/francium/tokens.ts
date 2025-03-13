@@ -1,5 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import { solanaNativeWrappedAddress } from '@sonarwatch/portfolio-core';
+import { mSOLMint } from '../marinade/constants';
 
 export const TOKENS: {
   [key: string]: {
@@ -265,7 +266,7 @@ export const TOKENS: {
     symbol: 'mSOL',
     name: 'msol',
     decimals: 9,
-    mintAddress: new PublicKey('mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So'),
+    mintAddress: new PublicKey(mSOLMint),
   },
   MNDE: {
     symbol: 'MNDE',

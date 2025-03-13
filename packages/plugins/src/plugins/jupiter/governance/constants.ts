@@ -16,10 +16,11 @@ export const platform: Platform = {
   website: platformWebsite,
   twitter: 'https://x.com/jup_dao',
   description: 'The first voting platform for Cats in history.',
+  tokens: [jupMint],
 };
 
 export const asr1Statics: AirdropStatics = {
-  id: 'jup-asr-1',
+  id: `${platformId}-jup-asr-1`,
   claimLink: 'https://vote.jup.ag/asr',
   image: platformImage,
   emitterLink: platformWebsite,
@@ -29,7 +30,7 @@ export const asr1Statics: AirdropStatics = {
   name: 'ASR #1',
 };
 export const asr2Statics: AirdropStatics = {
-  id: 'jup-asr-2',
+  id: `${platformId}-jup-asr-2`,
   claimLink: 'https://vote.jup.ag/asr',
   image: platformImage,
   emitterLink: platformWebsite,
@@ -39,7 +40,7 @@ export const asr2Statics: AirdropStatics = {
   name: 'ASR #2',
 };
 export const asr3Statics: AirdropStatics = {
-  id: 'jup-asr-3',
+  id: `${platformId}-jup-asr-3`,
   claimLink: 'https://vote.jup.ag/asr',
   image: platformImage,
   emitterLink: platformWebsite,
@@ -49,7 +50,7 @@ export const asr3Statics: AirdropStatics = {
   name: 'ASR #3',
 };
 export const jupuaryStatics: AirdropStatics = {
-  id: 'jup-jupuary',
+  id: `${platformId}-jupuary`,
   claimLink: 'https://jupuary.jup.ag',
   image: platformImage,
   emitterLink: platformWebsite,

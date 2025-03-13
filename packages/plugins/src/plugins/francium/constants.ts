@@ -3,6 +3,7 @@ import { PublicKey } from '@solana/web3.js';
 import { LendInfoItem } from './types';
 import { TOKENS } from './tokens';
 import { LendRewardInfo } from './structs';
+import { mSOLMint } from '../marinade/constants';
 
 export const platformId = 'francium';
 export const platform: Platform = {
@@ -317,7 +318,7 @@ export const lendingPools: {
       'A9L7C5QMNG5yBjntCxjo4tkxmu2AHiNP5ev9uBtLUMfE'
     ),
     programId: lendProgramId,
-    tokenMint: new PublicKey('mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So'),
+    tokenMint: new PublicKey(mSOLMint),
     marketInfoAccount: new PublicKey(
       '4XNif294wbrxj6tJ8K5Rg7SuaEACnu9s2L27i28MQB6E'
     ),

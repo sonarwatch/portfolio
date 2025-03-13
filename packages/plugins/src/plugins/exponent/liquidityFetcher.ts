@@ -24,7 +24,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (accounts.length === 0) return [];
 
   const markets = await marketsMemo.getItem(cache);
-  if (!markets) return [];
+  if (!markets) throw new Error('Markets not cached');
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 

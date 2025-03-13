@@ -29,7 +29,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     prefix: platformId,
     networkId: NetworkId.solana,
   });
-  if (!pools) return [];
+  if (!pools) throw new Error('No pools cached');
 
   const tokenPriceById = await cache.getTokenPricesAsMap(
     [...pools.map((pool) => pool.assetInfo.onassetMint), usdcSolanaMint],

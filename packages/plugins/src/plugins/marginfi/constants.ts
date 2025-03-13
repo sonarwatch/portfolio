@@ -14,6 +14,7 @@ export const platform: Platform = {
   documentation: 'https://docs.marginfi.com/',
   twitter: 'https://twitter.com/marginfi',
   telegram: 'https://t.me/mrgnteam',
+  tokens: ['LSTxxxnJzKDFSLr4dUkPcmCf5VyryEqzPLz5j4bpxFp'],
   description:
     'A liquidity layer built for finance. Access native yield, embedded risk systems, and off-chain data plug-ins.',
 };

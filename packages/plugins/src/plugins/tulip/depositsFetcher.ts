@@ -32,7 +32,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       networkId: NetworkId.solana,
     }
   );
-  if (!vaults) return [];
+  if (!vaults) throw new Error('Vaults not cached');
 
   const tokenPriceById = await cache.getTokenPricesAsMap(
     vaults.map((vault) => vault.base.sharesMint.toString()),
