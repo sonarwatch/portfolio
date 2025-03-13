@@ -7,10 +7,10 @@ import {
   Transaction,
 } from '@sonarwatch/portfolio-core';
 import { unshift } from '../unshift';
+import { sortedServices } from '../../services';
 
-export const findTransactionService = (
-  txn: ParsedTransactionWithMeta,
-  sortedServices: Service[]
+const findTransactionService = (
+  txn: ParsedTransactionWithMeta
 ): Service | undefined => {
   const { instructions } = txn.transaction.message;
 
@@ -28,8 +28,7 @@ export const findTransactionService = (
 
 export const parseTransaction = (
   txn: ParsedTransactionWithMeta | null,
-  owner: string,
-  sortedServices: Service[]
+  owner: string
 ): Transaction | null => {
   if (!txn) return null;
   if (txn.meta?.err) return null;
@@ -88,7 +87,7 @@ export const parseTransaction = (
   return {
     signature: txn.transaction.signatures[0],
     blockTime: txn.blockTime,
-    service: findTransactionService(txn, sortedServices),
+    service: findTransactionService(txn),
     balanceChanges: changes,
     isSigner: accountKeys.some(
       (accountKey) =>

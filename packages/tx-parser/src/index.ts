@@ -3,7 +3,6 @@ import {
   NetworkId,
   Transaction,
   TransactionsResult,
-  Service,
   promiseTimeout,
 } from '@sonarwatch/portfolio-core';
 import { Connection } from '@solana/web3.js';
@@ -11,30 +10,10 @@ import { getSignatures } from './utils/solana/getSignatures';
 import { getTransactions } from './utils/solana/getTransactions';
 import { parseTransaction } from './utils/solana/parseTransaction';
 
-import * as defituna from './services/defituna';
-import * as drift from './services/drift';
-import * as driftMMV from './services/drift-market-maker-vault';
-import * as jupiter from './services/jupiter';
-import * as kamino from './services/kamino';
-import * as meteora from './services/meteora';
-import * as orca from './services/orca';
-import * as raydium from './services/raydium';
-
-export const services: Service[] = [
-  defituna,
-  drift,
-  driftMMV,
-  jupiter,
-  kamino,
-  meteora,
-  orca,
-  raydium,
-]
-  .map((m) => m.default)
-  .flat();
 export * from './utils/solana/parseTransaction';
 export * from './utils/solana/getSignatures';
 export * from './utils/solana/getTransactions';
+export { services } from './services';
 
 const runActivityTimeout = 60000;
 
@@ -54,10 +33,6 @@ export async function run(
     }
   );
 
-  const sortedServices = services.sort(
-    (a, b) => (b.contracts?.length || 0) - (a.contracts?.length || 0)
-  );
-
   const startDate = Date.now();
 
   const activityPromise = getSignatures(client, account || owner)
@@ -68,7 +43,7 @@ export async function run(
       )
     )
     .then((parsedTransactions) =>
-      parsedTransactions.map((t) => parseTransaction(t, owner, sortedServices))
+      parsedTransactions.map((t) => parseTransaction(t, owner))
     )
     .then((txns) => {
       const now = Date.now();
