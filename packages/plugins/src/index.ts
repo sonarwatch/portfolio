@@ -168,6 +168,7 @@ export {
 } from './plugins/tokens/constants';
 
 export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
+export { isSolanaAddressActive } from './utils/solana/isActive';
 
 export * from './Cache';
 export * from './Fetcher';
