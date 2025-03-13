@@ -11,10 +11,8 @@ import {
   networks,
   sortPortfolioElement,
 } from '@sonarwatch/portfolio-core';
-import { PublicKey } from '@solana/web3.js';
 import { Cache } from './Cache';
 import promiseTimeout from './utils/misc/promiseTimeout';
-import { getClientSolana } from './utils/clients';
 
 const runFetcherTimeout = 60000;
 
@@ -45,24 +43,6 @@ export async function runFetchers(
     );
 
   const startDate = Date.now();
-  if (!(await isAddressActive(cache, fOwner, addressSystem))) {
-    const fetchEnd = Date.now();
-    return {
-      owner: fOwner,
-      addressSystem,
-      fetcherReports: [
-        {
-          id: 'address-is-inactive',
-          status: 'succeeded',
-          duration: fetchEnd - startDate,
-        },
-      ],
-      value: 0,
-      elements: [],
-      duration: fetchEnd - startDate,
-      date: fetchEnd,
-    };
-  }
   const promises = fetchers.map((f) => runFetcher(fOwner, f, cache));
   const result = await Promise.allSettled(promises);
 
@@ -135,31 +115,4 @@ export async function runFetcher(
     runFetcherTimeout,
     `Fetcher timed out: ${fetcher.id}`
   );
-}
-
-export async function isAddressActive(
-  cache: Cache,
-  owner: string,
-  addressSystem: AddressSystemType
-): Promise<boolean> {
-  if (addressSystem === 'solana') {
-    const isCached = await cache.getItem<boolean>(owner, {
-      prefix: `${addressSystem}/isActive`,
-    });
-    if (isCached) return true;
-
-    const client = getClientSolana();
-    const tx = await client.getSignaturesForAddress(new PublicKey(owner), {
-      limit: 1,
-    });
-    if (tx.length === 0) {
-      return false;
-    }
-    await cache.setItem(owner, true, {
-      prefix: `${addressSystem}/isActive`,
-      ttl: 60 * 60 * 24 * 30, // 30 days
-    });
-  }
-
-  return true;
 }
