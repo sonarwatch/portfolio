@@ -8,7 +8,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { unshift } from '../unshift';
 
-const findTransactionService = (
+export const findTransactionService = (
   txn: ParsedTransactionWithMeta,
   sortedServices: Service[]
 ): Service | undefined => {
