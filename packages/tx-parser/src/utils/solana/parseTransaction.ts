@@ -31,7 +31,6 @@ export const parseTransaction = (
   owner: string
 ): Transaction | null => {
   if (!txn) return null;
-  if (txn.meta?.err) return null;
 
   const { accountKeys } = txn.transaction.message;
 
@@ -93,5 +92,6 @@ export const parseTransaction = (
       (accountKey) =>
         accountKey.pubkey.toString() === owner && accountKey.signer
     ),
+    success: !txn.meta?.err,
   };
 };

@@ -207,6 +207,7 @@ export type Transaction = {
   service?: Service;
   balanceChanges: BalanceChange[];
   isSigner: boolean;
+  success: boolean;
 };
 
 export type SourceRefName =
