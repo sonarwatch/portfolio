@@ -1,7 +1,7 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from '../../Fetcher';
 import { Job } from '../../Job';
-import { platform } from '../zeta/constants';
+import { platform } from './constants';
 import delegationsFetcher from './delegationsFetcher';
 
 export const jobs: Job[] = [];
