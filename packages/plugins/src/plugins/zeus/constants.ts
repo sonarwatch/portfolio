@@ -1,4 +1,4 @@
-import { Contract, NetworkId, Platform } from '@sonarwatch/portfolio-core';
+import { Platform } from '@sonarwatch/portfolio-core';
 
 export const zeusMint = 'ZEUS1aR7aX8DFFJf5QjWj2ftDDdNTroMNGo8YoQm3Gq';
 export const platformId = 'zeus';
@@ -17,8 +17,4 @@ export const platform: Platform = {
   description: 'First Multichain Layer on Solana.',
 };
 
-export const zeusNodeDelegateContract: Contract = {
-  name: `${platform.name} Delegate`,
-  address: 'ZPLt7XEyRvRxEZcGFGnRKGLBymFjQbwmgTZhMAMfGAU',
-  network: NetworkId.solana,
-};
+export const programId = 'ZPLt7XEyRvRxEZcGFGnRKGLBymFjQbwmgTZhMAMfGAU';
