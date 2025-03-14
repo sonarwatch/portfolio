@@ -68,23 +68,32 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       (await getCachedDecimalsForToken(cache, outputMint, NetworkId.solana));
     if (!outputDecimals) continue;
 
-    const inputAsset = tokenPriceToAssetToken(
-      inputMint,
-      account.makingAmount.div(10 ** inputDecimals).toNumber(),
-      NetworkId.solana,
-      inputTokenPrice
-    );
+    const intputAmount = account.makingAmount
+      .div(10 ** inputDecimals)
+      .toNumber();
+    const inputAsset =
+      intputAmount === 0
+        ? null
+        : tokenPriceToAssetToken(
+            inputMint,
+            intputAmount,
+            NetworkId.solana,
+            inputTokenPrice
+          );
 
     const outputAmount = account.oriTakingAmount
       .minus(account.takingAmount)
       .div(10 ** outputDecimals)
       .toNumber();
-    const outputAsset = tokenPriceToAssetToken(
-      outputMint,
-      outputAmount,
-      NetworkId.solana,
-      outputTokenPrice
-    );
+    const outputAsset =
+      outputAmount === 0
+        ? null
+        : tokenPriceToAssetToken(
+            outputMint,
+            outputAmount,
+            NetworkId.solana,
+            outputTokenPrice
+          );
 
     const initialInputAmount = account.oriMakingAmount
       .div(10 ** inputDecimals)
@@ -111,7 +120,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         outputAddress: outputMint,
         initialInputAmount,
         expectedOutputAmount,
-        filledPercentage: 1 - inputAsset.data.amount / initialInputAmount,
+        filledPercentage: 1 - intputAmount / initialInputAmount,
         inputPrice: inputTokenPrice?.price || null,
         outputPrice: outputTokenPrice?.price || null,
         ref: account.pubkey.toString(),
@@ -121,7 +130,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           : limitV2ProgramId.toString(),
         withdrawnOutputAmount: 0,
       },
-      value: getUsdValueSum([inputAsset.value, outputAsset?.value || 0]),
+      value: getUsdValueSum([inputAsset?.value || 0, outputAsset?.value || 0]),
     };
     elements.push(element);
   }
