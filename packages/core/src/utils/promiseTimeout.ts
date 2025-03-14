@@ -1,4 +1,4 @@
-export default function promiseTimeout<T>(
+export function promiseTimeout<T>(
   promise: Promise<T>,
   ms: number,
   message?: string

@@ -4,8 +4,8 @@
   "sourceRoot": "packages/tx-parser",
   "projectType": "library",
   "targets": {
-    "run-print": {
-      "command": "ts-node -P packages/tx-parser/tsconfig.script.json --swc packages/tx-parser/scripts/print.ts",
+    "run": {
+      "command": "ts-node -P packages/tx-parser/tsconfig.script.json --swc packages/tx-parser/scripts/run.ts",
       "dependsOn": []
     },
     "build": {

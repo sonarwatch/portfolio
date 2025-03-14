@@ -4,8 +4,8 @@ import {
   elevationGroupsKey,
   lendingConfigs,
   marketsKey,
-  platformId,
   reservesKey,
+  platformId,
 } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { Cache } from '../../Cache';
