@@ -86,6 +86,8 @@ export const parseTransaction = (
 
   return {
     signature: txn.transaction.signatures[0],
+    networkId: NetworkId.solana,
+    owner,
     blockTime: txn.blockTime,
     service: findTransactionService(txn),
     balanceChanges: changes,
@@ -94,6 +96,5 @@ export const parseTransaction = (
         accountKey.pubkey.toString() === owner && accountKey.signer
     ),
     success: !txn.meta?.err,
-    networkId: NetworkId.solana,
   };
 };
