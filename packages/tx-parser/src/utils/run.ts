@@ -2,6 +2,7 @@ import { Connection } from '@solana/web3.js';
 import {
   NetworkId,
   promiseTimeout,
+  Transaction,
   TransactionsResult,
 } from '@sonarwatch/portfolio-core';
 import { getSignatures } from './getSignatures';
@@ -25,7 +26,7 @@ async function iRun(connection: Connection, owner: string, account?: string) {
     account: account || owner,
     duration: now - startDate,
     networkId: NetworkId.solana,
-    transactions: parsedTxs.filter((t) => t !== null),
+    transactions: parsedTxs.filter((t) => t !== null) as Transaction[],
   };
   return result;
 }

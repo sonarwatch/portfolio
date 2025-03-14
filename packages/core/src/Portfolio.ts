@@ -208,6 +208,7 @@ export type Transaction = {
   balanceChanges: BalanceChange[];
   isSigner: boolean;
   success: boolean;
+  networkId: NetworkIdType;
 };
 
 export type SourceRefName =

@@ -1,13 +1,14 @@
 import { ParsedTransactionWithMeta } from '@solana/web3.js';
 import {
   BalanceChange,
+  NetworkId,
   Service,
   solanaNativeDecimals,
   solanaNativeWrappedAddress,
   Transaction,
 } from '@sonarwatch/portfolio-core';
-import { unshift } from '../unshift';
-import { sortedServices } from '../../services';
+import { unshift } from './unshift';
+import { sortedServices } from '../services';
 
 const findTransactionService = (
   txn: ParsedTransactionWithMeta
@@ -93,5 +94,6 @@ export const parseTransaction = (
         accountKey.pubkey.toString() === owner && accountKey.signer
     ),
     success: !txn.meta?.err,
+    networkId: NetworkId.solana,
   };
 };

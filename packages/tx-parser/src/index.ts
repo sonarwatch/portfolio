@@ -1,6 +1,6 @@
-export * from './utils/solana/parseTransaction';
-export * from './utils/solana/getSignatures';
-export * from './utils/solana/getTransactions';
-export * from './utils/solana/run';
+export * from './utils/parseTransaction';
+export * from './utils/getSignatures';
+export * from './utils/getTransactions';
+export * from './utils/run';
 
 export { services } from './services';
