@@ -1,8 +1,4 @@
-import {
-  formatTokenAddress,
-  NetworkId,
-  suiNativeAddress,
-} from '@sonarwatch/portfolio-core';
+import { formatTokenAddress, NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { getCachedDecimalsForToken } from './getCachedDecimalsForToken';
 
