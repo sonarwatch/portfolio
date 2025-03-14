@@ -8,39 +8,37 @@ import { getSignatures } from './getSignatures';
 import { getTransactions } from './getTransactions';
 import { parseTransaction } from './parseTransaction';
 
-const runActivityTimeout = 60000;
+const DEFAULT_TIMEOUT = 60000;
+
+async function iRun(connection: Connection, owner: string, account?: string) {
+  const startDate = Date.now();
+
+  const signatures = await getSignatures(connection, account || owner);
+  const txs = await getTransactions(
+    connection,
+    signatures.map((s) => s.signature)
+  );
+  const parsedTxs = txs.map((t) => parseTransaction(t, owner));
+  const now = Date.now();
+  const result: TransactionsResult = {
+    owner,
+    account: account || owner,
+    duration: now - startDate,
+    networkId: NetworkId.solana,
+    transactions: parsedTxs.filter((t) => t !== null),
+  };
+  return result;
+}
 
 export async function run(
   connection: Connection,
   owner: string,
-  account?: string
+  account?: string,
+  timeoutMs?: number
 ): Promise<TransactionsResult> {
-  const startDate = Date.now();
-
-  const activityPromise = getSignatures(connection, account || owner)
-    .then((signatures) =>
-      getTransactions(
-        connection,
-        signatures.map((s) => s.signature)
-      )
-    )
-    .then((parsedTransactions) =>
-      parsedTransactions.map((t) => parseTransaction(t, owner))
-    )
-    .then((txns): TransactionsResult => {
-      const now = Date.now();
-      return {
-        owner,
-        account: account || owner,
-        duration: now - startDate,
-        networkId: NetworkId.solana,
-        transactions: txns.filter((t) => t !== null),
-      };
-    });
-
   return promiseTimeout(
-    activityPromise,
-    runActivityTimeout,
+    iRun(connection, owner, account),
+    timeoutMs || DEFAULT_TIMEOUT,
     `Activity timed out`
   );
 }
