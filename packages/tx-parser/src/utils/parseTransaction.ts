@@ -1,13 +1,14 @@
 import { ParsedTransactionWithMeta } from '@solana/web3.js';
 import {
   BalanceChange,
+  NetworkId,
   Service,
   solanaNativeDecimals,
   solanaNativeWrappedAddress,
   Transaction,
 } from '@sonarwatch/portfolio-core';
-import { unshift } from '../unshift';
-import { sortedServices } from '../../services';
+import { unshift } from './unshift';
+import { sortedServices } from '../services';
 
 const findTransactionService = (
   txn: ParsedTransactionWithMeta
@@ -85,6 +86,8 @@ export const parseTransaction = (
 
   return {
     signature: txn.transaction.signatures[0],
+    networkId: NetworkId.solana,
+    owner,
     blockTime: txn.blockTime,
     service: findTransactionService(txn),
     balanceChanges: changes,
