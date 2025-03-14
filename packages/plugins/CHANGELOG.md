@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.142](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.141...plugins-0.14.142) (2025-03-14)
+
+
+### Bug Fixes
+
+* **zeus:** platform import ([b226e34](https://github.com/sonarwatch/portfolio/commit/b226e3481410d33cf39bd64730c51329dd449860))
+
+
+### Reverts
+
+* Revert "add tx fetching for rpc performance optimization" ([25d669b](https://github.com/sonarwatch/portfolio/commit/25d669b6660b3d3e2c38fae14800dc9cb89e3a1b))
+* Revert "test" ([bbf8b3c](https://github.com/sonarwatch/portfolio/commit/bbf8b3ca3f4da142b65119c864866122106489b6))
+
+
+
 ## [0.14.141](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.140...plugins-0.14.141) (2025-03-12)
 
 
