@@ -46,6 +46,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const element = elementRegistry.addElementBorrowlend({
       label: 'Lending',
+      ref: account.pubkey,
+      sourceRefs: [
+        {
+          name: 'Market',
+          address: account.hadoMarket.toString(),
+        },
+      ],
     });
 
     let address;
