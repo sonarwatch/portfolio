@@ -8,7 +8,7 @@ import {
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { i64, u64 } from '../../utils/solana';
+import { i64, u128, u64 } from '../../utils/solana';
 
 export enum BanxTokenStakeState {
   None,
@@ -356,4 +356,70 @@ export const FraktbondStruct = new BeetStruct<Fraktbond>(
     ['refinanceAuctionStartedAt', u64],
   ],
   (args) => args as Fraktbond
+);
+
+export type BanxPool = {
+  accountDiscriminator: number[];
+};
+
+export const banxPoolStruct = new BeetStruct<BanxPool>(
+  [['accountDiscriminator', uniformFixedSizeArray(u8, 8)]],
+  (args) => args as BanxPool
+);
+
+export type BanxPoolMarketSettings = {
+  accountDiscriminator: number[];
+};
+
+export const banxPoolMarketSettingsStruct =
+  new BeetStruct<BanxPoolMarketSettings>(
+    [['accountDiscriminator', uniformFixedSizeArray(u8, 8)]],
+    (args) => args as BanxPoolMarketSettings
+  );
+
+export enum BanxPoolUserDepositState {
+  None = 0,
+  Active = 1,
+  Closed = 2,
+}
+
+export type BanxPoolUserDeposit = {
+  accountDiscriminator: number[];
+  userDepositState: BanxPoolUserDepositState;
+  banxPool: PublicKey;
+  user: PublicKey;
+  depositAmount: BigNumber;
+  depositedAt: BigNumber;
+  depositedAtCumulative: BigNumber;
+  requestedWithdrawAmount: BigNumber;
+  rewardsHarvested: BigNumber;
+  lastTransactedAt: BigNumber;
+  lossCumulative: BigNumber;
+  totalLossAmount: BigNumber;
+  placeholder1: BigNumber;
+  placeholder2: BigNumber;
+  placeholder3: BigNumber;
+  placeholder4: PublicKey;
+};
+
+export const banxPoolUserDepositStruct = new BeetStruct<BanxPoolUserDeposit>(
+  [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+    ['userDepositState', u8],
+    ['banxPool', publicKey],
+    ['user', publicKey],
+    ['depositAmount', u128],
+    ['depositedAt', u64],
+    ['depositedAtCumulative', u128],
+    ['requestedWithdrawAmount', u128],
+    ['rewardsHarvested', u128],
+    ['lastTransactedAt', u64],
+    ['lossCumulative', u64],
+    ['totalLossAmount', u64],
+    ['placeholder1', u64],
+    ['placeholder2', u64],
+    ['placeholder3', u64],
+    ['placeholder4', publicKey],
+  ],
+  (args) => args as BanxPoolUserDeposit
 );

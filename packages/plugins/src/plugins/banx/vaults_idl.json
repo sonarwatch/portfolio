@@ -1,0 +1,2735 @@
+{
+  "address": "BanxxEcFZPJLKhS59EkwTa8SZez8vDYTiJVN78mGHWDi",
+  "metadata": {
+    "name": "banxVaults",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "createBanxPool",
+      "discriminator": [
+        56,
+        141,
+        241,
+        67,
+        96,
+        7,
+        179,
+        251
+      ],
+      "accounts": [
+        {
+          "name": "banxPool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  97,
+                  110,
+                  120,
+                  95,
+                  112,
+                  111,
+                  111,
+                  108,
+                  95,
+                  112,
+                  114,
+                  101,
+                  102,
+                  105,
+                  120
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "poolSeed"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true,
+          "address": "BanxFCLCQZWWzhqhBHa1Fzfbg635SfJHNX2oD4MrWQcA"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "banxPoolInputParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "createBanxPoolMarketSettings",
+      "discriminator": [
+        154,
+        223,
+        31,
+        170,
+        31,
+        103,
+        208,
+        242
+      ],
+      "accounts": [
+        {
+          "name": "banxPool",
+          "writable": true
+        },
+        {
+          "name": "banxPoolMarketSettings",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  97,
+                  110,
+                  120,
+                  95,
+                  112,
+                  111,
+                  111,
+                  108,
+                  95,
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116,
+                  95,
+                  115,
+                  101,
+                  116,
+                  105,
+                  110,
+                  103,
+                  115,
+                  95,
+                  112,
+                  114,
+                  101,
+                  102,
+                  105,
+                  120
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "banxPool"
+              },
+              {
+                "kind": "account",
+                "path": "banxOffer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "banxOffer",
+          "writable": true
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true,
+          "address": "BanxFCLCQZWWzhqhBHa1Fzfbg635SfJHNX2oD4MrWQcA"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "banxPoolMarketSettingsInputParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "deleteAccount",
+      "discriminator": [
+        124,
+        6,
+        214,
+        255,
+        144,
+        7,
+        159,
+        251
+      ],
+      "accounts": [
+        {
+          "name": "accountToDelete",
+          "writable": true
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "depositLiquidityToPool",
+      "discriminator": [
+        13,
+        51,
+        188,
+        85,
+        196,
+        2,
+        66,
+        21
+      ],
+      "accounts": [
+        {
+          "name": "banxPool",
+          "writable": true
+        },
+        {
+          "name": "banxPoolUserDeposit",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  97,
+                  110,
+                  120,
+                  95,
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  100,
+                  101,
+                  112,
+                  111,
+                  115,
+                  105,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "banxPool"
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "banxPoolTokenAccount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "banxPool"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "poolLendingToken"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "userTokenAccount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "poolLendingToken"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "poolLendingToken",
+          "writable": true
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associatedTokenProgram",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        }
+      ],
+      "args": [
+        {
+          "name": "amountToDeposit",
+          "type": "u128"
+        }
+      ]
+    },
+    {
+      "name": "depositLiquidityToPoolAdmin",
+      "discriminator": [
+        215,
+        43,
+        126,
+        224,
+        80,
+        98,
+        156,
+        251
+      ],
+      "accounts": [
+        {
+          "name": "banxPool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  97,
+                  110,
+                  120,
+                  95,
+                  112,
+                  111,
+                  111,
+                  108,
+                  95,
+                  112,
+                  114,
+                  101,
+                  102,
+                  105,
+                  120
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "banxPool.seed",
+                "account": "banxPool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "rewardCurator",
+          "writable": true
+        },
+        {
+          "name": "rewardCuratorTokenAccount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "rewardCurator"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "poolLendingToken"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "banxPoolTokenAccount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "banxPool"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "poolLendingToken"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "userTokenAccount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "poolLendingToken"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "poolLendingToken",
+          "writable": true
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associatedTokenProgram",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        }
+      ],
+      "args": [
+        {
+          "name": "amountToDeposit",
+          "type": "u128"
+        },
+        {
+          "name": "amountOfLosses",
+          "type": "u128"
+        },
+        {
+          "name": "rewardsToDeposit",
+          "type": "u128"
+        }
+      ]
+    },
+    {
+      "name": "harvestRewards",
+      "discriminator": [
+        213,
+        164,
+        27,
+        71,
+        21,
+        69,
+        10,
+        104
+      ],
+      "accounts": [
+        {
+          "name": "banxPool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  97,
+                  110,
+                  120,
+                  95,
+                  112,
+                  111,
+                  111,
+                  108,
+                  95,
+                  112,
+                  114,
+                  101,
+                  102,
+                  105,
+                  120
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "banxPool.seed",
+                "account": "banxPool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "banxPoolUserDeposit",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  97,
+                  110,
+                  120,
+                  95,
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  100,
+                  101,
+                  112,
+                  111,
+                  115,
+                  105,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "banxPool"
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "banxPoolTokenAccount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "banxPool"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "poolLendingToken"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "userTokenAccount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "poolLendingToken"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "poolLendingToken",
+          "writable": true
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associatedTokenProgram",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "migrateDeposit",
+      "discriminator": [
+        122,
+        140,
+        217,
+        140,
+        223,
+        175,
+        173,
+        148
+      ],
+      "accounts": [
+        {
+          "name": "banxPool",
+          "writable": true
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "requestWithdrawFromPool",
+      "discriminator": [
+        100,
+        209,
+        185,
+        160,
+        250,
+        148,
+        96,
+        242
+      ],
+      "accounts": [
+        {
+          "name": "banxPool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  97,
+                  110,
+                  120,
+                  95,
+                  112,
+                  111,
+                  111,
+                  108,
+                  95,
+                  112,
+                  114,
+                  101,
+                  102,
+                  105,
+                  120
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "banxPool.seed",
+                "account": "banxPool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "banxPoolUserDeposit",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  97,
+                  110,
+                  120,
+                  95,
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  100,
+                  101,
+                  112,
+                  111,
+                  115,
+                  105,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "banxPool"
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "amountToWithdrawFromDeposit",
+          "type": "u128"
+        }
+      ]
+    },
+    {
+      "name": "syncPoolAdmin",
+      "discriminator": [
+        74,
+        39,
+        189,
+        44,
+        73,
+        49,
+        149,
+        107
+      ],
+      "accounts": [
+        {
+          "name": "banxPool",
+          "writable": true
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "banxPoolTokenAccount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "banxPool"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "poolLendingToken"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "poolLendingToken",
+          "writable": true
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associatedTokenProgram",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        }
+      ],
+      "args": [
+        {
+          "name": "period",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "withdrawLiquidityFromPool",
+      "discriminator": [
+        61,
+        75,
+        105,
+        156,
+        141,
+        94,
+        53,
+        71
+      ],
+      "accounts": [
+        {
+          "name": "banxPool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  97,
+                  110,
+                  120,
+                  95,
+                  112,
+                  111,
+                  111,
+                  108,
+                  95,
+                  112,
+                  114,
+                  101,
+                  102,
+                  105,
+                  120
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "banxPool.seed",
+                "account": "banxPool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "banxPoolUserDeposit",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  97,
+                  110,
+                  120,
+                  95,
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  100,
+                  101,
+                  112,
+                  111,
+                  115,
+                  105,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "banxPool"
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "banxPoolTokenAccount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "banxPool"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "poolLendingToken"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "userTokenAccount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "poolLendingToken"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "poolLendingToken",
+          "writable": true
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associatedTokenProgram",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        }
+      ],
+      "args": [
+        {
+          "name": "amountToWithdrawFromDeposit",
+          "type": "u128"
+        }
+      ]
+    },
+    {
+      "name": "withdrawLiquidityFromPoolAdmin",
+      "discriminator": [
+        174,
+        31,
+        211,
+        113,
+        6,
+        161,
+        97,
+        214
+      ],
+      "accounts": [
+        {
+          "name": "banxPool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  97,
+                  110,
+                  120,
+                  95,
+                  112,
+                  111,
+                  111,
+                  108,
+                  95,
+                  112,
+                  114,
+                  101,
+                  102,
+                  105,
+                  120
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "banxPool.seed",
+                "account": "banxPool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "banxPoolTokenAccount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "banxPool"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "poolLendingToken"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "userTokenAccount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "poolLendingToken"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "poolLendingToken",
+          "writable": true
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associatedTokenProgram",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        }
+      ],
+      "args": [
+        {
+          "name": "amountToWithdraw",
+          "type": "u128"
+        }
+      ]
+    },
+    {
+      "name": "withdrawUserDepositAdmin",
+      "discriminator": [
+        153,
+        4,
+        62,
+        245,
+        22,
+        139,
+        158,
+        63
+      ],
+      "accounts": [
+        {
+          "name": "banxPool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  97,
+                  110,
+                  120,
+                  95,
+                  112,
+                  111,
+                  111,
+                  108,
+                  95,
+                  112,
+                  114,
+                  101,
+                  102,
+                  105,
+                  120
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "banxPool.seed",
+                "account": "banxPool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "banxPoolUserDeposit",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  97,
+                  110,
+                  120,
+                  95,
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  100,
+                  101,
+                  112,
+                  111,
+                  115,
+                  105,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "banxPool"
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "user",
+          "writable": true
+        },
+        {
+          "name": "banxPoolTokenAccount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "banxPool"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "poolLendingToken"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "userTokenAccount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "admin"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "poolLendingToken"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "poolLendingToken",
+          "writable": true
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associatedTokenProgram",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        }
+      ],
+      "args": [
+        {
+          "name": "amountToWithdrawFromDeposit",
+          "type": "u128"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "banxPool",
+      "discriminator": [
+        244,
+        137,
+        43,
+        100,
+        25,
+        36,
+        150,
+        221
+      ]
+    },
+    {
+      "name": "banxPoolMarketSettings",
+      "discriminator": [
+        176,
+        103,
+        161,
+        160,
+        136,
+        202,
+        154,
+        12
+      ]
+    },
+    {
+      "name": "banxPoolUserDeposit",
+      "discriminator": [
+        111,
+        224,
+        169,
+        186,
+        223,
+        215,
+        84,
+        49
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "userDoesntHaveAuthority",
+      "msg": "UserDoesntHaveAuthority"
+    },
+    {
+      "code": 6001,
+      "name": "wrongVaultTokenAccount",
+      "msg": "Wrong vault token account"
+    },
+    {
+      "code": 6002,
+      "name": "notEnoughLiqForOffer",
+      "msg": "Not enough liquidity for offer"
+    },
+    {
+      "code": 6003,
+      "name": "poolShareLimitExceed",
+      "msg": "Pool ashre more than 100 percent"
+    },
+    {
+      "code": 6004,
+      "name": "maxCapExceed",
+      "msg": "Max cap exceed"
+    },
+    {
+      "code": 6005,
+      "name": "cantWithdrawMoreThanDeposit",
+      "msg": "CantWithdrawMoreThanDeposit"
+    }
+  ],
+  "types": [
+    {
+      "name": "banxPool",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "banxPoolState",
+            "type": {
+              "defined": {
+                "name": "banxPoolState"
+              }
+            }
+          },
+          {
+            "name": "seed",
+            "type": "u64"
+          },
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "lendingToken",
+            "type": "pubkey"
+          },
+          {
+            "name": "reservesPercentBp",
+            "type": "u64"
+          },
+          {
+            "name": "maxCap",
+            "type": "u128"
+          },
+          {
+            "name": "safetyReserveInterestShareBp",
+            "type": "u64"
+          },
+          {
+            "name": "lossCumulative",
+            "type": "u64"
+          },
+          {
+            "name": "liquidityUsageByMarketsBp",
+            "type": "u64"
+          },
+          {
+            "name": "reserves",
+            "type": "u128"
+          },
+          {
+            "name": "deposits",
+            "type": "u128"
+          },
+          {
+            "name": "liquidityInOffers",
+            "type": "u128"
+          },
+          {
+            "name": "liquidityTotal",
+            "type": "u128"
+          },
+          {
+            "name": "currentRewards",
+            "type": "u128"
+          },
+          {
+            "name": "totalRewardsAllTime",
+            "type": "u128"
+          },
+          {
+            "name": "apr",
+            "type": "u128"
+          },
+          {
+            "name": "cumulative",
+            "type": "u128"
+          },
+          {
+            "name": "period",
+            "type": "u64"
+          },
+          {
+            "name": "lastTime",
+            "type": "u64"
+          },
+          {
+            "name": "oldCumulative",
+            "type": "u128"
+          },
+          {
+            "name": "adminRewardsShareBp",
+            "type": "u64"
+          },
+          {
+            "name": "adminRewardsAmount",
+            "type": "u128"
+          },
+          {
+            "name": "lastTransactedAt",
+            "type": "u64"
+          },
+          {
+            "name": "safetyReserveInterestShareAmount",
+            "type": "u128"
+          },
+          {
+            "name": "rewardCurator",
+            "type": "pubkey"
+          },
+          {
+            "name": "placeholder2",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "banxPoolInputParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "poolSeed",
+            "type": "u64"
+          },
+          {
+            "name": "banxPoolState",
+            "type": {
+              "defined": {
+                "name": "banxPoolState"
+              }
+            }
+          },
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "rewardCurator",
+            "type": "pubkey"
+          },
+          {
+            "name": "period",
+            "type": "u64"
+          },
+          {
+            "name": "lendingToken",
+            "type": "pubkey"
+          },
+          {
+            "name": "safetyReserveInterestShareBp",
+            "type": "u64"
+          },
+          {
+            "name": "reservesPercentBp",
+            "type": "u64"
+          },
+          {
+            "name": "adminRewardsShareBp",
+            "type": "u64"
+          },
+          {
+            "name": "maxCap",
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "banxPoolMarketSettings",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "banxSettingsPoolState",
+            "type": {
+              "defined": {
+                "name": "banxPoolSettingsState"
+              }
+            }
+          },
+          {
+            "name": "banxPool",
+            "type": "pubkey"
+          },
+          {
+            "name": "banxOffer",
+            "type": "pubkey"
+          },
+          {
+            "name": "poolShareBp",
+            "type": "u64"
+          },
+          {
+            "name": "offerLtvBp",
+            "type": "u64"
+          },
+          {
+            "name": "liquidationLtvBp",
+            "type": "u64"
+          },
+          {
+            "name": "offerAprBp",
+            "type": "u64"
+          },
+          {
+            "name": "rollDuration",
+            "type": "u64"
+          },
+          {
+            "name": "maxMarketCap",
+            "type": "u128"
+          },
+          {
+            "name": "liquidityInOffers",
+            "type": "u128"
+          },
+          {
+            "name": "totalRewardsAllTime",
+            "type": "u128"
+          },
+          {
+            "name": "lastTransactedAt",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "banxPoolMarketSettingsInputParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "banxSettingsPoolState",
+            "type": {
+              "defined": {
+                "name": "banxPoolSettingsState"
+              }
+            }
+          },
+          {
+            "name": "poolShareBp",
+            "type": "u64"
+          },
+          {
+            "name": "offerLtvBp",
+            "type": "u64"
+          },
+          {
+            "name": "liquidationLtvBp",
+            "type": "u64"
+          },
+          {
+            "name": "offerAprBp",
+            "type": "u64"
+          },
+          {
+            "name": "rollDuration",
+            "type": "u64"
+          },
+          {
+            "name": "maxMarketCap",
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "banxPoolSettingsState",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "none"
+          },
+          {
+            "name": "active"
+          },
+          {
+            "name": "closed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "banxPoolState",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "none"
+          },
+          {
+            "name": "active"
+          },
+          {
+            "name": "closed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "banxPoolUserDeposit",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "userDepositState",
+            "type": {
+              "defined": {
+                "name": "banxPoolUserDepositState"
+              }
+            }
+          },
+          {
+            "name": "banxPool",
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "depositAmount",
+            "type": "u128"
+          },
+          {
+            "name": "depositedAt",
+            "type": "u64"
+          },
+          {
+            "name": "depositedAtCumulative",
+            "type": "u128"
+          },
+          {
+            "name": "requestedWithdrawAmount",
+            "type": "u128"
+          },
+          {
+            "name": "rewardsHarvested",
+            "type": "u128"
+          },
+          {
+            "name": "lastTransactedAt",
+            "type": "u64"
+          },
+          {
+            "name": "lossCumulative",
+            "type": "u64"
+          },
+          {
+            "name": "totalLossAmount",
+            "type": "u64"
+          },
+          {
+            "name": "placeholder1",
+            "type": "u64"
+          },
+          {
+            "name": "placeholder2",
+            "type": "u64"
+          },
+          {
+            "name": "placeholder3",
+            "type": "u64"
+          },
+          {
+            "name": "placeholder4",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "banxPoolUserDepositState",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "none"
+          },
+          {
+            "name": "active"
+          },
+          {
+            "name": "closed"
+          }
+        ]
+      }
+    }
+  ]
+}
