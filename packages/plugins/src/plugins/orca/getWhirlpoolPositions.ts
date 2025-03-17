@@ -129,7 +129,7 @@ export function getOrcaNftFetcher(
           (1 - whirlpoolInfo.protocolFeeRate / 10000),
         swapVolume24h: allWhirlpoolsStats.find(
           (p) => p?.address === positionInfo.whirlpool.toString()
-        )?.volumeUsdc24h,
+        )?.stats['24h'].volume,
       });
 
       const feesAndRewards = calcFeesAndRewards(
