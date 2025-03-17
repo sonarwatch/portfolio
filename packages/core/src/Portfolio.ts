@@ -203,6 +203,7 @@ export type BalanceChange = {
 
 export type Transaction = {
   signature: string;
+  owner: string;
   blockTime?: number | null;
   service?: Service;
   balanceChanges: BalanceChange[];
