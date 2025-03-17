@@ -12,6 +12,11 @@ export const platform: Platform = {
   website: 'https://sharky.fi/',
   twitter: 'https://twitter.com/SharkyFi',
   defiLlamaId: 'sharky', // from https://defillama.com/docs/api
+  discord: 'https://discord.gg/sharkyfi',
+  github: 'https://github.com/SharkyFi',
+  tokens: ['SHARKSYJjqaNyxVfrpnBN9pjgkhwDhatnMyicWPnr1s'],
+  description:
+    'Sharky is the first escrowless NFT lending and borrowing protocol on Solana. Users can borrow SOL against their NFTs or Lend SOL and earn a high % APY.',
 };
 export const collectionsCacheKey = `${platformId}-collections`;
 export const cachePrefix = `${platformId}`;

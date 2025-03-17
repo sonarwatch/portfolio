@@ -21,6 +21,7 @@ import { redeemFilter } from './filters';
 import { RootBank, TokenInfo, mangoAccountV3Struct } from './struct';
 import runInBatch from '../../utils/misc/runInBatch';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { mSOLMint } from '../marinade/constants';
 
 const mints = [
   'MangoCzJ36AjZyKwVj3VnYU4GTonjfVEnJmvvWaxLac',
@@ -33,7 +34,7 @@ const mints = [
   '11111111111111111111111111111111',
   'AGFEad2et2ZJif9jaGpdMixQqvW5i81aBdvKe7PHNfz3',
   '11111111111111111111111111111111',
-  'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So',
+  mSOLMint,
   '9gP2kCy3wA1ctvYWQk75guqXuHfrEomqydHLtcTCqiLa',
   'KgV1GvrHQmRBY8sHQQeUKwTm2r2h8t4C8qt12Cw1HVE',
   '11111111111111111111111111111111',

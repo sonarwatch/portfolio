@@ -2,6 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'accessprotocol';
+export const acsMint = '5MAYDfq5yxtudAhtfyuMBuHZjgAbaS9tbEyEQYAhDS5y';
 export const platform: Platform = {
   id: platformId,
   name: 'Access Protocol',
@@ -15,9 +16,9 @@ export const platform: Platform = {
   discord: 'https://discord.com/invite/access-protocol-1001837380044587118',
   documentation: 'https://docs.accessprotocol.co/guide',
   github: 'https://github.com/Access-Labs-Inc',
+  tokens: [acsMint],
 };
 export const stakePid = new PublicKey(
   '6HW8dXjtiTGkD4jzXs7igdFmZExPpmwUrRN5195xGup'
 );
-export const acsMint = '5MAYDfq5yxtudAhtfyuMBuHZjgAbaS9tbEyEQYAhDS5y';
 export const acsDecimals = 6;

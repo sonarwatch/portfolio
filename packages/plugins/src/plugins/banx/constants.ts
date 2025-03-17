@@ -5,6 +5,11 @@ import { Collection, SplAssetMarket, Vault } from './types';
 import { arrayToMap } from '../../utils/misc/arrayToMap';
 
 export const platformId = 'banx';
+
+export const banxMint = 'BANXbTpN8U2cU41FjPxe2Ti37PiT5cCxLUKDQZuJeMMR';
+export const banxDecimals = 9;
+export const banxSolMint = 'BANXyWgPpa519e2MtQF1ecRbKYKKDMXPF1dyBxUq9NQG';
+
 export const platform: Platform = {
   id: platformId,
   name: 'Banx',
@@ -18,6 +23,7 @@ export const platform: Platform = {
   documentation: 'https://docs.banx.gg/',
   discord: 'https://discord.com/invite/banxfromfrakt',
   github: 'https://github.com/frakt-solana',
+  tokens: [banxMint],
 };
 
 export const banxPid = new PublicKey(
@@ -26,9 +32,6 @@ export const banxPid = new PublicKey(
 export const banxVaultsPid = new PublicKey(
   'BanxxEcFZPJLKhS59EkwTa8SZez8vDYTiJVN78mGHWDi'
 );
-export const banxMint = 'BANXbTpN8U2cU41FjPxe2Ti37PiT5cCxLUKDQZuJeMMR';
-export const banxDecimals = 9;
-export const banxSolMint = 'BANXyWgPpa519e2MtQF1ecRbKYKKDMXPF1dyBxUq9NQG';
 
 export const banxApiCollectionsUrl =
   'https://api.banx.gg/bonds/preview?getAll=true&marketType=banxSol&isPrivate=false';

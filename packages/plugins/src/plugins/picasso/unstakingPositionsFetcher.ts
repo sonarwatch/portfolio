@@ -31,7 +31,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const allVaults = await allVaultsMemo.getItem(cache);
 
-  if (!allVaults || allVaults.length === 0) return [];
+  if (!allVaults) throw new Error('Vaults not cached');
 
   const myVaults = allVaults.filter(
     (v) => v.withdrawalRequest?.owner === owner

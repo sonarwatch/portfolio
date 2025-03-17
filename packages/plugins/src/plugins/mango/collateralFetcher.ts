@@ -39,7 +39,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     prefix: platformId,
     networkId: NetworkId.solana,
   });
-  if (!banks) return [];
+  if (!banks) throw new Error('Banks not cached');
 
   const tokensMints: Set<string> = new Set();
   const bankByIndex: Map<number, BankEnhanced> = new Map();

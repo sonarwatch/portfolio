@@ -43,6 +43,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     depositAccounts.map((deposit) => deposit.vault.toString()),
     { prefix: prefixVaults, networkId: NetworkId.solana }
   );
+  if (!vaultsInfo) throw new Error('Vaults not cached');
 
   const vaultById: Map<string, VaultInfo> = arrayToMap(
     vaultsInfo.filter((v) => v !== undefined) as VaultInfo[],

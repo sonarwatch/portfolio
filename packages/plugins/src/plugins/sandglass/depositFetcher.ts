@@ -29,7 +29,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     prefix: platformId,
     networkId: NetworkId.solana,
   });
-  if (!marketsInfos) return [];
+  if (!marketsInfos) throw new Error('Markets info not cached.');
 
   const marketInfoById: Map<string, MarketInfo> = new Map();
   marketsInfos.forEach((marketInfo) =>

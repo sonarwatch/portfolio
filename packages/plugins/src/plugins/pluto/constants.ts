@@ -10,6 +10,11 @@ export const platform: Platform = {
   website: 'https://pluto.so/',
   twitter: 'https://x.com/plutoleverage',
   discord: 'https://discord.com/invite/plutoleverage',
+  documentation: 'https://docs.pluto.so/',
+  telegram: 'https://t.me/PlutoLeverage',
+  description: 'Leveraged Yield Machine on Solana',
+  defiLlamaId: 'pluto',
+  github: 'https://github.com/plutoleverage/',
 };
 
 export const plutoProgramId = new PublicKey(

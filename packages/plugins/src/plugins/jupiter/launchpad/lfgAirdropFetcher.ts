@@ -19,7 +19,10 @@ export function getLfgAirdropFetcher(aConfig: AirdropConfig): AirdropFetcher {
         timeout: 5000,
       })
       .catch((e) => {
-        if (e.response && e.response.status === 404) {
+        if (
+          e.response &&
+          (e.response.status === 404 || e.response.status === 200)
+        ) {
           return null;
         }
         throw new Error(`Failed to get claim proof: ${aConfig.mint}`);

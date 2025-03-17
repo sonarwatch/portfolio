@@ -24,6 +24,7 @@ import {
   wUsdcSuiType,
 } from '../../utils/sui/constants';
 import { usdcSolanaDecimals, usdcSolanaMint } from '../../utils/solana';
+import { mSOLMint } from '../marinade/constants';
 
 // https://www.pyth.network/developers/price-feed-ids#solana-price-feed-accounts
 const feedsToFetch: FeedInfo[] = [
@@ -162,7 +163,7 @@ const feedsToFetch: FeedInfo[] = [
     address: new PublicKey('5CKzb9j4ChgLUt8Gfm5CNGLN6khXKiqMbnGAW4cgXgxK'),
     tokens: [
       {
-        mint: 'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So',
+        mint: mSOLMint,
         networkdId: 'solana',
         decimals: 9,
       },

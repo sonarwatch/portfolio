@@ -3,6 +3,7 @@ import { PublicKey } from '@solana/web3.js';
 import { LendInfoItem } from './types';
 import { TOKENS } from './tokens';
 import { LendRewardInfo } from './structs';
+import { mSOLMint } from '../marinade/constants';
 
 export const platformId = 'francium';
 export const platform: Platform = {
@@ -13,6 +14,13 @@ export const platform: Platform = {
   website: 'https://francium.io/',
   twitter: 'https://x.com/Francium_Defi',
   defiLlamaId: 'francium', // from https://defillama.com/docs/api
+  isDeprecated: true,
+  discord: 'discord.gg/francium',
+  github: 'https://github.com/Francium-DeFi',
+  telegram: 'https://t.me/franciumprotocol',
+  medium: 'https://francium-defi.medium.com/',
+  description:
+    'Francium is a DeFi yield strategy Platform on Solana, providing leveraged/hedged farming, DeFi strategies & on-chain trading strategies.',
 };
 
 export const lendingPoolsCacheKey = 'lending_pools';
@@ -310,7 +318,7 @@ export const lendingPools: {
       'A9L7C5QMNG5yBjntCxjo4tkxmu2AHiNP5ev9uBtLUMfE'
     ),
     programId: lendProgramId,
-    tokenMint: new PublicKey('mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So'),
+    tokenMint: new PublicKey(mSOLMint),
     marketInfoAccount: new PublicKey(
       '4XNif294wbrxj6tJ8K5Rg7SuaEACnu9s2L27i28MQB6E'
     ),

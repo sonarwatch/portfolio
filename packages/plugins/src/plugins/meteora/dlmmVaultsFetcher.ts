@@ -41,7 +41,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     prefix: platformId,
     networkId: NetworkId.solana,
   });
-  if (!vaults) return [];
+  if (!vaults) throw new Error('Vaults not cached');
 
   const time = Date.now();
 

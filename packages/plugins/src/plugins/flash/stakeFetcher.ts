@@ -28,17 +28,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
   if (!stakeAccounts.some((account) => account !== null)) return [];
 
-  const poolsInfo = await cache.getItem<PoolInfo[]>(poolsKey, {
-    prefix: platformId,
-    networkId: NetworkId.solana,
-  });
-  if (!poolsInfo) return [];
-
-  const custodiesInfo = await cache.getItem<CustodyInfo[]>(custodiesKey, {
-    prefix: platformId,
-    networkId: NetworkId.solana,
-  });
-  if (!custodiesInfo) return [];
+  const [poolsInfo, custodiesInfo] = await Promise.all([
+    cache.getItem<PoolInfo[]>(poolsKey, {
+      prefix: platformId,
+      networkId: NetworkId.solana,
+    }),
+    cache.getItem<CustodyInfo[]>(custodiesKey, {
+      prefix: platformId,
+      networkId: NetworkId.solana,
+    }),
+  ]);
+  if (!poolsInfo) throw new Error('Pools not cached');
+  if (!custodiesInfo) throw new Error('Custodies not cached');
 
   const custodiesByPool: Map<string, CustodyInfo> = new Map();
   custodiesInfo.forEach((custody) =>

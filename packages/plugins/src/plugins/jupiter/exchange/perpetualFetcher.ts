@@ -66,8 +66,8 @@ const executor: FetcherExecutor = async (
       positionRequestFilters(owner)
     ),
   ]);
-
-  if (!custodiesAccounts || !perpPoolsArr) return [];
+  if (!custodiesAccounts) throw new Error('No custodies cached');
+  if (!perpPoolsArr) throw new Error('No perp pools cached');
 
   const prAccountsObj: Record<
     string,

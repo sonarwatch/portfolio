@@ -166,6 +166,9 @@ npx nx run plugins:run-fetcher wallet-tokens-ethereum-top d8dA6BF26964aF9D7eEd9e
 
 # Run a airdrop fetcher
 npx nx run plugins:run-airdrop-fetcher drift-airdrop-1 DemoSX9F2zXfQLtBr56Yr5he15P7viZWsYJpSDAX3tKG
+
+# Run transactions
+npx nx run plugins:run-transactions solana DemoSX9F2zXfQLtBr56Yr5he15P7viZWsYJpSDAX3tKG
 ```
 
 ## Build
@@ -173,6 +176,7 @@ npx nx run plugins:run-airdrop-fetcher drift-airdrop-1 DemoSX9F2zXfQLtBr56Yr5he1
 ```bash
 npx nx run core:build
 npx nx run plugins:build
+npx nx run tx-parser:build
 ```
 
 ## Deploy
@@ -180,9 +184,11 @@ npx nx run plugins:build
 ```bash
 npx nx run core:version --releaseAs=patch
 npx nx run plugins:version --releaseAs=patch
+npx nx run tx-parser:version --releaseAs=patch
 
 npx nx run core:version --releaseAs=minor
 npx nx run plugins:version --releaseAs=minor
+npx nx run tx-parser:version --releaseAs=minor
 
 npm run nx:version
 ```

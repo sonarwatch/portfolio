@@ -15,5 +15,6 @@ export type Platform = {
   referral?: string;
   medium?: string;
   documentation?: string;
-  isActive?: boolean;
+  isDeprecated?: boolean;
+  tokens?: string[];
 };

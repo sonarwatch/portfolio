@@ -3,13 +3,19 @@ import { Platform } from '@sonarwatch/portfolio-core';
 import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'magiceden';
+export const meMint = 'MEFNBXixkEbait3xn9bkm8WsJzXtVsaJEn4c8Sam21u';
 export const platform: Platform = {
   id: platformId,
   name: 'MagicEden',
   image:
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/magiceden.webp',
-  website: 'https://magiceden.io/',
+  website: 'https://magiceden.io/solana',
   twitter: 'https://twitter.com/MagicEden',
+  discord: 'https://discord.gg/magiceden',
+  documentation: 'https://community.magiceden.io/learn',
+  github: 'https://github.com/magiceden',
+  description: 'The NFT Marketplace.',
+  tokens: [meMint],
 };
 
 export const m2Prefix = 'm2';
@@ -22,7 +28,6 @@ export const m2AuctionHouse = new PublicKey(
 export const stakingPid = new PublicKey(
   'veTbq5fF2HWYpgmkwjGKTYLVpY6miWYYmakML7R7LRf'
 );
-export const meMint = 'MEFNBXixkEbait3xn9bkm8WsJzXtVsaJEn4c8Sam21u';
 export const airdropApi =
   'https://mefoundation.com/api/trpc/allocation.queryClaimStatus?input=';
 

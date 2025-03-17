@@ -5,6 +5,7 @@ import { AirdropStatics } from '../../AirdropFetcher';
 export const platformId = 'sanctum';
 export const platformImage = 'https://sonar.watch/img/platforms/sanctum.webp';
 export const platformWebsite = 'https://www.sanctum.so/';
+export const cloudMint = 'CLoUDKc4Ane7HeQcPpE3YHnznRxhMimJ4MyaUqyHFzAu';
 export const platform: Platform = {
   id: platformId,
   defiLlamaId: 'parent#sanctum', // from https://defillama.com/docs/api
@@ -12,10 +13,15 @@ export const platform: Platform = {
   image: platformImage,
   website: platformWebsite,
   twitter: 'https://twitter.com/sanctumso',
+  discord: 'discord.gg/sanctumso',
+  documentation: 'https://learn.sanctum.so/docs',
+  github: 'https://github.com/igneous-labs',
+  tokens: [cloudMint],
+  description:
+    'Sanctum is a new primitive built on Solana to power liquid staking and bring Solana into an infinite-LST future. Sanctum enables users that stake SOL natively or with a liquid staking token (LST) to tap into a powerful unified liquidity layer.',
 };
 export const lstsKey = 'lsts';
 
-export const cloudMint = 'CLoUDKc4Ane7HeQcPpE3YHnznRxhMimJ4MyaUqyHFzAu';
 export const cloudDecimals = 9;
 export const s1AirdropStatics: AirdropStatics = {
   id: 'sanctum',

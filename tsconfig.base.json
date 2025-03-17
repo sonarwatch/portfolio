@@ -20,6 +20,7 @@
     "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
+      "@sonarwatch/tx-parser": ["packages/tx-parser/src/index.ts"],
       "@sonarwatch/portfolio-core": ["packages/core/src/index.ts"],
       "@sonarwatch/portfolio-plugins": ["packages/plugins/src/index.ts"]
     }

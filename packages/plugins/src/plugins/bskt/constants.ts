@@ -2,6 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'bskt';
+export const bsktMint = '6gnCPhXtLnUD76HjQuSYPENLSZdG8RvDB1pTLM5aLSJA';
 export const platform: Platform = {
   id: platformId,
   name: 'BSKT',
@@ -15,6 +16,7 @@ export const platform: Platform = {
   description:
     'Baskets of assets in a portfolio, bridging liquidity cross-chain.',
   documentation: 'https://www.bskt.fi/bskt-whitepaper.pdf',
+  tokens: [bsktMint],
 };
 
 export const bsktPid = new PublicKey(
@@ -22,4 +24,3 @@ export const bsktPid = new PublicKey(
 );
 
 export const bsktDecimals = 5;
-export const bsktMint = '6gnCPhXtLnUD76HjQuSYPENLSZdG8RvDB1pTLM5aLSJA';

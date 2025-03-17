@@ -22,8 +22,7 @@ const programsMemo = new MemoizedCache<Program[]>(programsCacheKey, {
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const programs = await programsMemo.getItem(cache);
-
-  if (!programs) return [];
+  if (!programs) throw new Error('No programs cached.');
 
   const userStatsByProgram = await getUserStatsByProgram(programs, owner);
 

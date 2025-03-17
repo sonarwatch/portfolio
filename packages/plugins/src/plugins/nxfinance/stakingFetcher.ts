@@ -43,7 +43,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       networkId: NetworkId.solana,
     }
   );
-
   if (!stakePoolAccount) throw new Error('Stake pool not found in cache.');
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);

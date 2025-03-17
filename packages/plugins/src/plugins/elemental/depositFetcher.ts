@@ -22,7 +22,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
 
   const pools = await poolsMemo.getItem(cache);
-  if (!pools) return [];
+  if (!pools) throw new Error('Pools not cached');
 
   const positionsKeys = pools.map((p) => getPositionAddress(p.pubkey, owner));
   const positions = await getParsedMultipleAccountsInfo(

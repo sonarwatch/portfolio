@@ -1,0 +1,66 @@
+{
+  "name": "tx-parser",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/tx-parser",
+  "projectType": "library",
+  "targets": {
+    "run": {
+      "command": "ts-node -P packages/tx-parser/tsconfig.script.json --swc packages/tx-parser/scripts/run.ts",
+      "dependsOn": []
+    },
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/tx-parser",
+        "main": "packages/tx-parser/src/index.ts",
+        "tsConfig": "packages/tx-parser/tsconfig.lib.json",
+        "assets": ["packages/tx-parser/*.md"]
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs tx-parser {args.ver} {args.tag}",
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "packages/tx-parser/**/*.ts",
+          "packages/tx-parser/package.json"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/tx-parser/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "version": {
+      "executor": "@jscutlery/semver:version",
+      "dependsOn": ["build"],
+      "options": {
+        "postTargets": ["tx-parser:npm"],
+        "allowEmptyRelease": true,
+        "trackDeps": true
+      }
+    },
+    "npm": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      }
+    }
+  },
+  "tags": []
+}

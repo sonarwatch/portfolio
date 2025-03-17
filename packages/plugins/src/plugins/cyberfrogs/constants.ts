@@ -9,6 +9,8 @@ export const platform: Platform = {
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/cyberfrogs.webp',
   website: 'https://legacy.cyberfrogs.io/faction-contracts-v3',
   twitter: 'https://twitter.com/CyberFrogsNFT',
+  discord: 'https://discord.com/invite/cyberfrogs',
+  description: 'Leading NFT Development, Innovation & Crypto Trading Tools',
 };
 
 export const pid = new PublicKey(

@@ -4,6 +4,7 @@ import { Platform } from '@sonarwatch/portfolio-core';
 export const platformId = 'save';
 export const platformDumpyId = 'dumpy';
 
+export const slndMint = 'SLNDpmoWTVADgEdndyvWzroNL7zSi1dF9PC3xHGtPwp';
 export const platform: Platform = {
   id: platformId,
   name: 'Save',
@@ -12,9 +13,12 @@ export const platform: Platform = {
   defiLlamaId: 'save',
   website: 'https://save.finance/',
   discord: 'https://discord.com/invite/J7m48UUPkJ',
-  description: "Solana's permissionless savings account.",
+  description:
+    'Solend is an algorithmic, decentralized protocol for lending and borrowing on Solana. ',
   twitter: 'https://x.com/save_finance',
   documentation: 'https://docs.save.finance/',
+  github: 'https://github.com/solendprotocol',
+  tokens: [slndMint, 'SAVEaeeqeXNKYb4Lyx28DkUms5gyZ76vGa6fCfdzWfK'],
 };
 
 export const platformDumpy: Platform = {
@@ -44,5 +48,3 @@ export const rewardProofsEndpoint =
   'https://api.save.finance/liquidity-mining/reward-proofs?obligation=';
 export const externalRewardStatsEndpoint =
   'https://api.save.finance/liquidity-mining/external-reward-stats-v2?flat=true';
-
-export const slndMint = 'SLNDpmoWTVADgEdndyvWzroNL7zSi1dF9PC3xHGtPwp';

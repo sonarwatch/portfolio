@@ -3,6 +3,7 @@ import { PublicKey } from '@solana/web3.js';
 import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'grass';
+export const grassMint = 'Grass7B4RdKfBCjTKgSqnXkqjwiGvQyFbuSCUJr3XXjs';
 export const platform: Platform = {
   id: platformId,
   name: 'Grass',
@@ -10,6 +11,10 @@ export const platform: Platform = {
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/grass.webp',
   website: 'https://www.grassfoundation.io/stake',
   twitter: 'https://twitter.com/getgrass_io',
+  documentation: 'https://grass-foundation.gitbook.io/grass-docs',
+  discord: 'https://discord.com/invite/getgrass',
+  description: 'Get rewarded for your unused internet',
+  tokens: [grassMint],
 };
 
 export const airdropStatics: AirdropStatics = {
@@ -30,4 +35,3 @@ export const pidDistributor = new PublicKey(
 export const pid = new PublicKey(
   'EyxPPowqBRTpZpiDb2ixUR6XUU1VJwTCNgJdK8eyc6kc'
 );
-export const grassMint = 'Grass7B4RdKfBCjTKgSqnXkqjwiGvQyFbuSCUJr3XXjs';

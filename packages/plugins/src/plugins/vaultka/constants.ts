@@ -16,7 +16,12 @@ export const platform: Platform = {
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/vaultka.webp',
   website: 'https://solana.vaultka.com/',
   twitter: 'https://x.com/Vaultkaofficial',
+  discord: 'https://discord.com/invite/hXagEmhN8F',
   defiLlamaId: 'vaultka', // from https://defillama.com/docs/api
+  documentation: 'https://docs.vaultka.com/',
+  medium: 'https://medium.com/@Vaultka',
+  github: 'https://github.com/Vaultka-Project',
+  description: 'Liquidity optimization layer for yield bearing tokens.',
 };
 
 export const lendingsCacheKey = `lendings`;
