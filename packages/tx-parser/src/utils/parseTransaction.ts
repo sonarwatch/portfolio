@@ -1,7 +1,6 @@
 import { ParsedTransactionWithMeta } from '@solana/web3.js';
 import {
   BalanceChange,
-  NetworkId,
   Service,
   solanaNativeDecimals,
   solanaNativeWrappedAddress,
