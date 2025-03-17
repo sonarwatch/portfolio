@@ -1,4 +1,8 @@
-import { TokenPrice, formatTokenAddress } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  TokenPrice,
+  formatTokenAddress,
+} from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import {
@@ -15,6 +19,8 @@ const executor: JobExecutor = async (cache: Cache) => {
   for (let i = 0; i < crvNetworkIds.length; i++) {
     const crvNetworkId = crvNetworkIds[i];
     const networkId = crvNetworkIdBySwNetworkId[crvNetworkId];
+    // We are only supporting fraxtal for now so no need to run jobs for other chains
+    if (networkId !== NetworkId.fraxtal) continue;
 
     const pools = await getPoolsData(crvNetworkId);
     const coinsAddresses = [

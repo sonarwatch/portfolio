@@ -1,22 +1,39 @@
-export const abi = [
+export const liquidityGaugeAbi = [
   {
     stateMutability: 'view',
     type: 'function',
-    name: 'n_gauges',
-    inputs: [],
-    outputs: [{ name: '', type: 'int128' }],
+    name: 'claimable_reward',
+    inputs: [
+      { name: '_user', type: 'address' },
+      { name: '_reward_token', type: 'address' },
+    ],
+    outputs: [{ name: '', type: 'uint256' }],
   },
   {
     stateMutability: 'view',
     type: 'function',
-    name: 'gauges',
+    name: 'claimable_tokens',
+    inputs: [{ name: 'addr', type: 'address' }],
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    name: 'reward_count',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    name: 'reward_tokens',
     inputs: [{ name: 'arg0', type: 'uint256' }],
     outputs: [{ name: '', type: 'address' }],
   },
   {
     stateMutability: 'view',
     type: 'function',
-    name: 'lp_token',
+    name: 'bal_token',
     inputs: [],
     outputs: [{ name: '', type: 'address' }],
   },

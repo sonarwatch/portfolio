@@ -1,17 +1,45 @@
-export type Pool = {
-  id: string;
+export type OwnerPoolApiResponse = {
   address: string;
+  name: string;
   symbol: string;
-  tokens: PoolToken[];
-  totalLiquidity: string;
-  totalShares: string;
+  type: string;
+  dynamicData: {
+    totalShares: string;
+    totalLiquidity: string;
+  };
+  poolTokens: {
+    address: string;
+    symbol: string;
+    name: string;
+    balance: string;
+    logoURI: string;
+    decimals: number;
+    balanceUSD: string;
+  }[];
+  staking: {
+    address: string;
+    gauge: {
+      gaugeAddress: string;
+    };
+  };
+  userBalance: {
+    stakedBalances: {
+      stakingType: string;
+      stakingId: string;
+      balance: string;
+      balanceUsd: number;
+    }[];
+    totalBalance: string;
+  };
 };
 
-export type PoolToken = {
-  decimals: number;
-  symbol: string;
-  address: string;
-  balance: string;
+export type PoolTokenApiResponse = {
+  poolTokens: {
+    address: string;
+    symbol: string;
+    name: string;
+    logoURI: string | null;
+    decimals: number;
+    coingeckoId: string | null;
+  }[];
 };
-
-export type GaugesByPool = Record<string, string[]>;

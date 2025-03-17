@@ -13,6 +13,7 @@ export const NetworkId = {
   sui: 'sui',
   sei: 'sei',
   bnb: 'bnb',
+  fraxtal: 'fraxtal',
 } as const;
 
 /**
@@ -32,7 +33,8 @@ export type EvmNetworkIdType =
   | typeof NetworkId.ethereum
   | typeof NetworkId.avalanche
   | typeof NetworkId.polygon
-  | typeof NetworkId.bnb;
+  | typeof NetworkId.bnb
+  | typeof NetworkId.fraxtal;
 
 /**
  * Represents the type of a Cosmos network ID.

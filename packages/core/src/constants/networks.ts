@@ -9,6 +9,8 @@ import {
   bnbNativeWrappedAddress,
   ethereumNativeAddress,
   ethereumNativeWrappedAddress,
+  fraxtalNativeAddress,
+  fraxtalNativeWrappedAddress,
   polygonNativeAddress,
   polygonNativeWrappedAddress,
   seiNativeAddress,
@@ -208,6 +210,30 @@ export const bnbNetwork: Network = {
     'https://github.com/sonarwatch/token-lists/releases/latest/download/sonarwatch.bnb.tokenlist.json',
 };
 
+export const fraxtalNetwork: Network = {
+  id: NetworkId.fraxtal,
+  name: 'Fraxtal',
+  image: 'https://images.octav.fi/chains/fraxtal_icon.svg',
+  addressSystem: AddressSystem.evm,
+  chainId: 252,
+  native: {
+    address: fraxtalNativeAddress,
+    decimals: 18,
+    coingeckoId: 'frax-ether',
+  },
+  nativeWrapped: {
+    address: fraxtalNativeWrappedAddress,
+    decimals: 18,
+    coingeckoId: 'wrapped-frxeth',
+  },
+  isLive: true,
+  geckoId: 'fraxtal-ecosystem',
+  llamaId: 'Fraxtal',
+  // TODO: change this to octavs token list once available
+  tokenListUrl:
+    'https://gist.githubusercontent.com/jtardioli/f0b857cbebf6d7f1be20eae612b9aa00/raw/920b1369dfbd9a7973a989b2c9dd0116919d60ee/sonarwatch.fraxtal.tokenlist.json',
+};
+
 export const networks: Record<NetworkIdType, Network> = {
   [NetworkId.aptos]: aptosNetwork,
   [NetworkId.avalanche]: avalancheNetwork,
@@ -218,6 +244,7 @@ export const networks: Record<NetworkIdType, Network> = {
   [NetworkId.solana]: solanaNetwork,
   [NetworkId.sui]: suiNetwork,
   [NetworkId.sei]: seiNetwork,
+  [NetworkId.fraxtal]: fraxtalNetwork,
 };
 
 export const networksAsArray = Object.values(networks);

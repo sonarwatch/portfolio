@@ -161,6 +161,8 @@ import * as baskt from './plugins/baskt';
 import * as guano from './plugins/guano';
 import * as coingecko from './plugins/coingecko';
 import * as zeusnode from './plugins/zeusnode';
+import * as convex from './plugins/convex';
+import * as fraxlend from './plugins/fraxlend';
 
 export {
   walletTokensPlatform,
@@ -336,6 +338,8 @@ const modules = [
   coingecko,
   orphanPlatforms,
   zeusnode,
+  convex,
+  fraxlend
 ];
 
 // PLATFORMS //

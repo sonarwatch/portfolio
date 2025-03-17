@@ -5,14 +5,16 @@ import { Job, JobExecutor } from '../../Job';
 import { topTokensPrefix } from './constants';
 import { coingeckoCoinsListUrl } from '../../utils/coingecko/constants';
 import { CoingeckoCoinsListResponse } from '../../utils/coingecko/types';
-import sleep from '../../utils/misc/sleep';
+// import sleep from '../../utils/misc/sleep';
 import getTopAddresses from './getTopAddresses';
+import sleep from '../../utils/misc/sleep';
 
 const networkIds = [
   NetworkId.avalanche,
   NetworkId.polygon,
   NetworkId.ethereum,
   NetworkId.bnb,
+  NetworkId.fraxtal,
 ];
 
 const executor: JobExecutor = async (cache: Cache) => {

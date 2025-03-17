@@ -7,14 +7,15 @@ import axios, { AxiosResponse } from 'axios';
 import { getCoingeckoSources, getTokensData } from './helpers';
 import { Cache } from '../../Cache';
 import { Job } from '../../Job';
-import sleep from '../../utils/misc/sleep';
 import { walletTokensPlatform } from './constants';
 import shuffleArray from '../../utils/misc/shuffleArray';
+import sleep from '../../utils/misc/sleep';
 
 export default function jobGenerator(networkId: NetworkIdType): Job {
   const network = networks[networkId];
   const executor = async (cache: Cache) => {
     await sleep(60000);
+
     const tokenListResponse: AxiosResponse<UniTokenList> | null = await axios
       .get(network.tokenListUrl)
       .catch(() => null);

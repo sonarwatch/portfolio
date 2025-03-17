@@ -1,73 +1,39 @@
-import {
-  NetworkId,
-  NetworkIdType,
-  formatTokenAddress,
-  zeroAddressEvm,
-} from '@sonarwatch/portfolio-core';
+import { EvmNetworkIdType } from '@sonarwatch/portfolio-core';
+import BigNumber from 'bignumber.js';
+import { getAddress } from 'viem';
 import { getEvmClient } from '../../../utils/clients';
-import { ethGaugeControllerAddress } from '../constants';
-import { abi } from '../abi';
-import { rangeBI } from '../../../utils/misc/rangeBI';
-import { GaugesByPool } from '../types';
+import { liquidityGaugeAbi } from '../abi';
 
-export async function getBalancerGaugesV2(
-  gaugesUrl: string,
-  networkId: NetworkIdType
-): Promise<GaugesByPool> {
-  if (networkId === NetworkId.ethereum) return getBalancerEthGaugesV2();
-  return getBalancerChildGaugesV2(gaugesUrl);
-}
+export async function getOwnerBalRewards(
+  networkId: EvmNetworkIdType,
+  owner: string,
+  gaugeAddress: string
+): Promise<{
+  address: string;
+  balance: BigNumber;
+}> {
+  const client = getEvmClient(networkId);
 
-async function getBalancerChildGaugesV2(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  gaugesUrl: string
-): Promise<GaugesByPool> {
-  // TODO
-  return {};
-}
+  const [balance, address] = (
+    await client.multicall({
+      contracts: [
+        {
+          address: getAddress(gaugeAddress),
+          abi: liquidityGaugeAbi,
+          functionName: 'claimable_tokens',
+          args: [getAddress(owner)],
+        },
+        {
+          address: getAddress(gaugeAddress),
+          abi: liquidityGaugeAbi,
+          functionName: 'bal_token',
+        },
+      ],
+    })
+  ).map((result) => result.result) as [bigint, string];
 
-async function getBalancerEthGaugesV2() {
-  const client = getEvmClient(NetworkId.ethereum);
-  const nGauges = await client.readContract({
-    address: ethGaugeControllerAddress,
-    abi,
-    functionName: 'n_gauges',
-  });
-
-  const gaugesRes = await client.multicall({
-    contracts: rangeBI(nGauges).map((i) => ({
-      abi,
-      address: ethGaugeControllerAddress,
-      functionName: 'gauges',
-      args: [i],
-    })),
-  });
-
-  const lpTokensRes = await client.multicall({
-    contracts: gaugesRes.map((g) => ({
-      abi,
-      address: g.result || zeroAddressEvm,
-      functionName: 'lp_token',
-    })),
-  });
-
-  const gaugesByPool: GaugesByPool = {};
-  lpTokensRes.forEach((lpTokenRes, i) => {
-    if (lpTokenRes.status === 'failure') return;
-    const gaugeRes = gaugesRes[i];
-    if (gaugeRes.status === 'failure') return;
-
-    const lpAddress = formatTokenAddress(lpTokenRes.result, NetworkId.ethereum);
-    const gaugeAddress = formatTokenAddress(
-      gaugeRes.result,
-      NetworkId.ethereum
-    );
-
-    if (lpAddress === zeroAddressEvm) return;
-    if (!gaugesByPool[lpAddress]) {
-      gaugesByPool[lpAddress] = [];
-    }
-    gaugesByPool[lpAddress].push(gaugeAddress);
-  });
-  return gaugesByPool;
+  return {
+    balance: new BigNumber(balance.toString()),
+    address,
+  };
 }

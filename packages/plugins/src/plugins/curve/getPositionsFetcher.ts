@@ -21,6 +21,7 @@ import { PoolDatum } from './getPoolsTypes';
 import { balanceOfAbI } from './abis';
 import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
 import { zeroBigInt } from '../../utils/misc/constants';
+import { getOwnerCRVRewards, getOwnerGaugeRewards } from './helpers/gauges';
 
 export function getPositionsFetcher(crvNetworkId: CrvNetworkId): Fetcher {
   const networkId = crvNetworkIdBySwNetworkId[crvNetworkId];
@@ -74,47 +75,122 @@ export function getPositionsFetcher(crvNetworkId: CrvNetworkId): Fetcher {
       poolDatumByAddress.set(poolAddressesArray[i], pool);
     });
 
+    const liquidityPromises = Array.from(balanceOfByAddress).map(
+      async ([address, balance]) => {
+        const poolAddress = poolsByAddress[address];
+        if (!poolAddress) return null;
+        const pool = poolDatumByAddress.get(poolAddress);
+        if (!pool) return null;
+
+        const coins = pool.underlyingCoins || pool.coins;
+        const supply = new BigNumber(pool.totalSupply);
+        const shares = balance.div(supply);
+        const assets: PortfolioAssetToken[] = coins
+          .map((coin) => {
+            const amount = new BigNumber(coin.poolBalance)
+              .times(shares)
+              .div(10 ** Number(coin.decimals))
+              .toNumber();
+            const tokenPrice = pool.coinsTokenPrices[coin.address];
+            return tokenPriceToAssetTokens(
+              coin.address,
+              amount,
+              networkId,
+              tokenPrice,
+              coin.usdPrice || undefined
+            );
+          })
+          .flat();
+
+        const value = getUsdValueSum(assets.map((a) => a.value));
+        const isGauge = pool.gaugeAddress === address;
+
+        // Return early for non-gauge liquidity
+        if (!isGauge) {
+          return {
+            type: 'pool',
+            liquidity: {
+              assets,
+              assetsValue: value,
+              value,
+              yields: [],
+              rewardAssets: [],
+              rewardAssetsValue: null,
+            },
+          };
+        }
+
+        const { gaugeAddress } = pool as { gaugeAddress: string };
+
+        const [balRewardsRaw, rewardTokensRaw] = await Promise.all([
+          getOwnerCRVRewards(networkId, owner, gaugeAddress),
+          getOwnerGaugeRewards(networkId, owner, gaugeAddress),
+        ]);
+
+        const allRewardTokensWithBalance = [
+          balRewardsRaw,
+          ...rewardTokensRaw,
+        ].filter((token) => token.balance.isGreaterThan(0));
+
+        // Fetch all token prices in parallel
+        const allRewardTokenWithBalanceAndPrice = await Promise.all(
+          allRewardTokensWithBalance.map((token) =>
+            cache
+              .getTokenPrice(token.address, networkId)
+              .then((tokenPrice) => ({
+                ...token,
+                tokenPrice,
+              }))
+          )
+        );
+
+        const rewardAssets: PortfolioAssetToken[] =
+          allRewardTokenWithBalanceAndPrice.flatMap((rewardAsset) => {
+            const rewardBalance = rewardAsset.balance.dividedBy(
+              new BigNumber(10).pow(rewardAsset?.tokenPrice?.decimals || 18)
+            );
+            return tokenPriceToAssetTokens(
+              rewardAsset.address,
+              rewardBalance.toNumber(),
+              networkId,
+              rewardAsset.tokenPrice,
+              rewardAsset.tokenPrice?.price || undefined
+            );
+          });
+
+        const rewardAssetsValue = getUsdValueSum(
+          rewardAssets.map((a) => a.value)
+        );
+
+        return {
+          type: 'gauge',
+          liquidity: {
+            assets,
+            assetsValue: value,
+            value,
+            yields: [],
+            rewardAssets,
+            rewardAssetsValue,
+          },
+        };
+      }
+    );
+
+    const results = (await Promise.all(liquidityPromises)).filter(
+      (result): result is NonNullable<typeof result> => result !== null
+    );
+
     const poolLiquidities: PortfolioLiquidity[] = [];
     const gaugeLiquidities: PortfolioLiquidity[] = [];
-    for (const [address, balance] of balanceOfByAddress) {
-      const poolAddress = poolsByAddress[address];
-      if (!poolAddress) continue;
-      const pool = poolDatumByAddress.get(poolAddress);
-      if (!pool) continue;
 
-      const coins = pool.underlyingCoins || pool.coins;
-      const supply = new BigNumber(pool.totalSupply);
-      const shares = balance.div(supply);
-      const assets: PortfolioAssetToken[] = coins
-        .map((coin) => {
-          const amount = new BigNumber(coin.poolBalance)
-            .times(shares)
-            .div(10 ** Number(coin.decimals))
-            .toNumber();
-          const tokenPrice = pool.coinsTokenPrices[coin.address];
-          return tokenPriceToAssetTokens(
-            coin.address,
-            amount,
-            networkId,
-            tokenPrice,
-            coin.usdPrice || undefined
-          );
-        })
-        .flat();
-
-      const value = getUsdValueSum(assets.map((a) => a.value));
-      const liquidity: PortfolioLiquidity = {
-        assets,
-        assetsValue: value,
-        value,
-        yields: [],
-        rewardAssets: [],
-        rewardAssetsValue: null,
-      };
-      const isGauge = pool.gaugeAddress === address;
-      if (isGauge) gaugeLiquidities.push(liquidity);
-      else poolLiquidities.push(liquidity);
-    }
+    // Separate pool and gauge liquidities
+    results.forEach((result) => {
+      if (result.type === 'pool') {
+        poolLiquidities.push(result.liquidity);
+      } else {
+        gaugeLiquidities.push(result.liquidity);
+      }
+    });
 
     const elements: PortfolioElementLiquidity[] = [];
     if (poolLiquidities.length !== 0) {
