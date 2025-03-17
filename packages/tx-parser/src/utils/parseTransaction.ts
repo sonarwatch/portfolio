@@ -86,7 +86,6 @@ export const parseTransaction = (
 
   return {
     signature: txn.transaction.signatures[0],
-    networkId: NetworkId.solana,
     owner,
     blockTime: txn.blockTime,
     service: findTransactionService(txn),
