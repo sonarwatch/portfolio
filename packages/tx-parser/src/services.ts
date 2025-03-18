@@ -1,5 +1,6 @@
 import { Service } from '@sonarwatch/portfolio-core';
 import * as banx from './services/banx';
+import * as bskt from './services/bskt';
 import * as defituna from './services/defituna';
 import * as drift from './services/drift';
 import * as driftMMV from './services/drift-market-maker-vault';
@@ -11,6 +12,7 @@ import * as raydium from './services/raydium';
 
 export const services: Service[] = [
   banx,
+  bskt,
   defituna,
   drift,
   driftMMV,
