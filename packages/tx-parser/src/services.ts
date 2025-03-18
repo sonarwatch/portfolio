@@ -9,6 +9,7 @@ import * as kamino from './services/kamino';
 import * as meteora from './services/meteora';
 import * as orca from './services/orca';
 import * as raydium from './services/raydium';
+import * as zeta from './services/zeta';
 
 export const services: Service[] = [
   banx,
@@ -21,6 +22,7 @@ export const services: Service[] = [
   meteora,
   orca,
   raydium,
+  zeta,
 ]
   .map((m) => m.default)
   .flat();
