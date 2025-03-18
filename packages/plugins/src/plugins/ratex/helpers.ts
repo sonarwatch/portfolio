@@ -1,15 +1,21 @@
 import { PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
-import { IdlItem } from '@solanafm/explorer-kit-idls';
 import {
-  getAutoParsedMultipleAccountsInfo,
+  getParsedMultipleAccountsInfo,
   ParsedAccount,
 } from '../../utils/solana';
-import { LP, Program, User, UserStats, YieldMarketWithOracle } from './types';
+import { Program, YieldMarketWithOracle } from './types';
 import { getClientSolana } from '../../utils/clients';
-import idl from './idl.json';
 import { getPool } from './getPool';
 import { Cache } from '../../Cache';
+import {
+  LP,
+  lpStruct,
+  User,
+  UserStats,
+  userStatsStruct,
+  userStruct,
+} from './structs';
 
 export const getUserStatsByProgram = async (
   programs: Program[],
@@ -25,13 +31,9 @@ export const getUserStatsByProgram = async (
     return userStatsPda;
   });
 
-  const userStatss = await getAutoParsedMultipleAccountsInfo<UserStats>(
+  const userStatss = await getParsedMultipleAccountsInfo(
     connection,
-    {
-      programId: programs[0].programId,
-      idl,
-      idlType: 'anchor',
-    } as IdlItem,
+    userStatsStruct,
     userStatsPdas
   );
 
@@ -55,13 +57,11 @@ export const getUsersByProgram = async (
     programs.map((program) => {
       const userStats = userStatsByProgram.get(program.programId);
       if (!userStats || userStats.numberOfSubAccountsCreated === 0) return null;
-      const idlItem = {
-        programId: program.programId,
-        idl,
-        idlType: 'anchor',
-      } as IdlItem;
-
-      return getUsers(owner, userStats.numberOfSubAccountsCreated, idlItem);
+      return getUsers(
+        owner,
+        userStats.numberOfSubAccountsCreated,
+        new PublicKey(program.programId)
+      );
     })
   );
 
@@ -84,13 +84,11 @@ export const getLpDatasByProgram = async (
     programs.map((program) => {
       const userStats = userStatsByProgram.get(program.programId);
       if (!userStats || userStats.numberOfSubAccountsCreated === 0) return null;
-      const idlItem = {
-        programId: program.programId,
-        idl,
-        idlType: 'anchor',
-      } as IdlItem;
-
-      return getLpDatas(owner, userStats.numberOfSubAccountsCreated, idlItem);
+      return getLpDatas(
+        owner,
+        userStats.numberOfSubAccountsCreated,
+        new PublicKey(program.programId)
+      );
     })
   );
 
@@ -114,17 +112,11 @@ export const getPools = async (
     programs.map((program) => {
       const lpDatas = lpDatasByProgram.get(program.programId);
       if (!lpDatas) return null;
-      const idlItem = {
-        programId: program.programId,
-        idl,
-        idlType: 'anchor',
-      } as IdlItem;
 
       return Promise.all(
         lpDatas.map(
           (lpData) =>
-            lpData &&
-            getPool(new PublicKey(lpData.ammPosition.ammpool), idlItem, cache)
+            lpData && getPool(new PublicKey(lpData.ammPosition.ammpool), cache)
         )
       ).then((lpDatasPools) => {
         lpDatasPools.forEach((p) => {
@@ -141,7 +133,7 @@ export const getPools = async (
 export const getUsers = (
   owner: string,
   numberOfSubAccountsCreated: number,
-  idlItem: IdlItem
+  program: PublicKey
 ) => {
   const userPdas: PublicKey[] = [];
   for (
@@ -155,18 +147,18 @@ export const getUsers = (
         new PublicKey(owner).toBuffer(),
         new BN(subaccountId).toArrayLike(Buffer, 'le', 2),
       ],
-      new PublicKey(idlItem.programId)
+      program
     );
     userPdas.push(userPda);
   }
   const connection = getClientSolana();
-  return getAutoParsedMultipleAccountsInfo<User>(connection, idlItem, userPdas);
+  return getParsedMultipleAccountsInfo(connection, userStruct, userPdas);
 };
 
 export const getLpDatas = (
   owner: string,
   numberOfSubAccountsCreated: number,
-  idlItem: IdlItem
+  programId: PublicKey
 ) => {
   const lpPdas: PublicKey[] = [];
   for (
@@ -180,10 +172,10 @@ export const getLpDatas = (
         new PublicKey(owner).toBuffer(),
         new BN(subaccountId).toArrayLike(Buffer, 'le', 2),
       ],
-      new PublicKey(idlItem.programId)
+      programId
     );
     lpPdas.push(lpPda);
   }
   const connection = getClientSolana();
-  return getAutoParsedMultipleAccountsInfo<LP>(connection, idlItem, lpPdas);
+  return getParsedMultipleAccountsInfo(connection, lpStruct, lpPdas);
 };

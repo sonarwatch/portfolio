@@ -1,5 +1,4 @@
 import { PublicKey } from '@solana/web3.js';
-import { IdlItem } from '@solanafm/explorer-kit-idls';
 import BN from 'bn.js';
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
@@ -10,9 +9,13 @@ import {
   programsCacheKey,
 } from './constants';
 import { getClientSolana } from '../../utils/clients';
-import idl from './idl.json';
-import { getAutoParsedMultipleAccountsInfo } from '../../utils/solana';
-import { MarginMarket, State } from './types';
+import { getParsedMultipleAccountsInfo } from '../../utils/solana';
+import {
+  MarginMarket,
+  marginMarketStruct,
+  State,
+  stateStruct,
+} from './structs';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
@@ -31,15 +34,9 @@ const executor: JobExecutor = async (cache: Cache) => {
       programId
     );
 
-    const idlItem = {
-      programId: programId.toString(),
-      idl,
-      idlType: 'anchor',
-    } as IdlItem;
-
-    const states = await getAutoParsedMultipleAccountsInfo<State>(
+    const states = await getParsedMultipleAccountsInfo<State>(
       connection,
-      idlItem,
+      stateStruct,
       [statePda]
     );
 
@@ -55,9 +52,9 @@ const executor: JobExecutor = async (cache: Cache) => {
       programId
     );
 
-    const marginMarkets = await getAutoParsedMultipleAccountsInfo<MarginMarket>(
+    const marginMarkets = await getParsedMultipleAccountsInfo<MarginMarket>(
       connection,
-      idlItem,
+      marginMarketStruct,
       [marginMarketPda]
     );
 
@@ -65,7 +62,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
     programs.push({
       programId: programId.toString(),
-      mint: marginMarkets[0].mint,
+      mint: marginMarkets[0].mint.toString(),
     });
   }
 
