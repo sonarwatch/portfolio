@@ -8,15 +8,16 @@ import {
   collectionsCacheKey,
   orderBookDataSize,
   platformId,
-  sharkyIdlItem,
+  sharkyProgram,
 } from './constants';
-import { Collection, nftListStruct, OrderBook } from './types';
 import {
-  getAutoParsedProgramAccounts,
   getParsedMultipleAccountsInfo,
   u8ArrayToString,
 } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
+import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
+import { nftListStruct, orderBookStruct } from './structs';
+import { Collection } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
@@ -29,11 +30,9 @@ const executor: JobExecutor = async (cache: Cache) => {
       .catch((err) => {
         throw Error(`SHARKY_API ERR: ${err}`);
       }),
-    getAutoParsedProgramAccounts<OrderBook>(connection, sharkyIdlItem, [
-      {
-        dataSize: orderBookDataSize,
-      },
-    ]),
+    ParsedGpa.build(connection, orderBookStruct, sharkyProgram)
+      .addDataSizeFilter(orderBookDataSize)
+      .run(),
   ]);
 
   if (!floorPrices.data || !orderBooks) return;
@@ -41,7 +40,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   const nftLists = await getParsedMultipleAccountsInfo(
     connection,
     nftListStruct,
-    orderBooks.map((ob) => new PublicKey(ob.orderBookType.nftList.listAccount)),
+    orderBooks.map((ob) => new PublicKey(ob.orderBookType.collectionKey)),
     {
       dataSlice: { offset: 0, length: 231 },
     }
@@ -59,9 +58,9 @@ const executor: JobExecutor = async (cache: Cache) => {
   const collections: Collection[] = [];
 
   orderBooks.forEach((orderBook) => {
-    if (!orderBook || !orderBook.orderBookType.nftList.listAccount) return;
+    if (!orderBook || !orderBook.orderBookType.collectionKey) return;
     const collectionName = collectionNamesAsMap.get(
-      orderBook.orderBookType.nftList.listAccount
+      orderBook.orderBookType.collectionKey.toString()
     );
     if (!collectionName) return;
     collections.push({

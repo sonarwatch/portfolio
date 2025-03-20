@@ -10,6 +10,7 @@ import * as meteora from './services/meteora';
 import * as orca from './services/orca';
 import * as ratex from './services/ratex';
 import * as raydium from './services/raydium';
+import * as sharky from './services/sharky';
 import * as zeta from './services/zeta';
 
 export const services: Service[] = [
@@ -24,6 +25,7 @@ export const services: Service[] = [
   orca,
   ratex,
   raydium,
+  sharky,
   zeta,
 ]
   .map((m) => m.default)
