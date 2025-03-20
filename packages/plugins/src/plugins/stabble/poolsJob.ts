@@ -1,14 +1,14 @@
 import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
+import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { platformId, stableIdlItem, weightedIdlItem } from './constants';
+import { platformId, stableProgramId, weightedProgramId } from './constants';
 import { getClientSolana } from '../../utils/clients';
-import { getAutoParsedProgramAccounts } from '../../utils/solana';
-import { stableFilter, weightedFilter } from './filters';
-import { StablePool, WeightedPool } from './types';
 import { getAssetBatchDasAsMap } from '../../utils/solana/das/getAssetBatchDas';
 import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
+import { stablePoolStruct, weightedPoolStruct } from './structs';
+import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
@@ -16,16 +16,26 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   const pools = (
     await Promise.all([
-      getAutoParsedProgramAccounts<StablePool>(
+      ParsedGpa.build(
         connection,
-        stableIdlItem,
-        stableFilter
-      ),
-      getAutoParsedProgramAccounts<WeightedPool>(
+        stablePoolStruct,
+        new PublicKey(stableProgramId)
+      )
+        .addFilter(
+          'vault',
+          new PublicKey('stab1io8dHvK26KoHmTwwHyYmHRbUWbyEJx6CdrGabC')
+        )
+        .run(),
+      ParsedGpa.build(
         connection,
-        weightedIdlItem,
-        weightedFilter
-      ),
+        weightedPoolStruct,
+        new PublicKey(weightedProgramId)
+      )
+        .addFilter(
+          'vault',
+          new PublicKey('w8edo9a9TDw52c1rBmVbP6dNakaAuFiPjDd52ZJwwVi')
+        )
+        .run(),
     ])
   ).flat();
 
@@ -34,9 +44,9 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   pools.forEach((pool) => {
     pool.tokens.forEach((token) => {
-      mints.add(token.mint);
+      mints.add(token.mint.toString());
     });
-    lpMints.add(pool.mint);
+    lpMints.add(pool.mint.toString());
   });
 
   const [tokenPrices, heliusAssets] = await Promise.all([
@@ -46,7 +56,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   const sources: TokenPriceSource[] = [];
 
   pools.forEach((pool) => {
-    const heliusAsset = heliusAssets.get(pool.mint);
+    const heliusAsset = heliusAssets.get(pool.mint.toString());
     if (!heliusAsset?.token_info) return;
 
     const supply = new BigNumber(heliusAsset.token_info.supply).dividedBy(
@@ -55,7 +65,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
     const underlyings = [];
     for (const token of pool.tokens) {
-      const tokenPrice = tokenPrices.get(token.mint);
+      const tokenPrice = tokenPrices.get(token.mint.toString());
       if (!tokenPrice) return;
 
       const tokenAmount = token.scalingUp
@@ -76,7 +86,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     }
 
     sources.push({
-      address: pool.mint,
+      address: pool.mint.toString(),
       decimals: heliusAsset.token_info.decimals,
       id: platformId,
       networkId: NetworkId.solana,
