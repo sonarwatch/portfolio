@@ -1,6 +1,6 @@
 {
   "name": "@sonarwatch/portfolio-plugins",
-  "version": "0.14.146",
+  "version": "0.14.147",
   "type": "commonjs",
   "types": "./src/index.d.ts",
   "peerDependencies": {
