@@ -1,7 +1,5 @@
 import { Platform } from '@sonarwatch/portfolio-core';
-import { IdlItem } from '@solanafm/explorer-kit-idls';
 import { PublicKey } from '@solana/web3.js';
-import { restakingIdl } from './idl';
 
 export const platformId = 'picasso';
 export const platform: Platform = {
@@ -30,9 +28,3 @@ export const restakingProgramId = new PublicKey(
 );
 
 export const unstakingOwner = 'BoNnRkatYrN7ckA9oAU4e7cHYfwKPgLEuzkKg4LWaHeH';
-
-export const restakingIdlItem = {
-  programId: restakingProgramId.toString(),
-  idl: restakingIdl,
-  idlType: 'anchor',
-} as IdlItem;

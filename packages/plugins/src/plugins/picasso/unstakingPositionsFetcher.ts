@@ -13,9 +13,9 @@ import {
 } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { Vault } from './types';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import { ParsedAccount } from '../../utils/solana';
+import { Vault } from './structs';
 
 const allVaultsMemo = new MemoizedCache<ParsedAccount<Vault>[]>(
   unstakingNftsCacheKey,
@@ -34,13 +34,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (!allVaults) throw new Error('Vaults not cached');
 
   const myVaults = allVaults.filter(
-    (v) => v.withdrawalRequest?.owner === owner
+    (v) => v.withdrawalRequest?.owner.toString() === owner
   );
 
   if (myVaults.length === 0) return [];
 
   const tokenMints = [
-    ...new Set(myVaults.map((vault) => vault.stakeMint).flat()),
+    ...new Set(myVaults.map((vault) => vault.stakeMint.toString()).flat()),
   ];
 
   const tokenPrices = await cache.getTokenPricesAsMap(
@@ -51,7 +51,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const assets: PortfolioAssetToken[] = [];
 
   myVaults.forEach((vault) => {
-    const tokenPrice = tokenPrices.get(vault.stakeMint);
+    const tokenPrice = tokenPrices.get(vault.stakeMint.toString());
     if (!tokenPrice || !vault.withdrawalRequest) return;
 
     const unlockingAt = new Date(
@@ -65,7 +65,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     assets.push({
       ...tokenPriceToAssetToken(
-        vault.stakeMint,
+        vault.stakeMint.toString(),
         new BigNumber(vault.stakeAmount)
           .dividedBy(10 ** tokenPrice.decimals)
           .toNumber(),

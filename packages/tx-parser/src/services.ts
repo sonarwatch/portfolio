@@ -8,6 +8,7 @@ import * as jupiter from './services/jupiter';
 import * as kamino from './services/kamino';
 import * as meteora from './services/meteora';
 import * as orca from './services/orca';
+import * as picasso from './services/picasso';
 import * as ratex from './services/ratex';
 import * as raydium from './services/raydium';
 import * as sharky from './services/sharky';
@@ -23,6 +24,7 @@ export const services: Service[] = [
   kamino,
   meteora,
   orca,
+  picasso,
   ratex,
   raydium,
   sharky,
