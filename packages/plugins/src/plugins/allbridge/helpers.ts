@@ -3,14 +3,12 @@ import { PublicKey } from '@solana/web3.js';
 import { Pools } from './types';
 
 export const getEarned = (
-  userLpAmount: string,
-  userRewardDebt: string,
+  userLpAmountBN: BigNumber,
+  userRewardDebtBN: BigNumber,
   accRewardPerShareP: string,
   p: number
 ): BigNumber => {
-  const userLpAmountBN = new BigNumber(userLpAmount);
   const accRewardPerSharePBN = new BigNumber(accRewardPerShareP);
-  const userRewardDebtBN = new BigNumber(userRewardDebt);
   const rewards = userLpAmountBN
     .multipliedBy(accRewardPerSharePBN)
     .dividedBy(10 ** p);

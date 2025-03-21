@@ -8,7 +8,6 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import {
-  allbridgeIdlItem,
   cachePrefix,
   platformId,
   poolsCacheKey,
@@ -17,13 +16,14 @@ import {
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
 import {
-  getAutoParsedMultipleAccountsInfo,
+  getParsedMultipleAccountsInfo,
   ParsedAccount,
 } from '../../utils/solana';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { Pools, UserDeposit } from './types';
+import { Pools } from './types';
 import { getEarned, getUserDepositPublicKeys } from './helpers';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
+import { UserDeposit, userDepositStruct } from './structs';
 
 const poolInfoMemo = new MemoizedCache<Pools>(poolsCacheKey, {
   prefix: cachePrefix,
@@ -40,14 +40,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const userDepositPublicKeys = getUserDepositPublicKeys(poolInfo, owner);
 
   const userDeposits = (
-    await getAutoParsedMultipleAccountsInfo<UserDeposit>(
+    await getParsedMultipleAccountsInfo<UserDeposit>(
       connection,
-      allbridgeIdlItem,
+      userDepositStruct,
       userDepositPublicKeys
     )
   ).filter(
     (userDeposit): userDeposit is ParsedAccount<UserDeposit> =>
-      userDeposit !== null && userDeposit?.lpAmount !== '0'
+      userDeposit !== null && !userDeposit?.lpAmount.isZero()
   );
 
   if (userDeposits.length === 0) return [];
