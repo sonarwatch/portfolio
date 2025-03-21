@@ -1,9 +1,9 @@
 import { Connection, ParsedTransactionWithMeta } from '@solana/web3.js';
 
 export const getTransactions = (
-  client: Connection,
+  connection: Connection,
   signatures: string[]
 ): Promise<(ParsedTransactionWithMeta | null)[]> =>
-  client.getParsedTransactions(signatures, {
+  connection.getParsedTransactions(signatures, {
     maxSupportedTransactionVersion: 0,
   });

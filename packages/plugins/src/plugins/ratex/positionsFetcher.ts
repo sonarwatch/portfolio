@@ -42,7 +42,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       users.forEach((user) => {
         if (!user) return;
         user.marginPositions.forEach((marginPosition) => {
-          if (marginPosition.balance !== 0) {
+          if (!marginPosition.balance.isZero()) {
             const element = elementRegistry.addElementMultiple({
               label: 'Margin',
               link: 'https://app.rate-x.io/trade',
@@ -61,7 +61,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (lpDatas) {
       lpDatas.forEach((lpData) => {
         if (!lpData) return;
-        const ammpool = pools.get(lpData.ammPosition.ammpool);
+        const ammpool = pools.get(lpData.ammPosition.ammpool.toString());
         if (!ammpool) return;
 
         const { tokenAmountA, tokenAmountB } = getTokenAmountsFromLiquidity(

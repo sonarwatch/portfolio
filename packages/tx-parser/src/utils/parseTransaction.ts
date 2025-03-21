@@ -6,8 +6,8 @@ import {
   solanaNativeWrappedAddress,
   Transaction,
 } from '@sonarwatch/portfolio-core';
-import { unshift } from '../unshift';
-import { sortedServices } from '../../services';
+import { unshift } from './unshift';
+import { sortedServices } from '../services';
 
 const findTransactionService = (
   txn: ParsedTransactionWithMeta
@@ -85,6 +85,7 @@ export const parseTransaction = (
 
   return {
     signature: txn.transaction.signatures[0],
+    owner,
     blockTime: txn.blockTime,
     service: findTransactionService(txn),
     balanceChanges: changes,

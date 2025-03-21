@@ -24,18 +24,20 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   do {
     const apiRes: AxiosResponse<ApiResStruct> = await axios.get(
-      `https://stats-api.mainnet.orca.so/api/whirlpools?limit=1000&after=${
-        cursor || ''
-      }`
+      `https://api.orca.so/v2/solana/pools?limit=1000&after=${cursor || ''}`
     );
     apiRes.data.data.forEach((p) => {
       cacheItems.push({
         key: `${p.address}-stats`,
         value: {
           address: p.address,
-          volumeUsdc24h: p.volumeUsdc24h,
+          stats: {
+            '24h': {
+              volume: p.stats['24h'].volume,
+              fees: p.stats['24h'].fees,
+            },
+          },
           tvlUsdc: p.tvlUsdc,
-          feesUsdc24h: p.feesUsdc24h,
         },
       });
     });

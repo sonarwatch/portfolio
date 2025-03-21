@@ -8,7 +8,7 @@ import {
 const MAX_SIGNATURES_PER_REQUEST = 10;
 
 export const getSignatures = (
-  client: Connection,
+  connection: Connection,
   address: string,
   optionsArgs?: SignaturesForAddressOptions | undefined
 ): Promise<ConfirmedSignatureInfo[]> => {
@@ -17,7 +17,7 @@ export const getSignatures = (
     options.limit = MAX_SIGNATURES_PER_REQUEST;
   }
 
-  return client.getSignaturesForAddress(
+  return connection.getSignaturesForAddress(
     new PublicKey(address),
     options,
     'confirmed'

@@ -1,7 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
-import { IdlItem } from '@solanafm/explorer-kit-idls';
-import { idls as ZetaStakingID } from './idls';
 import { AirdropStatics } from '../../AirdropFetcher';
 
 export const zexMint = 'ZEXy1pqteRu3n13kdyh4LwPQknkFk3GzmMYMuNadWPo';
@@ -81,9 +79,3 @@ export const distributors = [
 export const stakingPid = new PublicKey(
   '4DUapvWZDDCkfWJpdwvX2QjwAE9Yq4wU8792RMMv7Csg'
 );
-
-export const zetaIdlItem = {
-  programId: stakingPid.toString(),
-  idl: ZetaStakingID,
-  idlType: 'anchor',
-} as IdlItem;

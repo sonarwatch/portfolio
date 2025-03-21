@@ -5,15 +5,15 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, zetaIdlItem, zexMint } from './constants';
+import { platformId, zexMint } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getStakeAccountsAddresses, getTimestamp } from './helpers';
 import {
-  getAutoParsedMultipleAccountsInfo,
+  getParsedMultipleAccountsInfo,
   u8ArrayToString,
 } from '../../utils/solana';
-import { StakeAccount } from './types';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { stakeAccountStruct } from './structs';
 
 const networkId = NetworkId.solana;
 
@@ -30,15 +30,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       index,
       index + step
     );
-    const stakeAccounts = await getAutoParsedMultipleAccountsInfo<StakeAccount>(
+    const stakeAccounts = await getParsedMultipleAccountsInfo(
       client,
-      zetaIdlItem,
+      stakeAccountStruct,
       stakeAccountsAddresses
     );
 
     index += step;
     accounts.push(...stakeAccounts);
   } while (!accounts.some((acc) => !acc));
+
+  if (!accounts.length) return [];
 
   const registry = new ElementRegistry(networkId, platformId);
   const stakingElement = registry.addElementMultiple({
@@ -53,12 +55,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const amount = new BigNumber(account.amountStillStaked).toNumber();
 
     const attributes: PortfolioAssetAttributes = {
-      lockedUntil: account.stakeState.vesting
-        ? getTimestamp(
-            account.stakeDurationEpochs,
-            account.stakeState.vesting.stakeStartEpoch
-          )
-        : -1,
+      lockedUntil:
+        account.stakeState.__kind === 'Vesting'
+          ? getTimestamp(
+              account.stakeDurationEpochs,
+              account.stakeState.stakeStartEpoch
+            )
+          : -1,
       tags: [name],
     };
 

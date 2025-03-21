@@ -1,15 +1,14 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import { IdlItem } from '@solanafm/explorer-kit-idls';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { poolPrefix } from './constants';
-import { Oracle, YieldMarket, YieldMarketWithOracle } from './types';
-import { getAutoParsedMultipleAccountsInfo } from '../../utils/solana';
+import { getParsedMultipleAccountsInfo } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
+import { oracleStruct, yieldMarketStruct } from './structs';
+import { YieldMarketWithOracle } from './types';
 
 export const getPool = async (
   poolId: PublicKey,
-  idlItem: IdlItem,
   cache: Cache
 ): Promise<YieldMarketWithOracle | undefined> => {
   const cacheOpts = {
@@ -24,17 +23,17 @@ export const getPool = async (
 
   const connection = getClientSolana();
 
-  const pools = await getAutoParsedMultipleAccountsInfo<YieldMarket>(
+  const pools = await getParsedMultipleAccountsInfo(
     connection,
-    idlItem,
+    yieldMarketStruct,
     [poolId]
   );
 
   if (!pools[0]) return undefined;
 
-  const oracles = await getAutoParsedMultipleAccountsInfo<Oracle>(
+  const oracles = await getParsedMultipleAccountsInfo(
     connection,
-    idlItem,
+    oracleStruct,
     [new PublicKey(pools[0].oracle)]
   );
 
