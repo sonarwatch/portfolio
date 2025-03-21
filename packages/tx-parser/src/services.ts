@@ -4,6 +4,7 @@ import * as bskt from './services/bskt';
 import * as defituna from './services/defituna';
 import * as drift from './services/drift';
 import * as driftMMV from './services/drift-market-maker-vault';
+import * as ensofi from './services/ensofi';
 import * as jupiter from './services/jupiter';
 import * as kamino from './services/kamino';
 import * as meteora from './services/meteora';
@@ -20,6 +21,7 @@ export const services: Service[] = [
   defituna,
   drift,
   driftMMV,
+  ensofi,
   jupiter,
   kamino,
   meteora,
