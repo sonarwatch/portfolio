@@ -2,7 +2,6 @@ import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import {
   u8,
-  bool,
   FixableBeetStruct,
   uniformFixedSizeArray,
   COption,

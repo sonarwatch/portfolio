@@ -1,7 +1,5 @@
 import { Platform } from '@sonarwatch/portfolio-core';
-import { IdlItem } from '@solanafm/explorer-kit-idls';
 import { PublicKey } from '@solana/web3.js';
-import { DivvyIdl } from './idl';
 
 export const platformId = 'divvy';
 export const dvyMint = '8fdi18UQNGg8mFEzjf79GUkzTg9YHSeojzCcarVxCX2y';
@@ -24,11 +22,5 @@ export const platform: Platform = {
 export const divvyProgram = new PublicKey(
   'dvyFwAPniptQNb1ey4eM12L8iLHrzdiDsPPDndd6xAR'
 );
-
-export const divvyIdlItem = {
-  programId: divvyProgram.toString(),
-  idl: DivvyIdl,
-  idlType: 'anchor',
-} as IdlItem;
 
 export const houseCacheKey = 'houses';

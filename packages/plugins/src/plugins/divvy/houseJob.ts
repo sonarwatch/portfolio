@@ -2,22 +2,20 @@ import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { divvyIdlItem, houseCacheKey, platformId } from './constants';
-import { getAutoParsedProgramAccounts } from '../../utils/solana';
+import { divvyProgram, houseCacheKey, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
-import { House } from './types';
+import { houseStruct } from './structs';
+import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
 
-  const houses = await getAutoParsedProgramAccounts<House>(
-    connection,
-    divvyIdlItem,
-    [{ memcmp: { offset: 0, bytes: '4cEdzVs6LUe' } }]
-  );
+  const houses = await ParsedGpa.build(connection, houseStruct, divvyProgram)
+    .addFilter('accountDiscriminator', [21, 145, 94, 109, 254, 199, 210, 151])
+    .run();
 
   const tokenPrices = await cache.getTokenPricesAsMap(
-    houses.map((h) => h.currency),
+    houses.map((h) => h.currency.toString()),
     NetworkId.solana
   );
 
