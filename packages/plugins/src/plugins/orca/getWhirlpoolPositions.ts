@@ -107,13 +107,6 @@ export function getOrcaNftFetcher(
 
       const element = elementRegistry.addElementConcentratedLiquidity({
         link: 'https://www.orca.so/portfolio',
-        ref: positionInfo.pubkey.toString(),
-        sourceRefs: [
-          {
-            name: 'Pool',
-            address: whirlpoolInfo.pubkey.toString(),
-          },
-        ],
       });
       const liquidity = element.setLiquidity({
         addressA: whirlpoolInfo.tokenMintA,
@@ -130,6 +123,13 @@ export function getOrcaNftFetcher(
         swapVolume24h: allWhirlpoolsStats.find(
           (p) => p?.address === positionInfo.whirlpool.toString()
         )?.stats['24h'].volume,
+        ref: positionInfo.pubkey.toString(),
+        sourceRefs: [
+          {
+            name: 'Pool',
+            address: whirlpoolInfo.pubkey.toString(),
+          },
+        ],
       });
 
       const feesAndRewards = calcFeesAndRewards(

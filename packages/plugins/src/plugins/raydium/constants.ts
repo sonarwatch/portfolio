@@ -19,6 +19,7 @@ export const platform: Platform = {
     'Raydium is an automated market maker (AMM) built on the Solana blockchain which enables lightning-fast trades, permissionless pool creation, and new features for earning yield',
 };
 
+export const poolStatsPrefix = 'raydium-pool-stats';
 export const apiV3 = 'https://api-v3.raydium.io/';
 
 export const AMM_PROGRAM_ID_V3 = new PublicKey(
