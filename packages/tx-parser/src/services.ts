@@ -4,12 +4,15 @@ import * as bskt from './services/bskt';
 import * as defituna from './services/defituna';
 import * as drift from './services/drift';
 import * as driftMMV from './services/drift-market-maker-vault';
+import * as ensofi from './services/ensofi';
 import * as jupiter from './services/jupiter';
 import * as kamino from './services/kamino';
 import * as meteora from './services/meteora';
 import * as orca from './services/orca';
+import * as picasso from './services/picasso';
 import * as ratex from './services/ratex';
 import * as raydium from './services/raydium';
+import * as sharky from './services/sharky';
 import * as zeta from './services/zeta';
 
 export const services: Service[] = [
@@ -18,12 +21,15 @@ export const services: Service[] = [
   defituna,
   drift,
   driftMMV,
+  ensofi,
   jupiter,
   kamino,
   meteora,
   orca,
+  picasso,
   ratex,
   raydium,
+  sharky,
   zeta,
 ]
   .map((m) => m.default)
