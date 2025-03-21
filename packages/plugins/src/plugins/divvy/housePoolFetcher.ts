@@ -1,15 +1,20 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
+import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
-import { divvyIdlItem, houseCacheKey, platformId } from './constants';
+import { divvyProgram, houseCacheKey, platformId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
-import { House, Position } from './types';
-import { getAutoParsedProgramAccounts } from '../../utils/solana';
+import { ParsedAccount } from '../../utils/solana';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import { arrayToMap } from '../../utils/misc/arrayToMap';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { House, positionStruct } from './structs';
+import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 
-const housesMemo = new MemoizedCache<House[], Map<string, House>>(
+const housesMemo = new MemoizedCache<
+  ParsedAccount<House>[],
+  Map<string, ParsedAccount<House>>
+>(
   houseCacheKey,
   {
     prefix: platformId,
@@ -21,19 +26,15 @@ const housesMemo = new MemoizedCache<House[], Map<string, House>>(
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
 
-  const accounts = await getAutoParsedProgramAccounts<Position>(
+  const accounts = await ParsedGpa.build(
     connection,
-    divvyIdlItem,
-    [
-      { memcmp: { offset: 0, bytes: 'VZMoMoKgZQb' } },
-      {
-        memcmp: {
-          bytes: owner,
-          offset: 40,
-        },
-      },
-    ]
-  );
+    positionStruct,
+    divvyProgram
+  )
+    .addFilter('accountDiscriminator', [170, 188, 143, 228, 122, 64, 247, 208])
+    .addFilter('user', new PublicKey(owner))
+    .debug()
+    .run();
 
   if (accounts.length === 0) return [];
 
@@ -48,7 +49,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
 
   accounts.forEach((account) => {
-    const house = houses.get(account.house);
+    const house = houses.get(account.house.toString());
     if (!house) return;
     element.addAsset({
       address: house.currency,
