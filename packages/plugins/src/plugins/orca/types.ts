@@ -7,7 +7,6 @@ export type WhirlpoolStat = {
     };
   };
   tvlUsdc: string;
-  feesUsdc24h: string;
   apr?: string;
   feeRate?: number;
 };

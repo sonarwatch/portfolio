@@ -89,13 +89,6 @@ export async function getRaydiumCLMMPositions(
     const personalPositionInfo = personalPositionsInfo[index];
     if (!personalPositionInfo) continue;
 
-    if (
-      !poolStateInfo.tokenMint0 ||
-      !poolStateInfo.tokenMint1 ||
-      !poolStateInfo.tickCurrent
-    )
-      continue;
-
     const element = elementRegistry.addElementConcentratedLiquidity({
       link: 'https://raydium.io/portfolio/?position_tab=concentrated',
     });
@@ -112,8 +105,10 @@ export async function getRaydiumCLMMPositions(
       tickLowerIndex: personalPositionInfo.tickLowerIndex,
       tickUpperIndex: personalPositionInfo.tickUpperIndex,
       ref: personalPositionInfo.pubkey,
-      swapVolume24h: poolStats?.volumeUsdc24h,
+      swapVolume24h: poolStats?.stats['24h'].volume,
       feeRate: poolStats?.feeRate,
+      currentSqrtPrice: poolStateInfo.sqrtPriceX64,
+      poolLiquidity: poolStateInfo.liquidity,
       sourceRefs: [
         {
           name: 'Pool',

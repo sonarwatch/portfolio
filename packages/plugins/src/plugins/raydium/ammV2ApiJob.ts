@@ -156,13 +156,18 @@ const executor: JobExecutor = async (cache: Cache) => {
         key: poolInfo.id,
         value: {
           address: poolInfo.id,
-          volumeUsdc24h: poolInfo.day.volume.toString(),
+          stats: {
+            '24h': {
+              volume: poolInfo.day.volume.toString(),
+              fees: poolInfo.day.volumeFee.toString(),
+            },
+          },
           tvlUsdc: poolInfo.tvl.toString(),
-          feesUsdc24h: poolInfo.day.volumeFee.toString(),
           apr: poolInfo.day.apr.toString(),
           feeRate: poolInfo.config
-            ? (Number(poolInfo.feeRate) / 10000) *
-              (1 - poolInfo.config.protocolFeeRate / 10000)
+            ? Number(poolInfo.feeRate) *
+              100 *
+              (1 - poolInfo.config.protocolFeeRate / 1000000)
             : undefined,
         },
       });
