@@ -4,7 +4,7 @@ import {
   PortfolioElement,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
-import { platformId, raydiumProgram } from './constants';
+import { platformId, poolStatsPrefix, raydiumProgram } from './constants';
 import { getParsedMultipleAccountsInfo } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import {
@@ -15,6 +15,7 @@ import {
 import { Cache } from '../../Cache';
 import { getFeesAndRewardsBalance, getTickArrayAddress } from './helpers';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { WhirlpoolStat } from '../orca/types';
 
 export async function getRaydiumCLMMPositions(
   cache: Cache,
@@ -47,11 +48,13 @@ export async function getRaydiumCLMMPositions(
     position ? position.poolId : []
   );
 
-  const poolStatesInfo = await getParsedMultipleAccountsInfo(
-    client,
-    poolStateStruct,
-    poolsIds
-  );
+  const [poolStatesInfo, poolsStats] = await Promise.all([
+    getParsedMultipleAccountsInfo(client, poolStateStruct, poolsIds),
+    cache.getItems<WhirlpoolStat>(
+      poolsIds.map((p) => p.toString()),
+      { prefix: poolStatsPrefix, networkId: NetworkId.solana }
+    ),
+  ]);
 
   const tickArrays = await Promise.all(
     personalPositionsInfo.map((personalPositionInfo, index) => {
@@ -97,6 +100,10 @@ export async function getRaydiumCLMMPositions(
       link: 'https://raydium.io/portfolio/?position_tab=concentrated',
     });
 
+    const poolStats = poolsStats.find(
+      (p) => p?.address === personalPositionInfo.poolId.toString()
+    );
+
     const liquidity = element.setLiquidity({
       addressA: poolStateInfo.tokenMint0,
       addressB: poolStateInfo.tokenMint1,
@@ -105,6 +112,8 @@ export async function getRaydiumCLMMPositions(
       tickLowerIndex: personalPositionInfo.tickLowerIndex,
       tickUpperIndex: personalPositionInfo.tickUpperIndex,
       ref: personalPositionInfo.pubkey,
+      swapVolume24h: poolStats?.volumeUsdc24h,
+      feeRate: poolStats?.feeRate,
       sourceRefs: [
         {
           name: 'Pool',

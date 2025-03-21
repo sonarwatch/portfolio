@@ -4,12 +4,13 @@ import BigNumber from 'bignumber.js';
 import { walletTokensPlatform } from '../tokens/constants';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { apiV3, platformId } from './constants';
+import { apiV3, platformId, poolStatsPrefix } from './constants';
 import { ApiV3Response } from './types';
 import { getLpTokenSource } from '../../utils/misc/getLpTokenSource';
 import { minimumLiquidity } from '../../utils/misc/computeAndStoreLpPrice';
 import { defaultAcceptedPairs } from '../../utils/misc/getLpUnderlyingTokenSource';
 import getSourceWeight from '../../utils/misc/getSourceWeight';
+import { WhirlpoolStat } from '../orca/types';
 
 const executor: JobExecutor = async (cache: Cache) => {
   let apiRes;
@@ -63,6 +64,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     let tokenPriceB;
 
     const tokenPriceSources = [];
+    const poolStats: { key: string; value: WhirlpoolStat }[] = [];
 
     for (let id = 0; id < subPools.data.length; id++) {
       poolInfo = subPools.data[id];
@@ -150,7 +152,25 @@ const executor: JobExecutor = async (cache: Cache) => {
           });
         }
       }
+      poolStats.push({
+        key: poolInfo.id,
+        value: {
+          address: poolInfo.id,
+          volumeUsdc24h: poolInfo.day.volume.toString(),
+          tvlUsdc: poolInfo.tvl.toString(),
+          feesUsdc24h: poolInfo.day.volumeFee.toString(),
+          apr: poolInfo.day.apr.toString(),
+          feeRate: poolInfo.config
+            ? (Number(poolInfo.feeRate) / 10000) *
+              (1 - poolInfo.config.protocolFeeRate / 10000)
+            : undefined,
+        },
+      });
     }
+    await cache.setItems(poolStats, {
+      prefix: poolStatsPrefix,
+      networkId: NetworkId.solana,
+    });
     await cache.setTokenPriceSources(tokenPriceSources);
     page += 1;
   } while (subPools.hasNextPage && minimumLiquidity.isLessThan(lastLiquidity));

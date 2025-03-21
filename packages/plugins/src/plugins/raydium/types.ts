@@ -232,9 +232,9 @@ export type PoolInfo = {
   feeRate: number;
   openTime: string;
   tvl: number;
-  day: Day;
-  week: Day;
-  month: Day;
+  day: Stats;
+  week: Stats;
+  month: Stats;
   pooltype: string[];
   rewardDefaultInfos: number[];
   farmUpcomingCount: number;
@@ -245,9 +245,19 @@ export type PoolInfo = {
   lpPrice: number;
   lpAmount: number;
   burnPercent: number;
+  config?: {
+    id: string;
+    index: number;
+    protocolFeeRate: number;
+    tradeFeeRate: number;
+    tickSpacing: number;
+    fundFeeRate: number;
+    defaultRange: number;
+    defaultRangePoint: number[];
+  };
 };
 
-export type Day = {
+export type Stats = {
   volume: number;
   volumeQuote: number;
   volumeFee: number;
