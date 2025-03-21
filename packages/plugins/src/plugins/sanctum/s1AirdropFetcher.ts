@@ -10,7 +10,11 @@ import {
 import { deriveClaimStatus } from '../../utils/solana/jupiter/deriveClaimStatus';
 import { getClientSolana } from '../../utils/clients';
 import { ClaimProofResponse } from '../jupiter/types';
-import { lfgApiBaseUrl, lfgDisProgram } from '../jupiter/launchpad/constants';
+import {
+  jupApiToken,
+  lfgApiBaseUrl,
+  lfgDisProgram,
+} from '../jupiter/launchpad/constants';
 import {
   s1AirdropStatics,
   cloudMint,
@@ -27,7 +31,9 @@ const capitalClaimEnd = claimStart.plus(capitalClaimDuration);
 const executor: AirdropFetcherExecutor = async (owner: string) => {
   const claimProofBase: AxiosResponse<ClaimProofResponse> | null = await axios
     .get(
-      `${lfgApiBaseUrl}/CLoUDKc4Ane7HeQcPpE3YHnznRxhMimJ4MyaUqyHFzAu/${owner}`,
+      `${lfgApiBaseUrl}/CLoUDKc4Ane7HeQcPpE3YHnznRxhMimJ4MyaUqyHFzAu/${owner}?${
+        jupApiToken ?? ''
+      }`,
       {
         timeout: 5000,
       }
@@ -95,7 +101,9 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
   // Check Earnestness
   const claimProofEarn: AxiosResponse<ClaimProofResponse> | null = await axios
     .get(
-      `${lfgApiBaseUrl}/earnestness-CLoUDKc4Ane7HeQcPpE3YHnznRxhMimJ4MyaUqyHFzAu/${owner}`,
+      `${lfgApiBaseUrl}/earnestness-CLoUDKc4Ane7HeQcPpE3YHnznRxhMimJ4MyaUqyHFzAu/${owner}?${
+        jupApiToken ?? ''
+      }`,
       {
         timeout: 5000,
       }

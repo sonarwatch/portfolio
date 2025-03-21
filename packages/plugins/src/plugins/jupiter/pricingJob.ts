@@ -16,6 +16,7 @@ import { getClientSolana } from '../../utils/clients';
 import { lstsKey, platformId as sanctumPlatformId } from '../sanctum/constants';
 import { usdcSolanaMint } from '../../utils/solana';
 import { TokenResponse } from './types';
+import { jupApiToken } from './launchpad/constants';
 
 const mints = [
   'xLfNTYy76B8Tiix3hA51Jyvc1kMSFV4sPdR7szTZsRu', // xLifinity
@@ -49,7 +50,9 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   const [solSources, verifiedTokens] = await Promise.all([
     getJupiterPrices([new PublicKey(vsToken)], new PublicKey(usdcSolanaMint)),
-    axios.get<TokenResponse[]>('https://tokens.jup.ag/tokens?tags=verified'),
+    axios.get<TokenResponse[]>(
+      `https://tokens.jup.ag/tokens?tags=verified&${jupApiToken ?? ''}`
+    ),
   ]);
 
   const solPrice = solSources.get(vsToken);

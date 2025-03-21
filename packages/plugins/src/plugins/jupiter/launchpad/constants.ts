@@ -23,6 +23,7 @@ export const lockerPubkey = new PublicKey(
 export const jupMint = 'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN';
 export const jupDecimals = 6;
 
+export const jupApiToken = process.env['PORTFOLIO_JUP_API_PARAM'];
 export const lfgApiBaseUrl = 'https://worker.jup.ag/jup-claim-proof';
 export const lfgDisProgram = 'DiSLRwcSFvtwvMWSs7ubBMvYRaYNYupa76ZSuYLe6D7j';
 
@@ -34,7 +35,9 @@ export const airdropConfigs: AirdropConfig[] = [
     label: 'JUP',
     platformId,
     getApiPath: (owner: string) =>
-      `${lfgApiBaseUrl}/JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN/${owner}`,
+      `${lfgApiBaseUrl}/JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN/${owner}?${
+        jupApiToken ?? ''
+      }`,
     statics: {
       claimStart: 1706659200000,
       claimEnd: 1722430800000,
@@ -53,7 +56,9 @@ export const airdropConfigs: AirdropConfig[] = [
     label: 'ZEUS',
     platformId,
     getApiPath: (owner: string) =>
-      `${lfgApiBaseUrl}/ZEUS1aR7aX8DFFJf5QjWj2ftDDdNTroMNGo8YoQm3Gq/${owner}`,
+      `${lfgApiBaseUrl}/ZEUS1aR7aX8DFFJf5QjWj2ftDDdNTroMNGo8YoQm3Gq/${owner}?${
+        jupApiToken ?? ''
+      }`,
     statics: {
       claimStart: 1712235600000,
       claimEnd: 1713445200000,
@@ -72,7 +77,9 @@ export const airdropConfigs: AirdropConfig[] = [
     label: 'TNSR',
     platformId,
     getApiPath: (owner: string) =>
-      `${lfgApiBaseUrl}/TNSRxcUxoT9xBG3de7PiJyTDYu7kskLqcpddxnEJAS6/${owner}`,
+      `${lfgApiBaseUrl}/TNSRxcUxoT9xBG3de7PiJyTDYu7kskLqcpddxnEJAS6/${owner}?${
+        jupApiToken ?? ''
+      }`,
     statics: {
       claimStart: 1712534400000,
       claimEnd: 1728086400000,
@@ -91,7 +98,9 @@ export const airdropConfigs: AirdropConfig[] = [
     label: 'SHARKY',
     platformId,
     getApiPath: (owner: string) =>
-      `${lfgApiBaseUrl}/SHARKSYJjqaNyxVfrpnBN9pjgkhwDhatnMyicWPnr1s/${owner}`,
+      `${lfgApiBaseUrl}/SHARKSYJjqaNyxVfrpnBN9pjgkhwDhatnMyicWPnr1s/${owner}?${
+        jupApiToken ?? ''
+      }`,
     statics: {
       claimStart: 1713225600000,
       claimEnd: 1714435200000,
@@ -110,7 +119,9 @@ export const airdropConfigs: AirdropConfig[] = [
     label: 'UPT',
     platformId,
     getApiPath: (owner: string) =>
-      `${lfgApiBaseUrl}/UPTx1d24aBWuRgwxVnFmX4gNraj3QGFzL3QqBgxtWQG/${owner}`,
+      `${lfgApiBaseUrl}/UPTx1d24aBWuRgwxVnFmX4gNraj3QGFzL3QqBgxtWQG/${owner}?${
+        jupApiToken ?? ''
+      }`,
     statics: {
       claimStart: 1717077600000,
       claimEnd: 1719878400000,
@@ -149,7 +160,9 @@ export const airdropConfigs: AirdropConfig[] = [
     label: 'JUP',
     platformId,
     getApiPath: (owner: string) =>
-      `https://jupuary-api.jup.ag/claim-proof-2025/${owner}`,
+      `https://jupuary-api.jup.ag/claim-proof-2025/${owner}?${
+        jupApiToken ?? ''
+      }`,
     statics: {
       claimStart: 1737547200000,
       claimEnd: 1745323200000,
