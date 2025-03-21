@@ -5,7 +5,7 @@ export const platformId = 'bonfida';
 export const fidaMint = 'EchesyfXePKdLtoiZSL8pBe8Myagyy8ZRqsACNCFGnvp';
 export const platform: Platform = {
   id: platformId,
-  name: 'Bonfida (SNS)',
+  name: 'SNS',
   image:
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/bonfida.webp',
   website: 'https://www.sns.id/',
