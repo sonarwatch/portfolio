@@ -1,6 +1,5 @@
 import { Platform } from '@sonarwatch/portfolio-core';
-import { IdlItem } from '@solanafm/explorer-kit-idls';
-import { elementalIDLs } from './elementalVaultIDL';
+import { PublicKey } from '@solana/web3.js';
 
 export const platformId = 'elemental';
 export const platform: Platform = {
@@ -19,8 +18,6 @@ export const platform: Platform = {
 };
 export const poolsCacheKey = `pools`;
 
-export const elementalIdlItem = {
-  programId: elementalIDLs.address,
-  idl: elementalIDLs,
-  idlType: 'anchor',
-} as IdlItem;
+export const programId = new PublicKey(
+  'ELE5vYY81W7UCpTPs7SyD6Bwm5FwZBntTW8PiGqM5d4A'
+);
