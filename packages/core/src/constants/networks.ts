@@ -231,7 +231,7 @@ export const fraxtalNetwork: Network = {
   llamaId: 'Fraxtal',
   // TODO: change this to octavs token list once available
   tokenListUrl:
-    'https://gist.githubusercontent.com/jtardioli/f0b857cbebf6d7f1be20eae612b9aa00/raw/920b1369dfbd9a7973a989b2c9dd0116919d60ee/sonarwatch.fraxtal.tokenlist.json',
+    'https://gist.githubusercontent.com/jtardioli/f0b857cbebf6d7f1be20eae612b9aa00/raw/52b8f369b6fc055f1c91c4dbde7c8e3306155f6e/sonarwatch.fraxtal.tokenlist.json',
 };
 
 export const networks: Record<NetworkIdType, Network> = {
