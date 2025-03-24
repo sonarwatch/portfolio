@@ -8,30 +8,35 @@ import {
   walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
-import { MarginfiProgram, platformId, banksKey } from './constants';
-import { bankStruct } from './structs/Bank';
-import { banksFilters } from './filters';
-import { computeInterestRates, wrappedI80F48toBigNumber } from './helpers';
 import {
-  getParsedProgramAccounts,
-  mintAccountStruct,
-} from '../../utils/solana';
+  marginfiProgramId,
+  platformId,
+  banksKey,
+  MarginfiAccountAddress,
+} from './constants';
+import { bankStruct } from './structs/Bank';
+import { computeInterestRates, wrappedI80F48toBigNumber } from './helpers';
+import { mintAccountStruct } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { BankInfo } from './types';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 import { stakeAccountStruct } from '../native-stake/solana/structs';
+import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
 
-  const banksRawData = await getParsedProgramAccounts(
+  const banksRawData = await ParsedGpa.build(
     connection,
     bankStruct,
-    MarginfiProgram,
-    banksFilters()
-  );
+    marginfiProgramId
+  )
+    .addRawFilter(0, 'QnTef4UXSzF')
+    .addRawFilter(41, MarginfiAccountAddress)
+    .addDataSizeFilter(bankStruct.byteSize)
+    .run();
 
   const banks: BankInfo[] = [];
   const rateItems = [];
