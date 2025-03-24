@@ -87,10 +87,6 @@ export async function getLendBorrowBalances(
         BigNumber(value.toString())
       );
 
-      if (sharesBorrow.isZero() || sharesAsset.isZero()) {
-        continue;
-      }
-
       const pricePerFullShareBorrow = amountBorrow.div(sharesBorrow);
       const pricePerFullShareAsset = amountAsset.div(sharesAsset);
 
@@ -110,8 +106,8 @@ export async function getLendBorrowBalances(
         supplyAssetAddress: contract.suppliedAssetAddress,
         borrowAssetAddress: contract.borrowedAssetAddress,
         supplyAssetBalance: userAsset.toString(),
-        borrowAssetBalance: userBorrow.toString(),
         collateralBalance: userCollateralBalance.toString(),
+        borrowAssetBalance: userBorrow.toString(),
       });
     } catch (error) {
       console.error(
@@ -145,6 +141,13 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
       const element = elementRegistry.addElementBorrowlend({
         label: 'Lending',
       });
+
+      if (position.supplyAssetBalance !== '0') {
+        element.addSuppliedAsset({
+          address: position.borrowAssetAddress,
+          amount: position.supplyAssetBalance,
+        });
+      }
 
       if (position.collateralBalance !== '0') {
         element.addSuppliedAsset({

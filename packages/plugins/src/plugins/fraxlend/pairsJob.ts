@@ -57,7 +57,7 @@ export async function getPairsContracts(
     }),
     client.multicall({
       contracts: borrowedCalls,
-    })
+    }),
   ]);
 
   const contracts = [];
@@ -82,6 +82,7 @@ export async function getPairsContracts(
 
     contracts.push(poolToken);
   }
+
   return contracts;
 }
 const executor: JobExecutor = async (cache: Cache) => {
