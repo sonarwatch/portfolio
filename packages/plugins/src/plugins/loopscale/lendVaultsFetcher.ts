@@ -46,7 +46,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   userVaultStakes.forEach((stakeAccount) => {
     const vault = vaults.get(stakeAccount.vault.toString());
     if (!vault) return;
-    const amount = bytesToNumberLE(new Uint8Array(stakeAccount.amount.array));
+    const amount =
+      bytesToNumberLE(new Uint8Array(stakeAccount.amount.array)) * vault.price;
     const element = elementRegistry.addElementMultiple({
       label: 'Deposit',
       ref: stakeAccount.pubkey,
@@ -59,7 +60,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       link: `https://app.loopscale.com/vault/AXanCP4dJHtWd7zY4X7nwxN5t5Gysfy2uG3XTxSmXdaB${vault.pubkey}`,
     });
     element.addAsset({
-      address: vault.lp_mint,
+      address: vault.principal,
       amount,
     });
   });
