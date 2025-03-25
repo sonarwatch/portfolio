@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { apyToApr, NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
 import { Cache } from '../../Cache';
@@ -8,6 +8,7 @@ import { getClientSolana } from '../../utils/clients';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 import { loanStruct } from './structs';
+import { bytesToNumberLE } from './helpers';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
@@ -31,7 +32,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       link: `https://app.loopscale.com/loan/${account.pubkey}`,
     });
 
-    account.collateral.forEach((collateralData) => {
+    account.collateral.forEach((collateralData, i) => {
       if (
         collateralData.asset_identifier.toString() ===
         PublicKey.default.toString()
@@ -42,9 +43,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         address: collateralData.asset_identifier,
         amount: new BN(collateralData.amount.array.reverse()).toNumber(),
       });
+
+      element.addSuppliedLtv(
+        bytesToNumberLE(new Uint8Array(account.ltv_matrix[i][0].array))
+      );
     });
 
-    account.ledgers.forEach((ledger) => {
+    account.ledgers.forEach((ledger, i) => {
       if (ledger.principal_mint.toString() === PublicKey.default.toString()) {
         return;
       }
@@ -57,6 +62,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           new BN(ledger.interest_due.array.reverse()).toNumber() -
           new BN(ledger.interest_repaid.array.reverse()).toNumber(),
       });
+
+      element.addBorrowedWeight(
+        bytesToNumberLE(new Uint8Array(account.weight_matrix[i][0].array))
+      );
+
+      const apy = bytesToNumberLE(new Uint8Array(ledger.apy.array)) / 10000;
+      element.addBorrowedYield([
+        {
+          apy,
+          apr: apyToApr(apy),
+        },
+      ]);
     });
   });
 

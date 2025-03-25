@@ -267,7 +267,6 @@ export const loanStruct = new BeetStruct<Loan>(
     ['version', u8],
     ['bump', u8],
     ['loan_type', u8],
-
     ['borrower', publicKey],
     ['nonce', u64],
     ['start_time', podU64Struct],
