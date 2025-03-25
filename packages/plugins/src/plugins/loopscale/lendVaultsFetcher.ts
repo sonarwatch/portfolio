@@ -49,7 +49,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const amount =
       bytesToNumberLE(new Uint8Array(stakeAccount.amount.array)) * vault.price;
     const element = elementRegistry.addElementMultiple({
-      label: 'Deposit',
+      label: 'Vault',
       ref: stakeAccount.pubkey,
       sourceRefs: [
         {
