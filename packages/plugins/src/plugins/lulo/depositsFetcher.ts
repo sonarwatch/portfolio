@@ -11,6 +11,7 @@ import { getDerivedAccount, getDerivedPendingWithdraws } from './helpers';
 import driftDepositsFetcher from '../drift/depositsFetcher';
 import kaminoLendDepositFetcher from '../kamino/lendsFetcher';
 import mangoDepositFetcher from '../mango/collateralFetcher';
+import marginFiDepositFetcher from '../marginfi/depositsFetcher';
 import { walletTokensPlatform } from '../tokens/constants';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 import { getClientSolana } from '../../utils/clients';
@@ -19,14 +20,7 @@ import { obligationStruct } from '../save/structs';
 import { mainMarket, marketsPrefix, reservesPrefix } from '../save/constants';
 import { MarketInfo, ReserveInfo, ReserveInfoExtended } from '../save/types';
 import { getElementsFromObligations } from '../save/helpers';
-import { marginfiAccountStruct } from '../marginfi/structs/MarginfiAccount';
-import {
-  getParsedMultipleAccountsInfo,
-  ParsedAccount,
-} from '../../utils/solana';
-import { BankInfo } from '../marginfi/types';
-import { banksKey, platform } from '../marginfi/constants';
-import { getElementFromAccount } from '../marginfi/helpers';
+import { getParsedMultipleAccountsInfo } from '../../utils/solana';
 import { AllocationInfo } from './poolsJob';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
@@ -51,19 +45,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const portfolioElements: PortfolioElement[] = [];
   const [
-    marginfiAccount,
+    marginFiElements,
     driftElements,
     kaminoElements,
     mangoElements,
     saveObligation,
   ] = await Promise.all([
     isMarginFiActivated
-      ? getParsedAccountInfo(
-          client,
-          marginfiAccountStruct,
-          userAccount.mfi_account
+      ? marginFiDepositFetcher.executor(
+          userAccount.mfi_account.toString(),
+          cache
         )
-      : undefined,
+      : [],
     driftDepositsFetcher.executor(pda, cache),
     kaminoLendDepositFetcher.executor(pda, cache),
     mangoDepositFetcher.executor(pda, cache),
@@ -77,7 +70,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   ]);
 
   portfolioElements.push(
-    ...[...driftElements, ...kaminoElements, ...mangoElements]
+    ...[
+      ...marginFiElements,
+      ...driftElements,
+      ...kaminoElements,
+      ...mangoElements,
+    ]
   );
 
   if (saveObligation) {
@@ -116,37 +114,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           );
         portfolioElements.push(...solendElements);
       }
-    }
-  }
-
-  if (marginfiAccount) {
-    const banksInfo = await cache.getItem<ParsedAccount<BankInfo>[]>(banksKey, {
-      prefix: platform.id,
-      networkId: NetworkId.solana,
-    });
-    if (banksInfo) {
-      const banksInfoByAddress: Map<string, BankInfo> = new Map();
-      const tokensAddresses: Set<string> = new Set();
-      banksInfo.forEach((bankInfo) => {
-        if (!bankInfo) return;
-        banksInfoByAddress.set(
-          bankInfo.pubkey.toString(),
-          bankInfo as BankInfo
-        );
-        tokensAddresses.add(bankInfo.mint.toString());
-      });
-
-      const tokenPriceById = await cache.getTokenPricesAsMap(
-        Array.from(tokensAddresses),
-        NetworkId.solana
-      );
-
-      const element = getElementFromAccount(
-        marginfiAccount,
-        banksInfoByAddress,
-        tokenPriceById
-      );
-      if (element) portfolioElements.push(element);
     }
   }
 

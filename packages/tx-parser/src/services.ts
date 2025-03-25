@@ -9,6 +9,9 @@ import * as elemental from './services/elemental';
 import * as ensofi from './services/ensofi';
 import * as jupiter from './services/jupiter';
 import * as kamino from './services/kamino';
+import * as loopscale from './services/loopscale';
+import * as lulo from './services/lulo';
+import * as marginfi from './services/marginfi';
 import * as meteora from './services/meteora';
 import * as orca from './services/orca';
 import * as picasso from './services/picasso';
@@ -28,6 +31,9 @@ export const services: Service[] = [
   ensofi,
   jupiter,
   kamino,
+  loopscale,
+  lulo,
+  marginfi,
   meteora,
   orca,
   picasso,
