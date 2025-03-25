@@ -6,7 +6,7 @@ const bsktStakingContract = {
   platformId: 'bskt',
 };
 
-export const bsktStakingService: Service = {
+const bsktStakingService: Service = {
   id: 'bskt-staking',
   name: 'BSKT Staking',
   platformId: 'bskt',

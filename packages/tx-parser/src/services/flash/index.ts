@@ -1,15 +1,15 @@
 import { NetworkId, Service } from '@sonarwatch/portfolio-core';
 
 const contract = {
-  name: 'Elemental',
-  address: 'ELE5vYY81W7UCpTPs7SyD6Bwm5FwZBntTW8PiGqM5d4A',
-  platformId: 'elemental',
+  name: 'FlashTrade',
+  address: 'FLASH6Lo6h3iasJKWDs2F8TkW2UKf3s15C8PMGuVfgBn',
+  platformId: 'flash',
 };
 
 const service: Service = {
-  id: 'elemental',
-  name: 'Elemental',
-  platformId: 'elemental',
+  id: 'flash',
+  name: 'FlashTrade',
+  platformId: 'flash',
   networkId: NetworkId.solana,
   contracts: [contract],
 };

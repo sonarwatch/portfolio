@@ -6,7 +6,7 @@ const contract = {
   platformId: 'picasso',
 };
 
-export const service: Service = {
+const service: Service = {
   id: 'picasso',
   name: 'Picasso',
   platformId: 'picasso',
