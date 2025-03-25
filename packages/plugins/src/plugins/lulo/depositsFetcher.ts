@@ -51,7 +51,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     mangoElements,
     saveObligation,
   ] = await Promise.all([
-    isMarginFiActivated ? marginFiDepositFetcher.executor(pda, cache) : [],
+    isMarginFiActivated
+      ? marginFiDepositFetcher.executor(
+          userAccount.mfi_account.toString(),
+          cache
+        )
+      : [],
     driftDepositsFetcher.executor(pda, cache),
     kaminoLendDepositFetcher.executor(pda, cache),
     mangoDepositFetcher.executor(pda, cache),
