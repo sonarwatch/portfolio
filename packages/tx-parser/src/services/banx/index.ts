@@ -12,7 +12,7 @@ const banxVaultsContract = {
   platformId: 'banx',
 };
 
-export const banxService: Service = {
+const banxService: Service = {
   id: 'banx',
   name: 'Banx',
   platformId: 'banx',
@@ -20,7 +20,7 @@ export const banxService: Service = {
   contracts: [banxContract],
 };
 
-export const banxVaultsService: Service = {
+const banxVaultsService: Service = {
   id: 'banx',
   name: 'Banx Vaults',
   platformId: 'banx',

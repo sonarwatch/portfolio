@@ -67,7 +67,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         bytesToNumberLE(new Uint8Array(account.weight_matrix[i][0].array))
       );
 
-      const apy = bytesToNumberLE(new Uint8Array(ledger.apy.array)) / 10000;
+      const apy = bytesToNumberLE(new Uint8Array(ledger.apy.array)) / 1000000;
       element.addBorrowedYield([
         {
           apy,

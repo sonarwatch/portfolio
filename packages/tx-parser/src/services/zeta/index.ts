@@ -6,7 +6,7 @@ const zetaContract = {
   platformId: 'zeta',
 };
 
-export const zetaService: Service = {
+const zetaService: Service = {
   id: 'zeta',
   name: 'Zeta',
   platformId: 'zeta',
@@ -20,7 +20,7 @@ const zetaStakingContract = {
   platformId: 'zeta',
 };
 
-export const zetaStakingService: Service = {
+const zetaStakingService: Service = {
   id: 'zeta-staking',
   name: 'ZEX Staking',
   platformId: 'zeta',

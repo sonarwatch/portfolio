@@ -6,7 +6,7 @@ const contract = {
   platformId: 'flexlend',
 };
 
-export const service: Service = {
+const service: Service = {
   id: 'flexlend',
   name: 'Lulo',
   platformId: 'flexlend',

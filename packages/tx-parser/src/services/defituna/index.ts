@@ -5,7 +5,8 @@ const defiTunaContract = {
   address: 'tuna4uSQZncNeeiAMKbstuxA9CUkHH6HmC64wgmnogD',
   platformId: 'defituna',
 };
-export const defiTunaService: Service = {
+
+const defiTunaService: Service = {
   id: 'defituna',
   name: 'Lending',
   platformId: 'defituna',

@@ -5,6 +5,7 @@ const contract = {
   address: 'dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH',
   platformId: 'drift',
 };
+
 const service: Service = {
   id: 'drift',
   name: 'Perps',
