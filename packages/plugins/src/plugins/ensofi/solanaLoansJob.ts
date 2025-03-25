@@ -25,6 +25,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   const items = [];
   for (const lendOffer of lendOffers) {
     if (lendOffer.status !== LendOfferStatus.Created) continue;
+
     const apr = -lendOffer.interest / 10000;
     const blRate: BorrowLendRate = {
       borrowedAmount: 0,

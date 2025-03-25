@@ -7,7 +7,7 @@ import {
   COption,
   coption,
   u16,
-  array,
+  BeetStruct,
 } from '@metaplex-foundation/beet';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { f64, i64, u64 } from '../../utils/solana';
@@ -34,6 +34,7 @@ export type LendOfferAccount = {
   interest: number;
   lenderFeePercent: number;
   duration: BigNumber;
+  offerIdsLength: number[];
   offerId: number[];
   lender: PublicKey;
   lendMintToken: PublicKey;
@@ -42,13 +43,14 @@ export type LendOfferAccount = {
   status: LendOfferStatus;
 };
 
-export const lendOfferAccountStruct = new FixableBeetStruct<LendOfferAccount>(
+export const lendOfferAccountStruct = new BeetStruct<LendOfferAccount>(
   [
     ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
     ['interest', u16],
     ['lenderFeePercent', f64],
     ['duration', u64],
-    ['offerId', array(u8)],
+    ['offerIdsLength', uniformFixedSizeArray(u8, 4)],
+    ['offerId', uniformFixedSizeArray(u8, 32)],
     ['lender', publicKey],
     ['lendMintToken', publicKey],
     ['amount', u64],
