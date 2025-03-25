@@ -18,12 +18,6 @@ export const platform: Platform = {
 };
 export const vaultsCacheKey = `vaults`;
 
-export const creditbookProgramId = new PublicKey(
-  'abfcSQac2vK2Pa6UAJb37DzarVxF15bDTdphJzAqYYp'
-);
-export const lockboxProgramId = new PublicKey(
-  '1oCkVqJ2uk4SuHyCuZKi8q3J6gjoe9Pux3XvHnHFVy4'
-);
 export const loopscaleProgramId = new PublicKey(
   '1oopBoJG58DgkUVKkEzKgyG9dvRmpgeEm1AVjoHkF78'
 );

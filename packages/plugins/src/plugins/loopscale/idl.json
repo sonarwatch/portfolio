@@ -1,0 +1,5233 @@
+{
+  "address": "1oopBoJG58DgkUVKkEzKgyG9dvRmpgeEm1AVjoHkF78",
+  "metadata": {
+    "name": "loopscale",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "borrow_principal",
+      "docs": [
+        "principal instructions",
+        "6.",
+        "6.1. borrow principal"
+      ],
+      "discriminator": [
+        106,
+        10,
+        38,
+        204,
+        139,
+        188,
+        124,
+        50
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "borrower",
+          "signer": true
+        },
+        {
+          "name": "loan",
+          "writable": true
+        },
+        {
+          "name": "strategy",
+          "writable": true
+        },
+        {
+          "name": "market_information"
+        },
+        {
+          "name": "principal_mint"
+        },
+        {
+          "name": "borrower_ta",
+          "writable": true
+        },
+        {
+          "name": "strategy_ta",
+          "writable": true
+        },
+        {
+          "name": "associated_token_program"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "BorrowPrincipalParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "cancel_timelock",
+      "docs": [
+        "9.2.3 timelock cancel"
+      ],
+      "discriminator": [
+        158,
+        180,
+        47,
+        81,
+        133,
+        231,
+        168,
+        238
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "manager",
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "timelock",
+          "writable": true
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "claim_vault_fee",
+      "docs": [
+        "9.1.2 vault manager actions"
+      ],
+      "discriminator": [
+        38,
+        40,
+        51,
+        195,
+        130,
+        248,
+        134,
+        247
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "manager",
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "strategy",
+          "writable": true
+        },
+        {
+          "name": "principal_mint"
+        },
+        {
+          "name": "manager_principal_ta",
+          "writable": true
+        },
+        {
+          "name": "strategy_principal_ta",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "associated_token_program"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "ClaimVaultFeeParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "close_loop",
+      "docs": [
+        "1.3 close loop"
+      ],
+      "discriminator": [
+        98,
+        248,
+        86,
+        17,
+        177,
+        225,
+        29,
+        138
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "borrower",
+          "signer": true
+        },
+        {
+          "name": "loan",
+          "writable": true
+        },
+        {
+          "name": "strategy",
+          "writable": true
+        },
+        {
+          "name": "principal_mint"
+        },
+        {
+          "name": "collateral_mint"
+        },
+        {
+          "name": "borrower_collateral_ta",
+          "writable": true
+        },
+        {
+          "name": "loan_collateral_ta",
+          "writable": true
+        },
+        {
+          "name": "borrower_principal_ta",
+          "writable": true
+        },
+        {
+          "name": "strategy_principal_ta",
+          "writable": true
+        },
+        {
+          "name": "principal_token_program"
+        },
+        {
+          "name": "collateral_token_program"
+        },
+        {
+          "name": "associated_token_program"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "CloseLoopParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "close_strategy",
+      "docs": [
+        "8.5 close strategy"
+      ],
+      "discriminator": [
+        56,
+        247,
+        170,
+        246,
+        89,
+        221,
+        134,
+        200
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "lender",
+          "signer": true
+        },
+        {
+          "name": "strategy",
+          "writable": true
+        },
+        {
+          "name": "principal_mint"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "associated_token_program"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_loan",
+      "docs": [
+        "creditbook instructionss",
+        "",
+        "1. loan instructions",
+        "1.1 create loan"
+      ],
+      "discriminator": [
+        166,
+        131,
+        118,
+        219,
+        138,
+        218,
+        206,
+        140
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "borrower",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "loan",
+          "writable": true
+        },
+        {
+          "name": "strategy",
+          "writable": true
+        },
+        {
+          "name": "market_information"
+        },
+        {
+          "name": "principal_mint"
+        },
+        {
+          "name": "collateral_mint"
+        },
+        {
+          "name": "borrower_principal_ta",
+          "writable": true
+        },
+        {
+          "name": "strategy_principal_ta",
+          "writable": true
+        },
+        {
+          "name": "borrower_collateral_ta",
+          "writable": true
+        },
+        {
+          "name": "loan_collateral_ta",
+          "writable": true
+        },
+        {
+          "name": "principal_token_program"
+        },
+        {
+          "name": "collateral_token_program"
+        },
+        {
+          "name": "associated_token_program"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "CreateLoanParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "create_market_information",
+      "docs": [
+        "7. oracle instructions",
+        "7.1 create market information account"
+      ],
+      "discriminator": [
+        246,
+        45,
+        227,
+        173,
+        15,
+        51,
+        85,
+        1
+      ],
+      "accounts": [
+        {
+          "name": "market_information",
+          "writable": true
+        },
+        {
+          "name": "system_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "CreateMarketInformationParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "create_strategy",
+      "docs": [
+        "8. strategy instructions",
+        "8.1 create strategy"
+      ],
+      "discriminator": [
+        152,
+        160,
+        107,
+        148,
+        245,
+        190,
+        127,
+        224
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "nonce",
+          "signer": true
+        },
+        {
+          "name": "strategy",
+          "writable": true
+        },
+        {
+          "name": "market_information"
+        },
+        {
+          "name": "principal_mint"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "CreateStrategyParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "create_timelock",
+      "docs": [
+        "9.2 timelock instructions",
+        "9.2.1 timelock create"
+      ],
+      "discriminator": [
+        243,
+        10,
+        110,
+        170,
+        71,
+        251,
+        210,
+        87
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "manager",
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "timelock",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "market_information",
+          "writable": true
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "TimelockUpdateParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "create_vault",
+      "docs": [
+        "9.3 create vault"
+      ],
+      "discriminator": [
+        29,
+        237,
+        247,
+        208,
+        193,
+        82,
+        54,
+        135
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "nonce",
+          "signer": true
+        },
+        {
+          "name": "principal_mint"
+        },
+        {
+          "name": "lp_mint",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "strategy",
+          "writable": true
+        },
+        {
+          "name": "market_information",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "CreateVaultParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "deposit_collateral",
+      "docs": [
+        "collateral instructions",
+        "5.",
+        "5.1. deposit collateral"
+      ],
+      "discriminator": [
+        156,
+        131,
+        142,
+        116,
+        146,
+        247,
+        162,
+        120
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "borrower",
+          "signer": true
+        },
+        {
+          "name": "loan",
+          "writable": true
+        },
+        {
+          "name": "borrower_collateral_ta",
+          "writable": true
+        },
+        {
+          "name": "loan_collateral_ta",
+          "writable": true
+        },
+        {
+          "name": "deposit_mint"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "associated_token_program"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "DepositCollateralParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "deposit_strategy",
+      "docs": [
+        "8.2 deposit strategy"
+      ],
+      "discriminator": [
+        246,
+        82,
+        57,
+        226,
+        131,
+        222,
+        253,
+        249
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "lender",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "strategy",
+          "writable": true
+        },
+        {
+          "name": "principal_mint"
+        },
+        {
+          "name": "lender_ta",
+          "writable": true
+        },
+        {
+          "name": "strategy_ta",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "associated_token_program"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "deposit_user_vault",
+      "docs": [
+        "9. vault instructions",
+        "9.1 vault actions",
+        "9.1.1 vault user actions",
+        "9.1.1.1 vault user deposit"
+      ],
+      "discriminator": [
+        204,
+        190,
+        182,
+        224,
+        15,
+        219,
+        247,
+        121
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "strategy",
+          "writable": true
+        },
+        {
+          "name": "lp_mint",
+          "writable": true
+        },
+        {
+          "name": "user_lp_ta",
+          "writable": true
+        },
+        {
+          "name": "user_principal_ta",
+          "writable": true
+        },
+        {
+          "name": "strategy_principal_ta",
+          "writable": true
+        },
+        {
+          "name": "principal_mint"
+        },
+        {
+          "name": "principal_token_program"
+        },
+        {
+          "name": "token_2022_program"
+        },
+        {
+          "name": "associated_token_program"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "LpParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "execute_timelock",
+      "docs": [
+        "9.2.2 timelock execute"
+      ],
+      "discriminator": [
+        160,
+        194,
+        240,
+        8,
+        212,
+        93,
+        157,
+        221
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "timelock",
+          "writable": true
+        },
+        {
+          "name": "strategy",
+          "writable": true
+        },
+        {
+          "name": "market_information",
+          "writable": true
+        },
+        {
+          "name": "strategy_ta",
+          "writable": true
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "associated_token_program"
+        },
+        {
+          "name": "principal_mint"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "liquidate_ledger",
+      "docs": [
+        "2. liquidate ledger"
+      ],
+      "discriminator": [
+        5,
+        124,
+        101,
+        85,
+        254,
+        175,
+        184,
+        249
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "liquidator",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "borrower",
+          "writable": true
+        },
+        {
+          "name": "loan",
+          "writable": true
+        },
+        {
+          "name": "strategy",
+          "writable": true
+        },
+        {
+          "name": "market_information"
+        },
+        {
+          "name": "liquidator_ta",
+          "writable": true
+        },
+        {
+          "name": "strategy_ta",
+          "writable": true
+        },
+        {
+          "name": "principal_mint"
+        },
+        {
+          "name": "associated_token_program"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "token_2022_program"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "LiquidateLedgerParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "manage_collateral_claim_orca_fee",
+      "docs": [
+        "manage collateral instructions",
+        "5.3",
+        "5.3.1 orca claim fee"
+      ],
+      "discriminator": [
+        242,
+        48,
+        127,
+        91,
+        24,
+        187,
+        211,
+        234
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "borrower",
+          "signer": true
+        },
+        {
+          "name": "loan"
+        },
+        {
+          "name": "whirlpool",
+          "writable": true
+        },
+        {
+          "name": "token_vault_a",
+          "writable": true
+        },
+        {
+          "name": "token_vault_b",
+          "writable": true
+        },
+        {
+          "name": "tick_array_lower",
+          "writable": true
+        },
+        {
+          "name": "tick_array_upper",
+          "writable": true
+        },
+        {
+          "name": "position",
+          "writable": true
+        },
+        {
+          "name": "position_token_account",
+          "writable": true
+        },
+        {
+          "name": "borrower_ta_a",
+          "writable": true
+        },
+        {
+          "name": "borrower_ta_b",
+          "writable": true
+        },
+        {
+          "name": "loan_ta_a",
+          "writable": true
+        },
+        {
+          "name": "loan_ta_b",
+          "writable": true
+        },
+        {
+          "name": "mint_a"
+        },
+        {
+          "name": "mint_b"
+        },
+        {
+          "name": "whirlpool_program"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "token_2022_program"
+        },
+        {
+          "name": "associated_token_program"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "memo_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "close_ta",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "manage_collateral_increase_orca_liquidity",
+      "docs": [
+        "5.3.2 orca increase liquidity"
+      ],
+      "discriminator": [
+        173,
+        62,
+        204,
+        113,
+        206,
+        27,
+        147,
+        128
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "borrower",
+          "signer": true
+        },
+        {
+          "name": "loan"
+        },
+        {
+          "name": "whirlpool",
+          "writable": true
+        },
+        {
+          "name": "position",
+          "writable": true
+        },
+        {
+          "name": "position_token_account"
+        },
+        {
+          "name": "tick_array_lower",
+          "writable": true
+        },
+        {
+          "name": "tick_array_upper",
+          "writable": true
+        },
+        {
+          "name": "token_vault_a",
+          "writable": true
+        },
+        {
+          "name": "token_vault_b",
+          "writable": true
+        },
+        {
+          "name": "borrower_ta_a",
+          "writable": true
+        },
+        {
+          "name": "borrower_ta_b",
+          "writable": true
+        },
+        {
+          "name": "loan_ta_a",
+          "writable": true
+        },
+        {
+          "name": "loan_ta_b",
+          "writable": true
+        },
+        {
+          "name": "mint_a"
+        },
+        {
+          "name": "mint_b"
+        },
+        {
+          "name": "whirlpool_program"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "token_2022_program"
+        },
+        {
+          "name": "associated_token_program"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "memo_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "ManageOrcaLiquidityParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "manage_collateral_transfer_orca_position",
+      "docs": [
+        "5.3.4 orca transfer position"
+      ],
+      "discriminator": [
+        85,
+        151,
+        110,
+        243,
+        164,
+        41,
+        62,
+        238
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "borrower",
+          "signer": true
+        },
+        {
+          "name": "loan",
+          "writable": true
+        },
+        {
+          "name": "whirlpool",
+          "writable": true
+        },
+        {
+          "name": "position",
+          "writable": true
+        },
+        {
+          "name": "position_token_account",
+          "writable": true
+        },
+        {
+          "name": "position_mint",
+          "writable": true
+        },
+        {
+          "name": "tick_array_lower",
+          "writable": true
+        },
+        {
+          "name": "tick_array_upper",
+          "writable": true
+        },
+        {
+          "name": "new_tick_array_lower",
+          "writable": true
+        },
+        {
+          "name": "new_tick_array_upper",
+          "writable": true
+        },
+        {
+          "name": "token_vault_a",
+          "writable": true
+        },
+        {
+          "name": "token_vault_b",
+          "writable": true
+        },
+        {
+          "name": "borrower_ta_a",
+          "writable": true
+        },
+        {
+          "name": "borrower_ta_b",
+          "writable": true
+        },
+        {
+          "name": "loan_ta_a",
+          "writable": true
+        },
+        {
+          "name": "loan_ta_b",
+          "writable": true
+        },
+        {
+          "name": "new_position",
+          "writable": true
+        },
+        {
+          "name": "new_position_mint",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "new_position_token_account",
+          "writable": true
+        },
+        {
+          "name": "mint_a"
+        },
+        {
+          "name": "mint_b"
+        },
+        {
+          "name": "metadata_update_auth"
+        },
+        {
+          "name": "whirlpool_program"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "token_2022_program"
+        },
+        {
+          "name": "associated_token_program"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "memo_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "TransferOrcaPositionParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "manage_collateral_withdraw_orca_liquidity",
+      "docs": [
+        "5.3.3 orca withdraw liquidity"
+      ],
+      "discriminator": [
+        219,
+        89,
+        35,
+        158,
+        224,
+        12,
+        200,
+        90
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "borrower",
+          "signer": true
+        },
+        {
+          "name": "loan"
+        },
+        {
+          "name": "whirlpool",
+          "writable": true
+        },
+        {
+          "name": "position",
+          "writable": true
+        },
+        {
+          "name": "position_token_account"
+        },
+        {
+          "name": "tick_array_lower",
+          "writable": true
+        },
+        {
+          "name": "tick_array_upper",
+          "writable": true
+        },
+        {
+          "name": "token_vault_a",
+          "writable": true
+        },
+        {
+          "name": "token_vault_b",
+          "writable": true
+        },
+        {
+          "name": "borrower_ta_a",
+          "writable": true
+        },
+        {
+          "name": "borrower_ta_b",
+          "writable": true
+        },
+        {
+          "name": "loan_ta_a",
+          "writable": true
+        },
+        {
+          "name": "loan_ta_b",
+          "writable": true
+        },
+        {
+          "name": "mint_a"
+        },
+        {
+          "name": "mint_b"
+        },
+        {
+          "name": "whirlpool_program"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "token_2022_program"
+        },
+        {
+          "name": "associated_token_program"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "memo_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "ManageOrcaLiquidityParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "open_loop",
+      "docs": [
+        "1.2 open loop"
+      ],
+      "discriminator": [
+        153,
+        236,
+        150,
+        30,
+        36,
+        2,
+        246,
+        20
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "borrower",
+          "signer": true
+        },
+        {
+          "name": "loan",
+          "writable": true
+        },
+        {
+          "name": "strategy",
+          "writable": true
+        },
+        {
+          "name": "market_information"
+        },
+        {
+          "name": "principal_mint"
+        },
+        {
+          "name": "collateral_mint"
+        },
+        {
+          "name": "borrower_principal_ta",
+          "writable": true
+        },
+        {
+          "name": "strategy_principal_ta",
+          "writable": true
+        },
+        {
+          "name": "borrower_collateral_ta",
+          "writable": true
+        },
+        {
+          "name": "loan_collateral_ta",
+          "writable": true
+        },
+        {
+          "name": "principal_token_program"
+        },
+        {
+          "name": "collateral_token_program"
+        },
+        {
+          "name": "associated_token_program"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "OpenLoopParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "refinance_ledger",
+      "docs": [
+        "3. refinance ledger"
+      ],
+      "discriminator": [
+        103,
+        41,
+        134,
+        43,
+        140,
+        152,
+        253,
+        74
+      ],
+      "accounts": [
+        {
+          "name": "bs_auth",
+          "signer": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "loan",
+          "writable": true
+        },
+        {
+          "name": "old_strategy",
+          "writable": true
+        },
+        {
+          "name": "new_strategy",
+          "writable": true
+        },
+        {
+          "name": "old_strategy_ta",
+          "writable": true
+        },
+        {
+          "name": "new_strategy_ta",
+          "writable": true
+        },
+        {
+          "name": "old_strategy_market_information"
+        },
+        {
+          "name": "new_strategy_market_information"
+        },
+        {
+          "name": "principal_mint"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "associated_token_program"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "RefinanceLedgerParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "repay_principal",
+      "docs": [
+        "6.2. repay principal"
+      ],
+      "discriminator": [
+        229,
+        67,
+        83,
+        65,
+        77,
+        84,
+        80,
+        141
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "borrower",
+          "signer": true
+        },
+        {
+          "name": "loan",
+          "writable": true
+        },
+        {
+          "name": "strategy",
+          "writable": true
+        },
+        {
+          "name": "principal_mint"
+        },
+        {
+          "name": "borrower_ta",
+          "writable": true
+        },
+        {
+          "name": "strategy_ta",
+          "writable": true
+        },
+        {
+          "name": "associated_token_program"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "RepayPrincipalParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "sell_ledger",
+      "docs": [
+        "4. sell ledger"
+      ],
+      "discriminator": [
+        55,
+        17,
+        153,
+        148,
+        120,
+        242,
+        80,
+        5
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "lender_auth",
+          "signer": true
+        },
+        {
+          "name": "loan",
+          "writable": true
+        },
+        {
+          "name": "new_strategy_ta",
+          "writable": true
+        },
+        {
+          "name": "lender_auth_ta",
+          "writable": true
+        },
+        {
+          "name": "old_strategy",
+          "writable": true
+        },
+        {
+          "name": "new_strategy",
+          "writable": true
+        },
+        {
+          "name": "old_strategy_market_information"
+        },
+        {
+          "name": "new_strategy_market_information"
+        },
+        {
+          "name": "principal_mint"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "associated_token_program"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "optional": true
+        },
+        {
+          "name": "old_strategy_ta",
+          "writable": true,
+          "optional": true
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "SellLedgerParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "stake_user_vault_lp",
+      "docs": [
+        "9.1.1.3 vault user stake"
+      ],
+      "discriminator": [
+        114,
+        132,
+        194,
+        209,
+        208,
+        149,
+        43,
+        136
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "user",
+          "signer": true
+        },
+        {
+          "name": "nonce",
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "vault_stake",
+          "writable": true
+        },
+        {
+          "name": "lp_mint"
+        },
+        {
+          "name": "user_lp_ta",
+          "writable": true
+        },
+        {
+          "name": "vault_stake_lp_ta",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "associated_token_program"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "VaultStakeParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "unstake_user_vault_lp",
+      "docs": [
+        "9.1.1.4 vault user unstake"
+      ],
+      "discriminator": [
+        83,
+        78,
+        230,
+        123,
+        226,
+        40,
+        158,
+        97
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "user",
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "lp_mint",
+          "writable": true
+        },
+        {
+          "name": "vault_stake",
+          "writable": true
+        },
+        {
+          "name": "user_lp_ta",
+          "writable": true
+        },
+        {
+          "name": "vault_stake_lp_ta",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "associated_token_program"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "update_market_information",
+      "docs": [
+        "7.2 update market information account"
+      ],
+      "discriminator": [
+        186,
+        195,
+        82,
+        187,
+        196,
+        199,
+        135,
+        158
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "market_information",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "vec": {
+              "defined": {
+                "name": "UpdateMarketInformationParams"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "update_strategy",
+      "docs": [
+        "8.3 update strategy"
+      ],
+      "discriminator": [
+        16,
+        76,
+        138,
+        179,
+        171,
+        112,
+        196,
+        21
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "lender",
+          "signer": true
+        },
+        {
+          "name": "strategy",
+          "writable": true
+        },
+        {
+          "name": "principal_mint"
+        },
+        {
+          "name": "strategy_ta",
+          "writable": true
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "associated_token_program"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "collateral_terms",
+          "type": {
+            "vec": {
+              "defined": {
+                "name": "MultiCollateralTermsUpdateParams"
+              }
+            }
+          }
+        },
+        {
+          "name": "params",
+          "type": {
+            "option": {
+              "defined": {
+                "name": "UpdateStrategyParams"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "update_vault",
+      "docs": [
+        "9.4 toggle vault deposits"
+      ],
+      "discriminator": [
+        67,
+        229,
+        185,
+        188,
+        226,
+        11,
+        210,
+        60
+      ],
+      "accounts": [
+        {
+          "name": "manager",
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "UpdateVaultParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "withdraw_collateral",
+      "docs": [
+        "5.2. withdraw collateral"
+      ],
+      "discriminator": [
+        115,
+        135,
+        168,
+        106,
+        139,
+        214,
+        138,
+        150
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "borrower",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "loan",
+          "writable": true
+        },
+        {
+          "name": "borrower_ta",
+          "writable": true
+        },
+        {
+          "name": "loan_ta",
+          "writable": true
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "asset_mint"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "associated_token_program"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "WithdrawCollateralParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "withdraw_strategy",
+      "docs": [
+        "8.4 withdraw strategy"
+      ],
+      "discriminator": [
+        31,
+        45,
+        162,
+        5,
+        193,
+        217,
+        134,
+        188
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "lender",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "strategy",
+          "writable": true
+        },
+        {
+          "name": "principal_mint"
+        },
+        {
+          "name": "lender_ta",
+          "writable": true
+        },
+        {
+          "name": "strategy_ta",
+          "writable": true
+        },
+        {
+          "name": "associated_token_program"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "withdraw_all",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "withdraw_user_vault",
+      "docs": [
+        "9.1.1.2 vault user withdraw"
+      ],
+      "discriminator": [
+        9,
+        80,
+        134,
+        138,
+        212,
+        20,
+        61,
+        42
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "strategy",
+          "writable": true
+        },
+        {
+          "name": "lp_mint",
+          "writable": true
+        },
+        {
+          "name": "user_lp_ta",
+          "writable": true
+        },
+        {
+          "name": "user_principal_ta",
+          "writable": true
+        },
+        {
+          "name": "strategy_principal_ta",
+          "writable": true
+        },
+        {
+          "name": "principal_mint"
+        },
+        {
+          "name": "principal_token_program"
+        },
+        {
+          "name": "token_2022_program"
+        },
+        {
+          "name": "associated_token_program"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "LpParams"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Loan",
+      "discriminator": [
+        20,
+        195,
+        70,
+        117,
+        165,
+        227,
+        182,
+        1
+      ]
+    },
+    {
+      "name": "MarketInformation",
+      "discriminator": [
+        194,
+        154,
+        190,
+        99,
+        64,
+        111,
+        37,
+        205
+      ]
+    },
+    {
+      "name": "Position",
+      "discriminator": [
+        170,
+        188,
+        143,
+        228,
+        122,
+        64,
+        247,
+        208
+      ]
+    },
+    {
+      "name": "Strategy",
+      "discriminator": [
+        174,
+        110,
+        39,
+        119,
+        82,
+        106,
+        169,
+        102
+      ]
+    },
+    {
+      "name": "Timelock",
+      "discriminator": [
+        189,
+        33,
+        78,
+        75,
+        205,
+        31,
+        4,
+        177
+      ]
+    },
+    {
+      "name": "Vault",
+      "discriminator": [
+        211,
+        8,
+        232,
+        43,
+        2,
+        152,
+        117,
+        119
+      ]
+    },
+    {
+      "name": "VaultStake",
+      "discriminator": [
+        225,
+        34,
+        128,
+        53,
+        167,
+        239,
+        182,
+        107
+      ]
+    },
+    {
+      "name": "Whirlpool",
+      "discriminator": [
+        63,
+        149,
+        209,
+        12,
+        225,
+        128,
+        99,
+        9
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "TimelockCanceledEvent",
+      "discriminator": [
+        67,
+        213,
+        255,
+        46,
+        1,
+        27,
+        230,
+        3
+      ]
+    },
+    {
+      "name": "TimelockCreatedEvent",
+      "discriminator": [
+        152,
+        153,
+        7,
+        180,
+        31,
+        147,
+        228,
+        201
+      ]
+    },
+    {
+      "name": "TimelockExecutedEvent",
+      "discriminator": [
+        163,
+        211,
+        23,
+        234,
+        156,
+        203,
+        136,
+        240
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidCollateralMintOrIdentifier",
+      "msg": "The collateral mint specified does not match identifier according to type"
+    },
+    {
+      "code": 6001,
+      "name": "MaintanenceCollateralNotMet",
+      "msg": "Loan doesnt have enough collateral for maintenance"
+    },
+    {
+      "code": 6002,
+      "name": "ArithmeticOverflow",
+      "msg": "Arithmetic overflow"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidTimestamp",
+      "msg": "Invalid timestamp"
+    },
+    {
+      "code": 6004,
+      "name": "MaxCollateralReached",
+      "msg": "Max Collateral reached"
+    },
+    {
+      "code": 6005,
+      "name": "PartialWithdrawsNotAllowedForOrcaPositions",
+      "msg": "Partial withdraws not allowed for orca positions"
+    },
+    {
+      "code": 6006,
+      "name": "InvalidLedgerStatusForRefinance",
+      "msg": "Invalid ledger status for refinance"
+    },
+    {
+      "code": 6007,
+      "name": "InvalidLedgerStatusForLedgerSale",
+      "msg": "Invalid ledger status for ledger sale"
+    },
+    {
+      "code": 6008,
+      "name": "InvalidMarketInformation",
+      "msg": "Invalid market information"
+    },
+    {
+      "code": 6009,
+      "name": "LoanSizeExceedsMaxOriginationSize",
+      "msg": "Loan size exceeds max origination size"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidManager",
+      "msg": "Invalid manager"
+    },
+    {
+      "code": 6011,
+      "name": "NoOpenLedgers",
+      "msg": "No open ledgers"
+    },
+    {
+      "code": 6012,
+      "name": "InvalidDurationIndex",
+      "msg": "Invalid duration index"
+    },
+    {
+      "code": 6013,
+      "name": "InvalidAssetIdentifier",
+      "msg": "Invalid asset identifier"
+    },
+    {
+      "code": 6014,
+      "name": "APYDisabled",
+      "msg": "APY is disabled"
+    },
+    {
+      "code": 6015,
+      "name": "CollateralNotPresent",
+      "msg": "Collateral not present"
+    },
+    {
+      "code": 6016,
+      "name": "InvalidPrincipalMint",
+      "msg": "Invalid principal mint"
+    },
+    {
+      "code": 6017,
+      "name": "InvalidLedgerStrategy",
+      "msg": "Invalid ledger strategy"
+    },
+    {
+      "code": 6018,
+      "name": "InvalidLedgerIndex",
+      "msg": "Invalid ledger index"
+    },
+    {
+      "code": 6019,
+      "name": "NoSupportedCollateralFound",
+      "msg": "No supported collateral found"
+    },
+    {
+      "code": 6020,
+      "name": "CannotSellToSameStrategy",
+      "msg": "Cannot sell to same strategy"
+    },
+    {
+      "code": 6021,
+      "name": "InvalidOracleAccount",
+      "msg": "Invalid Oracle account"
+    },
+    {
+      "code": 6022,
+      "name": "InvalidLegacyPythAccount",
+      "msg": "Invalid Legacy Pyth account"
+    },
+    {
+      "code": 6023,
+      "name": "InvalidPriceExpo",
+      "msg": "Invalid price exponent"
+    },
+    {
+      "code": 6024,
+      "name": "StalePythPrice",
+      "msg": "Stale Pyth price"
+    },
+    {
+      "code": 6025,
+      "name": "PriceUncertainityExceeded",
+      "msg": "Price uncertainilty is more than max uncertainity"
+    },
+    {
+      "code": 6026,
+      "name": "NegativePrice",
+      "msg": "Price cannot be negative"
+    },
+    {
+      "code": 6027,
+      "name": "PriceOverflow",
+      "msg": "Price overflow"
+    },
+    {
+      "code": 6028,
+      "name": "MissingMarketInformationAccount",
+      "msg": "Missing Oracle Information account in remaining accounts"
+    },
+    {
+      "code": 6029,
+      "name": "MissingOracleAccount",
+      "msg": "Missing Oracle account in remaining accounts"
+    },
+    {
+      "code": 6030,
+      "name": "InvalidSeeds",
+      "msg": "Invalid seeds provided"
+    },
+    {
+      "code": 6031,
+      "name": "InvalidLoanVault",
+      "msg": "Invalid loan vault"
+    },
+    {
+      "code": 6032,
+      "name": "LoanNotInDefault",
+      "msg": "Loan not in default"
+    },
+    {
+      "code": 6033,
+      "name": "OrderStatusMismatch",
+      "msg": "Order status must be filled"
+    },
+    {
+      "code": 6034,
+      "name": "LSTOracleInvalid",
+      "msg": "LST Oracle invalid"
+    },
+    {
+      "code": 6035,
+      "name": "LSTOraclePriceNotFound",
+      "msg": "Could not get price per LST"
+    },
+    {
+      "code": 6036,
+      "name": "StaleLSTPrice",
+      "msg": "Stale LST price"
+    },
+    {
+      "code": 6037,
+      "name": "InvalidDecimal",
+      "msg": "value could not be converted to Decimal"
+    },
+    {
+      "code": 6038,
+      "name": "InvalidConversionOracleQuote",
+      "msg": "Invalid quote mint for conversion oracle"
+    },
+    {
+      "code": 6039,
+      "name": "MissingConversionRate",
+      "msg": "Missing conversion rate"
+    },
+    {
+      "code": 6040,
+      "name": "NotEnoughRemainingAccounts",
+      "msg": "Not enough remaining accounts passed in. Each lockbox asset requires at least 2 remaining accounts"
+    },
+    {
+      "code": 6041,
+      "name": "InvalidQuoteMintForMeteoraVault",
+      "msg": "Invalid quote mint for vault oracle. Must be the same as vault base token"
+    },
+    {
+      "code": 6042,
+      "name": "InvalidBaseMintForMeteoraVault",
+      "msg": "Invalid base mint for vault oracle. Must be the same as vault LP token"
+    },
+    {
+      "code": 6043,
+      "name": "InvalidDecimalsForMeteoraVault",
+      "msg": "Invalid decimals for vault oracle. Must be the same as vault LP token"
+    },
+    {
+      "code": 6044,
+      "name": "MeteoraVaultTotalAmountErr",
+      "msg": "Could not calculate total amount for meteroa vault"
+    },
+    {
+      "code": 6045,
+      "name": "InvalidExtraAccounts",
+      "msg": "Not enough extra accounts"
+    },
+    {
+      "code": 6046,
+      "name": "InvalidSwitchboardAccountOwner",
+      "msg": "Invalid switchboard account owner"
+    },
+    {
+      "code": 6047,
+      "name": "InvalidSwitchboardAccount",
+      "msg": "Invalid switchboard account"
+    },
+    {
+      "code": 6048,
+      "name": "InvalidOrcaAccountOwner",
+      "msg": "Invalid orca account owner"
+    },
+    {
+      "code": 6049,
+      "name": "InvalidOrcaPosition",
+      "msg": "Invalid orca position"
+    },
+    {
+      "code": 6050,
+      "name": "InvalidOrcaWhirlpool",
+      "msg": "Invalid orca whirlpool"
+    },
+    {
+      "code": 6051,
+      "name": "InvalidOrcaTickArray",
+      "msg": "Invalid orca tick array"
+    },
+    {
+      "code": 6052,
+      "name": "PositionDoesNotMatchWhirlpool",
+      "msg": "Position does not match whirlpool"
+    },
+    {
+      "code": 6053,
+      "name": "PositionDoesNotMatchMint",
+      "msg": "Position does not match mint"
+    },
+    {
+      "code": 6054,
+      "name": "TickArrayDoesNotMatchWhirlpool",
+      "msg": "Tick array does not match whirlpool"
+    },
+    {
+      "code": 6055,
+      "name": "MintDoesNotMatchWhirlpool",
+      "msg": "Mint does not match whirlpool"
+    },
+    {
+      "code": 6056,
+      "name": "InvalidPythAccount",
+      "msg": "Invalid Pyth account"
+    },
+    {
+      "code": 6057,
+      "name": "InvalidLtvData",
+      "msg": "Invalid LTV data"
+    },
+    {
+      "code": 6058,
+      "name": "LtvDataNotFound",
+      "msg": "Ltv data not found"
+    },
+    {
+      "code": 6059,
+      "name": "InvalidMintType",
+      "msg": "Invalid mint type for oracle"
+    },
+    {
+      "code": 6060,
+      "name": "InvalidMeteoraPool",
+      "msg": "Invalid meteora pool"
+    },
+    {
+      "code": 6061,
+      "name": "InvalidLPAccount",
+      "msg": "Invalid LP account"
+    },
+    {
+      "code": 6062,
+      "name": "UnsupportedCurveType",
+      "msg": "Unsupported curve type"
+    },
+    {
+      "code": 6063,
+      "name": "SwapSimulationFailed",
+      "msg": "Swap simulation failed"
+    },
+    {
+      "code": 6064,
+      "name": "InvalidBaseMintForFLP",
+      "msg": "Invalid base mint for FLP"
+    },
+    {
+      "code": 6065,
+      "name": "FLPPoolNotSupported",
+      "msg": "FLP pool not supported"
+    },
+    {
+      "code": 6066,
+      "name": "InvalidAssetIndex",
+      "msg": "Invalid asset index"
+    },
+    {
+      "code": 6067,
+      "name": "InvalidAssetIndexGuidance",
+      "msg": "Invalid asset index guidance"
+    },
+    {
+      "code": 6068,
+      "name": "PriceNotFound",
+      "msg": "Quote price not found in cache"
+    },
+    {
+      "code": 6069,
+      "name": "DuplicateCollateralMintsInMarketInformation",
+      "msg": "Duplicate collateral mints in market information"
+    },
+    {
+      "code": 6070,
+      "name": "MarketInformationFull",
+      "msg": "Market information is full"
+    },
+    {
+      "code": 6071,
+      "name": "AssetNotFoundInMarketInformation",
+      "msg": "Asset not found in market information"
+    },
+    {
+      "code": 6072,
+      "name": "MarketInformationAlreadyExists",
+      "msg": "Market information already exists"
+    },
+    {
+      "code": 6073,
+      "name": "InvalidVaultStrategy",
+      "msg": "Invalid vault strategy"
+    },
+    {
+      "code": 6074,
+      "name": "LedgerHealthy",
+      "msg": "Cannot liquidate a healthy ledger"
+    },
+    {
+      "code": 6075,
+      "name": "InvalidLiquidation",
+      "msg": "Invalid liquidation"
+    },
+    {
+      "code": 6076,
+      "name": "InsufficientLiquidity",
+      "msg": "Liquidity buffer has been exceeded"
+    },
+    {
+      "code": 6077,
+      "name": "InterestNotAccrued",
+      "msg": "Interest not accrued"
+    },
+    {
+      "code": 6078,
+      "name": "InvalidInterestPerSecondForClose",
+      "msg": "Invalid interest per second. Must be 0"
+    },
+    {
+      "code": 6079,
+      "name": "InvalidExternalYieldAmountForClose",
+      "msg": "Invalid external yield amount. Must be 0"
+    },
+    {
+      "code": 6080,
+      "name": "InvalidCurrentDeployedAmountForClose",
+      "msg": "Invalid current deployed amount. Must be 0"
+    },
+    {
+      "code": 6081,
+      "name": "InvalidTokenBalanceForClose",
+      "msg": "Invalid token balance. Must be 0"
+    },
+    {
+      "code": 6082,
+      "name": "InvalidFeeClaimableForClose",
+      "msg": "Invalid fee claimable. Must be 0"
+    },
+    {
+      "code": 6083,
+      "name": "InvalidLender",
+      "msg": "Invalid lender"
+    },
+    {
+      "code": 6084,
+      "name": "SaleSlippageExceeded",
+      "msg": "Sale slippage exceeded"
+    },
+    {
+      "code": 6085,
+      "name": "ExpectedLtvMismatch",
+      "msg": "Expected LTV mismatch"
+    },
+    {
+      "code": 6086,
+      "name": "ExpectedLqtMismatch",
+      "msg": "Expected LQT mismatch"
+    },
+    {
+      "code": 6087,
+      "name": "ExpectedApyMismatch",
+      "msg": "Expected APY mismatch"
+    },
+    {
+      "code": 6088,
+      "name": "LpSlippageToleranceExceeded",
+      "msg": "Lp slippage tolerance exceeded"
+    },
+    {
+      "code": 6089,
+      "name": "InvalidStartTime",
+      "msg": "Invalid start time. Loan start time must be within 5 minutes of current time"
+    },
+    {
+      "code": 6090,
+      "name": "InvalidWeightMatrix",
+      "msg": "Invalid weight matrix"
+    },
+    {
+      "code": 6091,
+      "name": "LoanPastEndTime",
+      "msg": "Loan is past end time"
+    },
+    {
+      "code": 6092,
+      "name": "InvalidCollateralWithdrawalWeightMatrixAssignment",
+      "msg": "Invalid collateral withdrawal weight matrix assignment"
+    },
+    {
+      "code": 6093,
+      "name": "TooMuchCollateralWithdrawn",
+      "msg": "Too much collateral withdrawn"
+    },
+    {
+      "code": 6094,
+      "name": "InvalidPrincipalWithdrawalWeightMatrixAssignment",
+      "msg": "Invalid principal withdrawal weight matrix assignment"
+    },
+    {
+      "code": 6095,
+      "name": "LedgerInRefinanceGracePeriodCannotBeWithdrawn",
+      "msg": "Ledger in refinance grace period cannot be withdrawn"
+    },
+    {
+      "code": 6096,
+      "name": "OnlyBorrowerCanRefinanceBeforeEnd",
+      "msg": "Only borrower can refinance before end"
+    },
+    {
+      "code": 6097,
+      "name": "InvalidDurationForLedgerSale",
+      "msg": "Invalid duration for ledger sale"
+    },
+    {
+      "code": 6098,
+      "name": "StakedSolCurrentlyUnsupported",
+      "msg": "Staked sol is currently unsupported"
+    },
+    {
+      "code": 6099,
+      "name": "LoanNotFullyRepaid",
+      "msg": "Loan has not been fully repaid"
+    },
+    {
+      "code": 6100,
+      "name": "InvalidLiquidationThreshold",
+      "msg": "Liquidation threshold must be >= ltv + buffer"
+    },
+    {
+      "code": 6101,
+      "name": "MaxAmountInExceeded",
+      "msg": "Max amount in exceeded"
+    },
+    {
+      "code": 6102,
+      "name": "MinAmountOutNotMet",
+      "msg": "Min amount out not met"
+    },
+    {
+      "code": 6103,
+      "name": "MissingAccount",
+      "msg": "Missing account"
+    },
+    {
+      "code": 6104,
+      "name": "LQTWeightedCollateralValueGreaterThanTotalDebt",
+      "msg": "LQT weighted collateral value is greater than total debt"
+    },
+    {
+      "code": 6105,
+      "name": "StrategyOriginationsDisabled",
+      "msg": "Strategy originations are disabled"
+    },
+    {
+      "code": 6106,
+      "name": "TimelockDelayNotMet",
+      "msg": "Timelock delay not met"
+    },
+    {
+      "code": 6107,
+      "name": "VaultDepositsDisabled",
+      "msg": "Vault deposits are disabled"
+    },
+    {
+      "code": 6108,
+      "name": "InvalidLpParams",
+      "msg": "Invalid LP params"
+    },
+    {
+      "code": 6109,
+      "name": "InvalidVaultAccount",
+      "msg": "Invalid Met Vault account"
+    },
+    {
+      "code": 6110,
+      "name": "InvalidCpiProgram",
+      "msg": "Invalid CPI program"
+    }
+  ],
+  "types": [
+    {
+      "name": "AddCollateralTimeLockArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "collateral_terms",
+            "type": {
+              "defined": {
+                "name": "CollateralTerms"
+              }
+            }
+          },
+          {
+            "name": "update_market_information_params",
+            "type": {
+              "defined": {
+                "name": "UpdateMarketInformationParams"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "AssetData",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c",
+        "packed": true
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "asset_identifier",
+            "type": "pubkey"
+          },
+          {
+            "name": "quote_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "oracle_account",
+            "type": "pubkey"
+          },
+          {
+            "name": "oracle_type",
+            "type": "u8"
+          },
+          {
+            "name": "max_uncertainty",
+            "type": {
+              "defined": {
+                "name": "PodU32CBPS"
+              }
+            }
+          },
+          {
+            "name": "max_age",
+            "type": {
+              "defined": {
+                "name": "PodU16"
+              }
+            }
+          },
+          {
+            "name": "decimals",
+            "type": "u8"
+          },
+          {
+            "name": "ltv",
+            "type": {
+              "defined": {
+                "name": "PodU32CBPS"
+              }
+            }
+          },
+          {
+            "name": "liquidation_threshold",
+            "type": {
+              "defined": {
+                "name": "PodU32CBPS"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "BorrowPrincipalParams",
+      "docs": [
+        "Remaining accounts:\n\nnum ledgers = L\n\n 1. LTV Write:\n    0: Ledger[ledger_index] Market Information\n\n 2. Healthcheck:\n    For each ledger:\n    Ledger market information\n    Principal oracle accounts + conversion oracle accounts\n    Then for each collateral in the loan:\n    Collateral oracle accounts + conversion oracle accounts\n\nAsset index guidance:\n\n1. LTV write:\n   For ledger[ledger_index]:\n    Collateral index for each collateral\n2. Healthcheck:\n    For each ledger:\n        For each collateral in the loan:\n            Principal index\n            Collateral index"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "weight_matrix",
+            "type": {
+              "array": [
+                {
+                  "array": [
+                    "u32",
+                    5
+                  ]
+                },
+                5
+              ]
+            }
+          },
+          {
+            "name": "asset_index_guidance",
+            "type": {
+              "vec": "u64"
+            }
+          },
+          {
+            "name": "duration",
+            "type": "u8"
+          },
+          {
+            "name": "expected_loan_values",
+            "type": {
+              "defined": {
+                "name": "ExpectedLoanValues"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ClaimVaultFeeParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CloseLoopParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "ledger_index",
+            "type": "u8"
+          },
+          {
+            "name": "collateral_index",
+            "type": "u8"
+          },
+          {
+            "name": "swap_cpi_data",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "SwapCpiData"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "CollateralData",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c",
+        "packed": true
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "asset_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": {
+              "defined": {
+                "name": "PodU64"
+              }
+            }
+          },
+          {
+            "name": "asset_type",
+            "type": "u8"
+          },
+          {
+            "name": "asset_identifier",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CollateralTerms",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "asset_identifier",
+            "type": "pubkey"
+          },
+          {
+            "name": "terms",
+            "type": {
+              "array": [
+                "u64",
+                5
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "CollateralTermsIndices",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "collateral_index",
+            "type": "u64"
+          },
+          {
+            "name": "duration_index",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CreateLoanParams",
+      "docs": [
+        "Remaining accounts:\n\n\n1. LTV Write:\n    0: Ledger Market Information\n\n2. Healthcheck:\n    Principal oracle accounts + conversion oracle accounts\n    Collateral oracle accounts + conversion oracle accounts\n\n\nAsset index guidance:\n1. LTV write:\n   For ledger[ledger_index]:\n    Collateral index for each collateral\n2. Healthcheck: -> don't need market information for healthcheck. Market information is already loaded in the accounts.\n    Principal index\n    Collateral index"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "principal_amount",
+            "type": "u64"
+          },
+          {
+            "name": "collateral_amount",
+            "type": "u64"
+          },
+          {
+            "name": "collateral_identifier",
+            "type": "pubkey"
+          },
+          {
+            "name": "collateral_type",
+            "type": "u8"
+          },
+          {
+            "name": "loan_type",
+            "type": "u8"
+          },
+          {
+            "name": "expected_apy",
+            "type": "u64"
+          },
+          {
+            "name": "expected_ltv",
+            "type": "u32"
+          },
+          {
+            "name": "expected_liquidation_threshold",
+            "type": "u32"
+          },
+          {
+            "name": "duration_index",
+            "type": "u8"
+          },
+          {
+            "name": "asset_index_guidance",
+            "type": {
+              "vec": "u64"
+            }
+          },
+          {
+            "name": "nonce",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CreateMarketInformationParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "principal_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CreateStrategyParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "lender",
+            "type": "pubkey"
+          },
+          {
+            "name": "origination_cap",
+            "type": "u64"
+          },
+          {
+            "name": "liquidity_buffer",
+            "type": "u64"
+          },
+          {
+            "name": "interest_fee",
+            "type": "u64"
+          },
+          {
+            "name": "origination_fee",
+            "type": "u64"
+          },
+          {
+            "name": "principal_fee",
+            "type": "u64"
+          },
+          {
+            "name": "originations_enabled",
+            "type": "bool"
+          },
+          {
+            "name": "external_yield_source_args",
+            "type": {
+              "option": {
+                "defined": {
+                  "name": "ExternalYieldSourceArgs"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "CreateVaultParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "token_name",
+            "type": "string"
+          },
+          {
+            "name": "token_symbol",
+            "type": "string"
+          },
+          {
+            "name": "token_uri",
+            "type": "string"
+          },
+          {
+            "name": "manager",
+            "type": "pubkey"
+          },
+          {
+            "name": "create_strategy_params",
+            "type": {
+              "defined": {
+                "name": "CreateStrategyParams"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "DepositCollateralParams",
+      "docs": [
+        "Remaining accounts:\n\nnum ledgers = L\n\n1. LTV Write:\n    0 -> (L-1): Ledger Market Information\n\nAsset index guidance:\n1. LTV Write:\n    0 -> (L-1): Collateral index for deposited collateral on the ledger market information"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "asset_type",
+            "type": "u8"
+          },
+          {
+            "name": "asset_identifier",
+            "type": "pubkey"
+          },
+          {
+            "name": "asset_index_guidance",
+            "type": {
+              "vec": "u64"
+            }
+          },
+          {
+            "name": "weight_matrix",
+            "type": {
+              "array": [
+                {
+                  "array": [
+                    "u32",
+                    5
+                  ]
+                },
+                5
+              ]
+            }
+          },
+          {
+            "name": "expected_loan_values",
+            "type": {
+              "defined": {
+                "name": "ExpectedLoanValues"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Duration",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c",
+        "packed": true
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "duration",
+            "type": {
+              "defined": {
+                "name": "PodU32"
+              }
+            }
+          },
+          {
+            "name": "duration_type",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ExactInParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount_in",
+            "type": "u64"
+          },
+          {
+            "name": "min_amount_out",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ExactOutParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount_out",
+            "type": "u64"
+          },
+          {
+            "name": "max_amount_in",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ExpectedLoanValues",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "expected_apy",
+            "type": "u64"
+          },
+          {
+            "name": "expected_ltv",
+            "type": {
+              "array": [
+                "u32",
+                5
+              ]
+            }
+          },
+          {
+            "name": "expected_liquidation_threshold",
+            "type": {
+              "array": [
+                "u32",
+                5
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ExternalYieldSourceArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "new_external_yield_source",
+            "type": "u8"
+          },
+          {
+            "name": "create_external_yield_account",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Ledger",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c",
+        "packed": true
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "status",
+            "type": "u8"
+          },
+          {
+            "name": "strategy",
+            "type": "pubkey"
+          },
+          {
+            "name": "principal_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "market_information",
+            "type": "pubkey"
+          },
+          {
+            "name": "principal_due",
+            "type": {
+              "defined": {
+                "name": "PodU64"
+              }
+            }
+          },
+          {
+            "name": "principal_repaid",
+            "type": {
+              "defined": {
+                "name": "PodU64"
+              }
+            }
+          },
+          {
+            "name": "interest_due",
+            "type": {
+              "defined": {
+                "name": "PodU64"
+              }
+            }
+          },
+          {
+            "name": "interest_repaid",
+            "type": {
+              "defined": {
+                "name": "PodU64"
+              }
+            }
+          },
+          {
+            "name": "duration",
+            "type": {
+              "defined": {
+                "name": "Duration"
+              }
+            }
+          },
+          {
+            "name": "interest_per_second",
+            "type": {
+              "defined": {
+                "name": "PodDecimal"
+              }
+            }
+          },
+          {
+            "name": "start_time",
+            "type": {
+              "defined": {
+                "name": "PodU64"
+              }
+            }
+          },
+          {
+            "name": "end_time",
+            "type": {
+              "defined": {
+                "name": "PodU64"
+              }
+            }
+          },
+          {
+            "name": "apy",
+            "type": {
+              "defined": {
+                "name": "PodU64CBPS"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "LiquidateLedgerParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "ledger_index",
+            "type": "u8"
+          },
+          {
+            "name": "asset_index_guidance",
+            "type": {
+              "vec": "u64"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Loan",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c",
+        "packed": true
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "loan_type",
+            "type": "u8"
+          },
+          {
+            "name": "borrower",
+            "type": "pubkey"
+          },
+          {
+            "name": "nonce",
+            "type": "u64"
+          },
+          {
+            "name": "start_time",
+            "type": {
+              "defined": {
+                "name": "PodU64"
+              }
+            }
+          },
+          {
+            "name": "ledgers",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "Ledger"
+                  }
+                },
+                5
+              ]
+            }
+          },
+          {
+            "name": "collateral",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "CollateralData"
+                  }
+                },
+                5
+              ]
+            }
+          },
+          {
+            "name": "weight_matrix",
+            "type": {
+              "array": [
+                {
+                  "array": [
+                    {
+                      "defined": {
+                        "name": "PodU32CBPS"
+                      }
+                    },
+                    5
+                  ]
+                },
+                5
+              ]
+            }
+          },
+          {
+            "name": "ltv_matrix",
+            "type": {
+              "array": [
+                {
+                  "array": [
+                    {
+                      "defined": {
+                        "name": "PodU32CBPS"
+                      }
+                    },
+                    5
+                  ]
+                },
+                5
+              ]
+            }
+          },
+          {
+            "name": "lqt_matrix",
+            "type": {
+              "array": [
+                {
+                  "array": [
+                    {
+                      "defined": {
+                        "name": "PodU32CBPS"
+                      }
+                    },
+                    5
+                  ]
+                },
+                5
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "LpParams",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "ExactIn",
+            "fields": [
+              {
+                "defined": {
+                  "name": "ExactInParams"
+                }
+              }
+            ]
+          },
+          {
+            "name": "ExactOut",
+            "fields": [
+              {
+                "defined": {
+                  "name": "ExactOutParams"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "ManageOrcaLiquidityParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "liquidity_amount",
+            "type": "u128"
+          },
+          {
+            "name": "amount_a",
+            "type": "u64"
+          },
+          {
+            "name": "amount_b",
+            "type": "u64"
+          },
+          {
+            "name": "asset_index_guidance",
+            "type": {
+              "vec": "u64"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "MarketInformation",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c",
+        "packed": true
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "delegate",
+            "type": "pubkey"
+          },
+          {
+            "name": "principal_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "asset_data",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "AssetData"
+                  }
+                },
+                200
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "MultiCollateralTermsUpdateParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "apy",
+            "type": "u64"
+          },
+          {
+            "name": "indices",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "CollateralTermsIndices"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "OpenLoopParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "principal_amount",
+            "type": "u64"
+          },
+          {
+            "name": "collateral_amount",
+            "type": "u64"
+          },
+          {
+            "name": "expected_apy",
+            "type": "u64"
+          },
+          {
+            "name": "expected_ltv",
+            "type": "u32"
+          },
+          {
+            "name": "expected_liquidation_threshold",
+            "type": "u32"
+          },
+          {
+            "name": "deposit_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "deposit_amount",
+            "type": "u64"
+          },
+          {
+            "name": "duration_index",
+            "type": "u8"
+          },
+          {
+            "name": "asset_index_guidance",
+            "type": {
+              "vec": "u64"
+            }
+          },
+          {
+            "name": "nonce",
+            "type": "u64"
+          },
+          {
+            "name": "external_yield_end_index",
+            "type": "u8"
+          },
+          {
+            "name": "swap_cpi_data",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "SwapCpiData"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "PodBool",
+      "docs": [
+        "Represents a bool stored as a byte"
+      ],
+      "repr": {
+        "kind": "transparent"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          "u8"
+        ]
+      }
+    },
+    {
+      "name": "PodDecimal",
+      "docs": [
+        "this is the scaled representation of a whole number. The whole number is scaled by 10^18 to avoid floating point errors when performing arithmetic operations."
+      ],
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "array": [
+              "u8",
+              24
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "PodU128",
+      "docs": [
+        "Represents a 128-bit unsigned integer stored as bytes (little-endian)"
+      ],
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "PodU16",
+      "docs": [
+        "Represents a 16-bit unsigned integer stored as bytes (little-endian)"
+      ],
+      "repr": {
+        "kind": "transparent"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "array": [
+              "u8",
+              2
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "PodU32",
+      "docs": [
+        "Represents a 32-bit unsigned integer stored as bytes (little-endian)"
+      ],
+      "repr": {
+        "kind": "transparent"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "array": [
+              "u8",
+              4
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "PodU32CBPS",
+      "docs": [
+        "helper type to store u32 cbps values"
+      ],
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "array": [
+              "u8",
+              4
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "PodU64",
+      "docs": [
+        "Represents a 64-bit unsigned integer stored as bytes (little-endian)"
+      ],
+      "repr": {
+        "kind": "transparent"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "array": [
+              "u8",
+              8
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "PodU64CBPS",
+      "docs": [
+        "helper type to store u64 cbps values"
+      ],
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "array": [
+              "u8",
+              8
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Position",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "whirlpool",
+            "type": "pubkey"
+          },
+          {
+            "name": "position_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "liquidity",
+            "type": "u128"
+          },
+          {
+            "name": "tick_lower_index",
+            "type": "i32"
+          },
+          {
+            "name": "tick_upper_index",
+            "type": "i32"
+          },
+          {
+            "name": "fee_growth_checkpoint_a",
+            "type": "u128"
+          },
+          {
+            "name": "fee_owed_a",
+            "type": "u64"
+          },
+          {
+            "name": "fee_growth_checkpoint_b",
+            "type": "u128"
+          },
+          {
+            "name": "fee_owed_b",
+            "type": "u64"
+          },
+          {
+            "name": "reward_infos",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "PositionRewardInfo"
+                  }
+                },
+                3
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "PositionRewardInfo",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "growth_inside_checkpoint",
+            "type": "u128"
+          },
+          {
+            "name": "amount_owed",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RefinanceLedgerParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "ledger_index",
+            "type": "u8"
+          },
+          {
+            "name": "duration_index",
+            "type": "u8"
+          },
+          {
+            "name": "asset_index_guidance",
+            "type": {
+              "vec": "u64"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RepayPrincipalParams",
+      "docs": [
+        "No remaining accounts or asset index guidance needed. In full repayment, we zero out the matrix for the specific ledger using default loan values."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "ledger_index",
+            "type": "u8"
+          },
+          {
+            "name": "repay_all",
+            "type": "bool"
+          },
+          {
+            "name": "weight_matrix",
+            "type": {
+              "array": [
+                {
+                  "array": [
+                    "u32",
+                    5
+                  ]
+                },
+                5
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "SellLedgerParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "ledger_index",
+            "type": "u8"
+          },
+          {
+            "name": "expected_sale_price",
+            "type": "u64"
+          },
+          {
+            "name": "buyer_duration_index",
+            "type": "u8"
+          },
+          {
+            "name": "asset_index_guidance",
+            "type": {
+              "vec": "u64"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Strategy",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c",
+        "packed": true
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "nonce",
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "principal_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "lender",
+            "type": "pubkey"
+          },
+          {
+            "name": "originations_enabled",
+            "type": {
+              "defined": {
+                "name": "PodBool"
+              }
+            }
+          },
+          {
+            "name": "external_yield_source",
+            "type": "u8"
+          },
+          {
+            "name": "interest_per_second",
+            "type": {
+              "defined": {
+                "name": "PodDecimal"
+              }
+            }
+          },
+          {
+            "name": "last_accrued_timestamp",
+            "docs": [
+              "timestamp interest per second's interest was last accrued"
+            ],
+            "type": {
+              "defined": {
+                "name": "PodU64"
+              }
+            }
+          },
+          {
+            "name": "liquidity_buffer",
+            "docs": [
+              "the is the amount of liquidity % that always needs to be in the strategy"
+            ],
+            "type": {
+              "defined": {
+                "name": "PodU64CBPS"
+              }
+            }
+          },
+          {
+            "name": "token_balance",
+            "docs": [
+              "amount of principal in the strategy"
+            ],
+            "type": {
+              "defined": {
+                "name": "PodU64"
+              }
+            }
+          },
+          {
+            "name": "interest_fee",
+            "docs": [
+              "this is the fee charged by and accrued to the manager on the interest accrued via external yield and loans"
+            ],
+            "type": {
+              "defined": {
+                "name": "PodU64CBPS"
+              }
+            }
+          },
+          {
+            "name": "principal_fee",
+            "docs": [
+              "this is the fee charged by and accrued to the manager on the origination fee"
+            ],
+            "type": {
+              "defined": {
+                "name": "PodU64CBPS"
+              }
+            }
+          },
+          {
+            "name": "origination_fee",
+            "docs": [
+              "fee charged on origination of new loans"
+            ],
+            "type": {
+              "defined": {
+                "name": "PodU64CBPS"
+              }
+            }
+          },
+          {
+            "name": "origination_cap",
+            "docs": [
+              "the maximum size of a loan that can be originated"
+            ],
+            "type": {
+              "defined": {
+                "name": "PodU64"
+              }
+            }
+          },
+          {
+            "name": "external_yield_amount",
+            "docs": [
+              "this is the amount of principal currently in external yield. has to always be updated on any new nav action"
+            ],
+            "type": {
+              "defined": {
+                "name": "PodU64"
+              }
+            }
+          },
+          {
+            "name": "current_deployed_amount",
+            "docs": [
+              "this is the amount of principal currently deployed in loans"
+            ],
+            "type": {
+              "defined": {
+                "name": "PodU64"
+              }
+            }
+          },
+          {
+            "name": "outstanding_interest_amount",
+            "docs": [
+              "this is the interest that has not been repaid yet but accrued"
+            ],
+            "type": {
+              "defined": {
+                "name": "PodU64"
+              }
+            }
+          },
+          {
+            "name": "fee_claimable",
+            "docs": [
+              "this is the amount that has accrued to the manager"
+            ],
+            "type": {
+              "defined": {
+                "name": "PodU64"
+              }
+            }
+          },
+          {
+            "name": "cumulative_principal_originated",
+            "type": {
+              "defined": {
+                "name": "PodU128"
+              }
+            }
+          },
+          {
+            "name": "cumulative_interest_accrued",
+            "type": {
+              "defined": {
+                "name": "PodU128"
+              }
+            }
+          },
+          {
+            "name": "cumulative_loan_count",
+            "type": {
+              "defined": {
+                "name": "PodU64"
+              }
+            }
+          },
+          {
+            "name": "active_loan_count",
+            "type": {
+              "defined": {
+                "name": "PodU64"
+              }
+            }
+          },
+          {
+            "name": "market_information",
+            "type": "pubkey"
+          },
+          {
+            "name": "collateral_map",
+            "type": {
+              "array": [
+                {
+                  "array": [
+                    {
+                      "defined": {
+                        "name": "PodU64"
+                      }
+                    },
+                    5
+                  ]
+                },
+                200
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "SwapCpiData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "num_swap_remaining_accounts",
+            "type": "u8"
+          },
+          {
+            "name": "cpi_data",
+            "type": "bytes"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Timelock",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "init_timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "execution_delay",
+            "type": "i64"
+          },
+          {
+            "name": "params",
+            "type": {
+              "defined": {
+                "name": "TimelockUpdateParams"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TimelockCanceledEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "timelock",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TimelockCreatedEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "timelock_address",
+            "type": "string"
+          },
+          {
+            "name": "vault_address",
+            "type": "string"
+          },
+          {
+            "name": "timelock_params",
+            "type": {
+              "defined": {
+                "name": "TimelockUpdateParams"
+              }
+            }
+          },
+          {
+            "name": "timelock_init_timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "timelock_execution_delay",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TimelockExecutedEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "timelock",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TimelockUpdateParams",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "UpdateMarketInformation",
+            "fields": [
+              "pubkey"
+            ]
+          },
+          {
+            "name": "AddCollateral",
+            "fields": [
+              {
+                "defined": {
+                  "name": "AddCollateralTimeLockArgs"
+                }
+              }
+            ]
+          },
+          {
+            "name": "UpdateLtv",
+            "fields": [
+              {
+                "defined": {
+                  "name": "UpdateMarketInformationParams"
+                }
+              }
+            ]
+          },
+          {
+            "name": "RemoveCollateral",
+            "fields": [
+              {
+                "defined": {
+                  "name": "CollateralTerms"
+                }
+              }
+            ]
+          },
+          {
+            "name": "UpdateApy",
+            "fields": [
+              {
+                "defined": {
+                  "name": "CollateralTerms"
+                }
+              }
+            ]
+          },
+          {
+            "name": "UpdateStrategy",
+            "fields": [
+              {
+                "defined": {
+                  "name": "UpdateStrategyParams"
+                }
+              }
+            ]
+          },
+          {
+            "name": "UpdateVault",
+            "fields": [
+              "u64"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "TransferOrcaPositionParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "liquidity_amount",
+            "type": "u128"
+          },
+          {
+            "name": "token_max_a",
+            "type": "u64"
+          },
+          {
+            "name": "token_max_b",
+            "type": "u64"
+          },
+          {
+            "name": "tick_lower_index",
+            "type": "i32"
+          },
+          {
+            "name": "tick_upper_index",
+            "type": "i32"
+          },
+          {
+            "name": "asset_index_guidance",
+            "type": {
+              "vec": "u64"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateMarketInformationParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "asset_identifier",
+            "type": "pubkey"
+          },
+          {
+            "name": "quote_mint",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "oracle_account",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "oracle_type",
+            "type": {
+              "option": "u8"
+            }
+          },
+          {
+            "name": "max_uncertainty",
+            "type": {
+              "option": "u32"
+            }
+          },
+          {
+            "name": "max_age",
+            "type": {
+              "option": "u16"
+            }
+          },
+          {
+            "name": "decimals",
+            "type": {
+              "option": "u8"
+            }
+          },
+          {
+            "name": "ltv",
+            "type": {
+              "option": "u32"
+            }
+          },
+          {
+            "name": "liquidation_threshold",
+            "type": {
+              "option": "u32"
+            }
+          },
+          {
+            "name": "remove",
+            "type": {
+              "option": "bool"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateStrategyParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "originations_enabled",
+            "type": {
+              "option": "bool"
+            }
+          },
+          {
+            "name": "liquidity_buffer",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "interest_fee",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "origination_fee",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "principal_fee",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "origination_cap",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "market_information",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "external_yield_source_args",
+            "type": {
+              "option": {
+                "defined": {
+                  "name": "ExternalYieldSourceArgs"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateVaultParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "deposits_enabled",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Vault",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c",
+        "packed": true
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "manager",
+            "type": "pubkey"
+          },
+          {
+            "name": "nonce",
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "lp_supply",
+            "type": {
+              "defined": {
+                "name": "PodU64"
+              }
+            }
+          },
+          {
+            "name": "lp_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "principal_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "cumulative_principal_deposited",
+            "type": {
+              "defined": {
+                "name": "PodU64"
+              }
+            }
+          },
+          {
+            "name": "deposits_enabled",
+            "type": {
+              "defined": {
+                "name": "PodBool"
+              }
+            }
+          },
+          {
+            "name": "max_early_unstake_fee",
+            "type": {
+              "defined": {
+                "name": "PodU64CBPS"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultStake",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c",
+        "packed": true
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "nonce",
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": {
+              "defined": {
+                "name": "PodU64"
+              }
+            }
+          },
+          {
+            "name": "duration",
+            "type": {
+              "defined": {
+                "name": "Duration"
+              }
+            }
+          },
+          {
+            "name": "start_time",
+            "type": {
+              "defined": {
+                "name": "PodU64"
+              }
+            }
+          },
+          {
+            "name": "end_time",
+            "type": {
+              "defined": {
+                "name": "PodU64"
+              }
+            }
+          },
+          {
+            "name": "unstake_time",
+            "type": {
+              "defined": {
+                "name": "PodU64"
+              }
+            }
+          },
+          {
+            "name": "unstake_fee_applied",
+            "type": {
+              "defined": {
+                "name": "PodU64"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultStakeParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "stake_all",
+            "type": {
+              "option": "bool"
+            }
+          },
+          {
+            "name": "duration",
+            "type": "u32"
+          },
+          {
+            "name": "duration_type",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Whirlpool",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "whirlpools_config",
+            "type": "pubkey"
+          },
+          {
+            "name": "whirlpool_bump",
+            "type": {
+              "array": [
+                "u8",
+                1
+              ]
+            }
+          },
+          {
+            "name": "tick_spacing",
+            "type": "u16"
+          },
+          {
+            "name": "tick_spacing_seed",
+            "type": {
+              "array": [
+                "u8",
+                2
+              ]
+            }
+          },
+          {
+            "name": "fee_rate",
+            "type": "u16"
+          },
+          {
+            "name": "protocol_fee_rate",
+            "type": "u16"
+          },
+          {
+            "name": "liquidity",
+            "type": "u128"
+          },
+          {
+            "name": "sqrt_price",
+            "type": "u128"
+          },
+          {
+            "name": "tick_current_index",
+            "type": "i32"
+          },
+          {
+            "name": "protocol_fee_owed_a",
+            "type": "u64"
+          },
+          {
+            "name": "protocol_fee_owed_b",
+            "type": "u64"
+          },
+          {
+            "name": "token_mint_a",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_vault_a",
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_growth_global_a",
+            "type": "u128"
+          },
+          {
+            "name": "token_mint_b",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_vault_b",
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_growth_global_b",
+            "type": "u128"
+          },
+          {
+            "name": "reward_last_updated_timestamp",
+            "type": "u64"
+          },
+          {
+            "name": "reward_infos",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "WhirlpoolRewardInfo"
+                  }
+                },
+                3
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "WhirlpoolRewardInfo",
+      "docs": [
+        "Stores the state relevant for tracking liquidity mining rewards at the `Whirlpool` level.",
+        "These values are used in conjunction with `PositionRewardInfo`, `Tick.reward_growths_outside`,",
+        "and `Whirlpool.reward_last_updated_timestamp` to determine how many rewards are earned by open",
+        "positions."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint",
+            "docs": [
+              "Reward token mint."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "vault",
+            "docs": [
+              "Reward vault token account."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "Authority account that has permission to initialize the reward and set emissions."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "emissions_per_second_x64",
+            "docs": [
+              "Q64.64 number that indicates how many tokens per second are earned per unit of liquidity."
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "growth_global_x64",
+            "docs": [
+              "Q64.64 number that tracks the total tokens earned per unit of liquidity since the reward",
+              "emissions were turned on."
+            ],
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WithdrawCollateralParams",
+      "docs": [
+        "Remaining accounts:\n\nnum ledgers = L\n\n1. 0 -> 2L-1: Strategy + MarketInformation for ledger L_i\n\n2. Healthcheck:\n    For each ledger:\n    Ledger market information\n    Principal oracle accounts + conversion oracle accounts\n    Then again for each ledger and collateral:\n        Collateral oracle accounts + conversion oracle accounts\n\n\nAsset index guidance:\n1. Healthcheck:\n    For each ledger:\n        For each collateral in the loan:\n            Principal index\n            Collateral index"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "collateral_index",
+            "type": "u8"
+          },
+          {
+            "name": "weight_matrix",
+            "type": {
+              "array": [
+                {
+                  "array": [
+                    "u32",
+                    5
+                  ]
+                },
+                5
+              ]
+            }
+          },
+          {
+            "name": "asset_index_guidance",
+            "type": {
+              "vec": "u64"
+            }
+          },
+          {
+            "name": "expected_loan_values",
+            "type": {
+              "defined": {
+                "name": "ExpectedLoanValues"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

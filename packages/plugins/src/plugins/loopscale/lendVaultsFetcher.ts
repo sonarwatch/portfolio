@@ -44,19 +44,24 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 
   userVaultStakes.forEach((stakeAccount) => {
-    const address = vaults
-      .get(stakeAccount.vault.toString())
-      ?.lp_mint.toString();
-    if (address !== undefined) {
-      const amount = bytesToNumberLE(new Uint8Array(stakeAccount.amount.array));
-      const element = elementRegistry.addElementMultiple({
-        label: 'Deposit',
-      });
-      element.addAsset({
-        address,
-        amount,
-      });
-    }
+    const vault = vaults.get(stakeAccount.vault.toString());
+    if (!vault) return;
+    const amount = bytesToNumberLE(new Uint8Array(stakeAccount.amount.array));
+    const element = elementRegistry.addElementMultiple({
+      label: 'Deposit',
+      ref: stakeAccount.pubkey,
+      sourceRefs: [
+        {
+          name: 'Vault',
+          address: vault.pubkey.toString(),
+        },
+      ],
+      link: `https://app.loopscale.com/vault/AXanCP4dJHtWd7zY4X7nwxN5t5Gysfy2uG3XTxSmXdaB${vault.pubkey}`,
+    });
+    element.addAsset({
+      address: vault.lp_mint,
+      amount,
+    });
   });
 
   return elementRegistry.getElements(cache);
