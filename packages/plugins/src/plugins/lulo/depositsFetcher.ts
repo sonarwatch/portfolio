@@ -40,9 +40,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     userAccount.solend_obligation.toString() !==
     '11111111111111111111111111111111';
 
-  const isMarginFiActivated =
-    userAccount.mfi_account.toString() !== '11111111111111111111111111111111';
-
   const portfolioElements: PortfolioElement[] = [];
   const [
     marginFiElements,
@@ -51,7 +48,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     mangoElements,
     saveObligation,
   ] = await Promise.all([
-    isMarginFiActivated ? marginFiDepositFetcher.executor(pda, cache) : [],
+    marginFiDepositFetcher.executor(pda, cache),
     driftDepositsFetcher.executor(pda, cache),
     kaminoLendDepositFetcher.executor(pda, cache),
     mangoDepositFetcher.executor(pda, cache),
