@@ -103,7 +103,7 @@ export function calculateBaseAssetValueWithOracle(
   perpPosition: PerpPosition,
   oraclePriceData: OraclePriceData,
   includeOpenOrders = false
-): BN {
+): { baseValue: BN; baseAmount: BN } {
   let { price } = oraclePriceData;
   if (market.status === MarketStatus.Settlement) {
     price = new BN(market.expiryPrice.toString(10), 10);
@@ -113,7 +113,10 @@ export function calculateBaseAssetValueWithOracle(
     ? calculateWorstCaseBaseAssetAmount(perpPosition)
     : perpPosition.baseAssetAmount;
 
-  return baseAssetAmount.abs().mul(price).div(AMM_RESERVE_PRECISION);
+  return {
+    baseValue: baseAssetAmount.abs().mul(price).div(AMM_RESERVE_PRECISION),
+    baseAmount: baseAssetAmount,
+  };
 }
 
 export function calculateWorstCaseBaseAssetAmount(

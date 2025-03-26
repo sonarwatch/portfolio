@@ -1,12 +1,17 @@
 import BN from 'bn.js';
+import BigNumber from 'bignumber.js';
+import { BASE_PRECISION_EXP } from '@drift-labs/sdk';
 import { PerpMarket, PerpPosition } from '../struct';
 import {
   AMM_RESERVE_PRECISION,
   AMM_TIMES_PEG_TO_QUOTE_PRECISION_RATIO,
   AMM_TO_QUOTE_PRECISION_RATIO,
+  BASE_PRECISION,
+  BASE_PRECISION_BIGNUMBER,
   FUNDING_RATE_BUFFER_PRECISION,
   ONE,
   PRICE_PRECISION,
+  PRICE_PRECISION_BIG_NUMBER,
   ZERO,
 } from './constants';
 import { OraclePriceData, PositionDirection } from './types';
@@ -88,17 +93,23 @@ export function calculateBaseAssetValue(
  * @param oraclePriceData
  * @returns BaseAssetAmount : Precision QUOTE_PRECISION
  */
-export function calculatePositionPNL(
+export function getPositionInfo(
   market: PerpMarket,
   perpPosition: PerpPosition,
   oraclePriceData: OraclePriceData,
   withFunding = false
-): BN {
+): { pnl: BigNumber; baseValue: BigNumber; baseAmount: BigNumber } {
   if (perpPosition.baseAssetAmount.eq(ZERO)) {
-    return perpPosition.quoteAssetAmount;
+    return {
+      pnl: new BigNumber(perpPosition.quoteAssetAmount.toString()).dividedBy(
+        PRICE_PRECISION_BIG_NUMBER
+      ),
+      baseValue: new BigNumber(0),
+      baseAmount: new BigNumber(0),
+    };
   }
 
-  const baseAssetValue = calculateBaseAssetValueWithOracle(
+  const { baseAmount, baseValue } = calculateBaseAssetValueWithOracle(
     market,
     perpPosition,
     oraclePriceData
@@ -107,7 +118,7 @@ export function calculatePositionPNL(
   const baseAssetValueSign = perpPosition.baseAssetAmount.isNeg()
     ? new BN(-1)
     : new BN(1);
-  let pnl = baseAssetValue
+  let pnl = baseValue
     .mul(baseAssetValueSign)
     .add(perpPosition.quoteAssetAmount);
 
@@ -117,7 +128,15 @@ export function calculatePositionPNL(
     pnl = pnl.add(fundingRatePnL);
   }
 
-  return pnl;
+  return {
+    pnl: new BigNumber(pnl.toString()).dividedBy(PRICE_PRECISION_BIG_NUMBER),
+    baseValue: new BigNumber(baseValue.toString()).dividedBy(
+      PRICE_PRECISION_BIG_NUMBER
+    ),
+    baseAmount: new BigNumber(baseAmount.toString()).dividedBy(
+      BASE_PRECISION_BIGNUMBER
+    ),
+  };
 }
 
 /**

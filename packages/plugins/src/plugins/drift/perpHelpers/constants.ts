@@ -13,6 +13,11 @@ export const ONE = new BN(1);
 export const TWO = new BN(2);
 export const TEN = new BN(10);
 export const AMM_RESERVE_PRECISION_EXP = new BN(9);
+export const BASE_PRECISION_EXP = new BN(9);
+export const BASE_PRECISION = new BN(10).pow(BASE_PRECISION_EXP);
+export const BASE_PRECISION_BIGNUMBER = new BigNumber(
+  BASE_PRECISION.toString()
+);
 export const QUOTE_PRECISION_EXP = new BN(6);
 export const QUOTE_PRECISION = new BN(10).pow(QUOTE_PRECISION_EXP);
 export const AMM_RESERVE_PRECISION = new BN(10).pow(AMM_RESERVE_PRECISION_EXP);

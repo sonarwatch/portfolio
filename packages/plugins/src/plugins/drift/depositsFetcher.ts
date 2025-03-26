@@ -1,6 +1,13 @@
-import { LeverageSide, NetworkId, aprToApy } from '@sonarwatch/portfolio-core';
+import {
+  CrossLevPosition,
+  LeverageSide,
+  NetworkId,
+  PortfolioAsset,
+  aprToApy,
+} from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
+import { AMM_TO_QUOTE_PRECISION_RATIO, PRICE_PRECISION } from '@drift-labs/sdk';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
@@ -32,16 +39,16 @@ import {
 } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import {
-  calculatePositionPNL,
+  getPositionInfo,
   positionCurrentDirection,
 } from './perpHelpers/position';
-import { PRICE_PRECISION_BIG_NUMBER } from './perpHelpers/constants';
 import { PositionDirection } from './perpHelpers/types';
 import { getOraclePrice } from './perpHelpers/getOraclePrice';
 import { getPerpMarket } from './perpHelpers/getPerpMarket';
 import { getMintFromOracle } from './perpHelpers/getMintFromOracle';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
+import { PRICE_PRECISION_BIG_NUMBER } from './perpHelpers/constants';
 
 export const spotMarketsMemo = new MemoizedCache<SpotMarketEnhanced[]>(
   keySpotMarkets,
@@ -162,6 +169,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
 
   // One user can have multiple sub-account
+  const elements = [];
   for (const userAccount of userAccounts) {
     if (!userAccount) continue;
 
@@ -174,6 +182,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       link: 'https://app.drift.trade/',
     });
 
+    const crossPositions: CrossLevPosition[] = [];
     for (const perpPosition of userAccount.perpPositions) {
       if (perpPosition.baseAssetAmount.isZero()) continue;
       const perpMarketAddress = perpMarketAddressByIndex.get(
@@ -191,11 +200,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       );
       if (!oraclePriceData || oraclePriceData.price.isZero()) continue;
 
-      const pnl = new BigNumber(
-        calculatePositionPNL(market, perpPosition, oraclePriceData).toString()
-      )
-        .div(PRICE_PRECISION_BIG_NUMBER)
-        .toNumber();
+      const { pnl, baseAmount, baseValue } = getPositionInfo(
+        market,
+        perpPosition,
+        oraclePriceData
+      );
 
       const side =
         positionCurrentDirection(perpPosition) === PositionDirection.LONG
@@ -203,6 +212,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           : LeverageSide.short;
 
       const mint = await getMintFromOracle(market.amm.oracle.toString(), cache);
+
+      const entryPrice = new BigNumber(
+        perpPosition.quoteEntryAmount
+          .mul(PRICE_PRECISION)
+          .mul(AMM_TO_QUOTE_PRECISION_RATIO)
+          .div(perpPosition.baseAssetAmount)
+          .abs()
+          .toString()
+      ).dividedBy(PRICE_PRECISION_BIG_NUMBER);
+
+      const markPrice = new BigNumber(
+        oraclePriceData.price.toString()
+      ).dividedBy(PRICE_PRECISION_BIG_NUMBER);
 
       element.addUnsettledGenericAsset({
         value: pnl,
@@ -213,9 +235,26 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         },
         sourceRefs: [{ name: 'Lending Market', address: perpMarketAddress }],
       });
+
+      crossPositions.push({
+        address: mint ?? undefined,
+        value: baseValue.toNumber(),
+        pnlValue: pnl.toNumber(),
+        side,
+        entryPrice: entryPrice.toNumber(),
+        markPrice: markPrice.toNumber(),
+        size: baseAmount.toNumber(),
+        sizeValue: baseValue.toNumber(),
+        liquidationPrice: 0,
+      });
+      console.log(
+        ' constexecutor:FetcherExecutor= ~ crossPositions:',
+        crossPositions
+      );
     }
 
     // Each account has up to 8 SpotPositions
+    const collateralAssets: PortfolioAsset[] = [];
     for (const spotPosition of userAccount.spotPositions) {
       if (spotPosition.scaledBalance.isZero()) continue;
       const countForBase = spotPosition.marketIndex === marketIndexRef;
