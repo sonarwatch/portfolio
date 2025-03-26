@@ -8,7 +8,7 @@ import { llamaProtocolsCacheKey, llamaProtocolsCachePrefix } from './constants';
 const llamaUrl = 'https://api.llama.fi/protocols';
 
 export function getLlamaProtocolsJob(
-  platforms: { id: string; defiLlamaId: string }[]
+  platforms: { id: string; defiLlamaId?: string }[]
 ): Job {
   const executor = async (cache: Cache) => {
     const llamaProtocolsResponse = await axios.get(llamaUrl);
