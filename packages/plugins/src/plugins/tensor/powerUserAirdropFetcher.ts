@@ -9,7 +9,6 @@ import {
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { vestingAccountStruct } from './struct';
-import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { vestingFilter } from './filters';
 import {
   AirdropFetcher,
@@ -64,7 +63,6 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
     accounts[0].pubkey,
     { mint: new PublicKey(tnsrMint) }
   );
-
   if (!tokenAccounts.value[0])
     return getAirdropRaw({
       statics: powerUsersStatics,
@@ -78,30 +76,21 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
       ],
     });
 
-  const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
-
-  const element = elementRegistry.addElementMultiple({
-    label: 'Airdrop',
-    name: 'Power User',
-  });
-
-  element.addAsset({
-    address: tokenAccounts.value[0].account.data.parsed.info.mint,
-    amount:
-      tokenAccounts.value[0].account.data.parsed.info.tokenAmount.uiAmount,
-    alreadyShifted: true,
-  });
-
-  const isClaimedFully =
-    alloc ===
-    tokenAccounts.value[0].account.data.parsed.info.tokenAmount.uiAmount;
-
   return getAirdropRaw({
     statics: powerUsersStatics,
     items: [
       {
-        amount: alloc,
-        isClaimed: isClaimedFully,
+        amount:
+          tokenAccounts.value[0].account.data.parsed.info.tokenAmount.uiAmount,
+        isClaimed: false,
+        label: 'TNSR',
+        address: tnsrMint,
+      },
+      {
+        amount:
+          alloc -
+          tokenAccounts.value[0].account.data.parsed.info.tokenAmount.uiAmount,
+        isClaimed: true,
         label: 'TNSR',
         address: tnsrMint,
       },
