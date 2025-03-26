@@ -12,6 +12,10 @@ export const LoanType =
 export const offersCacheKey = 'offers';
 export const loansCacheKey = 'loans';
 
-export const ensofiProgramId = new PublicKey(
+export const ensofiLendingProgramId = new PublicKey(
   'ensoQXKf4MvNuEC3M9xmcqUqgucFNd5UzAonDdUtgqn'
+);
+
+export const ensofiLiquidityPid = new PublicKey(
+  'ensSuXMeaUhRC7Re3ukaxLcX2E4qmd2LZxbxsK9XcWz'
 );
