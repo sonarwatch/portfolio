@@ -1,16 +1,4 @@
-import { Platform } from '@sonarwatch/portfolio-core';
-
 export const platformId = 'abex';
-export const platform: Platform = {
-  id: platformId,
-  name: 'ABEx Finance',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/abex.webp',
-  website: 'https://abex.fi/',
-  twitter: 'https://twitter.com/ABExFinance',
-  defiLlamaId: 'abex-finance', // from https://defillama.com/docs/api
-};
-
 export const stakingPackage =
   '0xc985ff436f334f864d74f35c3da9e116419b63a0c027cbe2ac7815afc4abc450';
 export const corePackage =

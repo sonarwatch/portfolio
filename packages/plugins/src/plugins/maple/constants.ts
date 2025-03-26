@@ -1,16 +1,4 @@
-import { Platform } from '@sonarwatch/portfolio-core';
-
 export const platformId = 'maple';
-
-export const platform: Platform = {
-  id: platformId,
-  name: 'Maple',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/maple.webp',
-  defiLlamaId: 'parent#maple-finance',
-  website: 'https://www.maple.finance/',
-};
-
 export const solanaLoanToken = 'AxuK8gNvN4Q8HtgHxFbePP6b84SpmcNTPdFA1E164Hgs';
 export const poolsKey = 'poolsInfo';
 

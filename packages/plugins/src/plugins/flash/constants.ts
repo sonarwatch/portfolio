@@ -1,21 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
-import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'flash';
-export const platform: Platform = {
-  id: platformId,
-  name: 'FlashTrade',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/flash.webp',
-  defiLlamaId: 'flashtrade', // from https://defillama.com/docs/api
-  website: 'https://beast.flash.trade/',
-  twitter: 'https://twitter.com/FlashTrade_',
-  documentation: 'https://docs.flash.trade/flash-trade',
-  github: 'https://github.com/flash-trade',
-  discord: 'https://discord.com/invite/HqYDWnMP6J',
-  description: 'Trade Perpetuals with instant fills and on demand liquidity.',
-};
-
 export const flashPid = new PublicKey(
   'FLASH6Lo6h3iasJKWDs2F8TkW2UKf3s15C8PMGuVfgBn'
 );

@@ -3,13 +3,14 @@ import {
   PortfolioAsset,
   PortfolioElement,
   getUsdValueSum,
+  nativeStakePlatformId,
   solanaNetwork,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { EpochInfo } from '@solana/web3.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
-import { nativeStakePlatform, platformId, validatorsKey } from '../constants';
+import { validatorsKey } from '../constants';
 import { getClientSolana } from '../../../utils/clients';
 import { getParsedProgramAccounts } from '../../../utils/solana';
 import { stakeAccountsFilter } from './filters';
@@ -29,7 +30,7 @@ import { arrayToMap } from '../../../utils/misc/arrayToMap';
 const validatorsMemo = new MemoizedCache<Validator[], Map<string, Validator>>(
   validatorsKey,
   {
-    prefix: platformId,
+    prefix: nativeStakePlatformId,
     networkId: NetworkId.solana,
   },
   (arr) => arrayToMap(arr || [], 'voter')
@@ -50,7 +51,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const [solTokenPrice, epochInfo, validators] = await Promise.all([
     cache.getTokenPrice(solanaNetwork.native.address, NetworkId.solana),
     cache.getItem<EpochInfo>(epochInfoCacheKey, {
-      prefix: platformId,
+      prefix: nativeStakePlatformId,
       networkId: NetworkId.solana,
     }),
     validatorsMemo.getItem(cache),
@@ -144,7 +145,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (nativeAssets.length !== 0) {
     elements.push({
       networkId: NetworkId.solana,
-      platformId: nativeStakePlatform.id,
+      platformId: nativeStakePlatformId,
       type: 'multiple',
       label: 'Staked',
       value: getUsdValueSum(nativeAssets.map((a) => a.value)),
@@ -203,7 +204,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-solana`,
+  id: `${nativeStakePlatformId}-solana`,
   networkId: NetworkId.solana,
   executor,
 };

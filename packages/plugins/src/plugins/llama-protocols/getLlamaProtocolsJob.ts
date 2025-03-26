@@ -1,8 +1,4 @@
-import {
-  LlamaProtocol,
-  LlamaProtocolFull,
-  Platform,
-} from '@sonarwatch/portfolio-core';
+import { LlamaProtocol, LlamaProtocolFull } from '@sonarwatch/portfolio-core';
 import axios from 'axios';
 import { Cache } from '../../Cache';
 import { Job } from '../../Job';
@@ -11,7 +7,9 @@ import { llamaProtocolsCacheKey, llamaProtocolsCachePrefix } from './constants';
 
 const llamaUrl = 'https://api.llama.fi/protocols';
 
-export function getLlamaProtocolsJob(platforms: Platform[]): Job {
+export function getLlamaProtocolsJob(
+  platforms: { id: string; defiLlamaId: string }[]
+): Job {
   const executor = async (cache: Cache) => {
     const llamaProtocolsResponse = await axios.get(llamaUrl);
     const platformIdByLlamaId = new Map<string, string>();

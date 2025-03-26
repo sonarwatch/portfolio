@@ -4,12 +4,12 @@ import {
   PortfolioAssetToken,
   PortfolioElementMultiple,
   PortfolioElementType,
+  walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
 
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
-import { walletTokensPlatform } from '../constants';
 import { getClientSolana } from '../../../utils/clients';
 import { solanaToken2022PidPk, solanaTokenPidPk } from '../../../utils/solana';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
@@ -45,7 +45,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const tokenPrice = tokenPrices.get(mint);
 
-    if (tokenPrice && tokenPrice.platformId !== walletTokensPlatform.id) return;
+    if (tokenPrice && tokenPrice.platformId !== walletTokensPlatformId) return;
 
     tokenAssets.push({
       ...tokenPriceToAssetToken(mint, amount, NetworkId.solana, tokenPrice),
@@ -60,7 +60,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const element: PortfolioElementMultiple = {
     type: PortfolioElementType.multiple,
     networkId: NetworkId.solana,
-    platformId: walletTokensPlatform.id,
+    platformId: walletTokensPlatformId,
     label: 'Wallet',
     value: getUsdValueSum(tokenAssets.map((a) => a.value)),
     data: {
@@ -71,7 +71,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${walletTokensPlatform.id}-solana-simple`,
+  id: `${walletTokensPlatformId}-solana-simple`,
   networkId: NetworkId.solana,
   executor,
 };

@@ -1,18 +1,6 @@
-import {
-  EvmNetworkIdType,
-  NetworkId,
-  Platform,
-} from '@sonarwatch/portfolio-core';
+import { EvmNetworkIdType, NetworkId } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'curve';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Curve Finance',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/curve.webp',
-  defiLlamaId: 'parent#curve-finance',
-  website: 'https://curve.fi/',
-};
 export const poolsCachePrefix = `${platformId}-pools`;
 export const gaugesCachePrefix = `${platformId}-gauges`;
 export const poolsByAddressPrefix = `${platformId}-pools-by-address`;

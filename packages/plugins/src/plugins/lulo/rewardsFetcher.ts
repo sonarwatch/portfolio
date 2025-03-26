@@ -1,5 +1,5 @@
 import { NetworkId, PortfolioElement } from '@sonarwatch/portfolio-core';
-import { platform, platformId } from './constants';
+import { platformId } from './constants';
 import driftAirdropFetcher from '../drift/airdropFetcher';
 import solendRewardsFetcher from '../save/rewardsFetcher';
 import { getDerivedAccount } from './helpers';
@@ -25,7 +25,7 @@ const executor: FetcherExecutor = async (
 
   return res.map((element) => ({
     ...element,
-    platformId: platform.id,
+    platformId,
     label: 'Rewards',
   }));
 };

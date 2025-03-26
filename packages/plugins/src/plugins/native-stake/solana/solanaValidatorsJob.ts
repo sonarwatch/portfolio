@@ -1,8 +1,8 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { nativeStakePlatformId, NetworkId } from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
 import { Cache } from '../../../Cache';
 import { Job, JobExecutor } from '../../../Job';
-import { platformId, validatorsKey } from '../constants';
+import { validatorsKey } from '../constants';
 import { stakewizApi } from './constants';
 import { Validator, ValidatorsApiResponse } from './types';
 
@@ -30,13 +30,13 @@ const executor: JobExecutor = async (cache: Cache) => {
   }));
 
   await cache.setItem(validatorsKey, validators, {
-    prefix: platformId,
+    prefix: nativeStakePlatformId,
     networkId: NetworkId.solana,
   });
 };
 
 const job: Job = {
-  id: `${platformId}-solana-validators`,
+  id: `${nativeStakePlatformId}-solana-validators`,
   executor,
   labels: ['normal'],
 };

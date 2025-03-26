@@ -1,5 +1,9 @@
 import BigNumber from 'bignumber.js';
-import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  TokenPriceSource,
+  walletTokensPlatformId,
+} from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSolana } from '../../utils/clients';
@@ -19,7 +23,6 @@ import {
 import { marketStruct } from './structs';
 import { marketAccountFilters } from './filters';
 import { MarketInfo } from './types';
-import { walletTokensPlatform } from '../tokens/constants';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -94,7 +97,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         decimals: ptDecimals,
         id: market.pubkey.toString(),
         networkId: NetworkId.solana,
-        platformId: walletTokensPlatform.id,
+        platformId: walletTokensPlatformId,
         price: ptPrice.times(baseTokenPrice.price).toNumber(),
         timestamp: Date.now(),
         weight: 1,
@@ -106,7 +109,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         decimals: ytDecimals,
         id: market.pubkey.toString(),
         networkId: NetworkId.solana,
-        platformId: walletTokensPlatform.id,
+        platformId: walletTokensPlatformId,
         price: ytPrice.times(baseTokenPrice.price).toNumber(),
         timestamp: Date.now(),
         weight: 1,
@@ -128,7 +131,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         decimals: lpDecimals,
         id: market.pubkey.toString(),
         networkId: NetworkId.solana,
-        platformId: walletTokensPlatform.id,
+        platformId: walletTokensPlatformId,
         price: lpPrice.toNumber(),
         timestamp: Date.now(),
         weight: 1,

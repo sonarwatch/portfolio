@@ -7,13 +7,13 @@ import {
   PortfolioLiquidity,
   formatMoveTokenAddress,
   getUsdValueSum,
+  walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
 
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSui } from '../../../utils/clients';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import { walletTokensPlatform } from '../constants';
 import tokenPriceToAssetTokens from '../../../utils/misc/tokenPriceToAssetTokens';
 import { getLpTag, parseLpTag } from '../helpers';
 
@@ -39,7 +39,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (!tokenPrice) continue;
 
     const amount = amountRaw / 10 ** tokenPrice.decimals;
-    if (tokenPrice.platformId !== walletTokensPlatform.id) {
+    if (tokenPrice.platformId !== walletTokensPlatformId) {
       const assets = tokenPriceToAssetTokens(
         coinType,
         amount,
@@ -76,7 +76,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const walletTokensElement: PortfolioElementMultiple = {
       type: PortfolioElementType.multiple,
       networkId: NetworkId.sui,
-      platformId: walletTokensPlatform.id,
+      platformId: walletTokensPlatformId,
       label: 'Wallet',
       value: getUsdValueSum(walletTokensAssets.map((a) => a.value)),
       data: {
@@ -103,7 +103,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${walletTokensPlatform.id}-sui`,
+  id: `${walletTokensPlatformId}-sui`,
   networkId: NetworkId.sui,
   executor,
 };

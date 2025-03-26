@@ -1,17 +1,6 @@
-import { Platform } from '@sonarwatch/portfolio-core';
 import { ContractInfo } from './types';
 
 export const platformId = 'paraswap';
-
-export const platform: Platform = {
-  id: platformId,
-  name: 'Paraswap',
-  defiLlamaId: 'paraswap',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/paraswap.webp',
-  website: 'https://paraswap.io/',
-};
-
 export const bptInfoKey = 'bptInfo';
 
 export const PSPToken = {

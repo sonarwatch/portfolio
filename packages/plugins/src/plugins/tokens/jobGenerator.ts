@@ -2,13 +2,13 @@ import {
   NetworkIdType,
   UniTokenList,
   networks,
+  walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
 import { getCoingeckoSources, getTokensData } from './helpers';
 import { Cache } from '../../Cache';
 import { Job } from '../../Job';
 import sleep from '../../utils/misc/sleep';
-import { walletTokensPlatform } from './constants';
 import shuffleArray from '../../utils/misc/shuffleArray';
 
 export default function jobGenerator(networkId: NetworkIdType): Job {
@@ -33,7 +33,7 @@ export default function jobGenerator(networkId: NetworkIdType): Job {
   };
   return {
     executor,
-    id: `${walletTokensPlatform.id}-${networkId}`,
+    id: `${walletTokensPlatformId}-${networkId}`,
     labels: ['coingecko'],
   };
 }

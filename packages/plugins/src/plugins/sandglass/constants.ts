@@ -1,21 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
-import { Platform } from '@sonarwatch/portfolio-core';
 import { usdcSolanaMint } from '../../utils/solana';
 
 export const platformId = 'sandglass';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Sandglass',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/sandglass.webp',
-  // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
-  website: 'https://sandglass.so/',
-  twitter: 'https://twitter.com/sandglass_so',
-  discord: 'https://discord.gg/jSNe84QZ67',
-  medium:
-    'https://medium.com/@lifinity.io/introducing-sandglass-a-yield-trading-protocol-on-solana-9b5ee5b33aff',
-};
-
 export const programId = new PublicKey(
   'SANDsy8SBzwUE8Zio2mrYZYqL52Phr2WQb9DDKuXMVK'
 );

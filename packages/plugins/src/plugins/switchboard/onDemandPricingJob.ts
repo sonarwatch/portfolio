@@ -2,13 +2,13 @@ import {
   NetworkId,
   solanaNativeWrappedAddress,
   TokenPriceSource,
+  walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
-import { walletTokensPlatform } from '../tokens/constants';
 import { getSwitchboardOnDemandPrices } from './helpers/getSwitchboardOnDemandPrice';
 import { getDecimalsForToken } from '../../utils/misc/getDecimalsForToken';
 import { SwitchboardTokenPricingInfo } from './types';
@@ -60,7 +60,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         decimals,
         id: `${platformId}-feed-${feedToFetch.toString()}`,
         networkId: tokenInfo.networkId,
-        platformId: walletTokensPlatform.id,
+        platformId: walletTokensPlatformId,
         weight: 0.8,
         timestamp: Date.now(),
         price,

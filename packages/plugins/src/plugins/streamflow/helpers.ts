@@ -1,7 +1,12 @@
 import { AirdropRaw, NetworkIdType } from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
 import BigNumber from 'bignumber.js';
-import { airdropApi, airdropStatics, platform, streamMint } from './constants';
+import {
+  airdropApi,
+  airdropStatics,
+  platformImg,
+  streamMint,
+} from './constants';
 import { getAirdropRaw } from '../../AirdropFetcher';
 import { AirdropResponse } from './types';
 import { eligibleAddresses } from './airdropAddresses';
@@ -41,7 +46,7 @@ export async function getAirdropItems(
           isClaimed: false,
           label: 'STREAM',
           address: streamMint,
-          imageUri: platform.image,
+          imageUri: platformImg,
         },
       ],
     });
@@ -57,7 +62,7 @@ export async function getAirdropItems(
           isClaimed: false,
           label: 'STREAM',
           address: streamMint,
-          imageUri: platform.image,
+          imageUri: platformImg,
         },
       ],
     });
@@ -73,7 +78,7 @@ export async function getAirdropItems(
           isClaimed: false,
           label: 'STREAM',
           address: streamMint,
-          imageUri: platform.image,
+          imageUri: platformImg,
         },
       ],
     });
@@ -89,7 +94,7 @@ export async function getAirdropItems(
         isClaimed: false,
         label: 'STREAM',
         address: streamMint,
-        imageUri: platform.image,
+        imageUri: platformImg,
       },
     ],
   });

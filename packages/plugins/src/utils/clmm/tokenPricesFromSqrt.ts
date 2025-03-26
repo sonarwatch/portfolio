@@ -2,12 +2,12 @@ import {
   NetworkIdType,
   TokenPriceSource,
   formatTokenAddress,
+  walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import Decimal from 'decimal.js';
 import { Cache } from '../../Cache';
 import { getCachedDecimalsForToken } from '../misc/getCachedDecimalsForToken';
-import { walletTokensPlatform } from '../../plugins/tokens/constants';
 import getSourceWeight from '../misc/getSourceWeight';
 import { minimumLiquidity } from '../misc/computeAndStoreLpPrice';
 import { defaultAcceptedPairs } from '../misc/getLpUnderlyingTokenSource';
@@ -67,7 +67,7 @@ export default async function storeTokenPricesFromSqrt(
       weight,
       address: mintY,
       networkId,
-      platformId: walletTokensPlatform.id,
+      platformId: walletTokensPlatformId,
       decimals: decimalsY,
       price,
       timestamp: Date.now(),
@@ -89,7 +89,7 @@ export default async function storeTokenPricesFromSqrt(
       weight,
       address: mintX,
       networkId,
-      platformId: walletTokensPlatform.id,
+      platformId: walletTokensPlatformId,
       decimals: decimalsX,
       price,
       timestamp: Date.now(),

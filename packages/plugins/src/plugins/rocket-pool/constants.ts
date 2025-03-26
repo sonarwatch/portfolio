@@ -1,15 +1,6 @@
-import { Platform } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 
 export const platformId = 'rocketpool';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Rocket Pool',
-  defiLlamaId: 'rocket-pool',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/rocketpool.webp',
-  website: 'https://rocketpool.net/',
-};
 export const marketsCachePrefix = `${platformId}-markets`;
 export const minipoolManagerAddress =
   '0x6293B8abC1F36aFB22406Be5f96D893072A8cF3a';

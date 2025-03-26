@@ -8,7 +8,6 @@ export * from './Airdrop';
 export * from './UsdValue';
 export * from './Client';
 export * from './Network';
-export * from './Platform';
 export * from './Portfolio';
 export * from './TokenList';
 export * from './TokenPrice';

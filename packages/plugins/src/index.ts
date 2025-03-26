@@ -1,9 +1,7 @@
-import { Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from './Fetcher';
 import { AirdropFetcher } from './AirdropFetcher';
 import { Job } from './Job';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
-import * as orphanPlatforms from './orphanPlatforms';
 
 // PLUGINS
 import * as tokens from './plugins/tokens';
@@ -161,11 +159,6 @@ import * as baskt from './plugins/baskt';
 import * as guano from './plugins/guano';
 import * as coingecko from './plugins/coingecko';
 import * as zeus from './plugins/zeus';
-
-export {
-  walletTokensPlatform,
-  walletNftsPlatform,
-} from './plugins/tokens/constants';
 
 export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 export { isSolanaAddressActive } from './utils/solana/isActive';
@@ -335,14 +328,8 @@ const modules = [
   baskt,
   guano,
   coingecko,
-  orphanPlatforms,
   zeus,
 ];
-
-// PLATFORMS //
-export const platforms: Platform[] = modules
-  .map((module) => module.platforms)
-  .flat();
 
 // JOBS //
 export const jobs: Job[] = modules

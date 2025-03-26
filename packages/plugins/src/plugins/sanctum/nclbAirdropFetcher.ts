@@ -5,7 +5,7 @@ import {
   airdropFetcherToFetcher,
   getAirdropRaw,
 } from '../../AirdropFetcher';
-import { cloudMint, platform, nclbAirdropStatics } from './constants';
+import { cloudMint, nclbAirdropStatics, platformId } from './constants';
 import noCLBAllocations from './noCloudLeftBehindAllocation.json';
 
 const allocs = noCLBAllocations as { [key: string]: number };
@@ -46,7 +46,7 @@ export const airdropFetcher: AirdropFetcher = {
 
 export const fetcher = airdropFetcherToFetcher(
   airdropFetcher,
-  platform.id,
-  `${platform.id}-airdrop-nclb`,
+  platformId,
+  `${platformId}-airdrop-nclb`,
   nclbAirdropStatics.claimEnd
 );

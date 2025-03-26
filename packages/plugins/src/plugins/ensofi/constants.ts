@@ -1,21 +1,6 @@
-import { Platform } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 
 export const platformId = 'ensofi';
-export const platform: Platform = {
-  id: platformId,
-  name: 'EnsoFi',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/ensofi.webp',
-  website: 'https://app.ensofi.xyz',
-  twitter: 'https://twitter.com/Ensofi_xyz',
-  discord: 'https://discord.com/invite/ensofi',
-  documentation: 'https://ensofi.gitbook.io/ensofi',
-  telegram: 'https://t.me/ensofiapp_bot/ensofi?startapp=mainnet',
-  github: 'https://github.com/Ensofi-xyz',
-  description:
-    'Cross-chain DeFi Hub. Lend, Borrow, LSTs, Earn & more with stable returns.',
-};
 
 // sui sc : https://github.com/Ensofi-xyz/lending_smart_contract/tree/main/sui_smartcontract/sources
 export const State =

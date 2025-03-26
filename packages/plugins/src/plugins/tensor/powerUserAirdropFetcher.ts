@@ -2,7 +2,6 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import {
   magmaProgramId,
-  platform,
   platformId,
   powerUsersStatics,
   tnsrMint,
@@ -118,7 +117,7 @@ export const powerUserAirdropFetcher: AirdropFetcher = {
 
 export const powerUserFetcher = airdropFetcherToFetcher(
   powerUserAirdropFetcher,
-  platform.id,
+  platformId,
   'tensor-s4',
   powerUsersStatics.claimEnd
 );

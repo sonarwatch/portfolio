@@ -1,16 +1,6 @@
-import { Platform } from '@sonarwatch/portfolio-core';
 import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'suins';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Sui Name Service',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/suins.webp',
-  website: 'https://suins.io/',
-  twitter: 'https://x.com/suinsdapp',
-  defiLlamaId: 'suins', // from https://defillama.com/docs/api
-};
 export const airdropStatics: AirdropStatics = {
   claimLink: 'https://claim.suins.io/',
   emitterLink: 'https://token.suins.io/',

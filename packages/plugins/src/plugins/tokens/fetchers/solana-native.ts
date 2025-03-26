@@ -3,11 +3,11 @@ import {
   PortfolioElementMultiple,
   PortfolioElementType,
   solanaNetwork,
+  walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
-import { walletTokensPlatform } from '../constants';
 import { getClientSolana } from '../../../utils/clients';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 
@@ -35,7 +35,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const element: PortfolioElementMultiple = {
     type: PortfolioElementType.multiple,
     networkId: NetworkId.solana,
-    platformId: walletTokensPlatform.id,
+    platformId: walletTokensPlatformId,
     label: 'Wallet',
     value: asset.value,
     data: {
@@ -46,7 +46,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${walletTokensPlatform.id}-solana-native`,
+  id: `${walletTokensPlatformId}-solana-native`,
   networkId: NetworkId.solana,
   executor,
 };

@@ -1,14 +1,4 @@
-import { Platform } from '@sonarwatch/portfolio-core';
-
 export const platformId = 'bucket';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Bucket',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/bucket.webp',
-  defiLlamaId: 'bucket-protocol',
-  website: 'https://bucketprotocol.io/',
-};
 
 export const buckId =
   '0xce7ff77a83ea0cb6fd39bd8748e2ec89a3f41e8efdc3f4eb123e0ca37b184db2::buck::BUCK';

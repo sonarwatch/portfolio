@@ -1,14 +1,4 @@
-import { Platform } from '@sonarwatch/portfolio-core';
-
 export const platformId = 'morpho';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Morpho',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/morpho.webp',
-  defiLlamaId: 'parent#morpho',
-  website: 'https://morpho.org/',
-};
 export const updatedIndexesPrefix = `${platformId}-updated-indexes`;
 export const morphoAaveV3Address = '0x33333aea097c193e66081E930c33020272b33333';
 export const morphoTokenAddress = '0x9994E35Db50125E0DF82e4c2dde62496CE330999';

@@ -1,20 +1,7 @@
-import {
-  NetworkId,
-  NetworkIdType,
-  Platform,
-  networks,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId, NetworkIdType, networks } from '@sonarwatch/portfolio-core';
 import { LendingConfig } from './types';
 
 export const platformId = 'aave';
-export const platform: Platform = {
-  id: platformId,
-  name: 'AAVE',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/aave.webp',
-  defiLlamaId: 'parent#aave',
-  website: 'https://aave.com/',
-};
 
 export const aaveAddress = '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9';
 export const aaveDecimals = 18;
