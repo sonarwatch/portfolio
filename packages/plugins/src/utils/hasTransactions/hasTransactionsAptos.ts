@@ -1,7 +1,9 @@
-import { getClientAptos } from '../clients';
+import { AptosClient } from '../clients/types';
 
-export async function isBlankAddressAptos(address: string) {
-  const client = getClientAptos();
+export async function hasTransactionsAptos(
+  address: string,
+  client: AptosClient
+) {
   const ressources = await client
     .getAccountResources({
       accountAddress: address,

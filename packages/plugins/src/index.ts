@@ -161,14 +161,14 @@ import * as coingecko from './plugins/coingecko';
 import * as zeus from './plugins/zeus';
 
 export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
-export { isSolanaAddressActive } from './utils/solana/isActive';
 
 export * from './Cache';
 export * from './Fetcher';
 export * from './AirdropFetcher';
 export * from './Job';
 export * from './utils/name-service';
-export * from './utils/blank';
+export * from './utils/hasTransactions';
+
 export { getLlamaProtocolsJob } from './plugins/llama-protocols';
 export { jupFetcherIds } from './plugins/jupiter';
 export { solanaSimpleFetcher } from './plugins/tokens';
