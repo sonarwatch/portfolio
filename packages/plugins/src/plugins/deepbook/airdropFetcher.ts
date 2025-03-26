@@ -6,7 +6,12 @@ import {
   airdropFetcherToFetcher,
   getAirdropRaw,
 } from '../../AirdropFetcher';
-import { airdropStatics, deepDecimals, deepMint, platform } from './constants';
+import {
+  airdropStatics,
+  deepDecimals,
+  deepMint,
+  platformId,
+} from './constants';
 import { getClientSui } from '../../utils/clients';
 import { AirdropWrapperNFT, DeepAirdropNFT } from '../../utils/sui/types';
 import { getOwnedObjectsPreloaded } from '../../utils/sui/getOwnedObjectsPreloaded';
@@ -78,7 +83,7 @@ export const airdropFetcher: AirdropFetcher = {
 
 export const fetcher = airdropFetcherToFetcher(
   airdropFetcher,
-  platform.id,
-  'deepbook-airdrop',
+  platformId,
+  `${platformId}-airdrop`,
   airdropStatics.claimEnd
 );

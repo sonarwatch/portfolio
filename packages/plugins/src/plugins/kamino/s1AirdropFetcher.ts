@@ -6,7 +6,7 @@ import {
   airdropFetcherToFetcher,
   getAirdropRaw,
 } from '../../AirdropFetcher';
-import { airdropStaticsS1, kmnoMint, platform } from './constants';
+import { airdropStaticsS1, kmnoMint, platformId } from './constants';
 import { AllocationsApiRes } from './types';
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
@@ -39,8 +39,8 @@ const airdropFetcher: AirdropFetcher = {
 
 const fetcher = airdropFetcherToFetcher(
   airdropFetcher,
-  platform.id,
-  `${platform.id}-airdrop-s1`,
+  platformId,
+  `${platformId}-airdrop-s1`,
   airdropStaticsS1.claimEnd
 );
 

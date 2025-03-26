@@ -1,15 +1,4 @@
-import { Platform } from '@sonarwatch/portfolio-core';
-
 export const platformId = 'joule';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Joule',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/joule.webp',
-  website: 'https://app.joule.finance/',
-  twitter: 'https://twitter.com/JouleFinance',
-  defiLlamaId: 'joule-finance', // from https://defillama.com/docs/api
-};
 
 export const marketsCacheKey = `markets`;
 export const api = 'https://price-api.joule.finance/api/market';

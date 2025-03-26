@@ -1,15 +1,4 @@
-import { Platform } from '@sonarwatch/portfolio-core';
-
 export const platformId = 'maker';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Maker DAO',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/maker.webp',
-  defiLlamaId: 'makerdao',
-  website: 'https://makerdao.com/',
-};
-
 export const ilksPrefix = `${platformId}-ilks`;
 export const daiAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
 export const daiDecimals = 18;

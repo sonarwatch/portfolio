@@ -6,7 +6,7 @@ import {
   airdropFetcherToFetcher,
   getAirdropRaw,
 } from '../../AirdropFetcher';
-import { airdropApi, airdropStatics, grassMint, platform } from './constants';
+import { airdropApi, airdropStatics, grassMint, platformId } from './constants';
 import { AirdropResponse } from './types';
 import { getClientSolana } from '../../utils/clients';
 import { deriveClaimStatus } from './helpers';
@@ -60,7 +60,7 @@ export const s1AirdropFetcher: AirdropFetcher = {
 };
 export const s1Fetcher = airdropFetcherToFetcher(
   s1AirdropFetcher,
-  platform.id,
+  platformId,
   'grass-airdrop',
   airdropStatics.claimEnd
 );

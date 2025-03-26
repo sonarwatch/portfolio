@@ -1,8 +1,8 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { nativeStakePlatformId, NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSui } from '../../utils/clients';
-import { platformId, validatorsKey, validatorsPrefix } from './constants';
+import { validatorsKey, validatorsPrefix } from './constants';
 import { SuiValidatorInfo } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -33,7 +33,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 };
 
 const job: Job = {
-  id: `${platformId}-active-validators-sui`,
+  id: `${nativeStakePlatformId}-active-validators-sui`,
   executor,
   labels: ['normal'],
 };

@@ -1,19 +1,7 @@
-import {
-  EvmNetworkIdType,
-  NetworkId,
-  Platform,
-} from '@sonarwatch/portfolio-core';
+import { EvmNetworkIdType, NetworkId } from '@sonarwatch/portfolio-core';
 import { MarketDetail } from './types';
 
 export const platformId = 'compound';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Compound',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/compound.webp',
-  defiLlamaId: 'parent#compound-finance', // from https://defillama.com/docs/api
-  website: 'https://compound.finance/',
-};
 
 export const marketDetailsKey = 'marketsDetails';
 export const comethTokenPricesPrefix = 'cometh-token-prices';

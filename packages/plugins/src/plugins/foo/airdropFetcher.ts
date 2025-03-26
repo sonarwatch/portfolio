@@ -5,7 +5,7 @@ import {
   airdropFetcherToFetcher,
   getAirdropRaw,
 } from '../../AirdropFetcher';
-import { airdropStatics, platform } from './constants';
+import { airdropStatics, platformId } from './constants';
 import { usdcSolanaMint } from '../../utils/solana';
 
 const executor: AirdropFetcherExecutor = async () =>
@@ -23,7 +23,7 @@ export const airdropFetcher: AirdropFetcher = {
 };
 export const fetcher = airdropFetcherToFetcher(
   airdropFetcher,
-  platform.id,
-  'foo-airdrop',
+  platformId,
+  `${platformId}-airdrop`,
   airdropStatics.claimEnd
 );

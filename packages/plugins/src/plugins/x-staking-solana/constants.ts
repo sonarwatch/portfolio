@@ -8,9 +8,11 @@ import {
 import { platformId as hawksightPlatformId } from '../hawksight/constants';
 import { platformId as whalesMarketPlatformId } from '../whalesmarket/constants';
 import { platformId as allbridgePlatformId } from '../allbridge/constants';
-import { stepfinancePlatform, ligmaPlatform } from '../../orphanPlatforms';
 import { platformId as stramflowPlatformId } from '../streamflow/constants';
 import { platformId as sanctumPlatformId } from '../sanctum/constants';
+
+const stepfinancePlatformId = 'stepfinance';
+const ligmaPlatformId = 'ligma';
 
 export const xStakingConfigs: StakingConfig[] = [
   {
@@ -35,7 +37,7 @@ export const xStakingConfigs: StakingConfig[] = [
     vault: 'ANYxxG365hutGYaTdtUQG8u2hC4dFX9mFHKuzy9ABQJi',
     xMint: 'xStpgUCss9piqeFUk2iLVcvJEGhAdJxJQuwLkXP555G',
     xDecimals: 9,
-    platformId: stepfinancePlatform.id,
+    platformId: stepfinancePlatformId,
   },
   {
     mint: 'a11bdAAuV8iB2fu7X6AxAvDTo1QZ8FXB3kk5eecdasp',
@@ -59,7 +61,7 @@ export const xStakingConfigs: StakingConfig[] = [
     vault: 'ENz6c4ZVYedrcK5V4fh7vwDA1SvZDNDQb1j3KKQbbo8Q',
     xMint: 'xNodeyB1u8WNrKQJqfucbKDMq7LYcAQfYXmqVdDj9M5',
     xDecimals: 6,
-    platformId: ligmaPlatform.id,
+    platformId: ligmaPlatformId,
   },
   {
     mint: 'STREAMribRwybYpMmSYoCsQUdr6MZNXEqHgm7p1gu9M',

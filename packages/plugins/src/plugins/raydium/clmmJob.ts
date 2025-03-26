@@ -1,4 +1,8 @@
-import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  TokenPriceSource,
+  walletTokensPlatformId,
+} from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import Decimal from 'decimal.js';
 import { platformId, raydiumProgram } from './constants';
@@ -17,7 +21,6 @@ import { clmmPoolsStateFilter } from './filters';
 import { defaultAcceptedPairs } from '../../utils/misc/getLpUnderlyingTokenSource';
 import { minimumReserveValue } from '../../utils/misc/constants';
 import getSourceWeight from '../../utils/misc/getSourceWeight';
-import { walletTokensPlatform } from '../tokens/constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -136,7 +139,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         decimals: unkDecimal,
         id: platformId,
         networkId: NetworkId.solana,
-        platformId: walletTokensPlatform.id,
+        platformId: walletTokensPlatformId,
         price: unknownPrice,
         timestamp: Date.now(),
         weight: getSourceWeight(refLiquidity.times(2)),

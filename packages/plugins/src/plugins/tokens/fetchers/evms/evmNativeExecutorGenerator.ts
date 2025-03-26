@@ -3,6 +3,7 @@ import {
   PortfolioElementMultiple,
   PortfolioElementType,
   networks,
+  walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
 import { getAddress } from 'viem';
 import BigNumber from 'bignumber.js';
@@ -10,7 +11,6 @@ import { FetcherExecutor } from '../../../../Fetcher';
 import { getEvmClient } from '../../../../utils/clients';
 import tokenPriceToAssetToken from '../../../../utils/misc/tokenPriceToAssetToken';
 import { Cache } from '../../../../Cache';
-import { walletTokensPlatform } from '../../constants';
 
 export default function getEvmFetcherNativeExecutor(
   networkId: EvmNetworkIdType
@@ -36,7 +36,7 @@ export default function getEvmFetcherNativeExecutor(
     const element: PortfolioElementMultiple = {
       type: PortfolioElementType.multiple,
       networkId,
-      platformId: walletTokensPlatform.id,
+      platformId: walletTokensPlatformId,
       label: 'Wallet',
       value: asset.value,
       data: {

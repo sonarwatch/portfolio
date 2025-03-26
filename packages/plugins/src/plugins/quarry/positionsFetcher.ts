@@ -12,7 +12,6 @@ import {
   IOUTokensElementName,
   mergeMineIdlItem,
   mineIdlItem,
-  platform,
   platformId,
   rewardersCacheKey,
 } from './constants';
@@ -221,8 +220,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       platformId: elementPlatformId,
       type: PortfolioElementType.liquidity,
       value,
-      name:
-        elementPlatformId === platformId ? primaryRewarder.name : platform.name,
+      name: elementPlatformId === platformId ? primaryRewarder.name : 'Quarry',
       data: {
         liquidities: [
           {

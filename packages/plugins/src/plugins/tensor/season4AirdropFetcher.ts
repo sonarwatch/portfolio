@@ -1,5 +1,5 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import { platform, s4Statics, tnsrMint } from './constants';
+import { platformId, s4Statics, tnsrMint } from './constants';
 import { season4Allocations, vectorBonusAllocations } from './season4Alloc';
 import {
   AirdropFetcher,
@@ -52,7 +52,7 @@ export const airdropS4Fetcher: AirdropFetcher = {
 
 export const s4Fetcher = airdropFetcherToFetcher(
   airdropS4Fetcher,
-  platform.id,
+  platformId,
   'tensor-s4',
   s4Statics.claimEnd
 );

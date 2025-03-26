@@ -2,10 +2,10 @@ import {
   NetworkId,
   PortfolioAssetCollectible,
   PortfolioElement,
+  walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
 
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
-import { walletTokensPlatform } from '../constants';
 import { Cache } from '../../../Cache';
 import { getRaydiumCLMMPositions } from '../../raydium/getRaydiumCLMMPositions';
 import { getOrcaNftFetcher } from '../../orca/getWhirlpoolPositions';
@@ -116,7 +116,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${walletTokensPlatform.id}-solana-nfts-underlyings`,
+  id: `${walletTokensPlatformId}-solana-nfts-underlyings`,
   networkId: NetworkId.solana,
   executor,
 };

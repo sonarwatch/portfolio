@@ -9,11 +9,11 @@ import {
 import {
   firstDistribStatics,
   dbrMint,
-  platform as dbrPlatform,
-  platform,
   distributorPid,
   receiptBuffer,
   secondDistribStatics,
+  platformId,
+  dbrImg,
 } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import distributions from './distributions.json';
@@ -43,7 +43,7 @@ const executorDis1: AirdropFetcherExecutor = async (owner: string) => {
           isClaimed: false,
           label: 'DBR',
           address: isEvm ? undefined : dbrMint,
-          imageUri: isEvm ? dbrPlatform.image : undefined,
+          imageUri: isEvm ? dbrImg : undefined,
         },
       ],
     });
@@ -57,7 +57,7 @@ const executorDis1: AirdropFetcherExecutor = async (owner: string) => {
         isClaimed: !!receipt,
         label: 'DBR',
         address: isEvm ? undefined : dbrMint,
-        imageUri: isEvm ? dbrPlatform.image : undefined,
+        imageUri: isEvm ? dbrImg : undefined,
       },
     ],
   });
@@ -84,7 +84,7 @@ const executorDis2: AirdropFetcherExecutor = async (owner: string) => {
           isClaimed: false,
           label: 'DBR',
           address: isEvm ? undefined : dbrMint,
-          imageUri: isEvm ? dbrPlatform.image : undefined,
+          imageUri: isEvm ? dbrImg : undefined,
         },
       ],
     });
@@ -98,7 +98,7 @@ const executorDis2: AirdropFetcherExecutor = async (owner: string) => {
         isClaimed,
         label: 'DBR',
         address: isEvm ? undefined : dbrMint,
-        imageUri: isEvm ? dbrPlatform.image : undefined,
+        imageUri: isEvm ? dbrImg : undefined,
       },
     ],
   });
@@ -148,14 +148,14 @@ export const dis2AirdropFetcherSolana: AirdropFetcher = {
 
 export const dis1Fetcher = airdropFetcherToFetcher(
   dis1AirdropFetcherSolana,
-  platform.id,
+  platformId,
   'dis1-debridge-airdrop',
   firstDistribStatics.claimEnd
 );
 
 export const dis2Fetcher = airdropFetcherToFetcher(
   dis2AirdropFetcherSolana,
-  platform.id,
+  platformId,
   'dis2-debridge-airdrop',
   secondDistribStatics.claimEnd
 );

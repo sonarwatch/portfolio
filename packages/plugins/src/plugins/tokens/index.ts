@@ -1,13 +1,8 @@
-import {
-  NetworkId,
-  Platform,
-  networksAsArray,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId, networksAsArray } from '@sonarwatch/portfolio-core';
 import { Job } from '../../Job';
 import { Fetcher } from '../../Fetcher';
 import {} from 'graphql';
 
-import { walletNftsPlatform, walletTokensPlatform } from './constants';
 import jobGenerator from './jobGenerator';
 import aptosFetcher from './fetchers/aptos';
 import suiFetcher from './fetchers/sui';
@@ -22,7 +17,6 @@ import getTokenListsJob from './getTokenListsJob';
 
 import solanaSimpleFetcher from './fetchers/solana-simple';
 
-export const platforms: Platform[] = [walletTokensPlatform, walletNftsPlatform];
 export const jobs: Job[] = [
   jobGenerator(NetworkId.bitcoin),
   jobGenerator(NetworkId.aptos),

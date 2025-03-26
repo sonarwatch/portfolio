@@ -1,5 +1,4 @@
 import { PublicKey } from '@solana/web3.js';
-import { Platform } from '@sonarwatch/portfolio-core';
 import { LendingMarketConfig } from './types';
 import { AirdropStatics } from '../../AirdropFetcher';
 import { mSOLMint } from '../marinade/constants';
@@ -8,19 +7,6 @@ import { jitoSOLMint } from '../jito/constants';
 
 export const platformId = 'kamino';
 export const kmnoMint = 'KMNo3nJsBXfcpJTVhZcXLW7RmTwTt4GVFE7suUBo9sS';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Kamino',
-  image: `https://sonar.watch/img/platforms/${platformId}.webp`,
-  website: 'https://kamino.finance/',
-  defiLlamaId: 'parent#kamino-finance',
-  description: 'Borrow, Earn and Leverage on Solana',
-  discord: 'https://discord.com/invite/kaminofinance',
-  twitter: 'https://x.com/KaminoFinance',
-  documentation: 'https://docs.kamino.finance/',
-  github: 'https://github.com/Kamino-Finance',
-  tokens: [kmnoMint],
-};
 
 export const kmnoDecimals = 6;
 export const programId = new PublicKey(

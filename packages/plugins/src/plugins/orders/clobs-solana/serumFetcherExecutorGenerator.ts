@@ -15,7 +15,7 @@ import { serumOrdersFilter } from './filters';
 import runInBatch from '../../../utils/misc/runInBatch';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import { CLOBMarket, CLOBVersion } from './types';
-import { serumPlatform } from './constants';
+import { serumId } from './constants';
 
 export default function getSerumFetcherExecutor(
   serumVersion: CLOBVersion
@@ -149,7 +149,7 @@ export default function getSerumFetcherExecutor(
       elements.push({
         type: 'multiple',
         networkId: NetworkId.solana,
-        platformId: serumPlatform.id,
+        platformId: serumId,
         value: asset.value,
         label: 'Deposit',
         name: `Empty Orders Accounts (${nbEmptyAccounts})`,
@@ -162,7 +162,7 @@ export default function getSerumFetcherExecutor(
       elements.push({
         type: 'multiple',
         networkId: NetworkId.solana,
-        platformId: serumPlatform.id,
+        platformId: serumId,
         value,
         label: 'Deposit',
         name: 'In Open Orders',
@@ -174,7 +174,7 @@ export default function getSerumFetcherExecutor(
       elements.push({
         type: 'multiple',
         networkId: NetworkId.solana,
-        platformId: serumPlatform.id,
+        platformId: serumId,
         value: unsettledValue,
         label: 'Rewards',
         name: 'Unsettled Balances',

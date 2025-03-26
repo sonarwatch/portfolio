@@ -1,13 +1,4 @@
-import { Platform } from '@sonarwatch/portfolio-core';
-
 export const platformId = 'scallop';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Scallop',
-  image: `https://sonar.watch/img/platforms/${platformId}.webp`,
-  defiLlamaId: 'parent#scallop',
-  website: 'https://app.scallop.io/',
-};
 
 export const addressPrefix = `${platformId}-address`;
 export const marketPrefix = `${platformId}-market`;

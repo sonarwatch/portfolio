@@ -1,25 +1,8 @@
-import { Platform } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'debridge';
 export const dbrMint = 'DBRiDgJAMsM95moTzJs7M9LnkGErpbv9v6CUR1DXnUu5';
-export const platform: Platform = {
-  id: platformId,
-  name: 'deBridge',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/debridge.webp',
-  website: 'https://debridge.finance/',
-  twitter: 'https://x.com/deBridgeFinance',
-  defiLlamaId: 'debridge', // from https://defillama.com/docs/api
-  github: 'https://github.com/debridge-finance/',
-  discord: 'https://discord.gg/debridge',
-  description:
-    'Cross-chain interoperability and liquidity transfer protocol that allows the decentralized transfer of arbitrary data and assets between various blockchains.',
-  documentation: 'https://docs.debridge.finance/',
-  telegram: 'https://t.me/deBridge_finance',
-  tokens: [dbrMint],
-};
 
 export const commonStatics = {
   claimLink: 'https://debridge.foundation/checker',
@@ -28,6 +11,7 @@ export const commonStatics = {
   image:
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/debridge.webp',
 };
+export const dbrImg = commonStatics.image;
 
 export const firstDistribStatics: AirdropStatics = {
   ...commonStatics,

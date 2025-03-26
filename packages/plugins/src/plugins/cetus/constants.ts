@@ -1,15 +1,4 @@
-import { Platform } from '@sonarwatch/portfolio-core';
-
 export const platformId = 'cetus';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Cetus',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/cetus.webp',
-  defiLlamaId: 'parent#cetus',
-  website: 'https://www.cetus.zone/',
-};
-
 export const cetusMint =
   '0x06864a6f921804860930db6ddbe2e16acdf8504495ea7481637a1c8b9a8fe54b::cetus::CETUS';
 export const xCetusMint =

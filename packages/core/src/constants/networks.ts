@@ -1,4 +1,4 @@
-import { AddressSystem } from '../Address';
+import { AddressSystem, AddressSystemType } from '../Address';
 import { Network, NetworkId, NetworkIdType } from '../Network';
 import {
   aptosNativeAddress,
@@ -221,6 +221,21 @@ export const networks: Record<NetworkIdType, Network> = {
 };
 
 export const networksAsArray = Object.values(networks);
+
+export const networksByAddressSystem: Record<AddressSystemType, Network[]> =
+  (() => {
+    const res: Record<AddressSystemType, Network[]> = {
+      bitcoin: [],
+      solana: [],
+      sei: [],
+      evm: [],
+      move: [],
+    };
+    for (const network of networksAsArray) {
+      res[network.addressSystem].push(network);
+    }
+    return res;
+  })();
 
 export const evmNetworks: Network[] = Object.values(networks).filter(
   (n) => n.addressSystem === AddressSystem.evm
