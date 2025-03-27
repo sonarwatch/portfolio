@@ -21,7 +21,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   if (!markets) throw new Error('No Markets found');
 
-  const [tokenPrices, tokenAccounts, lpDecimals, baseDecimals, quoteDecimals] =
+  const [tokenPrices, baseTokenAccounts, quoteTokenAccounts] =
     await Promise.all([
       cache.getTokenPricesAsMap(
         markets
@@ -35,54 +35,58 @@ const executor: JobExecutor = async (cache: Cache) => {
       getParsedMultipleAccountsInfo(
         connection,
         tokenAccountStruct,
-        markets
-          .map((market) => [
-            market.pool_base_token_account,
-            market.pool_quote_token_account,
-          ])
-          .flat()
+        markets.map((market) => market.pool_base_token_account)
       ),
-      Promise.all(
-        markets.map((market) =>
-          getCachedDecimalsForToken(
-            cache,
-            market.lp_mint.toString(),
-            NetworkId.solana
-          )
-        )
+      getParsedMultipleAccountsInfo(
+        connection,
+        tokenAccountStruct,
+        markets.map((market) => market.pool_quote_token_account)
       ),
-      Promise.all(
-        markets.map((market) =>
+    ]);
+
+  const [baseDecimals, quoteDecimals] = await Promise.all([
+    Promise.all(
+      markets.map((market) => {
+        const tokenPrice = tokenPrices.get(market.base_mint.toString());
+        return (
+          tokenPrice?.decimals ||
           getCachedDecimalsForToken(
             cache,
             market.base_mint.toString(),
             NetworkId.solana
           )
-        )
-      ),
-      Promise.all(
-        markets.map((market) =>
+        );
+      })
+    ),
+    Promise.all(
+      markets.map((market) => {
+        const tokenPrice = tokenPrices.get(market.quote_mint.toString());
+        return (
+          tokenPrice?.decimals ||
           getCachedDecimalsForToken(
             cache,
             market.quote_mint.toString(),
             NetworkId.solana
           )
-        )
-      ),
-    ]);
+        );
+      })
+    ),
+  ]);
 
   const sources: TokenPriceSource[] = [];
 
   markets.forEach((market, i) => {
-    const baseTokenAccount = tokenAccounts[i * 2];
-    const quoteTokenAccount = tokenAccounts[i * 2 + 1];
+    const baseTokenAccount = baseTokenAccounts[i];
+    const quoteTokenAccount = quoteTokenAccounts[i];
+
     if (!baseTokenAccount || !quoteTokenAccount) return;
-    const lpDecimal = lpDecimals[i];
+    const baseTokenPrice = tokenPrices.get(market.base_mint.toString());
+    const quoteTokenPrice = tokenPrices.get(market.quote_mint.toString());
+
+    const lpDecimal = 9;
     const baseTokenDecimal = baseDecimals[i];
     const quoteTokenDecimal = quoteDecimals[i];
     if (!lpDecimal || !baseTokenDecimal || !quoteTokenDecimal) return;
-    const baseTokenPrice = tokenPrices.get(market.base_mint.toString());
-    const quoteTokenPrice = tokenPrices.get(market.quote_mint.toString());
 
     const lpSources = getLpTokenSourceRaw({
       lpDetails: {
