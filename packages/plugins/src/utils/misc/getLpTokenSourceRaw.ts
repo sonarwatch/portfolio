@@ -1,5 +1,6 @@
 import {
   NetworkIdType,
+  SourceRef,
   TokenPrice,
   TokenPriceSource,
 } from '@sonarwatch/portfolio-core';
@@ -30,6 +31,8 @@ export type GetLpTokenSourceRawParams = {
   elementName?: string;
   liquidityName?: string;
   priceUnderlyings?: boolean;
+  sourceRefs?: SourceRef[];
+  link?: string;
 };
 
 export function getLpTokenSourceRaw(
@@ -60,5 +63,7 @@ export function getLpTokenSourceRaw(
     elementName: params.elementName,
     liquidityName: params.liquidityName,
     priceUnderlyings: params.priceUnderlyings,
+    sourceRefs: params.sourceRefs,
+    link: params.link,
   });
 }
