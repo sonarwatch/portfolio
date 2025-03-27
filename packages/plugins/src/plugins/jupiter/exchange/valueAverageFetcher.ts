@@ -8,7 +8,11 @@ import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { platformId, valueAverageProgramId } from './constants';
 import { getClientSolana } from '../../../utils/clients';
-import { getParsedProgramAccounts } from '../../../utils/solana';
+import {
+  getParsedMultipleAccountsInfo,
+  getParsedProgramAccounts,
+  tokenAccountStruct,
+} from '../../../utils/solana';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import { valueAverageStruct } from './structs';
 import { valueAverageFilters } from './filters';
@@ -24,15 +28,31 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
   if (accounts.length === 0) return [];
 
-  const tokenPrices = await cache.getTokenPricesAsMap(
-    accounts
-      .map((a) => [a.inputMint.toString(), a.outputMint.toString()])
-      .flat(),
-    NetworkId.solana
-  );
+  const [tokenPrices, inputTokenAccounts, outputTokenAccounts] =
+    await Promise.all([
+      cache.getTokenPricesAsMap(
+        accounts
+          .map((a) => [a.inputMint.toString(), a.outputMint.toString()])
+          .flat(),
+        NetworkId.solana
+      ),
+      getParsedMultipleAccountsInfo(
+        client,
+        tokenAccountStruct,
+        accounts.map((a) => a.inputVault)
+      ),
+      getParsedMultipleAccountsInfo(
+        client,
+        tokenAccountStruct,
+        accounts.map((a) => a.outputVault)
+      ),
+    ]);
 
   const elements: PortfolioElementTrade[] = [];
-  for (const account of accounts) {
+  for (let i = 0; i < accounts.length; i++) {
+    const account = accounts[i];
+    if (!inputTokenAccounts[i] || !outputTokenAccounts[i]) continue;
+
     const inputAddress = account.inputMint.toString();
     const outputAddress = account.outputMint.toString();
     const inputTokenPrice = tokenPrices.get(inputAddress);
