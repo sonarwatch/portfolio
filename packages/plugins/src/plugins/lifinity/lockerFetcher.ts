@@ -21,30 +21,22 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const escrowAccount = accounts[0];
 
-  const { amount, escrowEndsAt, duration } = escrowAccount;
+  const { amount, escrowEndsAt } = escrowAccount;
 
   if (amount.isZero()) return [];
 
-  const yearsLocked = duration.dividedBy(60 * 60 * 24 * 365).decimalPlaces(0);
-  let name = 'Locked';
-  if (escrowEndsAt.isZero()) {
-    name += ` (${yearsLocked.toString()} year${
-      yearsLocked.isGreaterThan(1) ? 's' : ''
-    })`;
-  }
   const registry = new ElementRegistry(NetworkId.solana, platformId);
   const element = registry.addElementMultiple({
     label: 'Vesting',
     link: 'https://lifinity.io/reward',
     ref: escrowAccount.pubkey,
-    name,
   });
 
   element.addAsset({
     address: lfntyMint,
     amount,
     attributes: {
-      lockedUntil: escrowEndsAt.times(1000).toNumber() || undefined,
+      lockedUntil: escrowEndsAt.times(1000).toNumber() || -1,
     },
   });
 
