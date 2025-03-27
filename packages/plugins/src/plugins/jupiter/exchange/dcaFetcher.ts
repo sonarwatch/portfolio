@@ -8,7 +8,11 @@ import {
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSolana } from '../../../utils/clients';
-import { getParsedProgramAccounts } from '../../../utils/solana';
+import {
+  getParsedMultipleAccountsInfo,
+  getParsedProgramAccounts,
+  tokenAccountStruct,
+} from '../../../utils/solana';
 import { platformId, dcaProgramId } from './constants';
 import { dcaStruct } from './structs';
 import { DCAFilters } from './filters';
@@ -32,14 +36,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       account.outputMint.toString(),
     ])
     .flat();
-  const pricesMap = await cache.getTokenPricesAsMap(
-    Array.from(mints),
-    NetworkId.solana
-  );
+  const [pricesMap, tokenAccounts] = await Promise.all([
+    cache.getTokenPricesAsMap(Array.from(mints), NetworkId.solana),
+    getParsedMultipleAccountsInfo(
+      client,
+      tokenAccountStruct,
+      accounts.map((account) => account.inAccount)
+    ),
+  ]);
 
   const elements: PortfolioElementTrade[] = [];
   for (let i = 0; i < accounts.length; i++) {
     const account = accounts[i];
+    if (tokenAccounts[i]?.amount.isZero()) continue;
 
     const inputMint = account.inputMint.toString();
     const inputTokenPrice = pricesMap.get(inputMint);
