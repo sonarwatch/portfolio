@@ -189,9 +189,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         const elevationGroup = elevationGroups.get(obligation.elevationGroup);
         if (elevationGroup)
           element.addSuppliedLtv(elevationGroup.liquidationThresholdPct / 100);
-        else {
-          element.addSuppliedLtv(0);
-        }
       } else {
         element.addSuppliedLtv(reserve.config.liquidationThresholdPct / 100);
       }
