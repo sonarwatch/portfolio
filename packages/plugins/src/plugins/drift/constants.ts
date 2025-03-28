@@ -4,6 +4,7 @@ import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'drift';
 export const platformName = 'Drift';
+export const driftMint = 'DriFtupJYLTosbwoN8koMbEYSx54aFAVLddWsbksjwg7';
 export const platformImage = 'https://sonar.watch/img/platforms/drift.webp';
 export const platformWebsite = 'https://www.drift.trade/';
 export const platform: Platform = {
@@ -18,6 +19,7 @@ export const platform: Platform = {
   twitter: 'https://twitter.com/DriftProtocol',
   documentation: 'https://docs.drift.trade/',
   github: 'https://github.com/drift-labs',
+  tokens: [driftMint],
 };
 export const keySpotMarkets = `spotMarkets`;
 
@@ -31,7 +33,6 @@ export const oracleToMintKey = 'oracle-to-mint';
 
 export const airdropUrl = 'https://airdrop.drift.trade/eligibility/';
 export const driftDecimals = 6;
-export const driftMint = 'DriFtupJYLTosbwoN8koMbEYSx54aFAVLddWsbksjwg7';
 
 export const airdropStatics: AirdropStatics = {
   id: 'drift-airdrop-1',

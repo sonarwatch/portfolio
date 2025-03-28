@@ -1,10 +1,3 @@
-export type UserDeposit = {
-  userAddress: string;
-  mint: string;
-  lpAmount: string;
-  rewardDebt: string;
-};
-
 export type Pools = {
   bridgeAddress: string;
   swapAddress: string;

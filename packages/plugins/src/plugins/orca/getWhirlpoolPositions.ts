@@ -75,6 +75,8 @@ export function getOrcaNftFetcher(
         }
       ),
     ]);
+    if (!allWhirlpoolsInfo)
+      throw new Error('Whirlpool info not found in cache.');
 
     const whirlpoolMap: Map<string, ParsedAccount<Whirlpool>> = new Map();
     allWhirlpoolsInfo.forEach((wInfo) => {
@@ -105,13 +107,6 @@ export function getOrcaNftFetcher(
 
       const element = elementRegistry.addElementConcentratedLiquidity({
         link: 'https://www.orca.so/portfolio',
-        ref: positionInfo.pubkey.toString(),
-        sourceRefs: [
-          {
-            name: 'Pool',
-            address: whirlpoolInfo.pubkey.toString(),
-          },
-        ],
       });
       const liquidity = element.setLiquidity({
         addressA: whirlpoolInfo.tokenMintA,
@@ -127,7 +122,14 @@ export function getOrcaNftFetcher(
           (1 - whirlpoolInfo.protocolFeeRate / 10000),
         swapVolume24h: allWhirlpoolsStats.find(
           (p) => p?.address === positionInfo.whirlpool.toString()
-        )?.volumeUsdc24h,
+        )?.stats['24h'].volume,
+        ref: positionInfo.pubkey.toString(),
+        sourceRefs: [
+          {
+            name: 'Pool',
+            address: whirlpoolInfo.pubkey.toString(),
+          },
+        ],
       });
 
       const feesAndRewards = calcFeesAndRewards(

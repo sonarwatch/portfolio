@@ -57,6 +57,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 
   const spotMarketsItems = await spotMarketsMemo.getItem(cache);
+  if (!spotMarketsItems) throw new Error('Spot markets not cached');
+
   const spotMarketByIndex: Map<number, SpotMarketEnhanced> = new Map();
   const insuranceFundStakeAccountsAddresses: PublicKey[] = [];
   const insuranceVaultsPkeys: PublicKey[] = [];

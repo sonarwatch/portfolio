@@ -160,9 +160,9 @@ import * as triad from './plugins/triad';
 import * as baskt from './plugins/baskt';
 import * as guano from './plugins/guano';
 import * as coingecko from './plugins/coingecko';
-import * as zeusnode from './plugins/zeusnode';
 import * as convex from './plugins/convex';
 import * as fraxlend from './plugins/fraxlend';
+import * as zeus from './plugins/zeus';
 
 export {
   walletTokensPlatform,
@@ -170,6 +170,7 @@ export {
 } from './plugins/tokens/constants';
 
 export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
+export { isSolanaAddressActive } from './utils/solana/isActive';
 
 export * from './Cache';
 export * from './Fetcher';
@@ -337,9 +338,9 @@ const modules = [
   guano,
   coingecko,
   orphanPlatforms,
-  zeusnode,
   convex,
-  fraxlend
+  fraxlend,
+  zeus
 ];
 
 // PLATFORMS //

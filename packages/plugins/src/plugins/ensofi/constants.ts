@@ -1,6 +1,5 @@
 import { Platform } from '@sonarwatch/portfolio-core';
-import { IdlItem } from '@solanafm/explorer-kit-idls';
-import { ensofiIdl } from './idl';
+import { PublicKey } from '@solana/web3.js';
 
 export const platformId = 'ensofi';
 export const platform: Platform = {
@@ -28,8 +27,6 @@ export const LoanType =
 export const offersCacheKey = 'offers';
 export const loansCacheKey = 'loans';
 
-export const ensofiIdlItem = {
-  programId: 'ensoQXKf4MvNuEC3M9xmcqUqgucFNd5UzAonDdUtgqn',
-  idl: ensofiIdl,
-  idlType: 'anchor',
-} as IdlItem;
+export const ensofiProgramId = new PublicKey(
+  'ensoQXKf4MvNuEC3M9xmcqUqgucFNd5UzAonDdUtgqn'
+);

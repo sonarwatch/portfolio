@@ -55,7 +55,8 @@
         "@typescript-eslint/dot-notation": "off",
         "import/prefer-default-export": "off",
         "no-continue": "off",
-        "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }]
+        "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
+        "no-underscore-dangle": ["error", { "allow": ["__kind"] }]
       }
     },
     {

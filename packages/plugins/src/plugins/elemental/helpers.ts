@@ -1,7 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
-import { elementalIDLs } from './elementalVaultIDL';
 import { CachedPool } from './types';
 import { Position } from './structs';
+import { programId } from './constants';
 
 export function getPositionAddress(
   poolAddress: string,
@@ -13,7 +13,7 @@ export function getPositionAddress(
       new PublicKey(ownerAddress).toBuffer(),
       new PublicKey(poolAddress).toBuffer(),
     ],
-    new PublicKey(elementalIDLs.address)
+    programId
   )[0];
 }
 

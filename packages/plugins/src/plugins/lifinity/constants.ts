@@ -2,6 +2,8 @@ import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'lifinity';
+export const xLfntyMint = 'xLfNTYy76B8Tiix3hA51Jyvc1kMSFV4sPdR7szTZsRu';
+export const lfntyMint = 'LFNTYraetVioAPnGJht4yNg2aUZFXR776cMeN9VMjXp';
 export const platform: Platform = {
   id: platformId,
   name: 'Lifinity',
@@ -14,6 +16,7 @@ export const platform: Platform = {
   medium: 'https://medium.com/@lifinity.io',
   discord: 'http://discord.gg/K2tvfcXwWr',
   github: 'https://github.com/Lifinity-Labs',
+  tokens: [lfntyMint, xLfntyMint],
   description:
     "Solana's oracle-based DEX, designed to improve capital efficiency and reverse impermanent loss.",
 };
@@ -27,6 +30,4 @@ export const rewarder = new PublicKey(
 );
 
 export const lfntyDecimals = 6;
-export const lfntyMint = 'LFNTYraetVioAPnGJht4yNg2aUZFXR776cMeN9VMjXp';
 export const xLfntyDecimals = 6;
-export const xLfntyMint = 'xLfNTYy76B8Tiix3hA51Jyvc1kMSFV4sPdR7szTZsRu';

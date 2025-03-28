@@ -175,17 +175,7 @@ export type ProxyInfo = {
 export type Contract = {
   name: string;
   address: string;
-  network: NetworkIdType;
-};
-
-/**
- * Represents the different configurations of a service
- */
-export type ServiceConfig = {
-  networkId: NetworkIdType;
-  integratedOn: number;
-  contracts?: Contract[];
-  link?: string;
+  platformId: string;
 };
 
 /**
@@ -195,7 +185,30 @@ export type Service = {
   id: string;
   name: string;
   platformId: string;
-  configs: ServiceConfig[];
+  networkId: NetworkIdType;
+  contracts?: Contract[];
+  link?: string;
+  description?: string;
+};
+
+/**
+ * Represents a transaction
+ */
+export type BalanceChange = {
+  address: string;
+  preBalance: number;
+  postBalance: number;
+  change: number;
+};
+
+export type Transaction = {
+  signature: string;
+  owner: string;
+  blockTime?: number | null;
+  service?: Service;
+  balanceChanges: BalanceChange[];
+  isSigner: boolean;
+  success: boolean;
 };
 
 export type SourceRefName =
@@ -533,5 +546,17 @@ export type FetchersResult = {
   value: UsdValue;
   elements: PortfolioElement[];
   duration: number;
+  tokenInfo?: Partial<Record<NetworkIdType, Record<string, TokenInfo>>>;
+};
+
+/**
+ * Represents the result of transactions.
+ */
+export type TransactionsResult = {
+  owner: string;
+  account: string;
+  networkId: NetworkIdType;
+  duration: number;
+  transactions: Transaction[];
   tokenInfo?: Partial<Record<NetworkIdType, Record<string, TokenInfo>>>;
 };

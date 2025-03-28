@@ -1,5 +1,10 @@
 import BigNumber from 'bignumber.js';
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import {
+  apyToApr,
+  BorrowLendRate,
+  borrowLendRatesPrefix,
+  NetworkId,
+} from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { defiTunaProgram, lendingPoolsCacheKey, platformId } from './constants';
@@ -30,6 +35,12 @@ const executor: JobExecutor = async (cache: Cache) => {
     ]
   );
 
+  const tokenPriceById = await cache.getTokenPricesAsMap(
+    pools.map((p) => p.mint.toString()),
+    NetworkId.solana
+  );
+
+  const items: { key: string; value: BorrowLendRate }[] = [];
   await cache.setItem(
     lendingPoolsCacheKey,
     pools.map((pool) => {
@@ -44,6 +55,34 @@ const executor: JobExecutor = async (cache: Cache) => {
         .multipliedBy(rateFactor(utilization));
 
       const supplyApy = borrowApy.multipliedBy(utilization);
+      const tokenPrice = tokenPriceById.get(pool.mint.toString());
+      if (tokenPrice) {
+        const blRate: BorrowLendRate = {
+          borrowedAmount: pool.borrowedFunds
+            .dividedBy(10 ** tokenPrice.decimals)
+            .toNumber(),
+          depositedAmount: pool.depositedFunds
+            .dividedBy(10 ** tokenPrice.decimals)
+            .toNumber(),
+          borrowYield: {
+            apr: apyToApr(borrowApy.toNumber()),
+            apy: borrowApy.toNumber(),
+          },
+          depositYield: {
+            apr: apyToApr(supplyApy.toNumber()),
+            apy: supplyApy.toNumber(),
+          },
+          utilizationRatio: utilization,
+          platformId,
+          tokenAddress: pool.mint.toString(),
+          ref: pool.pubkey.toString(),
+        };
+
+        items.push({
+          key: `${pool.pubkey.toString()}-${pool.mint.toString()}`,
+          value: blRate,
+        });
+      }
 
       return {
         ...pool,
@@ -56,6 +95,10 @@ const executor: JobExecutor = async (cache: Cache) => {
       networkId: NetworkId.solana,
     }
   );
+  await cache.setItems(items, {
+    prefix: borrowLendRatesPrefix,
+    networkId: NetworkId.solana,
+  });
 };
 
 const job: Job = {

@@ -1,3 +1,4 @@
+import { aprToApy, BorrowLendRate } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 
 /**
@@ -11,7 +12,7 @@ import BigNumber from 'bignumber.js';
  *
  * @returns {Aprs} BorrowApr and DepositApr of the market in raw value (i.e 0.02 = 2%)
  */
-export default function getLendingMarketAprs(
+export function getLendingMarketAprs(
   borrowedAmount: BigNumber,
   availableAmount: BigNumber,
   interestRateAprs: number[],
@@ -61,6 +62,42 @@ export default function getLendingMarketAprs(
   return {
     borrowApr,
     depositApr,
+  };
+}
+
+export function getLendingMarketBLRate(
+  tokenAddress: string,
+  netBorrowedAmount: BigNumber,
+  netAvailableAmount: BigNumber,
+  interestRateAprs: number[],
+  interestRateSteps: number[],
+  spreadFeeBps: number,
+  platformId: string,
+  poolName?: string
+): BorrowLendRate {
+  const { borrowApr, depositApr } = getLendingMarketAprs(
+    netBorrowedAmount,
+    netAvailableAmount,
+    interestRateAprs,
+    interestRateSteps,
+    spreadFeeBps
+  );
+  const depositedAmount = netBorrowedAmount.plus(netAvailableAmount).toNumber();
+  return {
+    tokenAddress,
+    depositedAmount,
+    utilizationRatio: netBorrowedAmount.dividedBy(depositedAmount).toNumber(),
+    borrowYield: {
+      apy: aprToApy(borrowApr),
+      apr: borrowApr,
+    },
+    borrowedAmount: 0,
+    depositYield: {
+      apy: aprToApy(depositApr),
+      apr: depositApr,
+    },
+    platformId,
+    poolName,
   };
 }
 

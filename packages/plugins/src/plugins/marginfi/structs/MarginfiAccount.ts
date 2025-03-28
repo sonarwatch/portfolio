@@ -6,8 +6,9 @@ import {
 } from '@metaplex-foundation/beet';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { PublicKey } from '@solana/web3.js';
-import { blob } from '../../../utils/solana';
+import { blob, ParsedAccount } from '../../../utils/solana';
 import { WrappedI80F48, wrappedI80F48Struct } from './common';
+import { BankInfo } from '../types';
 
 export type Balance = {
   active: number;
@@ -17,6 +18,8 @@ export type Balance = {
   liabilityShares: WrappedI80F48;
   padding: Buffer[];
 };
+
+export type BalanceWithBank = Balance & { bank: ParsedAccount<BankInfo> };
 
 export const balanceStruct = new BeetStruct<Balance>(
   [

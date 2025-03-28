@@ -6,6 +6,7 @@ import { tokenMarketIdl } from './tokenMarketIdl';
 
 export const platformId = 'famousfoxfederation';
 
+export const foxyMint = 'FoXyMu5xwXre7zEoSvzViRk3nGawHUp9kUh97y2NDhcq';
 export const platform: Platform = {
   id: platformId,
   name: 'Famous Fox Federation',
@@ -15,6 +16,7 @@ export const platform: Platform = {
   twitter: 'https://twitter.com/famousfoxfed',
   // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
   discord: 'https://discord.com/invite/famousfoxes',
+  tokens: [foxyMint],
 };
 
 export const tokenMarketProgram = new PublicKey(
@@ -33,8 +35,6 @@ export const foxProgram = new PublicKey(
 export const stakingConfigAccount = new PublicKey(
   '7N7M1H2CK51ip7sNtPgKhhv2eScx6BokLgHi1Ke3ZLiq'
 );
-
-export const foxyMint = 'FoXyMu5xwXre7zEoSvzViRk3nGawHUp9kUh97y2NDhcq';
 
 export const stakingIdlItem = {
   programId: foxProgram.toString(),

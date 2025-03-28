@@ -10,16 +10,15 @@ import {
   platformId,
   unstakingOwner,
   unstakingNftsCacheKey,
-  restakingIdlItem,
 } from './constants';
 import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
 import { DisplayOptions } from '../../utils/solana/das/types';
 import { getAssetsByOwnerDas } from '../../utils/solana/das/getAssetsByOwnerDas';
 import { heliusAssetToAssetCollectible } from '../../utils/solana/das/heliusAssetToAssetCollectible';
 import { getClientSolana } from '../../utils/clients';
-import { getAutoParsedMultipleAccountsInfo } from '../../utils/solana';
-import { Vault } from './types';
+import { getParsedMultipleAccountsInfo } from '../../utils/solana';
 import { getPositionPublicKey, isPicassoPosition } from './helpers';
+import { vaultStruct } from './structs';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const dasEndpoint = getSolanaDasEndpoint();
@@ -48,9 +47,9 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   const connection = getClientSolana();
 
-  const vaults = await getAutoParsedMultipleAccountsInfo<Vault>(
+  const vaults = await getParsedMultipleAccountsInfo(
     connection,
-    restakingIdlItem,
+    vaultStruct,
     nfts.map((asset) => getPositionPublicKey(new PublicKey(asset.data.address)))
   ).then((vs) => vs.filter((v) => v !== null));
 

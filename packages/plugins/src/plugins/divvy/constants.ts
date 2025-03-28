@@ -1,9 +1,8 @@
 import { Platform } from '@sonarwatch/portfolio-core';
-import { IdlItem } from '@solanafm/explorer-kit-idls';
 import { PublicKey } from '@solana/web3.js';
-import { DivvyIdl } from './idl';
 
 export const platformId = 'divvy';
+export const dvyMint = '8fdi18UQNGg8mFEzjf79GUkzTg9YHSeojzCcarVxCX2y';
 export const platform: Platform = {
   id: platformId,
   name: 'Divvy',
@@ -15,6 +14,7 @@ export const platform: Platform = {
   documentation:
     'https://divvy.bet/wp-content/uploads/2022/12/Divvy_Knowledge_Hub_06.pdf',
   twitter: 'https://twitter.com/DivvyBet',
+  tokens: [dvyMint],
   description:
     'Frictionless betting experience powered by Solana with no signups or deposits',
 };
@@ -22,12 +22,5 @@ export const platform: Platform = {
 export const divvyProgram = new PublicKey(
   'dvyFwAPniptQNb1ey4eM12L8iLHrzdiDsPPDndd6xAR'
 );
-export const dvyMint = '8fdi18UQNGg8mFEzjf79GUkzTg9YHSeojzCcarVxCX2y';
-
-export const divvyIdlItem = {
-  programId: divvyProgram.toString(),
-  idl: DivvyIdl,
-  idlType: 'anchor',
-} as IdlItem;
 
 export const houseCacheKey = 'houses';

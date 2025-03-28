@@ -8,21 +8,20 @@ import { Cache } from '../../Cache';
 import {
   cachePrefix,
   collectionsCacheKey,
+  loanDataSize,
   platformId,
-  sharkyIdlItem,
+  sharkyProgram,
 } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
-import {
-  getAutoParsedProgramAccounts,
-  ParsedAccount,
-} from '../../utils/solana';
-import { Collection, Loan } from './types';
-import { getLoanFilters } from './filters';
+import { ParsedAccount } from '../../utils/solana';
+import { Collection } from './types';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import { arrayToMap } from '../../utils/misc/arrayToMap';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { PortfolioAssetCollectibleParams } from '../../utils/elementbuilder/Params';
+import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
+import { loanStruct } from './structs';
 
 const collectionsMemo = new MemoizedCache<
   ParsedAccount<Collection>[],
@@ -39,14 +38,23 @@ const collectionsMemo = new MemoizedCache<
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
 
-  const [filterA, filterB, filterC] = getLoanFilters(owner);
   const accounts = (
     await Promise.all([
-      getAutoParsedProgramAccounts<Loan>(connection, sharkyIdlItem, filterA),
-      getAutoParsedProgramAccounts<Loan>(connection, sharkyIdlItem, filterB),
-      getAutoParsedProgramAccounts<Loan>(connection, sharkyIdlItem, filterC),
+      ParsedGpa.build(connection, loanStruct, sharkyProgram)
+        .addRawFilter(115, owner)
+        .addDataSizeFilter(loanDataSize)
+        .run(),
+      ParsedGpa.build(connection, loanStruct, sharkyProgram)
+        .addRawFilter(147, owner)
+        .addDataSizeFilter(loanDataSize)
+        .run(),
+      ParsedGpa.build(connection, loanStruct, sharkyProgram)
+        .addRawFilter(83, owner)
+        .addDataSizeFilter(loanDataSize)
+        .run(),
     ])
   ).flat();
+
   if (accounts.length === 0) return [];
 
   const [solTokenPrice, collections] = await Promise.all([
@@ -59,7 +67,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
   accounts.forEach((acc) => {
-    const collection = collections.get(acc.orderBook);
+    const collection = collections.get(acc.orderBook.toString());
     if (!collection) return;
 
     const element = elementRegistry.addElementBorrowlend({
@@ -67,9 +75,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     });
 
     let mintAsset: PortfolioAssetCollectibleParams | null = null;
-    if (acc.loanState.taken?.taken.nftCollateralMint) {
+    if (acc.loanState.__kind === 'Taken') {
       mintAsset = {
-        address: acc.loanState.taken.taken.nftCollateralMint,
+        address: acc.loanState.nftCollateralMint,
         collection: {
           name: collection.name,
           floorPrice: new BigNumber(collection.floor).multipliedBy(
@@ -87,12 +95,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     let name;
 
-    if (acc.loanState.offer) {
+    if (acc.loanState.__kind === 'Offer') {
       // LENDER
       element.addSuppliedAsset(solAsset);
       name = `Lend Offer on ${collection.name}`;
-    } else if (acc.loanState.taken) {
-      if (acc.loanState.taken.taken.lenderNoteMint === owner.toString()) {
+    } else if (acc.loanState.__kind === 'Taken') {
+      if (acc.loanState.lenderNoteMint.toString() === owner.toString()) {
         // LENDER
         element.addSuppliedAsset(solAsset);
         if (mintAsset) element.addBorrowedCollectibleAsset(mintAsset);
@@ -110,13 +118,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (name) element.setName(name);
 
     element.setFixedTerms(
-      acc.loanState.offer !== undefined ||
-        (acc.loanState.taken
-          ? acc.loanState.taken.taken.lenderNoteMint === owner.toString()
-          : false),
-      acc.loanState.taken
-        ? (Number(acc.loanState.taken.taken.terms.time.start) +
-            Number(acc.loanState.taken.taken.terms.time.duration)) *
+      (acc.loanState.__kind === 'Taken'
+        ? acc.loanState.lenderNoteMint.toString() === owner.toString()
+        : false) || acc.loanState.__kind !== 'Offer',
+      acc.loanState.__kind === 'Taken'
+        ? (Number(acc.loanState.terms.start) +
+            Number(acc.loanState.terms.duration)) *
             1000
         : undefined
     );

@@ -41,7 +41,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }),
   ]);
 
-  if (!tokenPrice || !configAccount) return [];
+  if (!configAccount) throw new Error('Staking config not cached');
+
+  if (!tokenPrice) throw new Error('Foxy price not found');
 
   const registry = new ElementRegistry(NetworkId.solana, platformId);
   const element = registry.addElementMultiple({

@@ -10,11 +10,11 @@ import {
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
-import { platformId, restakingIdlItem, restakingProgramId } from './constants';
+import { platformId, restakingProgramId } from './constants';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { getAutoParsedMultipleAccountsInfo } from '../../utils/solana';
-import { Vault } from './types';
+import { getParsedMultipleAccountsInfo } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
+import { vaultStruct } from './structs';
 
 export const getPositionPublicKey = (ei: PublicKey) => {
   const [vaultParamsPDA] = PublicKey.findProgramAddressSync(
@@ -33,9 +33,9 @@ export async function getPicassoElementsFromNFTs(
 ): Promise<PortfolioElement[]> {
   const connection = getClientSolana();
 
-  const vaults = await getAutoParsedMultipleAccountsInfo<Vault>(
+  const vaults = await getParsedMultipleAccountsInfo(
     connection,
-    restakingIdlItem,
+    vaultStruct,
     nfts.map((asset) => getPositionPublicKey(new PublicKey(asset.data.address)))
   );
 
@@ -45,7 +45,9 @@ export async function getPicassoElementsFromNFTs(
 
   const tokenMints = [
     ...new Set(
-      heliusAssetsPositions.map((item, i) => vaults[i]?.stakeMint).flat()
+      heliusAssetsPositions
+        .map((item, i) => vaults[i]?.stakeMint.toString())
+        .flat()
     ),
   ].filter((s) => s !== null) as string[];
 
@@ -59,11 +61,11 @@ export async function getPicassoElementsFromNFTs(
   heliusAssetsPositions.forEach((item, i) => {
     const vault = vaults[i];
     if (vault) {
-      const tokenPrice = tokenPrices.get(vault.stakeMint);
+      const tokenPrice = tokenPrices.get(vault.stakeMint.toString());
       if (!tokenPrice) return;
       assets.push(
         tokenPriceToAssetToken(
-          vault.stakeMint,
+          vault.stakeMint.toString(),
           new BigNumber(vault.stakeAmount)
             .dividedBy(10 ** tokenPrice.decimals)
             .toNumber(),

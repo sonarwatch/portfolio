@@ -95,7 +95,6 @@ const executor: JobExecutor = async (cache: Cache) => {
       },
       depositedAmount,
       platformId,
-      poolName: 'Main',
     };
 
     await cache.setItem(

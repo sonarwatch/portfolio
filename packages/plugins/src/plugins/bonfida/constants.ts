@@ -2,9 +2,10 @@ import { PublicKey } from '@solana/web3.js';
 import { Platform } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'bonfida';
+export const fidaMint = 'EchesyfXePKdLtoiZSL8pBe8Myagyy8ZRqsACNCFGnvp';
 export const platform: Platform = {
   id: platformId,
-  name: 'Bonfida (SNS)',
+  name: 'SNS',
   image:
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/bonfida.webp',
   website: 'https://www.sns.id/',
@@ -15,6 +16,7 @@ export const platform: Platform = {
   discord: 'https://discord.com/invite/bonfida-778660171265474572',
   documentation: 'https://docs.sns.id/collection',
   telegram: 'https://t.me/snsdotsol',
+  tokens: [fidaMint],
 };
 
 export const offerPid = new PublicKey(
@@ -27,5 +29,4 @@ export const airdropPid = new PublicKey(
 
 export const airdropApi =
   'https://jito-distributor-api.n38t0uklh84us.ap-southeast-1.cs.amazonlightsail.com/proof/';
-export const fidaMint = 'EchesyfXePKdLtoiZSL8pBe8Myagyy8ZRqsACNCFGnvp';
 export const fidaDecimals = 6;
