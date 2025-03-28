@@ -14,7 +14,7 @@ import { vaultIdls } from './constants';
 import { getClientSolana } from '../../utils/clients';
 
 export const getVaultClient = async (programId?: string) => {
-  const connection = getClientSolana();
+  const connection = getClientSolana({ forceDisableLogs: true });
   const sdkConfig = initialize({ env: 'mainnet-beta' });
   const driftPublicKey = new PublicKey(sdkConfig.DRIFT_PROGRAM_ID);
   // random, we do not use it
