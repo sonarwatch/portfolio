@@ -6,6 +6,7 @@ import { SolanaClient } from './types';
 
 export type SolanaClientParams = {
   commitment?: Commitment;
+  forceDisableLogs?: boolean;
 };
 
 export default function getClientSolana(
@@ -20,7 +21,10 @@ export default function getClientSolana(
     : undefined;
 
   let fetchMiddleware: FetchMiddleware | undefined;
-  if (process.env['PORTFOLIO_RPC_LOGS'] === 'true') {
+  if (
+    process.env['PORTFOLIO_RPC_LOGS'] === 'true' &&
+    !params?.forceDisableLogs
+  ) {
     const reqs: Record<string, number> = {
       total: 0,
     };
