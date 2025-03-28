@@ -41,6 +41,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
 
   const feeVaults = await feeVaultsMemo.getItem(cache);
+  if (!feeVaults) throw new Error('Fee vaults not cached');
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 

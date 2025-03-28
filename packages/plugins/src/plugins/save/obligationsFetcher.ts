@@ -34,7 +34,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     prefix: platformId,
     networkId: NetworkId.solana,
   });
-  if (!markets) return [];
+  if (!markets) throw new Error('Markets not cached.');
 
   const marketsByAddress: Map<string, MarketInfo> = new Map();
   markets.forEach((market) => {
@@ -63,7 +63,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       networkId: NetworkId.solana,
     }
   );
-  if (!reservesInfos) return [];
+  if (!reservesInfos) throw new Error('Reserves not cached.');
 
   const reserveByAddress: Map<string, ReserveInfo> = new Map();
   reservesInfos.forEach((reserveInfo) => {

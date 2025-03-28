@@ -20,6 +20,7 @@ import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
 import { getAssetsByOwnerDas } from '../../utils/solana/das/getAssetsByOwnerDas';
 import { DisplayOptions } from '../../utils/solana/das/types';
 import { heliusAssetToAssetCollectible } from '../../utils/solana/das/heliusAssetToAssetCollectible';
+import { mSOLMint } from '../marinade/constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const dasUrl = getSolanaDasEndpoint();
@@ -80,10 +81,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       element.type === PortfolioElementType.multiple
     ) {
       element.data.assets.forEach((token) => {
-        if (
-          token.type === 'token' &&
-          token.data.address === 'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So'
-        ) {
+        if (token.type === 'token' && token.data.address === mSOLMint) {
           tokens.push(token);
           return;
         }

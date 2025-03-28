@@ -1,54 +1,70 @@
-import { NetworkId, PortfolioElement } from '@sonarwatch/portfolio-core';
-import { MarginfiProgram, platformId, banksKey } from './constants';
-import { marginfiAccountStruct } from './structs/MarginfiAccount';
-import { getElementFromAccount } from './helpers';
-import { accountsFilter } from './filters';
-import { BankInfo } from './types';
-import { ParsedAccount, getParsedProgramAccounts } from '../../utils/solana';
-import { getClientSolana } from '../../utils/clients';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { platformId } from './constants';
+import { wrappedI80F48toBigNumber } from './helpers';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { Cache } from '../../Cache';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { getMarginFiAccounts } from './getMarginFiAccounts';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
-  const accounts = await getParsedProgramAccounts(
-    client,
-    marginfiAccountStruct,
-    MarginfiProgram,
-    accountsFilter(owner)
-  );
-  if (accounts.length === 0) return [];
+  const marginFiAccounts = await getMarginFiAccounts(owner, cache);
 
-  const banksInfo = await cache.getItem<ParsedAccount<BankInfo>[]>(banksKey, {
-    prefix: platformId,
-    networkId: NetworkId.solana,
+  if (!marginFiAccounts) return [];
+
+  const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
+
+  marginFiAccounts.forEach((marginfiAccount) => {
+    if (!marginfiAccount) return;
+    const { balances } = marginfiAccount;
+    if (!balances || balances.length === 0) return;
+
+    balances.forEach((balance) => {
+      if (!balance) return;
+      const element = elementRegistry.addElementBorrowlend({
+        label: 'Lending',
+        ref: marginfiAccount.pubkey.toString(),
+        link: 'https://app.marginfi.com/portfolio',
+      });
+
+      if (!balance.assetShares.value.isZero()) {
+        const suppliedAmount = wrappedI80F48toBigNumber(balance.assetShares)
+          .times(balance.bank.dividedAssetShareValue)
+          .toNumber();
+
+        element.addSuppliedAsset({
+          address: balance.bank.mint,
+          amount: suppliedAmount,
+          alreadyShifted: true,
+          sourceRefs: [
+            { name: 'Lending Market', address: balance.bankPk.toString() },
+          ],
+        });
+
+        element.addSuppliedLtv(balance.bank.suppliedLtv);
+        element.addSuppliedYield(balance.bank.suppliedYields);
+      }
+
+      if (!balance.liabilityShares.value.isZero()) {
+        const borrowedAmount = wrappedI80F48toBigNumber(balance.liabilityShares)
+          .times(balance.bank.dividedLiabilityShareValue)
+          .toNumber();
+
+        element.addBorrowedAsset({
+          address: balance.bank.mint,
+          amount: borrowedAmount,
+          alreadyShifted: true,
+          sourceRefs: [
+            { name: 'Lending Market', address: balance.bankPk.toString() },
+          ],
+        });
+
+        element.addBorrowedWeight(balance.bank.borrowedWeight);
+        element.addBorrowedYield(balance.bank.borrowedYields);
+      }
+    });
   });
-  if (!banksInfo || banksInfo.length === 0) return [];
 
-  const banksInfoByAddress: Map<string, BankInfo> = new Map();
-  const tokensAddresses: Set<string> = new Set();
-  banksInfo.forEach((bankInfo) => {
-    if (!bankInfo) return;
-    banksInfoByAddress.set(bankInfo.pubkey.toString(), bankInfo as BankInfo);
-    tokensAddresses.add(bankInfo.mint.toString());
-  });
-
-  const tokenPriceById = await cache.getTokenPricesAsMap(
-    Array.from(tokensAddresses),
-    NetworkId.solana
-  );
-
-  const elements: PortfolioElement[] = [];
-  for (const account of accounts) {
-    const element = getElementFromAccount(
-      account,
-      banksInfoByAddress,
-      tokenPriceById
-    );
-    if (element) elements.push(element);
-  }
-
-  return elements;
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

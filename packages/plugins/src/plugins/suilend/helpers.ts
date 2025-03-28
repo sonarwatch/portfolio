@@ -45,6 +45,7 @@ export function getRatesAsMap(borrowLendRates: BorrowLendRate[] | undefined) {
   if (!borrowLendRates) return ratesByReserveId;
   for (const borrowLendRate of borrowLendRates) {
     const id = borrowLendRate.poolName;
+    if (!id) continue;
     ratesByReserveId.set(id, borrowLendRate);
   }
   return ratesByReserveId;

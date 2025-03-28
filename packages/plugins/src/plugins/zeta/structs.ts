@@ -5,6 +5,10 @@ import {
   u32,
   u8,
   uniformFixedSizeArray,
+  FixableBeet,
+  DataEnumKeyAsKind,
+  dataEnum,
+  FixableBeetArgsStruct,
 } from '@metaplex-foundation/beet';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { PublicKey } from '@solana/web3.js';
@@ -130,4 +134,70 @@ export const claimStatusStruct = new BeetStruct<ClaimStatus>(
     ['claimedAmount', u64],
   ],
   (args) => args as ClaimStatus
+);
+
+type StakeStateRecord = {
+  Uninitialized: NonNullable<unknown>;
+  Vesting: {
+    stakeStartEpoch: number;
+    lastClaimTs: BigNumber;
+  };
+  Locked: NonNullable<unknown>;
+};
+type StakeState = DataEnumKeyAsKind<StakeStateRecord>;
+
+const stakeStateStruct = dataEnum<StakeStateRecord>([
+  [
+    'Uninitialized',
+    new FixableBeetArgsStruct<StakeStateRecord['Uninitialized']>(
+      [],
+      'StakeStateRecord["Uninitialized"]'
+    ),
+  ],
+  [
+    'Vesting',
+    new FixableBeetArgsStruct<StakeStateRecord['Vesting']>(
+      [
+        ['stakeStartEpoch', u32],
+        ['lastClaimTs', u64],
+      ],
+      'StakeStateRecord["Vesting"]'
+    ),
+  ],
+  [
+    'Locked',
+    new FixableBeetArgsStruct<StakeStateRecord['Locked']>(
+      [],
+      'StakeStateRecord["Locked"]'
+    ),
+  ],
+]) as FixableBeet<StakeState>;
+
+export type StakeAccount = {
+  accountDiscriminator: number[];
+  name: number[];
+  vaultNonce: number;
+  bitInUse: number;
+  stakeState: StakeState;
+  initialStakeAmount: BigNumber;
+  amountStillStaked: BigNumber;
+  amountClaimed: BigNumber;
+  stakeDurationEpochs: number;
+  authority: PublicKey;
+};
+
+export const stakeAccountStruct = new FixableBeetStruct<StakeAccount>(
+  [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+    ['name', uniformFixedSizeArray(u8, 10)],
+    ['vaultNonce', u8],
+    ['bitInUse', u8],
+    ['stakeState', stakeStateStruct],
+    ['initialStakeAmount', u64],
+    ['amountStillStaked', u64],
+    ['amountClaimed', u64],
+    ['stakeDurationEpochs', u32],
+    ['authority', publicKey], // 49
+  ],
+  (args) => args as StakeAccount
 );

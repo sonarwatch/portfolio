@@ -11,9 +11,3 @@ export const positionFilter = (owner: string): GetProgramAccountsFilter[] => [
     dataSize: 128,
   },
 ];
-
-export const poolFilter: GetProgramAccountsFilter[] = [
-  {
-    dataSize: 254,
-  },
-];

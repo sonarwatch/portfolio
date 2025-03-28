@@ -14,6 +14,7 @@ export const platform: Platform = {
   discord: 'https://discord.com/invite/pcSkP3yJMU',
   twitter: 'https://twitter.com/mangomarkets',
   description: 'Perps and spot trading on Solana',
+  tokens: ['MangoCzJ36AjZyKwVj3VnYU4GTonjfVEnJmvvWaxLac'],
 };
 
 export const yieldFanPlatformId = 'yieldfan';

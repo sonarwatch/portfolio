@@ -1,50 +1,38 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
+import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { ensofiIdlItem, platformId } from './constants';
-import { LendOfferAccount, LoanOfferAccount } from './types';
+import { ensofiProgramId, platformId } from './constants';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { getClientSolana } from '../../utils/clients';
-import { getAutoParsedProgramAccounts } from '../../utils/solana';
+import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
+import {
+  lendOfferAccountStruct,
+  LendOfferStatus,
+  loanOfferAccountStruct,
+  LoanOfferStatus,
+} from './structs';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
 
   const [loansAsLender, loansAsBorrower, offersAsLender] = await Promise.all([
-    getAutoParsedProgramAccounts<LoanOfferAccount>(connection, ensofiIdlItem, [
-      {
-        dataSize: 439,
-      },
-      {
-        memcmp: {
-          bytes: owner,
-          offset: 127,
-        },
-      },
-    ]),
-    getAutoParsedProgramAccounts<LoanOfferAccount>(connection, ensofiIdlItem, [
-      {
-        dataSize: 439,
-      },
-      {
-        memcmp: {
-          bytes: owner,
-          offset: 194,
-        },
-      },
-    ]),
-    getAutoParsedProgramAccounts<LendOfferAccount>(connection, ensofiIdlItem, [
-      {
-        dataSize: 152,
-      },
-      {
-        memcmp: {
-          bytes: owner,
-          offset: 68,
-        },
-      },
-    ]),
+    ParsedGpa.build(connection, loanOfferAccountStruct, ensofiProgramId)
+      .addFilter('accountDiscriminator', [254, 193, 253, 69, 80, 17, 193, 46])
+      .addFilter('lender', new PublicKey(owner))
+      .addDataSizeFilter(439)
+      .run(),
+    ParsedGpa.build(connection, loanOfferAccountStruct, ensofiProgramId)
+      .addFilter('accountDiscriminator', [254, 193, 253, 69, 80, 17, 193, 46])
+      .addFilter('borrower', new PublicKey(owner))
+      .addDataSizeFilter(439)
+      .run(),
+    ParsedGpa.build(connection, lendOfferAccountStruct, ensofiProgramId)
+      .addFilter('accountDiscriminator', [130, 140, 110, 73, 124, 199, 122, 81])
+      .addFilter('lender', new PublicKey(owner))
+      .addDataSizeFilter(154)
+      .run(),
   ]);
 
   if (
@@ -62,7 +50,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     link: 'https://app.ensofi.xyz/contract/lend',
   });
   offersAsLender.forEach((offer) => {
-    if (!offer.status.created) return;
+    if (offer.status !== LendOfferStatus.Created) return;
 
     openOffersElement.addSuppliedAsset({
       address: offer.lendMintToken,
@@ -77,7 +65,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     link: 'https://app.ensofi.xyz/contract/lend',
   });
   loansAsLender.forEach((loan) => {
-    if (!loan.status.fundTransferred && !loan.status.liquidating) return;
+    if (
+      loan.status !== LoanOfferStatus.FundTransferred &&
+      loan.status !== LoanOfferStatus.Liquidating
+    )
+      return;
     lenderActiveElement.addSuppliedAsset({
       address: loan.lendMintToken,
       amount: loan.borrowAmount,
@@ -91,7 +83,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
 
   loansAsBorrower.forEach((loan) => {
-    if (!loan.status.fundTransferred && !loan.status.liquidating) return;
+    if (
+      loan.status !== LoanOfferStatus.FundTransferred &&
+      loan.status !== LoanOfferStatus.Liquidating
+    )
+      return;
 
     const borrowerActiveElement = elementRegistry.addElementBorrowlend({
       label: 'Lending',

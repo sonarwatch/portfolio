@@ -13,6 +13,7 @@ export const platform: Platform = {
   discord: 'https://discord.com/invite/DtyqTx97kz',
   telegram: 'https://t.me/fluxbeam',
   documentation: 'https://docs.fluxbeam.xyz/',
+  tokens: ['FLUXBmPhT3Fd1EDVFdg46YREqHBeNypn1h4EbnTzWERX'],
 };
 export const poolsCachePrefix = `${platformId}-pools`;
 export const fluxbeamPoolsPid = 'FLUXubRmkEi2q6K3Y9kBPg9248ggaZVsoSFhtJHSrm1X';

@@ -1,12 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
-import {
-  Contract,
-  NetworkId,
-  Platform,
-  Service,
-  ServiceConfig,
-} from '@sonarwatch/portfolio-core';
+import { Platform } from '@sonarwatch/portfolio-core';
 import { usdcSolanaMint } from '../../utils/solana';
+import { mSOLMint } from '../marinade/constants';
 
 export const platformId = '01';
 export const platform: Platform = {
@@ -28,25 +23,6 @@ export const programId = new PublicKey(
   'Zo1ggzTUKMY5bYnDvT5mtVeZxzf2FaLTbKkmvGUhUQk'
 );
 
-export const contract: Contract = {
-  address: programId.toString(),
-  name: 'Lending',
-  network: NetworkId.solana,
-};
-
-export const config: ServiceConfig = {
-  integratedOn: 1700784000000,
-  networkId: NetworkId.solana,
-  contracts: [contract],
-};
-
-export const service: Service = {
-  id: `${platformId}_lending`,
-  platformId,
-  name: 'Lending',
-  configs: [config],
-};
-
 export const mints = [
   usdcSolanaMint,
   'So11111111111111111111111111111111111111112',
@@ -54,7 +30,7 @@ export const mints = [
   'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
   '2FPyTwcZLUg1MDrwsyoP4D6s1tM7hAkHYRjkNb5w6Pxk',
   '9vMJfxuKxXBoEa7rM12mYLMwTacLMLDJqHozw96WQL8i',
-  'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So',
+  mSOLMint,
   '1111111111111111111111111111111111111111111',
   '1111111111111111111111111111111111111111111',
   '1111111111111111111111111111111111111111111',

@@ -1,6 +1,6 @@
 import { Platform } from '@sonarwatch/portfolio-core';
 import { AirdropStatics } from '../../../AirdropFetcher';
-import { jupDecimals, jupMint } from '../launchpad/constants';
+import { jupApiToken, jupDecimals, jupMint } from '../launchpad/constants';
 import { dbrDecimals, dbrMint } from '../../debridge/constants';
 
 export const platformId = 'jupiter-governance';
@@ -16,10 +16,11 @@ export const platform: Platform = {
   website: platformWebsite,
   twitter: 'https://x.com/jup_dao',
   description: 'The first voting platform for Cats in history.',
+  tokens: [jupMint],
 };
 
 export const asr1Statics: AirdropStatics = {
-  id: 'jup-asr-1',
+  id: `${platformId}-jup-asr-1`,
   claimLink: 'https://vote.jup.ag/asr',
   image: platformImage,
   emitterLink: platformWebsite,
@@ -29,7 +30,7 @@ export const asr1Statics: AirdropStatics = {
   name: 'ASR #1',
 };
 export const asr2Statics: AirdropStatics = {
-  id: 'jup-asr-2',
+  id: `${platformId}-jup-asr-2`,
   claimLink: 'https://vote.jup.ag/asr',
   image: platformImage,
   emitterLink: platformWebsite,
@@ -39,7 +40,7 @@ export const asr2Statics: AirdropStatics = {
   name: 'ASR #2',
 };
 export const asr3Statics: AirdropStatics = {
-  id: 'jup-asr-3',
+  id: `${platformId}-jup-asr-3`,
   claimLink: 'https://vote.jup.ag/asr',
   image: platformImage,
   emitterLink: platformWebsite,
@@ -49,7 +50,7 @@ export const asr3Statics: AirdropStatics = {
   name: 'ASR #3',
 };
 export const jupuaryStatics: AirdropStatics = {
-  id: 'jup-jupuary',
+  id: `${platformId}-jupuary`,
   claimLink: 'https://jupuary.jup.ag',
   image: platformImage,
   emitterLink: platformWebsite,
@@ -92,7 +93,9 @@ export const asr1Config: AsrConfig = {
     ],
   ]),
   api: (owner: string) =>
-    `https://worker.jup.ag/jup-asr-july-2024-claim-proof/${owner}`,
+    `https://worker.jup.ag/jup-asr-july-2024-claim-proof/${owner}?${
+      jupApiToken ?? ''
+    }`,
 };
 
 export const asr2Config: AsrConfig = {
@@ -105,7 +108,9 @@ export const asr2Config: AsrConfig = {
     ],
   ]),
   api: (owner: string) =>
-    `https://worker.jup.ag/asr-claim-proof/${owner}?asrTimeline=oct-2024&mints=JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN%2CCLoUDKc4Ane7HeQcPpE3YHnznRxhMimJ4MyaUqyHFzAu`,
+    `https://worker.jup.ag/asr-claim-proof/${owner}?asrTimeline=oct-2024&mints=JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN%2CCLoUDKc4Ane7HeQcPpE3YHnznRxhMimJ4MyaUqyHFzAu&${
+      jupApiToken ?? ''
+    }`,
 };
 
 export const asr3Config: AsrConfig = {
@@ -115,5 +120,7 @@ export const asr3Config: AsrConfig = {
     [dbrMint, { label: 'DBR', decimals: dbrDecimals }],
   ]),
   api: (owner: string) =>
-    `https://worker.jup.ag/asr-claim-proof/${owner}?asrTimeline=jan-2025&mints=JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN%2CDBRiDgJAMsM95moTzJs7M9LnkGErpbv9v6CUR1DXnUu5`,
+    `https://worker.jup.ag/asr-claim-proof/${owner}?asrTimeline=jan-2025&mints=JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN%2CDBRiDgJAMsM95moTzJs7M9LnkGErpbv9v6CUR1DXnUu5&${
+      jupApiToken ?? ''
+    }`,
 };

@@ -30,6 +30,14 @@ export class ParsedGpa<T> {
     return this;
   }
 
+  addRawFilter(offset: number, bytes: string) {
+    if (this.gpaBuilder.config.filters == null) {
+      this.gpaBuilder.config.filters = [];
+    }
+    this.gpaBuilder.config.filters.push({ memcmp: { offset, bytes } });
+    return this;
+  }
+
   addFilter(key: keyof T & string, val: T[keyof T]) {
     this.gpaBuilder.addFilter(key, val);
     return this;
@@ -55,8 +63,10 @@ export class ParsedGpa<T> {
   }
 
   debug() {
+    /* eslint-disable no-console */
     console.log(this.programId.toString());
     console.log(this.gpaBuilder.config.filters);
+    /* eslint-enable no-console */
     return this;
   }
 }

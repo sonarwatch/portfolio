@@ -15,6 +15,11 @@ export const platform: Platform = {
   discord: 'https://discord.gg/fragmetric',
   documentation: 'https://docs.fragmetric.xyz/',
   github: 'https://github.com/fragmetric-labs',
+  tokens: [
+    'WFRGSWjaz8tbAxsJitmbfRuFV2mSNwy7BMWcCwaA28U',
+    'FRAGSEthVFL7fdqM8hxfxkfCZzUvmg21cqPJVvC1qdbo',
+    'FRAGJ157KSDfGvBJtCSrsTWUqFnZhrw4aC8N8LqHuoos',
+  ],
 };
 
 export const fragmetricPid = new PublicKey(

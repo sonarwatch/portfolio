@@ -10,7 +10,7 @@ import { platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { walletTokensPlatform } from '../tokens/constants';
 import { getSwitchboardOnDemandPrices } from './helpers/getSwitchboardOnDemandPrice';
-import { getDecimalsForToken } from '../../utils/misc/getCachedDecimalsForToken';
+import { getDecimalsForToken } from '../../utils/misc/getDecimalsForToken';
 import { SwitchboardTokenPricingInfo } from './types';
 import { usdcSolanaMint, crtSolanaMint } from '../../utils/solana';
 

@@ -2,6 +2,9 @@ import { Platform } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 
 export const platformId = 'adrena';
+export const adxMint = 'AuQaustGiaqxRvj2gtCdrd22PBzTn8kM3kEPEkZCtuDw';
+export const alpMint = '4yCLi5yWGzpTWMQ1iWHG5CrGYAdBkhyEdsuSugjDUqwj';
+
 export const platform: Platform = {
   id: platformId,
   name: 'Adrena',
@@ -15,11 +18,10 @@ export const platform: Platform = {
     'Adrena is a decentralized protocol for borrowing and lending on Solana.',
   documentation: 'https://docs.adrena.xyz/',
   github: 'https://github.com/orgs/AdrenaFoundation',
+  tokens: [adxMint, alpMint],
 };
 
 export const custodiesCacheKey = `custodies`;
 export const pid = new PublicKey(
   '13gDzEXCdocbj8iAiqrScGo47NiSuYENGsRqi3SEAwet'
 );
-export const adxMint = 'AuQaustGiaqxRvj2gtCdrd22PBzTn8kM3kEPEkZCtuDw';
-export const alpMint = '4yCLi5yWGzpTWMQ1iWHG5CrGYAdBkhyEdsuSugjDUqwj';

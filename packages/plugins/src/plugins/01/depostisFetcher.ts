@@ -16,6 +16,7 @@ import { marginStruct } from './struct';
 import { getClientSolana } from '../../utils/clients';
 import { wrappedI80F48toBigNumber } from '../marginfi/helpers';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { mSOLMint } from '../marinade/constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -39,7 +40,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const amount = [
       'So11111111111111111111111111111111111111112',
-      'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So',
+      mSOLMint,
     ].includes(mint)
       ? rawAmount.dividedBy(1000)
       : rawAmount;
