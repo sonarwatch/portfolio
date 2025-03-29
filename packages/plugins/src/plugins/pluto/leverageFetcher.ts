@@ -85,7 +85,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const openLV = borrowUSD.dividedBy(tokenCollateralAmount).plus(1);
 
       const element = elementRegistry.addElementBorrowlend({
-        name: `Leverage ${
+        name: `${
           vaultFromApi ? vaultFromApi.leverageName.replace('-', '/') : ''
         } ${parseFloat(openLV.toFixed(2))}x`,
         label: 'Leverage',

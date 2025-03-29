@@ -1,23 +1,12 @@
-import { Platform } from '@sonarwatch/portfolio-core';
 import { AirdropStatics } from '../../../AirdropFetcher';
 import { jupApiToken, jupDecimals, jupMint } from '../launchpad/constants';
 import { dbrDecimals, dbrMint } from '../../debridge/constants';
 
 export const platformId = 'jupiter-governance';
-const platformName = 'Jupiter DAO';
 const platformImage = 'https://sonar.watch/img/platforms/jupiterdao.webp';
 const platformWebsite = 'https://vote.jup.ag/';
 
 export const jupDisProgram = 'Dis2TfkFnXFkrtvAktEkw37sdb7qwJgY6H7YZJwk51wK';
-export const platform: Platform = {
-  id: platformId,
-  name: platformName,
-  image: platformImage,
-  website: platformWebsite,
-  twitter: 'https://x.com/jup_dao',
-  description: 'The first voting platform for Cats in history.',
-  tokens: [jupMint],
-};
 
 export const asr1Statics: AirdropStatics = {
   id: `${platformId}-jup-asr-1`,

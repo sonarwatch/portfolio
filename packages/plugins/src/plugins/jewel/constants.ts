@@ -1,15 +1,6 @@
-import { Platform, suiNativeAddress } from '@sonarwatch/portfolio-core';
+import { suiNativeAddress } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'jewel-swap';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Jewel Swap',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/jewel.webp',
-  website: 'https://sui.jewelswap.io/',
-  defiLlamaId: 'parent#jewelswap',
-  twitter: 'https://twitter.com/JewelSwapX',
-};
 export const marketsCachePrefix = `${platformId}-markets`;
 
 export const jwlSui =

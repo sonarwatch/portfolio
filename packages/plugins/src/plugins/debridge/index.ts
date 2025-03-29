@@ -1,7 +1,5 @@
-import { Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from '../../Fetcher';
 import { Job } from '../../Job';
-import { platform } from './constants';
 import {
   dis1AirdropFetcherEvm,
   dis1AirdropFetcherSolana,
@@ -14,7 +12,6 @@ import { AirdropFetcher } from '../../AirdropFetcher';
 import alphaVaultJob from './dlmmVaultsJob';
 import alphaVaultFetcher from './dlmmVaultsFetcher';
 
-export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [alphaVaultJob];
 export const fetchers: Fetcher[] = [
   alphaVaultFetcher,

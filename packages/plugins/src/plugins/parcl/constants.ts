@@ -1,5 +1,4 @@
 import { PublicKey } from '@solana/web3.js';
-import { Platform } from '@sonarwatch/portfolio-core';
 import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'parcl';
@@ -7,19 +6,6 @@ export const platformImage = 'https://sonar.watch/img/platforms/parcl.webp';
 export const platformWebsite = 'https://app.parcl.co/';
 export const platformName = 'Parcl';
 export const prclMint = '4LLbsb5ReP3yEtYzmXewyGjcir5uXtKFURtaEUVC2AHs';
-export const platform: Platform = {
-  id: platformId,
-  name: platformName,
-  image: platformImage,
-  defiLlamaId: 'parent#parcl', // from https://defillama.com/docs/api
-  website: platformWebsite,
-  twitter: 'https://twitter.com/Parcl',
-  description: 'Making investing in real estate faster, simpler, and smarter. ',
-  discord: 'https://discord.gg/parcl',
-  documentation: 'https://docs.parcl.co/',
-  github: 'https://github.com/ParclFinance',
-  tokens: [prclMint],
-};
 
 export const programId = new PublicKey(
   '3parcLrT7WnXAcyPfkCz49oofuuf2guUKkjuFkAhZW8Y'

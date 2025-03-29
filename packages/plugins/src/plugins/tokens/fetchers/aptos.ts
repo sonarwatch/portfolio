@@ -7,6 +7,7 @@ import {
   PortfolioLiquidity,
   getUsdValueSum,
   parseTypeString,
+  walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
 
 import BigNumber from 'bignumber.js';
@@ -21,7 +22,6 @@ import {
   getAccountResources,
   isCoinStoreRessourceType,
 } from '../../../utils/aptos';
-import { walletTokensPlatform } from '../constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientAptos();
@@ -53,7 +53,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const amount = rawAmount.div(10 ** tokenPrice.decimals).toNumber();
     if (amount === 0) continue;
 
-    if (tokenPrice.platformId !== walletTokensPlatform.id) {
+    if (tokenPrice.platformId !== walletTokensPlatformId) {
       const assets = tokenPriceToAssetTokens(
         coinType,
         amount,
@@ -85,7 +85,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const walletTokensElement: PortfolioElementMultiple = {
       type: PortfolioElementType.multiple,
       networkId: NetworkId.aptos,
-      platformId: walletTokensPlatform.id,
+      platformId: walletTokensPlatformId,
       label: 'Wallet',
       value: getUsdValueSum(walletTokensAssets.map((a) => a.value)),
       data: {
@@ -113,7 +113,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${walletTokensPlatform.id}-aptos`,
+  id: `${walletTokensPlatformId}-aptos`,
   networkId: NetworkId.aptos,
   executor,
 };

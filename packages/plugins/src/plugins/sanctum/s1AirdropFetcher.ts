@@ -19,7 +19,7 @@ import {
   s1AirdropStatics,
   cloudMint,
   cloudDecimals,
-  platform,
+  platformId,
 } from './constants';
 
 const claimStart = new BigNumber(1721314800000);
@@ -171,7 +171,7 @@ export const airdropFetcher: AirdropFetcher = {
 
 export const fetcher = airdropFetcherToFetcher(
   airdropFetcher,
-  platform.id,
-  `${platform.id}-airdrop`,
+  platformId,
+  `${platformId}-airdrop`,
   s1AirdropStatics.claimEnd
 );

@@ -1,4 +1,4 @@
-import { NetworkId, Platform } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Job } from '../../Job';
 import { Fetcher } from '../../Fetcher';
 import aptosJob from './aptosLpJob';
@@ -7,7 +7,6 @@ import {
   masterChefV2Bnb,
   masterChefV2Ethereum,
   networksConfigs,
-  platform,
   platformId,
   stakersBnb,
   stakersEthereum,
@@ -20,7 +19,6 @@ import stakerCakeFetcher from './stakerCakeFetcher';
 import { getUniV3PositionsFetcher } from '../uniswap/getUniV3PositionsFetcher';
 import getFarmsV2Fetcher from './getFarmsV2Fetcher';
 
-export const platforms: Platform[] = [platform];
 export const jobs: Job[] = [
   // Aptos
   aptosJob,

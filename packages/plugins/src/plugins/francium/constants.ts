@@ -1,4 +1,3 @@
-import { Platform } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { LendInfoItem } from './types';
 import { TOKENS } from './tokens';
@@ -6,23 +5,6 @@ import { LendRewardInfo } from './structs';
 import { mSOLMint } from '../marinade/constants';
 
 export const platformId = 'francium';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Francium',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/francium.webp',
-  website: 'https://francium.io/',
-  twitter: 'https://x.com/Francium_Defi',
-  defiLlamaId: 'francium', // from https://defillama.com/docs/api
-  isDeprecated: true,
-  discord: 'discord.gg/francium',
-  github: 'https://github.com/Francium-DeFi',
-  telegram: 'https://t.me/franciumprotocol',
-  medium: 'https://francium-defi.medium.com/',
-  description:
-    'Francium is a DeFi yield strategy Platform on Solana, providing leveraged/hedged farming, DeFi strategies & on-chain trading strategies.',
-};
-
 export const lendingPoolsCacheKey = 'lending_pools';
 
 // https://github.com/Francium-DeFi/francium-sdk/blob/6b284e8d8af3178fc6815dfc8fb50dfd90d160ca/src/constants/lend/pools.ts

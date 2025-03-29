@@ -18,13 +18,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const { balances } = marginfiAccount;
     if (!balances || balances.length === 0) return;
 
+    const element = elementRegistry.addElementBorrowlend({
+      label: 'Lending',
+      ref: marginfiAccount.pubkey.toString(),
+      link: 'https://app.marginfi.com/portfolio',
+    });
+
     balances.forEach((balance) => {
       if (!balance) return;
-      const element = elementRegistry.addElementBorrowlend({
-        label: 'Lending',
-        ref: marginfiAccount.pubkey.toString(),
-        link: 'https://app.marginfi.com/portfolio',
-      });
 
       if (!balance.assetShares.value.isZero()) {
         const suppliedAmount = wrappedI80F48toBigNumber(balance.assetShares)

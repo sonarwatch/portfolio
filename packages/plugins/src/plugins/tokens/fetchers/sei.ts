@@ -4,12 +4,12 @@ import {
   PortfolioElementMultiple,
   PortfolioElementType,
   getUsdValueSum,
+  walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
 
 import { BigNumber } from 'bignumber.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
-import { walletTokensPlatform } from '../constants';
 import { getClientSei } from '../../../utils/clients';
 import { getAllBalances } from '../../../utils/sei';
 
@@ -52,7 +52,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const element: PortfolioElementMultiple = {
     type: PortfolioElementType.multiple,
     networkId: NetworkId.sei,
-    platformId: walletTokensPlatform.id,
+    platformId: walletTokensPlatformId,
     label: 'Wallet',
     value: getUsdValueSum(assets.map((a) => a.value)),
     data: {
@@ -63,7 +63,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${walletTokensPlatform.id}-sei`,
+  id: `${walletTokensPlatformId}-sei`,
   networkId: NetworkId.sei,
   executor,
 };

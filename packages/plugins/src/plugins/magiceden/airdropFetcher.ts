@@ -8,7 +8,7 @@ import {
   airdropFetcherToFetcher,
 } from '../../AirdropFetcher';
 
-import { airdropApi, airdropStatics, meMint, platform } from './constants';
+import { airdropApi, airdropStatics, meMint, platformId } from './constants';
 import { AirdropResponse } from './types';
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
@@ -66,7 +66,7 @@ export const airdropFetcher: AirdropFetcher = {
 
 export const fetcher = airdropFetcherToFetcher(
   airdropFetcher,
-  platform.id,
+  platformId,
   'magiceden-airdrop',
   airdropStatics.claimEnd
 );

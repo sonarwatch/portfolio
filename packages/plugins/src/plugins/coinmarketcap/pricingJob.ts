@@ -1,6 +1,8 @@
-import { TokenPriceSource } from '@sonarwatch/portfolio-core';
+import {
+  TokenPriceSource,
+  walletTokensPlatformId,
+} from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
-import { walletTokensPlatform } from '../tokens/constants';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { cmcTokens, platformId } from './constants';
@@ -28,7 +30,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         id: `${platformId}-${coin.slug}`,
         decimals: token.decimals,
         networkId: token.networkId,
-        platformId: walletTokensPlatform.id,
+        platformId: walletTokensPlatformId,
         price: coin.quote.USD.price,
         timestamp: Date.now(),
         weight: 1,

@@ -10,8 +10,8 @@ import {
   solanaNativeAddress,
   solanaNativeWrappedAddress,
   suiNativeAddress,
+  walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
-import { walletTokensPlatform } from '../../plugins/tokens/constants';
 import getSourceWeight from './getSourceWeight';
 import { usdcSuiType, wUsdcSuiType } from '../sui/constants';
 import { minimumReserveValue } from './constants';
@@ -85,7 +85,7 @@ export function getLpUnderlyingTokenSource(
   let { platformId, acceptedPairs, minReserveValue } = params;
   const { networkId, poolUnderlyings, sourceId, liquidityName, elementName } =
     params;
-  if (!platformId) platformId = walletTokensPlatform.id;
+  if (!platformId) platformId = walletTokensPlatformId;
   if (!acceptedPairs) acceptedPairs = defaultAcceptedPairs.get(networkId);
   if (acceptedPairs === undefined) return [];
   if (acceptedPairs.length === 0) return [];
@@ -149,7 +149,7 @@ export function getLpUnderlyingTokenSource(
     const source: TokenPriceSource = {
       id: sourceId,
       networkId,
-      platformId: walletTokensPlatform.id,
+      platformId: walletTokensPlatformId,
       address: fAddresses[i],
       decimals: u.decimals,
       price,

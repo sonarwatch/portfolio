@@ -3,7 +3,7 @@ import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { ensofiProgramId, platformId } from './constants';
+import { ensofiLendingProgramId, platformId } from './constants';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { getClientSolana } from '../../utils/clients';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
@@ -18,17 +18,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
 
   const [loansAsLender, loansAsBorrower, offersAsLender] = await Promise.all([
-    ParsedGpa.build(connection, loanOfferAccountStruct, ensofiProgramId)
+    ParsedGpa.build(connection, loanOfferAccountStruct, ensofiLendingProgramId)
       .addFilter('accountDiscriminator', [254, 193, 253, 69, 80, 17, 193, 46])
       .addFilter('lender', new PublicKey(owner))
       .addDataSizeFilter(439)
       .run(),
-    ParsedGpa.build(connection, loanOfferAccountStruct, ensofiProgramId)
+    ParsedGpa.build(connection, loanOfferAccountStruct, ensofiLendingProgramId)
       .addFilter('accountDiscriminator', [254, 193, 253, 69, 80, 17, 193, 46])
       .addFilter('borrower', new PublicKey(owner))
       .addDataSizeFilter(439)
       .run(),
-    ParsedGpa.build(connection, lendOfferAccountStruct, ensofiProgramId)
+    ParsedGpa.build(connection, lendOfferAccountStruct, ensofiLendingProgramId)
       .addFilter('accountDiscriminator', [130, 140, 110, 73, 124, 199, 122, 81])
       .addFilter('lender', new PublicKey(owner))
       .addDataSizeFilter(154)

@@ -7,17 +7,23 @@ import {
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSolana } from '../../../utils/clients';
-import { getParsedProgramAccounts } from '../../../utils/solana';
+import {
+  getParsedMultipleAccountsInfo,
+  getParsedProgramAccounts,
+  ParsedAccount,
+  TokenAccount,
+  tokenAccountStruct,
+} from '../../../utils/solana';
 import { platformId, limitV1ProgramId, limitV2ProgramId } from './constants';
 import { limitFilters } from './filters';
-import { limitOrderStruct, limitOrderV2Struct } from './structs';
+import { limitOrderStruct, LimitOrderV2, limitOrderV2Struct } from './structs';
 import { getCachedDecimalsForToken } from '../../../utils/misc/getCachedDecimalsForToken';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana({ commitment: 'processed' });
 
-  const accountsRes = await Promise.all([
+  const [ordersAccV1, ordersAccV2] = await Promise.all([
     // V1
     getParsedProgramAccounts(
       client,
@@ -33,11 +39,21 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       limitFilters(owner)
     ),
   ]);
-  const v1Length = accountsRes[0].length;
-  const accounts = accountsRes.flat();
-  if (accounts.length === 0) return [];
+  // const v1Length = accountsRes[0].length;
+  const ordersAccounts = [ordersAccV1, ordersAccV2].flat();
+  if (ordersAccounts.length === 0) return [];
 
-  const mints = accounts
+  const v2tokenAccounts = await getParsedMultipleAccountsInfo(
+    client,
+    tokenAccountStruct,
+    ordersAccV2.map((orderAcc) => orderAcc.inputMintReserve)
+  );
+  const tokenAccountMap: Map<string, TokenAccount> = new Map();
+  v2tokenAccounts.forEach((acc) => {
+    if (acc) tokenAccountMap.set(acc.pubkey.toString(), acc);
+  });
+
+  const mints = ordersAccounts
     .map((account) => [
       account.inputMint.toString(),
       account.outputMint.toString(),
@@ -49,13 +65,26 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
 
   const elements: PortfolioElementTrade[] = [];
-  for (let i = 0; i < accounts.length; i++) {
-    const account = accounts[i];
+  for (let i = 0; i < ordersAccounts.length; i++) {
+    const isV1 = i <= ordersAccV1.length - 1;
+    const tags = ['deprecated'];
+    const orderAcc = ordersAccounts[i];
 
-    const inputMint = account.inputMint.toString();
+    const accountv2 = isV1
+      ? undefined
+      : (ordersAccounts[i] as ParsedAccount<LimitOrderV2>);
+    if (accountv2) {
+      const mintReserve = tokenAccountMap.get(
+        accountv2.inputMintReserve.toString()
+      );
+      // This means the orderAccount still exists but the order was cancelled and tokens refunded.
+      if (!mintReserve || mintReserve.amount.isZero()) continue;
+    }
+
+    const inputMint = orderAcc.inputMint.toString();
     const inputTokenPrice = pricesMap.get(inputMint);
 
-    const outputMint = account.outputMint.toString();
+    const outputMint = orderAcc.outputMint.toString();
     const outputTokenPrice = pricesMap.get(outputMint);
 
     // Decimals
@@ -68,7 +97,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       (await getCachedDecimalsForToken(cache, outputMint, NetworkId.solana));
     if (!outputDecimals) continue;
 
-    const intputAmount = account.makingAmount
+    const intputAmount = orderAcc.makingAmount
       .div(10 ** inputDecimals)
       .toNumber();
     const inputAsset =
@@ -81,8 +110,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             inputTokenPrice
           );
 
-    const outputAmount = account.oriTakingAmount
-      .minus(account.takingAmount)
+    const outputAmount = orderAcc.oriTakingAmount
+      .minus(orderAcc.takingAmount)
       .div(10 ** outputDecimals)
       .toNumber();
     const outputAsset =
@@ -95,15 +124,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             outputTokenPrice
           );
 
-    const initialInputAmount = account.oriMakingAmount
+    const initialInputAmount = orderAcc.oriMakingAmount
       .div(10 ** inputDecimals)
       .toNumber();
-    const expectedOutputAmount = account.oriTakingAmount
+    const expectedOutputAmount = orderAcc.oriTakingAmount
       .div(10 ** outputDecimals)
       .toNumber();
-
-    const isV1 = i <= v1Length - 1;
-    const tags = isV1 ? ['deprecated'] : undefined;
 
     const element: PortfolioElementTrade = {
       networkId: NetworkId.solana,
@@ -123,7 +149,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         filledPercentage: 1 - intputAmount / initialInputAmount,
         inputPrice: inputTokenPrice?.price || null,
         outputPrice: outputTokenPrice?.price || null,
-        ref: account.pubkey.toString(),
+        ref: orderAcc.pubkey.toString(),
         link: 'https://jup.ag/trigger/',
         contract: isV1
           ? limitV1ProgramId.toString()

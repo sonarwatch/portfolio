@@ -1,22 +1,8 @@
 import { PublicKey } from '@solana/web3.js';
-import { Platform } from '@sonarwatch/portfolio-core';
 import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'magiceden';
 export const meMint = 'MEFNBXixkEbait3xn9bkm8WsJzXtVsaJEn4c8Sam21u';
-export const platform: Platform = {
-  id: platformId,
-  name: 'MagicEden',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/magiceden.webp',
-  website: 'https://magiceden.io/solana',
-  twitter: 'https://twitter.com/MagicEden',
-  discord: 'https://discord.gg/magiceden',
-  documentation: 'https://community.magiceden.io/learn',
-  github: 'https://github.com/magiceden',
-  description: 'The NFT Marketplace.',
-  tokens: [meMint],
-};
 
 export const m2Prefix = 'm2';
 export const m2Program = new PublicKey(

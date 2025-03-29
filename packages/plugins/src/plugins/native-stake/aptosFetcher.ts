@@ -2,16 +2,12 @@ import {
   NetworkId,
   PortfolioElement,
   aptosNetwork,
+  nativeStakePlatformId,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import {
-  nativeStakePlatform,
-  platformId,
-  validatorsKey,
-  validatorsPrefix,
-} from './constants';
+import { validatorsKey, validatorsPrefix } from './constants';
 import { getClientAptos } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
@@ -60,7 +56,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
     elements.push({
       networkId: NetworkId.aptos,
-      platformId: nativeStakePlatform.id,
+      platformId: nativeStakePlatformId,
       type: 'multiple',
       label: 'Staked',
       tags: ['Native Stake'],
@@ -74,7 +70,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-aptos`,
+  id: `${nativeStakePlatformId}-aptos`,
   networkId: NetworkId.aptos,
   executor,
 };

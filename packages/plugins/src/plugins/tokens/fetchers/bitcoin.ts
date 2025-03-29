@@ -3,11 +3,11 @@ import {
   PortfolioElementMultiple,
   PortfolioElementType,
   bitcoinNetwork,
+  walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
 
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
-import { walletTokensPlatform } from '../constants';
 import { getMempoolEndpoint } from '../../../utils/clients';
 import { getBalance } from '../../../utils/bitcoin/getBalance';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
@@ -32,7 +32,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const element: PortfolioElementMultiple = {
     type: PortfolioElementType.multiple,
     networkId: NetworkId.bitcoin,
-    platformId: walletTokensPlatform.id,
+    platformId: walletTokensPlatformId,
     label: 'Wallet',
     value: asset.value,
     data: {
@@ -43,7 +43,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${walletTokensPlatform.id}-bitcoin`,
+  id: `${walletTokensPlatformId}-bitcoin`,
   networkId: NetworkId.bitcoin,
   executor,
 };

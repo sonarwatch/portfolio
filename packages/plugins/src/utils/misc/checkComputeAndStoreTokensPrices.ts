@@ -4,12 +4,12 @@ import {
   TokenPriceSource,
   networks,
   solanaNativeWrappedAddress,
+  walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import getSourceWeight from './getSourceWeight';
 import { getCachedDecimalsForToken } from './getCachedDecimalsForToken';
-import { walletTokensPlatform } from '../../plugins/tokens/constants';
 import { usdcSolanaMint } from '../solana';
 import { mSOLMint } from '../../plugins/marinade/constants';
 import { jitoSOLMint } from '../../plugins/jito/constants';
@@ -201,7 +201,7 @@ export default async function checkComputeAndStoreTokensPrices(
       weight,
       address,
       networkId,
-      platformId: walletTokensPlatform.id,
+      platformId: walletTokensPlatformId,
       decimals,
       price,
       timestamp: Date.now(),

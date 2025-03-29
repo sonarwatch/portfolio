@@ -21,6 +21,7 @@ import * as orca from './services/orca';
 import * as parcl from './services/parcl';
 import * as perena from './services/perena';
 import * as picasso from './services/picasso';
+import * as pumpswap from './services/pumpswap';
 import * as rain from './services/rain';
 import * as ratex from './services/ratex';
 import * as raydium from './services/raydium';
@@ -52,6 +53,7 @@ export const services: Service[] = [
   parcl,
   perena,
   picasso,
+  pumpswap,
   rain,
   ratex,
   raydium,

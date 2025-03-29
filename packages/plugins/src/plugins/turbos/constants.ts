@@ -1,14 +1,4 @@
-import { Platform } from '@sonarwatch/portfolio-core';
-
 export const platformId = 'turbos';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Turbos',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/turbos.webp',
-  defiLlamaId: 'turbos',
-  website: 'https://app.turbos.finance/',
-};
 export const clmmPoolsPrefix = `${platformId}-clmmPools`;
 
 export const poolTableId =

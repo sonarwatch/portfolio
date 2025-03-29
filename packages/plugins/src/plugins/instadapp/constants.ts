@@ -1,15 +1,4 @@
-import { Platform } from '@sonarwatch/portfolio-core';
-
 export const platformId = 'instadapp';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Instadapp',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/instadapp.webp',
-  defiLlamaId: 'instadapp',
-  website: 'https://instadapp.io/',
-  twitter: 'https://twitter.com/instadapp',
-};
 
 export const liteConfigs = [
   {

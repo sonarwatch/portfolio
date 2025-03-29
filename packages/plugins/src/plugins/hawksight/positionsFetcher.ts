@@ -5,6 +5,7 @@ import {
   PortfolioElement,
   PortfolioElementType,
   getUsdValueSum,
+  walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
@@ -15,7 +16,6 @@ import obligationsFetcher from '../save/obligationsFetcher';
 import dlmmPositionFetcher from '../meteora/dlmmPositionsFetcher';
 import tokenFetcher from '../tokens/fetchers/solana';
 import { getWhirlpoolPositions } from '../orca/getWhirlpoolPositions';
-import { walletTokensPlatform } from '../tokens/constants';
 import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
 import { getAssetsByOwnerDas } from '../../utils/solana/das/getAssetsByOwnerDas';
 import { DisplayOptions } from '../../utils/solana/das/types';
@@ -77,7 +77,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const tokens: PortfolioAsset[] = [];
   for (const element of portfolioElements) {
     if (
-      element.platformId === walletTokensPlatform.id &&
+      element.platformId === walletTokensPlatformId &&
       element.type === PortfolioElementType.multiple
     ) {
       element.data.assets.forEach((token) => {
@@ -94,7 +94,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     if (
       (element.name && element.name === 'Wallet-nfts') ||
-      element.platformId === 'wallet-tokens'
+      element.platformId === walletTokensPlatformId
     )
       continue;
 

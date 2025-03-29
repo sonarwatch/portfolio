@@ -1,15 +1,7 @@
-import { NetworkId, Platform } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { UniswapNetworkConfig } from './types';
 
 export const platformId = 'uniswap';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Uniswap',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/uniswap.webp',
-  defiLlamaId: 'parent#uniswap',
-  website: 'https://uniswap.org/',
-};
 
 export const poolsPrefix = 'uniswap-v3';
 export const poolsKey = 'poolsInfo';

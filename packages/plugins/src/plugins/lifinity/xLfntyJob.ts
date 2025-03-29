@@ -1,10 +1,13 @@
-import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  TokenPriceSource,
+  walletTokensPlatformId,
+} from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { lfntyMint, platformId, xLfntyDecimals, xLfntyMint } from './constants';
 import { getJupiterPrices } from '../jupiter/helpers';
-import { walletTokensPlatform } from '../tokens/constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const lfntyTokenPrice = await cache.getTokenPrice(
@@ -27,7 +30,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     networkId: NetworkId.solana,
     timestamp: Date.now(),
     price: price * lfntyTokenPrice.price,
-    platformId: walletTokensPlatform.id,
+    platformId: walletTokensPlatformId,
     weight: 0.5,
   };
   await cache.setTokenPriceSource(source);

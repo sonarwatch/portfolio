@@ -6,7 +6,7 @@ import {
   airdropFetcherToFetcher,
 } from '../../AirdropFetcher';
 
-import { airdropApi, airdropStatics, pudgyMint, platform } from './constants';
+import { airdropApi, airdropStatics, platformId, pudgyMint } from './constants';
 import { AirdropResponse } from './types';
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
@@ -58,7 +58,7 @@ export const airdropFetcher: AirdropFetcher = {
 
 export const fetcher = airdropFetcherToFetcher(
   airdropFetcher,
-  platform.id,
+  platformId,
   'pudgy-airdrop',
   airdropStatics.claimEnd
 );

@@ -12,7 +12,11 @@ import {
   splMarketsMemo,
 } from './constants';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
-import { BondOfferBondingCurveType, bondOfferv3Struct } from './structs';
+import {
+  BondOfferBondingCurveType,
+  bondOfferv3Struct,
+  PairState,
+} from './structs';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
@@ -23,7 +27,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       .addFilter('accountDiscriminator', [54, 96, 254, 195, 217, 91, 187, 104])
       .addFilter('assetReceiver', new PublicKey(owner))
       .run()
-  ).filter((acc) => !acc.buyOrdersQuantity.isZero());
+  ).filter(
+    (acc) =>
+      !acc.buyOrdersQuantity.isZero() &&
+      acc.pairState !== PairState.Perpetualmigrated
+  );
 
   if (accounts.length === 0) return [];
 

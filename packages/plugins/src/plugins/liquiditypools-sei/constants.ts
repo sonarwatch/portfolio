@@ -1,37 +1,21 @@
-import { Platform } from '@sonarwatch/portfolio-core';
 import {
   TokensInfosGetter,
   getTokensInfosV2,
   getTokensInfosV1,
 } from './helpers';
 
-export const seaswapPlatform: Platform = {
-  id: 'seaswap',
-  name: 'Seaswap',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/seaswap.webp',
-  defiLlamaId: 'seaswap',
-  website: 'https://seaswap.io/',
-};
-export const astroportPlatform: Platform = {
-  id: 'astroport',
-  name: 'Astroport',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/astroport.webp',
-  website: 'https://astroport.fi',
-  twitter: 'https://twitter.com/astroport_fi',
-  defiLlamaId: 'astroport',
-};
+const seaswapId = 'seaswap';
+const astroportId = 'astroport';
 
 export const liquidityPoolsKey = 'liquiditypools';
 export const liquidityPoolsInfos: LiquidityPoolsInfo[] = [
   {
-    platformId: astroportPlatform.id,
+    platformId: astroportId,
     codes: [3, 149],
     getter: getTokensInfosV1,
   },
   {
-    platformId: seaswapPlatform.id,
+    platformId: seaswapId,
     codes: [15],
     namesFilters: ['SeaSwap_Liquidity_Token'],
     getter: getTokensInfosV2,

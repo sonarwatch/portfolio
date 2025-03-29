@@ -12,7 +12,26 @@ import {
 } from '@metaplex-foundation/beet';
 import { i64, u64 } from '../../utils/solana';
 
-export type PoolToken = {
+export type StablePoolToken = {
+  mint: PublicKey;
+  decimals: number;
+  scalingUp: boolean;
+  scalingFactor: BigNumber;
+  balance: BigNumber;
+};
+
+export const stablePoolTokenStruct = new BeetStruct<StablePoolToken>(
+  [
+    ['mint', publicKey],
+    ['decimals', u8],
+    ['scalingUp', bool],
+    ['scalingFactor', u64],
+    ['balance', u64],
+  ],
+  (args) => args as StablePoolToken
+);
+
+export type WeightedPoolToken = {
   mint: PublicKey;
   decimals: number;
   scalingUp: boolean;
@@ -21,7 +40,7 @@ export type PoolToken = {
   weight: BigNumber;
 };
 
-export const poolTokenStruct = new BeetStruct<PoolToken>(
+export const weightedPoolTokenStruct = new BeetStruct<WeightedPoolToken>(
   [
     ['mint', publicKey],
     ['decimals', u8],
@@ -30,7 +49,7 @@ export const poolTokenStruct = new BeetStruct<PoolToken>(
     ['balance', u64],
     ['weight', u64],
   ],
-  (args) => args as PoolToken
+  (args) => args as WeightedPoolToken
 );
 
 export type WeightedPool = {
@@ -42,7 +61,7 @@ export type WeightedPool = {
   isActive: boolean;
   invariant: BigNumber;
   swapFee: BigNumber;
-  tokens: PoolToken[];
+  tokens: StablePoolToken[];
   pendingOwner?: PublicKey;
 };
 
@@ -56,7 +75,7 @@ export const weightedPoolStruct = new FixableBeetStruct<WeightedPool>(
     ['isActive', bool],
     ['invariant', u64],
     ['swapFee', u64],
-    ['tokens', array(poolTokenStruct)],
+    ['tokens', array(weightedPoolTokenStruct)],
     ['pendingOwner', publicKey],
   ],
   (args) => args as WeightedPool
@@ -74,7 +93,7 @@ export type StablePool = {
   rampStartTs: BigNumber;
   rampStopTs: BigNumber;
   swapFee: BigNumber;
-  tokens: PoolToken[];
+  tokens: StablePoolToken[];
   pendingOwner?: PublicKey;
 };
 
@@ -91,7 +110,7 @@ export const stablePoolStruct = new FixableBeetStruct<StablePool>(
     ['rampStartTs', i64],
     ['rampStopTs', i64],
     ['swapFee', u64],
-    ['tokens', array(poolTokenStruct)],
+    ['tokens', array(stablePoolTokenStruct)],
     ['pendingOwner', publicKey],
   ],
   (args) => args as StablePool

@@ -14,7 +14,7 @@ import { getParsedProgramAccounts } from '../../../utils/solana';
 import { openOrdersV2Struct } from '../../raydium/structs/openOrders';
 import runInBatch from '../../../utils/misc/runInBatch';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import { clobVersions, openbookPlatform } from './constants';
+import { clobVersions, openbookId } from './constants';
 import { serumOrdersFilter } from './filters';
 import { CLOBMarket } from './types';
 
@@ -100,7 +100,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const openBookElement: PortfolioElementMultiple = {
     type: 'multiple',
     networkId: NetworkId.solana,
-    platformId: openbookPlatform.id,
+    platformId: openbookId,
     value,
     label: 'Deposit',
     tags: ['Limit Orders'],
@@ -111,7 +111,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-${openbookPlatform.id}`,
+  id: `${platformId}-${openbookId}`,
   networkId: NetworkId.solana,
   executor,
 };

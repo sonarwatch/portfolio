@@ -1,13 +1,6 @@
-import { NetworkId, Platform } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 
 export const platformId = 'balancer2';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Balancer V2',
-  image: 'https://sonarwatch.github.io/portfolio/assets/images/platforms/balancer.webp',
-  defiLlamaId: 'parent#balancer', // from https://defillama.com/docs/api
-  website: 'https://balancer.fi/',
-};
 
 enum BalancerV2APINetwork {
   ethereum = 'MAINNET',
