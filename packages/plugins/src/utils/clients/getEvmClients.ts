@@ -9,5 +9,8 @@ export default function getEvmClients(): Record<EvmNetworkIdType, EvmClient> {
     polygon: getEvmClient(NetworkId.polygon),
     bnb: getEvmClient(NetworkId.bnb),
     fraxtal: getEvmClient(NetworkId.fraxtal),
+    arbitrum: getEvmClient(NetworkId.arbitrum),
+    optimism: getEvmClient(NetworkId.optimism),
+    base: getEvmClient(NetworkId.base),
   };
 }

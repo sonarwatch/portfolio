@@ -14,9 +14,11 @@ export const ethereumNativeAddress =
 export const polygonNativeAddress =
   '0x0000000000000000000000000000000000001010';
 export const avalancheNativeAddress = ethereumNativeAddress;
-export const optimismNativeAddress = ethereumNativeAddress;
 export const bnbNativeAddress = ethereumNativeAddress;
 export const fraxtalNativeAddress = ethereumNativeAddress;
+export const baseNativeAddress = ethereumNativeAddress;
+export const aributrumNativeAddress = ethereumNativeAddress;
+export const optimismNativeAddress = ethereumNativeAddress;
 
 export const solanaNativeWrappedAddress =
   'So11111111111111111111111111111111111111112';
@@ -28,7 +30,11 @@ export const bnbNativeWrappedAddress =
   '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c';
 export const avalancheNativeWrappedAddress =
   '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7';
-export const optimismNativeWrappedAddress =
-  '0x4200000000000000000000000000000000000006';
 export const fraxtalNativeWrappedAddress =
   '0xFC00000000000000000000000000000000000006';
+export const baseNativeWrappedAddress =
+  '0x4200000000000000000000000000000000000006';
+export const arbitrumNativeWrappedAddress =
+  '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1';
+export const optimismNativeWrappedAddress =
+  '0x4200000000000000000000000000000000000006';
