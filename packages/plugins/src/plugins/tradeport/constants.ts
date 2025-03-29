@@ -1,15 +1,5 @@
-import { Platform } from '@sonarwatch/portfolio-core';
-
 export const platformId = 'tradeport';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Tradeport',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/tradeport.webp',
-  website: 'https://www.tradeport.xyz/',
-  twitter: 'https://x.com/tradeportxyz',
-  // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
-};
+
 export const locksCacheKey = `locks`;
 export const bidsCacheKey = `bids`;
 

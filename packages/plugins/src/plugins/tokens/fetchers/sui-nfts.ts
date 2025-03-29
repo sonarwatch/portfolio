@@ -5,10 +5,10 @@ import {
   PortfolioAssetCollectibleData,
   PortfolioElementMultiple,
   PortfolioElementType,
+  walletNftsPlatformId,
 } from '@sonarwatch/portfolio-core';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSui } from '../../../utils/clients';
-import { walletNftsPlatform } from '../constants';
 import {
   NFTContentFields,
   SuiFrendFields,
@@ -147,7 +147,7 @@ const executor: FetcherExecutor = async (owner: string) => {
   const element: PortfolioElementMultiple = {
     type: PortfolioElementType.multiple,
     networkId: NetworkId.sui,
-    platformId: walletNftsPlatform.id,
+    platformId: walletNftsPlatformId,
     label: 'Wallet',
     value: null,
     data: {
@@ -158,7 +158,7 @@ const executor: FetcherExecutor = async (owner: string) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${walletNftsPlatform.id}-${NetworkId.sui}`,
+  id: `${walletNftsPlatformId}-${NetworkId.sui}`,
   networkId: NetworkId.sui,
   executor,
 };

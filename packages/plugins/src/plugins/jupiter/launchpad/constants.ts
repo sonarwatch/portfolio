@@ -1,18 +1,9 @@
 import { PublicKey } from '@solana/web3.js';
-import { Platform } from '@sonarwatch/portfolio-core';
 import { AirdropConfig } from './types';
 import { platformId as kaminoPlatformId } from '../../kamino/constants';
 
 export const platformId = 'jupiter-launchpad';
 const platformImage = 'https://sonar.watch/img/platforms/jupiter.webp';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Jupiter Launchpad',
-  image: platformImage,
-  website: 'https://lfg.jup.ag/',
-  twitter: 'https://twitter.com/JupiterExchange',
-  description: 'Ultimate decentralised distribution stack',
-};
 
 export const voteProgramId = new PublicKey(
   'voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj'

@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId, walletTokensPlatformId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSolana } from '../../utils/clients';
@@ -9,7 +9,6 @@ import {
   u8ArrayToString,
   usdcSolanaMint,
 } from '../../utils/solana';
-import { walletTokensPlatform } from '../tokens/constants';
 import { CustodyInfo, PoolInfo } from './types';
 import { getLpTokenPrice } from './helpers';
 import { getDecimals } from '../../utils/solana/getDecimals';
@@ -76,7 +75,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         decimals: stakedDecimals,
         id: poolsPkeys[i].toString(),
         networkId: NetworkId.solana,
-        platformId: walletTokensPlatform.id,
+        platformId: walletTokensPlatformId,
         price: stakedLpPrice,
         timestamp: Date.now(),
         weight: 1,
@@ -90,7 +89,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         decimals: compoundingDecimals,
         id: poolsPkeys[i].toString(),
         networkId: NetworkId.solana,
-        platformId: walletTokensPlatform.id,
+        platformId: walletTokensPlatformId,
         price: compoundingLpPrice,
         timestamp: Date.now(),
         weight: 1,

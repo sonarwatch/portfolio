@@ -1,4 +1,3 @@
-import { Platform } from '@sonarwatch/portfolio-core';
 import { IdlItem } from '@solanafm/explorer-kit-idls';
 import { PublicKey } from '@solana/web3.js';
 import { StakingIDL } from './stakingIdl';
@@ -7,18 +6,6 @@ import { tokenMarketIdl } from './tokenMarketIdl';
 export const platformId = 'famousfoxfederation';
 
 export const foxyMint = 'FoXyMu5xwXre7zEoSvzViRk3nGawHUp9kUh97y2NDhcq';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Famous Fox Federation',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/famousfoxfederation.webp',
-  website: 'https://famousfoxes.com',
-  twitter: 'https://twitter.com/famousfoxfed',
-  // defiLlamaId: 'foo-finance', // from https://defillama.com/docs/api
-  discord: 'https://discord.com/invite/famousfoxes',
-  tokens: [foxyMint],
-};
-
 export const tokenMarketProgram = new PublicKey(
   '8BYmYs3zsBhftNELJdiKsCN2WyCBbrTwXd6WG4AFPr6n'
 );

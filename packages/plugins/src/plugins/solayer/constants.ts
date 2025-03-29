@@ -1,5 +1,4 @@
 import { PublicKey } from '@solana/web3.js';
-import { Platform } from '@sonarwatch/portfolio-core';
 import { AirdropStatics } from '../../AirdropFetcher';
 
 export const layerMint = 'LAYER4xPpTCb3QL8S9u41EAhAX7mhBn8Q6xMTwY2Yzc';
@@ -7,23 +6,6 @@ export const platformId = 'solayer';
 export const solayerLstMint = 'sSo1wxKKr6zW2hqf5hZrp2CawLibcwi1pMBqk5bg2G4';
 export const solayerRstMint = 'sSo14endRuUbvQaJS3dq36Q829a3A6BEfoeeRGJywEh';
 export const solayersUSDMint = 'susdabGDNbhrnCa6ncrYo81u4s9GM8ecK2UwMyZiq4X';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Solayer',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/solayer.webp',
-  website: 'https://solayer.org/',
-  twitter: 'https://x.com/solayer_labs',
-  defiLlamaId: 'parent#solayer',
-  github: 'https://github.com/solayer-labs',
-  discord: 'https://discord.com/invite/solayerlabs',
-  telegram: 'https://t.me/solayer_discussion',
-  documentation:
-    'https://docs.solayer.org/documentation/get-started/introduction',
-  tokens: [layerMint, solayerLstMint, solayerRstMint, solayersUSDMint],
-  description:
-    'Solayer is the restaking protocol on Solana, securing both endogenous AVS (dApps) through stake-weighted quality of service and exogenous AVS via Solana-based POS primitives',
-};
 
 export const programId = new PublicKey(
   'sSo1iU21jBrU9VaJ8PJib1MtorefUV4fzC9GURa2KNn'
@@ -38,7 +20,7 @@ export const layerDecimals = 9;
 export const airdropStatics: AirdropStatics = {
   claimLink: 'https://claim.solayer.foundation/',
   emitterLink: 'https://solayer.foundation/',
-  emitterName: platform.name,
+  emitterName: 'Solayer',
   id: 'solayer-airdrop',
   image:
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/solayer.webp',

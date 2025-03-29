@@ -2,7 +2,6 @@ import {
   aptosNativeAddress,
   aptosNativeDecimals,
   NetworkId,
-  Platform,
   solanaNativeAddress,
   solanaNativeDecimals,
   solanaNativeWrappedAddress,
@@ -19,11 +18,6 @@ import { usdcSolanaDecimals, usdcSolanaMint } from '../../utils/solana';
 import { CmcToken } from './types';
 
 export const platformId = 'coinmarketcap';
-export const platform: Platform = {
-  id: platformId,
-  name: 'CoinMarketCap',
-};
-
 export const cmcTokens: CmcToken[] = [
   {
     slug: 'solana',

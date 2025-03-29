@@ -1,10 +1,9 @@
 import axios, { AxiosResponse } from 'axios';
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId, walletTokensPlatformId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { lastCountKey, platformId, tokensKey, whalesApi } from './constants';
 import { TokensResponse } from './types';
-import { walletTokensPlatform } from '../tokens/constants';
 
 const tokensToPrice = {
   CLOUD: { mint: 'CLoUDKc4Ane7HeQcPpE3YHnznRxhMimJ4MyaUqyHFzAu', decimals: 9 },
@@ -46,7 +45,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         weight: 0.001,
         id: platformId,
         networkId: NetworkId.solana,
-        platformId: walletTokensPlatform.id,
+        platformId: walletTokensPlatformId,
         price: token.last_price,
         timestamp: Date.now(),
       });

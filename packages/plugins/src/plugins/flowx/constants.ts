@@ -1,15 +1,4 @@
-import { Platform } from '@sonarwatch/portfolio-core';
-
 export const platformId = 'flowx';
-export const platform: Platform = {
-  id: platformId,
-  name: 'FlowX Finance',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/flowx.webp',
-  defiLlamaId: 'flowx-v2',
-  website: 'https://flowx.finance',
-  twitter: 'https://twitter.com/FlowX_finance',
-};
 
 export const flxMint =
   '0x6dae8ca14311574fdfe555524ea48558e3d1360d1607d1c7f98af867e3b7976c::flx::FLX';

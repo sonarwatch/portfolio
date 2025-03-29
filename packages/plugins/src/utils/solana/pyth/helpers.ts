@@ -1,7 +1,10 @@
 import { PublicKey } from '@solana/web3.js';
-import { NetworkIdType, TokenPriceSource } from '@sonarwatch/portfolio-core';
+import {
+  NetworkIdType,
+  TokenPriceSource,
+  walletTokensPlatformId,
+} from '@sonarwatch/portfolio-core';
 import { SolanaClient } from '../../clients/types';
-import { walletTokensPlatform } from '../../../plugins/tokens/constants';
 import { getParsedMultipleAccountsInfo } from '../getParsedMultipleAccountsInfo';
 import { priceUpdateV2Struct } from './structs';
 
@@ -73,7 +76,7 @@ export async function getPythTokenPriceSources(
         id: `pyth-feed-${feedInfo.address.toString()}`,
         decimals: token.decimals,
         networkId: token.networkdId,
-        platformId: token.platformId || walletTokensPlatform.id,
+        platformId: token.platformId || walletTokensPlatformId,
         price,
         timestamp: Date.now(),
         weight: 0.5,

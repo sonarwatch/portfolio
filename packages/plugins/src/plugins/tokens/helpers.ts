@@ -5,8 +5,9 @@ import {
   TokenPriceSource,
   UniTokenList,
   UniTokenListVersion,
+  walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
-import { nIdsToFetch, walletTokensPlatform } from './constants';
+import { nIdsToFetch } from './constants';
 import { CoingeckoSimpleRes, TokenData } from './types';
 import shuffleArray from '../../utils/misc/shuffleArray';
 import sleep from '../../utils/misc/sleep';
@@ -112,7 +113,7 @@ export function getTokensData(tokenList: UniTokenList): TokenData[] {
       address: ti.address,
       coingeckoId,
       decimals: ti.decimals,
-      platformId: walletTokensPlatform.id,
+      platformId: walletTokensPlatformId,
     };
     cTokensData.push(tokenData);
     return cTokensData;

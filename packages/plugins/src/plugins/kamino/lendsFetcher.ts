@@ -1,4 +1,8 @@
-import { NetworkId, aprToApy } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  PortfolioElementLabel,
+  aprToApy,
+} from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import {
   elevationGroupsKey,
@@ -118,21 +122,25 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     let name;
     let type = 'lending';
     let link;
+    let label: PortfolioElementLabel;
     if (index < lendingPdas.length) {
+      label = 'Lending';
       name = lendingConfig?.name;
       link = `https://app.kamino.finance/lending/dashboard/${obligation.lendingMarket.toString()}/${obligation.pubkey.toString()}`;
     } else if (index < lendingPdas.length + multiplyPdas.length) {
       name = lendingConfig ? `Multiply ${lendingConfig.name}` : 'Multiply';
+      label = 'Leverage';
       type = 'multiply';
       link = `https://app.kamino.finance/lending/multiply/${obligation.lendingMarket.toString()}/${obligation.deposits[0].depositReserve.toString()}/${obligation.borrows[0].borrowReserve.toString()}`;
     } else {
+      label = 'Leverage';
       name = 'Leverage';
       type = 'leverage';
       link = `https://app.kamino.finance/lending/leverage/${obligation.lendingMarket.toString()}/${obligation.deposits[0].depositReserve.toString()}/${obligation.borrows[0].borrowReserve.toString()}`;
     }
 
     const element = elementRegistry.addElementBorrowlend({
-      label: 'Lending',
+      label,
       name,
       ref: obligation.pubkey,
       sourceRefs: [
@@ -181,9 +189,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         const elevationGroup = elevationGroups.get(obligation.elevationGroup);
         if (elevationGroup)
           element.addSuppliedLtv(elevationGroup.liquidationThresholdPct / 100);
-        else {
-          element.addSuppliedLtv(0);
-        }
       } else {
         element.addSuppliedLtv(reserve.config.liquidationThresholdPct / 100);
       }

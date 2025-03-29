@@ -1,4 +1,5 @@
 import {
+  nativeStakePlatformId,
   NetworkId,
   PortfolioAssetToken,
   PortfolioElement,
@@ -7,12 +8,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import {
-  nativeStakePlatform,
-  platformId,
-  validatorsKey,
-  validatorsPrefix,
-} from './constants';
+import { validatorsKey, validatorsPrefix } from './constants';
 import { getClientSui } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { SuiValidatorInfo } from './types';
@@ -84,7 +80,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       value += stakedAsset.value !== null ? stakedAsset.value : 0;
       elements.push({
         networkId: NetworkId.sui,
-        platformId: nativeStakePlatform.id,
+        platformId: nativeStakePlatformId,
         type: 'multiple',
         label: 'Staked',
         value,
@@ -98,7 +94,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-sui`,
+  id: `${nativeStakePlatformId}-sui`,
   networkId: NetworkId.sui,
   executor,
 };

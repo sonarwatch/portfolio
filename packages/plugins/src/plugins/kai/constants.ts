@@ -1,16 +1,7 @@
-import { Platform, suiNetwork } from '@sonarwatch/portfolio-core';
+import { suiNetwork } from '@sonarwatch/portfolio-core';
 import { usdcSuiType } from '../../utils/sui/constants';
 
 export const platformId = 'kai';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Kai Finance',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/kai.webp',
-  website: 'https://kai.finance',
-  twitter: 'https://twitter.com/kai_finance_sui',
-  defiLlamaId: 'kai-finance', // from https://defillama.com/docs/api
-};
 
 export const vaultsInfo = [
   {

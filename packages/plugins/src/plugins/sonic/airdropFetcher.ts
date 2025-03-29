@@ -6,7 +6,7 @@ import {
   airdropFetcherToFetcher,
   getAirdropRaw,
 } from '../../AirdropFetcher';
-import { airdropApi, airdropStatics, sonicMint, platform } from './constants';
+import { airdropApi, airdropStatics, platformId, sonicMint } from './constants';
 import { AirdropResponse } from './types';
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
@@ -54,7 +54,7 @@ export const airdropFetcher: AirdropFetcher = {
 };
 export const fetcher = airdropFetcherToFetcher(
   airdropFetcher,
-  platform.id,
+  platformId,
   'sonic-airdrop',
   airdropStatics.claimEnd
 );

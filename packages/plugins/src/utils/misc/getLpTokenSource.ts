@@ -2,6 +2,7 @@ import {
   NetworkIdType,
   TokenPriceSource,
   formatTokenAddress,
+  SourceRef,
 } from '@sonarwatch/portfolio-core';
 import {
   PoolUnderlying,
@@ -23,6 +24,8 @@ export type GetLpTokenSourceParams = {
   elementName?: string;
   liquidityName?: string;
   priceUnderlyings?: boolean;
+  sourceRefs?: SourceRef[];
+  link?: string;
 };
 
 export function getLpTokenSource(
@@ -37,6 +40,8 @@ export function getLpTokenSource(
     sourceId,
     networkId,
     priceUnderlyings,
+    sourceRefs,
+    link,
   } = params;
   const sources: TokenPriceSource[] = [];
 
@@ -88,6 +93,8 @@ export function getLpTokenSource(
       decimals: u.decimals,
     })),
     timestamp: Date.now(),
+    sourceRefs,
+    link,
   };
   sources.push(lpSource);
   return sources;

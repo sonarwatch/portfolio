@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId, walletTokensPlatformId } from '@sonarwatch/portfolio-core';
 import { getAddress } from 'viem';
 import BigNumber from 'bignumber.js';
 import {
@@ -14,7 +14,6 @@ import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getEvmClient } from '../../utils/clients';
 import { potAbi } from './abis';
-import { walletTokensPlatform } from '../tokens/constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const daiTokenPrice = await cache.getTokenPrice(
@@ -35,7 +34,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   const commonSourceInfo = {
     id: 'maker-pot',
     networkId: NetworkId.ethereum,
-    platformId: walletTokensPlatform.id,
+    platformId: walletTokensPlatformId,
     price,
     timestamp: Date.now(),
     weight: 0.5,

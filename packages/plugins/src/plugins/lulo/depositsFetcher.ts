@@ -2,6 +2,7 @@ import {
   apyToApr,
   NetworkId,
   PortfolioElement,
+  walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
@@ -12,7 +13,6 @@ import driftDepositsFetcher from '../drift/depositsFetcher';
 import kaminoLendDepositFetcher from '../kamino/lendsFetcher';
 import mangoDepositFetcher from '../mango/collateralFetcher';
 import marginFiDepositFetcher from '../marginfi/depositsFetcher';
-import { walletTokensPlatform } from '../tokens/constants';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 import { getClientSolana } from '../../utils/clients';
 import { pendingWithdrawalStruct, userAccountStruct } from './struct';
@@ -113,7 +113,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   for (const element of portfolioElements) {
     const tmpElement = element;
     tmpElement.name =
-      tmpElement.platformId === walletTokensPlatform.id
+      tmpElement.platformId === walletTokensPlatformId
         ? 'Tokens/Rewards'
         : tmpElement.platformId.slice(0, 1).toUpperCase() +
           tmpElement.platformId.slice(1);

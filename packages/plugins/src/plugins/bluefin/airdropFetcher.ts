@@ -7,7 +7,7 @@ import {
   // airdropFetcherToFetcher,
   getAirdropRaw,
 } from '../../AirdropFetcher';
-import { airdropApi, airdropStatics, blueMint, platform } from './constants';
+import { airdropApi, airdropStatics, blueMint } from './constants';
 import { AirdropResponse } from './types';
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
@@ -28,7 +28,7 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
           isClaimed: false,
           label: 'BLUE',
           address: blueMint,
-          imageUri: platform.image,
+          imageUri: airdropStatics.image,
         },
       ],
     });
@@ -43,7 +43,7 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
         isClaimed: false,
         label: 'BLUE',
         address: blueMint,
-        imageUri: platform.image,
+        imageUri: airdropStatics.image,
       },
     ],
   });

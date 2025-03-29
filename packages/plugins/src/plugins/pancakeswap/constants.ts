@@ -1,17 +1,9 @@
-import { NetworkId, Platform } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { coinInfo } from '../../utils/aptos';
 import { StakerInfo } from './types';
 import { UniswapNetworkConfig } from '../uniswap/types';
 
 export const platformId = 'pancakeswap';
-export const platform: Platform = {
-  id: platformId,
-  name: 'PancakeSwap',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/pancakeswap.webp',
-  defiLlamaId: 'parent#pancakeswap',
-  website: 'https://pancakeswap.finance/',
-};
 export const programAddress =
   '0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa';
 

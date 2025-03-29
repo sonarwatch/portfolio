@@ -1,7 +1,10 @@
-import { EvmNetworkIdType, NetworkId } from '@sonarwatch/portfolio-core';
+import {
+  EvmNetworkIdType,
+  NetworkId,
+  walletTokensPlatformId,
+} from '@sonarwatch/portfolio-core';
 import { Fetcher } from '../../../../Fetcher';
 import getEvmFetcherNativeExecutor from './evmNativeExecutorGenerator';
-import { walletTokensPlatform } from '../../constants';
 import getEvmFetcherExecutorOctav from './evmExecutorGeneratorOctav';
 
 const evmNativeNetworksIds: EvmNetworkIdType[] = [
@@ -21,7 +24,7 @@ export const fetchers: Fetcher[] = [
   ...evmNativeNetworksIds
     .map((networkId) => [
       {
-        id: `${walletTokensPlatform.id}-${networkId}-native`,
+        id: `${walletTokensPlatformId}-${networkId}-native`,
         networkId,
         executor: getEvmFetcherNativeExecutor(networkId),
       },
@@ -30,7 +33,7 @@ export const fetchers: Fetcher[] = [
   ...evmNetworksIds
     .map((networkId) => [
       {
-        id: `${walletTokensPlatform.id}-${networkId}-top`,
+        id: `${walletTokensPlatformId}-${networkId}-top`,
         networkId,
         executor: getEvmFetcherExecutorOctav(networkId, true),
       },

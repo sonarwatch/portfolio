@@ -4,7 +4,7 @@ import {
   airdropStatics,
   distributors,
   graphqlApi,
-  platform,
+  platformId,
   zexMint,
 } from './constants';
 import { GQLResponse } from './types';
@@ -116,7 +116,7 @@ export const airdropFetcher: AirdropFetcher = {
 
 export const fetcher = airdropFetcherToFetcher(
   airdropFetcher,
-  platform.id,
+  platformId,
   'zeta-airdrop',
   airdropStatics.claimEnd
 );

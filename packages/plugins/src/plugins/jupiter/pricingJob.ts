@@ -3,6 +3,7 @@ import {
   TokenPriceSource,
   solanaNativeWrappedAddress,
   jupiterSourceId,
+  walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import axios from 'axios';
@@ -10,7 +11,6 @@ import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { platformId } from './exchange/constants';
 import { getJupiterPrices } from './helpers';
-import { walletTokensPlatform } from '../tokens/constants';
 import { getMultipleDecimalsAsMap } from '../../utils/solana/getMultipleDecimalsAsMap';
 import { getClientSolana } from '../../utils/clients';
 import { lstsKey, platformId as sanctumPlatformId } from '../sanctum/constants';
@@ -87,7 +87,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       networkId: NetworkId.solana,
       timestamp: Date.now(),
       price: solTokenPrice.price * price,
-      platformId: walletTokensPlatform.id,
+      platformId: walletTokensPlatformId,
       weight: 1,
     };
     sources.push(source);

@@ -8,7 +8,7 @@ import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSolana } from '../../utils/clients';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
-import { ensofiProgramId, platformId } from './constants';
+import { ensofiLendingProgramId, platformId } from './constants';
 import { lendOfferAccountStruct, LendOfferStatus } from './structs';
 import { u8ArrayToString } from '../../utils/solana';
 
@@ -17,7 +17,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   const lendOffers = await ParsedGpa.build(
     connection,
     lendOfferAccountStruct,
-    ensofiProgramId
+    ensofiLendingProgramId
   )
     .addFilter('accountDiscriminator', [130, 140, 110, 73, 124, 199, 122, 81])
     .addDataSizeFilter(154)
