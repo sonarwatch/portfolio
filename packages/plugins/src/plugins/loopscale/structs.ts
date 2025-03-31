@@ -247,11 +247,17 @@ export const collateralDataStruct = new BeetStruct<CollateralData>(
   (args) => args as CollateralData
 );
 
+export enum LoanType {
+  Borrowing = 0,
+  Unknown = 1,
+  YieldLoop = 2,
+}
+
 export type Loan = {
   accountDiscriminator: number[];
   version: number;
   bump: number;
-  loan_type: number;
+  loan_type: LoanType;
   borrower: PublicKey;
   nonce: BigNumber;
   start_time: PodU64;
