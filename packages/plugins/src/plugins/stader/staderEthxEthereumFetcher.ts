@@ -14,36 +14,46 @@ import {
 import { Cache } from '../../Cache';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getBalances } from '../../utils/evm/getBalances';
+import { Logger } from '../octav/utils/logger';
+
+const DECIMALS_ON_CONTRACT = 18;
+const NETWORK_ID = NetworkId.ethereum;
+
+const logger = Logger.getLogger();
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const networkId = NetworkId.ethereum;
+  const logCtx = { fn: 'staderEthxEthereumFetcher::executor', owner, networkId: NETWORK_ID, contractForBalances: ETHX_CONTRACT_ADDRESS_ETHREUM_MAINNET };
+
+  logger.info(logCtx, 'Fetching stader ethx balances');
+
   const balances = await getBalances(
     owner,
     [ETHX_CONTRACT_ADDRESS_ETHREUM_MAINNET],
-    networkId
+    NETWORK_ID
   );
 
   const elements: PortfolioElement[] = [];
-  if (balances.at(0)) {
-    const rawBalance = new BigNumber(balances.at(0)!.toString());
-
-    const decimals = 18;
-    const balance = rawBalance.div(10 ** decimals).toNumber();
+  const rawBalance = balances.at(0)?.toString();
+  logger.info({ ...logCtx, rawBalance }, 'Done fetching stader ethx balances');
+  if (rawBalance) {
+    const amount = new BigNumber(rawBalance).div(10 ** DECIMALS_ON_CONTRACT).toNumber();
 
     const tokenPrice = await cache.getTokenPrice(
       ETHX_CONTRACT_ADDRESS_ETHREUM_MAINNET,
-      networkId
+      NETWORK_ID
     );
+
+    logger.info({ ...logCtx, amount, tokenPrice }, 'Token price retrieved from cache');
 
     const stakedAsset = tokenPriceToAssetToken(
       ETHX_CONTRACT_ADDRESS_ETHREUM_MAINNET,
-      balance,
-      networkId,
+      amount,
+      NETWORK_ID,
       tokenPrice
     );
 
     const stakedElement: PortfolioElement = {
-      networkId,
+      networkId: NETWORK_ID,
       label: 'Staked',
       platformId,
       type: PortfolioElementType.multiple,
