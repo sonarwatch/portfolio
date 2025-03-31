@@ -8,3 +8,6 @@ export const voteProgramId = new PublicKey(
 export const lockerPubkey = new PublicKey(
   'CVMdMd79no569tjc5Sq7kzz8isbfCcFyBS5TLGsrZ5dN'
 );
+
+export const jupMint = 'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN';
+export const jupDecimals = 6;

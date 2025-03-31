@@ -1,7 +1,6 @@
 import { AirdropStatics } from '../../../AirdropFetcher';
-import { jupDecimals, jupMint } from '../launchpad/constants';
 import { dbrDecimals, dbrMint } from '../../debridge/constants';
-import { jupApiParams } from '../constants';
+import { jupApiParams, jupDecimals, jupMint } from '../constants';
 
 export const platformId = 'jupiter-governance';
 const platformImage = 'https://sonar.watch/img/platforms/jupiterdao.webp';

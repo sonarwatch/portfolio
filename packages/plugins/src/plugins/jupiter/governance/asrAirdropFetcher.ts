@@ -5,8 +5,9 @@ import { AirdropFetcherExecutor, getAirdropRaw } from '../../../AirdropFetcher';
 import { AsrResponse, ClaimProof } from '../types';
 import { getMultipleAccountsInfoSafe } from '../../../utils/solana/getMultipleAccountsInfoSafe';
 import { getClientSolana } from '../../../utils/clients';
-import { jupMint, lfgDisProgram } from '../launchpad/constants';
+import { lfgDisProgram } from '../launchpad/constants';
 import { deriveClaimStatus } from '../../../utils/solana/jupiter/deriveClaimStatus';
+import { jupMint } from '../constants';
 
 function getInegibleItems(items: AsrItems) {
   return Array.from(items).map(([address, { label }]) => ({

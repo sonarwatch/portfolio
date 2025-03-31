@@ -5,9 +5,6 @@ import { jupApiParams } from '../constants';
 export const platformId = 'jupiter-launchpad';
 const platformImage = 'https://sonar.watch/img/platforms/jupiter.webp';
 
-export const jupMint = 'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN';
-export const jupDecimals = 6;
-
 export const lfgApiBaseUrl = 'https://worker.jup.ag/jup-claim-proof';
 export const lfgDisProgram = 'DiSLRwcSFvtwvMWSs7ubBMvYRaYNYupa76ZSuYLe6D7j';
 
