@@ -33,7 +33,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   )
     .addFilter('accountDiscriminator', [170, 188, 143, 228, 122, 64, 247, 208])
     .addFilter('user', new PublicKey(owner))
-    .debug()
     .run();
 
   if (accounts.length === 0) return [];
