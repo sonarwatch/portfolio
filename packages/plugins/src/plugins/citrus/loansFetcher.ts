@@ -4,22 +4,24 @@ import {
   collectibleFreezedTag,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
+import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import {
   cachePrefix,
-  citrusIdlItem,
+  citrusProgram,
   collectionsCacheKey,
+  loanDataSize,
   platformId,
 } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
-import { Collection, Loan } from './types';
-import { getAutoParsedProgramAccounts } from '../../utils/solana';
-import { getLoanFilters } from './filters';
+import { Collection } from './types';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import { arrayToMap } from '../../utils/misc/arrayToMap';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { PortfolioAssetCollectibleParams } from '../../utils/elementbuilder/Params';
+import { LoanStatus, loanStruct } from './structs';
+import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 
 const collectionsMemo = new MemoizedCache<
   Collection[],
@@ -36,16 +38,21 @@ const collectionsMemo = new MemoizedCache<
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
 
-  const [filterA, filterB] = getLoanFilters(owner);
   const allAccounts = (
     await Promise.all([
-      getAutoParsedProgramAccounts<Loan>(connection, citrusIdlItem, filterA),
-      getAutoParsedProgramAccounts<Loan>(connection, citrusIdlItem, filterB),
+      ParsedGpa.build(connection, loanStruct, citrusProgram)
+        .addDataSizeFilter(loanDataSize)
+        .addFilter('lender', new PublicKey(owner))
+        .run(),
+      ParsedGpa.build(connection, loanStruct, citrusProgram)
+        .addDataSizeFilter(loanDataSize)
+        .addFilter('borrower', new PublicKey(owner))
+        .run(),
     ])
   ).flat();
 
   const accounts = allAccounts.filter(
-    (acc) => !acc.status.repaid // hide past loans
+    (acc) => acc.status !== LoanStatus.Repaid // hide past loans
   );
 
   if (accounts.length === 0) return [];
@@ -61,7 +68,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 
   accounts.forEach((acc) => {
-    const collection = collections.get(acc.collectionConfig);
+    const collection = collections.get(acc.collectionConfig.toString());
     if (!collection) return;
 
     const element = elementRegistry.addElementBorrowlend({
@@ -70,7 +77,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     });
 
     let mintAsset: PortfolioAssetCollectibleParams | null = null;
-    if (acc.mint && acc.mint !== '11111111111111111111111111111111') {
+    if (
+      acc.mint &&
+      acc.mint.toString() !== '11111111111111111111111111111111'
+    ) {
       mintAsset = {
         address: acc.mint,
         collection: {
@@ -91,16 +101,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     };
 
     let name;
-    if (acc.lender === owner.toString()) {
+    if (acc.lender.toString() === owner.toString()) {
       // LENDER
       element.addSuppliedAsset(solAsset);
       if (mintAsset) element.addBorrowedCollectibleAsset(mintAsset);
 
-      if (acc.status.waitingForBorrower) {
+      if (acc.status === LoanStatus.WaitingForBorrower) {
         name = `Lend Offer on ${collection.name}`;
-      } else if (acc.status.active || acc.status.onSale) {
+      } else if (
+        acc.status === LoanStatus.Active ||
+        acc.status === LoanStatus.OnSale
+      ) {
         name = `Active Loan`;
-      } else if (acc.status.defaulted) {
+      } else if (acc.status === LoanStatus.Defaulted) {
         name = `Defaulted Loan`;
       }
     } else {
@@ -108,11 +121,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       element.addBorrowedAsset(solAsset);
       if (mintAsset) element.addSuppliedCollectibleAsset(mintAsset);
 
-      if (acc.status.waitingForLender) {
+      if (acc.status === LoanStatus.WaitingForLender) {
         name = `Borrow Offer`;
-      } else if (acc.status.active || acc.status.onSale) {
+      } else if (
+        acc.status === LoanStatus.Active ||
+        acc.status === LoanStatus.OnSale
+      ) {
         name = `Active Loan`;
-      } else if (acc.status.defaulted) {
+      } else if (acc.status === LoanStatus.Defaulted) {
         name = `Expired Loan`;
       }
     }
@@ -120,8 +136,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (name) element.setName(name);
 
     element.setFixedTerms(
-      acc.lender === owner.toString(),
-      acc.status.active || acc.status.onSale
+      acc.lender.toString() === owner.toString(),
+      acc.status === LoanStatus.Active || acc.status === LoanStatus.OnSale
         ? (Number(acc.startTime) + Number(acc.loanTerms.duration)) * 1000
         : undefined
     );
