@@ -1,27 +1,22 @@
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
+import { FormattedLendingPool } from './types';
 import {
-  FormattedLendingPool,
-  LendingAccount,
-  LendingPool,
-  MarginAccount,
-  MarginPool,
-  SolayerPool,
-  SolayerUser,
-  VSolPositionAccount,
-} from './types';
-import {
-  getAutoParsedMultipleAccountsInfo,
+  getParsedMultipleAccountsInfo,
   ParsedAccount,
 } from '../../utils/solana';
-import {
-  ID,
-  lendProgramId,
-  leverageFiProgramID,
-  nxfinanceLendIdlItem,
-  nxfinanceLeverageIdlItem,
-} from './constants';
+import { ID, lendProgramId, leverageFiProgramID } from './constants';
 import { getClientSolana } from '../../utils/clients';
+import {
+  lendingAccountStruct,
+  LendingPool,
+  marginAccountStruct,
+  marginPoolStruct,
+  SolayerPool,
+  solayerUserStruct,
+  vSolPositionStruct,
+  MarginPool,
+} from './structs';
 
 const getBorrowApr = (utilization: BigNumber) => {
   if (utilization.isLessThanOrEqualTo(0.8)) {
@@ -179,9 +174,9 @@ export const getLendingAccounts = (
       lendProgramId
     )[0];
   });
-  return getAutoParsedMultipleAccountsInfo<LendingAccount>(
+  return getParsedMultipleAccountsInfo(
     getClientSolana(),
-    nxfinanceLendIdlItem,
+    lendingAccountStruct,
     pdas
   );
 };
@@ -201,9 +196,9 @@ export const getVSolPositionAccounts = (
         lendProgramId
       )[0]
   );
-  return getAutoParsedMultipleAccountsInfo<VSolPositionAccount>(
+  return getParsedMultipleAccountsInfo(
     getClientSolana(),
-    nxfinanceLendIdlItem,
+    vSolPositionStruct,
     pdas
   );
 };
@@ -224,9 +219,9 @@ export const getSolayerUserAccounts = (
         lendProgramId
       )[0]
   );
-  return getAutoParsedMultipleAccountsInfo<SolayerUser>(
+  return getParsedMultipleAccountsInfo(
     getClientSolana(),
-    nxfinanceLendIdlItem,
+    solayerUserStruct,
     pdas
   );
 };
@@ -244,9 +239,9 @@ export const getMarginAccount = async (owner: string) => {
     leverageFiProgramID
   )[0];
   return (
-    await getAutoParsedMultipleAccountsInfo<MarginAccount>(
+    await getParsedMultipleAccountsInfo(
       getClientSolana(),
-      nxfinanceLeverageIdlItem,
+      marginAccountStruct,
       [pdas]
     )
   )[0];
@@ -267,9 +262,9 @@ export const getMarginPools = async (mints: Set<string>) => {
       )[0]
   );
 
-  return getAutoParsedMultipleAccountsInfo<MarginPool>(
+  return getParsedMultipleAccountsInfo(
     getClientSolana(),
-    nxfinanceLeverageIdlItem,
+    marginPoolStruct,
     marginPoolsPublicKeys
   );
 };

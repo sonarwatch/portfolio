@@ -1,25 +1,19 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { getAutoParsedMultipleAccountsInfo } from '../../utils/solana';
-import {
-  lendingPoolKey,
-  lendingPools,
-  nxfinanceLendIdlItem,
-  platformId,
-} from './constants';
+import { getParsedMultipleAccountsInfo } from '../../utils/solana';
+import { lendingPoolKey, lendingPools, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
-import { LendingPool } from './types';
+import { lendingPoolStruct } from './structs';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
 
-  const lendingPoolAccounts =
-    await getAutoParsedMultipleAccountsInfo<LendingPool>(
-      connection,
-      nxfinanceLendIdlItem,
-      lendingPools
-    );
+  const lendingPoolAccounts = await getParsedMultipleAccountsInfo(
+    connection,
+    lendingPoolStruct,
+    lendingPools
+  );
 
   await cache.setItem(lendingPoolKey, lendingPoolAccounts, {
     prefix: platformId,
