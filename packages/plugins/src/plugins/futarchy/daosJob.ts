@@ -2,7 +2,6 @@ import { PublicKey } from '@solana/web3.js';
 import {
   NetworkId,
   TokenPriceSource,
-  UniTokenInfo,
   tokenPriceFromSources,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
@@ -98,7 +97,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   const tokenAccountById: Map<string, TokenAccount> = new Map();
   const mintAccountById: Map<string, MintAccount> = new Map();
-  const tokensDetailsById: Map<string, UniTokenInfo> = new Map();
   tokensAccounts.forEach((acc) => {
     if (acc) tokenAccountById.set(acc.pubkey.toString(), acc);
   });
@@ -126,24 +124,22 @@ const executor: JobExecutor = async (cache: Cache) => {
     const daoInfo = daoNameById.get(dao.pubkey.toString());
     if (!daoInfo) continue;
 
-    const { name: daoName, tokenName: daoTokenName } = daoInfo;
+    const proposalAddy = proposal.pubkey.toString();
+
+    const { name: daoName, platformId: customPlatformId, getLink } = daoInfo;
+    const link = getLink
+      ? getLink(proposal.pubkey.toString())
+      : `https://metadao.fi/${daoName.toLowerCase()}/trade/${proposalAddy}?tab=balances`;
     const elementName = `${daoName} Proposal : ${shortenAddress(
-      proposal.pubkey.toString()
+      proposalAddy
     )} (${ProposalState[proposal.state]})`;
 
     const usdReserveAccount = tokenAccountById.get(
       quoteVault.underlyingTokenAccount.toString()
     );
-    const [
-      usdTokenPrice,
-      baseUnderlyingTokenPrice,
-      usdUnderlyingTokenDetail,
-      baseUnderlyingTokenDetail,
-    ] = [
+    const [usdTokenPrice, baseUnderlyingTokenPrice] = [
       underlyingTokenPriceById.get(quoteVault.underlyingTokenMint.toString()),
       underlyingTokenPriceById.get(baseVault.underlyingTokenMint.toString()),
-      tokensDetailsById.get(quoteVault.underlyingTokenMint.toString()),
-      tokensDetailsById.get(baseVault.underlyingTokenMint.toString()),
     ];
 
     // Price the pUSD and fUSD of this proposal
@@ -176,32 +172,21 @@ const executor: JobExecutor = async (cache: Cache) => {
         )
         .dividedBy(2);
 
-      const symbol = usdUnderlyingTokenDetail?.symbol;
-
       const fUSDSource: TokenPriceSource = {
         address: fUSDMint,
         decimals: fUSDMintAccount.decimals,
         id: proposal.quoteVault.toString(),
         networkId: NetworkId.solana,
-        platformId,
+        platformId: customPlatformId || platformId,
         price: fUSDPrice.toNumber(),
         timestamp: Date.now(),
         weight: 1,
-        underlyings: [
-          {
-            amountPerLp: 1,
-            price: fUSDPrice.toNumber(),
-            address: usdTokenPrice.address,
-            decimals: usdTokenPrice.decimals,
-            networkId: NetworkId.solana,
-          },
-        ],
-        liquidityName: symbol ? `f${symbol}` : 'fUSD',
         elementName,
         sourceRefs: [
-          { name: 'Pool', address: proposal.pubkey.toString() },
+          { name: 'Proposal', address: proposalAddy },
           { name: 'Vault', address: proposal.quoteVault.toString() },
         ],
+        link,
       };
 
       const pUSDSource: TokenPriceSource = {
@@ -209,25 +194,16 @@ const executor: JobExecutor = async (cache: Cache) => {
         decimals: pUSDMintAccount.decimals,
         id: proposal.quoteVault.toString(),
         networkId: NetworkId.solana,
-        platformId,
+        platformId: customPlatformId || platformId,
         price: pUSDPrice.toNumber(),
         timestamp: Date.now(),
         weight: 1,
-        underlyings: [
-          {
-            amountPerLp: 1,
-            price: pUSDPrice.toNumber(),
-            address: usdTokenPrice.address,
-            decimals: usdTokenPrice.decimals,
-            networkId: NetworkId.solana,
-          },
-        ],
-        liquidityName: symbol ? `p${symbol}` : 'pUSD',
         elementName,
         sourceRefs: [
-          { name: 'Pool', address: proposal.pubkey.toString() },
+          { name: 'Proposal', address: proposal.pubkey.toString() },
           { name: 'Vault', address: proposal.quoteVault.toString() },
         ],
+        link,
       };
       // If the Proposal has passed, fUSD will not be redeemable (price = 0)
       if (proposal.state === ProposalState.Passed) {
@@ -260,19 +236,10 @@ const executor: JobExecutor = async (cache: Cache) => {
         mintAccountById.get(lpMint),
       ];
 
-      if (
-        !quoteSource ||
-        !lpMintAccount ||
-        !baseUnderlyingTokenPrice ||
-        !baseUnderlyingTokenDetail
-      )
-        continue;
+      if (!quoteSource || !lpMintAccount || !baseUnderlyingTokenPrice) continue;
 
       const isPassAmm = amm.pubkey.toString() === proposal.passAmm.toString();
       const liquidityName = isPassAmm ? 'Pass LP' : 'Fail LP';
-      const baseLiquidityName = isPassAmm
-        ? `p${daoTokenName}`
-        : `f${daoTokenName}`;
 
       const basePrice = amm.quoteAmount
         .dividedBy(10 ** amm.quoteMintDecimals)
@@ -286,12 +253,11 @@ const executor: JobExecutor = async (cache: Cache) => {
         price: basePrice,
         id: platformId,
         networkId: NetworkId.solana,
-        platformId,
+        platformId: customPlatformId || platformId,
         timestamp: Date.now(),
-        underlyings: [{ ...baseUnderlyingTokenPrice, amountPerLp: 1 }],
-        liquidityName: baseLiquidityName,
         elementName,
         sourceRefs: [{ name: 'Pool', address: amm.pubkey.toString() }],
+        link,
       };
 
       // If it's the amm handling the Pass LP and the Proposal has failed, pToken will not be redeemable (price = 0)
@@ -318,7 +284,7 @@ const executor: JobExecutor = async (cache: Cache) => {
             .toNumber(),
         },
         networkId: NetworkId.solana,
-        platformId,
+        platformId: customPlatformId || platformId,
         poolUnderlyings: [
           {
             address: baseUnderlyingTokenPrice.address,
@@ -342,6 +308,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         sourceId: platformId,
         liquidityName,
         elementName,
+        link,
       });
 
       if (lpSource.at(0)) {
