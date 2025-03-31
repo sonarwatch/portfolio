@@ -5,11 +5,12 @@ import { getClientSolana } from '../../../utils/clients';
 import { getParsedAccountInfo } from '../../../utils/solana/getParsedAccountInfo';
 import { getVotePda } from '../helpers';
 import { escrowStruct, partialUnstakeStruct } from '../launchpad/structs';
-import { jupMint, voteProgramId } from '../launchpad/constants';
+import { jupMint } from '../launchpad/constants';
 import { platformId } from './constants';
 import { getParsedProgramAccounts } from '../../../utils/solana';
 import { partialUnstakeFilter } from '../filters';
 import { ElementRegistry } from '../../../utils/elementbuilder/ElementRegistry';
+import { voteProgramId } from '../constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();

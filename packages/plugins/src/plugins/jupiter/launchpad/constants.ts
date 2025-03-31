@@ -1,20 +1,13 @@
-import { PublicKey } from '@solana/web3.js';
 import { AirdropConfig } from './types';
 import { platformId as kaminoPlatformId } from '../../kamino/constants';
+import { jupApiParams } from '../constants';
 
 export const platformId = 'jupiter-launchpad';
 const platformImage = 'https://sonar.watch/img/platforms/jupiter.webp';
 
-export const voteProgramId = new PublicKey(
-  'voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj'
-);
-export const lockerPubkey = new PublicKey(
-  'CVMdMd79no569tjc5Sq7kzz8isbfCcFyBS5TLGsrZ5dN'
-);
 export const jupMint = 'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN';
 export const jupDecimals = 6;
 
-export const jupApiToken = process.env['PORTFOLIO_JUP_API_PARAM'];
 export const lfgApiBaseUrl = 'https://worker.jup.ag/jup-claim-proof';
 export const lfgDisProgram = 'DiSLRwcSFvtwvMWSs7ubBMvYRaYNYupa76ZSuYLe6D7j';
 
@@ -27,7 +20,7 @@ export const airdropConfigs: AirdropConfig[] = [
     platformId,
     getApiPath: (owner: string) =>
       `${lfgApiBaseUrl}/JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN/${owner}?${
-        jupApiToken ?? ''
+        jupApiParams ?? ''
       }`,
     statics: {
       claimStart: 1706659200000,
@@ -48,7 +41,7 @@ export const airdropConfigs: AirdropConfig[] = [
     platformId,
     getApiPath: (owner: string) =>
       `${lfgApiBaseUrl}/ZEUS1aR7aX8DFFJf5QjWj2ftDDdNTroMNGo8YoQm3Gq/${owner}?${
-        jupApiToken ?? ''
+        jupApiParams ?? ''
       }`,
     statics: {
       claimStart: 1712235600000,
@@ -69,7 +62,7 @@ export const airdropConfigs: AirdropConfig[] = [
     platformId,
     getApiPath: (owner: string) =>
       `${lfgApiBaseUrl}/TNSRxcUxoT9xBG3de7PiJyTDYu7kskLqcpddxnEJAS6/${owner}?${
-        jupApiToken ?? ''
+        jupApiParams ?? ''
       }`,
     statics: {
       claimStart: 1712534400000,
@@ -90,7 +83,7 @@ export const airdropConfigs: AirdropConfig[] = [
     platformId,
     getApiPath: (owner: string) =>
       `${lfgApiBaseUrl}/SHARKSYJjqaNyxVfrpnBN9pjgkhwDhatnMyicWPnr1s/${owner}?${
-        jupApiToken ?? ''
+        jupApiParams ?? ''
       }`,
     statics: {
       claimStart: 1713225600000,
@@ -111,7 +104,7 @@ export const airdropConfigs: AirdropConfig[] = [
     platformId,
     getApiPath: (owner: string) =>
       `${lfgApiBaseUrl}/UPTx1d24aBWuRgwxVnFmX4gNraj3QGFzL3QqBgxtWQG/${owner}?${
-        jupApiToken ?? ''
+        jupApiParams ?? ''
       }`,
     statics: {
       claimStart: 1717077600000,
@@ -152,7 +145,7 @@ export const airdropConfigs: AirdropConfig[] = [
     platformId,
     getApiPath: (owner: string) =>
       `https://jupuary-api.jup.ag/claim-proof-2025/${owner}?${
-        jupApiToken ?? ''
+        jupApiParams ?? ''
       }`,
     statics: {
       claimStart: 1737547200000,

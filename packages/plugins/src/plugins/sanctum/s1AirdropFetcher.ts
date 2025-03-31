@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import axios, { AxiosResponse } from 'axios';
 import { NetworkId } from '@sonarwatch/portfolio-core';
+import { jupApiParams } from '../jupiter/constants';
 import {
   AirdropFetcher,
   AirdropFetcherExecutor,
@@ -10,11 +11,7 @@ import {
 import { deriveClaimStatus } from '../../utils/solana/jupiter/deriveClaimStatus';
 import { getClientSolana } from '../../utils/clients';
 import { ClaimProofResponse } from '../jupiter/types';
-import {
-  jupApiToken,
-  lfgApiBaseUrl,
-  lfgDisProgram,
-} from '../jupiter/launchpad/constants';
+import { lfgApiBaseUrl, lfgDisProgram } from '../jupiter/launchpad/constants';
 import {
   s1AirdropStatics,
   cloudMint,
@@ -32,7 +29,7 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
   const claimProofBase: AxiosResponse<ClaimProofResponse> | null = await axios
     .get(
       `${lfgApiBaseUrl}/CLoUDKc4Ane7HeQcPpE3YHnznRxhMimJ4MyaUqyHFzAu/${owner}?${
-        jupApiToken ?? ''
+        jupApiParams ?? ''
       }`,
       {
         timeout: 5000,
@@ -102,7 +99,7 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
   const claimProofEarn: AxiosResponse<ClaimProofResponse> | null = await axios
     .get(
       `${lfgApiBaseUrl}/earnestness-CLoUDKc4Ane7HeQcPpE3YHnznRxhMimJ4MyaUqyHFzAu/${owner}?${
-        jupApiToken ?? ''
+        jupApiParams ?? ''
       }`,
       {
         timeout: 5000,

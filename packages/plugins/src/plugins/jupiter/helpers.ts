@@ -1,7 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 import axios, { AxiosResponse } from 'axios';
 import { PriceResponse } from './types';
-import { lockerPubkey, voteProgramId } from './launchpad/constants';
+import { lockerPubkey, voteProgramId } from './constants';
 
 export function getVotePda(owner: string): PublicKey {
   return PublicKey.findProgramAddressSync(

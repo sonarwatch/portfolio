@@ -1,6 +1,7 @@
 import { AirdropStatics } from '../../../AirdropFetcher';
-import { jupApiToken, jupDecimals, jupMint } from '../launchpad/constants';
+import { jupDecimals, jupMint } from '../launchpad/constants';
 import { dbrDecimals, dbrMint } from '../../debridge/constants';
+import { jupApiParams } from '../constants';
 
 export const platformId = 'jupiter-governance';
 const platformImage = 'https://sonar.watch/img/platforms/jupiterdao.webp';
@@ -83,7 +84,7 @@ export const asr1Config: AsrConfig = {
   ]),
   api: (owner: string) =>
     `https://worker.jup.ag/jup-asr-july-2024-claim-proof/${owner}?${
-      jupApiToken ?? ''
+      jupApiParams ?? ''
     }`,
 };
 
@@ -98,7 +99,7 @@ export const asr2Config: AsrConfig = {
   ]),
   api: (owner: string) =>
     `https://worker.jup.ag/asr-claim-proof/${owner}?asrTimeline=oct-2024&mints=JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN%2CCLoUDKc4Ane7HeQcPpE3YHnznRxhMimJ4MyaUqyHFzAu&${
-      jupApiToken ?? ''
+      jupApiParams ?? ''
     }`,
 };
 
@@ -110,6 +111,6 @@ export const asr3Config: AsrConfig = {
   ]),
   api: (owner: string) =>
     `https://worker.jup.ag/asr-claim-proof/${owner}?asrTimeline=jan-2025&mints=JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN%2CDBRiDgJAMsM95moTzJs7M9LnkGErpbv9v6CUR1DXnUu5&${
-      jupApiToken ?? ''
+      jupApiParams ?? ''
     }`,
 };
