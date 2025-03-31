@@ -1,7 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 import axios, { AxiosResponse } from 'axios';
 import { PriceResponse } from './types';
-import { lockerPubkey, voteProgramId } from './constants';
+import { jupApiParams, lockerPubkey, voteProgramId } from './constants';
 
 export function getVotePda(owner: string): PublicKey {
   return PublicKey.findProgramAddressSync(
@@ -15,16 +15,16 @@ export function getVotePda(owner: string): PublicKey {
 }
 
 const maxIdsPerRequest = 100;
+const jupPriceApiUrl = 'https://api.jup.ag/price/v2';
 
 export async function getJupiterPrices(mints: PublicKey[], vsMint: PublicKey) {
-  const endpoint =
-    process.env['PORTFOLIO_JUP_PRICE_API_URL'] || 'https://api.jup.ag/price/v2';
-
   let res;
   const pricesData = [];
   let subMints;
   let start = 0;
   let end = maxIdsPerRequest - 1;
+  const endpoint = `${jupPriceApiUrl}?${jupApiParams ?? ''}`;
+
   do {
     subMints = mints.slice(start, end);
     res = await axios.get<unknown, AxiosResponse<PriceResponse>>(endpoint, {

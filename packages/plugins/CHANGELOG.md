@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.164](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.163...plugins-0.14.164) (2025-03-31)
+
+
+### Features
+
+* **jupiter:** move jupMint and jupDecimals constants ([99b5c04](https://github.com/sonarwatch/portfolio/commit/99b5c04d38b30f59ca0f2978d3e1111107d29f50))
+
+
+
 ## [0.14.163](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.162...plugins-0.14.163) (2025-03-28)
 
 
