@@ -10,8 +10,8 @@ import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import {
   IOUTokensElementName,
-  mergeMineIdlItem,
-  mineIdlItem,
+  mergeMineProgramId,
+  mineProgramId,
   platformId,
   rewardersCacheKey,
 } from './constants';
@@ -20,22 +20,23 @@ import { platformId as saberPlatformId } from '../saber/constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
 import {
-  getAutoParsedMultipleAccountsInfo,
-  getAutoParsedProgramAccounts,
+  getParsedMultipleAccountsInfo,
   ParsedAccount,
 } from '../../utils/solana';
-import {
-  DetailedTokenInfo,
-  MergeMiner,
-  Miner,
-  QuarryData,
-  Rewarder,
-} from './types';
+import { DetailedTokenInfo, Rewarder } from './types';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
-import { mergeMinerFilters, minerFilters } from './filters';
 import { calculatePositions } from './calculatePositions';
+import {
+  mergeMinerStruct,
+  MergeMiner,
+  minerStruct,
+  Miner,
+  quarryStruct,
+  Quarry,
+} from './structs';
+import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 
 const rewardersMemo = new MemoizedCache<Rewarder[]>(rewardersCacheKey, {
   prefix: platformId,
@@ -46,47 +47,46 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
 
   const [mergeMinerAccounts, minerAccounts] = await Promise.all([
-    getAutoParsedProgramAccounts<MergeMiner>(
-      connection,
-      mergeMineIdlItem,
-      mergeMinerFilters(owner)
-    ).then(
-      (accs) =>
-        accs.filter(
-          (acc) => acc !== null && acc.primaryBalance !== '0'
-        ) as ParsedAccount<MergeMiner>[]
-    ),
-    getAutoParsedProgramAccounts<Miner>(
-      connection,
-      mineIdlItem,
-      minerFilters(owner)
-    ).then(
-      (accs) =>
-        accs.filter(
-          (acc) => acc !== null && acc.balance !== '0'
-        ) as ParsedAccount<Miner>[]
-    ),
+    ParsedGpa.build(connection, mergeMinerStruct, mergeMineProgramId)
+      .addRawFilter(40, owner)
+      .addDataSizeFilter(97)
+      .run()
+      .then(
+        (accs) =>
+          accs.filter(
+            (acc) => acc !== null && !acc.primaryBalance.isZero()
+          ) as ParsedAccount<MergeMiner>[]
+      ),
+    ParsedGpa.build(connection, minerStruct, mineProgramId)
+      .addRawFilter(40, owner)
+      .addDataSizeFilter(145)
+      .run()
+      .then(
+        (accs) =>
+          accs.filter(
+            (acc) => acc !== null && !acc.balance.isZero()
+          ) as ParsedAccount<Miner>[]
+      ),
   ]);
   if (mergeMinerAccounts.length === 0 && minerAccounts.length === 0) return [];
 
   const replicaMinerAccounts = await Promise.all(
     mergeMinerAccounts.map((mmAcount) =>
-      getAutoParsedProgramAccounts<Miner>(
-        connection,
-        mineIdlItem,
-        minerFilters(mmAcount.pubkey.toString())
-      )
+      ParsedGpa.build(connection, minerStruct, mineProgramId)
+        .addRawFilter(40, mmAcount.pubkey.toString())
+        .addDataSizeFilter(145)
+        .run()
     )
   );
 
-  const quarryAccounts = await getAutoParsedMultipleAccountsInfo<QuarryData>(
+  const quarryAccounts = await getParsedMultipleAccountsInfo(
     connection,
-    mineIdlItem,
+    quarryStruct,
     [...minerAccounts, ...[...replicaMinerAccounts.values()].flat()].map(
       (m) => new PublicKey(m.quarry)
     )
   ).then(
-    (accs) => accs.filter((acc) => acc !== null) as ParsedAccount<QuarryData>[]
+    (accs) => accs.filter((acc) => acc !== null) as ParsedAccount<Quarry>[]
   );
 
   const allRewarders = await rewardersMemo.getItem(cache);

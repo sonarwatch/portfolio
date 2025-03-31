@@ -1,7 +1,8 @@
 import { PublicKey } from '@solana/web3.js';
 import { mergeMineProgramId, mineProgramId } from './constants';
-import { MergeMiner, Miner, QuarryAndMint, QuarryPDA, Rewarder } from './types';
+import { QuarryAndMint, QuarryPDA, Rewarder } from './types';
 import { ParsedAccount } from '../../utils/solana';
+import { MergeMiner, Miner } from './structs';
 
 const getQuarryPDA = (t: PublicKey, e: PublicKey) =>
   PublicKey.findProgramAddressSync(

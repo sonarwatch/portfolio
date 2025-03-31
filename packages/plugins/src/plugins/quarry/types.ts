@@ -56,26 +56,6 @@ export type QuarryAndMint = {
   rewardsMint: PublicKey;
 };
 
-export type Miner = {
-  quarry: string;
-  authority: string;
-  bump: string;
-  tokenVaultKey: string;
-  rewardsEarned: string;
-  rewardsPerTokenPaid: string;
-  balance: string;
-  index: string;
-};
-
-export type MergeMiner = {
-  pool: string;
-  owner: string;
-  bump: number;
-  index: string;
-  primaryBalance: string;
-  replicaBalance: string;
-};
-
 export type QuarryPDA = {
   primaryQuarry: PublicKey;
   mm: PublicKey;
@@ -107,18 +87,4 @@ export type Position = {
   rewardsBalance: BigNumber[];
   stakedTokenInfo: DetailedTokenInfo;
   stakedBalance: string;
-};
-
-export type QuarryData = {
-  rewarder: string;
-  tokenMintKey: string;
-  index: number;
-  tokenMintDecimals: number;
-  famineTs: string;
-  lastUpdateTs: string;
-  rewardsPerTokenStored: string;
-  annualRewardsRate: string;
-  rewardsShare: string;
-  totalTokensDeposited: string;
-  numMiners: string;
 };

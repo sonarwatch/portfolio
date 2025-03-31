@@ -1,29 +1,30 @@
 import BN from 'bn.js';
 import BigNumber from 'bignumber.js';
-import { Miner, QuarryData } from './types';
+import { Quarry, Miner } from './structs';
 import { Payroll } from './payroll';
+import { toBN } from '../../utils/misc/toBN';
 
 export const getClaimableRewards = (
-  quarryAccount: QuarryData,
+  quarryAccount: Quarry,
   minerAccount: Miner
 ) => {
   const timeInSec = new BN(Math.floor(Date.now() / 1000));
 
   const payroll = new Payroll(
-    new BN(quarryAccount.famineTs),
-    new BN(quarryAccount.lastUpdateTs),
-    new BN(quarryAccount.annualRewardsRate),
-    new BN(quarryAccount.rewardsPerTokenStored),
-    new BN(quarryAccount.totalTokensDeposited)
+    toBN(quarryAccount.famineTs),
+    toBN(quarryAccount.lastUpdateTs),
+    toBN(quarryAccount.annualRewardsRate),
+    toBN(quarryAccount.rewardsPerTokenStored),
+    toBN(quarryAccount.totalTokensDeposited)
   );
 
   return new BigNumber(
     payroll
       .calculateRewardsEarned(
         timeInSec,
-        new BN(minerAccount.balance),
-        new BN(minerAccount.rewardsPerTokenPaid),
-        new BN(minerAccount.rewardsEarned)
+        toBN(minerAccount.balance),
+        toBN(minerAccount.rewardsPerTokenPaid),
+        toBN(minerAccount.rewardsEarned)
       )
       .toString()
   );

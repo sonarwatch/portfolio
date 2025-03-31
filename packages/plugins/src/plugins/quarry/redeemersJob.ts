@@ -4,20 +4,24 @@ import { Job, JobExecutor } from '../../Job';
 import {
   IOUTokensElementName,
   platformId,
-  quarryRedeemerIdlItem,
-  redeemerIdlItem,
+  quarryRedeemerProgramId,
+  redeemerProgramId,
 } from './constants';
-import { Redeemer } from './types';
 import { getClientSolana } from '../../utils/clients';
-import { getAutoParsedProgramAccounts } from '../../utils/solana';
+import { quarryRedeemerStruct, redeemerStruct } from './structs';
+import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
 
   const accounts = (
     await Promise.all([
-      getAutoParsedProgramAccounts<Redeemer>(connection, quarryRedeemerIdlItem),
-      getAutoParsedProgramAccounts<Redeemer>(connection, redeemerIdlItem),
+      ParsedGpa.build(
+        connection,
+        quarryRedeemerStruct,
+        quarryRedeemerProgramId
+      ).run(),
+      ParsedGpa.build(connection, redeemerStruct, redeemerProgramId).run(),
     ])
   ).flat();
 
@@ -26,16 +30,16 @@ const executor: JobExecutor = async (cache: Cache) => {
   const sources: TokenPriceSource[] = [];
 
   const tokenPrices = await cache.getTokenPricesAsMap(
-    accounts.map((acc) => acc.redemptionMint),
+    accounts.map((acc) => acc.redemptionMint.toString()),
     NetworkId.solana
   );
 
   accounts.forEach((acc) => {
-    const redemptionTokenPrice = tokenPrices.get(acc.redemptionMint);
+    const redemptionTokenPrice = tokenPrices.get(acc.redemptionMint.toString());
     if (!redemptionTokenPrice) return;
 
     sources.push({
-      address: acc.iouMint,
+      address: acc.iouMint.toString(),
       decimals: redemptionTokenPrice.decimals,
       id: platformId,
       networkId: NetworkId.solana,
@@ -46,7 +50,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       elementName: IOUTokensElementName,
       underlyings: [
         {
-          address: acc.redemptionMint,
+          address: acc.redemptionMint.toString(),
           decimals: redemptionTokenPrice.decimals,
           amountPerLp: 1,
           networkId: NetworkId.solana,
