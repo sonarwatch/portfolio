@@ -9,7 +9,7 @@ import {
   ETHX_CONTRACT_ADDRESS_ETHREUM_MAINNET,
   platformId,
   ETHX_STAKING_POOL_ETHEREUM,
-  STAKING_POOL_MANAGER_ADDRESS_ETHREUM_MAINNET,
+  SD_TOKEN_ADDRESS_ETHREUM_MAINNET,
 } from './constants';
 
 import { Cache } from '../../Cache';
@@ -21,8 +21,8 @@ const DECIMALS_ON_CONTRACT = 18;
 const NETWORK_ID = NetworkId.ethereum;
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const contractsToFetchBalanceFor = [ETHX_CONTRACT_ADDRESS_ETHREUM_MAINNET, STAKING_POOL_MANAGER_ADDRESS_ETHREUM_MAINNET];
-  const logCtx = { fn: 'staderEthxEthereumFetcher::executor', owner, networkId: NETWORK_ID };
+  const contractsToFetchBalanceFor = [ETHX_CONTRACT_ADDRESS_ETHREUM_MAINNET, SD_TOKEN_ADDRESS_ETHREUM_MAINNET];
+  const logCtx = { fn: 'staderEthereumFetcher::executor', owner, networkId: NETWORK_ID };
 
   verboseLog({ ...logCtx, contractsToFetchBalanceFor }, 'Fetching stader ethx balances');
 
@@ -91,7 +91,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const stakedElement: PortfolioElement = {
       networkId: NETWORK_ID,
-      label: 'Staked',
+      label: 'Deposit',
       platformId,
       type: PortfolioElementType.multiple,
       value: stakedAsset.value,
