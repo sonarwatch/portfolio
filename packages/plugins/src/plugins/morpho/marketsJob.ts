@@ -3,7 +3,7 @@ import {
   formatTokenAddress,
   networks,
 } from '@sonarwatch/portfolio-core';
-import { getMarkets } from './helpers/markets';
+import { getMarkets } from './helpers/api';
 import { Job, JobExecutor } from '../../Job';
 import { morphoMarketsCachePrefix, platformId } from './constants';
 import { Cache } from '../../Cache';
@@ -24,23 +24,24 @@ export function marketsJob(networkId: EvmNetworkIdType): Job {
     ]);
     const uniqueTokens = Object.values(
       tokens.reduce((acc, token) => {
-        console.log(token);
         acc[token.address.toLowerCase()] = token;
         return acc;
       }, {} as Record<string, (typeof tokens)[number]>)
     );
 
     // Token Prices
-    const sources = uniqueTokens.map((token) => ({
-      address: formatTokenAddress(token.address, networkId),
-      decimals: token.decimals,
-      id: platformId,
-      networkId,
-      platformId,
-      price: token.priceUsd || 0,
-      timestamp: Date.now(),
-      weight: 1,
-    }));
+    const sources = uniqueTokens
+      .filter((token) => !!token.priceUsd)
+      .map((token) => ({
+        address: formatTokenAddress(token.address, networkId),
+        decimals: token.decimals,
+        id: platformId,
+        networkId,
+        platformId,
+        price: token.priceUsd!,
+        timestamp: Date.now(),
+        weight: 1,
+      }));
 
     // Token Metadata
     const morphoTokensMetaData = uniqueTokens.map((morphoToken) => ({
