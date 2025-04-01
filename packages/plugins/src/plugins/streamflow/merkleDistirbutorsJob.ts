@@ -6,6 +6,7 @@ import { getClientSolana } from '../../utils/clients';
 import { Job, JobExecutor } from '../../Job';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 import { merkleDistributorStruct } from './structs';
+import { MerkleInfo } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -19,7 +20,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     .addDataSizeFilter(344)
     .run();
 
-  const activeMerkles: { address: string; mint: string }[] = [];
+  const activeMerkles: MerkleInfo[] = [];
   for (const merkle of merkleAccounts) {
     // Airdrop Expired
     if (merkle.endTs.times(1000).isLessThan(Date.now())) continue;

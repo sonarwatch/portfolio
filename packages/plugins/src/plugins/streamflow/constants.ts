@@ -12,6 +12,10 @@ export const pid = new PublicKey('aSTRM2NKoKxNnkmLWk9sz3k74gKBk9t7bpPrTGxMszH');
 export const merklePid = new PublicKey(
   'MErKy6nZVoVAkryxAejJz2juifQ4ArgLgHmaJCQkU7N'
 );
+export const stakePid = new PublicKey(
+  'STAKEvGqQTtzJZH6BWDcbpzXXn2BBerPAgQ3EGLN2GH'
+);
+
 export const airdropApi =
   'https://api.streamflow.foundation/v2/api/airdrop-recipients/check-eligibility';
 

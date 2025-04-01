@@ -14,3 +14,4 @@ export type Data = {
 };
 
 export type MerkleInfo = { address: string; mint: string };
+export type StakePoolInfo = MerkleInfo & { stakeMint: string };

@@ -9,7 +9,7 @@ import {
   uniformFixedSizeArray,
 } from '@metaplex-foundation/beet';
 import { publicKey } from '@metaplex-foundation/beet-solana';
-import { blob, u64 } from '../../utils/solana';
+import { blob, u128, u64 } from '../../utils/solana';
 
 export type VestingAccount = {
   magic: BigNumber;
@@ -256,4 +256,88 @@ export const claimStatusStruct = new FixableBeetStruct<ClaimStatus>(
     ['buffer2', uniformFixedSizeArray(u8, 22)], // Fixed-size array of 22 bytes
   ],
   (args) => args as ClaimStatus
+);
+
+// Type for StakePool
+export type StakePool = {
+  accountDiscriminator: number[];
+  bump: number;
+  nonce: number;
+  mint: PublicKey;
+  creator: PublicKey;
+  authority: PublicKey;
+  minWeight: BigNumber;
+  maxWeight: BigNumber;
+  minDuration: BigNumber;
+  maxDuration: BigNumber;
+  permissionless: boolean;
+  vault: PublicKey;
+  stakeMint: PublicKey;
+  totalStake: BigNumber;
+  totalEffectiveStake: BigNumber;
+  freezeStakeMint: boolean;
+  unstakePeriod: BigNumber;
+  buffer: number[];
+};
+
+// Struct for StakePool
+export const stakePoolStruct = new FixableBeetStruct<StakePool>(
+  [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+    ['bump', u8],
+    ['nonce', u8],
+    ['mint', publicKey],
+    ['creator', publicKey],
+    ['authority', publicKey],
+    ['minWeight', u64],
+    ['maxWeight', u64],
+    ['minDuration', u64],
+    ['maxDuration', u64],
+    ['permissionless', bool],
+    ['vault', publicKey],
+    ['stakeMint', publicKey],
+    ['totalStake', u64],
+    ['totalEffectiveStake', u64],
+    ['freezeStakeMint', bool],
+    ['unstakePeriod', u64],
+    ['buffer', uniformFixedSizeArray(u8, 55)], // Fixed-size array of 55 bytes
+  ],
+  (args) => args as StakePool
+);
+
+// Type for StakeEntry
+export type StakeEntry = {
+  accountDiscriminator: number[];
+  nonce: number;
+  stakePool: PublicKey;
+  payer: PublicKey;
+  authority: PublicKey;
+  amount: BigNumber;
+  duration: BigNumber;
+  effectiveAmount: BigNumber;
+  createdTs: BigNumber;
+  closedTs: BigNumber;
+  priorTotalEffectiveStake: BigNumber;
+  unstakeTs: BigNumber;
+  buffer: number[];
+};
+
+// Struct for StakeEntry
+export const stakeEntryStruct = new FixableBeetStruct<StakeEntry>(
+  [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+    ['nonce', u32],
+    ['stakePool', publicKey],
+    ['payer', publicKey],
+    ['authority', publicKey],
+    ['amount', u64],
+    ['duration', u64],
+    ['effectiveAmount', u128],
+    ['createdTs', u64],
+    ['closedTs', u64],
+    ['priorTotalEffectiveStake', u128],
+    ['unstakeTs', u64],
+    ['buffer', uniformFixedSizeArray(u8, 40)], // Fixed-size array of 40 bytes
+  ],
+  (args) => args as StakeEntry
 );
