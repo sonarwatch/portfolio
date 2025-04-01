@@ -12,18 +12,28 @@ import {
 } from './constants';
 
 import { Cache } from '../../Cache';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { getBalances } from '../../utils/evm/getBalances';
+import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { verboseLog } from '../octav/utils/loggingUtils';
 
 const DECIMALS_ON_CONTRACT = 18;
 const NETWORK_ID = NetworkId.ethereum;
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const contractsToFetchBalanceFor = [CONTRACT_ADDRESS_ETHX_TOKEN_ETHEREUM_MAINNET, CONTRACT_ADDRESS_SD_TOKEN_ETHEREUM_MAINNET];
-  const logCtx = { fn: 'staderEthereumFetcher::executor', owner, networkId: NETWORK_ID };
+  const contractsToFetchBalanceFor = [
+    CONTRACT_ADDRESS_ETHX_TOKEN_ETHEREUM_MAINNET,
+    CONTRACT_ADDRESS_SD_TOKEN_ETHEREUM_MAINNET,
+  ];
+  const logCtx = {
+    fn: 'staderEthereumFetcher::executor',
+    owner,
+    networkId: NETWORK_ID,
+  };
 
-  verboseLog({ ...logCtx, contractsToFetchBalanceFor }, 'Fetching stader ethx balances');
+  verboseLog(
+    { ...logCtx, contractsToFetchBalanceFor },
+    'Fetching stader ethx balances'
+  );
 
   const balances = await getBalances(
     owner,
@@ -38,14 +48,16 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (rawBalance0) {
     const contractAddress = contractsToFetchBalanceFor[0];
     const contractDecimals = DECIMALS_ON_CONTRACT;
-    const amount = new BigNumber(rawBalance0).div(10 ** contractDecimals).toNumber();
+    const amount = new BigNumber(rawBalance0)
+      .div(10 ** contractDecimals)
+      .toNumber();
 
-    const tokenPrice = await cache.getTokenPrice(
-      contractAddress,
-      NETWORK_ID
+    const tokenPrice = await cache.getTokenPrice(contractAddress, NETWORK_ID);
+
+    verboseLog(
+      { ...logCtx, contractAddress, amount, tokenPrice },
+      'Token price retrieved from cache'
     );
-
-    verboseLog({ ...logCtx, contractAddress, amount, tokenPrice }, 'Token price retrieved from cache');
 
     const stakedAsset = tokenPriceToAssetToken(
       contractAddress,
@@ -72,14 +84,16 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const contractAddress = contractsToFetchBalanceFor[1];
     const contractDecimals = DECIMALS_ON_CONTRACT;
 
-    const amount = new BigNumber(rawBalance1).div(10 ** contractDecimals).toNumber();
+    const amount = new BigNumber(rawBalance1)
+      .div(10 ** contractDecimals)
+      .toNumber();
 
-    const tokenPrice = await cache.getTokenPrice(
-      contractAddress,
-      NETWORK_ID
+    const tokenPrice = await cache.getTokenPrice(contractAddress, NETWORK_ID);
+
+    verboseLog(
+      { ...logCtx, amount, tokenPrice },
+      'Token price retrieved from cache'
     );
-
-    verboseLog({ ...logCtx, amount, tokenPrice }, 'Token price retrieved from cache');
 
     const stakedAsset = tokenPriceToAssetToken(
       contractAddress,
