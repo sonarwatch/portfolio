@@ -18,3 +18,6 @@ export const Underlying = {
 
 export const wethAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 export const wethDecimals = 18;
+
+export const morphoApiUrl = 'https://blue-api.morpho.org/graphql';
+export const morphoMarketsCachePrefix = `${platformId}-markets`;

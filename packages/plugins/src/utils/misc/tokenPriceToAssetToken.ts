@@ -19,10 +19,11 @@ export default function tokenPriceToAssetToken(
   link?: string
 ): PortfolioAssetToken {
   const fPrice: UsdValue = tokenPrice?.price || price || null;
+  console.log(fPrice);
   return {
     type: PortfolioAssetType.token,
     networkId,
-    value: fPrice ? fPrice * amount : null,
+    value: fPrice != null ? fPrice * amount : null,
     data: {
       address: formatTokenAddress(address, networkId),
       amount,

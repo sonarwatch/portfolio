@@ -19,3 +19,27 @@ export type ParsedUpdatedIndexes = {
     p2pIndex: string;
   };
 };
+
+export type MorphoMarketRes = {
+  markets: {
+    items: {
+      uniqueKey: string;
+      loanAsset: {
+        address: string;
+        decimals: number;
+        logoURI: string | null;
+        name: string;
+        priceUsd: number | null;
+        symbol: string;
+      };
+      collateralAsset: {
+        address: string;
+        decimals: number;
+        logoURI: string | null;
+        name: string;
+        priceUsd: number | null;
+        symbol: string;
+      };
+    }[];
+  };
+};
