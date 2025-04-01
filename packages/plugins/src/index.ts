@@ -161,6 +161,7 @@ import * as coingecko from './plugins/coingecko';
 import * as zeus from './plugins/zeus';
 import * as pumpswap from './plugins/pumpswap';
 import * as pumpkin from './plugins/pumpkin';
+import * as nirvana from './plugins/nirvana';
 
 export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
@@ -333,6 +334,7 @@ const modules = [
   zeus,
   pumpswap,
   pumpkin,
+  nirvana,
 ];
 
 // JOBS //

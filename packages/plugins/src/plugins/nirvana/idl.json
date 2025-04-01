@@ -1,0 +1,1586 @@
+{
+  "version": "0.1.0",
+  "name": "nvana",
+  "instructions": [
+    {
+      "name": "adminSetMetadata",
+      "accounts": [
+        { "name": "payer", "isMut": true, "isSigner": true },
+        { "name": "admin", "isMut": false, "isSigner": true },
+        { "name": "tenant", "isMut": false, "isSigner": false },
+        { "name": "mint", "isMut": false, "isSigner": false },
+        { "name": "metadata", "isMut": true, "isSigner": false },
+        { "name": "tokenMetadataProgram", "isMut": false, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "metadataName", "type": "string" },
+        { "name": "metadataSymbol", "type": "string" },
+        { "name": "metadataUri", "type": "string" }
+      ]
+    },
+    {
+      "name": "initTenant",
+      "accounts": [
+        { "name": "payer", "isMut": true, "isSigner": true },
+        { "name": "admin", "isMut": false, "isSigner": true },
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "vaultAlms", "isMut": false, "isSigner": false },
+        { "name": "vaultMetta", "isMut": false, "isSigner": false },
+        { "name": "vaultPrana", "isMut": false, "isSigner": false },
+        { "name": "vaultAna", "isMut": false, "isSigner": false },
+        { "name": "escrowRevAna", "isMut": false, "isSigner": false },
+        { "name": "escrowRevNirv", "isMut": false, "isSigner": false },
+        { "name": "mintMain", "isMut": false, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "tenant", "type": { "defined": "TenantConfig" } }]
+    },
+    {
+      "name": "adminInitPriceCurve",
+      "accounts": [
+        { "name": "payer", "isMut": true, "isSigner": true },
+        { "name": "admin", "isMut": false, "isSigner": true },
+        { "name": "tenant", "isMut": false, "isSigner": false },
+        { "name": "priceCurve", "isMut": true, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    },
+    {
+      "name": "adminSetParams",
+      "accounts": [
+        { "name": "admin", "isMut": false, "isSigner": true },
+        { "name": "tenant", "isMut": true, "isSigner": false }
+      ],
+      "args": [{ "name": "params", "type": { "defined": "AdminParams" } }]
+    },
+    {
+      "name": "adminSetControls",
+      "accounts": [
+        { "name": "admin", "isMut": false, "isSigner": true },
+        { "name": "tenant", "isMut": true, "isSigner": false }
+      ],
+      "args": [{ "name": "controls", "type": { "defined": "Controls" } }]
+    },
+    {
+      "name": "buy",
+      "accounts": [
+        { "name": "payer", "isMut": true, "isSigner": true },
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "mintAna", "isMut": true, "isSigner": false },
+        { "name": "backingVault", "isMut": true, "isSigner": false },
+        { "name": "escrowRevAna", "isMut": true, "isSigner": false },
+        { "name": "backingSrc", "isMut": true, "isSigner": false },
+        { "name": "anaDst", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false },
+        { "name": "tokenProgramMain", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "anaOut", "type": "u64" },
+        { "name": "maxTokensIn", "type": "u64" }
+      ]
+    },
+    {
+      "name": "buyExact",
+      "accounts": [
+        { "name": "payer", "isMut": true, "isSigner": true },
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "mintAna", "isMut": true, "isSigner": false },
+        { "name": "backingVault", "isMut": true, "isSigner": false },
+        { "name": "escrowRevAna", "isMut": true, "isSigner": false },
+        { "name": "backingSrc", "isMut": true, "isSigner": false },
+        { "name": "anaDst", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false },
+        { "name": "tokenProgramMain", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "coinsIn", "type": "u64" },
+        { "name": "minAnaOut", "type": "u64" }
+      ]
+    },
+    {
+      "name": "buyChecked",
+      "docs": ["Not usable after the migration is complete"],
+      "accounts": [
+        { "name": "payer", "isMut": true, "isSigner": true },
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "mintAna", "isMut": true, "isSigner": false },
+        { "name": "escrowRevAna", "isMut": true, "isSigner": false },
+        { "name": "backingSrc", "isMut": true, "isSigner": false },
+        { "name": "anaDst", "isMut": true, "isSigner": false },
+        { "name": "mintNirv", "isMut": false, "isSigner": false },
+        { "name": "mintMain", "isMut": false, "isSigner": false },
+        { "name": "backingVaultMain", "isMut": true, "isSigner": false },
+        { "name": "backingVaultNirv", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false },
+        { "name": "tokenProgramMain", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "anaOut", "type": "u64" },
+        { "name": "maxTokensIn", "type": "u64" }
+      ]
+    },
+    {
+      "name": "buyExactChecked",
+      "docs": ["Not usable after the migration is complete"],
+      "accounts": [
+        { "name": "payer", "isMut": true, "isSigner": true },
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "mintAna", "isMut": true, "isSigner": false },
+        { "name": "mintNirv", "isMut": false, "isSigner": false },
+        { "name": "mintMain", "isMut": false, "isSigner": false },
+        { "name": "backingVaultMain", "isMut": true, "isSigner": false },
+        { "name": "backingVaultNirv", "isMut": true, "isSigner": false },
+        { "name": "escrowRevAna", "isMut": true, "isSigner": false },
+        { "name": "backingSrc", "isMut": true, "isSigner": false },
+        { "name": "anaDst", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false },
+        { "name": "tokenProgramMain", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "coinsIn", "type": "u64" },
+        { "name": "minAnaOut", "type": "u64" }
+      ]
+    },
+    {
+      "name": "buy2",
+      "docs": [
+        "Buy ANA with with exact ANA out",
+        "Can only be used once the new price curve is initialized"
+      ],
+      "accounts": [
+        { "name": "payer", "isMut": true, "isSigner": true },
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "priceCurve", "isMut": false, "isSigner": false },
+        { "name": "mintAna", "isMut": true, "isSigner": false },
+        { "name": "escrowRevAna", "isMut": true, "isSigner": false },
+        { "name": "backingSrc", "isMut": true, "isSigner": false },
+        { "name": "anaDst", "isMut": true, "isSigner": false },
+        { "name": "mintNirv", "isMut": false, "isSigner": false },
+        { "name": "mintMain", "isMut": false, "isSigner": false },
+        { "name": "backingVaultMain", "isMut": true, "isSigner": false },
+        { "name": "backingVaultNirv", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false },
+        { "name": "tokenProgramMain", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "anaOut", "type": "u64" },
+        { "name": "maxTokensIn", "type": "u64" }
+      ]
+    },
+    {
+      "name": "buyExact2",
+      "docs": [
+        "Buy ANA with with exact coins in",
+        "Can only be used once the new price curve is initialized"
+      ],
+      "accounts": [
+        { "name": "payer", "isMut": true, "isSigner": true },
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "priceCurve", "isMut": false, "isSigner": false },
+        { "name": "mintAna", "isMut": true, "isSigner": false },
+        { "name": "mintNirv", "isMut": false, "isSigner": false },
+        { "name": "mintMain", "isMut": false, "isSigner": false },
+        { "name": "backingVaultMain", "isMut": true, "isSigner": false },
+        { "name": "backingVaultNirv", "isMut": true, "isSigner": false },
+        { "name": "escrowRevAna", "isMut": true, "isSigner": false },
+        { "name": "backingSrc", "isMut": true, "isSigner": false },
+        { "name": "anaDst", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false },
+        { "name": "tokenProgramMain", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "coinsIn", "type": "u64" },
+        { "name": "minAnaOut", "type": "u64" }
+      ],
+      "returns": { "defined": "BuyEvent2" }
+    },
+    {
+      "name": "sell",
+      "accounts": [
+        { "name": "payer", "isMut": true, "isSigner": true },
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "mintAna", "isMut": true, "isSigner": false },
+        { "name": "backingVault", "isMut": true, "isSigner": false },
+        { "name": "escrowRevAna", "isMut": true, "isSigner": false },
+        { "name": "backingDst", "isMut": true, "isSigner": false },
+        { "name": "anaSrc", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false },
+        { "name": "tokenProgramMain", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "anaIn", "type": "u64" },
+        { "name": "minTokensOut", "type": "u64" }
+      ]
+    },
+    {
+      "name": "sellChecked",
+      "docs": [
+        "Sell ANA with exact ANA in",
+        "Not usable after the migration is complete"
+      ],
+      "accounts": [
+        { "name": "payer", "isMut": true, "isSigner": true },
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "mintAna", "isMut": true, "isSigner": false },
+        { "name": "backingDst", "isMut": true, "isSigner": false },
+        { "name": "escrowRevAna", "isMut": true, "isSigner": false },
+        { "name": "backingVaultMain", "isMut": true, "isSigner": false },
+        { "name": "backingVaultNirv", "isMut": true, "isSigner": false },
+        { "name": "anaSrc", "isMut": true, "isSigner": false },
+        { "name": "mintNirv", "isMut": false, "isSigner": false },
+        { "name": "mintMain", "isMut": false, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false },
+        { "name": "tokenProgramMain", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "anaIn", "type": "u64" },
+        { "name": "minTokensOut", "type": "u64" }
+      ]
+    },
+    {
+      "name": "sell2",
+      "docs": [
+        "Sell ANA with exact ANA in (using new price curve)",
+        "Can only be used once the new price curve is initialized"
+      ],
+      "accounts": [
+        { "name": "payer", "isMut": true, "isSigner": true },
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "priceCurve", "isMut": true, "isSigner": false },
+        { "name": "mintAna", "isMut": true, "isSigner": false },
+        { "name": "backingDst", "isMut": true, "isSigner": false },
+        { "name": "escrowRevAna", "isMut": true, "isSigner": false },
+        { "name": "backingVaultMain", "isMut": true, "isSigner": false },
+        { "name": "backingVaultNirv", "isMut": true, "isSigner": false },
+        { "name": "anaSrc", "isMut": true, "isSigner": false },
+        { "name": "mintNirv", "isMut": false, "isSigner": false },
+        { "name": "mintMain", "isMut": false, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false },
+        { "name": "tokenProgramMain", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "anaIn", "type": "u64" },
+        { "name": "minTokensOut", "type": "u64" }
+      ],
+      "returns": { "defined": "SellEvent2" }
+    },
+    {
+      "name": "initPersonalAccount",
+      "accounts": [
+        { "name": "payer", "isMut": true, "isSigner": true },
+        { "name": "tenant", "isMut": false, "isSigner": false },
+        { "name": "owner", "isMut": false, "isSigner": false },
+        { "name": "personalAccount", "isMut": true, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    },
+    {
+      "name": "depositAna",
+      "accounts": [
+        { "name": "owner", "isMut": true, "isSigner": true },
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "personalAccount", "isMut": true, "isSigner": false },
+        { "name": "ownerAna", "isMut": true, "isSigner": false },
+        { "name": "vaultAna", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "amount", "type": "u64" }]
+    },
+    {
+      "name": "withdrawAna",
+      "accounts": [
+        { "name": "owner", "isMut": true, "isSigner": true },
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "personalAccount", "isMut": true, "isSigner": false },
+        { "name": "anaOwner", "isMut": true, "isSigner": false },
+        { "name": "escrowRevAna", "isMut": true, "isSigner": false },
+        { "name": "vaultAna", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "amount", "type": "u64" }]
+    },
+    {
+      "name": "borrowNirv",
+      "accounts": [
+        { "name": "owner", "isMut": true, "isSigner": true },
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "personalAccount", "isMut": true, "isSigner": false },
+        { "name": "nirvDst", "isMut": true, "isSigner": false },
+        { "name": "mintNirv", "isMut": true, "isSigner": false },
+        { "name": "escrowRevNirv", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "amount", "type": "u64" }]
+    },
+    {
+      "name": "repayNirv",
+      "accounts": [
+        { "name": "owner", "isMut": true, "isSigner": true },
+        { "name": "tenant", "isMut": false, "isSigner": false },
+        { "name": "personalAccount", "isMut": true, "isSigner": false },
+        { "name": "nirvOwner", "isMut": true, "isSigner": false },
+        { "name": "mintNirv", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "amount", "type": "u64" }]
+    },
+    {
+      "name": "stagePrana",
+      "accounts": [
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "personalAccount", "isMut": true, "isSigner": false }
+      ],
+      "args": []
+    },
+    {
+      "name": "collectPrana",
+      "accounts": [
+        { "name": "owner", "isMut": true, "isSigner": true },
+        { "name": "tenant", "isMut": false, "isSigner": false },
+        { "name": "mintPrana", "isMut": true, "isSigner": false },
+        { "name": "pranaDst", "isMut": true, "isSigner": false },
+        { "name": "personalAccount", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    },
+    {
+      "name": "executePrana",
+      "docs": ["Not usable after the migration is complete"],
+      "accounts": [
+        { "name": "payer", "isMut": true, "isSigner": true },
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "mintAna", "isMut": true, "isSigner": false },
+        { "name": "mintPrana", "isMut": true, "isSigner": false },
+        { "name": "backingVault", "isMut": true, "isSigner": false },
+        { "name": "backingSrc", "isMut": true, "isSigner": false },
+        { "name": "pranaSrc", "isMut": true, "isSigner": false },
+        { "name": "anaDst", "isMut": true, "isSigner": false },
+        { "name": "escrowRevAna", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false },
+        { "name": "tokenProgramMain", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "amount", "type": "u64" }]
+    },
+    {
+      "name": "executePranaChecked",
+      "docs": ["Not usable after the migration is complete"],
+      "accounts": [
+        { "name": "payer", "isMut": true, "isSigner": true },
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "mintAna", "isMut": true, "isSigner": false },
+        { "name": "mintMain", "isMut": false, "isSigner": false },
+        { "name": "mintNirv", "isMut": false, "isSigner": false },
+        { "name": "mintPrana", "isMut": true, "isSigner": false },
+        { "name": "backingSrc", "isMut": true, "isSigner": false },
+        { "name": "pranaSrc", "isMut": true, "isSigner": false },
+        { "name": "anaDst", "isMut": true, "isSigner": false },
+        { "name": "escrowRevAna", "isMut": true, "isSigner": false },
+        { "name": "backingVaultMain", "isMut": true, "isSigner": false },
+        { "name": "backingVaultNirv", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false },
+        { "name": "tokenProgramMain", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "amount", "type": "u64" }]
+    },
+    {
+      "name": "executePrana2",
+      "docs": [
+        "Execute prANA on the new price curve.",
+        "And sync the old price curve to the new price curve.",
+        "Treating the new price curve as the master.",
+        "Can only be used once the new price curve is initialized"
+      ],
+      "accounts": [
+        { "name": "payer", "isMut": true, "isSigner": true },
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "pc", "isMut": true, "isSigner": false },
+        { "name": "mintAna", "isMut": true, "isSigner": false },
+        { "name": "mintMain", "isMut": false, "isSigner": false },
+        { "name": "mintNirv", "isMut": false, "isSigner": false },
+        { "name": "mintPrana", "isMut": true, "isSigner": false },
+        { "name": "backingSrc", "isMut": true, "isSigner": false },
+        { "name": "pranaSrc", "isMut": true, "isSigner": false },
+        { "name": "anaDst", "isMut": true, "isSigner": false },
+        { "name": "escrowRevAna", "isMut": true, "isSigner": false },
+        { "name": "backingVaultMain", "isMut": true, "isSigner": false },
+        { "name": "backingVaultNirv", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false },
+        { "name": "tokenProgramMain", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "amount", "type": "u64" }]
+    },
+    {
+      "name": "initAlmsRewarder",
+      "accounts": [
+        { "name": "feePayer", "isMut": true, "isSigner": true },
+        { "name": "owner", "isMut": false, "isSigner": false },
+        { "name": "almsRewarder", "isMut": true, "isSigner": false },
+        { "name": "tenant", "isMut": false, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    },
+    {
+      "name": "stageAlmsRev",
+      "accounts": [
+        { "name": "almsRewarder", "isMut": true, "isSigner": false },
+        { "name": "tenant", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    },
+    {
+      "name": "depositAlms",
+      "accounts": [
+        { "name": "depositor", "isMut": true, "isSigner": true },
+        { "name": "almsRewarder", "isMut": true, "isSigner": false },
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "almsSrc", "isMut": true, "isSigner": false },
+        { "name": "vaultAlms", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "amount", "type": "u64" }]
+    },
+    {
+      "name": "withdrawAlms",
+      "accounts": [
+        { "name": "owner", "isMut": true, "isSigner": true },
+        { "name": "almsRewarder", "isMut": true, "isSigner": false },
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "almsDst", "isMut": true, "isSigner": false },
+        { "name": "vaultAlms", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "amount", "type": "u64" }]
+    },
+    {
+      "name": "collectAlmsRev",
+      "accounts": [
+        { "name": "owner", "isMut": true, "isSigner": true },
+        { "name": "almsRewarder", "isMut": true, "isSigner": false },
+        { "name": "tenant", "isMut": false, "isSigner": false },
+        { "name": "escrowRevNirv", "isMut": true, "isSigner": false },
+        { "name": "escrowRevAna", "isMut": true, "isSigner": false },
+        { "name": "anaDst", "isMut": true, "isSigner": false },
+        { "name": "nirvDst", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    },
+    {
+      "name": "setVotes",
+      "accounts": [
+        { "name": "owner", "isMut": true, "isSigner": true },
+        { "name": "personalAccount", "isMut": true, "isSigner": false },
+        { "name": "tenant", "isMut": true, "isSigner": false }
+      ],
+      "args": [{ "name": "votes", "type": { "defined": "PersonalBallot" } }]
+    },
+    {
+      "name": "setVotes2",
+      "docs": ["Not usable without global curve ballot"],
+      "accounts": [
+        { "name": "owner", "isMut": true, "isSigner": true },
+        { "name": "personalAccount", "isMut": true, "isSigner": false },
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "curveBallot", "isMut": true, "isSigner": false },
+        { "name": "personalCurveBallot", "isMut": true, "isSigner": false }
+      ],
+      "args": [
+        { "name": "newBallot", "type": { "defined": "PersonalBallot" } },
+        { "name": "curveVotes", "type": "i64" }
+      ]
+    },
+    {
+      "name": "tallyVotes",
+      "accounts": [{ "name": "tenant", "isMut": true, "isSigner": false }],
+      "args": []
+    },
+    {
+      "name": "tallyVotes2",
+      "docs": [
+        "Tally the votes for a tenant",
+        "will not work unless curve ballot is initialized"
+      ],
+      "accounts": [
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "curveBallot", "isMut": false, "isSigner": false },
+        { "name": "priceCurve", "isMut": true, "isSigner": false },
+        { "name": "mintAna", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    },
+    {
+      "name": "depositPrana",
+      "accounts": [
+        { "name": "depositor", "isMut": true, "isSigner": true },
+        { "name": "personalAccount", "isMut": true, "isSigner": false },
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "vaultPrana", "isMut": true, "isSigner": false },
+        { "name": "pranaSrc", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "amount", "type": "u64" }]
+    },
+    {
+      "name": "withdrawPrana",
+      "docs": ["Not usable after the migration is complete"],
+      "accounts": [
+        { "name": "owner", "isMut": true, "isSigner": true },
+        { "name": "personalAccount", "isMut": true, "isSigner": false },
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "vaultPrana", "isMut": true, "isSigner": false },
+        { "name": "pranaDst", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "amount", "type": "u64" }]
+    },
+    {
+      "name": "withdrawPrana2",
+      "accounts": [
+        { "name": "owner", "isMut": true, "isSigner": true },
+        { "name": "personalAccount", "isMut": true, "isSigner": false },
+        { "name": "personalCurveBallot", "isMut": true, "isSigner": false },
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "vaultPrana", "isMut": true, "isSigner": false },
+        { "name": "pranaDst", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "amount", "type": "u64" }]
+    },
+    {
+      "name": "raiseFloor",
+      "docs": ["Not usable after the migration is complete"],
+      "accounts": [
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "mintAna", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "newX1", "type": "u64" },
+        { "name": "newX2", "type": "u64" },
+        { "name": "silentFail", "type": "bool" }
+      ]
+    },
+    {
+      "name": "raiseFloorFromShoulderArg",
+      "docs": [
+        "Raise the floor with the new price curve.",
+        "Can only be used once the new price curve is initialized"
+      ],
+      "accounts": [
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "mintAna", "isMut": false, "isSigner": false },
+        { "name": "priceCurve", "isMut": true, "isSigner": false }
+      ],
+      "args": [
+        { "name": "shoulderShiftAmount", "type": "u64" },
+        { "name": "silentFail", "type": "bool" }
+      ]
+    },
+    {
+      "name": "depositMetta",
+      "accounts": [
+        { "name": "depositor", "isMut": true, "isSigner": true },
+        { "name": "mettaRewarder", "isMut": true, "isSigner": false },
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "mettaSrc", "isMut": true, "isSigner": false },
+        { "name": "vaultMetta", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "amount", "type": "u64" }]
+    },
+    {
+      "name": "withdrawMetta",
+      "accounts": [
+        { "name": "owner", "isMut": true, "isSigner": true },
+        { "name": "mettaRewarder", "isMut": true, "isSigner": false },
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "mettaDst", "isMut": true, "isSigner": false },
+        { "name": "vaultMetta", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "amount", "type": "u64" }]
+    },
+    {
+      "name": "collectMettaRev",
+      "accounts": [
+        { "name": "owner", "isMut": true, "isSigner": true },
+        { "name": "mettaRewarder", "isMut": true, "isSigner": false },
+        { "name": "tenant", "isMut": false, "isSigner": false },
+        { "name": "escrowRevNirv", "isMut": true, "isSigner": false },
+        { "name": "escrowRevAna", "isMut": true, "isSigner": false },
+        { "name": "anaDst", "isMut": true, "isSigner": false },
+        { "name": "nirvDst", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    },
+    {
+      "name": "initMettaRewarder",
+      "accounts": [
+        { "name": "feePayer", "isMut": true, "isSigner": true },
+        { "name": "owner", "isMut": false, "isSigner": false },
+        { "name": "mettaRewarder", "isMut": true, "isSigner": false },
+        { "name": "tenant", "isMut": false, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    },
+    {
+      "name": "stageMettaRev",
+      "accounts": [
+        { "name": "mettaRewarder", "isMut": true, "isSigner": false },
+        { "name": "tenant", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    },
+    {
+      "name": "stageRevPrana",
+      "docs": ["Stage the revenue for prana on a personal account."],
+      "accounts": [
+        { "name": "personalAccount", "isMut": true, "isSigner": false },
+        { "name": "tenant", "isMut": false, "isSigner": false }
+      ],
+      "args": [],
+      "returns": { "defined": "StageRevPranaEvent" }
+    },
+    {
+      "name": "collectRevPrana",
+      "docs": ["Collect the revenue for prana on a personal account."],
+      "accounts": [
+        { "name": "owner", "isMut": true, "isSigner": true },
+        { "name": "personalPosition", "isMut": true, "isSigner": false },
+        { "name": "tenant", "isMut": false, "isSigner": false },
+        { "name": "escrowRevNirv", "isMut": true, "isSigner": false },
+        { "name": "escrowRevAna", "isMut": true, "isSigner": false },
+        { "name": "anaDst", "isMut": true, "isSigner": false },
+        { "name": "nirvDst", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [],
+      "returns": { "defined": "CollectRevPranaEvent" }
+    },
+    {
+      "name": "mintPrana",
+      "accounts": [
+        { "name": "admin", "isMut": false, "isSigner": true },
+        { "name": "tenant", "isMut": false, "isSigner": false },
+        { "name": "mintPrana", "isMut": true, "isSigner": false },
+        { "name": "pranaDst", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "amount", "type": "u64" }]
+    },
+    {
+      "name": "mintMetta",
+      "accounts": [
+        { "name": "admin", "isMut": false, "isSigner": true },
+        { "name": "tenant", "isMut": false, "isSigner": false },
+        { "name": "mintMetta", "isMut": true, "isSigner": false },
+        { "name": "mettaDst", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "amount", "type": "u64" }]
+    },
+    {
+      "name": "mintAlms",
+      "accounts": [
+        { "name": "admin", "isMut": false, "isSigner": true },
+        { "name": "tenant", "isMut": false, "isSigner": false },
+        { "name": "mintAlms", "isMut": true, "isSigner": false },
+        { "name": "almsDst", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "amount", "type": "u64" }]
+    },
+    {
+      "name": "ouroboros",
+      "accounts": [
+        { "name": "tenant", "isMut": true, "isSigner": false },
+        { "name": "mintAna", "isMut": false, "isSigner": false },
+        { "name": "backingVaultMain", "isMut": false, "isSigner": false },
+        { "name": "backingVaultNirv", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "shift", "type": "u64" }]
+    },
+    {
+      "name": "adminKinkCurve",
+      "accounts": [
+        { "name": "payer", "isMut": true, "isSigner": true },
+        { "name": "admin", "isMut": false, "isSigner": true },
+        {
+          "name": "tenant",
+          "isMut": false,
+          "isSigner": false,
+          "docs": ["but it's nice to have"]
+        },
+        { "name": "mintAna", "isMut": false, "isSigner": false },
+        { "name": "priceCurve", "isMut": true, "isSigner": false }
+      ],
+      "args": [{ "name": "newSlopeNormal", "type": "f64" }]
+    },
+    {
+      "name": "adminFiveCurve",
+      "accounts": [
+        { "name": "payer", "isMut": true, "isSigner": true },
+        { "name": "admin", "isMut": false, "isSigner": true },
+        {
+          "name": "tenant",
+          "isMut": false,
+          "isSigner": false,
+          "docs": ["but it's nice to have"]
+        },
+        { "name": "mintAna", "isMut": false, "isSigner": false },
+        { "name": "priceCurve", "isMut": true, "isSigner": false }
+      ],
+      "args": []
+    },
+    {
+      "name": "adminInitCurveBallot",
+      "docs": ["Initialize a curve ballot for a tenant"],
+      "accounts": [
+        { "name": "payer", "isMut": true, "isSigner": true },
+        { "name": "admin", "isMut": false, "isSigner": true },
+        { "name": "curveBallot", "isMut": true, "isSigner": false },
+        { "name": "tenant", "isMut": false, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    },
+    {
+      "name": "initPersonalCurveBallot",
+      "docs": ["Initialize a curve ballot for a personal account"],
+      "accounts": [
+        { "name": "payer", "isMut": true, "isSigner": true },
+        { "name": "owner", "isMut": false, "isSigner": false },
+        { "name": "tenant", "isMut": false, "isSigner": false },
+        { "name": "personalCurveBallot", "isMut": true, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "AlmsRewarder",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "owner", "type": "publicKey" },
+          { "name": "tenant", "type": "publicKey" },
+          { "name": "revManager", "type": { "defined": "RevenueManager" } }
+        ]
+      }
+    },
+    {
+      "name": "PriceCurve3Ser",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "tenant", "type": "publicKey" },
+          { "name": "floorPrice", "type": { "array": ["u8", 16] } },
+          { "name": "floorEndVertex", "type": { "defined": "VertexSer" } },
+          { "name": "finalVertex", "type": { "defined": "VertexSer" } },
+          {
+            "name": "middleVertices",
+            "type": { "vec": { "defined": "VertexSer" } }
+          }
+        ]
+      }
+    },
+    {
+      "name": "CurveBallot",
+      "docs": ["A ballot for a curve change"],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "tenant", "type": "publicKey" },
+          { "name": "votesUp", "type": "u64" },
+          { "name": "votesDown", "type": "u64" }
+        ]
+      }
+    },
+    {
+      "name": "MettaRewarder",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "owner", "type": "publicKey" },
+          { "name": "tenant", "type": "publicKey" },
+          { "name": "revManager", "type": { "defined": "RevenueManager" } }
+        ]
+      }
+    },
+    {
+      "name": "PersonalAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "owner", "type": "publicKey" },
+          { "name": "tenant", "type": "publicKey" },
+          { "name": "nirvBorrowed", "type": "u64" },
+          { "name": "anaDeposited", "type": "u64" },
+          {
+            "name": "lastSeenPranaIndex",
+            "docs": ["Last seen global prANA emission index"],
+            "type": { "defined": "Number" }
+          },
+          {
+            "name": "stagedPrana",
+            "docs": ["prANA that can be claimed"],
+            "type": "u64"
+          },
+          { "name": "personalBallot", "type": { "defined": "PersonalBallot" } },
+          { "name": "pranaRevManager", "type": { "defined": "RevenueManager" } }
+        ]
+      }
+    },
+    {
+      "name": "PersonalCurveBallot",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "tenant", "type": "publicKey" },
+          { "name": "owner", "type": "publicKey" },
+          {
+            "name": "votes",
+            "docs": [
+              "Positive votes = increase value, negative votes = decrease value"
+            ],
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tenant",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "selfAddress", "type": "publicKey" },
+          { "name": "decimals", "type": "u8" },
+          { "name": "mintAna", "type": "publicKey" },
+          { "name": "mintNirv", "type": "publicKey" },
+          { "name": "mintPrana", "type": "publicKey" },
+          { "name": "mintMain", "type": "publicKey" },
+          {
+            "name": "mintMetta",
+            "docs": ["metta is the restitution revshare token"],
+            "type": "publicKey"
+          },
+          { "name": "mintAlms", "type": "publicKey" },
+          {
+            "name": "backingVaultMain",
+            "docs": ["Vault for main backing token"],
+            "type": "publicKey"
+          },
+          {
+            "name": "backingVaultNirv",
+            "docs": ["Vault for nirv backing token"],
+            "type": "publicKey"
+          },
+          {
+            "name": "vaultAlms",
+            "docs": ["Holds deposited alms"],
+            "type": "publicKey"
+          },
+          {
+            "name": "vaultAna",
+            "docs": ["Holds deposited ANA"],
+            "type": "publicKey"
+          },
+          {
+            "name": "vaultMetta",
+            "docs": ["Holds deposited metta"],
+            "type": "publicKey"
+          },
+          {
+            "name": "vaultPrana",
+            "docs": ["Holds deposited prANA (used for gov & revshare)"],
+            "type": "publicKey"
+          },
+          {
+            "name": "depositedAna",
+            "docs": ["How much ANA is deposited (staked)"],
+            "type": "u64"
+          },
+          { "name": "pc2", "type": { "defined": "PriceCurve2" } },
+          {
+            "name": "escrowRevNirv",
+            "docs": ["Escrow for NIRV revenue"],
+            "type": "publicKey"
+          },
+          {
+            "name": "escrowRevAna",
+            "docs": ["Escrow for ANA revenue"],
+            "type": "publicKey"
+          },
+          { "name": "fees", "type": { "defined": "Fees" } },
+          { "name": "pranaAprMbps", "type": "u64" },
+          {
+            "name": "pranaLastIncreased",
+            "docs": ["Timestamp seconds for last prana increase"],
+            "type": "u64"
+          },
+          {
+            "name": "pranaIndex",
+            "docs": ["prANA emission index"],
+            "type": { "defined": "Number" }
+          },
+          {
+            "name": "floorRaisedAt",
+            "docs": ["Timestamp when floor was last raised"],
+            "type": "u64"
+          },
+          { "name": "floorRaiseCooldownSecs", "type": "u32" },
+          { "name": "gov", "type": { "defined": "Gov" } },
+          { "name": "revForAlms", "type": { "defined": "RevStream" } },
+          { "name": "revForMetta", "type": { "defined": "RevStream" } },
+          { "name": "revForPrana", "type": { "defined": "RevStream" } },
+          { "name": "controls", "type": { "defined": "Controls" } },
+          { "name": "authorityBump", "type": { "array": ["u8", 1] } },
+          {
+            "name": "tokenProgramMain",
+            "docs": ["The token program for the main backing token"],
+            "type": "publicKey"
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "AdminParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "revSplitPctMetta", "type": "u16" },
+          { "name": "revSplitPctAlms", "type": "u16" },
+          { "name": "revSplitPctPrana", "type": "u16" },
+          { "name": "floorRaiseCooldownSecs", "type": "u32" },
+          { "name": "govTallyCooldownSecs", "type": "u32" }
+        ]
+      }
+    },
+    {
+      "name": "TenantConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "pranaAprMbps", "type": "u64" },
+          { "name": "mintAna", "type": "publicKey" },
+          { "name": "mintNirv", "type": "publicKey" },
+          { "name": "mintPrana", "type": "publicKey" },
+          { "name": "mintMetta", "type": "publicKey" },
+          { "name": "mintAlms", "type": "publicKey" },
+          { "name": "backingVaultMain", "type": "publicKey" },
+          { "name": "backingVaultNirv", "type": "publicKey" },
+          { "name": "m1", "type": "f64" },
+          { "name": "m2", "type": "f64" },
+          { "name": "x1", "type": "u64" },
+          { "name": "x2", "type": "u64" },
+          { "name": "f", "type": "f64" },
+          { "name": "fees", "type": { "defined": "Fees" } },
+          { "name": "buyAnaFeeMbpsGov", "type": { "defined": "GovParams" } },
+          { "name": "sellAnaFeeMbpsGov", "type": { "defined": "GovParams" } },
+          {
+            "name": "realizePranaFeeMbpsGov",
+            "type": { "defined": "GovParams" }
+          },
+          {
+            "name": "withdrawAnaFeeMbpsGov",
+            "type": { "defined": "GovParams" }
+          },
+          {
+            "name": "borrowNirvFeeMbpsGov",
+            "type": { "defined": "GovParams" }
+          },
+          { "name": "pranaAprMbpsGov", "type": { "defined": "GovParams" } }
+        ]
+      }
+    },
+    {
+      "name": "GovParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "changeRateBps", "type": "u32" },
+          { "name": "min", "type": "u64" },
+          { "name": "max", "type": "u64" }
+        ]
+      }
+    },
+    {
+      "name": "NewGlobalCurveBallot",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "votesUp", "type": "u64" },
+          { "name": "votesDown", "type": "u64" }
+        ]
+      }
+    },
+    {
+      "name": "RevenueManager",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "sharesDeposited",
+            "docs": ["Amount of share tokens (eg, metta)"],
+            "type": "u64"
+          },
+          { "name": "revenueIndexes", "type": { "defined": "RevenueIndexes" } }
+        ]
+      }
+    },
+    {
+      "name": "RevenueIndexes",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "ana", "type": { "defined": "Revenue" } },
+          { "name": "nirv", "type": { "defined": "Revenue" } }
+        ]
+      }
+    },
+    {
+      "name": "Revenue",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "lastSeenIndex", "type": { "defined": "Number" } },
+          { "name": "staged", "type": "u64" }
+        ]
+      }
+    },
+    {
+      "name": "VertexSer",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "x",
+            "docs": ["x is the start of the vertex", "denominated in lamports"],
+            "type": "u64"
+          },
+          {
+            "name": "m",
+            "docs": ["m is the slope of the vertex"],
+            "type": { "array": ["u8", 16] }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Number",
+      "docs": [
+        "High precision U256 number stored as 4 u64 words in little endian"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [{ "name": "val", "type": { "array": ["u64", 4] } }]
+      }
+    },
+    {
+      "name": "PersonalBallot",
+      "docs": [
+        "Positive vote = increase value",
+        "Negative vote = decrease value"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "floorRaise",
+            "docs": [
+              "Positive is votes to raise the floor, negative is votes to lower the floor"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "buyAnaFeeMbps",
+            "docs": ["Fee for buying ANA"],
+            "type": "i64"
+          },
+          {
+            "name": "sellAnaFeeMbps",
+            "docs": ["Fee for selling ANA"],
+            "type": "i64"
+          },
+          {
+            "name": "withdrawAnaFeeMbps",
+            "docs": ["Fee for withdrawing from escrow"],
+            "type": "i64"
+          },
+          {
+            "name": "pranaAprMbps",
+            "docs": [
+              "Annualized rate of prana emission on the total amount of deposited ANA"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "nirvBorrowMbps",
+            "docs": ["Fee for borrowing NIRV"],
+            "type": "i64"
+          },
+          {
+            "name": "pranaRealizeFeeMbps",
+            "docs": ["Fee for realizing prana"],
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PriceCurve2",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "m1", "type": { "array": ["u8", 16] } },
+          { "name": "m2", "type": { "array": ["u8", 16] } },
+          { "name": "x1", "type": "u64" },
+          { "name": "x2", "type": "u64" },
+          {
+            "name": "f",
+            "docs": ["normalized floor price"],
+            "type": { "array": ["u8", 16] }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Controls",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "canBuyAna", "type": "bool" },
+          { "name": "canSellAna", "type": "bool" },
+          { "name": "canBorrowNirv", "type": "bool" },
+          { "name": "canRealizePrana", "type": "bool" }
+        ]
+      }
+    },
+    {
+      "name": "RevStream",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "indexes", "type": { "defined": "RevShareIndexes" } },
+          {
+            "name": "totalSharesDeposited",
+            "docs": ["How many rev earning shares are deposited"],
+            "type": "u64"
+          },
+          {
+            "name": "splitPct",
+            "docs": [
+              "Percentage of the total revenue that goes to this stream"
+            ],
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Gov",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "lastBallotTallyTs",
+            "docs": ["Timestamp of last ballot tally"],
+            "type": "u64"
+          },
+          {
+            "name": "tallyCooldownSecs",
+            "docs": ["Seconds between tallies"],
+            "type": "u64"
+          },
+          { "name": "ballot", "type": { "defined": "GlobalBallot" } }
+        ]
+      }
+    },
+    {
+      "name": "GlobalBallot",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "floorRaiseYes", "type": "u64" },
+          { "name": "floorRaiseNo", "type": "u64" },
+          { "name": "buyAnaFeeMbps", "type": { "defined": "BallotManager" } },
+          { "name": "sellAnaFeeMbps", "type": { "defined": "BallotManager" } },
+          { "name": "pranaAprMbps", "type": { "defined": "BallotManager" } },
+          {
+            "name": "borrowNirvFeeMbps",
+            "type": { "defined": "BallotManager" }
+          },
+          {
+            "name": "pranaRealizeFeeMbps",
+            "type": { "defined": "BallotManager" }
+          },
+          {
+            "name": "withdrawAnaFeeMbps",
+            "type": { "defined": "BallotManager" }
+          }
+        ]
+      }
+    },
+    {
+      "name": "BallotManager",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "min", "docs": ["Guardrail minimum value"], "type": "u64" },
+          { "name": "max", "docs": ["Guardrail maximum value"], "type": "u64" },
+          {
+            "name": "changeRateBps",
+            "docs": ["How much the rate can change in a single tally"],
+            "type": "u32"
+          },
+          { "name": "inc", "docs": ["Votes for UP"], "type": "u64" },
+          { "name": "dec", "docs": ["Votes for DOWN"], "type": "u64" }
+        ]
+      }
+    },
+    {
+      "name": "RevShareIndexes",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "nirv", "type": { "defined": "Number" } },
+          { "name": "ana", "type": { "defined": "Number" } }
+        ]
+      }
+    },
+    {
+      "name": "Fees",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "feeRealizePranaMpbs", "type": "u64" },
+          { "name": "feeBuyAnaMbps", "type": "u64" },
+          { "name": "feeSellAnaMbps", "type": "u64" },
+          { "name": "feeBorrowNirvMbps", "type": "u64" },
+          {
+            "name": "feeWithdrawAnaMbps",
+            "docs": ["Fee for withdrawing ANA from the escrow account"],
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CurveBallotResult",
+      "type": {
+        "kind": "enum",
+        "variants": [{ "name": "Up" }, { "name": "Down" }]
+      }
+    },
+    {
+      "name": "Vote",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          { "name": "Up", "fields": ["u64"] },
+          { "name": "Down", "fields": ["u64"] }
+        ]
+      }
+    },
+    {
+      "name": "CurveVote",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          { "name": "Up", "fields": ["u64"] },
+          { "name": "Down", "fields": ["u64"] }
+        ]
+      }
+    },
+    {
+      "name": "VoteResult",
+      "type": {
+        "kind": "enum",
+        "variants": [{ "name": "Inc" }, { "name": "Dec" }]
+      }
+    }
+  ],
+  "events": [
+    {
+      "name": "BuyEvent",
+      "fields": [
+        { "name": "anaOutFee", "type": "u64", "index": false },
+        { "name": "anaOutTrader", "type": "u64", "index": false },
+        { "name": "tokensIn", "type": "u64", "index": false },
+        { "name": "backingMint", "type": "publicKey", "index": false },
+        { "name": "trader", "type": "publicKey", "index": false }
+      ]
+    },
+    {
+      "name": "BuyEvent",
+      "fields": [
+        { "name": "anaOutFee", "type": "u64", "index": false },
+        { "name": "anaOutTrader", "type": "u64", "index": false },
+        { "name": "tokensIn", "type": "u64", "index": false },
+        { "name": "backingMint", "type": "publicKey", "index": false },
+        { "name": "trader", "type": "publicKey", "index": false }
+      ]
+    },
+    {
+      "name": "BuyEvent2",
+      "fields": [
+        { "name": "tenant", "type": "publicKey", "index": false },
+        { "name": "anaOutFee", "type": "u64", "index": false },
+        { "name": "anaOutTrader", "type": "u64", "index": false },
+        { "name": "tokensIn", "type": "u64", "index": false },
+        { "name": "backingMint", "type": "publicKey", "index": false },
+        { "name": "trader", "type": "publicKey", "index": false }
+      ]
+    },
+    {
+      "name": "ExecutePranaEvent",
+      "fields": [
+        { "name": "anaFee", "type": "u64", "index": false },
+        { "name": "anaToOwner", "type": "u64", "index": false },
+        { "name": "tokensIn", "type": "u64", "index": false },
+        { "name": "payer", "type": "publicKey", "index": false },
+        { "name": "tenant", "type": "publicKey", "index": false },
+        { "name": "trueIfMainFalseIfNirv", "type": "bool", "index": false }
+      ]
+    },
+    {
+      "name": "RaiseFloorEvent2",
+      "fields": [
+        { "name": "tenant", "type": "publicKey", "index": false },
+        { "name": "newFloor", "type": { "array": ["u8", 16] }, "index": false },
+        { "name": "currentSupply", "type": "u64", "index": false }
+      ]
+    },
+    {
+      "name": "RaiseFloorEvent",
+      "fields": [
+        { "name": "tenant", "type": "publicKey", "index": false },
+        { "name": "newX1", "type": "u64", "index": false },
+        { "name": "newX2", "type": "u64", "index": false },
+        { "name": "newFloor", "type": { "array": ["u8", 16] }, "index": false }
+      ]
+    },
+    {
+      "name": "SellEvent",
+      "fields": [
+        { "name": "anaInFee", "type": "u64", "index": false },
+        { "name": "anaInNet", "type": "u64", "index": false },
+        { "name": "tokensOut", "type": "u64", "index": false },
+        { "name": "backingMint", "type": "publicKey", "index": false },
+        { "name": "trader", "type": "publicKey", "index": false }
+      ]
+    },
+    {
+      "name": "SellEvent2",
+      "fields": [
+        { "name": "tenant", "type": "publicKey", "index": false },
+        { "name": "anaInFee", "type": "u64", "index": false },
+        { "name": "anaInNet", "type": "u64", "index": false },
+        { "name": "tokensOut", "type": "u64", "index": false },
+        { "name": "backingMint", "type": "publicKey", "index": false },
+        { "name": "trader", "type": "publicKey", "index": false }
+      ]
+    },
+    {
+      "name": "DepositMettaEvent",
+      "fields": [
+        { "name": "amount", "type": "u64", "index": false },
+        { "name": "tenant", "type": "publicKey", "index": false },
+        { "name": "user", "type": "publicKey", "index": false }
+      ]
+    },
+    {
+      "name": "WithdrawMettaEvent",
+      "fields": [
+        { "name": "amount", "type": "u64", "index": false },
+        { "name": "tenant", "type": "publicKey", "index": false },
+        { "name": "user", "type": "publicKey", "index": false }
+      ]
+    },
+    {
+      "name": "BorrowNirvEvent2",
+      "fields": [
+        { "name": "amountOwner", "type": "u64", "index": false },
+        { "name": "owner", "type": "publicKey", "index": false },
+        { "name": "amountFee", "type": "u64", "index": false },
+        { "name": "tenant", "type": "publicKey", "index": false }
+      ]
+    },
+    {
+      "name": "RepayNirvEvent2",
+      "fields": [
+        { "name": "amount", "type": "u64", "index": false },
+        { "name": "owner", "type": "publicKey", "index": false },
+        { "name": "tenant", "type": "publicKey", "index": false }
+      ]
+    },
+    {
+      "name": "PranaCollectEvent",
+      "fields": [
+        { "name": "amount", "type": "u64", "index": false },
+        { "name": "tenant", "type": "publicKey", "index": false },
+        { "name": "owner", "type": "publicKey", "index": false },
+        { "name": "pranaDst", "type": "publicKey", "index": false }
+      ]
+    },
+    {
+      "name": "CollectRevPranaEvent",
+      "fields": [
+        { "name": "tenant", "type": "publicKey", "index": false },
+        { "name": "owner", "type": "publicKey", "index": false },
+        { "name": "personalPosition", "type": "publicKey", "index": false },
+        { "name": "personalPranaDeposited", "type": "u64", "index": false },
+        { "name": "globalPranaDeposited", "type": "u64", "index": false },
+        { "name": "anaAmount", "type": "u64", "index": false },
+        { "name": "nirvAmount", "type": "u64", "index": false }
+      ]
+    },
+    {
+      "name": "DepositAnaEvent",
+      "fields": [
+        { "name": "amount", "type": "u64", "index": false },
+        { "name": "tenant", "type": "publicKey", "index": false },
+        { "name": "user", "type": "publicKey", "index": false }
+      ]
+    },
+    {
+      "name": "DepositPranaEvent",
+      "fields": [
+        { "name": "amount", "type": "u64", "index": false },
+        { "name": "tenant", "type": "publicKey", "index": false },
+        { "name": "user", "type": "publicKey", "index": false }
+      ]
+    },
+    {
+      "name": "InitPersonalAccountEvent",
+      "fields": [
+        { "name": "tenant", "type": "publicKey", "index": false },
+        { "name": "user", "type": "publicKey", "index": false }
+      ]
+    },
+    {
+      "name": "PersonalAccountSetVotesEvent2",
+      "fields": [
+        { "name": "tenant", "type": "publicKey", "index": false },
+        { "name": "owner", "type": "publicKey", "index": false },
+        {
+          "name": "newPersonalBallot",
+          "type": { "defined": "PersonalBallot" },
+          "index": false
+        },
+        {
+          "name": "newGlobalBallot",
+          "type": { "defined": "GlobalBallot" },
+          "index": false
+        },
+        {
+          "name": "newCurveBallot",
+          "type": { "defined": "NewGlobalCurveBallot" },
+          "index": false
+        },
+        { "name": "newPersonalCurveBallot", "type": "i64", "index": false }
+      ]
+    },
+    {
+      "name": "PersonalAccountSetVotesEvent",
+      "fields": [
+        { "name": "tenant", "type": "publicKey", "index": false },
+        { "name": "owner", "type": "publicKey", "index": false },
+        {
+          "name": "newPersonalBallot",
+          "type": { "defined": "PersonalBallot" },
+          "index": false
+        },
+        {
+          "name": "newGlobalBallot",
+          "type": { "defined": "GlobalBallot" },
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "StageRevPranaEvent",
+      "fields": [
+        { "name": "tenant", "type": "publicKey", "index": false },
+        { "name": "owner", "type": "publicKey", "index": false },
+        { "name": "personalPosition", "type": "publicKey", "index": false },
+        { "name": "personalPranaDeposited", "type": "u64", "index": false },
+        { "name": "globalPranaDeposited", "type": "u64", "index": false },
+        { "name": "anaEarned", "type": "u64", "index": false },
+        { "name": "nirvEarned", "type": "u64", "index": false }
+      ]
+    },
+    {
+      "name": "WithdrawAnaEvent",
+      "fields": [
+        { "name": "amountUser", "type": "u64", "index": false },
+        { "name": "amountFee", "type": "u64", "index": false },
+        { "name": "tenant", "type": "publicKey", "index": false },
+        { "name": "user", "type": "publicKey", "index": false }
+      ]
+    },
+    {
+      "name": "WithdrawPranaEvent",
+      "fields": [
+        { "name": "amount", "type": "u64", "index": false },
+        { "name": "tenant", "type": "publicKey", "index": false },
+        { "name": "user", "type": "publicKey", "index": false }
+      ]
+    },
+    {
+      "name": "RevEvent",
+      "fields": [
+        { "name": "tenant", "type": "publicKey", "index": false },
+        { "name": "trueIfAnaFalseIfNirv", "type": "bool", "index": false },
+        { "name": "amountPrana", "type": "u64", "index": false },
+        { "name": "amountAlms", "type": "u64", "index": false },
+        { "name": "amountMetta", "type": "u64", "index": false },
+        { "name": "pranaDeposited", "type": "u64", "index": false },
+        { "name": "mettaDeposited", "type": "u64", "index": false },
+        { "name": "almsDeposited", "type": "u64", "index": false }
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "RaiseFloorBadX1X2",
+      "msg": "Cannot raise floor with these x1 and x2"
+    },
+    {
+      "code": 6001,
+      "name": "RaiseFloorInsufficientSupply",
+      "msg": "ANA must be well beyond the end of the ramp"
+    },
+    {
+      "code": 6002,
+      "name": "RaiseFloorCooldown",
+      "msg": "Can't raise floor too soon"
+    },
+    {
+      "code": 6003,
+      "name": "RaiseFloorGov",
+      "msg": "Can't raise floor due to lack of votes"
+    },
+    { "code": 6004, "name": "SlippageExceeded", "msg": "Slippage exceeded" },
+    {
+      "code": 6005,
+      "name": "RaiseFloorFailed",
+      "msg": "Failed to raise floor"
+    },
+    {
+      "code": 6006,
+      "name": "InvalidPriceCurve",
+      "msg": "Cannot convert multi-segment price curve to old price curve"
+    }
+  ]
+}
