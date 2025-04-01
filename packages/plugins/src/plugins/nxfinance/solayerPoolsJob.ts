@@ -1,28 +1,21 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { getAutoParsedProgramAccounts } from '../../utils/solana';
-import { nxfinanceLendIdlItem, platformId, solayerPoolKey } from './constants';
+import { lendProgramId, platformId, solayerPoolKey } from './constants';
 import { getClientSolana } from '../../utils/clients';
-import { SolayerPool } from './types';
+import { solayerPoolStruct } from './structs';
+import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
-  const solayerPoolAccounts = await getAutoParsedProgramAccounts<SolayerPool>(
+  const solayerPoolAccounts = await ParsedGpa.build(
     connection,
-    nxfinanceLendIdlItem,
-    [
-      {
-        memcmp: {
-          offset: 0,
-          bytes: 'J27HTcn2xq3',
-        },
-      },
-      {
-        dataSize: 184,
-      },
-    ]
-  );
+    solayerPoolStruct,
+    lendProgramId
+  )
+    .addRawFilter(0, 'J27HTcn2xq3')
+    .addDataSizeFilter(184)
+    .run();
 
   await cache.setItem(solayerPoolKey, solayerPoolAccounts, {
     prefix: platformId,

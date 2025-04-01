@@ -1,9 +1,4 @@
 import { PublicKey } from '@solana/web3.js';
-import { IdlItem } from '@solanafm/explorer-kit-idls';
-import { mineIdl } from './mineIdl';
-import { mergeMineIdl } from './mergeMineIdl';
-import { quarryRedeemerIdl } from './quarryRedeemerIdl';
-import { redeemerIdl } from './redeemerIdl';
 
 export const platformId = 'quarry';
 export const IOUTokensElementName = 'IOU Tokens';
@@ -23,27 +18,3 @@ export const quarryRedeemerProgramId = new PublicKey(
 export const redeemerProgramId = new PublicKey(
   'RDM23yr8pr1kEAmhnFpaabPny6C9UVcEcok3Py5v86X'
 );
-
-export const mineIdlItem = {
-  programId: mineProgramId.toString(),
-  idl: mineIdl,
-  idlType: 'anchor',
-} as IdlItem;
-
-export const mergeMineIdlItem = {
-  programId: mergeMineProgramId.toString(),
-  idl: mergeMineIdl,
-  idlType: 'anchor',
-} as IdlItem;
-
-export const quarryRedeemerIdlItem = {
-  programId: quarryRedeemerProgramId.toString(),
-  idl: quarryRedeemerIdl,
-  idlType: 'anchor',
-} as IdlItem;
-
-export const redeemerIdlItem = {
-  programId: redeemerProgramId.toString(),
-  idl: redeemerIdl,
-  idlType: 'anchor',
-} as IdlItem;

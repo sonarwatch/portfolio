@@ -3,7 +3,6 @@ import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import {
-  nxfinanceStakingIdlItem,
   platformId,
   stakePool,
   stakingPoolKey,
@@ -11,32 +10,31 @@ import {
 } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
-import { getAutoParsedMultipleAccountsInfo } from '../../utils/solana';
-import { StakingAccount, StakingPoolAccount } from './types';
+import {
+  getParsedMultipleAccountsInfo,
+  ParsedAccount,
+} from '../../utils/solana';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { stakeAccountStruct, StakePool } from './structs';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
 
   const stakingAccount = (
-    await getAutoParsedMultipleAccountsInfo<StakingAccount>(
-      connection,
-      nxfinanceStakingIdlItem,
-      [
-        PublicKey.findProgramAddressSync(
-          [
-            new PublicKey(stakePool).toBuffer(),
-            Buffer.from('nx_account', 'utf8'),
-            new PublicKey(owner).toBuffer(),
-          ],
-          new PublicKey(stakingProgramId)
-        )[0],
-      ]
-    )
+    await getParsedMultipleAccountsInfo(connection, stakeAccountStruct, [
+      PublicKey.findProgramAddressSync(
+        [
+          new PublicKey(stakePool).toBuffer(),
+          Buffer.from('nx_account', 'utf8'),
+          new PublicKey(owner).toBuffer(),
+        ],
+        new PublicKey(stakingProgramId)
+      )[0],
+    ])
   )[0];
   if (!stakingAccount) return [];
 
-  const stakePoolAccount = await cache.getItem<StakingPoolAccount>(
+  const stakePoolAccount = await cache.getItem<ParsedAccount<StakePool>>(
     stakingPoolKey,
     {
       prefix: platformId,
@@ -50,7 +48,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     label: 'Staked',
     link: 'https://nxfinance.io/stake',
     ref: stakingAccount.pubkey.toString(),
-    sourceRefs: [{ name: 'Pool', address: stakePoolAccount.pubkey }],
+    sourceRefs: [{ name: 'Pool', address: stakePoolAccount.pubkey.toString() }],
   });
 
   element.addAsset({

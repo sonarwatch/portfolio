@@ -1,8 +1,4 @@
-import { IdlItem } from '@solanafm/explorer-kit-idls';
 import { PublicKey } from '@solana/web3.js';
-import { NxfinanceLeverageIDL } from './leverageIdl';
-import { NxfinanceLendIdl } from './lendIdl';
-import { NxfinanceStakingIdl } from './stakingIdl';
 
 export const platformId = 'nxfinance';
 // https://nxfinance.io/nx-data/doc
@@ -21,21 +17,9 @@ export const leverageVaultsMints = [
   'HUBsveNpjo5pWqNkH57QzxjQASdTVXcSK7bVKTSZtcSX', // hubSOL
 ];
 
-export const nxfinanceLeverageIdlItem = {
-  programId: leverageFiProgramID.toString(),
-  idl: NxfinanceLeverageIDL,
-  idlType: 'anchor',
-} as IdlItem;
-
 export const lendProgramId = new PublicKey(
   'NXFiKimQN3QSL3CDhCXddyVmLfrai8HK36bHKaAzK7g'
 );
-
-export const nxfinanceLendIdlItem = {
-  programId: lendProgramId.toString(),
-  idl: NxfinanceLendIdl,
-  idlType: 'anchor',
-} as IdlItem;
 
 export const lendingPoolKey = 'lending-pools';
 export const stakingPoolKey = 'staking-pool';
@@ -47,9 +31,3 @@ export const lendingPools = [
 
 export const stakePool = '2P1eeegdbEhN3bnCroJJPXiH13i4rw1XYk8ftdh9meRY';
 export const stakingProgramId = '9un1MopS4NRhgVDLXB1DqoQDTmq1un48YKJuPiMLpSc9';
-
-export const nxfinanceStakingIdlItem = {
-  programId: new PublicKey(stakingProgramId).toString(),
-  idl: NxfinanceStakingIdl,
-  idlType: 'anchor',
-} as IdlItem;

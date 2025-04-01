@@ -1,51 +1,30 @@
 /* eslint-disable no-param-reassign */
 import BN from 'bn.js';
-import {
-  checkIfAccountParser,
-  ParserType,
-  SolanaFMParser,
-} from '@solanafm/explorer-kit';
 import { PRICE_PRECISION, QUOTE_PRECISION, TEN } from './constants';
 import { OraclePriceData } from './types';
-import { pythSolanaReceiverIdlItem } from './idls';
-
-type PriceFeedMessage = {
-  feedId: number[];
-  price: string;
-  conf: string;
-  exponent: number;
-  publishTime: string;
-  prevPublishTime: string;
-  emaPrice: string;
-  emaConf: string;
-};
-
-const parser = new SolanaFMParser(
-  pythSolanaReceiverIdlItem,
-  pythSolanaReceiverIdlItem.programId.toString()
-);
+import { toBN } from '../../../utils/misc/toBN';
+import { priceUpdateV2Struct } from '../../../utils/solana/pyth/structs';
 
 export function getPythPullOraclePriceDataFromBuffer(
   buffer: Buffer,
   multiple: BN,
   stableCoin: boolean
 ): OraclePriceData {
-  const eventParser = parser.createParser(ParserType.ACCOUNT);
-  if (!eventParser || !checkIfAccountParser(eventParser))
-    throw new Error('Failed to create event parser Pyth pull');
-  const parsedAccount = eventParser.parseAccount(buffer.toString('base64'));
-  const priceData = parsedAccount?.data?.priceMessage as PriceFeedMessage;
-  const postedSlot = parsedAccount?.data?.postedSlot as BN;
-  if (!priceData || !postedSlot)
+  const [{ priceMessage, postedSlot }] = priceUpdateV2Struct.deserialize(
+    buffer,
+    0
+  );
+
+  if (!priceMessage || !postedSlot)
     throw new Error('Failed to parseAccount Pyth pull');
   const confidence = convertPythPrice(
-    new BN(priceData.conf),
-    priceData.exponent,
+    toBN(priceMessage.conf.toNumber()),
+    priceMessage.exponent,
     multiple
   );
   let price = convertPythPrice(
-    new BN(priceData.price),
-    priceData.exponent,
+    toBN(priceMessage.price.toNumber()),
+    priceMessage.exponent,
     multiple
   );
   if (stableCoin) {
@@ -54,16 +33,16 @@ export function getPythPullOraclePriceDataFromBuffer(
 
   return {
     price,
-    slot: postedSlot,
+    slot: toBN(postedSlot),
     confidence,
     twap: convertPythPrice(
-      new BN(priceData.price),
-      priceData.exponent,
+      toBN(priceMessage.price.toNumber()),
+      priceMessage.exponent,
       multiple
     ),
     twapConfidence: convertPythPrice(
-      new BN(priceData.price),
-      priceData.exponent,
+      toBN(priceMessage.price),
+      priceMessage.exponent,
       multiple
     ),
     hasSufficientNumberOfDataPoints: true,

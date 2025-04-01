@@ -1,5 +1,10 @@
 import {
   BeetStruct,
+  dataEnum,
+  DataEnumKeyAsKind,
+  FixableBeet,
+  FixableBeetArgsStruct,
+  FixableBeetStruct,
   i32,
   u8,
   uniformFixedSizeArray,
@@ -8,10 +13,34 @@ import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { i64, u64 } from '../beets/numbers';
-import { blob } from '../beets/buffers';
 
-export type PriceFeedMessage = {
-  buffer: Buffer;
+type VerificationLevelRecord = {
+  Partial: {
+    numSignatures: number;
+  };
+  Full: NonNullable<unknown>;
+};
+
+type VerificationLevel = DataEnumKeyAsKind<VerificationLevelRecord>;
+
+const verificationLevelStruct = dataEnum<VerificationLevelRecord>([
+  [
+    'Partial',
+    new FixableBeetArgsStruct<VerificationLevelRecord['Partial']>(
+      [['numSignatures', u8]],
+      'VerificationLevelRecord["Partial"]'
+    ),
+  ],
+  [
+    'Full',
+    new FixableBeetArgsStruct<VerificationLevelRecord['Full']>(
+      [],
+      'VerificationLevelRecord["Full"]'
+    ),
+  ],
+]) as FixableBeet<VerificationLevel>;
+
+type PriceFeedMessage = {
   feedId: number[];
   price: BigNumber;
   conf: BigNumber;
@@ -22,9 +51,8 @@ export type PriceFeedMessage = {
   emaConf: BigNumber;
 };
 
-export const priceFeedMessageStruct = new BeetStruct<PriceFeedMessage>(
+const priceFeedMessageStruct = new BeetStruct<PriceFeedMessage>(
   [
-    ['buffer', blob(8)],
     ['feedId', uniformFixedSizeArray(u8, 32)],
     ['price', i64],
     ['conf', u64],
@@ -37,23 +65,19 @@ export const priceFeedMessageStruct = new BeetStruct<PriceFeedMessage>(
   (args) => args as PriceFeedMessage
 );
 
-export enum VerificationLevel {
-  Partial,
-  Full,
-}
-
 export type PriceUpdateV2 = {
+  accountDiscriminator: number[];
   writeAuthority: PublicKey;
   verificationLevel: VerificationLevel;
   priceMessage: PriceFeedMessage;
   postedSlot: BigNumber;
-  overlapAmount: BigNumber;
 };
 
-export const priceUpdateV2Struct = new BeetStruct<PriceUpdateV2>(
+export const priceUpdateV2Struct = new FixableBeetStruct<PriceUpdateV2>(
   [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
     ['writeAuthority', publicKey],
-    ['verificationLevel', u8],
+    ['verificationLevel', verificationLevelStruct],
     ['priceMessage', priceFeedMessageStruct],
     ['postedSlot', u64],
   ],
