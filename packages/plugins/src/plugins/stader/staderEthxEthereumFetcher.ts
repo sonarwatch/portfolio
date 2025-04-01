@@ -35,17 +35,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elements: PortfolioElement[] = [];
   const rawBalance0 = balances.at(0)?.toString();
   if (rawBalance0) {
-    const amount = new BigNumber(rawBalance0).div(10 ** DECIMALS_ON_CONTRACT).toNumber();
+    const contractAddress = ETHX_CONTRACT_ADDRESS_ETHREUM_MAINNET;
+    const contractDecimals = DECIMALS_ON_CONTRACT;
+    const amount = new BigNumber(rawBalance0).div(10 ** contractDecimals).toNumber();
 
     const tokenPrice = await cache.getTokenPrice(
-      ETHX_CONTRACT_ADDRESS_ETHREUM_MAINNET,
+      contractAddress,
       NETWORK_ID
     );
 
     logger.info({ ...logCtx, amount, tokenPrice }, 'Token price retrieved from cache');
 
     const stakedAsset = tokenPriceToAssetToken(
-      ETHX_CONTRACT_ADDRESS_ETHREUM_MAINNET,
+      contractAddress,
       amount,
       NETWORK_ID,
       tokenPrice
