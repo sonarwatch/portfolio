@@ -9,6 +9,7 @@ import {
   ETHX_CONTRACT_ADDRESS_ETHREUM_MAINNET,
   platformId,
   ETHX_STAKING_POOL_ETHEREUM,
+  STAKING_POOL_MANAGER_ADDRESS_ETHREUM_MAINNET,
 } from './constants';
 
 import { Cache } from '../../Cache';
@@ -28,7 +29,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const balances = await getBalances(
     owner,
-    [ETHX_CONTRACT_ADDRESS_ETHREUM_MAINNET],
+    [ETHX_CONTRACT_ADDRESS_ETHREUM_MAINNET, STAKING_POOL_MANAGER_ADDRESS_ETHREUM_MAINNET],
     NETWORK_ID
   );
 
@@ -66,15 +67,22 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     elements.push(stakedElement);
   }
 
+  const rawBalance1 = balances.at(1)?.toString();
+  if (rawBalance1) {
+    const contractAddress = STAKING_POOL_MANAGER_ADDRESS_ETHREUM_MAINNET;
+    const contractDecimals = DECIMALS_ON_CONTRACT;
+
+    const amount = new BigNumber(rawBalance1).div(10 ** contractDecimals).toNumber();
+
     const tokenPrice = await cache.getTokenPrice(
-      ETHX_CONTRACT_ADDRESS_ETHREUM_MAINNET,
+      contractAddress,
       NETWORK_ID
     );
 
     logger.info({ ...logCtx, amount, tokenPrice }, 'Token price retrieved from cache');
 
     const stakedAsset = tokenPriceToAssetToken(
-      ETHX_CONTRACT_ADDRESS_ETHREUM_MAINNET,
+      contractAddress,
       amount,
       NETWORK_ID,
       tokenPrice
