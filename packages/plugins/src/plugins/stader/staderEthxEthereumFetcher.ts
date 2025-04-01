@@ -33,10 +33,36 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   );
 
   const elements: PortfolioElement[] = [];
-  const rawBalance = balances.at(0)?.toString();
-  logger.info({ ...logCtx, rawBalance }, 'Done fetching stader ethx balances');
-  if (rawBalance) {
-    const amount = new BigNumber(rawBalance).div(10 ** DECIMALS_ON_CONTRACT).toNumber();
+  const rawBalance0 = balances.at(0)?.toString();
+  if (rawBalance0) {
+    const amount = new BigNumber(rawBalance0).div(10 ** DECIMALS_ON_CONTRACT).toNumber();
+
+    const tokenPrice = await cache.getTokenPrice(
+      ETHX_CONTRACT_ADDRESS_ETHREUM_MAINNET,
+      NETWORK_ID
+    );
+
+    logger.info({ ...logCtx, amount, tokenPrice }, 'Token price retrieved from cache');
+
+    const stakedAsset = tokenPriceToAssetToken(
+      ETHX_CONTRACT_ADDRESS_ETHREUM_MAINNET,
+      amount,
+      NETWORK_ID,
+      tokenPrice
+    );
+
+    const stakedElement: PortfolioElement = {
+      networkId: NETWORK_ID,
+      label: 'Staked',
+      platformId,
+      type: PortfolioElementType.multiple,
+      value: stakedAsset.value,
+      data: {
+        assets: [stakedAsset],
+      },
+    };
+    elements.push(stakedElement);
+  }
 
     const tokenPrice = await cache.getTokenPrice(
       ETHX_CONTRACT_ADDRESS_ETHREUM_MAINNET,
