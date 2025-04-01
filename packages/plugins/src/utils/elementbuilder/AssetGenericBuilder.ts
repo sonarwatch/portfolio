@@ -35,12 +35,10 @@ export class AssetGenericBuilder extends AssetBuilder {
       );
     }
 
-    if (value.isZero()) return null;
-
     return {
       type: PortfolioAssetType.generic,
       networkId,
-      value: value.toNumber(),
+      value: value.isZero() ? null : value.toNumber(),
       name: this.params.name,
       data: {
         address: this.params.address
