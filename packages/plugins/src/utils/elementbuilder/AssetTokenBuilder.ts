@@ -66,15 +66,16 @@ export class AssetTokenBuilder extends AssetBuilder {
   ): PortfolioAsset | null {
     let amount = new BigNumber(this.amount);
     if (amount.isZero()) return null;
-    const tokenPrice = tokenPrices.get(this.address);
-    if (!tokenPrice) return null;
 
-    if (!this.alreadyShifted)
+    const tokenPrice = tokenPrices.get(this.address);
+    if (!tokenPrice && !this.alreadyShifted) return null;
+
+    if (!this.alreadyShifted && tokenPrice)
       amount = amount.dividedBy(10 ** tokenPrice.decimals);
 
     return {
       ...tokenPriceToAssetToken(
-        tokenPrice.address,
+        this.address,
         amount.toNumber(),
         networkId,
         tokenPrice,
