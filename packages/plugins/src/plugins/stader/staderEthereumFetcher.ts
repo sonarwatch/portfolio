@@ -7,7 +7,6 @@ import BigNumber from 'bignumber.js';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
   CONTRACT_ADDRESS_ETHX_TOKEN_ETHEREUM_MAINNET,
-  CONTRACT_ADDRESS_SD_TOKEN_ETHEREUM_MAINNET,
   platformId,
 } from './constants';
 
@@ -22,7 +21,6 @@ const NETWORK_ID = NetworkId.ethereum;
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const contractsToFetchBalanceFor = [
     CONTRACT_ADDRESS_ETHX_TOKEN_ETHEREUM_MAINNET,
-    CONTRACT_ADDRESS_SD_TOKEN_ETHEREUM_MAINNET,
   ];
   const logCtx = {
     fn: 'staderEthereumFetcher::executor',
@@ -69,42 +67,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const stakedElement: PortfolioElement = {
       networkId: NETWORK_ID,
       label: 'Staked',
-      platformId,
-      type: PortfolioElementType.multiple,
-      value: stakedAsset.value,
-      data: {
-        assets: [stakedAsset],
-      },
-    };
-    elements.push(stakedElement);
-  }
-
-  const rawBalance1 = balances.at(1)?.toString();
-  if (rawBalance1) {
-    const contractAddress = contractsToFetchBalanceFor[1];
-    const contractDecimals = DECIMALS_ON_CONTRACT;
-
-    const amount = new BigNumber(rawBalance1)
-      .div(10 ** contractDecimals)
-      .toNumber();
-
-    const tokenPrice = await cache.getTokenPrice(contractAddress, NETWORK_ID);
-
-    verboseLog(
-      { ...logCtx, amount, tokenPrice },
-      'Token price retrieved from cache'
-    );
-
-    const stakedAsset = tokenPriceToAssetToken(
-      contractAddress,
-      amount,
-      NETWORK_ID,
-      tokenPrice
-    );
-
-    const stakedElement: PortfolioElement = {
-      networkId: NETWORK_ID,
-      label: 'Deposit',
       platformId,
       type: PortfolioElementType.multiple,
       value: stakedAsset.value,
