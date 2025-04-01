@@ -14,14 +14,14 @@ const stakingContract = {
 export const services: Service[] = [
   {
     id: 'parcl',
-    name: 'Parcl',
+    name: 'Liquidity & Trading',
     platformId: 'parcl',
     networkId: NetworkId.solana,
     contracts: [contract],
   },
   {
     id: 'parcl-staking',
-    name: 'Parcl Staking',
+    name: 'Staking',
     platformId: 'parcl',
     networkId: NetworkId.solana,
     contracts: [stakingContract],
