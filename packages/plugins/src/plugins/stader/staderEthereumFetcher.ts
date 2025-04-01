@@ -8,7 +8,6 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
   ETHX_CONTRACT_ADDRESS_ETHREUM_MAINNET,
   platformId,
-  ETHX_STAKING_POOL_ETHEREUM,
   SD_TOKEN_ADDRESS_ETHREUM_MAINNET,
 } from './constants';
 
@@ -106,7 +105,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: ETHX_STAKING_POOL_ETHEREUM,
+  id: `${platformId}-${NetworkId.ethereum}-fetcher`,
   networkId: NetworkId.ethereum,
   executor,
 };
