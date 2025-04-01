@@ -58,7 +58,8 @@ export const parseTransaction = (
     if (preTokenBalances && postTokenBalances) {
       const preTokenBalance = preTokenBalances.find((b) => b.owner === owner);
       const postTokenBalance = postTokenBalances.find((b) => b.owner === owner);
-      if (preTokenBalance && postTokenBalance) {
+
+      if (preTokenBalance || postTokenBalance) {
         const preBalanceAmount = preTokenBalance
           ? unshift(
               preTokenBalance.uiTokenAmount.amount,
@@ -72,12 +73,16 @@ export const parseTransaction = (
             )
           : 0;
         if (postBalanceAmount !== preBalanceAmount) {
-          changes.push({
-            address: postTokenBalance.mint,
-            preBalance: preBalanceAmount,
-            postBalance: postBalanceAmount,
-            change: postBalanceAmount - preBalanceAmount,
-          });
+          const address = postTokenBalance
+            ? postTokenBalance.mint
+            : preTokenBalance?.mint;
+          if (address)
+            changes.push({
+              address,
+              preBalance: preBalanceAmount,
+              postBalance: postBalanceAmount,
+              change: postBalanceAmount - preBalanceAmount,
+            });
         }
       }
     }
