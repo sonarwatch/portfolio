@@ -32,6 +32,7 @@ import * as symmetry from './services/symmetry';
 import * as zeta from './services/zeta';
 import * as nirvana from './services/nirvana';
 import * as sanctum from './services/sanctum';
+import * as streamflow from './services/streamflow';
 
 export const services: Service[] = [
   banx,
@@ -67,6 +68,7 @@ export const services: Service[] = [
   zeta,
   nirvana,
   sanctum,
+  streamflow,
 ]
   .map((m) => m.default)
   .flat();
