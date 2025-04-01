@@ -91,9 +91,7 @@ function getLendingFetcher(networkId: EvmNetworkIdType): Fetcher {
       const borrowAssets =
         totalBorrowAssets === BigInt(0)
           ? BigInt(0)
-          : (borrowShares * totalBorrowShares) / totalBorrowAssets;
-
-      console.log(borrowAssets, supplyAssets, collateral);
+          : (borrowShares * totalBorrowAssets) / totalBorrowShares;
 
       /* 
         Lending Position

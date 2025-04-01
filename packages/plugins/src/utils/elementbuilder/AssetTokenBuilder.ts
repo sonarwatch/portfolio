@@ -67,8 +67,7 @@ export class AssetTokenBuilder extends AssetBuilder {
     let amount = new BigNumber(this.amount);
     if (amount.isZero()) return null;
     const tokenPrice = tokenPrices.get(this.address);
-
-    if (tokenPrice == null) return null;
+    if (!tokenPrice) return null;
 
     if (!this.alreadyShifted)
       amount = amount.dividedBy(10 ** tokenPrice.decimals);
