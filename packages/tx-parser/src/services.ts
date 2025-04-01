@@ -30,6 +30,8 @@ import * as save from './services/save';
 import * as sharky from './services/sharky';
 import * as symmetry from './services/symmetry';
 import * as zeta from './services/zeta';
+import * as nirvana from './services/nirvana';
+import * as sanctum from './services/sanctum';
 
 export const services: Service[] = [
   banx,
@@ -63,6 +65,8 @@ export const services: Service[] = [
   sharky,
   symmetry,
   zeta,
+  nirvana,
+  sanctum,
 ]
   .map((m) => m.default)
   .flat();
