@@ -1,6 +1,13 @@
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { FixableBeetStruct, bool, u32, u8 } from '@metaplex-foundation/beet';
+import {
+  FixableBeetStruct,
+  bool,
+  u16,
+  u32,
+  u8,
+  uniformFixedSizeArray,
+} from '@metaplex-foundation/beet';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { blob, u64 } from '../../utils/solana';
 
@@ -85,4 +92,168 @@ export const vestingAccountStruct = new FixableBeetStruct<VestingAccount>(
     ['padding', blob(505)],
   ],
   (args) => args as VestingAccount
+);
+
+// Enum for OracleType
+export enum OracleType {
+  None = 0,
+  Test = 1,
+  Pyth = 2,
+  Switchboard = 3,
+}
+
+// Type and Struct for Contract
+export type Contract = {
+  accountDiscriminator: number[];
+  bump: number;
+  sender: PublicKey;
+  senderTokens: PublicKey;
+  stream: PublicKey;
+  priceOracleType: OracleType;
+  priceOracle: PublicKey;
+  minPrice: BigNumber;
+  maxPrice: BigNumber;
+  minPercentage: BigNumber;
+  maxPercentage: BigNumber;
+  tickSize: BigNumber;
+  startTime: BigNumber;
+  endTime: BigNumber;
+  period: BigNumber;
+  lastAmountUpdateTime: BigNumber;
+  lastPrice: BigNumber;
+  streamCanceledTime: BigNumber;
+  initialAmountPerPeriod: BigNumber;
+  initialPrice: BigNumber;
+  initialNetAmount: BigNumber;
+  mint: PublicKey;
+  buffer: number[];
+};
+
+export const contractStruct = new FixableBeetStruct<Contract>(
+  [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+    ['bump', u8],
+    ['sender', publicKey],
+    ['senderTokens', publicKey],
+    ['stream', publicKey],
+    ['priceOracleType', u8], // Enum is represented as a u8
+    ['priceOracle', publicKey],
+    ['minPrice', u64],
+    ['maxPrice', u64],
+    ['minPercentage', u64],
+    ['maxPercentage', u64],
+    ['tickSize', u64],
+    ['startTime', u64],
+    ['endTime', u64],
+    ['period', u64],
+    ['lastAmountUpdateTime', u64],
+    ['lastPrice', u64],
+    ['streamCanceledTime', u64],
+    ['initialAmountPerPeriod', u64],
+    ['initialPrice', u64],
+    ['initialNetAmount', u64],
+    ['mint', publicKey],
+    ['buffer', uniformFixedSizeArray(u8, 32)], // Fixed-size array of 32 bytes
+  ],
+  (args) => args as Contract
+);
+
+export type MerkleDistributor = {
+  accountDiscriminator: number[];
+  bump: number;
+  version: BigNumber;
+  root: number[];
+  mint: PublicKey;
+  tokenVault: PublicKey;
+  maxTotalClaim: BigNumber;
+  maxNumNodes: BigNumber;
+  unlockPeriod: BigNumber;
+  totalAmountClaimed: BigNumber;
+  numNodesClaimed: BigNumber;
+  startTs: BigNumber;
+  endTs: BigNumber;
+  clawbackStartTs: BigNumber;
+  clawbackReceiver: PublicKey;
+  admin: PublicKey;
+  clawedBack: boolean;
+  claimsClosableByAdmin: boolean;
+  canUpdateDuration: boolean;
+  totalAmountUnlocked: BigNumber;
+  totalAmountLocked: BigNumber;
+  lastDurationUpdateTs: BigNumber;
+  totalClaimablePreUpdate: BigNumber;
+  clawedBackTs: BigNumber;
+  claimsClosableByClaimant: boolean;
+  claimsLimit: number;
+  buffer2: number[];
+  buffer3: number[];
+};
+
+export const merkleDistributorStruct = new FixableBeetStruct<MerkleDistributor>(
+  [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+    ['bump', u8],
+    ['version', u64],
+    ['root', uniformFixedSizeArray(u8, 32)], // Fixed-size array of 32 bytes
+    ['mint', publicKey],
+    ['tokenVault', publicKey],
+    ['maxTotalClaim', u64],
+    ['maxNumNodes', u64],
+    ['unlockPeriod', u64],
+    ['totalAmountClaimed', u64],
+    ['numNodesClaimed', u64],
+    ['startTs', u64],
+    ['endTs', u64],
+    ['clawbackStartTs', u64],
+    ['clawbackReceiver', publicKey],
+    ['admin', publicKey],
+    ['clawedBack', bool],
+    ['claimsClosableByAdmin', bool],
+    ['canUpdateDuration', bool],
+    ['totalAmountUnlocked', u64],
+    ['totalAmountLocked', u64],
+    ['lastDurationUpdateTs', u64],
+    ['totalClaimablePreUpdate', u64],
+    ['clawedBackTs', u64],
+    ['claimsClosableByClaimant', bool],
+    ['claimsLimit', u16],
+    ['buffer2', uniformFixedSizeArray(u8, 20)], // Fixed-size array of 20 bytes
+    ['buffer3', uniformFixedSizeArray(u8, 32)], // Fixed-size array of 32 bytes
+  ],
+  (args) => args as MerkleDistributor
+);
+
+// Type for ClaimStatus
+export type ClaimStatus = {
+  accountDiscriminator: number[];
+  claimant: PublicKey;
+  lockedAmount: BigNumber;
+  lockedAmountWithdrawn: BigNumber;
+  unlockedAmount: BigNumber;
+  lastClaimTs: BigNumber;
+  lastAmountPerUnlock: BigNumber;
+  closed: boolean;
+  distributor: PublicKey;
+  claimsCount: number;
+  closedTs: BigNumber;
+  buffer2: number[];
+};
+
+// Struct for ClaimStatus
+export const claimStatusStruct = new FixableBeetStruct<ClaimStatus>(
+  [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+    ['claimant', publicKey],
+    ['lockedAmount', u64],
+    ['lockedAmountWithdrawn', u64],
+    ['unlockedAmount', u64],
+    ['lastClaimTs', u64],
+    ['lastAmountPerUnlock', u64],
+    ['closed', bool],
+    ['distributor', publicKey],
+    ['claimsCount', u16],
+    ['closedTs', u64],
+    ['buffer2', uniformFixedSizeArray(u8, 22)], // Fixed-size array of 22 bytes
+  ],
+  (args) => args as ClaimStatus
 );

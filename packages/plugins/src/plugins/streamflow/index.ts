@@ -8,9 +8,11 @@ import {
   airdropFetcherSui,
 } from './airdropFetcher';
 import { AirdropFetcher } from '../../AirdropFetcher';
+import merkleDistirbutorsJob from './merkleDistirbutorsJob';
+import merklesFetcher from './merkleFetcher';
 
-export const jobs: Job[] = [];
-export const fetchers: Fetcher[] = [vestingFetcher];
+export const jobs: Job[] = [merkleDistirbutorsJob];
+export const fetchers: Fetcher[] = [vestingFetcher, merklesFetcher];
 export const airdropFetchers: AirdropFetcher[] = [
   airdropFetcherAptos,
   airdropFetcherEthereum,

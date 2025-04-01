@@ -8,7 +8,10 @@ export const platformImg =
 export const streamflowProgramId = new PublicKey(
   'strmRqUCoQUgGUan5YhzUZa6KqdzwX5L6FpUxfmKg5m'
 );
-
+export const pid = new PublicKey('aSTRM2NKoKxNnkmLWk9sz3k74gKBk9t7bpPrTGxMszH');
+export const merklePid = new PublicKey(
+  'MErKy6nZVoVAkryxAejJz2juifQ4ArgLgHmaJCQkU7N'
+);
 export const airdropApi =
   'https://api.streamflow.foundation/v2/api/airdrop-recipients/check-eligibility';
 
