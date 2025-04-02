@@ -30,7 +30,6 @@ import {
 } from './abis';
 import { StaderFetcherParams, StaderFetchFunction } from './types';
 
-const DECIMALS_ON_STADER_CONTRACTS = 18;
 const NETWORK_ID = NetworkId.ethereum;
 
 const createStakedPortfolioElement = async (
@@ -74,7 +73,7 @@ const fetchStakedEthx: StaderFetchFunction = async ({
   logCtx,
 }) => {
   const contractAddress = CONTRACT_ADDRESS_ETHX_TOKEN_ETHEREUM_MAINNET;
-  const contractDecimals = DECIMALS_ON_STADER_CONTRACTS;
+  const contractDecimals = DECIMALS_ON_CONTRACT_STADER_TOKEN;
 
   const contractsToFetchBalanceFor = [contractAddress];
 
@@ -115,7 +114,7 @@ const fetchStakedPermissionsLessNodeRegistry: StaderFetchFunction = async ({
 }): Promise<PortfolioElement | undefined> => {
   const contractAddress =
     CONTRACT_ADDRESS_PERMISSIONLESS_NODE_REGISTRY_ETHEREUM_MAINNET;
-  const contractDecimals = DECIMALS_ON_STADER_CONTRACTS;
+  const contractDecimals = DECIMALS_ON_CONTRACT_STADER_TOKEN;
 
   const client = getEvmClient(NETWORK_ID);
   verboseLog({ ...logCtx, contractAddress }, 'Fetching operatorId');
