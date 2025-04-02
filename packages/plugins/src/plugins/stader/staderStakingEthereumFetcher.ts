@@ -100,7 +100,10 @@ const fetchStakedPermissionsLessNodeRegistry = async (
     functionName: 'operatorIDByAddress',
     args: [owner],
   });
-  verboseLog({ ...logCtx, operatorId }, 'Call to operatorIDByAddress completed');
+  verboseLog(
+    { ...logCtx, operatorId },
+    'Call to operatorIDByAddress completed'
+  );
   if (!operatorId) {
     verboseLog(logCtx, 'No operatorId found; bailing out');
     return;
@@ -116,7 +119,10 @@ const fetchStakedPermissionsLessNodeRegistry = async (
     functionName: 'getOperatorTotalKeys',
     args: [operatorId],
   });
-  verboseLog({ ...logCtx, operatorTotalKeys }, 'Call to getOperatorTotalKeys completed');
+  verboseLog(
+    { ...logCtx, operatorTotalKeys },
+    'Call to getOperatorTotalKeys completed'
+  );
   if (!operatorTotalKeys) {
     verboseLog(logCtx, 'No operatorTotalKeys found; bailing out');
     return;
@@ -128,18 +134,24 @@ const fetchStakedPermissionsLessNodeRegistry = async (
     address: contractAddress,
     functionName: 'getCollateralETH',
   });
-  verboseLog({ ...logCtx, rawCollateralEth }, 'Call to getCollateralETH completed');
+  verboseLog(
+    { ...logCtx, rawCollateralEth },
+    'Call to getCollateralETH completed'
+  );
   if (!rawCollateralEth) {
     throw new Error('Call to getCollateralETH returned no value');
   }
 
   const collateralEth = new BigNumber(rawCollateralEth.toString())
-  .div(10 ** contractDecimals)
-  .toNumber();
+    .div(10 ** contractDecimals)
+    .toNumber();
 
   // We must get the price of ETH
   const contractAddressForEth = ethereumNativeAddress;
-  const tokenPrice = await cache.getTokenPrice(contractAddressForEth, NETWORK_ID);
+  const tokenPrice = await cache.getTokenPrice(
+    contractAddressForEth,
+    NETWORK_ID
+  );
 
   verboseLog(
     { ...logCtx, contractAddressForEth, tokenPrice },
