@@ -1103,3 +1103,6 @@ export const permissionsLessNodeRegistryAbi = [
 //     type: 'function',
 //   },
 ] as const;
+
+export const sdUtilityPoolAbi = [
+] as const;
