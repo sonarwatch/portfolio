@@ -6,6 +6,7 @@ import {
   PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
+import { Address } from 'viem';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
   CONTRACT_ADDRESS_ETHX_TOKEN_ETHEREUM_MAINNET,
@@ -13,7 +14,6 @@ import {
   platformId,
 } from './constants';
 
-import { Address } from 'viem';
 import { Cache } from '../../Cache';
 import { getEvmClient } from '../../utils/clients';
 import { getBalances } from '../../utils/evm/getBalances';
