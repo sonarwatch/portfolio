@@ -43,3 +43,20 @@ export type MorphoMarketRes = {
     }[];
   };
 };
+export type MorphoVaultRes = {
+  vaults: {
+    items: {
+      address: string;
+      asset: {
+        address: string;
+        decimals: number;
+        logoURI: string | null;
+        name: string;
+        priceUsd: number | null;
+        symbol: string;
+      };
+      symbol: string;
+      name: string;
+    }[];
+  };
+};
