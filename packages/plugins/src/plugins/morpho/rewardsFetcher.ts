@@ -126,17 +126,19 @@ export function getRewardsFetcher(networkId: EvmNetworkIdType): Fetcher {
       networkId
     );
 
+    // Not using element registry because Legacy Morpho does not have a price and gets filtered out by default
+
     /* 
         Context:
         The token price of Legacy Morpho is 0 (as indicated by the morpho team)
         Typically the sonarwatch code will ignore positions without a token price.
         It treats tokenPrice undefined and tokenPrice 0 the same
-        The code below works around this by hard coding the token price of Legacy Morpho to 0
+        The code below works around this by assuming the token price of Legacy Morpho is 0
      */
     const rewardAssets = rawRewards.map((rewardAsset) => {
       const tokenPrice = tokenPricesMap.get(rewardAsset.address);
 
-      // not Token Price of Legacy Morpho, therefore hardcode decimal to 18 when token not available
+      // token price of Legacy Morpho is  0
       const decimals = BigInt(tokenPrice?.decimals || 18);
       // Note: used BigNumber here because BigInt exponential operations are not supported in the current TypeScript target version.
       const balance = new BigNumber(rewardAsset.balance).dividedBy(
@@ -148,7 +150,7 @@ export function getRewardsFetcher(networkId: EvmNetworkIdType): Fetcher {
         balance.toNumber(),
         networkId,
         tokenPrice,
-        tokenPrice?.price || 0 // token price of Legacy Morpho is 0
+        tokenPrice?.price || 0 // token price of Legacy Morpho should be 0
       );
     });
 
