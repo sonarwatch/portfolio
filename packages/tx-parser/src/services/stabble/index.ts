@@ -16,13 +16,31 @@ const stakingContract = {
   address: 'rev31KMq4qzt1y1iw926p694MHVVWT57caQrsHLFA4x',
   platformId,
 };
-const liquidityPoolService: Service = {
-  id: `${platformId}-liquidity-pools`,
-  name: 'Liquidity Pools',
+const stablePoolsService: Service = {
+  id: `${platformId}-liquidity-pools-stable`,
+  name: 'Stable Pools',
   platformId,
   networkId: NetworkId.solana,
-  contracts: [weghtedPoolContract, stablePoolContract, stakingContract],
+  contracts: [stablePoolContract],
+};
+const weightedPoolsService: Service = {
+  id: `${platformId}-liquidity-pools`,
+  name: 'Weighted Pools',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [weghtedPoolContract],
+};
+const lpStakingService: Service = {
+  id: `${platformId}-lp-staking`,
+  name: 'LP Staking',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [stakingContract],
 };
 
-export const services: Service[] = [liquidityPoolService];
+export const services: Service[] = [
+  stablePoolsService,
+  weightedPoolsService,
+  lpStakingService,
+];
 export default services;
