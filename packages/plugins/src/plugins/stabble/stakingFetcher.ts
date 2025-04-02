@@ -63,6 +63,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   for (let i = 0; i < minerAccounts.length; i += 1) {
     const mainMiner = minerAccounts[i];
+    // If the beneficiary is not the authority, it means it's a derived miner for additional rewards
     if (mainMiner.beneficiary.toString() !== mainMiner.authority.toString())
       continue;
 
