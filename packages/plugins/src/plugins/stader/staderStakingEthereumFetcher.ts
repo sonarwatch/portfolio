@@ -304,38 +304,20 @@ const executor: FetcherExecutor = async (
     networkId: NETWORK_ID,
   };
 
-  const elements: PortfolioElement[] = [];
+  const fetchFunctions = [
+    fetchStakedEthx,
+    fetchStakedPermissionsLessNodeRegistry,
+    fetchStakedUtilityPool,
+    fetchStakedCollateralPool,
+  ];
 
-  const stakedEthx = await fetchStakedEthx(ownerAddress, cache, logCtx);
-  if (stakedEthx) {
-    elements.push(stakedEthx);
-  }
-
-  const stakedPermissionsLessNodeRegistry =
-    await fetchStakedPermissionsLessNodeRegistry(ownerAddress, cache, logCtx);
-  if (stakedPermissionsLessNodeRegistry) {
-    elements.push(stakedPermissionsLessNodeRegistry);
-  }
-
-  const stakedUtilityPool = await fetchStakedUtilityPool(
-    ownerAddress,
-    cache,
-    logCtx
+  const commonParams = [ownerAddress, cache, logCtx] as const;
+  
+  const results = await Promise.all(
+    fetchFunctions.map(fetchFn => fetchFn(...commonParams))
   );
-  if (stakedUtilityPool) {
-    elements.push(stakedUtilityPool);
-  }
 
-  const stakedCollateralPool = await fetchStakedCollateralPool(
-    ownerAddress,
-    cache,
-    logCtx
-  );
-  if (stakedCollateralPool) {
-    elements.push(stakedCollateralPool);
-  }
-
-  return elements;
+  return results.filter((element): element is PortfolioElement => element !== undefined);
 };
 
 const fetcher: Fetcher = {
