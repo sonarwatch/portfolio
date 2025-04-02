@@ -18,11 +18,17 @@ export default function tokenPriceToAssetToken(
   attributes?: PortfolioAssetAttributes,
   link?: string
 ): PortfolioAssetToken {
-  const fPrice: UsdValue = tokenPrice?.price || price || null;
+  // Handle prices of 0 different than undefined
+  let fPrice: UsdValue = null;
+  if (tokenPrice?.price !== undefined) {
+    fPrice = tokenPrice.price;
+  } else if (price !== undefined) {
+    fPrice = price;
+  }
   return {
     type: PortfolioAssetType.token,
     networkId,
-    value: fPrice ? fPrice * amount : null,
+    value: fPrice != null ? fPrice * amount : null,
     data: {
       address: formatTokenAddress(address, networkId),
       amount,
