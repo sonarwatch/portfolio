@@ -2400,3 +2400,6 @@ export const sdUtilityPoolAbi = [
 //     type: 'function',
 //   },
 ] as const;
+
+export const sdCollateralPoolAbi = [
+] as const;
