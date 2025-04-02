@@ -1,63 +1,27 @@
-import {
-  EvmNetworkIdType,
-  NetworkId,
-  networks,
-} from '@sonarwatch/portfolio-core';
-import request, { gql } from 'graphql-request';
+import { EvmNetworkIdType, NetworkId } from '@sonarwatch/portfolio-core';
+
 import { getAddress } from 'viem';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { morphoApiUrl, platformId } from './constants';
+import { morphoVaultsCachePrefix, platformId } from './constants';
 
-import { MorphoVaultRes } from './types';
 import { morphoVaultABI } from './abis';
 import { getEvmClient } from '../../utils/clients';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { Cache } from '../../Cache';
-
-export async function getVaults(networkId: EvmNetworkIdType) {
-  const query = gql`
-    query Vaults($first: Int, $orderBy: VaultOrderBy, $where: VaultFilters) {
-      vaults(first: $first, orderBy: $orderBy, where: $where) {
-        items {
-          address
-          asset {
-            address
-            decimals
-            logoURI
-            name
-            priceUsd
-            symbol
-          }
-          symbol
-          name
-        }
-      }
-    }
-  `;
-
-  const variables = {
-    first: 1000,
-    orderBy: 'TotalAssetsUsd',
-    where: {
-      // totalAssetsUsd_gte: 1,
-      chainId_in: networks[networkId].chainId,
-    },
-  };
-
-  try {
-    const res = await request<MorphoVaultRes>(morphoApiUrl, query, variables);
-
-    return res.vaults.items;
-  } catch (error) {
-    const msg = 'Cannot get Morpho vaults';
-    console.error(msg, error);
-    return [];
-  }
-}
+import { MorphoVaultRes } from './types';
 
 function getYieldFetcher(networkId: EvmNetworkIdType): Fetcher {
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-    const vaults = await getVaults(networkId);
+    const vaults = await cache.getItem<MorphoVaultRes['vaults']['items']>(
+      morphoVaultsCachePrefix,
+      {
+        networkId,
+        prefix: morphoVaultsCachePrefix,
+      }
+    );
+    if (!vaults || vaults.length === 0) {
+      return [];
+    }
 
     const client = getEvmClient(networkId);
 

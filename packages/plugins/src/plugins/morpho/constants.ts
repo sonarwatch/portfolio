@@ -21,3 +21,4 @@ export const wethDecimals = 18;
 
 export const morphoApiUrl = 'https://blue-api.morpho.org/graphql';
 export const morphoMarketsCachePrefix = `${platformId}-markets`;
+export const morphoVaultsCachePrefix = `${platformId}-vaults`;
