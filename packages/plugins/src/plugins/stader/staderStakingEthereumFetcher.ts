@@ -1,4 +1,5 @@
 import {
+  formatEvmAddress,
   NetworkId,
   PortfolioElement,
   PortfolioElementType,
@@ -10,6 +11,7 @@ import {
   platformId,
 } from './constants';
 
+import { Address } from 'viem';
 import { Cache } from '../../Cache';
 import { getBalances } from '../../utils/evm/getBalances';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
@@ -19,7 +21,7 @@ const DECIMALS_ON_CONTRACT = 18;
 const NETWORK_ID = NetworkId.ethereum;
 
 const fetchStakedEthx = async (
-  owner: string,
+  owner: Address,
   cache: Cache,
   logCtx: LoggingContext
 ): Promise<PortfolioElement | undefined> => {
@@ -77,16 +79,17 @@ const fetchStakedEthx = async (
   };
 };
 
-const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
+const executor: FetcherExecutor = async (owner: string, cache: Cache): Promise<PortfolioElement[]> => {
+  const ownerAddress: Address = formatEvmAddress(owner) as Address;
   const logCtx = {
     fn: 'staderStakingEthereumFetcher::executor',
-    owner,
+    ownerAddress,
     networkId: NETWORK_ID,
   };
 
   const elements: PortfolioElement[] = [];
 
-  const stakedEthx = await fetchStakedEthx(owner, cache, logCtx);
+  const stakedEthx = await fetchStakedEthx(ownerAddress, cache, logCtx);
   if (stakedEthx) {
     elements.push(stakedEthx);
   }
@@ -95,8 +98,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-${NetworkId.ethereum}-staking`,
-  networkId: NetworkId.ethereum,
+  id: `${platformId}-${NETWORK_ID}-staking`,
+  networkId: NETWORK_ID,
   executor,
 };
 
