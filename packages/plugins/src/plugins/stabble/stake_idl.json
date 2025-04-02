@@ -1,0 +1,614 @@
+{
+  "address": "rev31KMq4qzt1y1iw926p694MHVVWT57caQrsHLFA4x",
+  "metadata": {
+    "name": "rewarder",
+    "version": "0.8.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "claim_miner",
+      "discriminator": [136, 85, 228, 255, 237, 78, 246, 75],
+      "accounts": [
+        {
+          "name": "with",
+          "accounts": [
+            { "name": "miner", "writable": true },
+            { "name": "pool", "writable": true },
+            { "name": "rewarder", "writable": true }
+          ]
+        },
+        { "name": "beneficiary", "signer": true },
+        { "name": "rewarder_authority" },
+        { "name": "mint" },
+        { "name": "user_token", "writable": true },
+        { "name": "rewarder_token", "writable": true },
+        { "name": "token_program" }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_miner",
+      "discriminator": [126, 23, 157, 1, 147, 94, 245, 69],
+      "accounts": [
+        { "name": "payer", "writable": true, "signer": true },
+        { "name": "miner", "writable": true },
+        { "name": "pool", "writable": true },
+        { "name": "rewarder", "writable": true },
+        { "name": "system_program" }
+      ],
+      "args": [{ "name": "user", "type": "pubkey" }]
+    },
+    {
+      "name": "create_pool",
+      "discriminator": [233, 146, 209, 142, 207, 104, 64, 188],
+      "accounts": [
+        { "name": "admin", "signer": true },
+        { "name": "mint" },
+        { "name": "pool", "writable": true },
+        { "name": "rewarder", "writable": true }
+      ],
+      "args": [{ "name": "weight", "type": "u32" }]
+    },
+    {
+      "name": "create_rewarder",
+      "discriminator": [120, 73, 255, 176, 149, 192, 100, 11],
+      "accounts": [
+        { "name": "admin", "signer": true },
+        { "name": "mint" },
+        { "name": "rewarder", "writable": true },
+        { "name": "rewarder_authority" }
+      ],
+      "args": [
+        { "name": "total_rewards", "type": "u64" },
+        { "name": "epoch_starts_at", "type": "i64" },
+        { "name": "epoch_ends_at", "type": "i64" }
+      ]
+    },
+    {
+      "name": "deposit_derived_miner",
+      "discriminator": [177, 179, 189, 31, 213, 249, 237, 105],
+      "accounts": [
+        {
+          "name": "with",
+          "accounts": [
+            { "name": "miner", "writable": true },
+            { "name": "pool", "writable": true },
+            { "name": "rewarder", "writable": true }
+          ]
+        },
+        {
+          "name": "with_derived",
+          "accounts": [
+            { "name": "miner", "writable": true },
+            { "name": "pool", "writable": true },
+            { "name": "rewarder", "writable": true }
+          ]
+        },
+        { "name": "beneficiary", "signer": true },
+        { "name": "mint" },
+        { "name": "authority_token", "writable": true },
+        { "name": "miner_token", "writable": true },
+        { "name": "token_program" }
+      ],
+      "args": []
+    },
+    {
+      "name": "deposit_miner",
+      "discriminator": [54, 78, 85, 45, 168, 143, 128, 43],
+      "accounts": [
+        {
+          "name": "with",
+          "accounts": [
+            { "name": "miner", "writable": true },
+            { "name": "pool", "writable": true },
+            { "name": "rewarder", "writable": true }
+          ]
+        },
+        { "name": "authority", "signer": true },
+        { "name": "mint" },
+        { "name": "user_token", "writable": true },
+        { "name": "miner_token", "writable": true },
+        { "name": "token_program" }
+      ],
+      "args": [{ "name": "amount", "type": "u64" }]
+    },
+    {
+      "name": "derive_miner",
+      "discriminator": [27, 105, 228, 184, 40, 47, 143, 222],
+      "accounts": [
+        { "name": "payer", "writable": true, "signer": true },
+        { "name": "authority" },
+        { "name": "authority_pool" },
+        { "name": "miner", "writable": true },
+        { "name": "pool", "writable": true },
+        { "name": "rewarder", "writable": true },
+        { "name": "system_program" }
+      ],
+      "args": []
+    },
+    {
+      "name": "derive_rewarder",
+      "discriminator": [238, 3, 95, 138, 42, 120, 112, 95],
+      "accounts": [
+        { "name": "admin", "signer": true },
+        { "name": "rewarder", "writable": true },
+        { "name": "parent_rewarder" }
+      ],
+      "args": []
+    },
+    {
+      "name": "update_pool",
+      "discriminator": [239, 214, 170, 78, 36, 35, 30, 34],
+      "accounts": [
+        { "name": "admin", "signer": true },
+        { "name": "pool", "writable": true },
+        { "name": "rewarder", "writable": true }
+      ],
+      "args": [{ "name": "weight", "type": "u32" }]
+    },
+    {
+      "name": "update_rewarder",
+      "discriminator": [8, 200, 106, 119, 145, 217, 207, 184],
+      "accounts": [
+        { "name": "admin", "signer": true },
+        { "name": "rewarder", "writable": true }
+      ],
+      "args": [
+        { "name": "total_rewards", "type": "u64" },
+        { "name": "epoch_starts_at", "type": "i64" },
+        { "name": "epoch_ends_at", "type": "i64" }
+      ]
+    },
+    {
+      "name": "withdraw_derived_miner",
+      "discriminator": [187, 150, 79, 1, 70, 35, 158, 68],
+      "accounts": [
+        {
+          "name": "with",
+          "accounts": [
+            { "name": "miner", "writable": true },
+            { "name": "pool", "writable": true },
+            { "name": "rewarder", "writable": true }
+          ]
+        },
+        {
+          "name": "with_derived",
+          "accounts": [
+            { "name": "miner", "writable": true },
+            { "name": "pool", "writable": true },
+            { "name": "rewarder", "writable": true }
+          ]
+        },
+        { "name": "beneficiary", "signer": true },
+        { "name": "mint" },
+        { "name": "authority_token", "writable": true },
+        { "name": "miner_token", "writable": true },
+        { "name": "token_program" }
+      ],
+      "args": [{ "name": "amount", "type": "u64" }]
+    },
+    {
+      "name": "withdraw_miner",
+      "discriminator": [8, 3, 194, 213, 170, 53, 91, 115],
+      "accounts": [
+        {
+          "name": "with",
+          "accounts": [
+            { "name": "miner", "writable": true },
+            { "name": "pool", "writable": true },
+            { "name": "rewarder", "writable": true }
+          ]
+        },
+        { "name": "authority", "signer": true },
+        { "name": "mint" },
+        { "name": "user_token", "writable": true },
+        { "name": "miner_token", "writable": true },
+        { "name": "token_program" }
+      ],
+      "args": [{ "name": "amount", "type": "u64" }]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Miner",
+      "discriminator": [223, 113, 15, 54, 123, 122, 140, 100]
+    },
+    { "name": "Pool", "discriminator": [241, 154, 109, 4, 17, 177, 109, 188] },
+    {
+      "name": "Rewarder",
+      "discriminator": [83, 3, 203, 174, 244, 30, 172, 198]
+    }
+  ],
+  "events": [
+    {
+      "name": "MinerCreatedEvent",
+      "discriminator": [48, 135, 82, 71, 145, 215, 215, 244]
+    },
+    {
+      "name": "MinerUpdatedEvent",
+      "discriminator": [100, 3, 175, 177, 197, 54, 79, 30]
+    },
+    {
+      "name": "PoolUpdatedEvent",
+      "discriminator": [128, 39, 94, 221, 230, 222, 127, 141]
+    },
+    {
+      "name": "RewarderUpdatedEvent",
+      "discriminator": [76, 254, 223, 9, 1, 110, 75, 197]
+    },
+    {
+      "name": "RewardsPerAmountUpdatedEvent",
+      "discriminator": [189, 101, 42, 233, 13, 255, 223, 203]
+    },
+    {
+      "name": "RewardsPerWeightUpdatedEvent",
+      "discriminator": [251, 93, 148, 24, 47, 177, 139, 46]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "UnsupportedMint",
+      "msg": "The specified mint is not supported"
+    },
+    {
+      "code": 6001,
+      "name": "NoClaimableRewards",
+      "msg": "No rewards are currently available for claiming"
+    },
+    {
+      "code": 6002,
+      "name": "InsufficientFaucet",
+      "msg": "Insufficient rewards in the faucet"
+    },
+    {
+      "code": 6003,
+      "name": "RewardPoolEmpty",
+      "msg": "The reward pool is currently empty"
+    },
+    {
+      "code": 6004,
+      "name": "DepositAmountZero",
+      "msg": "Deposit amount cannot be zero"
+    }
+  ],
+  "types": [
+    {
+      "name": "Miner",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pool",
+            "docs": [
+              "Reference to the [Pool] where this miner is staking tokens."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "The authority (owner) address that controls this miner account and its staked tokens."
+            ],
+            "type": "pubkey"
+          },
+          { "name": "beneficiary", "type": "pubkey" },
+          { "name": "bump", "docs": ["Bump seed"], "type": "u8" },
+          {
+            "name": "amount",
+            "docs": ["The amount of tokens the miner has staked."],
+            "type": "u64"
+          },
+          {
+            "name": "rewards_debt",
+            "docs": [
+              "The accumulated rewards debt. This value is used in the rewards calculation formula to avoid double counting."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "rewards_credit",
+            "docs": [
+              "The total rewards credit. This value is used in the rewards calculation formula to account rewards for withdrawn amounts."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "rewards_claimed",
+            "docs": ["The total rewards that the miner has claimed so far."],
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MinerCreatedData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "pool", "type": "pubkey" },
+          { "name": "authority", "type": "pubkey" },
+          { "name": "beneficiary", "type": "pubkey" }
+        ]
+      }
+    },
+    {
+      "name": "MinerCreatedEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "pubkey", "type": "pubkey" },
+          {
+            "name": "data",
+            "type": { "defined": { "name": "MinerCreatedData" } }
+          }
+        ]
+      }
+    },
+    {
+      "name": "MinerUpdatedData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "amount", "type": "u64" },
+          { "name": "rewards_debt", "type": "u64" },
+          { "name": "rewards_credit", "type": "u64" },
+          { "name": "rewards_claimed", "type": "u64" }
+        ]
+      }
+    },
+    {
+      "name": "MinerUpdatedEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "pubkey", "type": "pubkey" },
+          {
+            "name": "data",
+            "type": { "defined": { "name": "MinerUpdatedData" } }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Pool",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "rewarder",
+            "docs": ["Reference to the [Rewarder] that this pool belongs to."],
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "docs": ["The mint of the token that users stake in this pool."],
+            "type": "pubkey"
+          },
+          { "name": "decimals", "type": "u8" },
+          {
+            "name": "weight",
+            "docs": ["Weight multiplier for the pool."],
+            "type": "u32"
+          },
+          {
+            "name": "total_amount",
+            "docs": ["Total amount of tokens staked in the pool."],
+            "type": "u64"
+          },
+          { "name": "total_rewards_debt", "docs": [""], "type": "u64" },
+          { "name": "total_rewards_credit", "docs": [""], "type": "u64" },
+          { "name": "total_rewards_distributed", "docs": [""], "type": "u64" },
+          { "name": "total_weights", "docs": [""], "type": "u128" },
+          { "name": "rewards_per_amount", "docs": [""], "type": "u128" },
+          {
+            "name": "num_miners",
+            "docs": ["Number of active miners (stakers) in this pool."],
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PoolUpdatedData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "weight", "type": "u32" },
+          { "name": "total_rewards_debt", "type": "u64" },
+          { "name": "total_rewards_credit", "type": "u64" },
+          { "name": "total_rewards_distributed", "type": "u64" },
+          { "name": "total_weights", "type": "u128" },
+          { "name": "rewards_per_amount", "type": "u128" }
+        ]
+      }
+    },
+    {
+      "name": "PoolUpdatedEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "pubkey", "type": "pubkey" },
+          {
+            "name": "data",
+            "type": { "defined": { "name": "PoolUpdatedData" } }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Rewarder",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "docs": [
+              "The admin authority that can manage the epoch rewards and to add new pools."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "docs": [
+              "The mint of the token that will be distributed as rewards."
+            ],
+            "type": "pubkey"
+          },
+          { "name": "decimals", "type": "u8" },
+          {
+            "name": "authority_bump",
+            "docs": ["Bump seed for the PDA that holds the reward tokens."],
+            "type": "u8"
+          },
+          {
+            "name": "cumulative_rewards",
+            "docs": [
+              "Total rewards distributed historically since inception until last epoch."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "total_rewards",
+            "docs": ["Total rewards allocated for the current epoch."],
+            "type": "u64"
+          },
+          { "name": "total_rewards_claimed", "type": "u64" },
+          {
+            "name": "total_weights",
+            "docs": [
+              "The sum of all pool weights; used to compute reward distribution across pools."
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "rewards_per_weight",
+            "docs": [
+              "Cumulative rewards per unit weight; updated over time as rewards are accrued."
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "num_pools",
+            "docs": ["The number of pools registered under this Rewarder."],
+            "type": "u32"
+          },
+          {
+            "name": "epoch_index",
+            "docs": ["Index of current epoch."],
+            "type": "u32"
+          },
+          {
+            "name": "epoch_starts_at",
+            "docs": ["Unix timestamp marking the start of the current epoch."],
+            "type": "i64"
+          },
+          {
+            "name": "epoch_ends_at",
+            "docs": ["Unix timestamp marking the end of the current epoch."],
+            "type": "i64"
+          },
+          { "name": "epoch_duration", "docs": [""], "type": "i64" },
+          {
+            "name": "last_updated_at",
+            "docs": [
+              "Unix timestamp of the last update to the reward distribution."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "parent_rewarder",
+            "docs": [
+              "Optional reference to a parent [Rewarder]. If set, this rewarder acts as a child in a double reward mechanism,",
+              "where rewards accrued here may be re-staked into the parent rewarder for additional reward accumulation."
+            ],
+            "type": { "option": "pubkey" }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RewarderUpdatedData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "cumulative_rewards", "type": "u64" },
+          { "name": "total_rewards", "type": "u64" },
+          { "name": "rewards_per_weight", "type": "u128" },
+          { "name": "epoch_index", "type": "u32" },
+          { "name": "epoch_starts_at", "type": "i64" },
+          { "name": "epoch_ends_at", "type": "i64" },
+          { "name": "epoch_duration", "type": "i64" },
+          { "name": "last_updated_at", "type": "i64" }
+        ]
+      }
+    },
+    {
+      "name": "RewarderUpdatedEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "pubkey", "type": "pubkey" },
+          {
+            "name": "data",
+            "type": { "defined": { "name": "RewarderUpdatedData" } }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RewardsPerAmountUpdatedData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "total_amount", "type": "u64" },
+          { "name": "total_rewards_debt", "type": "u64" },
+          { "name": "total_rewards_credit", "type": "u64" },
+          { "name": "total_rewards_distributed", "type": "u64" },
+          { "name": "total_weights", "type": "u128" },
+          { "name": "rewards_per_amount", "type": "u128" }
+        ]
+      }
+    },
+    {
+      "name": "RewardsPerAmountUpdatedEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "pubkey", "type": "pubkey" },
+          {
+            "name": "data",
+            "type": { "defined": { "name": "RewardsPerAmountUpdatedData" } }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RewardsPerWeightUpdatedData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "total_rewards_claimed", "type": "u64" },
+          { "name": "total_weights", "type": "u128" },
+          { "name": "rewards_per_weight", "type": "u128" },
+          { "name": "last_updated_at", "type": "i64" }
+        ]
+      }
+    },
+    {
+      "name": "RewardsPerWeightUpdatedEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "pubkey", "type": "pubkey" },
+          {
+            "name": "data",
+            "type": { "defined": { "name": "RewardsPerWeightUpdatedData" } }
+          }
+        ]
+      }
+    }
+  ]
+}
