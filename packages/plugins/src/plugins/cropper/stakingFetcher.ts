@@ -27,6 +27,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       address: crpMint,
       amount: stakingAcc.amount.dividedBy(10 ** 9),
       alreadyShifted: true,
+      attributes: {
+        lockedUntil: stakingAcc.lastStakeTime
+          .plus(stakingAcc.lockDuration)
+          .times(1000)
+          .toNumber(),
+      },
       ref: stakingAcc.pubkey,
       link: 'https://cropper.finance/staking/',
     });
