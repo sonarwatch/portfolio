@@ -15,6 +15,8 @@ export const CONTRACT_ADDRESS_PERMISSIONLESS_NODE_REGISTRY_ETHEREUM_MAINNET: Add
 
 export const CONTRACT_ADDRESS_STADER_UTILITY_POOL_ETHEREUM_MAINNET: Address  = '0xED6EE5049f643289ad52411E9aDeC698D04a9602';
 
+export const CONTRACT_ADDRESS_STADER_COLLATERAL_POOL_ETHEREUM_MAINNET: Address = '0x7Af4730cc8EbAd1a050dcad5c03c33D2793EE91f';
+
 /**
  * Matches https://stader.gitbook.io/stader/ethereum/smart-contracts#ethx-mainnet-smart-contracts and
  * https://github.com/llamafolio/llamafolio-api/blob/bf669cbaf424a7694954d151e39e143d28ff2e35/src/adapters/stader/ethereum/index.ts#L16

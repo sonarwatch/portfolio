@@ -11,6 +11,7 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
   CONTRACT_ADDRESS_ETHX_TOKEN_ETHEREUM_MAINNET,
   CONTRACT_ADDRESS_PERMISSIONLESS_NODE_REGISTRY_ETHEREUM_MAINNET,
+  CONTRACT_ADDRESS_STADER_COLLATERAL_POOL_ETHEREUM_MAINNET,
   CONTRACT_ADDRESS_STADER_TOKEN_ETHEREUM_MAINNET,
   CONTRACT_ADDRESS_STADER_UTILITY_POOL_ETHEREUM_MAINNET,
   DECIMALS_ON_CONTRACT_STADER_TOKEN,
@@ -22,7 +23,7 @@ import { getEvmClient } from '../../utils/clients';
 import { getBalances } from '../../utils/evm/getBalances';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { LoggingContext, verboseLog } from '../octav/utils/loggingUtils';
-import { permissionsLessNodeRegistryAbi, sdUtilityPoolAbi } from './abis';
+import { permissionsLessNodeRegistryAbi, sdCollateralPoolAbi, sdUtilityPoolAbi } from './abis';
 
 const DECIMALS_ON_CONTRACT = 18;
 const NETWORK_ID = NetworkId.ethereum;
@@ -234,6 +235,64 @@ const fetchStakedUtilityPool = async (
   };
 };
 
+const fetchStakedCollateralPool = async (
+  owner: Address,
+  cache: Cache,
+  logCtx: LoggingContext
+): Promise<PortfolioElement | undefined> => {
+  const contractAddress = CONTRACT_ADDRESS_STADER_COLLATERAL_POOL_ETHEREUM_MAINNET;
+  const contractDecimals = DECIMALS_ON_CONTRACT_STADER_TOKEN;
+
+  const client = getEvmClient(NETWORK_ID);
+  verboseLog({ ...logCtx, contractAddress }, 'Fetching stader collateral pool');
+ 
+  const rawCollateralBalance = await client.readContract({
+    abi: sdCollateralPoolAbi,
+    address: contractAddress,
+    functionName: 'operatorSDBalance',
+    args: [owner],
+  });
+  verboseLog(
+    { ...logCtx, rawCollateralBalance },
+    'Call to operatorSDBalance completed'
+  );
+  if (!rawCollateralBalance) {
+    verboseLog(logCtx, 'No collateral balance found; bailing out');
+    return;
+  } 
+  const collateralBalance = new BigNumber(rawCollateralBalance.toString())
+    .div(10 ** contractDecimals)
+    .toNumber();
+
+  const tokenPrice = await cache.getTokenPrice(
+    CONTRACT_ADDRESS_STADER_TOKEN_ETHEREUM_MAINNET,
+    NETWORK_ID
+  );
+  verboseLog(
+    { ...logCtx, contractAddress, tokenPrice },
+    'Token price retrieved from cache'
+  );
+
+  const stakedAsset = tokenPriceToAssetToken(
+    contractAddress,
+    collateralBalance,
+    NETWORK_ID,
+    tokenPrice
+  );
+
+  return {
+    networkId: NETWORK_ID,
+    label: 'Staked',
+    platformId,
+    type: PortfolioElementType.multiple,
+    value: stakedAsset.value,
+    data: {
+      assets: [stakedAsset],
+    },
+  };
+};
+
+
 const executor: FetcherExecutor = async (
   owner: string,
   cache: Cache
@@ -265,6 +324,15 @@ const executor: FetcherExecutor = async (
   );
   if (stakedUtilityPool) {
     elements.push(stakedUtilityPool);
+  }
+
+  const stakedCollateralPool = await fetchStakedCollateralPool(
+    ownerAddress,
+    cache,
+    logCtx
+  );
+  if (stakedCollateralPool) {
+    elements.push(stakedCollateralPool);
   }
 
   return elements;
