@@ -1,10 +1,9 @@
-import { Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from '../../Fetcher';
 import { Job } from '../../Job';
 import { getPoolsPositionsFetcher } from './gePoolPositionsFetcher';
 import { getPoolsJob } from './getPoolsJob';
 import { getFarmsJob } from './farmsJob';
-import { platform, stargateNetworksConfigs } from './constants';
+import { stargateNetworksConfigs } from './constants';
 import { getFarmsPositionsFetcher } from './getFarmPositionsFetcher';
 import { getVoteTokensFetcher } from './getVoteTokensFetcher';
 
@@ -21,4 +20,3 @@ export const fetchers: Fetcher[] = [
     ])
     .flat(),
 ];
-export const platforms: Platform[] = [platform];

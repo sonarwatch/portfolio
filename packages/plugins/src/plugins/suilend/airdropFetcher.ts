@@ -12,11 +12,11 @@ import {
   marketsKey,
   obligationOwnerCapType,
   packageId,
-  platform,
   platformId,
   mSendMint,
   suilendPointsType,
   mSendCoinType,
+  platformImage,
 } from './constants';
 import { multiGetObjects } from '../../utils/sui/multiGetObjects';
 import {
@@ -101,7 +101,7 @@ const executor: AirdropFetcherExecutor = async (
         isClaimed: isPointsAllocClaimed,
         label: 'mSEND',
         address: mSendMint,
-        imageUri: platform.image,
+        imageUri: platformImage,
       },
       {
         amount: nftsAllocation.collectionsAllocation,
@@ -110,14 +110,14 @@ const executor: AirdropFetcherExecutor = async (
           nftsAllocation.collectionsAllocation,
         label: 'mSEND',
         address: mSendMint,
-        imageUri: platform.image,
+        imageUri: platformImage,
       },
       {
         amount: capsuleAmountClaimed ?? nftsAllocation.capsulesAllocation,
         isClaimed: capsuleAmountClaimed === nftsAllocation.capsulesAllocation,
         label: 'mSEND',
         address: mSendMint,
-        imageUri: platform.image,
+        imageUri: platformImage,
       },
       {
         amount: getEarlyUserAllocation(owner),
@@ -125,7 +125,7 @@ const executor: AirdropFetcherExecutor = async (
         isClaimed: true,
         label: 'mSEND',
         address: mSendMint,
-        imageUri: platform.image,
+        imageUri: platformImage,
       },
       {
         amount: getBluefinLeagueAllocation(owner),
@@ -133,7 +133,7 @@ const executor: AirdropFetcherExecutor = async (
         isClaimed: true,
         label: 'mSEND',
         address: mSendMint,
-        imageUri: platform.image,
+        imageUri: platformImage,
       },
     ],
   });
@@ -146,7 +146,7 @@ export const airdropFetcher: AirdropFetcher = {
 
 export const fetcher = airdropFetcherToFetcher(
   airdropFetcher,
-  platform.id,
+  platformId,
   'suilend-airdrop',
   airdropStatics.claimEnd
 );

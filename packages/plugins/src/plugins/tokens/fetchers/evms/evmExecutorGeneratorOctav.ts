@@ -4,7 +4,7 @@ import {
   PortfolioElementMultiple,
   PortfolioElementType,
   // TokenPrice,
-  getUsdValueSum,
+  getUsdValueSum, walletTokensPlatformId
 } from '@sonarwatch/portfolio-core';
 import { BigNumber } from 'bignumber.js';
 import { getAddress } from 'viem';
@@ -14,7 +14,7 @@ import { getEvmClient } from '../../../../utils/clients';
 import { balanceOfErc20ABI } from '../../../../utils/evm/erc20Abi';
 import tokenPriceToAssetToken from '../../../../utils/misc/tokenPriceToAssetToken';
 import { TokenList } from '../../types';
-import { tokenListsPrefix, walletTokensPlatform } from '../../constants';
+import { tokenListsPrefix } from '../../constants';
 
 /* 
     This file was modified because sonarwatch hides wallet tokens for which they don't have the price
@@ -104,7 +104,7 @@ export default function getEvmFetcherExecutorOctav(
     const element: PortfolioElementMultiple = {
       type: PortfolioElementType.multiple,
       networkId,
-      platformId: walletTokensPlatform.id,
+      platformId: walletTokensPlatformId,
       label: 'Wallet',
       value: getUsdValueSum(walletTokensAssets.map((a) => a.value)),
       data: {

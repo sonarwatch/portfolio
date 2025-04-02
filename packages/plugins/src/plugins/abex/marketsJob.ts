@@ -2,6 +2,7 @@ import {
   NetworkId,
   formatTokenAddress,
   parseTypeString,
+  walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -23,7 +24,6 @@ import getLpTokenSourceRawOld, {
   PoolUnderlyingRaw,
 } from '../../utils/misc/getLpTokenSourceRawOld';
 import { getObject } from '../../utils/sui/getObject';
-import { walletTokensPlatform } from '../tokens/constants';
 import { getMarketInfo } from './helpers';
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -110,7 +110,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   await cache.setTokenPriceSource({
     id: 'alp',
     networkId: NetworkId.sui,
-    platformId: walletTokensPlatform.id,
+    platformId: walletTokensPlatformId,
     address: alpType,
     decimals: alpDecimals,
     price: lpSource.price,

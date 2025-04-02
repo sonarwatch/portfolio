@@ -1,9 +1,7 @@
-import { Platform } from '@sonarwatch/portfolio-core';
 import { Fetcher } from './Fetcher';
 import { AirdropFetcher } from './AirdropFetcher';
 import { Job } from './Job';
 import { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
-import * as orphanPlatforms from './orphanPlatforms';
 
 // PLUGINS
 import * as tokens from './plugins/tokens';
@@ -163,22 +161,18 @@ import * as coingecko from './plugins/coingecko';
 import * as convex from './plugins/convex';
 import * as fraxlend from './plugins/fraxlend';
 import * as zeus from './plugins/zeus';
+import * as pumpswap from './plugins/pumpswap';
 import * as eigenlayer from './plugins/eigenlayer';
 
-export {
-  walletTokensPlatform,
-  walletNftsPlatform,
-} from './plugins/tokens/constants';
-
 export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
-export { isSolanaAddressActive } from './utils/solana/isActive';
 
 export * from './Cache';
 export * from './Fetcher';
 export * from './AirdropFetcher';
 export * from './Job';
 export * from './utils/name-service';
-export * from './utils/blank';
+export * from './utils/hasTransactions';
+
 export { getLlamaProtocolsJob } from './plugins/llama-protocols';
 export { jupFetcherIds } from './plugins/jupiter';
 export { solanaSimpleFetcher } from './plugins/tokens';
@@ -338,17 +332,12 @@ const modules = [
   baskt,
   guano,
   coingecko,
-  orphanPlatforms,
   convex,
   fraxlend,
   zeus,
   eigenlayer,
+  pumpswap,
 ];
-
-// PLATFORMS //
-export const platforms: Platform[] = modules
-  .map((module) => module.platforms)
-  .flat();
 
 // JOBS //
 export const jobs: Job[] = modules

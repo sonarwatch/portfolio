@@ -1,15 +1,6 @@
-import { Platform } from '@sonarwatch/portfolio-core';
 import { coinInfo } from '../../utils/aptos';
 
 export const platformId = 'thala';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Thala',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/thala.webp',
-  defiLlamaId: 'parent#thala-labs',
-  website: 'https://www.thala.fi/',
-};
 export const packageId =
   '0x6f986d146e4a90b828d8c12c14b6f4e003fdff11a8eecceceb63744363eaac01';
 export const vePackageId =

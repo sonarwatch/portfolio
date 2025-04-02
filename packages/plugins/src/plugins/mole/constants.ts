@@ -1,15 +1,4 @@
-import { Platform } from '@sonarwatch/portfolio-core';
-
 export const platformId = 'mole';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Mole',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/mole.webp',
-  defiLlamaId: 'mole', // from https://defillama.com/docs/api
-  website: 'https://app.mole.fi/',
-  twitter: 'https://twitter.com/moledefi',
-};
 
 export const magicCoin =
   '0x5ffa69ee4ee14d899dcc750df92de12bad4bacf81efa1ae12ee76406804dda7f::vault::MagicCoin';

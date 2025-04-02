@@ -1,5 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId, walletTokensPlatformId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSolana } from '../../utils/clients';
@@ -9,7 +9,6 @@ import {
   tokenAccountStruct,
 } from '../../utils/solana';
 import { xStakingConfigs } from './constants';
-import { walletTokensPlatform } from '../tokens/constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -51,7 +50,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       decimals: config.xDecimals,
       id: config.vault,
       networkId: NetworkId.solana,
-      platformId: walletTokensPlatform.id,
+      platformId: walletTokensPlatformId,
       price: xPrice.toNumber(),
       timestamp: Date.now(),
       weight: 1,

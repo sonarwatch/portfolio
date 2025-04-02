@@ -201,7 +201,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     });
     const elementBorrowlend = elementRegistry.addElementBorrowlend({
       label: 'Leverage',
-      name: `JLP Leverage x${new BigNumber(marginAccount.leverage)
+      name: `JLP x${new BigNumber(marginAccount.leverage)
         .dividedBy(100)
         .decimalPlaces(2)}`,
       link: 'https://nxfinance.io/leverage',

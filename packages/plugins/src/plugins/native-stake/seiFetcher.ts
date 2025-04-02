@@ -2,12 +2,12 @@ import {
   NetworkId,
   PortfolioAsset,
   getUsdValueSum,
+  nativeStakePlatformId,
   seiNativeAddress,
   seiNetwork,
 } from '@sonarwatch/portfolio-core';
 import Long from 'long';
 import BigNumber from 'bignumber.js';
-import { platformId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { Cache } from '../../Cache';
 import { getClientSei } from '../../utils/clients';
@@ -65,7 +65,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   return [
     {
       networkId: NetworkId.sei,
-      platformId,
+      platformId: nativeStakePlatformId,
       type: 'multiple',
       label: 'Staked',
       value: getUsdValueSum(nativeAssets.map((a) => a.value)),
@@ -77,7 +77,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-sei`,
+  id: `${nativeStakePlatformId}-sei`,
   networkId: NetworkId.sei,
   executor,
 };

@@ -4,10 +4,10 @@ import {
   TokenPriceSource,
   coingeckoSourceId,
   formatTokenAddress,
+  walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import getSourceWeight from './getSourceWeight';
-import { walletTokensPlatform } from '../../plugins/tokens/constants';
 import { defaultAcceptedPairs } from './getLpUnderlyingTokenSource';
 
 export type PoolData = {
@@ -104,7 +104,7 @@ export default function getLpUnderlyingTokenSourceOld(
   const source: TokenPriceSource = {
     id: sourceId,
     networkId,
-    platformId: walletTokensPlatform.id,
+    platformId: walletTokensPlatformId,
     address: formatTokenAddress(unknownUnderlaying.address, networkId),
     decimals: unknownUnderlaying.decimals,
     price,

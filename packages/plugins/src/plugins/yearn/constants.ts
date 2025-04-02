@@ -1,16 +1,7 @@
-import { Platform } from '@sonarwatch/portfolio-core';
 import { Contract } from './types';
 
 export const platformId = 'yearn';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Yearn',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/yearn.webp',
-  website: 'https://yearn.fi/',
-  defiLlamaId: 'yearn-finance', // from https://defillama.com/docs/api
-  // twitter: 'https://twitter.com/myplatform',
-};
+
 export const vaultsKey = 'vaults';
 export const yearnApiUrl = 'https://api.yexporter.io/v1/chains';
 export const lockersEth: Contract[] = [

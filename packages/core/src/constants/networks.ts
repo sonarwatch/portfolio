@@ -1,9 +1,13 @@
-import { AddressSystem } from '../Address';
+import { AddressSystem, AddressSystemType } from '../Address';
 import { Network, NetworkId, NetworkIdType } from '../Network';
 import {
   aptosNativeAddress,
+  arbitrumNativeWrappedAddress,
+  aributrumNativeAddress,
   avalancheNativeAddress,
   avalancheNativeWrappedAddress,
+  baseNativeAddress,
+  baseNativeWrappedAddress,
   bitcoinNativeAddress,
   bnbNativeAddress,
   bnbNativeWrappedAddress,
@@ -11,6 +15,8 @@ import {
   ethereumNativeWrappedAddress,
   fraxtalNativeAddress,
   fraxtalNativeWrappedAddress,
+  optimismNativeAddress,
+  optimismNativeWrappedAddress,
   polygonNativeAddress,
   polygonNativeWrappedAddress,
   seiNativeAddress,
@@ -234,6 +240,72 @@ export const fraxtalNetwork: Network = {
     'https://gist.githubusercontent.com/jtardioli/f0b857cbebf6d7f1be20eae612b9aa00/raw/52b8f369b6fc055f1c91c4dbde7c8e3306155f6e/sonarwatch.fraxtal.tokenlist.json',
 };
 
+export const baseNetwork: Network = {
+  id: NetworkId.base,
+  name: 'Base',
+  image: 'https://images.octav.fi/chains/base_icon.svg',
+  addressSystem: AddressSystem.evm,
+  chainId: 8453,
+  native: {
+    address: baseNativeAddress,
+    decimals: 18,
+    coingeckoId: 'ethereum',
+  },
+  nativeWrapped: {
+    address: baseNativeWrappedAddress,
+    decimals: 18,
+    coingeckoId: 'weth',
+  },
+  isLive: true,
+  geckoId: 'base',
+  llamaId: 'Base',
+  tokenListUrl: '',
+};
+
+export const arbitrumNetwork: Network = {
+  id: NetworkId.arbitrum,
+  name: 'Arbitrum',
+  image: 'https://images.octav.fi/chains/arbitrum_icon.svg',
+  addressSystem: AddressSystem.evm,
+  chainId: 42161,
+  native: {
+    address: aributrumNativeAddress,
+    decimals: 18,
+    coingeckoId: 'ethereum',
+  },
+  nativeWrapped: {
+    address: arbitrumNativeWrappedAddress,
+    decimals: 18,
+    coingeckoId: 'weth',
+  },
+  isLive: true,
+  geckoId: 'arbitrum',
+  llamaId: 'Arbitrum',
+  tokenListUrl: '',
+};
+
+export const optimismNetwork: Network = {
+  id: NetworkId.optimism,
+  name: 'Optimism',
+  image: 'https://images.octav.fi/chains/optimism_icon.svg',
+  addressSystem: AddressSystem.evm,
+  chainId: 10,
+  native: {
+    address: optimismNativeAddress,
+    decimals: 18,
+    coingeckoId: 'ethereum',
+  },
+  nativeWrapped: {
+    address: optimismNativeWrappedAddress,
+    decimals: 18,
+    coingeckoId: 'weth',
+  },
+  isLive: true,
+  geckoId: 'optimism',
+  llamaId: 'Optimism',
+  tokenListUrl: '',
+};
+
 export const networks: Record<NetworkIdType, Network> = {
   [NetworkId.aptos]: aptosNetwork,
   [NetworkId.avalanche]: avalancheNetwork,
@@ -245,9 +317,27 @@ export const networks: Record<NetworkIdType, Network> = {
   [NetworkId.sui]: suiNetwork,
   [NetworkId.sei]: seiNetwork,
   [NetworkId.fraxtal]: fraxtalNetwork,
+  [NetworkId.base]: baseNetwork,
+  [NetworkId.arbitrum]: arbitrumNetwork,
+  [NetworkId.optimism]: optimismNetwork,
 };
 
 export const networksAsArray = Object.values(networks);
+
+export const networksByAddressSystem: Record<AddressSystemType, Network[]> =
+  (() => {
+    const res: Record<AddressSystemType, Network[]> = {
+      bitcoin: [],
+      solana: [],
+      sei: [],
+      evm: [],
+      move: [],
+    };
+    for (const network of networksAsArray) {
+      res[network.addressSystem].push(network);
+    }
+    return res;
+  })();
 
 export const evmNetworks: Network[] = Object.values(networks).filter(
   (n) => n.addressSystem === AddressSystem.evm

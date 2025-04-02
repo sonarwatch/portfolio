@@ -1,21 +1,12 @@
-import { Platform } from '@sonarwatch/portfolio-core';
 import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'bluefin';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Bluefin',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/bluefin.webp',
-  defiLlamaId: 'parent#bluefin', // from https://defillama.com/docs/api
-  website: 'https://trade.bluefin.io/',
-  twitter: 'https://x.com/bluefinapp',
-};
+export const platformName = 'Bluefin';
 
 export const airdropStatics: AirdropStatics = {
   claimLink: 'https://trade.bluefin.io/airdrop',
   emitterLink: 'https://trade.bluefin.io/',
-  emitterName: platform.name,
+  emitterName: platformName,
   id: 'bluefin-airdrop',
   image:
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/bluefin.webp',

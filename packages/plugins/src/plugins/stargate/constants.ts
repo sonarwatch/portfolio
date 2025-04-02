@@ -1,16 +1,7 @@
-import { NetworkId, Platform } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { StgConfig } from './types';
 
 export const platformId = 'stargate';
-
-export const platform: Platform = {
-  id: platformId,
-  name: 'Stargate',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/stargate.webp',
-  defiLlamaId: 'stargate-v1',
-  website: 'https://stargate.finance/',
-};
 
 export const poolsKey = 'pools';
 export const farmsKey = 'farms';

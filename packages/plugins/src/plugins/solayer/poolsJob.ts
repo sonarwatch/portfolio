@@ -3,6 +3,7 @@ import {
   solanaNativeAddress,
   solanaNativeDecimals,
   TokenPriceSource,
+  walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
@@ -18,7 +19,6 @@ import {
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { restakingPoolStruct, stakePoolStruct } from './structs';
-import { walletTokensPlatform } from '../tokens/constants';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 
 const executor: JobExecutor = async (cache: Cache) => {
@@ -43,7 +43,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       decimals: solayerLstDecimals,
       id: platformId,
       networkId: NetworkId.solana,
-      platformId: walletTokensPlatform.id,
+      platformId: walletTokensPlatformId,
       price: solTokenPrice.price * ratio,
       timestamp: Date.now(),
       weight: 1,

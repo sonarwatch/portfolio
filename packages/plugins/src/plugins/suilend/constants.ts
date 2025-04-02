@@ -1,16 +1,8 @@
-import { Platform } from '@sonarwatch/portfolio-core';
 import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'suilend';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Suilend',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/suilend.webp',
-  defiLlamaId: 'suilend', // from https://defillama.com/docs/api
-  website: 'https://www.suilend.fi/',
-  twitter: 'https://twitter.com/suilendprotocol',
-};
+export const platformImage =
+  'https://sonarwatch.github.io/portfolio/assets/images/platforms/suilend.webp';
 
 export const airdropStatics: AirdropStatics = {
   claimLink: 'https://suilend.fi/send',

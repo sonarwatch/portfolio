@@ -12,7 +12,7 @@ import {
   airdropStatics,
   layerDecimals,
   layerMint,
-  platform,
+  platformId,
 } from './constants';
 import { AirdropResponse } from './types';
 
@@ -75,7 +75,7 @@ export const airdropFetcher: AirdropFetcher = {
 };
 export const fetcher = airdropFetcherToFetcher(
   airdropFetcher,
-  platform.id,
+  platformId,
   'solayer-airdrop',
   airdropStatics.claimEnd
 );

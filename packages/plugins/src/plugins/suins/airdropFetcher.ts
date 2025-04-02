@@ -6,7 +6,7 @@ import {
   airdropFetcherToFetcher,
   getAirdropRaw,
 } from '../../AirdropFetcher';
-import { airdropStatics, nsDecimals, nsMint, platform } from './constants';
+import { airdropStatics, nsDecimals, nsMint, platformId } from './constants';
 import { getClientSui } from '../../utils/clients';
 import { AirdropWrapperNFT } from '../../utils/sui/types';
 import { NsAirdropClaimed } from './types';
@@ -80,7 +80,7 @@ export const airdropFetcher: AirdropFetcher = {
 
 export const fetcher = airdropFetcherToFetcher(
   airdropFetcher,
-  platform.id,
+  platformId,
   'ns-airdrop',
   airdropStatics.claimEnd
 );

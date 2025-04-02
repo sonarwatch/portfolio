@@ -6,10 +6,11 @@ import {
   PortfolioElementType,
   PortfolioLiquidity,
   getUsdValueSum,
+  walletNftsPlatformId,
+  walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
-import { walletNftsPlatform, walletTokensPlatform } from '../constants';
 import { Cache } from '../../../Cache';
 import { getLpTag, parseLpTag } from '../helpers';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
@@ -54,7 +55,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       : 1;
 
     // If it's an LP Token
-    if (tokenPrice && tokenPrice.platformId !== walletTokensPlatform.id) {
+    if (tokenPrice && tokenPrice.platformId !== walletTokensPlatformId) {
       const liquidity = tokenPriceToLiquidity(
         asset.id,
         amount,
@@ -68,7 +69,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       liquiditiesByTag[tag].push(liquidity);
     }
     // If it's a regular token
-    else if (tokenPrice && tokenPrice.platformId === walletTokensPlatform.id) {
+    else if (tokenPrice && tokenPrice.platformId === walletTokensPlatformId) {
       tokenAssets.push({
         ...tokenPriceToAssetToken(
           address,
@@ -92,7 +93,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     elements.push({
       type: PortfolioElementType.multiple,
       networkId: NetworkId.solana,
-      platformId: walletNftsPlatform.id,
+      platformId: walletNftsPlatformId,
       label: 'Wallet',
       value: null,
       data: {
@@ -105,7 +106,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     elements.push({
       type: PortfolioElementType.multiple,
       networkId: NetworkId.solana,
-      platformId: walletTokensPlatform.id,
+      platformId: walletTokensPlatformId,
       label: 'Wallet',
       value: getUsdValueSum(tokenAssets.map((a) => a.value)),
       data: {
@@ -131,7 +132,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${walletTokensPlatform.id}-solana`,
+  id: `${walletTokensPlatformId}-solana`,
   networkId: NetworkId.solana,
   executor,
 };

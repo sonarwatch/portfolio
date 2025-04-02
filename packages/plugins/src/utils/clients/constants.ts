@@ -3,7 +3,17 @@ import {
   NetworkIdType,
   RpcEndpoint,
 } from '@sonarwatch/portfolio-core';
-import { Chain, avalanche, mainnet, polygon, bsc } from 'viem/chains';
+import {
+  Chain,
+  avalanche,
+  mainnet,
+  polygon,
+  bsc,
+  arbitrum,
+  optimism,
+  base,
+} from 'viem/chains';
+import process from 'node:process';
 import urlToRpcEndpoint from './urlToRpcEndpoint';
 import { fraxtal } from './customViemChains';
 
@@ -13,6 +23,9 @@ export const viemChainsByNetworkId: Record<EvmNetworkIdType, Chain> = {
   polygon,
   bnb: bsc,
   fraxtal,
+  arbitrum,
+  optimism,
+  base,
 };
 
 export function getUrlEndpoints(): Record<NetworkIdType, string> {
@@ -35,6 +48,11 @@ export function getUrlEndpoints(): Record<NetworkIdType, string> {
       'https://api.mainnet.aptoslabs.com/v1',
     sui: process.env['PORTFOLIO_SUI_RPC'] || 'https://sui-rpc.publicnode.com',
     fraxtal: process.env['PORTFOLIO_FRAXTAL_RPC'] || 'https://rpc.frax.com',
+    arbitrum:
+      process.env['PORTFOLIO_ARBITRUM_RPC'] || 'https://arbitrum.llamarpc.com',
+    base: process.env['PORTFOLIO_BASE_RPC'] || 'https://base.llamarpc.com',
+    optimism:
+      process.env['PORTFOLIO_OPTIMISM_RPC'] || 'https://optimism.llamarpc.com',
   };
 }
 

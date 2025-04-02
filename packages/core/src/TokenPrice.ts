@@ -57,7 +57,7 @@ export function tokenPriceFromSources(
 
   const bestSource = updatedSources.reduce((prev, current) => {
     if (current.platformId !== walletTokensPlatformId) return current;
-    // TODO print warning if 2 differents platformId (other than walletTokensPlatform.id)
+    // TODO print warning if 2 differents platformId (other than walletTokensPlatformId)
     // TODO print warning if 2 differents decimals
     return prev;
   });

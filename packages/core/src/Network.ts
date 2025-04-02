@@ -14,6 +14,9 @@ export const NetworkId = {
   sei: 'sei',
   bnb: 'bnb',
   fraxtal: 'fraxtal',
+  arbitrum: 'arbitrum',
+  optimism: 'optimism',
+  base: 'base',
 } as const;
 
 /**
@@ -34,7 +37,10 @@ export type EvmNetworkIdType =
   | typeof NetworkId.avalanche
   | typeof NetworkId.polygon
   | typeof NetworkId.bnb
-  | typeof NetworkId.fraxtal;
+  | typeof NetworkId.fraxtal
+  | typeof NetworkId.arbitrum
+  | typeof NetworkId.optimism
+  | typeof NetworkId.base;
 
 /**
  * Represents the type of a Cosmos network ID.

@@ -1,24 +1,8 @@
 import { PublicKey } from '@solana/web3.js';
-import { Platform } from '@sonarwatch/portfolio-core';
 import { AirdropStatics } from '../../AirdropFetcher';
 
 export const zexMint = 'ZEXy1pqteRu3n13kdyh4LwPQknkFk3GzmMYMuNadWPo';
 export const platformId = 'zeta';
-export const platform: Platform = {
-  id: platformId,
-  name: 'Zeta',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/zeta.webp',
-  defiLlamaId: 'zeta',
-  website: 'https://www.zeta.markets/',
-  twitter: 'https://x.com/ZetaMarkets',
-  documentation: 'https://docs.zeta.markets/',
-  tokens: [zexMint],
-  telegram: 'https://t.me/realzetamarkets',
-  discord: 'https://discord.gg/Xn9HCJaDZd',
-  github: 'https://github.com/zetamarkets',
-  description: 'Zeta Markets is the premier derivatives protocol on Solana.',
-};
 
 export const programId = new PublicKey(
   'ZETAxsqBRek56DhiGXrn75yj2NHU3aYUnxvHXpkf3aD'

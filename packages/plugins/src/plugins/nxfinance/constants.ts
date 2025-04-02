@@ -1,4 +1,3 @@
-import { Platform } from '@sonarwatch/portfolio-core';
 import { IdlItem } from '@solanafm/explorer-kit-idls';
 import { PublicKey } from '@solana/web3.js';
 import { NxfinanceLeverageIDL } from './leverageIdl';
@@ -6,17 +5,6 @@ import { NxfinanceLendIdl } from './lendIdl';
 import { NxfinanceStakingIdl } from './stakingIdl';
 
 export const platformId = 'nxfinance';
-export const platform: Platform = {
-  id: platformId,
-  name: 'NX Finance',
-  image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/nxfinance.webp',
-  website: 'https://nxfinance.io/',
-  twitter: 'https://twitter.com/NX_Finance',
-  defiLlamaId: 'nx-finance',
-  discord: 'https://discord.com/invite/nxfinance',
-};
-
 // https://nxfinance.io/nx-data/doc
 
 export const ID = new PublicKey('RaXcyfW8jK295UAU1XN2uLMTHnTWEaeCcNWLeDB4iD6');
