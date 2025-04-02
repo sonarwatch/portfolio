@@ -2,6 +2,7 @@ import {
   ethereumNativeAddress,
   formatEvmAddress,
   NetworkId,
+  PortfolioAsset,
   PortfolioElement,
   PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
@@ -32,6 +33,19 @@ import { StaderFetcherParams, StaderFetchFunction } from './types';
 
 const DECIMALS_ON_CONTRACT = 18;
 const NETWORK_ID = NetworkId.ethereum;
+
+const createStakedPortfolioElement = (
+  asset: PortfolioAsset
+): PortfolioElement => ({
+    networkId: NETWORK_ID,
+    label: 'Staked',
+    platformId,
+    type: PortfolioElementType.multiple,
+    value: asset.value,
+    data: {
+      assets: [asset],
+    },
+  });
 
 const fetchStakedEthx: StaderFetchFunction = async ({
   owner,
@@ -80,16 +94,7 @@ const fetchStakedEthx: StaderFetchFunction = async ({
     tokenPrice
   );
 
-  return {
-    networkId: NETWORK_ID,
-    label: 'Staked',
-    platformId,
-    type: PortfolioElementType.multiple,
-    value: stakedAsset.value,
-    data: {
-      assets: [stakedAsset],
-    },
-  };
+  return createStakedPortfolioElement(stakedAsset);
 };
 
 const fetchStakedPermissionsLessNodeRegistry: StaderFetchFunction = async ({
@@ -174,16 +179,7 @@ const fetchStakedPermissionsLessNodeRegistry: StaderFetchFunction = async ({
     tokenPrice
   );
 
-  return {
-    networkId: NETWORK_ID,
-    label: 'Staked',
-    platformId,
-    type: PortfolioElementType.multiple,
-    value: stakedAsset.value,
-    data: {
-      assets: [stakedAsset],
-    },
-  };
+  return createStakedPortfolioElement(stakedAsset);
 };
 
 const fetchStakedUtilityPool: StaderFetchFunction = async ({
@@ -228,23 +224,14 @@ const fetchStakedUtilityPool: StaderFetchFunction = async ({
     tokenPrice
   );
 
-  return {
-    networkId: NETWORK_ID,
-    label: 'Staked',
-    platformId,
-    type: PortfolioElementType.multiple,
-    value: stakedAsset.value,
-    data: {
-      assets: [stakedAsset],
-    },
-  };
+  return createStakedPortfolioElement(stakedAsset);
 };
 
 const fetchStakedCollateralPool: StaderFetchFunction = async ({
   owner,
   cache,
   logCtx,
-}): Promise<PortfolioElement | undefined> => {  
+}): Promise<PortfolioElement | undefined> => {
   const contractAddress =
     CONTRACT_ADDRESS_STADER_COLLATERAL_POOL_ETHEREUM_MAINNET;
   const contractDecimals = DECIMALS_ON_CONTRACT_STADER_TOKEN;
@@ -286,16 +273,7 @@ const fetchStakedCollateralPool: StaderFetchFunction = async ({
     tokenPrice
   );
 
-  return {
-    networkId: NETWORK_ID,
-    label: 'Staked',
-    platformId,
-    type: PortfolioElementType.multiple,
-    value: stakedAsset.value,
-    data: {
-      assets: [stakedAsset],
-    },
-  };
+  return createStakedPortfolioElement(stakedAsset);
 };
 
 const executor: FetcherExecutor = async (
