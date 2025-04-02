@@ -22,7 +22,7 @@ import { Cache } from '../../Cache';
 import { getEvmClient } from '../../utils/clients';
 import { getBalances } from '../../utils/evm/getBalances';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { verboseLog } from '../octav/utils/loggingUtils';
+import { LoggingContext, verboseLog } from '../octav/utils/loggingUtils';
 import {
   permissionsLessNodeRegistryAbi,
   sdCollateralPoolAbi,
@@ -36,12 +36,13 @@ const createStakedPortfolioElement = async (
   assetContractAddress: Address,
   priceTokenAddress: Address,
   amount: number,
-  cache: Cache
+  cache: Cache,
+  logCtx: LoggingContext
 ): Promise<PortfolioElement | undefined> => {
   const tokenPrice = await cache.getTokenPrice(priceTokenAddress, NETWORK_ID);
   verboseLog(
     {
-      fn: 'staderStakingEthereumFetcher::createStakedPortfolioElement',
+      ...logCtx,
       priceTokenAddress,
       tokenPrice,
     },
@@ -103,7 +104,8 @@ const fetchStakedEthx: StaderFetchFunction = async ({
     contractAddress,
     contractAddress,
     amount,
-    cache
+    cache,
+    logCtx
   );
 };
 
@@ -174,7 +176,8 @@ const fetchStakedPermissionsLessNodeRegistry: StaderFetchFunction = async ({
     contractAddress,
     ethereumNativeAddress,
     Number(operatorTotalKeys) * collateralEth,
-    cache
+    cache,
+    logCtx
   );
 };
 
@@ -213,6 +216,7 @@ const fetchStakedUtilityPool: StaderFetchFunction = async ({
     CONTRACT_ADDRESS_STADER_TOKEN_ETHEREUM_MAINNET,
     latestSDBalance,
     cache,
+    logCtx
   );
 };
 
@@ -250,7 +254,8 @@ const fetchStakedCollateralPool: StaderFetchFunction = async ({
     contractAddress,
     CONTRACT_ADDRESS_STADER_TOKEN_ETHEREUM_MAINNET,
     collateralBalance,
-    cache
+    cache,
+    logCtx
   );
 };
 
