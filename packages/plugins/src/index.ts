@@ -163,6 +163,7 @@ import * as coingecko from './plugins/coingecko';
 import * as convex from './plugins/convex';
 import * as fraxlend from './plugins/fraxlend';
 import * as zeus from './plugins/zeus';
+import * as eigenlayer from './plugins/eigenlayer';
 
 export {
   walletTokensPlatform,
@@ -340,7 +341,8 @@ const modules = [
   orphanPlatforms,
   convex,
   fraxlend,
-  zeus
+  zeus,
+  eigenlayer,
 ];
 
 // PLATFORMS //
