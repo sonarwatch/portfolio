@@ -96,7 +96,7 @@ const fetchStakedPermissionsLessNodeRegistry: StaderFetchFunction = async ({
   owner,
   cache,
   logCtx,
-}) => {
+}): Promise<PortfolioElement | undefined> => {
   const contractAddress =
     CONTRACT_ADDRESS_PERMISSIONLESS_NODE_REGISTRY_ETHEREUM_MAINNET;
   const contractDecimals = DECIMALS_ON_CONTRACT;
@@ -115,7 +115,7 @@ const fetchStakedPermissionsLessNodeRegistry: StaderFetchFunction = async ({
   );
   if (!operatorId) {
     verboseLog(logCtx, 'No operatorId found; bailing out');
-    return;
+    return undefined;
   }
 
   verboseLog(
@@ -134,7 +134,7 @@ const fetchStakedPermissionsLessNodeRegistry: StaderFetchFunction = async ({
   );
   if (!operatorTotalKeys) {
     verboseLog(logCtx, 'No operatorTotalKeys found; bailing out');
-    return;
+    return undefined;
   }
 
   // Now that we have the operatorTotalKeys, we must multiply it by the pool's collateralETH
@@ -190,7 +190,7 @@ const fetchStakedUtilityPool: StaderFetchFunction = async ({
   owner,
   cache,
   logCtx,
-}) => {
+}): Promise<PortfolioElement | undefined> => {
   const contractAddress = CONTRACT_ADDRESS_STADER_UTILITY_POOL_ETHEREUM_MAINNET;
   const contractDecimals = DECIMALS_ON_CONTRACT_STADER_TOKEN;
 
@@ -209,7 +209,7 @@ const fetchStakedUtilityPool: StaderFetchFunction = async ({
   );
   if (!rawLatestSDBalance) {
     verboseLog(logCtx, 'No latestSDBalance found; bailing out');
-    return;
+    return undefined;
   }
 
   const latestSDBalance = new BigNumber(rawLatestSDBalance.toString())
@@ -244,7 +244,7 @@ const fetchStakedCollateralPool: StaderFetchFunction = async ({
   owner,
   cache,
   logCtx,
-}) => {
+}): Promise<PortfolioElement | undefined> => {  
   const contractAddress =
     CONTRACT_ADDRESS_STADER_COLLATERAL_POOL_ETHEREUM_MAINNET;
   const contractDecimals = DECIMALS_ON_CONTRACT_STADER_TOKEN;
@@ -264,7 +264,7 @@ const fetchStakedCollateralPool: StaderFetchFunction = async ({
   );
   if (!rawCollateralBalance) {
     verboseLog(logCtx, 'No collateral balance found; bailing out');
-    return;
+    return undefined;
   }
   const collateralBalance = new BigNumber(rawCollateralBalance.toString())
     .div(10 ** contractDecimals)
