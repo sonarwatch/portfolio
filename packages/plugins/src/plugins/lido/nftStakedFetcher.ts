@@ -1,11 +1,12 @@
-import {
-  NetworkId,
-  PortfolioElement,
-  ethereumNetwork,
-} from '@sonarwatch/portfolio-core';
+import { PortfolioElement, ethereumNetwork } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
-import { platformId, nftAddress, lidoCSMOperatorsKey } from './constants';
+import {
+  platformId,
+  nftAddress,
+  lidoCSMOperatorsKey,
+  networkId,
+} from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getEvmClient } from '../../utils/clients';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
@@ -21,20 +22,20 @@ const executor: FetcherExecutor = async (
     lidoCSMOperatorsKey,
     {
       prefix: platformId,
-      networkId: NetworkId.ethereum,
+      networkId,
     }
   );
   if (!operatorsMapping) return [];
 
   // Check if owner is a node operator
-  const operatorId = operatorsMapping[owner.toLowerCase()];
+  const operatorId = operatorsMapping[owner];
   if (operatorId === undefined) return [];
 
-  const client = getEvmClient(NetworkId.ethereum);
+  const client = getEvmClient(networkId);
 
   // Get bond amount for the operator
   const bondResult = await client.readContract({
-    address: nftAddress as `0x${string}`,
+    address: nftAddress,
     abi: nftStakedAbi,
     functionName: 'getBond',
     args: [BigInt(operatorId)],
@@ -47,13 +48,13 @@ const executor: FetcherExecutor = async (
   // Get ETH price for value calculation
   const ethTokenPrice = await cache.getTokenPrice(
     ethereumNetwork.native.address,
-    NetworkId.ethereum
+    networkId
   );
 
   const asset = tokenPriceToAssetToken(
     ethereumNetwork.native.address,
     amount.div(ethFactor).toNumber(),
-    NetworkId.ethereum,
+    networkId,
     ethTokenPrice
   );
 
@@ -63,7 +64,7 @@ const executor: FetcherExecutor = async (
     {
       type: 'multiple',
       label: 'Staked',
-      networkId: NetworkId.ethereum,
+      networkId,
       platformId,
       value: asset.value || 0,
       data: {
@@ -75,7 +76,7 @@ const executor: FetcherExecutor = async (
 
 const fetcher: Fetcher = {
   id: `${platformId}-nft-staked`,
-  networkId: NetworkId.ethereum,
+  networkId,
   executor,
 };
 

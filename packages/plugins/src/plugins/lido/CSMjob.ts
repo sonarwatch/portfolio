@@ -1,23 +1,27 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getEvmClient } from '../../utils/clients';
 import { CSMAbi } from './abis';
-import { nftCSMAddress, lidoCSMOperatorsKey } from './constants';
+import {
+  nftCSMAddress,
+  lidoCSMOperatorsKey,
+  platformId,
+  networkId,
+} from './constants';
 
 type NodeOperator = {
-  managerAddress: string;
-  rewardAddress: string;
+  readonly managerAddress: string;
+  readonly rewardAddress: string;
 };
 
-export default function getCSMJob(platformId: string): Job {
-  const client = getEvmClient(NetworkId.ethereum);
+export default function getCSMJob(): Job {
+  const client = getEvmClient(networkId);
 
   const executor: JobExecutor = async (cache: Cache) => {
     // Get total number of operators
     const operatorsCountRes = await client.readContract({
       abi: CSMAbi,
-      address: nftCSMAddress as `0x${string}`,
+      address: nftCSMAddress,
       functionName: 'getNodeOperatorsCount',
     });
 
@@ -25,7 +29,7 @@ export default function getCSMJob(platformId: string): Job {
     const operatorsCount = Number(operatorsCountRes);
 
     // Create array of indices from 0 to operatorsCount-1
-    const operatorIndices = Array.from(Array(operatorsCount).keys());
+    const operatorIndices = Array.from({ length: operatorsCount }, (_, i) => i);
 
     // Get all operators details using multicall
     const operatorsRes = await client.multicall({
@@ -33,7 +37,7 @@ export default function getCSMJob(platformId: string): Job {
         (index) =>
           ({
             abi: CSMAbi,
-            address: nftCSMAddress as `0x${string}`,
+            address: nftCSMAddress,
             functionName: 'getNodeOperator',
             args: [BigInt(index)],
           } as const)
@@ -45,9 +49,8 @@ export default function getCSMJob(platformId: string): Job {
 
     operatorsRes.forEach((operator, index) => {
       if (operator.status === 'success') {
-        const result = operator.result as NodeOperator;
-        const managerAddress = result.managerAddress.toLowerCase();
-        const rewardAddress = result.rewardAddress.toLowerCase();
+        const { managerAddress, rewardAddress } =
+          operator.result as NodeOperator;
 
         // Map both manager and reward addresses to the operator ID
         operatorsMapping[managerAddress] = index;
@@ -58,7 +61,7 @@ export default function getCSMJob(platformId: string): Job {
     // Store the mapping in cache
     await cache.setItem(lidoCSMOperatorsKey, operatorsMapping, {
       prefix: platformId,
-      networkId: NetworkId.ethereum,
+      networkId,
     });
   };
 

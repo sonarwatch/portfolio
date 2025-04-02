@@ -1,4 +1,8 @@
-import { NetworkId, ethereumNetwork } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  ethereumNetwork,
+  getUsdValueSum,
+} from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import {
@@ -14,8 +18,68 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { ethFactor } from '../../utils/evm/constants';
 import { maticAbi, wstETHAbi } from './abis';
 import { getBalances } from '../../utils/evm/getBalances';
+import { EvmClient } from '../../utils/clients/types';
+
+const getWstETHAsset = async (
+  balance: bigint,
+  client: EvmClient,
+  cache: Cache
+) => {
+  const conversionResult = await client.readContract({
+    address: wstETHAddress,
+    abi: wstETHAbi,
+    functionName: 'getStETHByWstETH',
+    args: [balance],
+  });
+
+  const stETHAmount = new BigNumber((conversionResult as bigint).toString());
+  const ethTokenPrice = await cache.getTokenPrice(
+    ethereumNetwork.native.address,
+    NetworkId.ethereum
+  );
+
+  if (!ethTokenPrice?.price) return null;
+
+  return tokenPriceToAssetToken(
+    ethereumNetwork.native.address,
+    stETHAmount.div(ethFactor).toNumber(),
+    NetworkId.ethereum,
+    ethTokenPrice
+  );
+};
+
+const getStMATICAsset = async (
+  balance: bigint,
+  client: EvmClient,
+  cache: Cache
+) => {
+  const conversionResult = await client.readContract({
+    address: stMATICAddress,
+    abi: maticAbi,
+    functionName: 'convertStMaticToMatic',
+    args: [balance],
+  });
+
+  const maticAmount = new BigNumber(
+    (conversionResult as bigint[]).at(0)?.toString() || '0'
+  );
+  const maticPrice = await cache.getTokenPrice(
+    maticTokenAddress,
+    NetworkId.ethereum
+  );
+
+  if (!maticPrice?.price) return null;
+
+  return tokenPriceToAssetToken(
+    maticTokenAddress,
+    maticAmount.div(ethFactor).toNumber(),
+    NetworkId.ethereum,
+    maticPrice
+  );
+};
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
+  const client = getEvmClient(NetworkId.ethereum);
   const balancesResults = await getBalances(
     owner,
     stakedAddresses,
@@ -24,67 +88,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const assets = await Promise.all(
     balancesResults.map(async (balance, index) => {
-      if (!balance) return null;
+      if (!balance) return undefined;
 
       const amount = new BigNumber(balance.toString());
-      if (amount.isZero()) return null;
+      if (amount.isZero()) return undefined;
 
-      // Handle wstETH conversion
-      if (
-        stakedAddresses[index].toLowerCase() === wstETHAddress.toLowerCase()
-      ) {
-        const client = getEvmClient(NetworkId.ethereum);
-        const conversionResult = await client.readContract({
-          address: wstETHAddress,
-          abi: wstETHAbi,
-          functionName: 'getStETHByWstETH',
-          args: [balance],
-        });
-
-        const stETHAmount = new BigNumber(
-          (conversionResult as bigint).toString()
-        );
-        const ethTokenPrice = await cache.getTokenPrice(
-          ethereumNetwork.native.address,
-          NetworkId.ethereum
-        );
-
-        return tokenPriceToAssetToken(
-          ethereumNetwork.native.address,
-          stETHAmount.div(ethFactor).toNumber(),
-          NetworkId.ethereum,
-          ethTokenPrice
-        );
+      if (stakedAddresses[index] === wstETHAddress) {
+        return getWstETHAsset(balance, client, cache);
       }
 
-      // Handle stMATIC conversion
-      if (
-        stakedAddresses[index].toLowerCase() === stMATICAddress.toLowerCase()
-      ) {
-        const maticClient = getEvmClient(NetworkId.ethereum);
-        const conversionResult = await maticClient.readContract({
-          address: stMATICAddress,
-          abi: maticAbi,
-          functionName: 'convertStMaticToMatic',
-          args: [balance],
-        });
-
-        const maticAmount = new BigNumber(
-          (conversionResult as bigint[]).at(0)?.toString() || '0'
-        );
-        const maticPrice = await cache.getTokenPrice(
-          maticTokenAddress,
-          NetworkId.ethereum
-        );
-
-        if (!maticPrice?.price) return null;
-
-        return tokenPriceToAssetToken(
-          maticTokenAddress,
-          maticAmount.div(ethFactor).toNumber(),
-          NetworkId.ethereum,
-          maticPrice
-        );
+      if (stakedAddresses[index] === stMATICAddress) {
+        return getStMATICAsset(balance, client, cache);
       }
 
       // For ETH staking tokens
@@ -93,7 +107,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         NetworkId.ethereum
       );
 
-      if (!ethTokenPrice?.price) return null;
+      if (!ethTokenPrice?.price) return undefined;
 
       return tokenPriceToAssetToken(
         ethereumNetwork.native.address,
@@ -104,15 +118,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     })
   );
 
-  const validAssets = assets.filter(
-    (asset): asset is NonNullable<typeof asset> => asset !== null
-  );
+  const validAssets = assets.filter((asset) => !!asset);
   if (validAssets.length === 0) return [];
 
-  const totalValue = validAssets.reduce(
-    (acc, asset) => acc + (asset.value || 0),
-    0
-  );
+  const totalValue = getUsdValueSum(validAssets.map((asset) => asset.value));
 
   return [
     {

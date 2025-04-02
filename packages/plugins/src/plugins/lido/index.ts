@@ -4,9 +4,8 @@ import withdrawlFetcher from './withdrawlFetcher';
 import stakedFetcher from './stakedFetcher';
 import nftStakedFetcher from './nftStakedFetcher';
 import getCSMJob from './CSMjob';
-import { platformId } from './constants';
 
-export const jobs: Job[] = [getCSMJob(platformId)];
+export const jobs: Job[] = [getCSMJob()];
 export const fetchers: Fetcher[] = [
   withdrawlFetcher,
   stakedFetcher,
