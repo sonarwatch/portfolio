@@ -1,4 +1,4 @@
-import { EvmNetworkIdType, NetworkId } from '@sonarwatch/portfolio-core';
+import { EvmNetworkIdType } from '@sonarwatch/portfolio-core';
 
 import { getAddress } from 'viem';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -88,7 +88,7 @@ export function getYieldFetcher(networkId: EvmNetworkIdType): Fetcher {
 
   return {
     id: `${platformId}-${networkId}-vaults`,
-    networkId: NetworkId.ethereum,
+    networkId,
     executor,
   };
 }

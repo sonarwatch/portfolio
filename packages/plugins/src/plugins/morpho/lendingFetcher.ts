@@ -1,4 +1,4 @@
-import { EvmNetworkIdType, NetworkId } from '@sonarwatch/portfolio-core';
+import { EvmNetworkIdType } from '@sonarwatch/portfolio-core';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { morphoMarketsCachePrefix, platformId } from './constants';
 import { getEvmClient } from '../../utils/clients';
@@ -135,7 +135,7 @@ export function getLendingFetcher(networkId: EvmNetworkIdType): Fetcher {
 
   return {
     id: `${platformId}-${networkId}-markets`,
-    networkId: NetworkId.ethereum,
+    networkId,
     executor,
   };
 }

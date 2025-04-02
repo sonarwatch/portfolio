@@ -10,8 +10,7 @@ import { Cache } from '../../Cache';
     The exact formula used to compute rewards is currently closed-source, though the 
     team has expressed intentions to open-source it in the future.
 */
-
-function getRewardsFetcher(networkId: EvmNetworkIdType): Fetcher {
+export function getRewardsFetcher(networkId: EvmNetworkIdType): Fetcher {
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     console.log(owner, cache);
 
