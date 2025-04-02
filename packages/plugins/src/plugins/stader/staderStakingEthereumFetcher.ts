@@ -11,6 +11,9 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
   CONTRACT_ADDRESS_ETHX_TOKEN_ETHEREUM_MAINNET,
   CONTRACT_ADDRESS_PERMISSIONLESS_NODE_REGISTRY_ETHEREUM_MAINNET,
+  CONTRACT_ADDRESS_STADER_TOKEN_ETHEREUM_MAINNET,
+  CONTRACT_ADDRESS_STADER_UTILITY_POOL_ETHEREUM_MAINNET,
+  DECIMALS_ON_CONTRACT_STADER_TOKEN,
   platformId,
 } from './constants';
 
@@ -19,7 +22,7 @@ import { getEvmClient } from '../../utils/clients';
 import { getBalances } from '../../utils/evm/getBalances';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { LoggingContext, verboseLog } from '../octav/utils/loggingUtils';
-import { permissionsLessNodeRegistryAbi } from './abi';
+import { permissionsLessNodeRegistryAbi, sdUtilityPoolAbi } from './abis';
 
 const DECIMALS_ON_CONTRACT = 18;
 const NETWORK_ID = NetworkId.ethereum;
@@ -177,7 +180,64 @@ const fetchStakedPermissionsLessNodeRegistry = async (
   };
 };
 
-const executor: FetcherExecutor = async (owner: string, cache: Cache): Promise<PortfolioElement[]> => {
+const fetchStakedUtilityPool = async (
+  owner: Address,
+  cache: Cache,
+  logCtx: LoggingContext
+): Promise<PortfolioElement | undefined> => {
+  const contractAddress = CONTRACT_ADDRESS_STADER_UTILITY_POOL_ETHEREUM_MAINNET;
+  const contractDecimals = DECIMALS_ON_CONTRACT_STADER_TOKEN;
+
+  const client = getEvmClient(NETWORK_ID);
+  verboseLog({ ...logCtx, contractAddress }, 'Fetching stader utility pool');
+
+  const rawLatestSDBalance = await client.readContract({
+    abi: sdUtilityPoolAbi,
+    address: contractAddress,
+    functionName: 'getDelegatorLatestSDBalance',
+    args: [owner],
+  });
+  verboseLog(
+    { ...logCtx, rawLatestSDBalance },
+    'Call to getDelegatorLatestSDBalance completed'
+  );
+  if (!rawLatestSDBalance) {
+    verboseLog(logCtx, 'No latestSDBalance found; bailing out');
+    return;
+  }
+
+  const latestSDBalance = new BigNumber(rawLatestSDBalance.toString())
+    .div(10 ** contractDecimals)
+    .toNumber();
+
+  const tokenPrice = await cache.getTokenPrice(
+    CONTRACT_ADDRESS_STADER_TOKEN_ETHEREUM_MAINNET,
+    NETWORK_ID
+  );
+
+  const stakedAsset = tokenPriceToAssetToken(
+    contractAddress,
+    latestSDBalance,
+    NETWORK_ID,
+    tokenPrice
+  );
+
+  return {
+    networkId: NETWORK_ID,
+    label: 'Staked',
+    platformId,
+    type: PortfolioElementType.multiple,
+    value: stakedAsset.value,
+    data: {
+      assets: [stakedAsset],
+    },
+  };
+};
+
+const executor: FetcherExecutor = async (
+  owner: string,
+  cache: Cache
+): Promise<PortfolioElement[]> => {
   const ownerAddress: Address = formatEvmAddress(owner) as Address;
   const logCtx = {
     fn: 'staderStakingEthereumFetcher::executor',
@@ -196,6 +256,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache): Promise<P
     await fetchStakedPermissionsLessNodeRegistry(ownerAddress, cache, logCtx);
   if (stakedPermissionsLessNodeRegistry) {
     elements.push(stakedPermissionsLessNodeRegistry);
+  }
+
+  const stakedUtilityPool = await fetchStakedUtilityPool(
+    ownerAddress,
+    cache,
+    logCtx
+  );
+  if (stakedUtilityPool) {
+    elements.push(stakedUtilityPool);
   }
 
   return elements;
