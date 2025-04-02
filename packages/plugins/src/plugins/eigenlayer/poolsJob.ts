@@ -5,24 +5,12 @@ import { Job, JobExecutor } from '../../Job';
 import { platformId } from './constants';
 import { getEvmClient } from '../../utils/clients';
 
-import {
-  getAllStakers,
-  getAVS,
-  getContracts,
-  getEigenLayerOperators,
-  getEigenlayerStrategies,
-  mapSuccessFilter,
-} from './helper';
-import { Share } from './types';
+import { getEigenLayerOperators } from './helper';
 import { abi } from './abi';
 import { getAddress } from 'viem';
 
 const executor: JobExecutor = async (cache: Cache) => {
-  const contracts = await getContracts(NetworkId.ethereum);
   const client = getEvmClient(NetworkId.ethereum);
-
-  // Get all strategies deployed
-  //const strategies = await getEigenlayerStrategies(NetworkId.ethereum);
 
   const operators = await getEigenLayerOperators();
   const strategies = Array.from(
@@ -46,21 +34,31 @@ const executor: JobExecutor = async (cache: Cache) => {
     underlyingToken: underlyingTokensResult[i].result,
   }));
 
-  await cache.setItem('eigenlayer-strategies', strategiesAndUnderlyingTokens, {
-    prefix: platformId,
-    networkId: NetworkId.ethereum,
+  // Get decimals of underlying token
+  const decimals = await client.multicall({
+    contracts: strategiesAndUnderlyingTokens
+      .filter((strategy) => strategy.underlyingToken)
+      .map((strategy) => ({
+        address: getAddress(strategy.underlyingToken as `0x${string}`),
+        abi: [abi.decimals],
+        functionName: abi.decimals.name,
+      })),
   });
 
-  //   await cache.setItem(
-  //     vaultsTvlKey,
-  //     Object.values(
-  //       res.data.data.tvl_per_exchange.BLUEFIN.token_pairs
-  //     ) as string[],
-  //     {
-  //       prefix: vaultsPrefix,
-  //       networkId: NetworkId.sui,
-  //     }
-  //   );
+  const strategiesAndUnderlyingTokensWithDecimals =
+    strategiesAndUnderlyingTokens.map((strategy, i) => ({
+      ...strategy,
+      decimals: decimals[i]?.result,
+    }));
+
+  await cache.setItem(
+    'eigenlayer-strategies',
+    strategiesAndUnderlyingTokensWithDecimals,
+    {
+      prefix: platformId,
+      networkId: NetworkId.ethereum,
+    }
+  );
 };
 
 const job: Job = {

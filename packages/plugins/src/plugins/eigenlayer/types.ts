@@ -21,3 +21,9 @@ export type Share = {
   strategyAddress: `0x${string}`;
   shares: string;
 };
+
+export type Position = {
+  strategyAddress: `0x${string}`;
+  underlyingToken?: `0x${string}`;
+  decimals?: number;
+};
