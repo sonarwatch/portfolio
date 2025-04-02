@@ -23,7 +23,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     CONTRACT_ADDRESS_ETHX_TOKEN_ETHEREUM_MAINNET,
   ];
   const logCtx = {
-    fn: 'staderEthereumFetcher::executor',
+    fn: 'staderStakingEthereumFetcher::executor',
     owner,
     networkId: NETWORK_ID,
   };
@@ -81,7 +81,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-${NetworkId.ethereum}-fetcher`,
+  id: `${platformId}-${NetworkId.ethereum}-staking`,
   networkId: NetworkId.ethereum,
   executor,
 };
