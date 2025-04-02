@@ -60,7 +60,7 @@ const fetchStakedEthx = async (
   const tokenPrice = await cache.getTokenPrice(contractAddress, NETWORK_ID);
 
   verboseLog(
-    { ...logCtx, contractAddress, amount, tokenPrice },
+    { ...logCtx, contractAddress, tokenPrice },
     'Token price retrieved from cache'
   );
 
