@@ -2,7 +2,6 @@ import {
   ethereumNativeAddress,
   formatEvmAddress,
   NetworkId,
-  PortfolioAsset,
   PortfolioElement,
   PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
@@ -34,9 +33,30 @@ import { StaderFetcherParams, StaderFetchFunction } from './types';
 const DECIMALS_ON_CONTRACT = 18;
 const NETWORK_ID = NetworkId.ethereum;
 
-const createStakedPortfolioElement = (
-  asset: PortfolioAsset
-): PortfolioElement => ({
+const createStakedPortfolioElement = async (
+  assetContractAddress: Address,
+  priceTokenAddress: Address,
+  amount: number,
+  cache: Cache
+): Promise<PortfolioElement | undefined> => {
+  const tokenPrice = await cache.getTokenPrice(priceTokenAddress, NETWORK_ID);
+  verboseLog(
+    {
+      fn: 'staderStakingEthereumFetcher::createStakedPortfolioElement',
+      priceTokenAddress,
+      tokenPrice,
+    },
+    'Token price retrieved from cache'
+  );
+
+  const asset = tokenPriceToAssetToken(
+    assetContractAddress,
+    amount,
+    NETWORK_ID,
+    tokenPrice
+  );
+
+  return {
     networkId: NETWORK_ID,
     label: 'Staked',
     platformId,
@@ -45,7 +65,8 @@ const createStakedPortfolioElement = (
     data: {
       assets: [asset],
     },
-  });
+  };
+};
 
 const fetchStakedEthx: StaderFetchFunction = async ({
   owner,
@@ -80,21 +101,12 @@ const fetchStakedEthx: StaderFetchFunction = async ({
     .div(10 ** contractDecimals)
     .toNumber();
 
-  const tokenPrice = await cache.getTokenPrice(contractAddress, NETWORK_ID);
-
-  verboseLog(
-    { ...logCtx, contractAddress, tokenPrice },
-    'Token price retrieved from cache'
-  );
-
-  const stakedAsset = tokenPriceToAssetToken(
+  return createStakedPortfolioElement(
+    contractAddress,
     contractAddress,
     amount,
-    NETWORK_ID,
-    tokenPrice
+    cache
   );
-
-  return createStakedPortfolioElement(stakedAsset);
 };
 
 const fetchStakedPermissionsLessNodeRegistry: StaderFetchFunction = async ({
@@ -160,26 +172,12 @@ const fetchStakedPermissionsLessNodeRegistry: StaderFetchFunction = async ({
     .div(10 ** contractDecimals)
     .toNumber();
 
-  // We must get the price of ETH
-  const contractAddressForEth = ethereumNativeAddress;
-  const tokenPrice = await cache.getTokenPrice(
-    contractAddressForEth,
-    NETWORK_ID
-  );
-
-  verboseLog(
-    { ...logCtx, contractAddressForEth, tokenPrice },
-    'Token price retrieved from cache'
-  );
-
-  const stakedAsset = tokenPriceToAssetToken(
+  return createStakedPortfolioElement(
     contractAddress,
+    ethereumNativeAddress,
     Number(operatorTotalKeys) * collateralEth,
-    NETWORK_ID,
-    tokenPrice
+    cache
   );
-
-  return createStakedPortfolioElement(stakedAsset);
 };
 
 const fetchStakedUtilityPool: StaderFetchFunction = async ({
@@ -212,19 +210,12 @@ const fetchStakedUtilityPool: StaderFetchFunction = async ({
     .div(10 ** contractDecimals)
     .toNumber();
 
-  const tokenPrice = await cache.getTokenPrice(
-    CONTRACT_ADDRESS_STADER_TOKEN_ETHEREUM_MAINNET,
-    NETWORK_ID
-  );
-
-  const stakedAsset = tokenPriceToAssetToken(
+  return createStakedPortfolioElement(
     contractAddress,
+    CONTRACT_ADDRESS_STADER_TOKEN_ETHEREUM_MAINNET,
     latestSDBalance,
-    NETWORK_ID,
-    tokenPrice
+    cache,
   );
-
-  return createStakedPortfolioElement(stakedAsset);
 };
 
 const fetchStakedCollateralPool: StaderFetchFunction = async ({
@@ -257,23 +248,12 @@ const fetchStakedCollateralPool: StaderFetchFunction = async ({
     .div(10 ** contractDecimals)
     .toNumber();
 
-  const tokenPrice = await cache.getTokenPrice(
-    CONTRACT_ADDRESS_STADER_TOKEN_ETHEREUM_MAINNET,
-    NETWORK_ID
-  );
-  verboseLog(
-    { ...logCtx, contractAddress, tokenPrice },
-    'Token price retrieved from cache'
-  );
-
-  const stakedAsset = tokenPriceToAssetToken(
+  return createStakedPortfolioElement(
     contractAddress,
+    CONTRACT_ADDRESS_STADER_TOKEN_ETHEREUM_MAINNET,
     collateralBalance,
-    NETWORK_ID,
-    tokenPrice
+    cache
   );
-
-  return createStakedPortfolioElement(stakedAsset);
 };
 
 const executor: FetcherExecutor = async (
