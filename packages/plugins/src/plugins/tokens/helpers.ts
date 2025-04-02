@@ -76,8 +76,9 @@ async function getPricesFromCoingeckoIds(
   shuffleArray(idsToFetch);
 
   const priceByCoingeckoId = new Map<string, number>();
+  const coingeckoApiKey = process.env['PORTFOLIO_COINGECKO_API_KEY'];
   while (idsToFetch.length !== 0) {
-    await sleep(10000);
+    await sleep(coingeckoApiKey ? 2000 : 10000);
     const currIdsToFetch = idsToFetch.splice(0, nIdsToFetch);
     const coingeckoSimpleRes: AxiosResponse<CoingeckoSimpleRes> | null =
       await axios
@@ -85,6 +86,9 @@ async function getPricesFromCoingeckoIds(
           params: {
             ids: currIdsToFetch.join(','),
             vs_currencies: 'usd',
+          },
+          headers: {
+            'x-cg-demo-api-key': coingeckoApiKey,
           },
         })
         .catch(() => null);
