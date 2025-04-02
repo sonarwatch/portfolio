@@ -605,13 +605,13 @@ export const permissionsLessNodeRegistryAbi = [
 //     stateMutability: 'view',
 //     type: 'function',
 //   },
-//   {
-//     inputs: [],
-//     name: 'getCollateralETH',
-//     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-//     stateMutability: 'pure',
-//     type: 'function',
-//   },
+  {
+    inputs: [],
+    name: 'getCollateralETH',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'pure',
+    type: 'function',
+  },
 //   {
 //     inputs: [{ internalType: 'uint256', name: '_operatorId', type: 'uint256' }],
 //     name: 'getOperatorRewardAddress',
@@ -619,13 +619,13 @@ export const permissionsLessNodeRegistryAbi = [
 //     stateMutability: 'view',
 //     type: 'function',
 //   },
-//   {
-//     inputs: [{ internalType: 'uint256', name: '_operatorId', type: 'uint256' }],
-//     name: 'getOperatorTotalKeys',
-//     outputs: [{ internalType: 'uint256', name: '_totalKeys', type: 'uint256' }],
-//     stateMutability: 'view',
-//     type: 'function',
-//   },
+  {
+    inputs: [{ internalType: 'uint256', name: '_operatorId', type: 'uint256' }],
+    name: 'getOperatorTotalKeys',
+    outputs: [{ internalType: 'uint256', name: '_totalKeys', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
 //   {
 //     inputs: [
 //       { internalType: 'address', name: '_nodeOperator', type: 'address' },
