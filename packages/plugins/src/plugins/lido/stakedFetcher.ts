@@ -1,8 +1,4 @@
-import {
-  NetworkId,
-  ethereumNetwork,
-  getUsdValueSum,
-} from '@sonarwatch/portfolio-core';
+import { ethereumNetwork, getUsdValueSum } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import {
@@ -11,6 +7,7 @@ import {
   stakedAddresses,
   wstETHAddress,
   stMATICAddress,
+  networkId,
 } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getEvmClient } from '../../utils/clients';
@@ -35,7 +32,7 @@ const getWstETHAsset = async (
   const stETHAmount = new BigNumber((conversionResult as bigint).toString());
   const ethTokenPrice = await cache.getTokenPrice(
     ethereumNetwork.native.address,
-    NetworkId.ethereum
+    networkId
   );
 
   if (!ethTokenPrice?.price) return null;
@@ -43,7 +40,7 @@ const getWstETHAsset = async (
   return tokenPriceToAssetToken(
     ethereumNetwork.native.address,
     stETHAmount.div(ethFactor).toNumber(),
-    NetworkId.ethereum,
+    networkId,
     ethTokenPrice
   );
 };
@@ -63,28 +60,21 @@ const getStMATICAsset = async (
   const maticAmount = new BigNumber(
     (conversionResult as bigint[]).at(0)?.toString() || '0'
   );
-  const maticPrice = await cache.getTokenPrice(
-    maticTokenAddress,
-    NetworkId.ethereum
-  );
+  const maticPrice = await cache.getTokenPrice(maticTokenAddress, networkId);
 
   if (!maticPrice?.price) return null;
 
   return tokenPriceToAssetToken(
     maticTokenAddress,
     maticAmount.div(ethFactor).toNumber(),
-    NetworkId.ethereum,
+    networkId,
     maticPrice
   );
 };
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getEvmClient(NetworkId.ethereum);
-  const balancesResults = await getBalances(
-    owner,
-    stakedAddresses,
-    NetworkId.ethereum
-  );
+  const client = getEvmClient(networkId);
+  const balancesResults = await getBalances(owner, stakedAddresses, networkId);
 
   const assets = await Promise.all(
     balancesResults.map(async (balance, index) => {
@@ -104,7 +94,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       // For ETH staking tokens
       const ethTokenPrice = await cache.getTokenPrice(
         ethereumNetwork.native.address,
-        NetworkId.ethereum
+        networkId
       );
 
       if (!ethTokenPrice?.price) return undefined;
@@ -112,7 +102,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       return tokenPriceToAssetToken(
         ethereumNetwork.native.address,
         amount.div(ethFactor).toNumber(),
-        NetworkId.ethereum,
+        networkId,
         ethTokenPrice
       );
     })
@@ -127,7 +117,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     {
       type: 'multiple',
       label: 'Staked',
-      networkId: NetworkId.ethereum,
+      networkId,
       platformId,
       value: totalValue,
       data: {
@@ -139,7 +129,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
 const fetcher: Fetcher = {
   id: `${platformId}-staked`,
-  networkId: NetworkId.ethereum,
+  networkId,
   executor,
 };
 
