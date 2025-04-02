@@ -5,7 +5,7 @@ import { platformId, stakingPid } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { stakedPoolStruct } from './structs';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
-import { PoolInfo } from './types';
+import { StakePoolInfo } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
@@ -15,7 +15,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     .addDataSizeFilter(145)
     .run();
 
-  const poolInfos: { key: string; value: PoolInfo }[] = [];
+  const poolInfos: { key: string; value: StakePoolInfo }[] = [];
 
   pools.forEach((pool) => {
     poolInfos.push({
@@ -23,6 +23,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       value: {
         address: pool.pubkey.toString(),
         mint: pool.mint.toString(),
+        rewarder: pool.rewarder.toString(),
       },
     });
   });
