@@ -245,12 +245,13 @@ const fetchStakedCollateralPool: StaderFetchFunction = async ({
   cache,
   logCtx,
 }) => {
-  const contractAddress = CONTRACT_ADDRESS_STADER_COLLATERAL_POOL_ETHEREUM_MAINNET;
+  const contractAddress =
+    CONTRACT_ADDRESS_STADER_COLLATERAL_POOL_ETHEREUM_MAINNET;
   const contractDecimals = DECIMALS_ON_CONTRACT_STADER_TOKEN;
 
   const client = getEvmClient(NETWORK_ID);
   verboseLog({ ...logCtx, contractAddress }, 'Fetching stader collateral pool');
- 
+
   const rawCollateralBalance = await client.readContract({
     abi: sdCollateralPoolAbi,
     address: contractAddress,
@@ -264,7 +265,7 @@ const fetchStakedCollateralPool: StaderFetchFunction = async ({
   if (!rawCollateralBalance) {
     verboseLog(logCtx, 'No collateral balance found; bailing out');
     return;
-  } 
+  }
   const collateralBalance = new BigNumber(rawCollateralBalance.toString())
     .div(10 ** contractDecimals)
     .toNumber();
@@ -296,7 +297,6 @@ const fetchStakedCollateralPool: StaderFetchFunction = async ({
     },
   };
 };
-
 
 const executor: FetcherExecutor = async (
   owner: string,
