@@ -87,7 +87,7 @@ function getYieldFetcher(networkId: EvmNetworkIdType): Fetcher {
   };
 
   return {
-    id: `${platformId}-vaults`,
+    id: `${platformId}-${networkId}-vaults`,
     networkId: NetworkId.ethereum,
     executor,
   };

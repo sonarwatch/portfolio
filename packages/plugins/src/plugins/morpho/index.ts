@@ -7,8 +7,13 @@ import aaveV3Job from './aaveV3Job';
 import getLendingFetcher from './getLendingFetcher';
 import getYieldFetcher from './getYieldFetcher';
 import { marketsJob } from './marketsJob';
+import { vaultsJob } from './vaultsJob';
 
-export const jobs: Job[] = [aaveV3Job, marketsJob(NetworkId.ethereum)];
+export const jobs: Job[] = [
+  aaveV3Job,
+  marketsJob(NetworkId.ethereum),
+  vaultsJob(NetworkId.ethereum),
+];
 export const fetchers: Fetcher[] = [
   aaveV3CollateralFetcher,
   aaveV3SupplyOnlyFetcher,

@@ -1,13 +1,13 @@
-import {
-  EvmNetworkIdType,
-  formatTokenAddress,
-  networks,
-} from '@sonarwatch/portfolio-core';
+import { EvmNetworkIdType } from '@sonarwatch/portfolio-core';
 import { getVaults } from './helpers/api';
 import { Job, JobExecutor } from '../../Job';
 import { morphoVaultsCachePrefix, platformId } from './constants';
 import { Cache } from '../../Cache';
 import { tokenListInfoPrefix } from '../tokens/constants';
+import {
+  buildTokenMetaDataItems,
+  buildTokenPriceSources,
+} from './helpers/jobs';
 
 const metaDataTTL = 1000 * 60 * 60 * 24 * 7; // 7 days
 
@@ -27,42 +27,8 @@ export function vaultsJob(networkId: EvmNetworkIdType): Job {
       }, {} as Record<string, (typeof tokens)[number]>)
     );
 
-    // Token Prices
-    const sources = uniqueTokens
-      .filter((token) => !!token.priceUsd)
-      .map((token) => ({
-        address: formatTokenAddress(token.address, networkId),
-        decimals: token.decimals,
-        id: platformId,
-        networkId,
-        platformId,
-        price: token.priceUsd!,
-        timestamp: Date.now(),
-        weight: 1,
-      }));
-
-    // Token Metadata
-    const morphoTokensMetaData = uniqueTokens.map((morphoToken) => ({
-      // simulate shape of tokenList response
-      chainId: networks[networkId].chainId,
-      address: morphoToken.address,
-      decimals: morphoToken.decimals,
-      name: morphoToken.name,
-      symbol: morphoToken.symbol,
-      logoURI: morphoToken.logoURI,
-      extensions: {},
-    }));
-
-    const tokenMetaDataItems = morphoTokensMetaData.map((token) => {
-      const address = formatTokenAddress(token.address, networkId);
-      return {
-        key: address,
-        value: {
-          ...token,
-          address,
-        },
-      };
-    });
+    const sources = buildTokenPriceSources(uniqueTokens, networkId);
+    const tokenMetaDataItems = buildTokenMetaDataItems(uniqueTokens, networkId);
 
     await Promise.all([
       cache.setItem(morphoVaultsCachePrefix, vaults, {
@@ -78,7 +44,7 @@ export function vaultsJob(networkId: EvmNetworkIdType): Job {
     ]);
   };
   return {
-    id: `${platformId}-markets`,
+    id: `${platformId}-${networkId}-vaults`,
     executor,
     labels: ['normal'],
   };

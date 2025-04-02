@@ -20,26 +20,21 @@ export type ParsedUpdatedIndexes = {
   };
 };
 
+export type MorphoAssetAPI = {
+  address: string;
+  decimals: number;
+  logoURI: string | null;
+  name: string;
+  priceUsd: number | null;
+  symbol: string;
+};
+
 export type MorphoMarketRes = {
   markets: {
     items: {
       uniqueKey: string;
-      loanAsset: {
-        address: string;
-        decimals: number;
-        logoURI: string | null;
-        name: string;
-        priceUsd: number | null;
-        symbol: string;
-      };
-      collateralAsset: {
-        address: string;
-        decimals: number;
-        logoURI: string | null;
-        name: string;
-        priceUsd: number | null;
-        symbol: string;
-      };
+      loanAsset: MorphoAssetAPI;
+      collateralAsset: MorphoAssetAPI;
     }[];
   };
 };
@@ -47,14 +42,7 @@ export type MorphoVaultRes = {
   vaults: {
     items: {
       address: string;
-      asset: {
-        address: string;
-        decimals: number;
-        logoURI: string | null;
-        name: string;
-        priceUsd: number | null;
-        symbol: string;
-      };
+      asset: MorphoAssetAPI;
       symbol: string;
       name: string;
     }[];

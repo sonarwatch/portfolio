@@ -134,7 +134,7 @@ function getLendingFetcher(networkId: EvmNetworkIdType): Fetcher {
   };
 
   return {
-    id: `${platformId}-markets`,
+    id: `${platformId}-${networkId}-markets`,
     networkId: NetworkId.ethereum,
     executor,
   };
