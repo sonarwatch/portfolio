@@ -2,10 +2,10 @@ import { EvmNetworkIdType, NetworkId } from '@sonarwatch/portfolio-core';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { morphoMarketsCachePrefix, platformId } from './constants';
 import { getEvmClient } from '../../utils/clients';
-import { morphoContractABI } from './abis';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { Cache } from '../../Cache';
 import { MorphoMarketRes } from './types';
+import { morphoContractABI } from './utils/abis';
 
 const morphoContract = '0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb';
 

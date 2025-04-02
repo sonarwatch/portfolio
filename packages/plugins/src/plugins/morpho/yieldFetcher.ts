@@ -4,11 +4,11 @@ import { getAddress } from 'viem';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { morphoVaultsCachePrefix, platformId } from './constants';
 
-import { morphoVaultABI } from './abis';
 import { getEvmClient } from '../../utils/clients';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { Cache } from '../../Cache';
 import { MorphoVaultRes } from './types';
+import { morphoVaultABI } from './utils/abis';
 
 function getYieldFetcher(networkId: EvmNetworkIdType): Fetcher {
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {

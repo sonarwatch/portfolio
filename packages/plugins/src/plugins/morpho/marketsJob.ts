@@ -1,13 +1,10 @@
 import { EvmNetworkIdType } from '@sonarwatch/portfolio-core';
-import { getMarkets } from './helpers/api';
+import { getMarkets } from './utils/api';
 import { Job, JobExecutor } from '../../Job';
 import { morphoMarketsCachePrefix, platformId } from './constants';
 import { Cache } from '../../Cache';
 import { tokenListInfoPrefix } from '../tokens/constants';
-import {
-  buildTokenMetaDataItems,
-  buildTokenPriceSources,
-} from './helpers/jobs';
+import { buildTokenMetaDataItems, buildTokenPriceSources } from './utils/jobs';
 
 const metaDataTTL = 1000 * 60 * 60 * 24 * 7; // 7 days
 
