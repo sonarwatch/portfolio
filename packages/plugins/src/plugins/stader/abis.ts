@@ -2402,441 +2402,441 @@ export const sdUtilityPoolAbi = [
 ] as const;
 
 export const sdCollateralPoolAbi = [
-  { inputs: [], stateMutability: 'nonpayable', type: 'constructor' },
-  { inputs: [], name: 'CallerNotManager', type: 'error' },
-  { inputs: [], name: 'CallerNotStaderContract', type: 'error' },
-  { inputs: [], name: 'CallerNotWithdrawVault', type: 'error' },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'operatorSDCollateral',
-        type: 'uint256',
-      },
-    ],
-    name: 'InsufficientSDToWithdraw',
-    type: 'error',
-  },
-  { inputs: [], name: 'InsufficientSelfBondToRepay', type: 'error' },
-  { inputs: [], name: 'InvalidPoolId', type: 'error' },
-  { inputs: [], name: 'InvalidPoolLimit', type: 'error' },
-  { inputs: [], name: 'NoStateChange', type: 'error' },
-  { inputs: [], name: 'NonTerminalKeysNotZero', type: 'error' },
-  { inputs: [], name: 'SDTransferFailed', type: 'error' },
-  { inputs: [], name: 'ZeroAddress', type: 'error' },
-  {
-    anonymous: false,
-    inputs: [
-      { indexed: false, internalType: 'uint8', name: 'version', type: 'uint8' },
-    ],
-    name: 'Initialized',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'operator',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'sdAmount',
-        type: 'uint256',
-      },
-    ],
-    name: 'ReducedUtilizedPosition',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      { indexed: true, internalType: 'bytes32', name: 'role', type: 'bytes32' },
-      {
-        indexed: true,
-        internalType: 'bytes32',
-        name: 'previousAdminRole',
-        type: 'bytes32',
-      },
-      {
-        indexed: true,
-        internalType: 'bytes32',
-        name: 'newAdminRole',
-        type: 'bytes32',
-      },
-    ],
-    name: 'RoleAdminChanged',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      { indexed: true, internalType: 'bytes32', name: 'role', type: 'bytes32' },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'sender',
-        type: 'address',
-      },
-    ],
-    name: 'RoleGranted',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      { indexed: true, internalType: 'bytes32', name: 'role', type: 'bytes32' },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'sender',
-        type: 'address',
-      },
-    ],
-    name: 'RoleRevoked',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'operator',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'sdAmount',
-        type: 'uint256',
-      },
-    ],
-    name: 'SDDeposited',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'address',
-        name: 'operator',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'repayAmount',
-        type: 'uint256',
-      },
-    ],
-    name: 'SDRepaid',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'operator',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'auction',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'sdSlashed',
-        type: 'uint256',
-      },
-    ],
-    name: 'SDSlashed',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'operator',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'sdAmount',
-        type: 'uint256',
-      },
-    ],
-    name: 'SDWithdrawn',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      { indexed: false, internalType: 'uint8', name: 'poolId', type: 'uint8' },
-      {
-        indexed: false,
-        internalType: 'address',
-        name: 'operator',
-        type: 'address',
-      },
-    ],
-    name: 'UpdatedPoolIdForOperator',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      { indexed: false, internalType: 'uint8', name: 'poolId', type: 'uint8' },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'minThreshold',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'withdrawThreshold',
-        type: 'uint256',
-      },
-    ],
-    name: 'UpdatedPoolThreshold',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'staderConfig',
-        type: 'address',
-      },
-    ],
-    name: 'UpdatedStaderConfig',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'operator',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'sdAmount',
-        type: 'uint256',
-      },
-    ],
-    name: 'UtilizedSDDeposited',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'address',
-        name: 'operator',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'sdSlashFromUtilized',
-        type: 'uint256',
-      },
-    ],
-    name: 'UtilizedSDSlashed',
-    type: 'event',
-  },
-  {
-    inputs: [],
-    name: 'DEFAULT_ADMIN_ROLE',
-    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [{ internalType: 'uint256', name: '_ethAmount', type: 'uint256' }],
-    name: 'convertETHToSD',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [{ internalType: 'uint256', name: '_sdAmount', type: 'uint256' }],
-    name: 'convertSDToETH',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [{ internalType: 'uint256', name: '_sdAmount', type: 'uint256' }],
-    name: 'depositSDAsCollateral',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      { internalType: 'address', name: '_operator', type: 'address' },
-      { internalType: 'uint256', name: '_sdAmount', type: 'uint256' },
-    ],
-    name: 'depositSDAsCollateralOnBehalf',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      { internalType: 'address', name: '_operator', type: 'address' },
-      { internalType: 'uint256', name: '_sdAmount', type: 'uint256' },
-    ],
-    name: 'depositSDFromUtilityPool',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      { internalType: 'uint8', name: '_poolId', type: 'uint8' },
-      { internalType: 'uint256', name: '_numValidator', type: 'uint256' },
-    ],
-    name: 'getMinimumSDToBond',
-    outputs: [
-      { internalType: 'uint256', name: '_minSDToBond', type: 'uint256' },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [{ internalType: 'address', name: '_operator', type: 'address' }],
-    name: 'getOperatorInfo',
-    outputs: [
-      { internalType: 'uint8', name: '_poolId', type: 'uint8' },
-      { internalType: 'uint256', name: '_operatorId', type: 'uint256' },
-      { internalType: 'uint256', name: '_validatorCount', type: 'uint256' },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [{ internalType: 'address', name: '_operator', type: 'address' }],
-    name: 'getOperatorWithdrawThreshold',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: 'operatorWithdrawThreshold',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      { internalType: 'address', name: '_operator', type: 'address' },
-      { internalType: 'uint8', name: '_poolId', type: 'uint8' },
-      { internalType: 'uint256', name: '_numValidator', type: 'uint256' },
-    ],
-    name: 'getRemainingSDToBond',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [{ internalType: 'address', name: '_operator', type: 'address' }],
-    name: 'getRewardEligibleSD',
-    outputs: [
-      { internalType: 'uint256', name: '_rewardEligibleSD', type: 'uint256' },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [{ internalType: 'bytes32', name: 'role', type: 'bytes32' }],
-    name: 'getRoleAdmin',
-    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      { internalType: 'bytes32', name: 'role', type: 'bytes32' },
-      { internalType: 'address', name: 'account', type: 'address' },
-    ],
-    name: 'grantRole',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      { internalType: 'address', name: '_operator', type: 'address' },
-      { internalType: 'uint8', name: '_poolId', type: 'uint8' },
-      { internalType: 'uint256', name: '_numValidator', type: 'uint256' },
-    ],
-    name: 'hasEnoughSDCollateral',
-    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      { internalType: 'bytes32', name: 'role', type: 'bytes32' },
-      { internalType: 'address', name: 'account', type: 'address' },
-    ],
-    name: 'hasRole',
-    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      { internalType: 'address', name: '_admin', type: 'address' },
-      { internalType: 'address', name: '_staderConfig', type: 'address' },
-    ],
-    name: 'initialize',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'maxApproveSD',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
+  // { inputs: [], stateMutability: 'nonpayable', type: 'constructor' },
+  // { inputs: [], name: 'CallerNotManager', type: 'error' },
+  // { inputs: [], name: 'CallerNotStaderContract', type: 'error' },
+  // { inputs: [], name: 'CallerNotWithdrawVault', type: 'error' },
+  // {
+  //   inputs: [
+  //     {
+  //       internalType: 'uint256',
+  //       name: 'operatorSDCollateral',
+  //       type: 'uint256',
+  //     },
+  //   ],
+  //   name: 'InsufficientSDToWithdraw',
+  //   type: 'error',
+  // },
+  // { inputs: [], name: 'InsufficientSelfBondToRepay', type: 'error' },
+  // { inputs: [], name: 'InvalidPoolId', type: 'error' },
+  // { inputs: [], name: 'InvalidPoolLimit', type: 'error' },
+  // { inputs: [], name: 'NoStateChange', type: 'error' },
+  // { inputs: [], name: 'NonTerminalKeysNotZero', type: 'error' },
+  // { inputs: [], name: 'SDTransferFailed', type: 'error' },
+  // { inputs: [], name: 'ZeroAddress', type: 'error' },
+  // {
+  //   anonymous: false,
+  //   inputs: [
+  //     { indexed: false, internalType: 'uint8', name: 'version', type: 'uint8' },
+  //   ],
+  //   name: 'Initialized',
+  //   type: 'event',
+  // },
+  // {
+  //   anonymous: false,
+  //   inputs: [
+  //     {
+  //       indexed: true,
+  //       internalType: 'address',
+  //       name: 'operator',
+  //       type: 'address',
+  //     },
+  //     {
+  //       indexed: false,
+  //       internalType: 'uint256',
+  //       name: 'sdAmount',
+  //       type: 'uint256',
+  //     },
+  //   ],
+  //   name: 'ReducedUtilizedPosition',
+  //   type: 'event',
+  // },
+  // {
+  //   anonymous: false,
+  //   inputs: [
+  //     { indexed: true, internalType: 'bytes32', name: 'role', type: 'bytes32' },
+  //     {
+  //       indexed: true,
+  //       internalType: 'bytes32',
+  //       name: 'previousAdminRole',
+  //       type: 'bytes32',
+  //     },
+  //     {
+  //       indexed: true,
+  //       internalType: 'bytes32',
+  //       name: 'newAdminRole',
+  //       type: 'bytes32',
+  //     },
+  //   ],
+  //   name: 'RoleAdminChanged',
+  //   type: 'event',
+  // },
+  // {
+  //   anonymous: false,
+  //   inputs: [
+  //     { indexed: true, internalType: 'bytes32', name: 'role', type: 'bytes32' },
+  //     {
+  //       indexed: true,
+  //       internalType: 'address',
+  //       name: 'account',
+  //       type: 'address',
+  //     },
+  //     {
+  //       indexed: true,
+  //       internalType: 'address',
+  //       name: 'sender',
+  //       type: 'address',
+  //     },
+  //   ],
+  //   name: 'RoleGranted',
+  //   type: 'event',
+  // },
+  // {
+  //   anonymous: false,
+  //   inputs: [
+  //     { indexed: true, internalType: 'bytes32', name: 'role', type: 'bytes32' },
+  //     {
+  //       indexed: true,
+  //       internalType: 'address',
+  //       name: 'account',
+  //       type: 'address',
+  //     },
+  //     {
+  //       indexed: true,
+  //       internalType: 'address',
+  //       name: 'sender',
+  //       type: 'address',
+  //     },
+  //   ],
+  //   name: 'RoleRevoked',
+  //   type: 'event',
+  // },
+  // {
+  //   anonymous: false,
+  //   inputs: [
+  //     {
+  //       indexed: true,
+  //       internalType: 'address',
+  //       name: 'operator',
+  //       type: 'address',
+  //     },
+  //     {
+  //       indexed: false,
+  //       internalType: 'uint256',
+  //       name: 'sdAmount',
+  //       type: 'uint256',
+  //     },
+  //   ],
+  //   name: 'SDDeposited',
+  //   type: 'event',
+  // },
+  // {
+  //   anonymous: false,
+  //   inputs: [
+  //     {
+  //       indexed: false,
+  //       internalType: 'address',
+  //       name: 'operator',
+  //       type: 'address',
+  //     },
+  //     {
+  //       indexed: false,
+  //       internalType: 'uint256',
+  //       name: 'repayAmount',
+  //       type: 'uint256',
+  //     },
+  //   ],
+  //   name: 'SDRepaid',
+  //   type: 'event',
+  // },
+  // {
+  //   anonymous: false,
+  //   inputs: [
+  //     {
+  //       indexed: true,
+  //       internalType: 'address',
+  //       name: 'operator',
+  //       type: 'address',
+  //     },
+  //     {
+  //       indexed: true,
+  //       internalType: 'address',
+  //       name: 'auction',
+  //       type: 'address',
+  //     },
+  //     {
+  //       indexed: false,
+  //       internalType: 'uint256',
+  //       name: 'sdSlashed',
+  //       type: 'uint256',
+  //     },
+  //   ],
+  //   name: 'SDSlashed',
+  //   type: 'event',
+  // },
+  // {
+  //   anonymous: false,
+  //   inputs: [
+  //     {
+  //       indexed: true,
+  //       internalType: 'address',
+  //       name: 'operator',
+  //       type: 'address',
+  //     },
+  //     {
+  //       indexed: false,
+  //       internalType: 'uint256',
+  //       name: 'sdAmount',
+  //       type: 'uint256',
+  //     },
+  //   ],
+  //   name: 'SDWithdrawn',
+  //   type: 'event',
+  // },
+  // {
+  //   anonymous: false,
+  //   inputs: [
+  //     { indexed: false, internalType: 'uint8', name: 'poolId', type: 'uint8' },
+  //     {
+  //       indexed: false,
+  //       internalType: 'address',
+  //       name: 'operator',
+  //       type: 'address',
+  //     },
+  //   ],
+  //   name: 'UpdatedPoolIdForOperator',
+  //   type: 'event',
+  // },
+  // {
+  //   anonymous: false,
+  //   inputs: [
+  //     { indexed: false, internalType: 'uint8', name: 'poolId', type: 'uint8' },
+  //     {
+  //       indexed: false,
+  //       internalType: 'uint256',
+  //       name: 'minThreshold',
+  //       type: 'uint256',
+  //     },
+  //     {
+  //       indexed: false,
+  //       internalType: 'uint256',
+  //       name: 'withdrawThreshold',
+  //       type: 'uint256',
+  //     },
+  //   ],
+  //   name: 'UpdatedPoolThreshold',
+  //   type: 'event',
+  // },
+  // {
+  //   anonymous: false,
+  //   inputs: [
+  //     {
+  //       indexed: true,
+  //       internalType: 'address',
+  //       name: 'staderConfig',
+  //       type: 'address',
+  //     },
+  //   ],
+  //   name: 'UpdatedStaderConfig',
+  //   type: 'event',
+  // },
+  // {
+  //   anonymous: false,
+  //   inputs: [
+  //     {
+  //       indexed: true,
+  //       internalType: 'address',
+  //       name: 'operator',
+  //       type: 'address',
+  //     },
+  //     {
+  //       indexed: false,
+  //       internalType: 'uint256',
+  //       name: 'sdAmount',
+  //       type: 'uint256',
+  //     },
+  //   ],
+  //   name: 'UtilizedSDDeposited',
+  //   type: 'event',
+  // },
+  // {
+  //   anonymous: false,
+  //   inputs: [
+  //     {
+  //       indexed: false,
+  //       internalType: 'address',
+  //       name: 'operator',
+  //       type: 'address',
+  //     },
+  //     {
+  //       indexed: false,
+  //       internalType: 'uint256',
+  //       name: 'sdSlashFromUtilized',
+  //       type: 'uint256',
+  //     },
+  //   ],
+  //   name: 'UtilizedSDSlashed',
+  //   type: 'event',
+  // },
+  // {
+  //   inputs: [],
+  //   name: 'DEFAULT_ADMIN_ROLE',
+  //   outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+  //   stateMutability: 'view',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [{ internalType: 'uint256', name: '_ethAmount', type: 'uint256' }],
+  //   name: 'convertETHToSD',
+  //   outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+  //   stateMutability: 'view',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [{ internalType: 'uint256', name: '_sdAmount', type: 'uint256' }],
+  //   name: 'convertSDToETH',
+  //   outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+  //   stateMutability: 'view',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [{ internalType: 'uint256', name: '_sdAmount', type: 'uint256' }],
+  //   name: 'depositSDAsCollateral',
+  //   outputs: [],
+  //   stateMutability: 'nonpayable',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [
+  //     { internalType: 'address', name: '_operator', type: 'address' },
+  //     { internalType: 'uint256', name: '_sdAmount', type: 'uint256' },
+  //   ],
+  //   name: 'depositSDAsCollateralOnBehalf',
+  //   outputs: [],
+  //   stateMutability: 'nonpayable',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [
+  //     { internalType: 'address', name: '_operator', type: 'address' },
+  //     { internalType: 'uint256', name: '_sdAmount', type: 'uint256' },
+  //   ],
+  //   name: 'depositSDFromUtilityPool',
+  //   outputs: [],
+  //   stateMutability: 'nonpayable',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [
+  //     { internalType: 'uint8', name: '_poolId', type: 'uint8' },
+  //     { internalType: 'uint256', name: '_numValidator', type: 'uint256' },
+  //   ],
+  //   name: 'getMinimumSDToBond',
+  //   outputs: [
+  //     { internalType: 'uint256', name: '_minSDToBond', type: 'uint256' },
+  //   ],
+  //   stateMutability: 'view',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [{ internalType: 'address', name: '_operator', type: 'address' }],
+  //   name: 'getOperatorInfo',
+  //   outputs: [
+  //     { internalType: 'uint8', name: '_poolId', type: 'uint8' },
+  //     { internalType: 'uint256', name: '_operatorId', type: 'uint256' },
+  //     { internalType: 'uint256', name: '_validatorCount', type: 'uint256' },
+  //   ],
+  //   stateMutability: 'view',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [{ internalType: 'address', name: '_operator', type: 'address' }],
+  //   name: 'getOperatorWithdrawThreshold',
+  //   outputs: [
+  //     {
+  //       internalType: 'uint256',
+  //       name: 'operatorWithdrawThreshold',
+  //       type: 'uint256',
+  //     },
+  //   ],
+  //   stateMutability: 'view',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [
+  //     { internalType: 'address', name: '_operator', type: 'address' },
+  //     { internalType: 'uint8', name: '_poolId', type: 'uint8' },
+  //     { internalType: 'uint256', name: '_numValidator', type: 'uint256' },
+  //   ],
+  //   name: 'getRemainingSDToBond',
+  //   outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+  //   stateMutability: 'view',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [{ internalType: 'address', name: '_operator', type: 'address' }],
+  //   name: 'getRewardEligibleSD',
+  //   outputs: [
+  //     { internalType: 'uint256', name: '_rewardEligibleSD', type: 'uint256' },
+  //   ],
+  //   stateMutability: 'view',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [{ internalType: 'bytes32', name: 'role', type: 'bytes32' }],
+  //   name: 'getRoleAdmin',
+  //   outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+  //   stateMutability: 'view',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [
+  //     { internalType: 'bytes32', name: 'role', type: 'bytes32' },
+  //     { internalType: 'address', name: 'account', type: 'address' },
+  //   ],
+  //   name: 'grantRole',
+  //   outputs: [],
+  //   stateMutability: 'nonpayable',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [
+  //     { internalType: 'address', name: '_operator', type: 'address' },
+  //     { internalType: 'uint8', name: '_poolId', type: 'uint8' },
+  //     { internalType: 'uint256', name: '_numValidator', type: 'uint256' },
+  //   ],
+  //   name: 'hasEnoughSDCollateral',
+  //   outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+  //   stateMutability: 'view',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [
+  //     { internalType: 'bytes32', name: 'role', type: 'bytes32' },
+  //     { internalType: 'address', name: 'account', type: 'address' },
+  //   ],
+  //   name: 'hasRole',
+  //   outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+  //   stateMutability: 'view',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [
+  //     { internalType: 'address', name: '_admin', type: 'address' },
+  //     { internalType: 'address', name: '_staderConfig', type: 'address' },
+  //   ],
+  //   name: 'initialize',
+  //   outputs: [],
+  //   stateMutability: 'nonpayable',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [],
+  //   name: 'maxApproveSD',
+  //   outputs: [],
+  //   stateMutability: 'nonpayable',
+  //   type: 'function',
+  // },
   {
     inputs: [{ internalType: 'address', name: '', type: 'address' }],
     name: 'operatorSDBalance',
@@ -2844,127 +2844,127 @@ export const sdCollateralPoolAbi = [
     stateMutability: 'view',
     type: 'function',
   },
-  {
-    inputs: [{ internalType: 'address', name: '', type: 'address' }],
-    name: 'operatorUtilizedSDBalance',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [{ internalType: 'uint8', name: '', type: 'uint8' }],
-    name: 'poolThresholdbyPoolId',
-    outputs: [
-      { internalType: 'uint256', name: 'minThreshold', type: 'uint256' },
-      { internalType: 'uint256', name: 'maxThreshold', type: 'uint256' },
-      { internalType: 'uint256', name: 'withdrawThreshold', type: 'uint256' },
-      { internalType: 'string', name: 'units', type: 'string' },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      { internalType: 'address', name: '_operator', type: 'address' },
-      { internalType: 'uint256', name: '_sdAmount', type: 'uint256' },
-    ],
-    name: 'reduceUtilizedSDPosition',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      { internalType: 'bytes32', name: 'role', type: 'bytes32' },
-      { internalType: 'address', name: 'account', type: 'address' },
-    ],
-    name: 'renounceRole',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      { internalType: 'bytes32', name: 'role', type: 'bytes32' },
-      { internalType: 'address', name: 'account', type: 'address' },
-    ],
-    name: 'revokeRole',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      { internalType: 'uint256', name: '_validatorId', type: 'uint256' },
-      { internalType: 'uint8', name: '_poolId', type: 'uint8' },
-    ],
-    name: 'slashValidatorSD',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'staderConfig',
-    outputs: [
-      { internalType: 'contract IStaderConfig', name: '', type: 'address' },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [{ internalType: 'bytes4', name: 'interfaceId', type: 'bytes4' }],
-    name: 'supportsInterface',
-    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [{ internalType: 'address', name: '_operator', type: 'address' }],
-    name: 'transferBackUtilizedSD',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      { internalType: 'uint8', name: '_poolId', type: 'uint8' },
-      { internalType: 'uint256', name: '_minThreshold', type: 'uint256' },
-      { internalType: 'uint256', name: '_maxThreshold', type: 'uint256' },
-      { internalType: 'uint256', name: '_withdrawThreshold', type: 'uint256' },
-      { internalType: 'string', name: '_units', type: 'string' },
-    ],
-    name: 'updatePoolThreshold',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      { internalType: 'address', name: '_staderConfig', type: 'address' },
-    ],
-    name: 'updateStaderConfig',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      { internalType: 'uint256', name: '_requestedSD', type: 'uint256' },
-    ],
-    name: 'withdraw',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      { internalType: 'uint256', name: '_requestedSD', type: 'uint256' },
-      { internalType: 'address', name: '_operator', type: 'address' },
-    ],
-    name: 'withdrawOnBehalf',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
+  // {
+  //   inputs: [{ internalType: 'address', name: '', type: 'address' }],
+  //   name: 'operatorUtilizedSDBalance',
+  //   outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+  //   stateMutability: 'view',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [{ internalType: 'uint8', name: '', type: 'uint8' }],
+  //   name: 'poolThresholdbyPoolId',
+  //   outputs: [
+  //     { internalType: 'uint256', name: 'minThreshold', type: 'uint256' },
+  //     { internalType: 'uint256', name: 'maxThreshold', type: 'uint256' },
+  //     { internalType: 'uint256', name: 'withdrawThreshold', type: 'uint256' },
+  //     { internalType: 'string', name: 'units', type: 'string' },
+  //   ],
+  //   stateMutability: 'view',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [
+  //     { internalType: 'address', name: '_operator', type: 'address' },
+  //     { internalType: 'uint256', name: '_sdAmount', type: 'uint256' },
+  //   ],
+  //   name: 'reduceUtilizedSDPosition',
+  //   outputs: [],
+  //   stateMutability: 'nonpayable',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [
+  //     { internalType: 'bytes32', name: 'role', type: 'bytes32' },
+  //     { internalType: 'address', name: 'account', type: 'address' },
+  //   ],
+  //   name: 'renounceRole',
+  //   outputs: [],
+  //   stateMutability: 'nonpayable',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [
+  //     { internalType: 'bytes32', name: 'role', type: 'bytes32' },
+  //     { internalType: 'address', name: 'account', type: 'address' },
+  //   ],
+  //   name: 'revokeRole',
+  //   outputs: [],
+  //   stateMutability: 'nonpayable',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [
+  //     { internalType: 'uint256', name: '_validatorId', type: 'uint256' },
+  //     { internalType: 'uint8', name: '_poolId', type: 'uint8' },
+  //   ],
+  //   name: 'slashValidatorSD',
+  //   outputs: [],
+  //   stateMutability: 'nonpayable',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [],
+  //   name: 'staderConfig',
+  //   outputs: [
+  //     { internalType: 'contract IStaderConfig', name: '', type: 'address' },
+  //   ],
+  //   stateMutability: 'view',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [{ internalType: 'bytes4', name: 'interfaceId', type: 'bytes4' }],
+  //   name: 'supportsInterface',
+  //   outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+  //   stateMutability: 'view',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [{ internalType: 'address', name: '_operator', type: 'address' }],
+  //   name: 'transferBackUtilizedSD',
+  //   outputs: [],
+  //   stateMutability: 'nonpayable',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [
+  //     { internalType: 'uint8', name: '_poolId', type: 'uint8' },
+  //     { internalType: 'uint256', name: '_minThreshold', type: 'uint256' },
+  //     { internalType: 'uint256', name: '_maxThreshold', type: 'uint256' },
+  //     { internalType: 'uint256', name: '_withdrawThreshold', type: 'uint256' },
+  //     { internalType: 'string', name: '_units', type: 'string' },
+  //   ],
+  //   name: 'updatePoolThreshold',
+  //   outputs: [],
+  //   stateMutability: 'nonpayable',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [
+  //     { internalType: 'address', name: '_staderConfig', type: 'address' },
+  //   ],
+  //   name: 'updateStaderConfig',
+  //   outputs: [],
+  //   stateMutability: 'nonpayable',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [
+  //     { internalType: 'uint256', name: '_requestedSD', type: 'uint256' },
+  //   ],
+  //   name: 'withdraw',
+  //   outputs: [],
+  //   stateMutability: 'nonpayable',
+  //   type: 'function',
+  // },
+  // {
+  //   inputs: [
+  //     { internalType: 'uint256', name: '_requestedSD', type: 'uint256' },
+  //     { internalType: 'address', name: '_operator', type: 'address' },
+  //   ],
+  //   name: 'withdrawOnBehalf',
+  //   outputs: [],
+  //   stateMutability: 'nonpayable',
+  //   type: 'function',
+  // },
 ] as const;
