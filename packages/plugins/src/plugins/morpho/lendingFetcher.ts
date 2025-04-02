@@ -9,7 +9,7 @@ import { morphoContractABI } from './utils/abis';
 
 const morphoContract = '0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb';
 
-function getLendingFetcher(networkId: EvmNetworkIdType): Fetcher {
+export function getLendingFetcher(networkId: EvmNetworkIdType): Fetcher {
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const markets = await cache.getItem<MorphoMarketRes['markets']['items']>(
       morphoMarketsCachePrefix,
@@ -139,5 +139,3 @@ function getLendingFetcher(networkId: EvmNetworkIdType): Fetcher {
     executor,
   };
 }
-
-export default getLendingFetcher;

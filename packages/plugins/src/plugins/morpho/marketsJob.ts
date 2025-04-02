@@ -4,7 +4,7 @@ import { Job, JobExecutor } from '../../Job';
 import { morphoMarketsCachePrefix, platformId } from './constants';
 import { Cache } from '../../Cache';
 import { tokenListInfoPrefix } from '../tokens/constants';
-import { buildTokenMetaDataItems, buildTokenPriceSources } from './utils/jobs';
+import { buildTokenMetaDataItems, buildTokenPriceSources } from './helpers';
 
 const metaDataTTL = 1000 * 60 * 60 * 24 * 7; // 7 days
 

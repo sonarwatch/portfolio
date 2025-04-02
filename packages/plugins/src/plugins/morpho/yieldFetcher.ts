@@ -10,7 +10,7 @@ import { Cache } from '../../Cache';
 import { MorphoVaultRes } from './types';
 import { morphoVaultABI } from './utils/abis';
 
-function getYieldFetcher(networkId: EvmNetworkIdType): Fetcher {
+export function getYieldFetcher(networkId: EvmNetworkIdType): Fetcher {
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const vaults = await cache.getItem<MorphoVaultRes['vaults']['items']>(
       morphoVaultsCachePrefix,
@@ -92,5 +92,3 @@ function getYieldFetcher(networkId: EvmNetworkIdType): Fetcher {
     executor,
   };
 }
-
-export default getYieldFetcher;
