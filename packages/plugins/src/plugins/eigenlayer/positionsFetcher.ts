@@ -35,7 +35,7 @@ const executor: FetcherExecutor = async (
   if (!strategies || strategies.length === 0) return [];
 
   try {
-    // Fetch both shares and underlying tokens in parallel
+    // Fetch user shares on all strategies
     const [sharesResult] = await Promise.all([
       client.multicall({
         contracts: strategies.map((strategy) => ({
@@ -47,6 +47,7 @@ const executor: FetcherExecutor = async (
       }),
     ]);
 
+    // Construct the strategies and underlying tokens with decimals
     const positions = strategies.map((strategy, i) => ({
       strategyAddress: getAddress(strategy.strategyAddress),
       underlyingToken: strategy.underlyingToken,
@@ -60,6 +61,7 @@ const executor: FetcherExecutor = async (
         position.shares && position.shares > 0 && position.underlyingToken
     );
 
+    // Fetch the amount of underlying tokens from the shares
     const amounts = await client.multicall({
       contracts: activePositionsShares.map((position) => ({
         address: getAddress(position.strategyAddress),
@@ -69,23 +71,15 @@ const executor: FetcherExecutor = async (
       })),
     });
 
-    // Get decimals of underlying token
-    const decimals = await client.multicall({
-      contracts: activePositionsShares.map((position) => ({
-        address: getAddress(position.underlyingToken as `0x${string}`),
-        abi: [abi.decimals],
-        functionName: abi.decimals.name,
-      })),
-    });
-
     const finalPositions = activePositionsShares.map((position, i) => ({
       ...position,
       amount: amounts[i].result,
-      decimals: decimals[i].result,
     }));
 
     const assets: PortfolioAsset[] = [];
     let totalValue = 0;
+
+    // Construct the assets
     for (const position of finalPositions) {
       const underlyingToken = position.underlyingToken;
       if (!underlyingToken || !position.amount) return [];

@@ -12,7 +12,10 @@ import { getAddress } from 'viem';
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getEvmClient(NetworkId.ethereum);
 
+  // Get all EigenLayer operators
   const operators = await getEigenLayerOperators();
+
+  // Get all the strategies addresses from the operators
   const strategies = Array.from(
     new Set<`0x${string}`>(
       operators.data
@@ -21,6 +24,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     )
   );
 
+  // Get the underlying token addresses from the strategies
   const underlyingTokensResult = await client.multicall({
     contracts: strategies.map((strategy) => ({
       address: getAddress(strategy),
@@ -29,6 +33,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     })),
   });
 
+  // Map the underlying token with the strategy address
   const strategiesAndUnderlyingTokens = strategies.map((strategy, i) => ({
     strategyAddress: getAddress(strategy),
     underlyingToken: underlyingTokensResult[i].result,
@@ -45,12 +50,14 @@ const executor: JobExecutor = async (cache: Cache) => {
       })),
   });
 
+  // Construct the strategies and underlying tokens with decimals
   const strategiesAndUnderlyingTokensWithDecimals =
     strategiesAndUnderlyingTokens.map((strategy, i) => ({
       ...strategy,
       decimals: decimals[i]?.result,
     }));
 
+  // Cache the strategies and underlying tokens with decimals
   await cache.setItem(
     'eigenlayer-strategies',
     strategiesAndUnderlyingTokensWithDecimals,
