@@ -22,17 +22,22 @@ import { Cache } from '../../Cache';
 import { getEvmClient } from '../../utils/clients';
 import { getBalances } from '../../utils/evm/getBalances';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { LoggingContext, verboseLog } from '../octav/utils/loggingUtils';
-import { permissionsLessNodeRegistryAbi, sdCollateralPoolAbi, sdUtilityPoolAbi } from './abis';
+import { verboseLog } from '../octav/utils/loggingUtils';
+import {
+  permissionsLessNodeRegistryAbi,
+  sdCollateralPoolAbi,
+  sdUtilityPoolAbi,
+} from './abis';
+import { StaderFetcherParams, StaderFetchFunction } from './types';
 
 const DECIMALS_ON_CONTRACT = 18;
 const NETWORK_ID = NetworkId.ethereum;
 
-const fetchStakedEthx = async (
-  owner: Address,
-  cache: Cache,
-  logCtx: LoggingContext
-): Promise<PortfolioElement | undefined> => {
+const fetchStakedEthx: StaderFetchFunction = async ({
+  owner,
+  cache,
+  logCtx,
+}) => {
   const contractsToFetchBalanceFor = [
     CONTRACT_ADDRESS_ETHX_TOKEN_ETHEREUM_MAINNET,
   ];
@@ -87,11 +92,11 @@ const fetchStakedEthx = async (
   };
 };
 
-const fetchStakedPermissionsLessNodeRegistry = async (
-  owner: Address,
-  cache: Cache,
-  logCtx: LoggingContext
-): Promise<PortfolioElement | undefined> => {
+const fetchStakedPermissionsLessNodeRegistry: StaderFetchFunction = async ({
+  owner,
+  cache,
+  logCtx,
+}) => {
   const contractAddress =
     CONTRACT_ADDRESS_PERMISSIONLESS_NODE_REGISTRY_ETHEREUM_MAINNET;
   const contractDecimals = DECIMALS_ON_CONTRACT;
@@ -181,11 +186,11 @@ const fetchStakedPermissionsLessNodeRegistry = async (
   };
 };
 
-const fetchStakedUtilityPool = async (
-  owner: Address,
-  cache: Cache,
-  logCtx: LoggingContext
-): Promise<PortfolioElement | undefined> => {
+const fetchStakedUtilityPool: StaderFetchFunction = async ({
+  owner,
+  cache,
+  logCtx,
+}) => {
   const contractAddress = CONTRACT_ADDRESS_STADER_UTILITY_POOL_ETHEREUM_MAINNET;
   const contractDecimals = DECIMALS_ON_CONTRACT_STADER_TOKEN;
 
@@ -235,11 +240,11 @@ const fetchStakedUtilityPool = async (
   };
 };
 
-const fetchStakedCollateralPool = async (
-  owner: Address,
-  cache: Cache,
-  logCtx: LoggingContext
-): Promise<PortfolioElement | undefined> => {
+const fetchStakedCollateralPool: StaderFetchFunction = async ({
+  owner,
+  cache,
+  logCtx,
+}) => {
   const contractAddress = CONTRACT_ADDRESS_STADER_COLLATERAL_POOL_ETHEREUM_MAINNET;
   const contractDecimals = DECIMALS_ON_CONTRACT_STADER_TOKEN;
 
@@ -304,20 +309,26 @@ const executor: FetcherExecutor = async (
     networkId: NETWORK_ID,
   };
 
-  const fetchFunctions = [
+  const params: StaderFetcherParams = {
+    owner: ownerAddress,
+    cache,
+    logCtx,
+  };
+
+  const fetchFunctions: StaderFetchFunction[] = [
     fetchStakedEthx,
     fetchStakedPermissionsLessNodeRegistry,
     fetchStakedUtilityPool,
     fetchStakedCollateralPool,
   ];
 
-  const commonParams = [ownerAddress, cache, logCtx] as const;
-  
   const results = await Promise.all(
-    fetchFunctions.map(fetchFn => fetchFn(...commonParams))
+    fetchFunctions.map((fetchFn) => fetchFn(params))
   );
 
-  return results.filter((element): element is PortfolioElement => element !== undefined);
+  return results.filter(
+    (element): element is PortfolioElement => element !== undefined
+  );
 };
 
 const fetcher: Fetcher = {
