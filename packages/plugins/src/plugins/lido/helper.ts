@@ -11,6 +11,7 @@ import {
 import { maticAbi, wstETHAbi } from './abis';
 import { ethFactor } from '../../utils/evm/constants';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { getAmount } from '../../utils/octav/tokenFactor';
 
 export const getWstETHAsset = async (
   balance: bigint,
@@ -61,7 +62,7 @@ export const getStMATICAsset = async (
 
   return tokenPriceToAssetToken(
     maticTokenAddress,
-    maticAmount.div(ethFactor).toNumber(),
+    getAmount(maticAmount, maticPrice),
     networkId,
     maticPrice
   );
