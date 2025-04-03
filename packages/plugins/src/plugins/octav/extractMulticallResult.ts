@@ -1,6 +1,4 @@
-import {
-  verboseLog
-} from '../../plugins/octav/utils/loggingUtils';
+import { verboseLog } from "./utils/loggingUtils";
 import { AbiCallsContext } from './types/abiCallsContext';
 
 export function extractMulticallResult<T>(
