@@ -162,6 +162,7 @@ import * as convex from './plugins/convex';
 import * as fraxlend from './plugins/fraxlend';
 import * as zeus from './plugins/zeus';
 import * as pumpswap from './plugins/pumpswap';
+import * as renzo from './plugins/renzo';
 
 export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
@@ -335,6 +336,7 @@ const modules = [
   fraxlend,
   zeus,
   pumpswap,
+  renzo,
 ];
 
 // JOBS //
