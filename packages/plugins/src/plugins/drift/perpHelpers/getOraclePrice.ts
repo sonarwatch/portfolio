@@ -94,7 +94,16 @@ export async function getOraclePrice(
         coPriceData = getSwitchboardOnDemandOraclePriceDataFromBuffer(acc.data);
         break;
       case OracleSource.pythLazer:
-        coPriceData = pythLazerPriceToOraclePrice(acc.data);
+        coPriceData = pythLazerPriceToOraclePrice(acc.data, new BN(1));
+        break;
+      case OracleSource.pythLazer1K:
+        coPriceData = pythLazerPriceToOraclePrice(acc.data, new BN(1000));
+        break;
+      case OracleSource.pythLazer1M:
+        coPriceData = pythLazerPriceToOraclePrice(acc.data, new BN(1000000));
+        break;
+      case OracleSource.pythLazerStableCoin:
+        coPriceData = pythLazerPriceToOraclePrice(acc.data, undefined, true);
         break;
       default:
         coPriceData = undefined;
