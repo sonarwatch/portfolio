@@ -1,10 +1,10 @@
-import { verboseLog } from "./utils/loggingUtils";
 import { AbiCallsContext } from './types/abiCallsContext';
+import { verboseLog } from './utils/loggingUtils';
 
-export function extractMulticallResult<T>(
+export const extractMulticallResult = <T>(
   result: { error?: Error; result?: T; status: 'success' | 'failure' },
   params: AbiCallsContext
-): T | undefined {
+): T | undefined => {
   const { functionName, logCtx } = params;
 
   verboseLog(
@@ -29,4 +29,4 @@ export function extractMulticallResult<T>(
   }
 
   return result.result;
-}
+};
