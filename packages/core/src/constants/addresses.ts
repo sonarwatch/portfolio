@@ -11,6 +11,7 @@ export const seiNativeAddress = 'usei';
 export const zeroAddressEvm = '0x0000000000000000000000000000000000000000';
 export const ethereumNativeAddress =
   '0x0000000000000000000000000000000000000000';
+export const ethereumNativeDecimals = 18;
 export const polygonNativeAddress =
   '0x0000000000000000000000000000000000001010';
 export const avalancheNativeAddress = ethereumNativeAddress;

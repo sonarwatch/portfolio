@@ -36,4 +36,18 @@ export const abi = {
     stateMutability: 'view',
     type: 'function',
   },
+  ownerToPod: {
+    inputs: [{ internalType: 'address', name: '', type: 'address' }],
+    name: 'ownerToPod',
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  getBalance: {
+    inputs: [],
+    name: 'getBalance',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
 } as const;

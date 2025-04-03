@@ -1,7 +1,8 @@
 import { Fetcher } from '../../Fetcher';
 import { Job } from '../../Job';
-import poolsJob from './poolsJob';
-import positionsFetcher from './positionsFetcher';
+import poolsJob from './jobs/poolsJob';
+import positionsFetcher from './fetchers/positionsFetcher';
+import withdrawalsJob from './jobs/withdrawalsJob';
 
-export const jobs: Job[] = [poolsJob];
+export const jobs: Job[] = [poolsJob, withdrawalsJob];
 export const fetchers: Fetcher[] = [positionsFetcher];

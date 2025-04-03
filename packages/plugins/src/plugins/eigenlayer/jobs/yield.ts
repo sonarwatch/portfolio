@@ -1,20 +1,17 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
-import axios from 'axios';
-import { Cache } from '../../Cache';
-import { Job, JobExecutor } from '../../Job';
-import { platformId } from './constants';
-import { getEvmClient } from '../../utils/clients';
-
-import { getEigenLayerOperators } from './helper';
-import { abi } from './abi';
+import {
+  EvmNetworkIdType,
+  NetworkId,
+  NetworkIdType,
+} from '@sonarwatch/portfolio-core';
+import { getEvmClient } from '../../../utils/clients';
+import { getEigenLayerOperators } from '../helper';
 import { getAddress } from 'viem';
+import { abi } from '../abi';
 
-const executor: JobExecutor = async (cache: Cache) => {
-  const client = getEvmClient(NetworkId.ethereum);
+export const getYieldPositions = async (networkId: EvmNetworkIdType) => {
+  const client = getEvmClient(networkId);
 
-  // Get all EigenLayer operators
   const operators = await getEigenLayerOperators();
-
   // Get all the strategies addresses from the operators
   const strategies = Array.from(
     new Set<`0x${string}`>(
@@ -57,21 +54,5 @@ const executor: JobExecutor = async (cache: Cache) => {
       decimals: decimals[i]?.result,
     }));
 
-  // Cache the strategies and underlying tokens with decimals
-  await cache.setItem(
-    'eigenlayer-strategies',
-    strategiesAndUnderlyingTokensWithDecimals,
-    {
-      prefix: platformId,
-      networkId: NetworkId.ethereum,
-    }
-  );
+  return strategiesAndUnderlyingTokensWithDecimals;
 };
-
-const job: Job = {
-  id: `${platformId}-strategies`,
-  executor,
-  labels: ['normal'],
-};
-
-export default job;
