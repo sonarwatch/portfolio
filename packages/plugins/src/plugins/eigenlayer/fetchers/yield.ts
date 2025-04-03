@@ -79,8 +79,7 @@ export const getYieldPositions = async (owner: string, cache: Cache) => {
   const elements: PortfolioElement = {
     networkId: NetworkId.ethereum,
     platformId,
-    // TODO: Change to Yield when Octav server is updated
-    label: 'Deposit',
+    label: 'Yield',
     type: PortfolioElementType.multiple,
     value: totalValue,
     data: {
