@@ -9,11 +9,7 @@ import {
 import { getEvmClient } from '../../../utils/clients';
 import { Cache } from '../../../Cache';
 
-import {
-  eigenDelegationManagerAddress,
-  eigenPodManagerAddress,
-  platformId,
-} from '../constants';
+import { eigenPodManagerAddress, platformId } from '../constants';
 import { getAddress } from 'viem';
 import { abi } from '../abi';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
