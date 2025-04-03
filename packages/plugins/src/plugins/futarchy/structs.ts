@@ -10,7 +10,7 @@ import {
 import { PublicKey } from '@solana/web3.js';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import BigNumber from 'bignumber.js';
-import { blob, u128, u64 } from '../../utils/solana';
+import { blob, i64, u128, u64 } from '../../utils/solana';
 
 export enum VaultStatus {
   Active,
@@ -205,4 +205,82 @@ export const proposalStruct = new FixableBeetStruct<Proposal>(
     ['pdaBump', u8],
   ],
   (args) => args as Proposal
+);
+
+// Launchpad
+
+// Type for Launch
+export type Launch = {
+  buffer: Buffer;
+  pdaBump: number;
+  minimumRaiseAmount: BigNumber;
+  launchAuthority: PublicKey;
+  launchSigner: PublicKey;
+  launchSignerPdaBump: number;
+  launchUsdcVault: PublicKey;
+  launchTokenVault: PublicKey;
+  tokenMint: PublicKey;
+  usdcMint: PublicKey;
+  unixTimestampStarted: BigNumber;
+  totalCommittedAmount: BigNumber;
+  state: LaunchState;
+  seqNum: BigNumber;
+  secondsForLaunch: number;
+  dao: PublicKey;
+  daoTreasury: PublicKey;
+};
+
+// Struct for Launch
+export const launchStruct = new BeetStruct<Launch>(
+  [
+    ['buffer', blob(8)],
+    ['pdaBump', u8],
+    ['minimumRaiseAmount', u64],
+    ['launchAuthority', publicKey],
+    ['launchSigner', publicKey],
+    ['launchSignerPdaBump', u8],
+    ['launchUsdcVault', publicKey],
+    ['launchTokenVault', publicKey],
+    ['tokenMint', publicKey],
+    ['usdcMint', publicKey],
+    ['unixTimestampStarted', i64],
+    ['totalCommittedAmount', u64],
+    ['state', u8], // Enum LaunchState is represented as u8
+    ['seqNum', u64],
+    ['secondsForLaunch', u32],
+    ['dao', publicKey], // Optional PublicKey
+    ['daoTreasury', publicKey], // Optional PublicKey
+  ],
+  (args) => args as Launch
+);
+
+// Enum for LaunchState
+export enum LaunchState {
+  Initialized = 0,
+  Live = 1,
+  Complete = 2,
+  Refunding = 3,
+}
+
+// Type for FundingRecord
+export type FundingRecord = {
+  buffer: Buffer;
+  pdaBump: number;
+  funder: PublicKey;
+  launch: PublicKey;
+  committedAmount: BigNumber;
+  seqNum: BigNumber;
+};
+
+// Struct for FundingRecord
+export const fundingRecordStruct = new BeetStruct<FundingRecord>(
+  [
+    ['buffer', blob(8)],
+    ['pdaBump', u8],
+    ['funder', publicKey],
+    ['launch', publicKey],
+    ['committedAmount', u64],
+    ['seqNum', u64],
+  ],
+  (args) => args as FundingRecord
 );

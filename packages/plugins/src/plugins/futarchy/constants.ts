@@ -7,7 +7,10 @@ export const metaMint = 'METADDFL6wWMWEoKTFJwcThTbUmtarRJZjRpzUvkxhr';
 export const daoPid = new PublicKey(
   'autoQP9RmUNkzzKRXsMkWicDVZ3h29vvyMDcAYjCxxg'
 );
-
+export const launchpadPid = new PublicKey(
+  'AfJJJ5UqxhBKoE3grkKAZZsoXDE9kncbMKvqSHGsCNrE'
+);
+export const launchpadKey = 'launchpad';
 type DaoInfo = {
   name: string;
   tokenName: string;

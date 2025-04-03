@@ -7,13 +7,26 @@ const contract = {
   platformId,
 };
 
+const launchpadContract = {
+  name: 'Launchpad',
+  address: 'AfJJJ5UqxhBKoE3grkKAZZsoXDE9kncbMKvqSHGsCNrE',
+  platformId,
+};
+
 const service: Service = {
   id: 'futarchy-dao',
-  name: 'Futarchy DAO',
+  name: 'DAO',
   platformId,
   networkId: NetworkId.solana,
   contracts: [contract],
 };
+const launchpadService: Service = {
+  id: 'futarchy-launchpad',
+  name: 'Launchpad',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [launchpadContract],
+};
 
-export const services: Service[] = [service];
+export const services: Service[] = [service, launchpadService];
 export default services;
