@@ -34,6 +34,8 @@ import * as zeta from './services/zeta';
 import * as nirvana from './services/nirvana';
 import * as sanctum from './services/sanctum';
 import * as streamflow from './services/streamflow';
+import * as runemine from './services/runemine';
+import * as futarchy from './services/futarchy';
 
 export const services: Service[] = [
   banx,
@@ -71,6 +73,8 @@ export const services: Service[] = [
   sanctum,
   stabble,
   streamflow,
+  runemine,
+  futarchy,
 ]
   .map((m) => m.default)
   .flat();

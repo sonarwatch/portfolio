@@ -162,6 +162,7 @@ import * as zeus from './plugins/zeus';
 import * as pumpswap from './plugins/pumpswap';
 import * as pumpkin from './plugins/pumpkin';
 import * as nirvana from './plugins/nirvana';
+import * as runemine from './plugins/runemine';
 
 export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
@@ -335,6 +336,7 @@ const modules = [
   pumpswap,
   pumpkin,
   nirvana,
+  runemine,
 ];
 
 // JOBS //
