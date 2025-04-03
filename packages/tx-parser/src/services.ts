@@ -28,6 +28,7 @@ import * as ratex from './services/ratex';
 import * as raydium from './services/raydium';
 import * as save from './services/save';
 import * as sharky from './services/sharky';
+import * as stabble from './services/stabble';
 import * as symmetry from './services/symmetry';
 import * as zeta from './services/zeta';
 import * as nirvana from './services/nirvana';
@@ -68,6 +69,7 @@ export const services: Service[] = [
   zeta,
   nirvana,
   sanctum,
+  stabble,
   streamflow,
 ]
   .map((m) => m.default)

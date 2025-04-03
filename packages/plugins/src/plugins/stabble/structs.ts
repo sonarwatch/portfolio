@@ -9,8 +9,9 @@ import {
   array,
   uniformFixedSizeArray,
   u16,
+  u32,
 } from '@metaplex-foundation/beet';
-import { i64, u64 } from '../../utils/solana';
+import { i64, u128, u64 } from '../../utils/solana';
 
 export type StablePoolToken = {
   mint: PublicKey;
@@ -114,4 +115,107 @@ export const stablePoolStruct = new FixableBeetStruct<StablePool>(
     ['pendingOwner', publicKey],
   ],
   (args) => args as StablePool
+);
+
+export type Miner = {
+  accountDiscriminator: number[];
+  pool: PublicKey;
+  authority: PublicKey;
+  beneficiary: PublicKey;
+  bump: number;
+  amount: BigNumber;
+  rewardsDebt: BigNumber;
+  rewardsCredit: BigNumber;
+  rewardsClaimed: BigNumber;
+};
+
+export const minerStruct = new BeetStruct<Miner>(
+  [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+    ['pool', publicKey],
+    ['authority', publicKey],
+    ['beneficiary', publicKey],
+    ['bump', u8],
+    ['amount', u64],
+    ['rewardsDebt', u64],
+    ['rewardsCredit', u64],
+    ['rewardsClaimed', u64],
+  ],
+  (args) => args as Miner
+);
+
+export type StakedPool = {
+  accountDiscriminator: number[];
+  rewarder: PublicKey;
+  mint: PublicKey;
+  decimals: number;
+  weight: number;
+  totalAmount: BigNumber;
+  totalRewardsDebt: BigNumber;
+  totalRewardsCredit: BigNumber;
+  totalRewardsDistributed: BigNumber;
+  totalWeights: BigNumber;
+  rewardsPerAmount: BigNumber;
+  numMiners: number;
+};
+
+export const stakedPoolStruct = new BeetStruct<StakedPool>(
+  [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+    ['rewarder', publicKey],
+    ['mint', publicKey],
+    ['decimals', u8],
+    ['weight', u32],
+    ['totalAmount', u64],
+    ['totalRewardsDebt', u64],
+    ['totalRewardsCredit', u64],
+    ['totalRewardsDistributed', u64],
+    ['totalWeights', u128],
+    ['rewardsPerAmount', u128],
+    ['numMiners', u32],
+  ],
+  (args) => args as StakedPool
+);
+
+export type Rewarder = {
+  accountDiscriminator: number[];
+  admin: PublicKey;
+  mint: PublicKey;
+  decimals: number;
+  authorityBump: number;
+  cumulativeRewards: BigNumber;
+  totalRewards: BigNumber;
+  totalRewardsClaimed: BigNumber;
+  totalWeights: BigNumber;
+  rewardsPerWeight: BigNumber;
+  numPools: number;
+  epochIndex: number;
+  epochStartsAt: BigNumber;
+  epochEndsAt: BigNumber;
+  epochDuration: BigNumber;
+  lastUpdatedAt: BigNumber;
+  parentRewarder: PublicKey;
+};
+
+export const rewarderStruct = new BeetStruct<Rewarder>(
+  [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+    ['admin', publicKey],
+    ['mint', publicKey],
+    ['decimals', u8],
+    ['authorityBump', u8],
+    ['cumulativeRewards', u64],
+    ['totalRewards', u64],
+    ['totalRewardsClaimed', u64],
+    ['totalWeights', u128],
+    ['rewardsPerWeight', u128],
+    ['numPools', u32],
+    ['epochIndex', u32],
+    ['epochStartsAt', i64],
+    ['epochEndsAt', i64],
+    ['epochDuration', i64],
+    ['lastUpdatedAt', i64],
+    ['parentRewarder', publicKey],
+  ],
+  (args) => args as Rewarder
 );
