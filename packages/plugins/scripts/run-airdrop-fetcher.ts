@@ -40,7 +40,7 @@ async function main(owner: string, fetcherId: string) {
   const fetcherResult = await runAirdropFetcher(fOwner, fetcher, cache, false);
   console.log(util.inspect(fetcherResult.airdrop, false, null, true));
   console.log(`Finished in: ${durationForHumans(fetcherResult.duration)}s`);
-  await cache.dispose();
+  // await cache.dispose();
   await sleep(100);
   process.exit(0);
 }

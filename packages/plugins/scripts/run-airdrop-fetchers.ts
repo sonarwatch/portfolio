@@ -36,7 +36,7 @@ async function main(owner: string) {
 
   console.log(util.inspect(fetcherResult.airdrops, false, null, true));
   console.log(`Finished in: ${durationForHumans(fetcherResult.duration)}`);
-  await cache.dispose();
+  // await cache.dispose();
   await sleep(100);
   process.exit(0);
 }
