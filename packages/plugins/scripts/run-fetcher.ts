@@ -42,7 +42,7 @@ async function main(owner: string, fetcherId: string) {
   const fetcherResult = await runFetcher(fOwner, fetcher, cache);
   console.log(util.inspect(fetcherResult.elements, false, null, true));
   console.log(`Finished in: ${durationForHumans(fetcherResult.duration)}s`);
-  await cache.dispose();
+  // await cache.dispose();
   await sleep(100);
   process.exit(0);
 }

@@ -1129,3 +1129,181 @@ export const withdrawlQueueAbi = [
     type: 'function',
   },
 ] as const;
+
+export const stakedAbi = [
+  {
+    constant: true,
+    inputs: [],
+    name: 'proxyType',
+    outputs: [{ name: 'proxyTypeId', type: 'uint256' }],
+    payable: false,
+    stateMutability: 'pure',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'isDepositable',
+    outputs: [{ name: '', type: 'bool' }],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'implementation',
+    outputs: [{ name: '', type: 'address' }],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'appId',
+    outputs: [{ name: '', type: 'bytes32' }],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'kernel',
+    outputs: [{ name: '', type: 'address' }],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { name: '_kernel', type: 'address' },
+      { name: '_appId', type: 'bytes32' },
+      { name: '_initializePayload', type: 'bytes' },
+    ],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+  },
+  { payable: true, stateMutability: 'payable', type: 'fallback' },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: false, name: 'sender', type: 'address' },
+      { indexed: false, name: 'value', type: 'uint256' },
+    ],
+    name: 'ProxyDeposit',
+    type: 'event',
+  },
+];
+
+export const maticAbi = [
+  {
+    inputs: [
+      { internalType: 'uint256', name: '_amountInStMatic', type: 'uint256' },
+    ],
+    name: 'convertStMaticToMatic',
+    outputs: [
+      { internalType: 'uint256', name: 'amountInMatic', type: 'uint256' },
+      { internalType: 'uint256', name: 'totalStMaticAmount', type: 'uint256' },
+      { internalType: 'uint256', name: 'totalPooledMatic', type: 'uint256' },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+];
+
+export const wstETHAbi = [
+  {
+    inputs: [
+      { internalType: 'uint256', name: '_wstETHAmount', type: 'uint256' },
+    ],
+    name: 'getStETHByWstETH',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+];
+
+export const CSMAbi = [
+  {
+    inputs: [
+      { internalType: 'uint256', name: 'nodeOperatorId', type: 'uint256' },
+    ],
+    name: 'getNodeOperator',
+    outputs: [
+      {
+        components: [
+          { internalType: 'uint32', name: 'totalAddedKeys', type: 'uint32' },
+          {
+            internalType: 'uint32',
+            name: 'totalWithdrawnKeys',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'totalDepositedKeys',
+            type: 'uint32',
+          },
+          { internalType: 'uint32', name: 'totalVettedKeys', type: 'uint32' },
+          {
+            internalType: 'uint32',
+            name: 'stuckValidatorsCount',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'depositableValidatorsCount',
+            type: 'uint32',
+          },
+          { internalType: 'uint32', name: 'targetLimit', type: 'uint32' },
+          { internalType: 'uint8', name: 'targetLimitMode', type: 'uint8' },
+          { internalType: 'uint32', name: 'totalExitedKeys', type: 'uint32' },
+          { internalType: 'uint32', name: 'enqueuedCount', type: 'uint32' },
+          { internalType: 'address', name: 'managerAddress', type: 'address' },
+          {
+            internalType: 'address',
+            name: 'proposedManagerAddress',
+            type: 'address',
+          },
+          { internalType: 'address', name: 'rewardAddress', type: 'address' },
+          {
+            internalType: 'address',
+            name: 'proposedRewardAddress',
+            type: 'address',
+          },
+          {
+            internalType: 'bool',
+            name: 'extendedManagerPermissions',
+            type: 'bool',
+          },
+        ],
+        internalType: 'struct NodeOperator',
+        name: '',
+        type: 'tuple',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getNodeOperatorsCount',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const;
+
+export const nftStakedAbi = [
+  {
+    inputs: [
+      { internalType: 'uint256', name: 'nodeOperatorId', type: 'uint256' },
+    ],
+    name: 'getBond',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const;
