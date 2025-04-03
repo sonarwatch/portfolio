@@ -1,4 +1,4 @@
-import { LoggingContext } from "../utils/loggingUtils";
+import { LoggingContext } from "../loggingUtils";
 
 export interface AbiCallsContext {
   /** The functionName of the contract call */

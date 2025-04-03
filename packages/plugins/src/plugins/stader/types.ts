@@ -1,7 +1,7 @@
 import { PortfolioElement } from '@sonarwatch/portfolio-core';
 import { Address } from 'viem';
 import { Cache } from '../../Cache';
-import { LoggingContext } from '../octav/utils/loggingUtils';
+import { LoggingContext } from '../../utils/octav/loggingUtils';
 
 export type StaderFetcherParams = {
   owner: Address;

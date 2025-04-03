@@ -20,16 +20,16 @@ import {
 import { Cache } from '../../Cache';
 import { getEvmClient } from '../../utils/clients';
 import { getBalances } from '../../utils/evm/getBalances';
-import { extractMulticallResult } from '../octav/utils/extractMulticallResult';
-import { verboseLog } from '../octav/utils/loggingUtils';
-import { wrapReadContractCall } from '../octav/utils/wrapReadContractCall';
+import { createStakedPortfolioElement } from '../../utils/octav/createStakedPortfolioElement';
+import { extractMulticallResult } from '../../utils/octav/extractMulticallResult';
+import { verboseLog } from '../../utils/octav/loggingUtils';
+import { wrapReadContractCall } from '../../utils/octav/wrapReadContractCall';
 import {
   permissionsLessNodeRegistryAbi,
   sdCollateralPoolAbi,
   sdUtilityPoolAbi,
 } from './abis';
 import { StaderFetcherParams, StaderFetchFunction } from './types';
-import { createStakedPortfolioElement } from '../octav/utils/createStakedPortfolioElement';
 
 const NETWORK_ID = NetworkId.ethereum;
 

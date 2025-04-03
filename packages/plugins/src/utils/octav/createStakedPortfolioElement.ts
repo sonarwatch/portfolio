@@ -1,11 +1,11 @@
 import {
-    NetworkIdType,
-    PortfolioElement,
-    PortfolioElementType,
+  NetworkIdType,
+  PortfolioElement,
+  PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
 import { Address } from 'viem';
-import { Cache } from '../../../Cache';
-import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
+import { Cache } from '../../Cache';
+import tokenPriceToAssetToken from '../misc/tokenPriceToAssetToken';
 import { LoggingContext, verboseLog } from './loggingUtils';
 
 export const createStakedPortfolioElement = async (
