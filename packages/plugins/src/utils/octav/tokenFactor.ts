@@ -1,5 +1,5 @@
+import { ethereumNetwork, TokenPrice } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
-import { TokenPrice } from '@sonarwatch/portfolio-core';
 
 /**
  * Calculates the token factor based on decimals from token price
@@ -7,7 +7,7 @@ import { TokenPrice } from '@sonarwatch/portfolio-core';
  * @returns BigNumber representing the token factor (10^decimals)
  */
 export const getTokenFactor = (tokenPrice?: TokenPrice): BigNumber => {
-  const decimals = tokenPrice?.decimals ?? 18;
+  const decimals = tokenPrice?.decimals ?? ethereumNetwork.native.decimals;
   return new BigNumber(10).pow(new BigNumber(decimals));
 };
 
