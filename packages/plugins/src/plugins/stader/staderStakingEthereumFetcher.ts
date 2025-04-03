@@ -3,7 +3,6 @@ import {
   formatEvmAddress,
   NetworkId,
   PortfolioElement,
-  PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Address } from 'viem';
@@ -21,9 +20,8 @@ import {
 import { Cache } from '../../Cache';
 import { getEvmClient } from '../../utils/clients';
 import { getBalances } from '../../utils/evm/getBalances';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { extractMulticallResult } from '../octav/utils/extractMulticallResult';
-import { LoggingContext, verboseLog } from '../octav/utils/loggingUtils';
+import { verboseLog } from '../octav/utils/loggingUtils';
 import { wrapReadContractCall } from '../octav/utils/wrapReadContractCall';
 import {
   permissionsLessNodeRegistryAbi,
@@ -31,44 +29,9 @@ import {
   sdUtilityPoolAbi,
 } from './abis';
 import { StaderFetcherParams, StaderFetchFunction } from './types';
+import { createStakedPortfolioElement } from '../octav/utils/createStakedPortfolioElement';
 
 const NETWORK_ID = NetworkId.ethereum;
-
-const createStakedPortfolioElement = async (
-  assetContractAddress: Address,
-  priceTokenAddress: Address,
-  amount: number,
-  cache: Cache,
-  logCtx: LoggingContext
-): Promise<PortfolioElement | undefined> => {
-  const tokenPrice = await cache.getTokenPrice(priceTokenAddress, NETWORK_ID);
-  verboseLog(
-    {
-      ...logCtx,
-      priceTokenAddress,
-      tokenPrice,
-    },
-    'Token price retrieved from cache'
-  );
-
-  const asset = tokenPriceToAssetToken(
-    assetContractAddress,
-    amount,
-    NETWORK_ID,
-    tokenPrice
-  );
-
-  return {
-    networkId: NETWORK_ID,
-    label: 'Staked',
-    platformId,
-    type: PortfolioElementType.multiple,
-    value: asset.value,
-    data: {
-      assets: [asset],
-    },
-  };
-};
 
 const fetchStakedEthx: StaderFetchFunction = async ({
   owner,
@@ -103,6 +66,8 @@ const fetchStakedEthx: StaderFetchFunction = async ({
     .toNumber();
 
   return createStakedPortfolioElement(
+    platformId,
+    NETWORK_ID,
     contractAddress,
     contractAddress,
     amount,
@@ -177,6 +142,8 @@ const fetchStakedPermissionsLessNodeRegistry: StaderFetchFunction = async ({
   }
 
   return createStakedPortfolioElement(
+    platformId,
+    NETWORK_ID,
     contractAddress,
     ethereumNativeAddress,
     Number(operatorTotalKeys) * collateralEth,
@@ -216,6 +183,8 @@ const fetchStakedUtilityPool: StaderFetchFunction = async ({
     .toNumber();
 
   return createStakedPortfolioElement(
+    platformId,
+    NETWORK_ID,
     contractAddress,
     CONTRACT_ADDRESS_STADER_TOKEN_ETHEREUM_MAINNET,
     latestSDBalance,
@@ -256,6 +225,8 @@ const fetchStakedCollateralPool: StaderFetchFunction = async ({
     .toNumber();
 
   return createStakedPortfolioElement(
+    platformId,
+    NETWORK_ID,
     contractAddress,
     CONTRACT_ADDRESS_STADER_TOKEN_ETHEREUM_MAINNET,
     collateralBalance,
