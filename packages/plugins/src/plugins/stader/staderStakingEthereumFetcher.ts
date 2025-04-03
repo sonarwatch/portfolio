@@ -22,7 +22,9 @@ import { Cache } from '../../Cache';
 import { getEvmClient } from '../../utils/clients';
 import { getBalances } from '../../utils/evm/getBalances';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { extractMulticallResult } from '../octav/extractMulticallResult';
 import { LoggingContext, verboseLog } from '../octav/utils/loggingUtils';
+import { wrapReadContractCall } from '../octav/wrapReadContractCall';
 import {
   permissionsLessNodeRegistryAbi,
   sdCollateralPoolAbi,
@@ -119,58 +121,60 @@ const fetchStakedPermissionsLessNodeRegistry: StaderFetchFunction = async ({
   const contractDecimals = DECIMALS_ON_CONTRACT_STADER_TOKEN;
 
   const client = getEvmClient(NETWORK_ID);
-  verboseLog({ ...logCtx, contractAddress }, 'Fetching operatorId');
-  const operatorId = await client.readContract({
-    abi: permissionsLessNodeRegistryAbi,
-    address: contractAddress,
+
+  const [operatorIDByAddressResult, getCollateralETHResult] =
+    await client.multicall({
+      contracts: [
+        {
+          abi: permissionsLessNodeRegistryAbi,
+          address: contractAddress,
+          functionName: 'operatorIDByAddress',
+          args: [owner],
+        } as const,
+        {
+          abi: permissionsLessNodeRegistryAbi,
+          address: contractAddress,
+          functionName: 'getCollateralETH',
+        } as const,
+      ],
+    });
+
+  const operatorId = extractMulticallResult(operatorIDByAddressResult, {
     functionName: 'operatorIDByAddress',
-    args: [owner],
+    logCtx,
   });
-  verboseLog(
-    { ...logCtx, operatorId },
-    'Call to operatorIDByAddress completed'
-  );
   if (!operatorId) {
-    verboseLog(logCtx, 'No operatorId found; bailing out');
     return undefined;
   }
 
-  verboseLog(
-    { ...logCtx, operatorId, contractAddress },
-    'Fetching operatorTotalKeys for operatorId'
-  );
-  const operatorTotalKeys = await client.readContract({
-    abi: permissionsLessNodeRegistryAbi,
-    address: contractAddress,
-    functionName: 'getOperatorTotalKeys',
-    args: [operatorId],
-  });
-  verboseLog(
-    { ...logCtx, operatorTotalKeys },
-    'Call to getOperatorTotalKeys completed'
-  );
-  if (!operatorTotalKeys) {
-    verboseLog(logCtx, 'No operatorTotalKeys found; bailing out');
-    return undefined;
-  }
-
-  // Now that we have the operatorTotalKeys, we must multiply it by the pool's collateralETH
-  const rawCollateralEth = await client.readContract({
-    abi: permissionsLessNodeRegistryAbi,
-    address: contractAddress,
+  const rawCollateralEth = extractMulticallResult(getCollateralETHResult, {
     functionName: 'getCollateralETH',
+    logCtx,
   });
-  verboseLog(
-    { ...logCtx, rawCollateralEth },
-    'Call to getCollateralETH completed'
-  );
   if (!rawCollateralEth) {
-    throw new Error('Call to getCollateralETH returned no value');
+    return undefined;
   }
 
   const collateralEth = new BigNumber(rawCollateralEth.toString())
     .div(10 ** contractDecimals)
     .toNumber();
+
+  const operatorTotalKeys = await wrapReadContractCall(
+    client,
+    {
+      abi: permissionsLessNodeRegistryAbi,
+      address: contractAddress,
+      functionName: 'getOperatorTotalKeys',
+      args: [operatorId],
+    },
+    {
+      logCtx,
+    }
+  );
+
+  if (!operatorTotalKeys) {
+    return undefined;
+  }
 
   return createStakedPortfolioElement(
     contractAddress,
