@@ -4,7 +4,6 @@ import {
   NetworkId,
   PortfolioElement,
 } from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
 import { Address } from 'viem';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
@@ -23,6 +22,7 @@ import { getBalances } from '../../utils/evm/getBalances';
 import { createStakedPortfolioElement } from '../../utils/octav/createStakedPortfolioElement';
 import { extractMulticallResult } from '../../utils/octav/extractMulticallResult';
 import { verboseLog } from '../../utils/octav/loggingUtils';
+import { convertBigIntToNumber } from '../../utils/octav/tokenFactor';
 import { wrapReadContractCall } from '../../utils/octav/wrapReadContractCall';
 import {
   permissionsLessNodeRegistryAbi,
@@ -39,7 +39,6 @@ const fetchStakedEthx: StaderFetchFunction = async ({
   logCtx,
 }) => {
   const contractAddress = CONTRACT_ADDRESS_ETHX_TOKEN_ETHEREUM_MAINNET;
-  const contractDecimals = DECIMALS_ON_CONTRACT_STADER_TOKEN;
 
   const contractsToFetchBalanceFor = [contractAddress];
 
@@ -61,9 +60,10 @@ const fetchStakedEthx: StaderFetchFunction = async ({
     return undefined;
   }
 
-  const amount = new BigNumber(rawBalance0)
-    .div(10 ** contractDecimals)
-    .toNumber();
+  const amount = convertBigIntToNumber(
+    rawBalance0,
+    DECIMALS_ON_CONTRACT_STADER_TOKEN
+  );
 
   return createStakedPortfolioElement(
     platformId,
@@ -83,7 +83,6 @@ const fetchStakedPermissionsLessNodeRegistry: StaderFetchFunction = async ({
 }): Promise<PortfolioElement | undefined> => {
   const contractAddress =
     CONTRACT_ADDRESS_PERMISSIONLESS_NODE_REGISTRY_ETHEREUM_MAINNET;
-  const contractDecimals = DECIMALS_ON_CONTRACT_STADER_TOKEN;
 
   const client = getEvmClient(NETWORK_ID);
 
@@ -120,9 +119,10 @@ const fetchStakedPermissionsLessNodeRegistry: StaderFetchFunction = async ({
     return undefined;
   }
 
-  const collateralEth = new BigNumber(rawCollateralEth.toString())
-    .div(10 ** contractDecimals)
-    .toNumber();
+  const collateralEth = convertBigIntToNumber(
+    rawCollateralEth,
+    DECIMALS_ON_CONTRACT_STADER_TOKEN
+  );
 
   const operatorTotalKeys = await wrapReadContractCall(
     client,
@@ -158,7 +158,6 @@ const fetchStakedUtilityPool: StaderFetchFunction = async ({
   logCtx,
 }): Promise<PortfolioElement | undefined> => {
   const contractAddress = CONTRACT_ADDRESS_STADER_UTILITY_POOL_ETHEREUM_MAINNET;
-  const contractDecimals = DECIMALS_ON_CONTRACT_STADER_TOKEN;
 
   const client = getEvmClient(NETWORK_ID);
   const rawLatestSDBalance = await wrapReadContractCall(
@@ -178,9 +177,10 @@ const fetchStakedUtilityPool: StaderFetchFunction = async ({
     return undefined;
   }
 
-  const latestSDBalance = new BigNumber(rawLatestSDBalance.toString())
-    .div(10 ** contractDecimals)
-    .toNumber();
+  const latestSDBalance = convertBigIntToNumber(
+    rawLatestSDBalance,
+    DECIMALS_ON_CONTRACT_STADER_TOKEN
+  );
 
   return createStakedPortfolioElement(
     platformId,
@@ -200,7 +200,6 @@ const fetchStakedCollateralPool: StaderFetchFunction = async ({
 }): Promise<PortfolioElement | undefined> => {
   const contractAddress =
     CONTRACT_ADDRESS_STADER_COLLATERAL_POOL_ETHEREUM_MAINNET;
-  const contractDecimals = DECIMALS_ON_CONTRACT_STADER_TOKEN;
 
   const client = getEvmClient(NETWORK_ID);
   const rawCollateralBalance = await wrapReadContractCall(
@@ -220,9 +219,10 @@ const fetchStakedCollateralPool: StaderFetchFunction = async ({
     return undefined;
   }
 
-  const collateralBalance = new BigNumber(rawCollateralBalance.toString())
-    .div(10 ** contractDecimals)
-    .toNumber();
+  const collateralBalance = convertBigIntToNumber(
+    rawCollateralBalance,
+    DECIMALS_ON_CONTRACT_STADER_TOKEN
+  );
 
   return createStakedPortfolioElement(
     platformId,
