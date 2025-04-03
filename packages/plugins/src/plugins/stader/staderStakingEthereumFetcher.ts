@@ -22,9 +22,9 @@ import { Cache } from '../../Cache';
 import { getEvmClient } from '../../utils/clients';
 import { getBalances } from '../../utils/evm/getBalances';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { extractMulticallResult } from '../octav/extractMulticallResult';
+import { extractMulticallResult } from '../octav/utils/extractMulticallResult';
 import { LoggingContext, verboseLog } from '../octav/utils/loggingUtils';
-import { wrapReadContractCall } from '../octav/wrapReadContractCall';
+import { wrapReadContractCall } from '../octav/utils/wrapReadContractCall';
 import {
   permissionsLessNodeRegistryAbi,
   sdCollateralPoolAbi,

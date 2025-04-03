@@ -4,8 +4,8 @@ import {
   ReadContractParameters,
   ReadContractReturnType,
 } from 'viem';
-import { AbiCallsContext } from './types/abiCallsContext';
-import { verboseLog } from './utils/loggingUtils';
+import { AbiCallsContext } from '../types/abiCallsContext';
+import { verboseLog } from './loggingUtils';
 
 export const wrapReadContractCall = async <
   const TAbi extends Abi | readonly unknown[],

@@ -1,5 +1,5 @@
-import { AbiCallsContext } from './types/abiCallsContext';
-import { verboseLog } from './utils/loggingUtils';
+import { AbiCallsContext } from '../types/abiCallsContext';
+import { verboseLog } from './loggingUtils';
 
 export const extractMulticallResult = <T>(
   result: { error?: Error; result?: T; status: 'success' | 'failure' },
