@@ -1,5 +1,6 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Connection, FetchMiddleware, Commitment } from '@solana/web3.js';
+import { createSolanaRpc } from '@solana/kit';
 import { getBasicAuthHeaders } from '../misc/getBasicAuthHeaders';
 import { getRpcEndpoint } from './constants';
 import { SolanaClient } from './types';
@@ -44,3 +45,8 @@ export default function getClientSolana(
     fetchMiddleware,
   });
 }
+
+export const getClientSolanaKit = () => {
+  const rpcEndpoint = getRpcEndpoint(NetworkId.solana);
+  return createSolanaRpc(rpcEndpoint.url);
+};

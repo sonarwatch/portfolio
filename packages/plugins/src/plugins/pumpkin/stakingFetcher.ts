@@ -1,20 +1,19 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import { PublicKey } from '@solana/web3.js';
+import { address } from '@solana/kit';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { getClientSolana } from '../../utils/clients';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { platformId, stakingProgramId } from './constants';
-import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
-import { stakedStruct } from './structs';
+import { getProgramAccounts } from '../../utils/solana/accounts/getProgramAccounts';
+import { stakedCodec } from './codecs';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
-
-  const accounts = await ParsedGpa.build(client, stakedStruct, stakingProgramId)
-    .addFilter('accountDiscriminator', [171, 229, 193, 85, 67, 177, 151, 4])
-    .addFilter('user', new PublicKey(owner))
-    .run();
+  const accounts = await getProgramAccounts(stakingProgramId, stakedCodec, [
+    {
+      key: 'user',
+      val: address(owner),
+    },
+  ]);
 
   if (!accounts.length) return [];
 
@@ -24,12 +23,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const element = registry.addElementMultiple({
       label: 'Staked',
       link: 'https://app.pumpkin.fun/stake',
-      ref: account.pubkey.toString(),
+      ref: account.address,
     });
 
     element.addAsset({
-      address: account.mint,
-      amount: account.amount,
+      address: account.data.mint,
+      amount: account.data.amount,
     });
   });
 
