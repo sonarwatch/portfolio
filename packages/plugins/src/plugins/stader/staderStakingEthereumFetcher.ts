@@ -194,20 +194,20 @@ const fetchStakedUtilityPool: StaderFetchFunction = async ({
   const contractDecimals = DECIMALS_ON_CONTRACT_STADER_TOKEN;
 
   const client = getEvmClient(NETWORK_ID);
-  verboseLog({ ...logCtx, contractAddress }, 'Fetching stader utility pool');
-
-  const rawLatestSDBalance = await client.readContract({
-    abi: sdUtilityPoolAbi,
-    address: contractAddress,
-    functionName: 'getDelegatorLatestSDBalance',
-    args: [owner],
-  });
-  verboseLog(
-    { ...logCtx, rawLatestSDBalance },
-    'Call to getDelegatorLatestSDBalance completed'
+  const rawLatestSDBalance = await wrapReadContractCall(
+    client,
+    {
+      abi: sdUtilityPoolAbi,
+      address: contractAddress,
+      functionName: 'getDelegatorLatestSDBalance',
+      args: [owner],
+    },
+    {
+      logCtx,
+    }
   );
+
   if (!rawLatestSDBalance) {
-    verboseLog(logCtx, 'No latestSDBalance found; bailing out');
     return undefined;
   }
 
@@ -234,22 +234,23 @@ const fetchStakedCollateralPool: StaderFetchFunction = async ({
   const contractDecimals = DECIMALS_ON_CONTRACT_STADER_TOKEN;
 
   const client = getEvmClient(NETWORK_ID);
-  verboseLog({ ...logCtx, contractAddress }, 'Fetching stader collateral pool');
-
-  const rawCollateralBalance = await client.readContract({
-    abi: sdCollateralPoolAbi,
-    address: contractAddress,
-    functionName: 'operatorSDBalance',
-    args: [owner],
-  });
-  verboseLog(
-    { ...logCtx, rawCollateralBalance },
-    'Call to operatorSDBalance completed'
+  const rawCollateralBalance = await wrapReadContractCall(
+    client,
+    {
+      abi: sdCollateralPoolAbi,
+      address: contractAddress,
+      functionName: 'operatorSDBalance',
+      args: [owner],
+    },
+    {
+      logCtx,
+    }
   );
+
   if (!rawCollateralBalance) {
-    verboseLog(logCtx, 'No collateral balance found; bailing out');
     return undefined;
   }
+
   const collateralBalance = new BigNumber(rawCollateralBalance.toString())
     .div(10 ** contractDecimals)
     .toNumber();
