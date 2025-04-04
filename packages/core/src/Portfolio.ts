@@ -201,7 +201,7 @@ export type BalanceChange = {
   change: number;
 };
 
-export type AccountChange = {
+export type AccountChanges = {
   created: string[];
   updated: string[];
   closed: string[];
@@ -213,8 +213,9 @@ export type Transaction = {
   blockTime?: number | null;
   service?: Service;
   balanceChanges: BalanceChange[];
-  accountChanges: AccountChange;
+  accountChanges: AccountChanges;
   isSigner: boolean;
+  fees?: number | null;
   success: boolean;
 };
 

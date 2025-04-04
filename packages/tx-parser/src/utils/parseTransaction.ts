@@ -1,6 +1,6 @@
 import { ParsedTransactionWithMeta } from '@solana/web3.js';
 import {
-  AccountChange,
+  AccountChanges,
   BalanceChange,
   Service,
   solanaNativeDecimals,
@@ -10,7 +10,7 @@ import {
 import { unshift } from './unshift';
 import { sortedServices } from '../services';
 
-const findTransactionService = (
+const getTransactionService = (
   txn: ParsedTransactionWithMeta
 ): Service | undefined => {
   const { instructions } = txn.transaction.message;
@@ -27,8 +27,8 @@ const findTransactionService = (
   );
 };
 
-const findAccountChanges = (txn: ParsedTransactionWithMeta): AccountChange => {
-  const accountChanges: AccountChange = {
+const getAccountChanges = (txn: ParsedTransactionWithMeta): AccountChanges => {
+  const accountChanges: AccountChanges = {
     created: [],
     updated: [],
     closed: [],
@@ -52,16 +52,13 @@ const findAccountChanges = (txn: ParsedTransactionWithMeta): AccountChange => {
   return accountChanges;
 };
 
-export const parseTransaction = (
-  txn: ParsedTransactionWithMeta | null,
+const getBalanceChanges = (
+  txn: ParsedTransactionWithMeta,
   owner: string
-): Transaction | null => {
-  if (!txn) return null;
-
-  const { accountKeys } = txn.transaction.message;
-
+): BalanceChange[] => {
   const changes: BalanceChange[] = [];
   if (txn.meta) {
+    const { accountKeys } = txn.transaction.message;
     const { preTokenBalances, postTokenBalances, preBalances, postBalances } =
       txn.meta;
 
@@ -114,17 +111,43 @@ export const parseTransaction = (
     }
   }
 
+  return changes;
+};
+
+const ownerIsSigner = (
+  txn: ParsedTransactionWithMeta,
+  owner: string
+): boolean =>
+  txn.transaction.message.accountKeys.some(
+    (accountKey) => accountKey.pubkey.toString() === owner && accountKey.signer
+  );
+
+export const parseTransaction = (
+  txn: ParsedTransactionWithMeta | null,
+  owner: string
+): Transaction | null => {
+  if (!txn) return null;
+
+  if (
+    txn.transaction.signatures[0] !==
+    '64t8A2FqRUF85gdH7G15aP2FUrukjUaLpVhqT929GfaN9GtGAxJXpPThoo9DTA6UcSnAMXUFuhrJ8y8vk7vL8dCH'
+  )
+    return null;
+
+  const isSigner = ownerIsSigner(txn, owner);
+
   return {
     signature: txn.transaction.signatures[0],
     owner,
     blockTime: txn.blockTime,
-    service: findTransactionService(txn),
-    balanceChanges: changes,
-    accountChanges: findAccountChanges(txn),
-    isSigner: accountKeys.some(
-      (accountKey) =>
-        accountKey.pubkey.toString() === owner && accountKey.signer
-    ),
+    service: getTransactionService(txn),
+    balanceChanges: getBalanceChanges(txn, owner),
+    accountChanges: getAccountChanges(txn),
+    isSigner,
+    fees:
+      isSigner && txn.meta?.fee
+        ? unshift(txn.meta.fee, solanaNativeDecimals)
+        : null,
     success: !txn.meta?.err,
   };
 };
