@@ -72,6 +72,16 @@ export const generateReadContractParamsForGetOperatorIDByAddress = (
     args: [ownerAddress],
   } as const);
 
+export const generateReadContractParamsForGetOperatorTotalKeys = (
+  operatorId: bigint
+) =>
+  ({
+    abi: permissionsLessNodeRegistryAbi,
+    address: CONTRACT_ADDRESS_PERMISSIONLESS_NODE_REGISTRY_ETHEREUM_MAINNET,
+    functionName: 'getOperatorTotalKeys',
+    args: [operatorId],
+  } as const);
+
 export const processFetchStakedEthxResult = async (
   params: StaderFetcherParams,
   multicallIO: MulticallIO<typeof balanceOfErc20ABI, 'balanceOf'>
@@ -180,18 +190,14 @@ export const fetchStakedPermissionsLessNodeRegistry = async (
     ...params.logCtx,
     fn: `${params.logCtx.fn}::fetchStakedPermissionsLessNodeRegistry`,
   };
-
-  const contractAddress =
-    CONTRACT_ADDRESS_PERMISSIONLESS_NODE_REGISTRY_ETHEREUM_MAINNET;
-
   const client = getEvmClient(NETWORK_ID);
 
+  const operatorIDByAddressInput =
+    generateReadContractParamsForGetOperatorIDByAddress(owner);
+  const getCollateralETHInput = generateReadContractParamsForGetCollateralETH();
   const [operatorIDByAddressResult, getCollateralETHResult] =
     await client.multicall({
-      contracts: [
-        generateMulticallInputForGetOperatorIDByAddress(owner),
-        generateMulticallInputForGetCollateralETH(),
-      ],
+      contracts: [operatorIDByAddressInput, getCollateralETHInput],
     });
 
   const operatorId = extractMulticallResult<
@@ -206,7 +212,7 @@ export const fetchStakedPermissionsLessNodeRegistry = async (
   }
 
   const rawCollateralEth = extractMulticallResult(getCollateralETHResult, {
-    functionName: 'getCollateralETH',
+    functionName: getCollateralETHInput.functionName,
     logCtx,
   });
   if (!rawCollateralEth) {
@@ -218,14 +224,11 @@ export const fetchStakedPermissionsLessNodeRegistry = async (
     DECIMALS_ON_CONTRACT_STADER_TOKEN
   );
 
+  const getOperatorTotalKeysInput =
+    generateReadContractParamsForGetOperatorTotalKeys(operatorId);
   const operatorTotalKeys = await wrapReadContractCall(
     client,
-    {
-      abi: permissionsLessNodeRegistryAbi,
-      address: contractAddress,
-      functionName: 'getOperatorTotalKeys',
-      args: [operatorId],
-    },
+    getOperatorTotalKeysInput,
     {
       logCtx,
     }
@@ -238,7 +241,7 @@ export const fetchStakedPermissionsLessNodeRegistry = async (
   return createStakedPortfolioElement(
     platformId,
     NETWORK_ID,
-    contractAddress,
+    getOperatorTotalKeysInput.address,
     ethereumNativeAddress,
     Number(operatorTotalKeys) * collateralEth,
     params.cache,
