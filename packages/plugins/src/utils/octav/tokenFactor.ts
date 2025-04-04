@@ -18,3 +18,16 @@ export const getAmount = (
   const tokenFactor = getTokenFactor(tokenPrice);
   return new BigNumber(amount).dividedBy(tokenFactor).toNumber();
 };
+
+/**
+ * Convenient one-liner that converts a uint256/bigint received from a contract
+ * into a number.
+ * For convenience, we also accept a string as input.
+ */
+export const convertBigIntToNumber = (
+  input: bigint | string,
+  decimals: number
+): number => new BigNumber(input.toString())
+    // We're force-casting to leverage our other utility
+    .dividedBy(getTokenFactor({ decimals } as TokenPrice))
+    .toNumber();
