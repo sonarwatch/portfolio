@@ -49,31 +49,23 @@ async function generateActiveStakeElement(
 ): Promise<PortfolioElement | null> {
   const { address, token } = activeStakeContract;
 
-  try {
-    const client = getEvmClient(networkId);
-    const activeStake = await client.readContract({
-      address,
-      abi: activeStakeAbi,
-      functionName: 'activeStake',
-      args: [owner as `0x${string}`],
-    });
+  const client = getEvmClient(networkId);
+  const activeStake = await client.readContract({
+    address,
+    abi: activeStakeAbi,
+    functionName: 'activeStake',
+    args: [owner as `0x${string}`],
+  });
 
-    if (!activeStake || activeStake === BigInt(0)) return null;
+  if (!activeStake || activeStake === BigInt(0)) return null;
 
-    return createPortfolioElement(
-      token,
-      activeStake,
-      STAKED_LABEL,
-      cache,
-      networkId
-    );
-  } catch (error) {
-    console.error(
-      `Error processing contract ${address} for ${owner} on ${networkId}:`,
-      error
-    );
-    return null;
-  }
+  return createPortfolioElement(
+    token,
+    activeStake,
+    STAKED_LABEL,
+    cache,
+    networkId
+  );
 }
 
 async function generateDepositElement(
