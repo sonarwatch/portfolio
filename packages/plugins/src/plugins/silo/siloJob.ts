@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { logger } from 'ethers';
+
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getEvmClient } from '../../utils/clients';
@@ -155,7 +155,6 @@ export default function getSiloJob(): Job {
         Object.assign(pool, updatedPool);
       }
     });
-    logger.info(JSON.stringify(uniquePools));
 
     // Cache both pools and router mapping
     await Promise.all([
