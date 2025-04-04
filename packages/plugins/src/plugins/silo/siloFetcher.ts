@@ -75,13 +75,13 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
 
         // Handle missing token prices by getting price from underlying asset
         let poolAsset = pool.asset;
-        let conversionRate = 1;
+        let conversionRate = BigNumber(1);
         if (missingTokenPriceAddresses.includes(pool.asset as `0x${string}`)) {
           if (!pool.underlyingAsset || !pool.conversionRate) {
             return null;
           }
           poolAsset = pool.underlyingAsset;
-          conversionRate = pool.conversionRate.toNumber();
+          conversionRate = new BigNumber(pool.conversionRate.toString());
         }
 
         const collateral = new BigNumber(
