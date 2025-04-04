@@ -204,7 +204,7 @@ export const fetchStakedPermissionsLessNodeRegistry = async (
     typeof permissionsLessNodeRegistryAbi,
     'operatorIDByAddress'
   >(operatorIDByAddressResult, {
-    functionName: 'operatorIDByAddress',
+    functionName: operatorIDByAddressInput.functionName,
     logCtx,
   });
   if (!operatorId) {
