@@ -23,24 +23,18 @@ async function generateStakedElements(
   cache: Cache,
   networkId: EvmNetworkIdType
 ): Promise<PortfolioElement[]> {
-  const contractsWithBalances = stakedContracts.filter(
-    (_, index) => balances[index] !== null && balances[index] !== BigInt(0)
-  );
-  const balancesWithValues = balances.filter(
-    (balance) => balance !== null && balance !== BigInt(0)
-  ) as bigint[];
-
-  if (contractsWithBalances.length === 0) return [];
-
   const elements = await Promise.all(
-    contractsWithBalances.map(async (contract, index) => {
-      return createPortfolioElement(
-        contract.token,
-        balancesWithValues[index],
-        STAKED_LABEL,
-        cache,
-        networkId
-      );
+    stakedContracts.map(async (contract, index) => {
+      const balance = balances[index];
+      return balance && balance !== BigInt(0)
+        ? createPortfolioElement(
+            contract.token,
+            balance,
+            STAKED_LABEL,
+            cache,
+            networkId
+          )
+        : null;
     })
   );
 
@@ -100,23 +94,23 @@ async function generateDepositElement(
 
   if (!numOfRequests || numOfRequests === BigInt(0)) return [];
 
-  const withdrawRequestsAnswers = await Promise.all(
-    Array.from({ length: Number(numOfRequests) }, (_, index) =>
-      client.readContract({
-        address,
-        abi: withdrawRequestAbi,
-        functionName: 'withdrawRequests',
-        args: [owner as `0x${string}`, BigInt(index)],
-      })
-    )
-  );
+  const withdrawRequestsAnswers = await client.multicall({
+    contracts: Array.from({ length: Number(numOfRequests) }, (_, index) => ({
+      address: address as `0x${string}`,
+      abi: withdrawRequestAbi,
+      functionName: 'withdrawRequests',
+      args: [owner as `0x${string}`, BigInt(index)],
+    })),
+  });
 
   const portfolioElements = await Promise.all(
     withdrawRequestsAnswers
-      .filter((req) => req !== null)
+      .filter((req) => req.status === 'success' && req.result)
       .map((req) => {
-        const token = req[0];
-        const balance = req[2];
+        const token = req.result?.[0];
+        const balance = req.result?.[2];
+
+        if (!token || !balance) return null;
 
         return createPortfolioElement(
           token,
@@ -131,44 +125,34 @@ async function generateDepositElement(
   return portfolioElements.filter((el) => el !== null);
 }
 
-export function getStakedPositionsFetcher(config: RenzoNetworkConfig): Fetcher {
-  const { networkId, stakedContracts, activeStakeContract } = config;
-
-  async function processStakedContracts(
-    owner: string,
-    cache: Cache
-  ): Promise<PortfolioElement[]> {
-    const contractAddresses = stakedContracts.map(
-      (contract) => contract.address
-    );
-    const balances = await getBalances(owner, contractAddresses, networkId);
-
-    return generateStakedElements(stakedContracts, balances, cache, networkId);
-  }
-
-  async function processActiveStakeContract(
-    owner: string,
-    cache: Cache
-  ): Promise<PortfolioElement | null> {
-    return generateActiveStakeElement(
-      activeStakeContract,
-      owner,
-      cache,
-      networkId
-    );
-  }
+export function getPositionsFetcher(config: RenzoNetworkConfig): Fetcher {
+  const { networkId, stakedContracts, activeStakeContract, depositContract } =
+    config;
 
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (!owner) return [];
 
-    const [stakedElements, activeStakedElement] = await Promise.all([
-      processStakedContracts(owner, cache),
-      processActiveStakeContract(owner, cache),
+    const contractAddresses = stakedContracts.map(
+      (contract) => contract.address
+    );
+
+    const [balances, activeStakedElement, depositElement] = await Promise.all([
+      getBalances(owner, contractAddresses, networkId),
+      generateActiveStakeElement(activeStakeContract, owner, cache, networkId),
+      generateDepositElement(depositContract, owner, cache, networkId),
     ]);
+
+    const stakedElements = await generateStakedElements(
+      stakedContracts,
+      balances,
+      cache,
+      networkId
+    );
 
     return [
       ...stakedElements,
       ...(activeStakedElement ? [activeStakedElement] : []),
+      ...depositElement,
     ];
   };
 
