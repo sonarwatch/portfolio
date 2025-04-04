@@ -7,9 +7,9 @@ import { Cache } from '../../Cache';
 import { getEvmClient } from '../../utils/clients';
 import {
   fetchStakedPermissionsLessNodeRegistry,
-  generateMulticallInputForStakedCollateralPool,
-  generateMulticallInputForStakedEthx,
-  generateMulticallInputForStakedUtilityPool,
+  generateReadContractParamsForStakedCollateralPool,
+  generateReadContractParamsForStakedEthx,
+  generateReadContractParamsForStakedUtilityPool,
   processFetchStakedCollateralPoolResult,
   processFetchStakedEthxResult,
   processFetchStakedUtilityPoolResult,
@@ -34,9 +34,9 @@ const executor: FetcherExecutor = async (
   };
 
   const multicallInputs = [
-    generateMulticallInputForStakedEthx(ownerAddress),
-    generateMulticallInputForStakedUtilityPool(ownerAddress),
-    generateMulticallInputForStakedCollateralPool(ownerAddress),
+    generateReadContractParamsForStakedEthx(ownerAddress),
+    generateReadContractParamsForStakedUtilityPool(ownerAddress),
+    generateReadContractParamsForStakedCollateralPool(ownerAddress),
   ] as const;
 
   const [permissionsLessNodeResult, multicallResults] = await Promise.all([

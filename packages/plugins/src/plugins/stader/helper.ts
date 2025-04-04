@@ -27,7 +27,7 @@ import {
 } from './constants';
 import { StaderFetcherParams } from './types';
 
-export const generateMulticallInputForStakedEthx = (ownerAddress: Address) =>
+export const generateReadContractParamsForStakedEthx = (ownerAddress: Address) =>
   ({
     address: CONTRACT_ADDRESS_ETHX_TOKEN_ETHEREUM_MAINNET,
     abi: balanceOfErc20ABI,
@@ -35,7 +35,7 @@ export const generateMulticallInputForStakedEthx = (ownerAddress: Address) =>
     args: [ownerAddress],
   } as const);
 
-export const generateMulticallInputForStakedUtilityPool = (
+export const generateReadContractParamsForStakedUtilityPool = (
   ownerAddress: Address
 ) =>
   ({
@@ -45,7 +45,7 @@ export const generateMulticallInputForStakedUtilityPool = (
     args: [ownerAddress],
   } as const);
 
-export const generateMulticallInputForStakedCollateralPool = (
+export const generateReadContractParamsForStakedCollateralPool = (
   ownerAddress: Address
 ) =>
   ({
@@ -55,14 +55,14 @@ export const generateMulticallInputForStakedCollateralPool = (
     args: [ownerAddress],
   } as const);
 
-export const generateMulticallInputForGetCollateralETH = () =>
+export const generateReadContractParamsForGetCollateralETH = () =>
   ({
     abi: permissionsLessNodeRegistryAbi,
     address: CONTRACT_ADDRESS_PERMISSIONLESS_NODE_REGISTRY_ETHEREUM_MAINNET,
     functionName: 'getCollateralETH',
   } as const);
 
-export const generateMulticallInputForGetOperatorIDByAddress = (
+export const generateReadContractParamsForGetOperatorIDByAddress = (
   ownerAddress: Address
 ) =>
   ({
