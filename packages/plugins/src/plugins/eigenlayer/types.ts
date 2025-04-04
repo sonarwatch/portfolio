@@ -1,43 +1,45 @@
+import { Address } from 'viem';
+
 export type Contract = {
   chain: string;
-  address: `0x${string}`;
+  address: Address;
 };
 
 export type Strategy = {
-  strategyAddress: `0x${string}`;
-  tokens: `0x${string}`[];
+  strategyAddress: Address;
+  tokens: Address[];
 };
 
 export type Operator = {
-  address: `0x${string}`;
+  address: Address;
   shares: Share[];
 };
 
 export type Staker = {
-  address: `0x${string}`;
+  address: Address;
   shares: Share[];
 };
 export type Share = {
-  strategyAddress: `0x${string}`;
+  strategyAddress: Address;
   shares: string;
 };
 
 export type Position = {
-  strategyAddress: `0x${string}`;
-  underlyingToken?: `0x${string}`;
+  strategyAddress: Address;
+  underlyingToken?: Address;
   decimals?: number;
   amount?: string;
   shares?: bigint;
 };
 
 export type Withdrawal = {
-  stakerAddress: `0x${string}`;
-  delegatedTo: `0x${string}`;
-  withdrawerAddress: `0x${string}`;
+  stakerAddress: Address;
+  delegatedTo: Address;
+  withdrawerAddress: Address;
   shares: Share[];
 };
 
 export type WithdrawalShare = {
-  strategyAddress: `0x${string}`;
+  strategyAddress: Address;
   shares: string;
 };

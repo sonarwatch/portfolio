@@ -1,12 +1,15 @@
-import { NetworkId, PortfolioAssetToken } from '@sonarwatch/portfolio-core';
+import { PortfolioAssetToken } from '@sonarwatch/portfolio-core';
+import axios, { AxiosResponse } from 'axios';
+
+import { getAddress } from 'viem';
 import { Operator, Position, Withdrawal } from './types';
 
-import axios, { AxiosResponse } from 'axios';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { getAddress } from '@ethersproject/address';
-import { customEigenlayerTokenMapping } from './constants';
+import { chain, customEigenlayerTokenMapping } from './constants';
 import { Cache } from '../../Cache';
-import BigNumber from 'bignumber.js';
+
+import { convertBigIntToNumber } from '../../utils/octav/tokenFactor';
+
 const eigenlayerApiKey = process.env['EIGENLAYER_API_KEY'];
 const eigenlayerApiUrl = 'https://api.eigenexplorer.com';
 const eigenlayerApiOperatorsUrl = `${eigenlayerApiUrl}/operators`;
@@ -51,23 +54,20 @@ export const getAssetsFromPositions = async (
 ): Promise<PortfolioAssetToken[]> => {
   const assets: PortfolioAssetToken[] = [];
   for (const position of positions) {
-    const underlyingToken = position.underlyingToken;
-    if (!underlyingToken || !position.amount) return [];
+    const { underlyingToken, amount } = position;
+    if (!underlyingToken || !amount) return [];
 
-    const amount = position.amount;
     const tokenPrice = await cache.getTokenPrice(
       customEigenlayerTokenMapping[
         underlyingToken as keyof typeof customEigenlayerTokenMapping
       ] || underlyingToken,
-      NetworkId.ethereum
+      chain
     );
     const underlyingTokenAddress = getAddress(underlyingToken);
     const asset = tokenPriceToAssetToken(
       underlyingTokenAddress,
-      BigNumber(amount.toString())
-        .div(10 ** (position.decimals || 18))
-        .toNumber(),
-      NetworkId.ethereum,
+      convertBigIntToNumber(amount, position.decimals || 18),
+      chain,
       tokenPrice
     );
     assets.push(asset);

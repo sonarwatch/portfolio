@@ -1,12 +1,11 @@
 import {
-  NetworkId,
   PortfolioElement,
   PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
+import { Address, getAddress } from 'viem';
 import { Cache } from '../../../Cache';
 import { Position, Withdrawal } from '../types';
-import { platformId } from '../constants';
-import { getAddress } from 'viem';
+import { cacheKey, chain, platformId } from '../constants';
 
 import { getAssetsFromPositions } from '../helper';
 
@@ -16,18 +15,15 @@ import { getAssetsFromPositions } from '../helper';
  * @param cache - The cache instance
  * @returns The withdrawals
  */
-export const getWithdrawals = async (owner: string, cache: Cache) => {
-  const withdrawals = await cache.getItem<Withdrawal[]>(
-    'eigenlayer-withdrawals',
-    {
-      prefix: platformId,
-      networkId: NetworkId.ethereum,
-    }
-  );
-
-  const strategies = await cache.getItem<Position[]>('eigenlayer-strategies', {
+export const getWithdrawals = async (owner: Address, cache: Cache) => {
+  const withdrawals = await cache.getItem<Withdrawal[]>(cacheKey.withdrawals, {
     prefix: platformId,
-    networkId: NetworkId.ethereum,
+    networkId: chain,
+  });
+
+  const strategies = await cache.getItem<Position[]>(cacheKey.strategies, {
+    prefix: platformId,
+    networkId: chain,
   });
 
   const userWithdrawals = withdrawals?.filter(
@@ -35,7 +31,12 @@ export const getWithdrawals = async (owner: string, cache: Cache) => {
       getAddress(withdrawal.withdrawerAddress) === getAddress(owner)
   );
 
-  const shares = userWithdrawals?.flatMap((withdrawal) => withdrawal.shares);
+  const shares = userWithdrawals?.flatMap((withdrawal) =>
+    withdrawal.shares.map((share) => ({
+      ...share,
+      strategyAddress: getAddress(share.strategyAddress),
+    }))
+  );
 
   if (!shares || shares.length === 0) return [];
 
@@ -44,14 +45,10 @@ export const getWithdrawals = async (owner: string, cache: Cache) => {
     strategyAddress: share.strategyAddress,
     amount: share.shares,
     underlyingToken: strategies?.find(
-      (strategy) =>
-        getAddress(strategy.strategyAddress) ===
-        getAddress(share.strategyAddress)
+      (strategy) => strategy.strategyAddress === share.strategyAddress
     )?.underlyingToken,
     decimals: strategies?.find(
-      (strategy) =>
-        getAddress(strategy.strategyAddress) ===
-        getAddress(share.strategyAddress)
+      (strategy) => strategy.strategyAddress === share.strategyAddress
     )?.decimals,
   }));
 
@@ -63,17 +60,17 @@ export const getWithdrawals = async (owner: string, cache: Cache) => {
     0
   );
 
-  const elements: PortfolioElement = {
-    networkId: NetworkId.ethereum,
+  const element: PortfolioElement = {
+    networkId: chain,
     platformId,
     name: 'Completable Withdrawals',
     label: 'Deposit',
     type: PortfolioElementType.multiple,
     value: totalValue,
     data: {
-      assets: assets,
+      assets,
     },
   };
 
-  return [elements];
+  return [element];
 };

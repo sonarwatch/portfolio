@@ -1,19 +1,19 @@
 import {
   ethereumNativeAddress,
   ethereumNetwork,
-  NetworkId,
   PortfolioAsset,
   PortfolioElement,
   PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
+import { Address, getAddress } from 'viem';
+
 import { getEvmClient } from '../../../utils/clients';
 import { Cache } from '../../../Cache';
 
-import { eigenPodManagerAddress, platformId } from '../constants';
-import { getAddress } from 'viem';
+import { chain, eigenPodManagerAddress, platformId } from '../constants';
 import { abi } from '../abi';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import BigNumber from 'bignumber.js';
+import { convertBigIntToNumber } from '../../../utils/octav/tokenFactor';
 
 /**
  * Returns the deposit positions for a given owner
@@ -21,15 +21,15 @@ import BigNumber from 'bignumber.js';
  * @param cache - The cache instance
  * @returns The deposit positions
  */
-export const getDepositPositions = async (owner: string, cache: Cache) => {
-  const client = getEvmClient(NetworkId.ethereum);
+export const getDepositPositions = async (owner: Address, cache: Cache) => {
+  const client = getEvmClient(chain);
   const podManagerAddress = getAddress(eigenPodManagerAddress);
 
   const podUserAddress = await client.readContract({
     address: podManagerAddress,
     abi: [abi.ownerToPod],
     functionName: abi.ownerToPod.name,
-    args: [getAddress(owner)],
+    args: [owner],
   });
 
   // If the user has no pod, the contract returns the ethereum native address address
@@ -41,30 +41,25 @@ export const getDepositPositions = async (owner: string, cache: Cache) => {
   });
 
   const assets: PortfolioAsset[] = [];
-  const tokenPrice = await cache.getTokenPrice(
-    ethereumNativeAddress,
-    NetworkId.ethereum
-  );
+  const tokenPrice = await cache.getTokenPrice(ethereumNativeAddress, chain);
   const asset = tokenPriceToAssetToken(
     ethereumNativeAddress,
-    BigNumber(balance.toString())
-      .div(10 ** ethereumNetwork.native.decimals)
-      .toNumber(),
-    NetworkId.ethereum,
+    convertBigIntToNumber(balance, ethereumNetwork.native.decimals),
+    chain,
     tokenPrice
   );
   assets.push(asset);
 
-  const elements: PortfolioElement = {
-    networkId: NetworkId.ethereum,
+  const element: PortfolioElement = {
+    networkId: chain,
     name: `Proxy Balance ${podUserAddress}`,
     platformId,
     label: 'Deposit',
     type: PortfolioElementType.multiple,
     value: asset.value,
     data: {
-      assets: assets,
+      assets,
     },
   };
-  return [elements];
+  return [element];
 };

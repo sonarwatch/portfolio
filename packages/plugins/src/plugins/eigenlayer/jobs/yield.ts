@@ -1,11 +1,7 @@
-import {
-  EvmNetworkIdType,
-  NetworkId,
-  NetworkIdType,
-} from '@sonarwatch/portfolio-core';
+import { EvmNetworkIdType } from '@sonarwatch/portfolio-core';
+import { Address, getAddress } from 'viem';
 import { getEvmClient } from '../../../utils/clients';
 import { getEigenLayerOperators } from '../helper';
-import { getAddress } from 'viem';
 import { abi } from '../abi';
 
 export const getYieldPositions = async (networkId: EvmNetworkIdType) => {
@@ -14,7 +10,7 @@ export const getYieldPositions = async (networkId: EvmNetworkIdType) => {
   const operators = await getEigenLayerOperators();
   // Get all the strategies addresses from the operators
   const strategies = Array.from(
-    new Set<`0x${string}`>(
+    new Set<Address>(
       operators.data
         .flatMap((operator) => operator.shares)
         .map((share) => share.strategyAddress)
@@ -41,7 +37,7 @@ export const getYieldPositions = async (networkId: EvmNetworkIdType) => {
     contracts: strategiesAndUnderlyingTokens
       .filter((strategy) => strategy.underlyingToken)
       .map((strategy) => ({
-        address: getAddress(strategy.underlyingToken as `0x${string}`),
+        address: getAddress(strategy.underlyingToken as Address),
         abi: [abi.decimals],
         functionName: abi.decimals.name,
       })),

@@ -1,12 +1,10 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
-
 import { Cache } from '../../../Cache';
 import { Job, JobExecutor } from '../../../Job';
-import { platformId } from '../constants';
+import { chain, platformId } from '../constants';
 import { getEigenLayerWithdrawals } from '../helper';
 
 const executor: JobExecutor = async (cache: Cache) => {
-  // Get the YIELD positions
+  // Get the WITHDRAWALS positions
   const withdrawals = await getEigenLayerWithdrawals();
 
   // Cache the strategies and underlying tokens with decimals
@@ -20,7 +18,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     })),
     {
       prefix: platformId,
-      networkId: NetworkId.ethereum,
+      networkId: chain,
     }
   );
 };

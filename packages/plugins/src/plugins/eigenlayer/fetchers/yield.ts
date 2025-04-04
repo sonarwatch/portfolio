@@ -1,13 +1,12 @@
 import {
-  NetworkId,
   PortfolioElement,
   PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
+import { getAddress } from 'viem';
 import { getEvmClient } from '../../../utils/clients';
 import { Cache } from '../../../Cache';
 import { Position } from '../types';
-import { platformId } from '../constants';
-import { getAddress } from 'viem';
+import { cacheKey, chain, platformId } from '../constants';
 import { abi } from '../abi';
 import { getAssetsFromPositions } from '../helper';
 
@@ -18,10 +17,10 @@ import { getAssetsFromPositions } from '../helper';
  * @returns The yield positions
  */
 export const getYieldPositions = async (owner: string, cache: Cache) => {
-  const client = getEvmClient(NetworkId.ethereum);
-  const strategies = await cache.getItem<Position[]>('eigenlayer-strategies', {
+  const client = getEvmClient(chain);
+  const strategies = await cache.getItem<Position[]>(cacheKey.strategies, {
     prefix: platformId,
-    networkId: NetworkId.ethereum,
+    networkId: chain,
   });
   if (!strategies || strategies.length === 0) return [];
 
@@ -76,16 +75,16 @@ export const getYieldPositions = async (owner: string, cache: Cache) => {
     0
   );
 
-  const elements: PortfolioElement = {
-    networkId: NetworkId.ethereum,
+  const element: PortfolioElement = {
+    networkId: chain,
     platformId,
     label: 'Yield',
     type: PortfolioElementType.multiple,
     value: totalValue,
     data: {
-      assets: assets,
+      assets,
     },
   };
 
-  return [elements];
+  return [element];
 };
