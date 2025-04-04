@@ -5,11 +5,12 @@ import { launchpadKey, platformId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedMultipleAccountsInfo } from '../../utils/solana';
-import { fundingRecordStruct } from './structs';
+import { fundingRecordStruct, LaunchState } from './structs';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import { getFundingRecordPda } from './helpers';
 import { LaunchCached } from './types';
+import { PortfolioAssetTokenParams } from '../../utils/elementbuilder/Params';
 
 const launchesMemo = new MemoizedCache<LaunchCached[]>(launchpadKey, {
   prefix: platformId,
@@ -47,16 +48,31 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       link: `https://metadao.fi/launchpad/projects/${launch.pubkey.toString()}`,
     });
 
-    element.addAsset({
-      address: launch?.usdcMint,
+    const assetParam: PortfolioAssetTokenParams = {
+      address: launch.usdcMint,
       amount: acc.committedAmount,
-      attributes: {
+    };
+
+    if (launch.state === LaunchState.Live) {
+      assetParam.attributes = {
         lockedUntil: new BigNumber(launch.unixTimestampStarted)
           .plus(launch.secondsForLaunch)
           .times(1000)
           .toNumber(),
-      },
-    });
+      };
+    } else if (launch.state === LaunchState.Complete) {
+      assetParam.address = launch.tokenMint;
+      assetParam.amount = acc.committedAmount
+        .dividedBy(launch.totalCommittedAmount)
+        // It's always 10M tokens for the launch
+        .times(10000000);
+      assetParam.alreadyShifted = true;
+      assetParam.attributes = { isClaimable: true };
+    } else if (launch.state === LaunchState.Refunding) {
+      assetParam.attributes = { isClaimable: true };
+    }
+
+    element.addAsset(assetParam);
   });
   return elementRegistry.getElements(cache);
 };
