@@ -7,17 +7,11 @@ export const extractMulticallResult = <
   TAbi extends Abi | readonly unknown[],
   TFunctionName extends string
 >(
-  result:
-    | {
-        error?: Error;
-        result: ContractFunctionResult<TAbi, TFunctionName>;
-        status: 'success';
-      }
-    | {
-        error: Error;
-        result?: undefined;
-        status: 'failure';
-      },
+  result: {
+    error?: Error;
+    status: 'success' | 'failure';
+    result?: ContractFunctionResult<TAbi, TFunctionName>;
+  },
   params: AbiCallsContext
 ): ContractFunctionResult<TAbi, TFunctionName> | undefined => {
   const { functionName, logCtx } = params;
