@@ -1,14 +1,10 @@
-import {
-  PortfolioElement,
-  PortfolioElementType,
-} from '@sonarwatch/portfolio-core';
-import { getAddress } from 'viem';
+import { Address, getAddress } from 'viem';
 import { getEvmClient } from '../../../utils/clients';
 import { Cache } from '../../../Cache';
 import { Position } from '../types';
 import { cacheKey, chain, platformId } from '../constants';
 import { abi } from '../abi';
-import { getAssetsFromPositions } from '../helper';
+import { ElementRegistry } from '../../../utils/elementbuilder/ElementRegistry';
 
 /**
  * Returns the yield positions for a given owner
@@ -67,24 +63,19 @@ export const getYieldPositions = async (owner: string, cache: Cache) => {
     amount: amounts[i].result as string,
   }));
 
-  // Construct the assets
-  const assets = await getAssetsFromPositions(finalPositions, cache);
+  const elementRegistry = new ElementRegistry(chain, platformId);
 
-  const totalValue = assets.reduce(
-    (acc, asset) => acc + (asset?.value || 0),
-    0
-  );
-
-  const element: PortfolioElement = {
-    networkId: chain,
-    platformId,
+  const element = elementRegistry.addElementMultiple({
     label: 'Yield',
-    type: PortfolioElementType.multiple,
-    value: totalValue,
-    data: {
-      assets,
-    },
-  };
+    tags: ['Yield'],
+  });
 
-  return [element];
+  finalPositions.forEach((position) => {
+    element.addAsset({
+      address: position.underlyingToken as Address,
+      amount: position.amount,
+    });
+  });
+
+  return elementRegistry.getElements(cache);
 };

@@ -1,10 +1,4 @@
-import {
-  ethereumNativeAddress,
-  ethereumNetwork,
-  PortfolioAsset,
-  PortfolioElement,
-  PortfolioElementType,
-} from '@sonarwatch/portfolio-core';
+import { ethereumNativeAddress } from '@sonarwatch/portfolio-core';
 import { Address, getAddress } from 'viem';
 
 import { getEvmClient } from '../../../utils/clients';
@@ -12,8 +6,8 @@ import { Cache } from '../../../Cache';
 
 import { chain, eigenPodManagerAddress, platformId } from '../constants';
 import { abi } from '../abi';
-import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import { convertBigIntToNumber } from '../../../utils/octav/tokenFactor';
+
+import { ElementRegistry } from '../../../utils/elementbuilder/ElementRegistry';
 
 /**
  * Returns the deposit positions for a given owner
@@ -40,26 +34,18 @@ export const getDepositPositions = async (owner: Address, cache: Cache) => {
     address: podUserAddress,
   });
 
-  const assets: PortfolioAsset[] = [];
-  const tokenPrice = await cache.getTokenPrice(ethereumNativeAddress, chain);
-  const asset = tokenPriceToAssetToken(
-    ethereumNativeAddress,
-    convertBigIntToNumber(balance, ethereumNetwork.native.decimals),
-    chain,
-    tokenPrice
-  );
-  assets.push(asset);
+  const elementRegistry = new ElementRegistry(chain, platformId);
 
-  const element: PortfolioElement = {
-    networkId: chain,
-    name: `Proxy Balance ${podUserAddress}`,
-    platformId,
+  const element = elementRegistry.addElementMultiple({
     label: 'Deposit',
-    type: PortfolioElementType.multiple,
-    value: asset.value,
-    data: {
-      assets,
-    },
-  };
-  return [element];
+    name: `Proxy Balance ${podUserAddress}`,
+    tags: ['Deposit'],
+  });
+
+  element.addAsset({
+    address: ethereumNativeAddress,
+    amount: balance.toString(),
+  });
+
+  return elementRegistry.getElements(cache);
 };

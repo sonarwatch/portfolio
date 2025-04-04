@@ -1,13 +1,9 @@
-import {
-  PortfolioElement,
-  PortfolioElementType,
-} from '@sonarwatch/portfolio-core';
 import { Address, getAddress } from 'viem';
 import { Cache } from '../../../Cache';
 import { Position, Withdrawal } from '../types';
 import { cacheKey, chain, platformId } from '../constants';
 
-import { getAssetsFromPositions } from '../helper';
+import { ElementRegistry } from '../../../utils/elementbuilder/ElementRegistry';
 
 /**
  * Returns the withdrawals for a given owner
@@ -40,37 +36,22 @@ export const getWithdrawals = async (owner: Address, cache: Cache) => {
 
   if (!shares || shares.length === 0) return [];
 
-  // Build the positions
-  const positions: Position[] = shares.map((share) => ({
-    strategyAddress: share.strategyAddress,
-    amount: share.shares,
-    underlyingToken: strategies?.find(
-      (strategy) => strategy.strategyAddress === share.strategyAddress
-    )?.underlyingToken,
-    decimals: strategies?.find(
-      (strategy) => strategy.strategyAddress === share.strategyAddress
-    )?.decimals,
-  }));
+  const elementRegistry = new ElementRegistry(chain, platformId);
 
-  // Get the assets from the positions
-  const assets = await getAssetsFromPositions(positions, cache);
-
-  const totalValue = assets.reduce(
-    (acc, asset) => acc + (asset?.value || 0),
-    0
-  );
-
-  const element: PortfolioElement = {
-    networkId: chain,
-    platformId,
-    name: 'Completable Withdrawals',
+  const element = elementRegistry.addElementMultiple({
     label: 'Deposit',
-    type: PortfolioElementType.multiple,
-    value: totalValue,
-    data: {
-      assets,
-    },
-  };
+    name: 'Completable Withdrawals',
+    tags: ['Withdrawal'],
+  });
 
-  return [element];
+  shares.forEach((share) => {
+    element.addAsset({
+      address: strategies?.find(
+        (strategy) => strategy.strategyAddress === share.strategyAddress
+      )?.underlyingToken as Address,
+      amount: share.shares,
+    });
+  });
+
+  return elementRegistry.getElements(cache);
 };

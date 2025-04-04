@@ -1,14 +1,6 @@
-import { PortfolioAssetToken } from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
 
-import { getAddress } from 'viem';
-import { Operator, Position, Withdrawal } from './types';
-
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { chain, customEigenlayerTokenMapping } from './constants';
-import { Cache } from '../../Cache';
-
-import { convertBigIntToNumber } from '../../utils/octav/tokenFactor';
+import { Operator, Withdrawal } from './types';
 
 const eigenlayerApiKey = process.env['EIGENLAYER_API_KEY'];
 const eigenlayerApiUrl = 'https://api.eigenexplorer.com';
@@ -47,30 +39,3 @@ export async function getEigenLayerWithdrawals() {
 
   return res.data;
 }
-
-export const getAssetsFromPositions = async (
-  positions: Position[],
-  cache: Cache
-): Promise<PortfolioAssetToken[]> => {
-  const assets: PortfolioAssetToken[] = [];
-  for (const position of positions) {
-    const { underlyingToken, amount } = position;
-    if (!underlyingToken || !amount) return [];
-
-    const tokenPrice = await cache.getTokenPrice(
-      customEigenlayerTokenMapping[
-        underlyingToken as keyof typeof customEigenlayerTokenMapping
-      ] || underlyingToken,
-      chain
-    );
-    const underlyingTokenAddress = getAddress(underlyingToken);
-    const asset = tokenPriceToAssetToken(
-      underlyingTokenAddress,
-      convertBigIntToNumber(amount, position.decimals || 18),
-      chain,
-      tokenPrice
-    );
-    assets.push(asset);
-  }
-  return assets;
-};
