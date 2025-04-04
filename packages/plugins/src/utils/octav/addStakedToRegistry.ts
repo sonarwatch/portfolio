@@ -32,5 +32,6 @@ export const addStakedToRegistry = (
     );
   }
 
+  // We return the registry to allow for method chaining
   return registry;
 };
