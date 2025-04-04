@@ -7,7 +7,7 @@ export const addStakedToRegistry = (
   assetName: string,
   assetContractAddress: Address,
   amount: number,
-  logCtx: LoggingContext
+  logCtx?: LoggingContext
 ): ElementRegistry => {
   const element = registry.addElementMultiple({
     label: 'Staked',
@@ -20,15 +20,17 @@ export const addStakedToRegistry = (
     amount,
   });
 
-  verboseLog(
-    {
-      ...logCtx,
-      element,
-      assetContractAddress,
-      amount,
-    },
-    'Added element to registry'
-  );
+  if (logCtx) {
+    verboseLog(
+      {
+        ...logCtx,
+        element,
+        assetContractAddress,
+        amount,
+      },
+      'Added element to registry'
+    );
+  }
 
   return registry;
 };
