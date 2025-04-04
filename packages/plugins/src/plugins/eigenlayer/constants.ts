@@ -6,7 +6,7 @@ export const platform = {
 
 export const chain = 'ethereum';
 
-const eigenTokenAddress = '0xec53bf9167f50cdeb3ae105f56099aaab9061f83';
+const eigenTokenAddress = '0xec53bF9167f50cDEB3Ae105f56099aaaB9061F83';
 
 // EigenPodManager address : https://github.com/Layr-Labs/eigenlayer-contracts/blob/dev/README.md
 export const eigenPodManagerAddress =

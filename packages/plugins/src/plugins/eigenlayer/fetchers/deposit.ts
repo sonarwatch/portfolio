@@ -1,6 +1,6 @@
 import {
   ethereumNativeAddress,
-  ethereumNativeDecimals,
+  ethereumNetwork,
   NetworkId,
   PortfolioAsset,
   PortfolioElement,
@@ -35,7 +35,7 @@ export const getDepositPositions = async (owner: string, cache: Cache) => {
   // If the user has no pod, the contract returns the ethereum native address address
   if (!podUserAddress || podUserAddress === ethereumNativeAddress) return [];
 
-  // Get ETH balance of each strategy contract
+  // Get the balance of the pod user contract
   const balance = await client.getBalance({
     address: podUserAddress,
   });
@@ -48,7 +48,7 @@ export const getDepositPositions = async (owner: string, cache: Cache) => {
   const asset = tokenPriceToAssetToken(
     ethereumNativeAddress,
     BigNumber(balance.toString())
-      .div(10 ** ethereumNativeDecimals)
+      .div(10 ** ethereumNetwork.native.decimals)
       .toNumber(),
     NetworkId.ethereum,
     tokenPrice

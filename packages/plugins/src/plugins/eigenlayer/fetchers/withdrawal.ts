@@ -11,10 +11,10 @@ import { getAddress } from 'viem';
 import { getAssetsFromPositions } from '../helper';
 
 /**
- * Returns the yield positions for a given owner
+ * Returns the withdrawals for a given owner
  * @param owner - The address of the owner
  * @param cache - The cache instance
- * @returns The yield positions
+ * @returns The withdrawals
  */
 export const getWithdrawals = async (owner: string, cache: Cache) => {
   const withdrawals = await cache.getItem<Withdrawal[]>(
