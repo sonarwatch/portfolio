@@ -128,12 +128,6 @@ export const parseTransaction = (
 ): Transaction | null => {
   if (!txn) return null;
 
-  if (
-    txn.transaction.signatures[0] !==
-    '64t8A2FqRUF85gdH7G15aP2FUrukjUaLpVhqT929GfaN9GtGAxJXpPThoo9DTA6UcSnAMXUFuhrJ8y8vk7vL8dCH'
-  )
-    return null;
-
   const isSigner = ownerIsSigner(txn, owner);
 
   return {
