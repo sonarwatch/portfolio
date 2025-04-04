@@ -72,7 +72,7 @@ export async function getPoolPositionsForOwner(
 
     return sortedPools;
   } catch (error) {
-    const msg = 'Cannot get Balancer pools'
+    const msg = 'Cannot get Balancer pools';
     console.error(msg, error);
     return [];
   }
@@ -88,7 +88,7 @@ export async function getBalancerPoolTokens(
           chainIn: [${balancerApiNetwork}],
         },
         orderBy: totalLiquidity,
-        first: 1000
+        first: 10000
       ) {
         poolTokens {
           address
@@ -97,6 +97,8 @@ export async function getBalancerPoolTokens(
           logoURI
           decimals
           coingeckoId
+          balance
+          balanceUSD
         }
       }
     }
@@ -111,9 +113,8 @@ export async function getBalancerPoolTokens(
 
     return pools;
   } catch (error) {
-    const msg = 'Cannot get Balancer pool tokens'
+    const msg = 'Cannot get Balancer pool tokens';
     console.error(msg, error);
     throw new Error(msg);
-
   }
 }
