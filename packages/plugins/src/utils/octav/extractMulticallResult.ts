@@ -1,10 +1,25 @@
+import { Abi, ContractFunctionResult } from 'viem';
 import { verboseLog } from './loggingUtils';
+import { processExtractedContractResult } from './processExtractedContractResult';
 import { AbiCallsContext } from './types/abiCallsContext';
 
-export const extractMulticallResult = <T>(
-  result: { error?: Error; result?: T; status: 'success' | 'failure' },
+export const extractMulticallResult = <
+  TAbi extends Abi | readonly unknown[],
+  TFunctionName extends string
+>(
+  result:
+    | {
+        error?: Error;
+        result: ContractFunctionResult<TAbi, TFunctionName>;
+        status: 'success';
+      }
+    | {
+        error: Error;
+        result?: undefined;
+        status: 'failure';
+      },
   params: AbiCallsContext
-): T | undefined => {
+): ContractFunctionResult<TAbi, TFunctionName> | undefined => {
   const { functionName, logCtx } = params;
 
   verboseLog(
@@ -20,13 +35,5 @@ export const extractMulticallResult = <T>(
     return undefined;
   }
 
-  if (!result.result) {
-    verboseLog(
-      { ...logCtx, functionName },
-      `Call to ${functionName} returned a falsy result; bailing out`
-    );
-    return undefined;
-  }
-
-  return result.result;
+  return processExtractedContractResult(result.result, functionName, logCtx);
 };

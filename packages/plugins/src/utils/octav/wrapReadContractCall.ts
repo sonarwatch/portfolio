@@ -5,6 +5,7 @@ import {
   ReadContractReturnType,
 } from 'viem';
 import { verboseLog } from './loggingUtils';
+import { processExtractedContractResult } from './processExtractedContractResult';
 import { AbiCallsContext } from './types/abiCallsContext';
 
 export const wrapReadContractCall = async <
@@ -27,18 +28,11 @@ export const wrapReadContractCall = async <
     `Calling readContract() for ${functionName}`
   );
   const result = await client.readContract(readContractParams);
+
   verboseLog(
     { ...logCtx, functionName, result },
     `Call to ${functionName} completed`
   );
 
-  if (!result) {
-    verboseLog(
-      { ...logCtx, functionName, result },
-      `Call to ${functionName} returned a falsy result; bailing out`
-    );
-    return undefined;
-  }
-
-  return result;
+  return processExtractedContractResult(result, functionName, logCtx);
 };
