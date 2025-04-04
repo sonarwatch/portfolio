@@ -201,12 +201,19 @@ export type BalanceChange = {
   change: number;
 };
 
+export type AccountChange = {
+  created: string[];
+  updated: string[];
+  closed: string[];
+};
+
 export type Transaction = {
   signature: string;
   owner: string;
   blockTime?: number | null;
   service?: Service;
   balanceChanges: BalanceChange[];
+  accountChanges: AccountChange;
   isSigner: boolean;
   success: boolean;
 };

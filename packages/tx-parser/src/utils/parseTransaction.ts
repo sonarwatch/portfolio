@@ -1,5 +1,6 @@
 import { ParsedTransactionWithMeta } from '@solana/web3.js';
 import {
+  AccountChange,
   BalanceChange,
   Service,
   solanaNativeDecimals,
@@ -24,6 +25,31 @@ const findTransactionService = (
       txnContractAddresses.includes(contract.address)
     )
   );
+};
+
+const findAccountChanges = (txn: ParsedTransactionWithMeta): AccountChange => {
+  const accountChanges: AccountChange = {
+    created: [],
+    updated: [],
+    closed: [],
+  };
+
+  if (txn.meta) {
+    const { preBalances, postBalances } = txn.meta;
+    const { accountKeys } = txn.transaction.message;
+
+    preBalances.forEach((preBalance, i) => {
+      if (preBalance === 0 && postBalances[i] > 0) {
+        accountChanges.created.push(accountKeys[i].pubkey.toString());
+      } else if (preBalance > 0 && postBalances[i] === 0) {
+        accountChanges.closed.push(accountKeys[i].pubkey.toString());
+      } else if (accountKeys[i].writable && !accountKeys[i].signer) {
+        accountChanges.updated.push(accountKeys[i].pubkey.toString());
+      }
+    });
+  }
+
+  return accountChanges;
 };
 
 export const parseTransaction = (
@@ -94,6 +120,7 @@ export const parseTransaction = (
     blockTime: txn.blockTime,
     service: findTransactionService(txn),
     balanceChanges: changes,
+    accountChanges: findAccountChanges(txn),
     isSigner: accountKeys.some(
       (accountKey) =>
         accountKey.pubkey.toString() === owner && accountKey.signer
