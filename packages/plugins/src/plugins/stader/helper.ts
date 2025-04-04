@@ -200,6 +200,12 @@ export const fetchStakedPermissionsLessNodeRegistry = async (
       contracts: [operatorIDByAddressInput, getCollateralETHInput],
     });
 
+  // The following explicit type cast is needed to get TypeScript to infer the correct type
+  // from the ABI.
+  // This approach is needed because operatorId value is re-used below and is expected to be a bigint.
+  // This approach is more robust than force-casting to bigint (and potentially shooting ourselves in the foot).
+  // The other calls to extractMulticallResult() do not need this because we're only checking the result
+  // and not re-using the type.
   const operatorId = extractMulticallResult<
     typeof permissionsLessNodeRegistryAbi,
     'operatorIDByAddress'
