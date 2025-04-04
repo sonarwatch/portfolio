@@ -1,7 +1,7 @@
-import { Cache } from '../../Cache';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { LoggingContext } from '../../utils/octav/loggingUtils';
 
 export type StaderFetcherParams = {
-  cache: Cache;
+  elementRegistry: ElementRegistry;
   logCtx: LoggingContext;
 };
