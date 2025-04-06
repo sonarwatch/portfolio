@@ -5,6 +5,9 @@ export const platformId = 'stader';
 
 export const NETWORK_ID = NetworkId.ethereum;
 
+export const TOKEN_NAME_STADER_ETHX = 'ETHx';
+export const TOKEN_NAME_STADER_SD = 'SD';
+
 /**
  * Matches https://stader.gitbook.io/stader/ethereum/smart-contracts#ethx-mainnet-smart-contracts and
  * https://github.com/llamafolio/llamafolio-api/blob/bf669cbaf424a7694954d151e39e143d28ff2e35/src/adapters/stader/ethereum/index.ts#L6-L11
