@@ -14,16 +14,17 @@ export const extractMulticallResult = <
   },
   params: AbiCallsContext
 ): ContractFunctionResult<TAbi, TFunctionName> | undefined => {
-  const { functionName, logCtx } = params;
+  const { logCtx, abiCallInput } = params;
+  const { functionName } = abiCallInput;
 
   verboseLog(
-    { ...logCtx, functionName, result },
+    { ...logCtx, abiCallInput, result },
     `Call to ${functionName} completed`
   );
 
   if (result.error || result.status === 'failure') {
     verboseLog(
-      { ...logCtx, functionName, error: result.error, status: result.status },
+      { ...logCtx, abiCallInput, error: result.error, status: result.status },
       `Error retrieving value from ${functionName}; bailing out`
     );
     return undefined;

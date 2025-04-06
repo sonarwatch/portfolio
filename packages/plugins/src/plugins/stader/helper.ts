@@ -95,7 +95,7 @@ export const processFetchStakedEthxResult = async (
   const contractAddress = multicallIO.input.address;
 
   const balance = extractMulticallResult(multicallIO.output, {
-    functionName: multicallIO.input.functionName,
+    abiCallInput: multicallIO.input,
     logCtx,
   });
 
@@ -130,7 +130,7 @@ export const processFetchStakedUtilityPoolResult = async (
   };
 
   const latestSDBalance = extractMulticallResult(multicallIO.output, {
-    functionName: multicallIO.input.functionName,
+    abiCallInput: multicallIO.input,
     logCtx,
   });
 
@@ -162,7 +162,7 @@ export const processFetchStakedCollateralPoolResult = async (
   };
 
   const collateralBalance = extractMulticallResult(multicallIO.output, {
-    functionName: multicallIO.input.functionName,
+    abiCallInput: multicallIO.input,
     logCtx,
   });
 
@@ -212,7 +212,7 @@ export const fetchStakedPermissionsLessNodeRegistry = async (
     typeof permissionsLessNodeRegistryAbi,
     'operatorIDByAddress'
   >(operatorIDByAddressResult, {
-    functionName: operatorIDByAddressInput.functionName,
+    abiCallInput: operatorIDByAddressInput,
     logCtx,
   });
   if (!operatorId) {
@@ -220,7 +220,7 @@ export const fetchStakedPermissionsLessNodeRegistry = async (
   }
 
   const rawCollateralEth = extractMulticallResult(getCollateralETHResult, {
-    functionName: getCollateralETHInput.functionName,
+    abiCallInput: getCollateralETHInput,
     logCtx,
   });
   if (!rawCollateralEth) {
@@ -238,6 +238,7 @@ export const fetchStakedPermissionsLessNodeRegistry = async (
     client,
     getOperatorTotalKeysInput,
     {
+      abiCallInput: getOperatorTotalKeysInput,
       logCtx,
     }
   );
