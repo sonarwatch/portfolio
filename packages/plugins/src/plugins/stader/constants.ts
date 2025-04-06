@@ -5,6 +5,7 @@ export const platformId = 'stader';
 
 export const NETWORK_ID = NetworkId.ethereum;
 
+export const TOKEN_NAME_STADER_ETH = 'ETH';
 export const TOKEN_NAME_STADER_ETHX = 'ETHx';
 export const TOKEN_NAME_STADER_SD = 'SD';
 
