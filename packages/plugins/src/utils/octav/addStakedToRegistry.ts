@@ -15,18 +15,21 @@ export const addStakedToRegistry = (
     tags: ['Staked'],
   });
 
-  element.addAsset({
+  // Extracting as a variable to be able to log below.
+  // This is needed because the call to addAsset() adds a `AssetTokenBuilder` and the log
+  // doesn't show valuable information.
+  const addAssetParams = {
     address: assetContractAddress,
     amount,
-  });
+  } as const;
+  element.addAsset(addAssetParams);
 
   if (logCtx) {
     verboseLog(
       {
         ...logCtx,
         element,
-        assetContractAddress,
-        amount,
+        addAssetParams,
       },
       'Added element to registry'
     );
