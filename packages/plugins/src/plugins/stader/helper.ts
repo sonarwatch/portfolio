@@ -27,7 +27,9 @@ import {
 } from './constants';
 import { StaderFetcherParams } from './types';
 
-export const generateReadContractParamsForStakedEthx = (ownerAddress: Address) =>
+export const generateReadContractParamsForStakedEthx = (
+  ownerAddress: Address
+) =>
   ({
     address: CONTRACT_ADDRESS_ETHX_TOKEN_ETHEREUM_MAINNET,
     abi: balanceOfErc20ABI,
