@@ -1,4 +1,4 @@
-import { ethereumNetwork, getUsdValueSum } from '@sonarwatch/portfolio-core';
+import { ethereumNetwork } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import {
@@ -10,64 +10,44 @@ import {
 } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getEvmClient } from '../../utils/clients';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { ethFactor } from '../../utils/evm/constants';
 import { getBalances } from '../../utils/evm/getBalances';
 import { getWstETHAsset, getStMATICAsset } from './helper';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getEvmClient(networkId);
+  const elementRegistry = new ElementRegistry(networkId, platformId);
   const balancesResults = await getBalances(owner, stakedAddresses, networkId);
 
-  const assets = await Promise.all(
+  await Promise.all(
     balancesResults.map(async (balance, index) => {
-      if (!balance) return undefined;
+      if (!balance) return;
 
       const amount = new BigNumber(balance.toString());
-      if (amount.isZero()) return undefined;
+      if (amount.isZero()) return;
 
       if (stakedAddresses[index] === wstETHAddress) {
-        return getWstETHAsset(balance, client, cache);
+        getWstETHAsset(balance, client, elementRegistry);
+        return;
       }
 
       if (stakedAddresses[index] === stMATICAddress) {
-        return getStMATICAsset(balance, client, cache);
+        getStMATICAsset(balance, client, elementRegistry);
+        return;
       }
 
-      // For ETH staking tokens
-      const ethTokenPrice = await cache.getTokenPrice(
-        ethereumNetwork.native.address,
-        networkId
-      );
-
-      if (!ethTokenPrice?.price) return undefined;
-
-      return tokenPriceToAssetToken(
-        ethereumNetwork.native.address,
-        amount.div(ethFactor).toNumber(),
-        networkId,
-        ethTokenPrice
-      );
+      const element = elementRegistry.addElementMultiple({
+        label: 'Staked',
+      });
+      element.addAsset({
+        address: ethereumNetwork.native.address,
+        amount: amount.div(ethFactor).toNumber(),
+      });
     })
   );
 
-  const validAssets = assets.filter((asset) => !!asset);
-  if (validAssets.length === 0) return [];
-
-  const totalValue = getUsdValueSum(validAssets.map((asset) => asset.value));
-
-  return [
-    {
-      type: 'multiple',
-      label: 'Staked',
-      networkId,
-      platformId,
-      value: totalValue,
-      data: {
-        assets: validAssets,
-      },
-    },
-  ];
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {
