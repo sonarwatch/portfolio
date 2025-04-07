@@ -229,12 +229,9 @@ export const fetchStakedPermissionsLessNodeRegistry = async (
     input: getCollateralETHInput,
     output: getCollateralETHResult,
   };
-  const collateralEth = extractMulticallIOResult(
-    getCollateralETHMulticallIO,
-    {
-      logCtx,
-    }
-  );
+  const collateralEth = extractMulticallIOResult(getCollateralETHMulticallIO, {
+    logCtx,
+  });
   if (!collateralEth) {
     return;
   }
