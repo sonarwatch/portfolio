@@ -1,5 +1,5 @@
-import { formatEvmAddress, PortfolioElement } from '@sonarwatch/portfolio-core';
-import { Address } from 'viem';
+import { PortfolioElement } from '@sonarwatch/portfolio-core';
+import { getAddress } from 'viem';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { NETWORK_ID, platformId } from './constants';
 
@@ -21,7 +21,7 @@ const executor: FetcherExecutor = async (
   owner: string,
   cache: Cache
 ): Promise<PortfolioElement[]> => {
-  const ownerAddress: Address = formatEvmAddress(owner) as Address;
+  const ownerAddress = getAddress(owner);
   const logCtx = {
     fn: 'staderStakingEthereumFetcher::executor',
     ownerAddress,
