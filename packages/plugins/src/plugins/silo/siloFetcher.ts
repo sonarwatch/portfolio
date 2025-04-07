@@ -1,6 +1,6 @@
 import { EvmNetworkIdType, PortfolioElement } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
-import { ContractFunctionConfig } from 'viem';
+import { Address, ContractFunctionConfig, getAddress } from 'viem';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getEvmClient } from '../../utils/clients';
@@ -22,6 +22,7 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
     owner: string,
     cache: Cache
   ): Promise<PortfolioElement[]> => {
+    const ownerAddress = getAddress(owner);
     const pools = await cache.getItem<SiloPool[]>(siloPoolsKey, {
       prefix: platformId,
       networkId,
@@ -36,21 +37,13 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
           address: legacyLensAddress,
           abi: balanceAbi,
           functionName: 'collateralBalanceOfUnderlying',
-          args: [
-            pool.vault as `0x${string}`,
-            pool.asset as `0x${string}`,
-            owner as `0x${string}`,
-          ],
+          args: [pool.vault, pool.asset as Address, ownerAddress],
         } as const,
         {
           address: legacyLensAddress,
           abi: balanceAbi,
           functionName: 'debtBalanceOfUnderlying',
-          args: [
-            pool.vault as `0x${string}`,
-            pool.asset as `0x${string}`,
-            owner as `0x${string}`,
-          ],
+          args: [pool.vault, pool.asset as Address, ownerAddress],
         } as const,
       ]
     );
@@ -77,7 +70,7 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
 
         // Handle missing token prices by getting price from underlying asset
         const isMissingPrice = missingTokenPriceAddresses.includes(
-          pool.asset as `0x${string}`
+          pool.asset as Address
         );
         if (isMissingPrice && (!pool.underlyingAsset || !pool.conversionRate))
           return null;

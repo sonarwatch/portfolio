@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js';
+import { Address } from 'viem';
 
 export type SiloPool = {
-  address: string;
-  vault: string;
+  address: Address;
+  vault: Address;
   category: 'lend' | 'borrow';
   asset: string;
   underlyingAsset?: string;

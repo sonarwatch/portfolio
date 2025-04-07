@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 
 import { EvmNetworkIdType } from '@sonarwatch/portfolio-core';
+import { Address } from 'viem';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getEvmClient } from '../../utils/clients';
@@ -83,7 +84,7 @@ export default function getSiloJob(networkId: EvmNetworkIdType): Job {
       ...missingTokenPriceAddresses.map(
         (address) =>
           ({
-            address: address as `0x${string}`,
+            address: address as Address,
             abi: conversionRateAbi,
             functionName: 'convertToAssets',
             args: [BigInt(CONVERSION_RATE_DIVISOR)] as const,
@@ -93,7 +94,7 @@ export default function getSiloJob(networkId: EvmNetworkIdType): Job {
       ...missingTokenPriceAddresses.map(
         (address) =>
           ({
-            address: address as `0x${string}`,
+            address: address as Address,
             abi: conversionRateAbi,
             functionName: 'asset',
           } as const)
@@ -149,7 +150,7 @@ export default function getSiloJob(networkId: EvmNetworkIdType): Job {
       if (underlyingRes.status === 'success') {
         const updatedPool = {
           ...pool,
-          underlyingAsset: underlyingRes.result as string,
+          underlyingAsset: underlyingRes.result as Address,
         };
         Object.assign(pool, updatedPool);
       }
