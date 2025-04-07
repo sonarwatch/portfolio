@@ -166,10 +166,7 @@ export const processFetchStakedUtilityPoolResult = async (
     // We don't use multicallIO.input.address here because it's the address of the utility pool
     // and we need to use the address of the stader token contract.
     CONTRACT_ADDRESS_STADER_TOKEN_ETHEREUM_MAINNET,
-    convertBigIntToNumber(
-      latestSDBalance.toString(),
-      DECIMALS_ON_CONTRACT_STADER_TOKEN
-    ),
+    latestSDBalance.toString(),
     logCtx
   );
 };
