@@ -4,9 +4,6 @@ import { RenzoNetworkConfig } from './types';
 
 export const platformId = 'renzo';
 
-export const STAKED_LABEL = 'Staked';
-export const DEPOSIT_LABEL = 'Deposit';
-
 export const renzoNetworkConfigs: RenzoNetworkConfig[] = [
   {
     networkId: NetworkId.ethereum,

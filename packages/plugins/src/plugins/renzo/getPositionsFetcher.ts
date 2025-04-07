@@ -1,102 +1,15 @@
-import { EvmNetworkIdType } from '@sonarwatch/portfolio-core';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 
-import { platformId, STAKED_LABEL } from './constants';
+import { platformId } from './constants';
 import { Cache } from '../../Cache';
 import { getBalances } from '../../utils/evm/getBalances';
-import {
-  RenzoContractConfig,
-  RenzoNetworkConfig,
-  RenzoStakedContractConfig,
-} from './types';
-import { getEvmClient } from '../../utils/clients';
-import {
-  activeStakeAbi,
-  getOutstandingWithdrawRequestsAbi,
-  withdrawRequestAbi,
-} from './abis';
+import { RenzoNetworkConfig } from './types';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
-
-function generateStakedElements(
-  stakedContracts: RenzoStakedContractConfig[],
-  balances: (bigint | null)[],
-  registry: ElementRegistry
-): void {
-  const contractsWithBalances = stakedContracts
-    .map((contract, index) => ({ contract, balance: balances[index] }))
-    .filter((item) => item.balance && item.balance !== BigInt(0));
-
-  for (const { contract, balance } of contractsWithBalances) {
-    registry.addElementMultiple({ label: STAKED_LABEL }).addAsset({
-      address: contract.token,
-      amount: balance!.toString(),
-    });
-  }
-}
-
-async function generateActiveStakeElement(
-  activeStakeContract: RenzoStakedContractConfig,
-  owner: string,
-  networkId: EvmNetworkIdType,
-  registry: ElementRegistry
-): Promise<void> {
-  const { address, token } = activeStakeContract;
-
-  const client = getEvmClient(networkId);
-  const activeStake = await client.readContract({
-    address,
-    abi: activeStakeAbi,
-    functionName: 'activeStake',
-    args: [owner as `0x${string}`],
-  });
-
-  if (!activeStake || activeStake === BigInt(0)) return;
-
-  registry
-    .addElementMultiple({ label: 'Staked' })
-    .addAsset({ address: token, amount: activeStake.toString() });
-}
-
-async function generateDepositElement(
-  depositContract: RenzoContractConfig,
-  owner: string,
-  networkId: EvmNetworkIdType,
-  registry: ElementRegistry
-): Promise<void> {
-  const { address } = depositContract;
-  const client = getEvmClient(networkId);
-
-  const numOfRequests = await client.readContract({
-    address,
-    abi: getOutstandingWithdrawRequestsAbi,
-    functionName: 'getOutstandingWithdrawRequests',
-    args: [owner as `0x${string}`],
-  });
-
-  if (!numOfRequests || numOfRequests === BigInt(0)) return;
-
-  const withdrawRequestsAnswers = await client.multicall({
-    contracts: Array.from({ length: Number(numOfRequests) }, (_, index) => ({
-      address: address as `0x${string}`,
-      abi: withdrawRequestAbi,
-      functionName: 'withdrawRequests',
-      args: [owner as `0x${string}`, BigInt(index)],
-    })),
-  });
-
-  withdrawRequestsAnswers
-    .filter((req) => req.status === 'success' && req.result)
-    .forEach((req) => {
-      const token = req.result?.[0];
-      const balance = req.result?.[2];
-
-      if (!token || !balance) return;
-
-      registry
-        .addElementMultiple({ label: 'Deposit' })
-        .addAsset({ address: token, amount: balance.toString() });
-    });
-}
+import {
+  generateActiveStakeElement,
+  generateDepositElement,
+  generateStakedElements,
+} from './helpers';
 
 export function getPositionsFetcher(config: RenzoNetworkConfig): Fetcher {
   const { networkId, stakedContracts, activeStakeContract, depositContract } =
