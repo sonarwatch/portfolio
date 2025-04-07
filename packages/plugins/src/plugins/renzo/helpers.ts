@@ -9,23 +9,6 @@ import {
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { Address } from 'viem';
 
-export function generateStakedElements(
-  stakedContracts: RenzoStakedContractConfig[],
-  balances: (bigint | null)[],
-  registry: ElementRegistry
-): void {
-  const contractsWithBalances = stakedContracts
-    .map((contract, index) => ({ contract, balance: balances[index] }))
-    .filter((item) => item.balance && item.balance !== BigInt(0));
-
-  for (const { contract, balance } of contractsWithBalances) {
-    registry.addElementMultiple({ label: 'Staked' }).addAsset({
-      address: contract.token,
-      amount: balance!.toString(),
-    });
-  }
-}
-
 export async function generateActiveStakeElement(
   activeStakeContract: RenzoStakedContractConfig,
   owner: string,

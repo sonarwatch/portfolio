@@ -25,7 +25,17 @@ export function getPositionsFetcher(config: RenzoNetworkConfig): Fetcher {
     );
 
     const balances = await getBalances(owner, contractAddresses, networkId);
-    generateStakedElements(stakedContracts, balances, registry);
+
+    const contractsWithBalances = stakedContracts
+      .map((contract, index) => ({ contract, balance: balances[index] }))
+      .filter((item) => item.balance && item.balance !== BigInt(0));
+
+    for (const { contract, balance } of contractsWithBalances) {
+      registry.addElementMultiple({ label: 'Staked' }).addAsset({
+        address: contract.token,
+        amount: balance!.toString(),
+      });
+    }
 
     await Promise.all([
       generateActiveStakeElement(
@@ -36,8 +46,6 @@ export function getPositionsFetcher(config: RenzoNetworkConfig): Fetcher {
       ),
       generateDepositElement(depositContract, owner, networkId, registry),
     ]);
-
-    generateStakedElements(stakedContracts, balances, registry);
 
     return registry.getElements(cache);
   };
