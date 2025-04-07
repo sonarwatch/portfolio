@@ -14,14 +14,14 @@ import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 function fetcher(networkId: EvmNetworkIdType): Fetcher {
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const client = getEvmClient(networkId);
-
+    const ownerAddress = owner as Address;
     const rewardCalls = siloIncentiveControllerAddresses.flatMap(
       (controller) => [
         {
           address: controller,
           abi: rewardAbi,
           functionName: 'getRewardsBalance',
-          args: [rewardVaultAddresses, owner as `0x${string}`],
+          args: [rewardVaultAddresses, ownerAddress],
         } as const,
         {
           address: controller,
@@ -41,16 +41,18 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
     const elementRegistry = new ElementRegistry(networkId, platformId);
 
     for (let i = 0; i < siloIncentiveControllerAddresses.length; i++) {
-      const balanceRes = balanceResults[i];
-      const tokenRes = tokenResults[i];
+      const balance = balanceResults[i]?.result?.toString();
+      const token = tokenResults[i].result as Address;
+
+      if (!balance || balance === '0') continue;
 
       elementRegistry
         .addElementMultiple({
           label: 'Rewards',
         })
         .addAsset({
-          address: tokenRes.result as Address,
-          amount: balanceRes?.result?.toString() ?? 0,
+          address: token,
+          amount: balance,
         });
     }
 

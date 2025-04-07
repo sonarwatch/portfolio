@@ -75,7 +75,7 @@ export default function getSiloJob(networkId: EvmNetworkIdType): Job {
       ...pools.map(
         (pool) =>
           ({
-            address: pool.address as `0x${string}`,
+            address: pool.address,
             abi: poolAbi,
             functionName: 'asset',
           } as const)
@@ -84,7 +84,7 @@ export default function getSiloJob(networkId: EvmNetworkIdType): Job {
       ...missingTokenPriceAddresses.map(
         (address) =>
           ({
-            address: address as Address,
+            address,
             abi: conversionRateAbi,
             functionName: 'convertToAssets',
             args: [BigInt(CONVERSION_RATE_DIVISOR)] as const,
@@ -94,7 +94,7 @@ export default function getSiloJob(networkId: EvmNetworkIdType): Job {
       ...missingTokenPriceAddresses.map(
         (address) =>
           ({
-            address: address as Address,
+            address,
             abi: conversionRateAbi,
             functionName: 'asset',
           } as const)
@@ -117,7 +117,7 @@ export default function getSiloJob(networkId: EvmNetworkIdType): Job {
     // Update pools with asset addresses
     poolAssetResults.forEach((res, i) => {
       if (res.status === 'success') {
-        pools[i].asset = res.result as string;
+        pools[i].asset = res.result as Address;
       }
     });
 
@@ -132,7 +132,7 @@ export default function getSiloJob(networkId: EvmNetworkIdType): Job {
     // Update pools with conversion rates and underlying assets for missing tokens
     uniquePools.forEach((pool) => {
       const missingTokenIndex = missingTokenPriceAddresses.indexOf(
-        pool.asset as `0x${string}`
+        pool.asset as Address
       );
       if (missingTokenIndex === -1) return;
 
