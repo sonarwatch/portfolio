@@ -17,7 +17,6 @@ const executor: JobExecutor = async (cache: Cache) => {
   const items: { key: string; value: ParsedAccount<PoolState> }[] = [];
 
   poolStates.forEach((poolState) => {
-    console.log(' poolStates.forEach ~ poolState:', poolState);
     items.push({
       key: poolState.pubkey.toString(),
       value: poolState,

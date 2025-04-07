@@ -37,10 +37,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const poolState = cachedPoolStates.find(
       (pool) => pool?.pubkey.toString() === account.poolState.toString()
     );
-    console.log(' constexecutor:FetcherExecutor= ~ poolState:', poolState);
     if (!poolState) continue;
 
-    const liqElement = registry.addElementLiquidity({ label: 'LiquidityPool' });
+    const liqElement = registry.addElementLiquidity({
+      label: 'LiquidityPool',
+      ref: account.pubkey.toString(),
+      sourceRefs: [{ address: poolState.pubkey.toString(), name: 'Pool' }],
+      link: 'https://app.goosefx.io/gamma',
+    });
 
     const liq = liqElement.addLiquidity({});
     liq.addAsset({
