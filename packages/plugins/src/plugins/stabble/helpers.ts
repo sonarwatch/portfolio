@@ -9,12 +9,10 @@ export function getRewards(
   const currentTime = Math.trunc(new Date().getTime() / 1000);
   const lastUpdatedTime = rewarder.lastUpdatedAt.toNumber();
 
-  let { rewardsPerAmount } = pool;
+  let { rewardsPerWeight } = rewarder;
 
   if (currentTime > lastUpdatedTime) {
     const elapsedTime = currentTime - lastUpdatedTime;
-
-    let { rewardsPerWeight } = rewarder;
 
     if (rewarder.totalWeights.isGreaterThan(new BigNumber(0))) {
       rewardsPerWeight = rewarder.totalRewards
@@ -24,18 +22,20 @@ export function getRewards(
         .div(rewarder.totalWeights)
         .plus(rewarder.rewardsPerWeight);
     }
+  }
 
-    if (pool.totalAmount.isGreaterThan(new BigNumber(0))) {
-      rewardsPerAmount = rewardsPerWeight
-        .times(pool.totalWeights)
-        .div(new BigNumber(1000000000))
-        .plus(pool.totalRewardsCredit)
-        .minus(pool.totalRewardsDebt)
-        .minus(pool.totalRewardsDistributed)
-        .times(new BigNumber(1000000000))
-        .div(pool.totalAmount)
-        .plus(pool.rewardsPerAmount);
-    }
+  let { rewardsPerAmount } = pool;
+
+  if (pool.totalAmount.isGreaterThan(new BigNumber(0))) {
+    rewardsPerAmount = rewardsPerWeight
+      .times(pool.totalWeights)
+      .div(new BigNumber(1000000000))
+      .plus(pool.totalRewardsCredit)
+      .minus(pool.totalRewardsDebt)
+      .minus(pool.totalRewardsDistributed)
+      .times(new BigNumber(1000000000))
+      .div(pool.totalAmount)
+      .plus(pool.rewardsPerAmount);
   }
 
   return rewardsPerAmount
