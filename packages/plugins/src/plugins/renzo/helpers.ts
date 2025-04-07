@@ -3,7 +3,6 @@ import { RenzoStakedContractConfig } from './types';
 import { getEvmClient } from '../../utils/clients';
 import {
   activeStakeAbi,
-  balanceOfAbi,
   getOutstandingWithdrawRequestsAbi,
   withdrawRequestAbi,
 } from './abis';
@@ -13,7 +12,6 @@ import { MulticallIO } from '../../utils/octav/types/multicallIO';
 import { zeroBigInt } from '../../utils/misc/constants';
 
 export type ActiveStakeIO = MulticallIO<typeof activeStakeAbi, 'activeStake'>;
-export type BalanceOfIO = MulticallIO<typeof balanceOfAbi, 'balanceOf'>;
 export type OutstandingWithdrawRequestsIO = MulticallIO<
   typeof getOutstandingWithdrawRequestsAbi,
   'getOutstandingWithdrawRequests'
