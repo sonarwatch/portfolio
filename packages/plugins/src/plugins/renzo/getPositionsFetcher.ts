@@ -1,7 +1,7 @@
-import { PortfolioElement, EvmNetworkIdType } from '@sonarwatch/portfolio-core';
+import { EvmNetworkIdType } from '@sonarwatch/portfolio-core';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 
-import { DEPOSIT_LABEL, platformId, STAKED_LABEL } from './constants';
+import { platformId, STAKED_LABEL } from './constants';
 import { Cache } from '../../Cache';
 import { getBalances } from '../../utils/evm/getBalances';
 import {
@@ -15,38 +15,31 @@ import {
   getOutstandingWithdrawRequestsAbi,
   withdrawRequestAbi,
 } from './abis';
-import { createPortfolioElement } from '../../utils/octav/portfolioElement';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
-async function generateStakedElements(
+function generateStakedElements(
   stakedContracts: RenzoStakedContractConfig[],
   balances: (bigint | null)[],
-  cache: Cache,
-  networkId: EvmNetworkIdType
-): Promise<PortfolioElement[]> {
-  const elements = await Promise.all(
-    stakedContracts.map(async (contract, index) => {
-      const balance = balances[index];
-      return balance && balance !== BigInt(0)
-        ? createPortfolioElement(
-            contract.token,
-            balance,
-            STAKED_LABEL,
-            cache,
-            networkId
-          )
-        : null;
-    })
-  );
+  registry: ElementRegistry
+): void {
+  const contractsWithBalances = stakedContracts
+    .map((contract, index) => ({ contract, balance: balances[index] }))
+    .filter((item) => item.balance && item.balance !== BigInt(0));
 
-  return elements.filter((el) => el !== null);
+  for (const { contract, balance } of contractsWithBalances) {
+    registry.addElementMultiple({ label: STAKED_LABEL }).addAsset({
+      address: contract.token,
+      amount: balance!.toString(),
+    });
+  }
 }
 
 async function generateActiveStakeElement(
   activeStakeContract: RenzoStakedContractConfig,
   owner: string,
-  cache: Cache,
-  networkId: EvmNetworkIdType
-): Promise<PortfolioElement | null> {
+  networkId: EvmNetworkIdType,
+  registry: ElementRegistry
+): Promise<void> {
   const { address, token } = activeStakeContract;
 
   const client = getEvmClient(networkId);
@@ -57,23 +50,19 @@ async function generateActiveStakeElement(
     args: [owner as `0x${string}`],
   });
 
-  if (!activeStake || activeStake === BigInt(0)) return null;
+  if (!activeStake || activeStake === BigInt(0)) return;
 
-  return createPortfolioElement(
-    token,
-    activeStake,
-    STAKED_LABEL,
-    cache,
-    networkId
-  );
+  registry
+    .addElementMultiple({ label: 'Staked' })
+    .addAsset({ address: token, amount: activeStake.toString() });
 }
 
 async function generateDepositElement(
   depositContract: RenzoContractConfig,
   owner: string,
-  cache: Cache,
-  networkId: EvmNetworkIdType
-): Promise<PortfolioElement[]> {
+  networkId: EvmNetworkIdType,
+  registry: ElementRegistry
+): Promise<void> {
   const { address } = depositContract;
   const client = getEvmClient(networkId);
 
@@ -84,7 +73,7 @@ async function generateDepositElement(
     args: [owner as `0x${string}`],
   });
 
-  if (!numOfRequests || numOfRequests === BigInt(0)) return [];
+  if (!numOfRequests || numOfRequests === BigInt(0)) return;
 
   const withdrawRequestsAnswers = await client.multicall({
     contracts: Array.from({ length: Number(numOfRequests) }, (_, index) => ({
@@ -95,26 +84,18 @@ async function generateDepositElement(
     })),
   });
 
-  const portfolioElements = await Promise.all(
-    withdrawRequestsAnswers
-      .filter((req) => req.status === 'success' && req.result)
-      .map((req) => {
-        const token = req.result?.[0];
-        const balance = req.result?.[2];
+  withdrawRequestsAnswers
+    .filter((req) => req.status === 'success' && req.result)
+    .forEach((req) => {
+      const token = req.result?.[0];
+      const balance = req.result?.[2];
 
-        if (!token || !balance) return null;
+      if (!token || !balance) return;
 
-        return createPortfolioElement(
-          token,
-          balance,
-          DEPOSIT_LABEL,
-          cache,
-          networkId
-        );
-      })
-  );
-
-  return portfolioElements.filter((el) => el !== null);
+      registry
+        .addElementMultiple({ label: 'Deposit' })
+        .addAsset({ address: token, amount: balance.toString() });
+    });
 }
 
 export function getPositionsFetcher(config: RenzoNetworkConfig): Fetcher {
@@ -124,28 +105,28 @@ export function getPositionsFetcher(config: RenzoNetworkConfig): Fetcher {
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (!owner) return [];
 
+    const registry = new ElementRegistry(networkId, platformId);
+
     const contractAddresses = stakedContracts.map(
       (contract) => contract.address
     );
 
-    const [balances, activeStakedElement, depositElement] = await Promise.all([
-      getBalances(owner, contractAddresses, networkId),
-      generateActiveStakeElement(activeStakeContract, owner, cache, networkId),
-      generateDepositElement(depositContract, owner, cache, networkId),
+    const balances = await getBalances(owner, contractAddresses, networkId);
+    generateStakedElements(stakedContracts, balances, registry);
+
+    await Promise.all([
+      generateActiveStakeElement(
+        activeStakeContract,
+        owner,
+        networkId,
+        registry
+      ),
+      generateDepositElement(depositContract, owner, networkId, registry),
     ]);
 
-    const stakedElements = await generateStakedElements(
-      stakedContracts,
-      balances,
-      cache,
-      networkId
-    );
+    generateStakedElements(stakedContracts, balances, registry);
 
-    return [
-      ...stakedElements,
-      ...(activeStakedElement ? [activeStakedElement] : []),
-      ...depositElement,
-    ];
+    return registry.getElements(cache);
   };
 
   return {
