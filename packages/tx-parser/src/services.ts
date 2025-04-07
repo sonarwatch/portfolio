@@ -28,6 +28,7 @@ import * as ratex from './services/ratex';
 import * as raydium from './services/raydium';
 import * as save from './services/save';
 import * as sharky from './services/sharky';
+import * as solanaid from './services/solanaid';
 import * as stabble from './services/stabble';
 import * as symmetry from './services/symmetry';
 import * as zeta from './services/zeta';
@@ -45,6 +46,7 @@ export const services: Service[] = [
   drift,
   driftMMV,
   elemental,
+  ensofi,
   ensofi,
   exponent,
   flash,
@@ -67,6 +69,7 @@ export const services: Service[] = [
   raydium,
   save,
   sharky,
+  solanaid,
   symmetry,
   zeta,
   nirvana,
