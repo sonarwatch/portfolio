@@ -61,9 +61,6 @@ export const REWARD_VAULT_ADDRESSES: Address[] = [
   '0x2509C0025CB9658f2582C43ffA78dba86ba1758e',
 ];
 
-export const SUPPLY_TAG = 'supply';
-export const BORROW_TAG = 'borrow';
-
 export const MISSING_TOKEN_PRICE_ADDRESSES: Address[] = [
   '0x84631c0d0081FDe56DeB72F6DE77abBbF6A9f93a',
   '0x7a4EffD87C2f3C55CA251080b1343b605f327E3a',
