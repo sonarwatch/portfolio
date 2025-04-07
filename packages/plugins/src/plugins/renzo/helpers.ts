@@ -9,6 +9,7 @@ import {
 import { Address } from 'viem';
 import { getBalances } from '../../utils/evm/getBalances';
 import { MulticallIO } from '../../utils/octav/types/multicallIO';
+import { zeroBigInt } from '../../utils/misc/constants';
 
 export type ActiveStakeIO = MulticallIO<typeof activeStakeAbi, 'activeStake'>;
 export type OutstandingWithdrawRequestsIO = MulticallIO<
@@ -31,7 +32,7 @@ export async function fetchStakedBalances(
 
   return stakedContracts
     .map((contract, index) => ({ contract, balance: balances[index] }))
-    .filter((item) => item.balance && item.balance !== BigInt(0));
+    .filter((item) => item.balance && item.balance !== zeroBigInt);
 }
 
 export async function fetchActiveStakeAndOutstandingWithdrawRequests(
@@ -69,7 +70,7 @@ export async function fetchWithdrawRequests(
   numOfRequests: bigint,
   networkId: EvmNetworkIdType
 ): Promise<Array<{ token: Address; balance: bigint }>> {
-  if (numOfRequests === BigInt(0)) return [];
+  if (numOfRequests === zeroBigInt) return [];
 
   const client = getEvmClient(networkId);
 

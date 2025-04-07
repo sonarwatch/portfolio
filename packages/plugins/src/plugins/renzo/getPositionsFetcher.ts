@@ -10,6 +10,7 @@ import {
   fetchStakedBalances,
 } from './helpers';
 import { Address, getAddress } from 'viem';
+import { zeroBigInt } from '../../utils/misc/constants';
 
 export function getPositionsFetcher(config: RenzoNetworkConfig): Fetcher {
   const { networkId, stakedContracts, activeStakeContract, depositContract } =
@@ -50,7 +51,7 @@ export function getPositionsFetcher(config: RenzoNetworkConfig): Fetcher {
     if (
       activeStake.status === 'success' &&
       activeStake.result &&
-      activeStake.result !== BigInt(0)
+      activeStake.result !== zeroBigInt
     ) {
       registry
         .addElementMultiple({
@@ -69,7 +70,7 @@ export function getPositionsFetcher(config: RenzoNetworkConfig): Fetcher {
     if (
       numOfWithdrawRequests.status === 'success' &&
       numOfWithdrawRequests.result &&
-      numOfWithdrawRequests.result !== BigInt(0)
+      numOfWithdrawRequests.result !== zeroBigInt
     ) {
       depositPositions = await fetchWithdrawRequests(
         depositContract.address,
