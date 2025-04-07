@@ -233,17 +233,15 @@ export const fetchStakedPermissionsLessNodeRegistry = async (
     input: getCollateralETHInput,
     output: getCollateralETHResult,
   };
-  const rawCollateralEth = extractMulticallIOResult(getCollateralETHMulticallIO, {
-    logCtx,
-  });
-  if (!rawCollateralEth) {
+  const collateralEth = extractMulticallIOResult(
+    getCollateralETHMulticallIO,
+    {
+      logCtx,
+    }
+  );
+  if (!collateralEth) {
     return;
   }
-
-  const collateralEth = convertBigIntToNumber(
-    rawCollateralEth.toString(),
-    DECIMALS_ON_CONTRACT_STADER_TOKEN
-  );
 
   const getOperatorTotalKeysInput =
     generateReadContractParamsForGetOperatorTotalKeys(operatorId);
@@ -265,7 +263,7 @@ export const fetchStakedPermissionsLessNodeRegistry = async (
     TOKEN_NAME_STADER_ETH,
     // The collateral pool contains ETH, so we need to use the ETH address here
     ethereumNativeAddress,
-    Number(operatorTotalKeys) * collateralEth,
+    Number(operatorTotalKeys) * Number(collateralEth),
     logCtx
   );
 };
