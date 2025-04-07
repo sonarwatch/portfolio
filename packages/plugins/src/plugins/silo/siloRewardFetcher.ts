@@ -1,5 +1,5 @@
 import { EvmNetworkIdType } from '@sonarwatch/portfolio-core';
-import { Address } from 'viem';
+import { Address, getAddress } from 'viem';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getEvmClient } from '../../utils/clients';
 import {
@@ -14,7 +14,7 @@ import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 function fetcher(networkId: EvmNetworkIdType): Fetcher {
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const client = getEvmClient(networkId);
-    const ownerAddress = owner as Address;
+    const ownerAddress = getAddress(owner);
     const rewardCalls = siloIncentiveControllerAddresses.flatMap(
       (controller) => [
         {

@@ -1,6 +1,6 @@
 import { EvmNetworkIdType, PortfolioElement } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
-import { Address, ContractFunctionConfig } from 'viem';
+import { Address, ContractFunctionConfig, getAddress } from 'viem';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getEvmClient } from '../../utils/clients';
@@ -22,7 +22,7 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
     owner: string,
     cache: Cache
   ): Promise<PortfolioElement[]> => {
-    const ownerAddress = owner as Address;
+    const ownerAddress = getAddress(owner);
     const pools = await cache.getItem<SiloPool[]>(siloPoolsKey, {
       prefix: platformId,
       networkId,
