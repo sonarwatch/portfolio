@@ -66,14 +66,14 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
         const debtRes = debtBalances[i];
 
         if (collateralRes.status !== 'success' || debtRes.status !== 'success')
-          return null;
+          return undefined;
 
         // Handle missing token prices by getting price from underlying asset
         const isMissingPrice = missingTokenPriceAddresses.includes(
           pool.asset as Address
         );
         if (isMissingPrice && (!pool.underlyingAsset || !pool.conversionRate))
-          return null;
+          return undefined;
 
         const poolAsset = isMissingPrice ? pool.underlyingAsset : pool.asset;
         const conversionRate = isMissingPrice
@@ -88,10 +88,10 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
           conversionRate
         );
 
-        if (collateral.isZero() && debt.isZero()) return null;
+        if (collateral.isZero() && debt.isZero()) return undefined;
 
         const tokenPrice = await cache.getTokenPrice(poolAsset!, networkId);
-        if (!tokenPrice?.price) return null;
+        if (!tokenPrice?.price) return undefined;
 
         return {
           ...pool,
