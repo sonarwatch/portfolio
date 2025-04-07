@@ -69,7 +69,6 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
     // Process balances and create assets
     const assets = await Promise.all(
       pools.map(async (pool, i) => {
-        if (i >= pools.length - 1) return null;
         const collateralRes = collateralBalances[i];
         const debtRes = debtBalances[i];
 
