@@ -2,11 +2,14 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 
 import { platformId } from './constants';
 import { Cache } from '../../Cache';
-import { getBalances } from '../../utils/evm/getBalances';
 import { RenzoNetworkConfig } from './types';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
-import { generateActiveStakeElement, generateDepositElement } from './helpers';
-import { getAddress } from 'viem';
+import {
+  fetchActiveStakeAndOutstandingWithdrawRequests,
+  fetchWithdrawRequests,
+  fetchStakedBalances,
+} from './helpers';
+import { Address, getAddress } from 'viem';
 
 export function getPositionsFetcher(config: RenzoNetworkConfig): Fetcher {
   const { networkId, stakedContracts, activeStakeContract, depositContract } =
@@ -17,19 +20,11 @@ export function getPositionsFetcher(config: RenzoNetworkConfig): Fetcher {
 
     const registry = new ElementRegistry(networkId, platformId);
 
-    const contractAddresses = stakedContracts.map(
-      (contract) => contract.address
-    );
-
-    const balances = await getBalances(
+    const contractsWithBalances = await fetchStakedBalances(
+      stakedContracts,
       ownerAddress,
-      contractAddresses,
       networkId
     );
-
-    const contractsWithBalances = stakedContracts
-      .map((contract, index) => ({ contract, balance: balances[index] }))
-      .filter((item) => item.balance && item.balance !== BigInt(0));
 
     for (const { contract, balance } of contractsWithBalances) {
       registry
@@ -44,13 +39,19 @@ export function getPositionsFetcher(config: RenzoNetworkConfig): Fetcher {
         });
     }
 
-    const activeStake = await generateActiveStakeElement(
-      activeStakeContract,
-      ownerAddress,
-      networkId
-    );
+    const [activeStake, numOfWithdrawRequests] =
+      await fetchActiveStakeAndOutstandingWithdrawRequests(
+        activeStakeContract.address,
+        depositContract.address,
+        ownerAddress,
+        networkId
+      );
 
-    if (activeStake && activeStake !== BigInt(0)) {
+    if (
+      activeStake.status === 'success' &&
+      activeStake.result &&
+      activeStake.result !== BigInt(0)
+    ) {
       registry
         .addElementMultiple({
           label: 'Staked',
@@ -59,15 +60,24 @@ export function getPositionsFetcher(config: RenzoNetworkConfig): Fetcher {
         })
         .addAsset({
           address: activeStakeContract.token,
-          amount: activeStake.toString(),
+          amount: activeStake.result.toString(),
         });
     }
 
-    const depositPositions = await generateDepositElement(
-      depositContract,
-      ownerAddress,
-      networkId
-    );
+    let depositPositions: Array<{ token: Address; balance: bigint }> = [];
+
+    if (
+      numOfWithdrawRequests.status === 'success' &&
+      numOfWithdrawRequests.result &&
+      numOfWithdrawRequests.result !== BigInt(0)
+    ) {
+      depositPositions = await fetchWithdrawRequests(
+        depositContract.address,
+        ownerAddress,
+        numOfWithdrawRequests.result,
+        networkId
+      );
+    }
 
     for (const { token, balance } of depositPositions) {
       registry

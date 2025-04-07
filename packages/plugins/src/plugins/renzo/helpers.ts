@@ -1,5 +1,5 @@
 import { EvmNetworkIdType } from '@sonarwatch/portfolio-core';
-import { RenzoContractConfig, RenzoStakedContractConfig } from './types';
+import { RenzoStakedContractConfig } from './types';
 import { getEvmClient } from '../../utils/clients';
 import {
   activeStakeAbi,
@@ -7,45 +7,75 @@ import {
   withdrawRequestAbi,
 } from './abis';
 import { Address } from 'viem';
+import { getBalances } from '../../utils/evm/getBalances';
+import { MulticallIO } from '../../utils/octav/types/multicallIO';
 
-export async function generateActiveStakeElement(
-  activeStakeContract: RenzoStakedContractConfig,
+export type ActiveStakeIO = MulticallIO<typeof activeStakeAbi, 'activeStake'>;
+export type OutstandingWithdrawRequestsIO = MulticallIO<
+  typeof getOutstandingWithdrawRequestsAbi,
+  'getOutstandingWithdrawRequests'
+>;
+
+export async function fetchStakedBalances(
+  stakedContracts: RenzoStakedContractConfig[],
   owner: Address,
   networkId: EvmNetworkIdType
-): Promise<bigint | undefined> {
-  const { address } = activeStakeContract;
+): Promise<
+  {
+    contract: RenzoStakedContractConfig;
+    balance: bigint | null;
+  }[]
+> {
+  const contractAddresses = stakedContracts.map((contract) => contract.address);
+  const balances = await getBalances(owner, contractAddresses, networkId);
 
+  return stakedContracts
+    .map((contract, index) => ({ contract, balance: balances[index] }))
+    .filter((item) => item.balance && item.balance !== BigInt(0));
+}
+
+export async function fetchActiveStakeAndOutstandingWithdrawRequests(
+  activeStakeContractAddress: Address,
+  depositContractAddress: Address,
+  owner: Address,
+  networkId: EvmNetworkIdType
+): Promise<[ActiveStakeIO['output'], OutstandingWithdrawRequestsIO['output']]> {
   const client = getEvmClient(networkId);
-  const activeStake = await client.readContract({
-    address,
+
+  const activeStakeInput: ActiveStakeIO['input'] = {
+    address: activeStakeContractAddress,
     abi: activeStakeAbi,
     functionName: 'activeStake',
     args: [owner],
-  });
+  };
 
-  return activeStake;
-}
-
-export async function generateDepositElement(
-  depositContract: RenzoContractConfig,
-  owner: Address,
-  networkId: EvmNetworkIdType
-): Promise<Array<{ token: Address; balance: bigint }>> {
-  const { address } = depositContract;
-  const client = getEvmClient(networkId);
-
-  const numOfRequests = await client.readContract({
-    address,
+  const withdrawRequestsInput: OutstandingWithdrawRequestsIO['input'] = {
+    address: depositContractAddress,
     abi: getOutstandingWithdrawRequestsAbi,
     functionName: 'getOutstandingWithdrawRequests',
     args: [owner],
+  };
+
+  const multicallResults = await client.multicall({
+    contracts: [activeStakeInput, withdrawRequestsInput],
   });
 
-  if (!numOfRequests || numOfRequests === BigInt(0)) return [];
+  return [multicallResults[0], multicallResults[1]];
+}
+
+export async function fetchWithdrawRequests(
+  depositContractAddress: Address,
+  owner: Address,
+  numOfRequests: bigint,
+  networkId: EvmNetworkIdType
+): Promise<Array<{ token: Address; balance: bigint }>> {
+  if (numOfRequests === BigInt(0)) return [];
+
+  const client = getEvmClient(networkId);
 
   const withdrawRequestsAnswers = await client.multicall({
     contracts: Array.from({ length: Number(numOfRequests) }, (_, index) => ({
-      address: address,
+      address: depositContractAddress,
       abi: withdrawRequestAbi,
       functionName: 'withdrawRequests',
       args: [owner, BigInt(index)],
@@ -55,12 +85,14 @@ export async function generateDepositElement(
   return withdrawRequestsAnswers
     .filter((req) => req.status === 'success' && req.result)
     .map((req) => {
-      const token = req.result?.[0];
-      const balance = req.result?.[2];
+      if (req.status !== 'success' || !req.result) return undefined;
 
-      if (!token || !balance) return null;
+      const token = req.result[0];
+      const balance = req.result[2];
+
+      if (!token || !balance) return undefined;
 
       return { token, balance };
     })
-    .filter((item) => item !== null);
+    .filter((item) => !!item);
 }
