@@ -28,12 +28,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       if (amount.isZero()) return;
 
       if (stakedAddresses[index] === wstETHAddress) {
-        getWstETHAsset(balance, client, cache, elementRegistry);
+        getWstETHAsset(balance, client, elementRegistry);
         return;
       }
 
       if (stakedAddresses[index] === stMATICAddress) {
-        getStMATICAsset(balance, client, cache, elementRegistry);
+        getStMATICAsset(balance, client, elementRegistry);
         return;
       }
 

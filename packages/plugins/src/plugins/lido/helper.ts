@@ -10,7 +10,6 @@ import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 export const getWstETHAsset = async (
   balance: bigint,
   client: EvmClient,
-  cache: Cache,
   elementRegistry: ElementRegistry
 ) => {
   const conversionResult = await client.readContract({
@@ -34,7 +33,6 @@ export const getWstETHAsset = async (
 export const getStMATICAsset = async (
   balance: bigint,
   client: EvmClient,
-  cache: Cache,
   elementRegistry: ElementRegistry
 ) => {
   const conversionResult = await client.readContract({
