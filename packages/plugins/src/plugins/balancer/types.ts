@@ -41,5 +41,7 @@ export type PoolTokenApiResponse = {
     logoURI: string | null;
     decimals: number;
     coingeckoId: string | null;
+    balance: string;
+    balanceUSD: string;
   }[];
 };
