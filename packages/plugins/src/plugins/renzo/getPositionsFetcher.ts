@@ -5,11 +5,7 @@ import { Cache } from '../../Cache';
 import { getBalances } from '../../utils/evm/getBalances';
 import { RenzoNetworkConfig } from './types';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
-import {
-  generateActiveStakeElement,
-  generateDepositElement,
-  generateStakedElements,
-} from './helpers';
+import { generateActiveStakeElement, generateDepositElement } from './helpers';
 
 export function getPositionsFetcher(config: RenzoNetworkConfig): Fetcher {
   const { networkId, stakedContracts, activeStakeContract, depositContract } =
@@ -37,15 +33,31 @@ export function getPositionsFetcher(config: RenzoNetworkConfig): Fetcher {
       });
     }
 
-    await Promise.all([
-      generateActiveStakeElement(
-        activeStakeContract,
-        owner,
-        networkId,
-        registry
-      ),
-      generateDepositElement(depositContract, owner, networkId, registry),
-    ]);
+    const activeStake = await generateActiveStakeElement(
+      activeStakeContract,
+      owner,
+      networkId
+    );
+
+    if (activeStake && activeStake !== BigInt(0)) {
+      registry.addElementMultiple({ label: 'Staked' }).addAsset({
+        address: activeStakeContract.token,
+        amount: activeStake.toString(),
+      });
+    }
+
+    const depositPositions = await generateDepositElement(
+      depositContract,
+      owner,
+      networkId
+    );
+
+    for (const { token, balance } of depositPositions) {
+      registry.addElementMultiple({ label: 'Deposit' }).addAsset({
+        address: token,
+        amount: balance.toString(),
+      });
+    }
 
     return registry.getElements(cache);
   };

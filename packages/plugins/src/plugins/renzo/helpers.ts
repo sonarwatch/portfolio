@@ -6,15 +6,13 @@ import {
   getOutstandingWithdrawRequestsAbi,
   withdrawRequestAbi,
 } from './abis';
-import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { Address } from 'viem';
 
 export async function generateActiveStakeElement(
   activeStakeContract: RenzoStakedContractConfig,
   owner: string,
-  networkId: EvmNetworkIdType,
-  registry: ElementRegistry
-): Promise<void> {
+  networkId: EvmNetworkIdType
+): Promise<bigint | undefined> {
   const { address, token } = activeStakeContract;
 
   const client = getEvmClient(networkId);
@@ -25,19 +23,14 @@ export async function generateActiveStakeElement(
     args: [owner as Address],
   });
 
-  if (!activeStake || activeStake === BigInt(0)) return;
-
-  registry
-    .addElementMultiple({ label: 'Staked' })
-    .addAsset({ address: token, amount: activeStake.toString() });
+  return activeStake;
 }
 
 export async function generateDepositElement(
   depositContract: RenzoContractConfig,
   owner: string,
-  networkId: EvmNetworkIdType,
-  registry: ElementRegistry
-): Promise<void> {
+  networkId: EvmNetworkIdType
+): Promise<Array<{ token: Address; balance: bigint }>> {
   const { address } = depositContract;
   const client = getEvmClient(networkId);
 
@@ -48,7 +41,7 @@ export async function generateDepositElement(
     args: [owner as Address],
   });
 
-  if (!numOfRequests || numOfRequests === BigInt(0)) return;
+  if (!numOfRequests || numOfRequests === BigInt(0)) return [];
 
   const withdrawRequestsAnswers = await client.multicall({
     contracts: Array.from({ length: Number(numOfRequests) }, (_, index) => ({
@@ -59,16 +52,15 @@ export async function generateDepositElement(
     })),
   });
 
-  withdrawRequestsAnswers
+  return withdrawRequestsAnswers
     .filter((req) => req.status === 'success' && req.result)
-    .forEach((req) => {
+    .map((req) => {
       const token = req.result?.[0];
       const balance = req.result?.[2];
 
-      if (!token || !balance) return;
+      if (!token || !balance) return null;
 
-      registry
-        .addElementMultiple({ label: 'Deposit' })
-        .addAsset({ address: token, amount: balance.toString() });
-    });
+      return { token, balance };
+    })
+    .filter((item) => item !== null);
 }
