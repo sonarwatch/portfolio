@@ -1,3 +1,6 @@
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { Address } from 'viem';
+
 export const platformId = 'morpho';
 export const updatedIndexesPrefix = `${platformId}-updated-indexes`;
 export const morphoAaveV3Address = '0x33333aea097c193e66081E930c33020272b33333';
@@ -18,3 +21,15 @@ export const Underlying = {
 
 export const wethAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 export const wethDecimals = 18;
+
+export const morphoApiUrl = 'https://blue-api.morpho.org/graphql';
+export const morphoRewardsApiUrl = 'https://rewards.morpho.org/v1';
+
+export const morphoMarketsCachePrefix = `${platformId}-markets`;
+export const morphoVaultsCachePrefix = `${platformId}-vaults`;
+
+export type MorphoNetworkIdType = typeof NetworkId.ethereum;
+
+export const networkIdToMorphoContract: Record<MorphoNetworkIdType, Address> = {
+  [NetworkId.ethereum]: '0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb',
+};
