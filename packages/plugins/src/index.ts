@@ -162,6 +162,7 @@ import * as convex from './plugins/convex';
 import * as fraxlend from './plugins/fraxlend';
 import * as zeus from './plugins/zeus';
 import * as pumpswap from './plugins/pumpswap';
+import * as eigenlayer from './plugins/eigenlayer';
 
 export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
@@ -334,6 +335,7 @@ const modules = [
   convex,
   fraxlend,
   zeus,
+  eigenlayer,
   pumpswap,
 ];
 
