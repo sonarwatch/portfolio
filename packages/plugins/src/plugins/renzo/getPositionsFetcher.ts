@@ -21,11 +21,16 @@ export function getPositionsFetcher(config: RenzoNetworkConfig): Fetcher {
 
     const registry = new ElementRegistry(networkId, platformId);
 
-    const contractsWithBalances = await fetchStakedBalances(
-      stakedContracts,
-      ownerAddress,
-      networkId
-    );
+    const [contractsWithBalances, [activeStake, numOfWithdrawRequests]] =
+      await Promise.all([
+        fetchStakedBalances(stakedContracts, ownerAddress, networkId),
+        fetchActiveStakeAndOutstandingWithdrawRequests(
+          activeStakeContract.address,
+          depositContract.address,
+          ownerAddress,
+          networkId
+        ),
+      ]);
 
     for (const { contract, balance } of contractsWithBalances) {
       if (balance === null) continue;
@@ -40,14 +45,6 @@ export function getPositionsFetcher(config: RenzoNetworkConfig): Fetcher {
           amount: balance.toString(),
         });
     }
-
-    const [activeStake, numOfWithdrawRequests] =
-      await fetchActiveStakeAndOutstandingWithdrawRequests(
-        activeStakeContract.address,
-        depositContract.address,
-        ownerAddress,
-        networkId
-      );
 
     if (
       activeStake.status === 'success' &&
