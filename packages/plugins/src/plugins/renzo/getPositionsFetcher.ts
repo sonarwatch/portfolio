@@ -9,7 +9,7 @@ import {
   fetchWithdrawRequests,
   fetchStakedBalances,
 } from './helpers';
-import { Address, getAddress } from 'viem';
+import { getAddress } from 'viem';
 import { zeroBigInt } from '../../utils/misc/constants';
 
 export function getPositionsFetcher(config: RenzoNetworkConfig): Fetcher {
@@ -28,6 +28,7 @@ export function getPositionsFetcher(config: RenzoNetworkConfig): Fetcher {
     );
 
     for (const { contract, balance } of contractsWithBalances) {
+      if (balance === null) continue;
       registry
         .addElementMultiple({
           label: 'Staked',
@@ -36,7 +37,7 @@ export function getPositionsFetcher(config: RenzoNetworkConfig): Fetcher {
         })
         .addAsset({
           address: contract.token,
-          amount: balance!.toString(),
+          amount: balance.toString(),
         });
     }
 
@@ -65,20 +66,19 @@ export function getPositionsFetcher(config: RenzoNetworkConfig): Fetcher {
         });
     }
 
-    let depositPositions: Array<{ token: Address; balance: bigint }> = [];
-
     if (
-      numOfWithdrawRequests.status === 'success' &&
-      numOfWithdrawRequests.result &&
-      numOfWithdrawRequests.result !== zeroBigInt
-    ) {
-      depositPositions = await fetchWithdrawRequests(
-        depositContract.address,
-        ownerAddress,
-        numOfWithdrawRequests.result,
-        networkId
-      );
-    }
+      numOfWithdrawRequests.status === 'failure' ||
+      !numOfWithdrawRequests.result ||
+      numOfWithdrawRequests.result === zeroBigInt
+    )
+      return registry.getElements(cache);
+
+    const depositPositions = await fetchWithdrawRequests(
+      depositContract.address,
+      ownerAddress,
+      numOfWithdrawRequests.result,
+      networkId
+    );
 
     for (const { token, balance } of depositPositions) {
       registry
@@ -97,7 +97,7 @@ export function getPositionsFetcher(config: RenzoNetworkConfig): Fetcher {
   };
 
   return {
-    id: `${platformId}-${networkId}`,
+    id: `${platformId}-${networkId}-positions`,
     networkId,
     executor,
   };
