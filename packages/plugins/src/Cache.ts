@@ -11,7 +11,7 @@ import {
   TokenPrice,
   tokenPriceFromSources,
   TokenPriceSource,
-  // tokenPriceSourceTtl,
+  tokenPriceSourceTtl,
 } from '@sonarwatch/portfolio-core';
 import overlayDriver from './overlayDriver';
 import memoryDriver, {
@@ -292,7 +292,7 @@ export class Cache {
     await this.setItem(fSource.address, newSources, {
       prefix: tokenPriceSourcePrefix,
       networkId: fSource.networkId,
-      // ttl: tokenPriceSourceTtl,
+      ttl: tokenPriceSourceTtl,
     });
   }
 
