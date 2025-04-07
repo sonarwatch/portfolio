@@ -5,12 +5,12 @@ import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getEvmClient } from '../../utils/clients';
 import {
-  platformId,
-  siloPoolsKey,
-  legacyLensAddress,
-  supplyTag,
-  borrowTag,
-  missingTokenPriceAddresses,
+  PLATFORM_ID,
+  SILOS_POOLS_KEY,
+  LEGACY_LENS_ADDRESS,
+  SUPPLY_TAG,
+  BORROW_TAG,
+  MISSING_TOKEN_PRICE_ADDRESSES,
 } from './constants';
 import { balanceAbi } from './abis';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
@@ -23,8 +23,8 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
     cache: Cache
   ): Promise<PortfolioElement[]> => {
     const ownerAddress = getAddress(owner);
-    const pools = await cache.getItem<SiloPool[]>(siloPoolsKey, {
-      prefix: platformId,
+    const pools = await cache.getItem<SiloPool[]>(SILOS_POOLS_KEY, {
+      prefix: PLATFORM_ID,
       networkId,
     });
     if (!pools) return [];
@@ -34,13 +34,13 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
     const poolCalls = pools.flatMap<ContractFunctionConfig<typeof balanceAbi>>(
       (pool) => [
         {
-          address: legacyLensAddress,
+          address: LEGACY_LENS_ADDRESS,
           abi: balanceAbi,
           functionName: 'collateralBalanceOfUnderlying',
           args: [pool.vault, pool.asset as Address, ownerAddress],
         } as const,
         {
-          address: legacyLensAddress,
+          address: LEGACY_LENS_ADDRESS,
           abi: balanceAbi,
           functionName: 'debtBalanceOfUnderlying',
           args: [pool.vault, pool.asset as Address, ownerAddress],
@@ -69,7 +69,7 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
           return undefined;
 
         // Handle missing token prices by getting price from underlying asset
-        const isMissingPrice = missingTokenPriceAddresses.includes(
+        const isMissingPrice = MISSING_TOKEN_PRICE_ADDRESSES.includes(
           pool.asset as Address
         );
         if (isMissingPrice && (!pool.underlyingAsset || !pool.conversionRate))
@@ -103,7 +103,7 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
             networkId,
             tokenPrice,
             tokenPrice?.price || 0,
-            { tags: [collateral.isZero() ? borrowTag : supplyTag] }
+            { tags: [collateral.isZero() ? BORROW_TAG : SUPPLY_TAG] }
           ),
         };
       })
@@ -126,11 +126,11 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
       type: 'multiple',
       label: 'Lending',
       networkId,
-      platformId,
+      platformId: PLATFORM_ID,
       value: vaultAssets.reduce((sum, asset) => {
         if (!asset.asset?.value) return sum;
-        const isSupply = asset.asset.attributes?.tags?.includes(supplyTag);
-        const isBorrow = asset.asset.attributes?.tags?.includes(borrowTag);
+        const isSupply = asset.asset.attributes?.tags?.includes(SUPPLY_TAG);
+        const isBorrow = asset.asset.attributes?.tags?.includes(BORROW_TAG);
         if (isSupply) return sum + asset.asset.value;
         if (isBorrow) return sum - asset.asset.value;
         return sum;
@@ -142,7 +142,7 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
   };
 
   return {
-    id: `${platformId}-${networkId}-positions`,
+    id: `${PLATFORM_ID}-${networkId}-positions`,
     networkId,
     executor,
   };

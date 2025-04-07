@@ -9,3 +9,12 @@ export type SiloPool = {
   underlyingAsset?: string;
   conversionRate?: BigNumber;
 };
+
+export type SiloVaultResponse = {
+  silos: {
+    id: string;
+    totalValueLockedUSD: string;
+    totalBorrowBalanceUSD: string;
+    totalDepositBalanceUSD: string;
+  }[];
+};
