@@ -8,6 +8,7 @@ import { getEvmClient } from '../../utils/clients';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import {
   fetchStakedPermissionsLessNodeRegistry,
+  generateReadContractParamsForGetExchangeRate,
   generateReadContractParamsForStakedCollateralPool,
   generateReadContractParamsForStakedEthx,
   generateReadContractParamsForStakedUtilityPool,
@@ -39,6 +40,7 @@ const executor: FetcherExecutor = async (
     generateReadContractParamsForStakedEthx(ownerAddress),
     generateReadContractParamsForStakedUtilityPool(ownerAddress),
     generateReadContractParamsForStakedCollateralPool(ownerAddress),
+    generateReadContractParamsForGetExchangeRate(),
   ] as const;
 
   const [permissionsLessNodeResult, multicallResults] = await Promise.all([
@@ -48,10 +50,17 @@ const executor: FetcherExecutor = async (
 
   await Promise.all([
     permissionsLessNodeResult,
-    processFetchStakedEthxResult(params, {
-      input: multicallInputs[0],
-      output: multicallResults[0],
-    }),
+    processFetchStakedEthxResult(
+      params,
+      {
+        input: multicallInputs[0],
+        output: multicallResults[0],
+      },
+      {
+        input: multicallInputs[3],
+        output: multicallResults[3],
+      }
+    ),
     processFetchStakedUtilityPoolResult(params, {
       input: multicallInputs[1],
       output: multicallResults[1],

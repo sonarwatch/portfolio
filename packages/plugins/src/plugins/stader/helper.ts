@@ -1,4 +1,5 @@
 import { ethereumNativeAddress } from '@sonarwatch/portfolio-core';
+import BigNumber from 'bignumber.js';
 import { Address } from 'viem';
 import { getEvmClient } from '../../utils/clients';
 import { balanceOfErc20ABI } from '../../utils/evm/erc20Abi';
@@ -11,14 +12,17 @@ import {
     permissionsLessNodeRegistryAbi,
     sdCollateralPoolAbi,
     sdUtilityPoolAbi,
+    staderStakingPoolManagerAbi,
 } from './abis';
 import {
     CONTRACT_ADDRESS_ETHX_TOKEN_ETHEREUM_MAINNET,
     CONTRACT_ADDRESS_PERMISSIONLESS_NODE_REGISTRY_ETHEREUM_MAINNET,
     CONTRACT_ADDRESS_STADER_COLLATERAL_POOL_ETHEREUM_MAINNET,
+    CONTRACT_ADDRESS_STADER_STAKING_POOL_MANAGER_ETHEREUM_MAINNET,
     CONTRACT_ADDRESS_STADER_TOKEN_ETHEREUM_MAINNET,
     CONTRACT_ADDRESS_STADER_UTILITY_POOL_ETHEREUM_MAINNET,
     DECIMALS_ON_CONTRACT_STADER_TOKEN,
+    DECIMALS_ON_CONTRACT_STAKING_POOL_MANAGER_EXCHANGE_RATE,
     NETWORK_ID,
     TOKEN_NAME_STADER_ETH,
     TOKEN_NAME_STADER_ETHX,
@@ -83,16 +87,27 @@ export const generateReadContractParamsForGetOperatorTotalKeys = (
     args: [operatorId],
   } as const);
 
+export const generateReadContractParamsForGetExchangeRate = () =>
+  ({
+    abi: staderStakingPoolManagerAbi,
+    address: CONTRACT_ADDRESS_STADER_STAKING_POOL_MANAGER_ETHEREUM_MAINNET,
+    functionName: 'getExchangeRate',
+  } as const);
+
 export const processFetchStakedEthxResult = async (
   params: StaderFetcherParams,
-  multicallIO: MulticallIO<typeof balanceOfErc20ABI, 'balanceOf'>
+  stakedEthxMulticallIO: MulticallIO<typeof balanceOfErc20ABI, 'balanceOf'>,
+  exchangeRateMulticallIO: MulticallIO<
+    typeof staderStakingPoolManagerAbi,
+    'getExchangeRate'
+  >
 ): Promise<void> => {
   const logCtx = {
     ...params.logCtx,
     fn: `${params.logCtx.fn}::processFetchStakedEthxResult`,
   };
 
-  const balance = extractMulticallIOResult(multicallIO, {
+  const balance = extractMulticallIOResult(stakedEthxMulticallIO, {
     logCtx,
   });
 
@@ -100,14 +115,27 @@ export const processFetchStakedEthxResult = async (
     return;
   }
 
+  const exchangeRate = extractMulticallIOResult(exchangeRateMulticallIO, {
+    logCtx,
+  });
+
+  if (!exchangeRate) {
+    return;
+  }
+
+  const balanceInEth = new BigNumber(balance.toString()).multipliedBy(
+    convertBigIntToNumber(
+      exchangeRate,
+      DECIMALS_ON_CONTRACT_STAKING_POOL_MANAGER_EXCHANGE_RATE
+    )
+  );
+
   addStakedToRegistry(
     params.elementRegistry,
     TOKEN_NAME_STADER_ETHX,
-    multicallIO.input.address,
-    convertBigIntToNumber(
-      balance.toString(),
-      DECIMALS_ON_CONTRACT_STADER_TOKEN
-    ),
+    // We're using the ETH address because we manually applied the exchange rate
+    ethereumNativeAddress,
+    balanceInEth,
     logCtx
   );
 };

@@ -29,9 +29,17 @@ export const CONTRACT_ADDRESS_STADER_COLLATERAL_POOL_ETHEREUM_MAINNET: Address =
   '0x7Af4730cc8EbAd1a050dcad5c03c33D2793EE91f';
 
 /**
+ * Matches https://stader.gitbook.io/stader/ethereum/smart-contracts#ethx-mainnet-smart-contracts
+ */
+export const CONTRACT_ADDRESS_STADER_STAKING_POOL_MANAGER_ETHEREUM_MAINNET: Address =
+  '0xcf5EA1b38380f6aF39068375516Daf40Ed70D299';
+
+/**
  * Matches https://stader.gitbook.io/stader/ethereum/smart-contracts#ethx-mainnet-smart-contracts and
  * https://github.com/llamafolio/llamafolio-api/blob/bf669cbaf424a7694954d151e39e143d28ff2e35/src/adapters/stader/ethereum/index.ts#L16
  */
 export const CONTRACT_ADDRESS_STADER_TOKEN_ETHEREUM_MAINNET: Address =
   '0x30D20208d987713f46DFD34EF128Bb16C404D10f';
 export const DECIMALS_ON_CONTRACT_STADER_TOKEN = 18;
+
+export const DECIMALS_ON_CONTRACT_STAKING_POOL_MANAGER_EXCHANGE_RATE = 18;
