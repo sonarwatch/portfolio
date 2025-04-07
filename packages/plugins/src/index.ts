@@ -163,6 +163,7 @@ import * as pumpswap from './plugins/pumpswap';
 import * as pumpkin from './plugins/pumpkin';
 import * as nirvana from './plugins/nirvana';
 import * as runemine from './plugins/runemine';
+import * as solanaid from './plugins/solanaid';
 
 export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
@@ -337,6 +338,7 @@ const modules = [
   pumpkin,
   nirvana,
   runemine,
+  solanaid,
 ];
 
 // JOBS //

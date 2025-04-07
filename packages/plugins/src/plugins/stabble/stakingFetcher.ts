@@ -57,11 +57,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     ]);
 
   const registry = new ElementRegistry(NetworkId.solana, platformId);
-  const element = registry.addElementLiquidity({
-    label: 'Farming',
-  });
 
   for (let i = 0; i < minerAccounts.length; i += 1) {
+    const element = registry.addElementLiquidity({
+      label: 'Farming',
+    });
     const mainMiner = minerAccounts[i];
     // If the beneficiary is not the authority, it means it's a derived miner for additional rewards
     if (mainMiner.beneficiary.toString() !== mainMiner.authority.toString())
@@ -106,14 +106,16 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         (p) => p?.pubkey.toString() === miner.pool.toString()
       );
       if (!pool) return;
+
       const nextRewarder = rewarderAccounts.find(
         (r) => r?.pubkey.toString() === pool?.rewarder.toString()
       );
       if (!nextRewarder) return;
 
       liquidityElement.addRewardAsset({
-        address: miner.pool,
+        address: nextRewarder.mint,
         amount: getRewards(nextRewarder, pool, miner),
+        alreadyShifted: true,
       });
     });
   }

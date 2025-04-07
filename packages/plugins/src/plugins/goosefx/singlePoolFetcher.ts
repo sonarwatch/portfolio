@@ -6,13 +6,12 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, programId } from './constants';
+import { platformId, singlePoolPid } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { liquidityStruct } from './structs';
 import { liquidityAccountFilter } from './filters';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -20,16 +19,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const accounts = await getParsedProgramAccounts(
     client,
     liquidityStruct,
-    programId,
+    singlePoolPid,
     liquidityAccountFilter(owner)
   );
 
   if (accounts.length === 0) return [];
 
-  const tokenPriceById = await getTokenPricesMap(
+  const tokenPriceById = await cache.getTokenPricesAsMap(
     accounts.map((account) => account.mint.toString()),
-    NetworkId.solana,
-    cache
+    NetworkId.solana
   );
 
   const liquidities: PortfolioLiquidity[] = [];
@@ -55,6 +53,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       rewardAssetsValue: null,
       value: asset.value,
       yields: [],
+      ref: account.pubkey.toString(),
+      link: 'https://app.goosefx.io/ssl',
     });
   }
 
