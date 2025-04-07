@@ -195,7 +195,7 @@ export const processFetchStakedCollateralPoolResult = async (
     params.elementRegistry,
     TOKEN_NAME_STADER_SD,
     CONTRACT_ADDRESS_STADER_TOKEN_ETHEREUM_MAINNET,
-    Number(collateralBalance),
+    collateralBalance.toString(),
     logCtx
   );
 };
