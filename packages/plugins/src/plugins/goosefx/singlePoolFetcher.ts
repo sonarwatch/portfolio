@@ -6,7 +6,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, programId } from './constants';
+import { platformId, singlePoolPid } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { liquidityStruct } from './structs';
@@ -20,7 +20,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const accounts = await getParsedProgramAccounts(
     client,
     liquidityStruct,
-    programId,
+    singlePoolPid,
     liquidityAccountFilter(owner)
   );
 
