@@ -11,46 +11,72 @@ import {
   Yield,
   formatTokenAddress,
   getElementLendingValues,
-  networks,
+  BorrowLendRate,
+  aprToApy,
+  TokenPriceSource,
+  TokenPrice,
+  EvmNetworkIdType,
 } from '@sonarwatch/portfolio-core';
 import {
   UiIncentiveDataProvider,
   UiPoolDataProvider,
-} from '@aave/contract-helpers';
-import { StaticJsonRpcProvider } from '@ethersproject/providers';
+} from '@aave/contract-helpers-v2';
 import {
-  UserIncentiveDict,
   formatUserSummaryAndIncentives,
-} from '@aave/math-utils';
+  UserIncentiveDict,
+} from '@aave/math-utils-v2';
+import { Address, ContractFunctionConfig } from 'viem';
 import {
+  FormattedReserve,
   LendingConfig,
   LendingData,
   ReserveYieldInfo,
   UserReserveData,
+  UserReserveDataV3,
   UserSummary,
 } from './types';
 import { Cache } from '../../Cache';
-import { getRpcEndpoint } from '../../utils/clients/constants';
-import { platformId } from './constants';
+import { lendingPoolsPrefix } from './constants';
+import getEvmEthersClient from '../../utils/clients/getEvmEthersClient';
+import { getEvmClient } from '../../utils/clients';
+import { zeroBigInt } from '../../utils/misc/constants';
+import { stkAbi } from './abi';
 
-export const lendingPoolsPrefix = 'aave-lendingPools';
+export function getUiProviders(
+  networkId: EvmNetworkIdType,
+  lendingConfig: LendingConfig
+) {
+  const provider = getEvmEthersClient(networkId);
+  const poolDataProvider = new UiPoolDataProvider({
+    uiPoolDataProviderAddress: lendingConfig.uiPoolDataProviderAddress,
+    provider,
+    chainId: lendingConfig.chainId,
+  });
+
+  const incentiveDataProvider = new UiIncentiveDataProvider({
+    uiIncentiveDataProviderAddress:
+      lendingConfig.uiIncentiveDataProviderAddress,
+    provider,
+    chainId: lendingConfig.chainId,
+  });
+
+  return {
+    poolDataProvider,
+    incentiveDataProvider,
+  };
+}
 
 export async function fetchLendingForAddress(
-  address: string,
-  networkId: NetworkIdType,
+  address: Address,
+  networkId: EvmNetworkIdType,
   configs: LendingConfig[],
   cache: Cache,
+  platformId: string,
   proxyInfo?: ProxyInfo
 ): Promise<PortfolioElement[]> {
-  const elements: PortfolioElementBorrowLend[] = [];
-  for (let i = 0; i < configs.length; i++) {
-    const config = configs[i];
-    if (!config) continue;
-    const {
-      lendingPoolAddressProvider,
-      uiPoolDataProviderAddress,
-      uiIncentiveDataProviderAddress,
-    } = config;
+  const elementPromises = configs.map(async (config) => {
+    if (!config) return null;
+    const { lendingPoolAddressProvider } = config;
     const lendingData = await cache.getItem<LendingData>(
       lendingPoolAddressProvider,
       {
@@ -58,30 +84,12 @@ export async function fetchLendingForAddress(
         networkId,
       }
     );
-    if (!lendingData) continue;
+    if (!lendingData) return null;
 
-    const rpcEndpoint = getRpcEndpoint(networkId);
-    const user = rpcEndpoint.basicAuth?.username;
-    const password = rpcEndpoint.basicAuth?.password;
-    const provider = new StaticJsonRpcProvider(
-      {
-        url: rpcEndpoint.url,
-        user,
-        password,
-      },
-      networks[networkId].chainId
+    const { poolDataProvider, incentiveDataProvider } = getUiProviders(
+      networkId,
+      config
     );
-    const poolDataProvider = new UiPoolDataProvider({
-      uiPoolDataProviderAddress,
-      provider,
-      chainId: networks[networkId].chainId,
-    });
-
-    const incentiveDataProvider = new UiIncentiveDataProvider({
-      uiIncentiveDataProviderAddress,
-      provider,
-      chainId: networks[networkId].chainId,
-    });
 
     const userSummary = await getUserSummary(
       address,
@@ -91,7 +99,7 @@ export async function fetchLendingForAddress(
       lendingPoolAddressProvider
     );
     const elementData = getElementLendingData(networkId, userSummary);
-    if (elementData.value === 0) continue;
+    if (elementData.value === 0) return null;
 
     const element: PortfolioElementBorrowLend = {
       type: PortfolioElementType.borrowlend,
@@ -103,9 +111,14 @@ export async function fetchLendingForAddress(
       name: config.elementName,
       proxyInfo,
     };
-    elements.push(element);
-  }
-  return elements;
+
+    return element;
+  });
+
+  const elements = await Promise.all(elementPromises);
+  return elements.filter(
+    (element): element is PortfolioElementBorrowLend => element !== null
+  );
 }
 
 export async function getUserSummary(
@@ -115,15 +128,17 @@ export async function getUserSummary(
   incentiveDataProvider: UiIncentiveDataProvider,
   lendingPoolAddressProvider: string
 ) {
-  const userReserves = await poolDataProvider.getUserReservesHumanized({
-    lendingPoolAddressProvider,
-    user,
-  });
-  const userIncentives =
-    await incentiveDataProvider.getUserReservesIncentivesDataHumanized({
+  const [userReserves, userIncentives] = await Promise.all([
+    poolDataProvider.getUserReservesHumanized({
       lendingPoolAddressProvider,
       user,
-    });
+    }),
+    incentiveDataProvider.getUserReservesIncentivesDataHumanized({
+      lendingPoolAddressProvider,
+      user,
+    }),
+  ]);
+
   const userReservesArray = userReserves.userReserves;
   const userSummary = formatUserSummaryAndIncentives({
     currentTimestamp: lendingData.currentTimestamp,
@@ -191,7 +206,7 @@ export function getStableBorrowedAsset(
 
 export function getVarriableBorrowedAsset(
   networkId: NetworkIdType,
-  userReserveData: UserReserveData
+  userReserveData: UserReserveData | UserReserveDataV3
 ) {
   const variableBorrowedAsset: PortfolioAssetToken = {
     networkId,
@@ -210,7 +225,7 @@ export function getVarriableBorrowedAsset(
 
 export function getSuppliedAsset(
   networkId: NetworkIdType,
-  userReserveData: UserReserveData
+  userReserveData: UserReserveData | UserReserveDataV3
 ) {
   const suppliedAsset: PortfolioAssetToken = {
     networkId,
@@ -235,7 +250,7 @@ export function getSuppliedAsset(
   };
 }
 
-function getRewardAssets(
+export function getRewardAssets(
   networkId: NetworkIdType,
   calculatedUserIncentives: UserIncentiveDict
 ): PortfolioAsset[] {
@@ -285,7 +300,10 @@ export function getElementLendingData(
     const userReserveData = userReservesData[i];
 
     // Stable borrows
-    if (userReserveData.stableBorrows !== '0') {
+    if (
+      isUserReserveData(userReserveData) &&
+      userReserveData.stableBorrows !== '0'
+    ) {
       const { stableBorrowedAsset, yields } = getStableBorrowedAsset(
         networkId,
         userReserveData
@@ -337,4 +355,100 @@ export function getElementLendingData(
     value,
   };
   return elementData;
+}
+
+export function getRates(
+  tokenAddress: string,
+  platformId: string,
+  formattedReserve: Pick<
+    FormattedReserve,
+    'supplyAPR' | 'variableBorrowAPR' | 'totalLiquidity' | 'totalDebt'
+  >,
+  elementName: string
+): BorrowLendRate {
+  const lendingApr = Number(formattedReserve.supplyAPR);
+  const borrowingApr = Number(formattedReserve.variableBorrowAPR);
+  const depositedAmount = Number(formattedReserve.totalLiquidity);
+  const borrowedAmount = Number(formattedReserve.totalDebt);
+  return {
+    tokenAddress,
+    borrowYield: {
+      apy: aprToApy(borrowingApr),
+      apr: borrowingApr,
+    },
+    borrowedAmount,
+    depositYield: {
+      apy: aprToApy(lendingApr),
+      apr: lendingApr,
+    },
+    depositedAmount,
+    platformId,
+    poolName: elementName,
+  };
+}
+
+export function getTokenPriceSourceFromReserve(
+  aTokenAddress: string,
+  networkId: NetworkIdType,
+  platformId: string,
+  formattedReserve: Pick<FormattedReserve, 'decimals' | 'underlyingAsset'>,
+  underlyingAssetPrice: TokenPrice,
+  elementName: string
+) {
+  const source: TokenPriceSource = {
+    id: platformId,
+    weight: 1,
+    address: aTokenAddress,
+    networkId,
+    platformId,
+    decimals: formattedReserve.decimals,
+    price: underlyingAssetPrice.price,
+    underlyings: [
+      {
+        address: formattedReserve.underlyingAsset,
+        amountPerLp: 1,
+        decimals: formattedReserve.decimals,
+        networkId,
+        price: underlyingAssetPrice.price,
+      },
+    ],
+    elementName,
+    timestamp: Date.now(),
+  };
+  return source;
+}
+
+// typeguard
+export function isUserReserveData(
+  item: UserReserveData | UserReserveDataV3
+): item is UserReserveData {
+  return 'stableBorrows' in item && 'stableBorrowAPR' in item;
+}
+
+export async function getBalancesAndTotalRewards(
+  owner: Address,
+  addresses: Address[],
+  networkId: EvmNetworkIdType
+): Promise<(bigint | undefined)[]> {
+  const client = getEvmClient(networkId);
+  const balances = await client.multicall({
+    contracts: addresses.flatMap<ContractFunctionConfig<typeof stkAbi>>((a) => [
+      {
+        abi: stkAbi,
+        address: a,
+        functionName: 'balanceOf',
+        args: [owner],
+      },
+      {
+        abi: stkAbi,
+        address: a,
+        functionName: 'getTotalRewardsBalance',
+        args: [owner],
+      },
+    ]),
+  });
+
+  return balances.map((b) =>
+    !b.result || b.result === zeroBigInt ? undefined : b.result
+  );
 }

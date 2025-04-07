@@ -1,107 +1,287 @@
-import { NetworkId, NetworkIdType, networks } from '@sonarwatch/portfolio-core';
-import { LendingConfig } from './types';
+import {
+  EvmNetworkIdType,
+  NetworkId,
+  networks,
+} from '@sonarwatch/portfolio-core';
+import {
+  AaveSafetyModule,
+  AaveV2Avalanche,
+  AaveV2Ethereum,
+  AaveV2EthereumAMM,
+  AaveV2Polygon,
+  AaveV3Avalanche,
+  AaveV3Ethereum,
+  AaveV3EthereumEtherFi,
+  AaveV3EthereumLido,
+  AaveV3Polygon,
+  GhoEthereum,
+} from '@bgd-labs/aave-address-book';
+import { Address } from 'viem';
+import { LendingConfig, StakingConfig, YieldConfig } from './types';
 
-export const platformId = 'aave';
+// export const platformId = 'aave'; // reserved for v1
+export const aave2PlatformId = 'aave2';
+export const aave3PlatformId = 'aave3';
 
-export const aaveAddress = '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9';
-export const aaveDecimals = 18;
-export const stkAaveAddress = '0x4da27a545c0c5b758a6ba100e3a049001de870f5';
-export const stkAaveDecimals = 18;
-export const stkAbptAddress = '0xa1116930326d21fb917d5a27f1e9943a9595fb47';
-export const stkAbptDecimals = 18;
-export const abptAddress = '0xC697051d1C6296C24aE3bceF39acA743861D9A81';
-export const abptDecimals = 18;
+export const lendingPoolsPrefix = 'aave-lendingPools';
+export const yieldPoolsPrefix = 'aave-yieldPools';
+export const yieldAssetsPrefix = 'aave-yieldAssets';
 
-export const lendingConfigs: Map<NetworkIdType, LendingConfig[]> = new Map([
+export const aaveAddress: Address = AaveV2Ethereum.ASSETS.AAVE.UNDERLYING;
+
+const AVALANCE_NETWORK_ID = NetworkId.avalanche;
+const AVALANCHE_NETWORK = networks[AVALANCE_NETWORK_ID];
+
+const POLYGON_NETWORK_ID = NetworkId.polygon;
+const POLYGON_NETWORK = networks[POLYGON_NETWORK_ID];
+
+const ETHEREUM_NETWORK_ID = NetworkId.ethereum;
+const ETHEREUM_NETWORK = networks[ETHEREUM_NETWORK_ID];
+
+export const stakingConfigs: StakingConfig[] = [
+  {
+    name: 'AAVE V2 Staking',
+    platformId: aave2PlatformId,
+    stakingTokenAddress: AaveSafetyModule.STK_AAVE,
+    stakedAssetAddress: aaveAddress,
+    rewardAssetAddress: aaveAddress,
+  },
+  {
+    name: 'AAVE V2 ABPT Staking',
+    platformId: aave2PlatformId,
+    stakingTokenAddress: AaveSafetyModule.STK_ABPT,
+    stakedAssetAddress: '0xC697051d1C6296C24aE3bceF39acA743861D9A81', // abpt
+    rewardAssetAddress: aaveAddress,
+  },
+  {
+    name: 'AAVE V3 GHO Staking',
+    platformId: aave3PlatformId,
+    stakingTokenAddress: AaveSafetyModule.STK_GHO,
+    stakedAssetAddress: GhoEthereum.GHO_TOKEN,
+    rewardAssetAddress: aaveAddress,
+  },
+  {
+    name: 'AAVE V3 AAVE/WSTETH Staking',
+    platformId: aave3PlatformId,
+    stakingTokenAddress: AaveSafetyModule.STK_AAVE_WSTETH_BPTV2,
+    stakedAssetAddress: '0x3de27EFa2F1AA663Ae5D458857e731c129069F29', // aaveWstethBptv2
+    rewardAssetAddress: aaveAddress,
+  },
+];
+
+export const v2lendingConfigs: Map<EvmNetworkIdType, LendingConfig[]> = new Map(
   [
-    NetworkId.avalanche,
+    [
+      AVALANCE_NETWORK_ID,
+      [
+        {
+          chainId: AVALANCHE_NETWORK.chainId,
+          networkId: AVALANCE_NETWORK_ID,
+          elementName: 'Aave V2',
+          lendingPoolAddressProvider: AaveV2Avalanche.POOL_ADDRESSES_PROVIDER,
+          uiIncentiveDataProviderAddress:
+            AaveV2Avalanche.UI_INCENTIVE_DATA_PROVIDER,
+          uiPoolDataProviderAddress: AaveV2Avalanche.UI_POOL_DATA_PROVIDER,
+          version: 2,
+        },
+      ],
+    ],
+    [
+      POLYGON_NETWORK_ID,
+      [
+        {
+          chainId: POLYGON_NETWORK.chainId,
+          networkId: POLYGON_NETWORK_ID,
+          elementName: 'Aave V2',
+          lendingPoolAddressProvider: AaveV2Polygon.POOL_ADDRESSES_PROVIDER,
+          uiIncentiveDataProviderAddress:
+            AaveV2Polygon.UI_INCENTIVE_DATA_PROVIDER,
+          uiPoolDataProviderAddress: AaveV2Polygon.UI_POOL_DATA_PROVIDER,
+          version: 2,
+        },
+      ],
+    ],
+    [
+      ETHEREUM_NETWORK_ID,
+      [
+        {
+          chainId: ETHEREUM_NETWORK.chainId,
+          networkId: ETHEREUM_NETWORK_ID,
+          elementName: 'Aave V2',
+          lendingPoolAddressProvider: AaveV2Ethereum.POOL_ADDRESSES_PROVIDER,
+          uiIncentiveDataProviderAddress:
+            AaveV2Ethereum.UI_INCENTIVE_DATA_PROVIDER,
+          uiPoolDataProviderAddress: AaveV2Ethereum.UI_POOL_DATA_PROVIDER,
+          version: 2,
+        },
+        {
+          chainId: ETHEREUM_NETWORK.chainId,
+          networkId: ETHEREUM_NETWORK_ID,
+          elementName: 'Aave V2 AMM',
+          lendingPoolAddressProvider: AaveV2EthereumAMM.POOL_ADDRESSES_PROVIDER,
+          uiIncentiveDataProviderAddress:
+            AaveV2EthereumAMM.UI_INCENTIVE_DATA_PROVIDER,
+          uiPoolDataProviderAddress: AaveV2EthereumAMM.UI_POOL_DATA_PROVIDER,
+          version: 2,
+        },
+      ],
+    ],
+  ]
+);
+
+export const v3lendingConfigs: Map<EvmNetworkIdType, LendingConfig[]> = new Map(
+  [
+    [
+      AVALANCE_NETWORK_ID,
+      [
+        {
+          chainId: AVALANCHE_NETWORK.chainId,
+          networkId: AVALANCE_NETWORK_ID,
+          elementName: 'Aave V3',
+          lendingPoolAddressProvider: AaveV3Avalanche.POOL_ADDRESSES_PROVIDER,
+          uiIncentiveDataProviderAddress:
+            AaveV3Avalanche.UI_INCENTIVE_DATA_PROVIDER,
+          uiPoolDataProviderAddress: AaveV3Avalanche.UI_POOL_DATA_PROVIDER,
+          version: 3,
+        },
+      ],
+    ],
+    [
+      POLYGON_NETWORK_ID,
+      [
+        {
+          chainId: POLYGON_NETWORK.chainId,
+          networkId: POLYGON_NETWORK_ID,
+          elementName: 'Aave V3',
+          lendingPoolAddressProvider: AaveV3Polygon.POOL_ADDRESSES_PROVIDER,
+          uiIncentiveDataProviderAddress:
+            AaveV3Polygon.UI_INCENTIVE_DATA_PROVIDER,
+          uiPoolDataProviderAddress: AaveV3Polygon.UI_POOL_DATA_PROVIDER,
+          version: 3,
+        },
+      ],
+    ],
+    [
+      ETHEREUM_NETWORK_ID,
+      [
+        {
+          chainId: ETHEREUM_NETWORK.chainId,
+          networkId: ETHEREUM_NETWORK_ID,
+          elementName: 'Aave V3 Core',
+          lendingPoolAddressProvider: AaveV3Ethereum.POOL_ADDRESSES_PROVIDER,
+          uiIncentiveDataProviderAddress:
+            AaveV3Ethereum.UI_INCENTIVE_DATA_PROVIDER,
+          uiPoolDataProviderAddress: AaveV3Ethereum.UI_POOL_DATA_PROVIDER,
+          version: 3,
+        },
+        {
+          chainId: ETHEREUM_NETWORK.chainId,
+          networkId: ETHEREUM_NETWORK_ID,
+          elementName: 'Aave V3 Lido',
+          lendingPoolAddressProvider:
+            AaveV3EthereumLido.POOL_ADDRESSES_PROVIDER,
+          uiIncentiveDataProviderAddress:
+            AaveV3EthereumLido.UI_INCENTIVE_DATA_PROVIDER,
+          uiPoolDataProviderAddress: AaveV3EthereumLido.UI_POOL_DATA_PROVIDER,
+          version: 3,
+        },
+        {
+          chainId: ETHEREUM_NETWORK.chainId,
+          networkId: ETHEREUM_NETWORK_ID,
+          elementName: 'Aave V3 EtherFi',
+          lendingPoolAddressProvider:
+            AaveV3EthereumEtherFi.POOL_ADDRESSES_PROVIDER,
+          uiIncentiveDataProviderAddress:
+            AaveV3EthereumEtherFi.UI_INCENTIVE_DATA_PROVIDER,
+          uiPoolDataProviderAddress:
+            AaveV3EthereumEtherFi.UI_POOL_DATA_PROVIDER,
+          version: 3,
+        },
+      ],
+    ],
+  ]
+);
+
+export const combinedLendingConfigs: Map<EvmNetworkIdType, LendingConfig[]> =
+  new Map([
+    [
+      AVALANCE_NETWORK_ID,
+      [
+        ...(v2lendingConfigs.get(AVALANCE_NETWORK_ID) || []),
+        ...(v3lendingConfigs.get(AVALANCE_NETWORK_ID) || []),
+      ],
+    ],
+    [
+      POLYGON_NETWORK_ID,
+      [
+        ...(v2lendingConfigs.get(POLYGON_NETWORK_ID) || []),
+        ...(v3lendingConfigs.get(POLYGON_NETWORK_ID) || []),
+      ],
+    ],
+    [
+      ETHEREUM_NETWORK_ID,
+      [
+        ...(v2lendingConfigs.get(ETHEREUM_NETWORK_ID) || []),
+        ...(v3lendingConfigs.get(ETHEREUM_NETWORK_ID) || []),
+      ],
+    ],
+  ]);
+
+export const yieldConfigs: Map<EvmNetworkIdType, YieldConfig[]> = new Map([
+  [
+    AVALANCE_NETWORK_ID,
     [
       {
-        chainId: networks.avalanche.chainId,
-        networkId: NetworkId.avalanche,
-        elementName: 'Aave V2',
-        lendingPoolAddressProvider:
-          '0xb6A86025F0FE1862B372cb0ca18CE3EDe02A318f',
-        uiIncentiveDataProviderAddress:
-          '0x11979886A6dBAE27D7a72c49fCF3F23240D647bF',
-        uiPoolDataProviderAddress: '0x00e50FAB64eBB37b87df06Aa46b8B35d5f1A4e1A',
-        version: 2,
+        factory: AaveV3Avalanche.STATA_FACTORY,
+        networkId: AVALANCE_NETWORK_ID,
+        elementName: 'Aave V3 Static Yield',
+        isLegacy: false,
       },
       {
-        chainId: networks.avalanche.chainId,
-        networkId: NetworkId.avalanche,
-        elementName: 'Aave V3',
-        lendingPoolAddressProvider:
-          '0xa97684ead0e402dC232d5A977953DF7ECBaB3CDb',
-        uiIncentiveDataProviderAddress:
-          '0x265d414f80b0fca9505710e6F16dB4b67555D365',
-        uiPoolDataProviderAddress: '0x374a2592f0265b3bb802d75809e61b1b5BbD85B7',
-        version: 3,
+        factory: AaveV3Avalanche.LEGACY_STATIC_A_TOKEN_FACTORY,
+        networkId: AVALANCE_NETWORK_ID,
+        elementName: 'Aave V3 Legacy Static Yield',
+        isLegacy: true,
       },
     ],
   ],
   [
-    NetworkId.polygon,
+    POLYGON_NETWORK_ID,
     [
       {
-        chainId: networks.polygon.chainId,
-        networkId: NetworkId.polygon,
-        elementName: 'Aave V2',
-        lendingPoolAddressProvider:
-          '0xd05e3E715d945B59290df0ae8eF85c1BdB684744',
-        uiIncentiveDataProviderAddress:
-          '0x645654D59A5226CBab969b1f5431aA47CBf64ab8',
-        uiPoolDataProviderAddress: '0x204f2Eb81D996729829debC819f7992DCEEfE7b1',
-        version: 2,
+        factory: AaveV3Polygon.STATA_FACTORY,
+        networkId: POLYGON_NETWORK_ID,
+        elementName: 'Aave V3 Static Yield',
+        isLegacy: false,
       },
       {
-        chainId: networks.polygon.chainId,
-        networkId: NetworkId.polygon,
-        elementName: 'Aave V3',
-        lendingPoolAddressProvider:
-          '0xa97684ead0e402dC232d5A977953DF7ECBaB3CDb',
-        uiIncentiveDataProviderAddress:
-          '0x874313A46e4957D29FAAC43BF5Eb2B144894f557',
-        uiPoolDataProviderAddress: '0xC69728f11E9E6127733751c8410432913123acf1',
-        version: 3,
+        factory: AaveV3Polygon.LEGACY_STATIC_A_TOKEN_FACTORY,
+        networkId: POLYGON_NETWORK_ID,
+        elementName: 'Aave V3 Legacy Static Yield',
+        isLegacy: true,
       },
     ],
   ],
   [
-    NetworkId.ethereum,
+    ETHEREUM_NETWORK_ID,
     [
       {
-        chainId: networks.ethereum.chainId,
-        networkId: NetworkId.ethereum,
-        elementName: 'Aave V2 Main',
-        lendingPoolAddressProvider:
-          '0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5',
-        uiIncentiveDataProviderAddress:
-          '0xD01ab9a6577E1D84F142e44D49380e23A340387d',
-        uiPoolDataProviderAddress: '0x00e50FAB64eBB37b87df06Aa46b8B35d5f1A4e1A',
-        version: 2,
+        factory: AaveV3Ethereum.STATA_FACTORY,
+        networkId: ETHEREUM_NETWORK_ID,
+        elementName: 'Aave V3 Static Yield',
+        isLegacy: false,
       },
       {
-        chainId: networks.ethereum.chainId,
-        networkId: NetworkId.ethereum,
-        elementName: 'Aave V2 AMM',
-        lendingPoolAddressProvider:
-          '0xAcc030EF66f9dFEAE9CbB0cd1B25654b82cFA8d5',
-        uiIncentiveDataProviderAddress:
-          '0xD01ab9a6577E1D84F142e44D49380e23A340387d',
-        uiPoolDataProviderAddress: '0x00e50FAB64eBB37b87df06Aa46b8B35d5f1A4e1A',
-        version: 2,
+        factory: AaveV3Ethereum.LEGACY_STATIC_A_TOKEN_FACTORY,
+        networkId: ETHEREUM_NETWORK_ID,
+        elementName: 'Aave V3 Legacy Static Yield',
+        isLegacy: true,
       },
       {
-        chainId: networks.ethereum.chainId,
-        networkId: NetworkId.ethereum,
-        elementName: 'Aave V3 AMM',
-        lendingPoolAddressProvider:
-          '0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e',
-        uiIncentiveDataProviderAddress:
-          '0x162A7AC02f547ad796CA549f757e2b8d1D9b10a6',
-        uiPoolDataProviderAddress: '0x91c0eA31b49B69Ea18607702c5d9aC360bf3dE7d',
-        version: 3,
+        factory: AaveV3EthereumLido.STATA_FACTORY,
+        networkId: ETHEREUM_NETWORK_ID,
+        elementName: 'Aave V3 Lido Static Yield',
+        isLegacy: false,
       },
     ],
   ],
