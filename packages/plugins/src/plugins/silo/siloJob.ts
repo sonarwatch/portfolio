@@ -1,7 +1,8 @@
 import { BigNumber } from 'bignumber.js';
 
-import { EvmNetworkIdType } from '@sonarwatch/portfolio-core';
+import { EvmNetworkIdType, formatEvmAddress } from '@sonarwatch/portfolio-core';
 import { Address } from 'viem';
+import { logger } from '@nx/devkit';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getEvmClient } from '../../utils/clients';
@@ -11,12 +12,43 @@ import {
   siloPoolsKey,
   siloVaults,
   missingTokenPriceAddresses,
+  legacyPools,
+  llamaPools,
+  mainetPools,
 } from './constants';
 import { SiloPool } from './types';
 
 const CONVERSION_RATE_DIVISOR = 1e18;
 
 export default function getSiloJob(networkId: EvmNetworkIdType): Job {
+  const legacyid = legacyPools.map((p) => p.id);
+  const llamaid = llamaPools.map((p) => p.id);
+  const mainnetid = mainetPools.map((p) => p.id);
+
+  // Combine all pool ids into one array and remove duplicates using Set
+  const allPools = [...legacyid, ...llamaid, ...mainnetid];
+
+  // Remove duplicates
+  const uniquePoolss = [...new Set(allPools)];
+
+  const matchingIds = siloVaults.filter((address) =>
+    uniquePoolss.includes(address.toLowerCase())
+  );
+
+  // Find missing ids in siloVaults (addresses in siloVaults but not in silos)
+  const missingInSilos = siloVaults.filter(
+    (address) => !uniquePoolss.includes(address.toLowerCase())
+  );
+
+  // Find missing ids in siloVaults (addresses in silos but not in siloVaults)
+  const missingInSiloVaults = uniquePoolss.filter(
+    (id) => !siloVaults.includes(formatEvmAddress(id) as Address)
+  );
+
+  logger.info(`matchingIds: ${matchingIds}`);
+  logger.info(`missingInSilos: ${missingInSilos}`);
+  logger.info(`missingInSiloVaults: ${missingInSiloVaults}`);
+
   const client = getEvmClient(networkId);
 
   const executor: JobExecutor = async (cache: Cache) => {

@@ -5,7 +5,7 @@ import { PortfolioElementLabel, SourceRef } from './Portfolio';
 
 export const coingeckoSourceId = 'coingecko';
 export const jupiterSourceId = 'jupiter-api';
-export const tokenPriceSourceTtl = 4 * 60 * 60 * 1000; // 4 hours
+// export const tokenPriceSourceTtl = 4 * 60 * 60 * 1000; // 4 hours
 const MAX_N_SOURCES = 10;
 
 export type TokenPriceUnderlying = {
@@ -124,9 +124,9 @@ export function updateTokenPriceSources(
   let newSources = deepClone(sources);
 
   // Remove too old sources
-  const tsThreshold = Date.now() - tokenPriceSourceTtl;
-  newSources = newSources.filter((source) => source.timestamp > tsThreshold);
-  if (newSources.length === 0) return undefined;
+  // const tsThreshold = Date.now() - tokenPriceSourceTtl;
+  // newSources = newSources.filter((source) => source.timestamp > tsThreshold);
+  // if (newSources.length === 0) return undefined;
 
   // Keep only MAX_N_SOURCES
   newSources.sort((sourceA, sourceB) => {

@@ -1,0 +1,986 @@
+[
+  {
+    "address": "0xbA75c98e0b4E9d4e91beD85d98257CBDd0F73118",
+    "vault": "0x96eFdF95Cc47fe90e8f63D2f5Ef9FB8B180dAeB9",
+    "category": "lend",
+    "asset": "0xD533a949740bb3306d119CC777fa900bA034cd52"
+  },
+  {
+    "address": "0xb27D1729489d04473631f0AFAca3c3A7389ac9F8",
+    "vault": "0x96eFdF95Cc47fe90e8f63D2f5Ef9FB8B180dAeB9",
+    "category": "lend",
+    "asset": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
+  },
+  {
+    "address": "0x68cB3Da148184830f9d0f3CF6F2e0228B586C9FF",
+    "vault": "0x6543ee07Cf5Dd7Ad17AeECF22ba75860ef3bBAAa",
+    "category": "lend",
+    "asset": "0xa0246c9032bC3A600820415aE600c6388619A14D"
+  },
+  {
+    "address": "0x115A5826D118D91eaEF54C270f05a4f3b5E58c56",
+    "vault": "0x6543ee07Cf5Dd7Ad17AeECF22ba75860ef3bBAAa",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0xD3132A4fEB58a4EAb4Cb6eBda4ea553Cba596f15",
+    "vault": "0x6543ee07Cf5Dd7Ad17AeECF22ba75860ef3bBAAa",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0x29099081AC1733407E273b169897d51653Ce587A",
+    "vault": "0xDc4c07CDCb0fc4A6D6446c789f9B734e22A7391a",
+    "category": "lend",
+    "asset": "0x55C08ca52497e2f1534B59E2917BF524D4765257"
+  },
+  {
+    "address": "0x144FCA03a40Ebe5AaB31Ef6e29ED7e695dd52AAd",
+    "vault": "0xDc4c07CDCb0fc4A6D6446c789f9B734e22A7391a",
+    "category": "lend",
+    "asset": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
+  },
+  {
+    "address": "0x416DE9AD46C53AAAb2352F91120952393946d2ac",
+    "vault": "0xFCCc27AABd0AB7a0B2Ad2B7760037B1eAb61616b",
+    "category": "lend",
+    "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+  },
+  {
+    "address": "0x818Ae48449DfdF908F7bb58f7aa2Ba16863f79dF",
+    "vault": "0xFCCc27AABd0AB7a0B2Ad2B7760037B1eAb61616b",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0xABC775f81eC313B0D4eE74Ed825774F3988C323c",
+    "vault": "0xFCCc27AABd0AB7a0B2Ad2B7760037B1eAb61616b",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0xeCC96f56Ea198991b85A10F2845D04F96Ec924eA",
+    "vault": "0x4f5717f1EfDec78a960f08871903B394e7Ea95Ed",
+    "category": "lend",
+    "asset": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0"
+  },
+  {
+    "address": "0x5ed68Fcfa0a531bBfE1078cC65bd50015BBC4bdA",
+    "vault": "0x4f5717f1EfDec78a960f08871903B394e7Ea95Ed",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x9aa679Eb72365783921FF267688442b9f421EE44",
+    "vault": "0x4f5717f1EfDec78a960f08871903B394e7Ea95Ed",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0x2420930aDb6946E4bf5F4685539eC6f7929DaE5A",
+    "vault": "0x2eaf84b425822edF450fC5FdeEc085f2e5aDa98b",
+    "category": "lend",
+    "asset": "0xBe9895146f7AF43049ca1c1AE358B0541Ea49704"
+  },
+  {
+    "address": "0x315c9c216BBA84017C2204b248F29023c04C4e07",
+    "vault": "0x2eaf84b425822edF450fC5FdeEc085f2e5aDa98b",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x70e822df47E3A9aCB883Df3e642ab4D248c35f92",
+    "vault": "0x2eaf84b425822edF450fC5FdeEc085f2e5aDa98b",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0x2509C0025CB9658f2582C43ffA78dba86ba1758e",
+    "vault": "0x2c2A3aBBa45BF2D52CeB0Eb3A55A4E354F986901",
+    "category": "lend",
+    "asset": "0x514910771AF9Ca656af840dff83E8264EcF986CA"
+  },
+  {
+    "address": "0xe6359F82f9054Ed88629e69Ee646d54092705BA6",
+    "vault": "0x2c2A3aBBa45BF2D52CeB0Eb3A55A4E354F986901",
+    "category": "lend",
+    "asset": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
+  },
+  {
+    "address": "0x65e6608ed67cb57487C02e0CB1F86Bb9646A396F",
+    "vault": "0xb0823c25cDF531a58e581eE14f160c290fef5722",
+    "category": "lend",
+    "asset": "0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e"
+  },
+  {
+    "address": "0xe835fb5e74E20f1ae3074084d286580cCA58b739",
+    "vault": "0xb0823c25cDF531a58e581eE14f160c290fef5722",
+    "category": "lend",
+    "asset": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
+  },
+  {
+    "address": "0x7b1F6fb13d3c8f76Eca4fcc1da4A4d4317A33f79",
+    "vault": "0xB1590d554dC7d66F710369983b46a5905AD34c8c",
+    "category": "lend",
+    "asset": "0xae78736Cd615f374D3085123A210448E74Fc6393"
+  },
+  {
+    "address": "0x9c8168C88d90Fd777041053cCB56D809eDEf4d74",
+    "vault": "0xB1590d554dC7d66F710369983b46a5905AD34c8c",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x8CCD889bb3a0252b803B6B6eaA0404c40CF8Cca7",
+    "vault": "0xB1590d554dC7d66F710369983b46a5905AD34c8c",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0x55F5E96c764caF2d9BF606d035E06dDA3183245A",
+    "vault": "0xbC6594df90ddeADA7CDd70dBc08E221a77512Deb",
+    "category": "lend",
+    "asset": "0x5f98805A4E8be255a32880FDeC7F6728C6568bA0"
+  },
+  {
+    "address": "0xAad2927538b952d6487f08246E5599ccD3bc89D2",
+    "vault": "0xbC6594df90ddeADA7CDd70dBc08E221a77512Deb",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0xA838bFc45aA61C2f1EDF76B39D10540Cd9b14915",
+    "vault": "0xbC6594df90ddeADA7CDd70dBc08E221a77512Deb",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0x26693A8D6f2A95F9DB48a950D5F2d7f9DE320CcD",
+    "vault": "0xcB3B879aB11F825885d5aDD8Bf3672596d35197C",
+    "category": "lend",
+    "asset": "0x514910771AF9Ca656af840dff83E8264EcF986CA"
+  },
+  {
+    "address": "0x2A011fCAA007c840a0b34593D00CB4Ab9f2f067F",
+    "vault": "0xcB3B879aB11F825885d5aDD8Bf3672596d35197C",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0xb02E552D68Cd538f571f72F630366adb616d9466",
+    "vault": "0xcB3B879aB11F825885d5aDD8Bf3672596d35197C",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0x30BeB07A72703f1aAF5Cd0b2dc7e00246b674827",
+    "vault": "0xC8CD77d4cd9511f2822f24aD14FE9e3C97C57836",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0xDecFb01E9cC4eBcb7A2ACE5457A03C0Fdd96D61F",
+    "vault": "0xC8CD77d4cd9511f2822f24aD14FE9e3C97C57836",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0xc23A43920863b3425ACdb6a0853697AEdc11f266",
+    "vault": "0xac3333401e69574d433307b31f43a7826eB6f8FD",
+    "category": "lend",
+    "asset": "0x4a220E6096B25EADb88358cb44068A3248254675"
+  },
+  {
+    "address": "0x44e159C7CbFF5aa40C6dd91bEBe65d18949865Dd",
+    "vault": "0xac3333401e69574d433307b31f43a7826eB6f8FD",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x2BAD8a833ff6118837EDeE8cC6B02022fc5AC07d",
+    "vault": "0xac3333401e69574d433307b31f43a7826eB6f8FD",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0xDB627bAbF509D72d8c414c97c0973FB35bf25Ef2",
+    "vault": "0xA0460fCEb47886920aAd8A87b627F3890793d1A6",
+    "category": "lend",
+    "asset": "0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e"
+  },
+  {
+    "address": "0xA6D92F3a805f18D2d2CBF4DC2F194F9D4B9D3A8B",
+    "vault": "0xA0460fCEb47886920aAd8A87b627F3890793d1A6",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x6A1F6f79290342ba2daF0Ee0c49b83bA7C4ACBd0",
+    "vault": "0xA0460fCEb47886920aAd8A87b627F3890793d1A6",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0x91C30065424F6dD61600DE7c346489bD52fBdA17",
+    "vault": "0xcd888c9Bd53c1CA49b9251F74Cc93C73E22963fa",
+    "category": "lend",
+    "asset": "0xdAC17F958D2ee523a2206206994597C13D831ec7"
+  },
+  {
+    "address": "0x91A48Dae3A4754d0847414c62D0dEab07998d2ED",
+    "vault": "0xcd888c9Bd53c1CA49b9251F74Cc93C73E22963fa",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x1bE6C807303627d0cd18B2716F61F1DA53019923",
+    "vault": "0xcd888c9Bd53c1CA49b9251F74Cc93C73E22963fa",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0x6650C679c3e8A52607501069028683eb8effE4f9",
+    "vault": "0xC413DD03555F3eB29D834B482d386b2999dc2EB0",
+    "category": "lend",
+    "asset": "0x0ab87046fBb341D058F17CBC4c1133F25a20a52f"
+  },
+  {
+    "address": "0x25aA24f69587cCE63C215370fA40d851ec0205dd",
+    "vault": "0xC413DD03555F3eB29D834B482d386b2999dc2EB0",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x3525c45331c282Ed4a491975631D1aFE00cC0a35",
+    "vault": "0xC413DD03555F3eB29D834B482d386b2999dc2EB0",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0x694Db8A411694263f118CE8429801246cd352aBa",
+    "vault": "0xAA7103F98E57c63e1BC7a9479c8c025aDFf9F71D",
+    "category": "lend",
+    "asset": "0xD533a949740bb3306d119CC777fa900bA034cd52"
+  },
+  {
+    "address": "0x50e5759F888a2EA9d0fA7883a79eC41C19e23b8f",
+    "vault": "0xAA7103F98E57c63e1BC7a9479c8c025aDFf9F71D",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x35b86be96a4E80446fbc65a4e8c25ed94ea9e3Fb",
+    "vault": "0xAA7103F98E57c63e1BC7a9479c8c025aDFf9F71D",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0x907136B74abA7D5978341eBA903544134A66B065",
+    "vault": "0xf5ffabab8f9a6F4F6dE1f0dd6e0820f68657d7Db",
+    "category": "lend",
+    "asset": "0x64aa3364F17a4D01c6f1751Fd97C2BD3D7e7f1D5"
+  },
+  {
+    "address": "0x875DD8fa0b6C47ba391c066f09a58a42143012Ea",
+    "vault": "0xf5ffabab8f9a6F4F6dE1f0dd6e0820f68657d7Db",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x05AC7aA29A029c71fc48bd5a6Bf1CA1A10071c3e",
+    "vault": "0xf5ffabab8f9a6F4F6dE1f0dd6e0820f68657d7Db",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0xB144D13E60B620477AD42Dd11729A346aeAc8Bbe",
+    "vault": "0x339666A930fd79C190e824dd9d9df0393b8BD196",
+    "category": "lend",
+    "asset": "0x470f9f350642eDF3CB3f2a6eB4569c0219386F0b"
+  },
+  {
+    "address": "0x599B2200e3735d0ECaa5A2e4F4c61bFE53286F5d",
+    "vault": "0x339666A930fd79C190e824dd9d9df0393b8BD196",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x6668481FB5CE4AD6A26AeEBd4c287301b4A97CA5",
+    "vault": "0x339666A930fd79C190e824dd9d9df0393b8BD196",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0x9016a7B1112bE6790254FF60Ec936a55d2739a64",
+    "vault": "0x71D11118F64536a1722e86E3D0815556169cecA8",
+    "category": "lend",
+    "asset": "0x6B175474E89094C44Da98b954EedeAC495271d0F"
+  },
+  {
+    "address": "0x366dAA26bD0765eaf9f1fDfF21E8d019eA0E59ED",
+    "vault": "0x71D11118F64536a1722e86E3D0815556169cecA8",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x92b45baE69c7Ac55Bf97ECBebb5b9686638ae634",
+    "vault": "0x71D11118F64536a1722e86E3D0815556169cecA8",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0x7B0b088Fe665DdDe000d8fa4Ac51af4aBbea8cae",
+    "vault": "0x31F3b3B86a074e2ffc4fd75D8Eb9721a75ee04DC",
+    "category": "lend",
+    "asset": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"
+  },
+  {
+    "address": "0x4EfFe8608773dC3e3A9b7D3646dcA5F41C74Dc0f",
+    "vault": "0x31F3b3B86a074e2ffc4fd75D8Eb9721a75ee04DC",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x0F259a09EE1723a8f64955cd8D5f8b1FAD9E5b7c",
+    "vault": "0x31F3b3B86a074e2ffc4fd75D8Eb9721a75ee04DC",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0xF5328879635Edd800ee67b10c8246a1841d88C21",
+    "vault": "0x63E5D6cc84ed2A6336b2A06FB5b4318F70F14b45",
+    "category": "lend",
+    "asset": "0xD33526068D116cE69F19A9ee46F0bd304F21A51f"
+  },
+  {
+    "address": "0xf3d2f30C9Eacd890f35B2f86fff3859f29EbDF6c",
+    "vault": "0x63E5D6cc84ed2A6336b2A06FB5b4318F70F14b45",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0xc7aDD25Eec290CC964fFe60169B79F8a713A7292",
+    "vault": "0x63E5D6cc84ed2A6336b2A06FB5b4318F70F14b45",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0xF834418Ea766e6D96EBD8f4DcAA61Ba31E5FBE86",
+    "vault": "0x629B9e70A7d32C718318D691dda5dA585E468B82",
+    "category": "lend",
+    "asset": "0x6DEA81C8171D0bA574754EF6F8b412F2Ed88c54D"
+  },
+  {
+    "address": "0x4168Bef790d8628B01D8EefDac791bEA4AF4e8EC",
+    "vault": "0x629B9e70A7d32C718318D691dda5dA585E468B82",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x69C9AFC130a9ac9d29F71201b5C035879226222c",
+    "vault": "0x629B9e70A7d32C718318D691dda5dA585E468B82",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0x6f2269797C449bab47f76d095ddAe5ddA4AF98ae",
+    "vault": "0x92E7E77163FFed918421E3CB6e0A22F2Fe8B37FA",
+    "category": "lend",
+    "asset": "0xba100000625a3754423978a60c9317c58a424e3D"
+  },
+  {
+    "address": "0x6729C4A030790F915f902Ded961350f9a127D1a3",
+    "vault": "0x92E7E77163FFed918421E3CB6e0A22F2Fe8B37FA",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x71F3285f1BEa862d700Ee7F99eD64EC7686f4349",
+    "vault": "0x92E7E77163FFed918421E3CB6e0A22F2Fe8B37FA",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0xA49Fa88EcD8e196BF68f486E88718a8eC84EDaC6",
+    "vault": "0xa104F14AeeB9b7246367D6a6E1f4E2C61A70e5d3",
+    "category": "lend",
+    "asset": "0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B"
+  },
+  {
+    "address": "0xDC4eE1B6A178E7514bEfD262117a593655Ef794c",
+    "vault": "0xa104F14AeeB9b7246367D6a6E1f4E2C61A70e5d3",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0xAe6f86699fCFb997F263B2b5Cfd34F7De456b4BD",
+    "vault": "0xa104F14AeeB9b7246367D6a6E1f4E2C61A70e5d3",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0xB8Dc5332e9EED0d3FCE8075435859431D7bf5Aa7",
+    "vault": "0x74a633b156b55711D0c91e64fa7DE3B7aF87470a",
+    "category": "lend",
+    "asset": "0xA600dF1FB4c79a668c4d9E3016504d28BFaAfF1a"
+  },
+  {
+    "address": "0xAc6844925dCcbFdB3Ad744F03B443952dbE0bEF5",
+    "vault": "0x74a633b156b55711D0c91e64fa7DE3B7aF87470a",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x56b2B20bE03eDE970AD78fcB53Fc282E39272107",
+    "vault": "0x74a633b156b55711D0c91e64fa7DE3B7aF87470a",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0x25a857a7db90D417D438F7De03B2c325C254576F",
+    "vault": "0x0a898EBA24e6D1213f1e494d49e757640628AEEC",
+    "category": "lend",
+    "asset": "0xfCDeEe2BfEAe88E749E88a628E2C3401Ec5edA3C"
+  },
+  {
+    "address": "0x54cb4EdECdC08f0470798Eb6A979288132128535",
+    "vault": "0x0a898EBA24e6D1213f1e494d49e757640628AEEC",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x868EB1922B792B427A353524107d8d39D01B0B80",
+    "vault": "0x0a898EBA24e6D1213f1e494d49e757640628AEEC",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0xce0B873C9049384f0d1acc51aa718d1bc36cB728",
+    "vault": "0x67Cdb77C6C641F9881cdce6a9E223411fefd507C",
+    "category": "lend",
+    "asset": "0x853d955aCEf822Db058eb8505911ED77F175b99e"
+  },
+  {
+    "address": "0x493c7058244d9c6caA9f9D1434b5151927718c5b",
+    "vault": "0x67Cdb77C6C641F9881cdce6a9E223411fefd507C",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0xAdB65534dE6CDC36A18c42cA537Dfc227A3fc0B5",
+    "vault": "0x67Cdb77C6C641F9881cdce6a9E223411fefd507C",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0x0Bf1f1E3ccf6A1089710359E312753b44BBF85f8",
+    "vault": "0x67b2D089c39c59a49F8FBDea43F5878B3A3F65C3",
+    "category": "lend",
+    "asset": "0xC0c293ce456fF0ED870ADd98a0828Dd4d2903DBF"
+  },
+  {
+    "address": "0xF1A2876Cb73db9CB6621ABb1979d95De1E338eD2",
+    "vault": "0x67b2D089c39c59a49F8FBDea43F5878B3A3F65C3",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0xb92f2CA97426712101C3fAd6FE923Fc0B3a7392B",
+    "vault": "0x67b2D089c39c59a49F8FBDea43F5878B3A3F65C3",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0x6a00B63cEBE6b5FD8F59D1C362d56AaE5938d85b",
+    "vault": "0xe7F63C75aBc21E43c7bd83aA338BFb58FF7A7178",
+    "category": "lend",
+    "asset": "0x7690202e2C2297bcD03664e31116d1dFfE7e3B73"
+  },
+  {
+    "address": "0x75ED571D550CC0967B38A28CB6ddc6bAa32618E3",
+    "vault": "0xe7F63C75aBc21E43c7bd83aA338BFb58FF7A7178",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0xf2f6fB8410f4D9FA92D07f39E9DB0BFA16c82f02",
+    "vault": "0xe7F63C75aBc21E43c7bd83aA338BFb58FF7A7178",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0xeDD06d9f3eA572509FD19846D366EEa99a6fC8B3",
+    "vault": "0xc9ae642D3A2792c429219bA641C4a2a8fB8f7dC5",
+    "category": "lend",
+    "asset": "0xD33526068D116cE69F19A9ee46F0bd304F21A51f"
+  },
+  {
+    "address": "0xe3dEB8fCe523460e7366A0c3b37Be974B0bFf154",
+    "vault": "0xc9ae642D3A2792c429219bA641C4a2a8fB8f7dC5",
+    "category": "lend",
+    "asset": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
+  },
+  {
+    "address": "0xAbaC39dba2595b53dAcf17412384d490F48cC595",
+    "vault": "0x7A0e248e1Ae9A042e5fBC7daBDbbdF1bF738B07f",
+    "category": "lend",
+    "asset": "0x6982508145454Ce325dDbE47a25d4ec3d2311933"
+  },
+  {
+    "address": "0xC75F02C67BEC49E05bc0cd370eb29F97DC0422fe",
+    "vault": "0x7A0e248e1Ae9A042e5fBC7daBDbbdF1bF738B07f",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x6b5eaE94c495b486A0e186E7f40D749c4Fd320f0",
+    "vault": "0x7A0e248e1Ae9A042e5fBC7daBDbbdF1bF738B07f",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0xe97b6874e9D49E3182C756810C5112116DF38918",
+    "vault": "0xF60535Db51E4639e0d23E4A3C2bA60194BF0f426",
+    "category": "lend",
+    "asset": "0xBe9895146f7AF43049ca1c1AE358B0541Ea49704"
+  },
+  {
+    "address": "0xe1Bd3E40d7Df19044feCDe89f599db2b2d0A6288",
+    "vault": "0xF60535Db51E4639e0d23E4A3C2bA60194BF0f426",
+    "category": "lend",
+    "asset": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
+  },
+  {
+    "address": "0x62FBFfA11EAFE27F77523E671Ac7f98859F7CF11",
+    "vault": "0x463C0B5e3f52ab27ffe02C23e803903E5E5B361f",
+    "category": "lend",
+    "asset": "0xae78736Cd615f374D3085123A210448E74Fc6393"
+  },
+  {
+    "address": "0x1Ab59933022F3813F1A655b141a1E0297def7E98",
+    "vault": "0x463C0B5e3f52ab27ffe02C23e803903E5E5B361f",
+    "category": "lend",
+    "asset": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
+  },
+  {
+    "address": "0x87Aa48Dc4e3516a9FbbE3aBeb5444145427dE75c",
+    "vault": "0x58F93Cb4ef4e3428066C848Ec4d054EDd68441Af",
+    "category": "lend",
+    "asset": "0x92D6C1e31e14520e676a687F0a93788B716BEff5"
+  },
+  {
+    "address": "0x8bf38679790027A051039F3488458f6004bd9891",
+    "vault": "0x58F93Cb4ef4e3428066C848Ec4d054EDd68441Af",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x23034F8413DF24aaAaea1a8dB79A09405dA4b459",
+    "vault": "0x58F93Cb4ef4e3428066C848Ec4d054EDd68441Af",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0x663c008Ac7448E5AA89E9fC1f1292A67a84F43FF",
+    "vault": "0x6926E507339eca2b01BeDe825d762F4EA19E13C2",
+    "category": "lend",
+    "asset": "0x72B886d09C117654aB7dA13A14d603001dE0B777"
+  },
+  {
+    "address": "0xF01bD35D52321FB69bd5B950b87DB8F165d1A0a3",
+    "vault": "0x6926E507339eca2b01BeDe825d762F4EA19E13C2",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x683C980cA38a57dcEE849553fd83Ce72cAE52C97",
+    "vault": "0x6926E507339eca2b01BeDe825d762F4EA19E13C2",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0xdBAD653D25f50A5851615fFf111737B6b5863106",
+    "vault": "0x3876cA746cC3b25f304F8da8f9F80C220C99D750",
+    "category": "lend",
+    "asset": "0x64aa3364F17a4D01c6f1751Fd97C2BD3D7e7f1D5"
+  },
+  {
+    "address": "0x8E6c2Ca678a02021a664eE401e85569aBf0dCc2F",
+    "vault": "0x3876cA746cC3b25f304F8da8f9F80C220C99D750",
+    "category": "lend",
+    "asset": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
+  },
+  {
+    "address": "0x91C37D5ea5F79a727169816D8DE39B00EdAc6d28",
+    "vault": "0xaEaFE7Ba306ca37cb7C69F6A2822541a28C116e8",
+    "category": "lend",
+    "asset": "0x111111111117dC0aa78b770fA6A738034120C302"
+  },
+  {
+    "address": "0x46601645ED5f9F768dA70aEA4326c34E0cc78d6b",
+    "vault": "0xaEaFE7Ba306ca37cb7C69F6A2822541a28C116e8",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x65ae667Dea533c2fcfe01214b39cf14355FCD3Ee",
+    "vault": "0xaEaFE7Ba306ca37cb7C69F6A2822541a28C116e8",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0xBC5983599E890443Bf7CbC56bf2B6933DBc80f02",
+    "vault": "0x0bce613Ef6a197e8C56BE525cf173c27b49aC47D",
+    "category": "lend",
+    "asset": "0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2"
+  },
+  {
+    "address": "0x5693E813B39cf2768B0cE103c9d8088e9cb45fbF",
+    "vault": "0x0bce613Ef6a197e8C56BE525cf173c27b49aC47D",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0xE8C5A2ECa2cDE8C7B03F260412D8bbB71B21e283",
+    "vault": "0x0bce613Ef6a197e8C56BE525cf173c27b49aC47D",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0xFBc74f4CFf1CF833997DD4d0A57a75687DadF7d6",
+    "vault": "0xCD7ae3373F7e76A817238261b8303FA17D2AF585",
+    "category": "lend",
+    "asset": "0xCd5fE23C85820F7B72D0926FC9b05b43E359b7ee"
+  },
+  {
+    "address": "0x9D4B3926031a9EC6f5B64274ffB3e8eD3fA296D8",
+    "vault": "0xCD7ae3373F7e76A817238261b8303FA17D2AF585",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x741b6c0F6a9DE4e5aFD85685d464332B036ea47C",
+    "vault": "0xCD7ae3373F7e76A817238261b8303FA17D2AF585",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0x078ED19fADdDB5C2b33Bcc8f40334B80BE9f83c4",
+    "vault": "0x992298cb9a6aafaDBc038dC85f1a1C012F45b67d",
+    "category": "lend",
+    "asset": "0x5fD13359Ba15A84B76f7F87568309040176167cd",
+    "conversionRate": "1.000000000099571403",
+    "underlyingAsset": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0"
+  },
+  {
+    "address": "0xdf683738D57496E08f77bD2a551BEa782d03b077",
+    "vault": "0x992298cb9a6aafaDBc038dC85f1a1C012F45b67d",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0xC97Cb442f4733A903efBE97e616aa1a605089Be7",
+    "vault": "0x992298cb9a6aafaDBc038dC85f1a1C012F45b67d",
+    "category": "lend",
+    "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+  },
+  {
+    "address": "0xb5aAAe6C5d096F4506f96F4044FB0D5fFf478fbB",
+    "vault": "0x1cdbde50F9D122CCE8fe8D08d0D482b0161fFD15",
+    "category": "lend",
+    "asset": "0x8c9532a60E0E7C6BbD2B2c1303F63aCE1c3E9811"
+  },
+  {
+    "address": "0x45758dA27E6bbBF58b7C500B19f4745Cc3B43686",
+    "vault": "0x1cdbde50F9D122CCE8fe8D08d0D482b0161fFD15",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x1a4833aC0d2c5980f5bce65d6f306eC38c6a13B0",
+    "vault": "0x1cdbde50F9D122CCE8fe8D08d0D482b0161fFD15",
+    "category": "lend",
+    "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+  },
+  {
+    "address": "0x0DBE01430343b76323aE37dA11E881c45935E48e",
+    "vault": "0x884725A8dd9E8591E851C88Eb665735f8D86da8C",
+    "category": "lend",
+    "asset": "0x84631c0d0081FDe56DeB72F6DE77abBbF6A9f93a",
+    "conversionRate": "1.000000000099571407",
+    "underlyingAsset": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0"
+  },
+  {
+    "address": "0x6C9956f7BD0873fa9e7cE1e79D076a8b8051488A",
+    "vault": "0x884725A8dd9E8591E851C88Eb665735f8D86da8C",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x1BfEc21712e47Ee9aef609518f2128875e0734b1",
+    "vault": "0x884725A8dd9E8591E851C88Eb665735f8D86da8C",
+    "category": "lend",
+    "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+  },
+  {
+    "address": "0x966837bd1bF22b72E05fCE150A62f696c35344d5",
+    "vault": "0xB5077F7561400b01106D151718099B22c4616FBF",
+    "category": "lend",
+    "asset": "0xbf5495Efe5DB9ce00f80364C8B423567e58d2110"
+  },
+  {
+    "address": "0x863a5F62d6e871d94f46e3F7ced3350899402B52",
+    "vault": "0xB5077F7561400b01106D151718099B22c4616FBF",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0xBabC78ACECa188744418E1A309EFA2A063bC3C12",
+    "vault": "0xB5077F7561400b01106D151718099B22c4616FBF",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0xb88d68Fb1fDc66008DDE8A4661718F91c2C61dc6",
+    "vault": "0x9080775f499Ef84FEd22a5A2bc13b1B2D2728687",
+    "category": "lend",
+    "asset": "0xA35b1B31Ce002FBF2058D22F30f95D405200A15b"
+  },
+  {
+    "address": "0xa134C033b2BF185414169d569B367fBDC82E2aF8",
+    "vault": "0x9080775f499Ef84FEd22a5A2bc13b1B2D2728687",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0xfB7E471Dfa620d2cA6836e99092b503b0ab0732A",
+    "vault": "0x9080775f499Ef84FEd22a5A2bc13b1B2D2728687",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0x2AaFF4C16E2491E9C8E9C0E2A5327C79d4225584",
+    "vault": "0x6cE02337e26164aF01D049A1E7FE9215De9DF31D",
+    "category": "lend",
+    "asset": "0x9D39A5DE30e57443BfF2A8307A4256c8797A3497"
+  },
+  {
+    "address": "0x9Aed7aC848e6A6e69cD21a099fcd62d6B8e31737",
+    "vault": "0x6cE02337e26164aF01D049A1E7FE9215De9DF31D",
+    "category": "lend",
+    "asset": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
+  },
+  {
+    "address": "0xB4d282cbbbcf083D6d3614F830C167Ef2f2d3fA3",
+    "vault": "0xd953cC57D906e1F2D7d6C8C50A369Ff64096DDC5",
+    "category": "lend",
+    "asset": "0x4d224452801ACEd8B2F0aebE155379bb5D594381"
+  },
+  {
+    "address": "0x3DD82b078961078a3045960AEdE6B59DC4b3be4B",
+    "vault": "0xd953cC57D906e1F2D7d6C8C50A369Ff64096DDC5",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x21dDcfc7E38a535D99136eCac1C9395DEC99fEF7",
+    "vault": "0xd953cC57D906e1F2D7d6C8C50A369Ff64096DDC5",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0x07D4a0e9255CD3Ed076f5340e6D37fDD561Afa7B",
+    "vault": "0xb3499737F35973a73A6270ae6616eca3E2dC0f65",
+    "category": "lend",
+    "asset": "0x7a4EffD87C2f3C55CA251080b1343b605f327E3a",
+    "conversionRate": "1.000000000099571403",
+    "underlyingAsset": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0"
+  },
+  {
+    "address": "0x309fB48ab256e95BB9EA46Bff339b559Aa613182",
+    "vault": "0xb3499737F35973a73A6270ae6616eca3E2dC0f65",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x44Dd9bbebe8C8fF97d62245552A5Ca1226F897C0",
+    "vault": "0xb3499737F35973a73A6270ae6616eca3E2dC0f65",
+    "category": "lend",
+    "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+  },
+  {
+    "address": "0x720ba6B092822a8F965943095CdAF06C0D110Dd0",
+    "vault": "0xf39f64D85AD89200e3b06C67F679c45798bF6a5b",
+    "category": "lend",
+    "asset": "0x3432B6A60D23Ca0dFCa7761B7ab56459D9C964D0"
+  },
+  {
+    "address": "0x950cC7D88Fd59F68bC5E85F1cdA5f7c547A1D712",
+    "vault": "0xf39f64D85AD89200e3b06C67F679c45798bF6a5b",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x86b44f024b92FdBeEe53989ef5E9DE0D8557a38d",
+    "vault": "0xf39f64D85AD89200e3b06C67F679c45798bF6a5b",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0xF081C1fB030CC6bC35bA457296742DD373F453De",
+    "vault": "0xA56D5162a4E3Bc6Ed6395b05765e18EdAa3ceDFe",
+    "category": "lend",
+    "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+  },
+  {
+    "address": "0x5a9daFA323905908FDbceD7D91CBa5711aFB17A0",
+    "vault": "0xA56D5162a4E3Bc6Ed6395b05765e18EdAa3ceDFe",
+    "category": "lend",
+    "asset": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
+  },
+  {
+    "address": "0x9F8B40E233e46503Dc5beD0A7E916Ed63b62FD51",
+    "vault": "0xE6c6Bb43D1cA6bcf2320D4c472Ad51aA747C15b1",
+    "category": "lend",
+    "asset": "0x1c085195437738d73d75DC64bC5A3E098b7f93b1"
+  },
+  {
+    "address": "0xa5De33f4EcFe74869A070b3e2d22f6147efd3510",
+    "vault": "0xE6c6Bb43D1cA6bcf2320D4c472Ad51aA747C15b1",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x020Ae25F92DBba5B849293A293b536b52adC3892",
+    "vault": "0xE6c6Bb43D1cA6bcf2320D4c472Ad51aA747C15b1",
+    "category": "lend",
+    "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+  },
+  {
+    "address": "0x86a826d52e8763fE8094EBB4D7EB85D5e25dFcc6",
+    "vault": "0x36B41888BD223dFB4a7ce2eeA75E3D82fB866A9e",
+    "category": "lend",
+    "asset": "0xbf5495Efe5DB9ce00f80364C8B423567e58d2110"
+  },
+  {
+    "address": "0xDD4e791deF19d029e05b925EA2DfA6Ae5055d740",
+    "vault": "0x36B41888BD223dFB4a7ce2eeA75E3D82fB866A9e",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0xd9Ff1F4b35F7352e74f1a4E9f6AEEb56bb1C1Be3",
+    "vault": "0x36B41888BD223dFB4a7ce2eeA75E3D82fB866A9e",
+    "category": "lend",
+    "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+  },
+  {
+    "address": "0x0a59Ad915Cf438126DefEad1Ca85eB98B26CD0C4",
+    "vault": "0xaE64A1a45C1d2A85e01449d85010Ab1671eeC7eF",
+    "category": "lend",
+    "asset": "0x6c9f097e044506712B58EAC670c9a5fd4BCceF13"
+  },
+  {
+    "address": "0x57C0A5F2c987d0E3B3607f03Be74BBBAAA76c20f",
+    "vault": "0xaE64A1a45C1d2A85e01449d85010Ab1671eeC7eF",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x88238256E842349f176b66E62c2Af8a6c5B149d2",
+    "vault": "0xaE64A1a45C1d2A85e01449d85010Ab1671eeC7eF",
+    "category": "lend",
+    "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+  },
+  {
+    "address": "0xf28AF4E48F6B70cEDEB87097c3D224D52BB53eE5",
+    "vault": "0x26a334F76A1aC40Bb6094131f7D30BBA0c08D4c6",
+    "category": "lend",
+    "asset": "0xCd5fE23C85820F7B72D0926FC9b05b43E359b7ee"
+  },
+  {
+    "address": "0xfC18009c329f58724C87f2682C4CdEcE17C55E8b",
+    "vault": "0x26a334F76A1aC40Bb6094131f7D30BBA0c08D4c6",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x4482E26ee5fEB318c2EBe0e00891f834739949C6",
+    "vault": "0x26a334F76A1aC40Bb6094131f7D30BBA0c08D4c6",
+    "category": "lend",
+    "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+  },
+  {
+    "address": "0x40d851e8186B61e8D34897Bc4378fBb52eb5cc37",
+    "vault": "0x03E543365cb2C762c31D5BE4555E871d17155Ac7",
+    "category": "lend",
+    "asset": "0xeEE8aED1957ca1545a0508AfB51b53cCA7e3c0d1"
+  },
+  {
+    "address": "0xC1811E05AE408d1D42c8891A25134c95C58fF003",
+    "vault": "0x03E543365cb2C762c31D5BE4555E871d17155Ac7",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0xED1a77E77559e0Fc50CCF21F281112a1d74a416f",
+    "vault": "0x03E543365cb2C762c31D5BE4555E871d17155Ac7",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  },
+  {
+    "address": "0x7b0c729d5bb4BAA7b9f055283929FB115188d374",
+    "vault": "0xa2AED60DbDd09c91C2e686E948592dc1c1Cd0cc6",
+    "category": "lend",
+    "asset": "0x6ee2b5E19ECBa773a352E5B21415Dc419A700d1d"
+  },
+  {
+    "address": "0xa13f11D61912773E98921aB6E4cbD0a885EE77D7",
+    "vault": "0xa2AED60DbDd09c91C2e686E948592dc1c1Cd0cc6",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x7f3dCC5455dE53EE57bd0dF8A0e1c3012e412937",
+    "vault": "0xa2AED60DbDd09c91C2e686E948592dc1c1Cd0cc6",
+    "category": "lend",
+    "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+  },
+  {
+    "address": "0x7754092F41E0f54174E939b1B6785dD2c99B5dfE",
+    "vault": "0xf2443e687Ec149B9b1571AB5017e242017B42fCb",
+    "category": "lend",
+    "asset": "0x248241244356D18f63d0c16082996839ecB0C7bF"
+  },
+  {
+    "address": "0xCBB09be98B8A255Be7d478AA7BF00529B45bD811",
+    "vault": "0xf2443e687Ec149B9b1571AB5017e242017B42fCb",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0x06eFC70BE75608D4dc275C47AAbFc1B86615c228",
+    "vault": "0xf2443e687Ec149B9b1571AB5017e242017B42fCb",
+    "category": "lend",
+    "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+  },
+  {
+    "address": "0x513090eedeA25BDAbBE4a51c7BaA1f08E3054B0e",
+    "vault": "0x9318a4aF26Ad2A2D2c5783BBc90Bd809f72a47df",
+    "category": "lend",
+    "asset": "0xA1290d69c65A6Fe4DF752f95823fae25cB99e5A7"
+  },
+  {
+    "address": "0xc1f7682280387Ff216F7Ea9bc58c374A61e5ba1A",
+    "vault": "0x9318a4aF26Ad2A2D2c5783BBc90Bd809f72a47df",
+    "category": "lend",
+    "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    "address": "0xbc505178038aD9B3e0CF8CaF6bf6A62ca8cf9b82",
+    "vault": "0x9318a4aF26Ad2A2D2c5783BBc90Bd809f72a47df",
+    "category": "lend",
+    "asset": "0xd7C9F0e536dC865Ae858b0C0453Fe76D13c3bEAc"
+  }
+]
