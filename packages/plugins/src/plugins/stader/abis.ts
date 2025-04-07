@@ -41,3 +41,13 @@ export const sdCollateralPoolAbi = [
     type: 'function',
   },
 ] as const;
+
+export const staderStakingPoolManagerAbi = [
+  {
+    inputs: [],
+    name: 'getExchangeRate',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const;

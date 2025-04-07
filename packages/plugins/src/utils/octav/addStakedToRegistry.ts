@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { Address } from 'viem';
 import { ElementRegistry } from '../elementbuilder/ElementRegistry';
 import { LoggingContext, verboseLog } from './loggingUtils';
@@ -6,7 +7,7 @@ export const addStakedToRegistry = (
   registry: ElementRegistry,
   assetName: string,
   assetContractAddress: Address,
-  amount: number,
+  amount: number | BigNumber | string,
   logCtx?: LoggingContext
 ): ElementRegistry => {
   const element = registry.addElementMultiple({
