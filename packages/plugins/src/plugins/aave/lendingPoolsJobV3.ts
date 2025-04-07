@@ -3,25 +3,26 @@ import {
   borrowLendRatesPrefix,
   formatTokenAddress,
 } from '@sonarwatch/portfolio-core';
-import { formatReservesAndIncentives } from '@aave/math-utils-v2';
+import { formatReservesAndIncentives } from '@aave/math-utils-v3';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import {
-  aave2PlatformId,
+  aave3PlatformId,
   lendingPoolsPrefix,
-  v2lendingConfigs,
+  v3lendingConfigs,
 } from './constants';
-import {
-  getRates,
-  getTokenPriceSourceFromReserve,
-  getUiProviders,
-} from './helpers';
-import { LendingData } from './types';
+import { LendingDataV3 } from './types';
+import { getRates, getTokenPriceSourceFromReserve } from './helpers';
+import { getUiProvidersV3 } from './helpersV3';
 
-const PLATFORM_ID = aave2PlatformId;
+const PLATFORM_ID = aave3PlatformId;
 
+/*
+ * Essentially the same as lendingPoolsJob.ts, but uses an updated library for v3.
+ * The previous library throws an error with v3 contracts.
+ */
 const executor: JobExecutor = async (cache: Cache) => {
-  const lendingConfigsArray = Array.from(v2lendingConfigs.values()).flat();
+  const lendingConfigsArray = Array.from(v3lendingConfigs.values()).flat();
 
   const currentTimestamp = Math.round(Date.now() / 1000);
   for (let i = 0; i < lendingConfigsArray.length; i++) {
@@ -31,7 +32,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     const { lendingPoolAddressProvider, chainId, networkId, elementName } =
       lendingConfig;
 
-    const { poolDataProvider, incentiveDataProvider } = getUiProviders(
+    const { poolDataProvider, incentiveDataProvider } = getUiProvidersV3(
       networkId,
       lendingConfig
     );
@@ -81,7 +82,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       });
     }
 
-    const lendingData: LendingData = {
+    const lendingData: LendingDataV3 = {
       lendingPoolAddressProvider,
       chainId,
       networkId,
@@ -109,6 +110,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
       const underlyingAssetPrice = underlyingAssetPrices[j];
       if (!underlyingAssetPrice) continue;
+
       const source = getTokenPriceSourceFromReserve(
         aTokenAddress,
         networkId,

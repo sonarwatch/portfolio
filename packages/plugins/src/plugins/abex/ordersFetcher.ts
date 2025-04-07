@@ -22,6 +22,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (!positionInfoList.length) return [];
 
   const elementRegistry = new ElementRegistry(NetworkId.sui, platformId);
+
   const element = elementRegistry.addElementMultiple({
     label: 'Deposit',
     tags: ['Orders'],

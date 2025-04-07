@@ -1,0 +1,54 @@
+import { EvmNetworkIdType } from '@sonarwatch/portfolio-core';
+import { Address, getAddress } from 'viem';
+import { getEvmClient } from '../../../utils/clients';
+import { getEigenLayerOperators } from '../helper';
+import { abi } from '../abi';
+
+export const getYieldPositions = async (networkId: EvmNetworkIdType) => {
+  const client = getEvmClient(networkId);
+
+  const operators = await getEigenLayerOperators();
+  // Get all the strategies addresses from the operators
+  const strategies = Array.from(
+    new Set<Address>(
+      operators.data
+        .flatMap((operator) => operator.shares)
+        .map((share) => share.strategyAddress)
+    )
+  );
+
+  // Get the underlying token addresses from the strategies
+  const underlyingTokensResult = await client.multicall({
+    contracts: strategies.map((strategy) => ({
+      address: getAddress(strategy),
+      abi: [abi.underlyingToken],
+      functionName: abi.underlyingToken.name,
+    })),
+  });
+
+  // Map the underlying token with the strategy address
+  const strategiesAndUnderlyingTokens = strategies.map((strategy, i) => ({
+    strategyAddress: getAddress(strategy),
+    underlyingToken: underlyingTokensResult[i].result,
+  }));
+
+  // Get decimals of underlying token
+  const decimals = await client.multicall({
+    contracts: strategiesAndUnderlyingTokens
+      .filter((strategy) => strategy.underlyingToken)
+      .map((strategy) => ({
+        address: getAddress(strategy.underlyingToken as Address),
+        abi: [abi.decimals],
+        functionName: abi.decimals.name,
+      })),
+  });
+
+  // Construct the strategies and underlying tokens with decimals
+  const strategiesAndUnderlyingTokensWithDecimals =
+    strategiesAndUnderlyingTokens.map((strategy, i) => ({
+      ...strategy,
+      decimals: decimals[i]?.result,
+    }));
+
+  return strategiesAndUnderlyingTokensWithDecimals;
+};

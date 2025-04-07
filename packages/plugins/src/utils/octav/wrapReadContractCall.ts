@@ -20,8 +20,11 @@ export const wrapReadContractCall = async <
    */
   params: Omit<AbiCallsContext, 'functionName'>
 ): Promise<ReadContractReturnType<TAbi, TFunctionName> | undefined> => {
-  const { logCtx } = params;
   const { functionName } = readContractParams;
+  const logCtx = {
+    ...params.logCtx,
+    fn: `${params.logCtx.fn}::${functionName}::wrapReadContractCall`,
+  };
 
   verboseLog(
     { ...logCtx, readContractParams },

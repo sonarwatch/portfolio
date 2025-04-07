@@ -7,9 +7,12 @@
     "@sonarwatch/portfolio-core": "^0.14.0"
   },
   "dependencies": {
-    "@aave/contract-helpers": "^1.28.2",
-    "@aave/math-utils": "^1.28.2",
+    "@aave/contract-helpers-v2": "npm:@aave/contract-helpers@1.28.2",
+    "@aave/contract-helpers-v3": "npm:@aave/contract-helpers@^1.33.1",
+    "@aave/math-utils-v2": "npm:@aave/math-utils@1.28.2",
+    "@aave/math-utils-v3": "npm:@aave/math-utils@^1.33.1",
     "@aptos-labs/ts-sdk": "^1.19.0",
+    "@bgd-labs/aave-address-book": "^4.17.2",
     "@bonfida/spl-name-service": "^3.0.8",
     "@cosmjs/cosmwasm-stargate": "^0.31.1",
     "@drift-labs/sdk": "^2.110.0-beta.13",

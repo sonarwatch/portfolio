@@ -1,10 +1,11 @@
-import { formatEvmAddress, PortfolioElement } from '@sonarwatch/portfolio-core';
-import { Address } from 'viem';
+import { PortfolioElement } from '@sonarwatch/portfolio-core';
+import { getAddress } from 'viem';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { NETWORK_ID, platformId } from './constants';
 
 import { Cache } from '../../Cache';
 import { getEvmClient } from '../../utils/clients';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import {
   fetchStakedPermissionsLessNodeRegistry,
   generateReadContractParamsForStakedCollateralPool,
@@ -20,7 +21,7 @@ const executor: FetcherExecutor = async (
   owner: string,
   cache: Cache
 ): Promise<PortfolioElement[]> => {
-  const ownerAddress: Address = formatEvmAddress(owner) as Address;
+  const ownerAddress = getAddress(owner);
   const logCtx = {
     fn: 'staderStakingEthereumFetcher::executor',
     ownerAddress,
@@ -28,8 +29,9 @@ const executor: FetcherExecutor = async (
   };
 
   const client = getEvmClient(NETWORK_ID);
+  const elementRegistry = new ElementRegistry(NETWORK_ID, platformId);
   const params: StaderFetcherParams = {
-    cache,
+    elementRegistry,
     logCtx,
   };
 
@@ -44,7 +46,7 @@ const executor: FetcherExecutor = async (
     client.multicall({ contracts: multicallInputs }),
   ]);
 
-  const results = await Promise.all([
+  await Promise.all([
     permissionsLessNodeResult,
     processFetchStakedEthxResult(params, {
       input: multicallInputs[0],
@@ -60,7 +62,7 @@ const executor: FetcherExecutor = async (
     }),
   ]);
 
-  return results.filter((r): r is PortfolioElement => !!r);
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

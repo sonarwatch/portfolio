@@ -1,12 +1,9 @@
-import {
-    ethereumNativeAddress,
-    PortfolioElement,
-} from '@sonarwatch/portfolio-core';
+import { ethereumNativeAddress } from '@sonarwatch/portfolio-core';
 import { Address } from 'viem';
 import { getEvmClient } from '../../utils/clients';
 import { balanceOfErc20ABI } from '../../utils/evm/erc20Abi';
-import { createStakedPortfolioElement } from '../../utils/octav/createStakedPortfolioElement';
-import { extractMulticallResult } from '../../utils/octav/extractMulticallResult';
+import { addStakedToRegistry } from '../../utils/octav/addStakedToRegistry';
+import { extractMulticallIOResult } from '../../utils/octav/extractMulticallIOResult';
 import { convertBigIntToNumber } from '../../utils/octav/tokenFactor';
 import { MulticallIO } from '../../utils/octav/types/multicallIO';
 import { wrapReadContractCall } from '../../utils/octav/wrapReadContractCall';
@@ -23,11 +20,15 @@ import {
     CONTRACT_ADDRESS_STADER_UTILITY_POOL_ETHEREUM_MAINNET,
     DECIMALS_ON_CONTRACT_STADER_TOKEN,
     NETWORK_ID,
-    platformId,
+    TOKEN_NAME_STADER_ETH,
+    TOKEN_NAME_STADER_ETHX,
+    TOKEN_NAME_STADER_SD,
 } from './constants';
 import { StaderFetcherParams } from './types';
 
-export const generateReadContractParamsForStakedEthx = (ownerAddress: Address) =>
+export const generateReadContractParamsForStakedEthx = (
+  ownerAddress: Address
+) =>
   ({
     address: CONTRACT_ADDRESS_ETHX_TOKEN_ETHEREUM_MAINNET,
     abi: balanceOfErc20ABI,
@@ -85,32 +86,28 @@ export const generateReadContractParamsForGetOperatorTotalKeys = (
 export const processFetchStakedEthxResult = async (
   params: StaderFetcherParams,
   multicallIO: MulticallIO<typeof balanceOfErc20ABI, 'balanceOf'>
-): Promise<PortfolioElement | undefined> => {
+): Promise<void> => {
   const logCtx = {
     ...params.logCtx,
     fn: `${params.logCtx.fn}::processFetchStakedEthxResult`,
   };
-  const contractAddress = multicallIO.input.address;
 
-  const balance = extractMulticallResult(multicallIO.output, {
-    functionName: multicallIO.input.functionName,
+  const balance = extractMulticallIOResult(multicallIO, {
     logCtx,
   });
 
   if (!balance) {
-    return undefined;
+    return;
   }
 
-  return createStakedPortfolioElement(
-    platformId,
-    NETWORK_ID,
-    contractAddress,
-    contractAddress,
+  addStakedToRegistry(
+    params.elementRegistry,
+    TOKEN_NAME_STADER_ETHX,
+    multicallIO.input.address,
     convertBigIntToNumber(
       balance.toString(),
       DECIMALS_ON_CONTRACT_STADER_TOKEN
     ),
-    params.cache,
     logCtx
   );
 };
@@ -121,31 +118,30 @@ export const processFetchStakedUtilityPoolResult = async (
     typeof sdUtilityPoolAbi,
     'getDelegatorLatestSDBalance'
   >
-): Promise<PortfolioElement | undefined> => {
+): Promise<void> => {
   const logCtx = {
     ...params.logCtx,
     fn: `${params.logCtx.fn}::processFetchStakedUtilityPoolResult`,
   };
 
-  const latestSDBalance = extractMulticallResult(multicallIO.output, {
-    functionName: multicallIO.input.functionName,
+  const latestSDBalance = extractMulticallIOResult(multicallIO, {
     logCtx,
   });
 
   if (!latestSDBalance) {
-    return undefined;
+    return;
   }
 
-  return createStakedPortfolioElement(
-    platformId,
-    NETWORK_ID,
-    multicallIO.input.address,
+  addStakedToRegistry(
+    params.elementRegistry,
+    TOKEN_NAME_STADER_SD,
+    // We don't use multicallIO.input.address here because it's the address of the utility pool
+    // and we need to use the address of the stader token contract.
     CONTRACT_ADDRESS_STADER_TOKEN_ETHEREUM_MAINNET,
     convertBigIntToNumber(
       latestSDBalance.toString(),
       DECIMALS_ON_CONTRACT_STADER_TOKEN
     ),
-    params.cache,
     logCtx
   );
 };
@@ -153,31 +149,25 @@ export const processFetchStakedUtilityPoolResult = async (
 export const processFetchStakedCollateralPoolResult = async (
   params: StaderFetcherParams,
   multicallIO: MulticallIO<typeof sdCollateralPoolAbi, 'operatorSDBalance'>
-): Promise<PortfolioElement | undefined> => {
+): Promise<void> => {
   const logCtx = {
     ...params.logCtx,
     fn: `${params.logCtx.fn}::processFetchStakedCollateralPoolResult`,
   };
 
-  const collateralBalance = extractMulticallResult(multicallIO.output, {
-    functionName: multicallIO.input.functionName,
+  const collateralBalance = extractMulticallIOResult(multicallIO, {
     logCtx,
   });
 
   if (!collateralBalance) {
-    return undefined;
+    return;
   }
 
-  return createStakedPortfolioElement(
-    platformId,
-    NETWORK_ID,
-    multicallIO.input.address,
+  addStakedToRegistry(
+    params.elementRegistry,
+    TOKEN_NAME_STADER_SD,
     CONTRACT_ADDRESS_STADER_TOKEN_ETHEREUM_MAINNET,
-    convertBigIntToNumber(
-      collateralBalance.toString(),
-      DECIMALS_ON_CONTRACT_STADER_TOKEN
-    ),
-    params.cache,
+    Number(collateralBalance),
     logCtx
   );
 };
@@ -185,7 +175,7 @@ export const processFetchStakedCollateralPoolResult = async (
 export const fetchStakedPermissionsLessNodeRegistry = async (
   owner: Address,
   params: StaderFetcherParams
-): Promise<PortfolioElement | undefined> => {
+): Promise<void> => {
   const logCtx = {
     ...params.logCtx,
     fn: `${params.logCtx.fn}::fetchStakedPermissionsLessNodeRegistry`,
@@ -200,29 +190,26 @@ export const fetchStakedPermissionsLessNodeRegistry = async (
       contracts: [operatorIDByAddressInput, getCollateralETHInput],
     });
 
-  // The following explicit type cast is needed to get TypeScript to infer the correct type
-  // from the ABI.
-  // This approach is needed because operatorId value is re-used below and is expected to be a bigint.
-  // This approach is more robust than force-casting to bigint (and potentially shooting ourselves in the foot).
-  // The other calls to extractMulticallResult() do not need this because we're only checking the result
-  // and not re-using the type.
-  const operatorId = extractMulticallResult<
-    typeof permissionsLessNodeRegistryAbi,
-    'operatorIDByAddress'
-  >(operatorIDByAddressResult, {
-    functionName: operatorIDByAddressInput.functionName,
+  const operatorIDByAddressMulticallIO = {
+    input: operatorIDByAddressInput,
+    output: operatorIDByAddressResult,
+  };
+  const operatorId = extractMulticallIOResult(operatorIDByAddressMulticallIO, {
     logCtx,
   });
   if (!operatorId) {
-    return undefined;
+    return;
   }
 
-  const rawCollateralEth = extractMulticallResult(getCollateralETHResult, {
-    functionName: getCollateralETHInput.functionName,
+  const getCollateralETHMulticallIO = {
+    input: getCollateralETHInput,
+    output: getCollateralETHResult,
+  };
+  const rawCollateralEth = extractMulticallIOResult(getCollateralETHMulticallIO, {
     logCtx,
   });
   if (!rawCollateralEth) {
-    return undefined;
+    return;
   }
 
   const collateralEth = convertBigIntToNumber(
@@ -236,21 +223,21 @@ export const fetchStakedPermissionsLessNodeRegistry = async (
     client,
     getOperatorTotalKeysInput,
     {
+      abiCallInput: getOperatorTotalKeysInput,
       logCtx,
     }
   );
 
   if (!operatorTotalKeys) {
-    return undefined;
+    return;
   }
 
-  return createStakedPortfolioElement(
-    platformId,
-    NETWORK_ID,
-    getOperatorTotalKeysInput.address,
+  addStakedToRegistry(
+    params.elementRegistry,
+    TOKEN_NAME_STADER_ETH,
+    // The collateral pool contains ETH, so we need to use the ETH address here
     ethereumNativeAddress,
     Number(operatorTotalKeys) * collateralEth,
-    params.cache,
     logCtx
   );
 };

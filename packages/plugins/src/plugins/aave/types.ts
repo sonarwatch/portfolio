@@ -1,31 +1,73 @@
-import { ReservesIncentiveDataHumanized } from '@aave/contract-helpers';
 import {
   formatReservesAndIncentives,
+  ReservesIncentiveDataHumanized,
   UserIncentiveDict,
-} from '@aave/math-utils';
-import { NetworkIdType } from '@sonarwatch/portfolio-core';
+} from '@aave/math-utils-v2';
+import {
+  ReservesIncentiveDataHumanized as ReservesIncentiveDataHumanizedV3,
+  formatReservesAndIncentives as formatReservesAndIncentivesV3,
+} from '@aave/math-utils-v3';
+import { EvmNetworkIdType } from '@sonarwatch/portfolio-core';
+import { Abi, Address } from 'viem';
 
 type FormattedReserves = ReturnType<typeof formatReservesAndIncentives>;
+export type FormattedReserve = FormattedReserves[number];
+
+export type FormattedReservesV3 = ReturnType<
+  typeof formatReservesAndIncentivesV3
+>;
 
 export type LendingConfig = {
   chainId: number;
-  networkId: NetworkIdType;
+  networkId: EvmNetworkIdType;
   elementName: string;
   lendingPoolAddressProvider: string;
   uiIncentiveDataProviderAddress: string;
   uiPoolDataProviderAddress: string;
-  version: number;
+  version: 2 | 3;
+};
+
+export type YieldConfig = {
+  networkId: EvmNetworkIdType;
+  elementName: string;
+  factory: Address;
+  isLegacy: boolean;
+};
+
+export interface StakingConfig {
+  name: string;
+  platformId: string;
+  stakedAssetAddress: Address;
+  rewardAssetAddress: Address;
+  stakingTokenAddress: Address;
+}
+
+export type YieldData = {
+  conversionRate: string;
+  underlyingAssetAddress: Address;
+  elementName: string;
 };
 
 export type LendingData = {
   lendingPoolAddressProvider: string;
   chainId: number;
-  networkId: NetworkIdType;
+  networkId: EvmNetworkIdType;
   currentTimestamp: number;
   marketReferencePriceInUsd: string;
   marketReferenceCurrencyDecimals: number;
   formattedReserves: FormattedReserves;
   reserveIncentives: ReservesIncentiveDataHumanized[];
+};
+
+export type LendingDataV3 = {
+  lendingPoolAddressProvider: string;
+  chainId: number;
+  networkId: EvmNetworkIdType;
+  currentTimestamp: number;
+  marketReferencePriceInUsd: string;
+  marketReferenceCurrencyDecimals: number;
+  formattedReserves: FormattedReservesV3;
+  reserveIncentives: ReservesIncentiveDataHumanizedV3[];
 };
 
 export type UserReserveData = {
@@ -41,8 +83,17 @@ export type UserReserveData = {
   stableBorrowAPY: string;
 };
 
+export type UserReserveDataV3 = {
+  underlyingAsset: string;
+  underlyingBalance: string;
+  underlyingBalanceUSD: string;
+  variableBorrows: string;
+  variableBorrowsUSD: string;
+  reserve: ReserveYieldInfo;
+};
+
 export type UserSummary = {
-  userReservesData: UserReserveData[];
+  userReservesData: UserReserveData[] | UserReserveDataV3[];
   calculatedUserIncentives: UserIncentiveDict;
 };
 
