@@ -10,17 +10,17 @@ import { Address } from 'viem';
 
 export async function generateActiveStakeElement(
   activeStakeContract: RenzoStakedContractConfig,
-  owner: string,
+  owner: Address,
   networkId: EvmNetworkIdType
 ): Promise<bigint | undefined> {
-  const { address, token } = activeStakeContract;
+  const { address } = activeStakeContract;
 
   const client = getEvmClient(networkId);
   const activeStake = await client.readContract({
     address,
     abi: activeStakeAbi,
     functionName: 'activeStake',
-    args: [owner as Address],
+    args: [owner],
   });
 
   return activeStake;
@@ -28,7 +28,7 @@ export async function generateActiveStakeElement(
 
 export async function generateDepositElement(
   depositContract: RenzoContractConfig,
-  owner: string,
+  owner: Address,
   networkId: EvmNetworkIdType
 ): Promise<Array<{ token: Address; balance: bigint }>> {
   const { address } = depositContract;
@@ -38,17 +38,17 @@ export async function generateDepositElement(
     address,
     abi: getOutstandingWithdrawRequestsAbi,
     functionName: 'getOutstandingWithdrawRequests',
-    args: [owner as Address],
+    args: [owner],
   });
 
   if (!numOfRequests || numOfRequests === BigInt(0)) return [];
 
   const withdrawRequestsAnswers = await client.multicall({
     contracts: Array.from({ length: Number(numOfRequests) }, (_, index) => ({
-      address: address as Address,
+      address: address,
       abi: withdrawRequestAbi,
       functionName: 'withdrawRequests',
-      args: [owner as Address, BigInt(index)],
+      args: [owner, BigInt(index)],
     })),
   });
 
