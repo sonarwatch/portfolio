@@ -7,6 +7,7 @@ import {
   withdrawRequestAbi,
 } from './abis';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { Address } from 'viem';
 
 export function generateStakedElements(
   stakedContracts: RenzoStakedContractConfig[],
@@ -38,7 +39,7 @@ export async function generateActiveStakeElement(
     address,
     abi: activeStakeAbi,
     functionName: 'activeStake',
-    args: [owner as `0x${string}`],
+    args: [owner as Address],
   });
 
   if (!activeStake || activeStake === BigInt(0)) return;
@@ -61,17 +62,17 @@ export async function generateDepositElement(
     address,
     abi: getOutstandingWithdrawRequestsAbi,
     functionName: 'getOutstandingWithdrawRequests',
-    args: [owner as `0x${string}`],
+    args: [owner as Address],
   });
 
   if (!numOfRequests || numOfRequests === BigInt(0)) return;
 
   const withdrawRequestsAnswers = await client.multicall({
     contracts: Array.from({ length: Number(numOfRequests) }, (_, index) => ({
-      address: address as `0x${string}`,
+      address: address as Address,
       abi: withdrawRequestAbi,
       functionName: 'withdrawRequests',
-      args: [owner as `0x${string}`, BigInt(index)],
+      args: [owner as Address, BigInt(index)],
     })),
   });
 

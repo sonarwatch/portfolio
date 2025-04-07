@@ -1,11 +1,12 @@
 import { EvmNetworkIdType } from '@sonarwatch/portfolio-core';
+import { Address } from 'viem';
 
 export type RenzoContractConfig = {
-  address: `0x${string}`;
+  address: Address;
 };
 
 export type RenzoStakedContractConfig = RenzoContractConfig & {
-  token: `0x${string}`;
+  token: Address;
 };
 
 export type RenzoNetworkConfig = {
