@@ -8,14 +8,11 @@ import {
   PLATFORM_ID,
   SILOS_POOLS_KEY,
   LEGACY_LENS_ADDRESS,
-  SUPPLY_TAG,
-  BORROW_TAG,
   MISSING_TOKEN_PRICE_ADDRESSES,
 } from './constants';
 import { balanceAbi } from './abis';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { SiloPool } from './types';
-import { getAmount } from '../../utils/octav/tokenFactor';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 function fetcher(networkId: EvmNetworkIdType): Fetcher {
   const executor: FetcherExecutor = async (
@@ -30,6 +27,7 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
     if (!pools) return [];
 
     const client = getEvmClient(networkId);
+    const elementRegistry = new ElementRegistry(networkId, PLATFORM_ID);
 
     const poolCalls = pools.flatMap<ContractFunctionConfig<typeof balanceAbi>>(
       (pool) => [
@@ -60,20 +58,20 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
     );
 
     // Process balances and create assets
-    const assets = await Promise.all(
+    await Promise.all(
       pools.map(async (pool, i) => {
         const collateralRes = collateralBalances[i];
         const debtRes = debtBalances[i];
 
         if (collateralRes.status !== 'success' || debtRes.status !== 'success')
-          return undefined;
+          return;
 
         // Handle missing token prices by getting price from underlying asset
         const isMissingPrice = MISSING_TOKEN_PRICE_ADDRESSES.includes(
           pool.asset as Address
         );
         if (isMissingPrice && (!pool.underlyingAsset || !pool.conversionRate))
-          return undefined;
+          return;
 
         const poolAsset = isMissingPrice ? pool.underlyingAsset : pool.asset;
         const conversionRate = isMissingPrice
@@ -88,57 +86,30 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
           conversionRate
         );
 
-        if (collateral.isZero() && debt.isZero()) return undefined;
+        if (collateral.isZero() && debt.isZero()) return;
 
         const tokenPrice = await cache.getTokenPrice(poolAsset!, networkId);
-        if (!tokenPrice?.price) return undefined;
+        if (!tokenPrice?.price) return;
 
-        return {
-          ...pool,
-          collateralAmount: getAmount(collateral, tokenPrice),
-          debtAmount: getAmount(debt, tokenPrice),
-          asset: tokenPriceToAssetToken(
-            pool.asset,
-            getAmount(collateral.isZero() ? debt : collateral, tokenPrice),
-            networkId,
-            tokenPrice,
-            tokenPrice?.price || 0,
-            { tags: [collateral.isZero() ? BORROW_TAG : SUPPLY_TAG] }
-          ),
-        };
+        const element = elementRegistry.addElementBorrowlend({
+          label: 'Lending',
+        });
+        if (!collateral.isZero()) {
+          element.addSuppliedAsset({
+            address: poolAsset!,
+            amount: collateral.toString(),
+          });
+        }
+        if (!debt.isZero()) {
+          element.addBorrowedAsset({
+            address: poolAsset!,
+            amount: debt.toString(),
+          });
+        }
       })
     );
 
-    const validAssets = assets.filter((asset) => !!asset);
-    if (validAssets.length === 0) return [];
-
-    // Group by vault
-    const vaultGroups = validAssets.reduce((acc, asset) => {
-      if (!acc[asset.vault]) {
-        acc[asset.vault] = [];
-      }
-      acc[asset.vault].push(asset);
-      return acc;
-    }, {} as { [vault: string]: typeof validAssets });
-
-    // Create portfolio elements for each vault
-    return Object.entries(vaultGroups).map(([, vaultAssets]) => ({
-      type: 'multiple',
-      label: 'Lending',
-      networkId,
-      platformId: PLATFORM_ID,
-      value: vaultAssets.reduce((sum, asset) => {
-        if (!asset.asset?.value) return sum;
-        const isSupply = asset.asset.attributes?.tags?.includes(SUPPLY_TAG);
-        const isBorrow = asset.asset.attributes?.tags?.includes(BORROW_TAG);
-        if (isSupply) return sum + asset.asset.value;
-        if (isBorrow) return sum - asset.asset.value;
-        return sum;
-      }, 0),
-      data: {
-        assets: vaultAssets.map((asset) => asset.asset).filter((a) => a),
-      },
-    }));
+    return elementRegistry.getElements(cache);
   };
 
   return {

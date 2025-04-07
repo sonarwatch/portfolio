@@ -79,6 +79,6 @@ export default function getSiloVaultsJob(networkId: EvmNetworkIdType): Job {
   return {
     id: `${PLATFORM_ID}-${networkId}-vaults`,
     executor,
-    labels: [networkId] as const,
+    labels: ['normal'] as const,
   };
 }
