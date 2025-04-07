@@ -66,12 +66,6 @@ export const siloVaults: Address[] = [
   '0x9318a4aF26Ad2A2D2c5783BBc90Bd809f72a47df',
 ];
 
-export const siloRouters: Address[] = [
-  '0xb2374f84b3cEeFF6492943Df613C9BcF45322a0c',
-  '0x8658047e48CC09161f4152c79155Dac1d710Ff0a',
-  '0xF380F025675A868eD5614a1Dd77c6b05f4147004',
-];
-
 export const legacyLensAddress: Address =
   '0xf12C3758c1eC393704f0Db8537ef7F57368D92Ea';
 
