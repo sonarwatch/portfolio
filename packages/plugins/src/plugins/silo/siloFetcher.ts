@@ -1,5 +1,6 @@
 import { EvmNetworkIdType, PortfolioElement } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
+import { ContractFunctionConfig } from 'viem';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getEvmClient } from '../../utils/clients';
@@ -29,28 +30,30 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
 
     const client = getEvmClient(networkId);
 
-    const poolCalls = pools.flatMap((pool) => [
-      {
-        address: legacyLensAddress,
-        abi: balanceAbi,
-        functionName: 'collateralBalanceOfUnderlying',
-        args: [
-          pool.vault as `0x${string}`,
-          pool.asset as `0x${string}`,
-          owner as `0x${string}`,
-        ],
-      } as const,
-      {
-        address: legacyLensAddress,
-        abi: balanceAbi,
-        functionName: 'debtBalanceOfUnderlying',
-        args: [
-          pool.vault as `0x${string}`,
-          pool.asset as `0x${string}`,
-          owner as `0x${string}`,
-        ],
-      } as const,
-    ]);
+    const poolCalls = pools.flatMap<ContractFunctionConfig<typeof balanceAbi>>(
+      (pool) => [
+        {
+          address: legacyLensAddress,
+          abi: balanceAbi,
+          functionName: 'collateralBalanceOfUnderlying',
+          args: [
+            pool.vault as `0x${string}`,
+            pool.asset as `0x${string}`,
+            owner as `0x${string}`,
+          ],
+        } as const,
+        {
+          address: legacyLensAddress,
+          abi: balanceAbi,
+          functionName: 'debtBalanceOfUnderlying',
+          args: [
+            pool.vault as `0x${string}`,
+            pool.asset as `0x${string}`,
+            owner as `0x${string}`,
+          ],
+        } as const,
+      ]
+    );
 
     const collateralBalancesAndDebtBalances = await client.multicall({
       contracts: poolCalls,
@@ -74,15 +77,16 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
           return null;
 
         // Handle missing token prices by getting price from underlying asset
-        let poolAsset = pool.asset;
-        let conversionRate = BigNumber(1);
-        if (missingTokenPriceAddresses.includes(pool.asset as `0x${string}`)) {
-          if (!pool.underlyingAsset || !pool.conversionRate) {
-            return null;
-          }
-          poolAsset = pool.underlyingAsset;
-          conversionRate = new BigNumber(pool.conversionRate.toString());
-        }
+        const isMissingPrice = missingTokenPriceAddresses.includes(
+          pool.asset as `0x${string}`
+        );
+        if (isMissingPrice && (!pool.underlyingAsset || !pool.conversionRate))
+          return null;
+
+        const poolAsset = isMissingPrice ? pool.underlyingAsset : pool.asset;
+        const conversionRate = isMissingPrice
+          ? new BigNumber(pool.conversionRate!.toString())
+          : BigNumber(1);
 
         const collateral = new BigNumber(
           collateralRes.result.toString()
@@ -94,7 +98,7 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
 
         if (collateral.isZero() && debt.isZero()) return null;
 
-        const tokenPrice = await cache.getTokenPrice(poolAsset, networkId);
+        const tokenPrice = await cache.getTokenPrice(poolAsset!, networkId);
         if (!tokenPrice?.price) return null;
 
         return {

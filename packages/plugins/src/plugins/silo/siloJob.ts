@@ -1,22 +1,21 @@
 import { BigNumber } from 'bignumber.js';
 
+import { EvmNetworkIdType } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getEvmClient } from '../../utils/clients';
 import { conversionRateAbi, poolAbi } from './abis';
 import {
-  networkId,
   platformId,
   siloPoolsKey,
   siloVaults,
-  siloRouters,
   missingTokenPriceAddresses,
 } from './constants';
 import { SiloPool } from './types';
 
 const CONVERSION_RATE_DIVISOR = 1e18;
 
-export default function getSiloJob(): Job {
+export default function getSiloJob(networkId: EvmNetworkIdType): Job {
   const client = getEvmClient(networkId);
 
   const executor: JobExecutor = async (cache: Cache) => {
@@ -162,22 +161,11 @@ export default function getSiloJob(): Job {
         prefix: platformId,
         networkId,
       }),
-      cache.setItem(
-        'silo-routers',
-        siloRouters.map((router) => ({
-          address: router,
-          underlyings: uniquePools,
-        })),
-        {
-          prefix: platformId,
-          networkId,
-        }
-      ),
     ]);
   };
 
   return {
-    id: `${platformId}-pools`,
+    id: `${platformId}-${networkId}-pools`,
     executor,
     labels: ['normal'],
   };

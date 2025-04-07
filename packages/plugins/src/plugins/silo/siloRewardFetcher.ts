@@ -1,4 +1,5 @@
 import { EvmNetworkIdType } from '@sonarwatch/portfolio-core';
+import { Address } from 'viem';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getEvmClient } from '../../utils/clients';
 import {
@@ -39,21 +40,19 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
 
     const elementRegistry = new ElementRegistry(networkId, platformId);
 
-    await Promise.all(
-      siloIncentiveControllerAddresses.map(async (_, i) => {
-        const balanceRes = balanceResults[i];
-        const tokenRes = tokenResults[i];
+    for (let i = 0; i < siloIncentiveControllerAddresses.length; i++) {
+      const balanceRes = balanceResults[i];
+      const tokenRes = tokenResults[i];
 
-        elementRegistry
-          .addElementMultiple({
-            label: 'Rewards',
-          })
-          .addAsset({
-            address: tokenRes.result as `0x${string}`,
-            amount: balanceRes?.result?.toString() ?? 0,
-          });
-      })
-    );
+      elementRegistry
+        .addElementMultiple({
+          label: 'Rewards',
+        })
+        .addAsset({
+          address: tokenRes.result as Address,
+          amount: balanceRes?.result?.toString() ?? 0,
+        });
+    }
 
     return elementRegistry.getElements(cache);
   };

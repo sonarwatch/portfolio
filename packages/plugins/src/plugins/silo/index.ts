@@ -5,7 +5,7 @@ import siloJob from './siloJob';
 import siloFetcher from './siloFetcher';
 import siloRewardFetcher from './siloRewardFetcher';
 
-export const jobs: Job[] = [siloJob()];
+export const jobs: Job[] = [siloJob(NetworkId.ethereum)];
 export const fetchers: Fetcher[] = [
   siloFetcher(NetworkId.ethereum),
   siloRewardFetcher(NetworkId.ethereum),
