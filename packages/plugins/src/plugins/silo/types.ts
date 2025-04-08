@@ -10,11 +10,25 @@ export type SiloPool = {
   conversionRate?: BigNumber;
 };
 
-export type SiloVaultResponse = {
+export type SiloVaultsResponse = {
   silos: {
     id: string;
     totalValueLockedUSD: string;
     totalBorrowBalanceUSD: string;
     totalDepositBalanceUSD: string;
+    market: {
+      dToken: {
+        id: string;
+      };
+      spToken: {
+        id: string;
+      };
+      sToken: {
+        id: string;
+      };
+    }[];
+  }[];
+  tokens: {
+    id: string;
   }[];
 };
