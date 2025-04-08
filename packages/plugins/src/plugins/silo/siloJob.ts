@@ -14,6 +14,7 @@ import {
   MISSING_TOKEN_PRICE_ADDRESSES,
 } from './constants';
 import { SiloPool } from './types';
+import { mapToSuccess } from '../../utils/octav/mapToSuccess';
 
 const CONVERSION_RATE_DIVISOR = 1e18;
 
@@ -48,10 +49,10 @@ export default function getSiloJob(networkId: EvmNetworkIdType): Job {
 
     // Process responses and create pools array
     const pools: SiloPool[] = [];
-    assetsWithStatesRes.forEach((res, i) => {
-      if (res.status !== 'success') return;
+    const successfulAssetsWithStatesRes = mapToSuccess(assetsWithStatesRes);
 
-      const [, assetsStorages] = res.result;
+    successfulAssetsWithStatesRes.forEach((result, i) => {
+      const [, assetsStorages] = result;
       const vault = vaults[i];
 
       assetsStorages.forEach((storage) => {
@@ -129,10 +130,9 @@ export default function getSiloJob(networkId: EvmNetworkIdType): Job {
     ];
 
     // Update pools with asset addresses
-    poolAssetResults.forEach((res, i) => {
-      if (res.status === 'success') {
-        pools[i].asset = res.result as Address;
-      }
+    const successfulPoolAssetResults = mapToSuccess(poolAssetResults);
+    successfulPoolAssetResults.forEach((result, i) => {
+      pools[i].asset = result as Address;
     });
 
     // Deduplicate pools based on vault and asset combinations
