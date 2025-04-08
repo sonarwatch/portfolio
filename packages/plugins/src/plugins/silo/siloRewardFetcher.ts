@@ -23,7 +23,7 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
       }
     );
 
-    if (!rewardVaultAddresses) {
+    if (!rewardVaultAddresses || rewardVaultAddresses.length === 0) {
       logger.error(`No reward vault addresses found for ${networkId}`);
       return [];
     }

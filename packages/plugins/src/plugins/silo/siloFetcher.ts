@@ -69,6 +69,8 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
           return undefined;
 
         const poolAsset = isMissingPrice ? pool.underlyingAsset : pool.asset;
+        // If we use the underlying asset, we need to convert the balance to the asset
+        // It defaults to 1 if the amount doesn't need to be converted
         const conversionRate = isMissingPrice
           ? new BigNumber(pool.conversionRate!.toString())
           : BigNumber(1);

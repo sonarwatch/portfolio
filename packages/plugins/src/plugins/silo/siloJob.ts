@@ -22,7 +22,6 @@ export default function getSiloJob(networkId: EvmNetworkIdType): Job {
   const client = getEvmClient(networkId);
 
   const executor: JobExecutor = async (cache: Cache) => {
-    // Get vaults from cache
     const vaults = await cache.getItem<Address[]>(SILOS_VAULTS_KEY, {
       prefix: PLATFORM_ID,
       networkId,
@@ -35,7 +34,6 @@ export default function getSiloJob(networkId: EvmNetworkIdType): Job {
       return;
     }
 
-    // Get assets with states for each vault
     const assetsWithStatesRes = await client.multicall({
       contracts: vaults.map(
         (vault) =>
@@ -84,7 +82,6 @@ export default function getSiloJob(networkId: EvmNetworkIdType): Job {
       });
     });
 
-    // Prepare all multicall contracts
     const contracts = [
       // Get assets for all pools
       ...pools.map(
@@ -116,7 +113,6 @@ export default function getSiloJob(networkId: EvmNetworkIdType): Job {
       ),
     ];
 
-    // Execute all calls in a single multicall
     const results = await client.multicall({ contracts });
 
     // Split results into their respective groups
@@ -170,13 +166,10 @@ export default function getSiloJob(networkId: EvmNetworkIdType): Job {
       }
     });
 
-    // Cache both pools and router mapping
-    await Promise.all([
-      cache.setItem(SILOS_POOLS_KEY, uniquePools, {
-        prefix: PLATFORM_ID,
-        networkId,
-      }),
-    ]);
+    await cache.setItem(SILOS_POOLS_KEY, uniquePools, {
+      prefix: PLATFORM_ID,
+      networkId,
+    });
   };
 
   return {
