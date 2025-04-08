@@ -50,7 +50,7 @@ export const stakingConfigs: StakingConfig[] = [
     name: 'AAVE V2 ABPT Staking',
     platformId: aave2PlatformId,
     stakingTokenAddress: AaveSafetyModule.STK_ABPT,
-    stakedAssetAddress: '0xC697051d1C6296C24aE3bceF39acA743861D9A81', // abpt
+    stakedAssetAddress: '0x41A08648C3766F9F9d85598fF102a08f4ef84F84', // abpt
     rewardAssetAddress: aaveAddress,
   },
   {
