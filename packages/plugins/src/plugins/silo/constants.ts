@@ -25,6 +25,7 @@ export const SILOS_INCENTIVE_CONTROLLER_ADDRESSES: Address[] = [
   '0x361384A0d755f972E5Eea26e4F4efBAf976B6461',
 ];
 
+// All the contracts coming from the 3 Rewards Pools on Ethereum
 export const REWARD_VAULT_ADDRESSES: Address[] = [
   '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
   '0x45758dA27E6bbBF58b7C500B19f4745Cc3B43686',
