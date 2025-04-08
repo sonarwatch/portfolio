@@ -1,11 +1,11 @@
 import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { platformId, solayerRstMint, avsTokens } from './constants';
+import { platformId, avsTokens, solayerLstMint } from './constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const rstTokenPrice = await cache.getTokenPrice(
-    solayerRstMint,
+    solayerLstMint,
     NetworkId.solana
   );
 
@@ -26,7 +26,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       elementName: 'Delegate',
       underlyings: [
         {
-          address: solayerRstMint,
+          address: solayerLstMint,
           decimals: rstTokenPrice.decimals,
           amountPerLp: 1,
           networkId: NetworkId.solana,

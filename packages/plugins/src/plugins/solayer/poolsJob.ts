@@ -89,7 +89,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     const lstMint = acc.lstMint.toString();
 
     // Ignore Solayer custom RST, already supported above
-    if (rstMint === stakePoolMint) return;
+    if (rstMint === solayerLstMint) return;
 
     const tp = prices.get(lstMint);
     if (!tp) return;
