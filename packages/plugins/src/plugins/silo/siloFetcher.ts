@@ -13,6 +13,7 @@ import {
 import { balanceAbi } from './abis';
 import { SiloPool } from './types';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { executeAndSplitMulticall } from '../../utils/octav/splitMulticallResult';
 
 function fetcher(networkId: EvmNetworkIdType): Fetcher {
   const executor: FetcherExecutor = async (
@@ -46,32 +47,26 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
       ]
     );
 
-    const collateralBalancesAndDebtBalances = await client.multicall({
-      contracts: poolCalls,
-    });
-
-    const collateralBalances = collateralBalancesAndDebtBalances.filter(
-      (_, i) => i % 2 === 0
-    );
-    const debtBalances = collateralBalancesAndDebtBalances.filter(
-      (_, i) => i % 2 === 1
+    const [collateralBalances, debtBalances] = await executeAndSplitMulticall(
+      client,
+      poolCalls
     );
 
     // Process balances and create assets
-    await Promise.all(
+    const assets = await Promise.all(
       pools.map(async (pool, i) => {
         const collateralRes = collateralBalances[i];
         const debtRes = debtBalances[i];
 
         if (collateralRes.status !== 'success' || debtRes.status !== 'success')
-          return;
+          return undefined;
 
         // Handle missing token prices by getting price from underlying asset
         const isMissingPrice = MISSING_TOKEN_PRICE_ADDRESSES.includes(
           pool.asset as Address
         );
         if (isMissingPrice && (!pool.underlyingAsset || !pool.conversionRate))
-          return;
+          return undefined;
 
         const poolAsset = isMissingPrice ? pool.underlyingAsset : pool.asset;
         const conversionRate = isMissingPrice
@@ -86,28 +81,51 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
           conversionRate
         );
 
-        if (collateral.isZero() && debt.isZero()) return;
+        if (collateral.isZero() && debt.isZero()) return undefined;
 
-        const tokenPrice = await cache.getTokenPrice(poolAsset!, networkId);
-        if (!tokenPrice?.price) return;
-
-        const element = elementRegistry.addElementBorrowlend({
-          label: 'Lending',
-        });
-        if (!collateral.isZero()) {
-          element.addSuppliedAsset({
-            address: poolAsset!,
-            amount: collateral.toString(),
-          });
-        }
-        if (!debt.isZero()) {
-          element.addBorrowedAsset({
-            address: poolAsset!,
-            amount: debt.toString(),
-          });
-        }
+        return {
+          ...pool,
+          collateralAmount: collateral,
+          debtAmount: debt,
+          asset: poolAsset,
+        };
       })
     );
+
+    const validAssets = assets.filter((asset) => !!asset);
+    if (validAssets.length === 0) return [];
+
+    // Group by vault
+    const vaultGroups = validAssets.reduce((acc, asset) => {
+      if (!acc[asset.vault]) {
+        acc[asset.vault] = [];
+      }
+      acc[asset.vault].push(asset);
+      return acc;
+    }, {} as { [vault: string]: typeof validAssets });
+
+    // Create portfolio elements for each vault
+    for (const vaultAssets of Object.values(vaultGroups)) {
+      const element = elementRegistry.addElementBorrowlend({
+        label: 'Lending',
+      });
+
+      // Handle both supplied and borrowed assets in a single loop
+      for (const asset of vaultAssets) {
+        if (!asset.collateralAmount.isZero()) {
+          element.addSuppliedAsset({
+            address: asset.asset!,
+            amount: asset.collateralAmount,
+          });
+        }
+        if (!asset.debtAmount.isZero()) {
+          element.addBorrowedAsset({
+            address: asset.asset!,
+            amount: asset.debtAmount,
+          });
+        }
+      }
+    }
 
     return elementRegistry.getElements(cache);
   };

@@ -10,6 +10,7 @@ import {
 import { rewardAbi, rewardTokenAbi } from './abis';
 import { Cache } from '../../Cache';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { executeAndSplitMulticall } from '../../utils/octav/splitMulticallResult';
 
 function fetcher(networkId: EvmNetworkIdType): Fetcher {
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
@@ -31,12 +32,10 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
       ]
     );
 
-    const rewardsResults = await client.multicall({
-      contracts: rewardCalls,
-    });
-
-    const balanceResults = rewardsResults.filter((_, i) => i % 2 === 0);
-    const tokenResults = rewardsResults.filter((_, i) => i % 2 === 1);
+    const [balanceResults, tokenResults] = await executeAndSplitMulticall(
+      client,
+      rewardCalls
+    );
 
     const elementRegistry = new ElementRegistry(networkId, PLATFORM_ID);
 
