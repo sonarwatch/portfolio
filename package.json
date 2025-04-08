@@ -11,7 +11,7 @@
     "postversion": "git push && git push --tags"
   },
   "engines": {
-    "node": ">18"
+    "node": "^20.0.0"
   },
   "devDependencies": {
     "@jscutlery/semver": "3.4.1",
