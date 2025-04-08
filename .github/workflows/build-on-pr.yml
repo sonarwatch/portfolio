@@ -1,0 +1,31 @@
+name: Nx Build on Pull Request
+
+on:
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.11.1
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build core
+        run: npx nx run core:build
+
+      - name: Build plugins
+        run: npx nx run plugins:build
+
+      - name: Build tx-parser
+        run: npx nx run tx-parser:build
