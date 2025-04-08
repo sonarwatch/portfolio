@@ -88,11 +88,13 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
           collateralAmount: collateral,
           debtAmount: debt,
           asset: poolAsset,
-        };
+        } as const;
       })
     );
 
-    const validAssets = assets.filter((asset) => !!asset);
+    const validAssets = assets.filter(
+      (asset): asset is NonNullable<typeof asset> => asset !== undefined
+    );
     if (validAssets.length === 0) return [];
 
     // Group by vault
