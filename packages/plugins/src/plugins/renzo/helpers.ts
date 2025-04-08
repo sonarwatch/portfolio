@@ -83,17 +83,14 @@ export async function fetchWithdrawRequests(
     })),
   });
 
-  return withdrawRequestsAnswers
-    .filter((req) => req.status === 'success' && req.result)
-    .map((req) => {
-      if (req.status !== 'success' || !req.result) return;
+  return withdrawRequestsAnswers.flatMap((req) => {
+    if (req.status !== 'success' || !req.result) return [];
 
-      const token = req.result[0];
-      const balance = req.result[2];
+    const token = req.result[0];
+    const balance = req.result[2];
 
-      if (!token || !balance) return;
+    if (!token || !balance) return [];
 
-      return { token, balance };
-    })
-    .filter((item) => !!item);
+    return [{ token, balance }];
+  });
 }
