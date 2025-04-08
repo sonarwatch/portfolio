@@ -160,6 +160,7 @@ import * as guano from './plugins/guano';
 import * as coingecko from './plugins/coingecko';
 import * as convex from './plugins/convex';
 import * as fraxlend from './plugins/fraxlend';
+import * as silo from './plugins/silo';
 import * as zeus from './plugins/zeus';
 import * as pumpswap from './plugins/pumpswap';
 import * as renzo from './plugins/renzo';
@@ -339,6 +340,7 @@ const modules = [
   eigenlayer,
   pumpswap,
   renzo,
+  silo,
 ];
 
 // JOBS //
