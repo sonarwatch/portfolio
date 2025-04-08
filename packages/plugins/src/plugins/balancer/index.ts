@@ -10,8 +10,8 @@ export const jobs: Job[] = [
 ];
 
 export const fetchers: Fetcher[] = [
-  getPoolPositionsFetcher(NetworkId.ethereum),
-  getPoolPositionsFetcher(NetworkId.avalanche),
-  getPoolPositionsFetcher(NetworkId.polygon),
+  // getPoolPositionsFetcher(NetworkId.ethereum),
+  // getPoolPositionsFetcher(NetworkId.avalanche),
+  // getPoolPositionsFetcher(NetworkId.polygon),
   getPoolPositionsFetcher(NetworkId.fraxtal),
 ];
