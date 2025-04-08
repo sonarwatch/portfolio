@@ -88,7 +88,7 @@ function fetcher(networkId: EvmNetworkIdType): Fetcher {
       // Get the token result
       const token = results[tokenIndex].result as Address;
       // Get the *first* balance result for this controller
-      const balance = results[firstBalanceIndex].result.toString();
+      const balance = results[firstBalanceIndex].result!.toString();
 
       if (!balance || balance === '0') {
         continue;
