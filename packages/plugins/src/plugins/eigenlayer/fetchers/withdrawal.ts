@@ -46,8 +46,7 @@ export const getWithdrawals = async (owner: Address, cache: Cache) => {
 
   shares.forEach((share) => {
     const strategy = strategies?.find(
-      (str) =>
-        getAddress(str.strategyAddress) === getAddress(share.strategyAddress)
+      (str) => str.strategyAddress === share.strategyAddress
     );
 
     if (!strategy || !strategy.underlyingToken) return;
