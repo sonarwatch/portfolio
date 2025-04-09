@@ -18,7 +18,18 @@ function getInegibleItems(items: AsrItems) {
   }));
 }
 
-function asrDeriveClaimStatus(claimant: string, claimProof: ClaimProof) {
+function asrDeriveClaimStatus(
+  claimant: string,
+  claimProof: ClaimProof,
+  distributorProgram?: string
+) {
+  if (distributorProgram) {
+    return deriveClaimStatus(
+      claimant,
+      claimProof.merkle_tree,
+      distributorProgram
+    );
+  }
   if (claimProof.mint === jupMint) {
     return deriveClaimStatus(claimant, claimProof.merkle_tree, jupDisProgram);
   }
@@ -45,7 +56,7 @@ export function getAsrAirdropExecutor(
       });
 
     const claimAddresses = claimsProof.data.claim.map((cp) =>
-      asrDeriveClaimStatus(owner, cp)
+      asrDeriveClaimStatus(owner, cp, config.distributorProgram)
     );
     const client = getClientSolana();
 
