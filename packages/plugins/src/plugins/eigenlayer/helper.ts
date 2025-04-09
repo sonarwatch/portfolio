@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 
-import { Address } from 'viem';
+import { Address, getAddress } from 'viem';
 import { Operator, Withdrawal } from './types';
 import { bEigenTokenAddress, eigenTokenAddress } from './constants';
 
@@ -47,7 +47,7 @@ export async function getEigenLayerWithdrawals() {
  * @param {Address} tokenAddress - The address of the token to unwrap
  * @returns {Address} - The address of the unwrapped token
  */
-export const unwrapBackingLayerToken = (tokenAddress: Address) => {
-  if (tokenAddress === bEigenTokenAddress) return eigenTokenAddress;
+export const unwrapBackingLayerToken = (tokenAddress: Address | string) => {
+  if (getAddress(tokenAddress) === bEigenTokenAddress) return eigenTokenAddress;
   return tokenAddress;
 };
