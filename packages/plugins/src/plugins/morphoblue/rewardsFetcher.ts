@@ -28,19 +28,22 @@ function calculateRawRewardBalances(data: MorphoRewardsRes['data']) {
 
   for (const entry of data) {
     const address = entry.asset?.address
-      ? getAddress(entry.asset?.address)
+      ? getAddress(entry.asset.address)
       : undefined;
     if (!address) continue;
 
-    let raw: bigint | undefined;
+    let raw = BigInt(0);
 
     if (entry.type === 'uniform-reward' || entry.type === 'airdrop-reward') {
       raw = BigInt(entry.amount?.claimable_now ?? '0');
-    } else if (entry.type === 'market-reward') {
+    } else if (
+      entry.type === 'market-reward' ||
+      entry.type === 'vault-reward'
+    ) {
       raw = BigInt(entry.for_supply?.claimable_now ?? '0');
     }
 
-    if (!raw || raw === BigInt(0)) continue;
+    if (raw === BigInt(0)) continue;
 
     balances[address] = (balances[address] || BigInt(0)) + raw;
   }
@@ -50,7 +53,6 @@ function calculateRawRewardBalances(data: MorphoRewardsRes['data']) {
     balance: total.toString(),
   }));
 }
-
 export function getRewardsFetcher(networkId: EvmNetworkIdType): Fetcher {
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const rewardsRes = await getRewards(owner, networkId);
