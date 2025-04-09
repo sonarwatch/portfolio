@@ -10,7 +10,6 @@ import {
 } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getEvmClient } from '../../utils/clients';
-import { ethFactor } from '../../utils/evm/constants';
 import { getBalances } from '../../utils/evm/getBalances';
 import { getWstETHAsset, getStMATICAsset } from './helper';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
@@ -42,7 +41,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       });
       element.addAsset({
         address: ethereumNetwork.native.address,
-        amount: amount.div(ethFactor).toNumber(),
+        amount: amount.toString(),
       });
     })
   );

@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
 import { ethereumNetwork } from '@sonarwatch/portfolio-core';
-import { Cache } from '../../Cache';
 import { EvmClient } from '../../utils/clients/types';
 import { wstETHAddress, stMATICAddress, maticTokenAddress } from './constants';
 import { maticAbi, wstETHAbi } from './abis';
