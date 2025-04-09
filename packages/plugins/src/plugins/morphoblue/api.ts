@@ -3,6 +3,7 @@ import { EvmNetworkIdType, networks } from '@sonarwatch/portfolio-core';
 import axios from 'axios';
 import { MorphoMarketRes, MorphoRewardsRes, MorphoVaultRes } from './types';
 import { morphoApiUrl, morphoRewardsApiUrl } from './constants';
+import { deepLog } from '../../utils/misc/logging';
 
 export async function getMarkets(networkId: EvmNetworkIdType) {
   const query = gql`
@@ -154,6 +155,8 @@ export async function getRewards(
         },
       }
     );
+
+    console.log(deepLog(rewardsRes));
 
     return rewardsRes;
   } catch (error) {
