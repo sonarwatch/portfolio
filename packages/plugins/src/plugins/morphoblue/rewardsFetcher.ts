@@ -9,11 +9,11 @@ import {
 import BigNumber from 'bignumber.js';
 import { Address, getAddress } from 'viem';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId } from './constants';
 import { Cache } from '../../Cache';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { getRewards } from './api';
 import { MorphoRewardsRes } from './types';
-import { getRewards } from './utils/api';
+import { platformId } from './constants';
 
 /* 
     As of April 2025, Morpho rewards are calculated off-chain.

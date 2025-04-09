@@ -1,11 +1,12 @@
 import { EvmNetworkIdType } from '@sonarwatch/portfolio-core';
-import { getMarkets } from './utils/api';
+import { getMarkets } from './api';
 import { Job, JobExecutor } from '../../Job';
-import { morphoMarketsCachePrefix, platformId } from './constants';
 import { Cache } from '../../Cache';
 import { tokenListInfoPrefix } from '../tokens/constants';
-import { buildTokenMetaDataItems, buildTokenPriceSources } from './helpers';
+
 import { SEVEN_DAYS } from '../../utils/octav/time';
+import { buildTokenMetaDataItems, buildTokenPriceSources } from './helpers';
+import { morphoMarketsCachePrefix, platformId } from './constants';
 
 export function marketsJob(networkId: EvmNetworkIdType): Job {
   const executor: JobExecutor = async (cache: Cache) => {

@@ -1,11 +1,11 @@
 import { EvmNetworkIdType } from '@sonarwatch/portfolio-core';
-import { getVaults } from './utils/api';
+import { getVaults } from './api';
 import { Job, JobExecutor } from '../../Job';
-import { morphoVaultsCachePrefix, platformId } from './constants';
 import { Cache } from '../../Cache';
 import { tokenListInfoPrefix } from '../tokens/constants';
-import { buildTokenMetaDataItems, buildTokenPriceSources } from './helpers';
 import { SEVEN_DAYS } from '../../utils/octav/time';
+import { buildTokenMetaDataItems, buildTokenPriceSources } from './helpers';
+import { morphoVaultsCachePrefix, platformId } from './constants';
 
 export function vaultsJob(networkId: EvmNetworkIdType): Job {
   const executor: JobExecutor = async (cache: Cache) => {

@@ -1,17 +1,18 @@
 import { ContractFunctionConfig, getAddress } from 'viem';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
+
+import { getEvmClient } from '../../utils/clients';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { Cache } from '../../Cache';
+import { zeroBigInt } from '../../utils/misc/constants';
 import {
   MorphoNetworkIdType,
   morphoMarketsCachePrefix,
   networkIdToMorphoContract,
   platformId,
 } from './constants';
-import { getEvmClient } from '../../utils/clients';
-import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
-import { Cache } from '../../Cache';
 import { MorphoMarketRes } from './types';
-import { morphoContractABI } from './utils/abis';
-import { zeroBigInt } from '../../utils/misc/constants';
+import { morphoContractABI } from './abis';
 
 export function getLendingFetcher(networkId: MorphoNetworkIdType): Fetcher {
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {

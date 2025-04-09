@@ -2,14 +2,14 @@ import { EvmNetworkIdType } from '@sonarwatch/portfolio-core';
 
 import { ContractFunctionConfig, getAddress } from 'viem';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { morphoVaultsCachePrefix, platformId } from './constants';
 
 import { getEvmClient } from '../../utils/clients';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { Cache } from '../../Cache';
-import { MorphoVaultRes } from './types';
-import { morphoVaultABI } from './utils/abis';
 import { zeroBigInt } from '../../utils/misc/constants';
+import { MorphoVaultRes } from './types';
+import { morphoVaultsCachePrefix, platformId } from './constants';
+import { morphoVaultABI } from './abis';
 
 export function getYieldFetcher(networkId: EvmNetworkIdType): Fetcher {
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {

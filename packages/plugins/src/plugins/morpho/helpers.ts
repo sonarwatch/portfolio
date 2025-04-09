@@ -1,15 +1,10 @@
-import {
-  EvmNetworkIdType,
-  NetworkId,
-  formatTokenAddress,
-  networks,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { getAddress } from 'viem';
 import { getEvmClient } from '../../utils/clients';
 import { MorphoAaveV3Abi } from './utils/abis';
-import { morphoAaveV3Address, platformId } from './constants';
+import { morphoAaveV3Address } from './constants';
 import WadRayMath from './utils/WadRayMath';
-import { MorphoAssetAPI, ParsedUpdatedIndexes, UpdatedIndexes } from './types';
+import { ParsedUpdatedIndexes, UpdatedIndexes } from './types';
 
 export function parseUpdatedIndexes(
   updatedIndexes: UpdatedIndexes
@@ -118,51 +113,3 @@ export const getCurrentBorrowBalanceInOf = async (
   const totalBalance = balanceInP2P.add(balanceOnPool);
   return totalBalance;
 };
-
-export function buildTokenPriceSources(
-  tokens: MorphoAssetAPI[],
-  networkId: EvmNetworkIdType
-) {
-  const timestamp = Date.now();
-  return (
-    tokens
-      // API returns null price sometimes, so we filter them out
-      .filter((token) => !!token.priceUsd)
-      .map((token) => ({
-        address: formatTokenAddress(token.address, networkId),
-        decimals: token.decimals,
-        id: platformId,
-        networkId,
-        platformId,
-        price: token.priceUsd!,
-        timestamp,
-        weight: 1,
-      }))
-  );
-}
-
-export function buildTokenMetaDataItems(
-  tokens: MorphoAssetAPI[],
-  networkId: EvmNetworkIdType
-) {
-  const metaData = tokens.map((token) => ({
-    chainId: networks[networkId].chainId,
-    address: token.address,
-    decimals: token.decimals,
-    name: token.name,
-    symbol: token.symbol,
-    logoURI: token.logoURI,
-    extensions: {},
-  }));
-
-  return metaData.map((token) => {
-    const address = formatTokenAddress(token.address, networkId);
-    return {
-      key: address,
-      value: {
-        ...token,
-        address,
-      },
-    };
-  });
-}

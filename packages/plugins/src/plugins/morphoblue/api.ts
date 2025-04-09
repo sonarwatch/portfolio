@@ -1,8 +1,8 @@
 import request, { gql } from 'graphql-request';
 import { EvmNetworkIdType, networks } from '@sonarwatch/portfolio-core';
 import axios from 'axios';
-import { morphoApiUrl, morphoRewardsApiUrl } from '../constants';
-import { MorphoMarketRes, MorphoRewardsRes, MorphoVaultRes } from '../types';
+import { MorphoMarketRes, MorphoRewardsRes, MorphoVaultRes } from './types';
+import { morphoApiUrl, morphoRewardsApiUrl } from './constants';
 
 export async function getMarkets(networkId: EvmNetworkIdType) {
   const query = gql`
