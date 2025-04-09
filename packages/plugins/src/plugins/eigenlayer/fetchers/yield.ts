@@ -5,6 +5,7 @@ import { Position } from '../types';
 import { cacheKey, chain, platformId } from '../constants';
 import { abi } from '../abi';
 import { ElementRegistry } from '../../../utils/elementbuilder/ElementRegistry';
+import { unwrapBackingLayerToken } from '../helper';
 
 /**
  * Returns the yield positions for a given owner
@@ -72,7 +73,7 @@ export const getYieldPositions = async (owner: string, cache: Cache) => {
 
   finalPositions.forEach((position) => {
     element.addAsset({
-      address: position.underlyingToken as Address,
+      address: unwrapBackingLayerToken(position.underlyingToken as Address),
       amount: position.amount,
     });
   });
