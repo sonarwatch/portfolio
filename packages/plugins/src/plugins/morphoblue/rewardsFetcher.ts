@@ -54,8 +54,11 @@ function calculateRawRewardBalances(data: MorphoRewardsRes['data']) {
 export function getRewardsFetcher(networkId: EvmNetworkIdType): Fetcher {
   const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const rewardsRes = await getRewards(owner, networkId);
-
     const rawRewards = calculateRawRewardBalances(rewardsRes.data);
+
+    if (rawRewards.length === 0) {
+      return [];
+    }
 
     const tokenPricesMap = await cache.getTokenPricesAsMap(
       rawRewards.map((rewardToken) => rewardToken.address),

@@ -27,6 +27,7 @@ export function marketsJob(networkId: EvmNetworkIdType): Job {
     );
 
     const sources = buildTokenPriceSources(uniqueTokens, networkId);
+
     const tokenMetaDataItems = buildTokenMetaDataItems(uniqueTokens, networkId);
 
     await Promise.all([

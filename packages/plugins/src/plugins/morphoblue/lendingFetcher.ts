@@ -67,6 +67,8 @@ export function getLendingFetcher(networkId: MorphoNetworkIdType): Fetcher {
         continue;
       }
 
+      console.log(supplyShares, borrowShares, collateral);
+
       const [
         totalSupplyAssets,
         totalSupplyShares,
@@ -86,6 +88,8 @@ export function getLendingFetcher(networkId: MorphoNetworkIdType): Fetcher {
           ? zeroBigInt
           : (borrowShares * totalBorrowAssets) / totalBorrowShares;
 
+      console.log(supplyAssets, borrowAssets, collateral);
+
       /* 
         Lending Position
         User has provided collateral to borrow 
@@ -93,6 +97,9 @@ export function getLendingFetcher(networkId: MorphoNetworkIdType): Fetcher {
       const lendingElement = elementRegistry.addElementBorrowlend({
         label: 'Lending',
       });
+
+      console.log(partialMarket.collateralAsset.address, collateral);
+      console.log(partialMarket.loanAsset.address, borrowAssets);
 
       lendingElement.addSuppliedAsset({
         address: partialMarket.collateralAsset.address,

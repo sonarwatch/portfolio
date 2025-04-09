@@ -165,6 +165,7 @@ import * as zeus from './plugins/zeus';
 import * as pumpswap from './plugins/pumpswap';
 import * as renzo from './plugins/renzo';
 import * as eigenlayer from './plugins/eigenlayer';
+import * as morphoblue from './plugins/morphoblue';
 
 export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
@@ -341,6 +342,7 @@ const modules = [
   pumpswap,
   renzo,
   silo,
+  morphoblue,
 ];
 
 // JOBS //
