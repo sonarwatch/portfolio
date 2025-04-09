@@ -1,3 +1,4 @@
+import { getAddress } from 'viem';
 import { Cache } from '../../../Cache';
 import { Job, JobExecutor } from '../../../Job';
 import { cacheKey, chain, platformId } from '../constants';
@@ -12,9 +13,9 @@ const executor: JobExecutor = async (cache: Cache) => {
   await cache.setItem(
     cacheKey.withdrawals,
     withdrawals.data.map((withdrawal) => ({
-      stakerAddress: withdrawal.stakerAddress,
-      delegatedTo: withdrawal.delegatedTo,
-      withdrawerAddress: withdrawal.withdrawerAddress,
+      stakerAddress: getAddress(withdrawal.stakerAddress),
+      delegatedTo: getAddress(withdrawal.delegatedTo),
+      withdrawerAddress: getAddress(withdrawal.withdrawerAddress),
       shares: withdrawal.shares,
     })),
     {

@@ -24,8 +24,7 @@ export const getWithdrawals = async (owner: Address, cache: Cache) => {
   });
 
   const userWithdrawals = withdrawals?.filter(
-    (withdrawal) =>
-      getAddress(withdrawal.withdrawerAddress) === getAddress(owner)
+    (withdrawal) => withdrawal.withdrawerAddress === owner
   );
 
   const shares = userWithdrawals?.flatMap((withdrawal) =>
