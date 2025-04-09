@@ -1,19 +1,21 @@
+import { getAddress } from 'viem';
 import { Cache } from '../../../Cache';
 import { Job, JobExecutor } from '../../../Job';
-import { chain, platformId } from '../constants';
+import { cacheKey, chain, platformId } from '../constants';
 import { getEigenLayerWithdrawals } from '../helper';
 
 const executor: JobExecutor = async (cache: Cache) => {
   // Get the WITHDRAWALS positions
+
   const withdrawals = await getEigenLayerWithdrawals();
 
   // Cache the strategies and underlying tokens with decimals
   await cache.setItem(
-    'eigenlayer-withdrawals',
+    cacheKey.withdrawals,
     withdrawals.data.map((withdrawal) => ({
-      stakerAddress: withdrawal.stakerAddress,
-      delegatedTo: withdrawal.delegatedTo,
-      withdrawerAddress: withdrawal.withdrawerAddress,
+      stakerAddress: getAddress(withdrawal.stakerAddress),
+      delegatedTo: getAddress(withdrawal.delegatedTo),
+      withdrawerAddress: getAddress(withdrawal.withdrawerAddress),
       shares: withdrawal.shares,
     })),
     {

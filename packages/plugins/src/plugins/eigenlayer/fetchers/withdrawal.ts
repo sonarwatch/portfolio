@@ -4,6 +4,7 @@ import { Position, Withdrawal } from '../types';
 import { cacheKey, chain, platformId } from '../constants';
 
 import { ElementRegistry } from '../../../utils/elementbuilder/ElementRegistry';
+import { unwrapBackingLayerToken } from '../helper';
 
 /**
  * Returns the withdrawals for a given owner
@@ -23,8 +24,7 @@ export const getWithdrawals = async (owner: Address, cache: Cache) => {
   });
 
   const userWithdrawals = withdrawals?.filter(
-    (withdrawal) =>
-      getAddress(withdrawal.withdrawerAddress) === getAddress(owner)
+    (withdrawal) => withdrawal.withdrawerAddress === owner
   );
 
   const shares = userWithdrawals?.flatMap((withdrawal) =>
@@ -40,15 +40,19 @@ export const getWithdrawals = async (owner: Address, cache: Cache) => {
 
   const element = elementRegistry.addElementMultiple({
     label: 'Deposit',
-    name: 'Completable Withdrawals',
+    name: 'Withdrawals',
     tags: ['Withdrawal'],
   });
 
   shares.forEach((share) => {
+    const strategy = strategies?.find(
+      (str) => str.strategyAddress === share.strategyAddress
+    );
+
+    if (!strategy || !strategy.underlyingToken) return;
+
     element.addAsset({
-      address: strategies?.find(
-        (strategy) => strategy.strategyAddress === share.strategyAddress
-      )?.underlyingToken as Address,
+      address: unwrapBackingLayerToken(strategy.underlyingToken as Address),
       amount: share.shares,
     });
   });
