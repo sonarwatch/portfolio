@@ -129,7 +129,7 @@ export const asr4Config: AsrConfig = {
   statics: asr4Statics,
   items: new Map([[jupMint, { label: 'JUP', decimals: jupDecimals }]]),
   api: (owner: string) =>
-    `https://worker.jup.ag/asr-claim-proof/${owner}?asrTimeline=apr-2025&mints=JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN${
+    `https://worker.jup.ag/asr-claim-proof/${owner}?asrTimeline=apr-2025&mints=JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN&${
       jupApiParams ?? ''
     }`,
   distributorProgram: 'DiS3nNjFVMieMgmiQFm6wgJL7nevk4NrhXKLbtEH1Z2R',
