@@ -49,4 +49,6 @@ export const jupFetcherIds = [
   valueAverageFetcher.id,
   limitFetcher.id,
   dcaFetcher.id,
+  voteFetcher.id,
+  lockFetcher.id,
 ];
