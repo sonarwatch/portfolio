@@ -33,6 +33,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 
   personalAccounts.forEach((acc) => {
+    // Skip the demo accounts from temple.nirvana.finance
+    if (
+      acc.tenant.toString() === '8PWyxJYYpoJgrgeGRUEqqFRun4z9zzZFy5cCZvXSXWe5'
+    )
+      return;
     const lendingElement = elementRegistry.addElementBorrowlend({
       label: 'Lending',
       ref: acc.pubkey,
