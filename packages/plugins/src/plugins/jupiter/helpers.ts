@@ -22,7 +22,7 @@ export async function getJupiterPrices(mints: PublicKey[], vsMint: PublicKey) {
   const pricesData = [];
   let subMints;
   let start = 0;
-  let end = maxIdsPerRequest - 1;
+  let end = maxIdsPerRequest;
   const endpoint = `${jupPriceApiUrl}?${jupApiParams ?? ''}`;
 
   do {
@@ -33,7 +33,7 @@ export async function getJupiterPrices(mints: PublicKey[], vsMint: PublicKey) {
         vsToken: vsMint.toString(),
       },
     });
-    start += maxIdsPerRequest;
+    start = end;
     end += maxIdsPerRequest;
     pricesData.push(res.data.data);
   } while (mints.at(start));
