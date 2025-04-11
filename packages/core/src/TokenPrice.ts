@@ -2,6 +2,7 @@ import { NetworkIdType } from './Network';
 import { deepClone } from './helpers';
 import { walletTokensPlatformId } from './constants';
 import { PortfolioElementLabel, SourceRef } from './Portfolio';
+import { Yield } from './Yield';
 
 export const coingeckoSourceId = 'coingecko';
 export const jupiterSourceId = 'jupiter-api';
@@ -24,6 +25,7 @@ export type TokenPriceSource = {
   platformId: string;
   decimals: number;
   price: number;
+  yield?: Yield;
   label?: PortfolioElementLabel;
   elementName?: string;
   liquidityName?: string;
@@ -39,6 +41,7 @@ export type TokenPrice = {
   platformId: string;
   decimals: number;
   price: number;
+  yield?: Yield;
   label?: PortfolioElementLabel;
   elementName?: string;
   liquidityName?: string;
@@ -57,8 +60,8 @@ export function tokenPriceFromSources(
 
   const bestSource = updatedSources.reduce((prev, current) => {
     if (current.platformId !== walletTokensPlatformId) return current;
-    // TODO print warning if 2 differents platformId (other than walletTokensPlatformId)
-    // TODO print warning if 2 differents decimals
+    // TODO print warning if 2 different platformId (other than walletTokensPlatformId)
+    // TODO print warning if 2 different decimals
     return prev;
   });
 
@@ -90,6 +93,7 @@ export function tokenPriceFromSources(
     platformId: bestSource.platformId,
     decimals: bestSource.decimals,
     price,
+    yield: bestSource.yield,
     underlyings: bestSource.underlyings,
     elementName: bestSource.elementName,
     label: bestSource.label,

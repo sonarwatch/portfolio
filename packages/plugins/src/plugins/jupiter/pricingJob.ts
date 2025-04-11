@@ -4,6 +4,7 @@ import {
   solanaNativeWrappedAddress,
   jupiterSourceId,
   walletTokensPlatformId,
+  apyToApr,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import axios from 'axios';
@@ -13,10 +14,9 @@ import { platformId } from './exchange/constants';
 import { getJupiterPrices } from './helpers';
 import { getMultipleDecimalsAsMap } from '../../utils/solana/getMultipleDecimalsAsMap';
 import { getClientSolana } from '../../utils/clients';
-import { lstsKey, platformId as sanctumPlatformId } from '../sanctum/constants';
 import { usdcSolanaMint } from '../../utils/solana';
 import { TokenResponse } from './types';
-import { jupApiParams } from './constants';
+import { internalLstApysApiUrl, jupApiParams } from './constants';
 
 const mints = [
   'xLfNTYy76B8Tiix3hA51Jyvc1kMSFV4sPdR7szTZsRu', // xLifinity
@@ -41,18 +41,23 @@ const mints = [
 const vsToken = solanaNativeWrappedAddress;
 
 const executor: JobExecutor = async (cache: Cache) => {
-  const sanctumMints = await cache.getItem<string[]>(lstsKey, {
-    prefix: sanctumPlatformId,
-    networkId: NetworkId.solana,
-  });
-  if (sanctumMints) mints.push(...sanctumMints);
   const connection = getClientSolana();
 
-  const [solSources, verifiedTokens] = await Promise.all([
+  const [solSources, verifiedTokens, lstApys] = await Promise.all([
     getJupiterPrices([new PublicKey(vsToken)], new PublicKey(usdcSolanaMint)),
     axios.get<TokenResponse[]>(
       `https://tokens.jup.ag/tokens?tags=verified&${jupApiParams ?? ''}`
     ),
+    internalLstApysApiUrl
+      ? axios
+          .get<{
+            apys: Record<string, number>;
+          }>(internalLstApysApiUrl)
+          .catch((err) => {
+            // eslint-disable-next-line no-console
+            console.log(`INTERNAL_LSTAPYS_API ERR: ${err}`);
+          })
+      : null,
   ]);
 
   const solPrice = solSources.get(vsToken);
@@ -60,6 +65,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   const mintsPk: Set<PublicKey> = new Set([
     ...mints.map((m) => new PublicKey(m)),
+    ...Object.keys(lstApys?.data.apys || []).map((m) => new PublicKey(m)),
   ]);
 
   const decimalsMap = await getMultipleDecimalsAsMap(connection, [...mintsPk]);
@@ -87,6 +93,12 @@ const executor: JobExecutor = async (cache: Cache) => {
       networkId: NetworkId.solana,
       timestamp: Date.now(),
       price: solTokenPrice.price * price,
+      yield: lstApys?.data.apys[mint]
+        ? {
+            apr: apyToApr(lstApys.data.apys[mint]),
+            apy: lstApys.data.apys[mint],
+          }
+        : undefined,
       platformId: walletTokensPlatformId,
       weight: 1,
     };
