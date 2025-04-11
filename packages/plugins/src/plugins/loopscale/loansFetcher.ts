@@ -7,7 +7,7 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
-import { loanStruct } from './structs';
+import { loanStruct, LoanType } from './structs';
 import { bytesToNumberLE } from './helpers';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
@@ -27,7 +27,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   accounts.forEach((account) => {
     const element = elementRegistry.addElementBorrowlend({
-      label: 'Lending',
+      label: account.loan_type === LoanType.YieldLoop ? 'Leverage' : 'Lending',
       ref: account.pubkey,
       link: `https://app.loopscale.com/loan/${account.pubkey}`,
     });

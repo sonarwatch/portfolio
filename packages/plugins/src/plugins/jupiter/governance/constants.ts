@@ -38,6 +38,16 @@ export const asr3Statics: AirdropStatics = {
   claimEnd: 1743465600000,
   name: 'ASR #3',
 };
+export const asr4Statics: AirdropStatics = {
+  id: `${platformId}-jup-asr-4`,
+  claimLink: 'https://vote.jup.ag/asr',
+  image: platformImage,
+  emitterLink: platformWebsite,
+  emitterName: 'Jupiter',
+  claimStart: 1744213500000,
+  claimEnd: 1751328000000,
+  name: 'ASR #4',
+};
 export const jupuaryStatics: AirdropStatics = {
   id: `${platformId}-jupuary`,
   claimLink: 'https://jupuary.jup.ag',
@@ -58,6 +68,7 @@ export type AsrConfig = {
   statics: AirdropStatics;
   items: AsrItems;
   api: (owner: string) => string;
+  distributorProgram?: string;
 };
 
 export const asr1Config: AsrConfig = {
@@ -112,4 +123,14 @@ export const asr3Config: AsrConfig = {
     `https://worker.jup.ag/asr-claim-proof/${owner}?asrTimeline=jan-2025&mints=JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN%2CDBRiDgJAMsM95moTzJs7M9LnkGErpbv9v6CUR1DXnUu5&${
       jupApiParams ?? ''
     }`,
+};
+
+export const asr4Config: AsrConfig = {
+  statics: asr4Statics,
+  items: new Map([[jupMint, { label: 'JUP', decimals: jupDecimals }]]),
+  api: (owner: string) =>
+    `https://worker.jup.ag/asr-claim-proof/${owner}?asrTimeline=apr-2025&mints=JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN&${
+      jupApiParams ?? ''
+    }`,
+  distributorProgram: 'DiS3nNjFVMieMgmiQFm6wgJL7nevk4NrhXKLbtEH1Z2R',
 };

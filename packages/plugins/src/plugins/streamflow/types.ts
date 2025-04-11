@@ -12,3 +12,6 @@ export type Data = {
   cexWalletAddress: null;
   allocation: string;
 };
+
+export type MerkleInfo = { address: string; mint: string };
+export type StakePoolInfo = MerkleInfo & { stakeMint: string };

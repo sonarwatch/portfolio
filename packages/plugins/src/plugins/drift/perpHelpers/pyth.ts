@@ -4,6 +4,7 @@ import { parsePriceData } from '../../../utils/solana/pyth/helpersOld';
 import { PRICE_PRECISION, QUOTE_PRECISION, TEN } from './constants';
 import { OraclePriceData } from './types';
 import { pythLazerOracleStruct } from '../struct';
+import { toBN } from '../../../utils/misc/toBN';
 
 export function getPythOraclePriceDataFromBuffer(
   buffer: Buffer,
@@ -55,6 +56,7 @@ export function convertPythPrice(
 }
 
 const fiveBPS = new BN(500);
+
 function getStableCoinPrice(price: BN, confidence: BN): BN {
   if (price.sub(QUOTE_PRECISION).abs().lt(BN.min(confidence, fiveBPS))) {
     return QUOTE_PRECISION;
@@ -62,14 +64,38 @@ function getStableCoinPrice(price: BN, confidence: BN): BN {
   return price;
 }
 
-export function pythLazerPriceToOraclePrice(buffer: Buffer): OraclePriceData {
+const ONE = new BN(1);
+
+function convertPythPriceLazer(price: BN, exponent: number, multiple: BN): BN {
+  exponent = Math.abs(exponent);
+  const pythPrecision = TEN.pow(new BN(exponent).abs()).div(multiple);
+  return price.mul(PRICE_PRECISION).div(pythPrecision);
+}
+export function pythLazerPriceToOraclePrice(
+  buffer: Buffer,
+  multiple: BN = ONE,
+  stableCoin = false
+): OraclePriceData {
   const pythLazer = pythLazerOracleStruct.deserialize(buffer)[0];
 
-  const adjustedExp = pythLazer.exponent + 6;
+  const confidence = convertPythPriceLazer(
+    toBN(pythLazer.conf),
+    pythLazer.exponent,
+    multiple
+  );
+  let price = convertPythPriceLazer(
+    toBN(pythLazer.price),
+    pythLazer.exponent,
+    multiple
+  );
+  if (stableCoin) {
+    price = getStableCoinPrice(price, confidence);
+  }
+
   return {
-    price: new BN(pythLazer.price.shiftedBy(adjustedExp).toNumber()),
-    slot: new BN(pythLazer.postedSlot.toNumber()),
-    confidence: new BN(pythLazer.conf.toNumber()),
+    price,
+    slot: toBN(pythLazer.postedSlot),
+    confidence: toBN(pythLazer.conf),
     hasSufficientNumberOfDataPoints: true,
   };
 }

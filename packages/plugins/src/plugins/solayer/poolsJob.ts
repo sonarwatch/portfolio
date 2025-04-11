@@ -11,10 +11,11 @@ import { Job, JobExecutor } from '../../Job';
 import {
   platformId,
   programId,
+  solayerLstPool,
+  stakePoolMint,
+  stakePoolDecimals,
   solayerLstMint,
   solayerLstDecimals,
-  solayerLstPool,
-  solayerRstMint,
 } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
@@ -38,14 +39,15 @@ const executor: JobExecutor = async (cache: Cache) => {
     const ratio = stakePool.totalLamports
       .div(stakePool.poolTokenSupply)
       .toNumber();
-    const lstSource = {
-      address: solayerLstMint,
-      decimals: solayerLstDecimals,
+    const stakePoolSource = {
+      address: stakePoolMint,
+      decimals: stakePoolDecimals,
       id: platformId,
       networkId: NetworkId.solana,
-      platformId: walletTokensPlatformId,
+      platformId,
       price: solTokenPrice.price * ratio,
       timestamp: Date.now(),
+      elementName: 'Restaking',
       weight: 1,
       underlyings: [
         {
@@ -57,22 +59,13 @@ const executor: JobExecutor = async (cache: Cache) => {
         },
       ],
     };
-    const rstSource = {
-      ...lstSource,
-      address: solayerRstMint,
-      platformId,
-      elementName: 'Restaking',
-      underlyings: [
-        {
-          address: solanaNativeAddress,
-          amountPerLp: ratio,
-          decimals: solanaNativeDecimals,
-          networkId: NetworkId.solana,
-          price: solTokenPrice.price,
-        },
-      ],
+    const lstSource = {
+      ...stakePoolSource,
+      address: solayerLstMint,
+      decimals: solayerLstDecimals,
+      platformId: walletTokensPlatformId,
     };
-    await cache.setTokenPriceSources([lstSource, rstSource]);
+    await cache.setTokenPriceSources([stakePoolSource, lstSource]);
   }
 
   // Solayer restaking pools
@@ -96,7 +89,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     const lstMint = acc.lstMint.toString();
 
     // Ignore Solayer custom RST, already supported above
-    if (rstMint === solayerRstMint) return;
+    if (rstMint === solayerLstMint) return;
 
     const tp = prices.get(lstMint);
     if (!tp) return;

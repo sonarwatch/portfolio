@@ -1,6 +1,4 @@
 import { PublicKey } from '@solana/web3.js';
-import { IdlItem } from '@solanafm/explorer-kit-idls';
-import { CitrusIDL } from './idl';
 
 export const platformId = 'citrus';
 export const collectionsCacheKey = `${platformId}-collections`;
@@ -14,9 +12,3 @@ export const citrusProgram = new PublicKey(
 );
 
 export const loanDataSize = 464;
-
-export const citrusIdlItem = {
-  programId: citrusProgram.toString(),
-  idl: CitrusIDL,
-  idlType: 'anchor',
-} as IdlItem;

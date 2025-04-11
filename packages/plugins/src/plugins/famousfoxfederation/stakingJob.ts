@@ -6,21 +6,19 @@ import {
   stakingConfigCacheKey,
   platformId,
   stakingConfigAccount,
-  stakingIdlItem,
 } from './constants';
-import { StakingConfig } from './types';
-import { getAutoParsedMultipleAccountsInfo } from '../../utils/solana';
+import { getParsedMultipleAccountsInfo } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
+import { stakingConfigStruct } from './structs';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
 
-  const [stakingConfig] =
-    await getAutoParsedMultipleAccountsInfo<StakingConfig>(
-      connection,
-      stakingIdlItem,
-      [stakingConfigAccount]
-    );
+  const [stakingConfig] = await getParsedMultipleAccountsInfo(
+    connection,
+    stakingConfigStruct,
+    [stakingConfigAccount]
+  );
 
   await cache.setItem(stakingConfigCacheKey, stakingConfig, {
     prefix: cachePrefix,

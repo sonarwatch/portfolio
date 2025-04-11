@@ -1,23 +1,18 @@
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import {
-  DetailedTokenInfo,
-  MergeMiner,
-  Miner,
-  Position,
-  QuarryData,
-  Rewarder,
-} from './types';
+import { DetailedTokenInfo, Position, Rewarder } from './types';
 import { ParsedAccount } from '../../utils/solana';
 import { getQuarryPDAs, isMinerAccount } from './helpers';
 import { getClaimableRewards } from './getClaimableRewards';
+
+import { MergeMiner, Miner, Quarry } from './structs';
 
 export const calculatePositions = (
   mergeMinerAccounts: ParsedAccount<MergeMiner>[],
   minerAccounts: ParsedAccount<Miner>[],
   replicaMinerAccounts: ParsedAccount<Miner>[][],
   allRewarders: Rewarder[],
-  quarryAccounts: ParsedAccount<QuarryData>[],
+  quarryAccounts: ParsedAccount<Quarry>[],
   owner: string
 ) => {
   const positions: Position[] = [];
@@ -59,7 +54,7 @@ export const calculatePositions = (
       rewardsBalance.push(getClaimableRewards(primaryQuarryAccount, account));
     } else {
       minerAccount = replicaMinerAccounts[i].find(
-        (a) => a.quarry === primaryQuarryAccount.pubkey.toString()
+        (a) => a.quarry.toString() === primaryQuarryAccount.pubkey.toString()
       );
       if (!minerAccount) return;
 
@@ -73,7 +68,7 @@ export const calculatePositions = (
         );
         if (!quarryAccount) return;
         const replicaMinerAccount = replicaMinerAccounts[i].find(
-          (a) => a.quarry === quarryAccount.pubkey.toString()
+          (a) => a.quarry.toString() === quarryAccount.pubkey.toString()
         );
         if (!replicaMinerAccount) return;
         const replicaQuarryPDA = quarryPDA.replicas.find(
@@ -102,8 +97,8 @@ export const calculatePositions = (
         name: primaryRewarder.info?.name,
       },
       stakedBalance: isMinerAccount(account)
-        ? account.balance
-        : account.primaryBalance,
+        ? account.balance.toString()
+        : account.primaryBalance.toString(),
       stakedTokenInfo: primaryQuarry.primaryTokenInfo,
       rewardsTokenInfo,
       rewardsBalance,

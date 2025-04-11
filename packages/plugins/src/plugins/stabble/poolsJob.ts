@@ -9,6 +9,7 @@ import { getAssetBatchDasAsMap } from '../../utils/solana/das/getAssetBatchDas';
 import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
 import { stablePoolStruct, weightedPoolStruct } from './structs';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
+import { PoolInfo } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
@@ -54,7 +55,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     getAssetBatchDasAsMap(dasUrl, [...lpMints]),
   ]);
   const sources: TokenPriceSource[] = [];
-
+  const poolInfos: { key: string; value: PoolInfo }[] = [];
   pools.forEach((pool) => {
     const heliusAsset = heliusAssets.get(pool.mint.toString());
     if (!heliusAsset?.token_info) return;
@@ -98,10 +99,23 @@ const executor: JobExecutor = async (cache: Cache) => {
       timestamp: Date.now(),
       weight: 1,
       underlyings,
+      link: `https://app.stabble.org/liquidity-pools/${pool.pubkey.toString()}/deposit`,
       sourceRefs: [{ address: pool.pubkey.toString(), name: 'Pool' }],
+    });
+
+    poolInfos.push({
+      key: pool.pubkey.toString(),
+      value: {
+        address: pool.pubkey.toString(),
+        mint: pool.mint.toString(),
+      },
     });
   });
 
+  await cache.setItems(poolInfos, {
+    prefix: platformId,
+    networkId: NetworkId.solana,
+  });
   await cache.setTokenPriceSources(sources);
 };
 const job: Job = {

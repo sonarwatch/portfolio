@@ -6,38 +6,34 @@ import {
   PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
+import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
-import { tokenMarketIdlItem, platformId } from './constants';
+import { platformId, tokenMarketProgram } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
-import { getAutoParsedProgramAccounts } from '../../utils/solana';
-import { Order } from './types';
 import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
 import { mintsToAssets } from '../../utils/solana/mintsToAssets';
+import { orderStruct } from './structs';
+import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const dasUrl = getSolanaDasEndpoint();
   const connection = getClientSolana();
 
-  const accounts = await getAutoParsedProgramAccounts<Order>(
+  const accounts = await ParsedGpa.build(
     connection,
-    tokenMarketIdlItem,
-    [
-      {
-        memcmp: {
-          bytes: owner,
-          offset: 41,
-        },
-      },
-    ]
-  );
+    orderStruct,
+    tokenMarketProgram
+  )
+    .addFilter('owner', new PublicKey(owner))
+    .run();
 
   if (accounts.length === 0) return [];
 
   const assetsByMint = await mintsToAssets(
     dasUrl,
     cache,
-    accounts.map((acc) => acc.mint),
+    accounts.map((acc) => acc.mint.toString()),
     accounts.map((acc) => new BigNumber(acc.count).toNumber())
   );
 

@@ -1,4 +1,4 @@
-import { StakingAccount, StakingConfig } from './types';
+import { StakingAccount, StakingConfig } from './structs';
 
 export const calcEarnings = (
   stakingAccount: StakingAccount,

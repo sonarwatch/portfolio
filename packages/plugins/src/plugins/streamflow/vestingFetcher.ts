@@ -12,9 +12,7 @@ import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { withdrawalVestingAccountFilters } from './filters';
 import { vestingAccountStruct } from './structs';
-import getTokenPricesMap from '../../utils/misc/getTokensPricesMap';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import getTokensDetailsMap from '../../utils/misc/getTokensDetailsMap';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -29,16 +27,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (vestingAccounts.length === 0) return [];
 
   const tokensAddresses = vestingAccounts.map((a) => a.mint.toString());
-  const tokenPriceById = await getTokenPricesMap(
+  const tokenPriceById = await cache.getTokenPricesAsMap(
     tokensAddresses,
-    NetworkId.solana,
-    cache
-  );
-
-  const tokenDetailsById = await getTokensDetailsMap(
-    tokensAddresses,
-    NetworkId.solana,
-    cache
+    NetworkId.solana
   );
 
   const assets: PortfolioAsset[] = [];
@@ -58,7 +49,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const decimals =
       tokenInCache?.decimals ||
-      tokenDetailsById.get(tokenMint)?.decimals ||
       (await client.getTokenSupply(new PublicKey(tokenMint))).value.decimals;
     if (!decimals) continue;
 

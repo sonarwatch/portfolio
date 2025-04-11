@@ -96,6 +96,9 @@ export enum OracleSource {
   PythStableCoinPull,
   SWITCHBOARD_ON_DEMAND,
   pythLazer,
+  pythLazer1K,
+  pythLazer1M,
+  pythLazerStableCoin,
 }
 
 export enum ContractType {

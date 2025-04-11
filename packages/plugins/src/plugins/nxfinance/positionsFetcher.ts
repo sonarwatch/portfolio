@@ -13,7 +13,7 @@ import {
 } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { ParsedAccount } from '../../utils/solana';
-import { LendingPool, SolayerPool } from './types';
+import { LendingPool, SolayerPool } from './structs';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import {
   formatLendingPool,
@@ -72,17 +72,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const mints = new Set<string>();
   if (marginAccount) {
-    marginAccount.deposits.forEach((d) => mints.add(d.tokenMint));
-    marginAccount.loans.forEach((l) => mints.add(l.tokenMint));
+    marginAccount.deposits.forEach((d) => mints.add(d.tokenMint.toString()));
+    marginAccount.loans.forEach((l) => mints.add(l.tokenMint.toString()));
   }
   vSolPositionsAccounts.forEach((vSolPositionsAccount) => {
     vSolPositionsAccount?.positions.forEach((position) => {
-      mints.add(position.borrowMint);
-      mints.add(position.collateralMint);
-      mints.add(position.leverageMint);
+      mints.add(position.borrowMint.toString());
+      mints.add(position.collateralMint.toString());
+      mints.add(position.leverageMint.toString());
     });
   });
-  lendingPools.forEach((l) => mints.add(l.tokenMint));
+  lendingPools.forEach((l) => mints.add(l.tokenMint.toString()));
 
   const [marginPools, tokenPrices] = await Promise.all([
     getMarginPools(mints),
@@ -93,14 +93,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   lendingAccounts.forEach((lendingAccount) => {
     if (!lendingAccount) return;
-    if (lendingAccount.depositNotes === '0') return;
+    if (lendingAccount.depositNotes.isZero()) return;
 
     const lendingPool = lendingPools.find(
-      (lp) => lp.nxMarket === lendingAccount.nxMarket
+      (lp) => lp.nxMarket.toString() === lendingAccount.nxMarket.toString()
     );
     if (!lendingPool) return;
 
-    const tokenPrice = tokenPrices.get(lendingPool.tokenMint);
+    const tokenPrice = tokenPrices.get(lendingPool.tokenMint.toString());
 
     if (!tokenPrice) return;
 
@@ -139,11 +139,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     vSolPositionsAccount.positions.forEach((position) => {
       if (!position) return;
       const lendingPool = lendingPools.find(
-        (lp) => lp.nxMarket === vSolPositionsAccount.nxMarket
+        (lp) =>
+          lp.nxMarket.toString() === vSolPositionsAccount.nxMarket.toString()
       );
       if (!lendingPool) return;
 
-      const tokenPrice = tokenPrices.get(lendingPool.tokenMint);
+      const tokenPrice = tokenPrices.get(lendingPool.tokenMint.toString());
 
       if (!tokenPrice) return;
 
@@ -152,9 +153,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         tokenPrice.decimals
       );
 
-      const collateralTokenPrice = tokenPrices.get(position.collateralMint);
-      const loanTokenPrice = tokenPrices.get(position.borrowMint);
-      const leverageTokenPrice = tokenPrices.get(position.leverageMint);
+      const collateralTokenPrice = tokenPrices.get(
+        position.collateralMint.toString()
+      );
+      const loanTokenPrice = tokenPrices.get(position.borrowMint.toString());
+      const leverageTokenPrice = tokenPrices.get(
+        position.leverageMint.toString()
+      );
 
       if (!collateralTokenPrice || !loanTokenPrice || !leverageTokenPrice)
         return;
@@ -210,7 +215,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     marginAccount.deposits.forEach((deposit) => {
       const marginPool = marginPools.find(
-        (mp) => mp?.tokenMint === deposit.tokenMint
+        (mp) => mp?.tokenMint.toString() === deposit.tokenMint.toString()
       );
       if (!marginPool) return;
 
@@ -225,7 +230,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         amount,
       };
 
-      if (leverageVaultsMints.includes(deposit.tokenMint)) {
+      if (leverageVaultsMints.includes(deposit.tokenMint.toString())) {
         asset.amount = asset.amount
           .multipliedBy(marginAccount.leverage)
           .dividedBy(100);
@@ -237,10 +242,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     marginAccount.loans.forEach((loan) => {
       const marginPool = marginPools.find(
-        (mp) => mp?.tokenMint === loan.tokenMint
+        (mp) => mp?.tokenMint.toString() === loan.tokenMint.toString()
       );
       if (!marginPool) return;
-      if (loan.loanNote === '0') return;
+      if (loan.loanNote.isZero()) return;
 
       const borrowNoteRate = getBorrowNoteRate(marginPool);
 

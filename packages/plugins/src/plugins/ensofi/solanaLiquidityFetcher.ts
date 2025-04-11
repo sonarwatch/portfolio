@@ -38,10 +38,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 
-  const liquidityElement = elementRegistry.addElementConcentratedLiquidity({
-    label: 'LiquidityPool',
-    link: 'https://app.ensofi.xyz/portfolio',
-  });
   userPositions.forEach((userPosition) => {
     const protocolPosition = protocolPositions.find((p) =>
       p?.pubkey.equals(userPosition.protocol_position)
@@ -52,6 +48,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       p?.pubkey.equals(protocolPosition.pool_address)
     );
     if (!pool) return;
+
+    const liquidityElement = elementRegistry.addElementConcentratedLiquidity({
+      label: 'LiquidityPool',
+      link: 'https://app.ensofi.xyz/portfolio',
+    });
 
     liquidityElement.setLiquidity({
       addressA: pool.tokenMint0,

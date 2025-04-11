@@ -1,0 +1,1080 @@
+{
+  "address": "gp8fqiE5cwX3JRT8unpKeFutNdMihyisAe3nx6L3S1p",
+  "metadata": {
+    "name": "locked_voter",
+    "version": "0.2.0",
+    "spec": "0.1.0"
+  },
+  "docs": [
+    "Locked voter program."
+  ],
+  "instructions": [
+    {
+      "name": "new_locker",
+      "docs": [
+        "Creates a new [Locker]."
+      ],
+      "discriminator": [
+        177,
+        133,
+        32,
+        90,
+        229,
+        216,
+        131,
+        47
+      ],
+      "accounts": [
+        {
+          "name": "base",
+          "docs": [
+            "Base."
+          ],
+          "signer": true
+        },
+        {
+          "name": "locker",
+          "docs": [
+            "[Locker]."
+          ],
+          "writable": true
+        },
+        {
+          "name": "token_mint",
+          "docs": [
+            "Mint of the token that can be used to join the [Locker]."
+          ]
+        },
+        {
+          "name": "governor",
+          "docs": [
+            "[Governor] associated with the [Locker]."
+          ]
+        },
+        {
+          "name": "payer",
+          "docs": [
+            "Payer of the initialization."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "System program."
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "LockerParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "new_escrow",
+      "docs": [
+        "Creates a new [Escrow] for an account.",
+        "",
+        "A Vote Escrow, or [Escrow] for short, is an agreement between an account (known as the `authority`) and the DAO to",
+        "lock up tokens for a specific period of time, in exchange for voting rights",
+        "linearly proportional to the amount of votes given."
+      ],
+      "discriminator": [
+        216,
+        182,
+        143,
+        11,
+        220,
+        38,
+        86,
+        185
+      ],
+      "accounts": [
+        {
+          "name": "locker",
+          "docs": [
+            "[Locker]."
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow",
+          "docs": [
+            "[Escrow]."
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow_owner"
+        },
+        {
+          "name": "payer",
+          "docs": [
+            "Payer of the initialization."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "System program."
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "increase_locked_amount",
+      "docs": [
+        "increase locked amount [Escrow]."
+      ],
+      "discriminator": [
+        5,
+        168,
+        118,
+        53,
+        72,
+        46,
+        203,
+        146
+      ],
+      "accounts": [
+        {
+          "name": "locker",
+          "docs": [
+            "[Locker]."
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow",
+          "docs": [
+            "[Escrow]."
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow_tokens",
+          "docs": [
+            "Token account held by the [Escrow]."
+          ],
+          "writable": true
+        },
+        {
+          "name": "payer",
+          "docs": [
+            "Authority [Self::source_tokens], Anyone can increase amount for user"
+          ],
+          "signer": true
+        },
+        {
+          "name": "source_tokens",
+          "docs": [
+            "The source of deposited tokens."
+          ],
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "Token program."
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "toggle_max_lock",
+      "docs": [
+        "toogle max lock [Escrow]."
+      ],
+      "discriminator": [
+        163,
+        157,
+        161,
+        132,
+        179,
+        107,
+        127,
+        143
+      ],
+      "accounts": [
+        {
+          "name": "locker",
+          "docs": [
+            "[Locker]."
+          ]
+        },
+        {
+          "name": "escrow",
+          "docs": [
+            "[Escrow]."
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow_owner",
+          "docs": [
+            "Authority of the [Escrow] and"
+          ],
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "is_max_lock",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "withdraw",
+      "docs": [
+        "Exits the DAO; i.e., withdraws all staked tokens in an [Escrow] if the [Escrow] is unlocked."
+      ],
+      "discriminator": [
+        183,
+        18,
+        70,
+        156,
+        148,
+        109,
+        161,
+        34
+      ],
+      "accounts": [
+        {
+          "name": "locker",
+          "docs": [
+            "The [Locker] being exited from."
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow",
+          "docs": [
+            "The [Escrow] that is being closed."
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow_owner",
+          "docs": [
+            "Authority of the [Escrow]."
+          ],
+          "signer": true
+        },
+        {
+          "name": "escrow_tokens",
+          "docs": [
+            "Tokens locked up in the [Escrow]."
+          ],
+          "writable": true
+        },
+        {
+          "name": "destination_tokens",
+          "docs": [
+            "Destination for the tokens to unlock."
+          ],
+          "writable": true
+        },
+        {
+          "name": "payer",
+          "docs": [
+            "The payer to receive the rent refund."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "Token program."
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "open_partial_unstaking",
+      "docs": [
+        "Open partial unstaking"
+      ],
+      "discriminator": [
+        201,
+        137,
+        207,
+        175,
+        79,
+        95,
+        220,
+        27
+      ],
+      "accounts": [
+        {
+          "name": "locker",
+          "docs": [
+            "[Locker]."
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow",
+          "docs": [
+            "[Escrow]."
+          ],
+          "writable": true
+        },
+        {
+          "name": "partial_unstake",
+          "docs": [
+            "[Escrow]."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "System program."
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "memo",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "withdraw_partial_unstaking",
+      "docs": [
+        "Withdraw partial unstaking"
+      ],
+      "discriminator": [
+        201,
+        202,
+        137,
+        124,
+        2,
+        3,
+        245,
+        87
+      ],
+      "accounts": [
+        {
+          "name": "locker",
+          "docs": [
+            "The [Locker] being exited from."
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow",
+          "docs": [
+            "The [Escrow] that is being closed."
+          ],
+          "writable": true
+        },
+        {
+          "name": "partial_unstake",
+          "docs": [
+            "The [PartialUnstaking] that is being withdraw."
+          ],
+          "writable": true
+        },
+        {
+          "name": "owner",
+          "docs": [
+            "Authority of the [Escrow]."
+          ],
+          "signer": true
+        },
+        {
+          "name": "escrow_tokens",
+          "docs": [
+            "Tokens locked up in the [Escrow]."
+          ],
+          "writable": true
+        },
+        {
+          "name": "destination_tokens",
+          "docs": [
+            "Destination for the tokens to unlock."
+          ],
+          "writable": true
+        },
+        {
+          "name": "payer",
+          "docs": [
+            "The payer to receive the rent refund."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "Token program."
+          ]
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Locker",
+      "discriminator": [
+        74,
+        246,
+        6,
+        113,
+        249,
+        228,
+        75,
+        169
+      ]
+    },
+    {
+      "name": "Escrow",
+      "discriminator": [
+        31,
+        213,
+        123,
+        187,
+        186,
+        22,
+        218,
+        155
+      ]
+    },
+    {
+      "name": "PartialUnstaking",
+      "discriminator": [
+        172,
+        146,
+        58,
+        213,
+        40,
+        250,
+        107,
+        63
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "IncreaseLockedAmountEvent",
+      "discriminator": [
+        100,
+        70,
+        156,
+        246,
+        40,
+        169,
+        119,
+        10
+      ]
+    },
+    {
+      "name": "NewEscrowEvent",
+      "discriminator": [
+        96,
+        82,
+        181,
+        204,
+        84,
+        177,
+        72,
+        141
+      ]
+    },
+    {
+      "name": "NewLockerEvent",
+      "discriminator": [
+        149,
+        31,
+        207,
+        106,
+        172,
+        155,
+        65,
+        110
+      ]
+    },
+    {
+      "name": "OpenPartialStakingEvent",
+      "discriminator": [
+        56,
+        151,
+        51,
+        15,
+        89,
+        64,
+        183,
+        201
+      ]
+    },
+    {
+      "name": "WithdrawPartialUnstakingEvent",
+      "discriminator": [
+        19,
+        40,
+        16,
+        28,
+        107,
+        45,
+        42,
+        83
+      ]
+    },
+    {
+      "name": "ExitEscrowEvent",
+      "discriminator": [
+        218,
+        91,
+        68,
+        189,
+        102,
+        152,
+        212,
+        166
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "LockupDurationTooShort",
+      "msg": "Lockup duration must at least be the min stake duration"
+    },
+    {
+      "code": 6001,
+      "name": "LockupDurationTooLong",
+      "msg": "Lockup duration must at most be the max stake duration"
+    },
+    {
+      "code": 6002,
+      "name": "RefreshCannotShorten",
+      "msg": "A voting escrow refresh cannot shorten the escrow time remaining"
+    },
+    {
+      "code": 6003,
+      "name": "EscrowNotEnded",
+      "msg": "Escrow has not ended"
+    },
+    {
+      "code": 6004,
+      "name": "MaxLockIsSet",
+      "msg": "Maxlock is set"
+    },
+    {
+      "code": 6005,
+      "name": "ExpirationIsLessThanCurrentTime",
+      "msg": "Cannot set expiration less than the current time"
+    },
+    {
+      "code": 6006,
+      "name": "LockerIsExpired",
+      "msg": "Locker is expired"
+    },
+    {
+      "code": 6007,
+      "name": "ExpirationIsNotZero",
+      "msg": "Expiration is not zero"
+    },
+    {
+      "code": 6008,
+      "name": "AmountIsZero",
+      "msg": "Amount is zero"
+    },
+    {
+      "code": 6009,
+      "name": "MaxLockIsNotSet",
+      "msg": "Maxlock is not set"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidAmountForPartialUnstaking",
+      "msg": "Invalid amount for partial unstaking"
+    },
+    {
+      "code": 6011,
+      "name": "EscrowHasBeenEnded",
+      "msg": "Escrow has been ended"
+    },
+    {
+      "code": 6012,
+      "name": "InvalidUnstakingLockDuration",
+      "msg": "Invalid unstaking lock duration"
+    },
+    {
+      "code": 6013,
+      "name": "PartialUnstakingAmountIsNotZero",
+      "msg": "Partial unstaking amount is not zero"
+    },
+    {
+      "code": 6014,
+      "name": "PartialUnstakingIsNotEnded",
+      "msg": "Partial unstaking has not ended"
+    }
+  ],
+  "types": [
+    {
+      "name": "LockerParams",
+      "docs": [
+        "Contains parameters for the [Locker]."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "max_stake_vote_multiplier",
+            "docs": [
+              "The weight of a maximum vote lock relative to the total number of tokens locked.",
+              "For example, veCRV is 10 because 1 CRV locked for 4 years = 10 veCRV."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "min_stake_duration",
+            "docs": [
+              "Minimum staking duration."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "max_stake_duration",
+            "docs": [
+              "Maximum staking duration."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "proposal_activation_min_votes",
+            "docs": [
+              "Minimum number of votes required to activate a proposal."
+            ],
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Locker",
+      "docs": [
+        "A group of [Escrow]s."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "base",
+            "docs": [
+              "Base account used to generate signer seeds."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "token_mint",
+            "docs": [
+              "Mint of the token that must be locked in the [Locker]."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "locked_supply",
+            "docs": [
+              "Total number of tokens locked in [Escrow]s."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "total_escrow",
+            "docs": [
+              "Total number of escrow"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "governor",
+            "docs": [
+              "Governor associated with the [Locker]."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "params",
+            "docs": [
+              "Mutable parameters of how a [Locker] should behave."
+            ],
+            "type": {
+              "defined": {
+                "name": "LockerParams"
+              }
+            }
+          },
+          {
+            "name": "buffers",
+            "docs": [
+              "buffer for further use"
+            ],
+            "type": {
+              "array": [
+                "u128",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Escrow",
+      "docs": [
+        "Locks tokens on behalf of a user."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "locker",
+            "docs": [
+              "The [Locker] that this [Escrow] is part of."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "docs": [
+              "The key of the account that is authorized to stake into/withdraw from this [Escrow]."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "tokens",
+            "docs": [
+              "The token account holding the escrow tokens."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Amount of tokens staked."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "escrow_started_at",
+            "docs": [
+              "When the [Escrow::owner] started their escrow."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "escrow_ends_at",
+            "docs": [
+              "When the escrow unlocks; i.e. the [Escrow::owner] is scheduled to be allowed to withdraw their tokens."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "vote_delegate",
+            "docs": [
+              "Account that is authorized to vote on behalf of this [Escrow].",
+              "Defaults to the [Escrow::owner]."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "is_max_lock",
+            "docs": [
+              "Max lock"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "partial_unstaking_amount",
+            "docs": [
+              "total amount of partial unstaking amount"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "padding",
+            "docs": [
+              "padding for further use"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "buffers",
+            "docs": [
+              "buffer for further use"
+            ],
+            "type": {
+              "array": [
+                "u128",
+                9
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "PartialUnstaking",
+      "docs": [
+        "Account to store infor for partial unstaking"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow",
+            "docs": [
+              "The [Escrow] pubkey."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Amount of this partial unstaking"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "expiration",
+            "docs": [
+              "Timestamp when owner can withdraw the partial unstaking amount"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "buffers",
+            "docs": [
+              "buffer for further use"
+            ],
+            "type": {
+              "array": [
+                "u128",
+                6
+              ]
+            }
+          },
+          {
+            "name": "memo",
+            "docs": [
+              "Memo"
+            ],
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "IncreaseLockedAmountEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "locker",
+            "type": "pubkey"
+          },
+          {
+            "name": "escrow_owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "locker_supply",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "NewEscrowEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow",
+            "type": "pubkey"
+          },
+          {
+            "name": "escrow_owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "locker",
+            "type": "pubkey"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "NewLockerEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "governor",
+            "type": "pubkey"
+          },
+          {
+            "name": "locker",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "params",
+            "type": {
+              "defined": {
+                "name": "LockerParams"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "OpenPartialStakingEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "partial_unstake",
+            "type": "pubkey"
+          },
+          {
+            "name": "escrow",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "expiration",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WithdrawPartialUnstakingEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow_owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "locker",
+            "type": "pubkey"
+          },
+          {
+            "name": "partial_unstaking",
+            "type": "pubkey"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "locker_supply",
+            "type": "u64"
+          },
+          {
+            "name": "released_amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ExitEscrowEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow_owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "locker",
+            "type": "pubkey"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "locker_supply",
+            "type": "u64"
+          },
+          {
+            "name": "released_amount",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ]
+}

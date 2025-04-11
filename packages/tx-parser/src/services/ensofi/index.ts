@@ -9,7 +9,7 @@ const lendingContract: Contract = {
 };
 
 const liquidityContract: Contract = {
-  name: 'Liqudity',
+  name: 'Liquidity',
   address: 'ensSuXMeaUhRC7Re3ukaxLcX2E4qmd2LZxbxsK9XcWz',
   platformId: 'ensofi',
 };

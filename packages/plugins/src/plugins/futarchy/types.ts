@@ -1,0 +1,20 @@
+export type LaunchCached = {
+  pubkey: string;
+  buffer: Buffer;
+  pdaBump: number;
+  minimumRaiseAmount: string;
+  launchAuthority: string;
+  launchSigner: string;
+  launchSignerPdaBump: number;
+  launchUsdcVault: string;
+  launchTokenVault: string;
+  tokenMint: string;
+  usdcMint: string;
+  unixTimestampStarted: number;
+  totalCommittedAmount: string;
+  state: number;
+  seqNum: string;
+  secondsForLaunch: number;
+  dao: string;
+  daoTreasury: string;
+};

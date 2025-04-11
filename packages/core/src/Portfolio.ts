@@ -201,13 +201,21 @@ export type BalanceChange = {
   change: number;
 };
 
+export type AccountChanges = {
+  created: string[];
+  updated: string[];
+  closed: string[];
+};
+
 export type Transaction = {
   signature: string;
   owner: string;
   blockTime?: number | null;
   service?: Service;
   balanceChanges: BalanceChange[];
+  accountChanges: AccountChanges;
   isSigner: boolean;
+  fees?: number | null;
   success: boolean;
 };
 
@@ -220,7 +228,9 @@ export type SourceRefName =
   | 'Strategy'
   | 'NFT Mint'
   | 'Reserve'
-  | 'Proposal';
+  | 'Proposal'
+  | 'Distributor'
+  | 'Locker';
 
 /**
  * Represents references to on-chain accounts.

@@ -22,13 +22,21 @@ import * as parcl from './services/parcl';
 import * as perena from './services/perena';
 import * as picasso from './services/picasso';
 import * as pumpswap from './services/pumpswap';
+import * as pumpkin from './services/pumpkin';
 import * as rain from './services/rain';
 import * as ratex from './services/ratex';
 import * as raydium from './services/raydium';
 import * as save from './services/save';
 import * as sharky from './services/sharky';
+import * as solanaid from './services/solanaid';
+import * as stabble from './services/stabble';
 import * as symmetry from './services/symmetry';
 import * as zeta from './services/zeta';
+import * as nirvana from './services/nirvana';
+import * as sanctum from './services/sanctum';
+import * as streamflow from './services/streamflow';
+import * as runemine from './services/runemine';
+import * as futarchy from './services/futarchy';
 
 export const services: Service[] = [
   banx,
@@ -38,6 +46,7 @@ export const services: Service[] = [
   drift,
   driftMMV,
   elemental,
+  ensofi,
   ensofi,
   exponent,
   flash,
@@ -54,13 +63,21 @@ export const services: Service[] = [
   perena,
   picasso,
   pumpswap,
+  pumpkin,
   rain,
   ratex,
   raydium,
   save,
   sharky,
+  solanaid,
   symmetry,
   zeta,
+  nirvana,
+  sanctum,
+  stabble,
+  streamflow,
+  runemine,
+  futarchy,
 ]
   .map((m) => m.default)
   .flat();

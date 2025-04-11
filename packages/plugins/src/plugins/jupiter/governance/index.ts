@@ -10,6 +10,8 @@ import {
   asr2Statics,
   asr3Config,
   asr3Statics,
+  asr4Config,
+  asr4Statics,
   platformId,
 } from './constants';
 import { getAsrAirdropExecutor } from './asrAirdropFetcher';
@@ -49,4 +51,16 @@ export const asr3Fetcher = airdropFetcherToFetcher(
   platformId,
   `${platformId}-asr-3`,
   asr3Statics.claimEnd
+);
+
+export const asr4AirdropFetcher: AirdropFetcher = {
+  id: asr4Statics.id,
+  networkId: NetworkId.solana,
+  executor: getAsrAirdropExecutor(asr4Config),
+};
+export const asr4Fetcher = airdropFetcherToFetcher(
+  asr4AirdropFetcher,
+  platformId,
+  `${platformId}-asr-4`,
+  asr4Statics.claimEnd
 );

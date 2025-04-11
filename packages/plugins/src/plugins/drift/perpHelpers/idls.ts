@@ -1,5 +1,3 @@
-import { IdlItem } from '@solanafm/explorer-kit-idls';
-
 export const pythSolanaReceiverIdl = {
   version: '0.1.0',
   name: 'pyth_solana_receiver',
@@ -616,9 +614,3 @@ export const pythSolanaReceiverIdl = {
     },
   ],
 };
-
-export const pythSolanaReceiverIdlItem = {
-  programId: 'G6EoTTTgpkNBtVXo96EQp2m6uwwVh2Kt6YidjkmQqoha',
-  idl: pythSolanaReceiverIdl,
-  idlType: 'anchor',
-} as IdlItem;

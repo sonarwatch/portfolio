@@ -1,5 +1,6 @@
 import { ParsedTransactionWithMeta } from '@solana/web3.js';
 import {
+  AccountChanges,
   BalanceChange,
   Service,
   solanaNativeDecimals,
@@ -9,7 +10,7 @@ import {
 import { unshift } from './unshift';
 import { sortedServices } from '../services';
 
-const findTransactionService = (
+const getTransactionService = (
   txn: ParsedTransactionWithMeta
 ): Service | undefined => {
   const { instructions } = txn.transaction.message;
@@ -26,16 +27,38 @@ const findTransactionService = (
   );
 };
 
-export const parseTransaction = (
-  txn: ParsedTransactionWithMeta | null,
+const getAccountChanges = (txn: ParsedTransactionWithMeta): AccountChanges => {
+  const accountChanges: AccountChanges = {
+    created: [],
+    updated: [],
+    closed: [],
+  };
+
+  if (txn.meta) {
+    const { preBalances, postBalances } = txn.meta;
+    const { accountKeys } = txn.transaction.message;
+
+    preBalances.forEach((preBalance, i) => {
+      if (preBalance === 0 && postBalances[i] > 0) {
+        accountChanges.created.push(accountKeys[i].pubkey.toString());
+      } else if (preBalance > 0 && postBalances[i] === 0) {
+        accountChanges.closed.push(accountKeys[i].pubkey.toString());
+      } else if (accountKeys[i].writable && !accountKeys[i].signer) {
+        accountChanges.updated.push(accountKeys[i].pubkey.toString());
+      }
+    });
+  }
+
+  return accountChanges;
+};
+
+const getBalanceChanges = (
+  txn: ParsedTransactionWithMeta,
   owner: string
-): Transaction | null => {
-  if (!txn) return null;
-
-  const { accountKeys } = txn.transaction.message;
-
+): BalanceChange[] => {
   const changes: BalanceChange[] = [];
   if (txn.meta) {
+    const { accountKeys } = txn.transaction.message;
     const { preTokenBalances, postTokenBalances, preBalances, postBalances } =
       txn.meta;
 
@@ -58,7 +81,8 @@ export const parseTransaction = (
     if (preTokenBalances && postTokenBalances) {
       const preTokenBalance = preTokenBalances.find((b) => b.owner === owner);
       const postTokenBalance = postTokenBalances.find((b) => b.owner === owner);
-      if (preTokenBalance && postTokenBalance) {
+
+      if (preTokenBalance || postTokenBalance) {
         const preBalanceAmount = preTokenBalance
           ? unshift(
               preTokenBalance.uiTokenAmount.amount,
@@ -72,27 +96,52 @@ export const parseTransaction = (
             )
           : 0;
         if (postBalanceAmount !== preBalanceAmount) {
-          changes.push({
-            address: postTokenBalance.mint,
-            preBalance: preBalanceAmount,
-            postBalance: postBalanceAmount,
-            change: postBalanceAmount - preBalanceAmount,
-          });
+          const address = postTokenBalance
+            ? postTokenBalance.mint
+            : preTokenBalance?.mint;
+          if (address)
+            changes.push({
+              address,
+              preBalance: preBalanceAmount,
+              postBalance: postBalanceAmount,
+              change: postBalanceAmount - preBalanceAmount,
+            });
         }
       }
     }
   }
 
+  return changes;
+};
+
+const ownerIsSigner = (
+  txn: ParsedTransactionWithMeta,
+  owner: string
+): boolean =>
+  txn.transaction.message.accountKeys.some(
+    (accountKey) => accountKey.pubkey.toString() === owner && accountKey.signer
+  );
+
+export const parseTransaction = (
+  txn: ParsedTransactionWithMeta | null,
+  owner: string
+): Transaction | null => {
+  if (!txn) return null;
+
+  const isSigner = ownerIsSigner(txn, owner);
+
   return {
     signature: txn.transaction.signatures[0],
     owner,
     blockTime: txn.blockTime,
-    service: findTransactionService(txn),
-    balanceChanges: changes,
-    isSigner: accountKeys.some(
-      (accountKey) =>
-        accountKey.pubkey.toString() === owner && accountKey.signer
-    ),
+    service: getTransactionService(txn),
+    balanceChanges: getBalanceChanges(txn, owner),
+    accountChanges: getAccountChanges(txn),
+    isSigner,
+    fees:
+      isSigner && txn.meta?.fee
+        ? unshift(txn.meta.fee, solanaNativeDecimals)
+        : null,
     success: !txn.meta?.err,
   };
 };
