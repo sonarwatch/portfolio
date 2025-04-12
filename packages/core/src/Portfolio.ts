@@ -108,6 +108,7 @@ export type PortfolioAssetTokenData = {
   address: string;
   amount: number;
   price: UsdValue;
+  yield?: Yield;
 };
 
 /**

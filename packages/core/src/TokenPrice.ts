@@ -66,6 +66,7 @@ export function tokenPriceFromSources(
   });
 
   let price: number;
+  let tYield: Yield | undefined;
 
   const jupiterSource = updatedSources.find(
     (source) => source.id === jupiterSourceId
@@ -75,6 +76,7 @@ export function tokenPriceFromSources(
   );
   if (jupiterSource) {
     price = jupiterSource.price;
+    tYield = jupiterSource.yield;
   } else if (coingeckoSource) {
     price = coingeckoSource.price;
   } else {
@@ -93,7 +95,7 @@ export function tokenPriceFromSources(
     platformId: bestSource.platformId,
     decimals: bestSource.decimals,
     price,
-    yield: bestSource.yield,
+    yield: tYield,
     underlyings: bestSource.underlyings,
     elementName: bestSource.elementName,
     label: bestSource.label,
