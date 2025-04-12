@@ -103,6 +103,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     });
   }
   if (tokenAssets.length !== 0) {
+    const tokenYields = await cache.getTokenYieldsAsMap(
+      tokenAssets.map((a) => a.data.address),
+      NetworkId.solana
+    );
     elements.push({
       type: PortfolioElementType.multiple,
       networkId: NetworkId.solana,
@@ -110,7 +114,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       label: 'Wallet',
       value: getUsdValueSum(tokenAssets.map((a) => a.value)),
       data: {
-        assets: tokenAssets,
+        assets: tokenAssets.map((a) => ({
+          ...a,
+          data: {
+            ...a.data,
+            yield: tokenYields.get(a.data.address)?.yield,
+          },
+        })),
       },
     });
   }

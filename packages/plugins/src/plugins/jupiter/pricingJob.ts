@@ -93,18 +93,27 @@ const executor: JobExecutor = async (cache: Cache) => {
       networkId: NetworkId.solana,
       timestamp: Date.now(),
       price: solTokenPrice.price * price,
-      yield: lstApys?.data.apys[mint]
-        ? {
-            apr: apyToApr(lstApys.data.apys[mint]),
-            apy: lstApys.data.apys[mint],
-          }
-        : undefined,
       platformId: walletTokensPlatformId,
       weight: 1,
     };
     sources.push(source);
   });
   await cache.setTokenPriceSources(sources);
+
+  if (lstApys?.data) {
+    for (const address of Object.keys(lstApys.data.apys)) {
+      const apy = lstApys.data.apys[address];
+      await cache.setTokenYield({
+        address,
+        networkId: NetworkId.solana,
+        yield: {
+          apr: apyToApr(apy),
+          apy,
+        },
+        timestamp: Date.now(),
+      });
+    }
+  }
 };
 const job: Job = {
   id: `${platformId}-pricing`,
