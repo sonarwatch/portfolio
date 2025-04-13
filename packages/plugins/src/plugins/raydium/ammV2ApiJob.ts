@@ -133,8 +133,8 @@ const executor: JobExecutor = async (cache: Cache) => {
           networkId: NetworkId.solana,
           timestamp: Date.now(),
           yield: {
-            apr: poolInfo.day.apr / 100,
-            apy: aprToApy(poolInfo.day.apr / 100),
+            apr: poolInfo.week.apr / 100,
+            apy: aprToApy(poolInfo.week.apr / 100),
           },
         });
       } else if (acceptedPairs) {
