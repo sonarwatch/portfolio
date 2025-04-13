@@ -37,6 +37,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     fungibleAddresses,
     NetworkId.solana
   );
+  const tokenYields = await cache.getTokenYieldsAsMap(
+    fungibleAddresses,
+    NetworkId.solana
+  );
 
   const nftAssets: PortfolioAssetCollectible[] = [];
   const tokenAssets: PortfolioAssetToken[] = [];
@@ -45,9 +49,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   for (let i = 0; i < items.length; i++) {
     const asset = items[i];
     const isFungible = isHeliusFungibleAsset(asset);
-    const tokenPrice = isFungible ? tokenPrices.get(asset.id) : undefined;
-
     const address = asset.id;
+    const tokenPrice = isFungible ? tokenPrices.get(address) : undefined;
+    const tokenYield = isFungible ? tokenYields.get(address) : undefined;
+
     const amount = asset.token_info
       ? BigNumber(asset.token_info.balance)
           .div(10 ** asset.token_info.decimals)
@@ -57,10 +62,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     // If it's an LP Token
     if (tokenPrice && tokenPrice.platformId !== walletTokensPlatformId) {
       const liquidity = tokenPriceToLiquidity(
-        asset.id,
+        address,
         amount,
         NetworkId.solana,
-        tokenPrice
+        tokenPrice,
+        tokenYield
       );
       const tag = getLpTag(tokenPrice.platformId, tokenPrice.elementName);
       if (!liquiditiesByTag[tag]) {
@@ -75,7 +81,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           address,
           amount,
           NetworkId.solana,
-          tokenPrice
+          tokenPrice,
+          undefined,
+          undefined,
+          undefined,
+          tokenYield
         ),
         ref: asset.token_info?.associated_token_address,
         link: tokenPrice.link,
@@ -103,10 +113,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     });
   }
   if (tokenAssets.length !== 0) {
-    const tokenYields = await cache.getTokenYieldsAsMap(
-      tokenAssets.map((a) => a.data.address),
-      NetworkId.solana
-    );
     elements.push({
       type: PortfolioElementType.multiple,
       networkId: NetworkId.solana,
@@ -114,13 +120,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       label: 'Wallet',
       value: getUsdValueSum(tokenAssets.map((a) => a.value)),
       data: {
-        assets: tokenAssets.map((a) => ({
-          ...a,
-          data: {
-            ...a.data,
-            yield: tokenYields.get(a.data.address)?.yield,
-          },
-        })),
+        assets: tokenAssets,
       },
     });
   }

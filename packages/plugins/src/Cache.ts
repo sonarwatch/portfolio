@@ -321,6 +321,14 @@ export class Cache {
     );
   }
 
+  async setTokenYields(sources: (TokenYield | null)[]) {
+    const fSources = sources.filter((s) => s !== null) as TokenYield[];
+    await runInBatch(
+      fSources.map((source) => () => this.setTokenYield(source)),
+      15
+    );
+  }
+
   async getTokenYieldsAsMap(
     addresses: string[] | Set<string>,
     networkId: NetworkIdType

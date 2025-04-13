@@ -55,7 +55,9 @@ const executor: JobExecutor = async (cache: Cache) => {
     networkId: NetworkId.solana,
   });
 
-  const jlpPool = pools.find((p) => p.pubkey === jlpPoolPk);
+  const jlpPool = pools.find(
+    (p) => p.pubkey.toString() === jlpPoolPk.toString()
+  );
   if (jlpPool) {
     await cache.setTokenYield({
       address: jlpMint,

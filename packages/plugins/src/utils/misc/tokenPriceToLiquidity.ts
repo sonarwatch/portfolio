@@ -3,6 +3,8 @@ import {
   NetworkIdType,
   PortfolioLiquidity,
   TokenPrice,
+  TokenYield,
+  Yield,
 } from '@sonarwatch/portfolio-core';
 import tokenPriceToAssetTokens from './tokenPriceToAssetTokens';
 
@@ -10,7 +12,8 @@ export default function tokenPriceToLiquidity(
   address: string,
   amount: number,
   networkId: NetworkIdType,
-  tokenPrice: TokenPrice
+  tokenPrice: TokenPrice,
+  tokenYield?: TokenYield | undefined
 ): PortfolioLiquidity {
   const assets = tokenPriceToAssetTokens(
     address,
@@ -24,7 +27,7 @@ export default function tokenPriceToLiquidity(
     rewardAssets: [],
     rewardAssetsValue: 0,
     value: getUsdValueSum(assets.map((a) => a.value)),
-    yields: [],
+    yields: [tokenYield?.yield].filter((y) => y !== undefined) as Yield[],
     name: tokenPrice.liquidityName,
     link: tokenPrice.link,
     sourceRefs: [
