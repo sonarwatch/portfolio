@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.176](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.175...plugins-0.14.176) (2025-04-14)
+
+
+### Bug Fixes
+
+* **dependencies:** update @drift-labs/sdk and @drift-labs/vaults-sdk to latest beta versions ([09357ce](https://github.com/sonarwatch/portfolio/commit/09357ce16434754dc576a1c908c5ec65db2ab8d3))
+
+
+
 ## [0.14.175](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.174...plugins-0.14.175) (2025-04-11)
 
 
