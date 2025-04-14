@@ -101,18 +101,20 @@ const executor: JobExecutor = async (cache: Cache) => {
   await cache.setTokenPriceSources(sources);
 
   if (lstApys?.data) {
-    for (const address of Object.keys(lstApys.data.apys)) {
-      const apy = lstApys.data.apys[address];
-      await cache.setTokenYield({
-        address,
-        networkId: NetworkId.solana,
-        yield: {
-          apr: apyToApr(apy),
-          apy,
-        },
-        timestamp: Date.now(),
-      });
-    }
+    await cache.setTokenYields(
+      Object.keys(lstApys.data.apys).map((address) => {
+        const apy = lstApys.data.apys[address];
+        return {
+          address,
+          networkId: NetworkId.solana,
+          yield: {
+            apr: apyToApr(apy),
+            apy,
+          },
+          timestamp: Date.now(),
+        };
+      })
+    );
   }
 };
 const job: Job = {
