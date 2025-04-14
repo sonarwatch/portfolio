@@ -39,6 +39,7 @@ const executor: JobExecutor = async (cache: Cache) => {
             apr: apyToApr(apy),
             apy,
           },
+          timebase: 864000000, // 10 days, or approx. 5 epochs
           timestamp: Date.now(),
         };
       })

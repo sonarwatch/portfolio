@@ -66,6 +66,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         apr: jlpPool.poolApr.feeAprBps.shiftedBy(-4).toNumber(),
         apy: aprToApy(jlpPool.poolApr.feeAprBps.shiftedBy(-4).toNumber()),
       },
+      timebase: 604800000, // week
       timestamp: Date.now(),
     });
   }
