@@ -4,7 +4,6 @@ import {
   solanaNativeWrappedAddress,
   jupiterSourceId,
   walletTokensPlatformId,
-  apyToApr,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import axios from 'axios';
@@ -16,7 +15,8 @@ import { getMultipleDecimalsAsMap } from '../../utils/solana/getMultipleDecimals
 import { getClientSolana } from '../../utils/clients';
 import { usdcSolanaMint } from '../../utils/solana';
 import { TokenResponse } from './types';
-import { internalLstApysApiUrl, jupApiParams } from './constants';
+import { jupApiParams } from './constants';
+import { lstsKey, platformId as sanctumPlatformId } from '../sanctum/constants';
 
 const mints = [
   'xLfNTYy76B8Tiix3hA51Jyvc1kMSFV4sPdR7szTZsRu', // xLifinity
@@ -43,21 +43,15 @@ const vsToken = solanaNativeWrappedAddress;
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
 
-  const [solSources, verifiedTokens, lstApys] = await Promise.all([
+  const [solSources, verifiedTokens, sanctumMints] = await Promise.all([
     getJupiterPrices([new PublicKey(vsToken)], new PublicKey(usdcSolanaMint)),
     axios.get<TokenResponse[]>(
       `https://tokens.jup.ag/tokens?tags=verified&${jupApiParams ?? ''}`
     ),
-    internalLstApysApiUrl
-      ? axios
-          .get<{
-            apys: Record<string, number>;
-          }>(internalLstApysApiUrl)
-          .catch((err) => {
-            // eslint-disable-next-line no-console
-            console.log(`INTERNAL_LSTAPYS_API ERR: ${err}`);
-          })
-      : null,
+    cache.getItem<string[]>(lstsKey, {
+      prefix: sanctumPlatformId,
+      networkId: NetworkId.solana,
+    }),
   ]);
 
   const solPrice = solSources.get(vsToken);
@@ -65,7 +59,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   const mintsPk: Set<PublicKey> = new Set([
     ...mints.map((m) => new PublicKey(m)),
-    ...Object.keys(lstApys?.data.apys || []).map((m) => new PublicKey(m)),
+    ...(sanctumMints || []).map((a) => new PublicKey(a)),
   ]);
 
   const decimalsMap = await getMultipleDecimalsAsMap(connection, [...mintsPk]);
@@ -99,23 +93,6 @@ const executor: JobExecutor = async (cache: Cache) => {
     sources.push(source);
   });
   await cache.setTokenPriceSources(sources);
-
-  if (lstApys?.data) {
-    await cache.setTokenYields(
-      Object.keys(lstApys.data.apys).map((address) => {
-        const apy = lstApys.data.apys[address];
-        return {
-          address,
-          networkId: NetworkId.solana,
-          yield: {
-            apr: apyToApr(apy),
-            apy,
-          },
-          timestamp: Date.now(),
-        };
-      })
-    );
-  }
 };
 const job: Job = {
   id: `${platformId}-pricing`,

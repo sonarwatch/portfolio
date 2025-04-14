@@ -1,8 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 
 export const jupApiParams = process.env['PORTFOLIO_JUP_API_PARAM'];
-export const internalLstApysApiUrl =
-  process.env['PORTFOLIO_INTERNAL_LSTAPYS_API'];
 
 export const voteProgramId = new PublicKey(
   'voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj'

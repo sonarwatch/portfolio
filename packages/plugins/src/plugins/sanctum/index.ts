@@ -10,8 +10,9 @@ import {
   fetcher as nclbFetcher,
 } from './nclbAirdropFetcher';
 import stakingFetcher from './stakingFetcher';
+import lstsJob from './lstsJob';
 
-export const jobs: Job[] = [];
+export const jobs: Job[] = [lstsJob];
 export const fetchers: Fetcher[] = [s1Fetcher, nclbFetcher, stakingFetcher];
 export const airdropFetchers: AirdropFetcher[] = [
   s1AirdropFetcher,
