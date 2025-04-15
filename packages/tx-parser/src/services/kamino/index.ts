@@ -3,7 +3,7 @@ import { jupiterSwapContract } from '../jupiter';
 
 const platformId = 'kamino';
 
-const kaminoLendContract: Contract = {
+export const kaminoLendContract: Contract = {
   name: 'Kamino Lend',
   address: 'KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD',
   platformId,
