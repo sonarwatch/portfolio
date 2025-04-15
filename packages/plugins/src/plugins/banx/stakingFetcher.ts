@@ -19,28 +19,22 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     .addFilter('user', new PublicKey(owner))
     .run();
 
-  const amounts: BigNumber[] = [];
-  for (const account of accounts) {
-    if (account.banxStakeState === BanxTokenStakeState.Unstaked) continue;
-    if (account.tokensStaked.isZero()) continue;
-
-    amounts.push(account.tokensStaked.dividedBy(banxFactor));
-  }
-  if (amounts.length === 0) return [];
-
-  const amount = amounts.reduce((curr, sum) => curr.plus(sum), BigNumber(0));
-
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 
   const element = elementRegistry.addElementMultiple({
     label: 'Staked',
   });
+  for (const account of accounts) {
+    if (account.banxStakeState === BanxTokenStakeState.Unstaked) continue;
+    if (account.tokensStaked.isZero()) continue;
 
-  element.addAsset({
-    address: banxMint,
-    amount,
-    alreadyShifted: true,
-  });
+    element.addAsset({
+      address: banxMint,
+      amount: account.tokensStaked.dividedBy(banxFactor),
+      alreadyShifted: true,
+      ref: account.pubkey.toString(),
+    });
+  }
 
   return elementRegistry.getElements(cache);
 };
