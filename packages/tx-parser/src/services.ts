@@ -1,6 +1,8 @@
 import { Service } from '@sonarwatch/portfolio-core';
 import * as banx from './services/banx';
+import * as bonkrewards from './services/bonkrewards';
 import * as bskt from './services/bskt';
+import * as debridge from './services/debridge';
 import * as defituna from './services/defituna';
 import * as divvy from './services/divvy';
 import * as drift from './services/drift';
@@ -40,7 +42,9 @@ import * as futarchy from './services/futarchy';
 
 export const services: Service[] = [
   banx,
+  bonkrewards,
   bskt,
+  debridge,
   defituna,
   divvy,
   drift,
