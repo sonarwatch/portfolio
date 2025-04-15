@@ -33,6 +33,13 @@ export function getPdas(owner: string) {
   );
 }
 
+export function getTokenStakePDA(owner: string): PublicKey {
+  return PublicKey.findProgramAddressSync(
+    [Buffer.from('token_stake', 'utf8'), new PublicKey(owner).toBuffer()],
+    flashPid
+  )[0];
+}
+
 export async function getLpTokenPrice(
   connection: SolanaClient,
   pool: ParsedAccount<FLPool>,
