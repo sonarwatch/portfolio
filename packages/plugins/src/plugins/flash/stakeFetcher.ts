@@ -143,6 +143,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         value: getUsdValueSum(assets.map((asset) => asset.value)),
         data: {
           assets,
+          ref: stakeAccount.pubkey.toString(),
         },
       });
   }
