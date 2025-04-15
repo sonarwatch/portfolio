@@ -1,3 +1,4 @@
+import { PublicKey } from '@solana/web3.js';
 import { getClientSolana } from '../../utils/clients';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 import {
@@ -5,16 +6,21 @@ import {
   MarginfiAccount,
   marginfiAccountStruct,
 } from './structs/MarginfiAccount';
-import {
-  MarginfiAccountAddress,
-  marginFiBanksMemo,
-  marginfiProgramId,
-} from './constants';
 import { Cache } from '../../Cache';
 import { ParsedAccount } from '../../utils/solana';
+import { MemoizedCache } from '../../utils/misc/MemoizedCache';
+import { BankInfo } from './types';
 
 export const getMarginFiAccounts = async (
   authority: string,
+  config: {
+    pid: PublicKey;
+    group: PublicKey;
+    memo: MemoizedCache<
+      ParsedAccount<BankInfo>[],
+      Map<string, ParsedAccount<BankInfo>>
+    >;
+  },
   cache: Cache
 ): Promise<
   (
@@ -28,16 +34,16 @@ export const getMarginFiAccounts = async (
   const accounts = await ParsedGpa.build(
     client,
     marginfiAccountStruct,
-    marginfiProgramId
+    config.pid
   )
-    .addRawFilter(0, 'CKkRR4La3xu')
-    .addRawFilter(8, MarginfiAccountAddress)
+    .addFilter('discriminator', [67, 178, 130, 109, 126, 114, 28, 42])
+    .addFilter('group', config.group)
     .addRawFilter(40, authority)
     .run();
 
   if (accounts.length === 0) return [];
 
-  const banksInfoByAddress = await marginFiBanksMemo.getItem(cache);
+  const banksInfoByAddress = await config.memo.getItem(cache);
   if (!banksInfoByAddress) throw new Error('MarginFi banks not cached');
 
   return accounts.map((marginfiAccount) => {

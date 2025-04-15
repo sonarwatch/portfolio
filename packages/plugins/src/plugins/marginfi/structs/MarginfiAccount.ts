@@ -47,7 +47,7 @@ export const lendingAccountStruct = new FixableBeetStruct<LendingAccount>(
 );
 
 export type MarginfiAccount = {
-  padding1: Buffer;
+  discriminator: number[];
   group: PublicKey;
   authority: PublicKey;
   lendingAccount: LendingAccount;
@@ -56,7 +56,7 @@ export type MarginfiAccount = {
 
 export const marginfiAccountStruct = new FixableBeetStruct<MarginfiAccount>(
   [
-    ['padding1', blob(8)],
+    ['discriminator', uniformFixedSizeArray(u8, 8)],
     ['group', publicKey],
     ['authority', publicKey],
     ['lendingAccount', lendingAccountStruct],

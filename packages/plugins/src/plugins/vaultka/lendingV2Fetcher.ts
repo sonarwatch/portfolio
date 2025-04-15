@@ -1,23 +1,18 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import {
-  MarginfiAccountAddress,
-  marginFiBanksMemo,
-  marginfiProgramId,
-  platformId,
-} from './constants';
-import { wrappedI80F48toBigNumber } from './helpers';
+import { banksMemo, group, lendingV2Pid, platformId } from './constants';
+import { wrappedI80F48toBigNumber } from '../marginfi/helpers';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { Cache } from '../../Cache';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
-import { getMarginFiAccounts } from './getMarginFiAccounts';
+import { getMarginFiAccounts } from '../marginfi/getMarginFiAccounts';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const marginFiAccounts = await getMarginFiAccounts(
     owner,
     {
-      group: MarginfiAccountAddress,
-      pid: marginfiProgramId,
-      memo: marginFiBanksMemo,
+      group,
+      pid: lendingV2Pid,
+      memo: banksMemo,
     },
     cache
   );
@@ -34,7 +29,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const element = elementRegistry.addElementBorrowlend({
       label: 'Lending',
       ref: marginfiAccount.pubkey.toString(),
-      link: 'https://app.marginfi.com/portfolio',
+      link: 'https://solana.vaultka.com/',
     });
 
     balances.forEach((balance) => {

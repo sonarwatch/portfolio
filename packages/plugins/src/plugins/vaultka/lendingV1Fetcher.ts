@@ -41,7 +41,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
   const element = elementRegistry.addElementMultiple({
     label: 'Lending',
-    link: 'https://solana.vaultka.com/',
+    link: 'https://solana-v1.vaultka.com/',
   });
 
   userInfos.forEach((userInfo, i) => {

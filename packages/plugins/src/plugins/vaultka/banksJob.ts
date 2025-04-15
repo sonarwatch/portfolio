@@ -8,19 +8,18 @@ import {
   walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { group, lendingV2Pid, platformId } from './constants';
+import { banksKey } from '../marginfi/constants';
+import { bankStruct } from '../marginfi/structs/Bank';
 import {
-  marginfiProgramId,
-  platformId,
-  banksKey,
-  MarginfiAccountAddress,
-} from './constants';
-import { bankStruct } from './structs/Bank';
-import { computeInterestRates, wrappedI80F48toBigNumber } from './helpers';
+  computeInterestRates,
+  wrappedI80F48toBigNumber,
+} from '../marginfi/helpers';
 import { mintAccountStruct } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { BankInfo } from './types';
+import { BankInfo } from '../marginfi/types';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 import { stakeAccountStruct } from '../native-stake/solana/structs';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
@@ -31,10 +30,10 @@ const executor: JobExecutor = async (cache: Cache) => {
   const banksRawData = await ParsedGpa.build(
     connection,
     bankStruct,
-    marginfiProgramId
+    lendingV2Pid
   )
     .addFilter('discriminator', [142, 49, 166, 242, 50, 66, 97, 188])
-    .addFilter('group', MarginfiAccountAddress)
+    .addFilter('group', group)
     .addDataSizeFilter(bankStruct.byteSize)
     .run();
 

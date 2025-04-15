@@ -10,8 +10,9 @@ export const marginfiProgramId = new PublicKey(
   'MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA'
 );
 
-export const MarginfiAccountAddress =
-  '4qp6Fx6tnZkY5Wropq9wUYgtFxXKwE6viZxFHg3rdAG8';
+export const MarginfiAccountAddress = new PublicKey(
+  '4qp6Fx6tnZkY5Wropq9wUYgtFxXKwE6viZxFHg3rdAG8'
+);
 
 export const banksKey = 'banks';
 
