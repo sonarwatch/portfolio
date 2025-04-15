@@ -44,7 +44,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       decimals: stakePoolDecimals,
       id: platformId,
       networkId: NetworkId.solana,
-      platformId,
+      platformId: walletTokensPlatformId,
       price: solTokenPrice.price * ratio,
       timestamp: Date.now(),
       elementName: 'Restaking',
