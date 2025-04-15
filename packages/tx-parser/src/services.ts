@@ -39,6 +39,7 @@ import * as sanctum from './services/sanctum';
 import * as streamflow from './services/streamflow';
 import * as runemine from './services/runemine';
 import * as futarchy from './services/futarchy';
+import * as vaultka from './services/vaultka';
 
 export const services: Service[] = [
   banx,
@@ -82,6 +83,7 @@ export const services: Service[] = [
   streamflow,
   runemine,
   futarchy,
+  vaultka,
 ]
   .map((m) => m.default)
   .flat();

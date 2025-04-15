@@ -1,14 +1,14 @@
 import { NetworkId, Service } from '@sonarwatch/portfolio-core';
 
-const platformId = 'pumpkin';
+const platformId = 'hxro';
 const contract = {
   name: 'Staking',
-  address: 'ARFxpgenuFNbyoysFdqEwTgEdxtLtHbTHwCWHJjqWHTb',
+  address: '2jmux3fWV5zHirkEZCoSMEgTgdYZqkE9Qx2oQnxoHRgA',
   platformId,
 };
 
 const service: Service = {
-  id: 'pumpkin-staking',
+  id: `${platformId}-staking`,
   name: 'Staking',
   platformId,
   networkId: NetworkId.solana,
