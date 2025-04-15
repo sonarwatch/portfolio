@@ -23,6 +23,7 @@ import { getElementsFromObligations } from '../save/helpers';
 import { getParsedMultipleAccountsInfo } from '../../utils/solana';
 import { AllocationInfo } from './poolsJob';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { isPortfolioElementLiquidity } from '../../utils/misc/isPortfolioElementLiquidity';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -118,6 +119,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         : tmpElement.platformId.slice(0, 1).toUpperCase() +
           tmpElement.platformId.slice(1);
     tmpElement.platformId = platformId;
+    if (!isPortfolioElementLiquidity(tmpElement)) {
+      tmpElement.data.link = 'https://app.lulo.fi';
+    }
     elements.push({
       ...tmpElement,
     });
@@ -128,10 +132,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const lendingElement = registry.addElementBorrowlend({
       label: 'Lending',
       ref: pda,
+      link: 'https://app.lulo.fi',
     });
     const withdrawElement = registry.addElementMultiple({
       label: 'Deposit',
       name: 'Boosted Withdraws',
+      link: 'https://app.lulo.fi',
     });
     if (userAccount.activeWithdraws.some((w) => w !== 0)) {
       const pdas = getDerivedPendingWithdraws(

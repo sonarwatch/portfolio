@@ -48,14 +48,6 @@ export const asr4Statics: AirdropStatics = {
   claimEnd: 1751328000000,
   name: 'ASR #4',
 };
-export const jupuaryStatics: AirdropStatics = {
-  id: `${platformId}-jupuary`,
-  claimLink: 'https://jupuary.jup.ag',
-  image: platformImage,
-  emitterLink: platformWebsite,
-  emitterName: 'Jupiter',
-  name: 'Jupuary 2025',
-};
 
 export type AsrItems = Map<
   string,

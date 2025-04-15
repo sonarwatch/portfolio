@@ -37,6 +37,21 @@ const jupiterPerpsContract: Contract = {
   address: 'PERPHjGBqRHArX4DySjwM6UJHiR3sWAatqfdBS2qQJu',
   platformId,
 };
+const jupiterJupuaryContract: Contract = {
+  name: 'Jupiter Jupuary',
+  address: 'DiS3nNjFVMieMgmiQFm6wgJL7nevk4NrhXKLbtEH1Z2R',
+  platformId,
+};
+const jupiterGovernanceContract: Contract = {
+  name: 'Jupiter Governance',
+  address: 'GovaE4iu227srtG2s3tZzB4RmWBzw8sTwrCLZz7kN7rY',
+  platformId,
+};
+const jupiterVoteContract: Contract = {
+  name: 'Jupiter Vote',
+  address: 'voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj',
+  platformId,
+};
 
 export const services: Service[] = [
   {
@@ -87,6 +102,27 @@ export const services: Service[] = [
     platformId,
     networkId: NetworkId.solana,
     contracts: [jupiterPerpsContract],
+  },
+  {
+    id: `${platformId}-jupuary`,
+    name: 'Jupuary',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [jupiterJupuaryContract],
+  },
+  {
+    id: `${platformId}-governance`,
+    name: 'Governance',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [jupiterGovernanceContract],
+  },
+  {
+    id: `${platformId}-vote`,
+    name: 'Vote',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [jupiterVoteContract],
   },
 ];
 export default services;

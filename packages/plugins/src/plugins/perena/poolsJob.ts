@@ -2,6 +2,7 @@ import {
   NetworkId,
   solanaNativeAddress,
   TokenPriceSource,
+  walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -66,6 +67,10 @@ const executor: JobExecutor = async (cache: Cache) => {
       })
       .flat();
 
+    const isUsdStar =
+      lpAccount.lp_mint.toString() ===
+      'BenJy1n3WTx9mTjEvy63e8Q1j4RqUc6E4VBMz3ir4Wo6';
+
     const lpSources = getLpTokenSourceRaw({
       lpDetails: {
         address: lpAccount.lp_mint.toString(),
@@ -73,7 +78,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         supplyRaw: lpMintAccount.supply,
       },
       networkId: NetworkId.solana,
-      platformId,
+      platformId: isUsdStar ? walletTokensPlatformId : platformId,
       poolUnderlyingsRaw: underlyings,
       sourceId: lpAccount.pubkey.toString(),
       priceUnderlyings: true,
