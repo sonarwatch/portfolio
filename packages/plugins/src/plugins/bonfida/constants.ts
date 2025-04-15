@@ -1,6 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 
-export const platformId = 'bonfida';
+export const platformId = 'sns';
 export const fidaMint = 'EchesyfXePKdLtoiZSL8pBe8Myagyy8ZRqsACNCFGnvp';
 export const offerPid = new PublicKey(
   '85iDfUvr3HJyLM2zcq5BXSiDvUWfw6cSE1FfNBo8Ap29'
