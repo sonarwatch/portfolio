@@ -5,6 +5,7 @@ import {
   PortfolioAssetType,
   TokenPrice,
   TokenPriceUnderlying,
+  TokenYield,
   UsdValue,
   formatTokenAddress,
 } from '@sonarwatch/portfolio-core';
@@ -16,7 +17,8 @@ export default function tokenPriceToAssetToken(
   tokenPrice?: TokenPrice | TokenPriceUnderlying | null,
   price?: number,
   attributes?: PortfolioAssetAttributes,
-  link?: string
+  link?: string,
+  tokenYield?: TokenYield | null
 ): PortfolioAssetToken {
   const fPrice: UsdValue = tokenPrice?.price || price || null;
   return {
@@ -27,6 +29,7 @@ export default function tokenPriceToAssetToken(
       address: formatTokenAddress(address, networkId),
       amount,
       price: fPrice,
+      yield: tokenYield?.yield,
     },
     attributes: attributes || {},
     link,

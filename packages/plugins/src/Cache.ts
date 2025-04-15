@@ -5,6 +5,7 @@ import httpDriver from 'unstorage/drivers/http';
 import {
   formatTokenAddress,
   formatTokenPriceSource,
+  NetworkId,
   NetworkIdType,
   publicBearerToken,
   pushTokenPriceSource,
@@ -12,6 +13,8 @@ import {
   tokenPriceFromSources,
   TokenPriceSource,
   tokenPriceSourceTtl,
+  TokenYield,
+  tokenYieldTtl,
 } from '@sonarwatch/portfolio-core';
 import overlayDriver from './overlayDriver';
 import memoryDriver, {
@@ -20,6 +23,7 @@ import memoryDriver, {
 } from './memoryDriver';
 import runInBatch from './utils/misc/runInBatch';
 import { TokenPriceMap } from './TokenPriceMap';
+import { TokenYieldMap } from './TokenYieldMap';
 
 export type TransactionOptions = {
   prefix: string;
@@ -37,6 +41,7 @@ export type TransactionOptionsSetItem = {
 };
 
 const tokenPriceSourcePrefix = 'tokenpricesource';
+const tokenYieldPrefix = 'tokenyield';
 
 export type CacheConfig = { name?: string } & (
   | CacheConfigOverlayHttp
@@ -301,6 +306,46 @@ export class Cache {
     await runInBatch(
       fSources.map((source) => () => this.setTokenPriceSource(source)),
       15
+    );
+  }
+
+  async setTokenYield(tokenYield: TokenYield) {
+    await this.setItem(
+      formatTokenAddress(tokenYield.address, tokenYield.networkId),
+      tokenYield,
+      {
+        prefix: tokenYieldPrefix,
+        networkId: NetworkId.solana,
+        ttl: tokenYieldTtl,
+      }
+    );
+  }
+
+  async setTokenYields(sources: (TokenYield | null)[]) {
+    const fSources = sources.filter((s) => s !== null) as TokenYield[];
+    await runInBatch(
+      fSources.map((source) => () => this.setTokenYield(source)),
+      15
+    );
+  }
+
+  async getTokenYieldsAsMap(
+    addresses: string[] | Set<string>,
+    networkId: NetworkIdType
+  ): Promise<TokenYieldMap> {
+    const tokenYields = await this.getItems<TokenYield>(
+      [...addresses].map((address) => formatTokenAddress(address, networkId)),
+      {
+        prefix: tokenYieldPrefix,
+        networkId: NetworkId.solana,
+      }
+    ).then(
+      (values) => values.filter((tokenYield) => tokenYield) as TokenYield[]
+    );
+
+    return new TokenYieldMap(
+      networkId,
+      tokenYields.map((tokenYield) => [tokenYield.address, tokenYield])
     );
   }
 
