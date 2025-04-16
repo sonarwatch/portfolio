@@ -75,6 +75,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       price: xSolPrice,
       timestamp: Date.now(),
       weight: 0.5,
+      link: 'https://hylo.so/xsol',
     });
   }
 
@@ -89,6 +90,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       price: 1,
       timestamp: Date.now(),
       weight: 0.5,
+      link: 'https://hylo.so/hyusd',
     });
   }
 
@@ -107,6 +109,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       price: stakedHyUsd.value.uiAmount / shyUsdSupply.value.uiAmount,
       timestamp: Date.now(),
       weight: 0.5,
+      link: 'https://hylo.so/hyusd',
     });
   }
 };
