@@ -55,6 +55,7 @@ import * as staratlas from './services/staratlas';
 import * as streamflow from './services/streamflow';
 import * as symmetry from './services/symmetry';
 import * as tensor from './services/tensor';
+import * as texture from './services/texture';
 import * as triad from './services/triad';
 import * as vaultka from './services/vaultka';
 import * as wormhole from './services/wormhole';
@@ -119,6 +120,7 @@ export const services: Service[] = [
   streamflow,
   symmetry,
   tensor,
+  texture,
   triad,
   vaultka,
   wormhole,
