@@ -107,7 +107,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const element = elementRegistry.addElementLiquidity({
       label: 'Lending',
       name: 'GMS Lending Pool',
-      link: 'https://nxfinance.io/lend',
+      link: 'https://www.nxfinance.info/lend',
     });
 
     const formattedLendingPool = formatLendingPool(
@@ -169,7 +169,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         name: `vSOL Leverage x${new BigNumber(position.leverageMultiples)
           .dividedBy(1000000)
           .decimalPlaces(2)}`,
-        link: 'https://nxfinance.io/leverage',
+        link: 'https://www.nxfinance.info/leverage',
         ref: vSolPositionsAccount.pubkey.toString(),
         sourceRefs: [
           { name: 'Lending Market', address: lendingPool.pubkey.toString() },
@@ -201,7 +201,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const elementMultiple = elementRegistry.addElementMultiple({
       label: 'Lending',
       name: 'Fulcrum Lending Pool',
-      link: 'https://nxfinance.io/lend',
+      link: 'https://www.nxfinance.info/lend',
       ref: marginAccount.pubkey,
     });
     const elementBorrowlend = elementRegistry.addElementBorrowlend({
@@ -209,7 +209,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       name: `JLP x${new BigNumber(marginAccount.leverage)
         .dividedBy(100)
         .decimalPlaces(2)}`,
-      link: 'https://nxfinance.io/leverage',
+      link: 'https://www.nxfinance.info/leverage',
       ref: marginAccount.pubkey,
     });
 
@@ -260,7 +260,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (!solayerUserAccount) return;
     const element = elementRegistry.addElementMultiple({
       label: 'Leverage',
-      link: 'https://nxfinance.io/leverage',
+      link: 'https://www.nxfinance.info/leverage',
       ref: solayerUserAccount.pubkey,
     });
     element.addAsset({
