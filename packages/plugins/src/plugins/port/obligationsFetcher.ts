@@ -180,6 +180,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         rewardAssets,
         rewardValue,
         value,
+        ref: obligation.pubkey.toString(),
       },
     });
   }

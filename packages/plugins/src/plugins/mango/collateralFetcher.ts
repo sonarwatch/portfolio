@@ -188,6 +188,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         rewardAssets,
         rewardValue,
         value,
+        ref: userAccount.pubkey.toString(),
       },
       name: isYieldFan ? leverage : name,
     });

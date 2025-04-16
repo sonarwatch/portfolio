@@ -33,8 +33,8 @@ const executor: JobExecutor = async (cache: Cache) => {
     bankStruct,
     marginfiProgramId
   )
-    .addRawFilter(0, 'QnTef4UXSzF')
-    .addRawFilter(41, MarginfiAccountAddress)
+    .addFilter('discriminator', [142, 49, 166, 242, 50, 66, 97, 188])
+    .addFilter('group', MarginfiAccountAddress)
     .addDataSizeFilter(bankStruct.byteSize)
     .run();
 

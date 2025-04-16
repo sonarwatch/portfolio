@@ -4,6 +4,7 @@ import {
   array,
   bool,
   i32,
+  u32,
   u8,
   uniformFixedSizeArray,
 } from '@metaplex-foundation/beet';
@@ -564,4 +565,54 @@ export const flPoolStruct = new FixableBeetStruct<FLPool>(
     ['compoundingLpVault', publicKey],
   ],
   (args) => args as FLPool
+);
+
+export type WithdrawRequest = {
+  pendingDeactivation: BigNumber;
+  withdrawRequestTimestamp: BigNumber;
+};
+
+export const withdrawRequestStruct = new BeetStruct<WithdrawRequest>(
+  [
+    ['pendingDeactivation', u64],
+    ['withdrawRequestTimestamp', i64],
+  ],
+  (args) => args as WithdrawRequest
+);
+
+export type TokenStake = {
+  discriminator: number[];
+  owner: PublicKey;
+  isInitialized: boolean;
+  bump: number;
+  level: number;
+  withdrawRequestCount: number;
+  withdrawRequest: WithdrawRequest[];
+  activeStakeAmount: BigNumber;
+  updateTimestamp: BigNumber;
+  tradeTimestamp: BigNumber;
+  tradeCounter: number;
+  lastRewardEpochCount: number;
+  rewardTokens: BigNumber;
+  padding: BigNumber[];
+};
+
+export const tokenStakeStruct = new BeetStruct<TokenStake>(
+  [
+    ['discriminator', uniformFixedSizeArray(u8, 8)],
+    ['owner', publicKey],
+    ['isInitialized', u8], // Boolean is stored as u8
+    ['bump', u8],
+    ['level', u8],
+    ['withdrawRequestCount', u8],
+    ['withdrawRequest', uniformFixedSizeArray(withdrawRequestStruct, 5)], // Array of 5 WithdrawRequest
+    ['activeStakeAmount', u64],
+    ['updateTimestamp', i64],
+    ['tradeTimestamp', i64],
+    ['tradeCounter', u32],
+    ['lastRewardEpochCount', u32],
+    ['rewardTokens', u64],
+    ['padding', uniformFixedSizeArray(u64, 4)], // Array of 4 u64 values
+  ],
+  (args) => args as TokenStake
 );

@@ -1,4 +1,5 @@
 import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { kaminoLendContract } from '../kamino';
 
 const contract = {
   name: 'Lulo',
@@ -6,13 +7,20 @@ const contract = {
   platformId: 'flexlend',
 };
 
-const service: Service = {
-  id: 'flexlend',
-  name: 'Lulo',
-  platformId: 'flexlend',
-  networkId: NetworkId.solana,
-  contracts: [contract],
-};
-
-export const services: Service[] = [service];
+export const services: Service[] = [
+  {
+    id: 'flexlend',
+    name: 'Lulo',
+    platformId: 'flexlend',
+    networkId: NetworkId.solana,
+    contracts: [contract],
+  },
+  {
+    id: 'flexlend-with-kamino',
+    name: 'Lulo',
+    platformId: 'flexlend',
+    networkId: NetworkId.solana,
+    contracts: [contract, kaminoLendContract],
+  },
+];
 export default services;

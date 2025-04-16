@@ -13,7 +13,10 @@ import { solanaTokenPid, tokenAccountStruct } from '../../utils/solana';
 import { getEditionPubkeyOfNft, getMetadataPubkey } from './helpers';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 
+const resizeExpiration = 1745582400000;
+
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
+  if (Date.now() > resizeExpiration) return [];
   const client = getClientSolana();
 
   const asset = await client.getTokenAccountsByOwner(new PublicKey(owner), {

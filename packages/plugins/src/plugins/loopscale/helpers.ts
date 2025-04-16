@@ -3,6 +3,11 @@ import BigNumber from 'bignumber.js';
 import { getMarginFiAccounts } from '../marginfi/getMarginFiAccounts';
 import { Cache } from '../../Cache';
 import { wrappedI80F48toBigNumber } from '../marginfi/helpers';
+import {
+  MarginfiAccountAddress,
+  marginFiBanksMemo,
+  marginfiProgramId,
+} from '../marginfi/constants';
 
 export const getProgramAddress = (
   seeds: (Uint8Array | Buffer)[],
@@ -26,7 +31,15 @@ export async function getMarginFiAccountBalance(
   account: PublicKey,
   cache: Cache
 ) {
-  const marginFiAccounts = await getMarginFiAccounts(account.toString(), cache);
+  const marginFiAccounts = await getMarginFiAccounts(
+    account.toString(),
+    {
+      group: MarginfiAccountAddress,
+      pid: marginfiProgramId,
+      memo: marginFiBanksMemo,
+    },
+    cache
+  );
 
   let accountBalance = 0;
   marginFiAccounts.forEach((acc) => {

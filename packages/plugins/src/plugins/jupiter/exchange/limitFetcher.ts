@@ -67,7 +67,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elements: PortfolioElementTrade[] = [];
   for (let i = 0; i < ordersAccounts.length; i++) {
     const isV1 = i <= ordersAccV1.length - 1;
-    const tags = ['deprecated'];
+    const tags = isV1 ? ['deprecated'] : undefined;
     const orderAcc = ordersAccounts[i];
 
     const accountv2 = isV1

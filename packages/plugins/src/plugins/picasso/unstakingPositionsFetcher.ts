@@ -1,9 +1,4 @@
-import {
-  NetworkId,
-  PortfolioAssetToken,
-  PortfolioElementType,
-  getUsdValueSum,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import {
@@ -12,10 +7,10 @@ import {
   unstakingNftsCachePrefix,
 } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import { ParsedAccount } from '../../utils/solana';
 import { Vault } from './structs';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const allVaultsMemo = new MemoizedCache<ParsedAccount<Vault>[]>(
   unstakingNftsCacheKey,
@@ -36,66 +31,34 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const myVaults = allVaults.filter(
     (v) => v.withdrawalRequest?.owner.toString() === owner
   );
-
   if (myVaults.length === 0) return [];
 
-  const tokenMints = [
-    ...new Set(myVaults.map((vault) => vault.stakeMint.toString()).flat()),
-  ];
-
-  const tokenPrices = await cache.getTokenPricesAsMap(
-    tokenMints,
-    NetworkId.solana
-  );
-
-  const assets: PortfolioAssetToken[] = [];
+  const registry = new ElementRegistry(NetworkId.solana, platformId);
 
   myVaults.forEach((vault) => {
-    const tokenPrice = tokenPrices.get(vault.stakeMint.toString());
-    if (!tokenPrice || !vault.withdrawalRequest) return;
-
-    const unlockingAt = new Date(
-      new BigNumber(vault.withdrawalRequest.timestampInSec)
-        .plus(7 * 24 * 60 * 60)
-        .times(1000)
-        .toNumber()
-    );
-
-    const isClaimable = unlockingAt.getTime() < Date.now();
-
-    assets.push({
-      ...tokenPriceToAssetToken(
-        vault.stakeMint.toString(),
-        new BigNumber(vault.stakeAmount)
-          .dividedBy(10 ** tokenPrice.decimals)
-          .toNumber(),
-        NetworkId.solana,
-        tokenPrice,
-        undefined,
-        {
-          isClaimable,
-          lockedUntil: unlockingAt.getTime(),
-        }
-      ),
+    const element = registry.addElementMultiple({
+      label: 'Staked',
+      link: 'https://app.picasso.network/restake',
       ref: vault.pubkey.toString(),
+    });
+    if (!vault.withdrawalRequest) return;
+
+    const locketUntil = vault.withdrawalRequest.timestampInSec
+      .plus(7 * 24 * 60 * 60)
+      .times(1000)
+      .toNumber();
+
+    element.addAsset({
+      address: vault.stakeMint.toString(),
+      amount: new BigNumber(vault.stakeAmount),
+      attributes: {
+        lockedUntil: locketUntil,
+        isClaimable: locketUntil < Date.now(),
+      },
     });
   });
 
-  if (assets.length === 0) return [];
-
-  return [
-    {
-      networkId: NetworkId.solana,
-      label: 'Staked',
-      platformId,
-      type: PortfolioElementType.multiple,
-      value: getUsdValueSum(assets.map((a) => a.value)),
-      data: {
-        assets,
-        link: 'https://app.picasso.network/restake',
-      },
-    },
-  ];
+  return registry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

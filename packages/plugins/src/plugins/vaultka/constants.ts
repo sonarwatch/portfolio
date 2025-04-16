@@ -1,4 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { StrategyInfo } from './types';
 import {
   lstPositionInfoStruct,
@@ -6,6 +7,11 @@ import {
   positionInfoStruct,
   strategyStruct,
 } from './structs';
+import { MemoizedCache } from '../../utils/misc/MemoizedCache';
+import { ParsedAccount } from '../../utils/solana';
+import { BankInfo } from '../marginfi/types';
+import { banksKey } from '../marginfi/constants';
+import { arrayToMap } from '../../utils/misc/arrayToMap';
 
 export const platformId = 'vaultka';
 
@@ -17,6 +23,24 @@ export const lendingProgramIds = [
   new PublicKey('nKMLJtN1rr64K9DjmfzXvzaq4JEy5a4AJHHP9gY1dW6'),
   new PublicKey('69oX4gmwgDAfXWxSRtTx9SHvWmu2bd9qVGjQPpAFHaBF'),
 ];
+
+export const lendingV2Pid = new PublicKey(
+  'V1enDN8GY531jkFp3DWEQiRxwYYsnir8SADjHmkt4RG'
+);
+export const group = new PublicKey(
+  'groUPysZbKCi8RbcziZFeP1WSFPa31kC9CsdUBggdkc'
+);
+export const banksMemo = new MemoizedCache<
+  ParsedAccount<BankInfo>[],
+  Map<string, ParsedAccount<BankInfo>>
+>(
+  banksKey,
+  {
+    prefix: platformId,
+    networkId: NetworkId.solana,
+  },
+  (arr) => arrayToMap(arr || [], 'pubkey')
+);
 
 export const strategiesCacheKey = `strategies`;
 

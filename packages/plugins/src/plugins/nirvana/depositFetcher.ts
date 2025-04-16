@@ -26,6 +26,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     pid
   )
     .addFilter('owner', new PublicKey(owner))
+    // the only real USDC accounts
+    .addFilter(
+      'tenant',
+      new PublicKey('BcAoCEdkzV2J21gAjCCEokBw5iMnAe96SbYo9F6QmKWV')
+    )
     .addDataSizeFilter(272)
     .run();
   if (personalAccounts.length === 0) return [];

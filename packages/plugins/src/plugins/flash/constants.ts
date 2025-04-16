@@ -7,6 +7,7 @@ export const flashPid = new PublicKey(
 export const flashPerpetuals = new PublicKey(
   '7DWCtB5Z8rPiyBMKUwqyC95R9tJpbhoQhLM9LbK3Z5QZ'
 );
+export const fafMint = 'FAFxVxnkzZHMCodkWyoccgUNgVScqMw2mhhQBYDFjFAF';
 
 export const poolsPkeys = [
   new PublicKey('HfF7GCcEc76xubFCHLLXRdYcgRzwjEPdfKWqzRS8Ncog'),

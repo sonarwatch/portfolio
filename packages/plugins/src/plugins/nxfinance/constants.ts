@@ -1,7 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 
 export const platformId = 'nxfinance';
-// https://nxfinance.io/nx-data/doc
+// https://www.nxfinance.info/nx-data/doc
 
 export const ID = new PublicKey('RaXcyfW8jK295UAU1XN2uLMTHnTWEaeCcNWLeDB4iD6');
 

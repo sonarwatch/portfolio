@@ -1,37 +1,17 @@
-import {
-  BeetStruct,
-  u8,
-  uniformFixedSizeArray,
-} from '@metaplex-foundation/beet';
+import { BeetStruct } from '@metaplex-foundation/beet';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { PublicKey } from '@solana/web3.js';
-import BigNumber from 'bignumber.js';
-import { blob, u64 } from '../../utils/solana';
+import { blob } from '../../utils/solana';
 
-export enum State {
-  Uninitialized,
-  StakePool,
-  InactiveStakePool,
-  StakeAccount,
-}
-
-export type Liquidity = {
+export type User = {
   buffer: Buffer;
-  state: State;
-  mint: PublicKey;
   owner: PublicKey;
-  amountDeposited: BigNumber;
-  space: number[];
 };
 
-export const liquidityStruct = new BeetStruct<Liquidity>(
+export const userStruct = new BeetStruct<User>(
   [
-    ['buffer', blob(8)],
-    ['state', u8],
-    ['mint', publicKey],
+    ['buffer', blob(24)],
     ['owner', publicKey],
-    ['amountDeposited', u64],
-    ['space', uniformFixedSizeArray(u8, 128)],
   ],
-  (args) => args as Liquidity
+  (args) => args as User
 );
