@@ -22,6 +22,7 @@ import * as gpool from './services/gpool';
 import * as grass from './services/grass';
 import * as helium from './services/helium';
 import * as hxro from './services/hxro';
+import * as hylo from './services/hylo';
 import * as jupiter from './services/jupiter';
 import * as kamino from './services/kamino';
 import * as lifinity from './services/lifinity';
@@ -87,6 +88,7 @@ export const services: Service[] = [
   grass,
   helium,
   hxro,
+  hylo,
   jupiter,
   kamino,
   lifinity,

@@ -1,0 +1,1456 @@
+{
+  "address": "HYEXCHtHkBagdStcJCp3xbbb9B7sdMdWXFNj6mdsG4hn",
+  "metadata": {
+    "name": "hylo_exchange",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "accounts": [
+    {
+      "name": "Hylo",
+      "discriminator": [
+        114,
+        161,
+        169,
+        210,
+        204,
+        175,
+        149,
+        174
+      ]
+    },
+    {
+      "name": "LstHeader",
+      "discriminator": [
+        125,
+        135,
+        217,
+        151,
+        122,
+        202,
+        138,
+        59
+      ]
+    },
+    {
+      "name": "PriceUpdateV2",
+      "discriminator": [
+        34,
+        241,
+        35,
+        99,
+        157,
+        126,
+        244,
+        205
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "HarvestYieldEvent",
+      "discriminator": [
+        164,
+        43,
+        118,
+        208,
+        1,
+        71,
+        104,
+        111
+      ]
+    },
+    {
+      "name": "MintLevercoinEvent",
+      "discriminator": [
+        18,
+        23,
+        150,
+        111,
+        137,
+        167,
+        16,
+        105
+      ]
+    },
+    {
+      "name": "MintStablecoinEvent",
+      "discriminator": [
+        42,
+        81,
+        75,
+        72,
+        194,
+        250,
+        182,
+        1
+      ]
+    },
+    {
+      "name": "RedeemLevercoinEvent",
+      "discriminator": [
+        218,
+        53,
+        51,
+        45,
+        194,
+        220,
+        150,
+        167
+      ]
+    },
+    {
+      "name": "RedeemStablecoinEvent",
+      "discriminator": [
+        125,
+        13,
+        242,
+        52,
+        238,
+        177,
+        159,
+        89
+      ]
+    },
+    {
+      "name": "RegisterLstEvent",
+      "discriminator": [
+        67,
+        129,
+        63,
+        97,
+        144,
+        52,
+        195,
+        33
+      ]
+    },
+    {
+      "name": "SwapLeverToStableEvent",
+      "discriminator": [
+        9,
+        27,
+        13,
+        212,
+        81,
+        211,
+        190,
+        9
+      ]
+    },
+    {
+      "name": "SwapStableToLeverEvent",
+      "discriminator": [
+        214,
+        204,
+        117,
+        39,
+        83,
+        129,
+        230,
+        88
+      ]
+    },
+    {
+      "name": "UpdateAdminEvent",
+      "discriminator": [
+        225,
+        152,
+        171,
+        87,
+        246,
+        63,
+        66,
+        234
+      ]
+    },
+    {
+      "name": "UpdateLevercoinFeesEvent",
+      "discriminator": [
+        84,
+        176,
+        60,
+        195,
+        204,
+        115,
+        242,
+        169
+      ]
+    },
+    {
+      "name": "UpdateLstPricesEvent",
+      "discriminator": [
+        104,
+        0,
+        189,
+        118,
+        195,
+        155,
+        77,
+        151
+      ]
+    },
+    {
+      "name": "UpdateOracleIntervalEvent",
+      "discriminator": [
+        190,
+        132,
+        209,
+        41,
+        79,
+        137,
+        195,
+        226
+      ]
+    },
+    {
+      "name": "UpdateStabilityPoolEvent",
+      "discriminator": [
+        220,
+        82,
+        162,
+        130,
+        152,
+        212,
+        135,
+        63
+      ]
+    },
+    {
+      "name": "UpdateStabilityThresholdsEvent",
+      "discriminator": [
+        36,
+        117,
+        167,
+        25,
+        25,
+        39,
+        46,
+        189
+      ]
+    },
+    {
+      "name": "UpdateStablecoinFeesEvent",
+      "discriminator": [
+        38,
+        140,
+        45,
+        231,
+        238,
+        94,
+        115,
+        249
+      ]
+    },
+    {
+      "name": "UpdateTreasuryEvent",
+      "discriminator": [
+        104,
+        210,
+        213,
+        227,
+        230,
+        150,
+        146,
+        19
+      ]
+    },
+    {
+      "name": "UpdateYieldHarvestConfigEvent",
+      "discriminator": [
+        67,
+        168,
+        96,
+        20,
+        78,
+        117,
+        245,
+        206
+      ]
+    },
+    {
+      "name": "WithdrawFeesEvent",
+      "discriminator": [
+        236,
+        118,
+        138,
+        90,
+        139,
+        173,
+        177,
+        89
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "FeePair",
+      "docs": [
+        "Represents the spread of fees between mint and redeem for protocol tokens.",
+        "All fees must be in basis points to represent a fractional percentage",
+        "directly applicable to a token amount e.g. `0.XXXX` or `bips x 10^-4`."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "redeem",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "HarvestYieldEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "harvestable_stablecoin",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "fees_extracted",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "stablecoin_to_pool",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "sol_usd_price",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Hylo",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "treasury",
+            "type": "pubkey"
+          },
+          {
+            "name": "lst_registry",
+            "type": "pubkey"
+          },
+          {
+            "name": "stablecoin_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "levercoin_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "stability_pool",
+            "type": "pubkey"
+          },
+          {
+            "name": "stablecoin_mint_bump",
+            "type": "u8"
+          },
+          {
+            "name": "stablecoin_auth_bump",
+            "type": "u8"
+          },
+          {
+            "name": "levercoin_mint_bump",
+            "type": "u8"
+          },
+          {
+            "name": "levercoin_auth_bump",
+            "type": "u8"
+          },
+          {
+            "name": "registry_auth_bump",
+            "type": "u8"
+          },
+          {
+            "name": "total_sol_cache_bump",
+            "type": "u8"
+          },
+          {
+            "name": "oracle_interval_secs",
+            "type": "u64"
+          },
+          {
+            "name": "stablecoin_fees",
+            "type": {
+              "defined": {
+                "name": "StablecoinFees"
+              }
+            }
+          },
+          {
+            "name": "levercoin_fees",
+            "type": {
+              "defined": {
+                "name": "LevercoinFees"
+              }
+            }
+          },
+          {
+            "name": "total_sol_cache",
+            "type": {
+              "defined": {
+                "name": "TotalSolCache"
+              }
+            }
+          },
+          {
+            "name": "yield_harvest_cache",
+            "type": {
+              "defined": {
+                "name": "YieldHarvestCache"
+              }
+            }
+          },
+          {
+            "name": "yield_harvest_config",
+            "type": {
+              "defined": {
+                "name": "YieldHarvestConfig"
+              }
+            }
+          },
+          {
+            "name": "stability_threshold_1",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "stability_threshold_2",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "_reserved",
+            "type": {
+              "array": [
+                "u8",
+                128
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "LevercoinFees",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "normal",
+            "type": {
+              "defined": {
+                "name": "FeePair"
+              }
+            }
+          },
+          {
+            "name": "mode_1",
+            "type": {
+              "defined": {
+                "name": "FeePair"
+              }
+            }
+          },
+          {
+            "name": "mode_2",
+            "type": {
+              "defined": {
+                "name": "FeePair"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "LstHeader",
+      "docs": [
+        "Header for a specific LST. Should be the first entry in the block of",
+        "accounts, and contains references to the rest of the accounts."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "pool_state",
+            "type": "pubkey"
+          },
+          {
+            "name": "stake_program",
+            "type": {
+              "defined": {
+                "name": "LstStakePoolProgram"
+              }
+            }
+          },
+          {
+            "name": "prev_price_sol",
+            "type": {
+              "defined": {
+                "name": "LstSolPrice"
+              }
+            }
+          },
+          {
+            "name": "price_sol",
+            "type": {
+              "defined": {
+                "name": "LstSolPrice"
+              }
+            }
+          },
+          {
+            "name": "last_yield_harvest_epoch",
+            "type": "u64"
+          },
+          {
+            "name": "_reserved",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "LstSolPrice",
+      "docs": [
+        "Captures the true LST price in SOL for the current epoch."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "price",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "epoch",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LstStakePoolProgram",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Spl"
+          },
+          {
+            "name": "SanctumSpl"
+          },
+          {
+            "name": "SanctumSplMulti"
+          },
+          {
+            "name": "Marinade"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MintLevercoinEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "minted",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "total_supply",
+            "type": "u64"
+          },
+          {
+            "name": "sol_usd_price",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "collateral_deposited",
+            "type": "u64"
+          },
+          {
+            "name": "collateral_ratio",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "nav",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "MintStablecoinEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "minted",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "total_supply",
+            "type": "u64"
+          },
+          {
+            "name": "sol_usd_price",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "collateral_deposited",
+            "type": "u64"
+          },
+          {
+            "name": "collateral_ratio",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "nav",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "PriceFeedMessage",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "feed_id",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "price",
+            "type": "i64"
+          },
+          {
+            "name": "conf",
+            "type": "u64"
+          },
+          {
+            "name": "exponent",
+            "type": "i32"
+          },
+          {
+            "name": "publish_time",
+            "docs": [
+              "The timestamp of this price update in seconds"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "prev_publish_time",
+            "docs": [
+              "The timestamp of the previous price update. This field is intended to allow users to",
+              "identify the single unique price update for any moment in time:",
+              "for any time t, the unique update is the one such that prev_publish_time < t <= publish_time.",
+              "",
+              "Note that there may not be such an update while we are migrating to the new message-sending logic,",
+              "as some price updates on pythnet may not be sent to other chains (because the message-sending",
+              "logic may not have triggered). We can solve this problem by making the message-sending mandatory",
+              "(which we can do once publishers have migrated over).",
+              "",
+              "Additionally, this field may be equal to publish_time if the message is sent on a slot where",
+              "where the aggregation was unsuccesful. This problem will go away once all publishers have",
+              "migrated over to a recent version of pyth-agent."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "ema_price",
+            "type": "i64"
+          },
+          {
+            "name": "ema_conf",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PriceUpdateV2",
+      "docs": [
+        "A price update account. This account is used by the Pyth Receiver program to store a verified price update from a Pyth price feed.",
+        "It contains:",
+        "- `write_authority`: The write authority for this account. This authority can close this account to reclaim rent or update the account to contain a different price update.",
+        "- `verification_level`: The [`VerificationLevel`] of this price update. This represents how many Wormhole guardian signatures have been verified for this price update.",
+        "- `price_message`: The actual price update.",
+        "- `posted_slot`: The slot at which this price update was posted."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "write_authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "verification_level",
+            "type": {
+              "defined": {
+                "name": "VerificationLevel"
+              }
+            }
+          },
+          {
+            "name": "price_message",
+            "type": {
+              "defined": {
+                "name": "PriceFeedMessage"
+              }
+            }
+          },
+          {
+            "name": "posted_slot",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RedeemLevercoinEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "redeemed",
+            "type": "u64"
+          },
+          {
+            "name": "total_supply",
+            "type": "u64"
+          },
+          {
+            "name": "sol_usd_price",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "collateral_withdrawn",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "collateral_ratio",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "nav",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RedeemStablecoinEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "redeemed",
+            "type": "u64"
+          },
+          {
+            "name": "total_supply",
+            "type": "u64"
+          },
+          {
+            "name": "sol_usd_price",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "collateral_withdrawn",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "collateral_ratio",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "nav",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RegisterLstEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "header",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "pool_state",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "StablecoinFees",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "normal",
+            "type": {
+              "defined": {
+                "name": "FeePair"
+              }
+            }
+          },
+          {
+            "name": "mode_1",
+            "type": {
+              "defined": {
+                "name": "FeePair"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "SwapLeverToStableEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "levercoin_burned",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "stablecoin_minted",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "SwapStableToLeverEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "stablecoin_burned",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "levercoin_minted",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TotalSolCache",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "current_update_epoch",
+            "type": "u64"
+          },
+          {
+            "name": "total_sol",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UFixValue64",
+      "docs": [
+        "A value-space `Fix` where base is always 10 and bits are a concrete type.",
+        "Intended for serialized storage in Solana accounts where generics won't work."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bits",
+            "type": "u64"
+          },
+          {
+            "name": "exp",
+            "type": "i8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateAdminEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "old_admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "new_admin",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateLevercoinFeesEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "old_levercoin_fees",
+            "type": {
+              "defined": {
+                "name": "LevercoinFees"
+              }
+            }
+          },
+          {
+            "name": "new_levercoin_fees",
+            "type": {
+              "defined": {
+                "name": "LevercoinFees"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateLstPricesEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "updated_mints",
+            "type": {
+              "vec": "pubkey"
+            }
+          },
+          {
+            "name": "new_total_sol",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateOracleIntervalEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "old_oracle_interval_secs",
+            "type": "u64"
+          },
+          {
+            "name": "new_oracle_interval_secs",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateStabilityPoolEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "old_stability_pool",
+            "type": "pubkey"
+          },
+          {
+            "name": "new_stability_pool",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateStabilityThresholdsEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "old_stability_threshold_1",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "old_stability_threshold_2",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "new_stability_threshold_1",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "new_stability_threshold_2",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateStablecoinFeesEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "old_stablecoin_fees",
+            "type": {
+              "defined": {
+                "name": "StablecoinFees"
+              }
+            }
+          },
+          {
+            "name": "new_stablecoin_fees",
+            "type": {
+              "defined": {
+                "name": "StablecoinFees"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateTreasuryEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "old_treasury",
+            "type": "pubkey"
+          },
+          {
+            "name": "new_treasury",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateYieldHarvestConfigEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "old_yield_harvest_config",
+            "type": {
+              "defined": {
+                "name": "YieldHarvestConfig"
+              }
+            }
+          },
+          {
+            "name": "new_yield_harvest_config",
+            "type": {
+              "defined": {
+                "name": "YieldHarvestConfig"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "VerificationLevel",
+      "docs": [
+        "Pyth price updates are bridged to all blockchains via Wormhole.",
+        "Using the price updates on another chain requires verifying the signatures of the Wormhole guardians.",
+        "The usual process is to check the signatures for two thirds of the total number of guardians, but this can be cumbersome on Solana because of the transaction size limits,",
+        "so we also allow for partial verification.",
+        "",
+        "This enum represents how much a price update has been verified:",
+        "- If `Full`, we have verified the signatures for two thirds of the current guardians.",
+        "- If `Partial`, only `num_signatures` guardian signatures have been checked.",
+        "",
+        "# Warning",
+        "Using partially verified price updates is dangerous, as it lowers the threshold of guardians that need to collude to produce a malicious price update."
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Partial",
+            "fields": [
+              {
+                "name": "num_signatures",
+                "type": "u8"
+              }
+            ]
+          },
+          {
+            "name": "Full"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WithdrawFeesEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "treasury_ata",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "YieldHarvestCache",
+      "docs": [
+        "Records epoch yield harvest information for off-chain consumers."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "epoch",
+            "type": "u64"
+          },
+          {
+            "name": "stability_pool_cap",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "stablecoin_yield_to_pool",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "YieldHarvestConfig",
+      "docs": [
+        "Captures yield harvest configuration as two basis point values:"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "allocation",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          },
+          {
+            "name": "fee",
+            "type": {
+              "defined": {
+                "name": "UFixValue64"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "constants": [
+    {
+      "name": "FEE_AUTH",
+      "type": {
+        "array": [
+          "u8",
+          8
+        ]
+      },
+      "value": "[102, 101, 101, 95, 97, 117, 116, 104]"
+    },
+    {
+      "name": "HYLO",
+      "type": {
+        "array": [
+          "u8",
+          4
+        ]
+      },
+      "value": "[104, 121, 108, 111]"
+    },
+    {
+      "name": "HYUSD",
+      "type": {
+        "array": [
+          "u8",
+          5
+        ]
+      },
+      "value": "[104, 121, 85, 83, 68]"
+    },
+    {
+      "name": "LST_HEADER",
+      "type": {
+        "array": [
+          "u8",
+          10
+        ]
+      },
+      "value": "[108, 115, 116, 95, 104, 101, 97, 100, 101, 114]"
+    },
+    {
+      "name": "LST_REGISTRY_AUTH",
+      "type": {
+        "array": [
+          "u8",
+          17
+        ]
+      },
+      "value": "[108, 115, 116, 95, 114, 101, 103, 105, 115, 116, 114, 121, 95, 97, 117, 116, 104]"
+    },
+    {
+      "name": "MINT_AUTH",
+      "type": {
+        "array": [
+          "u8",
+          9
+        ]
+      },
+      "value": "[109, 105, 110, 116, 95, 97, 117, 116, 104]"
+    },
+    {
+      "name": "POOL_AUTH",
+      "type": {
+        "array": [
+          "u8",
+          9
+        ]
+      },
+      "value": "[112, 111, 111, 108, 95, 97, 117, 116, 104]"
+    },
+    {
+      "name": "VAULT_AUTH",
+      "type": {
+        "array": [
+          "u8",
+          10
+        ]
+      },
+      "value": "[118, 97, 117, 108, 116, 95, 97, 117, 116, 104]"
+    },
+    {
+      "name": "XSOL",
+      "type": {
+        "array": [
+          "u8",
+          4
+        ]
+      },
+      "value": "[120, 83, 79, 76]"
+    }
+  ]
+}
