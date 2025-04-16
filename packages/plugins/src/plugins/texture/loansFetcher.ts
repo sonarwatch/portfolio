@@ -1,77 +1,98 @@
-import {
-  NetworkId,
-  PortfolioAssetToken,
-  PortfolioElementMultiple,
-  PortfolioElementType,
-  getUsdValueSum,
-  solanaNativeAddress,
-  solanaNativeDecimals,
-} from '@sonarwatch/portfolio-core';
-import { PublicKey } from '@solana/web3.js';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import axios from 'axios';
 import { Cache } from '../../Cache';
-import { platformId } from './constants';
+import { pairsMemo, platformId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { getClientSolana } from '../../utils/clients';
-import { getParsedProgramAccounts } from '../../utils/solana';
-import { liquidityStruct } from './structs';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
+import { getMemoizedUser } from './helpers';
+import { Loan, Offer } from './types';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const connection = getClientSolana();
-  const accounts = await getParsedProgramAccounts(
-    connection,
-    liquidityStruct,
-    new PublicKey('pid'),
-    [
-      {
-        dataSize: liquidityStruct.byteSize,
-      },
-      {
-        memcmp: {
-          bytes: owner,
-          offset: 40,
+  const user = await getMemoizedUser(owner);
+  if (!user) return [];
+
+  const [loansAsBorrower, loansAsLender, offersAsLender] = await Promise.all([
+    axios.get<Loan[]>(
+      `https://moneyback.texture.finance/loans?borrower=${user}`
+    ),
+    axios.get<Loan[]>(`https://moneyback.texture.finance/loans?lender=${user}`),
+    axios.get<Offer[]>(
+      `https://moneyback.texture.finance/my_offers?lender=${user}`
+    ),
+  ]);
+
+  const pairs = await pairsMemo.getItem(cache);
+  if (!pairs) throw new Error('Pairs not cached');
+
+  const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
+
+  [...loansAsBorrower.data, ...loansAsLender.data].forEach((loan) => {
+    const pair = pairs.get(loan.pair);
+    if (!pair) return;
+
+    if (loan.status !== 'Active') return;
+
+    const isLender = loan.lender_owner === owner;
+
+    const element = elementRegistry.addElementBorrowlend({
+      label: 'Lending',
+      ref: loan.loan,
+      sourceRefs: [
+        {
+          name: 'Pair',
+          address: pair.pair,
         },
-      },
-    ]
-  );
-  if (accounts.length === 0) return [];
-
-  const solTokenPrice = await cache.getTokenPrice(
-    solanaNativeAddress,
-    NetworkId.solana
-  );
-  const assets: PortfolioAssetToken[] = [];
-  accounts.forEach((acc) => {
-    if (acc.amountDeposited.isZero()) return;
-    const amount = acc.amountDeposited
-      .div(10 ** solanaNativeDecimals)
-      .toNumber();
-    const asset = tokenPriceToAssetToken(
-      solanaNativeAddress,
-      amount,
-      NetworkId.solana,
-      solTokenPrice
-    );
-    assets.push({ ...asset, ref: acc.pubkey.toString() });
-  });
-  if (assets.length === 0) return [];
-
-  const element: PortfolioElementMultiple = {
-    networkId: NetworkId.solana,
-    label: 'Deposit',
-    platformId,
-    type: PortfolioElementType.multiple,
-    value: getUsdValueSum(assets.map((a) => a.value)),
-    data: {
-      assets,
+      ],
       link: 'https://texture.finance/lendy/my_loans',
-    },
-  };
-  return [element];
+    });
+    element.setFixedTerms(isLender, (loan.start_time + pair.duration) * 1000);
+
+    const principal = {
+      address: pair.principal_token.mint,
+      amount: loan.principal,
+    };
+    const collateral = {
+      address: pair.collateral_token.mint,
+      amount: loan.collateral,
+    };
+
+    if (isLender) {
+      element.addSuppliedAsset(collateral);
+      element.addBorrowedAsset(principal);
+    } else {
+      element.addSuppliedAsset(principal);
+      element.addBorrowedAsset(collateral);
+    }
+  });
+
+  offersAsLender.data.forEach((offer) => {
+    const pair = pairs.get(offer.pair);
+    if (!pair) return;
+
+    const element = elementRegistry.addElementBorrowlend({
+      label: 'Lending',
+      name: 'Offer',
+      ref: offer.offer,
+      sourceRefs: [
+        {
+          name: 'Pair',
+          address: pair.pair,
+        },
+      ],
+      link: 'https://texture.finance/lendy/my_offers',
+    });
+
+    element.addSuppliedAsset({
+      address: pair.principal_token.mint,
+      amount: offer.remaining_principal,
+    });
+  });
+
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-positions-solana`,
+  id: `${platformId}-loans`,
   networkId: NetworkId.solana,
   executor,
 };

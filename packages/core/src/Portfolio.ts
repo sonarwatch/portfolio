@@ -230,7 +230,8 @@ export type SourceRefName =
   | 'Reserve'
   | 'Proposal'
   | 'Distributor'
-  | 'Locker';
+  | 'Locker'
+  | 'Pair';
 
 /**
  * Represents references to on-chain accounts.
