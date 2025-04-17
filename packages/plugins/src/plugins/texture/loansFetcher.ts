@@ -57,11 +57,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     };
 
     if (isLender) {
-      element.addSuppliedAsset(collateral);
-      element.addBorrowedAsset(principal);
-    } else {
       element.addSuppliedAsset(principal);
       element.addBorrowedAsset(collateral);
+    } else {
+      element.addSuppliedAsset(collateral);
+      element.addBorrowedAsset(principal);
     }
   });
 
