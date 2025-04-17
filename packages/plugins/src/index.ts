@@ -167,6 +167,8 @@ import * as solanaid from './plugins/solanaid';
 import * as texture from './plugins/texture';
 import * as hylo from './plugins/hylo';
 import * as oresupply from './plugins/oresupply';
+import * as bio from './plugins/bio';
+import * as huma from './plugins/huma';
 
 export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
@@ -345,6 +347,8 @@ const modules = [
   texture,
   hylo,
   oresupply,
+  bio,
+  huma,
 ];
 
 // JOBS //
