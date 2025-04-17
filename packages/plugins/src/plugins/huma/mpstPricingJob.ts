@@ -1,14 +1,14 @@
 import { NetworkId, walletTokensPlatformId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { platformId } from './constants';
+import { mPstMint, platformId } from './constants';
 import { usdcSolanaMint } from '../../utils/solana';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const usdcPrice = await cache.getTokenPrice(usdcSolanaMint, NetworkId.solana);
   if (!usdcPrice) return;
   await cache.setTokenPriceSource({
-    address: 'HUPfpnsaJtJGpJxAPNX1vXah7BgYiQYt1c2JMgMumvPs',
+    address: mPstMint,
     networkId: NetworkId.solana,
     decimals: 6,
     id: 'Huma',
