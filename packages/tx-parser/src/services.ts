@@ -18,7 +18,7 @@ import * as flash from './services/flash';
 import * as fragmetric from './services/fragmetric';
 import * as francium from './services/francium';
 import * as futarchy from './services/futarchy';
-import * as gpool from './services/gpool';
+import * as gpool from './services/oresupply';
 import * as grass from './services/grass';
 import * as helium from './services/helium';
 import * as hxro from './services/hxro';

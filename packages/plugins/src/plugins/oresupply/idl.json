@@ -1,0 +1,642 @@
+{
+  "version": "4.0.0",
+  "name": "ore_boost",
+  "instructions": [
+    {
+      "name": "claim",
+      "accounts": [
+        {
+          "name": "signer",
+          "isSigner": true,
+          "isWritable": false
+        },
+        {
+          "name": "beneficiary",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "boost",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "config",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "proof",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "rewards",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "stake",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "treasury",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "treasuryTokens",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "oreProgram",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "tokenProgram",
+          "isSigner": false,
+          "isWritable": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "close",
+      "accounts": [
+        {
+          "name": "signer",
+          "isSigner": true,
+          "isWritable": false
+        },
+        {
+          "name": "boost",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "stake",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "systemProgram",
+          "isSigner": false,
+          "isWritable": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "deposit",
+      "accounts": [
+        {
+          "name": "signer",
+          "isSigner": true,
+          "isWritable": false
+        },
+        {
+          "name": "boost",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "config",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "deposits",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "mint",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "proof",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "rewards",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "sender",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "stake",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "treasury",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "treasuryTokens",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "oreProgram",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "tokenProgram",
+          "isSigner": false,
+          "isWritable": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "open",
+      "accounts": [
+        {
+          "name": "signer",
+          "isSigner": true,
+          "isWritable": false
+        },
+        {
+          "name": "payer",
+          "isSigner": true,
+          "isWritable": false
+        },
+        {
+          "name": "boost",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "mint",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "stake",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "systemProgram",
+          "isSigner": false,
+          "isWritable": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "withdraw",
+      "accounts": [
+        {
+          "name": "signer",
+          "isSigner": true,
+          "isWritable": false
+        },
+        {
+          "name": "beneficiary",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "boost",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "config",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "deposits",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "mint",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "proof",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "rewards",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "stake",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "treasury",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "treasuryTokens",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "oreProgram",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "tokenProgram",
+          "isSigner": false,
+          "isWritable": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "activate",
+      "accounts": [
+        {
+          "name": "signer",
+          "isSigner": true,
+          "isWritable": false
+        },
+        {
+          "name": "boost",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "config",
+          "isSigner": false,
+          "isWritable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "deactivate",
+      "accounts": [
+        {
+          "name": "signer",
+          "isSigner": true,
+          "isWritable": false
+        },
+        {
+          "name": "boost",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "config",
+          "isSigner": false,
+          "isWritable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize",
+      "accounts": [
+        {
+          "name": "signer",
+          "isSigner": true,
+          "isWritable": false
+        },
+        {
+          "name": "config",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "oreMint",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "proof",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "rewards",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "oreProgram",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "systemProgram",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "tokenProgram",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "slotHashes",
+          "isSigner": false,
+          "isWritable": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "new",
+      "accounts": [
+        {
+          "name": "signer",
+          "isSigner": true,
+          "isWritable": false
+        },
+        {
+          "name": "boost",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "config",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "deposits",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "mint",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "systemProgram",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "tokenProgram",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isSigner": false,
+          "isWritable": false
+        }
+      ],
+      "args": [
+        {
+          "name": "expiresAt",
+          "type": "i64"
+        },
+        {
+          "name": "weight",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "updateAdmin",
+      "accounts": [
+        {
+          "name": "signer",
+          "isSigner": true,
+          "isWritable": false
+        },
+        {
+          "name": "config",
+          "isSigner": false,
+          "isWritable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "newAdmin",
+          "type": "publicKey"
+        }
+      ]
+    },
+    {
+      "name": "updateBoost",
+      "accounts": [
+        {
+          "name": "signer",
+          "isSigner": true,
+          "isWritable": false
+        },
+        {
+          "name": "boost",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "config",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "proof",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "rewards",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "name": "treasury",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "treasuryTokens",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "oreProgram",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "name": "tokenProgram",
+          "isSigner": false,
+          "isWritable": false
+        }
+      ],
+      "args": [
+        {
+          "name": "weight",
+          "type": "u64"
+        },
+        {
+          "name": "expiresAt",
+          "type": "i64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Boost",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "expiresAt",
+            "type": "i64"
+          },
+          {
+            "name": "mint",
+            "type": "publicKey"
+          },
+          {
+            "name": "weight",
+            "type": "u64"
+          },
+          {
+            "name": "lastRewardsFactor",
+            "type": "u128"
+          },
+          {
+            "name": "rewardsFactor",
+            "type": "u128"
+          },
+          {
+            "name": "totalDeposits",
+            "type": "u64"
+          },
+          {
+            "name": "totalStakers",
+            "type": "u64"
+          },
+          {
+            "name": "withdrawFee",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Config",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "publicKey"
+          },
+          {
+            "name": "boosts",
+            "type": {
+              "array": ["publicKey", 256]
+            }
+          },
+          {
+            "name": "len",
+            "type": "u8"
+          },
+          {
+            "name": "rewardsFactor",
+            "type": "u128"
+          },
+          {
+            "name": "takeRate",
+            "type": "u64"
+          },
+          {
+            "name": "totalWeight",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Stake",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "balance",
+            "type": "u64"
+          },
+          {
+            "name": "boost",
+            "type": "publicKey"
+          },
+          {
+            "name": "lastClaimAt",
+            "type": "i64"
+          },
+          {
+            "name": "lastDepositAt",
+            "type": "i64"
+          },
+          {
+            "name": "lastWithdrawAt",
+            "type": "i64"
+          },
+          {
+            "name": "lastRewardsFactor",
+            "type": "u128"
+          },
+          {
+            "name": "rewards",
+            "type": "u64"
+          },
+          {
+            "name": "_buffer",
+            "type": {
+              "array": ["u8", 1024]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

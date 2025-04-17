@@ -166,6 +166,7 @@ import * as runemine from './plugins/runemine';
 import * as solanaid from './plugins/solanaid';
 import * as texture from './plugins/texture';
 import * as hylo from './plugins/hylo';
+import * as oresupply from './plugins/oresupply';
 
 export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
@@ -343,6 +344,7 @@ const modules = [
   solanaid,
   texture,
   hylo,
+  oresupply,
 ];
 
 // JOBS //
