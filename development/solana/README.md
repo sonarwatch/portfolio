@@ -1,31 +1,102 @@
-# Solana Plugin Runner
+# 🔗 Solana Integration – SonarWatch Portfolio
 
-This script automatically detects and runs **all Solana-related plugins** in the codebase. It identifies plugins that use `NetworkId.solana`, executes their `*Job.ts` and `*Fetcher.ts` scripts, and uses a local cache for optimized performance.
+This guide covers the Solana-specific portion of the SonarWatch portfolio backend.
 
----
-
-## Features
-
-- **Auto-detects Solana plugins** — No need to manually list them.
-- **Runs all Solana Jobs** — Any `*Job.ts` file inside the plugin.
-- **Runs all Solana Fetchers** — Any `*Fetcher.ts` file using a test wallet address.
-- **Local cache** support to improve job performance.
-- **Auto cleanup** — Stops cache after execution.
+This integration is responsible for indexing Solana DeFi protocols, tracking wallet activity, computing token prices, and converting all of that into structured portfolio data.
 
 ---
 
-## Prerequisites
+## 🔍 Responsibilities of the Solana Code
 
-Make sure you have:
-
-- `node` and `npm` installed
-- All project dependencies installed (`npm install`)
-- `npx nx` available (comes with the monorepo setup)
+| Area | Description |
+|------|-------------|
+| 🪙 **Token Price Indexing** | Fetches token prices (e.g., from liquidity pools or on-chain oracles) and stores them in cache |
+| 👛 **User Wallet Scanning** | Finds what tokens, LPs, NFTs, or positions a wallet holds |
+| 📦 **Protocol Position Tracking** | Detects deposits, staked tokens, loans, rewards, locked tokens, etc., in Solana DeFi protocols |
+| 💾 **Caching & Aggregation** | Combines on-chain data with off-chain metadata, stores in Redis or overlay caches |
+| 🌉 **Plugin System** | Each Solana protocol (e.g., Kamino, Jito, Zeta) is modularized into fetchers (per-wallet) and jobs (indexers) |
 
 ---
 
-## Running the Script
+## 🧩 How It Works
+
+The Solana integration follows a **plugin-based architecture**.
+
+Each plugin contains:
+
+### 1. 🛠 `*Job.ts` – Protocol Indexers
+
+Jobs are periodic scripts that:
+
+- Pull on-chain program account data (via Solana RPC)
+- Parse custom Solana structs (via borsh or manual deserialization)
+- Calculate token prices, metadata, or protocol state
+- Write to the cache for fast lookup by fetchers
+
+📍 **Examples**:
+- `kamino/reservesJob.ts`: Gets lending reserves and APRs
+- `jito/vaultsJob.ts`: Calculates restaking vault token prices
+
+---
+
+### 2. 👤 `*Fetcher.ts` – Per-User Position Fetchers
+
+Fetchers are executed per wallet address and:
+
+- Query on-chain data tied to the wallet (e.g. token accounts, staking positions)
+- Decode balances, claimable rewards, or LP shares
+- Return structured `PortfolioElement` objects for frontend display
+
+📍 **Examples**:
+- `zeta/stakingFetcher.ts`: Gets ZEX tokens staked by the user
+- `adrena/positionsFetcher.ts`: Finds leverage positions
+- `guano/stakingFetcher.ts`: Detects locked/unstaked tokens
+
+---
+
+## ⚙️ Environment Setup
+
+```env
+PORTFOLIO_SOLANA_RPC=https://mainnet.helius-rpc.com/?api-key=your-key
+PORTFOLIO_SOLANA_DAS_ENDPOINT=https://mainnet.helius-rpc.com/das/v0/?api-key=your-key
+
+CACHE_CONFIG_TYPE=overlayHttp
+CACHE_CONFIG_OVERLAY_HTTP_BASES=http://localhost:3000/,https://portfolio-api-public.sonar.watch/v1/portfolio/cache/
+CACHE_CONFIG_REDIS_URL=redis://@redis:6379
+```
+
+---
+
+## 🚀 Running Locally
+
+Install and build:
 
 ```bash
-bash run-solana.sh
+npm install
+```
+
+Run a job:
+
+```bash
+npx nx run plugins:run-job kamino-reserves
+```
+
+Run a fetcher for a wallet:
+```bash
+npx nx run plugins:run-fetcher kamino-staking <WALLET_ADDRESS>
+```
+
+---
+
+## ➕ Adding a New Protocol
+
+```bash
+npx nx generate @sonarwatch/portfolio-plugins:plugin my-protocol
+```
+
+Then generate a job or fetcher:
+
+```bash
+npx nx generate @sonarwatch/portfolio-plugins:job --jobName=myJob --pluginId=my-protocol
+npx nx generate @sonarwatch/portfolio-plugins:fetcher --fetcherName=myFetcher --pluginId=my-protocol
 ```
