@@ -76,6 +76,6 @@ const job: Job = {
   id: `${platformId}-vaults`,
   networkIds: [NetworkId.solana],
   executor,
-  labels: ['realtime'],
+  labels: ['realtime', NetworkId.solana],
 };
 export default job;

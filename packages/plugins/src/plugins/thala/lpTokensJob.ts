@@ -189,6 +189,6 @@ const job: Job = {
   id: `${platformId}-lp-tokens`,
   networkIds: [NetworkId.aptos],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.aptos],
 };
 export default job;

@@ -332,6 +332,6 @@ const job: Job = {
   id: `${platformId}-daos`,
   networkIds: [NetworkId.solana],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.solana],
 };
 export default job;

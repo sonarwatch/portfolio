@@ -18,6 +18,6 @@ const job: Job = {
   id: `${nativeStakePlatformId}-solana-epoch`,
   networkIds: [NetworkId.solana],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.solana],
 };
 export default job;

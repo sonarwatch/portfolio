@@ -81,6 +81,6 @@ const job: Job = {
   id: `${platformId}-ondemand-pricing`,
   networkIds: [NetworkId.solana],
   executor,
-  labels: ['realtime'],
+  labels: ['realtime', NetworkId.solana],
 };
 export default job;

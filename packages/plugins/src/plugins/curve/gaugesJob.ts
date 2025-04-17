@@ -30,6 +30,6 @@ const job: Job = {
   id: `${platformId}-gauges`,
   networkIds: [NetworkId.ethereum, NetworkId.polygon, NetworkId.avalanche],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.ethereum],
 };
 export default job;

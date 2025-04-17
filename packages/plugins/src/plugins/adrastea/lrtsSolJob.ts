@@ -26,6 +26,6 @@ const job: Job = {
   id: `${platformId}-lrtssol`,
   networkIds: [NetworkId.solana],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.solana],
 };
 export default job;

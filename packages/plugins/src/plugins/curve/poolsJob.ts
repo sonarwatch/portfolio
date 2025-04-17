@@ -82,6 +82,6 @@ const job: Job = {
   id: `${platformId}-pools`,
   networkIds: [NetworkId.ethereum, NetworkId.polygon, NetworkId.avalanche],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.ethereum, NetworkId.polygon, NetworkId.avalanche],
 };
 export default job;

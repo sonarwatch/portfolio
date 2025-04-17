@@ -45,6 +45,6 @@ const job: Job = {
   id: `${platformId}-sbuck`,
   networkIds: [NetworkId.sui],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.sui],
 };
 export default job;

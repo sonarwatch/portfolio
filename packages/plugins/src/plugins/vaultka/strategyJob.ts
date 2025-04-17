@@ -32,6 +32,6 @@ const job: Job = {
   id: `${platformId}-strategy`,
   networkIds: [NetworkId.solana],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.solana],
 };
 export default job;

@@ -27,6 +27,6 @@ const job: Job = {
   id: `${platformId}-farming-pools`,
   networkIds: [NetworkId.aptos],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.aptos],
 };
 export default job;

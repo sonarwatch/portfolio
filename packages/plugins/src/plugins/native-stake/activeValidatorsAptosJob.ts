@@ -39,6 +39,6 @@ const job: Job = {
   id: `${nativeStakePlatformId}-active-validators`,
   networkIds: [NetworkId.aptos],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.aptos],
 };
 export default job;

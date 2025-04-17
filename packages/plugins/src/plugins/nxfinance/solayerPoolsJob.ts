@@ -27,6 +27,6 @@ const job: Job = {
   id: `${platformId}-solayer-pools`,
   networkIds: [NetworkId.solana],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.solana],
 };
 export default job;

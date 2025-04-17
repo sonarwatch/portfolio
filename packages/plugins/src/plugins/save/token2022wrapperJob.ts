@@ -66,6 +66,6 @@ const job: Job = {
   id: `${platformId}-token2002wrapper`,
   networkIds: [NetworkId.solana],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.solana],
 };
 export default job;

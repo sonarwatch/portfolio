@@ -53,6 +53,6 @@ const job: Job = {
   id: 'top-tokens',
   networkIds,
   executor,
-  labels: ['coingecko'],
+  labels: ['coingecko', 'evm', NetworkId.bnb],
 };
 export default job;

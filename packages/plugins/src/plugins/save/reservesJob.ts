@@ -142,6 +142,6 @@ const job: Job = {
   id: `${platformId}-reserves`,
   networkIds: [NetworkId.solana],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.solana],
 };
 export default job;

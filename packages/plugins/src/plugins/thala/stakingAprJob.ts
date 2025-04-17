@@ -25,6 +25,6 @@ const job: Job = {
   id: `${platformId}-staking-apr`,
   networkIds: [NetworkId.aptos],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.aptos],
 };
 export default job;

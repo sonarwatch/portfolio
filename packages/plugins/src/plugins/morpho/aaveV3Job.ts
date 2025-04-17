@@ -31,6 +31,6 @@ const job: Job = {
   id: `${platformId}-aave-v3`,
   networkIds: [NetworkId.ethereum],
   executor,
-  labels: ['normal', 'evm', 'ethereum'],
+  labels: ['normal', 'evm', NetworkId.ethereum],
 };
 export default job;

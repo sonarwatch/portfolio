@@ -47,6 +47,6 @@ const job: Job = {
   id: `${platformId}-loans`,
   networkIds: [NetworkId.sui],
   executor,
-  labels: ['realtime'],
+  labels: ['realtime', NetworkId.sui],
 };
 export default job;

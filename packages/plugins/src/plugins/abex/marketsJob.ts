@@ -124,6 +124,6 @@ const job: Job = {
   id: `${platformId}-markets`,
   networkIds: [NetworkId.sui],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.sui],
 };
 export default job;

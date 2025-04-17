@@ -39,6 +39,6 @@ const job: Job = {
   id: `${platformId}-dlmm-vaults`,
   networkIds: [NetworkId.solana],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.solana],
 };
 export default job;

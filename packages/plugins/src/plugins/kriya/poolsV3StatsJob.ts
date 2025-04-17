@@ -33,6 +33,6 @@ const job: Job = {
   id: `${platformId}-pools-v3-stats`,
   networkIds: [NetworkId.sui],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.sui],
 };
 export default job;

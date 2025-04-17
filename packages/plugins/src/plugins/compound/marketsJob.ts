@@ -32,6 +32,6 @@ const job: Job = {
   id: `${platformId}-v3-markets`,
   networkIds: [NetworkId.ethereum, NetworkId.polygon],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.ethereum, NetworkId.polygon],
 };
 export default job;

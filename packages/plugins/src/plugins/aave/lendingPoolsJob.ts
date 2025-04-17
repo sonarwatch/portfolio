@@ -177,6 +177,6 @@ const job: Job = {
   id: `${platformId}-lending-pools`,
   networkIds: [],
   executor,
-  labels: ['normal'],
+  labels: ['normal', 'evm'],
 };
 export default job;

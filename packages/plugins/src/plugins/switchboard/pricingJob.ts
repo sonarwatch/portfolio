@@ -54,6 +54,6 @@ const job: Job = {
   id: `${platformId}-pricing`,
   networkIds: [NetworkId.solana],
   executor,
-  labels: ['coingecko'],
+  labels: ['coingecko', NetworkId.solana],
 };
 export default job;

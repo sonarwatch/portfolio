@@ -26,6 +26,6 @@ const job: Job = {
   id: `${platformId}-supply-pools`,
   networkIds: [NetworkId.sui],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.sui],
 };
 export default job;

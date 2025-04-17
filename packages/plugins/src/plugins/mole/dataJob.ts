@@ -40,7 +40,7 @@ const job: Job = {
   id: `${platformId}-data`,
   networkIds: [NetworkId.sui],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.sui],
 };
 
 export default job;

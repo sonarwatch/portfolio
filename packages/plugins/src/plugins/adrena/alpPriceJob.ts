@@ -40,6 +40,6 @@ const job: Job = {
   id: `${platformId}-alp-price`,
   networkIds: [NetworkId.solana],
   executor,
-  labels: ['realtime'],
+  labels: ['realtime', NetworkId.solana],
 };
 export default job;

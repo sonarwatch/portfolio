@@ -24,6 +24,6 @@ const job: Job = {
   id: `${platformId}-markets`,
   networkIds: [NetworkId.aptos],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.aptos],
 };
 export default job;

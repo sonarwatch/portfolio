@@ -59,6 +59,6 @@ const job: Job = {
   id: `${platformId}-solana-loans`,
   networkIds: [NetworkId.solana],
   executor,
-  labels: ['realtime'],
+  labels: ['realtime', NetworkId.solana],
 };
 export default job;

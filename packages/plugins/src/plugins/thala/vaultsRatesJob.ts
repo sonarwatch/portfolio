@@ -35,6 +35,6 @@ const job: Job = {
   id: `${platformId}-vaults-rates`,
   networkIds: [NetworkId.aptos],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.aptos],
 };
 export default job;

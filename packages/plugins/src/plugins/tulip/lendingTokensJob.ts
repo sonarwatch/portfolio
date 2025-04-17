@@ -120,6 +120,6 @@ const job: Job = {
   id: `${platformId}-lending-tokens`,
   networkIds: [NetworkId.solana],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.solana],
 };
 export default job;

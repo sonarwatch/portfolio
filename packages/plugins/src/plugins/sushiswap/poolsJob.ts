@@ -28,6 +28,6 @@ const job: Job = {
   id: `${platformId}-pools`,
   networkIds: [NetworkId.ethereum],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.ethereum],
 };
 export default job;

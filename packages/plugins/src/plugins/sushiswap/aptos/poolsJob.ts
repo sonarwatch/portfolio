@@ -89,6 +89,6 @@ const job: Job = {
   id: `${platformId}-aptos-pools`,
   networkIds: [NetworkId.aptos],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.aptos],
 };
 export default job;

@@ -55,6 +55,6 @@ const job: Job = {
   id: `${platformId}-sdai`,
   networkIds: [NetworkId.ethereum],
   executor,
-  labels: ['normal', 'evm', 'ethereum'],
+  labels: ['normal', 'evm', NetworkId.ethereum],
 };
 export default job;

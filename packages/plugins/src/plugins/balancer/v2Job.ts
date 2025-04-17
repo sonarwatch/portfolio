@@ -112,6 +112,6 @@ const job: Job = {
   id: `${platformId}-v2`,
   networkIds: [],
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.ethereum, NetworkId.avalanche, NetworkId.polygon],
 };
 export default job;
