@@ -11,14 +11,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const user = await getMemoizedUser(owner);
   if (!user) return [];
 
+  const apiClient = axios.create({
+    baseURL: 'https://moneyback.texture.finance',
+    timeout: 500,
+  });
+
   const [loansAsBorrower, loansAsLender, offersAsLender] = await Promise.all([
-    axios.get<Loan[]>(
-      `https://moneyback.texture.finance/loans?borrower=${user}`
-    ),
-    axios.get<Loan[]>(`https://moneyback.texture.finance/loans?lender=${user}`),
-    axios.get<Offer[]>(
-      `https://moneyback.texture.finance/my_offers?lender=${user}`
-    ),
+    apiClient.get<Loan[]>(`/loans?borrower=${user}`),
+    apiClient.get<Loan[]>(`/loans?lender=${user}`),
+    apiClient.get<Offer[]>(`/my_offers?lender=${user}`),
   ]);
 
   const pairs = await pairsMemo.getItem(cache);
