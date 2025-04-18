@@ -17,6 +17,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     platformId: walletTokensPlatformId,
     timestamp: Date.now(),
     weight: 1,
+    link: 'https://liquid.rain.fi/jupiter',
   });
 };
 
