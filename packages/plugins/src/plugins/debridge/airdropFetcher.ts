@@ -1,5 +1,5 @@
 import { isEvmAddress, NetworkId } from '@sonarwatch/portfolio-core';
-import { AccountInfo, PublicKey } from '@solana/web3.js';
+import { AccountInfo } from '@solana/web3.js';
 import {
   AirdropFetcher,
   AirdropFetcherExecutor,
@@ -9,8 +9,6 @@ import {
 import {
   firstDistribStatics,
   dbrMint,
-  distributorPid,
-  receiptBuffer,
   secondDistribStatics,
   platformId,
   dbrImg,
@@ -18,6 +16,7 @@ import {
 import { getClientSolana } from '../../utils/clients';
 import distributions from './distributions.json';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
+import { getEvmReceiptPdaBySeason, getSolReceiptPdaBySeason } from './helpers';
 
 const distributionByWallet = distributions as {
   [key: string]: {
@@ -29,7 +28,9 @@ const distributionByWallet = distributions as {
 const executorDis1: AirdropFetcherExecutor = async (owner: string) => {
   const isEvm = isEvmAddress(owner);
   const walletDistributions = distributionByWallet[owner];
-  const pda = isEvm ? getEvmPda(owner, 1) : getSolPda(owner, 1);
+  const pda = isEvm
+    ? getEvmReceiptPdaBySeason(owner, 1)
+    : getSolReceiptPdaBySeason(owner, 1);
 
   const receipt: AccountInfo<Buffer> | null =
     await getClientSolana().getAccountInfo(pda);
@@ -66,9 +67,10 @@ const executorDis1: AirdropFetcherExecutor = async (owner: string) => {
 const executorDis2: AirdropFetcherExecutor = async (owner: string) => {
   const isEvm = isEvmAddress(owner);
   const walletDistributions = distributionByWallet[owner];
+
   const pdas = isEvm
-    ? [getEvmPda(owner, 2), getEvmPda(owner, 3)]
-    : [getSolPda(owner, 2), getSolPda(owner, 3)];
+    ? [getEvmReceiptPdaBySeason(owner, 2), getEvmReceiptPdaBySeason(owner, 3)]
+    : [getSolReceiptPdaBySeason(owner, 2), getSolReceiptPdaBySeason(owner, 3)];
 
   const receipts: (AccountInfo<Buffer> | null)[] =
     await getMultipleAccountsInfoSafe(getClientSolana(), pdas);
@@ -103,24 +105,6 @@ const executorDis2: AirdropFetcherExecutor = async (owner: string) => {
     ],
   });
 };
-
-function getEvmPda(owner: string, season: number): PublicKey {
-  return PublicKey.findProgramAddressSync(
-    [
-      receiptBuffer,
-      Uint8Array.from([season]),
-      Buffer.from(owner.slice(2), 'hex'),
-    ],
-    distributorPid
-  )[0];
-}
-
-function getSolPda(owner: string, season: number): PublicKey {
-  return PublicKey.findProgramAddressSync(
-    [receiptBuffer, Uint8Array.from([season]), new PublicKey(owner).toBytes()],
-    distributorPid
-  )[0];
-}
 
 export const dis1AirdropFetcherEvm: AirdropFetcher = {
   id: `${firstDistribStatics.id}-evm`,
