@@ -75,15 +75,34 @@ Install and build:
 npm install
 ```
 
-Run a job:
+List available jobs:
+```bash
+npx nx run plugins:list-jobs
+```
 
+Run a job:
 ```bash
 npx nx run plugins:run-job kamino-reserves
 ```
 
+List available fetchers:
+```bash
+npx nx run plugins:list-fetchers
+```
+
 Run a fetcher for a wallet:
 ```bash
-npx nx run plugins:run-fetcher kamino-staking <WALLET_ADDRESS>
+npx nx run plugins:run-fetcher kamino-farms BBkoocctRizBPsu2WRHx5xvpd21UHx6ARVEDGVw7sAFa
+```
+
+Run all fetchers for provided address on solana network:
+```bash
+npx nx run plugins:run-fetchers-by-network-id solana BBkoocctRizBPsu2WRHx5xvpd21UHx6ARVEDGVw7sAFa
+```
+
+Get list of transactions by solana address:
+```bash
+npx nx run tx-parser:run BBkoocctRizBPsu2WRHx5xvpd21UHx6ARVEDGVw7sAFa
 ```
 
 ---
