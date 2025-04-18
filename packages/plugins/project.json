@@ -38,6 +38,10 @@
       "command": "ts-node -P packages/plugins/tsconfig.script.json --swc packages/plugins/scripts/run-job.ts",
       "dependsOn": []
     },
+    "list-fetchers": {
+      "command": "ts-node -P packages/plugins/tsconfig.script.json --swc packages/plugins/scripts/list-fetchers.ts",
+      "dependsOn": []
+    },
     "publish": {
       "command": "node tools/scripts/publish.mjs plugins {args.ver} {args.tag}",
       "dependsOn": ["build"]

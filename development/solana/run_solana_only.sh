@@ -2,8 +2,6 @@
 
 set -e
 
-LAMBDA_PORTFOLIO_HOME="/"
-
 # === CONFIG ===
 SOLANA_ADDRESS="DemoSX9F2zXfQLtBr56Yr5he15P7viZWsYJpSDAX3tKG"
 PLUGINS_DIR="${LAMBDA_PORTFOLIO_HOME}/packages/plugins/src/plugins"
