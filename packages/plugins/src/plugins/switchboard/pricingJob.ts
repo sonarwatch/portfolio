@@ -53,6 +53,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-pricing`,
   executor,
-  labels: ['coingecko'],
+  labels: ['coingecko', NetworkId.solana],
 };
 export default job;

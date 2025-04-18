@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { platformId, stabilityEndpoint } from './constants';
 import { LiquidityInfo } from './types';
 import { Cache } from '../../Cache';
@@ -23,6 +24,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-staking-apr`,
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.aptos],
 };
 export default job;

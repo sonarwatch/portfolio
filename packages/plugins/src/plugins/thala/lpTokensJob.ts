@@ -188,6 +188,6 @@ function getTokensValuesArray(
 const job: Job = {
   id: `${platformId}-lp-tokens`,
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.aptos],
 };
 export default job;

@@ -176,6 +176,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-lending-pools`,
   executor,
-  labels: ['normal'],
+  labels: ['normal', 'evm'],
 };
 export default job;

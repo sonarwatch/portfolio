@@ -178,6 +178,6 @@ export default function getMarketsV2Job(
   return {
     id: `${platformId}-${networkId}-markets-v2`,
     executor,
-    labels: ['normal'],
+    labels: ['normal', 'evm'],
   };
 }

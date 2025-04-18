@@ -9,6 +9,7 @@ import { fp64ToFloat } from './helpers';
 import { getAccountResources, getNestedType } from '../../utils/aptos';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientAptos();
@@ -33,6 +34,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-vaults-rates`,
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.aptos],
 };
 export default job;

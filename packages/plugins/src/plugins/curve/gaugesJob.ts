@@ -1,4 +1,4 @@
-import { NetworkIdType } from '@sonarwatch/portfolio-core';
+import { NetworkId, NetworkIdType } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import {
@@ -29,6 +29,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-gauges`,
   executor,
-  labels: ['normal'],
+  labels: ['normal', NetworkId.ethereum],
 };
 export default job;
