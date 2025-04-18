@@ -17,12 +17,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (!accounts) return [];
 
   const registry = new ElementRegistry(NetworkId.solana, platformId);
-  const element = registry.addElementMultiple({
-    label: 'Staked',
-    link: 'https://staking.defiland.app/',
-  });
 
   for (const stakingAcc of accounts) {
+    const element = registry.addElementMultiple({
+      label: 'Staked',
+      link: 'https://cropper.finance/staking/',
+      ref: stakingAcc.pubkey,
+    });
     element.addAsset({
       address: crpMint,
       amount: stakingAcc.amount.dividedBy(10 ** 9),
@@ -33,8 +34,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           .times(1000)
           .toNumber(),
       },
-      ref: stakingAcc.pubkey,
-      link: 'https://cropper.finance/staking/',
     });
   }
   return registry.getElements(cache);
