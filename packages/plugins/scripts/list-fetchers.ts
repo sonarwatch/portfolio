@@ -1,8 +1,7 @@
 import { networks } from '@sonarwatch/portfolio-core';
 import { fetchers, solanaSimpleFetcher } from '../src';
 
-async function main(network?: string) {
-
+async function listFetchers(network?: string) {
   if (network && !Object.keys(networks).includes(network)) {
     console.error(`unknown network. NetworkId: ${network}`);
   }
@@ -14,4 +13,4 @@ async function main(network?: string) {
   console.info(`Available fetchers: \n ${filteredFetchers.join('\n')}`);
 }
 
-main(process.argv.at(2));
+listFetchers(process.argv.at(2));
