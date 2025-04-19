@@ -5,7 +5,7 @@ import {
   PortfolioElementLiquidity,
   PortfolioElementMultiple,
   PortfolioElementTrade,
-} from '@sonarwatch/portfolio-core';
+} from '../Portfolio';
 
 export function isPortfolioElementLiquidity(
   element: PortfolioElement | null

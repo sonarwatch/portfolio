@@ -3,6 +3,7 @@ import {
   NetworkId,
   PortfolioElement,
   walletTokensPlatformId,
+  isPortfolioElementLiquidity,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
@@ -23,7 +24,6 @@ import { getElementsFromObligations } from '../save/helpers';
 import { getParsedMultipleAccountsInfo } from '../../utils/solana';
 import { AllocationInfo } from './poolsJob';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
-import { isPortfolioElementLiquidity } from '../../utils/misc/isPortfolioElementLiquidity';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();

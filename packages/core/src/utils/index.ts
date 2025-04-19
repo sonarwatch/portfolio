@@ -43,3 +43,4 @@ export * from './getLabelFromAssets';
 export * from './healthFactorToHealthRatio';
 export * from './healthRatioToHealthFactor';
 export * from './promiseTimeout';
+export * from './isPortfolioElement';
