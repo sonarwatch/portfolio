@@ -16,6 +16,9 @@ import {
 } from './constants';
 import { AirdropResponse } from './types';
 import { getClientSolana } from '../../utils/clients';
+import { getUnlockedAmountFromLinearVesting } from '../../utils/misc/getUnlockedAmountFromVesting';
+
+const oneMonth = 30 * 24 * 60 * 60 * 1000;
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
   const epoch = await getClientSolana().getEpochInfo();
@@ -49,11 +52,22 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
       ],
     });
 
-  const claimedAmount = new BigNumber(res.data.claimedAmount);
   const vestedAmount = new BigNumber(res.data.totalAmount).times(
     (epoch.epoch - res.data.startEpoch) /
       (res.data.endEpoch - res.data.startEpoch)
   );
+
+  const availableToClaim = new BigNumber(
+    getUnlockedAmountFromLinearVesting(
+      1737201600000,
+      1752840000000,
+      vestedAmount.toNumber(),
+      oneMonth
+    )
+  );
+
+  const claimedAmount = new BigNumber(res.data.claimedAmount);
+
   return getAirdropRaw({
     statics: airdropStatics,
     items: [
@@ -64,7 +78,7 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
         address: layerMint,
       },
       {
-        amount: vestedAmount.dividedBy(10 ** layerDecimals).toNumber(),
+        amount: availableToClaim.dividedBy(10 ** layerDecimals).toNumber(),
         isClaimed: false,
         label: 'LAYER',
         address: layerMint,
