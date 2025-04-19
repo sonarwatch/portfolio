@@ -79,35 +79,41 @@ const getBalanceChanges = (
     }
 
     if (preTokenBalances && postTokenBalances) {
-      const preTokenBalance = preTokenBalances.find((b) => b.owner === owner);
-      const postTokenBalance = postTokenBalances.find((b) => b.owner === owner);
+      accountKeys.forEach((accountKey, i) => {
+        const preTokenBalance = preTokenBalances.find(
+          (b) => b.accountIndex === i && b.owner === owner
+        );
+        const postTokenBalance = postTokenBalances.find(
+          (b) => b.accountIndex === i && b.owner === owner
+        );
 
-      if (preTokenBalance || postTokenBalance) {
-        const preBalanceAmount = preTokenBalance
-          ? unshift(
-              preTokenBalance.uiTokenAmount.amount,
-              preTokenBalance.uiTokenAmount.decimals
-            )
-          : 0;
-        const postBalanceAmount = postTokenBalance
-          ? unshift(
-              postTokenBalance.uiTokenAmount.amount,
-              postTokenBalance.uiTokenAmount.decimals
-            )
-          : 0;
-        if (postBalanceAmount !== preBalanceAmount) {
-          const address = postTokenBalance
-            ? postTokenBalance.mint
-            : preTokenBalance?.mint;
-          if (address)
-            changes.push({
-              address,
-              preBalance: preBalanceAmount,
-              postBalance: postBalanceAmount,
-              change: postBalanceAmount - preBalanceAmount,
-            });
+        if (preTokenBalance || postTokenBalance) {
+          const preBalanceAmount = preTokenBalance
+            ? unshift(
+                preTokenBalance.uiTokenAmount.amount,
+                preTokenBalance.uiTokenAmount.decimals
+              )
+            : 0;
+          const postBalanceAmount = postTokenBalance
+            ? unshift(
+                postTokenBalance.uiTokenAmount.amount,
+                postTokenBalance.uiTokenAmount.decimals
+              )
+            : 0;
+          if (postBalanceAmount !== preBalanceAmount) {
+            const address = postTokenBalance
+              ? postTokenBalance.mint
+              : preTokenBalance?.mint;
+            if (address)
+              changes.push({
+                address,
+                preBalance: preBalanceAmount,
+                postBalance: postBalanceAmount,
+                change: postBalanceAmount - preBalanceAmount,
+              });
+          }
         }
-      }
+      });
     }
   }
 
