@@ -43,7 +43,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     });
     if (!vault.withdrawalRequest) return;
 
-    const locketUntil = vault.withdrawalRequest.timestampInSec
+    const locketUntil = new BigNumber(vault.withdrawalRequest.timestampInSec)
       .plus(7 * 24 * 60 * 60)
       .times(1000)
       .toNumber();
