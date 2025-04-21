@@ -1,21 +1,32 @@
+import BigNumber from 'bignumber.js';
+
 export function getUnlockedAmountFromLinearVesting(
   startTime: number,
   endTime: number,
-  totalAmount: number,
-  vestingPeriod?: number
+  totalAmount: BigNumber,
+  periodLength?: number
 ): number {
-  const currentTime = Date.now();
+  const currentTime = Date.now() / 1000; // Convert to seconds
   if (currentTime < startTime) return 0;
-  if (currentTime > endTime) return totalAmount;
+  if (currentTime > endTime) return totalAmount.toNumber();
 
   // If vestingPeriod is not provided, use the default linear vesting
-  if (!vestingPeriod) {
-    return ((currentTime - startTime) / (endTime - startTime)) * totalAmount;
+  if (!periodLength) {
+    return totalAmount
+      .times((currentTime - startTime) / (endTime - startTime))
+      .toNumber();
   }
 
-  // For linear vesting with a specific period
-  const unlockedAmount =
-    ((currentTime - startTime) / vestingPeriod) * totalAmount;
+  // Number of periods that have passed
+  const periodsPassed = Math.floor((currentTime - startTime) / periodLength);
 
-  return Math.min(unlockedAmount, totalAmount);
+  // Amount per period
+  const amountPerPeriod = totalAmount.dividedBy(
+    Math.floor((endTime - startTime) / periodLength)
+  );
+
+  // Total unlocked amount
+  const unlockedAmount = amountPerPeriod.times(periodsPassed);
+
+  return unlockedAmount.toNumber();
 }

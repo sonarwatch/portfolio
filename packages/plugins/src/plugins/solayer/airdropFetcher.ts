@@ -18,7 +18,7 @@ import { AirdropResponse } from './types';
 import { getClientSolana } from '../../utils/clients';
 import { getUnlockedAmountFromLinearVesting } from '../../utils/misc/getUnlockedAmountFromVesting';
 
-const oneMonth = 30 * 24 * 60 * 60 * 1000;
+const oneMonth = 30 * 24 * 60 * 60;
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
   const epoch = await getClientSolana().getEpochInfo();
@@ -56,17 +56,33 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
     (epoch.epoch - res.data.startEpoch) /
       (res.data.endEpoch - res.data.startEpoch)
   );
+  const unvestedAmount = new BigNumber(res.data.totalAmount).minus(
+    vestedAmount
+  );
 
-  const availableToClaim = new BigNumber(
+  const unlockedFromVesting = new BigNumber(
     getUnlockedAmountFromLinearVesting(
-      1737201600000,
-      1752840000000,
-      vestedAmount.toNumber(),
+      1737201600,
+      1752840000,
+      vestedAmount,
       oneMonth
     )
   );
 
   const claimedAmount = new BigNumber(res.data.claimedAmount);
+
+  let leftToClaim = new BigNumber(0);
+  if (claimedAmount.isZero()) {
+    leftToClaim = unvestedAmount.plus(unlockedFromVesting);
+  } else if (claimedAmount.isGreaterThan(unvestedAmount)) {
+    leftToClaim = claimedAmount.minus(unvestedAmount.plus(unlockedFromVesting));
+  } else {
+    leftToClaim = unvestedAmount.plus(unlockedFromVesting);
+  }
+
+  if (leftToClaim.dividedBy(res.data.totalAmount).isLessThan(0.05)) {
+    leftToClaim = new BigNumber(0);
+  }
 
   return getAirdropRaw({
     statics: airdropStatics,
@@ -78,7 +94,7 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
         address: layerMint,
       },
       {
-        amount: availableToClaim.dividedBy(10 ** layerDecimals).toNumber(),
+        amount: leftToClaim.dividedBy(10 ** layerDecimals).toNumber(),
         isClaimed: false,
         label: 'LAYER',
         address: layerMint,
