@@ -1,4 +1,5 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { aprToApy, NetworkId } from '@sonarwatch/portfolio-core';
+import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../../Cache';
 import { Job, JobExecutor } from '../../../Job';
 import { getClientSolana } from '../../../utils/clients';
@@ -8,6 +9,8 @@ import {
 } from '../../../utils/solana';
 import {
   custodiesKey,
+  jlpMint,
+  jlpPoolPk,
   perpPoolsKey,
   perpsProgramId,
   platformId,
@@ -35,7 +38,9 @@ const executor: JobExecutor = async (cache: Cache) => {
     await getParsedMultipleAccountsInfo(
       client,
       perpetualPoolStruct,
-      custodiesAccs.map((acc) => acc.pool)
+      [...new Set(custodiesAccs.map((acc) => acc.pool.toString()))].map(
+        (p) => new PublicKey(p)
+      )
     )
   )
     .map((acc) => (acc === null ? [] : [acc]))
@@ -49,6 +54,21 @@ const executor: JobExecutor = async (cache: Cache) => {
     prefix: platformId,
     networkId: NetworkId.solana,
   });
+
+  const jlpPool = pools.find(
+    (p) => p.pubkey.toString() === jlpPoolPk.toString()
+  );
+  if (jlpPool) {
+    await cache.setTokenYield({
+      address: jlpMint,
+      networkId: NetworkId.solana,
+      yield: {
+        apr: jlpPool.poolApr.feeAprBps.shiftedBy(-4).toNumber(),
+        apy: aprToApy(jlpPool.poolApr.feeAprBps.shiftedBy(-4).toNumber()),
+      },
+      timestamp: Date.now(),
+    });
+  }
 };
 
 const job: Job = {

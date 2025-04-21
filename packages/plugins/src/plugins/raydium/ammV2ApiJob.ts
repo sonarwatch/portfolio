@@ -1,4 +1,9 @@
-import { NetworkId, walletTokensPlatformId } from '@sonarwatch/portfolio-core';
+import {
+  aprToApy,
+  NetworkId,
+  TokenYield,
+  walletTokensPlatformId,
+} from '@sonarwatch/portfolio-core';
 import axios from 'axios';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -63,6 +68,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     let tokenPriceB;
 
     const tokenPriceSources = [];
+    const tokenYields: TokenYield[] = [];
     const poolStats: { key: string; value: WhirlpoolStat }[] = [];
 
     for (let id = 0; id < subPools.data.length; id++) {
@@ -122,6 +128,15 @@ const executor: JobExecutor = async (cache: Cache) => {
             ],
           })
         );
+        tokenYields.push({
+          address: lpMint.toString(),
+          networkId: NetworkId.solana,
+          yield: {
+            apr: poolInfo.week.apr / 100,
+            apy: aprToApy(poolInfo.week.apr / 100),
+          },
+          timestamp: Date.now(),
+        });
       } else if (acceptedPairs) {
         if (acceptedPairs.includes(mintB) && tokenPriceB) {
           tokenPriceSources.push({
@@ -176,6 +191,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       networkId: NetworkId.solana,
     });
     await cache.setTokenPriceSources(tokenPriceSources);
+    await cache.setTokenYields(tokenYields);
     page += 1;
   } while (subPools.hasNextPage && minimumLiquidity.isLessThan(lastLiquidity));
 };

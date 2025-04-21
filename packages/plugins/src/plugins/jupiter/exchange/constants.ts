@@ -1,9 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 
 export const platformId = 'jupiter-exchange';
-export const jlpToken = new PublicKey(
-  '27G8MtK7VtTcCHkpASjSDdkWWYfoqT6ggEuKidVJidD4'
-);
+export const jlpMint = '27G8MtK7VtTcCHkpASjSDdkWWYfoqT6ggEuKidVJidD4';
 export const jupSOLMint = 'jupSoLaHXQiZZTSfEWMTRRgpnyFm8f6sZdosWBjx93v';
 export const perpsProgramId = new PublicKey(
   'PERPHjGBqRHArX4DySjwM6UJHiR3sWAatqfdBS2qQJu'
@@ -24,7 +22,7 @@ export const lockProgramId = new PublicKey(
   'LocpQgucEQHbqNABEYvBvwoxCPsSbG91A1QaQhQQqjn'
 );
 
-export const jlpPool = new PublicKey(
+export const jlpPoolPk = new PublicKey(
   '5BUwFW4nRbftYTDMbgxykoFWqWHPzahFSNAaaaJtVKsq'
 );
 

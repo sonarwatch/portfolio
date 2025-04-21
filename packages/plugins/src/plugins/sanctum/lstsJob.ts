@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { apyToApr, NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { lstsKey, platformId } from './constants';
@@ -18,6 +18,31 @@ const executor: JobExecutor = async (cache: Cache) => {
       prefix: platformId,
       networkId: NetworkId.solana,
     });
+
+    const params = new URLSearchParams();
+
+    mints.forEach((mint) => {
+      params.append('lst', mint);
+    });
+
+    const aprs = await axios.get<{
+      apys: Record<string, number>;
+    }>(`https://extra-api.sanctum.so/v1/apy/latest?${params.toString()}`);
+
+    await cache.setTokenYields(
+      Object.keys(aprs.data.apys).map((address) => {
+        const apy = aprs.data.apys[address];
+        return {
+          address,
+          networkId: NetworkId.solana,
+          yield: {
+            apr: apyToApr(apy),
+            apy,
+          },
+          timestamp: Date.now(),
+        };
+      })
+    );
   }
 };
 const job: Job = {

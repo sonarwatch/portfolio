@@ -108,6 +108,7 @@ export type PortfolioAssetTokenData = {
   address: string;
   amount: number;
   price: UsdValue;
+  yield?: Yield;
 };
 
 /**
@@ -215,9 +216,11 @@ export type Transaction = {
   balanceChanges: BalanceChange[];
   accountChanges: AccountChanges;
   isSigner: boolean;
+  tags?: TransactionTag[];
   fees?: number | null;
   success: boolean;
 };
+export type TransactionTag = 'jitotip' | 'spam';
 
 export type SourceRefName =
   | 'Pool'

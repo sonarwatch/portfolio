@@ -3,12 +3,15 @@ import {
   AccountChanges,
   BalanceChange,
   Service,
+  solanaNativeAddress,
   solanaNativeDecimals,
-  solanaNativeWrappedAddress,
   Transaction,
+  TransactionTag,
 } from '@sonarwatch/portfolio-core';
 import { unshift } from './unshift';
 import { sortedServices } from '../services';
+import { transactionContainsJitotip } from './transactionContainsJitotip';
+import { transactionIsSpam } from './transactionIsSpam';
 
 const getTransactionService = (
   txn: ParsedTransactionWithMeta
@@ -68,7 +71,7 @@ const getBalanceChanges = (
 
     if (postBalances[ownerIndex] !== preBalances[ownerIndex]) {
       changes.push({
-        address: solanaNativeWrappedAddress,
+        address: solanaNativeAddress,
         preBalance: unshift(preBalances[ownerIndex], solanaNativeDecimals),
         postBalance: unshift(postBalances[ownerIndex], solanaNativeDecimals),
         change: unshift(
@@ -136,6 +139,14 @@ export const parseTransaction = (
 
   const isSigner = ownerIsSigner(txn, owner);
 
+  const tags: TransactionTag[] = [];
+  if (transactionContainsJitotip(txn)) {
+    tags.push('jitotip');
+  }
+  if (transactionIsSpam(txn, isSigner)) {
+    tags.push('spam');
+  }
+
   return {
     signature: txn.transaction.signatures[0],
     owner,
@@ -144,6 +155,7 @@ export const parseTransaction = (
     balanceChanges: getBalanceChanges(txn, owner),
     accountChanges: getAccountChanges(txn),
     isSigner,
+    tags,
     fees:
       isSigner && txn.meta?.fee
         ? unshift(txn.meta.fee, solanaNativeDecimals)
