@@ -2,6 +2,25 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## 0.0.1 (2025-04-21)
+
+
+### Features
+
+* **networks:** add networksByAddressSystem for categorizing networks by address system ([6e839af](https://github.com/aglumova/portfolio/commit/6e839af0c9ae96546647c2d4514b9ccfc135ad2a))
+
+
+### Reverts
+
+* Revert "tmp to multiple" ([9512357](https://github.com/aglumova/portfolio/commit/9512357d6583a16107082bb29ef84c9f78fecebf))
+* Revert "chore(core): release version 0.14.112" ([6451b73](https://github.com/aglumova/portfolio/commit/6451b734a659ccedfc18a0e02c3601d1e31af0b3))
+* Revert "nxfinance fix" ([771326b](https://github.com/aglumova/portfolio/commit/771326b2733e529f7b90a7827978822b4f640349))
+* Revert "upgrade nx" ([62550ba](https://github.com/aglumova/portfolio/commit/62550bab2e60d40b8616465843dad4d3ad612bbd))
+* Revert "rename" ([ffcf477](https://github.com/aglumova/portfolio/commit/ffcf47783e7dcb924c7685a4c7784a2385b526c2))
+* Revert "fix" ([a93952e](https://github.com/aglumova/portfolio/commit/a93952e9e6ad61547691bf5e00af35a892a0b81c))
+
+
+
 ## [0.14.185](https://github.com/sonarwatch/portfolio/compare/core-0.14.184...core-0.14.185) (2025-04-16)
 
 
