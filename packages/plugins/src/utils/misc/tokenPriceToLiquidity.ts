@@ -12,7 +12,7 @@ export default function tokenPriceToLiquidity(
   amount: number,
   networkId: NetworkIdType,
   tokenPrice: TokenPrice,
-  tokenYield?: TokenYield | undefined
+  tokenYield?: TokenYield
 ): PortfolioLiquidity {
   const assets = tokenPriceToAssetTokens(
     address,
