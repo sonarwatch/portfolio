@@ -135,7 +135,6 @@ const executor: JobExecutor = async (cache: Cache) => {
             apr: poolInfo.week.apr / 100,
             apy: aprToApy(poolInfo.week.apr / 100),
           },
-          timebase: 604800000, // week
           timestamp: Date.now(),
         });
       } else if (acceptedPairs) {
