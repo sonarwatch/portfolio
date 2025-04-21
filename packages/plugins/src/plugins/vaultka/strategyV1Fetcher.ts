@@ -57,7 +57,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
       const element = elementRegistry.addElementBorrowlend({
         label: 'Leverage',
-        link: 'https://solana.vaultka.com/leverage',
+        link: 'https://solana-v1.vaultka.com/',
         ref: positionInfo[0].pubkey,
         sourceRefs: [{ name: 'Strategy', address: strategy.pubkey.toString() }],
       });

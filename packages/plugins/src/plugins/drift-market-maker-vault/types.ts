@@ -8,4 +8,5 @@ export type VaultInfo = {
   totalTokens: string;
   user: string;
   profitShare: number;
+  link?: string;
 };

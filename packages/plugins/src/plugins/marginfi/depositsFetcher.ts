@@ -1,5 +1,10 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import { platformId } from './constants';
+import {
+  MarginfiAccountAddress,
+  marginFiBanksMemo,
+  marginfiProgramId,
+  platformId,
+} from './constants';
 import { wrappedI80F48toBigNumber } from './helpers';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { Cache } from '../../Cache';
@@ -7,7 +12,15 @@ import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { getMarginFiAccounts } from './getMarginFiAccounts';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const marginFiAccounts = await getMarginFiAccounts(owner, cache);
+  const marginFiAccounts = await getMarginFiAccounts(
+    owner,
+    {
+      group: MarginfiAccountAddress,
+      pid: marginfiProgramId,
+      memo: marginFiBanksMemo,
+    },
+    cache
+  );
 
   if (!marginFiAccounts) return [];
 

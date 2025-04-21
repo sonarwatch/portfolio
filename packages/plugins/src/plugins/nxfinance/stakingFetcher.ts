@@ -46,7 +46,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
   const element = elementRegistry.addElementMultiple({
     label: 'Staked',
-    link: 'https://nxfinance.io/stake',
+    link: 'https://www.nxfinance.info/stake',
     ref: stakingAccount.pubkey.toString(),
     sourceRefs: [{ name: 'Pool', address: stakePoolAccount.pubkey.toString() }],
   });

@@ -2,6 +2,39 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.183](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.182...plugins-0.14.183) (2025-04-19)
+
+
+
+## [0.14.182](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.181...plugins-0.14.182) (2025-04-18)
+
+
+### Features
+
+* **rain:** add stJup job for real-time token price updates ([161e3de](https://github.com/sonarwatch/portfolio/commit/161e3de497ea634bebd2462f1fedbae95e52d8cf))
+
+
+
+## [0.14.181](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.180...plugins-0.14.181) (2025-04-18)
+
+
+
+## [0.14.180](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.179...plugins-0.14.180) (2025-04-17)
+
+
+
+## [0.14.179](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.178...plugins-0.14.179) (2025-04-17)
+
+
+
+## [0.14.178](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.177...plugins-0.14.178) (2025-04-16)
+
+
+
+## [0.14.177](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.176...plugins-0.14.177) (2025-04-15)
+
+
+
 ## [0.14.176](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.175...plugins-0.14.176) (2025-04-14)
 
 

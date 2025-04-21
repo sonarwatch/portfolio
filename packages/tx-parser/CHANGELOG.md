@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.0.17](https://github.com/sonarwatch/portfolio/compare/tx-parser-0.0.16...tx-parser-0.0.17) (2025-04-19)
+
+
+### Features
+
+* **rain:** add stJup job for real-time token price updates ([161e3de](https://github.com/sonarwatch/portfolio/commit/161e3de497ea634bebd2462f1fedbae95e52d8cf))
+
+
+
+## [0.0.16](https://github.com/sonarwatch/portfolio/compare/tx-parser-0.0.15...tx-parser-0.0.16) (2025-04-16)
+
+
+
 ## [0.0.15](https://github.com/sonarwatch/portfolio/compare/tx-parser-0.0.14...tx-parser-0.0.15) (2025-04-07)
 
 

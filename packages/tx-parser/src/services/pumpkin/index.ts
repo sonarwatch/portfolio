@@ -1,15 +1,16 @@
 import { NetworkId, Service } from '@sonarwatch/portfolio-core';
 
+const platformId = 'pumpkin';
 const contract = {
-  name: 'Pumpkin Staking',
+  name: 'Staking',
   address: 'ARFxpgenuFNbyoysFdqEwTgEdxtLtHbTHwCWHJjqWHTb',
-  platformId: 'pumpkin',
+  platformId,
 };
 
 const service: Service = {
-  id: 'pumpkin',
-  name: 'Pumpkin Staking',
-  platformId: 'pumpswap',
+  id: 'pumpkin-staking',
+  name: 'Staking',
+  platformId,
   networkId: NetworkId.solana,
   contracts: [contract],
 };

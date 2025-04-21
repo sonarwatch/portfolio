@@ -44,3 +44,10 @@ export const platformIdByVaultManager: Map<string, string> = new Map([
   ['7n1eiWbLWRC3a7cggUcnM9gnudtwVJc8Xrs41ELGwGbE', luckyperpPlatformId],
   ['8KX7LUPnn94R2nXguftRJwyiDHFob4AS8DrNDYx7H3o5', nxFinancePlatformId],
 ]);
+
+export const linksByPlatformId: Map<string, string> = new Map([
+  [circuitPlatformId, 'https://app.circuit.trade/'],
+  [moosePlatformId, 'https://moose.market/'],
+  [neutralPlatformId, 'https://www.app.neutral.trade/'],
+  [vectisPlatformId, 'https://app.vectis.finance/vault/'],
+]);

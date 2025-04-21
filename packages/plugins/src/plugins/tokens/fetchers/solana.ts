@@ -61,13 +61,16 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     // If it's an LP Token
     if (tokenPrice && tokenPrice.platformId !== walletTokensPlatformId) {
-      const liquidity = tokenPriceToLiquidity(
-        address,
-        amount,
-        NetworkId.solana,
-        tokenPrice,
-        tokenYield
-      );
+      const liquidity = {
+        ...tokenPriceToLiquidity(
+          address,
+          amount,
+          NetworkId.solana,
+          tokenPrice,
+          tokenYield
+        ),
+        ref: asset.token_info?.associated_token_address,
+      };
       const tag = getLpTag(tokenPrice.platformId, tokenPrice.elementName);
       if (!liquiditiesByTag[tag]) {
         liquiditiesByTag[tag] = [];

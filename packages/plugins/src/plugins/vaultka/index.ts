@@ -1,9 +1,15 @@
 import { Fetcher } from '../../Fetcher';
 import { Job } from '../../Job';
 import lendingJob from './lendingJob';
-import lendingFetcher from './lendingFetcher';
-import strategyFetcher from './strategyFetcher';
+import lendingV1Fetcher from './lendingV1Fetcher';
+import strategyFetcher from './strategyV1Fetcher';
 import strategyJob from './strategyJob';
+import banksJon from './banksJob';
+import lendingV2Fetcher from './lendingV2Fetcher';
 
-export const jobs: Job[] = [lendingJob, strategyJob];
-export const fetchers: Fetcher[] = [lendingFetcher, strategyFetcher];
+export const jobs: Job[] = [lendingJob, strategyJob, banksJon];
+export const fetchers: Fetcher[] = [
+  lendingV1Fetcher,
+  strategyFetcher,
+  lendingV2Fetcher,
+];

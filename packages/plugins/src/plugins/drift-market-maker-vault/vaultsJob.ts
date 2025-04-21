@@ -8,6 +8,7 @@ import {
   vaultsProgramIds,
   platformIdByVaultManager,
   prefixVaults,
+  linksByPlatformId,
 } from './constants';
 import { vaultFilter } from './filters';
 import { SpotMarketEnhanced } from '../drift/types';
@@ -56,6 +57,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       );
       if (!vaultPlatformId) continue;
 
+      const link = linksByPlatformId.get(vaultPlatformId);
       const totalTokens = await vaultClient.calculateVaultEquityInDepositAsset({
         vault,
         factorUnrealizedPNL: true,
@@ -71,6 +73,7 @@ const executor: JobExecutor = async (cache: Cache) => {
         totalTokens: totalTokens.toString(),
         user: vault.user.toString(),
         profitShare: vault.profitShare,
+        link,
       };
 
       cachedItems.push({

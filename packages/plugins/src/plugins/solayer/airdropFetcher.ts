@@ -15,8 +15,13 @@ import {
   platformId,
 } from './constants';
 import { AirdropResponse } from './types';
+import { getClientSolana } from '../../utils/clients';
+import { getUnlockedAmountFromLinearVesting } from '../../utils/misc/getUnlockedAmountFromVesting';
+
+const oneMonth = 30 * 24 * 60 * 60 * 1000;
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
+  const epoch = await getClientSolana().getEpochInfo();
   let res: AxiosResponse<AirdropResponse>;
   try {
     res = await axios.get(airdropApi + owner);
@@ -47,20 +52,34 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
       ],
     });
 
-  const amount = BigNumber(res.data.totalAmount);
-  const isFullyClaimed = amount.isEqualTo(Number(res.data.claimedAmount));
+  const vestedAmount = new BigNumber(res.data.totalAmount).times(
+    (epoch.epoch - res.data.startEpoch) /
+      (res.data.endEpoch - res.data.startEpoch)
+  );
+
+  const availableToClaim = new BigNumber(
+    getUnlockedAmountFromLinearVesting(
+      1737201600000,
+      1752840000000,
+      vestedAmount.toNumber(),
+      oneMonth
+    )
+  );
+
+  const claimedAmount = new BigNumber(res.data.claimedAmount);
 
   return getAirdropRaw({
     statics: airdropStatics,
     items: [
       {
-        amount: isFullyClaimed
-          ? amount.dividedBy(10 ** layerDecimals).toNumber()
-          : amount
-              .minus(res.data.claimedAmount)
-              .dividedBy(10 ** layerDecimals)
-              .toNumber(),
-        isClaimed: isFullyClaimed,
+        amount: claimedAmount.dividedBy(10 ** layerDecimals).toNumber(),
+        isClaimed: true,
+        label: 'LAYER',
+        address: layerMint,
+      },
+      {
+        amount: availableToClaim.dividedBy(10 ** layerDecimals).toNumber(),
+        isClaimed: false,
         label: 'LAYER',
         address: layerMint,
       },

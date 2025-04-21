@@ -5,7 +5,7 @@ import {
   SignaturesForAddressOptions,
 } from '@solana/web3.js';
 
-const MAX_SIGNATURES_PER_REQUEST = 10;
+export const MAX_TRANSACTIONS_PER_REQUEST = 1000;
 
 export const getSignatures = (
   connection: Connection,
@@ -13,8 +13,11 @@ export const getSignatures = (
   optionsArgs?: SignaturesForAddressOptions | undefined
 ): Promise<ConfirmedSignatureInfo[]> => {
   const options = optionsArgs || {};
-  if (!optionsArgs?.limit || optionsArgs?.limit > MAX_SIGNATURES_PER_REQUEST) {
-    options.limit = MAX_SIGNATURES_PER_REQUEST;
+  if (
+    !optionsArgs?.limit ||
+    optionsArgs?.limit > MAX_TRANSACTIONS_PER_REQUEST
+  ) {
+    options.limit = MAX_TRANSACTIONS_PER_REQUEST;
   }
 
   return connection.getSignaturesForAddress(
