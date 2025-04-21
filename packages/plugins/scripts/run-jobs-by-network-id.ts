@@ -51,7 +51,7 @@ async function runJobs(network: NetworkIdType) {
         console.log(`${job.id}. Running.`);
         const startJob = Date.now();
         try {
-          await awaitWithTimeout(job.executor(cache), 60000);
+          await awaitWithTimeout(job.executor(cache), 120000);
           const durationJob = ((Date.now() - startJob) / 1000).toFixed(2);
           console.log(`${job.id}. Finished (${durationJob}s)`);
         } catch (err) {
