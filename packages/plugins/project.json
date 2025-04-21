@@ -26,6 +26,10 @@
       "command": "ts-node -P packages/plugins/tsconfig.script.json --swc packages/plugins/scripts/run-airdrop-fetchers.ts",
       "dependsOn": []
     },
+    "list-fetchers": {
+      "command": "ts-node -P packages/plugins/tsconfig.script.json --swc packages/plugins/scripts/list-fetchers.ts",
+      "dependsOn": []
+    },
     "run-fetcher": {
       "command": "ts-node -P packages/plugins/tsconfig.script.json --swc packages/plugins/scripts/run-fetcher.ts",
       "dependsOn": []
@@ -34,16 +38,16 @@
       "command": "ts-node -P packages/plugins/tsconfig.script.json --swc packages/plugins/scripts/run-fetchers-by-network-id.ts",
       "dependsOn": []
     },
+    "list-jobs": {
+      "command": "ts-node -P packages/plugins/tsconfig.script.json --swc packages/plugins/scripts/list-jobs.ts",
+      "dependsOn": []
+    },
     "run-job": {
       "command": "ts-node -P packages/plugins/tsconfig.script.json --swc packages/plugins/scripts/run-job.ts",
       "dependsOn": []
     },
-    "list-fetchers": {
-      "command": "ts-node -P packages/plugins/tsconfig.script.json --swc packages/plugins/scripts/list-fetchers.ts",
-      "dependsOn": []
-    },
-    "list-jobs": {
-      "command": "ts-node -P packages/plugins/tsconfig.script.json --swc packages/plugins/scripts/list-jobs.ts",
+    "run-jobs-by-network-id": {
+      "command": "ts-node -P packages/plugins/tsconfig.script.json --swc packages/plugins/scripts/run-jobs-by-network-id.ts",
       "dependsOn": []
     },
     "publish": {
