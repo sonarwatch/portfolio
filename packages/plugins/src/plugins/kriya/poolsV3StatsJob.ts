@@ -31,6 +31,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-pools-v3-stats`,
+  networkIds: [NetworkId.sui],
   executor,
   labels: ['normal'],
 };

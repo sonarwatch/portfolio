@@ -38,6 +38,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-data`,
+  networkIds: [NetworkId.sui],
   executor,
   labels: ['normal'],
 };

@@ -30,6 +30,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-bids`,
+  networkIds: [NetworkId.sui],
   executor,
   labels: ['realtime'],
 };

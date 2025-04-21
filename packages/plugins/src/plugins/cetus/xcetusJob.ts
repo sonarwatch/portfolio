@@ -21,6 +21,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-xcetus`,
+  networkIds: [NetworkId.sui],
   executor,
   labels: ['normal'],
 };

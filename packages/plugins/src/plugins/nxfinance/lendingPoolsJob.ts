@@ -23,6 +23,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-lending-pools`,
+  networkIds: [NetworkId.solana],
   executor,
   labels: ['normal'],
 };

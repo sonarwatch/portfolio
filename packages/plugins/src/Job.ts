@@ -10,6 +10,7 @@ export type JobLabel =
   | NetworkIdType;
 export type Job = {
   id: string;
+  networkIds: Array<NetworkIdType | 'ALL'>;
   executor: JobExecutor;
   labels: JobLabel[];
 };

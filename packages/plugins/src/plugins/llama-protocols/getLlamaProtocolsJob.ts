@@ -70,6 +70,7 @@ export function getLlamaProtocolsJob(
   };
   return {
     id: 'llama-protocols',
+    networkIds: ['ALL'],
     executor,
     labels: ['coingecko'],
   };

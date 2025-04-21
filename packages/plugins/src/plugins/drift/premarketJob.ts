@@ -44,6 +44,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-premarket`,
+  networkIds: [NetworkId.solana],
   executor,
   labels: ['normal'],
 };

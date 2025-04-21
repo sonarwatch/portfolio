@@ -83,6 +83,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 };
 const job: Job = {
   id: `${platformId}-multitoken-pools`,
+  networkIds: [NetworkId.solana],
   executor,
   labels: ['normal'],
 };

@@ -38,6 +38,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 };
 const job: Job = {
   id: `${platformId}-alp-price`,
+  networkIds: [NetworkId.solana],
   executor,
   labels: ['realtime'],
 };

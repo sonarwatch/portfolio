@@ -139,6 +139,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-pool`,
+  networkIds: [NetworkId.sui],
   executor,
   labels: ['normal'],
 };

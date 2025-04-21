@@ -79,6 +79,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 };
 const job: Job = {
   id: `${platformId}-baskets`,
+  networkIds: [NetworkId.solana],
   executor,
   labels: ['normal'],
 };

@@ -5,6 +5,7 @@ import { getEvmClient } from '../../utils/clients';
 import { poolInfoAbi, poolLengthAbi } from './abis';
 import { farmsKey, platformId } from './constants';
 import { StgConfig } from './types';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 
 export function getFarmsJob(config: StgConfig) {
   const { farmsContract: address, networkId } = config;
@@ -39,6 +40,7 @@ export function getFarmsJob(config: StgConfig) {
 
   const job: Job = {
     id: `${platformId}-${networkId}-farms`,
+    networkIds: [networkId],
     executor,
     labels: ['normal', 'evm', networkId],
   };

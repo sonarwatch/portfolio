@@ -18,6 +18,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-safu-vaults`,
+  networkIds: [NetworkId.sui],
   executor,
   labels: ['normal'],
 };

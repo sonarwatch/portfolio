@@ -27,6 +27,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-perps`,
+  networkIds: [NetworkId.sui],
   executor,
   labels: ['realtime'],
 };

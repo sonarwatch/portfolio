@@ -37,6 +37,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: prefix,
+  networkIds: [NetworkId.sui],
   executor,
   labels: ['normal'],
 };

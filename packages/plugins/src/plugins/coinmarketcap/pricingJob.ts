@@ -43,6 +43,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-pricing`,
+  networkIds: ['ALL'],
   executor,
   labels: ['coingecko'],
 };

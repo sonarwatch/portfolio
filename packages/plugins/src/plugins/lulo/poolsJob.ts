@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSolana } from '../../utils/clients';
@@ -50,6 +51,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-pools`,
+  networkIds: [NetworkId.solana],
   executor,
   labels: ['normal'],
 };

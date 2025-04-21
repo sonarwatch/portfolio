@@ -5,6 +5,7 @@ import { getEvmClient } from '../../utils/clients';
 import { platformId, poolsKey } from './constants';
 import { allPoolsAbi, allPoolsLengthAbi, decimalsAbi, tokenAbi } from './abis';
 import { StgConfig } from './types';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 
 export function getPoolsJob(config: StgConfig) {
   const { poolsContract: address, networkId } = config;
@@ -110,6 +111,7 @@ export function getPoolsJob(config: StgConfig) {
 
   const job: Job = {
     id: `${platformId}-${networkId}-pools`,
+    networkIds: [networkId],
     executor,
     labels: ['normal', 'evm', networkId],
   };

@@ -15,6 +15,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-leverage-vaults`,
+  networkIds: [NetworkId.solana],
   executor,
   labels: ['normal'],
 };

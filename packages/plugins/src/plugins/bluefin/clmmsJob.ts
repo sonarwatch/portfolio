@@ -45,6 +45,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-clmms`,
+  networkIds: [NetworkId.sui],
   executor,
   labels: ['normal'],
 };

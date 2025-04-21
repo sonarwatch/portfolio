@@ -3,7 +3,7 @@ import {
   TokenPrice,
   TokenPriceSource,
   TokenPriceUnderlying,
-  formatTokenAddress,
+  formatTokenAddress, NetworkId
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -129,8 +129,9 @@ export default function getPoolsJob(
   };
 
   return {
-    executor,
     id: `${platformId}-${networkId}-pools-${version.toLowerCase()}`,
+    networkIds: [networkId],
+    executor,
     labels: ['normal'],
   };
 }

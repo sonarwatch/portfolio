@@ -70,6 +70,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-reserves`,
+  networkIds: [NetworkId.aptos],
   executor,
   labels: ['normal'],
 };

@@ -45,6 +45,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 };
 const job: Job = {
   id: `${platformId}-loans`,
+  networkIds: [NetworkId.sui],
   executor,
   labels: ['realtime'],
 };

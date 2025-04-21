@@ -43,6 +43,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 };
 const job: Job = {
   id: `${platformId}-sbuck`,
+  networkIds: [NetworkId.sui],
   executor,
   labels: ['normal'],
 };

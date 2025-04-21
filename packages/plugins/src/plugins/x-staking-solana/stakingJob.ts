@@ -60,6 +60,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `x-staking-solana`,
+  networkIds: [NetworkId.solana],
   executor,
   labels: ['normal'],
 };

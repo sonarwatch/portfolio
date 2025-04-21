@@ -146,6 +146,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: 'sei-liquiditypools',
+  networkIds: [NetworkId.sei],
   executor,
   labels: ['normal'],
 };
