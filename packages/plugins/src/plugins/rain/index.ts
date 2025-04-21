@@ -6,8 +6,9 @@ import defiBorrowsFetcher from './defiBorrowsFetcher';
 import nftBorrowsFetcher from './nftBorrowsFetcher';
 import defiPoolsFetcher from './defiPoolsFetcher';
 import nftPoolsFetcher from './nftPoolsFetcher';
+import stJupJob from './stJupJob';
 
-export const jobs: Job[] = [collectionsJob];
+export const jobs: Job[] = [collectionsJob, stJupJob];
 export const fetchers: Fetcher[] = [
   defiBorrowsFetcher,
   nftBorrowsFetcher,
