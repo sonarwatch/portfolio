@@ -7,6 +7,12 @@ const contract = {
   platformId,
 };
 
+const rewarderContract = {
+  name: 'Rewarder',
+  address: 'LRewdYDnxyP9HXCL6DQYgTaeL9FKb5Pc8Gr4UbVrtnj',
+  platformId,
+};
+
 const service: Service = {
   id: `${platformId}-locker`,
   name: 'Locker',
@@ -15,5 +21,12 @@ const service: Service = {
   contracts: [contract],
 };
 
-export const services: Service[] = [service];
+const rewarderService: Service = {
+  id: `${platformId}-Reward`,
+  name: 'Reward',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [rewarderContract],
+};
+export const services: Service[] = [service, rewarderService];
 export default services;
