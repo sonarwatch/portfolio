@@ -1,18 +1,32 @@
 import { NetworkId, Service } from '@sonarwatch/portfolio-core';
 
-const contract = {
-  name: 'deBridge Vault',
+const aidropContract = {
+  name: 'Airdrop',
   address: 'DBrLFG4dco1xNC5Aarbt3KEaKaJ5rBYHwysqZoeqsSFE',
   platformId: 'debridge',
 };
 
-const service: Service = {
-  id: 'debridge-vault',
-  name: 'deBridge Vault',
+const vaultContract = {
+  name: 'Vault',
+  address: 'DeDRoPXNyHRJSagxZBBqs4hLAAM1bGKgxh7cyfuNCBpo',
   platformId: 'debridge',
-  networkId: NetworkId.solana,
-  contracts: [contract],
 };
 
-export const services: Service[] = [service];
+const vaultService: Service = {
+  id: 'debridge-vault',
+  name: 'Vault',
+  platformId: 'debridge',
+  networkId: NetworkId.solana,
+  contracts: [vaultContract],
+};
+
+const airdropService: Service = {
+  id: 'debridge-airdrop',
+  name: 'Airdrop',
+  platformId: 'debridge',
+  networkId: NetworkId.solana,
+  contracts: [aidropContract],
+};
+
+export const services: Service[] = [airdropService, vaultService];
 export default services;
