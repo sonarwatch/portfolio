@@ -1,7 +1,7 @@
 import { NetworkId, Service } from '@sonarwatch/portfolio-core';
 
 const platformId = 'sanctum';
-const contract = {
+const voteContract = {
   name: 'Vote',
   address: 'VAU1T7S5UuEHmMvXtXMVmpEoQtZ2ya7eRb7gcN47wDp',
   platformId,
@@ -13,13 +13,21 @@ const stakingContract = {
   platformId,
 };
 
-const service: Service = {
-  id: 'sanctum-dao',
-  name: 'Sanctum DAO',
+const voteService: Service = {
+  id: 'sanctum-vote',
+  name: 'Vote',
   platformId,
   networkId: NetworkId.solana,
-  contracts: [contract, stakingContract],
+  contracts: [voteContract],
 };
 
-export const services: Service[] = [service];
+const stakingService: Service = {
+  id: 'sanctum-staking',
+  name: 'Staking',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [stakingContract],
+};
+
+export const services: Service[] = [voteService, stakingService];
 export default services;
