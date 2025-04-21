@@ -4,7 +4,6 @@ import {
   PortfolioLiquidity,
   TokenPrice,
   TokenYield,
-  Yield,
 } from '@sonarwatch/portfolio-core';
 import tokenPriceToAssetTokens from './tokenPriceToAssetTokens';
 
@@ -27,7 +26,7 @@ export default function tokenPriceToLiquidity(
     rewardAssets: [],
     rewardAssetsValue: 0,
     value: getUsdValueSum(assets.map((a) => a.value)),
-    yields: [tokenYield?.yield].filter((y) => y !== undefined) as Yield[],
+    yields: tokenYield ? [tokenYield.yield] : [],
     name: tokenPrice.liquidityName,
     link: tokenPrice.link,
     sourceRefs: [
