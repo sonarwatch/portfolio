@@ -32,7 +32,9 @@ async function main() {
     cache
   );
   const duration = ((Date.now() - startDate) / 1000).toFixed(2);
-  console.log(util.inspect(result, false, null, true));
+  console.log(util.inspect(result, false, null, false));
+  result.fetcherReports.sort((r, r1) => (r1.duration ?? 0) - (r.duration ?? 0))
+  console.log(JSON.stringify(result.fetcherReports.slice(0, 10)))
   console.log(`Finished (${duration}s)`);
   await cache.dispose();
   await sleep(100);
