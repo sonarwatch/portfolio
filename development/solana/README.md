@@ -77,7 +77,7 @@ npm install
 
 List available jobs:
 ```bash
-npx nx run plugins:list-jobs
+npx nx run plugins:list-jobs solana
 ```
 
 Run a job:
@@ -85,9 +85,14 @@ Run a job:
 npx nx run plugins:run-job kamino-reserves
 ```
 
+Run all jobs:
+```bash
+npx nx run plugins:run-jobs-by-network-id solana
+```
+
 List available fetchers:
 ```bash
-npx nx run plugins:list-fetchers
+npx nx run plugins:list-fetchers solana
 ```
 
 Run a fetcher for a wallet:
