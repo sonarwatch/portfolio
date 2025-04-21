@@ -52,6 +52,11 @@ const jupiterVoteContract: Contract = {
   address: 'voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj',
   platformId,
 };
+const rfqContract: Contract = {
+  name: 'JupiterZ',
+  address: '61DFfeTKM7trxYcPQCM78bJ794ddZprZpAwAnLiwTpYH',
+  platformId,
+};
 
 export const services: Service[] = [
   {
@@ -60,6 +65,13 @@ export const services: Service[] = [
     platformId,
     networkId: NetworkId.solana,
     contracts: [jupiterSwapContract],
+  },
+  {
+    id: `${platformId}-jupiter-z`,
+    name: 'JupiterZ',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [rfqContract],
   },
   {
     id: `${platformId}-limitv1`,
@@ -80,7 +92,7 @@ export const services: Service[] = [
     name: 'DCA',
     platformId,
     networkId: NetworkId.solana,
-    contracts: [jupiterDcaContract],
+    contracts: [jupiterDcaContract, jupiterSwapContract],
   },
   {
     id: `${platformId}-dcava`,

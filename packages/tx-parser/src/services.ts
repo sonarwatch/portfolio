@@ -1,4 +1,5 @@
 import { Service } from '@sonarwatch/portfolio-core';
+import * as allbridge from './services/allbridge';
 import * as armada from './services/armada';
 import * as atrix from './services/atrix';
 import * as aurory from './services/aurory';
@@ -37,6 +38,7 @@ import * as nirvana from './services/nirvana';
 import * as nxfinance from './services/nxfinance';
 import * as orca from './services/orca';
 import * as parcl from './services/parcl';
+import * as pengu from './services/pengu';
 import * as perena from './services/perena';
 import * as picasso from './services/picasso';
 import * as pluto from './services/pluto';
@@ -56,6 +58,7 @@ import * as spiderswap from './services/spiderswap';
 import * as stabble from './services/stabble';
 import * as staratlas from './services/staratlas';
 import * as streamflow from './services/streamflow';
+import * as switchboard from './services/switchboard';
 import * as symmetry from './services/symmetry';
 import * as tensor from './services/tensor';
 import * as texture from './services/texture';
@@ -65,6 +68,7 @@ import * as wormhole from './services/wormhole';
 import * as zeta from './services/zeta';
 
 export const services: Service[] = [
+  allbridge,
   armada,
   atrix,
   aurory,
@@ -103,6 +107,7 @@ export const services: Service[] = [
   nxfinance,
   orca,
   parcl,
+  pengu,
   perena,
   picasso,
   pluto,
@@ -122,6 +127,7 @@ export const services: Service[] = [
   stabble,
   staratlas,
   streamflow,
+  switchboard,
   symmetry,
   tensor,
   texture,

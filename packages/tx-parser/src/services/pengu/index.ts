@@ -1,15 +1,15 @@
 import { NetworkId, Service } from '@sonarwatch/portfolio-core';
 
-const platformId = 'wormhole';
+const platformId = 'pengu';
 const contract = {
-  name: 'Staking',
-  address: 'sspu65omPW2zJGWDxmx8btqxudHezoQHSGZmnW8jbVz',
+  name: 'Airdrop',
+  address: 'CUEB3rQGVrvCRTmyjLrPnsd6bBBsGbz1Sr49vxNLJkGR',
   platformId,
 };
 
 const service: Service = {
-  id: `${platformId}-staking`,
-  name: 'Staking',
+  id: `${platformId}-airdrop`,
+  name: 'Airdrop',
   platformId,
   networkId: NetworkId.solana,
   contracts: [contract],
