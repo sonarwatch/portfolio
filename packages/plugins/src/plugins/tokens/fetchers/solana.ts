@@ -37,6 +37,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     fungibleAddresses,
     NetworkId.solana
   );
+  const tokenYields = await cache.getTokenYieldsAsMap(
+    fungibleAddresses,
+    NetworkId.solana
+  );
 
   const nftAssets: PortfolioAssetCollectible[] = [];
   const tokenAssets: PortfolioAssetToken[] = [];
@@ -45,9 +49,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   for (let i = 0; i < items.length; i++) {
     const asset = items[i];
     const isFungible = isHeliusFungibleAsset(asset);
-    const tokenPrice = isFungible ? tokenPrices.get(asset.id) : undefined;
-
     const address = asset.id;
+    const tokenPrice = isFungible ? tokenPrices.get(address) : undefined;
+    const tokenYield = isFungible ? tokenYields.get(address) : undefined;
+
     const amount = asset.token_info
       ? BigNumber(asset.token_info.balance)
           .div(10 ** asset.token_info.decimals)
@@ -58,10 +63,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (tokenPrice && tokenPrice.platformId !== walletTokensPlatformId) {
       const liquidity = {
         ...tokenPriceToLiquidity(
-          asset.id,
+          address,
           amount,
           NetworkId.solana,
-          tokenPrice
+          tokenPrice,
+          tokenYield
         ),
         ref: asset.token_info?.associated_token_address,
       };
@@ -78,7 +84,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           address,
           amount,
           NetworkId.solana,
-          tokenPrice
+          tokenPrice,
+          undefined,
+          undefined,
+          undefined,
+          tokenYield
         ),
         ref: asset.token_info?.associated_token_address,
         link: tokenPrice.link,
