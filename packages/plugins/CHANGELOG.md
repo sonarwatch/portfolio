@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.185](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.184...plugins-0.14.185) (2025-04-21)
+
+
+### Bug Fixes
+
+* **tokenPriceToLiquidity:** refine yields handling for optional tokenYield ([9cee5b4](https://github.com/sonarwatch/portfolio/commit/9cee5b43fe696227e0f47c3dfbeb4638f96a83c5))
+* **tokenPriceToLiquidity:** simplify tokenYield type definition ([0b96ec8](https://github.com/sonarwatch/portfolio/commit/0b96ec87509c60539f35866668891dfdf7f0b915))
+
+
+
 ## [0.14.184](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.183...plugins-0.14.184) (2025-04-21)
 
 
