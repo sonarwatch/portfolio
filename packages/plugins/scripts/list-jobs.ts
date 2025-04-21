@@ -1,4 +1,4 @@
-import { networks } from '@sonarwatch/portfolio-core';
+import { NetworkIdType, networks } from '@sonarwatch/portfolio-core';
 import { getLlamaProtocolsJob, jobs, platforms } from '../src';
 
 async function listJobs(network?: string) {
@@ -9,8 +9,13 @@ async function listJobs(network?: string) {
   const allJobs = [...jobs, getLlamaProtocolsJob(platforms)];
   console.log(allJobs);
   const filteredJobs = allJobs
-    .filter(job => !network || job.id.includes(network)  )
-    .map(job => job.id);
+    .filter(
+      (job) =>
+        !network ||
+        job.networkIds.includes('ALL') ||
+        job.networkIds.includes(network as NetworkIdType)
+    )
+    .map((job) => job.id);
 
   console.info(`Available jobs: \n ${filteredJobs.join('\n')}`);
 }
