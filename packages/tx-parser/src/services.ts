@@ -10,6 +10,7 @@ import * as bskt from './services/bskt';
 import * as debridge from './services/debridge';
 import * as defiland from './services/defiland';
 import * as defituna from './services/defituna';
+import * as dflow from './services/dflow';
 import * as divvy from './services/divvy';
 import * as drift from './services/drift';
 import * as driftMMV from './services/drift-market-maker-vault';
@@ -20,6 +21,7 @@ import * as flash from './services/flash';
 import * as fragmetric from './services/fragmetric';
 import * as francium from './services/francium';
 import * as futarchy from './services/futarchy';
+import * as goosefx from './services/goosefx';
 import * as gpool from './services/oresupply';
 import * as grass from './services/grass';
 import * as helium from './services/helium';
@@ -53,6 +55,7 @@ import * as sanctum from './services/sanctum';
 import * as save from './services/save';
 import * as sharky from './services/sharky';
 import * as solanaid from './services/solanaid';
+import * as solayer from './services/solayer';
 import * as sonic from './services/sonic';
 import * as spiderswap from './services/spiderswap';
 import * as stabble from './services/stabble';
@@ -79,6 +82,7 @@ export const services: Service[] = [
   debridge,
   defiland,
   defituna,
+  dflow,
   divvy,
   drift,
   driftMMV,
@@ -89,6 +93,7 @@ export const services: Service[] = [
   fragmetric,
   francium,
   futarchy,
+  goosefx,
   gpool,
   grass,
   helium,
@@ -122,6 +127,7 @@ export const services: Service[] = [
   save,
   sharky,
   solanaid,
+  solayer,
   sonic,
   spiderswap,
   stabble,
