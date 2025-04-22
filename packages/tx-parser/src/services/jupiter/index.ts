@@ -3,52 +3,72 @@ import { Contract, NetworkId, Service } from '@sonarwatch/portfolio-core';
 const platformId = 'jupiter-exchange';
 
 export const jupiterV6Contract: Contract = {
-  name: 'Jupiter Swap',
+  name: 'Swap',
   address: 'JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4',
   platformId,
 };
+const jupiterV5Contract = {
+  name: 'Swap v5',
+  address: 'JUP5pEAZeHdHrLxh5UCwAbpjGwYKKoquCpda2hfP4u8',
+  platformId,
+};
+const jupiterV4Contract = {
+  name: 'Swap v4',
+  address: 'JUP4Fb2cqiRUcaTHdrPC8h2gNsA2ETXiPDD33WcGuJB',
+  platformId,
+};
+const jupiterV3Contract = {
+  name: 'Swap v3',
+  address: 'JUP3c2Uh3WA4Ng34tw6kPd2G4C5BB21Xo36Je1s32Ph',
+  platformId,
+};
+const jupiterV2Contract = {
+  name: 'Swap v2',
+  address: 'JUP2jxvXaqu7NQY1GmNF4m1vodw12LVXYxbFL2uJvfo',
+  platformId,
+};
 const jupiterLimitV1Contract: Contract = {
-  name: 'Jupiter Limit v1',
+  name: 'Limit v1',
   address: 'jupoNjAxXgZ4rjzxzPMP4oxduvQsQtZzyknqvzYNrNu',
   platformId,
 };
 const jupiterLimitContract: Contract = {
-  name: 'Jupiter Limit',
+  name: 'Limit',
   address: 'j1o2qRpjcyUwEvwtcfhEQefh773ZgjxcVRry7LDqg5X',
   platformId,
 };
 const jupiterDcaContract: Contract = {
-  name: 'Jupiter DCA',
+  name: 'DCA',
   address: 'DCA265Vj8a9CEuX1eb1LWRnDT7uK6q1xMipnNyatn23M',
   platformId,
 };
 const jupiterDcaVaContract: Contract = {
-  name: 'Jupiter DCA VA',
+  name: 'VA',
   address: 'VALaaymxQh2mNy2trH9jUqHT1mTow76wpTcGmSWSwJe',
   platformId,
 };
 const jupiterLockContract: Contract = {
-  name: 'Jupiter Lock',
+  name: 'Lock',
   address: 'LocpQgucEQHbqNABEYvBvwoxCPsSbG91A1QaQhQQqjn',
   platformId,
 };
 const jupiterPerpsContract: Contract = {
-  name: 'Jupiter Perps',
+  name: 'Perps',
   address: 'PERPHjGBqRHArX4DySjwM6UJHiR3sWAatqfdBS2qQJu',
   platformId,
 };
 const jupiterJupuaryContract: Contract = {
-  name: 'Jupiter Jupuary',
+  name: 'Jupuary',
   address: 'DiS3nNjFVMieMgmiQFm6wgJL7nevk4NrhXKLbtEH1Z2R',
   platformId,
 };
 const jupiterGovernanceContract: Contract = {
-  name: 'Jupiter Governance',
+  name: 'Governance',
   address: 'GovaE4iu227srtG2s3tZzB4RmWBzw8sTwrCLZz7kN7rY',
   platformId,
 };
 const jupiterVoteContract: Contract = {
-  name: 'Jupiter Vote',
+  name: 'Vote',
   address: 'voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj',
   platformId,
 };
@@ -70,6 +90,34 @@ export const services: Service[] = [
     platformId,
     networkId: NetworkId.solana,
     contracts: [jupiterV6Contract],
+  },
+  {
+    id: `${platformId}-swap-v5`,
+    name: 'Swap v5',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [jupiterV5Contract],
+  },
+  {
+    id: `${platformId}-swap-v4`,
+    name: 'Swap v4',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [jupiterV4Contract],
+  },
+  {
+    id: `${platformId}-swap-v3`,
+    name: 'Swap v3',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [jupiterV3Contract],
+  },
+  {
+    id: `${platformId}-swap-v2`,
+    name: 'Swap v2',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [jupiterV2Contract],
   },
   {
     id: `${platformId}-jupiter-z`,
