@@ -1,5 +1,5 @@
 import { NetworkId, Service } from '@sonarwatch/portfolio-core';
-import { jupiterSwapContract } from '../jupiter';
+import { jupiterV6Contract } from '../jupiter';
 
 const platformId = 'pluto';
 
@@ -21,7 +21,7 @@ const withJupiterSwapService: Service = {
   name: 'Leverage',
   platformId,
   networkId: NetworkId.solana,
-  contracts: [contract, jupiterSwapContract],
+  contracts: [contract, jupiterV6Contract],
 };
 
 export const services: Service[] = [service, withJupiterSwapService];

@@ -1,5 +1,5 @@
 import { Contract, NetworkId, Service } from '@sonarwatch/portfolio-core';
-import { jupiterSwapContract } from '../jupiter';
+import { jupiterV6Contract } from '../jupiter';
 
 const platformId = 'kamino';
 
@@ -39,7 +39,7 @@ const kaminoMultiplyService: Service = {
   name: 'Multiply',
   platformId,
   networkId: NetworkId.solana,
-  contracts: [kaminoLendContract, jupiterSwapContract],
+  contracts: [kaminoLendContract, jupiterV6Contract],
 };
 const kaminoLimitOrderService: Service = {
   id: `${platformId}-limit-order`,
