@@ -8,6 +8,12 @@ export const solanaStakingContract = {
   platformId,
 };
 
+export const associatedTokenContract = {
+  name: 'Associated Token Account',
+  address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+  platformId,
+};
+
 export const solanaStakingService: Service = {
   id: `${platformId}-stake`,
   name: 'Staking',

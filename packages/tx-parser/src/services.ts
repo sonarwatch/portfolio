@@ -45,9 +45,11 @@ import * as loopscale from './services/loopscale';
 import * as lulo from './services/lulo';
 import * as magiceden from './services/magiceden';
 import * as marginfi from './services/marginfi';
+import * as marinade from './services/marinade';
 import * as metaplex from './services/metaplex';
 import * as magma from './services/magma';
 import * as meteora from './services/meteora';
+import * as moonwalk from './services/moonwalk';
 import * as nirvana from './services/nirvana';
 import * as nxfinance from './services/nxfinance';
 import * as okx from './services/okx';
@@ -56,6 +58,7 @@ import * as orderly from './services/orderly';
 import * as parcl from './services/parcl';
 import * as pengu from './services/pengu';
 import * as perena from './services/perena';
+import * as phantom from './services/phantom';
 import * as phoenix from './services/phoenix';
 import * as picasso from './services/picasso';
 import * as pluto from './services/pluto';
@@ -66,13 +69,16 @@ import * as quarry from './services/quarry';
 import * as rain from './services/rain';
 import * as ratex from './services/ratex';
 import * as raydium from './services/raydium';
+import * as realms from './services/realms';
 import * as runemine from './services/runemine';
 import * as sanctum from './services/sanctum';
+import * as sandglass from './services/sandglass';
 import * as save from './services/save';
 import * as sharky from './services/sharky';
 import * as sns from './services/sns';
 import * as solanaid from './services/solanaid';
 import * as solayer from './services/solayer';
+import * as solincinerator from './services/solincinerator';
 import * as sonic from './services/sonic';
 import * as spiderswap from './services/spiderswap';
 import * as stabble from './services/stabble';
@@ -84,8 +90,10 @@ import * as tensor from './services/tensor';
 import * as texture from './services/texture';
 import * as triad from './services/triad';
 import * as vaultka from './services/vaultka';
+import * as whalesmarket from './services/whalesmarket';
 import * as wormhole from './services/wormhole';
 import * as zeta from './services/zeta';
+import * as zeus from './services/zeus';
 
 export const services: Service[] = [
   adrena,
@@ -134,9 +142,11 @@ export const services: Service[] = [
   lulo,
   magiceden,
   marginfi,
+  marinade,
   metaplex,
   magma,
   meteora,
+  moonwalk,
   nirvana,
   nxfinance,
   okx,
@@ -145,6 +155,7 @@ export const services: Service[] = [
   parcl,
   pengu,
   perena,
+  phantom,
   phoenix,
   picasso,
   pluto,
@@ -155,13 +166,16 @@ export const services: Service[] = [
   rain,
   ratex,
   raydium,
+  realms,
   runemine,
   sanctum,
+  sandglass,
   save,
   sharky,
   sns,
   solanaid,
   solayer,
+  solincinerator,
   sonic,
   spiderswap,
   stabble,
@@ -173,8 +187,10 @@ export const services: Service[] = [
   texture,
   triad,
   vaultka,
+  whalesmarket,
   wormhole,
   zeta,
+  zeus,
 ]
   .map((m) => m.default)
   .flat();

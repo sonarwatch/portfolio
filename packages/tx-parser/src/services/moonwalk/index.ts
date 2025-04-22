@@ -1,0 +1,21 @@
+import { Contract, NetworkId, Service } from '@sonarwatch/portfolio-core';
+
+const platformId = 'moonwalk';
+
+const mainContract: Contract = {
+  name: `Game`,
+  address: 'FitAFk15vtx2PBjfr7QTnefaHRx6HwajRiZMt1DdSSKU',
+  platformId,
+};
+
+export const services: Service[] = [
+  {
+    id: `${platformId}-game`,
+    name: 'Game',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [mainContract],
+  },
+];
+
+export default services;

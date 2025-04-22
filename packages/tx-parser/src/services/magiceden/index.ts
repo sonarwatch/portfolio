@@ -8,8 +8,8 @@ const airdropContract = {
   platformId,
 };
 
-const escroContract = {
-  name: 'Escrow',
+const escrowContract = {
+  name: 'MarketPlace',
   address: 'M2mx93ekt1fmXSVkTrUL9xVFHkmME8HTUi5Cyc5aF7K',
   platformId,
 };
@@ -35,11 +35,11 @@ const airdropService: Service = {
 };
 
 const escrowService: Service = {
-  id: `${platformId}-escrow`,
-  name: 'Escrow',
+  id: `${platformId}-marketPlace`,
+  name: 'MarketPlace',
   platformId,
   networkId: NetworkId.solana,
-  contracts: [escroContract],
+  contracts: [escrowContract],
 };
 
 const stakingService: Service = {
