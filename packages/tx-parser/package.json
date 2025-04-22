@@ -1,12 +1,13 @@
 {
   "name": "@sonarwatch/tx-parser",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "type": "commonjs",
   "types": "./src/index.d.ts",
   "peerDependencies": {
     "@sonarwatch/portfolio-core": "^0.14.0"
   },
   "dependencies": {
-    "@solana/web3.js": "^1.98.0"
+    "@solana/web3.js": "^1.98.0",
+    "bs58": "^6.0.0"
   }
 }

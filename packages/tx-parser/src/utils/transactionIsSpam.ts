@@ -1,5 +1,6 @@
 import { ParsedTransactionWithMeta } from '@solana/web3.js';
 import { isParsedInstruction } from './isParsedInstruction';
+import { transactionIsCnftMint } from './transactionIsCnftMint';
 
 const spammerAccounts = [
   'FLiPgGTXtBtEJoytikaywvWgbz5a56DdHKZU72HSYMFF',
@@ -11,6 +12,7 @@ const spammerAccounts = [
   'Habp5bncMSsBC3vkChyebepym5dcTNRYeg2LVG464E96',
   '9KxQy6StbkJhubAbfvfriUK6LYYJ5cSkBoS3ZhcbdUx2',
   'RecoWuBP1kCPABPVAABCR7f7FY513EVhQwoWcxntNT9',
+  'fLiPgg2yTvmgfhiPkKriAHkDmmXGP6CdeFX9UF5o7Zc',
 ];
 
 export const transactionIsSpam = (
@@ -31,12 +33,22 @@ export const transactionIsSpam = (
   }
 
   // if more than 10 small sol transfers
-  const smallTransfers = txn.transaction.message.instructions.filter(
+  const smallTransferInstructions = txn.transaction.message.instructions.filter(
     (i) =>
       i.programId.toString() === '11111111111111111111111111111111' &&
       isParsedInstruction(i) &&
       i.parsed.type === 'transfer' &&
       i.parsed.info.lamports < 1000
   );
-  return smallTransfers.length > 10;
+
+  if (smallTransferInstructions.length > 10) {
+    return true;
+  }
+
+  // if cnft minted by third party
+  if (transactionIsCnftMint(txn)) {
+    return true;
+  }
+
+  return false;
 };
