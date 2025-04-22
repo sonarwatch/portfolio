@@ -1,19 +1,19 @@
 import { NetworkId, Service } from '@sonarwatch/portfolio-core';
 
-const platformId = 'famousfoxfederation';
-const stakingContract = {
-  name: 'Staking',
-  address: 'FoXpJL1exLBJgHVvdSHNKyKu2xX2uatctH9qp6dLmfpP',
+const platformId = 'fluxbeam';
+const contract = {
+  name: 'Pool',
+  address: 'FLUXubRmkEi2q6K3Y9kBPg9248ggaZVsoSFhtJHSrm1X',
   platformId,
 };
 
-const stakingService: Service = {
-  id: `${platformId}-staking`,
-  name: 'Staking',
+const service: Service = {
+  id: `${platformId}-pool`,
+  name: 'Pool',
   platformId,
   networkId: NetworkId.solana,
-  contracts: [stakingContract],
+  contracts: [contract],
 };
 
-export const services: Service[] = [stakingService];
+export const services: Service[] = [service];
 export default services;
