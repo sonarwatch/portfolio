@@ -45,8 +45,16 @@ export const transactionIsSpam = (
     return true;
   }
 
-  // if cnft minted by third party
-  if (transactionIsCnftMint(txn)) {
+  // if cnft minted by third party, other than Drip.haus
+  if (
+    !txn.transaction.message.accountKeys.some(
+      (accountKey) =>
+        accountKey.signer &&
+        accountKey.pubkey.toString() ===
+          'DRiPPP2LytGjNZ5fVpdZS7Xi1oANSY3Df1gSxvUKpzny'
+    ) &&
+    transactionIsCnftMint(txn)
+  ) {
     return true;
   }
 
