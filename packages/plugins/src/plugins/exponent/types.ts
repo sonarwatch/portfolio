@@ -37,6 +37,7 @@ export type MarketStatsData = {
   syAmountPerLpShare: number;
   ptAmountPerLpShare: number;
   ptPriceInAsset: number;
+  ptPriceInUsd: number;
   syPriceInAsset: number;
 };
 
