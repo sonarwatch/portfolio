@@ -9,6 +9,7 @@ const spammerAccounts = [
   'C38eZRbq4HxXM5YjikT9RpuYMyvQLpB8cujiUAtUq48V',
   '2kEMxpStc2JVMsMNhFPqeepVGWmkTuSExo8oqr4HabS6',
   'Habp5bncMSsBC3vkChyebepym5dcTNRYeg2LVG464E96',
+  '9KxQy6StbkJhubAbfvfriUK6LYYJ5cSkBoS3ZhcbdUx2',
 ];
 
 export const transactionIsSpam = (
@@ -36,5 +37,5 @@ export const transactionIsSpam = (
       i.parsed.type === 'transfer' &&
       i.parsed.info.lamports < 1000
   );
-  return smallTransfers.length < 10;
+  return smallTransfers.length > 10;
 };
