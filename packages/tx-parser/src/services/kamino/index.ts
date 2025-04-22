@@ -14,6 +14,12 @@ const kaminoFarmContract = {
   platformId,
 };
 
+const limitOrderContract = {
+  name: 'Kamino Limit Order',
+  address: 'LiMoM9rMhrdYrfzUCxQppvxCSG1FcrUK9G8uLq4A1GF',
+  platformId,
+};
+
 const kaminoLendingService: Service = {
   id: `${platformId}-lend`,
   name: 'Lending',
@@ -35,11 +41,19 @@ const kaminoMultiplyService: Service = {
   networkId: NetworkId.solana,
   contracts: [kaminoLendContract, jupiterSwapContract],
 };
+const kaminoLimitOrderService: Service = {
+  id: `${platformId}-limit-order`,
+  name: 'Limit Order',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [limitOrderContract],
+};
 
 export const services: Service[] = [
   kaminoLendingService,
   kaminoFarmService,
   kaminoMultiplyService,
+  kaminoLimitOrderService,
 ];
 
 export default services;

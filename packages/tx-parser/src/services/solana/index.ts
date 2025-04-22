@@ -2,19 +2,19 @@ import { NetworkId, Service } from '@sonarwatch/portfolio-core';
 
 const platformId = 'solana';
 
-const contract = {
+export const solanaStakingContract = {
   name: 'Staking',
   address: 'Stake11111111111111111111111111111111111111',
   platformId,
 };
 
-const service: Service = {
+export const solanaStakingService: Service = {
   id: `${platformId}-stake`,
   name: 'Staking',
   platformId,
   networkId: NetworkId.solana,
-  contracts: [contract],
+  contracts: [solanaStakingContract],
 };
 
-export const services: Service[] = [service];
+export const services: Service[] = [solanaStakingService];
 export default services;

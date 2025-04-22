@@ -57,6 +57,11 @@ const rfqContract: Contract = {
   address: '61DFfeTKM7trxYcPQCM78bJ794ddZprZpAwAnLiwTpYH',
   platformId,
 };
+const inviteContract: Contract = {
+  name: 'Invite',
+  address: 'inv1tEtSwRMtM44tbvJGNiTxMvDfPVnX9StyqXfDfks',
+  platformId,
+};
 
 export const services: Service[] = [
   {
@@ -135,6 +140,13 @@ export const services: Service[] = [
     platformId,
     networkId: NetworkId.solana,
     contracts: [jupiterVoteContract],
+  },
+  {
+    id: `${platformId}-invite`,
+    name: 'Invite',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [inviteContract],
   },
 ];
 export default services;

@@ -1,4 +1,5 @@
 import { Service } from '@sonarwatch/portfolio-core';
+import * as adrena from './services/adrena';
 import * as allbridge from './services/allbridge';
 import * as armada from './services/armada';
 import * as atrix from './services/atrix';
@@ -24,24 +25,31 @@ import * as futarchy from './services/futarchy';
 import * as goosefx from './services/goosefx';
 import * as gpool from './services/oresupply';
 import * as grass from './services/grass';
+import * as guano from './services/guano';
 import * as helium from './services/helium';
 import * as huma from './services/huma';
 import * as hxro from './services/hxro';
 import * as hylo from './services/hylo';
 import * as jupiter from './services/jupiter';
+import * as layer3 from './services/layer3';
 import * as kamino from './services/kamino';
 import * as lifinity from './services/lifinity';
 import * as loopscale from './services/loopscale';
 import * as lulo from './services/lulo';
+import * as magiceden from './services/magiceden';
 import * as marginfi from './services/marginfi';
+import * as metaplex from './services/metaplex';
 import * as magma from './services/magma';
 import * as meteora from './services/meteora';
 import * as nirvana from './services/nirvana';
 import * as nxfinance from './services/nxfinance';
+import * as okx from './services/okx';
 import * as orca from './services/orca';
+import * as orderly from './services/orderly';
 import * as parcl from './services/parcl';
 import * as pengu from './services/pengu';
 import * as perena from './services/perena';
+import * as phoenix from './services/phoenix';
 import * as picasso from './services/picasso';
 import * as pluto from './services/pluto';
 import * as pumpswap from './services/pumpswap';
@@ -71,6 +79,7 @@ import * as wormhole from './services/wormhole';
 import * as zeta from './services/zeta';
 
 export const services: Service[] = [
+  adrena,
   allbridge,
   armada,
   atrix,
@@ -96,24 +105,31 @@ export const services: Service[] = [
   goosefx,
   gpool,
   grass,
+  guano,
   helium,
   huma,
   hxro,
   hylo,
   jupiter,
   kamino,
+  layer3,
   lifinity,
   loopscale,
   lulo,
+  magiceden,
   marginfi,
+  metaplex,
   magma,
   meteora,
   nirvana,
   nxfinance,
+  okx,
   orca,
+  orderly,
   parcl,
   pengu,
   perena,
+  phoenix,
   picasso,
   pluto,
   pumpswap,

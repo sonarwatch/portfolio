@@ -6,6 +6,12 @@ const contract = {
   platformId: 'loopscale',
 };
 
+const creditBookContract = {
+  name: 'CreditBook',
+  address: 'abfcSQac2vK2Pa6UAJb37DzarVxF15bDTdphJzAqYYp',
+  platformId: 'loopscale',
+};
+
 const service: Service = {
   id: 'loopscale',
   name: 'Loopscale',
@@ -14,5 +20,13 @@ const service: Service = {
   contracts: [contract],
 };
 
-export const services: Service[] = [service];
+const creditBookService: Service = {
+  id: 'loopscale-creditbook',
+  name: 'CreditBook',
+  platformId: 'loopscale',
+  networkId: NetworkId.solana,
+  contracts: [creditBookContract],
+};
+
+export const services: Service[] = [service, creditBookService];
 export default services;
