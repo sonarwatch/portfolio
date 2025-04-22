@@ -2,7 +2,7 @@ import { Contract, NetworkId, Service } from '@sonarwatch/portfolio-core';
 
 const platformId = 'metaplex';
 
-const bubblegumContract: Contract = {
+export const bubblegumContract: Contract = {
   name: `Bubblegum (cNFT)`,
   address: 'BGUMAp9Gq7iTEuizy4pqaxsTyUCBK68MDfK752saRPUY',
   platformId,
