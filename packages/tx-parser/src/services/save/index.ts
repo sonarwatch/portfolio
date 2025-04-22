@@ -1,7 +1,7 @@
 import { NetworkId, Service } from '@sonarwatch/portfolio-core';
 
 const platformId = 'save';
-const contract = {
+export const saveContract = {
   name: 'Lending',
   address: 'So1endDq2YkqhipRh3WViPa8hdiSpxWy6z3Z6tMCpAo',
   platformId,
@@ -24,7 +24,7 @@ const lendingService: Service = {
   name: 'Save',
   platformId,
   networkId: NetworkId.solana,
-  contracts: [contract],
+  contracts: [saveContract],
 };
 
 const migrationService: Service = {

@@ -2,7 +2,7 @@ import { Contract, NetworkId, Service } from '@sonarwatch/portfolio-core';
 
 const platformId = 'jupiter-exchange';
 
-export const jupiterSwapContract: Contract = {
+export const jupiterV6Contract: Contract = {
   name: 'Jupiter Swap',
   address: 'JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4',
   platformId,
@@ -69,7 +69,7 @@ export const services: Service[] = [
     name: 'Swap',
     platformId,
     networkId: NetworkId.solana,
-    contracts: [jupiterSwapContract],
+    contracts: [jupiterV6Contract],
   },
   {
     id: `${platformId}-jupiter-z`,
@@ -93,11 +93,18 @@ export const services: Service[] = [
     contracts: [jupiterLimitContract],
   },
   {
-    id: `${platformId}-dca`,
+    id: `${platformId}-dca-swap`,
     name: 'DCA',
     platformId,
     networkId: NetworkId.solana,
-    contracts: [jupiterDcaContract, jupiterSwapContract],
+    contracts: [jupiterDcaContract, jupiterV6Contract],
+  },
+  {
+    id: `${platformId}-dca-deposit`,
+    name: 'DCA',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [jupiterDcaContract],
   },
   {
     id: `${platformId}-dcava`,

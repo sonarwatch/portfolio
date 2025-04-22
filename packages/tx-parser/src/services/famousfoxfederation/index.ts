@@ -1,15 +1,15 @@
 import { NetworkId, Service } from '@sonarwatch/portfolio-core';
 
-const platformId = 'banger';
+const platformId = 'fluxbeam';
 const contract = {
-  name: 'Launch',
-  address: 'BANGURqoS7pzE8MEtQrqxHPD9qYHfYdhCA7NVWPZvCtT',
+  name: 'Pool',
+  address: 'FLUXubRmkEi2q6K3Y9kBPg9248ggaZVsoSFhtJHSrm1X',
   platformId,
 };
 
 const service: Service = {
-  id: 'banger-launch',
-  name: 'Launch',
+  id: `${platformId}-pool`,
+  name: 'Pool',
   platformId,
   networkId: NetworkId.solana,
   contracts: [contract],

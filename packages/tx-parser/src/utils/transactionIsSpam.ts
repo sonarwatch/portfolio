@@ -11,6 +11,7 @@ const spammerAccounts = [
   '2kEMxpStc2JVMsMNhFPqeepVGWmkTuSExo8oqr4HabS6',
   'Habp5bncMSsBC3vkChyebepym5dcTNRYeg2LVG464E96',
   '9KxQy6StbkJhubAbfvfriUK6LYYJ5cSkBoS3ZhcbdUx2',
+  'RecoWuBP1kCPABPVAABCR7f7FY513EVhQwoWcxntNT9',
   'fLiPgg2yTvmgfhiPkKriAHkDmmXGP6CdeFX9UF5o7Zc',
 ];
 

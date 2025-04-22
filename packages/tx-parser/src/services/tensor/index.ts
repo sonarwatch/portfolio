@@ -7,6 +7,12 @@ const contract = {
   platformId,
 };
 
+const bidContract = {
+  name: 'Bid',
+  address: 'TB1Dqt8JeKQh7RLDzfYDJsq8KS4fS2yt87avRjyRxMv',
+  platformId,
+};
+
 const airdropContract = {
   name: 'Magma',
   address: '3zK38YBP6u3BpLUpaa6QhRHh4VXdv3J8cmD24fFpuyqy',
@@ -29,5 +35,13 @@ const airdropService: Service = {
   contracts: [airdropContract],
 };
 
-export const services: Service[] = [service, airdropService];
+const bidService: Service = {
+  id: `${platformId}-bid`,
+  name: 'Bid',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [bidContract],
+};
+
+export const services: Service[] = [service, airdropService, bidService];
 export default services;

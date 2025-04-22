@@ -16,6 +16,20 @@ const service: Service = {
   contracts: [contract],
 };
 
+const leverageContract = {
+  name: 'Leverage',
+  address: 'EHBN9YKtMmrZhj8JZqyBQRGqyyeHw5xUB1Q5eAHszuMt',
+  platformId,
+};
+
+const leverageService: Service = {
+  id: `${platformId}-leverage`,
+  name: 'Leverage',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [leverageContract],
+};
+
 const stakingContract = {
   name: 'Staking',
   address: '9un1MopS4NRhgVDLXB1DqoQDTmq1un48YKJuPiMLpSc9',
@@ -30,5 +44,5 @@ const stakingService: Service = {
   contracts: [stakingContract],
 };
 
-export const services: Service[] = [service, stakingService];
+export const services: Service[] = [service, stakingService, leverageService];
 export default services;
