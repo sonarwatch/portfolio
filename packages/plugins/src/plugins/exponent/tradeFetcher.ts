@@ -41,11 +41,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         month: 'short',
       })} ${maturity.getDate()} ${maturity.getFullYear().toString()}`,
       link: 'https://www.exponent.finance/farm',
+      ref: account.pubkey,
     });
 
     element.addAsset({
-      address: market.vault.mintAsset,
-      amount: account.yt_balance.multipliedBy(1 - market.stats.ptPriceInAsset),
+      address: market.vault.mintYt,
+      amount: account.yt_balance,
     });
   });
 

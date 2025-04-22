@@ -37,7 +37,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
 
     const element = elementRegistry.addElementLiquidity({
-      label: 'Vault',
+      label: 'LiquidityPool',
       name: `${market.vault.platform} ${maturity.toLocaleString('en-US', {
         month: 'short',
       })} ${maturity.getDate()} ${maturity.getFullYear().toString()}`,

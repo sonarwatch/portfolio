@@ -14,11 +14,11 @@ import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { Cache } from '../../../Cache';
 import { getLpTag, parseLpTag } from '../helpers';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-import tokenPriceToLiquidity from '../../../utils/misc/tokenPriceToLiquidity';
 import { heliusAssetToAssetCollectible } from '../../../utils/solana/das/heliusAssetToAssetCollectible';
 import { getAssetsByOwnerDas } from '../../../utils/solana/das/getAssetsByOwnerDas';
 import { isHeliusFungibleAsset } from '../../../utils/solana/das/isHeliusFungibleAsset';
 import getSolanaDasEndpoint from '../../../utils/clients/getSolanaDasEndpoint';
+import tokenPriceToAssetTokens from '../../../utils/misc/tokenPriceToAssetTokens';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const dasEndpoint = getSolanaDasEndpoint();
@@ -61,17 +61,27 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     // If it's an LP Token
     if (tokenPrice && tokenPrice.platformId !== walletTokensPlatformId) {
-      const liquidity = {
-        ...tokenPriceToLiquidity(
-          address,
-          amount,
-          NetworkId.solana,
-          tokenPrice,
-          tokenYield
-        ),
-        ref: asset.token_info?.associated_token_address,
+      const assets = tokenPriceToAssetTokens(
+        address,
+        amount,
+        NetworkId.solana,
+        tokenPrice
+      );
+
+      const liquidity: PortfolioLiquidity = {
+        assets,
+        assetsValue: getUsdValueSum(assets.map((a) => a.value)),
+        rewardAssets: [],
+        rewardAssetsValue: 0,
+        value: getUsdValueSum(assets.map((a) => a.value)),
+        yields: tokenYield ? [tokenYield.yield] : [],
+        name: tokenPrice.liquidityName,
       };
-      const tag = getLpTag(tokenPrice.platformId, tokenPrice.elementName);
+      const tag = getLpTag(
+        tokenPrice.platformId,
+        tokenPrice.elementName,
+        tokenPrice.label
+      );
       if (!liquiditiesByTag[tag]) {
         liquiditiesByTag[tag] = [];
       }
@@ -128,13 +138,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     });
   }
   for (const [tag, liquidities] of Object.entries(liquiditiesByTag)) {
-    const { platformId, elementName } = parseLpTag(tag);
+    const { platformId, elementName, label } = parseLpTag(tag);
     elements.push({
       type: PortfolioElementType.liquidity,
       networkId: NetworkId.solana,
       platformId,
       name: elementName,
-      label: 'LiquidityPool',
+      label: label ?? 'LiquidityPool',
       value: getUsdValueSum(liquidities.map((a) => a.value)),
       data: {
         liquidities,

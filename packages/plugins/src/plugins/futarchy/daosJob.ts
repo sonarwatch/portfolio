@@ -129,7 +129,9 @@ const executor: JobExecutor = async (cache: Cache) => {
     const { name: daoName, platformId: customPlatformId, getLink } = daoInfo;
     const link = getLink
       ? getLink(proposal.pubkey.toString())
-      : `https://metadao.fi/${daoName.toLowerCase()}/trade/${proposalAddy}?tab=balances`;
+      : `https://metadao.fi/${daoName
+          .toLowerCase()
+          .trim()}/trade/${proposalAddy}?tab=balances`;
     const elementName = `${daoName} Proposal : ${shortenAddress(
       proposalAddy
     )} (${ProposalState[proposal.state]})`;
