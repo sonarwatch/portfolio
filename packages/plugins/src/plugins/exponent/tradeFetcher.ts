@@ -45,8 +45,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     });
 
     element.addAsset({
-      address: market.vault.mintYt,
-      amount: account.yt_balance,
+      address: market.vault.mintAsset,
+      amount: account.yt_balance.multipliedBy(1 - market.stats.ptPriceInAsset),
     });
   });
 
