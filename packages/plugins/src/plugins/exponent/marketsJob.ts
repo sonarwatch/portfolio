@@ -36,18 +36,20 @@ const executor: JobExecutor = async (cache: Cache) => {
       weight: 1,
     });
 
-    tokenPriceSources.push({
+    /* tokenPriceSources.push({
       address: market.vault.mintYt,
       decimals: market.vault.decimals,
       id: market.vault.id,
       networkId: NetworkId.solana,
       platformId,
+      label: 'Deposit',
       price: new BigNumber(tokenPriceMintAsset.price)
         .multipliedBy(1 - market.stats.ptPriceInAsset)
         .toNumber(),
       timestamp: Date.now(),
       weight: 1,
-    });
+      link: 'https://www.exponent.finance/farm',
+    }); */
   });
 
   await Promise.all([
