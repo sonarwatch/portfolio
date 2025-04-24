@@ -13,7 +13,7 @@ const vsrPrograms = [
   'AVoAYTs36yB5izAaBkxRG67wL1AMwG3vo41hKtUSb8is',
   'G41fmJzd29v7Qmdi8ZyTBBYa98ghh3cwHBTexqCG1PQJ',
   'GovHgfDPyQ1GwazJTDY2avSVY8GGcpmCapmmCsymRaGe',
-  'pytGY6tWRgGinSCvRLnSv4fHfBTMoiDGiCsesmHWM6U',
+  // 'pytGY6tWRgGinSCvRLnSv4fHfBTMoiDGiCsesmHWM6U', // Made a dedicated service for this
   'J9uWvULFL47gtCPvgR3oN7W357iehn5WF2Vn9MJvcSxz',
   'JPGov2SBA6f7XSJF5R4Si5jEJekGiyrwP2m7gSEqLUs',
   '5hAykmD4YGcQ7Am3N7nC9kyELq6CThAkU82nhNKDJiCy',
@@ -35,7 +35,7 @@ const vsrPrograms = [
   'GMnke6kxYvqoAXgbFGnu84QzvNHoqqTnijWSXYYTFQbB',
   'Di9ZVJeJrRZdQEWzAFYmfjukjR5dUQb7KMaDmv34rNJg',
   'hgovkRU6Ghe1Qoyb54HdSLdqN7VtxaifBzRmh9jtd3S',
-  'jtogvBNH3WBSWDYD5FJfQP2ZxNTuf82zL8GkEhPeaJx',
+  // 'jtogvBNH3WBSWDYD5FJfQP2ZxNTuf82zL8GkEhPeaJx', // Made a dedicated service for this
   'dgov7NC8iaumWw3k8TkmLDybvZBCmd1qwxgLAGAsWxf',
   'GovRp7uazvmYkQ7gqjdfjKFwr6pHDcYFWH3SP9DHzdtR',
   'VoteMBhDCqGLRgYpp9o7DGyq81KNmwjXQRAHStjtJsS',

@@ -14,6 +14,18 @@ const tokenBridgeContract = {
   platformId,
 };
 
+const tokenBridgeRelayerContract = {
+  name: 'Token Bridge Relayer',
+  address: '3vxKRPwUTiEkeUVyoZ9MXFe1V71sRLbLqu1gRYaWmehQ',
+  platformId,
+};
+
+const tbtcBridgeContract = {
+  name: 'tBTC Bridge',
+  address: '87MEvHZCXE3ML5rrmh5uX1FbShHmRXXS32xJDGbQ7h5t',
+  platformId,
+};
+
 const service: ServiceDefinition = {
   id: `${platformId}-staking`,
   name: 'Staking',
@@ -30,5 +42,26 @@ const tokenBridgeService: ServiceDefinition = {
   contracts: [tokenBridgeContract],
 };
 
-export const services: ServiceDefinition[] = [service, tokenBridgeService];
+const tokenBridgeRelayerService: ServiceDefinition = {
+  id: `${platformId}-token-bridge-relayer`,
+  name: 'Token Bridge',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [tokenBridgeRelayerContract],
+};
+
+const tbtcBridgeService: ServiceDefinition = {
+  id: `${platformId}-tbtc-bridge`,
+  name: 'tBTC Bridge',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [tbtcBridgeContract],
+};
+
+export const services: ServiceDefinition[] = [
+  service,
+  tokenBridgeService,
+  tokenBridgeRelayerService,
+  tbtcBridgeService,
+];
 export default services;

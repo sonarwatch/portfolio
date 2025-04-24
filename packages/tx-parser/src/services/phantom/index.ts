@@ -11,8 +11,8 @@ const contract = {
 
 export const services: ServiceDefinition[] = [
   {
-    id: `${platformId}-phoenix-market`,
-    name: 'Asset Owner Verification',
+    id: `${platformId}-swap`,
+    name: 'Swap',
     platformId,
     networkId: NetworkId.solana,
     contracts: [contract, associatedTokenContract],

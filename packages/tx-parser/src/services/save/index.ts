@@ -22,7 +22,7 @@ const migrationContract = {
 
 const lendingService: ServiceDefinition = {
   id: `${platformId}-lending`,
-  name: 'Save',
+  name: 'Lending',
   platformId,
   networkId: NetworkId.solana,
   contracts: [saveContract],

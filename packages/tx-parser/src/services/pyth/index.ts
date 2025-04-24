@@ -8,9 +8,15 @@ const contract = {
   platformId,
 };
 
-const expressRelayContract = {
+export const expressRelayContract = {
   name: 'Express Relay',
   address: 'PytERJFhAKuNNuaiXkApLfWzwNwSNDACpigT3LwQfou',
+  platformId,
+};
+
+const governanceContract = {
+  name: 'Governance',
+  address: 'pytGY6tWRgGinSCvRLnSv4fHfBTMoiDGiCsesmHWM6U',
   platformId,
 };
 
@@ -20,6 +26,14 @@ const stakingService: ServiceDefinition = {
   platformId,
   networkId: NetworkId.solana,
   contracts: [contract],
+};
+
+const governanceService: ServiceDefinition = {
+  id: `${platformId}-governance`,
+  name: 'Governance',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [governanceContract],
 };
 
 const expressRelayService: ServiceDefinition = {
@@ -33,5 +47,6 @@ const expressRelayService: ServiceDefinition = {
 export const services: ServiceDefinition[] = [
   stakingService,
   expressRelayService,
+  governanceService,
 ];
 export default services;

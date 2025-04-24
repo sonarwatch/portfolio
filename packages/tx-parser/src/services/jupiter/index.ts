@@ -27,6 +27,16 @@ const jupiterV2Contract = {
   address: 'JUP2jxvXaqu7NQY1GmNF4m1vodw12LVXYxbFL2uJvfo',
   platformId,
 };
+const jupiterV1Contract = {
+  name: 'Swap v1',
+  address: 'JUP6i4ozu5ydDCnLiMogSckDPpbtr7BJ4FtzYWkb5Rk',
+  platformId,
+};
+const apeContract: Contract = {
+  name: 'Ape',
+  address: 'JSWX3pKDbj2EdCMu4ei7sPYSpdcwZNyjkDSteoHQ4UH',
+  platformId,
+};
 const jupiterLimitV1Contract: Contract = {
   name: 'Limit v1',
   address: 'jupoNjAxXgZ4rjzxzPMP4oxduvQsQtZzyknqvzYNrNu',
@@ -118,6 +128,20 @@ export const services: ServiceDefinition[] = [
     platformId,
     networkId: NetworkId.solana,
     contracts: [jupiterV2Contract],
+  },
+  {
+    id: `${platformId}-swap-v1`,
+    name: 'Swap v1',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [jupiterV1Contract],
+  },
+  {
+    id: `${platformId}-ape`,
+    name: 'Ape',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [apeContract, jupiterV6Contract],
   },
   {
     id: `${platformId}-jupiter-z`,
