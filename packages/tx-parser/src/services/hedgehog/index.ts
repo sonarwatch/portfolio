@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'hedgehog';
 const ammContract = {
@@ -19,7 +20,7 @@ const tokensContract = {
   platformId,
 };
 
-const governanceV1Service: Service = {
+const governanceV1Service: ServiceDefinition = {
   id: `${platformId}-markets`,
   name: 'Markets',
   platformId,
@@ -27,5 +28,5 @@ const governanceV1Service: Service = {
   contracts: [ammContract, swapContract, tokensContract],
 };
 
-export const services: Service[] = [governanceV1Service];
+export const services: ServiceDefinition[] = [governanceV1Service];
 export default services;

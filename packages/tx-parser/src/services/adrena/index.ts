@@ -1,4 +1,5 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'adrena';
 const contract = {

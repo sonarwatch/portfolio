@@ -1,4 +1,5 @@
 import { Contract, NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const driftVaultsContract: Contract = {
   name: 'Drift Vaults',

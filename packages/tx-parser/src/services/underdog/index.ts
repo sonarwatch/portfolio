@@ -1,5 +1,6 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { bubblegumContract } from '../metaplex';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'underdog';
 
@@ -9,7 +10,7 @@ const mainContract = {
   platformId,
 };
 
-const service: Service = {
+const service: ServiceDefinition = {
   id: `${platformId}-core`,
   name: 'Core',
   platformId,
@@ -17,12 +18,12 @@ const service: Service = {
   contracts: [mainContract],
 };
 
-const metadataService: Service = {
+const metadataService: ServiceDefinition = {
   id: `${platformId}-metadata`,
   name: 'Metadata',
   platformId,
   networkId: NetworkId.solana,
   contracts: [bubblegumContract, mainContract],
 };
-export const services: Service[] = [service, metadataService];
+export const services: ServiceDefinition[] = [service, metadataService];
 export default services;

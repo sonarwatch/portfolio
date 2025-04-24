@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'helio';
 const contractV2 = {
@@ -13,7 +14,7 @@ const contractV1 = {
   platformId,
 };
 
-const paymentService: Service = {
+const paymentService: ServiceDefinition = {
   id: `${platformId}-payment`,
   name: 'Payment',
   platformId,
@@ -21,7 +22,7 @@ const paymentService: Service = {
   contracts: [contractV2],
 };
 
-const paymentV2Service: Service = {
+const paymentV2Service: ServiceDefinition = {
   id: `${platformId}-payment-v1`,
   name: 'Payment V1',
   platformId,
@@ -29,5 +30,5 @@ const paymentV2Service: Service = {
   contracts: [contractV1],
 };
 
-export const services: Service[] = [paymentService, paymentV2Service];
+export const services: ServiceDefinition[] = [paymentService, paymentV2Service];
 export default services;
