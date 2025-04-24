@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.0.22](https://github.com/sonarwatch/portfolio/compare/tx-parser-0.0.21...tx-parser-0.0.22) (2025-04-24)
+
+
+### Features
+
+* **services:** add new services and update existing ones ([bf7b008](https://github.com/sonarwatch/portfolio/commit/bf7b008836f7e7c27555d6b07286cc70dfae6f10))
+
+
+
 ## [0.0.21](https://github.com/sonarwatch/portfolio/compare/tx-parser-0.0.20...tx-parser-0.0.21) (2025-04-24)
 
 
