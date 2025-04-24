@@ -25,18 +25,24 @@ export const getTransactionService = (
     .map((i) => i.programId.toString())
     .filter((value, index, self) => self.indexOf(value) === index);
 
-  // We keep the first service with all contract addresses in txn
   return toService(
-    sortedServiceDefinitions.find((service) => {
-      if (service.matchTransaction) {
-        return service.matchTransaction(txn, txnContractAddresses);
-      }
-      return service.contracts?.every((contract) =>
-        txnContractAddresses.includes(contract.address)
-      );
-    })
+    sortedServiceDefinitions.find((service) =>
+      service.matchTransaction
+        ? service.matchTransaction(txn, txnContractAddresses)
+        : defaultMatchTransaction(service, txnContractAddresses)
+    )
   );
 };
+
+const defaultMatchTransaction = (
+  service: ServiceDefinition,
+  contracts: string[]
+): boolean =>
+  service.contracts
+    ? service.contracts.every((contract) =>
+        contracts.includes(contract.address)
+      )
+    : false;
 
 const toService = (def?: ServiceDefinition): Service | undefined => {
   if (!def) return undefined;
