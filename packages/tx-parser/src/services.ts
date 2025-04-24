@@ -108,7 +108,7 @@ import * as whalesmarket from './services/whalesmarket';
 import * as wormhole from './services/wormhole';
 import * as zeta from './services/zeta';
 import * as zeus from './services/zeus';
-import { ServiceDefinition } from './ServiceDefinition';
+import { ServiceDefinition, ServicePriority } from './ServiceDefinition';
 
 export const services: ServiceDefinition[] = [
   adrena,
@@ -226,8 +226,8 @@ export const services: ServiceDefinition[] = [
   .flat();
 
 export const sortedServiceDefinitions = services.sort((a, b) => {
-  const prioA = a.priority || 5;
-  const prioB = b.priority || 5;
+  const prioA = a.priority || ServicePriority.default;
+  const prioB = b.priority || ServicePriority.default;
   if (prioA !== prioB) {
     return prioB - prioA;
   }
