@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'tensor';
 
@@ -26,7 +27,7 @@ const airdropContract = {
   platformId,
 };
 
-const marketplaceService: Service = {
+const marketplaceService: ServiceDefinition = {
   id: `${platformId}-swap`,
   name: 'Marketplace',
   platformId,
@@ -34,7 +35,7 @@ const marketplaceService: Service = {
   contracts: [contract],
 };
 
-const cnftService: Service = {
+const cnftService: ServiceDefinition = {
   id: `${platformId}-cnft`,
   name: 'Marketplace',
   platformId,
@@ -42,7 +43,7 @@ const cnftService: Service = {
   contracts: [cnftContract],
 };
 
-const airdropService: Service = {
+const airdropService: ServiceDefinition = {
   id: `${platformId}-airdrop`,
   name: 'Vesting Airdrop',
   platformId,
@@ -50,7 +51,7 @@ const airdropService: Service = {
   contracts: [airdropContract],
 };
 
-const bidService: Service = {
+const bidService: ServiceDefinition = {
   id: `${platformId}-bid`,
   name: 'Bid',
   platformId,
@@ -58,7 +59,7 @@ const bidService: Service = {
   contracts: [bidContract],
 };
 
-export const services: Service[] = [
+export const services: ServiceDefinition[] = [
   marketplaceService,
   airdropService,
   bidService,

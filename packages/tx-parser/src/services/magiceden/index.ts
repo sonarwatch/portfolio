@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'magiceden';
 
@@ -32,7 +33,7 @@ const auctionContract = {
   platformId,
 };
 
-const airdropService: Service = {
+const airdropService: ServiceDefinition = {
   id: `${platformId}-magic-claim`,
   name: 'Magic Claim',
   platformId,
@@ -40,7 +41,7 @@ const airdropService: Service = {
   contracts: [airdropContract],
 };
 
-const escrowService: Service = {
+const escrowService: ServiceDefinition = {
   id: `${platformId}-marketPlace`,
   name: 'MarketPlace',
   platformId,
@@ -48,7 +49,7 @@ const escrowService: Service = {
   contracts: [escrowContract],
 };
 
-const stakingService: Service = {
+const stakingService: ServiceDefinition = {
   id: `${platformId}-staking`,
   name: 'Staking',
   platformId,
@@ -56,7 +57,7 @@ const stakingService: Service = {
   contracts: [stakingContract],
 };
 
-const auctionService: Service = {
+const auctionService: ServiceDefinition = {
   id: `${platformId}-auction`,
   name: 'Auction',
   platformId,
@@ -64,7 +65,7 @@ const auctionService: Service = {
   contracts: [auctionContract],
 };
 
-const cnftService: Service = {
+const cnftService: ServiceDefinition = {
   id: `${platformId}-cnft`,
   name: 'cNFT',
   platformId,
@@ -72,7 +73,7 @@ const cnftService: Service = {
   contracts: [cnftContract],
 };
 
-export const services: Service[] = [
+export const services: ServiceDefinition[] = [
   airdropService,
   escrowService,
   stakingService,

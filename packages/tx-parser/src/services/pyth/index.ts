@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'pyth';
 const contract = {
@@ -19,7 +20,7 @@ const governanceContract = {
   platformId,
 };
 
-const stakingService: Service = {
+const stakingService: ServiceDefinition = {
   id: `${platformId}-staking`,
   name: 'Staking',
   platformId,
@@ -27,7 +28,7 @@ const stakingService: Service = {
   contracts: [contract],
 };
 
-const governanceService: Service = {
+const governanceService: ServiceDefinition = {
   id: `${platformId}-governance`,
   name: 'Governance',
   platformId,
@@ -35,7 +36,7 @@ const governanceService: Service = {
   contracts: [governanceContract],
 };
 
-const expressRelayService: Service = {
+const expressRelayService: ServiceDefinition = {
   id: `${platformId}-express-relay`,
   name: 'Express Relay',
   platformId,
@@ -43,7 +44,7 @@ const expressRelayService: Service = {
   contracts: [expressRelayContract],
 };
 
-export const services: Service[] = [
+export const services: ServiceDefinition[] = [
   stakingService,
   expressRelayService,
   governanceService,

@@ -13,6 +13,7 @@ const spammerAccounts = [
   '9KxQy6StbkJhubAbfvfriUK6LYYJ5cSkBoS3ZhcbdUx2',
   'RecoWuBP1kCPABPVAABCR7f7FY513EVhQwoWcxntNT9',
   'fLiPgg2yTvmgfhiPkKriAHkDmmXGP6CdeFX9UF5o7Zc',
+  'GUq7PhyAUZko2mPhv3CupmdJKQ61LH8VyrdsRL25q7zg',
 ];
 
 export const transactionIsSpam = (

@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'solayer';
 const solayerContract = {
@@ -31,7 +32,7 @@ const endoAvsContract = {
   platformId,
 };
 
-const solayerService: Service = {
+const solayerService: ServiceDefinition = {
   id: `${platformId}`,
   name: 'Staking',
   platformId,
@@ -39,7 +40,7 @@ const solayerService: Service = {
   contracts: [solayerContract],
 };
 
-const restakingService: Service = {
+const restakingService: ServiceDefinition = {
   id: `${platformId}-restaking`,
   name: 'Restaking',
   platformId,
@@ -47,7 +48,7 @@ const restakingService: Service = {
   contracts: [solayerContract, stakePoolContract],
 };
 
-const airdropService: Service = {
+const airdropService: ServiceDefinition = {
   id: `${platformId}-airdrop`,
   name: 'Airdrop',
   platformId,
@@ -55,7 +56,7 @@ const airdropService: Service = {
   contracts: [airdropContract],
 };
 
-const sUSDService: Service = {
+const sUSDService: ServiceDefinition = {
   id: `${platformId}-susd`,
   name: 'sUSD',
   platformId,
@@ -63,7 +64,7 @@ const sUSDService: Service = {
   contracts: [sUDCContract],
 };
 
-const delegateService: Service = {
+const delegateService: ServiceDefinition = {
   id: `${platformId}-delegate`,
   name: 'Delegate',
   platformId,
@@ -71,7 +72,7 @@ const delegateService: Service = {
   contracts: [endoAvsContract, solayerContract, stakePoolContract],
 };
 
-export const services: Service[] = [
+export const services: ServiceDefinition[] = [
   solayerService,
   airdropService,
   sUSDService,

@@ -1,4 +1,4 @@
-import { Contract, NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { Contract, NetworkId } from '@sonarwatch/portfolio-core';
 
 const platformId = 'okx';
 
@@ -8,7 +8,7 @@ const aggregatorContract: Contract = {
   platformId,
 };
 
-export const services: Service[] = [
+export const services: ServiceDefinition[] = [
   {
     id: `${platformId}-aggregator`,
     name: 'Aggregator',

@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'futarchy';
 const contract = {
@@ -13,14 +14,14 @@ const launchpadContract = {
   platformId,
 };
 
-const service: Service = {
+const service: ServiceDefinition = {
   id: 'futarchy-dao',
   name: 'DAO',
   platformId,
   networkId: NetworkId.solana,
   contracts: [contract],
 };
-const launchpadService: Service = {
+const launchpadService: ServiceDefinition = {
   id: 'futarchy-launchpad',
   name: 'Launchpad',
   platformId,
@@ -28,5 +29,5 @@ const launchpadService: Service = {
   contracts: [launchpadContract],
 };
 
-export const services: Service[] = [service, launchpadService];
+export const services: ServiceDefinition[] = [service, launchpadService];
 export default services;

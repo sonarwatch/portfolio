@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'parcl';
 const mainContract = {
@@ -17,7 +18,7 @@ const airdropContract = {
   platformId,
 };
 
-export const services: Service[] = [
+export const services: ServiceDefinition[] = [
   {
     id: `${platformId}-main`,
     name: 'Liquidity & Trading',

@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'helium';
 const contract = {
@@ -13,7 +14,7 @@ const daoContract = {
   platformId,
 };
 
-const governanceV1Service: Service = {
+const governanceV1Service: ServiceDefinition = {
   id: `${platformId}-governance-v1`,
   name: 'Governance V1',
   platformId,
@@ -21,7 +22,7 @@ const governanceV1Service: Service = {
   contracts: [contract],
 };
 
-const governanceV2Service: Service = {
+const governanceV2Service: ServiceDefinition = {
   id: `${platformId}-governance-v2`,
   name: 'Governance V2',
   platformId,
@@ -29,5 +30,8 @@ const governanceV2Service: Service = {
   contracts: [daoContract],
 };
 
-export const services: Service[] = [governanceV1Service, governanceV2Service];
+export const services: ServiceDefinition[] = [
+  governanceV1Service,
+  governanceV2Service,
+];
 export default services;

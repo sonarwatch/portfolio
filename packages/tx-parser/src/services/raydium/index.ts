@@ -1,4 +1,4 @@
-import { Contract, NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { Contract, NetworkId } from '@sonarwatch/portfolio-core';
 
 const platformId = 'raydium';
 
@@ -53,7 +53,7 @@ const farmV6Contract: Contract = {
   platformId,
 };
 
-export const services: Service[] = [
+export const services: ServiceDefinition[] = [
   {
     id: `${platformId}-amm-v3`,
     name: 'AMM v3',

@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'solana';
 
@@ -14,7 +15,7 @@ export const associatedTokenContract = {
   platformId,
 };
 
-export const solanaStakingService: Service = {
+export const solanaStakingService: ServiceDefinition = {
   id: `${platformId}-stake`,
   name: 'Staking',
   platformId,
@@ -22,5 +23,5 @@ export const solanaStakingService: Service = {
   contracts: [solanaStakingContract],
 };
 
-export const services: Service[] = [solanaStakingService];
+export const services: ServiceDefinition[] = [solanaStakingService];
 export default services;

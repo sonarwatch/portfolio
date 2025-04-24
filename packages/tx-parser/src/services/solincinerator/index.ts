@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 import { metaplexContract } from '../metaplex';
 
 const platformId = 'solincinerator';
@@ -9,7 +10,7 @@ export const contract = {
   platformId,
 };
 
-export const solanaStakingService: Service = {
+export const solanaStakingService: ServiceDefinition = {
   id: `${platformId}-incinerator`,
   name: 'Incinerator',
   platformId,
@@ -17,5 +18,5 @@ export const solanaStakingService: Service = {
   contracts: [contract, metaplexContract],
 };
 
-export const services: Service[] = [solanaStakingService];
+export const services: ServiceDefinition[] = [solanaStakingService];
 export default services;

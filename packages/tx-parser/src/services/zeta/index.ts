@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const zetaContract = {
   name: 'Zeta',
@@ -6,7 +7,7 @@ const zetaContract = {
   platformId: 'zeta',
 };
 
-const zetaService: Service = {
+const zetaService: ServiceDefinition = {
   id: 'zeta',
   name: 'Zeta',
   platformId: 'zeta',
@@ -20,7 +21,7 @@ const zetaStakingContract = {
   platformId: 'zeta',
 };
 
-const zetaStakingService: Service = {
+const zetaStakingService: ServiceDefinition = {
   id: 'zeta-staking',
   name: 'ZEX Staking',
   platformId: 'zeta',
@@ -28,5 +29,5 @@ const zetaStakingService: Service = {
   contracts: [zetaStakingContract],
 };
 
-export const services: Service[] = [zetaService, zetaStakingService];
+export const services: ServiceDefinition[] = [zetaService, zetaStakingService];
 export default services;

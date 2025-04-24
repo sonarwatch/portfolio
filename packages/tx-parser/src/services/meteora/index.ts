@@ -1,4 +1,4 @@
-import { Contract, NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { Contract, NetworkId } from '@sonarwatch/portfolio-core';
 
 const platformId = 'meteora';
 
@@ -33,7 +33,7 @@ const m3m3Contract: Contract = {
   platformId,
 };
 
-export const services: Service[] = [
+export const services: ServiceDefinition[] = [
   {
     id: `${platformId}-vaults`,
     name: 'Vaults',

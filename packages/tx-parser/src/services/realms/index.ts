@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'realms';
 
@@ -49,7 +50,7 @@ const contract = {
   platformId,
 };
 
-const service: Service = {
+const service: ServiceDefinition = {
   id: `${platformId}-governance`,
   name: 'DAO',
   platformId,
@@ -57,7 +58,7 @@ const service: Service = {
   contracts: [contract],
 };
 
-export const services: Service[] = [
+export const services: ServiceDefinition[] = [
   service,
   ...vsrPrograms.map((address) => ({
     id: `${platformId}-vsr-${address}`,

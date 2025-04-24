@@ -1,4 +1,3 @@
-import { Service } from '@sonarwatch/portfolio-core';
 import * as adrena from './services/adrena';
 import * as allbridge from './services/allbridge';
 import * as armada from './services/armada';
@@ -109,8 +108,9 @@ import * as whalesmarket from './services/whalesmarket';
 import * as wormhole from './services/wormhole';
 import * as zeta from './services/zeta';
 import * as zeus from './services/zeus';
+import { ServiceDefinition } from './ServiceDefinition';
 
-export const services: Service[] = [
+export const services: ServiceDefinition[] = [
   adrena,
   allbridge,
   armada,
@@ -225,6 +225,13 @@ export const services: Service[] = [
   .map((m) => m.default)
   .flat();
 
-export const sortedServices = services.sort(
-  (a, b) => (b.contracts?.length || 0) - (a.contracts?.length || 0)
-);
+export const sortedServiceDefinitions = services.sort((a, b) => {
+  const prioA = a.priority || 5;
+  const prioB = b.priority || 5;
+  if (prioA !== prioB) {
+    return prioB - prioA;
+  }
+  const countContractsB = b.contracts?.length || 0;
+  const countContractsA = a.contracts?.length || 0;
+  return countContractsB - countContractsA;
+});

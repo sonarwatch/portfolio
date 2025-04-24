@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'streamflow';
 export const vestingContract = {
@@ -23,28 +24,28 @@ const airdropContract = {
   platformId,
 };
 
-const vestingService: Service = {
+const vestingService: ServiceDefinition = {
   id: `${platformId}-vesting`,
   name: 'Vesting',
   platformId,
   networkId: NetworkId.solana,
   contracts: [vestingContract],
 };
-const stakingService: Service = {
+const stakingService: ServiceDefinition = {
   id: `${platformId}-staking`,
   name: 'Staking',
   platformId,
   networkId: NetworkId.solana,
   contracts: [stakingContract],
 };
-const airdropService: Service = {
+const airdropService: ServiceDefinition = {
   id: `${platformId}-airdrops`,
   name: 'Airdrops',
   platformId,
   networkId: NetworkId.solana,
   contracts: [airdropsContract],
 };
-const airdropDistributionService: Service = {
+const airdropDistributionService: ServiceDefinition = {
   id: `${platformId}-airdrop-distribution`,
   name: 'Airdrop Distribution',
   platformId,
@@ -52,7 +53,7 @@ const airdropDistributionService: Service = {
   contracts: [airdropContract],
 };
 
-export const services: Service[] = [
+export const services: ServiceDefinition[] = [
   vestingService,
   stakingService,
   airdropService,

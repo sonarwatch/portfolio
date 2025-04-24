@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const contract = {
   name: 'PumpSwap AMM',
@@ -6,7 +7,7 @@ const contract = {
   platformId: 'pumpswap',
 };
 
-const service: Service = {
+const service: ServiceDefinition = {
   id: 'pumpswap',
   name: 'PumpSwap AMM',
   platformId: 'pumpswap',
@@ -14,5 +15,5 @@ const service: Service = {
   contracts: [contract],
 };
 
-export const services: Service[] = [service];
+export const services: ServiceDefinition[] = [service];
 export default services;

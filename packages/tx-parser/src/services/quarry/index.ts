@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'quarry';
 const contract = {
@@ -13,7 +14,7 @@ const mergeContract = {
   platformId,
 };
 
-const minerService: Service = {
+const minerService: ServiceDefinition = {
   id: `${platformId}-miner`,
   name: 'Miner',
   platformId,
@@ -21,7 +22,7 @@ const minerService: Service = {
   contracts: [contract],
 };
 
-const mergeMinerService: Service = {
+const mergeMinerService: ServiceDefinition = {
   id: `${platformId}-merge-miner`,
   name: 'Merge Miner',
   platformId,
@@ -29,5 +30,5 @@ const mergeMinerService: Service = {
   contracts: [mergeContract],
 };
 
-export const services: Service[] = [minerService, mergeMinerService];
+export const services: ServiceDefinition[] = [minerService, mergeMinerService];
 export default services;

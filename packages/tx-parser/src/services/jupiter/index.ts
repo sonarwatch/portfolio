@@ -1,4 +1,4 @@
-import { Contract, NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { Contract, NetworkId } from '@sonarwatch/portfolio-core';
 
 const platformId = 'jupiter-exchange';
 const governancePlatformId = 'jupiter-governance';
@@ -99,7 +99,7 @@ const lfgContract: Contract = {
   platformId: launchpadPlatformId,
 };
 
-export const services: Service[] = [
+export const services: ServiceDefinition[] = [
   {
     id: `${platformId}-swap`,
     name: 'Swap',

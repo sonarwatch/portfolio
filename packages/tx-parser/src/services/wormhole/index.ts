@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'wormhole';
 const contract = {
@@ -25,7 +26,7 @@ const tbtcBridgeContract = {
   platformId,
 };
 
-const service: Service = {
+const service: ServiceDefinition = {
   id: `${platformId}-staking`,
   name: 'Staking',
   platformId,
@@ -33,7 +34,7 @@ const service: Service = {
   contracts: [contract],
 };
 
-const tokenBridgeService: Service = {
+const tokenBridgeService: ServiceDefinition = {
   id: `${platformId}-token-bridge`,
   name: 'Token Bridge',
   platformId,
@@ -41,7 +42,7 @@ const tokenBridgeService: Service = {
   contracts: [tokenBridgeContract],
 };
 
-const tokenBridgeRelayerService: Service = {
+const tokenBridgeRelayerService: ServiceDefinition = {
   id: `${platformId}-token-bridge-relayer`,
   name: 'Token Bridge',
   platformId,
@@ -49,7 +50,7 @@ const tokenBridgeRelayerService: Service = {
   contracts: [tokenBridgeRelayerContract],
 };
 
-const tbtcBridgeService: Service = {
+const tbtcBridgeService: ServiceDefinition = {
   id: `${platformId}-tbtc-bridge`,
   name: 'tBTC Bridge',
   platformId,
@@ -57,7 +58,7 @@ const tbtcBridgeService: Service = {
   contracts: [tbtcBridgeContract],
 };
 
-export const services: Service[] = [
+export const services: ServiceDefinition[] = [
   service,
   tokenBridgeService,
   tokenBridgeRelayerService,

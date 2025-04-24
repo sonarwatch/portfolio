@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'save';
 export const saveContract = {
@@ -25,7 +26,7 @@ const rewardContract = {
   platformId,
 };
 
-const lendingService: Service = {
+const lendingService: ServiceDefinition = {
   id: `${platformId}-lending`,
   name: 'Lending',
   platformId,
@@ -33,7 +34,7 @@ const lendingService: Service = {
   contracts: [saveContract],
 };
 
-const migrationService: Service = {
+const migrationService: ServiceDefinition = {
   id: `${platformId}-migration`,
   name: 'Migration',
   platformId,
@@ -41,7 +42,7 @@ const migrationService: Service = {
   contracts: [migrationContract],
 };
 
-const wrapperService: Service = {
+const wrapperService: ServiceDefinition = {
   id: `${platformId}-wrapper`,
   name: 'Wrapper',
   platformId,
@@ -49,7 +50,7 @@ const wrapperService: Service = {
   contracts: [wrapperContract],
 };
 
-const rewardService: Service = {
+const rewardService: ServiceDefinition = {
   id: `${platformId}-reward`,
   name: 'Reward',
   platformId,
@@ -57,7 +58,7 @@ const rewardService: Service = {
   contracts: [rewardContract],
 };
 
-export const services: Service[] = [
+export const services: ServiceDefinition[] = [
   lendingService,
   migrationService,
   wrapperService,

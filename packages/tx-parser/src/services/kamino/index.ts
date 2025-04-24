@@ -1,4 +1,4 @@
-import { Contract, NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { Contract, NetworkId } from '@sonarwatch/portfolio-core';
 import { jupiterV6Contract } from '../jupiter';
 import { contract } from '../dflow';
 import { expressRelayContract } from '../pyth';
@@ -22,7 +22,7 @@ const limitOrderContract = {
   platformId,
 };
 
-const kaminoLendingService: Service = {
+const kaminoLendingService: ServiceDefinition = {
   id: `${platformId}-lend`,
   name: 'Lending',
   platformId,
@@ -36,14 +36,14 @@ const kaminoFarmService = {
   networkId: NetworkId.solana,
   contracts: [kaminoFarmContract],
 };
-const kaminoMultiplyService: Service = {
+const kaminoMultiplyService: ServiceDefinition = {
   id: `${platformId}-multiply`,
   name: 'Multiply',
   platformId,
   networkId: NetworkId.solana,
   contracts: [kaminoLendContract, jupiterV6Contract],
 };
-const kaminoLimitOrderService: Service = {
+const kaminoLimitOrderService: ServiceDefinition = {
   id: `${platformId}-limit-order`,
   name: 'Limit Order',
   platformId,
@@ -73,7 +73,7 @@ const swapPythService: Service = {
   contracts: [limitOrderContract, expressRelayContract],
 };
 
-export const services: Service[] = [
+export const services: ServiceDefinition[] = [
   kaminoLendingService,
   kaminoFarmService,
   kaminoMultiplyService,
