@@ -1,15 +1,16 @@
 import { NetworkId, Service } from '@sonarwatch/portfolio-core';
 
+const platformId = 'sentre';
 const contract = {
-  name: 'Core',
-  address: 'ExponentnaRg3CQbW6dqQNZKXp7gtZ9DGMp1cwC4HAS7',
-  platformId: 'exponent',
+  name: 'Utility',
+  address: '7oyG4wSf2kz2CxTqKTf1uhpPqrw9a8Av1w5t8Uj5PfXb',
+  platformId,
 };
 
 const service: Service = {
-  id: 'exponent',
-  name: 'Core',
-  platformId: 'exponent',
+  id: `${platformId}-utility`,
+  name: 'Utility',
+  platformId,
   networkId: NetworkId.solana,
   contracts: [contract],
 };

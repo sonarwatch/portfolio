@@ -19,6 +19,12 @@ const migrationContract = {
   platformId,
 };
 
+const rewardContract = {
+  name: 'Reward',
+  address: 'mrksLcZ6rMs9xkmJgw6oKiR3GECw44Gb5NeDqu64kiw',
+  platformId,
+};
+
 const lendingService: Service = {
   id: `${platformId}-lending`,
   name: 'Lending',
@@ -43,9 +49,18 @@ const wrapperService: Service = {
   contracts: [wrapperContract],
 };
 
+const rewardService: Service = {
+  id: `${platformId}-reward`,
+  name: 'Reward',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [rewardContract],
+};
+
 export const services: Service[] = [
   lendingService,
   migrationService,
   wrapperService,
+  rewardService,
 ];
 export default services;

@@ -1,15 +1,16 @@
 import { NetworkId, Service } from '@sonarwatch/portfolio-core';
 
+const platformId = 'degencoinflip';
 const contract = {
-  name: 'Core',
-  address: 'ExponentnaRg3CQbW6dqQNZKXp7gtZ9DGMp1cwC4HAS7',
-  platformId: 'exponent',
+  name: 'Coinflip',
+  address: 'BmjJ85zsP2xHPesBKpmHYKt136gzeTtNbeVDcdfybHHT',
+  platformId,
 };
 
 const service: Service = {
-  id: 'exponent',
-  name: 'Core',
-  platformId: 'exponent',
+  id: `${platformId}-coinflip`,
+  name: 'Coinflip',
+  platformId,
   networkId: NetworkId.solana,
   contracts: [contract],
 };
