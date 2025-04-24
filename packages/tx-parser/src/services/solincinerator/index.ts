@@ -11,8 +11,8 @@ export const contract = {
 };
 
 export const solanaStakingService: ServiceDefinition = {
-  id: `${platformId}-incinerator`,
-  name: 'Incinerator',
+  id: `${platformId}-cleanup`,
+  name: 'Cleanup',
   platformId,
   networkId: NetworkId.solana,
   contracts: [contract, metaplexContract],
