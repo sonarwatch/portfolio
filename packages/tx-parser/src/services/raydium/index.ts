@@ -17,6 +17,11 @@ const raydiumAmmV5Contract: Contract = {
   address: '5quBtoiQqxF9Jv6KYKctB59NT3gtJD2Y65kdnB1Uev3h',
   platformId,
 };
+const ammRootingContract: Contract = {
+  name: 'Raydium AMM Rooting',
+  address: 'routeUGWgWzqBWFcrCfv8tritsqukccJPu3q5GPP3xS',
+  platformId,
+};
 const raydiumClmmContract: Contract = {
   name: 'Raydium CLMM',
   address: 'CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK',
@@ -69,6 +74,13 @@ export const services: ServiceDefinition[] = [
     platformId,
     networkId: NetworkId.solana,
     contracts: [raydiumAmmV5Contract],
+  },
+  {
+    id: `${platformId}-amm-rooting`,
+    name: 'Swap',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [ammRootingContract],
   },
   {
     id: `${platformId}-clmm`,

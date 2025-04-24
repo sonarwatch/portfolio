@@ -9,7 +9,7 @@ const contract = {
 
 const service: ServiceDefinition = {
   id: 'perena',
-  name: 'Perena',
+  name: 'Numéraire',
   platformId: 'perena',
   networkId: NetworkId.solana,
   contracts: [contract],

@@ -2,14 +2,14 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import { ServiceDefinition } from '../../ServiceDefinition';
 
 const contract = {
-  name: 'Exponent',
+  name: 'Core',
   address: 'ExponentnaRg3CQbW6dqQNZKXp7gtZ9DGMp1cwC4HAS7',
   platformId: 'exponent',
 };
 
 const service: ServiceDefinition = {
   id: 'exponent',
-  name: 'Exponent',
+  name: 'Core',
   platformId: 'exponent',
   networkId: NetworkId.solana,
   contracts: [contract],

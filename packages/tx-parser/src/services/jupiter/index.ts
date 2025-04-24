@@ -1,7 +1,8 @@
 import { Contract, NetworkId } from '@sonarwatch/portfolio-core';
 
 const platformId = 'jupiter-exchange';
-
+const governancePlatformId = 'jupiter-governance';
+const launchpadPlatformId = 'jupiter-launchpad';
 export const jupiterV6Contract: Contract = {
   name: 'Swap',
   address: 'JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4',
@@ -75,12 +76,12 @@ const jupiterJupuaryContract: Contract = {
 const jupiterGovernanceContract: Contract = {
   name: 'Governance',
   address: 'GovaE4iu227srtG2s3tZzB4RmWBzw8sTwrCLZz7kN7rY',
-  platformId,
+  platformId: governancePlatformId,
 };
 const jupiterVoteContract: Contract = {
-  name: 'Vote',
+  name: 'Locker Vote',
   address: 'voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj',
-  platformId,
+  platformId: governancePlatformId,
 };
 const rfqContract: Contract = {
   name: 'JupiterZ',
@@ -91,6 +92,11 @@ const inviteContract: Contract = {
   name: 'Invite',
   address: 'inv1tEtSwRMtM44tbvJGNiTxMvDfPVnX9StyqXfDfks',
   platformId,
+};
+const lfgContract: Contract = {
+  name: 'LFG',
+  address: 'DiSLRwcSFvtwvMWSs7ubBMvYRaYNYupa76ZSuYLe6D7j',
+  platformId: launchpadPlatformId,
 };
 
 export const services: ServiceDefinition[] = [
@@ -208,15 +214,15 @@ export const services: ServiceDefinition[] = [
   },
   {
     id: `${platformId}-governance`,
-    name: 'Governance',
-    platformId,
+    name: 'Vote Manager',
+    platformId: governancePlatformId,
     networkId: NetworkId.solana,
     contracts: [jupiterGovernanceContract],
   },
   {
-    id: `${platformId}-vote`,
-    name: 'Vote',
-    platformId,
+    id: `${governancePlatformId}-locker-vote`,
+    name: 'Governance',
+    platformId: governancePlatformId,
     networkId: NetworkId.solana,
     contracts: [jupiterVoteContract],
   },
@@ -226,6 +232,13 @@ export const services: ServiceDefinition[] = [
     platformId,
     networkId: NetworkId.solana,
     contracts: [inviteContract],
+  },
+  {
+    id: `${launchpadPlatformId}-lfg`,
+    name: 'LFG',
+    platformId: launchpadPlatformId,
+    networkId: NetworkId.solana,
+    contracts: [lfgContract],
   },
 ];
 export default services;

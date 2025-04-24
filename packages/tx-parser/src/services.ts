@@ -13,6 +13,7 @@ import * as citrus from './services/citrus';
 import * as debridge from './services/debridge';
 import * as defiland from './services/defiland';
 import * as defituna from './services/defituna';
+import * as degencoinflip from './services/degencoinflip';
 import * as dflow from './services/dflow';
 import * as divvy from './services/divvy';
 import * as drift from './services/drift';
@@ -22,6 +23,7 @@ import * as elemental from './services/elemental';
 import * as ensofi from './services/ensofi';
 import * as exponent from './services/exponent';
 import * as famousfoxfederation from './services/famousfoxfederation';
+import * as fjordfoundry from './services/fjordfoundry';
 import * as flash from './services/flash';
 import * as fluxbeam from './services/fluxbeam';
 import * as fragmetric from './services/fragmetric';
@@ -32,6 +34,7 @@ import * as gpool from './services/oresupply';
 import * as grass from './services/grass';
 import * as guano from './services/guano';
 import * as hedgehog from './services/hedgehog';
+import * as helio from './services/helio';
 import * as helium from './services/helium';
 import * as huma from './services/huma';
 import * as hxro from './services/hxro';
@@ -44,17 +47,21 @@ import * as kamino from './services/kamino';
 import * as lifinity from './services/lifinity';
 import * as loopscale from './services/loopscale';
 import * as lulo from './services/lulo';
+import * as madlads from './services/madlads';
 import * as magiceden from './services/magiceden';
 import * as marginfi from './services/marginfi';
 import * as marinade from './services/marinade';
+import * as mayan from './services/mayan';
 import * as metaplex from './services/metaplex';
 import * as magma from './services/magma';
 import * as maple from './services/maple';
 import * as meteora from './services/meteora';
 import * as moonwalk from './services/moonwalk';
 import * as nirvana from './services/nirvana';
+import * as nosana from './services/nosana';
 import * as nxfinance from './services/nxfinance';
 import * as okx from './services/okx';
+import * as only1 from './services/only1';
 import * as orca from './services/orca';
 import * as orderly from './services/orderly';
 import * as parcl from './services/parcl';
@@ -62,6 +69,7 @@ import * as pengu from './services/pengu';
 import * as perena from './services/perena';
 import * as phantom from './services/phantom';
 import * as phoenix from './services/phoenix';
+import * as photon from './services/photon';
 import * as picasso from './services/picasso';
 import * as pluto from './services/pluto';
 import * as pumpkin from './services/pumpkin';
@@ -76,11 +84,13 @@ import * as runemine from './services/runemine';
 import * as sanctum from './services/sanctum';
 import * as sandglass from './services/sandglass';
 import * as save from './services/save';
+import * as sentre from './services/sentre';
 import * as sharky from './services/sharky';
 import * as sns from './services/sns';
 import * as solanaid from './services/solanaid';
 import * as solayer from './services/solayer';
 import * as solincinerator from './services/solincinerator';
+import * as solsea from './services/solsea';
 import * as sonic from './services/sonic';
 import * as spiderswap from './services/spiderswap';
 import * as stabble from './services/stabble';
@@ -92,6 +102,7 @@ import * as tensor from './services/tensor';
 import * as texture from './services/texture';
 import * as titan from './services/titan';
 import * as triad from './services/triad';
+import * as underdog from './services/underdog';
 import * as vaultka from './services/vaultka';
 import * as whalesmarket from './services/whalesmarket';
 import * as wormhole from './services/wormhole';
@@ -116,6 +127,7 @@ export const services: ServiceDefinition[] = [
   defiland,
   defituna,
   dflow,
+  degencoinflip,
   divvy,
   drift,
   driftMMV,
@@ -124,6 +136,7 @@ export const services: ServiceDefinition[] = [
   ensofi,
   exponent,
   famousfoxfederation,
+  fjordfoundry,
   flash,
   fluxbeam,
   fragmetric,
@@ -134,6 +147,7 @@ export const services: ServiceDefinition[] = [
   grass,
   guano,
   hedgehog,
+  helio,
   helium,
   huma,
   hxro,
@@ -146,17 +160,21 @@ export const services: ServiceDefinition[] = [
   lifinity,
   loopscale,
   lulo,
+  madlads,
   magiceden,
   marginfi,
   marinade,
+  mayan,
   metaplex,
   magma,
   maple,
   meteora,
   moonwalk,
   nirvana,
+  nosana,
   nxfinance,
   okx,
+  only1,
   orca,
   orderly,
   parcl,
@@ -164,6 +182,7 @@ export const services: ServiceDefinition[] = [
   perena,
   phantom,
   phoenix,
+  photon,
   picasso,
   pluto,
   pumpkin,
@@ -178,11 +197,13 @@ export const services: ServiceDefinition[] = [
   sanctum,
   sandglass,
   save,
+  sentre,
   sharky,
   sns,
   solanaid,
   solayer,
   solincinerator,
+  solsea,
   sonic,
   spiderswap,
   stabble,
@@ -194,6 +215,7 @@ export const services: ServiceDefinition[] = [
   texture,
   titan,
   triad,
+  underdog,
   vaultka,
   whalesmarket,
   wormhole,

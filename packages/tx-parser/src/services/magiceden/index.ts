@@ -15,6 +15,12 @@ const escrowContract = {
   platformId,
 };
 
+const cnftContract = {
+  name: 'CNFT',
+  address: 'M3mxk5W2tt27WGT7THox7PmgRDp4m6NEhL5xvxrBfS1',
+  platformId,
+};
+
 const stakingContract = {
   name: 'Staking',
   address: 'veTbq5fF2HWYpgmkwjGKTYLVpY6miWYYmakML7R7LRf',
@@ -59,10 +65,19 @@ const auctionService: ServiceDefinition = {
   contracts: [auctionContract],
 };
 
+const cnftService: ServiceDefinition = {
+  id: `${platformId}-cnft`,
+  name: 'cNFT',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [cnftContract],
+};
+
 export const services: ServiceDefinition[] = [
   airdropService,
   escrowService,
   stakingService,
   auctionService,
+  cnftService,
 ];
 export default services;

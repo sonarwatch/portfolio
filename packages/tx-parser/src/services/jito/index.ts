@@ -8,6 +8,12 @@ const contract = {
   platformId,
 };
 
+const restakingContract = {
+  name: 'Restaking',
+  address: 'Vau1t6sLNxnzB7ZDsef8TLbPLfyZMYXH8WTNqUdm9g8',
+  platformId,
+};
+
 const service: Service = {
   id: `${platformId}-governance`,
   name: 'Governance',
@@ -16,5 +22,13 @@ const service: Service = {
   contracts: [contract],
 };
 
-export const services: Service[] = [service];
+const restakingService: Service = {
+  id: `${platformId}-restaking`,
+  name: 'Restaking',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [restakingContract],
+};
+
+export const services: Service[] = [service, restakingService];
 export default services;

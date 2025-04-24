@@ -4,15 +4,15 @@ import { associatedTokenContract } from '../solana';
 
 const platformId = 'phantom';
 const contract = {
-  name: 'Asset Owner',
+  name: 'Assert Owner',
   address: 'DeJBGdMFa1uynnnKiwrVioatTuHmNLpyFKnmB5kaFdzQ',
   platformId,
 };
 
 export const services: ServiceDefinition[] = [
   {
-    id: `${platformId}-swap`,
-    name: 'Swap',
+    id: `${platformId}-send`,
+    name: 'Send',
     platformId,
     networkId: NetworkId.solana,
     contracts: [contract, associatedTokenContract],
