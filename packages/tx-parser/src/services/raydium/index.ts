@@ -27,6 +27,26 @@ const raydiumCpmmContract: Contract = {
   address: 'CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C',
   platformId,
 };
+const farmV3Contract: Contract = {
+  name: 'Raydium Farm V3',
+  address: 'EhhTKczWMGQt46ynNeRX1WfeagwwJd7ufHvCDjRxjo5Q',
+  platformId,
+};
+const farmV4Contract: Contract = {
+  name: 'Raydium Farm V4',
+  address: 'CBuCnLe26faBpcBP2fktp4rp8abpcAnTWft6ZrP5Q4T',
+  platformId,
+};
+const farmV5Contract: Contract = {
+  name: 'Raydium Farm V5',
+  address: '9KEPoZmtHUrBbhWN1v1KWLMkkvwY6WLtAVUCPRtRjP4z',
+  platformId,
+};
+const farmV6Contract: Contract = {
+  name: 'Raydium Farm V6',
+  address: 'FarmqiPv5eAj3j1GMdMCMUGXqPUvmquZtMy86QH6rzhG',
+  platformId,
+};
 
 export const services: Service[] = [
   {
@@ -63,6 +83,34 @@ export const services: Service[] = [
     platformId,
     networkId: NetworkId.solana,
     contracts: [raydiumCpmmContract],
+  },
+  {
+    id: `${platformId}-farm-v3`,
+    name: 'Stake',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [farmV3Contract],
+  },
+  {
+    id: `${platformId}-farm-v4`,
+    name: 'Farm V4',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [farmV4Contract],
+  },
+  {
+    id: `${platformId}-farm-v5`,
+    name: 'Farm V5',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [farmV5Contract],
+  },
+  {
+    id: `${platformId}-farm-v6`,
+    name: 'Farm V6',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [farmV6Contract],
   },
 ];
 

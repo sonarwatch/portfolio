@@ -1,15 +1,17 @@
 import { NetworkId, Service } from '@sonarwatch/portfolio-core';
 
+const platformId = 'jito';
+
 const contract = {
-  name: 'Lending',
-  address: 'MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA',
-  platformId: 'marginfi',
+  name: 'Governance',
+  address: 'jtogvBNH3WBSWDYD5FJfQP2ZxNTuf82zL8GkEhPeaJx',
+  platformId,
 };
 
 const service: Service = {
-  id: 'marginfi-lending',
-  name: 'Lending',
-  platformId: 'marginfi',
+  id: `${platformId}-governance`,
+  name: 'Governance',
+  platformId,
   networkId: NetworkId.solana,
   contracts: [contract],
 };

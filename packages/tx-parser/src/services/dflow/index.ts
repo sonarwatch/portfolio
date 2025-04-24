@@ -1,7 +1,7 @@
 import { NetworkId, Service } from '@sonarwatch/portfolio-core';
 
 const platformId = 'dflow';
-const contract = {
+export const contract = {
   name: 'Aggregator',
   address: 'DF1ow4tspfHX9JwWJsAb9epbkA8hmpSEAtxXy1V27QBH',
   platformId,

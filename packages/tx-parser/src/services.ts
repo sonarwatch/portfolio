@@ -32,11 +32,13 @@ import * as goosefx from './services/goosefx';
 import * as gpool from './services/oresupply';
 import * as grass from './services/grass';
 import * as guano from './services/guano';
+import * as hedgehog from './services/hedgehog';
 import * as helium from './services/helium';
 import * as huma from './services/huma';
 import * as hxro from './services/hxro';
 import * as hylo from './services/hylo';
 import * as iloop from './services/iloop';
+import * as jito from './services/jito';
 import * as jupiter from './services/jupiter';
 import * as layer3 from './services/layer3';
 import * as kamino from './services/kamino';
@@ -48,6 +50,7 @@ import * as marginfi from './services/marginfi';
 import * as marinade from './services/marinade';
 import * as metaplex from './services/metaplex';
 import * as magma from './services/magma';
+import * as maple from './services/maple';
 import * as meteora from './services/meteora';
 import * as moonwalk from './services/moonwalk';
 import * as nirvana from './services/nirvana';
@@ -88,6 +91,7 @@ import * as switchboard from './services/switchboard';
 import * as symmetry from './services/symmetry';
 import * as tensor from './services/tensor';
 import * as texture from './services/texture';
+import * as titan from './services/titan';
 import * as triad from './services/triad';
 import * as vaultka from './services/vaultka';
 import * as whalesmarket from './services/whalesmarket';
@@ -129,11 +133,13 @@ export const services: Service[] = [
   gpool,
   grass,
   guano,
+  hedgehog,
   helium,
   huma,
   hxro,
   hylo,
   iloop,
+  jito,
   jupiter,
   kamino,
   layer3,
@@ -145,6 +151,7 @@ export const services: Service[] = [
   marinade,
   metaplex,
   magma,
+  maple,
   meteora,
   moonwalk,
   nirvana,
@@ -185,6 +192,7 @@ export const services: Service[] = [
   symmetry,
   tensor,
   texture,
+  titan,
   triad,
   vaultka,
   whalesmarket,
