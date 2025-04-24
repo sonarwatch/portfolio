@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'famousfoxfederation';
 const stakingContract = {
@@ -13,7 +14,7 @@ const mainContract = {
   platformId,
 };
 
-const stakingService: Service = {
+const stakingService: ServiceDefinition = {
   id: `${platformId}-staking`,
   name: 'Staking',
   platformId,
@@ -21,7 +22,7 @@ const stakingService: Service = {
   contracts: [stakingContract],
 };
 
-const mainService: Service = {
+const mainService: ServiceDefinition = {
   id: `${platformId}-tools`,
   name: 'Tool',
   platformId,
@@ -29,5 +30,5 @@ const mainService: Service = {
   contracts: [mainContract],
 };
 
-export const services: Service[] = [stakingService, mainService];
+export const services: ServiceDefinition[] = [stakingService, mainService];
 export default services;

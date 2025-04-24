@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const defiTunaContract = {
   name: 'DefiTuna',
@@ -6,7 +7,7 @@ const defiTunaContract = {
   platformId: 'defituna',
 };
 
-const defiTunaService: Service = {
+const defiTunaService: ServiceDefinition = {
   id: 'defituna',
   name: 'Lending',
   platformId: 'defituna',
@@ -14,5 +15,5 @@ const defiTunaService: Service = {
   contracts: [defiTunaContract],
 };
 
-export const services: Service[] = [defiTunaService];
+export const services: ServiceDefinition[] = [defiTunaService];
 export default services;

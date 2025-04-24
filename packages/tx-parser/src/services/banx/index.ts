@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const banxContract = {
   name: 'Banx Bonds',
@@ -12,7 +13,7 @@ const banxVaultsContract = {
   platformId: 'banx',
 };
 
-const bondsService: Service = {
+const bondsService: ServiceDefinition = {
   id: 'banx-bonds',
   name: 'Bonds',
   platformId: 'banx',
@@ -20,7 +21,7 @@ const bondsService: Service = {
   contracts: [banxContract],
 };
 
-const vaultsService: Service = {
+const vaultsService: ServiceDefinition = {
   id: 'banx-vaults',
   name: 'Vaults',
   platformId: 'banx',
@@ -28,5 +29,5 @@ const vaultsService: Service = {
   contracts: [banxVaultsContract, banxContract],
 };
 
-export const services: Service[] = [bondsService, vaultsService];
+export const services: ServiceDefinition[] = [bondsService, vaultsService];
 export default services;

@@ -1,4 +1,4 @@
-import { Contract, NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { Contract, NetworkId } from '@sonarwatch/portfolio-core';
 
 const platformId = 'jupiter-exchange';
 
@@ -83,7 +83,7 @@ const inviteContract: Contract = {
   platformId,
 };
 
-export const services: Service[] = [
+export const services: ServiceDefinition[] = [
   {
     id: `${platformId}-swap`,
     name: 'Swap',

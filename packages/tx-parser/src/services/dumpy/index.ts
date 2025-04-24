@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 import { jupiterV6Contract } from '../jupiter';
 import { saveContract } from '../save';
 
@@ -9,7 +10,7 @@ const lendingContract = {
   platformId,
 };
 
-const lendingService: Service = {
+const lendingService: ServiceDefinition = {
   id: `${platformId}-short-lending`,
   name: 'Short Lending',
   platformId,
@@ -17,5 +18,5 @@ const lendingService: Service = {
   contracts: [lendingContract, jupiterV6Contract, saveContract],
 };
 
-export const services: Service[] = [lendingService];
+export const services: ServiceDefinition[] = [lendingService];
 export default services;

@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'hylo';
 
@@ -14,7 +15,7 @@ const stabilityPoolContract = {
   platformId,
 };
 
-const exchangeService: Service = {
+const exchangeService: ServiceDefinition = {
   id: `${platformId}-exchange`,
   name: 'Exchange',
   platformId,
@@ -22,7 +23,7 @@ const exchangeService: Service = {
   contracts: [exchangeContract],
 };
 
-const stabilityPoolService: Service = {
+const stabilityPoolService: ServiceDefinition = {
   id: `${platformId}-stability-pool`,
   name: 'Stability Pool',
   platformId,
@@ -30,5 +31,8 @@ const stabilityPoolService: Service = {
   contracts: [stabilityPoolContract],
 };
 
-export const services: Service[] = [exchangeService, stabilityPoolService];
+export const services: ServiceDefinition[] = [
+  exchangeService,
+  stabilityPoolService,
+];
 export default services;

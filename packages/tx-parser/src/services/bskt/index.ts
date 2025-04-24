@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const bsktStakingContract = {
   name: 'BSKT Staking',
@@ -6,7 +7,7 @@ const bsktStakingContract = {
   platformId: 'bskt',
 };
 
-const bsktStakingService: Service = {
+const bsktStakingService: ServiceDefinition = {
   id: 'bskt-staking',
   name: 'BSKT Staking',
   platformId: 'bskt',
@@ -14,5 +15,5 @@ const bsktStakingService: Service = {
   contracts: [bsktStakingContract],
 };
 
-export const services: Service[] = [bsktStakingService];
+export const services: ServiceDefinition[] = [bsktStakingService];
 export default services;

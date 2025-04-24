@@ -2,33 +2,15 @@ import { ParsedTransactionWithMeta } from '@solana/web3.js';
 import {
   AccountChanges,
   BalanceChange,
-  Service,
   solanaNativeAddress,
   solanaNativeDecimals,
   Transaction,
   TransactionTag,
 } from '@sonarwatch/portfolio-core';
 import { unshift } from './unshift';
-import { sortedServices } from '../services';
 import { transactionContainsJitotip } from './transactionContainsJitotip';
 import { transactionIsSpam } from './transactionIsSpam';
-
-const getTransactionService = (
-  txn: ParsedTransactionWithMeta
-): Service | undefined => {
-  const { instructions } = txn.transaction.message;
-
-  const txnContractAddresses = instructions
-    .map((i) => i.programId.toString())
-    .filter((value, index, self) => self.indexOf(value) === index);
-
-  // We keep the first service with all contract addresses in txn
-  return sortedServices.find((service) =>
-    service.contracts?.every((contract) =>
-      txnContractAddresses.includes(contract.address)
-    )
-  );
-};
+import { getTransactionService } from './getTransactionService';
 
 const getAccountChanges = (txn: ParsedTransactionWithMeta): AccountChanges => {
   const accountChanges: AccountChanges = {

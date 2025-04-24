@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'goosefx';
 const singleTokenPoolContract = {
@@ -16,21 +17,21 @@ const stakingContract = {
   address: 'STKRWxT4irmTthSJydggspWmkc3ovYHx62DHLPVv1f1',
   platformId,
 };
-const singleTokenPoolsService: Service = {
+const singleTokenPoolsService: ServiceDefinition = {
   id: `${platformId}-single-pools`,
   name: 'Single Token Pools',
   platformId,
   networkId: NetworkId.solana,
   contracts: [singleTokenPoolContract],
 };
-const dualTokenPoolsService: Service = {
+const dualTokenPoolsService: ServiceDefinition = {
   id: `${platformId}-dual-pools`,
   name: 'Dual Token Pools',
   platformId,
   networkId: NetworkId.solana,
   contracts: [dualTokenPoolContract],
 };
-const lpStakingService: Service = {
+const lpStakingService: ServiceDefinition = {
   id: `${platformId}-staking`,
   name: 'Staking',
   platformId,
@@ -38,7 +39,7 @@ const lpStakingService: Service = {
   contracts: [stakingContract],
 };
 
-export const services: Service[] = [
+export const services: ServiceDefinition[] = [
   singleTokenPoolsService,
   dualTokenPoolsService,
   lpStakingService,

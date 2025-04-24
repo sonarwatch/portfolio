@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'rain';
 const contractNftLending = {
@@ -25,7 +26,7 @@ const liquidContract = {
   platformId,
 };
 
-const defiService: Service = {
+const defiService: ServiceDefinition = {
   id: 'rain-defi-lending',
   name: 'Lending',
   platformId,
@@ -33,7 +34,7 @@ const defiService: Service = {
   contracts: [contractDefiLending],
 };
 
-const nftService: Service = {
+const nftService: ServiceDefinition = {
   id: 'rain-nft-lending',
   name: 'NFT Lending',
   platformId,
@@ -41,7 +42,7 @@ const nftService: Service = {
   contracts: [contractNftLending],
 };
 
-const vaultsService: Service = {
+const vaultsService: ServiceDefinition = {
   id: 'rain-vaults',
   name: 'Vaults',
   platformId,
@@ -49,7 +50,7 @@ const vaultsService: Service = {
   contracts: [contractBank],
 };
 
-const liquidService: Service = {
+const liquidService: ServiceDefinition = {
   id: 'rain-vaults',
   name: 'Liquid',
   platformId,
@@ -57,7 +58,7 @@ const liquidService: Service = {
   contracts: [liquidContract],
 };
 
-export const services: Service[] = [
+export const services: ServiceDefinition[] = [
   defiService,
   nftService,
   vaultsService,

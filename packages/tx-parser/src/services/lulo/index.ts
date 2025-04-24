@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 import { kaminoLendContract } from '../kamino';
 
 const contract = {
@@ -7,7 +8,7 @@ const contract = {
   platformId: 'flexlend',
 };
 
-export const services: Service[] = [
+export const services: ServiceDefinition[] = [
   {
     id: 'flexlend',
     name: 'Lulo',

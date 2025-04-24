@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'wormhole';
 const contract = {
@@ -13,7 +14,7 @@ const tokenBridgeContract = {
   platformId,
 };
 
-const service: Service = {
+const service: ServiceDefinition = {
   id: `${platformId}-staking`,
   name: 'Staking',
   platformId,
@@ -21,7 +22,7 @@ const service: Service = {
   contracts: [contract],
 };
 
-const tokenBridgeService: Service = {
+const tokenBridgeService: ServiceDefinition = {
   id: `${platformId}-token-bridge`,
   name: 'Token Bridge',
   platformId,
@@ -29,5 +30,5 @@ const tokenBridgeService: Service = {
   contracts: [tokenBridgeContract],
 };
 
-export const services: Service[] = [service, tokenBridgeService];
+export const services: ServiceDefinition[] = [service, tokenBridgeService];
 export default services;

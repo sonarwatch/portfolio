@@ -1,4 +1,5 @@
-import { NetworkId, Service } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'debridge';
 
@@ -19,7 +20,7 @@ const vaultContract = {
   platformId: 'debridge',
 };
 
-const transferService: Service = {
+const transferService: ServiceDefinition = {
   id: `${platformId}-transfer`,
   name: 'Transfer',
   platformId,
@@ -27,7 +28,7 @@ const transferService: Service = {
   contracts: [transferContract],
 };
 
-const vaultService: Service = {
+const vaultService: ServiceDefinition = {
   id: 'debridge-vault',
   name: 'Vault',
   platformId: 'debridge',
@@ -35,7 +36,7 @@ const vaultService: Service = {
   contracts: [vaultContract],
 };
 
-const airdropService: Service = {
+const airdropService: ServiceDefinition = {
   id: 'debridge-airdrop',
   name: 'Airdrop',
   platformId: 'debridge',
@@ -43,7 +44,7 @@ const airdropService: Service = {
   contracts: [aidropContract],
 };
 
-export const services: Service[] = [
+export const services: ServiceDefinition[] = [
   airdropService,
   vaultService,
   transferService,
