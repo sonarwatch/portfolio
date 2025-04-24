@@ -13,6 +13,7 @@ const spammerAccounts = [
   '9KxQy6StbkJhubAbfvfriUK6LYYJ5cSkBoS3ZhcbdUx2',
   'RecoWuBP1kCPABPVAABCR7f7FY513EVhQwoWcxntNT9',
   'fLiPgg2yTvmgfhiPkKriAHkDmmXGP6CdeFX9UF5o7Zc',
+  'GUq7PhyAUZko2mPhv3CupmdJKQ61LH8VyrdsRL25q7zg',
 ];
 
 export const transactionIsSpam = (
@@ -32,7 +33,7 @@ export const transactionIsSpam = (
     return true;
   }
 
-  // if more than 10 small sol transfers
+  // if more than 5 small sol transfers
   const smallTransferInstructions = txn.transaction.message.instructions.filter(
     (i) =>
       i.programId.toString() === '11111111111111111111111111111111' &&
@@ -41,7 +42,7 @@ export const transactionIsSpam = (
       i.parsed.info.lamports < 1000
   );
 
-  if (smallTransferInstructions.length > 10) {
+  if (smallTransferInstructions.length > 5) {
     return true;
   }
 
