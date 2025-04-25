@@ -11,6 +11,7 @@ import {
   FixableBeetArgsStruct,
   FixableBeet,
   array,
+  BeetStruct,
 } from '@metaplex-foundation/beet';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { i64, u64 } from '../../utils/solana';
@@ -260,4 +261,118 @@ export const programVersionStruct = new FixableBeetStruct<ProgramVersion>(
     ['updated', i64],
   ],
   (args) => args as ProgramVersion
+);
+
+export type TokenLendingPool = {
+  accountDiscriminator: number[];
+  orderbook: PublicKey;
+  lender: PublicKey;
+  usdc_vault: PublicKey;
+  collateral_vault: PublicKey;
+  nonce: BigNumber;
+  total_usdc_liquidity: BigNumber;
+  available_usdc_liquidity: BigNumber;
+  collateral_required_amount: BigNumber;
+  total_usdc_interest: BigNumber;
+  total_loan_count: BigNumber;
+  active_loan_count: BigNumber;
+  total_defaulted_loan_count: BigNumber;
+  total_defaulted_usdc_amount: BigNumber;
+  total_defaulted_collateral_amount: BigNumber;
+  version: number;
+  bump: number;
+  padding: number[];
+};
+
+export const tokenLendingPoolStruct = new BeetStruct<TokenLendingPool>(
+  [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+    ['orderbook', publicKey],
+    ['lender', publicKey],
+    ['usdc_vault', publicKey],
+    ['collateral_vault', publicKey],
+    ['nonce', u64],
+    ['total_usdc_liquidity', u64],
+    ['available_usdc_liquidity', u64],
+    ['collateral_required_amount', u64],
+    ['total_usdc_interest', u64],
+    ['total_loan_count', u64],
+    ['active_loan_count', u64],
+    ['total_defaulted_loan_count', u64],
+    ['total_defaulted_usdc_amount', u64],
+    ['total_defaulted_collateral_amount', u64],
+    ['version', u8],
+    ['bump', u8],
+    ['padding', uniformFixedSizeArray(u8, 6)],
+  ],
+  (args) => args as TokenLendingPool
+);
+
+export type TokenLendingOrderBook = {
+  accountDiscriminator: number[];
+  fee_authority: PublicKey;
+  loan_mint: PublicKey;
+  collateral_mint: PublicKey;
+  collateral_token_program: PublicKey;
+  duration: BigNumber;
+  min_liquidity: BigNumber;
+  max_liquidity: BigNumber;
+  apr: number;
+  fee_permillicentage: number;
+  collateral_decimals: number;
+  version: number;
+  bump: number;
+  padding: number[];
+};
+
+export const tokenLendingOrderBookStruct =
+  new BeetStruct<TokenLendingOrderBook>(
+    [
+      ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+      ['fee_authority', publicKey],
+      ['loan_mint', publicKey],
+      ['collateral_mint', publicKey],
+      ['collateral_token_program', publicKey],
+      ['duration', u64],
+      ['min_liquidity', u64],
+      ['max_liquidity', u64],
+      ['apr', u32],
+      ['fee_permillicentage', u16],
+      ['collateral_decimals', u8],
+      ['version', u8],
+      ['bump', u8],
+      ['padding', uniformFixedSizeArray(u8, 7)],
+    ],
+    (args) => args as TokenLendingOrderBook
+  );
+
+export type TokenLendingLoan = {
+  accountDiscriminator: number[];
+  orderbook: PublicKey;
+  borrower: PublicKey;
+  pool: PublicKey;
+  principal_usdc_amount: BigNumber;
+  collateral_required_amount: BigNumber;
+  start_ts: BigNumber;
+  end_ts: BigNumber;
+  apr: number;
+  version: number;
+  padding: number[];
+};
+
+export const tokenLendingLoanStruct = new BeetStruct<TokenLendingLoan>(
+  [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+    ['orderbook', publicKey],
+    ['borrower', publicKey],
+    ['pool', publicKey],
+    ['principal_usdc_amount', u64],
+    ['collateral_required_amount', u64],
+    ['start_ts', u64],
+    ['end_ts', u64],
+    ['apr', u32],
+    ['version', u8],
+    ['padding', uniformFixedSizeArray(u8, 3)],
+  ],
+  (args) => args as TokenLendingLoan
 );
