@@ -80,7 +80,6 @@ export function heliusAssetToAssetCollectible(
         collection?.name ||
         props?.collection?.name,
       dataUri: asset.content.json_uri,
-      imageUri: asset.content.links?.image,
       attributes: asset.content.metadata.attributes,
       collection,
     },

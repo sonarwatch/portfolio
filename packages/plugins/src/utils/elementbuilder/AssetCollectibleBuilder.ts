@@ -38,7 +38,6 @@ export class AssetCollectibleBuilder extends AssetBuilder {
         amount: new BigNumber(this.params.amount || 1).toNumber(),
         price: new BigNumber(this.params.collection.floorPrice).toNumber(),
         name: this.params.name || this.params.collection.name,
-        imageUri: this.params.collection.imageUri,
         /* dataUri: asset.content.json_uri,
         attributes: asset.content.metadata.attributes, */
         collection: {
