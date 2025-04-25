@@ -63,20 +63,22 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
     if (!pool) return;
 
-    const collatPrice = priceById.get(pool.collateralType.toString());
-    if (!collatPrice) return;
+    const assetPrice = priceById.get(pool.collateralType.toString());
+    if (!assetPrice) return;
     const timeReference = !acc.lastInterestCollect.isZero()
       ? acc.lastInterestCollect
       : acc.timestamp;
     const daysSinceStart = Math.floor(
       (Date.now() / 1000 - timeReference.toNumber()) / (60 * 60 * 24)
     );
-    const collatAmount = acc.collateralAmount.dividedBy(amountFactor);
-    const size = acc.amount.plus(acc.userPaid).dividedBy(amountFactor);
-    const collateralValue = collatAmount.times(collatPrice.price);
-    const sizeValue = size.times(
+
+    // Seems like they mixed up the collateral and size
+    const size = acc.collateralAmount.dividedBy(amountFactor);
+    const collatAmount = acc.userPaid.dividedBy(amountFactor);
+    const collateralValue = collatAmount.times(
       index <= usdcPositions.length ? usdcPrice.price : solPrice.price
     );
+    const sizeValue = size.times(assetPrice.price);
     const dailyInterest = acc.interestRate / 365;
     const amount = acc.amount.dividedBy(amountFactor);
     const entryPrice = size.dividedBy(collatAmount);
@@ -88,20 +90,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       .plus(interest)
       .dividedBy(collateralValue.times(0.9))
       .toNumber();
-    const pnlValue = new BigNumber(collatPrice.price)
+    const pnlValue = new BigNumber(assetPrice.price)
       .minus(entryPrice)
       .times(collatAmount)
       .minus(interest)
       .toNumber();
     element.addIsoPosition({
       collateralValue: collateralValue.toNumber(),
-      address: collatPrice.address,
+      address: assetPrice.address,
       entryPrice: entryPrice.toNumber(),
       leverage: acc.amount
         .plus(acc.userPaid)
         .dividedBy(acc.userPaid)
         .toNumber(),
-      markPrice: collatPrice.price,
+      markPrice: assetPrice.price,
       liquidationPrice,
       side: LeverageSide.long,
       size: size.toNumber(),
