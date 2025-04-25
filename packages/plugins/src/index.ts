@@ -169,6 +169,7 @@ import * as hylo from './plugins/hylo';
 import * as oresupply from './plugins/oresupply';
 import * as bio from './plugins/bio';
 import * as huma from './plugins/huma';
+import * as honeyland from './plugins/honeyland';
 
 export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
@@ -349,6 +350,7 @@ const modules = [
   oresupply,
   bio,
   huma,
+  honeyland,
 ];
 
 // JOBS //

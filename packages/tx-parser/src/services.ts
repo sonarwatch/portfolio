@@ -36,6 +36,7 @@ import * as guano from './services/guano';
 import * as hedgehog from './services/hedgehog';
 import * as helio from './services/helio';
 import * as helium from './services/helium';
+import * as honeyland from './services/honeyland';
 import * as huma from './services/huma';
 import * as hxro from './services/hxro';
 import * as hylo from './services/hylo';
@@ -149,6 +150,7 @@ export const services: ServiceDefinition[] = [
   hedgehog,
   helio,
   helium,
+  honeyland,
   huma,
   hxro,
   hylo,
