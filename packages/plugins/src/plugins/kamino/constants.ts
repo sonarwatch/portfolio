@@ -75,6 +75,7 @@ export const lendingConfigs: Map<string, LendingMarketConfig> = new Map([
         ['7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs', usdcSolanaMint],
         ['Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB', usdcSolanaMint],
         ['3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh', usdcSolanaMint],
+        ['2u1tszSeqZ3qBWF3uNGPFc8TzMk2tdiwknnRMWGWjGWH', usdcSolanaMint],
       ],
     },
   ],
