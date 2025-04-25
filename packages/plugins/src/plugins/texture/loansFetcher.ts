@@ -1,25 +1,35 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import axios from 'axios';
+import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
-import { pairsMemo, platformId } from './constants';
+import { pairsMemo, platformId, lendyProgramId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getMemoizedUser } from './helpers';
-import { Loan, Offer } from './types';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
+import { getClientSolana } from '../../utils/clients';
+import { LoanStatus, loanStruct, offerStruct } from './structs';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const user = await getMemoizedUser(owner);
   if (!user) return [];
 
-  const apiClient = axios.create({
-    baseURL: 'https://moneyback.texture.finance',
-    timeout: 500,
-  });
+  const client = getClientSolana();
 
   const [loansAsBorrower, loansAsLender, offersAsLender] = await Promise.all([
-    apiClient.get<Loan[]>(`/loans?borrower=${user}`),
-    apiClient.get<Loan[]>(`/loans?lender=${user}`),
-    apiClient.get<Offer[]>(`/my_offers?lender=${user}`),
+    ParsedGpa.build(client, loanStruct, lendyProgramId)
+      .addFilter('accountDiscriminator', [77, 95, 95, 95, 76, 79, 65, 78])
+      .addFilter('borrower', new PublicKey(user))
+      .addFilter('status', LoanStatus.Active)
+      .run(),
+    ParsedGpa.build(client, loanStruct, lendyProgramId)
+      .addFilter('accountDiscriminator', [77, 95, 95, 95, 76, 79, 65, 78])
+      .addFilter('lender', new PublicKey(user))
+      .addFilter('status', LoanStatus.Active)
+      .run(),
+    ParsedGpa.build(client, offerStruct, lendyProgramId)
+      // .addFilter('accountDiscriminator', [77, 95, 95, 95, 76, 79, 65, 78])
+      .addFilter('lender', new PublicKey(user))
+      .run(),
   ]);
 
   const pairs = await pairsMemo.getItem(cache);
@@ -27,17 +37,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 
-  [...loansAsBorrower.data, ...loansAsLender.data].forEach((loan) => {
-    const pair = pairs.get(loan.pair);
+  [...loansAsBorrower, ...loansAsLender].forEach((loan) => {
+    const pair = pairs.get(loan.pair.toString());
     if (!pair) return;
 
-    if (loan.status !== 'Active') return;
-
-    const isLender = loan.lender_owner === owner;
+    const isLender = loan.lender.toString() === owner;
 
     const element = elementRegistry.addElementBorrowlend({
       label: 'Lending',
-      ref: loan.loan,
+      ref: loan.pubkey.toString(),
       sourceRefs: [
         {
           name: 'Pair',
@@ -46,7 +54,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       ],
       link: 'https://texture.finance/lendy/my_loans',
     });
-    element.setFixedTerms(isLender, (loan.start_time + pair.duration) * 1000);
+    element.setFixedTerms(
+      isLender,
+      loan.start_time.plus(pair.duration).multipliedBy(1000)
+    );
 
     const principal = {
       address: pair.principal_token.mint,
@@ -66,14 +77,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     }
   });
 
-  offersAsLender.data.forEach((offer) => {
-    const pair = pairs.get(offer.pair);
+  offersAsLender.forEach((offer) => {
+    const pair = pairs.get(offer.pair.toString());
     if (!pair) return;
 
     const element = elementRegistry.addElementBorrowlend({
       label: 'Lending',
       name: 'Offer',
-      ref: offer.offer,
+      ref: offer.pubkey.toString(),
       sourceRefs: [
         {
           name: 'Pair',

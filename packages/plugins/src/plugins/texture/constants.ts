@@ -6,8 +6,11 @@ import { arrayToMap } from '../../utils/misc/arrayToMap';
 
 export const platformId = 'texture';
 
-export const programId = new PublicKey(
+export const lendyProgramId = new PublicKey(
   'MLENdNkmK61mGd4Go8BJX9PhYPN3azrAKRQsAC7u55v'
+);
+export const superlendyProgramId = new PublicKey(
+  'sUperbZBsdZa4s7pWPKQaQ2fRTesjKxupxagZ8FSgVi'
 );
 
 export const pairsCacheKey = 'pairs';

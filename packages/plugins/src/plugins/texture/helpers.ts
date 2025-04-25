@@ -1,7 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 import { getClientSolana } from '../../utils/clients';
 import { userStruct } from './structs';
-import { programId } from './constants';
+import { lendyProgramId } from './constants';
 import { Memoized } from '../../utils/misc/Memoized';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 
@@ -21,7 +21,7 @@ export const getMemoizedUser = async (
 const getUser = async (owner: string): Promise<string | null> => {
   const userPk = PublicKey.findProgramAddressSync(
     [new PublicKey(owner).toBytes(), Buffer.from('MONEY_LENDER_USER')],
-    new PublicKey(programId)
+    new PublicKey(lendyProgramId)
   )[0];
 
   const connection = getClientSolana();
