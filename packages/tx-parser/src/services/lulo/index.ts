@@ -11,14 +11,14 @@ const contract = {
 export const services: ServiceDefinition[] = [
   {
     id: 'flexlend',
-    name: 'Lulo',
+    name: 'Lending',
     platformId: 'flexlend',
     networkId: NetworkId.solana,
     contracts: [contract],
   },
   {
     id: 'flexlend-with-kamino',
-    name: 'Lulo',
+    name: 'Lending',
     platformId: 'flexlend',
     networkId: NetworkId.solana,
     contracts: [contract, kaminoLendContract],

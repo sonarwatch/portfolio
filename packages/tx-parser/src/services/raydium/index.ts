@@ -57,7 +57,7 @@ const farmV6Contract: Contract = {
 export const services: ServiceDefinition[] = [
   {
     id: `${platformId}-amm-v3`,
-    name: 'AMM v3',
+    name: 'Stake',
     platformId,
     networkId: NetworkId.solana,
     contracts: [raydiumAmmV3Contract],

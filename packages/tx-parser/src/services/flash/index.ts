@@ -9,7 +9,7 @@ const contract = {
 
 const service: ServiceDefinition = {
   id: 'flash',
-  name: 'FlashTrade',
+  name: 'Earn',
   platformId: 'flash',
   networkId: NetworkId.solana,
   contracts: [contract],
