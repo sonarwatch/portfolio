@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.0.23](https://github.com/sonarwatch/portfolio/compare/tx-parser-0.0.22...tx-parser-0.0.23) (2025-04-28)
+
+
+### Bug Fixes
+
+* **tx-parser:** update solanaStakingService id and name to reflect cleanup service ([8aa835f](https://github.com/sonarwatch/portfolio/commit/8aa835fdc0e191021132eb2d5678b0b43ee39750))
+
+
+
 ## [0.0.22](https://github.com/sonarwatch/portfolio/compare/tx-parser-0.0.21...tx-parser-0.0.22) (2025-04-24)
 
 
