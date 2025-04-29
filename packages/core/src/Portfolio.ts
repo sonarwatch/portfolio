@@ -323,6 +323,8 @@ export type IsoLevPosition = {
   tp?: number;
   sl?: number;
   value: UsdValue;
+  ref?: string;
+  sourceRefs?: SourceRef[];
 };
 
 export type CrossLevPosition = Omit<IsoLevPosition, 'collateralValue'>;
