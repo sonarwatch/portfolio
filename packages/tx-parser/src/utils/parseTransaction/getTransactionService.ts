@@ -1,7 +1,7 @@
 import { ParsedTransactionWithMeta } from '@solana/web3.js';
 import { Service } from '@sonarwatch/portfolio-core';
-import { sortedServiceDefinitions } from '../services';
-import { ServiceDefinition } from '../ServiceDefinition';
+import { sortedServiceDefinitions } from '../../services';
+import { ServiceDefinition } from '../../ServiceDefinition';
 
 /**
  * Finds the first matching service for a given Solana transaction.
@@ -27,7 +27,7 @@ export const getTransactionService = (
 
   return toService(
     sortedServiceDefinitions.find((service) =>
-      service.matchTransaction
+      hasMatchTransaction(service)
         ? service.matchTransaction(txn, txnContractAddresses)
         : defaultMatchTransaction(service, txnContractAddresses)
     )
@@ -43,6 +43,15 @@ const defaultMatchTransaction = (
         contracts.includes(contract.address)
       )
     : false;
+
+const hasMatchTransaction = (
+  service: ServiceDefinition
+): service is ServiceDefinition & {
+  matchTransaction: (
+    txn: ParsedTransactionWithMeta,
+    contracts: string[]
+  ) => boolean;
+} => typeof service.matchTransaction === 'function';
 
 const toService = (def?: ServiceDefinition): Service | undefined => {
   if (!def) return undefined;

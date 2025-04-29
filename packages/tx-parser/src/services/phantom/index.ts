@@ -1,6 +1,6 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { ServiceDefinition } from '../../ServiceDefinition';
-import { associatedTokenContract } from '../solana';
+import { solanaAssociatedTokenContract } from '../solana';
 
 const platformId = 'phantom';
 const contract = {
@@ -15,7 +15,7 @@ export const services: ServiceDefinition[] = [
     name: 'Send',
     platformId,
     networkId: NetworkId.solana,
-    contracts: [contract, associatedTokenContract],
+    contracts: [contract, solanaAssociatedTokenContract],
   },
 ];
 export default services;

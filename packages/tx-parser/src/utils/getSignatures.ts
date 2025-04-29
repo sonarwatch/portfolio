@@ -5,7 +5,7 @@ import {
   SignaturesForAddressOptions,
 } from '@solana/web3.js';
 
-export const MAX_TRANSACTIONS_PER_REQUEST = 1000;
+export const MAX_TRANSACTIONS_PER_REQUEST = 500;
 
 export const getSignatures = (
   connection: Connection,

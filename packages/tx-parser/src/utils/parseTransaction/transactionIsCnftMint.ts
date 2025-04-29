@@ -1,5 +1,5 @@
 import { ParsedTransactionWithMeta } from '@solana/web3.js';
-import { bubblegumContract } from '../services/metaplex';
+import { bubblegumContract } from '../../services/metaplex';
 import { isPartiallyDecodedInstruction } from './isPartiallyDecodedInstruction';
 import { getDiscriminator } from './getDiscriminator';
 

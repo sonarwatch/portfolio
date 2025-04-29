@@ -1,6 +1,7 @@
 import { ParsedTransactionWithMeta } from '@solana/web3.js';
-import { isParsedInstruction } from './isParsedInstruction';
 import { transactionIsCnftMint } from './transactionIsCnftMint';
+import { systemContract } from '../../services/solana';
+import { getTransactionParsedInstructions } from './getTransactionParsedInstructions';
 
 const spammerAccounts = [
   'FLiPgGTXtBtEJoytikaywvWgbz5a56DdHKZU72HSYMFF',
@@ -33,16 +34,17 @@ export const transactionIsSpam = (
     return true;
   }
 
-  // if more than 5 small sol transfers
-  const smallTransferInstructions = txn.transaction.message.instructions.filter(
-    (i) =>
-      i.programId.toString() === '11111111111111111111111111111111' &&
-      isParsedInstruction(i) &&
-      i.parsed.type === 'transfer' &&
-      i.parsed.info.lamports < 1000
-  );
+  const instructions = getTransactionParsedInstructions(txn);
 
-  if (smallTransferInstructions.length > 5) {
+  // if only small sol transfers
+  if (
+    instructions.every(
+      (i) =>
+        i.programId.toString() === systemContract.address &&
+        i.parsed.type === 'transfer' &&
+        i.parsed.info.lamports <= 100000
+    )
+  ) {
     return true;
   }
 

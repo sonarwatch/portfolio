@@ -1,5 +1,8 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import { ServiceDefinition } from '../../ServiceDefinition';
+import { ParsedTransactionWithMeta } from '@solana/web3.js';
+import { ServiceDefinition, ServicePriority } from '../../ServiceDefinition';
+import { getTransactionParsedInstructions } from '../../utils/parseTransaction/getTransactionParsedInstructions';
+import { transactionContainsJitotip } from '../../utils/parseTransaction/transactionContainsJitotip';
 
 const platformId = 'jito';
 
@@ -31,5 +34,22 @@ const restakingService: ServiceDefinition = {
   contracts: [restakingContract],
 };
 
-export const services: ServiceDefinition[] = [service, restakingService];
+const tipService: ServiceDefinition = {
+  id: `${platformId}-tip`,
+  name: 'Tip',
+  platformId,
+  networkId: NetworkId.solana,
+  priority: ServicePriority.low,
+  matchTransaction: (txn: ParsedTransactionWithMeta) => {
+    const instructions = getTransactionParsedInstructions(txn);
+
+    return instructions.length === 1 && transactionContainsJitotip(txn);
+  },
+};
+
+export const services: ServiceDefinition[] = [
+  service,
+  restakingService,
+  tipService,
+];
 export default services;

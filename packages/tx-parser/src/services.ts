@@ -88,6 +88,7 @@ import * as save from './services/save';
 import * as sentre from './services/sentre';
 import * as sharky from './services/sharky';
 import * as sns from './services/sns';
+import * as solana from './services/solana';
 import * as solanaid from './services/solanaid';
 import * as solayer from './services/solayer';
 import * as solincinerator from './services/solincinerator';
@@ -202,6 +203,7 @@ export const services: ServiceDefinition[] = [
   sentre,
   sharky,
   sns,
+  solana,
   solanaid,
   solayer,
   solincinerator,

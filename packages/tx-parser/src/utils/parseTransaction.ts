@@ -8,9 +8,9 @@ import {
   TransactionTag,
 } from '@sonarwatch/portfolio-core';
 import { unshift } from './unshift';
-import { transactionContainsJitotip } from './transactionContainsJitotip';
-import { transactionIsSpam } from './transactionIsSpam';
-import { getTransactionService } from './getTransactionService';
+import { getTransactionService } from './parseTransaction/getTransactionService';
+import { transactionContainsJitotip } from './parseTransaction/transactionContainsJitotip';
+import { transactionIsSpam } from './parseTransaction/transactionIsSpam';
 
 const getAccountChanges = (txn: ParsedTransactionWithMeta): AccountChanges => {
   const accountChanges: AccountChanges = {
