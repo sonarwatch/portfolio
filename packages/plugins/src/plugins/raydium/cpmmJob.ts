@@ -38,6 +38,11 @@ const executor: JobExecutor = async (cache: Cache) => {
 
     cpmmPoolsInfo.forEach((pI) => {
       if (!pI) return;
+      if (
+        pI.token0Mint.toString() === solanaNativeAddress &&
+        pI.token1Mint.toString() === solanaNativeAddress
+      )
+        return;
       mints.add(pI.token0Mint.toString());
       mints.add(pI.token1Mint.toString());
       tokenAccountsPkeys.push(...[pI.token0Vault, pI.token1Vault]);
