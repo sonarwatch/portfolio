@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId, solanaNativeAddress } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { cpmmProgramId, platformId } from './constants';
 import {
@@ -39,8 +39,8 @@ const executor: JobExecutor = async (cache: Cache) => {
     cpmmPoolsInfo.forEach((pI) => {
       if (!pI) return;
       if (
-        pI.token0Mint.toString() === solanaNativeAddress &&
-        pI.token1Mint.toString() === solanaNativeAddress
+        pI.token0Vault.toString() === solanaNativeAddress &&
+        pI.token1Vault.toString() === solanaNativeAddress
       )
         return;
       mints.add(pI.token0Mint.toString());
