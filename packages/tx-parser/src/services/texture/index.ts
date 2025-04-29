@@ -15,6 +15,12 @@ const contractV2 = {
   platformId,
 };
 
+const priceContract = {
+  name: 'Price',
+  address: 'priceEvKXX3KERsitDpmvujXfPFYesmEspw4kiC3ryF',
+  platformId,
+};
+
 export const services: ServiceDefinition[] = [
   {
     id: `${platformId}-lendy`,
@@ -28,7 +34,7 @@ export const services: ServiceDefinition[] = [
     name: 'Lending',
     platformId,
     networkId: NetworkId.solana,
-    contracts: [contractV2],
+    contracts: [contractV2, priceContract],
   },
 ];
 export default services;
