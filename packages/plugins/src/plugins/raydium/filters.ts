@@ -26,6 +26,12 @@ export const clmmPoolsStateFilter: GetProgramAccountsFilter[] = [
 
 export const cpmmPoolsStateFilter: GetProgramAccountsFilter[] = [
   { dataSize: 637 },
+  {
+    memcmp: {
+      offset: 0,
+      bytes: 'iUE1qg7KXeV',
+    },
+  },
 ];
 
 export const stakingFilters = (owner: string): GetProgramAccountsFilter[] => [
