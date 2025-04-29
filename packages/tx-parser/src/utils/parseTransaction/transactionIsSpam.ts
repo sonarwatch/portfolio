@@ -42,7 +42,7 @@ export const transactionIsSpam = (
       (i) =>
         i.programId.toString() === systemContract.address &&
         i.parsed.type === 'transfer' &&
-        i.parsed.info.lamports <= 100000
+        i.parsed.info.lamports <= 1000000
     )
   ) {
     return true;

@@ -52,15 +52,12 @@ const closeAccountService: ServiceDefinition = {
   matchTransaction: (txn: ParsedTransactionWithMeta) => {
     const instructions = getTransactionParsedInstructions(txn);
 
-    if (
+    return (
       instructions.length === 1 &&
       instructions[0].programId.toString() ===
         solanaTokenProgramContract.address &&
       instructions[0].parsed.type === 'closeAccount'
-    )
-      return true;
-
-    return false;
+    );
   },
 };
 
@@ -73,15 +70,12 @@ const createAccountService: ServiceDefinition = {
   matchTransaction: (txn: ParsedTransactionWithMeta) => {
     const instructions = getTransactionParsedInstructions(txn);
 
-    if (
+    return (
       instructions.length === 2 &&
       instructions[0].programId.toString() ===
         solanaAssociatedTokenContract.address &&
       instructions[0].parsed.type === 'create'
-    )
-      return true;
-
-    return false;
+    );
   },
 };
 
@@ -124,10 +118,29 @@ const transferService: ServiceDefinition = {
   },
 };
 
+const burnService: ServiceDefinition = {
+  id: `${platformId}-burn`,
+  name: 'Burn',
+  platformId,
+  networkId: NetworkId.solana,
+  priority: ServicePriority.low,
+  matchTransaction: (txn: ParsedTransactionWithMeta) => {
+    const instructions = getTransactionParsedInstructions(txn);
+
+    return (
+      instructions.length === 1 &&
+      instructions[0].programId.toString() ===
+        solanaTokenProgramContract.address &&
+      instructions[0].parsed.type === 'burn'
+    );
+  },
+};
+
 export const services: ServiceDefinition[] = [
   solanaStakingService,
   createAccountService,
   closeAccountService,
   transferService,
+  burnService,
 ];
 export default services;
