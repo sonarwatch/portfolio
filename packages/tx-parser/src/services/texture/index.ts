@@ -34,7 +34,7 @@ export const services: ServiceDefinition[] = [
     name: 'Lending',
     platformId,
     networkId: NetworkId.solana,
-    contracts: [contractV2, priceContract],
+    contracts: [contractV2],
   },
 ];
 export default services;
