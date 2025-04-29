@@ -2,7 +2,14 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'wormhole';
-const contract = {
+
+const mainContract = {
+  name: 'Wormhole',
+  address: 'HDwcJBJXjL9FpJ7UBsYBtaDjsBUhuLCUYoz3zr8SWWaQ',
+  platformId,
+};
+
+const stakingContract = {
   name: 'Staking',
   address: 'sspu65omPW2zJGWDxmx8btqxudHezoQHSGZmnW8jbVz',
   platformId,
@@ -26,12 +33,20 @@ const tbtcBridgeContract = {
   platformId,
 };
 
-const service: ServiceDefinition = {
+const stakingService: ServiceDefinition = {
   id: `${platformId}-staking`,
   name: 'Staking',
   platformId,
   networkId: NetworkId.solana,
-  contracts: [contract],
+  contracts: [stakingContract],
+};
+
+const wormholeService: ServiceDefinition = {
+  id: `${platformId}-main`,
+  name: 'Bridge',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [mainContract],
 };
 
 const tokenBridgeService: ServiceDefinition = {
@@ -59,7 +74,8 @@ const tbtcBridgeService: ServiceDefinition = {
 };
 
 export const services: ServiceDefinition[] = [
-  service,
+  wormholeService,
+  stakingService,
   tokenBridgeService,
   tokenBridgeRelayerService,
   tbtcBridgeService,
