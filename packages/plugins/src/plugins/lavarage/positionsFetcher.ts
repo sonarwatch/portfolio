@@ -75,24 +75,27 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     // Seems like they mixed up the collateral and size
     const size = acc.collateralAmount.dividedBy(amountFactor);
     const collatAmount = acc.userPaid.dividedBy(amountFactor);
-    const collateralValue = collatAmount.times(
-      index <= usdcPositions.length ? usdcPrice.price : solPrice.price
-    );
+    const amount = acc.amount.dividedBy(amountFactor);
+
+    const collatPrice =
+      index <= usdcPositions.length ? usdcPrice.price : solPrice.price;
+    const collatSizeValue = size.times(collatPrice);
+
+    const collateralValue = collatAmount.times(collatPrice);
     const sizeValue = size.times(assetPrice.price);
     const dailyInterest = acc.interestRate / 365;
-    const amount = acc.amount.dividedBy(amountFactor);
-    const entryPrice = size.dividedBy(collatAmount);
+    const entryPrice = amount.plus(collatAmount).dividedBy(size);
     const interest = amount
       .times(dailyInterest / 100)
       .times(daysSinceStart + 1);
 
     const liquidationPrice = amount
       .plus(interest)
-      .dividedBy(collateralValue.times(0.9))
+      .dividedBy(collatSizeValue.times(0.9))
       .toNumber();
     const pnlValue = new BigNumber(assetPrice.price)
       .minus(entryPrice)
-      .times(collatAmount)
+      .times(size)
       .minus(interest)
       .toNumber();
     element.addIsoPosition({
