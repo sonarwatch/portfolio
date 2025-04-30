@@ -3,6 +3,12 @@ import { ServiceDefinition, ServicePriority } from '../../ServiceDefinition';
 
 const platformId = 'metaplex';
 
+const coreContract: Contract = {
+  name: `Core`,
+  address: 'CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d',
+  platformId,
+};
+
 export const metaplexContract: Contract = {
   name: `Token Metadata`,
   address: 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
@@ -22,6 +28,7 @@ export const services: ServiceDefinition[] = [
     platformId,
     networkId: NetworkId.solana,
     contracts: [bubblegumContract],
+    priority: ServicePriority.low,
   },
   {
     id: `${platformId}-metadata`,
@@ -29,6 +36,14 @@ export const services: ServiceDefinition[] = [
     platformId,
     networkId: NetworkId.solana,
     contracts: [metaplexContract],
+    priority: ServicePriority.low,
+  },
+  {
+    id: `${platformId}-core`,
+    name: 'Core',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [coreContract],
     priority: ServicePriority.low,
   },
 ];

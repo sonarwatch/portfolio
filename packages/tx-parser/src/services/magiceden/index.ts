@@ -1,11 +1,18 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { ServiceDefinition } from '../../ServiceDefinition';
+import { matchAnyInstructionWithPrograms } from '../../utils/parseTransaction/matchAnyInstructionWithPrograms';
 
 const platformId = 'magiceden';
 
 const airdropContract = {
   name: 'Magic Claim',
   address: 'mcmexbLZHASMjxjARNvDhXnEQT8vMP4uWnBi1Et8RdX',
+  platformId,
+};
+
+const distributionContract = {
+  name: 'Magic Claim Distribution',
+  address: 'disGCfSiJKFigEphfou4PGHn1rukMfbs9cg9GpTM6oe',
   platformId,
 };
 
@@ -33,12 +40,22 @@ const auctionContract = {
   platformId,
 };
 
+const candyMachineContract = {
+  name: 'Candy Machine',
+  address: 'CMZYPASGWeTz7RNGHaRJfCq2XQ5pYK6nDvVQxzkH51zb',
+  platformId,
+};
+
 const airdropService: ServiceDefinition = {
-  id: `${platformId}-magic-claim`,
-  name: 'Magic Claim',
+  id: `${platformId}-airdrop`,
+  name: 'Airdrop',
   platformId,
   networkId: NetworkId.solana,
-  contracts: [airdropContract],
+  matchTransaction: (tx) =>
+    matchAnyInstructionWithPrograms(tx, [
+      airdropContract.address,
+      distributionContract.address,
+    ]),
 };
 
 const escrowService: ServiceDefinition = {
@@ -73,11 +90,20 @@ const cnftService: ServiceDefinition = {
   contracts: [cnftContract],
 };
 
+const launchpadService: ServiceDefinition = {
+  id: `${platformId}-launchpad`,
+  name: 'Launchpad',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [candyMachineContract],
+};
+
 export const services: ServiceDefinition[] = [
   airdropService,
   escrowService,
   stakingService,
   auctionService,
   cnftService,
+  launchpadService,
 ];
 export default services;

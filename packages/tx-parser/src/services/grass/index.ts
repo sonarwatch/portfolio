@@ -8,6 +8,12 @@ const contract = {
   platformId,
 };
 
+const airdropContract = {
+  name: 'Airdrop',
+  address: 'Eohp5jrnGQgP74oD7ij9EuCSYnQDLLHgsuAmtSTuxABk',
+  platformId,
+};
+
 const service: ServiceDefinition = {
   id: `${platformId}-staking`,
   name: 'Staking',
@@ -16,5 +22,13 @@ const service: ServiceDefinition = {
   contracts: [contract],
 };
 
-export const services: ServiceDefinition[] = [service];
+const airdropService: ServiceDefinition = {
+  id: `${platformId}-airdrop`,
+  name: 'Airdrop',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [airdropContract],
+};
+
+export const services: ServiceDefinition[] = [service, airdropService];
 export default services;

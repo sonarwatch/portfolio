@@ -23,6 +23,7 @@ import * as debridge from './services/debridge';
 import * as defiland from './services/defiland';
 import * as defituna from './services/defituna';
 import * as degencoinflip from './services/degencoinflip';
+import * as degods from './services/degods';
 import * as dflow from './services/dflow';
 import * as divvy from './services/divvy';
 import * as drift from './services/drift';
@@ -78,6 +79,7 @@ import * as nxfinance from './services/nxfinance';
 import * as okx from './services/okx';
 import * as only1 from './services/only1';
 import * as openbook from './services/openbook';
+import * as openloop from './services/openloop';
 import * as orca from './services/orca';
 import * as orderly from './services/orderly';
 import * as parcl from './services/parcl';
@@ -105,6 +107,7 @@ import * as save from './services/save';
 import * as sentre from './services/sentre';
 import * as serum from './services/serum';
 import * as sharky from './services/sharky';
+import * as smb from './services/smb';
 import * as sns from './services/sns';
 import * as solana from './services/solana';
 import * as solanaid from './services/solanaid';
@@ -160,6 +163,7 @@ export const services: ServiceDefinition[] = [
   defituna,
   dflow,
   degencoinflip,
+  degods,
   divvy,
   drift,
   driftMMV,
@@ -214,6 +218,7 @@ export const services: ServiceDefinition[] = [
   okx,
   only1,
   openbook,
+  openloop,
   orca,
   orderly,
   parcl,
@@ -241,6 +246,7 @@ export const services: ServiceDefinition[] = [
   sentre,
   serum,
   sharky,
+  smb,
   sns,
   solana,
   solanaid,

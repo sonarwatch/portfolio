@@ -2,21 +2,29 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import { ServiceDefinition } from '../../ServiceDefinition';
 import { matchAnyInstructionWithPrograms } from '../../utils/parseTransaction/matchAnyInstructionWithPrograms';
 
-const platformId = 'solincinerator';
+const platformId = 'saber';
+const stableswapContract = {
+  name: 'Stable Swap',
+  address: 'SSwpkEEcbUqx4vtoEByFjSkhKdCT862DNVb52nZg1UZ',
+  platformId,
+};
 
-const contract = {
-  name: 'Incinerator',
-  address: 'F6fmDVCQfvnEq2KR8hhfZSEczfM9JK9fWbCsYJNbTGn7',
+const swapContract = {
+  name: 'Swap',
+  address: 'YAkoNb6HKmSxQN9L8hiBE5tPJRsniSSMzND1boHmZxe',
   platformId,
 };
 
 const service: ServiceDefinition = {
-  id: `${platformId}-cleanup`,
-  name: 'Cleanup',
+  id: `${platformId}-swap`,
+  name: 'Swap',
   platformId,
   networkId: NetworkId.solana,
   matchTransaction: (tx) =>
-    matchAnyInstructionWithPrograms(tx, [contract.address]),
+    matchAnyInstructionWithPrograms(tx, [
+      stableswapContract.address,
+      swapContract.address,
+    ]),
 };
 
 export const services: ServiceDefinition[] = [service];
