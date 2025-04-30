@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.0.25](https://github.com/sonarwatch/portfolio/compare/tx-parser-0.0.24...tx-parser-0.0.25) (2025-04-30)
+
+
+### Features
+
+* **lavarage:** add new leverage plugin with pools and positions fetchers ([3398d7c](https://github.com/sonarwatch/portfolio/commit/3398d7cc153889e324f479b9ad46afeecf556bc0))
+
+
+
 ## [0.0.24](https://github.com/sonarwatch/portfolio/compare/tx-parser-0.0.23...tx-parser-0.0.24) (2025-04-29)
 
 
