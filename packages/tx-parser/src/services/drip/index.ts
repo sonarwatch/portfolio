@@ -11,8 +11,10 @@ export const services: ServiceDefinition[] = [
     platformId,
     networkId: NetworkId.solana,
     matchTransaction(txn) {
-      return txn.transaction.signatures.some(
-        (account) => account === dripcNFTSenderAddress
+      return txn.transaction.message.accountKeys.some(
+        (accountKey) =>
+          accountKey.signer &&
+          accountKey.pubkey.toString() === dripcNFTSenderAddress
       );
     },
   },
