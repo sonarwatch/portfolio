@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.0.27](https://github.com/sonarwatch/portfolio/compare/tx-parser-0.0.26...tx-parser-0.0.27) (2025-04-30)
+
+
+### Features
+
+* **services:** add bonkbot and cudis service definitions ([db4585f](https://github.com/sonarwatch/portfolio/commit/db4585f6073925ea5dba79404d6500be5a0d15dd))
+
+
+
 ## [0.0.26](https://github.com/sonarwatch/portfolio/compare/tx-parser-0.0.25...tx-parser-0.0.26) (2025-04-30)
 
 
