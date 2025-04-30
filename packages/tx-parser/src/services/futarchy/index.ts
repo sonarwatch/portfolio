@@ -22,7 +22,7 @@ const conditionalContract = {
 
 const ammContract = {
   name: 'AMM',
-  address: 'autoQP9RmUNkzzKRXsMkWicDVZ3h29vvyMDcAYjCxxg',
+  address: 'AMMyu265tkBpRW21iGQxKGLaves3gKm2JcMUqfXNSpqD',
   platformId,
 };
 
