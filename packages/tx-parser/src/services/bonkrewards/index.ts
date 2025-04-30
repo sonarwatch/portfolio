@@ -9,7 +9,7 @@ const contract = {
 
 const service: ServiceDefinition = {
   id: 'bonkrewards-staking',
-  name: 'Bonk Staking',
+  name: 'Staking',
   platformId: 'bonkrewards',
   networkId: NetworkId.solana,
   contracts: [contract],
