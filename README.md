@@ -169,6 +169,7 @@ npx nx run plugins:run-airdrop-fetcher drift-airdrop-1 DemoSX9F2zXfQLtBr56Yr5he1
 
 # Run transactions
 npx nx run tx-parser:run DemoSX9F2zXfQLtBr56Yr5he15P7viZWsYJpSDAX3tKG
+npx nx run tx-parser:run-tx 2hnxfn9CX7tUhSbHZ2rQLXzrBJ4BwuJMhKVZgWgAFPKkJSj8aFFPDeYVmxqGSGuCGhNCCAtCyEp1fJ4nTQEmxVSs
 ```
 
 ## Build

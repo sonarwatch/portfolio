@@ -8,6 +8,10 @@
       "command": "ts-node -P packages/tx-parser/tsconfig.script.json --swc packages/tx-parser/scripts/run.ts",
       "dependsOn": []
     },
+    "run-tx": {
+      "command": "ts-node -P packages/tx-parser/tsconfig.script.json --swc packages/tx-parser/scripts/run-tx.ts",
+      "dependsOn": []
+    },
     "build": {
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
