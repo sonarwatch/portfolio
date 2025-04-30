@@ -116,6 +116,7 @@ import * as solincinerator from './services/solincinerator';
 import * as solsea from './services/solsea';
 import * as sonic from './services/sonic';
 import * as spiderswap from './services/spiderswap';
+import * as squads from './services/squads';
 import * as stabble from './services/stabble';
 import * as staratlas from './services/staratlas';
 import * as stepfinance from './services/stepfinance';
@@ -255,6 +256,7 @@ export const services: ServiceDefinition[] = [
   solsea,
   sonic,
   spiderswap,
+  squads,
   stabble,
   staratlas,
   stepfinance,
