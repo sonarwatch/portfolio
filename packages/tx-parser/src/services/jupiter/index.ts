@@ -1,5 +1,6 @@
 import { Contract, NetworkId } from '@sonarwatch/portfolio-core';
 import { ServiceDefinition } from '../../ServiceDefinition';
+import { matchAnyInstructionWithPrograms } from '../../utils/parseTransaction/matchAnyInstructionWithPrograms';
 
 const platformId = 'jupiter-exchange';
 const governancePlatformId = 'jupiter-governance';
@@ -215,17 +216,14 @@ export const services: ServiceDefinition[] = [
   },
   {
     id: `${platformId}-governance`,
-    name: 'Vote Manager',
+    name: 'Vote',
     platformId: governancePlatformId,
     networkId: NetworkId.solana,
-    contracts: [jupiterGovernanceContract],
-  },
-  {
-    id: `${governancePlatformId}-locker-vote`,
-    name: 'Governance',
-    platformId: governancePlatformId,
-    networkId: NetworkId.solana,
-    contracts: [jupiterVoteContract],
+    matchTransaction: (tx) =>
+      matchAnyInstructionWithPrograms(tx, [
+        jupiterGovernanceContract.address,
+        jupiterVoteContract.address,
+      ]),
   },
   {
     id: `${platformId}-invite`,
