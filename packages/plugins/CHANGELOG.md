@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.193](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.192...plugins-0.14.193) (2025-04-30)
+
+
+### Bug Fixes
+
+* correct next starting index calculation ([2af8811](https://github.com/sonarwatch/portfolio/commit/2af8811b9302bfa0d81736487ac24e13612fc0a6))
+
+
+### Features
+
+* **lavarage:** add new leverage plugin with pools and positions fetchers ([3398d7c](https://github.com/sonarwatch/portfolio/commit/3398d7cc153889e324f479b9ad46afeecf556bc0))
+
+
+
 ## [0.14.192](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.191...plugins-0.14.192) (2025-04-29)
 
 
