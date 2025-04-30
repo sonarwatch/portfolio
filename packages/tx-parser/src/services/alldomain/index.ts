@@ -15,14 +15,6 @@ const coSignerContract = {
   platformId,
 };
 
-const coSignerService: ServiceDefinition = {
-  id: `${platformId}-co-signer`,
-  name: 'CoSigner',
-  platformId,
-  networkId: NetworkId.solana,
-  contracts: [coSignerContract],
-};
-
 const service: ServiceDefinition = {
   id: `${platformId}-name-service`,
   name: 'Name Service',
@@ -35,5 +27,5 @@ const service: ServiceDefinition = {
     ]),
 };
 
-export const services: ServiceDefinition[] = [service, coSignerService];
+export const services: ServiceDefinition[] = [service];
 export default services;
