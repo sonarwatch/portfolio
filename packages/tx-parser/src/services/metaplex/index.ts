@@ -1,5 +1,5 @@
 import { Contract, NetworkId } from '@sonarwatch/portfolio-core';
-import { ServiceDefinition } from '../../ServiceDefinition';
+import { ServiceDefinition, ServicePriority } from '../../ServiceDefinition';
 
 const platformId = 'metaplex';
 
@@ -29,6 +29,7 @@ export const services: ServiceDefinition[] = [
     platformId,
     networkId: NetworkId.solana,
     contracts: [metaplexContract],
+    priority: ServicePriority.low,
   },
 ];
 
