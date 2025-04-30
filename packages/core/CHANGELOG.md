@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.198](https://github.com/sonarwatch/portfolio/compare/core-0.14.197...core-0.14.198) (2025-04-30)
+
+
+### Features
+
+* **lavarage:** add new leverage plugin with pools and positions fetchers ([3398d7c](https://github.com/sonarwatch/portfolio/commit/3398d7cc153889e324f479b9ad46afeecf556bc0))
+
+
+
 ## [0.14.197](https://github.com/sonarwatch/portfolio/compare/core-0.14.196...core-0.14.197) (2025-04-28)
 
 
