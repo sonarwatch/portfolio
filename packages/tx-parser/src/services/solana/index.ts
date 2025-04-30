@@ -35,12 +35,26 @@ export const solanaTokenProgramContract = {
   platformId,
 };
 
-const solanaStakingService: ServiceDefinition = {
+export const solanaStakePoolContract = {
+  name: 'Stake Pool',
+  address: 'SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy',
+  platformId,
+};
+
+const stakingService: ServiceDefinition = {
   id: `${platformId}-stake`,
   name: 'Staking',
   platformId,
   networkId: NetworkId.solana,
   contracts: [solanaStakingContract],
+};
+
+const stakePoolService: ServiceDefinition = {
+  id: `${platformId}-stake-pool`,
+  name: 'Stake Pool',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [solanaStakePoolContract],
 };
 
 const closeAccountService: ServiceDefinition = {
@@ -137,7 +151,8 @@ const burnService: ServiceDefinition = {
 };
 
 export const services: ServiceDefinition[] = [
-  solanaStakingService,
+  stakingService,
+  stakePoolService,
   createAccountService,
   closeAccountService,
   transferService,

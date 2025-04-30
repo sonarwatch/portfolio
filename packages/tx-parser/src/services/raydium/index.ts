@@ -3,54 +3,79 @@ import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'raydium';
 
-const raydiumAmmV3Contract: Contract = {
-  name: 'Raydium AMM v3',
+const ammV3Contract: Contract = {
+  name: 'AMM v3',
   address: 'EhhTKczWMGQt46ynNeRX1WfeagwwJd7ufHvCDjRxjo5Q',
   platformId,
 };
-const raydiumAmmV4Contract: Contract = {
-  name: 'Raydium AMM v4',
+const ammV4Contract: Contract = {
+  name: 'AMM v4',
   address: '675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8',
   platformId,
 };
-const raydiumAmmV5Contract: Contract = {
-  name: 'Raydium AMM v5',
+const ammV5Contract: Contract = {
+  name: 'AMM v5',
   address: '5quBtoiQqxF9Jv6KYKctB59NT3gtJD2Y65kdnB1Uev3h',
   platformId,
 };
 const ammRootingContract: Contract = {
-  name: 'Raydium AMM Rooting',
+  name: 'AMM Rooting',
   address: 'routeUGWgWzqBWFcrCfv8tritsqukccJPu3q5GPP3xS',
   platformId,
 };
-const raydiumClmmContract: Contract = {
-  name: 'Raydium CLMM',
+const clmmContract: Contract = {
+  name: 'CLMM',
   address: 'CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK',
   platformId,
 };
-const raydiumCpmmContract: Contract = {
-  name: 'Raydium CPMM',
+const cpmmContract: Contract = {
+  name: 'CPMM',
   address: 'CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C',
   platformId,
 };
 const farmV3Contract: Contract = {
-  name: 'Raydium Farm V3',
+  name: 'Farm V3',
   address: 'EhhTKczWMGQt46ynNeRX1WfeagwwJd7ufHvCDjRxjo5Q',
   platformId,
 };
 const farmV4Contract: Contract = {
-  name: 'Raydium Farm V4',
+  name: 'Farm V4',
   address: 'CBuCnLe26faBpcBP2fktp4rp8abpcAnTWft6ZrP5Q4T',
   platformId,
 };
 const farmV5Contract: Contract = {
-  name: 'Raydium Farm V5',
+  name: 'Farm V5',
   address: '9KEPoZmtHUrBbhWN1v1KWLMkkvwY6WLtAVUCPRtRjP4z',
   platformId,
 };
 const farmV6Contract: Contract = {
-  name: 'Raydium Farm V6',
+  name: 'Farm V6',
   address: 'FarmqiPv5eAj3j1GMdMCMUGXqPUvmquZtMy86QH6rzhG',
+  platformId,
+};
+const idoContract: Contract = {
+  name: 'IDO V1',
+  address: '6FJon3QE27qgPVggARueB22hLvoh22VzJpXv4rBEoSLF',
+  platformId,
+};
+const idoV2Contract: Contract = {
+  name: 'IDO V2',
+  address: 'CC12se5To1CdEuw7fDS27B7Geo5jJyL7t5UK2B44NgiH',
+  platformId,
+};
+const idoV3Contract: Contract = {
+  name: 'IDO V3',
+  address: '9HzJyW1qZsEiSfMUf6L2jo3CcTKAyBmSyKdwQeYisHrC',
+  platformId,
+};
+const idoV4Contract: Contract = {
+  name: 'IDO V4',
+  address: 'DropEU8AvevN3UrXWXTMuz3rqnMczQVNjq3kcSdW2SQi',
+  platformId,
+};
+const launchpadContract: Contract = {
+  name: 'Launchpad',
+  address: 'LanMV9sAd7wArD4vJFi2qDdfnVhFxYSUg6eADduJ3uj',
   platformId,
 };
 
@@ -60,21 +85,21 @@ export const services: ServiceDefinition[] = [
     name: 'Stake',
     platformId,
     networkId: NetworkId.solana,
-    contracts: [raydiumAmmV3Contract],
+    contracts: [ammV3Contract],
   },
   {
     id: `${platformId}-amm-v4`,
     name: 'AMM v4',
     platformId,
     networkId: NetworkId.solana,
-    contracts: [raydiumAmmV4Contract],
+    contracts: [ammV4Contract],
   },
   {
     id: `${platformId}-amm-v5`,
     name: 'AMM v5',
     platformId,
     networkId: NetworkId.solana,
-    contracts: [raydiumAmmV5Contract],
+    contracts: [ammV5Contract],
   },
   {
     id: `${platformId}-amm-rooting`,
@@ -88,14 +113,14 @@ export const services: ServiceDefinition[] = [
     name: 'CLMM',
     platformId,
     networkId: NetworkId.solana,
-    contracts: [raydiumClmmContract],
+    contracts: [clmmContract],
   },
   {
     id: `${platformId}-cpmm`,
     name: 'CPMM',
     platformId,
     networkId: NetworkId.solana,
-    contracts: [raydiumCpmmContract],
+    contracts: [cpmmContract],
   },
   {
     id: `${platformId}-farm-v3`,
@@ -124,6 +149,41 @@ export const services: ServiceDefinition[] = [
     platformId,
     networkId: NetworkId.solana,
     contracts: [farmV6Contract],
+  },
+  {
+    id: `${platformId}-ido-v1`,
+    name: 'IDO V1',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [idoContract],
+  },
+  {
+    id: `${platformId}-ido-v2`,
+    name: 'IDO V2',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [idoV2Contract],
+  },
+  {
+    id: `${platformId}-ido-v3`,
+    name: 'IDO V3',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [idoV3Contract],
+  },
+  {
+    id: `${platformId}-ido-v4`,
+    name: 'IDO V4',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [idoV4Contract],
+  },
+  {
+    id: `${platformId}-launchpad`,
+    name: 'Launchpad',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [launchpadContract],
   },
 ];
 

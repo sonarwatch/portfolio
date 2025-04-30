@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.0.26](https://github.com/sonarwatch/portfolio/compare/tx-parser-0.0.25...tx-parser-0.0.26) (2025-04-30)
+
+
+### Features
+
+* **services:** add new services for accessprotocol, amulet, banana-gun, bloom, maestro, mintech, openbook, pumpfun, and serum ([a48f591](https://github.com/sonarwatch/portfolio/commit/a48f591dcf3ceb5d5a845fda35dda3543b4faf46))
+* **services:** add staking and contract definitions for multiple platforms ([143337b](https://github.com/sonarwatch/portfolio/commit/143337befedf80658f8dc64368d8fdfa1c116145))
+
+
+
 ## [0.0.25](https://github.com/sonarwatch/portfolio/compare/tx-parser-0.0.24...tx-parser-0.0.25) (2025-04-30)
 
 

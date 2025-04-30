@@ -11,6 +11,12 @@ export const kaminoLendContract: Contract = {
   address: 'KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD',
   platformId,
 };
+const poolsContract = {
+  name: 'Liquidity',
+  address: '6LtLpnUFNByNXLyCoK9wA2MykKAmQNZKBdY8s47dehDc',
+  platformId,
+};
+
 const kaminoFarmContract = {
   name: 'Kamino Farm',
   address: 'FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr',
@@ -74,6 +80,14 @@ const swapPythService: ServiceDefinition = {
   contracts: [limitOrderContract, expressRelayContract],
 };
 
+const kaminoLiquidityService: ServiceDefinition = {
+  id: `${platformId}-liquidity`,
+  name: 'Liquidity',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [poolsContract],
+};
+
 export const services: ServiceDefinition[] = [
   kaminoLendingService,
   kaminoFarmService,
@@ -82,6 +96,7 @@ export const services: ServiceDefinition[] = [
   swapService,
   swapJupiterService,
   swapPythService,
+  kaminoLiquidityService,
 ];
 
 export default services;

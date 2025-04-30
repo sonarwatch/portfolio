@@ -14,12 +14,31 @@ const launchpadContract = {
   platformId,
 };
 
+const conditionalContract = {
+  name: 'Conditional Vault',
+  address: 'VLTX1ishMBbcX3rdBWGssxawAo1Q2X2qxYFYqiGodVg',
+  platformId,
+};
+
+const ammContract = {
+  name: 'AMM',
+  address: 'autoQP9RmUNkzzKRXsMkWicDVZ3h29vvyMDcAYjCxxg',
+  platformId,
+};
+
 const service: ServiceDefinition = {
   id: 'futarchy-dao',
-  name: 'DAO',
+  name: 'Decision Market',
   platformId,
   networkId: NetworkId.solana,
-  contracts: [contract],
+  matchTransaction: (tx) =>
+    tx.transaction.message.instructions.some((ix) =>
+      [
+        ammContract.address,
+        conditionalContract.address,
+        contract.address,
+      ].includes(ix.programId.toString())
+    ),
 };
 const launchpadService: ServiceDefinition = {
   id: 'futarchy-launchpad',
