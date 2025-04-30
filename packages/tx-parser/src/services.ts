@@ -67,7 +67,7 @@ import * as marginfi from './services/marginfi';
 import * as marinade from './services/marinade';
 import * as mayan from './services/mayan';
 import * as metaplex from './services/metaplex';
-import * as magma from './services/magma';
+import * as magna from './services/magna';
 import * as mango from './services/mango';
 import * as maple from './services/maple';
 import * as meteora from './services/meteora';
@@ -207,7 +207,7 @@ export const services: ServiceDefinition[] = [
   marinade,
   mayan,
   metaplex,
-  magma,
+  magna,
   mango,
   maple,
   meteora,
