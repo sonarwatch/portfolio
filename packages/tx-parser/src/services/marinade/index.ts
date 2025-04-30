@@ -1,5 +1,6 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { ServiceDefinition } from '../../ServiceDefinition';
+import { systemContract } from '../solana';
 
 const platformId = 'marinade';
 const contract = {
@@ -13,6 +14,8 @@ const airdropContract = {
   address: 'indiXdKbsC4QSLQQnn6ngZvkqfywn6KgEeQbkGSpk1V',
   platformId,
 };
+
+const nativeStakingOperator = 'opNS8ENpEMWdXcJUgJCsJTDp7arTXayoBEeBUg6UezP';
 
 const service: ServiceDefinition = {
   id: `${platformId}-ticket`,
@@ -30,5 +33,23 @@ const airdropService: ServiceDefinition = {
   contracts: [airdropContract],
 };
 
-export const services: ServiceDefinition[] = [service, airdropService];
+const nativeStakeService: ServiceDefinition = {
+  id: `${platformId}-native-stake`,
+  name: 'Native Stake',
+  platformId,
+  networkId: NetworkId.solana,
+  matchTransaction: (txn) =>
+    txn.transaction.message.accountKeys.some(
+      (accnt) => accnt.pubkey.toString() === nativeStakingOperator
+    ) &&
+    txn.transaction.message.instructions.some(
+      (instruction) =>
+        instruction.programId.toString() === systemContract.address
+    ),
+};
+export const services: ServiceDefinition[] = [
+  service,
+  airdropService,
+  nativeStakeService,
+];
 export default services;
