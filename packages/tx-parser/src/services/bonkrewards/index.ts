@@ -20,6 +20,12 @@ const swapContract = {
   platformId,
 };
 
+const bonkMasContract = {
+  name: 'BonkMas',
+  address: 'BMas2pUrC5GR1ZJFbJLy2UmBcEgCfdxB5QLSBrLRnvK4',
+  platformId,
+};
+
 const stakingService: ServiceDefinition = {
   id: `${platformId}-staking`,
   name: 'Staking',
@@ -44,9 +50,18 @@ const swapService: ServiceDefinition = {
   contracts: [swapContract],
 };
 
+const bonkMasService: ServiceDefinition = {
+  id: `${platformId}-bonkmas`,
+  name: 'BONKmas',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [bonkMasContract],
+};
+
 export const services: ServiceDefinition[] = [
   stakingService,
   fireService,
   swapService,
+  bonkMasService,
 ];
 export default services;
