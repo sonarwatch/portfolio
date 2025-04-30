@@ -71,7 +71,7 @@ const createAccountService: ServiceDefinition = {
     const instructions = getTransactionParsedInstructions(txn);
 
     return (
-      instructions.length === 2 &&
+      instructions.length === 1 &&
       instructions[0].programId.toString() ===
         solanaAssociatedTokenContract.address &&
       instructions[0].parsed.type === 'create'
