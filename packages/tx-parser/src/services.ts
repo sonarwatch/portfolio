@@ -1,10 +1,12 @@
 import * as access from './services/access';
 import * as adrena from './services/adrena';
 import * as allbridge from './services/allbridge';
+import * as alldomain from './services/alldomain';
 import * as amulet from './services/amulet';
 import * as armada from './services/armada';
 import * as atrix from './services/atrix';
 import * as aurory from './services/aurory';
+import * as backwoods from './services/backwoods';
 import * as bananagun from './services/bananagun';
 import * as banger from './services/banger';
 import * as banx from './services/banx';
@@ -135,10 +137,12 @@ export const services: ServiceDefinition[] = [
   access,
   adrena,
   allbridge,
+  alldomain,
   amulet,
   armada,
   atrix,
   aurory,
+  backwoods,
   bananagun,
   banger,
   banx,
