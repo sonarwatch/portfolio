@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.0.28](https://github.com/sonarwatch/portfolio/compare/tx-parser-0.0.27...tx-parser-0.0.28) (2025-04-30)
+
+
+### Features
+
+* add new services for degods, openloop, saber, smb, solanart and update existing services ([08e63c8](https://github.com/sonarwatch/portfolio/commit/08e63c81e488da61d40ffd6ade47b1d707ec3637))
+
+
+
 ## [0.0.27](https://github.com/sonarwatch/portfolio/compare/tx-parser-0.0.26...tx-parser-0.0.27) (2025-04-30)
 
 
