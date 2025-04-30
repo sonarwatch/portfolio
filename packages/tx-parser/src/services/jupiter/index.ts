@@ -247,7 +247,7 @@ export const services: ServiceDefinition[] = [
   {
     id: `${platformId}-asr`,
     name: 'ASR',
-    platformId,
+    platformId: governancePlatformId,
     networkId: NetworkId.solana,
     contracts: [asrContract],
   },
