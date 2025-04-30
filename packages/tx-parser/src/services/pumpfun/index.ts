@@ -1,18 +1,19 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import { ServiceDefinition } from '../../ServiceDefinition';
+import { ServiceDefinition, ServicePriority } from '../../ServiceDefinition';
 
-const platformId = 'adrena';
+const platformId = 'pumpfun';
 const contract = {
-  name: 'Main',
-  address: '13gDzEXCdocbj8iAiqrScGo47NiSuYENGsRqi3SEAwet',
+  name: 'Launchpad',
+  address: '6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P',
   platformId,
 };
 
 const service: ServiceDefinition = {
-  id: `${platformId}-core`,
-  name: 'Core',
+  id: `${platformId}-launchpad`,
+  name: 'Launchpad',
   platformId,
   networkId: NetworkId.solana,
+  priority: ServicePriority.low,
   contracts: [contract],
 };
 

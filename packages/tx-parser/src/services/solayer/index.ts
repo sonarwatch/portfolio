@@ -1,16 +1,11 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { ServiceDefinition } from '../../ServiceDefinition';
+import { solanaStakePoolContract } from '../solana';
 
 const platformId = 'solayer';
 const solayerContract = {
   name: 'Solayer',
   address: 'sSo1iU21jBrU9VaJ8PJib1MtorefUV4fzC9GURa2KNn',
-  platformId,
-};
-
-const stakePoolContract = {
-  name: 'Stake Pool',
-  address: 'SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy',
   platformId,
 };
 
@@ -45,7 +40,7 @@ const restakingService: ServiceDefinition = {
   name: 'Restaking',
   platformId,
   networkId: NetworkId.solana,
-  contracts: [solayerContract, stakePoolContract],
+  contracts: [solayerContract, solanaStakePoolContract],
 };
 
 const airdropService: ServiceDefinition = {
@@ -69,7 +64,7 @@ const delegateService: ServiceDefinition = {
   name: 'Delegate',
   platformId,
   networkId: NetworkId.solana,
-  contracts: [endoAvsContract, solayerContract, stakePoolContract],
+  contracts: [endoAvsContract, solayerContract, solanaStakePoolContract],
 };
 
 export const services: ServiceDefinition[] = [

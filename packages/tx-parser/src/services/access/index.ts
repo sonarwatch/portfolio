@@ -1,16 +1,16 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { ServiceDefinition } from '../../ServiceDefinition';
 
-const platformId = 'adrena';
+const platformId = 'accessprotocol';
 const contract = {
-  name: 'Main',
-  address: '13gDzEXCdocbj8iAiqrScGo47NiSuYENGsRqi3SEAwet',
+  name: 'Staking',
+  address: '6HW8dXjtiTGkD4jzXs7igdFmZExPpmwUrRN5195xGup',
   platformId,
 };
 
 const service: ServiceDefinition = {
-  id: `${platformId}-core`,
-  name: 'Core',
+  id: `${platformId}-staking`,
+  name: 'Staking',
   platformId,
   networkId: NetworkId.solana,
   contracts: [contract],

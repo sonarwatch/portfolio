@@ -1,10 +1,10 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { ServiceDefinition } from '../../ServiceDefinition';
 
-const platformId = 'adrena';
+const platformId = 'amulet';
 const contract = {
-  name: 'Main',
-  address: '13gDzEXCdocbj8iAiqrScGo47NiSuYENGsRqi3SEAwet',
+  name: 'Core',
+  address: 'AFX6h67CCoqcJcoFbq12dabMLDruQ38U2nogpeU7ECLa',
   platformId,
 };
 

@@ -2,6 +2,12 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'sanctum';
+const poolContract = {
+  name: 'Infinity Pool',
+  address: '5ocnV1qiCgaQR8Jb8xWnVbApfaygJ8tNoZfgPwsgx9kx',
+  platformId,
+};
+
 const voteContract = {
   name: 'Vote',
   address: 'VAU1T7S5UuEHmMvXtXMVmpEoQtZ2ya7eRb7gcN47wDp',
@@ -15,7 +21,7 @@ const stakingContract = {
 };
 
 const voteService: ServiceDefinition = {
-  id: 'sanctum-vote',
+  id: `${platformId}-vote`,
   name: 'Vote',
   platformId,
   networkId: NetworkId.solana,
@@ -23,12 +29,24 @@ const voteService: ServiceDefinition = {
 };
 
 const stakingService: ServiceDefinition = {
-  id: 'sanctum-staking',
+  id: `${platformId}-staking`,
   name: 'Staking',
   platformId,
   networkId: NetworkId.solana,
   contracts: [stakingContract],
 };
 
-export const services: ServiceDefinition[] = [voteService, stakingService];
+const poolService: ServiceDefinition = {
+  id: `${platformId}-pool`,
+  name: 'Infinity Pool',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [poolContract],
+};
+
+export const services: ServiceDefinition[] = [
+  voteService,
+  stakingService,
+  poolService,
+];
 export default services;
