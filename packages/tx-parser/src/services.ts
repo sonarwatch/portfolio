@@ -55,6 +55,7 @@ import * as hylo from './services/hylo';
 import * as iloop from './services/iloop';
 import * as jito from './services/jito';
 import * as jupiter from './services/jupiter';
+import * as lavarage from './services/lavarage';
 import * as layer3 from './services/layer3';
 import * as kamino from './services/kamino';
 import * as lifinity from './services/lifinity';
@@ -196,6 +197,7 @@ export const services: ServiceDefinition[] = [
   jito,
   jupiter,
   kamino,
+  lavarage,
   layer3,
   lifinity,
   loopscale,
