@@ -1,15 +1,22 @@
+import * as access from './services/access';
 import * as adrena from './services/adrena';
 import * as allbridge from './services/allbridge';
+import * as amulet from './services/amulet';
 import * as armada from './services/armada';
 import * as atrix from './services/atrix';
 import * as aurory from './services/aurory';
+import * as bananagun from './services/bananagun';
+import * as banger from './services/banger';
 import * as banx from './services/banx';
 import * as bio from './services/bio';
+import * as bloom from './services/bloom';
 import * as bonkrewards from './services/bonkrewards';
 import * as bskt from './services/bskt';
 import * as carrot from './services/carrot';
 import * as circle from './services/circle';
 import * as citrus from './services/citrus';
+import * as cropper from './services/cropper';
+import * as cudis from './services/cudis';
 import * as debridge from './services/debridge';
 import * as defiland from './services/defiland';
 import * as defituna from './services/defituna';
@@ -29,10 +36,12 @@ import * as fluxbeam from './services/fluxbeam';
 import * as fragmetric from './services/fragmetric';
 import * as francium from './services/francium';
 import * as futarchy from './services/futarchy';
+import * as genesysgo from './services/genesysgo';
 import * as goosefx from './services/goosefx';
 import * as gpool from './services/oresupply';
 import * as grass from './services/grass';
 import * as guano from './services/guano';
+import * as hawkfi from './services/hawkfi';
 import * as hedgehog from './services/hedgehog';
 import * as helio from './services/helio';
 import * as helium from './services/helium';
@@ -49,20 +58,24 @@ import * as lifinity from './services/lifinity';
 import * as loopscale from './services/loopscale';
 import * as lulo from './services/lulo';
 import * as madlads from './services/madlads';
+import * as maestro from './services/maestro';
 import * as magiceden from './services/magiceden';
 import * as marginfi from './services/marginfi';
 import * as marinade from './services/marinade';
 import * as mayan from './services/mayan';
 import * as metaplex from './services/metaplex';
 import * as magma from './services/magma';
+import * as mango from './services/mango';
 import * as maple from './services/maple';
 import * as meteora from './services/meteora';
+import * as mintech from './services/mintech';
 import * as moonwalk from './services/moonwalk';
 import * as nirvana from './services/nirvana';
 import * as nosana from './services/nosana';
 import * as nxfinance from './services/nxfinance';
 import * as okx from './services/okx';
 import * as only1 from './services/only1';
+import * as openbook from './services/openbook';
 import * as orca from './services/orca';
 import * as orderly from './services/orderly';
 import * as parcl from './services/parcl';
@@ -73,6 +86,8 @@ import * as phoenix from './services/phoenix';
 import * as photon from './services/photon';
 import * as picasso from './services/picasso';
 import * as pluto from './services/pluto';
+import * as puffcoin from './services/puffcoin';
+import * as pumpfun from './services/pumpfun';
 import * as pumpkin from './services/pumpkin';
 import * as pumpswap from './services/pumpswap';
 import * as pyth from './services/pyth';
@@ -86,6 +101,7 @@ import * as sanctum from './services/sanctum';
 import * as sandglass from './services/sandglass';
 import * as save from './services/save';
 import * as sentre from './services/sentre';
+import * as serum from './services/serum';
 import * as sharky from './services/sharky';
 import * as sns from './services/sns';
 import * as solana from './services/solana';
@@ -97,6 +113,7 @@ import * as sonic from './services/sonic';
 import * as spiderswap from './services/spiderswap';
 import * as stabble from './services/stabble';
 import * as staratlas from './services/staratlas';
+import * as stepfinance from './services/stepfinance';
 import * as streamflow from './services/streamflow';
 import * as switchboard from './services/switchboard';
 import * as symmetry from './services/symmetry';
@@ -105,26 +122,35 @@ import * as texture from './services/texture';
 import * as titan from './services/titan';
 import * as triad from './services/triad';
 import * as underdog from './services/underdog';
+import * as uxd from './services/uxd';
 import * as vaultka from './services/vaultka';
 import * as whalesmarket from './services/whalesmarket';
 import * as wormhole from './services/wormhole';
+import * as zelo from './services/zelo';
 import * as zeta from './services/zeta';
 import * as zeus from './services/zeus';
 import { ServiceDefinition, ServicePriority } from './ServiceDefinition';
 
 export const services: ServiceDefinition[] = [
+  access,
   adrena,
   allbridge,
+  amulet,
   armada,
   atrix,
   aurory,
+  bananagun,
+  banger,
   banx,
   bio,
+  bloom,
   bonkrewards,
   bskt,
   carrot,
   circle,
   citrus,
+  cropper,
+  cudis,
   debridge,
   defiland,
   defituna,
@@ -144,10 +170,12 @@ export const services: ServiceDefinition[] = [
   fragmetric,
   francium,
   futarchy,
+  genesysgo,
   goosefx,
   gpool,
   grass,
   guano,
+  hawkfi,
   hedgehog,
   helio,
   helium,
@@ -164,20 +192,24 @@ export const services: ServiceDefinition[] = [
   loopscale,
   lulo,
   madlads,
+  maestro,
   magiceden,
   marginfi,
   marinade,
   mayan,
   metaplex,
   magma,
+  mango,
   maple,
   meteora,
+  mintech,
   moonwalk,
   nirvana,
   nosana,
   nxfinance,
   okx,
   only1,
+  openbook,
   orca,
   orderly,
   parcl,
@@ -188,6 +220,8 @@ export const services: ServiceDefinition[] = [
   photon,
   picasso,
   pluto,
+  puffcoin,
+  pumpfun,
   pumpkin,
   pumpswap,
   pyth,
@@ -201,6 +235,7 @@ export const services: ServiceDefinition[] = [
   sandglass,
   save,
   sentre,
+  serum,
   sharky,
   sns,
   solana,
@@ -212,6 +247,7 @@ export const services: ServiceDefinition[] = [
   spiderswap,
   stabble,
   staratlas,
+  stepfinance,
   streamflow,
   switchboard,
   symmetry,
@@ -220,9 +256,11 @@ export const services: ServiceDefinition[] = [
   titan,
   triad,
   underdog,
+  uxd,
   vaultka,
   whalesmarket,
   wormhole,
+  zelo,
   zeta,
   zeus,
 ]
