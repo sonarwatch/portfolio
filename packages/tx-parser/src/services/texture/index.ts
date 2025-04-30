@@ -1,5 +1,6 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { ServiceDefinition } from '../../ServiceDefinition';
+import { matchAnyInstructionWithPrograms } from '../../utils/parseTransaction/matchAnyInstructionWithPrograms';
 
 const platformId = 'texture';
 
@@ -21,20 +22,25 @@ const priceContract = {
   platformId,
 };
 
+const contract = {
+  name: 'Lending',
+  address: 'MLENdNkmK61mGd4Go8BJX9PhYPN3azrAKRQsAC7u55v',
+  platformId,
+};
+
 export const services: ServiceDefinition[] = [
   {
-    id: `${platformId}-lendy`,
+    id: `${platformId}-lending`,
     name: 'Lending',
     platformId,
     networkId: NetworkId.solana,
-    contracts: [contractV1],
-  },
-  {
-    id: `${platformId}-superlendy`,
-    name: 'Lending',
-    platformId,
-    networkId: NetworkId.solana,
-    contracts: [contractV2],
+    matchTransaction: (tx) =>
+      matchAnyInstructionWithPrograms(tx, [
+        contract.address,
+        contractV1.address,
+        contractV2.address,
+        priceContract.address,
+      ]),
   },
 ];
 export default services;
