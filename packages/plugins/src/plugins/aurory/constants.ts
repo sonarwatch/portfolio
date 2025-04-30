@@ -4,7 +4,7 @@ export const platformId = 'aurory';
 export const auryMint = 'AURYydfxJib1ZkTir1Jn1J9ECYUtjb6rKQVmtYaixWPP';
 
 export const programId = new PublicKey(
-  'StKLLTf7CQ9n5BgXPSDXENovLTCuNc7N2ehvTb6JZ5x'
+  'STkwf3sbMapjy7KV3hgrJtcVvY4SvRxWQ8pj4Enw1i5'
 );
 
 export const xAuryMint = 'xAURp5XmAG7772mfkSy6vRAjGK9JofYjc3dmQDWdVDP';

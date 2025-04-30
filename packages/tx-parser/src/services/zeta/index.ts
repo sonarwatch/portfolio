@@ -1,33 +1,34 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { ServiceDefinition } from '../../ServiceDefinition';
 
-const zetaContract = {
-  name: 'Zeta',
+const platformId = 'zeta';
+const mainContract = {
+  name: 'Markets',
   address: 'ZETAxsqBRek56DhiGXrn75yj2NHU3aYUnxvHXpkf3aD',
-  platformId: 'zeta',
+  platformId,
 };
 
-const zetaService: ServiceDefinition = {
-  id: 'zeta',
-  name: 'Zeta',
-  platformId: 'zeta',
+const mainService: ServiceDefinition = {
+  id: `${platformId}-markets`,
+  name: 'Markets',
+  platformId,
   networkId: NetworkId.solana,
-  contracts: [zetaContract],
+  contracts: [mainContract],
 };
 
-const zetaStakingContract = {
-  name: 'ZEX Staking',
+const stakingContract = {
+  name: 'Staking',
   address: '4DUapvWZDDCkfWJpdwvX2QjwAE9Yq4wU8792RMMv7Csg',
-  platformId: 'zeta',
+  platformId,
 };
 
-const zetaStakingService: ServiceDefinition = {
-  id: 'zeta-staking',
-  name: 'ZEX Staking',
-  platformId: 'zeta',
+const stakingService: ServiceDefinition = {
+  id: `${platformId}-staking`,
+  name: 'Staking',
+  platformId,
   networkId: NetworkId.solana,
-  contracts: [zetaStakingContract],
+  contracts: [stakingContract],
 };
 
-export const services: ServiceDefinition[] = [zetaService, zetaStakingService];
+export const services: ServiceDefinition[] = [mainService, stakingService];
 export default services;
