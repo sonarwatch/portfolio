@@ -100,6 +100,11 @@ const lfgContract: Contract = {
   address: 'DiSLRwcSFvtwvMWSs7ubBMvYRaYNYupa76ZSuYLe6D7j',
   platformId: launchpadPlatformId,
 };
+const asrContract: Contract = {
+  name: 'ASR Distributor',
+  address: 'Dis2TfkFnXFkrtvAktEkw37sdb7qwJgY6H7YZJwk51wK',
+  platformId,
+};
 
 export const services: ServiceDefinition[] = [
   {
@@ -238,6 +243,13 @@ export const services: ServiceDefinition[] = [
     platformId: launchpadPlatformId,
     networkId: NetworkId.solana,
     contracts: [lfgContract],
+  },
+  {
+    id: `${platformId}-asr`,
+    name: 'ASR',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [asrContract],
   },
 ];
 export default services;
