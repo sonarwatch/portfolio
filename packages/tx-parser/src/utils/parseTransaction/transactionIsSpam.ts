@@ -23,18 +23,28 @@ export const transactionIsSpam = (
 ): boolean => {
   if (isSigner) return false;
 
-  // if spammer is known
-  if (
-    txn.transaction.message.accountKeys.some(
-      (accountKey) =>
-        accountKey.signer &&
-        spammerAccounts.includes(accountKey.pubkey.toString())
+  for (const accountKey of txn.transaction.message.accountKeys) {
+    // If drip acount is signer, not a spam
+    if (
+      accountKey.signer &&
+      accountKey.pubkey.toString() ===
+        'DRiPPP2LytGjNZ5fVpdZS7Xi1oANSY3Df1gSxvUKpzny'
     )
-  ) {
-    return true;
+      return false;
+
+    // if signer is a known spammer, it's a spam
+    if (
+      accountKey.signer &&
+      spammerAccounts.includes(accountKey.pubkey.toString())
+    ) {
+      return true;
+    }
   }
 
   const instructions = getTransactionParsedInstructions(txn);
+
+  // if cnft minted by third party, other than Drip.haus
+  if (transactionIsCnftMint(txn)) return true;
 
   // if only small sol transfers
   if (
@@ -44,19 +54,6 @@ export const transactionIsSpam = (
         i.parsed.type === 'transfer' &&
         i.parsed.info.lamports <= 1000000
     )
-  ) {
-    return true;
-  }
-
-  // if cnft minted by third party, other than Drip.haus
-  if (
-    !txn.transaction.message.accountKeys.some(
-      (accountKey) =>
-        accountKey.signer &&
-        accountKey.pubkey.toString() ===
-          'DRiPPP2LytGjNZ5fVpdZS7Xi1oANSY3Df1gSxvUKpzny'
-    ) &&
-    transactionIsCnftMint(txn)
   ) {
     return true;
   }
