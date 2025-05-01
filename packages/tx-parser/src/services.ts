@@ -28,6 +28,7 @@ import * as dflow from './services/dflow';
 import * as divvy from './services/divvy';
 import * as drift from './services/drift';
 import * as driftMMV from './services/drift-market-maker-vault';
+import * as drip from './services/drip';
 import * as dumpy from './services/dumpy';
 import * as elemental from './services/elemental';
 import * as ensofi from './services/ensofi';
@@ -169,6 +170,7 @@ export const services: ServiceDefinition[] = [
   divvy,
   drift,
   driftMMV,
+  drip,
   dumpy,
   elemental,
   ensofi,
@@ -284,10 +286,31 @@ export const services: ServiceDefinition[] = [
 export const sortedServiceDefinitions = services.sort((a, b) => {
   const prioA = a.priority || ServicePriority.default;
   const prioB = b.priority || ServicePriority.default;
+
+  const countContractsB = b.contracts?.length || 0;
+  const countContractsA = a.contracts?.length || 0;
+
+  // If service has macthTransaction it has the priority
+  if (a.matchTransaction && !b.matchTransaction) {
+    return -1;
+  }
+  if (!a.matchTransaction && b.matchTransaction) {
+    return 1;
+  }
+  // If both services have matchTransaction, sort by priority
+  if (a.matchTransaction && b.matchTransaction) {
+    // sort by priority first
+    if (prioA !== prioB) {
+      return prioA - prioB;
+    }
+    // then by number of contracts
+    return countContractsB - countContractsA;
+  }
+
+  // If both services have no matchTransaction, sort by priority
   if (prioA !== prioB) {
     return prioB - prioA;
   }
-  const countContractsB = b.contracts?.length || 0;
-  const countContractsA = a.contracts?.length || 0;
+  // If both services have the same priority, sort by number of contracts
   return countContractsB - countContractsA;
 });
