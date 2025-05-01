@@ -1,5 +1,6 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { ServiceDefinition } from '../../ServiceDefinition';
+import { matchAnyInstructionWithPrograms } from '../../utils/parseTransaction/matchAnyInstructionWithPrograms';
 
 const platformId = 'openbook';
 const contract = {
@@ -13,6 +14,13 @@ const contract2 = {
   address: 'opnbkNkqux64GppQhwbyEVc3axhssFhVYuwar8rDHCu',
   platformId,
 };
+
+const contractV2 = {
+  name: 'V2',
+  address: 'opnb2LAfJYbRMAHHvqjCwQxanZn7ReEHp1k81EohpZb',
+  platformId,
+};
+
 const service: ServiceDefinition = {
   id: `${platformId}-v1`,
   name: 'V1',
@@ -26,7 +34,11 @@ const service2: ServiceDefinition = {
   name: 'V2',
   platformId,
   networkId: NetworkId.solana,
-  contracts: [contract2],
+  matchTransaction: (tx) =>
+    matchAnyInstructionWithPrograms(tx, [
+      contract2.address,
+      contractV2.address,
+    ]),
 };
 
 export const services: ServiceDefinition[] = [service, service2];

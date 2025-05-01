@@ -10,6 +10,7 @@ import * as backwoods from './services/backwoods';
 import * as bananagun from './services/bananagun';
 import * as banger from './services/banger';
 import * as banx from './services/banx';
+import * as believe from './services/believe';
 import * as bio from './services/bio';
 import * as bloom from './services/bloom';
 import * as bonkrewards from './services/bonkrewards';
@@ -130,8 +131,10 @@ import * as texture from './services/texture';
 import * as titan from './services/titan';
 import * as triad from './services/triad';
 import * as underdog from './services/underdog';
+import * as unknown from './services/unknown';
 import * as uxd from './services/uxd';
 import * as vaultka from './services/vaultka';
+import * as vidar from './services/vidar';
 import * as whalesmarket from './services/whalesmarket';
 import * as wormhole from './services/wormhole';
 import * as zelo from './services/zelo';
@@ -152,6 +155,7 @@ export const services: ServiceDefinition[] = [
   bananagun,
   banger,
   banx,
+  believe,
   bio,
   bloom,
   bonkrewards,
@@ -272,8 +276,10 @@ export const services: ServiceDefinition[] = [
   titan,
   triad,
   underdog,
+  unknown,
   uxd,
   vaultka,
+  vidar,
   whalesmarket,
   wormhole,
   zelo,

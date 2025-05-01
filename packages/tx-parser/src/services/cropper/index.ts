@@ -24,8 +24,8 @@ const stakingService: ServiceDefinition = {
 };
 
 const clmmService: ServiceDefinition = {
-  id: `${platformId}-clmm`,
-  name: 'CLMM',
+  id: `${platformId}-liquidity`,
+  name: 'Liquidity',
   platformId,
   networkId: NetworkId.solana,
   contracts: [clmmContract],
