@@ -22,7 +22,7 @@ import {
 
 import { whirlpoolStrategyStruct } from './structs/vaults';
 import { dataStructSizeFilter } from '../../utils/solana/filters';
-import { binArrayStruct } from '../meteora/struct';
+import { binArrayStruct } from '../meteora/dlmm/structs';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();

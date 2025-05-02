@@ -21,7 +21,7 @@ import {
   LbPair,
   dlmmPositionV2Struct,
   lbPairStruct,
-} from '../../meteora/struct';
+} from '../../meteora/dlmm/structs';
 import { getTokensAmountsFromLiquidity } from '../../meteora/dlmm/dlmmHelper';
 
 export enum DEXS {

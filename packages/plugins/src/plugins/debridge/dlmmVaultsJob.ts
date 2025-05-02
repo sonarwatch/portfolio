@@ -6,7 +6,7 @@ import { getParsedProgramAccounts } from '../../utils/solana';
 import { dataSizeFilter } from '../../utils/solana/filters';
 import { dlmmVaultProgramId, platformId } from './constants';
 import { CachedDlmmVaults } from '../meteora/types';
-import { dlmmVaultStruct } from '../meteora/struct';
+import { dlmmVaultStruct } from '../meteora/dlmm/structs';
 import { dlmmVaultsKey } from '../meteora/constants';
 
 const executor: JobExecutor = async (cache: Cache) => {
