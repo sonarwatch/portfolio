@@ -1,6 +1,6 @@
 {
   "name": "@solanahub/portfolio-plugins",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "commonjs",
   "types": "./src/index.d.ts",
   "peerDependencies": {
