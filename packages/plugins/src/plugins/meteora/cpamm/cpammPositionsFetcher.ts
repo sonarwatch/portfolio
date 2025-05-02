@@ -93,23 +93,23 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       amount: tokenAmountB,
     });
 
-    // const { rewards } = getUnClaimReward(pool, position);
+    const { rewards, feeTokenA, feeTokenB } = getUnClaimReward(pool, position);
 
-    // for (let i = 0; i < rewards.length; i++) {
-    //   liq.addRewardAsset({
-    //     address: pool.rewardInfos[i].mint,
-    //     amount: rewards[i],
-    //   });
-    // }
+    for (let i = 0; i < rewards.length; i++) {
+      liq.addRewardAsset({
+        address: pool.rewardInfos[i].mint,
+        amount: rewards[i],
+      });
+    }
 
-    // liq.addRewardAsset({
-    //   address: pool.tokenAMint.toString(),
-    //   amount: position.feeAPending,
-    // });
-    // liq.addRewardAsset({
-    //   address: pool.tokenBMint.toString(),
-    //   amount: position.feeBPending,
-    // });
+    liq.addRewardAsset({
+      address: pool.tokenAMint.toString(),
+      amount: feeTokenA,
+    });
+    liq.addRewardAsset({
+      address: pool.tokenBMint.toString(),
+      amount: feeTokenB,
+    });
   }
 
   return registry.getElements(cache);

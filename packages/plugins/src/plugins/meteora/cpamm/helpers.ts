@@ -6,8 +6,6 @@ import { Pool, Position } from './structs';
 import { Rounding } from '../dlmm/dlmmHelper';
 import { cpammProgramId } from '../constants';
 
-const LIQUIDITY_SCALE = 128;
-
 export const getUnClaimReward = (
   poolState: Pool,
   positionState: Position
@@ -16,9 +14,11 @@ export const getUnClaimReward = (
   feeTokenB: BigNumber;
   rewards: BigNumber[];
 } => {
-  const totalPositionLiquidity = positionState.unlockedLiquidity
-    .plus(positionState.vestedLiquidity)
-    .plus(positionState.permanentLockedLiquidity);
+  const totalPositionLiquidity = BigNumber(
+    positionState.unlockedLiquidity.toString()
+  )
+    .plus(BigNumber(positionState.vestedLiquidity.toString()))
+    .plus(BigNumber(positionState.permanentLockedLiquidity.toString()));
 
   const feeAPerTokenStored = new BN(
     Buffer.from(poolState.feeAPerLiquidity).reverse()
@@ -28,16 +28,17 @@ export const getUnClaimReward = (
     Buffer.from(poolState.feeBPerLiquidity).reverse()
   ).sub(new BN(Buffer.from(positionState.feeBPerTokenCheckpoint).reverse()));
 
+  const denominator = new BigNumber(2).pow(128);
   const feeA = totalPositionLiquidity
     .times(feeAPerTokenStored.toString())
-    .shiftedBy(LIQUIDITY_SCALE);
+    .dividedBy(denominator);
   const feeB = totalPositionLiquidity
     .times(feeBPerTokenStored.toString())
-    .shiftedBy(LIQUIDITY_SCALE);
+    .dividedBy(denominator);
 
   return {
-    feeTokenA: positionState.feeAPending.plus(feeA),
-    feeTokenB: positionState.feeBPending.plus(feeB),
+    feeTokenA: BigNumber(positionState.feeAPending.toString()).plus(feeA),
+    feeTokenB: BigNumber(positionState.feeBPending.toString()).plus(feeB),
     rewards:
       positionState.rewardInfos.length > 0
         ? positionState.rewardInfos.map((item) => item.rewardPendings)
