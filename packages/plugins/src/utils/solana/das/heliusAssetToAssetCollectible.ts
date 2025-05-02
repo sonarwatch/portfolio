@@ -66,8 +66,9 @@ export async function heliusAssetToAssetCollectible(
     };
   }
 
-  if (collection?.id && !asset.compression.compressed) {
-    let collectionMetaData = await cache.getItem<PopularCollection>(collection.id, {
+  const key = collection?.id || asset.content?.metadata?.symbol
+  if (!!key && !asset.compression.compressed) {
+    let collectionMetaData = await cache.getItem<PopularCollection>(key, {
       prefix: nftCollectionPrefix,
       networkId: NetworkId.solana,
     });

@@ -107,8 +107,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   // Convert map to array of key-value pairs
   const assets = collections
-    .filter((collection) => collection.address)
-    .map((collection) => ({key: collection.address, value: collection}));
+    .map((collection) => ({key: collection.address ?? collection.symbol, value: collection}));
 
   // Store assets in cache
   await cache.setItems(assets, {
