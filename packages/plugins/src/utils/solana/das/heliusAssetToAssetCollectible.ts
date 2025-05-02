@@ -4,15 +4,19 @@ import {
   PortfolioAssetCollectible,
   PortfolioAssetType,
 } from '@sonarwatch/portfolio-core';
+import { Cache } from '../../../Cache';
 import { CollectionGroup, HeliusAsset } from './types';
+import { PopularCollection } from "../../../plugins/tensor/types";
+import { nftCollectionPrefix } from "../../../plugins/tensor/constants";
 
-export function heliusAssetToAssetCollectible(
+export async function heliusAssetToAssetCollectible(
   asset: HeliusAsset,
+  cache: Cache,
   props?: {
     tags?: string[];
     collection?: { floorPrice?: number; name?: string };
   }
-): PortfolioAssetCollectible | null {
+): Promise<PortfolioAssetCollectible | null> {
   // Tags
   const tags: string[] | undefined = [];
   if (asset.compression.compressed) tags.push('compressed');
@@ -62,6 +66,21 @@ export function heliusAssetToAssetCollectible(
     };
   }
 
+  if (collection?.id && !asset.compression.compressed) {
+    let collectionMetaData = await cache.getItem<PopularCollection>(collection.id, {
+      prefix: nftCollectionPrefix,
+      networkId: NetworkId.solana,
+    });
+
+    if (collectionMetaData) {
+      collection = {
+        ...collection,
+        floorPrice: collectionMetaData.floorPrice,
+        name: collectionMetaData.name,
+      }
+    }
+  }
+
   return {
     type: PortfolioAssetType.collectible,
     attributes: {
@@ -74,7 +93,7 @@ export function heliusAssetToAssetCollectible(
     data: {
       address: asset.id,
       amount,
-      price: props?.collection?.floorPrice ?? null,
+      price: (props?.collection?.floorPrice || collection?.floorPrice) ?? null,
       name:
         asset.content.metadata.name ||
         collection?.name ||
@@ -86,6 +105,6 @@ export function heliusAssetToAssetCollectible(
     },
     networkId: NetworkId.solana,
     imageUri: asset.content.links?.image,
-    value: props?.collection?.floorPrice ?? null,
+    value: (props?.collection?.floorPrice || collection?.floorPrice ) ?? null,
   };
 }

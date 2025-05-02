@@ -38,7 +38,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   const nfts: PortfolioAssetCollectible[] = [];
   for (let n = 0; n < assets.length; n += 1) {
-    const nft = heliusAssetToAssetCollectible(assets[n]);
+    const nft = await heliusAssetToAssetCollectible(assets[n], cache);
     if (!nft) continue;
     if (nft.attributes.tags?.includes('compressed')) continue;
     if (!isPicassoPosition(nft)) continue;

@@ -89,7 +89,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const nftsByIndentifier: Map<string, PortfolioAssetCollectible[]> = new Map();
   for (let n = 0; n < assets.length; n += 1) {
-    const nft = heliusAssetToAssetCollectible(assets[n]);
+    const nft = await heliusAssetToAssetCollectible(assets[n], cache);
     if (!nft) continue;
     if (nft.attributes.tags?.includes('compressed')) continue;
 

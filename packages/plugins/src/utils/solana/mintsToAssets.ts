@@ -27,12 +27,13 @@ export const mintsToAssets = async (
 
   const assets = new Map<string, PortfolioAsset>();
 
-  mints.forEach((mint, i) => {
+  for (const mint of mints) {
+    const i = mints.indexOf(mint);
     const heliusAsset = heliusAssets.get(mint);
     const tokenPrice = tokenPrices.get(mint);
     const amount = amounts[i];
-    if (!heliusAsset && !tokenPrice) return;
-    if (!amount) return;
+    if (!heliusAsset && !tokenPrice) continue;
+    if (!amount) continue;
 
     if (tokenPrice) {
       // TOKEN
@@ -47,7 +48,7 @@ export const mintsToAssets = async (
       );
     } else if (heliusAsset) {
       // NFT
-      const assetCollectible = heliusAssetToAssetCollectible(heliusAsset);
+      const assetCollectible = await heliusAssetToAssetCollectible(heliusAsset, cache);
       if (assetCollectible) assets.set(mint, assetCollectible);
       else {
         // Unknown token
@@ -55,7 +56,7 @@ export const mintsToAssets = async (
         if (assetToken) assets.set(mint, assetToken);
       }
     }
-  });
+  }
 
   return assets;
 };

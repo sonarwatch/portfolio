@@ -3,6 +3,9 @@ import { AirdropStatics } from '../../AirdropFetcher';
 
 export const tnsrMint = 'TNSRxcUxoT9xBG3de7PiJyTDYu7kskLqcpddxnEJAS6';
 export const platformId = 'tensor';
+export const nftCollectionPrefix = 'nfts';
+export const tensorApiKey = process.env['PORTFOLIO_TENSOR_API_KEY']
+export const tensorApiBaseURL = 'https://api.mainnet.tensordev.io/api/v1';
 
 export const tensorPid = new PublicKey(
   'TSWAPaqyCSx2KABk68Shruf4rp7CxcNi8hAsbdwmHbN'
