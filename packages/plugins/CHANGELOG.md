@@ -2,6 +2,50 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# 0.1.0 (2025-05-02)
+
+
+### Bug Fixes
+
+* **dependencies:** update @drift-labs/sdk and @drift-labs/vaults-sdk to latest beta versions ([09357ce](https://github.com/block-sync-one/portfolio/commit/09357ce16434754dc576a1c908c5ec65db2ab8d3))
+* **driftPlatforms:** add missing platforms export ([777adbe](https://github.com/block-sync-one/portfolio/commit/777adbecbe0ed6a51587acdec6715672bbcdb16a))
+* minor ([20d39a4](https://github.com/block-sync-one/portfolio/commit/20d39a48b0e6806269a334f6c366668b4a0043d0))
+* **plugins:** zeta airdrop fetcher ([2df3b04](https://github.com/block-sync-one/portfolio/commit/2df3b046a5078862d9fbbb7bcbc69fa40237a5c8))
+* **tokenList:** isLatestVersion-version-check ([f9e0c0b](https://github.com/block-sync-one/portfolio/commit/f9e0c0b8a716a3577abfc691eb7413fc4c72f2fa))
+* use underlying asset type for new sCoin ([e5f39b6](https://github.com/block-sync-one/portfolio/commit/e5f39b6a85551df03a8e08fc219315a507fee102))
+* **zeus:** platform import ([b226e34](https://github.com/block-sync-one/portfolio/commit/b226e3481410d33cf39bd64730c51329dd449860))
+
+
+### Features
+
+* add new scoin support ([ea4382d](https://github.com/block-sync-one/portfolio/commit/ea4382d314fc366273c7847164f1028f3e3fb585))
+* add new types ([9e3c962](https://github.com/block-sync-one/portfolio/commit/9e3c96279015ef232f9503b4a0b7d8e60f21bd63))
+* add support for native usdc ([7350aaa](https://github.com/block-sync-one/portfolio/commit/7350aaa72bf205c9013c2e602dedc5061d6b029e))
+* **jupiter:** move jupMint and jupDecimals constants ([99b5c04](https://github.com/block-sync-one/portfolio/commit/99b5c04d38b30f59ca0f2978d3e1111107d29f50))
+* **rain:** add stJup job for real-time token price updates ([161e3de](https://github.com/block-sync-one/portfolio/commit/161e3de497ea634bebd2462f1fedbae95e52d8cf))
+* update scallop lending fetcher ([0620dd9](https://github.com/block-sync-one/portfolio/commit/0620dd969814c7725e03a4ff7f0d0206cab37f42))
+
+
+### Reverts
+
+* Revert "add tx fetching for rpc performance optimization" ([25d669b](https://github.com/block-sync-one/portfolio/commit/25d669b6660b3d3e2c38fae14800dc9cb89e3a1b))
+* Revert "test" ([bbf8b3c](https://github.com/block-sync-one/portfolio/commit/bbf8b3ca3f4da142b65119c864866122106489b6))
+* Revert "fix drift" ([b1318fa](https://github.com/block-sync-one/portfolio/commit/b1318fa453a4d1a723f47791051942fba2e98d13))
+* Revert "tmp to multiple" ([9512357](https://github.com/block-sync-one/portfolio/commit/9512357d6583a16107082bb29ef84c9f78fecebf))
+* Revert "add link to airdropFetcher" ([0407ce5](https://github.com/block-sync-one/portfolio/commit/0407ce5bf9d0fe361b91f99ed714b4885dab329d))
+* Revert "nxfinance fix" ([771326b](https://github.com/block-sync-one/portfolio/commit/771326b2733e529f7b90a7827978822b4f640349))
+* Revert "quick fix" ([8bc6088](https://github.com/block-sync-one/portfolio/commit/8bc60880781fa62359ed79132aa56660a770ea67))
+* Revert "fix" ([1da1323](https://github.com/block-sync-one/portfolio/commit/1da13233267c4db40155341d91752b4b4dba58d1))
+* Revert "fix getAutoParsedProgramAccounts" ([451cbb2](https://github.com/block-sync-one/portfolio/commit/451cbb297fb99a3a6e1ed4801fd91c211fb6e833))
+* Revert "linting" ([cc27848](https://github.com/block-sync-one/portfolio/commit/cc27848b5a5e965d54457cd9dce7359a62c5e48d))
+* Revert "improve namings" ([155a7ff](https://github.com/block-sync-one/portfolio/commit/155a7ffdddd158964f27f8ed52ec82c357c5034e))
+* Revert "fix flashtrade" ([4055eb1](https://github.com/block-sync-one/portfolio/commit/4055eb1e72e64c96adf536bbd81c377c41018535))
+* Revert "upgrade nx" ([62550ba](https://github.com/block-sync-one/portfolio/commit/62550bab2e60d40b8616465843dad4d3ad612bbd))
+* Revert "rename" ([ffcf477](https://github.com/block-sync-one/portfolio/commit/ffcf47783e7dcb924c7685a4c7784a2385b526c2))
+* Revert "fix" ([75a2d85](https://github.com/block-sync-one/portfolio/commit/75a2d85230c10109f052c903700899308a48e72c))
+
+
+
 ## [0.0.7](https://github.com/block-sync-one/portfolio/compare/plugins-0.0.6...plugins-0.0.7) (2025-04-18)
 
 
