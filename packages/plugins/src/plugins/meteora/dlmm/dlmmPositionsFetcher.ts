@@ -8,14 +8,14 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { Cache } from '../../Cache';
-import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { dlmmProgramId, platformId } from './constants';
-import { getClientSolana } from '../../utils/clients';
+import { Cache } from '../../../Cache';
+import { Fetcher, FetcherExecutor } from '../../../Fetcher';
+import { dlmmProgramId, platformId } from '../constants';
+import { getClientSolana } from '../../../utils/clients';
 import {
   getParsedMultipleAccountsInfo,
   tokenAccountStruct,
-} from '../../utils/solana';
+} from '../../../utils/solana';
 import {
   BinArray,
   binArrayStruct,
@@ -23,16 +23,16 @@ import {
   dlmmPositionV2Struct,
   LbPair,
   lbPairStruct,
-} from './struct';
+} from './structs';
 import {
   binIdToBinArrayIndex,
   deriveBinArray,
   processPosition,
 } from './dlmmHelper';
-import { PositionVersion } from './types';
-import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
-import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
+import { PositionVersion } from '../types';
+import { getMultipleAccountsInfoSafe } from '../../../utils/solana/getMultipleAccountsInfoSafe';
+import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
+import { ParsedGpa } from '../../../utils/solana/beets/ParsedGpa';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();

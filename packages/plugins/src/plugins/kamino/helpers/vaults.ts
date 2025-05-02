@@ -22,7 +22,7 @@ import {
   dlmmPositionV2Struct,
   lbPairStruct,
 } from '../../meteora/struct';
-import { getTokensAmountsFromLiquidity } from '../../meteora/dlmmHelper';
+import { getTokensAmountsFromLiquidity } from '../../meteora/dlmm/dlmmHelper';
 
 export enum DEXS {
   ORCA,

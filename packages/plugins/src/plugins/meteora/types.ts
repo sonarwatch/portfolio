@@ -1,6 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { DlmmVault, LbPair } from './struct';
+import { DlmmVault, LbPair } from './dlmm/structs';
 
 export type FormattedFarm = {
   pubkey: string;

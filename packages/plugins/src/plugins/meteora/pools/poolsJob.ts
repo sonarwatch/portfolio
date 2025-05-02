@@ -1,20 +1,20 @@
 import { TokenPriceSource } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
-import { platformId, poolsProgramId } from './constants';
-import { getClientSolana } from '../../utils/clients';
+import { platformId, poolsProgramId } from '../constants';
+import { getClientSolana } from '../../../utils/clients';
 import {
   ParsedAccount,
   getParsedMultipleAccountsInfo,
-} from '../../utils/solana';
-import { PoolState, poolStateStruct, poolStateV2Struct } from './struct';
+} from '../../../utils/solana';
+import { PoolState, poolStateStruct, poolStateV2Struct } from '../struct';
 import {
   constantPoolsFilters,
   memePoolsFilters,
   stablePoolsFilters,
-} from './filters';
-import { Cache } from '../../Cache';
-import { Job, JobExecutor } from '../../Job';
-import { getLpTokenPricesFromPoolsStates } from './helpers';
+} from '../filters';
+import { Cache } from '../../../Cache';
+import { Job, JobExecutor } from '../../../Job';
+import { getLpTokenPricesFromPoolsStates } from '../helpers';
 
 const poolsConfigs = [
   {

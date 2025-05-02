@@ -10,10 +10,10 @@ import {
   PositionData,
   PositionVersion,
   SwapFee,
-} from './types';
-import { Bin, BinArray, DLMMPosition, LbPair } from './struct';
-import { dlmmProgramId } from './constants';
-import { toBN } from '../../utils/misc/toBN';
+} from '../types';
+import { Bin, BinArray, DLMMPosition, LbPair } from './structs';
+import { dlmmProgramId } from '../constants';
+import { toBN } from '../../../utils/misc/toBN';
 
 export const MAX_BIN_ARRAY_SIZE = new BN(70);
 export const SCALE_OFFSET = 64;

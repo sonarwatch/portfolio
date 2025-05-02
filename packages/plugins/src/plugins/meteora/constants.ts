@@ -30,3 +30,7 @@ export const dlmmVaultProgramId = new PublicKey(
 export const stakeForFeeProgramId = new PublicKey(
   'FEESngU3neckdwib9X3KWqdL7Mjmqk9XNp3uh5JbP4KP'
 );
+
+export const cpammProgramId = new PublicKey(
+  'cpamdpZCGKUy5JxQXB4dcpGPiikHawvSWAd6mEn1sGG'
+);

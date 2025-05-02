@@ -13,7 +13,7 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId } from './constants';
 import { getHawksightUserPdas } from './helper';
 import obligationsFetcher from '../save/obligationsFetcher';
-import dlmmPositionFetcher from '../meteora/dlmmPositionsFetcher';
+import dlmmPositionFetcher from '../meteora/dlmm/dlmmPositionsFetcher';
 import tokenFetcher from '../tokens/fetchers/solana';
 import { getWhirlpoolPositions } from '../orca/getWhirlpoolPositions';
 import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
