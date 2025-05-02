@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.194](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.193...plugins-0.14.194) (2025-05-02)
+
+
+### Features
+
+* **services:** add staking and contract definitions for multiple platforms ([143337b](https://github.com/sonarwatch/portfolio/commit/143337befedf80658f8dc64368d8fdfa1c116145))
+
+
+
 ## [0.14.193](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.192...plugins-0.14.193) (2025-04-30)
 
 
