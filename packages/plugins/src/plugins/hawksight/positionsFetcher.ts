@@ -63,10 +63,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   ).flat();
 
   const collectibles: PortfolioAssetCollectible[] = [];
-  heliusAssets.forEach((asset) => {
-    const collectible = heliusAssetToAssetCollectible(asset);
+  for (const asset of heliusAssets) {
+    const collectible = await heliusAssetToAssetCollectible(asset, cache);
+
     if (collectible) collectibles.push(collectible);
-  });
+  }
 
   const portfolioElements = (
     await Promise.all([

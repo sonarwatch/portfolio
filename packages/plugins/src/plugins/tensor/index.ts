@@ -11,6 +11,7 @@ import {
 } from './powerUserAirdropFetcher';
 import { s4Fetcher, airdropS4Fetcher } from './season4AirdropFetcher';
 import { AirdropFetcher } from '../../AirdropFetcher';
+import topNftCollectionJob from './topNftCollectionJob';
 
 export const fetchers: Fetcher[] = [
   bidsFetcher,
@@ -24,4 +25,4 @@ export const airdropFetchers: AirdropFetcher[] = [
   airdropS4Fetcher,
 ];
 
-export const jobs: Job[] = [];
+export const jobs: Job[] = [topNftCollectionJob];
