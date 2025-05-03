@@ -2,6 +2,10 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.2](https://github.com/block-sync-one/portfolio/compare/plugins-0.1.1...plugins-0.1.2) (2025-05-03)
+
+
+
 ## [0.1.1](https://github.com/block-sync-one/portfolio/compare/plugins-0.1.0...plugins-0.1.1) (2025-05-02)
 
 
