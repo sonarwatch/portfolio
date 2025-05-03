@@ -6,8 +6,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../../Cache';
 import { CollectionGroup, HeliusAsset } from './types';
-import { PopularCollection } from "../../../plugins/tensor/types";
-import { nftCollectionPrefix } from "../../../plugins/tensor/constants";
+import { getTopCollection } from "./getTopCollection";
 
 export async function heliusAssetToAssetCollectible(
   asset: HeliusAsset,
@@ -51,6 +50,9 @@ export async function heliusAssetToAssetCollectible(
     tags.push('spl20');
   }
 
+  // load cached collections
+  let tensorTopCollection = await getTopCollection(cache);
+
   // Collection
   const collectionGroup = asset.grouping.find(
     (g) => g.group_key === 'collection'
@@ -68,10 +70,7 @@ export async function heliusAssetToAssetCollectible(
 
   const key = collection?.id || asset.content?.metadata?.symbol
   if (!!key && !asset.compression.compressed) {
-    let collectionMetaData = await cache.getItem<PopularCollection>(key, {
-      prefix: nftCollectionPrefix,
-      networkId: NetworkId.solana,
-    });
+    let collectionMetaData = tensorTopCollection.get(key);
 
     if (collectionMetaData) {
       collection = {

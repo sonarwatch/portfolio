@@ -9,7 +9,7 @@ import {
 } from './constants';
 import { PopularCollection } from "./types";
 
-export const nftSourceTtl = 2 * 60 * 60 * 1000; // 2 hour
+export const nftSourceTtl = 2 * 60 * 60 * 1000; // 2 hours
 
 const COLLECTIONS_PER_PAGE = 100;
 const TOTAL_PAGES = 4;
@@ -92,7 +92,9 @@ const executor: JobExecutor = async (cache: Cache) => {
   }, {} as Record<string, string>);
 
   // Transform the data into the desired format
-  const collections: PopularCollection[] = allCollections.map((collection) => ({
+  const collections: PopularCollection[] = allCollections
+    .filter((collection) => (uuidToValueMap[collection.collId] || collection.symbol))
+    .map((collection) => ({
     collectionId: collection.collId,
     address: uuidToValueMap[collection.collId] || null,
     floorPrice: collection.stats.buyNowPriceNetFees
@@ -105,12 +107,8 @@ const executor: JobExecutor = async (cache: Cache) => {
     source: `${platformId}`
   }));
 
-  // Convert map to array of key-value pairs
-  const assets = collections
-    .map((collection) => ({key: collection.address ?? collection.symbol, value: collection}));
-
   // Store assets in cache
-  await cache.setItems(assets, {
+  await cache.setItem(platformId, collections, {
     prefix: nftCollectionPrefix,
     networkId: NetworkId.solana,
     ttl: nftSourceTtl
