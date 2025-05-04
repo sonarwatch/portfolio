@@ -1,7 +1,6 @@
 import { ParsedTransactionWithMeta } from '@solana/web3.js';
 import { transactionIsCnftMint } from './transactionIsCnftMint';
-import { systemContract } from '../../services/solana';
-import { getTransactionParsedInstructions } from './getTransactionParsedInstructions';
+import { isParsedInstruction } from './isParsedInstruction';
 
 const spammerAccounts = [
   'FLiPgGTXtBtEJoytikaywvWgbz5a56DdHKZU72HSYMFF',
@@ -41,18 +40,17 @@ export const transactionIsSpam = (
     }
   }
 
-  const instructions = getTransactionParsedInstructions(txn);
-
   // if cnft minted by third party, other than Drip.haus
   if (transactionIsCnftMint(txn)) return true;
 
   // if only small sol transfers
   if (
-    instructions.every(
+    txn.transaction.message.instructions.every(
       (i) =>
-        i.programId.toString() === systemContract.address &&
+        i.programId.toString() === '11111111111111111111111111111111' &&
+        isParsedInstruction(i) &&
         i.parsed.type === 'transfer' &&
-        i.parsed.info.lamports <= 1000000
+        i.parsed.info.lamports < 1000000
     )
   ) {
     return true;
