@@ -1,6 +1,7 @@
 import { ParsedTransactionWithMeta } from '@solana/web3.js';
 import { systemContract } from '../../services/solana';
-import { getTransactionParsedInstructions } from './getTransactionParsedInstructions';
+import { getRelevantInstructions } from './getRelevantInstructions';
+import { isParsedInstruction } from './isParsedInstruction';
 
 // https://jito-foundation.gitbook.io/mev/mev-payment-and-distribution/on-chain-addresses
 const tipPaymentsAccounts = [
@@ -17,9 +18,10 @@ const tipPaymentsAccounts = [
 export const transactionContainsJitotip = (
   txn: ParsedTransactionWithMeta
 ): boolean =>
-  getTransactionParsedInstructions(txn).some(
+  getRelevantInstructions(txn).some(
     (i) =>
       i.programId.toString() === systemContract.address &&
+      isParsedInstruction(i) &&
       i.parsed.type === 'transfer' &&
       tipPaymentsAccounts.includes(i.parsed.info.destination)
   );

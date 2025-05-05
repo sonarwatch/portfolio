@@ -1,7 +1,8 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { ParsedTransactionWithMeta } from '@solana/web3.js';
 import { ServiceDefinition, ServicePriority } from '../../ServiceDefinition';
-import { getTransactionParsedInstructions } from '../../utils/parseTransaction/getTransactionParsedInstructions';
+import { getRelevantInstructions } from '../../utils/parseTransaction/getRelevantInstructions';
+import { isParsedInstruction } from '../../utils/parseTransaction/isParsedInstruction';
 
 const platformId = 'solana';
 
@@ -64,12 +65,13 @@ const closeAccountService: ServiceDefinition = {
   networkId: NetworkId.solana,
   priority: ServicePriority.low,
   matchTransaction: (txn: ParsedTransactionWithMeta) => {
-    const instructions = getTransactionParsedInstructions(txn);
+    const instructions = getRelevantInstructions(txn);
 
     return (
       instructions.length === 1 &&
       instructions[0].programId.toString() ===
         solanaTokenProgramContract.address &&
+      isParsedInstruction(instructions[0]) &&
       instructions[0].parsed.type === 'closeAccount'
     );
   },
@@ -82,12 +84,13 @@ const createAccountService: ServiceDefinition = {
   networkId: NetworkId.solana,
   priority: ServicePriority.low,
   matchTransaction: (txn: ParsedTransactionWithMeta) => {
-    const instructions = getTransactionParsedInstructions(txn);
+    const instructions = getRelevantInstructions(txn);
 
     return (
       instructions.length === 1 &&
       instructions[0].programId.toString() ===
         solanaAssociatedTokenContract.address &&
+      isParsedInstruction(instructions[0]) &&
       instructions[0].parsed.type === 'create'
     );
   },
@@ -100,11 +103,12 @@ const transferService: ServiceDefinition = {
   networkId: NetworkId.solana,
   priority: ServicePriority.low,
   matchTransaction: (txn: ParsedTransactionWithMeta) => {
-    const instructions = getTransactionParsedInstructions(txn);
+    const instructions = getRelevantInstructions(txn);
 
     if (
       instructions.length === 1 &&
       instructions[0].programId.toString() === systemContract.address &&
+      isParsedInstruction(instructions[0]) &&
       instructions[0].parsed.type === 'transfer'
     )
       return true;
@@ -113,6 +117,7 @@ const transferService: ServiceDefinition = {
       instructions.length === 1 &&
       instructions[0].programId.toString() ===
         solanaTokenProgramContract.address &&
+      isParsedInstruction(instructions[0]) &&
       instructions[0].parsed.type === 'transferChecked'
     )
       return true;
@@ -121,9 +126,11 @@ const transferService: ServiceDefinition = {
       instructions.length === 2 &&
       instructions[0].programId.toString() ===
         solanaAssociatedTokenContract.address &&
+      isParsedInstruction(instructions[0]) &&
       instructions[0].parsed.type === 'create' &&
       instructions[1].programId.toString() ===
         solanaTokenProgramContract.address &&
+      isParsedInstruction(instructions[1]) &&
       instructions[1].parsed.type === 'transferChecked'
     )
       return true;
@@ -139,12 +146,13 @@ const burnService: ServiceDefinition = {
   networkId: NetworkId.solana,
   priority: ServicePriority.low,
   matchTransaction: (txn: ParsedTransactionWithMeta) => {
-    const instructions = getTransactionParsedInstructions(txn);
+    const instructions = getRelevantInstructions(txn);
 
     return (
       instructions.length === 1 &&
       instructions[0].programId.toString() ===
         solanaTokenProgramContract.address &&
+      isParsedInstruction(instructions[0]) &&
       instructions[0].parsed.type === 'burn'
     );
   },
