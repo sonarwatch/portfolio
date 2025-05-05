@@ -1,6 +1,6 @@
 {
   "name": "@sonarwatch/tx-parser",
-  "version": "0.0.28",
+  "version": "0.0.29",
   "type": "commonjs",
   "types": "./src/index.d.ts",
   "peerDependencies": {
