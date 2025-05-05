@@ -1,7 +1,7 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { ParsedTransactionWithMeta } from '@solana/web3.js';
 import { ServiceDefinition, ServicePriority } from '../../ServiceDefinition';
-import { getTransactionParsedInstructions } from '../../utils/parseTransaction/getTransactionParsedInstructions';
+import { getRelevantInstructions } from '../../utils/parseTransaction/getRelevantInstructions';
 import { transactionContainsJitotip } from '../../utils/parseTransaction/transactionContainsJitotip';
 
 const platformId = 'jito';
@@ -41,7 +41,7 @@ const tipService: ServiceDefinition = {
   networkId: NetworkId.solana,
   priority: ServicePriority.low,
   matchTransaction: (txn: ParsedTransactionWithMeta) => {
-    const instructions = getTransactionParsedInstructions(txn);
+    const instructions = getRelevantInstructions(txn);
 
     return instructions.length === 1 && transactionContainsJitotip(txn);
   },
