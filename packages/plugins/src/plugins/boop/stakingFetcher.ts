@@ -73,7 +73,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           .plus(5 * 24 * 60 * 60)
           .times(1000)
           .toNumber(),
-        tags: ['Withdrawing'],
+        tags: ['Withdraw'],
       },
       ref: pendingWithdraw.pubkey.toString(),
     });
