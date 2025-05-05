@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.196](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.195...plugins-0.14.196) (2025-05-05)
+
+
+### Features
+
+* **cytonic:** add cytonic plugin with fetchers and service definitions ([6a6ec39](https://github.com/sonarwatch/portfolio/commit/6a6ec39811361b994f7c6a935e6472f8570dc244))
+
+
+
 ## [0.14.195](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.194...plugins-0.14.195) (2025-05-05)
 
 
