@@ -1,8 +1,4 @@
-import {
-  NetworkId,
-  solanaNativeAddress,
-  yieldFromApy,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId, solanaNativeAddress } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
@@ -127,12 +123,13 @@ const executor: JobExecutor = async (cache: Cache) => {
         )
         .toNumber();
 
+    const apr = lastEpochYield * epochsPerYear;
     const apy = (1 + lastEpochYield) ** epochsPerYear - 1;
 
     await cache.setTokenYield({
       address: shyUsdMint,
       networkId: NetworkId.solana,
-      yield: yieldFromApy(apy),
+      yield: { apr, apy },
       timestamp: Date.now(),
     });
   }
