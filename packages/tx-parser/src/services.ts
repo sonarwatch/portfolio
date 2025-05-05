@@ -21,6 +21,8 @@ import * as circle from './services/circle';
 import * as citrus from './services/citrus';
 import * as cropper from './services/cropper';
 import * as cudis from './services/cudis';
+import * as cyberfrog from './services/cyberfrog';
+import * as cytonic from './services/cytonic';
 import * as debridge from './services/debridge';
 import * as defiland from './services/defiland';
 import * as defituna from './services/defituna';
@@ -167,6 +169,8 @@ export const services: ServiceDefinition[] = [
   citrus,
   cropper,
   cudis,
+  cyberfrog,
+  cytonic,
   debridge,
   defiland,
   defituna,
