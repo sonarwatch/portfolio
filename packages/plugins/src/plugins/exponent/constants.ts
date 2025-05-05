@@ -16,8 +16,6 @@ export const marketsMemo = new MemoizedCache<Market[]>(marketsCacheKey, {
   networkId: NetworkId.solana,
 });
 
-export const marketsApiUrl =
-  'https://xpon-json-api-prod-650968662509.europe-west3.run.app/api/markets';
+export const marketsApiUrl = 'https://web-api.exponent.finance/api/markets';
 
-export const ptTokensApiUrl =
-  'https://xpon-json-api-prod-650968662509.europe-west3.run.app/api/tokens/pt';
+export const ptTokensApiUrl = 'https://web-api.exponent.finance/api/tokens/pt';

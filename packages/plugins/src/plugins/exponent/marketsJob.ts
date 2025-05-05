@@ -32,6 +32,15 @@ const executor: JobExecutor = async (cache: Cache) => {
       price: new BigNumber(tokenPriceMintAsset.price)
         .multipliedBy(market.stats.syPriceInAsset)
         .toNumber(),
+      underlyings: [
+        {
+          address: market.vault.mintAsset.toString(),
+          amountPerLp: market.stats.syPriceInAsset,
+          decimals: market.vault.decimals,
+          networkId: NetworkId.solana,
+          price: tokenPriceMintAsset.price,
+        },
+      ],
       timestamp: Date.now(),
       weight: 1,
     });
