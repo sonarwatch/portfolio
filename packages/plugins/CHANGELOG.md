@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.195](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.194...plugins-0.14.195) (2025-05-05)
+
+
+### Features
+
+* **boop:** add initial implementation of staking plugin ([0765d4e](https://github.com/sonarwatch/portfolio/commit/0765d4eb8b2ea1c59fc69a11a68f6a4c33e88b8a))
+
+
+
 ## [0.14.194](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.193...plugins-0.14.194) (2025-05-02)
 
 
