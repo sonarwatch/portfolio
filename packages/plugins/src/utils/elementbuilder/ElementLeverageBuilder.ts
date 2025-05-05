@@ -68,9 +68,9 @@ export class ElementLeverageBuilder extends ElementBuilder {
     tokenPrices: TokenPriceMap
   ): PortfolioElementLeverage | null {
     if (
-      !this.isoPositions &&
-      !this.crossPositions &&
-      !this.crossCollateralAssets
+      this.isoPositions.length === 0 &&
+      this.crossPositions.length === 0 &&
+      this.crossCollateralAssets.length === 0
     )
       return null;
 
