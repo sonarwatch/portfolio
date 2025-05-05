@@ -171,6 +171,7 @@ import * as bio from './plugins/bio';
 import * as huma from './plugins/huma';
 import * as honeyland from './plugins/honeyland';
 import * as lavarage from './plugins/lavarage';
+import * as boop from './plugins/boop';
 
 export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
@@ -353,6 +354,7 @@ const modules = [
   huma,
   honeyland,
   lavarage,
+  boop,
 ];
 
 // JOBS //
