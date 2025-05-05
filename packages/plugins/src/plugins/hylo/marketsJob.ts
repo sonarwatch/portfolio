@@ -1,4 +1,8 @@
-import { NetworkId, solanaNativeAddress } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  solanaNativeAddress,
+  yieldFromApy,
+} from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
@@ -110,6 +114,26 @@ const executor: JobExecutor = async (cache: Cache) => {
       timestamp: Date.now(),
       weight: 0.5,
       link: 'https://hylo.so/hyusd',
+    });
+
+    const epochsPerYear = 182.5;
+    const lastEpochYield =
+      hylo.yield_harvest_cache.stablecoin_yield_to_pool.bits
+        .shiftedBy(hylo.yield_harvest_cache.stablecoin_yield_to_pool.exp)
+        .dividedBy(
+          hylo.yield_harvest_cache.stability_pool_cap.bits.shiftedBy(
+            hylo.yield_harvest_cache.stability_pool_cap.exp
+          )
+        )
+        .toNumber();
+
+    const apy = (1 + lastEpochYield) ** epochsPerYear - 1;
+
+    await cache.setTokenYield({
+      address: shyUsdMint,
+      networkId: NetworkId.solana,
+      yield: yieldFromApy(apy),
+      timestamp: Date.now(),
     });
   }
 };
