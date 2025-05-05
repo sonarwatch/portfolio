@@ -76,6 +76,21 @@ const stablecoinFeesStruct = new BeetStruct<StablecoinFees>(
   (args) => args as StablecoinFees
 );
 
+type YieldHarvestCache = {
+  epoch: BigNumber;
+  stability_pool_cap: UFixValue64;
+  stablecoin_yield_to_pool: UFixValue64;
+};
+
+const yieldHarvestCacheStruct = new BeetStruct<YieldHarvestCache>(
+  [
+    ['epoch', u64],
+    ['stability_pool_cap', uFixValue64Struct],
+    ['stablecoin_yield_to_pool', uFixValue64Struct],
+  ],
+  (args) => args as YieldHarvestCache
+);
+
 export type Hylo = {
   accountDiscriminator: number[];
   admin: PublicKey;
@@ -94,6 +109,7 @@ export type Hylo = {
   stablecoin_fees: StablecoinFees;
   levercoin_fees: LevercoinFees;
   total_sol_cache: TotalSolCache;
+  yield_harvest_cache: YieldHarvestCache;
 };
 
 export const hyloStruct = new BeetStruct<Hylo>(
@@ -115,6 +131,7 @@ export const hyloStruct = new BeetStruct<Hylo>(
     ['stablecoin_fees', stablecoinFeesStruct],
     ['levercoin_fees', levercoinFeesStruct],
     ['total_sol_cache', totalSolCacheStruct],
+    ['yield_harvest_cache', yieldHarvestCacheStruct],
   ],
   (args) => args as Hylo
 );
