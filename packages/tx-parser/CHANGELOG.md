@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.0.30](https://github.com/sonarwatch/portfolio/compare/tx-parser-0.0.29...tx-parser-0.0.30) (2025-05-06)
+
+
+### Features
+
+* **cytonic:** add cytonic plugin with fetchers and service definitions ([6a6ec39](https://github.com/sonarwatch/portfolio/commit/6a6ec39811361b994f7c6a935e6472f8570dc244))
+
+
+
 ## [0.0.29](https://github.com/sonarwatch/portfolio/compare/tx-parser-0.0.28...tx-parser-0.0.29) (2025-05-05)
 
 
