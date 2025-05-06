@@ -1,0 +1,995 @@
+{
+  "version": "0.1.0",
+  "name": "solauto",
+  "accounts": [
+    {
+      "name": "ReferralState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": {
+              "array": [
+                "u8",
+                1
+              ]
+            }
+          },
+          {
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u8",
+                7
+              ]
+            }
+          },
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "referredByState",
+            "type": "publicKey"
+          },
+          {
+            "name": "destFeesMint",
+            "type": "publicKey"
+          },
+          {
+            "name": "lookupTable",
+            "type": "publicKey"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                96
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "SolautoPosition",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": {
+              "array": [
+                "u8",
+                1
+              ]
+            }
+          },
+          {
+            "name": "positionId",
+            "type": {
+              "array": [
+                "u8",
+                1
+              ]
+            }
+          },
+          {
+            "name": "selfManaged",
+            "type": {
+              "defined": "PodBool"
+            }
+          },
+          {
+            "name": "positionType",
+            "type": {
+              "defined": "PositionType"
+            }
+          },
+          {
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u8",
+                4
+              ]
+            }
+          },
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "position",
+            "type": {
+              "defined": "PositionData"
+            }
+          },
+          {
+            "name": "state",
+            "type": {
+              "defined": "PositionState"
+            }
+          },
+          {
+            "name": "rebalance",
+            "type": {
+              "defined": "RebalanceData"
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u32",
+                20
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "AutomationSettingsInp",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "targetPeriods",
+            "type": "u16"
+          },
+          {
+            "name": "periodsPassed",
+            "type": "u16"
+          },
+          {
+            "name": "unixStartDate",
+            "type": "u64"
+          },
+          {
+            "name": "intervalSeconds",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AutomationSettings",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "targetPeriods",
+            "type": "u16"
+          },
+          {
+            "name": "periodsPassed",
+            "type": "u16"
+          },
+          {
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u8",
+                4
+              ]
+            }
+          },
+          {
+            "name": "unixStartDate",
+            "type": "u64"
+          },
+          {
+            "name": "intervalSeconds",
+            "type": "u64"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "DCASettingsInp",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "automation",
+            "type": {
+              "defined": "AutomationSettingsInp"
+            }
+          },
+          {
+            "name": "dcaInBaseUnit",
+            "type": "u64"
+          },
+          {
+            "name": "tokenType",
+            "type": {
+              "defined": "TokenType"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "DCASettings",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "automation",
+            "type": {
+              "defined": "AutomationSettings"
+            }
+          },
+          {
+            "name": "dcaInBaseUnit",
+            "type": "u64"
+          },
+          {
+            "name": "tokenType",
+            "type": {
+              "defined": "TokenType"
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                31
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenAmount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "baseUnit",
+            "type": "u64"
+          },
+          {
+            "name": "baseAmountUsdValue",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PositionTokenState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint",
+            "type": "publicKey"
+          },
+          {
+            "name": "decimals",
+            "type": "u8"
+          },
+          {
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u8",
+                5
+              ]
+            }
+          },
+          {
+            "name": "borrowFeeBps",
+            "type": "u16"
+          },
+          {
+            "name": "amountUsed",
+            "type": {
+              "defined": "TokenAmount"
+            }
+          },
+          {
+            "name": "amountCanBeUsed",
+            "type": {
+              "defined": "TokenAmount"
+            }
+          },
+          {
+            "name": "baseAmountMarketPriceUsd",
+            "type": "u64"
+          },
+          {
+            "name": "padding2",
+            "type": {
+              "array": [
+                "u8",
+                8
+              ]
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "SolautoSettingsParametersInp",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "boostToBps",
+            "type": "u16"
+          },
+          {
+            "name": "boostGap",
+            "type": "u16"
+          },
+          {
+            "name": "repayToBps",
+            "type": "u16"
+          },
+          {
+            "name": "repayGap",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SolautoSettingsParameters",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "boostToBps",
+            "type": "u16"
+          },
+          {
+            "name": "boostGap",
+            "type": "u16"
+          },
+          {
+            "name": "repayToBps",
+            "type": "u16"
+          },
+          {
+            "name": "repayGap",
+            "type": "u16"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u32",
+                24
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "PositionState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "liqUtilizationRateBps",
+            "type": "u16"
+          },
+          {
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u8",
+                6
+              ]
+            }
+          },
+          {
+            "name": "netWorth",
+            "type": {
+              "defined": "TokenAmount"
+            }
+          },
+          {
+            "name": "supply",
+            "type": {
+              "defined": "PositionTokenState"
+            }
+          },
+          {
+            "name": "debt",
+            "type": {
+              "defined": "PositionTokenState"
+            }
+          },
+          {
+            "name": "maxLtvBps",
+            "type": "u16"
+          },
+          {
+            "name": "liqThresholdBps",
+            "type": "u16"
+          },
+          {
+            "name": "padding2",
+            "type": {
+              "array": [
+                "u8",
+                4
+              ]
+            }
+          },
+          {
+            "name": "lastRefreshed",
+            "type": "u64"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u32",
+                2
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "PositionData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "lendingPlatform",
+            "type": {
+              "defined": "LendingPlatform"
+            }
+          },
+          {
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u8",
+                7
+              ]
+            }
+          },
+          {
+            "name": "lpUserAccount",
+            "type": "publicKey"
+          },
+          {
+            "name": "lpSupplyAccount",
+            "type": "publicKey"
+          },
+          {
+            "name": "lpDebtAccount",
+            "type": "publicKey"
+          },
+          {
+            "name": "settings",
+            "type": {
+              "defined": "SolautoSettingsParameters"
+            }
+          },
+          {
+            "name": "lpPoolAccount",
+            "type": "publicKey"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u32",
+                20
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenBalanceChange",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "changeType",
+            "type": {
+              "defined": "TokenBalanceChangeType"
+            }
+          },
+          {
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u8",
+                7
+              ]
+            }
+          },
+          {
+            "name": "amountUsd",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RebalanceStateValues",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "rebalanceDirection",
+            "type": {
+              "defined": "RebalanceDirection"
+            }
+          },
+          {
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u8",
+                7
+              ]
+            }
+          },
+          {
+            "name": "targetSupplyUsd",
+            "type": "u64"
+          },
+          {
+            "name": "targetDebtUsd",
+            "type": "u64"
+          },
+          {
+            "name": "tokenBalanceChange",
+            "type": {
+              "defined": "TokenBalanceChange"
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u32",
+                4
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RebalanceInstructionData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "active",
+            "type": {
+              "defined": "PodBool"
+            }
+          },
+          {
+            "name": "rebalanceType",
+            "type": {
+              "defined": "SolautoRebalanceType"
+            }
+          },
+          {
+            "name": "swapType",
+            "type": {
+              "defined": "SwapType"
+            }
+          },
+          {
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u8",
+                5
+              ]
+            }
+          },
+          {
+            "name": "flashLoanAmount",
+            "type": "u64"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u32",
+                4
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RebalanceData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "ixs",
+            "type": {
+              "defined": "RebalanceInstructionData"
+            }
+          },
+          {
+            "name": "values",
+            "type": {
+              "defined": "RebalanceStateValues"
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u32",
+                4
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateReferralStatesArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "referralFeesDestMint",
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "addressLookupTable",
+            "type": {
+              "option": "publicKey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "MarginfiOpenPositionData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "positionType",
+            "type": {
+              "defined": "PositionType"
+            }
+          },
+          {
+            "name": "positionData",
+            "type": {
+              "defined": "UpdatePositionData"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdatePositionData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "positionId",
+            "type": "u8"
+          },
+          {
+            "name": "settings",
+            "type": {
+              "option": {
+                "defined": "SolautoSettingsParametersInp"
+              }
+            }
+          },
+          {
+            "name": "dca",
+            "type": {
+              "option": {
+                "defined": "DCASettingsInp"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RebalanceSettings",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "rebalanceType",
+            "type": {
+              "defined": "SolautoRebalanceType"
+            }
+          },
+          {
+            "name": "swapInAmountBaseUnit",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "targetLiqUtilizationRateBps",
+            "type": {
+              "option": "u16"
+            }
+          },
+          {
+            "name": "flashLoanFeeBps",
+            "type": {
+              "option": "u16"
+            }
+          },
+          {
+            "name": "priceType",
+            "type": {
+              "option": {
+                "defined": "PriceType"
+              }
+            }
+          },
+          {
+            "name": "swapType",
+            "type": {
+              "option": {
+                "defined": "SwapType"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "PodBool",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "val",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenBalanceChangeType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "None"
+          },
+          {
+            "name": "PreSwapDeposit"
+          },
+          {
+            "name": "PostSwapDeposit"
+          },
+          {
+            "name": "PostRebalanceWithdrawSupplyToken"
+          },
+          {
+            "name": "PostRebalanceWithdrawDebtToken"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SolautoAction",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Deposit",
+            "fields": [
+              "u64"
+            ]
+          },
+          {
+            "name": "Borrow",
+            "fields": [
+              "u64"
+            ]
+          },
+          {
+            "name": "Repay",
+            "fields": [
+              {
+                "defined": "TokenBalanceAmount"
+              }
+            ]
+          },
+          {
+            "name": "Withdraw",
+            "fields": [
+              {
+                "defined": "TokenBalanceAmount"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "LendingPlatform",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Marginfi"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PositionType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Leverage"
+          },
+          {
+            "name": "SafeLoan"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Supply"
+          },
+          {
+            "name": "Debt"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RebalanceDirection",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "None"
+          },
+          {
+            "name": "Boost"
+          },
+          {
+            "name": "Repay"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RebalanceStep",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "PreSwap"
+          },
+          {
+            "name": "PostSwap"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SolautoRebalanceType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Regular"
+          },
+          {
+            "name": "DoubleRebalanceWithFL"
+          },
+          {
+            "name": "FLSwapThenRebalance"
+          },
+          {
+            "name": "FLRebalanceThenSwap"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SwapType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "ExactIn"
+          },
+          {
+            "name": "ExactOut"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenBalanceAmount",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Some",
+            "fields": [
+              "u64"
+            ]
+          },
+          {
+            "name": "All"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PriceType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Realtime"
+          },
+          {
+            "name": "Ema"
+          }
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "origin": "shank",
+    "address": "AutoyKBRaHSBHy9RsmXCZMy6nNFAg5FYijrvZyQcNLV"
+  }
+}

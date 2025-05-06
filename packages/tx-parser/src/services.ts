@@ -50,6 +50,7 @@ import * as goosefx from './services/goosefx';
 import * as gpool from './services/oresupply';
 import * as grass from './services/grass';
 import * as guano from './services/guano';
+import * as haven from './services/haven';
 import * as hawkfi from './services/hawkfi';
 import * as hedgehog from './services/hedgehog';
 import * as helio from './services/helio';
@@ -199,6 +200,7 @@ export const services: ServiceDefinition[] = [
   gpool,
   grass,
   guano,
+  haven,
   hawkfi,
   hedgehog,
   helio,

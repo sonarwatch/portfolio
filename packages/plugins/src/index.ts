@@ -174,6 +174,7 @@ import * as lavarage from './plugins/lavarage';
 import * as boop from './plugins/boop';
 import * as cytonic from './plugins/cytonic';
 import * as bouncebit from './plugins/bouncebit';
+import * as haven from './plugins/haven';
 
 export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
@@ -359,6 +360,7 @@ const modules = [
   boop,
   cytonic,
   bouncebit,
+  haven,
 ];
 
 // JOBS //
