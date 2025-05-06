@@ -1,0 +1,4084 @@
+{
+  "address": "65YBWQitcBexwuaBKfAV163xDd4LzVAdytATLbttpgxx",
+  "metadata": {
+    "name": "cedefi_v_2",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "batch_claim",
+      "discriminator": [
+        3,
+        1,
+        13,
+        209,
+        198,
+        215,
+        144,
+        13
+      ],
+      "accounts": [
+        {
+          "name": "configure",
+          "docs": [
+            "Global configuration"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103,
+                  117,
+                  114,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "docs": [
+            "Token Vault"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              },
+              {
+                "kind": "arg",
+                "path": "arg.strategy_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "close_requests",
+          "docs": [
+            "Close Request"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  108,
+                  111,
+                  115,
+                  101,
+                  95,
+                  114,
+                  101,
+                  113,
+                  117,
+                  101,
+                  115,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "bank_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "bank_account"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "fee_recipient_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "configure.fee_recipient",
+                "account": "Configure"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "token_mint"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "bank_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "fee_recipient_account",
+          "writable": true
+        },
+        {
+          "name": "user",
+          "docs": [
+            "The user."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "The [System] program."
+          ],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "arg",
+          "type": {
+            "defined": {
+              "name": "BatchClaimArg"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "close",
+      "discriminator": [
+        98,
+        165,
+        201,
+        177,
+        108,
+        65,
+        206,
+        96
+      ],
+      "accounts": [
+        {
+          "name": "configure",
+          "docs": [
+            "Global configuration"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103,
+                  117,
+                  114,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "docs": [
+            "Token Vault"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              },
+              {
+                "kind": "arg",
+                "path": "arg.strategy_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "total_info",
+          "docs": [
+            "Total Information"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  111,
+                  116,
+                  97,
+                  108,
+                  95,
+                  105,
+                  110,
+                  102,
+                  111
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "clearing_daily_info",
+          "docs": [
+            "Daily Information"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  97,
+                  105,
+                  108,
+                  121,
+                  95,
+                  105,
+                  110,
+                  102,
+                  111
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "vault.clearing_date_no",
+                "account": "Vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "open_requests",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  112,
+                  101,
+                  110,
+                  95,
+                  114,
+                  101,
+                  113,
+                  117,
+                  101,
+                  115,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "close_requests",
+          "docs": [
+            "Close Request"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  108,
+                  111,
+                  115,
+                  101,
+                  95,
+                  114,
+                  101,
+                  113,
+                  117,
+                  101,
+                  115,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_mint"
+        },
+        {
+          "name": "user",
+          "docs": [
+            "The user."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "The [System] program."
+          ],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "arg",
+          "type": {
+            "defined": {
+              "name": "CloseArg"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "convert_to_assets_by_date_no",
+      "discriminator": [
+        163,
+        220,
+        52,
+        141,
+        117,
+        213,
+        25,
+        115
+      ],
+      "accounts": [
+        {
+          "name": "vault",
+          "docs": [
+            "Token Vault"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              },
+              {
+                "kind": "arg",
+                "path": "arg.strategy_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "daily_info",
+          "docs": [
+            "Daily Information"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  97,
+                  105,
+                  108,
+                  121,
+                  95,
+                  105,
+                  110,
+                  102,
+                  111
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "arg",
+                "path": "arg.date_no"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_mint"
+        }
+      ],
+      "args": [
+        {
+          "name": "arg",
+          "type": {
+            "defined": {
+              "name": "ConvertArg"
+            }
+          }
+        }
+      ],
+      "returns": "u64"
+    },
+    {
+      "name": "convert_to_shares_by_date_no",
+      "discriminator": [
+        206,
+        64,
+        80,
+        44,
+        150,
+        2,
+        237,
+        239
+      ],
+      "accounts": [
+        {
+          "name": "vault",
+          "docs": [
+            "Token Vault"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              },
+              {
+                "kind": "arg",
+                "path": "arg.strategy_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "daily_info",
+          "docs": [
+            "Daily Information"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  97,
+                  105,
+                  108,
+                  121,
+                  95,
+                  105,
+                  110,
+                  102,
+                  111
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "arg",
+                "path": "arg.date_no"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_mint"
+        }
+      ],
+      "args": [
+        {
+          "name": "arg",
+          "type": {
+            "defined": {
+              "name": "ConvertArg"
+            }
+          }
+        }
+      ],
+      "returns": "u64"
+    },
+    {
+      "name": "current_date_no",
+      "discriminator": [
+        116,
+        191,
+        24,
+        177,
+        39,
+        87,
+        42,
+        10
+      ],
+      "accounts": [],
+      "args": [],
+      "returns": "u16"
+    },
+    {
+      "name": "get_apr_by_days",
+      "discriminator": [
+        134,
+        30,
+        122,
+        112,
+        41,
+        244,
+        210,
+        90
+      ],
+      "accounts": [
+        {
+          "name": "vault",
+          "docs": [
+            "Token Vault"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              },
+              {
+                "kind": "arg",
+                "path": "arg.strategy_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "from_daily_info",
+          "docs": [
+            "From Daily Information"
+          ]
+        },
+        {
+          "name": "clearing_daily_info",
+          "docs": [
+            "Clearing Daily Information"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  97,
+                  105,
+                  108,
+                  121,
+                  95,
+                  105,
+                  110,
+                  102,
+                  111
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "vault.clearing_date_no",
+                "account": "Vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_mint"
+        }
+      ],
+      "args": [
+        {
+          "name": "arg",
+          "type": {
+            "defined": {
+              "name": "AprArg"
+            }
+          }
+        }
+      ],
+      "returns": "u64"
+    },
+    {
+      "name": "get_info_by_account",
+      "discriminator": [
+        196,
+        150,
+        85,
+        88,
+        245,
+        20,
+        215,
+        120
+      ],
+      "accounts": [
+        {
+          "name": "vault",
+          "docs": [
+            "Token Vault"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              },
+              {
+                "kind": "arg",
+                "path": "arg.strategy_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "clearing_daily_info",
+          "docs": [
+            "Daily Information for clearing date"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  97,
+                  105,
+                  108,
+                  121,
+                  95,
+                  105,
+                  110,
+                  102,
+                  111
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "vault.clearing_date_no",
+                "account": "Vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "open_requests",
+          "docs": [
+            "Open Requests Account"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  112,
+                  101,
+                  110,
+                  95,
+                  114,
+                  101,
+                  113,
+                  117,
+                  101,
+                  115,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "arg",
+                "path": "arg.user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_mint",
+          "docs": [
+            "Token Mint Account"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "arg",
+          "type": {
+            "defined": {
+              "name": "UserInfoArg"
+            }
+          }
+        }
+      ],
+      "returns": {
+        "defined": {
+          "name": "UserInfoResult"
+        }
+      }
+    },
+    {
+      "name": "get_open_info_by_account",
+      "discriminator": [
+        27,
+        233,
+        58,
+        168,
+        1,
+        188,
+        58,
+        229
+      ],
+      "accounts": [
+        {
+          "name": "vault",
+          "docs": [
+            "Token Vault"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              },
+              {
+                "kind": "arg",
+                "path": "arg.strategy_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "clearing_daily_info",
+          "docs": [
+            "Daily Information for clearing date"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  97,
+                  105,
+                  108,
+                  121,
+                  95,
+                  105,
+                  110,
+                  102,
+                  111
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "vault.clearing_date_no",
+                "account": "Vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "open_requests",
+          "docs": [
+            "Open Requests Account"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  112,
+                  101,
+                  110,
+                  95,
+                  114,
+                  101,
+                  113,
+                  117,
+                  101,
+                  115,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "arg",
+                "path": "arg.user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_mint",
+          "docs": [
+            "Token Mint Account"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "arg",
+          "type": {
+            "defined": {
+              "name": "OpenInfoByAccountArg"
+            }
+          }
+        }
+      ],
+      "returns": {
+        "defined": {
+          "name": "OpenInfoByAccountResult"
+        }
+      }
+    },
+    {
+      "name": "init_vault",
+      "discriminator": [
+        77,
+        79,
+        85,
+        150,
+        33,
+        217,
+        52,
+        106
+      ],
+      "accounts": [
+        {
+          "name": "configure",
+          "docs": [
+            "Global configuration"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103,
+                  117,
+                  114,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "docs": [
+            "Token Vault"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              },
+              {
+                "kind": "arg",
+                "path": "arg.strategy_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "total_info",
+          "docs": [
+            "Total Information"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  111,
+                  116,
+                  97,
+                  108,
+                  95,
+                  105,
+                  110,
+                  102,
+                  111
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "open_requests",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  112,
+                  101,
+                  110,
+                  95,
+                  114,
+                  101,
+                  113,
+                  117,
+                  101,
+                  115,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "bank_account"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_mint"
+        },
+        {
+          "name": "bank_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "signer",
+          "docs": [
+            "The signer."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "The [System] program."
+          ],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "arg",
+          "type": {
+            "defined": {
+              "name": "InitVaultArg"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "configure",
+          "docs": [
+            "Global configuration"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103,
+                  117,
+                  114,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "signer",
+          "docs": [
+            "The signer."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "The [System] program."
+          ],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "arg",
+          "type": {
+            "defined": {
+              "name": "InitializeArg"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "open",
+      "discriminator": [
+        228,
+        220,
+        155,
+        71,
+        199,
+        189,
+        60,
+        45
+      ],
+      "accounts": [
+        {
+          "name": "configure",
+          "docs": [
+            "Global configuration"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103,
+                  117,
+                  114,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "docs": [
+            "Token Vault"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              },
+              {
+                "kind": "arg",
+                "path": "arg.strategy_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "daily_info",
+          "docs": [
+            "Daily Information"
+          ],
+          "writable": true
+        },
+        {
+          "name": "open_requests",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  112,
+                  101,
+                  110,
+                  95,
+                  114,
+                  101,
+                  113,
+                  117,
+                  101,
+                  115,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "bank_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "bank_account"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "escrow_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "configure.token_escrow",
+                "account": "Configure"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "token_mint"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "bank_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_account",
+          "writable": true
+        },
+        {
+          "name": "user",
+          "docs": [
+            "The user."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "The [System] program."
+          ],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "arg",
+          "type": {
+            "defined": {
+              "name": "OpenArg"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "rebase",
+      "discriminator": [
+        139,
+        9,
+        204,
+        225,
+        162,
+        197,
+        172,
+        77
+      ],
+      "accounts": [
+        {
+          "name": "configure",
+          "docs": [
+            "Global configuration"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103,
+                  117,
+                  114,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "docs": [
+            "Token Vault"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              },
+              {
+                "kind": "arg",
+                "path": "arg.strategy_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "total_info",
+          "docs": [
+            "Total Information"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  111,
+                  116,
+                  97,
+                  108,
+                  95,
+                  105,
+                  110,
+                  102,
+                  111
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "prev_daily_info",
+          "docs": [
+            "Previous Daily Information"
+          ]
+        },
+        {
+          "name": "daily_info",
+          "docs": [
+            "Daily Information"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  97,
+                  105,
+                  108,
+                  121,
+                  95,
+                  105,
+                  110,
+                  102,
+                  111
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "arg",
+                "path": "arg.next_clearing_date_no"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_mint"
+        },
+        {
+          "name": "signer",
+          "docs": [
+            "The signer."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "The [System] program."
+          ],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "arg",
+          "type": {
+            "defined": {
+              "name": "RebaseArg"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "register_vault",
+      "discriminator": [
+        121,
+        62,
+        4,
+        122,
+        93,
+        231,
+        119,
+        49
+      ],
+      "accounts": [
+        {
+          "name": "configure",
+          "docs": [
+            "Global configuration"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103,
+                  117,
+                  114,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "docs": [
+            "Token Vault"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              },
+              {
+                "kind": "arg",
+                "path": "arg.strategy_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "total_info",
+          "docs": [
+            "Total Information"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  111,
+                  116,
+                  97,
+                  108,
+                  95,
+                  105,
+                  110,
+                  102,
+                  111
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "prev_daily_info",
+          "docs": [
+            "Daily Information"
+          ],
+          "writable": true
+        },
+        {
+          "name": "open_requests",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  112,
+                  101,
+                  110,
+                  95,
+                  114,
+                  101,
+                  113,
+                  117,
+                  101,
+                  115,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "bank_account"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "signer"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "bank_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "bank_account"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "escrow_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "configure.token_escrow",
+                "account": "Configure"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "token_mint"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "bank_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_account",
+          "writable": true
+        },
+        {
+          "name": "signer",
+          "docs": [
+            "The signer."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "The [System] program."
+          ],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "arg",
+          "type": {
+            "defined": {
+              "name": "RegisterVaultArg"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "set_config",
+      "discriminator": [
+        108,
+        158,
+        154,
+        175,
+        212,
+        98,
+        52,
+        66
+      ],
+      "accounts": [
+        {
+          "name": "configure",
+          "docs": [
+            "Global configuration"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103,
+                  117,
+                  114,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "signer",
+          "docs": [
+            "The signer."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "The [System] program."
+          ],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "arg",
+          "type": {
+            "defined": {
+              "name": "SetConfigArg"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "set_vault",
+      "discriminator": [
+        177,
+        23,
+        187,
+        59,
+        247,
+        215,
+        255,
+        162
+      ],
+      "accounts": [
+        {
+          "name": "configure",
+          "docs": [
+            "Global configuration"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103,
+                  117,
+                  114,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "docs": [
+            "Token Vault"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              },
+              {
+                "kind": "arg",
+                "path": "arg.strategy_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_mint"
+        },
+        {
+          "name": "signer",
+          "docs": [
+            "The signer."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "The [System] program."
+          ],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "arg",
+          "type": {
+            "defined": {
+              "name": "SetVaultArg"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "CloseRequests",
+      "discriminator": [
+        72,
+        24,
+        42,
+        105,
+        215,
+        85,
+        13,
+        164
+      ]
+    },
+    {
+      "name": "Configure",
+      "discriminator": [
+        203,
+        61,
+        5,
+        203,
+        76,
+        241,
+        174,
+        6
+      ]
+    },
+    {
+      "name": "DailyInfo",
+      "discriminator": [
+        241,
+        53,
+        100,
+        51,
+        78,
+        232,
+        177,
+        254
+      ]
+    },
+    {
+      "name": "OpenRequests",
+      "discriminator": [
+        216,
+        148,
+        224,
+        127,
+        28,
+        21,
+        217,
+        78
+      ]
+    },
+    {
+      "name": "TotalInfo",
+      "discriminator": [
+        169,
+        31,
+        225,
+        174,
+        83,
+        54,
+        210,
+        113
+      ]
+    },
+    {
+      "name": "Vault",
+      "discriminator": [
+        211,
+        8,
+        232,
+        43,
+        2,
+        152,
+        117,
+        119
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "AdminSet",
+      "discriminator": [
+        157,
+        245,
+        205,
+        226,
+        118,
+        125,
+        183,
+        97
+      ]
+    },
+    {
+      "name": "Claimed",
+      "discriminator": [
+        217,
+        192,
+        123,
+        72,
+        108,
+        150,
+        248,
+        33
+      ]
+    },
+    {
+      "name": "Closed",
+      "discriminator": [
+        50,
+        31,
+        87,
+        155,
+        135,
+        220,
+        195,
+        239
+      ]
+    },
+    {
+      "name": "FeeRateSet",
+      "discriminator": [
+        122,
+        135,
+        53,
+        85,
+        40,
+        42,
+        251,
+        192
+      ]
+    },
+    {
+      "name": "FeeReceiverSet",
+      "discriminator": [
+        93,
+        36,
+        93,
+        45,
+        178,
+        182,
+        191,
+        232
+      ]
+    },
+    {
+      "name": "ForwardToSet",
+      "discriminator": [
+        192,
+        147,
+        158,
+        218,
+        152,
+        140,
+        222,
+        161
+      ]
+    },
+    {
+      "name": "Initialized",
+      "discriminator": [
+        208,
+        213,
+        115,
+        98,
+        115,
+        82,
+        201,
+        209
+      ]
+    },
+    {
+      "name": "Opened",
+      "discriminator": [
+        166,
+        172,
+        97,
+        9,
+        77,
+        76,
+        189,
+        109
+      ]
+    },
+    {
+      "name": "RebaseOperatorSet",
+      "discriminator": [
+        126,
+        100,
+        218,
+        130,
+        64,
+        214,
+        95,
+        20
+      ]
+    },
+    {
+      "name": "RebaseRateLimitSet",
+      "discriminator": [
+        70,
+        209,
+        231,
+        167,
+        91,
+        113,
+        78,
+        198
+      ]
+    },
+    {
+      "name": "Rebased",
+      "discriminator": [
+        191,
+        57,
+        120,
+        100,
+        252,
+        208,
+        74,
+        136
+      ]
+    },
+    {
+      "name": "VaultClaimEnableSet",
+      "discriminator": [
+        187,
+        19,
+        60,
+        160,
+        129,
+        25,
+        176,
+        18
+      ]
+    },
+    {
+      "name": "VaultEnableSet",
+      "discriminator": [
+        41,
+        83,
+        15,
+        40,
+        8,
+        20,
+        91,
+        1
+      ]
+    },
+    {
+      "name": "VaultFastCloseEnableSet",
+      "discriminator": [
+        74,
+        184,
+        73,
+        140,
+        150,
+        67,
+        10,
+        160
+      ]
+    },
+    {
+      "name": "VaultInitialized",
+      "discriminator": [
+        180,
+        43,
+        207,
+        2,
+        18,
+        71,
+        3,
+        75
+      ]
+    },
+    {
+      "name": "VaultMinAmountSet",
+      "discriminator": [
+        102,
+        142,
+        102,
+        72,
+        153,
+        155,
+        133,
+        180
+      ]
+    },
+    {
+      "name": "VaultNormalCloseEnableSet",
+      "discriminator": [
+        5,
+        26,
+        121,
+        105,
+        194,
+        113,
+        130,
+        45
+      ]
+    },
+    {
+      "name": "VaultOpenCooldownDaysSet",
+      "discriminator": [
+        198,
+        186,
+        15,
+        242,
+        197,
+        145,
+        28,
+        99
+      ]
+    },
+    {
+      "name": "VaultOpenEnableSet",
+      "discriminator": [
+        77,
+        235,
+        73,
+        35,
+        155,
+        214,
+        254,
+        119
+      ]
+    },
+    {
+      "name": "VaultRegistered",
+      "discriminator": [
+        215,
+        55,
+        28,
+        170,
+        12,
+        58,
+        41,
+        93
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "AccountNotWritable",
+      "msg": "Account not writable"
+    },
+    {
+      "code": 6001,
+      "name": "AlreadySet",
+      "msg": "Already set"
+    },
+    {
+      "code": 6002,
+      "name": "AmountTooSmall",
+      "msg": "The amount is too small"
+    },
+    {
+      "code": 6003,
+      "name": "CalculationOverflow",
+      "msg": "Calculation resulted in an overflow"
+    },
+    {
+      "code": 6004,
+      "name": "ClaimStillFrozen",
+      "msg": "The claim is still frozen"
+    },
+    {
+      "code": 6005,
+      "name": "ElementMismatch",
+      "msg": "Some element not match"
+    },
+    {
+      "code": 6006,
+      "name": "ElementNotExists",
+      "msg": "Some element not exists"
+    },
+    {
+      "code": 6007,
+      "name": "ElementNotUnique",
+      "msg": "Some element not unique"
+    },
+    {
+      "code": 6008,
+      "name": "ExceedLimit",
+      "msg": "Exceeds limit"
+    },
+    {
+      "code": 6009,
+      "name": "FunctionDisabled",
+      "msg": "The function is disabled"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidDateNo",
+      "msg": "Invalid date number"
+    },
+    {
+      "code": 6011,
+      "name": "InvalidOpenRequest",
+      "msg": "Invalid open request"
+    },
+    {
+      "code": 6012,
+      "name": "InvalidStrategyId",
+      "msg": "Invalid strategy id"
+    },
+    {
+      "code": 6013,
+      "name": "PdaAccountNotFound",
+      "msg": "PDA account not found"
+    },
+    {
+      "code": 6014,
+      "name": "RequestAmountTooLarge",
+      "msg": "Request amount too large"
+    },
+    {
+      "code": 6015,
+      "name": "TooEarly",
+      "msg": "Too Early"
+    },
+    {
+      "code": 6016,
+      "name": "Unauthorized",
+      "msg": "Unauthorized"
+    },
+    {
+      "code": 6017,
+      "name": "VaultDisabled",
+      "msg": "The vault is disabled"
+    },
+    {
+      "code": 6018,
+      "name": "ZeroAmount",
+      "msg": "Zero amount"
+    }
+  ],
+  "types": [
+    {
+      "name": "AdminSet",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "account",
+            "type": "pubkey"
+          },
+          {
+            "name": "admin",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AprArg",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "strategy_id",
+            "type": "u16"
+          },
+          {
+            "name": "days",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BatchClaimArg",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "strategy_id",
+            "type": "u16"
+          },
+          {
+            "name": "close_ids",
+            "type": {
+              "vec": "u32"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Claimed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "account",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "strategy_id",
+            "type": "u16"
+          },
+          {
+            "name": "close_id",
+            "type": "u32"
+          },
+          {
+            "name": "date_no",
+            "type": "u16"
+          },
+          {
+            "name": "assets",
+            "type": "u64"
+          },
+          {
+            "name": "fee",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CloseArg",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "strategy_id",
+            "type": "u16"
+          },
+          {
+            "name": "close_type",
+            "type": {
+              "defined": {
+                "name": "CloseType"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "CloseRequest",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "type": "u32"
+          },
+          {
+            "name": "pending_until",
+            "type": "i64"
+          },
+          {
+            "name": "normal_principal",
+            "type": "u64"
+          },
+          {
+            "name": "normal_shares",
+            "type": "u64"
+          },
+          {
+            "name": "normal_rewards",
+            "type": "u64"
+          },
+          {
+            "name": "fast_principal",
+            "type": "u64"
+          },
+          {
+            "name": "fast_fee",
+            "type": "u64"
+          },
+          {
+            "name": "is_fast",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CloseRequests",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "items",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "CloseRequest"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "CloseType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "NormalThenFast",
+            "fields": [
+              {
+                "name": "normal",
+                "type": {
+                  "option": "u64"
+                }
+              },
+              {
+                "name": "fast",
+                "type": {
+                  "option": "u64"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Closed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "account",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "strategy_id",
+            "type": "u16"
+          },
+          {
+            "name": "date_no",
+            "type": "u16"
+          },
+          {
+            "name": "clearing_date_no",
+            "type": "u16"
+          },
+          {
+            "name": "close_id",
+            "type": "u32"
+          },
+          {
+            "name": "pending_until",
+            "type": "i64"
+          },
+          {
+            "name": "normal_principal",
+            "type": "u64"
+          },
+          {
+            "name": "normal_shares",
+            "type": "u64"
+          },
+          {
+            "name": "normal_rewards",
+            "type": "u64"
+          },
+          {
+            "name": "fast_principal",
+            "type": "u64"
+          },
+          {
+            "name": "fast_fee",
+            "type": "u64"
+          },
+          {
+            "name": "is_fast",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Configure",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "rebase_operator",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_escrow",
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_recipient",
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_rate",
+            "type": "u64"
+          },
+          {
+            "name": "rebase_rate_limit",
+            "type": "u64"
+          },
+          {
+            "name": "last_close_id",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ConvertArg",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "strategy_id",
+            "type": "u16"
+          },
+          {
+            "name": "date_no",
+            "type": "u16"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DailyInfo",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pending_stakes",
+            "type": "u64"
+          },
+          {
+            "name": "stakes",
+            "type": "u64"
+          },
+          {
+            "name": "shares",
+            "type": "u64"
+          },
+          {
+            "name": "rewards",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FeeRateSet",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "account",
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_rate",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FeeReceiverSet",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "account",
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_recipient",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ForwardToSet",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "account",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_escrow",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitVaultArg",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "strategy_id",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitializeArg",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "rebase_operator",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_escrow",
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_recipient",
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_rate",
+            "type": "u64"
+          },
+          {
+            "name": "rebase_rate_limit",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Initialized",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "account",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OpenArg",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "strategy_id",
+            "type": "u16"
+          },
+          {
+            "name": "assets",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OpenInfoByAccountArg",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "strategy_id",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OpenInfoByAccountResult",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "normal_shares",
+            "type": "u64"
+          },
+          {
+            "name": "normal_assets",
+            "type": "u64"
+          },
+          {
+            "name": "fast_principal",
+            "type": "u64"
+          },
+          {
+            "name": "fast_assets",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OpenRequest",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "principal",
+            "type": "u64"
+          },
+          {
+            "name": "closed_shares",
+            "type": "u64"
+          },
+          {
+            "name": "pending_until_date_no",
+            "type": "u16"
+          },
+          {
+            "name": "create_date_no",
+            "type": "u16"
+          },
+          {
+            "name": "open_date_no",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OpenRequests",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "items",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "OpenRequest"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Opened",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "account",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "strategy_id",
+            "type": "u16"
+          },
+          {
+            "name": "create_date_no",
+            "type": "u16"
+          },
+          {
+            "name": "open_date_no",
+            "type": "u16"
+          },
+          {
+            "name": "assets",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RebaseArg",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "strategy_id",
+            "type": "u16"
+          },
+          {
+            "name": "next_clearing_date_no",
+            "type": "u16"
+          },
+          {
+            "name": "rewards",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RebaseOperatorSet",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "account",
+            "type": "pubkey"
+          },
+          {
+            "name": "rebase_operator",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RebaseRateLimitSet",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "account",
+            "type": "pubkey"
+          },
+          {
+            "name": "rebase_rate_limit",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Rebased",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "account",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "strategy_id",
+            "type": "u16"
+          },
+          {
+            "name": "date_no",
+            "type": "u16"
+          },
+          {
+            "name": "rewards",
+            "type": "u64"
+          },
+          {
+            "name": "total_stakes",
+            "type": "u64"
+          },
+          {
+            "name": "total_shares",
+            "type": "u64"
+          },
+          {
+            "name": "total_reward",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RegisterVaultArg",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "strategy_id",
+            "type": "u16"
+          },
+          {
+            "name": "open_cooldown_days",
+            "type": "u16"
+          },
+          {
+            "name": "open_date_offset",
+            "type": "u16"
+          },
+          {
+            "name": "min_amount",
+            "type": "u64"
+          },
+          {
+            "name": "init_assets",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SetConfigArg",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Admin",
+            "fields": [
+              "pubkey"
+            ]
+          },
+          {
+            "name": "RebaseOperator",
+            "fields": [
+              "pubkey"
+            ]
+          },
+          {
+            "name": "TokenEscrow",
+            "fields": [
+              "pubkey"
+            ]
+          },
+          {
+            "name": "FeeRecipient",
+            "fields": [
+              "pubkey"
+            ]
+          },
+          {
+            "name": "FeeRate",
+            "fields": [
+              "u64"
+            ]
+          },
+          {
+            "name": "RebaseRateLimit",
+            "fields": [
+              "u64"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "SetVaultArg",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "strategy_id",
+            "type": "u16"
+          },
+          {
+            "name": "set_vault_type",
+            "type": {
+              "defined": {
+                "name": "SetVaultType"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "SetVaultType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "EnableVault",
+            "fields": [
+              "bool"
+            ]
+          },
+          {
+            "name": "EnableOpen",
+            "fields": [
+              "bool"
+            ]
+          },
+          {
+            "name": "EnableNormalClose",
+            "fields": [
+              "bool"
+            ]
+          },
+          {
+            "name": "EnableFastClose",
+            "fields": [
+              "bool"
+            ]
+          },
+          {
+            "name": "EnableClaim",
+            "fields": [
+              "bool"
+            ]
+          },
+          {
+            "name": "OpenCooldownDays",
+            "fields": [
+              "u16"
+            ]
+          },
+          {
+            "name": "MinAmount",
+            "fields": [
+              "u64"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "TotalInfo",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "stakes",
+            "type": "u64"
+          },
+          {
+            "name": "shares",
+            "type": "u64"
+          },
+          {
+            "name": "rewards",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UserInfoArg",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "strategy_id",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UserInfoResult",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "total_principal",
+            "type": "u64"
+          },
+          {
+            "name": "total_shares",
+            "type": "u64"
+          },
+          {
+            "name": "total_rewards",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Vault",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "is_vault_enable",
+            "type": "bool"
+          },
+          {
+            "name": "is_open_enable",
+            "type": "bool"
+          },
+          {
+            "name": "is_normal_close_enable",
+            "type": "bool"
+          },
+          {
+            "name": "is_fast_close_enable",
+            "type": "bool"
+          },
+          {
+            "name": "is_claim_enable",
+            "type": "bool"
+          },
+          {
+            "name": "open_cooldown_days",
+            "type": "u16"
+          },
+          {
+            "name": "open_date_offset",
+            "type": "u16"
+          },
+          {
+            "name": "clearing_date_no",
+            "type": "u16"
+          },
+          {
+            "name": "min_amount",
+            "type": "u64"
+          },
+          {
+            "name": "stat",
+            "type": {
+              "defined": {
+                "name": "VaultStat"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultClaimEnableSet",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "account",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "strategy_id",
+            "type": "u16"
+          },
+          {
+            "name": "enable",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultEnableSet",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "account",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "strategy_id",
+            "type": "u16"
+          },
+          {
+            "name": "enable",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultFastCloseEnableSet",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "account",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "strategy_id",
+            "type": "u16"
+          },
+          {
+            "name": "enable",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultInitialized",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "account",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "strategy_id",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultMinAmountSet",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "account",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "strategy_id",
+            "type": "u16"
+          },
+          {
+            "name": "min_amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultNormalCloseEnableSet",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "account",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "strategy_id",
+            "type": "u16"
+          },
+          {
+            "name": "enable",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultOpenCooldownDaysSet",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "account",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "strategy_id",
+            "type": "u16"
+          },
+          {
+            "name": "open_cooldown_days",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultOpenEnableSet",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "account",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "strategy_id",
+            "type": "u16"
+          },
+          {
+            "name": "enable",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultRegistered",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "account",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "strategy_id",
+            "type": "u16"
+          },
+          {
+            "name": "open_date_offset",
+            "type": "u16"
+          },
+          {
+            "name": "init_assets",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultStat",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "total_open",
+            "type": "u128"
+          },
+          {
+            "name": "total_normal_principal_close",
+            "type": "u128"
+          },
+          {
+            "name": "total_normal_shares_close",
+            "type": "u128"
+          },
+          {
+            "name": "total_normal_rewards_close",
+            "type": "u128"
+          },
+          {
+            "name": "total_fast_close",
+            "type": "u128"
+          },
+          {
+            "name": "total_fast_fee",
+            "type": "u128"
+          },
+          {
+            "name": "total_claim_assets",
+            "type": "u128"
+          },
+          {
+            "name": "total_claim_fee",
+            "type": "u128"
+          }
+        ]
+      }
+    }
+  ],
+  "constants": [
+    {
+      "name": "DATE_NO_OFFSET",
+      "type": "i64",
+      "value": "14400"
+    },
+    {
+      "name": "DOW_FRI",
+      "type": "i64",
+      "value": "5"
+    },
+    {
+      "name": "DOW_MON",
+      "type": "i64",
+      "value": "1"
+    },
+    {
+      "name": "DOW_THU",
+      "type": "i64",
+      "value": "4"
+    },
+    {
+      "name": "MAX_CLOSE_REQUEST_SIZE",
+      "type": "u16",
+      "value": "10"
+    },
+    {
+      "name": "MAX_OPEN_REQUEST_SIZE",
+      "type": "u16",
+      "value": "10"
+    },
+    {
+      "name": "MAX_RATE_DENOMINATOR",
+      "type": "u64",
+      "value": "1000000"
+    },
+    {
+      "name": "ONE_DAY_SECONDS",
+      "type": "i64",
+      "value": "86400"
+    },
+    {
+      "name": "PENDING_UNTIL_CLAIM_OFFSET",
+      "type": "i64",
+      "value": "36000"
+    },
+    {
+      "name": "PENDING_UNTIL_CLOSE_OFFSET",
+      "type": "i64",
+      "value": "14400"
+    },
+    {
+      "name": "STRATEGY_MANUAL_START_ID",
+      "type": "u16",
+      "value": "10"
+    },
+    {
+      "name": "WRAPPED_SOL",
+      "type": "pubkey",
+      "value": "So11111111111111111111111111111111111111112"
+    }
+  ]
+}

@@ -173,6 +173,7 @@ import * as honeyland from './plugins/honeyland';
 import * as lavarage from './plugins/lavarage';
 import * as boop from './plugins/boop';
 import * as cytonic from './plugins/cytonic';
+import * as bouncebit from './plugins/bouncebit';
 
 export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
@@ -357,6 +358,7 @@ const modules = [
   lavarage,
   boop,
   cytonic,
+  bouncebit,
 ];
 
 // JOBS //

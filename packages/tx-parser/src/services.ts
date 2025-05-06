@@ -15,6 +15,7 @@ import * as bio from './services/bio';
 import * as bloom from './services/bloom';
 import * as bonkrewards from './services/bonkrewards';
 import * as boop from './services/boop';
+import * as bouncebit from './services/bouncebit';
 import * as bskt from './services/bskt';
 import * as carrot from './services/carrot';
 import * as circle from './services/circle';
@@ -163,6 +164,7 @@ export const services: ServiceDefinition[] = [
   bloom,
   bonkrewards,
   boop,
+  bouncebit,
   bskt,
   carrot,
   circle,
