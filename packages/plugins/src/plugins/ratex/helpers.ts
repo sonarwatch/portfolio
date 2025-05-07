@@ -1,9 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
-import {
-  getParsedMultipleAccountsInfo,
-  ParsedAccount,
-} from '../../utils/solana';
+import { ParsedAccount } from '../../utils/solana';
 import { Program, YieldMarketWithOracle } from './types';
 import { getClientSolana } from '../../utils/clients';
 import { getPool } from './getPool';
@@ -133,7 +130,7 @@ export const getPools = async (
   return pools;
 };
 
-export const getUsers = (
+export const getUsers = async (
   owner: string,
   numberOfSubAccountsCreated: number,
   program: PublicKey
@@ -155,7 +152,19 @@ export const getUsers = (
     userPdas.push(userPda);
   }
   const connection = getClientSolana();
-  return getParsedMultipleAccountsInfo(connection, userStruct, userPdas);
+
+  const accounts = await getMultipleAccountsInfoSafe(connection, userPdas);
+  const users = accounts.flatMap((acc) => {
+    if (!acc) return [];
+    let parsedData;
+    try {
+      [parsedData] = userStruct.deserialize(acc.data);
+    } catch (err) {
+      return [];
+    }
+    return parsedData;
+  });
+  return users;
 };
 
 export const getLpDatas = async (

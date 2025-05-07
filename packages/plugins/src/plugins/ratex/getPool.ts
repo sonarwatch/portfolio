@@ -2,10 +2,10 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { poolPrefix } from './constants';
-import { getParsedMultipleAccountsInfo } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import { oracleStruct, yieldMarketStruct } from './structs';
 import { YieldMarketWithOracle } from './types';
+import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 
 export const getPool = async (
   poolId: PublicKey,
@@ -23,25 +23,26 @@ export const getPool = async (
 
   const connection = getClientSolana();
 
-  const pools = await getParsedMultipleAccountsInfo(
-    connection,
-    yieldMarketStruct,
-    [poolId]
-  );
+  const account = await connection.getAccountInfo(poolId);
+  if (!account) return undefined;
 
-  if (!pools[0]) return undefined;
+  let pool;
+  try {
+    [pool] = yieldMarketStruct.deserialize(account.data);
+  } catch (err) {
+    return undefined;
+  }
 
-  const oracles = await getParsedMultipleAccountsInfo(
+  const oracle = await getParsedAccountInfo(
     connection,
     oracleStruct,
-    [new PublicKey(pools[0].oracle)]
+    pool.oracle
   );
-
-  if (!oracles[0]) return undefined;
+  if (!oracle) return undefined;
 
   const poolWithOracle = {
-    ...pools[0],
-    rate: oracles[0].rate,
+    ...pool,
+    rate: oracle.rate,
   };
 
   await cache.setItem(poolId.toString(), poolWithOracle, cacheOpts);
