@@ -1,9 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
-import {
-  getParsedMultipleAccountsInfo,
-  ParsedAccount,
-} from '../../utils/solana';
+import { ParsedAccount } from '../../utils/solana';
 import { Program, YieldMarketWithOracle } from './types';
 import { getClientSolana } from '../../utils/clients';
 import { getPool } from './getPool';
@@ -16,6 +13,7 @@ import {
   userStatsStruct,
   userStruct,
 } from './structs';
+import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 
 export const getUserStatsByProgram = async (
   programs: Program[],
@@ -31,11 +29,13 @@ export const getUserStatsByProgram = async (
     return userStatsPda;
   });
 
-  const userStatss = await getParsedMultipleAccountsInfo(
-    connection,
-    userStatsStruct,
-    userStatsPdas
-  );
+  const accounts = await getMultipleAccountsInfoSafe(connection, userStatsPdas);
+  const userStatss = accounts.flatMap((acc) => {
+    if (!acc) return [];
+    if (acc.data.byteLength < userStatsStruct.byteSize) return [];
+
+    return userStatsStruct.deserialize(acc.data)[0];
+  });
 
   const userStatsByProgram = new Map();
   programs.forEach((program, i) => {
@@ -130,7 +130,7 @@ export const getPools = async (
   return pools;
 };
 
-export const getUsers = (
+export const getUsers = async (
   owner: string,
   numberOfSubAccountsCreated: number,
   program: PublicKey
@@ -152,10 +152,22 @@ export const getUsers = (
     userPdas.push(userPda);
   }
   const connection = getClientSolana();
-  return getParsedMultipleAccountsInfo(connection, userStruct, userPdas);
+
+  const accounts = await getMultipleAccountsInfoSafe(connection, userPdas);
+  const users = accounts.flatMap((acc) => {
+    if (!acc) return [];
+    let parsedData;
+    try {
+      [parsedData] = userStruct.deserialize(acc.data);
+    } catch (err) {
+      return [];
+    }
+    return parsedData;
+  });
+  return users;
 };
 
-export const getLpDatas = (
+export const getLpDatas = async (
   owner: string,
   numberOfSubAccountsCreated: number,
   programId: PublicKey
@@ -177,5 +189,14 @@ export const getLpDatas = (
     lpPdas.push(lpPda);
   }
   const connection = getClientSolana();
-  return getParsedMultipleAccountsInfo(connection, lpStruct, lpPdas);
+  const accounts = await getMultipleAccountsInfoSafe(connection, lpPdas);
+
+  const parsedLps = accounts.flatMap((acc) => {
+    if (!acc) return [];
+    if (acc.data.byteLength < lpStruct.byteSize) return [];
+
+    return lpStruct.deserialize(acc.data)[0];
+  });
+
+  return parsedLps;
 };

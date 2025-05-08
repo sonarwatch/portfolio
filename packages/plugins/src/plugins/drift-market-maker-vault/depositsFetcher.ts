@@ -63,7 +63,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       continue;
 
     const vaultInfo = vaultById.get(depositAccount.vault.toString());
-    if (!vaultInfo) continue;
+    if (!vaultInfo || new BigNumber(vaultInfo.totalShares).isZero()) continue;
 
     const { name, mint, platformId, link } = vaultInfo;
 

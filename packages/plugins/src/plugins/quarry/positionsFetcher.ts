@@ -105,6 +105,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const mints = new Set<string>();
   positions.forEach((position) => {
+    if (!position.stakedTokenInfo) return;
     mints.add(position.stakedTokenInfo.address);
     position.rewardsTokenInfo.forEach((rewardTokenInfo) =>
       mints.add(rewardTokenInfo.address.toString())
@@ -126,6 +127,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const assets: PortfolioAssetToken[] = [];
     const rewardAssets: PortfolioAssetToken[] = [];
 
+    if (!stakedTokenInfo) return;
     const stakedTokenPrice = tokenPrices.get(stakedTokenInfo.address);
 
     if (stakedTokenPrice)

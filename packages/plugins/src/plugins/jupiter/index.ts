@@ -12,15 +12,12 @@ import pricingJob from './pricingJob';
 import { AirdropFetcher } from '../../AirdropFetcher';
 import {
   asr1AirdropFetcher,
-  asr1Fetcher,
   asr2AirdropFetcher,
-  asr2Fetcher,
   asr3AirdropFetcher,
-  asr3Fetcher,
   asr4AirdropFetcher,
   asr4Fetcher,
 } from './governance';
-import { lfgAirdropFetchers, lfgFetchers } from './launchpad';
+import { lfgAirdropFetchers } from './launchpad';
 
 export const jobs: Job[] = [custodiesJob, pricingJob];
 export const fetchers: Fetcher[] = [
@@ -30,11 +27,7 @@ export const fetchers: Fetcher[] = [
   dcaFetcher,
   lockFetcher,
   voteFetcher,
-  asr1Fetcher,
-  asr2Fetcher,
-  asr3Fetcher,
   asr4Fetcher,
-  ...lfgFetchers,
 ];
 export const airdropFetchers: AirdropFetcher[] = [
   asr1AirdropFetcher,
