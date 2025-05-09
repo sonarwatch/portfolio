@@ -37,6 +37,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${nativeStakePlatformId}-active-validators`,
+  networkIds: [NetworkId.aptos],
   executor,
   labels: ['normal'],
 };

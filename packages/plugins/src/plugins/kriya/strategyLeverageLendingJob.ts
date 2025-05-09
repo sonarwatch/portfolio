@@ -28,6 +28,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-strategy-leverage-lending`,
+  networkIds: [NetworkId.sui],
   executor,
   labels: ['normal'],
 };

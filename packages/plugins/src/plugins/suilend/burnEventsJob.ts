@@ -67,6 +67,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-burn-events`,
+  networkIds: [NetworkId.sui],
   executor,
   labels: ['normal'],
 };

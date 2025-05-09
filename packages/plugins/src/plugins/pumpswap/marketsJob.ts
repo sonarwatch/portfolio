@@ -124,6 +124,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-markets`,
+  networkIds: [NetworkId.solana],
   executor,
   labels: ['normal'],
 };

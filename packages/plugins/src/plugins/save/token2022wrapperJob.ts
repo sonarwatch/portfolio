@@ -64,6 +64,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-token2002wrapper`,
+  networkIds: [NetworkId.solana],
   executor,
   labels: ['normal'],
 };

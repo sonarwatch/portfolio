@@ -29,6 +29,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-aave-v3`,
+  networkIds: [NetworkId.ethereum],
   executor,
   labels: ['normal', 'evm', 'ethereum'],
 };

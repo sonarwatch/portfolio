@@ -50,6 +50,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 };
 const job: Job = {
   id: `${platformId}-lock-lp`,
+  networkIds: [NetworkId.sui],
   executor,
   labels: ['normal'],
 };

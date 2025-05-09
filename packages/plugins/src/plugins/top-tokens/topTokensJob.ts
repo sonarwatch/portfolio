@@ -51,6 +51,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: 'top-tokens',
+  networkIds,
   executor,
   labels: ['coingecko'],
 };

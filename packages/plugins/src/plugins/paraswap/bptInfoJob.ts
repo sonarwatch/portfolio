@@ -40,6 +40,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-bpt-info`,
+  networkIds: [NetworkId.ethereum],
   executor,
   labels: ['normal', 'evm', 'ethereum'],
 };

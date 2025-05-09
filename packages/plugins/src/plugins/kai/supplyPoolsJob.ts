@@ -24,6 +24,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 };
 const job: Job = {
   id: `${platformId}-supply-pools`,
+  networkIds: [NetworkId.sui],
   executor,
   labels: ['normal'],
 };

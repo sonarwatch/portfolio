@@ -1,4 +1,4 @@
-import { TokenPrice } from '@sonarwatch/portfolio-core';
+import { NetworkId, TokenPrice } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import {
@@ -30,6 +30,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 };
 const job: Job = {
   id: `${platformId}-v3-markets`,
+  networkIds: [NetworkId.ethereum, NetworkId.polygon],
   executor,
   labels: ['normal'],
 };

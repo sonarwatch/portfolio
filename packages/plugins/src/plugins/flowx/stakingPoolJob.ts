@@ -47,6 +47,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-staking-pool`,
+  networkIds: [NetworkId.sui],
   executor,
   labels: ['normal'],
 };

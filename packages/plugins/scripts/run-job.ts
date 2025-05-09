@@ -1,6 +1,6 @@
-import { getCache, getLlamaProtocolsJob, jobs, platforms } from '../src';
+import { getCache, getLlamaProtocolsJob, jobs } from '../src';
 
-const allJobs = [...jobs, getLlamaProtocolsJob(platforms)];
+const allJobs = [...jobs, getLlamaProtocolsJob([])];
 const jobId = process.argv.at(2);
 if (!jobId || jobId === '') {
   console.error('Fetcher ID is missing');

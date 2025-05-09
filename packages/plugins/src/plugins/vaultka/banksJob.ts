@@ -160,6 +160,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-banks`,
+  networkIds: [NetworkId.solana],
   executor,
   labels: ['normal'],
 };

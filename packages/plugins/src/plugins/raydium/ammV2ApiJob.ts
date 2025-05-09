@@ -198,6 +198,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-lp-tokens-api`,
+  networkIds: [NetworkId.solana],
   executor,
   labels: ['normal'],
 };

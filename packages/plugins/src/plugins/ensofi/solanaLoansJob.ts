@@ -57,6 +57,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 };
 const job: Job = {
   id: `${platformId}-solana-loans`,
+  networkIds: [NetworkId.solana],
   executor,
   labels: ['realtime'],
 };

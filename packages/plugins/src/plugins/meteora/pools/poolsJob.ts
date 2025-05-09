@@ -1,4 +1,4 @@
-import { TokenPriceSource } from '@sonarwatch/portfolio-core';
+import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { platformId, poolsProgramId } from '../constants';
 import { getClientSolana } from '../../../utils/clients';
@@ -70,6 +70,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-pools`,
+  networkIds: [NetworkId.solana],
   executor,
   labels: ['normal'],
 };

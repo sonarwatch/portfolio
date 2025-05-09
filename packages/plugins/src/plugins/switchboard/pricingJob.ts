@@ -52,6 +52,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 };
 const job: Job = {
   id: `${platformId}-pricing`,
+  networkIds: [NetworkId.solana],
   executor,
   labels: ['coingecko'],
 };

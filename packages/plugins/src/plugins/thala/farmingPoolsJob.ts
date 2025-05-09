@@ -25,6 +25,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-farming-pools`,
+  networkIds: [NetworkId.aptos],
   executor,
   labels: ['normal'],
 };

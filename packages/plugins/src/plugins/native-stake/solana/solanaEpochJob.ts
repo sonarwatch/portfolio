@@ -16,6 +16,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${nativeStakePlatformId}-solana-epoch`,
+  networkIds: [NetworkId.solana],
   executor,
   labels: ['normal'],
 };

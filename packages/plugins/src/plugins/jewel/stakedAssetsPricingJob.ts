@@ -38,6 +38,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 };
 const job: Job = {
   id: `${platformId}-assets-pricing`,
+  networkIds: [NetworkId.sui],
   executor,
   labels: ['normal'],
 };

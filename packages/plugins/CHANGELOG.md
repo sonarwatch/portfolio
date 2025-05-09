@@ -2,139 +2,46 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
-## [0.14.204](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.203...plugins-0.14.204) (2025-05-07)
-
-
-
-## [0.14.204](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.203...plugins-0.14.204) (2025-05-07)
-
-
-
-## [0.14.203](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.202...plugins-0.14.203) (2025-05-07)
-
-
-
-## [0.14.202](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.201...plugins-0.14.202) (2025-05-07)
-
-
-
-## [0.14.201](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.200...plugins-0.14.201) (2025-05-06)
-
-
-
-## [0.14.200](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.199...plugins-0.14.200) (2025-05-06)
-
-
-
-## [0.14.199](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.198...plugins-0.14.199) (2025-05-06)
-
-
-
-## [0.14.198](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.197...plugins-0.14.198) (2025-05-06)
-
-
-
-## [0.14.197](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.196...plugins-0.14.197) (2025-05-06)
-
-
-
-## [0.14.196](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.195...plugins-0.14.196) (2025-05-05)
-
-
-### Features
-
-* **cytonic:** add cytonic plugin with fetchers and service definitions ([6a6ec39](https://github.com/sonarwatch/portfolio/commit/6a6ec39811361b994f7c6a935e6472f8570dc244))
-
-
-
-## [0.14.195](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.194...plugins-0.14.195) (2025-05-05)
-
-
-### Features
-
-* **boop:** add initial implementation of staking plugin ([0765d4e](https://github.com/sonarwatch/portfolio/commit/0765d4eb8b2ea1c59fc69a11a68f6a4c33e88b8a))
-
-
-
-## [0.14.194](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.193...plugins-0.14.194) (2025-05-02)
-
-
-### Features
-
-* **services:** add staking and contract definitions for multiple platforms ([143337b](https://github.com/sonarwatch/portfolio/commit/143337befedf80658f8dc64368d8fdfa1c116145))
-
-
-
-## [0.14.193](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.192...plugins-0.14.193) (2025-04-30)
+## 0.0.1 (2025-04-21)
 
 
 ### Bug Fixes
 
-* correct next starting index calculation ([2af8811](https://github.com/sonarwatch/portfolio/commit/2af8811b9302bfa0d81736487ac24e13612fc0a6))
+* **dependencies:** update @drift-labs/sdk and @drift-labs/vaults-sdk to latest beta versions ([09357ce](https://github.com/aglumova/portfolio/commit/09357ce16434754dc576a1c908c5ec65db2ab8d3))
+* **driftPlatforms:** add missing platforms export ([777adbe](https://github.com/aglumova/portfolio/commit/777adbecbe0ed6a51587acdec6715672bbcdb16a))
+* minor ([20d39a4](https://github.com/aglumova/portfolio/commit/20d39a48b0e6806269a334f6c366668b4a0043d0))
+* **plugins:** zeta airdrop fetcher ([2df3b04](https://github.com/aglumova/portfolio/commit/2df3b046a5078862d9fbbb7bcbc69fa40237a5c8))
+* **tokenList:** isLatestVersion-version-check ([f9e0c0b](https://github.com/aglumova/portfolio/commit/f9e0c0b8a716a3577abfc691eb7413fc4c72f2fa))
+* use underlying asset type for new sCoin ([e5f39b6](https://github.com/aglumova/portfolio/commit/e5f39b6a85551df03a8e08fc219315a507fee102))
+* **zeus:** platform import ([b226e34](https://github.com/aglumova/portfolio/commit/b226e3481410d33cf39bd64730c51329dd449860))
 
 
 ### Features
 
-* **lavarage:** add new leverage plugin with pools and positions fetchers ([3398d7c](https://github.com/sonarwatch/portfolio/commit/3398d7cc153889e324f479b9ad46afeecf556bc0))
+* add new scoin support ([ea4382d](https://github.com/aglumova/portfolio/commit/ea4382d314fc366273c7847164f1028f3e3fb585))
+* add new types ([9e3c962](https://github.com/aglumova/portfolio/commit/9e3c96279015ef232f9503b4a0b7d8e60f21bd63))
+* add support for native usdc ([7350aaa](https://github.com/aglumova/portfolio/commit/7350aaa72bf205c9013c2e602dedc5061d6b029e))
+* **jupiter:** move jupMint and jupDecimals constants ([99b5c04](https://github.com/aglumova/portfolio/commit/99b5c04d38b30f59ca0f2978d3e1111107d29f50))
+* update scallop lending fetcher ([0620dd9](https://github.com/aglumova/portfolio/commit/0620dd969814c7725e03a4ff7f0d0206cab37f42))
 
 
+### Reverts
 
-## [0.14.192](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.191...plugins-0.14.192) (2025-04-29)
-
-
-
-## [0.14.191](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.190...plugins-0.14.191) (2025-04-28)
-
-
-
-## [0.14.190](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.189...plugins-0.14.190) (2025-04-23)
-
-
-
-## [0.14.189](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.188...plugins-0.14.189) (2025-04-23)
-
-
-
-## [0.14.188](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.187...plugins-0.14.188) (2025-04-23)
-
-
-
-## [0.14.187](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.186...plugins-0.14.187) (2025-04-23)
-
-
-
-## [0.14.186](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.185...plugins-0.14.186) (2025-04-21)
-
-
-
-## [0.14.185](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.184...plugins-0.14.185) (2025-04-21)
-
-
-### Bug Fixes
-
-* **tokenPriceToLiquidity:** refine yields handling for optional tokenYield ([9cee5b4](https://github.com/sonarwatch/portfolio/commit/9cee5b43fe696227e0f47c3dfbeb4638f96a83c5))
-* **tokenPriceToLiquidity:** simplify tokenYield type definition ([0b96ec8](https://github.com/sonarwatch/portfolio/commit/0b96ec87509c60539f35866668891dfdf7f0b915))
-
-
-
-## [0.14.184](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.183...plugins-0.14.184) (2025-04-21)
-
-
-
-## [0.14.183](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.182...plugins-0.14.183) (2025-04-19)
-
-
-
-## [0.14.182](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.181...plugins-0.14.182) (2025-04-18)
-
-
-### Features
-
-* **rain:** add stJup job for real-time token price updates ([161e3de](https://github.com/sonarwatch/portfolio/commit/161e3de497ea634bebd2462f1fedbae95e52d8cf))
-
-
-
-## [0.14.181](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.180...plugins-0.14.181) (2025-04-18)
+* Revert "add tx fetching for rpc performance optimization" ([25d669b](https://github.com/aglumova/portfolio/commit/25d669b6660b3d3e2c38fae14800dc9cb89e3a1b))
+* Revert "test" ([bbf8b3c](https://github.com/aglumova/portfolio/commit/bbf8b3ca3f4da142b65119c864866122106489b6))
+* Revert "fix drift" ([b1318fa](https://github.com/aglumova/portfolio/commit/b1318fa453a4d1a723f47791051942fba2e98d13))
+* Revert "tmp to multiple" ([9512357](https://github.com/aglumova/portfolio/commit/9512357d6583a16107082bb29ef84c9f78fecebf))
+* Revert "add link to airdropFetcher" ([0407ce5](https://github.com/aglumova/portfolio/commit/0407ce5bf9d0fe361b91f99ed714b4885dab329d))
+* Revert "nxfinance fix" ([771326b](https://github.com/aglumova/portfolio/commit/771326b2733e529f7b90a7827978822b4f640349))
+* Revert "quick fix" ([8bc6088](https://github.com/aglumova/portfolio/commit/8bc60880781fa62359ed79132aa56660a770ea67))
+* Revert "fix" ([1da1323](https://github.com/aglumova/portfolio/commit/1da13233267c4db40155341d91752b4b4dba58d1))
+* Revert "fix getAutoParsedProgramAccounts" ([451cbb2](https://github.com/aglumova/portfolio/commit/451cbb297fb99a3a6e1ed4801fd91c211fb6e833))
+* Revert "linting" ([cc27848](https://github.com/aglumova/portfolio/commit/cc27848b5a5e965d54457cd9dce7359a62c5e48d))
+* Revert "improve namings" ([155a7ff](https://github.com/aglumova/portfolio/commit/155a7ffdddd158964f27f8ed52ec82c357c5034e))
+* Revert "fix flashtrade" ([4055eb1](https://github.com/aglumova/portfolio/commit/4055eb1e72e64c96adf536bbd81c377c41018535))
+* Revert "upgrade nx" ([62550ba](https://github.com/aglumova/portfolio/commit/62550bab2e60d40b8616465843dad4d3ad612bbd))
+* Revert "rename" ([ffcf477](https://github.com/aglumova/portfolio/commit/ffcf47783e7dcb924c7685a4c7784a2385b526c2))
+* Revert "fix" ([75a2d85](https://github.com/aglumova/portfolio/commit/75a2d85230c10109f052c903700899308a48e72c))
 
 
 

@@ -93,6 +93,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-market-maker-vaults`,
+  networkIds: [NetworkId.solana],
   executor,
   labels: ['realtime'],
 };

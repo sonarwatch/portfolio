@@ -25,6 +25,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-stake-for-fee-vaults`,
+  networkIds: [NetworkId.solana],
   executor,
   labels: ['normal'],
 };

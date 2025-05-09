@@ -1,7 +1,7 @@
 import {
   NetworkIdType,
   UniTokenList,
-  networks,
+  networks, NetworkId
 } from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
 import { Cache } from '../../Cache';
@@ -49,6 +49,7 @@ function getTokenListsJob(networkId: NetworkIdType): Job {
   };
   const job: Job = {
     id: `token-lists-${networkId}`,
+    networkIds: [networkId],
     executor,
     labels: ['normal'],
   };

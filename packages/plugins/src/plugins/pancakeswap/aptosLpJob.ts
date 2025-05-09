@@ -153,6 +153,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-aptos-lp`,
+  networkIds: [NetworkId.aptos],
   executor,
   labels: ['normal'],
 };
