@@ -2,22 +2,72 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
-## 0.0.1 (2025-04-21)
+## [0.14.201](https://github.com/sonarwatch/portfolio/compare/core-0.14.200...core-0.14.201) (2025-05-07)
+
+
+
+## [0.14.200](https://github.com/sonarwatch/portfolio/compare/core-0.14.199...core-0.14.200) (2025-05-05)
+
+
+
+## [0.14.199](https://github.com/sonarwatch/portfolio/compare/core-0.14.198...core-0.14.199) (2025-05-02)
+
+
+
+## [0.14.198](https://github.com/sonarwatch/portfolio/compare/core-0.14.197...core-0.14.198) (2025-04-30)
 
 
 ### Features
 
-* **networks:** add networksByAddressSystem for categorizing networks by address system ([6e839af](https://github.com/aglumova/portfolio/commit/6e839af0c9ae96546647c2d4514b9ccfc135ad2a))
+* **lavarage:** add new leverage plugin with pools and positions fetchers ([3398d7c](https://github.com/sonarwatch/portfolio/commit/3398d7cc153889e324f479b9ad46afeecf556bc0))
 
 
-### Reverts
 
-* Revert "tmp to multiple" ([9512357](https://github.com/aglumova/portfolio/commit/9512357d6583a16107082bb29ef84c9f78fecebf))
-* Revert "chore(core): release version 0.14.112" ([6451b73](https://github.com/aglumova/portfolio/commit/6451b734a659ccedfc18a0e02c3601d1e31af0b3))
-* Revert "nxfinance fix" ([771326b](https://github.com/aglumova/portfolio/commit/771326b2733e529f7b90a7827978822b4f640349))
-* Revert "upgrade nx" ([62550ba](https://github.com/aglumova/portfolio/commit/62550bab2e60d40b8616465843dad4d3ad612bbd))
-* Revert "rename" ([ffcf477](https://github.com/aglumova/portfolio/commit/ffcf47783e7dcb924c7685a4c7784a2385b526c2))
-* Revert "fix" ([a93952e](https://github.com/aglumova/portfolio/commit/a93952e9e6ad61547691bf5e00af35a892a0b81c))
+## [0.14.197](https://github.com/sonarwatch/portfolio/compare/core-0.14.196...core-0.14.197) (2025-04-28)
+
+
+
+## [0.14.196](https://github.com/sonarwatch/portfolio/compare/core-0.14.195...core-0.14.196) (2025-04-24)
+
+
+
+## [0.14.195](https://github.com/sonarwatch/portfolio/compare/core-0.14.194...core-0.14.195) (2025-04-23)
+
+
+
+## [0.14.194](https://github.com/sonarwatch/portfolio/compare/core-0.14.193...core-0.14.194) (2025-04-23)
+
+
+
+## [0.14.193](https://github.com/sonarwatch/portfolio/compare/core-0.14.192...core-0.14.193) (2025-04-21)
+
+
+
+## [0.14.192](https://github.com/sonarwatch/portfolio/compare/core-0.14.191...core-0.14.192) (2025-04-21)
+
+
+
+## [0.14.191](https://github.com/sonarwatch/portfolio/compare/core-0.14.190...core-0.14.191) (2025-04-19)
+
+
+
+## [0.14.190](https://github.com/sonarwatch/portfolio/compare/core-0.14.189...core-0.14.190) (2025-04-19)
+
+
+
+## [0.14.189](https://github.com/sonarwatch/portfolio/compare/core-0.14.188...core-0.14.189) (2025-04-19)
+
+
+
+## [0.14.188](https://github.com/sonarwatch/portfolio/compare/core-0.14.187...core-0.14.188) (2025-04-18)
+
+
+
+## [0.14.187](https://github.com/sonarwatch/portfolio/compare/core-0.14.186...core-0.14.187) (2025-04-18)
+
+
+
+## [0.14.186](https://github.com/sonarwatch/portfolio/compare/core-0.14.185...core-0.14.186) (2025-04-18)
 
 
 
