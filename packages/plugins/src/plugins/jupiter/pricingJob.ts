@@ -37,6 +37,7 @@ const mints = [
   '8qJSyQprMC57TWKaYEmetUR3UUiTP2M3hXdcvFhkZdmv', // Tether USD (Wormhole from BSC)
   'UPTx1d24aBWuRgwxVnFmX4gNraj3QGFzL3QqBgxtWQG', // UPT
   'STREAMribRwybYpMmSYoCsQUdr6MZNXEqHgm7p1gu9M', // STREAM
+  'SAVEDpx3nFNdzG3ymJfShYnrBuYy7LtQEABZQ3qtTFt', // saveSOL
 ];
 const vsToken = solanaNativeWrappedAddress;
 
