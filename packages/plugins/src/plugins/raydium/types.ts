@@ -1,7 +1,6 @@
 import { GetProgramAccountsFilter, PublicKey } from '@solana/web3.js';
 import { BeetStruct } from '@metaplex-foundation/beet';
 import { TokenPrice, Yield } from '@sonarwatch/portfolio-core';
-import BigNumber from 'bignumber.js';
 import BN from 'bn.js';
 import Decimal from 'decimal.js';
 import { AmmInfoV4, AmmInfoV5 } from './structs/amms';
@@ -12,6 +11,7 @@ import {
   UserFarmAccountV31,
   UserFarmAccountV4,
   UserFarmAccountV5,
+  UserFarmAccountV61,
 } from './structs/farms';
 import { ParsedAccount } from '../../utils/solana';
 
@@ -50,12 +50,26 @@ export type UserFarmConfig = {
     | BeetStruct<UserFarmAccountV31, Partial<UserFarmAccountV31>>;
 };
 
+export type UserFarmConfigV6 = {
+  programId: PublicKey;
+  version: string;
+  filters: (address: string) => GetProgramAccountsFilter[];
+  struct: BeetStruct<UserFarmAccountV61, Partial<UserFarmAccountV61>>;
+};
+
 export type FarmConfig = {
   programId: PublicKey;
   version: string;
   d: number;
   filters: GetProgramAccountsFilter[];
   struct: BeetStruct<FarmAccount, Partial<FarmAccount>>;
+};
+export type FarmConfigV6 = {
+  programId: PublicKey;
+  version: string;
+  d: number;
+  filters: GetProgramAccountsFilter[];
+  struct: BeetStruct<FarmAccountV6, Partial<FarmAccountV6>>;
 };
 
 export type FarmInfo = {
@@ -64,14 +78,6 @@ export type FarmInfo = {
   d: number;
   rewardTokenA?: TokenPrice;
   rewardTokenB?: TokenPrice;
-  yields?: Yield[];
-};
-
-export type FarmInfoV6 = {
-  account: FarmAccountV6;
-  lpToken: TokenPrice;
-  multiplier: BigNumber;
-  rewardTokens: (TokenPrice | undefined)[];
   yields?: Yield[];
 };
 
