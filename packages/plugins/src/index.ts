@@ -175,6 +175,7 @@ import * as boop from './plugins/boop';
 import * as cytonic from './plugins/cytonic';
 import * as bouncebit from './plugins/bouncebit';
 import * as haven from './plugins/haven';
+import * as pumpfun from './plugins/pumpfun';
 
 export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
@@ -361,6 +362,7 @@ const modules = [
   cytonic,
   bouncebit,
   haven,
+  pumpfun,
 ];
 
 // JOBS //
