@@ -35,6 +35,10 @@ const ammsDetails = [
   // },
 ];
 
+/**
+ * @deprecated
+ * This function has been deprecated. Use the raydium-lp-tokens-api fetcher instead.
+ */
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
   const tokenPriceSources = [];
