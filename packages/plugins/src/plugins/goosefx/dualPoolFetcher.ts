@@ -19,7 +19,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   )
     .addFilter('accountDiscriminator', [0, 141, 89, 29, 236, 6, 14, 15])
     .addFilter('user', new PublicKey(owner))
-    .addDataSizeFilter(184)
+    .addDataSizeFilter(217)
     .run();
   if (userLiquidities.length === 0) return [];
 

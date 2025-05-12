@@ -16,9 +16,6 @@ import {
 } from './constants';
 import { AirdropResponse } from './types';
 import { getClientSolana } from '../../utils/clients';
-import { getUnlockedAmountFromLinearVesting } from '../../utils/misc/getUnlockedAmountFromVesting';
-
-const oneMonth = 30 * 24 * 60 * 60;
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
   const epoch = await getClientSolana().getEpochInfo();
@@ -52,36 +49,41 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
       ],
     });
 
-  const vestedAmount = new BigNumber(res.data.totalAmount).times(
-    (epoch.epoch - res.data.startEpoch) /
-      (res.data.endEpoch - res.data.startEpoch)
-  );
-  const unvestedAmount = new BigNumber(res.data.totalAmount).minus(
-    vestedAmount
-  );
-
-  const unlockedFromVesting = new BigNumber(
-    getUnlockedAmountFromLinearVesting(
-      1737201600,
-      1752840000,
-      vestedAmount,
-      oneMonth
-    )
-  );
-
   const claimedAmount = new BigNumber(res.data.claimedAmount);
+  const totalAmount = new BigNumber(res.data.totalAmount);
+  const { startEpoch } = res.data;
+  const { endEpoch } = res.data;
 
-  let leftToClaim = new BigNumber(0);
-  if (claimedAmount.isZero()) {
-    leftToClaim = unvestedAmount.plus(unlockedFromVesting);
-  } else if (claimedAmount.isGreaterThan(unvestedAmount)) {
-    leftToClaim = claimedAmount.minus(unvestedAmount.plus(unlockedFromVesting));
-  } else {
-    leftToClaim = unvestedAmount.plus(unlockedFromVesting);
-  }
+  if (epoch.epoch >= startEpoch && endEpoch >= startEpoch) {
+    const diffAirDropEpoch = endEpoch - startEpoch;
+    const diffCurrentEpoch = epoch.epoch - startEpoch;
 
-  if (leftToClaim.dividedBy(res.data.totalAmount).isLessThan(0.05)) {
-    leftToClaim = new BigNumber(0);
+    const ratio = diffCurrentEpoch / diffAirDropEpoch;
+
+    if (diffAirDropEpoch > 0 && diffCurrentEpoch > 0) {
+      const availableAmount = totalAmount
+        .times(ratio)
+        .minus(claimedAmount)
+        .decimalPlaces(0, BigNumber.ROUND_DOWN);
+
+      return getAirdropRaw({
+        statics: airdropStatics,
+        items: [
+          {
+            amount: availableAmount.dividedBy(10 ** layerDecimals).toNumber(),
+            isClaimed: false,
+            label: 'LAYER',
+            address: layerMint,
+          },
+          {
+            amount: claimedAmount.dividedBy(10 ** layerDecimals).toNumber(),
+            isClaimed: true,
+            label: 'LAYER',
+            address: layerMint,
+          },
+        ],
+      });
+    }
   }
 
   return getAirdropRaw({
@@ -90,12 +92,6 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
       {
         amount: claimedAmount.dividedBy(10 ** layerDecimals).toNumber(),
         isClaimed: true,
-        label: 'LAYER',
-        address: layerMint,
-      },
-      {
-        amount: leftToClaim.dividedBy(10 ** layerDecimals).toNumber(),
-        isClaimed: false,
         label: 'LAYER',
         address: layerMint,
       },
