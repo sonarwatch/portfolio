@@ -40,7 +40,7 @@ async function getOwner(name: string): Promise<string | null> {
   }
 }
 
-async function getNames(address: string): Promise<string[]> {
+export async function getNames(address: string): Promise<string[]> {
   const client = getClientSolana();
   const owner = new PublicKey(address);
 
