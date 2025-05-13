@@ -120,6 +120,7 @@ import * as sns from './services/sns';
 import * as solana from './services/solana';
 import * as solanaid from './services/solanaid';
 import * as solayer from './services/solayer';
+import * as solcasino from './services/solcasino';
 import * as solincinerator from './services/solincinerator';
 import * as solsea from './services/solsea';
 import * as sonic from './services/sonic';
@@ -270,6 +271,7 @@ export const services: ServiceDefinition[] = [
   solana,
   solanaid,
   solayer,
+  solcasino,
   solincinerator,
   solsea,
   sonic,
