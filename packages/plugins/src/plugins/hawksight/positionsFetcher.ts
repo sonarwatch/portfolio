@@ -21,10 +21,22 @@ import { getAssetsByOwnerDas } from '../../utils/solana/das/getAssetsByOwnerDas'
 import { DisplayOptions } from '../../utils/solana/das/types';
 import { heliusAssetToAssetCollectible } from '../../utils/solana/das/heliusAssetToAssetCollectible';
 import { mSOLMint } from '../marinade/constants';
+import { hasTransactions } from '../../utils/hasTransactions';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const dasUrl = getSolanaDasEndpoint();
   const derivedAddresses = getHawksightUserPdas(new PublicKey(owner));
+
+  if (
+    !(await hasTransactions(derivedAddresses[0].toString(), NetworkId.solana))
+  )
+    return [];
+
+  if (
+    !(await hasTransactions(derivedAddresses[1].toString(), NetworkId.solana))
+  )
+    return [];
+
+  const dasUrl = getSolanaDasEndpoint();
 
   const displayOptions: DisplayOptions = {
     showCollectionMetadata: true,
@@ -34,6 +46,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     showGrandTotal: false,
     showFungible: true,
   };
+
   const heliusAssets = (
     await Promise.all([
       getAssetsByOwnerDas(
