@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.207](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.206...plugins-0.14.207) (2025-05-13)
+
+
+### Features
+
+* **plugins:** add Solana Umi client and update dependencies ([e590c54](https://github.com/sonarwatch/portfolio/commit/e590c541af2968c0e8ed832be494f59a8a49e98b))
+
+
+
 ## [0.14.206](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.205...plugins-0.14.206) (2025-05-12)
 
 
