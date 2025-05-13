@@ -47,7 +47,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const registry = new ElementRegistry(NetworkId.solana, platformId);
   const element = registry.addElementMultiple({
     label: 'Rewards',
-    link: `https://pump.fun/profile/${owner}`,
+    link: `https://pump.fun/profile/${owner}?&tab=coins`,
   });
   element.addAsset({
     address: solanaNativeWrappedAddress,
