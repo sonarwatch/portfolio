@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.209](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.208...plugins-0.14.209) (2025-05-13)
+
+
+### Bug Fixes
+
+* **dependencies:** update @metaplex-foundation/umi-serializers-encodings to version 1.2.0 and remove deprecated packages ([f429622](https://github.com/sonarwatch/portfolio/commit/f42962254647f7ffc58048f4e58527e4eeffe3d5))
+
+
+
 ## [0.14.208](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.207...plugins-0.14.208) (2025-05-13)
 
 
