@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.202](https://github.com/sonarwatch/portfolio/compare/core-0.14.201...core-0.14.202) (2025-05-13)
+
+
+### Bug Fixes
+
+* **getUsdValueSum:** change return type from UsdValue to number ([168f9e0](https://github.com/sonarwatch/portfolio/commit/168f9e009051d756ea57554c2d861aa4b3a54905))
+
+
+
 ## [0.14.201](https://github.com/sonarwatch/portfolio/compare/core-0.14.200...core-0.14.201) (2025-05-07)
 
 
