@@ -175,6 +175,8 @@ import * as boop from './plugins/boop';
 import * as cytonic from './plugins/cytonic';
 import * as bouncebit from './plugins/bouncebit';
 import * as haven from './plugins/haven';
+import * as pumpfun from './plugins/pumpfun';
+import { solanaSimpleFetcher } from './plugins/tokens';
 
 export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
@@ -187,7 +189,7 @@ export * from './utils/hasTransactions';
 
 export { getLlamaProtocolsJob } from './plugins/llama-protocols';
 export { jupFetcherIds } from './plugins/jupiter';
-export { solanaSimpleFetcher } from './plugins/tokens';
+export { solanaSimpleFetcher };
 
 const modules = [
   tokens,
@@ -361,6 +363,7 @@ const modules = [
   cytonic,
   bouncebit,
   haven,
+  pumpfun,
 ];
 
 // JOBS //
@@ -374,7 +377,8 @@ export const jobs: Job[] = modules
   .flat();
 
 // FETCHERS //
-export const fetchers: Fetcher[] = modules
+
+export const defaultFetchers: Fetcher[] = modules
   .map((module): Fetcher[] => {
     if ('fetchers' in module) {
       return module.fetchers as Fetcher[];
@@ -382,7 +386,16 @@ export const fetchers: Fetcher[] = modules
     return [];
   })
   .flat();
-export const fetchersByAddressSystem = getFetchersByAddressSystem(fetchers);
+
+/**
+ * @deprecated Use `defaultFetchers` instead.
+ */
+export const fetchers: Fetcher[] = defaultFetchers;
+export const allFetchers = [...defaultFetchers, solanaSimpleFetcher];
+export const fetchersByAddressSystem =
+  getFetchersByAddressSystem(defaultFetchers);
+export const allFetchersByAddressSystem =
+  getFetchersByAddressSystem(allFetchers);
 
 export const airdropFetchers: AirdropFetcher[] = modules
   .map((module): AirdropFetcher[] => {
