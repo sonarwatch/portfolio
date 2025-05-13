@@ -60,10 +60,6 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         userFarmAccount.pubkey.toString() === rayStakingPubkey
           ? 'Staked'
           : 'Farming',
-      link:
-        userFarmAccount.pubkey.toString() === rayStakingPubkey
-          ? 'https://raydium.io/staking/'
-          : 'https://raydium.io/portfolio/?position_tab=standard',
     });
 
     const liquidityParams: LiquidityParams = {
@@ -71,6 +67,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       sourceRefs: [
         { name: 'Farm', address: userFarmAccount.poolId.toString() },
       ],
+      link:
+        userFarmAccount.pubkey.toString() === rayStakingPubkey
+          ? 'https://raydium.io/staking/'
+          : 'https://raydium.io/portfolio/?position_tab=standard',
     };
 
     const liquidity = element.addLiquidity(liquidityParams);

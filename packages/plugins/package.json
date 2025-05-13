@@ -1,6 +1,6 @@
 {
   "name": "@sonarwatch/portfolio-plugins",
-  "version": "0.14.204",
+  "version": "0.14.218",
   "type": "commonjs",
   "types": "./src/index.d.ts",
   "peerDependencies": {
@@ -21,6 +21,7 @@
     "@isaacs/ttlcache": "^1.4.1",
     "@metaplex-foundation/beet": "^0.7.1",
     "@metaplex-foundation/beet-solana": "^0.4.0",
+    "@metaplex-foundation/umi-bundle-defaults": "^1.2.0",
     "@mysten/bcs": "^0.11.1",
     "@mysten/sui": "^1.12.0",
     "@onsol/tldparser": "^0.6.1",

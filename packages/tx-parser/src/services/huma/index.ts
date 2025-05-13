@@ -8,6 +8,12 @@ const contract = {
   platformId,
 };
 
+const institutionalContract = {
+  name: 'Institutional',
+  address: 'EVQ4s1b6N1vmWFDv8PRNc77kufBP8HcrSNWXQAhRsJq9',
+  platformId,
+};
+
 const service: ServiceDefinition = {
   id: `${platformId}-permissionless`,
   name: 'Permissionless',
@@ -15,6 +21,13 @@ const service: ServiceDefinition = {
   networkId: NetworkId.solana,
   contracts: [contract],
 };
+const institutionalService: ServiceDefinition = {
+  id: `${platformId}-institutional`,
+  name: 'Institutional',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [institutionalContract],
+};
 
-export const services: ServiceDefinition[] = [service];
+export const services: ServiceDefinition[] = [service, institutionalService];
 export default services;

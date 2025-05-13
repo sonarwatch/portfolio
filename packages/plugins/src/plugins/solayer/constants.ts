@@ -24,7 +24,7 @@ export const airdropStatics: AirdropStatics = {
   image:
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/solayer.webp',
   claimStart: 1739275200000,
-  claimEnd: 1752840000,
+  claimEnd: 1752840000000,
 };
 
 // export const stakePoolProgramId = 'SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy'

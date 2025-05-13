@@ -2,6 +2,77 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.218](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.217...plugins-0.14.218) (2025-05-13)
+
+
+
+## [0.14.217](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.216...plugins-0.14.217) (2025-05-13)
+
+
+
+## [0.14.216](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.215...plugins-0.14.216) (2025-05-13)
+
+
+
+## [0.14.215](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.214...plugins-0.14.215) (2025-05-13)
+
+
+
+## [0.14.214](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.213...plugins-0.14.214) (2025-05-13)
+
+
+
+## [0.14.213](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.212...plugins-0.14.213) (2025-05-13)
+
+
+
+## [0.14.212](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.211...plugins-0.14.212) (2025-05-13)
+
+
+
+## [0.14.211](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.210...plugins-0.14.211) (2025-05-13)
+
+
+
+## [0.14.210](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.209...plugins-0.14.210) (2025-05-13)
+
+
+
+## [0.14.209](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.208...plugins-0.14.209) (2025-05-13)
+
+
+### Bug Fixes
+
+* **dependencies:** update @metaplex-foundation/umi-serializers-encodings to version 1.2.0 and remove deprecated packages ([f429622](https://github.com/sonarwatch/portfolio/commit/f42962254647f7ffc58048f4e58527e4eeffe3d5))
+
+
+
+## [0.14.208](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.207...plugins-0.14.208) (2025-05-13)
+
+
+### Features
+
+* **fetchers:** refactor fetchers to use defaultFetchers and deprecate old fetchers export ([d846675](https://github.com/sonarwatch/portfolio/commit/d8466757503b1abb216df7eb11c3e445f9dce8f6))
+
+
+
+## [0.14.207](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.206...plugins-0.14.207) (2025-05-13)
+
+
+### Features
+
+* **plugins:** add Solana Umi client and update dependencies ([e590c54](https://github.com/sonarwatch/portfolio/commit/e590c541af2968c0e8ed832be494f59a8a49e98b))
+
+
+
+## [0.14.206](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.205...plugins-0.14.206) (2025-05-12)
+
+
+
+## [0.14.205](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.204...plugins-0.14.205) (2025-05-12)
+
+
+
 ## [0.14.204](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.203...plugins-0.14.204) (2025-05-07)
 
 

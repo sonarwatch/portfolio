@@ -41,9 +41,6 @@ export const farmProgramIdV4 = new PublicKey(
 export const farmProgramIdV5 = new PublicKey(
   '9KEPoZmtHUrBbhWN1v1KWLMkkvwY6WLtAVUCPRtRjP4z'
 );
-export const farmProgramIdV6 = new PublicKey(
-  'FarmqiPv5eAj3j1GMdMCMUGXqPUvmquZtMy86QH6rzhG'
-);
 
 export const userFarmConfigs: UserFarmConfig[] = [
   {

@@ -2,6 +2,28 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.0.2](https://github.com/sonarwatch/portfolio/compare/tx-parser-1.0.1...tx-parser-1.0.2) (2025-05-13)
+
+
+
+## [1.0.1](https://github.com/sonarwatch/portfolio/compare/tx-parser-1.0.0...tx-parser-1.0.1) (2025-05-13)
+
+
+### Features
+
+* **services:** add solcasino service integration ([0a4e4ca](https://github.com/sonarwatch/portfolio/commit/0a4e4ca04e19fdcaf58cfa3b22910dc31028e804))
+* **services:** integrate jupiter contract into mayan and relay services ([c9220a6](https://github.com/sonarwatch/portfolio/commit/c9220a64219def971fd69b48e3c3d651ebbae283))
+
+
+
+# [1.0.0](https://github.com/sonarwatch/portfolio/compare/tx-parser-0.0.31...tx-parser-1.0.0) (2025-05-13)
+
+
+
+## [0.0.31](https://github.com/sonarwatch/portfolio/compare/tx-parser-0.0.30...tx-parser-0.0.31) (2025-05-12)
+
+
+
 ## [0.0.30](https://github.com/sonarwatch/portfolio/compare/tx-parser-0.0.29...tx-parser-0.0.30) (2025-05-06)
 
 

@@ -1,12 +1,12 @@
 {
   "name": "@sonarwatch/portfolio-core",
-  "version": "0.14.201",
+  "version": "0.14.204",
   "type": "commonjs",
   "types": "./src/index.d.ts",
   "dependencies": {
     "@ethersproject/address": "^5.7.0",
     "@ethersproject/bytes": "^5.7.0",
-    "@metaplex-foundation/umi-serializers-encodings": "^0.8.9",
+    "@metaplex-foundation/umi-serializers-encodings": "^1.2.0",
     "bitcoin-address-validation": "^2.2.1"
   }
 }

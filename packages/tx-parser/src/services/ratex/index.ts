@@ -17,6 +17,8 @@ const programIds = [
   'raTeSq8Ebeb1JR3xRgSz7i2DP35Fyz5zsszkijgnXKm',
   'RaTeUhvvohYGErSb2Sy3RA5EdMv9A9jtiJe8FHTg7uK',
   'rAtewzmMSgn1QGewCM8PHdoW49bbuzrDQi4ftFoTFWo',
+  'ratEoDQr8juEipHZ7kx1Vu7BffJ2t2R27ScJCJHDiSV',
+  'RAtELWRTmTxPtDUue6ihnoXRhLzjbFixvJmH9RwymLo',
 ];
 
 export const services: ServiceDefinition[] = programIds.map((programId, i) => ({
