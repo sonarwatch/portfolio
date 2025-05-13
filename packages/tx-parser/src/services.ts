@@ -108,6 +108,7 @@ import * as rain from './services/rain';
 import * as ratex from './services/ratex';
 import * as raydium from './services/raydium';
 import * as realms from './services/realms';
+import * as relay from './services/relay';
 import * as runemine from './services/runemine';
 import * as sanctum from './services/sanctum';
 import * as sandglass from './services/sandglass';
@@ -259,6 +260,7 @@ export const services: ServiceDefinition[] = [
   ratex,
   raydium,
   realms,
+  relay,
   runemine,
   sanctum,
   sandglass,

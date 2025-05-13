@@ -1,5 +1,6 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { ServiceDefinition } from '../../ServiceDefinition';
+import { systemContract } from '../solana';
 
 const platformId = 'solcasino';
 
@@ -9,13 +10,29 @@ const contract = {
   platformId,
 };
 
-const service: ServiceDefinition = {
-  id: `${platformId}-main`,
-  name: 'Wallet',
+const depositService: ServiceDefinition = {
+  id: `${platformId}-deposit`,
+  name: 'Deposit',
   platformId,
   networkId: NetworkId.solana,
   contracts: [contract],
 };
 
-export const services: ServiceDefinition[] = [service];
+const withdrawService: ServiceDefinition = {
+  id: `${platformId}-withdraw`,
+  name: 'Withdraw',
+  platformId,
+  networkId: NetworkId.solana,
+  matchTransaction: (txn) =>
+    txn.transaction.message.instructions.some(
+      (ix) => ix.programId.toString() === systemContract.address
+    ) &&
+    txn.transaction.message.accountKeys.some(
+      (x) =>
+        x.pubkey.toString() ===
+          '6qkh2JcHt3ctFeiL4HBn1e9NU5aPw25XNhtgEv6ZCJ4U' && x.signer
+    ),
+};
+
+export const services: ServiceDefinition[] = [depositService, withdrawService];
 export default services;
