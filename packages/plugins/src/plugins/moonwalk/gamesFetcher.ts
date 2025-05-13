@@ -11,7 +11,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (!apiKey) return [];
 
   const apiResponse: AxiosResponse<Games> = await axios.get(newApi + owner, {
-    timeout: 3000,
+    timeout: 5000,
     headers: {
       'X-API-KEY': apiKey,
     },

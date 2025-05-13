@@ -34,6 +34,12 @@ const m3m3Contract: Contract = {
   platformId,
 };
 
+const dammV2Contract: Contract = {
+  name: `AMM V2`,
+  address: 'cpamdpZCGKUy5JxQXB4dcpGPiikHawvSWAd6mEn1sGG',
+  platformId,
+};
+
 export const bondingCurveContract: Contract = {
   name: `Bonding Curve`,
   address: 'dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN',
@@ -75,6 +81,13 @@ export const services: ServiceDefinition[] = [
     platformId,
     networkId: NetworkId.solana,
     contracts: [meteoraDlmmVaultsContract],
+  },
+  {
+    id: `${platformId}-damm-v2`,
+    name: 'DAMM V2',
+    platformId,
+    networkId: NetworkId.solana,
+    contracts: [dammV2Contract],
   },
   {
     id: `${platformId}-m3m3-staking`,
