@@ -15,7 +15,7 @@ export const airdropApi =
   'https://jito-distributor-api.n38t0uklh84us.ap-southeast-1.cs.amazonlightsail.com/proof/';
 export const fidaDecimals = 6;
 
-export const snsMint = undefined;
+export const snsMint = 'SNS8DJbHc34nKySHVhLGMUUE72ho6igvJaxtq9T3cX3';
 
 export const snsAirdropStatics: AirdropStatics = {
   emitterLink: 'https://sns.id/',
