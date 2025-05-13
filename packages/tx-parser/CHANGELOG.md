@@ -2,6 +2,10 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [1.0.0](https://github.com/sonarwatch/portfolio/compare/tx-parser-0.0.31...tx-parser-1.0.0) (2025-05-13)
+
+
+
 ## [0.0.31](https://github.com/sonarwatch/portfolio/compare/tx-parser-0.0.30...tx-parser-0.0.31) (2025-05-12)
 
 
