@@ -1,6 +1,9 @@
 import { PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
-import { ParsedAccount } from '../../utils/solana';
+import {
+  getParsedMultipleAccountsInfo,
+  ParsedAccount,
+} from '../../utils/solana';
 import { Program, YieldMarketWithOracle } from './types';
 import { getClientSolana } from '../../utils/clients';
 import { getPool } from './getPool';
@@ -29,13 +32,11 @@ export const getUserStatsByProgram = async (
     return userStatsPda;
   });
 
-  const accounts = await getMultipleAccountsInfoSafe(connection, userStatsPdas);
-  const userStatss = accounts.flatMap((acc) => {
-    if (!acc) return [];
-    if (acc.data.byteLength < userStatsStruct.byteSize) return [];
-
-    return userStatsStruct.deserialize(acc.data)[0];
-  });
+  const userStatss = await getParsedMultipleAccountsInfo(
+    connection,
+    userStatsStruct,
+    userStatsPdas
+  );
 
   const userStatsByProgram = new Map();
   programs.forEach((program, i) => {
@@ -154,7 +155,7 @@ export const getUsers = async (
   const connection = getClientSolana();
 
   const accounts = await getMultipleAccountsInfoSafe(connection, userPdas);
-  const users = accounts.flatMap((acc) => {
+  return accounts.flatMap((acc) => {
     if (!acc) return [];
     let parsedData;
     try {
@@ -164,7 +165,6 @@ export const getUsers = async (
     }
     return parsedData;
   });
-  return users;
 };
 
 export const getLpDatas = async (
@@ -188,15 +188,6 @@ export const getLpDatas = async (
     );
     lpPdas.push(lpPda);
   }
-  const connection = getClientSolana();
-  const accounts = await getMultipleAccountsInfoSafe(connection, lpPdas);
 
-  const parsedLps = accounts.flatMap((acc) => {
-    if (!acc) return [];
-    if (acc.data.byteLength < lpStruct.byteSize) return [];
-
-    return lpStruct.deserialize(acc.data)[0];
-  });
-
-  return parsedLps;
+  return getParsedMultipleAccountsInfo(getClientSolana(), lpStruct, lpPdas);
 };
