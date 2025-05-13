@@ -6,7 +6,7 @@
   "dependencies": {
     "@ethersproject/address": "^5.7.0",
     "@ethersproject/bytes": "^5.7.0",
-    "@metaplex-foundation/umi-serializers-encodings": "^0.8.9",
+    "@metaplex-foundation/umi-serializers-encodings": "^1.2.0",
     "bitcoin-address-validation": "^2.2.1"
   }
 }
