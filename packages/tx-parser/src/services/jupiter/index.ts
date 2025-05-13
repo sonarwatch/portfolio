@@ -1,5 +1,5 @@
 import { Contract, NetworkId } from '@sonarwatch/portfolio-core';
-import { ServiceDefinition } from '../../ServiceDefinition';
+import { ServiceDefinition, ServicePriority } from '../../ServiceDefinition';
 import { matchAnyInstructionWithPrograms } from '../../utils/parseTransaction/matchAnyInstructionWithPrograms';
 
 const platformId = 'jupiter-exchange';
@@ -113,6 +113,7 @@ export const services: ServiceDefinition[] = [
     platformId,
     networkId: NetworkId.solana,
     contracts: [jupiterV6Contract],
+    priority: ServicePriority.low,
   },
   {
     id: `${platformId}-swap-v5`,

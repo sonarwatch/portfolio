@@ -1,5 +1,6 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { ServiceDefinition } from '../../ServiceDefinition';
+import { jupiterV6Contract } from '../jupiter';
 
 const platformId = 'mayan';
 const contract = {
@@ -8,13 +9,21 @@ const contract = {
   platformId,
 };
 
-const service: ServiceDefinition = {
-  id: `${platformId}-swift`,
-  name: 'Swift',
+const claimService: ServiceDefinition = {
+  id: `${platformId}-claim`,
+  name: 'Claim',
   platformId,
   networkId: NetworkId.solana,
   contracts: [contract],
 };
 
-export const services: ServiceDefinition[] = [service];
+const bridgeService: ServiceDefinition = {
+  id: `${platformId}-bridge`,
+  name: 'Bridge',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [contract, jupiterV6Contract],
+};
+
+export const services: ServiceDefinition[] = [claimService, bridgeService];
 export default services;
