@@ -70,15 +70,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const isMarinade = marinadeManagerAddresses.includes(staker.toString());
 
-    if (!activationEpoch.isZero() && !isMarinade)
-      mevRewards += new BigNumber(stakeAccount.lamports)
+    let accountMevRewards = new BigNumber(0);
+    if (!activationEpoch.isZero() && !isMarinade) {
+      accountMevRewards = new BigNumber(stakeAccount.lamports)
         .minus(stakeAccount.rentExemptReserve)
-        .minus(stakeAccount.stake)
-        .dividedBy(10 ** 9)
-        .toNumber();
+        .minus(stakeAccount.stake);
+      mevRewards += accountMevRewards.dividedBy(10 ** 9).toNumber();
+    }
 
     const amount = new BigNumber(stakeAccount.lamports)
       .minus(stakeAccount.rentExemptReserve)
+      .minus(accountMevRewards)
       .dividedBy(10 ** 9)
       .toNumber();
     if (amount <= 0) continue;
