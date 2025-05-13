@@ -1,5 +1,6 @@
 export { default as getClientAptos } from './getClientAptos';
 export { default as getClientSolana } from './getClientSolana';
+export { default as getClientSolanaUmi } from './getClientSolanaUmi';
 export { default as getClientSui } from './getClientSui';
 export { default as getClientSei } from './getClientSei';
 export { default as getClientCosmos } from './getClientCosmos';
