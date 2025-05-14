@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.2](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.1...plugins-0.15.2) (2025-05-14)
+
+
+### Bug Fixes
+
+* **dependencies:** update peer dependency @sonarwatch/portfolio-core to version ^0.15.0 ([ad5ef7f](https://github.com/sonarwatch/portfolio/commit/ad5ef7fbd5ededa7136a950a94f45ec57aaeeb09))
+
+
+
 ## [0.15.1](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.0...plugins-0.15.1) (2025-05-14)
 
 
