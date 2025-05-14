@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.14.219](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.218...plugins-0.14.219) (2025-05-14)
+
+
+### Bug Fixes
+
+* update profile link to include tab for coins ([acf94fe](https://github.com/sonarwatch/portfolio/commit/acf94fe389cb3edf820bbdb5f807e105b3fe2268))
+
+
+
 ## [0.14.218](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.217...plugins-0.14.218) (2025-05-13)
 
 
