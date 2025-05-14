@@ -7,6 +7,8 @@ import {
   getAirdropRaw,
 } from '../../AirdropFetcher';
 import { snsAllocation } from './SNS_allocation';
+import { getClaimStatusPda } from './helpers';
+import { getClientSolana } from '../../utils/clients';
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
   const alloc = snsAllocation[owner];
@@ -25,12 +27,16 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
     });
   }
 
+  const claimed = await getClientSolana().getAccountInfo(
+    getClaimStatusPda(owner)
+  );
+
   return getAirdropRaw({
     statics: snsAirdropStatics,
     items: [
       {
         amount: alloc,
-        isClaimed: false,
+        isClaimed: !!claimed,
         label: 'SNS',
         address: snsMint,
         imageUri: snsAirdropStatics.image,
