@@ -179,6 +179,7 @@ npx nx run tx-parser:run-tx DemoSX9F2zXfQLtBr56Yr5he15P7viZWsYJpSDAX3tKG 4AN8Fc4
 npx nx run core:build
 npx nx run plugins:build
 npx nx run tx-parser:build
+npx nx run webapp:build
 ```
 
 ## Deploy

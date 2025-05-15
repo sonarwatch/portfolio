@@ -1,0 +1,35 @@
+{
+  "name": "webapp",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/webapp/src",
+  "projectType": "webapp",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/packages/webapp",
+        "main": "packages/webapp/src/server.ts",
+        "tsConfig": "packages/webapp/tsconfig.json",
+        "assets": [
+          "packages/webapp/*.md"
+        ]
+      }
+    },
+    "build:docker": {
+      "command": "docker build --platform=linux/amd64 -t solana-portfolio:latest .",
+      "dependsOn": []
+    },
+    "run": {
+      "command": "ts-node --project packages/webapp/tsconfig.json  packages/webapp/src/server.ts",
+      "dependsOn": []
+    },
+    "run:docker": {
+      "command": "docker run --platform=linux/amd64 --rm -it solana-portfolio:latest",
+      "dependsOn": []
+    }
+  },
+  "tags": []
+}

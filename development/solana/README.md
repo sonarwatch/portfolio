@@ -32,6 +32,7 @@ Jobs are periodic scripts that:
 - Parse custom Solana structs (via borsh or manual deserialization)
 - Calculate token prices, metadata, or protocol state
 - Write to the cache for fast lookup by fetchers
+- Retrieves and caches pools/vaults/etc for protocols 
 
 📍 **Examples**:
 - `kamino/reservesJob.ts`: Gets lending reserves and APRs
@@ -44,7 +45,7 @@ Jobs are periodic scripts that:
 Fetchers are executed per wallet address and:
 
 - Query on-chain data tied to the wallet (e.g. token accounts, staking positions)
-- Decode balances, claimable rewards, or LP shares
+- Decode balances, claimable rewards, or LP shares.
 - Return structured `PortfolioElement` objects for frontend display
 
 📍 **Examples**:

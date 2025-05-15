@@ -7,7 +7,6 @@ import { getParsedProgramAccounts } from '../../utils/solana';
 import { luloProgramId, platformId, poolsKey } from './constants';
 import { poolStruct } from './struct';
 import { APIResponse } from './types';
-import { NetworkId } from '@sonarwatch/portfolio-core';
 
 export type AllocationInfo = {
   mint: string;

@@ -53,6 +53,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
 const job: Job = {
   id: `${platformId}-farms-v6`,
+  networkIds: [NetworkId.solana],
   executor,
   labels: ['normal'],
 };

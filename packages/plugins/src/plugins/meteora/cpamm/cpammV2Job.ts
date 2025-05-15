@@ -97,6 +97,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-cpamm-pools`,
   executor,
+  networkIds: [NetworkId.solana],
   labels: ['normal'],
 };
 export default job;

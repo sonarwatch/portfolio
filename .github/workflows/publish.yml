@@ -1,0 +1,82 @@
+---
+name: Build Portfolio Docker image & Push to Registry image
+
+on:
+  workflow_dispatch:
+    inputs:
+      buildtag:
+        description: 'Custom Tag'
+        required: true
+        type: string
+      setlatest:
+        description: 'Set latest tag'
+        type: boolean
+        default: false
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+
+jobs:
+  build-images:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4.1.6
+
+      - id: filter
+        uses: dorny/paths-filter@v3.0.2
+        with:
+          filters: |
+            portfolio:
+              - 'webapp/**'
+              - 'packages/**'
+
+      - name: Set up Docker Buildx
+        if: steps.filter.outputs.portfolio == 'true' || github.event_name == 'workflow_dispatch'
+        uses: docker/setup-buildx-action@v3.3.0
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5.5.1
+        with:
+          images: |
+            us-central1-docker.pkg.dev/p2p-data-lambda/images/lambda-portfolio-api
+          tags: |
+            type=ref,event=tag
+            type=sha,enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value=${{ inputs.buildtag }},enable=${{ github.event_name == 'workflow_dispatch' }}
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value=latest,enable=${{ github.event_name == 'workflow_dispatch' && inputs.setlatest }}
+          flavor: |
+            latest=auto
+
+      - name: Auth to Google Cloud
+        id: auth
+        if: steps.filter.outputs.portfolio == 'true' || github.event_name == 'workflow_dispatch'
+        uses: google-github-actions/auth@v2.1.7
+        with:
+          project_id: p2p-data-lambda
+          workload_identity_provider: projects/196334367470/locations/global/workloadIdentityPools/p2p-github-lambda/providers/github-lambda-repos
+
+      - name: Login to GAR
+        uses: docker/login-action@v3.2.0
+        if: steps.filter.outputs.portfolio == 'true' || github.event_name == 'workflow_dispatch'
+        with:
+          registry: us-central1-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.auth_token }}
+
+      - name: Build and push portfolio
+        uses: docker/build-push-action@v5.4.0
+        if: steps.filter.outputs.portfolio == 'true' || github.event_name == 'workflow_dispatch'
+        with:
+          context: webapp/
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=us-central1-docker.pkg.dev/p2p-data-lambda/images/lambda-portfolio-api:buildcache
+          cache-to: type=registry,ref=us-central1-docker.pkg.dev/p2p-data-lambda/images/lambda-portfolio-api:buildcache,mode=max

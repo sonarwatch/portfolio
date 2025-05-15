@@ -1,13 +1,12 @@
 import { NetworkIdType, networks } from '@sonarwatch/portfolio-core';
-import { getLlamaProtocolsJob, jobs, platforms } from '../src';
+import { getLlamaProtocolsJob, jobs } from '../src';
 
 async function listJobs(network?: string) {
   if (network && !Object.keys(networks).includes(network)) {
     console.error(`unknown network. NetworkId: ${network}`);
   }
 
-  const allJobs = [...jobs, getLlamaProtocolsJob(platforms)];
-  console.log(allJobs);
+  const allJobs = [...jobs, getLlamaProtocolsJob([])];
   const filteredJobs = allJobs
     .filter(
       (job) =>
