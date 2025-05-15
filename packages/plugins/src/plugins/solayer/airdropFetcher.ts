@@ -1,6 +1,11 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
 import BigNumber from 'bignumber.js';
+import {
+  getTransactions,
+  parseTransaction,
+  getSignatures,
+} from '@sonarwatch/tx-parser';
 import { PublicKey } from '@solana/web3.js';
 import {
   AirdropFetcher,
@@ -20,7 +25,6 @@ import { getClientSolana } from '../../utils/clients';
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
   const client = getClientSolana();
-  const epoch = await client.getEpochInfo();
 
   let res: AxiosResponse<AirdropResponse>;
   try {
@@ -52,61 +56,44 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
       ],
     });
 
-  const claimedAmount = new BigNumber(res.data.claimedAmount);
   const totalAmount = new BigNumber(res.data.totalAmount);
-  const { startEpoch, endEpoch } = res.data;
 
-  const txs = client.getSignaturesForAddress(
-    new PublicKey('35YYQV8wTUWxKoyMSAzhLSshxYSuiWZmtnsb94asAZfk')
+  // This is for test purpose
+  const claimAccount = new PublicKey(
+    '35YYQV8wTUWxKoyMSAzhLSshxYSuiWZmtnsb94asAZfk'
   );
-
-  if (epoch.epoch >= startEpoch && endEpoch >= startEpoch) {
-    const diffAirDropEpoch = endEpoch - startEpoch;
-    const diffCurrentEpoch = epoch.epoch - startEpoch;
-
-    const ratio = diffCurrentEpoch / diffAirDropEpoch;
-
-    if (diffAirDropEpoch > 0 && diffCurrentEpoch > 0) {
-      const availableAmount = totalAmount
-        .times(ratio)
-        .minus(claimedAmount)
-        .decimalPlaces(0, BigNumber.ROUND_DOWN);
-
-      return getAirdropRaw({
-        statics: airdropStatics,
-        items: [
-          {
-            amount: totalAmount.dividedBy(10 ** layerDecimals).toNumber(),
-            isClaimed: false,
-            label: 'LAYER',
-            address: layerMint,
-            claims: [
-              {
-                date: 0,
-                amount: claimedAmount.dividedBy(10 ** layerDecimals).toNumber(),
-              },
-            ],
-            ref: '35YYQV8wTUWxKoyMSAzhLSshxYSuiWZmtnsb94asAZfk',
-          },
-          // {
-          //   amount: claimedAmount.dividedBy(10 ** layerDecimals).toNumber(),
-          //   isClaimed: true,
-          //   label: 'LAYER',
-          //   address: layerMint,
-          // },
-        ],
-      });
-    }
-  }
+  const claimSignatures = await getSignatures(client, claimAccount.toString());
+  const claimTransaction = await getTransactions(
+    client,
+    claimSignatures.map((s) => s.signature)
+  );
+  const claimTransactionParsed = claimTransaction.map((t) =>
+    parseTransaction(t, owner)
+  );
 
   return getAirdropRaw({
     statics: airdropStatics,
     items: [
       {
-        amount: claimedAmount.dividedBy(10 ** layerDecimals).toNumber(),
-        isClaimed: true,
+        amount: totalAmount.dividedBy(10 ** layerDecimals).toNumber(),
+        isClaimed: false,
         label: 'LAYER',
         address: layerMint,
+        claims: claimTransactionParsed.flatMap((t) => {
+          if (t && t.blockTime) {
+            const layerChange = t?.balanceChanges.find(
+              (b) => b.address === layerMint
+            )?.change;
+            if (layerChange)
+              return {
+                amount: layerChange,
+                date: t.blockTime * 1000,
+                txId: t.signature,
+              };
+          }
+          return [];
+        }),
+        ref: '35YYQV8wTUWxKoyMSAzhLSshxYSuiWZmtnsb94asAZfk',
       },
     ],
   });

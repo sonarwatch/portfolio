@@ -392,15 +392,20 @@ export function airdropFetcherToFetcher(
       airdrop.items.forEach((item) => {
         if (
           item.status !== AirdropItemStatus.claimable &&
-          item.status !== AirdropItemStatus.claimableLater
+          item.status !== AirdropItemStatus.claimableLater &&
+          item.status !== AirdropItemStatus.partiallyClaimed
         )
           return;
+
+        const amountLeftToClaim = item.claims
+          ? item.claims.reduce((acc, c) => acc - c.amount, item.amount)
+          : item.amount;
 
         const asset: PortfolioAssetGeneric | PortfolioAssetToken = item.address
           ? {
               ...tokenPriceToAssetToken(
                 item.address,
-                item.amount,
+                amountLeftToClaim,
                 airdropFetcher.networkId,
                 undefined,
                 item.price || undefined,
@@ -412,7 +417,7 @@ export function airdropFetcherToFetcher(
           : {
               type: PortfolioAssetType.generic,
               data: {
-                amount: item.amount,
+                amount: amountLeftToClaim,
                 price: item.price,
               },
               name: item.label,
