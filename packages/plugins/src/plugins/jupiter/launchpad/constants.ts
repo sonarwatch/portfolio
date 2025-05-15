@@ -114,26 +114,26 @@ export const airdropConfigs: AirdropConfig[] = [
         'https://sonarwatch.github.io/portfolio/assets/images/platforms/uprock.webp',
     },
   },
-  {
-    mint: 'KMNo3nJsBXfcpJTVhZcXLW7RmTwTt4GVFE7suUBo9sS',
-    decimals: 6,
-    distributorProgram: 'KdisqEcXbXKaTrBFqeDLhMmBvymLTwj9GmhDcdJyGat',
-    label: 'KMNO',
-    platformId: kaminoPlatformId,
-    getApiPath: (owner: string) =>
-      `https://api.kamino.finance/distributor/user/${owner}`,
-    statics: {
-      claimStart: 1724158800000,
-      claimEnd: 1733130000000,
-      id: 'kamino-s2',
-      emitterName: 'Kamino',
-      emitterLink: 'https://app.kamino.finance/',
-      claimLink: 'https://app.kamino.finance/season-2-airdrop',
-      image:
-        'https://sonarwatch.github.io/portfolio/assets/images/platforms/kamino.webp',
-      name: 'S2',
-    },
-  },
+  // {
+  //   mint: 'KMNo3nJsBXfcpJTVhZcXLW7RmTwTt4GVFE7suUBo9sS',
+  //   decimals: 6,
+  //   distributorProgram: 'KdisqEcXbXKaTrBFqeDLhMmBvymLTwj9GmhDcdJyGat',
+  //   label: 'KMNO',
+  //   platformId: kaminoPlatformId,
+  //   getApiPath: (owner: string) =>
+  //     `https://api.kamino.finance/distributor/user/${owner}`,
+  //   statics: {
+  //     claimStart: 1724158800000,
+  //     claimEnd: 1733130000000,
+  //     id: 'kamino-s2',
+  //     emitterName: 'Kamino',
+  //     emitterLink: 'https://app.kamino.finance/',
+  //     claimLink: 'https://app.kamino.finance/season-2-airdrop',
+  //     image:
+  //       'https://sonarwatch.github.io/portfolio/assets/images/platforms/kamino.webp',
+  //     name: 'S2',
+  //   },
+  // },
   {
     mint: 'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN',
     decimals: 6,
@@ -153,6 +153,26 @@ export const airdropConfigs: AirdropConfig[] = [
       claimLink: 'https://jupuary.jup.ag/',
       image: platformImage,
       name: 'Jupuary 2025',
+    },
+  },
+  {
+    mint: 'KMNo3nJsBXfcpJTVhZcXLW7RmTwTt4GVFE7suUBo9sS',
+    decimals: 6,
+    distributorProgram: 'KdisqEcXbXKaTrBFqeDLhMmBvymLTwj9GmhDcdJyGat',
+    label: 'KMNO',
+    platformId: kaminoPlatformId,
+    getApiPath: (owner: string) =>
+      `https://api.kamino.finance/distributor/user/${owner}`,
+    statics: {
+      claimStart: 1724158800000,
+      claimEnd: 1733130000000,
+      id: 'kamino-s2',
+      emitterName: 'Kamino',
+      emitterLink: 'https://app.kamino.finance/',
+      claimLink: 'https://app.kamino.finance/season-3-airdrop',
+      image:
+        'https://sonarwatch.github.io/portfolio/assets/images/platforms/kamino.webp',
+      name: 'S3',
     },
   },
 ];
