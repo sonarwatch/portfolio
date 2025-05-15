@@ -5,6 +5,7 @@ import {
   coingeckoSourceId,
   formatTokenAddress,
   walletTokensPlatformId,
+  jupiterSourceId,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import getSourceWeight from './getSourceWeight';
@@ -80,7 +81,8 @@ export default function getLpUnderlyingTokenSourceOld(
   if (
     unknownUnderlaying.tokenPrice &&
     unknownUnderlaying.tokenPrice.sources.some(
-      (source) => source.id === coingeckoSourceId
+      (source) =>
+        source.id === coingeckoSourceId || source.id === jupiterSourceId
     )
   ) {
     return null;

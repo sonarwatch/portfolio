@@ -201,13 +201,20 @@ export const variableParametersStruct = new BeetStruct<VariableParameters>(
   (args) => args as VariableParameters
 );
 
+export enum LbPairType {
+  Permissionless,
+  Permission,
+  CustomizablePermissionless,
+  PermissionlessV2,
+}
+
 export type LbPair = {
-  buffer: Buffer;
+  accountDiscriminator: number[];
   parameters: StaticParameters;
   vParameters: VariableParameters;
   bumpSeed: number[];
   binStepSeed: number[];
-  pairType: number;
+  pairType: LbPairType;
   activeId: number;
   binStep: number;
   status: number;
@@ -238,7 +245,7 @@ export type LbPair = {
 
 export const lbPairStruct = new BeetStruct<LbPair>(
   [
-    ['buffer', blob(8)],
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
     ['parameters', staticParametersStruct],
     ['vParameters', variableParametersStruct],
     ['bumpSeed', uniformFixedSizeArray(u8, 1)],
@@ -325,7 +332,7 @@ export const binArrayStruct = new BeetStruct<BinArray>(
 );
 
 export type DlmmVault = {
-  buffer: Buffer;
+  accountDiscriminator: number[];
   lbPair: string;
   tokenVault: string;
   tokenOutVault: string;
@@ -349,7 +356,7 @@ export type DlmmVault = {
 
 export const dlmmVaultStruct = new BeetStruct<DlmmVault>(
   [
-    ['buffer', blob(8)],
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
     ['lbPair', publicKeyStr],
     ['tokenVault', publicKeyStr],
     ['tokenOutVault', publicKeyStr],
