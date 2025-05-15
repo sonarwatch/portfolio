@@ -1,6 +1,7 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
 import BigNumber from 'bignumber.js';
+import { PublicKey } from '@solana/web3.js';
 import {
   AirdropFetcher,
   AirdropFetcherExecutor,
@@ -18,7 +19,9 @@ import { AirdropResponse } from './types';
 import { getClientSolana } from '../../utils/clients';
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
-  const epoch = await getClientSolana().getEpochInfo();
+  const client = getClientSolana();
+  const epoch = await client.getEpochInfo();
+
   let res: AxiosResponse<AirdropResponse>;
   try {
     res = await axios.get(airdropApi + owner);
@@ -51,8 +54,11 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
 
   const claimedAmount = new BigNumber(res.data.claimedAmount);
   const totalAmount = new BigNumber(res.data.totalAmount);
-  const { startEpoch } = res.data;
-  const { endEpoch } = res.data;
+  const { startEpoch, endEpoch } = res.data;
+
+  const txs = client.getSignaturesForAddress(
+    new PublicKey('35YYQV8wTUWxKoyMSAzhLSshxYSuiWZmtnsb94asAZfk')
+  );
 
   if (epoch.epoch >= startEpoch && endEpoch >= startEpoch) {
     const diffAirDropEpoch = endEpoch - startEpoch;
@@ -70,17 +76,24 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
         statics: airdropStatics,
         items: [
           {
-            amount: availableAmount.dividedBy(10 ** layerDecimals).toNumber(),
+            amount: totalAmount.dividedBy(10 ** layerDecimals).toNumber(),
             isClaimed: false,
             label: 'LAYER',
             address: layerMint,
+            claims: [
+              {
+                date: 0,
+                amount: claimedAmount.dividedBy(10 ** layerDecimals).toNumber(),
+              },
+            ],
+            ref: '35YYQV8wTUWxKoyMSAzhLSshxYSuiWZmtnsb94asAZfk',
           },
-          {
-            amount: claimedAmount.dividedBy(10 ** layerDecimals).toNumber(),
-            isClaimed: true,
-            label: 'LAYER',
-            address: layerMint,
-          },
+          // {
+          //   amount: claimedAmount.dividedBy(10 ** layerDecimals).toNumber(),
+          //   isClaimed: true,
+          //   label: 'LAYER',
+          //   address: layerMint,
+          // },
         ],
       });
     }

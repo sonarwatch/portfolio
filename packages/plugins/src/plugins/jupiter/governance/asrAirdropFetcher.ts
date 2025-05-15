@@ -65,6 +65,10 @@ export function getAsrAirdropExecutor(
       claimAddresses
     );
 
+    const txClaimAccounts = await Promise.all([
+      ...claimAddresses.map((add) => client.getSignaturesForAddress(add)),
+    ]);
+
     return getAirdropRaw({
       statics: config.statics,
       items: claimAccounts
@@ -73,15 +77,30 @@ export function getAsrAirdropExecutor(
           if (!claimProofRes.mint) return [];
           const asrItem = config.items.get(claimProofRes.mint);
           if (!asrItem) return [];
+
+          const claimTx = txClaimAccounts[i][0];
           const { label, decimals } = asrItem;
+
+          const amount = new BigNumber(claimProofRes.amount)
+            .div(10 ** decimals)
+            .toNumber();
           return [
             {
-              amount: new BigNumber(claimProofRes.amount)
-                .div(10 ** decimals)
-                .toNumber(),
+              amount,
               isClaimed: !!claimAcc,
               label,
               address: claimProofRes.mint,
+              ref: claimAcc ? claimAddresses[i].toString() : undefined,
+              claims:
+                claimAcc && claimTx && claimTx.blockTime
+                  ? [
+                      {
+                        date: claimTx.blockTime * 1000,
+                        amount,
+                        txId: claimTx.signature,
+                      },
+                    ]
+                  : undefined,
             },
           ];
         })

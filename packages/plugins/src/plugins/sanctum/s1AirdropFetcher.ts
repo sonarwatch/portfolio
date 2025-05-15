@@ -20,8 +20,8 @@ import {
 } from './constants';
 
 const claimStart = new BigNumber(1721314800000);
-const earnestClaimDuration = 180 * 24 * 60 * 60 * 1000;
-const earnestClaimEnd = claimStart.plus(earnestClaimDuration);
+const earnestClaimDuration = 172 * 24 * 60 * 60 * 1000;
+const earnestClaimEnd = new BigNumber(1736208000000);
 const capitalClaimDuration = 14 * 24 * 60 * 60 * 1000;
 const capitalClaimEnd = claimStart.plus(capitalClaimDuration);
 
@@ -63,10 +63,12 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
   const claimStatusAccount = await client.getAccountInfo(claimStatusAddress);
 
   let capitalAmount = new BigNumber(0);
+  let claimedTs;
+  let firstTx;
   if (claimStatusAccount) {
     const txs = await client.getSignaturesForAddress(claimStatusAddress);
-    const accountCreationTx = txs[0];
-    const claimedTs = accountCreationTx.blockTime;
+    [firstTx] = txs;
+    claimedTs = firstTx.blockTime;
     if (claimedTs) {
       const ratio = new BigNumber(claimedTs * 1000)
         .minus(claimStart)
@@ -92,6 +94,17 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
       isClaimed: claimStatusAccount !== null,
       label: 'CLOUD',
       address: cloudMint,
+      claims:
+        claimedTs && firstTx
+          ? [
+              {
+                date: claimedTs,
+                amount: capitalAmount.div(10 ** cloudDecimals).toNumber(),
+                txId: firstTx.signature,
+              },
+            ]
+          : undefined,
+      ref: claimStatusAccount ? claimStatusAddress.toString() : undefined,
     },
   ];
 
@@ -124,16 +137,24 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
     );
 
     let earnestAmount = new BigNumber(0);
+    let earnestClaimTx;
+    let earnestClaimTime;
     if (earnClaimStatusAccount) {
       const txs = await client.getSignaturesForAddress(earnClaimStatusAddress);
-      const accountCreationTx = txs[0];
-      const time = accountCreationTx.blockTime;
-      if (time) {
-        const ratio = new BigNumber(time * 1000)
-          .minus(claimStart)
-          .dividedBy(earnestClaimDuration)
-          .plus(1);
-        earnestAmount = new BigNumber(claimProofEarn.data.amount).times(ratio);
+      [earnestClaimTx] = txs;
+      earnestClaimTime = earnestClaimTx.blockTime;
+      if (earnestClaimTime) {
+        if (earnestClaimEnd.isLessThanOrEqualTo(earnestClaimTime * 1000))
+          earnestAmount = new BigNumber(claimProofEarn.data.amount).times(2);
+        else {
+          const ratio = new BigNumber(earnestClaimTime * 1000)
+            .minus(claimStart)
+            .dividedBy(earnestClaimDuration)
+            .plus(1);
+          earnestAmount = new BigNumber(claimProofEarn.data.amount).times(
+            ratio
+          );
+        }
       } else {
         earnestAmount = new BigNumber(claimProofEarn.data.amount);
       }
@@ -151,6 +172,19 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
       isClaimed: earnClaimStatusAccount !== null,
       label: 'CLOUD',
       address: cloudMint,
+      claims:
+        earnestClaimTime && earnestClaimTx
+          ? [
+              {
+                date: earnestClaimTime,
+                amount: earnestAmount.div(10 ** cloudDecimals).toNumber(),
+                txId: earnestClaimTx.signature,
+              },
+            ]
+          : undefined,
+      ref: earnClaimStatusAccount
+        ? earnClaimStatusAddress.toString()
+        : undefined,
     });
   }
 
