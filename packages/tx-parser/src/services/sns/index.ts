@@ -13,6 +13,13 @@ const airdropContract = {
   address: 'bMersFdXPWiRzjqmbviCRMvwvN1FpRmATaqrF894CbU',
   platformId,
 };
+
+const mainContract = {
+  name: 'Main',
+  address: 'HP3D4D1ZCmohQGFVms2SS4LCANgJyksBf5s1F77FuFjZ',
+  platformId,
+};
+
 const airdropService: ServiceDefinition = {
   id: `${platformId}-airdrop`,
   name: 'Airdrop',
@@ -29,5 +36,17 @@ const offerService: ServiceDefinition = {
   contracts: [contract],
 };
 
-export const services: ServiceDefinition[] = [offerService, airdropService];
+const mainService: ServiceDefinition = {
+  id: `${platformId}-domaine-name`,
+  name: 'Domain Name',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [mainContract],
+};
+
+export const services: ServiceDefinition[] = [
+  offerService,
+  airdropService,
+  mainService,
+];
 export default services;

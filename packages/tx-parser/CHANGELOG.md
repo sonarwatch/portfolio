@@ -2,6 +2,24 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [1.2.0](https://github.com/sonarwatch/portfolio/compare/tx-parser-1.1.0...tx-parser-1.2.0) (2025-05-14)
+
+
+### Bug Fixes
+
+* **dependencies:** update peer dependency @sonarwatch/portfolio-core to version ^0.15.0 ([799effb](https://github.com/sonarwatch/portfolio/commit/799effb278ebad324c9ac4b6e333fbcca204ef4b))
+
+
+### Features
+
+* **sns:** add main service definition to SNS services ([771b001](https://github.com/sonarwatch/portfolio/commit/771b0012352425a5f7375a8122d9800f3cf3de5e))
+
+
+
+# [1.1.0](https://github.com/sonarwatch/portfolio/compare/tx-parser-1.0.2...tx-parser-1.1.0) (2025-05-14)
+
+
+
 ## [1.0.2](https://github.com/sonarwatch/portfolio/compare/tx-parser-1.0.1...tx-parser-1.0.2) (2025-05-13)
 
 
