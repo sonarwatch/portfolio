@@ -15,8 +15,8 @@ const airdropContract = {
   platformId,
 };
 
-const mainContract = {
-  name: 'Main',
+const recordContract = {
+  name: 'Records Program',
   address: 'HP3D4D1ZCmohQGFVms2SS4LCANgJyksBf5s1F77FuFjZ',
   platformId,
 };
@@ -27,8 +27,8 @@ const nameServiceContract = {
   platformId,
 };
 
-const nameServiceContract2 = {
-  name: 'Name Service',
+const registrarContract = {
+  name: 'Registrar',
   address: 'jCebN34bUfdeUYJT13J1yG16XWQpt5PDx6Mse9GUqhR',
   platformId,
 };
@@ -56,9 +56,9 @@ const mainService: ServiceDefinition = {
   networkId: NetworkId.solana,
   matchTransaction: (tx) =>
     matchAnyInstructionWithPrograms(tx, [
-      mainContract.address,
+      recordContract.address,
       nameServiceContract.address,
-      nameServiceContract2.address,
+      registrarContract.address,
     ]),
 };
 
