@@ -1,5 +1,6 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { ServiceDefinition } from '../../ServiceDefinition';
+import { matchAnyInstructionWithPrograms } from '../../utils/parseTransaction/matchAnyInstructionWithPrograms';
 
 const platformId = 'sns';
 const contract = {
@@ -17,6 +18,18 @@ const airdropContract = {
 const mainContract = {
   name: 'Main',
   address: 'HP3D4D1ZCmohQGFVms2SS4LCANgJyksBf5s1F77FuFjZ',
+  platformId,
+};
+
+const nameServiceContract = {
+  name: 'Name Service',
+  address: 'namesLPneVptA9Z5rqUDD9tMTWEJwofgaYwp8cawRkX',
+  platformId,
+};
+
+const nameServiceContract2 = {
+  name: 'Name Service',
+  address: 'jCebN34bUfdeUYJT13J1yG16XWQpt5PDx6Mse9GUqhR',
   platformId,
 };
 
@@ -38,10 +51,15 @@ const offerService: ServiceDefinition = {
 
 const mainService: ServiceDefinition = {
   id: `${platformId}-domaine-name`,
-  name: 'Domain Name',
+  name: 'Name Service',
   platformId,
   networkId: NetworkId.solana,
-  contracts: [mainContract],
+  matchTransaction: (tx) =>
+    matchAnyInstructionWithPrograms(tx, [
+      mainContract.address,
+      nameServiceContract.address,
+      nameServiceContract2.address,
+    ]),
 };
 
 export const services: ServiceDefinition[] = [
