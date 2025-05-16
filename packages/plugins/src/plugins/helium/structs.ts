@@ -1,10 +1,8 @@
 import {
   array,
   BeetStruct,
-  bool,
   FixableBeetStruct,
   u16,
-  u32,
   u8,
   uniformFixedSizeArray,
 } from '@metaplex-foundation/beet';
@@ -61,6 +59,7 @@ export const recentProposalStruct = new BeetStruct<RecentProposal>(
 );
 
 export type PositionData = {
+  accountDiscriminator: number[];
   registrar: PublicKey;
   mint: PublicKey;
   lockup: Lockup;
@@ -75,6 +74,7 @@ export type PositionData = {
 };
 export const positionDataStruct = new FixableBeetStruct<PositionData>(
   [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
     ['registrar', publicKey],
     ['mint', publicKey],
     ['lockup', lockupStruct],
