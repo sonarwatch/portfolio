@@ -274,7 +274,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             { name: 'Lending Market', address: spotMarket.pubkey.toString() },
           ],
         });
-        element.addSuppliedYield([
+        element.addBorrowedYield([
           {
             apr: -spotMarket.borrowApr,
             apy: -aprToApy(spotMarket.borrowApr),
