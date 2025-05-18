@@ -152,7 +152,7 @@ export function getLpUnderlyingTokenSource(
     const source: TokenPriceSource = {
       id: sourceId,
       networkId,
-      platformId: walletTokensPlatformId,
+      platformId,
       address: fAddresses[i],
       decimals: u.decimals,
       price,
