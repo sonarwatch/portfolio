@@ -50,6 +50,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       label: 'Lending',
       ref: account.pubkey,
       link: 'https://boost.deficarrot.com/',
+      name: 'Boost',
     });
 
     account.lendingAccount.balances.forEach((balance) => {

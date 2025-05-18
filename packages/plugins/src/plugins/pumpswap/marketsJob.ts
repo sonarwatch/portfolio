@@ -46,30 +46,22 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   const [baseDecimals, quoteDecimals] = await Promise.all([
     Promise.all(
-      markets.map((market) => {
-        const tokenPrice = tokenPrices.get(market.base_mint.toString());
-        return (
-          tokenPrice?.decimals ||
-          getCachedDecimalsForToken(
-            cache,
-            market.base_mint.toString(),
-            NetworkId.solana
-          )
-        );
-      })
+      markets.map((market) =>
+        getCachedDecimalsForToken(
+          cache,
+          market.base_mint.toString(),
+          NetworkId.solana
+        )
+      )
     ),
     Promise.all(
-      markets.map((market) => {
-        const tokenPrice = tokenPrices.get(market.quote_mint.toString());
-        return (
-          tokenPrice?.decimals ||
-          getCachedDecimalsForToken(
-            cache,
-            market.quote_mint.toString(),
-            NetworkId.solana
-          )
-        );
-      })
+      markets.map((market) =>
+        getCachedDecimalsForToken(
+          cache,
+          market.quote_mint.toString(),
+          NetworkId.solana
+        )
+      )
     ),
   ]);
 
