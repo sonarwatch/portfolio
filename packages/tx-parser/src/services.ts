@@ -135,6 +135,7 @@ import * as switchboard from './services/switchboard';
 import * as symmetry from './services/symmetry';
 import * as tensor from './services/tensor';
 import * as texture from './services/texture';
+import * as tiplink from './services/tiplink';
 import * as titan from './services/titan';
 import * as triad from './services/triad';
 import * as underdog from './services/underdog';
@@ -287,6 +288,7 @@ export const services: ServiceDefinition[] = [
   symmetry,
   tensor,
   texture,
+  tiplink,
   titan,
   triad,
   underdog,
