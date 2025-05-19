@@ -51,18 +51,14 @@ const executor: JobExecutor = async (cache: Cache) => {
 
     for (const pair of apiRes.data.pairs) {
       const tokenPriceX = tokenPrices.get(pair.mint_x);
-      const decimalsX = await getCachedDecimalsForToken(
-        cache,
-        pair.mint_x,
-        NetworkId.solana
-      );
+      const decimalsX =
+        tokenPriceX?.decimals ||
+        (await getCachedDecimalsForToken(cache, pair.mint_x, NetworkId.solana));
 
       const tokenPriceY = tokenPrices.get(pair.mint_y);
-      const decimalsY = await getCachedDecimalsForToken(
-        cache,
-        pair.mint_y,
-        NetworkId.solana
-      );
+      const decimalsY =
+        tokenPriceY?.decimals ||
+        (await getCachedDecimalsForToken(cache, pair.mint_y, NetworkId.solana));
 
       if (!decimalsX || !decimalsY) continue;
 
@@ -114,7 +110,7 @@ const executor: JobExecutor = async (cache: Cache) => {
           address: pair.mint_x,
           networkId: NetworkId.solana,
           platformId: walletTokensPlatformId,
-          decimals: decimalsY,
+          decimals: decimalsX,
           price: new BigNumber(tokenPriceY.price)
             .multipliedBy(price)
             .toNumber(),

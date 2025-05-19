@@ -1,5 +1,4 @@
 import { formatTokenAddress, NetworkId } from '@sonarwatch/portfolio-core';
-import { aD } from '@aptos-labs/ts-sdk/dist/common/accountAddress-BHsGaOsa';
 import { Cache } from '../../Cache';
 import { getCachedDecimalsForToken } from './getCachedDecimalsForToken';
 
