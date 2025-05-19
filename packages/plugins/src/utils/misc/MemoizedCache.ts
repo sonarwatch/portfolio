@@ -11,6 +11,7 @@ export class MemoizedCache<T extends StorageValue, K = T> {
   private readonly transform: ((i: T | undefined) => K) | undefined;
   private readonly ttl: number;
   private readonly fetch: (() => Promise<T>) | undefined;
+  private fetchPromise: Promise<T> | undefined;
 
   private item: K | undefined;
   private lastUpdate: number;
@@ -37,8 +38,18 @@ export class MemoizedCache<T extends StorageValue, K = T> {
       let rawItem = await cache.getItem<T>(this.key, this.opts);
 
       if (!rawItem && this.fetch) {
-        rawItem = await this.fetch();
-        await cache.setItem(this.key, rawItem, this.opts);
+        if (!this.fetchPromise) {
+          this.fetchPromise = this.fetch();
+          this.fetchPromise
+            .then((i) => {
+              cache.setItem(this.key, i, this.opts);
+              return i;
+            })
+            .finally(() => {
+              this.fetchPromise = undefined;
+            });
+        }
+        rawItem = await this.fetchPromise;
       }
 
       this.item = this.transform ? this.transform(rawItem) : (rawItem as K);

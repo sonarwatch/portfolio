@@ -1,4 +1,5 @@
 import { formatTokenAddress, NetworkId } from '@sonarwatch/portfolio-core';
+import { aD } from '@aptos-labs/ts-sdk/dist/common/accountAddress-BHsGaOsa';
 import { Cache } from '../../Cache';
 import { getCachedDecimalsForToken } from './getCachedDecimalsForToken';
 
@@ -9,21 +10,20 @@ describe('getDecimalsForToken', () => {
       params: {},
     });
 
-    const networkId = NetworkId.sui;
-    const address =
-      '0x0ac4339286c11e75c35b63ded3d4a1920171ead6af77d25bd7bff7cfbd9fc641::movepump::MOVEPUMP';
-    const expectedDecimals = 9;
+    const networkId = NetworkId.solana;
+    const address = 'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN';
+    const expectedDecimals = 6;
 
-    const suiDecimals = await getCachedDecimalsForToken(
+    const onchainDecimals = await getCachedDecimalsForToken(
       cache,
       address,
       networkId
     );
 
-    expect(suiDecimals).not.toBeUndefined();
-    expect(suiDecimals).toBe(expectedDecimals);
+    expect(onchainDecimals).not.toBeUndefined();
+    expect(onchainDecimals).toBe(expectedDecimals);
 
-    const cachedSuiDecimals = await cache.getItem<number | null>(
+    const cachedOnChainDecimals = await cache.getItem<number | null>(
       formatTokenAddress(address, networkId),
       {
         prefix: 'decimalsfortoken',
@@ -31,15 +31,15 @@ describe('getDecimalsForToken', () => {
       }
     );
 
-    expect(cachedSuiDecimals).not.toBeUndefined();
-    expect(cachedSuiDecimals).toBe(expectedDecimals);
+    expect(cachedOnChainDecimals).not.toBeUndefined();
+    expect(cachedOnChainDecimals).toBe(expectedDecimals);
 
-    const suiDecimals2 = await getCachedDecimalsForToken(
+    const onchainDecimals2 = await getCachedDecimalsForToken(
       cache,
       address,
       networkId
     );
-    expect(suiDecimals2).not.toBeUndefined();
-    expect(suiDecimals2).toBe(expectedDecimals);
+    expect(onchainDecimals2).not.toBeUndefined();
+    expect(onchainDecimals2).toBe(expectedDecimals);
   });
 });
