@@ -110,7 +110,7 @@ const executor: JobExecutor = async (cache: Cache) => {
           address: pair.mint_x,
           networkId: NetworkId.solana,
           platformId: walletTokensPlatformId,
-          decimals: decimalsY,
+          decimals: decimalsX,
           price: new BigNumber(tokenPriceY.price)
             .multipliedBy(price)
             .toNumber(),

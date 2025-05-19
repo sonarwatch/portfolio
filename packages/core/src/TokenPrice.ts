@@ -56,9 +56,23 @@ export function tokenPriceFromSources(
   if (!updatedSources || updatedSources.length === 0) return undefined;
 
   const bestSource = updatedSources.reduce((prev, current) => {
+    if (
+      current.platformId !== walletTokensPlatformId &&
+      prev.platformId !== walletTokensPlatformId &&
+      current.platformId !== prev.platformId
+    ) {
+      console.warn(
+        `Warning: Conflicting platformIds among sources for ${current.address} : ${prev.platformId} vs ${current.platformId}`
+      );
+    }
+
+    if (current.decimals !== prev.decimals) {
+      console.warn(
+        `Warning: Conflicting decimals among sources for ${current.address}: ${prev.decimals} vs ${current.decimals}`
+      );
+    }
+
     if (current.platformId !== walletTokensPlatformId) return current;
-    // TODO print warning if 2 different platformId (other than walletTokensPlatformId)
-    // TODO print warning if 2 different decimals
     return prev;
   });
 
