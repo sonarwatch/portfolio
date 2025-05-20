@@ -12,12 +12,14 @@ import stakeForFeeFetcher from './stake2earn/stakeForFeeFetcher';
 import stakeForFeeVaultsJob from './stake2earn/stakeForFeeVaultsJob';
 import dammV2Job from './cpamm/cpammV2Job';
 import cpammPositionFetcher from './cpamm/cpammPositionsFetcher';
+import dlmmJob from './dlmm/dlmmJob';
 
 export const jobs: Job[] = [
   vaultsJob,
   poolsJob,
   farmsJob,
   multiTokenPoolsJob,
+  dlmmJob,
   dlmmVaultsJob,
   stakeForFeeVaultsJob,
   dammV2Job,

@@ -2,6 +2,45 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.10](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.9...plugins-0.15.10) (2025-05-19)
+
+
+
+## [0.15.9](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.8...plugins-0.15.9) (2025-05-19)
+
+
+
+## [0.15.8](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.7...plugins-0.15.8) (2025-05-19)
+
+
+
+## [0.15.7](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.6...plugins-0.15.7) (2025-05-19)
+
+
+
+## [0.15.6](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.5...plugins-0.15.6) (2025-05-18)
+
+
+
+## [0.15.5](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.4...plugins-0.15.5) (2025-05-16)
+
+
+
+## [0.15.4](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.3...plugins-0.15.4) (2025-05-16)
+
+
+### Features
+
+* **airdrop:** add kamino S3 (waiting for timestamps) ([3c6cd33](https://github.com/sonarwatch/portfolio/commit/3c6cd3385d19a65d4b04dcf55e6d21a22115d496))
+* **plugins:** add helium DAO staking (WIP) ([f220551](https://github.com/sonarwatch/portfolio/commit/f2205514bc402cdca534f5bd8fa8588e88e05f7d))
+
+
+### Reverts
+
+* Revert "pumpfun rewards fix" ([4fa62c4](https://github.com/sonarwatch/portfolio/commit/4fa62c43697fc07a18b633e3e7b6ec35066db6a3))
+
+
+
 ## [0.15.3](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.2...plugins-0.15.3) (2025-05-14)
 
 

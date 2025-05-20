@@ -3,6 +3,7 @@ import { jupiterV6Contract } from '../jupiter';
 import { contract } from '../dflow';
 import { expressRelayContract } from '../pyth';
 import { ServiceDefinition } from '../../ServiceDefinition';
+import { matchAnyInstructionWithPrograms } from '../../utils/parseTransaction/matchAnyInstructionWithPrograms';
 
 const platformId = 'kamino';
 
@@ -26,6 +27,12 @@ const kaminoFarmContract = {
 const limitOrderContract = {
   name: 'Kamino Limit Order',
   address: 'LiMoM9rMhrdYrfzUCxQppvxCSG1FcrUK9G8uLq4A1GF',
+  platformId,
+};
+
+const vaultContract = {
+  name: 'Kamino Vault',
+  address: 'KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd',
   platformId,
 };
 
@@ -85,7 +92,11 @@ const kaminoLiquidityService: ServiceDefinition = {
   name: 'Liquidity',
   platformId,
   networkId: NetworkId.solana,
-  contracts: [poolsContract],
+  matchTransaction: (tx) =>
+    matchAnyInstructionWithPrograms(tx, [
+      poolsContract.address,
+      vaultContract.address,
+    ]),
 };
 
 export const services: ServiceDefinition[] = [

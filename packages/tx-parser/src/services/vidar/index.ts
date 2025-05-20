@@ -15,6 +15,12 @@ const ljupMinterContract = {
   platformId,
 };
 
+const safeLaunchContract = {
+  name: 'SafeLaunch',
+  address: 'SAFEuracFxm3sZfhUNtComzcyS4RTkcNccbkWWb4PH5',
+  platformId,
+};
+
 const ljupService: ServiceDefinition = {
   id: `${platformId}-ljup`,
   name: 'LJUP Minter',
@@ -31,5 +37,17 @@ const nokService: ServiceDefinition = {
   contracts: [nokContract],
 };
 
-export const services: ServiceDefinition[] = [nokService, ljupService];
+const safeLaunchService: ServiceDefinition = {
+  id: `${platformId}-safe-launch`,
+  name: 'SafeLaunch',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [safeLaunchContract],
+};
+
+export const services: ServiceDefinition[] = [
+  nokService,
+  ljupService,
+  safeLaunchService,
+];
 export default services;

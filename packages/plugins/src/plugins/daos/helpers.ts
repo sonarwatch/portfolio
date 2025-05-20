@@ -1,18 +1,18 @@
 import {
-  CollectibleAttribute,
   NetworkId,
-  PortfolioAsset,
   PortfolioAssetCollectible,
   PortfolioElement,
-  getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
-import { HeliumNftVoterMetadata } from './types';
 import { LockupKind } from './structs/realms';
-import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { heliumPlatformId } from './constants';
+import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
+import { getClientSolana } from '../../utils/clients';
+import { positionDataStruct } from '../helium/structs';
+import { stakeRegistryId } from '../helium/constants';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 export const nftIdentifier = 'Voting Escrow Token Position';
 
@@ -39,63 +39,51 @@ export async function getHeliumElementsFromNFTs(
   cache: Cache,
   nfts: PortfolioAssetCollectible[]
 ): Promise<PortfolioElement[]> {
-  const assets: PortfolioAsset[] = [];
-  const amountByMint: Map<string, BigNumber> = new Map();
-  for (const nft of nfts) {
-    const { attributes } = nft.data;
-    if (!attributes) continue;
+  const accounts = (
+    await Promise.all(
+      nfts.map((nft) =>
+        ParsedGpa.build(getClientSolana(), positionDataStruct, stakeRegistryId)
+          .addFilter(
+            'accountDiscriminator',
+            [152, 131, 154, 46, 158, 42, 31, 233]
+          )
+          .addFilter('mint', new PublicKey(nft.data.address))
+          .run()
+      )
+    )
+  ).flat();
 
-    const votersValues = getNftValues(attributes);
-    if (votersValues && !votersValues.amountDepositedNative.isZero()) {
-      const existingAmount = amountByMint.get(votersValues.votingMint);
-      if (existingAmount) {
-        amountByMint.set(
-          votersValues.votingMint,
-          existingAmount.plus(votersValues.amountDepositedNative)
-        );
-      } else {
-        amountByMint.set(
-          votersValues.votingMint,
-          votersValues.amountDepositedNative
-        );
-      }
-    }
-  }
+  if (!accounts.length) return [];
 
-  const mints = Array.from(amountByMint.keys());
-  const tokenPriceById = await cache.getTokenPricesAsMap(
-    mints,
-    NetworkId.solana
+  const elementRegistry = new ElementRegistry(
+    NetworkId.solana,
+    heliumPlatformId
   );
 
-  for (const mint of mints) {
-    const amount = amountByMint.get(mint);
-    if (amount) {
-      const tokenPrice = tokenPriceById.get(mint);
-      if (tokenPrice)
-        assets.push(
-          tokenPriceToAssetToken(
-            mint,
-            amount.dividedBy(10 ** tokenPrice.decimals).toNumber(),
-            NetworkId.solana,
-            tokenPrice
-          )
-        );
-    }
-  }
-  if (assets.length === 0) return [];
-  return [
-    {
-      networkId: NetworkId.solana,
-      platformId: heliumPlatformId,
-      type: 'multiple',
+  accounts.forEach((account) => {
+    const element = elementRegistry.addElementMultiple({
       label: 'Deposit',
-      value: getUsdValueSum(assets.map((a) => a.value)),
-      data: {
-        assets,
+      ref: account.pubkey,
+      link: `https://heliumvote.com/hnt/positions/${account.pubkey}`,
+      sourceRefs: [{ name: 'Vault', address: account.registrar.toString() }],
+    });
+
+    const lockedUntil = getLockedUntil(
+      account.lockup.startTs,
+      account.lockup.endTs,
+      account.lockup.kind
+    );
+
+    element.addAsset({
+      address: 'hntyVP6YFm1Hg25TN9WGLqM12b8TQmcknKrdu1oxWux',
+      amount: account.amountDepositedNative,
+      attributes: {
+        lockedUntil,
       },
-    },
-  ];
+    });
+  });
+
+  return elementRegistry.getElements(cache);
 }
 
 export function getLockedUntil(
@@ -114,48 +102,4 @@ export function getLockedUntil(
     lockedUntil = endTs.times(1000).toNumber();
   }
   return lockedUntil;
-}
-
-function getNftValues(
-  items: CollectibleAttribute[] | undefined
-): undefined | HeliumNftVoterMetadata {
-  if (!items || items.length < 10) return undefined;
-
-  const registrar = items[0].value as string;
-  const amountDepositedNative = items[1].value as string;
-  const amountDeposited = items[2].value as string;
-  const votingMintConfigIdx = items[3].value as number;
-  const votingMint = items[4].value as string;
-  const startTs = items[5].value as string;
-  const endTs = items[6].value as string;
-  const kind = items[7].value as string;
-  const genesisEnd = items[8].value as string;
-  const numActiveVotes = items[9].value as number;
-
-  if (
-    registrar !== undefined &&
-    amountDepositedNative !== undefined &&
-    amountDeposited !== undefined &&
-    votingMintConfigIdx !== undefined &&
-    votingMint !== undefined &&
-    startTs !== undefined &&
-    endTs !== undefined &&
-    kind !== undefined &&
-    genesisEnd !== undefined &&
-    numActiveVotes !== undefined
-  ) {
-    return {
-      registrar,
-      amountDeposited: new BigNumber(amountDeposited),
-      amountDepositedNative: new BigNumber(amountDepositedNative),
-      votingMintConfigIdx,
-      votingMint,
-      startTs: new BigNumber(startTs),
-      endTs: new BigNumber(endTs),
-      kind,
-      genesisEnd,
-      numActiveVotes: Number(numActiveVotes),
-    } as HeliumNftVoterMetadata;
-  }
-  return undefined;
 }

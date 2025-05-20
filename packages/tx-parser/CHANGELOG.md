@@ -2,6 +2,26 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.2.2](https://github.com/sonarwatch/portfolio/compare/tx-parser-1.2.1...tx-parser-1.2.2) (2025-05-19)
+
+
+### Bug Fixes
+
+* **tx-parser:** correct contract definitions ([0debdf6](https://github.com/sonarwatch/portfolio/commit/0debdf6128689e1b0221f0c1a7f5292c1b47d3e6))
+
+
+### Features
+
+* **tx-parser:** add Creator Rewards service to drip platform ([2a7c34a](https://github.com/sonarwatch/portfolio/commit/2a7c34ab71a23783a54603a5e9d6d33c471cc0b4))
+* **tx-parser:** add SafeLaunch service and contract ([21156d6](https://github.com/sonarwatch/portfolio/commit/21156d6b97f61f60cfe5f894d561bb9470b14f11))
+* **tx-parser:** update sns contracts ([b9cfce9](https://github.com/sonarwatch/portfolio/commit/b9cfce9f724ca33e61fa802db94a504c3316b44d))
+
+
+
+## [1.2.1](https://github.com/sonarwatch/portfolio/compare/tx-parser-1.2.0...tx-parser-1.2.1) (2025-05-16)
+
+
+
 # [1.2.0](https://github.com/sonarwatch/portfolio/compare/tx-parser-1.1.0...tx-parser-1.2.0) (2025-05-14)
 
 
