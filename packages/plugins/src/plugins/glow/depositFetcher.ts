@@ -1,17 +1,17 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
-import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { poolsCacheKey, platformId, programId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 import { getClientSolana } from '../../utils/clients';
-import { marginAccountStruct, MarginPool, TokenKind } from './structs';
+import { marginAccountStruct, TokenKind } from './structs';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import { ParsedAccount } from '../../utils/solana';
+import { CalcMarginPool } from './types';
 
-const poolsMemo = new MemoizedCache<ParsedAccount<MarginPool>[]>(
+const poolsMemo = new MemoizedCache<ParsedAccount<CalcMarginPool>[]>(
   poolsCacheKey,
   {
     prefix: platformId,
@@ -48,25 +48,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           (p) => p.deposit_note_mint.toString() === position.token.toString()
         );
         if (!pool) return;
-        const noteRate = new BigNumber(pool.deposit_tokens).dividedBy(
-          pool.loan_notes
-        );
 
-        element.addBorrowedAsset({
+        element.addSuppliedAsset({
           address: pool.token_mint,
-          amount: position.balance.dividedBy(noteRate),
+          amount: position.balance.multipliedBy(pool.depositNoteExchangeRate),
         });
       } else {
         const pool = pools.find(
           (p) => p.loan_note_mint.toString() === position.token.toString()
         );
         if (!pool) return;
-        const depositNoteRate = new BigNumber(pool.deposit_tokens).dividedBy(
-          pool.deposit_notes
-        );
-        element.addSuppliedAsset({
+
+        element.addBorrowedAsset({
           address: pool.token_mint,
-          amount: position.balance.dividedBy(depositNoteRate),
+          amount: position.balance.multipliedBy(pool.loanNoteExchangeRate),
         });
       }
     });

@@ -1,10 +1,13 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
+import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { poolsCacheKey, platformId, poolProgramId } from './constants';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 import { getClientSolana } from '../../utils/clients';
 import { marginPoolStruct } from './structs';
+import { Number192 } from './number192';
+import { CalcMarginPool } from './types';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const pools = await ParsedGpa.build(
@@ -15,7 +18,22 @@ const executor: JobExecutor = async (cache: Cache) => {
     .addFilter('accountDiscriminator', [142, 255, 28, 32, 196, 168, 170, 175])
     .run();
 
-  await cache.setItem(poolsCacheKey, pools, {
+  const formattedPools: CalcMarginPool[] = pools.map((pool) => ({
+    ...pool,
+    depositNoteExchangeRate: BigNumber.max(
+      1,
+      Number192.fromBits(pool.borrowed_tokens)
+        .toBigNumber()
+        .plus(pool.deposit_tokens)
+        .minus(Number192.fromBits(pool.uncollected_fees).toBigNumber())
+    ).dividedBy(BigNumber.max(1, pool.deposit_notes)),
+    loanNoteExchangeRate: BigNumber.max(
+      1,
+      Number192.fromBits(pool.borrowed_tokens).toBigNumber()
+    ).dividedBy(BigNumber.max(1, pool.loan_notes)),
+  }));
+
+  await cache.setItem(poolsCacheKey, formattedPools, {
     prefix: platformId,
     networkId: NetworkId.solana,
   });
