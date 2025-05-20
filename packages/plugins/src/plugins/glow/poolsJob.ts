@@ -6,8 +6,8 @@ import { poolsCacheKey, platformId, poolProgramId } from './constants';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 import { getClientSolana } from '../../utils/clients';
 import { marginPoolStruct } from './structs';
-import { Number192 } from './number192';
 import { CalcMarginPool } from './types';
+import { Number192 } from './Number192';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const pools = await ParsedGpa.build(
