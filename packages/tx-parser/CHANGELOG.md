@@ -2,6 +2,62 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.2.2](https://github.com/sonarwatch/portfolio/compare/tx-parser-1.2.1...tx-parser-1.2.2) (2025-05-19)
+
+
+### Bug Fixes
+
+* **tx-parser:** correct contract definitions ([0debdf6](https://github.com/sonarwatch/portfolio/commit/0debdf6128689e1b0221f0c1a7f5292c1b47d3e6))
+
+
+### Features
+
+* **tx-parser:** add Creator Rewards service to drip platform ([2a7c34a](https://github.com/sonarwatch/portfolio/commit/2a7c34ab71a23783a54603a5e9d6d33c471cc0b4))
+* **tx-parser:** add SafeLaunch service and contract ([21156d6](https://github.com/sonarwatch/portfolio/commit/21156d6b97f61f60cfe5f894d561bb9470b14f11))
+* **tx-parser:** update sns contracts ([b9cfce9](https://github.com/sonarwatch/portfolio/commit/b9cfce9f724ca33e61fa802db94a504c3316b44d))
+
+
+
+## [1.2.1](https://github.com/sonarwatch/portfolio/compare/tx-parser-1.2.0...tx-parser-1.2.1) (2025-05-16)
+
+
+
+# [1.2.0](https://github.com/sonarwatch/portfolio/compare/tx-parser-1.1.0...tx-parser-1.2.0) (2025-05-14)
+
+
+### Bug Fixes
+
+* **dependencies:** update peer dependency @sonarwatch/portfolio-core to version ^0.15.0 ([799effb](https://github.com/sonarwatch/portfolio/commit/799effb278ebad324c9ac4b6e333fbcca204ef4b))
+
+
+### Features
+
+* **sns:** add main service definition to SNS services ([771b001](https://github.com/sonarwatch/portfolio/commit/771b0012352425a5f7375a8122d9800f3cf3de5e))
+
+
+
+# [1.1.0](https://github.com/sonarwatch/portfolio/compare/tx-parser-1.0.2...tx-parser-1.1.0) (2025-05-14)
+
+
+
+## [1.0.2](https://github.com/sonarwatch/portfolio/compare/tx-parser-1.0.1...tx-parser-1.0.2) (2025-05-13)
+
+
+
+## [1.0.1](https://github.com/sonarwatch/portfolio/compare/tx-parser-1.0.0...tx-parser-1.0.1) (2025-05-13)
+
+
+### Features
+
+* **services:** add solcasino service integration ([0a4e4ca](https://github.com/sonarwatch/portfolio/commit/0a4e4ca04e19fdcaf58cfa3b22910dc31028e804))
+* **services:** integrate jupiter contract into mayan and relay services ([c9220a6](https://github.com/sonarwatch/portfolio/commit/c9220a64219def971fd69b48e3c3d651ebbae283))
+
+
+
+# [1.0.0](https://github.com/sonarwatch/portfolio/compare/tx-parser-0.0.31...tx-parser-1.0.0) (2025-05-13)
+
+
+
 ## [0.0.31](https://github.com/sonarwatch/portfolio/compare/tx-parser-0.0.30...tx-parser-0.0.31) (2025-05-12)
 
 

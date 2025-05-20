@@ -109,6 +109,7 @@ import * as rain from './services/rain';
 import * as ratex from './services/ratex';
 import * as raydium from './services/raydium';
 import * as realms from './services/realms';
+import * as relay from './services/relay';
 import * as runemine from './services/runemine';
 import * as sanctum from './services/sanctum';
 import * as sandglass from './services/sandglass';
@@ -121,6 +122,7 @@ import * as sns from './services/sns';
 import * as solana from './services/solana';
 import * as solanaid from './services/solanaid';
 import * as solayer from './services/solayer';
+import * as solcasino from './services/solcasino';
 import * as solincinerator from './services/solincinerator';
 import * as solsea from './services/solsea';
 import * as sonic from './services/sonic';
@@ -134,6 +136,7 @@ import * as switchboard from './services/switchboard';
 import * as symmetry from './services/symmetry';
 import * as tensor from './services/tensor';
 import * as texture from './services/texture';
+import * as tiplink from './services/tiplink';
 import * as titan from './services/titan';
 import * as triad from './services/triad';
 import * as underdog from './services/underdog';
@@ -260,6 +263,7 @@ export const services: ServiceDefinition[] = [
   ratex,
   raydium,
   realms,
+  relay,
   runemine,
   sanctum,
   sandglass,
@@ -272,6 +276,7 @@ export const services: ServiceDefinition[] = [
   solana,
   solanaid,
   solayer,
+  solcasino,
   solincinerator,
   solsea,
   sonic,
@@ -285,6 +290,7 @@ export const services: ServiceDefinition[] = [
   symmetry,
   tensor,
   texture,
+  tiplink,
   titan,
   triad,
   underdog,

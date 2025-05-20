@@ -7,7 +7,11 @@ import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId } from './constants';
-import { coinCreatorVaultAta, creatorVaultPda } from './helpers';
+import {
+  coinCreatorVaultAta,
+  coinCreatorVaultAuthorityPda,
+  creatorVaultPda,
+} from './helpers';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
@@ -17,9 +21,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
   const ownerPk = new PublicKey(owner);
   const creatorVault = creatorVaultPda(ownerPk);
+  const coinCreatorVaultAuthority = coinCreatorVaultAuthorityPda(ownerPk);
   const coinCreatorVault = coinCreatorVaultAta(
-    ownerPk,
-    solanaNativeWrappedAddress
+    coinCreatorVaultAuthority,
+    new PublicKey(solanaNativeWrappedAddress)
   );
   const [creatorVaultAccount, coinCreatorVaultAccount] = await Promise.all([
     client.getAccountInfo(creatorVault),
@@ -28,43 +33,41 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       : undefined,
   ]);
 
-  let creatorVaultAmount = new BigNumber(0);
-  let coinVaultAmount = new BigNumber(0);
+  const registry = new ElementRegistry(NetworkId.solana, platformId);
+
+  const element = registry.addElementMultiple({
+    label: 'Rewards',
+    link: `https://pump.fun/profile/${owner}?&tab=coins`,
+  });
+
   if (creatorVaultAccount !== null) {
     const rentExemptionLamports =
       await client.getMinimumBalanceForRentExemption(
         creatorVaultAccount.data.length
       );
-    creatorVaultAmount = new BigNumber(creatorVaultAccount.lamports).minus(
-      rentExemptionLamports
-    );
+
+    element.addAsset({
+      address: solanaNativeWrappedAddress,
+      amount: new BigNumber(creatorVaultAccount.lamports).minus(
+        rentExemptionLamports
+      ),
+      ref: creatorVault,
+      attributes: {
+        isClaimable: true,
+      },
+    });
   }
 
   if (coinCreatorVaultAccount) {
-    coinVaultAmount = new BigNumber(coinCreatorVaultAccount.amount);
+    element.addAsset({
+      address: solanaNativeWrappedAddress,
+      amount: coinCreatorVaultAccount.amount,
+      ref: coinCreatorVault,
+      attributes: {
+        isClaimable: true,
+      },
+    });
   }
-
-  const registry = new ElementRegistry(NetworkId.solana, platformId);
-  const element = registry.addElementMultiple({
-    label: 'Rewards',
-    link: `https://pump.fun/profile/${owner}`,
-  });
-  element.addAsset({
-    address: solanaNativeWrappedAddress,
-    amount: coinVaultAmount,
-    ref: coinCreatorVault,
-    attributes: {
-      isClaimable: true,
-    },
-  });
-  element.addAsset({
-    address: solanaNativeWrappedAddress,
-    amount: creatorVaultAmount,
-    ref: creatorVault,
-    attributes: {
-      isClaimable: true,
-    },
-  });
 
   return registry.getElements(cache);
 };

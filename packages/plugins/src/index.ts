@@ -176,7 +176,10 @@ import * as cytonic from './plugins/cytonic';
 import * as bouncebit from './plugins/bouncebit';
 import * as haven from './plugins/haven';
 import * as pumpfun from './plugins/pumpfun';
+import * as helium from './plugins/helium';
+import * as carrot from './plugins/carrot';
 import * as glow from './plugins/glow';
+
 import { solanaSimpleFetcher } from './plugins/tokens';
 
 export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
@@ -365,6 +368,8 @@ const modules = [
   bouncebit,
   haven,
   pumpfun,
+  helium,
+  carrot,
   glow,
 ];
 

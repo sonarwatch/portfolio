@@ -2,6 +2,111 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.10](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.9...plugins-0.15.10) (2025-05-19)
+
+
+
+## [0.15.9](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.8...plugins-0.15.9) (2025-05-19)
+
+
+
+## [0.15.8](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.7...plugins-0.15.8) (2025-05-19)
+
+
+
+## [0.15.7](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.6...plugins-0.15.7) (2025-05-19)
+
+
+
+## [0.15.6](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.5...plugins-0.15.6) (2025-05-18)
+
+
+
+## [0.15.5](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.4...plugins-0.15.5) (2025-05-16)
+
+
+
+## [0.15.4](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.3...plugins-0.15.4) (2025-05-16)
+
+
+### Features
+
+* **airdrop:** add kamino S3 (waiting for timestamps) ([3c6cd33](https://github.com/sonarwatch/portfolio/commit/3c6cd3385d19a65d4b04dcf55e6d21a22115d496))
+* **plugins:** add helium DAO staking (WIP) ([f220551](https://github.com/sonarwatch/portfolio/commit/f2205514bc402cdca534f5bd8fa8588e88e05f7d))
+
+
+### Reverts
+
+* Revert "pumpfun rewards fix" ([4fa62c4](https://github.com/sonarwatch/portfolio/commit/4fa62c43697fc07a18b633e3e7b6ec35066db6a3))
+
+
+
+## [0.15.3](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.2...plugins-0.15.3) (2025-05-14)
+
+
+
+## [0.15.2](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.1...plugins-0.15.2) (2025-05-14)
+
+
+### Bug Fixes
+
+* **dependencies:** update peer dependency @sonarwatch/portfolio-core to version ^0.15.0 ([ad5ef7f](https://github.com/sonarwatch/portfolio/commit/ad5ef7fbd5ededa7136a950a94f45ec57aaeeb09))
+
+
+
+## [0.15.1](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.0...plugins-0.15.1) (2025-05-14)
+
+
+
+# [0.15.0](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.219...plugins-0.15.0) (2025-05-14)
+
+
+
+## [0.14.219](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.218...plugins-0.14.219) (2025-05-14)
+
+
+### Bug Fixes
+
+* update profile link to include tab for coins ([acf94fe](https://github.com/sonarwatch/portfolio/commit/acf94fe389cb3edf820bbdb5f807e105b3fe2268))
+
+
+
+## [0.14.218](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.217...plugins-0.14.218) (2025-05-13)
+
+
+
+## [0.14.217](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.216...plugins-0.14.217) (2025-05-13)
+
+
+
+## [0.14.216](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.215...plugins-0.14.216) (2025-05-13)
+
+
+
+## [0.14.215](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.214...plugins-0.14.215) (2025-05-13)
+
+
+
+## [0.14.214](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.213...plugins-0.14.214) (2025-05-13)
+
+
+
+## [0.14.213](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.212...plugins-0.14.213) (2025-05-13)
+
+
+
+## [0.14.212](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.211...plugins-0.14.212) (2025-05-13)
+
+
+
+## [0.14.211](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.210...plugins-0.14.211) (2025-05-13)
+
+
+
+## [0.14.210](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.209...plugins-0.14.210) (2025-05-13)
+
+
+
 ## [0.14.209](https://github.com/sonarwatch/portfolio/compare/plugins-0.14.208...plugins-0.14.209) (2025-05-13)
 
 

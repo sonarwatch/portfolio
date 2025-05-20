@@ -19,17 +19,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         i + 1
       }&pk=${account.pubkey.toString()}`,
     });
+
     element.addSuppliedAsset({
       address: account.state.supply.mint,
-      amount: account.state.supply.amountUsed.baseUnit.plus(
-        account.state.supply.amountCanBeUsed.baseUnit
-      ),
+      amount: account.state.supply.amountUsed.baseUnit,
     });
     element.addBorrowedAsset({
       address: account.state.debt.mint,
-      amount: account.state.debt.amountUsed.baseUnit.plus(
-        account.state.debt.amountCanBeUsed.baseUnit
-      ),
+      amount: account.state.debt.amountUsed.baseUnit,
     });
   });
 

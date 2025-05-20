@@ -11,6 +11,7 @@ import {
   solanaNativeWrappedAddress,
   suiNativeAddress,
   walletTokensPlatformId,
+  jupiterSourceId,
 } from '@sonarwatch/portfolio-core';
 import getSourceWeight from './getSourceWeight';
 import { usdcSuiType, wUsdcSuiType } from '../sui/constants';
@@ -137,7 +138,9 @@ export function getLpUnderlyingTokenSource(
     if (acceptedPairs.includes(fAddresses[i])) continue;
     if (
       u.tokenPrice &&
-      u.tokenPrice.sources.some((s) => s.id === coingeckoSourceId)
+      u.tokenPrice.sources.some(
+        (s) => s.id === coingeckoSourceId || s.id === jupiterSourceId
+      )
     )
       continue;
 
@@ -149,7 +152,7 @@ export function getLpUnderlyingTokenSource(
     const source: TokenPriceSource = {
       id: sourceId,
       networkId,
-      platformId: walletTokensPlatformId,
+      platformId,
       address: fAddresses[i],
       decimals: u.decimals,
       price,
