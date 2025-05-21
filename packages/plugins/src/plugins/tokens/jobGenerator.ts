@@ -2,7 +2,7 @@ import {
   NetworkIdType,
   UniTokenList,
   networks,
-  walletTokensPlatformId, NetworkId
+  walletTokensPlatformId
 } from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
 import { getCoingeckoSources, getTokensData } from './helpers';

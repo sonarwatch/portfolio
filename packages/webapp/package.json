@@ -19,6 +19,7 @@
    "@sonarwatch/portfolio-plugins": "0.14.186",
     "dotenv": "16.4.7",
     "fastify": "5.3.2",
+    "fastify-metrics": "^12.1.0",
     "pino": "9.6.0",
     "pino-pretty": "13.0.0",
     "libsodium": "0.7.13",

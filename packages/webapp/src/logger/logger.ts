@@ -17,7 +17,7 @@ const logger = pino({
     },
   },
   serializers: {
-    error: pino.stdSerializers.err,
+    error: pino.stdSerializers.errWithCause,
   },
 });
 

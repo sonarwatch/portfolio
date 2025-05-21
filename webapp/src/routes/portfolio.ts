@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { logger } from '../logger/logger';
-import { getPortfolio } from '../services/portfolio';
+import portfolioService from '../services/portfolio';
 
 const initPortfolioRoutes = (app: FastifyInstance) => {
   app.get(
@@ -18,7 +18,7 @@ const initPortfolioRoutes = (app: FastifyInstance) => {
     async (req: FastifyRequest, reply: FastifyReply) => {
       const { address } = req.params as any;
       logger.info(`Portfolio requested. Address: ${address}`);
-      const result = await getPortfolio(address);
+      const result = await portfolioService.getPortfolio(address);
       return reply.send(result);
     },
   );

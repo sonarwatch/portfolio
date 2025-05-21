@@ -16,7 +16,7 @@
     "docker:run": "docker run --rm -it portfolio:latest"
   },
   "dependencies": {
-    "@sonarwatch/portfolio-plugins": "0.14.186",
+    "@sonarwatch/portfolio-plugins": "0.14.190",
     "dotenv": "16.4.7",
     "fastify": "5.3.2",
     "fastify-metrics": "^12.1.0",

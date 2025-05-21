@@ -56,7 +56,7 @@ async function runJobs(network: NetworkIdType) {
           console.log(`${job.id}. Finished (${durationJob}s)`);
         } catch (err) {
           const durationJob = ((Date.now() - startJob) / 1000).toFixed(2);
-          console.error(`${job.id}. Failed (${durationJob}s)`);
+          console.error(`${job.id}. Failed (${durationJob}s)`, err);
         }
       })
     );
