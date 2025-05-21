@@ -206,7 +206,7 @@ export class Cache {
     networkId: NetworkIdType
   ): Promise<TokenPriceMap> {
     const tokenPrices = await this.getTokenPrices(
-      [...addresses],
+      [...(addresses instanceof Set ? addresses : new Set(addresses))],
       networkId
     ).then(
       (values) =>
