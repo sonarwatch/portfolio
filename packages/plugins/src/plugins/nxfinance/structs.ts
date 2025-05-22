@@ -222,6 +222,109 @@ export const vSolPositionStruct = new FixableBeetStruct<VSolPosition>(
   (args) => args as VSolPosition
 );
 
+export type PositionDetail = {
+  collateralMint: PublicKey;
+  borrowMint: PublicKey;
+  leverageMint: PublicKey;
+  collateralNote: BigNumber;
+  collateralTokens: BigNumber;
+  borrowNote: BigNumber;
+  borrowTokens: BigNumber;
+  leverageNote: BigNumber;
+  leverageTokens: BigNumber;
+  liquidationFlag: BigNumber;
+  leverageMultiples: BigNumber;
+  positionType: PositionType;
+};
+
+export enum PositionType {
+  Normal,
+  Solayer,
+  Fragmetric,
+}
+
+export const positionDetailStruct = new BeetStruct<PositionDetail>(
+  [
+    ['collateralMint', publicKey],
+    ['borrowMint', publicKey],
+    ['leverageMint', publicKey],
+    ['collateralNote', u64],
+    ['collateralTokens', u64],
+    ['borrowNote', u64],
+    ['borrowTokens', u64],
+    ['leverageNote', u64],
+    ['leverageTokens', u64],
+    ['liquidationFlag', u64],
+    ['leverageMultiples', u64],
+    ['positionType', u8],
+  ],
+  (args) => args as PositionDetail
+);
+
+export type FragmetricPosition = {
+  accountDiscriminator: number[];
+  nxMarket: PublicKey;
+  owner: PublicKey;
+  positions: PositionDetail[];
+};
+
+export const fragmetricPositionStruct =
+  new FixableBeetStruct<FragmetricPosition>(
+    [
+      ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+      ['nxMarket', publicKey],
+      ['owner', publicKey],
+      ['positions', array(positionDetailStruct)],
+    ],
+    (args) => args as FragmetricPosition
+  );
+
+export type FragmetricUser = {
+  accountDiscriminator: number[];
+  nxMarket: PublicKey;
+  owner: PublicKey;
+  receiptToken: PublicKey;
+  amount: BigNumber;
+  nxFragmetricPoints: BigNumber;
+  lastUpdateTime: BigNumber;
+};
+
+export const fragmetricUserStruct = new FixableBeetStruct<FragmetricUser>(
+  [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+    ['nxMarket', publicKey],
+    ['owner', publicKey],
+    ['receiptToken', publicKey],
+    ['amount', u64],
+    ['nxFragmetricPoints', u64],
+    ['lastUpdateTime', i64],
+  ],
+  (args) => args as FragmetricUser
+);
+
+export type FragmetricPool = {
+  accountDiscriminator: number[];
+  nxMarket: PublicKey;
+  receiptToken: PublicKey;
+  amount: BigNumber;
+  totalNxFragmetricPoints: BigNumber;
+  lastUpdateTime: BigNumber;
+  padding: BigNumber[];
+};
+
+export const fragmetricPoolStruct = new FixableBeetStruct<FragmetricPool>(
+  [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+    ['nxMarket', publicKey],
+    ['receiptToken', publicKey],
+    ['amount', u64],
+    ['totalNxFragmetricPoints', u64],
+    ['lastUpdateTime', i64],
+    ['padding', uniformFixedSizeArray(u64, 10)],
+  ],
+  (args) => args as FragmetricPool
+);
+
 export type StakePoolWithdrawal = {
   stakeAccount: PublicKey;
   solAmount: BigNumber;

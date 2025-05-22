@@ -15,6 +15,7 @@ export const leverageVaultsMints = [
   'vSoLxydx6akxyMD9XEcPvGYNGq6Nn66oqVb3UkGkei7', // vSOL
   'sSo14endRuUbvQaJS3dq36Q829a3A6BEfoeeRGJywEh', // sSOL
   'HUBsveNpjo5pWqNkH57QzxjQASdTVXcSK7bVKTSZtcSX', // hubSOL
+  'WFRGSWjaz8tbAxsJitmbfRuFV2mSNwy7BMWcCwaA28U', // wfragSOL
 ];
 
 export const lendProgramId = new PublicKey(
@@ -24,10 +25,6 @@ export const lendProgramId = new PublicKey(
 export const lendingPoolKey = 'lending-pools';
 export const stakingPoolKey = 'staking-pool';
 export const solayerPoolKey = 'solayer-pools';
-
-export const lendingPools = [
-  new PublicKey('HVn3F2wq2Fvr8T5yX7VS9yWaNxX5PMgxTyHb4aKAX8z3'),
-];
 
 export const stakePool = '2P1eeegdbEhN3bnCroJJPXiH13i4rw1XYk8ftdh9meRY';
 export const stakingProgramId = '9un1MopS4NRhgVDLXB1DqoQDTmq1un48YKJuPiMLpSc9';

@@ -13,8 +13,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     solayerPoolStruct,
     lendProgramId
   )
-    .addRawFilter(0, 'J27HTcn2xq3')
-    .addDataSizeFilter(184)
+    .addFilter('accountDiscriminator', [101, 192, 39, 191, 52, 165, 70, 246])
     .run();
 
   await cache.setItem(solayerPoolKey, solayerPoolAccounts, {

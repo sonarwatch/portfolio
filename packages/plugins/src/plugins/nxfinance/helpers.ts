@@ -16,7 +16,9 @@ import {
   solayerUserStruct,
   vSolPositionStruct,
   MarginPool,
+  fragmetricPositionStruct,
 } from './structs';
+import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 
 const getBorrowApr = (utilization: BigNumber) => {
   if (utilization.isLessThanOrEqualTo(0.8)) {
@@ -180,6 +182,12 @@ export const getLendingAccounts = (
     pdas
   );
 };
+
+export const getFragmetricLendingAccounts = (owner: string) =>
+  ParsedGpa.build(getClientSolana(), fragmetricPositionStruct, lendProgramId)
+    .addFilter('accountDiscriminator', [214, 242, 143, 234, 146, 27, 21, 1])
+    .addFilter('owner', new PublicKey(owner))
+    .run();
 
 export const getVSolPositionAccounts = (
   lendingPools: ParsedAccount<LendingPool>[],
