@@ -1,4 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
+import { solanaNativeWrappedAddress } from '@sonarwatch/portfolio-core';
 import { LendingMarketConfig } from './types';
 import { AirdropStatics } from '../../AirdropFetcher';
 import { mSOLMint } from '../marinade/constants';
@@ -32,42 +33,51 @@ export const lendingConfigs: Map<string, LendingMarketConfig> = new Map([
     {
       name: 'Main Market',
       multiplyPairs: [
-        [mSOLMint, 'So11111111111111111111111111111111111111112'],
-        [
-          'J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn',
-          'So11111111111111111111111111111111111111112',
-        ],
+        [mSOLMint, solanaNativeWrappedAddress],
+        [jitoSOLMint, solanaNativeWrappedAddress],
         [
           'bSo13r4TkiE4KumL71LsHTPpL2euBYLFx6h9HP3piy1',
-          'So11111111111111111111111111111111111111112',
+          solanaNativeWrappedAddress,
         ],
         [
           'jupSoLaHXQiZZTSfEWMTRRgpnyFm8f6sZdosWBjx93v',
-          'So11111111111111111111111111111111111111112',
+          solanaNativeWrappedAddress,
         ],
         [
           'he1iusmfkpAdwvxLNGV8Y1iSbj4rUy6yMhEA3fotn9A',
-          'So11111111111111111111111111111111111111112',
+          solanaNativeWrappedAddress,
         ],
         [
           'vSoLxydx6akxyMD9XEcPvGYNGq6Nn66oqVb3UkGkei7',
-          'So11111111111111111111111111111111111111112',
+          solanaNativeWrappedAddress,
         ],
         [
           'HUBsveNpjo5pWqNkH57QzxjQASdTVXcSK7bVKTSZtcSX',
-          'So11111111111111111111111111111111111111112',
+          solanaNativeWrappedAddress,
         ],
         [
           'BNso1VUJnh4zcfpZa6986Ea66P6TCp59hvtNJ8b1X85',
-          'So11111111111111111111111111111111111111112',
+          solanaNativeWrappedAddress,
         ],
         [
           'picobAEvs6w7QEknPce34wAE4gknZA9v5tTonnmHYdX',
-          'So11111111111111111111111111111111111111112',
+          solanaNativeWrappedAddress,
         ],
         [
           'LAinEtNLgpmCP9Rvsf5Hn8W6EhNiKLZQti1xfWMLy6X',
-          'So11111111111111111111111111111111111111112',
+          solanaNativeWrappedAddress,
+        ],
+        [
+          'CgnTSoL3DgY9SFHxcLj6CgCgKKoTBr6tp4CPAEWy25DE',
+          solanaNativeWrappedAddress,
+        ],
+        [
+          'Dso1bDeDjCQxTrWHqUUi63oBvV7Mdm6WaobLbQ7gnPQ',
+          solanaNativeWrappedAddress,
+        ],
+        [
+          'Bybit2vBJGhPF52GBdNaQfUJ6ZpThSgHBobjWZpLPb4B',
+          solanaNativeWrappedAddress,
         ],
       ],
       leveragePairs: [
@@ -75,11 +85,21 @@ export const lendingConfigs: Map<string, LendingMarketConfig> = new Map([
         [jitoSOLMint, usdcSolanaMint],
         ['bSo13r4TkiE4KumL71LsHTPpL2euBYLFx6h9HP3piy1', usdcSolanaMint],
         [mSOLMint, usdcSolanaMint],
-        ['So11111111111111111111111111111111111111112', usdcSolanaMint],
+        [solanaNativeWrappedAddress, usdcSolanaMint],
         ['7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs', usdcSolanaMint],
         ['Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB', usdcSolanaMint],
         ['3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh', usdcSolanaMint],
         ['2u1tszSeqZ3qBWF3uNGPFc8TzMk2tdiwknnRMWGWjGWH', usdcSolanaMint],
+        ['cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij', usdcSolanaMint],
+        [
+          solanaNativeWrappedAddress,
+          '2u1tszSeqZ3qBWF3uNGPFc8TzMk2tdiwknnRMWGWjGWH',
+        ],
+        [
+          'cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij',
+          '2u1tszSeqZ3qBWF3uNGPFc8TzMk2tdiwknnRMWGWjGWH',
+        ],
+        [jitoSOLMint, '2u1tszSeqZ3qBWF3uNGPFc8TzMk2tdiwknnRMWGWjGWH'],
       ],
     },
   ],
@@ -100,19 +120,97 @@ export const lendingConfigs: Map<string, LendingMarketConfig> = new Map([
           '27G8MtK7VtTcCHkpASjSDdkWWYfoqT6ggEuKidVJidD4',
           'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
         ],
+        [
+          '27G8MtK7VtTcCHkpASjSDdkWWYfoqT6ggEuKidVJidD4',
+          '2u1tszSeqZ3qBWF3uNGPFc8TzMk2tdiwknnRMWGWjGWH', // USDG
+        ],
       ],
     },
   ],
-  ['ByYiZxp8QrdN9qbdtaAiePN8AAr3qvTPppNJDpf5DVJ5', { name: 'Altcoins Market' }],
+  [
+    'ByYiZxp8QrdN9qbdtaAiePN8AAr3qvTPppNJDpf5DVJ5',
+    {
+      name: 'Altcoins Market',
+      leveragePairs: [
+        ['EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm', usdcSolanaMint],
+        ['Grass7B4RdKfBCjTKgSqnXkqjwiGvQyFbuSCUJr3XXjs', usdcSolanaMint],
+      ],
+    },
+  ],
   ['BJnbcRHqvppTyGesLzWASGKnmnF1wq9jZu6ExrjT7wvF', { name: 'Ethena Market' }],
   [
     'H6rHXmXoCQvq8Ue81MqNh7ow5ysPa1dSozwW3PU1dDH6',
     {
       name: 'Jito Market',
       multiplyPairs: [
+        [jitoSOLMint, solanaNativeWrappedAddress],
         [
-          'J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn',
-          'So11111111111111111111111111111111111111112',
+          'ezSoL6fY1PVdJcJsUpe5CM3xkfmy3zoVCABybm5WtiC',
+          solanaNativeWrappedAddress,
+        ],
+      ],
+    },
+  ],
+  [
+    '4UwtBqa8DDtcWV6nWFregeMVkGdfWfiYeFxoHaR2hm9c',
+    {
+      name: 'Fartcoin Market',
+      leveragePairs: [
+        ['9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump', usdcSolanaMint],
+      ],
+    },
+  ],
+  ['GMqmFygF5iSm5nkckYU6tieggFcR42SyjkkhK5rswFRs', { name: 'Bitcoin Market' }],
+  ['3EZEy7vBTJ8Q9PWxKwdLVULRdsvVLT51rpBG3gH1TSJ5', { name: 'Jupiter Market' }],
+  ['9wmqLq3n3KdQBbNfwqrF3PwcLgZ9edZ7hW5TsaC3o6uj', { name: 'JTO Market' }],
+  [
+    'GVDUXFwS8uvBG35RjZv6Y8S1AkV5uASiMJ9qTUKqb5PL',
+    {
+      name: 'Marinade Market',
+      multiplyPairs: [[mSOLMint, solanaNativeWrappedAddress]],
+    },
+  ],
+  [
+    'F4Pn9mAvbUazDmWET5yYATTiyLHLaCRTWgGex4tiMXAs',
+    { name: 'Exponent PT-SOL Market' },
+  ],
+  [
+    '7WQeTuLsFrZsgnHW7ddFdNfhfJAViqH4mvcFZPQ5zuQ9',
+    {
+      name: 'Bonk Market',
+      leveragePairs: [
+        ['DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263', usdcSolanaMint],
+        [
+          'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263',
+          '2u1tszSeqZ3qBWF3uNGPFc8TzMk2tdiwknnRMWGWjGWH',
+        ],
+      ],
+    },
+  ],
+  [
+    'SZ8MbzSojH84K41jYGUvMJDSCTCWgemh3vanWtCx181',
+    { name: 'rstSOL/bbSOL Leverage Market' },
+  ],
+  [
+    'eNLm5e5KVDX2vEcCkt75PpZ2GMfXcZES3QrFshgpVzp',
+    {
+      name: 'Sanctum Market',
+      multiplyPairs: [
+        [
+          '5oVNBeEEQvYi1cX3ir8Dx5n1P7pdxydbGF2X4TxVusJm',
+          solanaNativeWrappedAddress,
+        ],
+      ],
+    },
+  ],
+  [
+    'C7h9YnjPrDvNhe2cWWDhCu4CZEB1XTTH4RzjmsHuengV',
+    {
+      name: 'GM-Solblaze',
+      multiplyPairs: [
+        [
+          'bSo13r4TkiE4KumL71LsHTPpL2euBYLFx6h9HP3piy1',
+          solanaNativeWrappedAddress,
         ],
       ],
     },
