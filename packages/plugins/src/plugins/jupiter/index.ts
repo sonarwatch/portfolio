@@ -18,8 +18,9 @@ import {
   asr4Fetcher,
 } from './governance';
 import { lfgAirdropFetchers } from './launchpad';
+import verifiedJob from './verifiedJob';
 
-export const jobs: Job[] = [custodiesJob, pricingJob];
+export const jobs: Job[] = [custodiesJob, verifiedJob, pricingJob];
 export const fetchers: Fetcher[] = [
   perpetualFetcher,
   valueAverageFetcher,

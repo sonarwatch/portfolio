@@ -11,3 +11,5 @@ export const lockerPubkey = new PublicKey(
 
 export const jupMint = 'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN';
 export const jupDecimals = 6;
+
+export const verifiedTokensCacheKey = 'verified_tokens';
