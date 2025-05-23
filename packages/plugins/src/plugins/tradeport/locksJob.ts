@@ -25,6 +25,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-locks`,
   executor,
-  labels: ['realtime'],
+  labels: ['normal'],
 };
 export default job;
