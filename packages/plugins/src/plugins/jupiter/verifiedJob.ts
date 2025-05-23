@@ -24,6 +24,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 };
 const job: Job = {
   id: `${platformId}-verified`,
+  networkIds: [NetworkId.solana],
   executor,
   labels: ['normal'],
 };

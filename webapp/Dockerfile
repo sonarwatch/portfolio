@@ -6,4 +6,4 @@ COPY . .
 ENV NODE_ENV=production
 EXPOSE 3001
 
-CMD ["npx", "ts-node", "--project", "./tsconfig.json", "./src/server.ts"]
+CMD ["node", "-r", "ts-node/register", "--max-old-space-size=3000", "./src/server.ts"]

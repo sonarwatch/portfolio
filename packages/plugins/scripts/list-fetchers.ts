@@ -1,12 +1,12 @@
 import { networks } from '@sonarwatch/portfolio-core';
-import { fetchers, solanaSimpleFetcher } from '../src';
+import { fetchers, solanaSimpleFetcher, airdropFetchers } from '../src';
 
 async function listFetchers(network?: string) {
   if (network && !Object.keys(networks).includes(network)) {
     console.error(`unknown network. NetworkId: ${network}`);
   }
 
-  const filteredFetchers = [...fetchers, solanaSimpleFetcher]
+  const filteredFetchers = [...fetchers, ...airdropFetchers, solanaSimpleFetcher]
     .filter(f => !network || f.networkId === network)
     .map(f => f.id);
 
