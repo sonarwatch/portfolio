@@ -32,6 +32,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     activeMerkles.push({
       address: merkle.pubkey.toString(),
       mint: merkle.mint.toString(),
+      unlockPeriod: merkle.unlockPeriod
     });
   }
 

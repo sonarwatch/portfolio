@@ -1,10 +1,12 @@
+import BigNumber from 'bignumber.js';
+
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedMultipleAccountsInfo } from '../../utils/solana';
-import { claimStatusStruct } from './structs';
+import { ClaimStatus, claimStatusStruct } from './structs';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import { getPdas } from './helpers';
 import { MerkleInfo } from './types';
@@ -14,6 +16,28 @@ const merkleMemo = new MemoizedCache<MerkleInfo[]>('merkles', {
   prefix: platformId,
   networkId: NetworkId.solana,
 });
+
+function calculateTotalClaimable(
+  claim: ClaimStatus,
+  unlockPeriod?: string
+): BigNumber {
+  if (!unlockPeriod) {
+    return BigNumber(0);
+  }
+  const now = Math.floor(Date.now() / 1000);
+  const elapsed = now - Number(claim.lastClaimTs);
+  const unlockPeriodNumber = parseInt(unlockPeriod, 10);
+
+  const periods = Math.floor(elapsed / unlockPeriodNumber);
+  const totalUnlocked = new BigNumber(periods).multipliedBy(
+    claim.lastAmountPerUnlock
+  );
+  const remaining = new BigNumber(claim.lockedAmount).minus(
+    claim.lockedAmountWithdrawn
+  );
+
+  return BigNumber.max(BigNumber.min(totalUnlocked, remaining), BigNumber(0));
+}
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -44,11 +68,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       ref: claim.pubkey.toString(),
       sourceRefs: [{ address: merkle.address, name: 'Distributor' }],
     });
-    element.addAsset({
-      address: merkle.mint,
-      amount: claim.unlockedAmount.minus(claim.lockedAmountWithdrawn),
-      attributes: { isClaimable: true },
-    });
+
+    const claimable = calculateTotalClaimable(
+      claim,
+      merkle?.unlockPeriod?.toString()
+    );
+    if (claimable.gt(0)) {
+      element.addAsset({
+        address: merkle.mint,
+        amount: claim.unlockedAmount.minus(claim.lockedAmountWithdrawn),
+        attributes: { isClaimable: true },
+      });
+    }
+
     element.addAsset({
       address: merkle.mint,
       amount: claim.lockedAmount.minus(claim.lockedAmountWithdrawn),

@@ -61,12 +61,20 @@ Fetchers are executed per wallet address and:
 PORTFOLIO_SOLANA_RPC=https://mainnet.helius-rpc.com/?api-key=your-key
 PORTFOLIO_SOLANA_DAS_ENDPOINT=https://mainnet.helius-rpc.com/das/v0/?api-key=your-key
 
-CACHE_CONFIG_TYPE=overlayHttp
-CACHE_CONFIG_OVERLAY_HTTP_BASES=http://localhost:3000/,https://portfolio-api-public.sonar.watch/v1/portfolio/cache/
-CACHE_CONFIG_REDIS_URL=redis://@redis:6379
+CACHE_CONFIG_TYPE=redis
+CACHE_CONFIG_REDIS_URL=redis://localhost:6379
+CACHE_CONFIG_REDIS_DB=0
+CACHE_CONFIG_REDIS_TTL=14400
 ```
 
 ---
+
+## Setup infrastructure
+Run redis in docker
+```
+  cd ${PORTFOLIO_API_HOME}/development
+  docker compose up -d
+```
 
 ## 🚀 Running Locally
 
@@ -109,6 +117,37 @@ npx nx run plugins:run-fetchers-by-network-id solana BBkoocctRizBPsu2WRHx5xvpd21
 Get list of transactions by solana address:
 ```bash
 npx nx run tx-parser:run BBkoocctRizBPsu2WRHx5xvpd21UHx6ARVEDGVw7sAFa
+```
+
+### Example
+1. We need to get data for `streamflow` protocol
+2. List all the fetcher and search for `streamflow`
+```
+  npx nx run plugins:list-fetchers solana | grep streamflow
+```
+3. Try to run the necessary fetcher
+```
+ npx nx run plugins:run-fetcher streamflow-merkles Hp8SsZZZot8UB28HTfEuxxCXECoSiwHfpzqwenjrMPKF
+```
+4. You will see an error like this
+```
+  if (merkles.length === 0) throw new Error('No active merkles found in cache');
+```
+5. It means that you need to run some job (often it has similar name). Run
+```
+  npx nx run plugins:run-job streamflow-merkles
+```
+6. Try to rerun fetcher from step 3. It will finish successfully, but could return no data.
+   It happens because there is no prices in the cache. To populate prices it is required to run
+   The second one is long running
+```
+ npx nx run plugins:run-job token-lists-solana
+ npx nx run plugins:run-job wallet-tokens-solana
+```
+7. If you need to debug something, the next code to the script section of 
+   `package.json` in the root folder, and run it debug mode from IDE 
+```
+"merkles": "npx nx run plugins:run-fetcher streamflow-merkles Hp8SsZZZot8UB28HTfEuxxCXECoSiwHfpzqwenjrMPKF",
 ```
 
 ---
