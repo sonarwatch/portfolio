@@ -15,8 +15,6 @@ import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 import { CachedPool } from './types';
 import { usdcSolanaMint } from '../../utils/solana';
 
-const amountFactor = 10 ** 6;
-
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
   const [usdcPositions, solPositions] = await Promise.all([
@@ -80,16 +78,17 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       (Date.now() / 1000 - timeReference.toNumber()) / (60 * 60 * 24)
     );
 
+    const collat = index + 1 <= usdcPositions.length ? usdcPrice : solPrice;
+
     // Seems like they mixed up the collateral and size
-    const size = acc.collateralAmount.dividedBy(amountFactor);
-    const collatAmount = acc.userPaid.dividedBy(amountFactor);
-    const amount = acc.amount.dividedBy(amountFactor);
 
-    const collatPrice =
-      index <= usdcPositions.length ? usdcPrice.price : solPrice.price;
-    const collatSizeValue = size.times(collatPrice);
+    const size = acc.collateralAmount.dividedBy(10 ** assetPrice.decimals); // in asset
+    const collatAmount = acc.userPaid.dividedBy(10 ** collat.decimals);
+    const amount = acc.amount.dividedBy(10 ** collat.decimals);
 
-    const collateralValue = collatAmount.times(collatPrice);
+    const collatSizeValue = size.times(assetPrice.price);
+
+    const collateralValue = collatAmount.times(collat.price);
     const sizeValue = size.times(assetPrice.price);
     const dailyInterest = acc.interestRate / 365;
     const entryPrice = amount.plus(collatAmount).dividedBy(size);
@@ -100,8 +99,12 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const liquidationPrice = amount
       .plus(interest)
       .dividedBy(collatSizeValue.times(0.9))
+      .multipliedBy(assetPrice.price)
       .toNumber();
-    const pnlValue = new BigNumber(assetPrice.price)
+
+    const markPrice = assetPrice.price / collat.price;
+
+    const pnlValue = new BigNumber(markPrice)
       .minus(entryPrice)
       .times(size)
       .minus(interest)
@@ -114,7 +117,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         .plus(acc.userPaid)
         .dividedBy(acc.userPaid)
         .toNumber(),
-      markPrice: assetPrice.price,
+      markPrice,
       liquidationPrice,
       side: LeverageSide.long,
       size: size.toNumber(),
