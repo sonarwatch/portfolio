@@ -13,9 +13,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   await cache.setItem(
     verifiedTokensCacheKey,
-    verifiedTokens.data
-      .sort((a, b) => b.daily_volume - a.daily_volume)
-      .slice(0, 1000),
+    verifiedTokens.data.sort((a, b) => b.daily_volume - a.daily_volume),
     {
       prefix: platformId,
       networkId: NetworkId.solana,
