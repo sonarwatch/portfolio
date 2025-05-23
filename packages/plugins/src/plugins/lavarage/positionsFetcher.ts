@@ -24,18 +24,26 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       .addFilter('discriminator', [170, 188, 143, 228, 122, 64, 247, 208])
       .addDataSizeFilter(178)
       .addFilter('trader', new PublicKey(owner))
-      .run(),
+      .run()
+      .then((accounts) =>
+        accounts.filter((acc) => acc.closeTimestamp.isZero())
+      ),
     ParsedGpa.build(connection, positionStruct, solPid)
       .addFilter('discriminator', [170, 188, 143, 228, 122, 64, 247, 208])
       .addDataSizeFilter(178)
       .addFilter('trader', new PublicKey(owner))
-      .run(),
+      .run()
+      .then((accounts) =>
+        accounts.filter((acc) => acc.closeTimestamp.isZero())
+      ),
   ]);
 
-  if (!usdcPositions && !solPositions) return [];
+  const positions = [...usdcPositions, ...solPositions];
+
+  if (!positions.length) return [];
 
   const pools = await cache.getItems<CachedPool>(
-    [...usdcPositions, ...solPositions].map((p) => p.pool.toString()),
+    positions.map((p) => p.pool.toString()),
     { prefix: platformId, networkId: NetworkId.solana }
   );
   if (!pools) throw new Error('Pools not in cache');
@@ -57,7 +65,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
   const element = elementRegistry.addElementLeverage({ label: 'Leverage' });
 
-  [...usdcPositions, ...solPositions].forEach((acc, index) => {
+  positions.forEach((acc, index) => {
     const pool = pools.find((p) =>
       p ? p.pubkey.toString() === acc.pool.toString() : false
     );

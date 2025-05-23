@@ -46,6 +46,7 @@ import * as fragmetric from './services/fragmetric';
 import * as francium from './services/francium';
 import * as futarchy from './services/futarchy';
 import * as genesysgo from './services/genesysgo';
+import * as glow from './services/glow';
 import * as goosefx from './services/goosefx';
 import * as gpool from './services/oresupply';
 import * as grass from './services/grass';
@@ -199,6 +200,7 @@ export const services: ServiceDefinition[] = [
   francium,
   futarchy,
   genesysgo,
+  glow,
   goosefx,
   gpool,
   grass,

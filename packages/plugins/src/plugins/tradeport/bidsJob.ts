@@ -32,6 +32,6 @@ const job: Job = {
   id: `${platformId}-bids`,
   networkIds: [NetworkId.sui],
   executor,
-  labels: ['realtime', NetworkId.sui],
+  labels: ['normal', NetworkId.sui],
 };
 export default job;

@@ -18,6 +18,7 @@ import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import {
   formatLendingPool,
   getBorrowNoteRate,
+  getFragmetricLendingAccounts,
   getLendingAccounts,
   getMarginAccount,
   getMarginPools,
@@ -52,11 +53,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const [
     lendingAccounts,
+    fragmetricLendingAccounts,
     vSolPositionsAccounts,
     marginAccount,
     solayerUserAccounts,
   ] = await Promise.all([
     getLendingAccounts(lendingPools, owner), // JLP
+    getFragmetricLendingAccounts(owner), // fragSOL
     getVSolPositionAccounts(lendingPools, owner), // vSOL
     getMarginAccount(owner), // Fulcrum Lending Pool
     getSolayerUserAccounts(solayerPools, owner), // Solayer
@@ -64,6 +67,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (
     lendingAccounts.length === 0 &&
+    fragmetricLendingAccounts.length === 0 &&
     vSolPositionsAccounts.length === 0 &&
     !marginAccount &&
     solayerUserAccounts.length === 0
@@ -83,6 +87,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     });
   });
   lendingPools.forEach((l) => mints.add(l.tokenMint.toString()));
+  fragmetricLendingAccounts.forEach((acc) => {
+    acc.positions.forEach((position) => {
+      mints.add(position.borrowMint.toString());
+      mints.add(position.collateralMint.toString());
+      mints.add(position.leverageMint.toString());
+    });
+  });
 
   const [marginPools, tokenPrices] = await Promise.all([
     getMarginPools(mints),
@@ -90,6 +101,52 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   ]);
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
+
+  fragmetricLendingAccounts.forEach((lendingAccount) => {
+    if (!lendingAccount) return;
+
+    lendingAccount.positions.forEach((position) => {
+      if (position.collateralNote.isZero()) return;
+
+      const element = elementRegistry.addElementMultiple({
+        label: 'Leverage',
+        name: `fragSOL Leverage x${new BigNumber(position.leverageMultiples)
+          .dividedBy(1000000)
+          .decimalPlaces(2)}`,
+        link: 'https://www.nxfinance.info/leverage/v2/fragSOL',
+        ref: lendingAccount.pubkey.toString(),
+      });
+
+      const collateralTokenPrice = tokenPrices.get(
+        position.collateralMint.toString()
+      );
+      const loanTokenPrice = tokenPrices.get(position.borrowMint.toString());
+      const leverageTokenPrice = tokenPrices.get(
+        position.leverageMint.toString()
+      );
+
+      if (!collateralTokenPrice || !loanTokenPrice || !leverageTokenPrice)
+        return;
+
+      const amount = new BigNumber(
+        new BigNumber(position.leverageTokens)
+          .dividedBy(10 ** leverageTokenPrice.decimals)
+          .times(leverageTokenPrice.price)
+      )
+        .minus(
+          new BigNumber(position.borrowTokens)
+            .dividedBy(10 ** loanTokenPrice.decimals)
+            .times(loanTokenPrice.price)
+        )
+        .div(collateralTokenPrice.price);
+
+      element.addAsset({
+        address: position.collateralMint,
+        amount,
+        alreadyShifted: true,
+      });
+    });
+  });
 
   lendingAccounts.forEach((lendingAccount) => {
     if (!lendingAccount) return;

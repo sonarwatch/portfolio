@@ -123,6 +123,6 @@ const job: Job = {
   id: `${platformId}-strategy-lp-rebalancing`,
   networkIds: [NetworkId.sui],
   executor,
-  labels: ['realtime', NetworkId.sui],
+  labels: ['normal', NetworkId.sui],
 };
 export default job;

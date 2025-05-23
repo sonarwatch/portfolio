@@ -1,0 +1,1028 @@
+{
+  "address": "GLoWMgcn3VbyFKiC2FGMgfKxYSyTJS7uKFwKY2CSkq9X",
+  "metadata": {
+    "name": "margin",
+    "version": "1.0.0",
+    "spec": "0.1.0",
+    "description": "Manager for margin accounts"
+  },
+  "accounts": [
+    {
+      "name": "AdapterConfig",
+      "discriminator": [
+        232,
+        238,
+        221,
+        123,
+        55,
+        57,
+        27,
+        14
+      ]
+    },
+    {
+      "name": "Airspace",
+      "discriminator": [
+        14,
+        154,
+        104,
+        38,
+        250,
+        109,
+        45,
+        101
+      ]
+    },
+    {
+      "name": "AirspacePermit",
+      "discriminator": [
+        244,
+        233,
+        44,
+        229,
+        112,
+        87,
+        200,
+        88
+      ]
+    },
+    {
+      "name": "LiquidationState",
+      "discriminator": [
+        51,
+        3,
+        38,
+        175,
+        93,
+        144,
+        255,
+        172
+      ]
+    },
+    {
+      "name": "MarginAccount",
+      "discriminator": [
+        133,
+        220,
+        173,
+        213,
+        179,
+        211,
+        43,
+        238
+      ]
+    },
+    {
+      "name": "Permit",
+      "discriminator": [
+        219,
+        195,
+        186,
+        174,
+        197,
+        232,
+        83,
+        160
+      ]
+    },
+    {
+      "name": "TokenConfig",
+      "discriminator": [
+        92,
+        73,
+        255,
+        43,
+        107,
+        51,
+        117,
+        101
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "AccountClosed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "margin_account",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AccountCreated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "margin_account",
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "airspace",
+            "type": "pubkey"
+          },
+          {
+            "name": "seed",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AccountingInvokeBegin",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "margin_account",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AccountingInvokeEnd",
+      "type": {
+        "kind": "struct",
+        "fields": []
+      }
+    },
+    {
+      "name": "AdapterConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "airspace",
+            "type": "pubkey"
+          },
+          {
+            "name": "adapter_program",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AdapterConfigured",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "airspace",
+            "type": "pubkey"
+          },
+          {
+            "name": "adapter_program",
+            "type": "pubkey"
+          },
+          {
+            "name": "is_adapter",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AdapterInvokeBegin",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "margin_account",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AdapterInvokeEnd",
+      "type": {
+        "kind": "struct",
+        "fields": []
+      }
+    },
+    {
+      "name": "Airspace",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "is_restricted",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AirspacePermit",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "airspace",
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "issuer",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BitSet",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bits",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Invocation",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "caller_heights",
+            "type": {
+              "defined": {
+                "name": "BitSet"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "IxData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "num_accounts",
+            "type": "u8"
+          },
+          {
+            "name": "data",
+            "type": "bytes"
+          }
+        ]
+      }
+    },
+    {
+      "name": "JupiterSwap",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "margin_account",
+            "type": "pubkey"
+          },
+          {
+            "name": "adapter_program",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Liquidation",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "equity_loss",
+            "type": "i128"
+          },
+          {
+            "name": "max_equity_loss",
+            "type": "i128"
+          },
+          {
+            "name": "collateral_change",
+            "type": "i128"
+          },
+          {
+            "name": "max_available_collateral_limit",
+            "type": "i128"
+          },
+          {
+            "name": "start_time",
+            "type": "i64"
+          },
+          {
+            "name": "is_collecting_fees",
+            "type": "u8"
+          },
+          {
+            "name": "__padding",
+            "type": {
+              "array": [
+                "u8",
+                7
+              ]
+            }
+          },
+          {
+            "name": "accrued_liquidation_fees",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "LiquidationFee"
+                  }
+                },
+                6
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "LiquidationBegun",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "margin_account",
+            "type": "pubkey"
+          },
+          {
+            "name": "liquidator",
+            "type": "pubkey"
+          },
+          {
+            "name": "liquidation",
+            "type": "pubkey"
+          },
+          {
+            "name": "liquidation_data",
+            "type": {
+              "defined": {
+                "name": "Liquidation"
+              }
+            }
+          },
+          {
+            "name": "valuation_summary",
+            "type": {
+              "defined": {
+                "name": "ValuationSummary"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "LiquidationEnded",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "margin_account",
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "timed_out",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LiquidationFee",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LiquidationState",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c",
+        "align": 8
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "liquidator",
+            "type": "pubkey"
+          },
+          {
+            "name": "margin_account",
+            "type": "pubkey"
+          },
+          {
+            "name": "state",
+            "type": {
+              "defined": {
+                "name": "Liquidation"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "LiquidatorInvokeBegin",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "margin_account",
+            "type": "pubkey"
+          },
+          {
+            "name": "liquidator",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LiquidatorInvokeEnd",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "liquidation_data",
+            "type": {
+              "defined": {
+                "name": "Liquidation"
+              }
+            }
+          },
+          {
+            "name": "valuation_summary",
+            "type": {
+              "defined": {
+                "name": "ValuationSummary"
+              }
+            }
+          },
+          {
+            "name": "accrued_liquidation_fee_amount",
+            "type": "u64"
+          },
+          {
+            "name": "liquidation_fee_mint",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MarginAccount",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c",
+        "align": 8
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "bump_seed",
+            "type": {
+              "array": [
+                "u8",
+                1
+              ]
+            }
+          },
+          {
+            "name": "user_seed",
+            "type": {
+              "array": [
+                "u8",
+                2
+              ]
+            }
+          },
+          {
+            "name": "invocation",
+            "type": {
+              "defined": {
+                "name": "Invocation"
+              }
+            }
+          },
+          {
+            "name": "reserved0",
+            "type": {
+              "array": [
+                "u8",
+                3
+              ]
+            }
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "airspace",
+            "type": "pubkey"
+          },
+          {
+            "name": "liquidator",
+            "type": "pubkey"
+          },
+          {
+            "name": "positions",
+            "type": {
+              "defined": {
+                "name": "Positions"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Permissions",
+      "repr": {
+        "kind": "transparent"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          "u32"
+        ]
+      }
+    },
+    {
+      "name": "Permit",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "airspace",
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "permissions",
+            "type": {
+              "defined": {
+                "name": "Permissions"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "PermitConfigured",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "airspace",
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "permissions",
+            "type": {
+              "defined": {
+                "name": "Permissions"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Positions",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "positions",
+            "type": {
+              "array": [
+                "u8",
+                7432
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenAdmin",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Margin",
+            "fields": [
+              {
+                "name": "oracle",
+                "type": {
+                  "defined": {
+                    "name": "TokenPriceOracle"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "Adapter",
+            "fields": [
+              "pubkey"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint_token_program",
+            "type": "pubkey"
+          },
+          {
+            "name": "underlying_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "underlying_mint_token_program",
+            "type": "pubkey"
+          },
+          {
+            "name": "airspace",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_kind",
+            "type": {
+              "defined": {
+                "name": "TokenKind"
+              }
+            }
+          },
+          {
+            "name": "value_modifier",
+            "type": "u16"
+          },
+          {
+            "name": "max_staleness",
+            "type": "u64"
+          },
+          {
+            "name": "admin",
+            "type": {
+              "defined": {
+                "name": "TokenAdmin"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenConfigUpdate",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "underlying_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "underlying_mint_token_program",
+            "type": "pubkey"
+          },
+          {
+            "name": "admin",
+            "type": {
+              "defined": {
+                "name": "TokenAdmin"
+              }
+            }
+          },
+          {
+            "name": "token_kind",
+            "type": {
+              "defined": {
+                "name": "TokenKind"
+              }
+            }
+          },
+          {
+            "name": "value_modifier",
+            "type": "u16"
+          },
+          {
+            "name": "max_staleness",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenConfigured",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "airspace",
+            "type": "pubkey"
+          },
+          {
+            "name": "update",
+            "type": {
+              "option": {
+                "defined": {
+                  "name": "TokenConfigUpdate"
+                }
+              }
+            }
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenKind",
+      "repr": {
+        "kind": "rust"
+      },
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Collateral"
+          },
+          {
+            "name": "Claim"
+          },
+          {
+            "name": "AdapterCollateral"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenPriceOracle",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "NoOracle"
+          },
+          {
+            "name": "PythPull",
+            "fields": [
+              {
+                "name": "feed_id",
+                "type": {
+                  "array": [
+                    "u8",
+                    32
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "name": "PythPullRedemption",
+            "fields": [
+              {
+                "name": "feed_id",
+                "type": {
+                  "array": [
+                    "u8",
+                    32
+                  ]
+                }
+              },
+              {
+                "name": "quote_mint",
+                "type": "pubkey"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "TransferPosition",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "source_margin_account",
+            "type": "pubkey"
+          },
+          {
+            "name": "target_margin_account",
+            "type": "pubkey"
+          },
+          {
+            "name": "source_token_account",
+            "type": "pubkey"
+          },
+          {
+            "name": "target_token_account",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ValuationSummary",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "equity",
+            "type": "i128"
+          },
+          {
+            "name": "liabilities",
+            "type": "i128"
+          },
+          {
+            "name": "required_collateral",
+            "type": "i128"
+          },
+          {
+            "name": "weighted_collateral",
+            "type": "i128"
+          },
+          {
+            "name": "effective_collateral",
+            "type": "i128"
+          },
+          {
+            "name": "available_collateral",
+            "type": "i128"
+          },
+          {
+            "name": "past_due",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VerifiedHealthy",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "margin_account",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VerifiedUnhealthy",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "margin_account",
+            "type": "pubkey"
+          }
+        ]
+      }
+    }
+  ],
+  "constants": [
+    {
+      "name": "ADAPTER_CONFIG_SEED",
+      "type": "bytes",
+      "value": "[97, 100, 97, 112, 116, 101, 114, 45, 99, 111, 110, 102, 105, 103]"
+    },
+    {
+      "name": "LIQUIDATION_MAX_EQUITY_LOSS_CONSTANT",
+      "type": "u64",
+      "value": "1"
+    },
+    {
+      "name": "LIQUIDATION_MAX_EQUITY_LOSS_PROPORTION_BPS",
+      "type": "u16",
+      "value": "500"
+    },
+    {
+      "name": "LIQUIDATION_TIMEOUT",
+      "type": "i64",
+      "value": "60"
+    },
+    {
+      "name": "LIQUIDATOR_CONFIG_SEED",
+      "type": "bytes",
+      "value": "[112, 101, 114, 109, 105, 116]"
+    },
+    {
+      "name": "MAX_ORACLE_CONFIDENCE",
+      "type": "u16",
+      "value": "500"
+    },
+    {
+      "name": "MAX_ORACLE_STALENESS",
+      "type": "u64",
+      "value": "30"
+    },
+    {
+      "name": "MAX_PRICE_QUOTE_AGE",
+      "type": "u64",
+      "value": "30"
+    },
+    {
+      "name": "PERMIT_SEED",
+      "type": "bytes",
+      "value": "[112, 101, 114, 109, 105, 116]"
+    },
+    {
+      "name": "TOKEN_CONFIG_SEED",
+      "type": "bytes",
+      "value": "[116, 111, 107, 101, 110, 45, 99, 111, 110, 102, 105, 103]"
+    }
+  ]
+}

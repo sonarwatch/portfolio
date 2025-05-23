@@ -26,6 +26,6 @@ const job: Job = {
   id: `${platformId}-locks`,
   networkIds: [NetworkId.sui],
   executor,
-  labels: ['realtime', NetworkId.sui],
+  labels: ['normal', NetworkId.sui],
 };
 export default job;
