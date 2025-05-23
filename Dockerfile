@@ -1,9 +1,9 @@
 FROM node:20-alpine
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
 COPY . .
+RUN npm install
+RUN NODE_OPTIONS="--max-old-space-size=4096" npx nx build webapp --with-deps
 ENV NODE_ENV=production
 EXPOSE 3001
 
-CMD ["npx", "ts-node", "--project", "./packages/webapp/tsconfig.json", "./packages/webapp/src/server.ts"]
+CMD ["node", "./dist/packages/webapp/server.cjs"]

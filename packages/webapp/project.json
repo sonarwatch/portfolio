@@ -2,14 +2,15 @@
   "name": "webapp",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/webapp/src",
-  "projectType": "webapp",
+  "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
+      "executor": "@nx/esbuild:esbuild",
       "outputs": [
         "{options.outputPath}"
       ],
       "options": {
+        "format": ["cjs"],
         "outputPath": "dist/packages/webapp",
         "main": "packages/webapp/src/server.ts",
         "tsConfig": "packages/webapp/tsconfig.json",

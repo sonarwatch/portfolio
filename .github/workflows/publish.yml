@@ -32,7 +32,6 @@ jobs:
         with:
           filters: |
             portfolio:
-              - 'webapp/**'
               - 'packages/**'
 
       - name: Set up Docker Buildx
@@ -74,7 +73,6 @@ jobs:
         uses: docker/build-push-action@v5.4.0
         if: steps.filter.outputs.portfolio == 'true' || github.event_name == 'workflow_dispatch'
         with:
-          context: webapp/
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
