@@ -69,7 +69,10 @@ class JobRunner {
       }
     };
 
-    runWithThrottle();
+    const randomDelay = Math.floor(Math.random() * 120_000);
+    setTimeout(() => {
+      runWithThrottle();
+    }, randomDelay);
 
     const timer = setInterval(() => {
       runWithThrottle();

@@ -1,26 +1,23 @@
 import {
+  Cache,
   fetchersByAddressSystem,
   runFetchersByNetworkId,
-  Cache
 } from '@sonarwatch/portfolio-plugins';
-import {
-  Token,
-  TokenList,
-} from '@sonarwatch/portfolio-plugins/src/plugins/tokens/types';
-import { TokenInfo } from '@sonarwatch/portfolio-core';
-import { tokenListsPrefix } from '@sonarwatch/portfolio-plugins/src/plugins/tokens/constants';
+import { NetworkId, NetworkIdType } from '@sonarwatch/portfolio-core';
 import { logger } from '../logger/logger';
 import portfolioCache from '../cache/cache';
+import tokenCache from '../cache/token';
+import { Token, TokenRegistry } from '@sonarwatch/token-registry';
 
 class PortfolioService {
   private static instance: PortfolioService;
 
   private readonly cache: Cache;
-  private tokensMap?: Record<string, Token>;
-
+  private readonly registry: TokenRegistry;
 
   private constructor() {
-    this.cache = portfolioCache.getCache()
+    this.cache = portfolioCache.getCache();
+    this.registry = tokenCache.getRegistry();
   }
 
   public static getInstance(): PortfolioService {
@@ -38,39 +35,30 @@ class PortfolioService {
       fetchers,
       this.cache
     );
-    const addresses: string[] = [];
+    const addresses: Array<{ address: string; networkId: NetworkIdType }> = [];
     result.elements.forEach((element) => {
       if (element.type === 'multiple') {
         element.data.assets
-          .filter((a) => a.type === 'token')
-          .forEach((a) => a.data.address && addresses.push(a.data.address));
+          .filter((a) => a.type === 'token' && a.data.address)
+          .forEach((a) =>
+            addresses.push({
+              address: a.data.address!,
+              networkId: NetworkId.solana,
+            })
+          );
       }
     });
 
-    if (!this.tokensMap) {
-      const tokenList = await this.cache.getItem<TokenList>('solana', {
-        prefix: tokenListsPrefix,
-      });
-      this.tokensMap = tokenList?.tokens.reduce((acc, token) => {
-        acc[token.address] = token;
-        return acc;
-      }, {} as Record<string, Token>);
-    }
-    const tokenInfoMap = addresses.reduce((acc, address: string) => {
-      const token = this.tokensMap && this.tokensMap[address];
-
+    const tokens = await this.registry.getTokens(addresses);
+    const tokenInfoMap = tokens.reduce((acc, token: Token | null) => {
       if (token) {
-        acc[address] = {
-          ...token,
-          networkId: 'solana',
-          extensions: undefined,
-        };
+        acc[token.address] = token;
       } else {
         logger.warn(`Token meta not found for address. Address=${address}`);
       }
 
       return acc;
-    }, {} as Record<string, TokenInfo | undefined>);
+    }, {} as Record<string, Token>);
     return { ...result, tokenInfo: { solana: tokenInfoMap } };
   };
 }
