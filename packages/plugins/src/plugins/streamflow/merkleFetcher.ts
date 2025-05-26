@@ -18,12 +18,15 @@ const merkleMemo = new MemoizedCache<MerkleInfo[]>('merkles', {
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
   const merkles = await merkleMemo.getItem(cache);
-  if (merkles.length === 0) throw new Error('No active merkles found in cache');
+  if (!merkles) throw new Error('No active merkles found in cache');
 
   const pdas = getPdas(
     owner,
     merkles.map((m) => m.address)
   );
+
+  // This will only return accounts that exist
+  // meaning if the user didn't start to claim we won't but able to find his account
   const claimAccounts = await getParsedMultipleAccountsInfo(
     client,
     claimStatusStruct,
