@@ -24,7 +24,6 @@ const mints = [
   'Bn113WT6rbdgwrm12UJtnmNqGqZjY4it2WoUQuQopFVn', // Wrapped USDT (Allbridge from Ethereum)
   'E77cpQ4VncGmcAXX16LHFFzNBEBb2U7Ar7LBmZNfCgwL', // Wrapped USDT (Allbridge from BSC)
   '8qJSyQprMC57TWKaYEmetUR3UUiTP2M3hXdcvFhkZdmv', // Tether USD (Wormhole from BSC)
-  'SAVEDpx3nFNdzG3ymJfShYnrBuYy7LtQEABZQ3qtTFt', // saveSOL
 ];
 const vsToken = solanaNativeWrappedAddress;
 
@@ -64,6 +63,8 @@ const executor: JobExecutor = async (cache: Cache) => {
   const solTokenPrice = { price: solPrice };
 
   const prices = await getJupiterPrices([...mintsPk], new PublicKey(vsToken));
+
+  console.log(prices.get('SAVEDpx3nFNdzG3ymJfShYnrBuYy7LtQEABZQ3qtTFt'));
 
   const sources: TokenPriceSource[] = [];
   prices.forEach((price, mint) => {
