@@ -14,6 +14,12 @@ const institutionalContract = {
   platformId,
 };
 
+const stakingContract = {
+  name: 'Staking',
+  address: 'vsRJM68m7i18PwzTFphgPYXTujCgxEi28knpUwSmg3q',
+  platformId,
+};
+
 const service: ServiceDefinition = {
   id: `${platformId}-permissionless`,
   name: 'Permissionless',
@@ -28,6 +34,17 @@ const institutionalService: ServiceDefinition = {
   networkId: NetworkId.solana,
   contracts: [institutionalContract],
 };
+const stakingService: ServiceDefinition = {
+  id: `${platformId}-staking`,
+  name: 'Staking',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [stakingContract],
+};
 
-export const services: ServiceDefinition[] = [service, institutionalService];
+export const services: ServiceDefinition[] = [
+  service,
+  institutionalService,
+  stakingService,
+];
 export default services;

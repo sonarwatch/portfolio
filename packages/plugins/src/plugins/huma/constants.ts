@@ -16,3 +16,4 @@ export const airdropStatics: AirdropStatics = {
   claimStart: 1748262600000,
   claimEnd: 1750946340000,
 };
+export const stakingProgramId = 'vsRJM68m7i18PwzTFphgPYXTujCgxEi28knpUwSmg3q';
