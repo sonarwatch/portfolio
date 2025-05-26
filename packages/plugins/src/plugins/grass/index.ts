@@ -6,5 +6,4 @@ import { s1AirdropFetcher, s1Fetcher } from './airdropFetcher';
 
 export const jobs: Job[] = [];
 export const fetchers: Fetcher[] = [stakingFetcher, s1Fetcher];
-
 export const airdropFetchers: AirdropFetcher[] = [s1AirdropFetcher];
