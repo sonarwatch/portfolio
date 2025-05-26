@@ -13,7 +13,7 @@ import { Collection } from './types';
 const executor: JobExecutor = async (cache: Cache) => {
   const res = await axios
     .get<Collection[]>(collectionsApiUrl, {
-      timeout: 5000,
+      timeout: 30000,
     })
     .catch((err) => {
       throw Error(`CITRUS_API ERR: ${err}`);

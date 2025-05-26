@@ -73,10 +73,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       claim,
       merkle?.unlockPeriod?.toString()
     );
+
     if (claimable.gt(0)) {
       element.addAsset({
         address: merkle.mint,
-        amount: claim.unlockedAmount.minus(claim.lockedAmountWithdrawn),
+        amount: claimable,
         attributes: { isClaimable: true },
       });
     }
