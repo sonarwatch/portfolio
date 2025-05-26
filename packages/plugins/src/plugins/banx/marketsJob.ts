@@ -16,7 +16,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   const resSpl = await axios.get<{ data: SplAssetMarket[] }>(
     banxApiMarketsUrl,
     {
-      timeout: 3000,
+      timeout: 30000,
     }
   );
 
@@ -28,7 +28,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   const resNft = await axios.get<{ data: Collection[] }>(
     banxApiCollectionsUrl,
     {
-      timeout: 10000,
+      timeout: 30000,
     }
   );
 

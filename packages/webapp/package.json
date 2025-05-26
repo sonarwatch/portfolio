@@ -15,9 +15,6 @@
     "docker:build": "docker build . -t portfolio:latest",
     "docker:run": "docker run --rm -it portfolio:latest"
   },
-  "peerDependencies": {
-   "@sonarwatch/portfolio-plugins": "0.14.186"
-  },
   "dependencies": {
     "dotenv": "^16.4.5",
     "fastify": "5.3.2",
