@@ -77,10 +77,21 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     });
 
     // Vesting not started yet
-    if (time < Number(vault.startVestingTs) * 1000) {
+    if (time < Number(vault.startVestingTs) * 1000 && escrow.refunded === 0) {
       element.addAsset({
         address: vault.quoteMint,
         amount: escrow.totalDeposit,
+      });
+    } else if (vault.startVestingTs === vault.endVestingTs) {
+      // Unlock immediately after endVesting
+      const shares = new BigNumber(escrow.totalDeposit).div(vault.totalDeposit);
+      const totalAmount = new BigNumber(vault.boughtToken).times(shares);
+      element.addAsset({
+        address: vault.baseMint,
+        amount: totalAmount,
+        attributes: {
+          lockedUntil: Number(vault.endVestingTs) * 1000,
+        },
       });
     } else {
       // Vesting started

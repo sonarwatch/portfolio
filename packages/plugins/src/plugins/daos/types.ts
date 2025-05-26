@@ -4,6 +4,8 @@ import BigNumber from 'bignumber.js';
 export type VSRInfos = {
   programId: PublicKey;
   mint: string;
+  platformId?: string;
+  link?: string;
 };
 
 export type HeliumNftVoterMetadata = {
@@ -29,6 +31,8 @@ export type RegistrarInfo = {
   pubkey: string;
   vsr: string;
   mint: string;
+  platformId?: string;
+  link?: string;
 };
 
 export type RealmData = {
