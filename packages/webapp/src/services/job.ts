@@ -1,6 +1,7 @@
-import { Cache, getCache, jobs } from '@sonarwatch/portfolio-plugins';
+import { Cache, jobs } from '@sonarwatch/portfolio-plugins';
 import { logger } from '../logger/logger';
 import { ScheduleJobRequest } from '../model/job';
+import portfolioCache from '../cache/cache';
 
 class JobRunner {
   private static instance: JobRunner;
@@ -17,7 +18,7 @@ class JobRunner {
     this.runningJobsCount = 0;
     this.jobsQueue = [];
     this.scheduledTasks = [];
-    this.cache = getCache();
+    this.cache = portfolioCache.getCache();
   }
 
   public static getInstance(): JobRunner {

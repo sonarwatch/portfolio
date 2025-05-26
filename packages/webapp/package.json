@@ -4,7 +4,7 @@
   "type": "commonjs",
   "description": "Backend service for Portfolio",
   "scripts": {
-    "start": "ts-node ./src/server.ts",
+    "start": "node -r ts-node/register --max-old-space-size=3049 ./src/server.ts",
     "dev": "nodemon --exec ts-node ./src/server.ts",
     "test": "test",
     "build": "tsc --noEmit",

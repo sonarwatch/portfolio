@@ -29,8 +29,10 @@ const start = async () => {
 
     const isJobRunner = process.env['PORTFOLIO_JOB_RUNNER'] === 'true';
     if (isJobRunner) {
-      logger.info('Running in worker mode.');
-      scheduleJobs(mainServer);
+      mainServer.addHook('onReady', () => {
+        logger.info('Running in worker mode.');
+        scheduleJobs(mainServer);
+      });
     } else {
       logger.info('Running in web-api mode.');
       initPortfolioRoutes(mainServer);

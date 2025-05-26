@@ -1,8 +1,7 @@
 import {
-  Cache,
   fetchersByAddressSystem,
-  getCache,
   runFetchersByNetworkId,
+  Cache
 } from '@sonarwatch/portfolio-plugins';
 import {
   Token,
@@ -10,6 +9,8 @@ import {
 } from '@sonarwatch/portfolio-plugins/src/plugins/tokens/types';
 import { TokenInfo } from '@sonarwatch/portfolio-core';
 import { tokenListsPrefix } from '@sonarwatch/portfolio-plugins/src/plugins/tokens/constants';
+import { logger } from '../logger/logger';
+import portfolioCache from '../cache/cache';
 
 class PortfolioService {
   private static instance: PortfolioService;
@@ -17,8 +18,9 @@ class PortfolioService {
   private readonly cache: Cache;
   private tokensMap?: Record<string, Token>;
 
+
   private constructor() {
-    this.cache = getCache();
+    this.cache = portfolioCache.getCache()
   }
 
   public static getInstance(): PortfolioService {
@@ -56,11 +58,17 @@ class PortfolioService {
     }
     const tokenInfoMap = addresses.reduce((acc, address: string) => {
       const token = this.tokensMap && this.tokensMap[address];
-      acc[address] = token && {
-        ...token,
-        networkId: 'solana',
-        extensions: undefined,
-      };
+
+      if (token) {
+        acc[address] = {
+          ...token,
+          networkId: 'solana',
+          extensions: undefined,
+        };
+      } else {
+        logger.warn(`Token meta not found for address. Address=${address}`);
+      }
+
       return acc;
     }, {} as Record<string, TokenInfo | undefined>);
     return { ...result, tokenInfo: { solana: tokenInfoMap } };
