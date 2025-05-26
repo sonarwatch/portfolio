@@ -13,6 +13,14 @@ import { scheduleJobs } from './schedulers/job';
 
 const start = async () => {
   try {
+    process.on('unhandledRejection', (reason, promise) => {
+      console.error('⚠️ Unhandled Rejection:', reason);
+    });
+
+    process.on('uncaughtException', (err) => {
+      console.error('🔥 Uncaught Exception:', err);
+    });
+
     const mainServer = Fastify({ logger: fastifyLogger });
     const metricsServer = Fastify({ logger: fastifyLogger });
 
