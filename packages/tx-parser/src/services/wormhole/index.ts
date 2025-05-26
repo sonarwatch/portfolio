@@ -1,5 +1,5 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import { ServiceDefinition } from '../../ServiceDefinition';
+import { ServiceDefinition, ServicePriority } from '../../ServiceDefinition';
 import { matchAnyInstructionWithPrograms } from '../../utils/parseTransaction/matchAnyInstructionWithPrograms';
 
 const platformId = 'wormhole';
@@ -16,9 +16,15 @@ const coreContract = {
   platformId,
 };
 
+const legacyStakingContract = {
+  name: 'Legacy Staking',
+  address: 'sspu65omPW2zJGWDxmx8btqxudHezoQHSGZmnW8jbVz',
+  platformId,
+};
+
 const stakingContract = {
   name: 'Staking',
-  address: 'sspu65omPW2zJGWDxmx8btqxudHezoQHSGZmnW8jbVz',
+  address: 'MGoV9M6YUsdhJzjzH9JMCW2tRe1LLxF1CjwqKC7DR1B',
   platformId,
 };
 
@@ -38,6 +44,15 @@ const tbtcBridgeContract = {
   name: 'tBTC Bridge',
   address: '87MEvHZCXE3ML5rrmh5uX1FbShHmRXXS32xJDGbQ7h5t',
   platformId,
+};
+
+const legacyStakingService: ServiceDefinition = {
+  id: `${platformId}-legacy-staking`,
+  name: 'Legacy Staking',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [legacyStakingContract],
+  priority: ServicePriority.low,
 };
 
 const stakingService: ServiceDefinition = {
@@ -82,6 +97,7 @@ const tbtcBridgeService: ServiceDefinition = {
 
 export const services: ServiceDefinition[] = [
   wormholeService,
+  legacyStakingService,
   stakingService,
   tokenBridgeService,
   tbtcBridgeService,
