@@ -88,12 +88,15 @@ async function getAirdropItemsPrices(
   networkId: NetworkIdType,
   cache: Cache
 ): Promise<UsdValue[]> {
-  const addresses: string[] = [];
-  const labels: string[] = [];
+  // Group addresses for prices, remove duplicates:
+  const addressesSet: Set<string> = new Set();
+  const labelsSet: Set<string> = new Set();
   airdrop.items.forEach((i) => {
-    if (i.address) addresses.push(i.address);
-    else labels.push(i.label);
+    if (i.address) addressesSet.add(i.address);
+    else labelsSet.add(i.label);
   });
+  const addresses = Array.from(addressesSet);
+  const labels = Array.from(labelsSet);
 
   const [tokenPricesMap, pricesMap] = await Promise.all([
     cache.getTokenPricesAsMap(addresses, networkId),
@@ -244,9 +247,16 @@ export async function runAirdropFetchers(
     );
 
   const result = await runInParallel(
-    fetchers.map((f) => () => runAirdropFetcher(fOwner, f, cache, useCache)),
+    fetchers.map((f) => async () => {
+      try {
+        return await runAirdropFetcher(fOwner, f, cache, useCache);
+      } catch (err) {
+        console.error(`[AirdropFetcher:${f.id}] Error:`, err);
+        throw err;
+      }
+    }),
     5
-  );
+ );
 
   const fReports: AirdropFetcherReport[] = [];
   const airdrops = result.flatMap((r, index) => {
