@@ -47,6 +47,8 @@ const executor: JobExecutor = async (cache: Cache) => {
         pubkey: registrar.pubkey.toString(),
         vsr: vsrInfo.programId.toString(),
         mint: vsrInfo.mint,
+        platformId: vsrInfo.platformId,
+        link: vsrInfo.link,
       })
     );
   }
