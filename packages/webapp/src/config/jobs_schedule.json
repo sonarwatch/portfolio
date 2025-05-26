@@ -195,6 +195,11 @@
     "tokenPrice": true,
     "ttl": "NOT_DEFINED"
   },
+  "jupiter-exchange-verified": {
+    "intervalMs": 1080000,
+    "tokenPrice": true,
+    "ttl": "NOT_DEFINED"
+  },
   "jupiter-exchange-pricing": {
     "intervalMs": 1080000,
     "tokenPrice": true,
