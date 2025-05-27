@@ -1,0 +1,619 @@
+{
+  "address": "CNDL7Y1SYqvSF34aXayqHjm2JZrHB7BfhhVi3TUan3fe",
+  "metadata": {
+    "name": "candle_staking",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "create_stake_pool",
+      "discriminator": [198, 175, 88, 63, 128, 43, 8, 214],
+      "accounts": [
+        { "name": "signer", "writable": true, "signer": true },
+        { "name": "lp_mint", "writable": true, "signer": true },
+        { "name": "staked_mint" },
+        {
+          "name": "staked_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [115, 116, 97, 107, 101, 45, 118, 97, 117, 108, 116]
+              }
+            ]
+          }
+        },
+        {
+          "name": "pending_staked_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112, 101, 110, 100, 105, 110, 103, 45, 115, 116, 97, 107, 101,
+                  45, 118, 97, 117, 108, 116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "stake_pool",
+          "docs": ["Initialize an account to store the pool state"],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [115, 116, 97, 107, 101, 45, 112, 111, 111, 108]
+              },
+              { "kind": "account", "path": "staked_mint" }
+            ]
+          }
+        },
+        { "name": "mint_metadata", "writable": true },
+        {
+          "name": "metadata_program",
+          "address": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
+                ]
+              }
+            ]
+          }
+        },
+        { "name": "program" }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": { "defined": { "name": "CreateStakePoolParameters" } }
+        }
+      ]
+    },
+    {
+      "name": "end_unstake",
+      "discriminator": [44, 65, 159, 108, 149, 89, 27, 203],
+      "accounts": [
+        { "name": "signer", "writable": true, "signer": true },
+        { "name": "staker_account", "writable": true },
+        { "name": "lp_mint", "writable": true },
+        { "name": "staked_mint" },
+        {
+          "name": "staker_lp_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "signer" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206,
+                  235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "stake_pool.lp_mint",
+                "account": "StakePool"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "stake_pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [115, 116, 97, 107, 101, 45, 112, 111, 111, 108]
+              },
+              { "kind": "account", "path": "staked_mint" }
+            ]
+          }
+        },
+        {
+          "name": "staked_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [115, 116, 97, 107, 101, 45, 118, 97, 117, 108, 116]
+              }
+            ]
+          }
+        },
+        {
+          "name": "pending_staked_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112, 101, 110, 100, 105, 110, 103, 45, 115, 116, 97, 107, 101,
+                  45, 118, 97, 117, 108, 116
+                ]
+              }
+            ]
+          }
+        },
+        { "name": "withdrawal", "writable": true },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "clock",
+          "address": "SysvarC1ock11111111111111111111111111111111"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [{ "name": "instant", "type": "bool" }]
+    },
+    {
+      "name": "stake",
+      "discriminator": [206, 176, 202, 18, 200, 209, 179, 108],
+      "accounts": [
+        { "name": "signer", "writable": true, "signer": true },
+        { "name": "depositor_account", "writable": true },
+        { "name": "staker_lp_account", "writable": true },
+        {
+          "name": "stake_pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [115, 116, 97, 107, 101, 45, 112, 111, 111, 108]
+              },
+              { "kind": "account", "path": "staked_mint" }
+            ]
+          }
+        },
+        {
+          "name": "staked_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [115, 116, 97, 107, 101, 45, 118, 97, 117, 108, 116]
+              }
+            ]
+          }
+        },
+        { "name": "lp_mint", "writable": true },
+        { "name": "staked_mint" },
+        {
+          "name": "clock",
+          "address": "SysvarC1ock11111111111111111111111111111111"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [{ "name": "amount", "type": "u64" }]
+    },
+    {
+      "name": "start_unstake",
+      "discriminator": [200, 243, 106, 111, 170, 72, 31, 117],
+      "accounts": [
+        { "name": "signer", "writable": true, "signer": true },
+        { "name": "staker_account", "writable": true },
+        { "name": "lp_mint", "writable": true },
+        { "name": "staked_mint" },
+        {
+          "name": "staker_lp_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "signer" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206,
+                  235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "stake_pool.lp_mint",
+                "account": "StakePool"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "stake_pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [115, 116, 97, 107, 101, 45, 112, 111, 111, 108]
+              },
+              { "kind": "account", "path": "staked_mint" }
+            ]
+          }
+        },
+        {
+          "name": "staked_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [115, 116, 97, 107, 101, 45, 118, 97, 117, 108, 116]
+              }
+            ]
+          }
+        },
+        {
+          "name": "pending_staked_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112, 101, 110, 100, 105, 110, 103, 45, 115, 116, 97, 107, 101,
+                  45, 118, 97, 117, 108, 116
+                ]
+              }
+            ]
+          }
+        },
+        { "name": "withdrawal", "writable": true, "signer": true },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "clock",
+          "address": "SysvarC1ock11111111111111111111111111111111"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        { "name": "amount", "type": "u64" },
+        { "name": "instant", "type": "bool" }
+      ]
+    },
+    {
+      "name": "update_stake_pool_timelock",
+      "discriminator": [89, 125, 210, 56, 156, 116, 88, 76],
+      "accounts": [
+        { "name": "signer", "writable": true, "signer": true },
+        { "name": "staked_mint" },
+        {
+          "name": "stake_pool",
+          "docs": ["Initialize an account to store the pool state"],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [115, 116, 97, 107, 101, 45, 112, 111, 111, 108]
+              },
+              { "kind": "account", "path": "staked_mint" }
+            ]
+          }
+        }
+      ],
+      "args": [{ "name": "withdrawal_timelock", "type": "i64" }]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "StakePool",
+      "discriminator": [121, 34, 206, 21, 79, 127, 255, 28]
+    },
+    {
+      "name": "Withdrawal",
+      "discriminator": [10, 45, 211, 182, 129, 235, 90, 82]
+    }
+  ],
+  "events": [
+    {
+      "name": "EvtCreateStakePool",
+      "discriminator": [225, 156, 179, 190, 133, 152, 42, 16]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidStakeAmount",
+      "msg": "The amount attempting to be staked is invalid"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidUnstakeAmountEmpty",
+      "msg": "Cannot unstake an amount less than 1"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidAdmin",
+      "msg": "This function requires an admin to call it"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidStakePoolMint",
+      "msg": "Invalid stake pool mint, the mint you are trying to stake does not match the pool"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidStakePoolLPMint",
+      "msg": "Invalid stake LP pool mint, the LP mint you are trying to use does not match the pool"
+    },
+    {
+      "code": 6005,
+      "name": "NotEnoughToStake",
+      "msg": "Trying to stake more than you have in your token account"
+    },
+    {
+      "code": 6006,
+      "name": "StakePoolMathError",
+      "msg": "Stake pool math error"
+    },
+    {
+      "code": 6007,
+      "name": "WithdrawalAlreadyBurned",
+      "msg": "Withdrawal was already processed"
+    },
+    {
+      "code": 6008,
+      "name": "InvalidPoolMintAuthority",
+      "msg": "Invalid pool mint authority"
+    },
+    {
+      "code": 6009,
+      "name": "InvalidDepositor",
+      "msg": "The signing depositor doesn't match either of the balance accounts"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidVault",
+      "msg": "The vault given does not match the vault expected."
+    },
+    {
+      "code": 6011,
+      "name": "InvalidVaultOwner",
+      "msg": "Invalid vault owner."
+    },
+    {
+      "code": 6012,
+      "name": "Unknown",
+      "msg": "An unknown error has occurred."
+    },
+    {
+      "code": 6013,
+      "name": "UnstakeTimelock",
+      "msg": "The unstake timelock has not yet expired."
+    },
+    {
+      "code": 6014,
+      "name": "InsufficientReward",
+      "msg": "Reward vendors must have at least one token unit per pool token"
+    },
+    {
+      "code": 6015,
+      "name": "InvalidExpiry",
+      "msg": "Reward expiry must be after the current clock timestamp."
+    },
+    {
+      "code": 6016,
+      "name": "VendorExpired",
+      "msg": "The reward vendor has been expired."
+    },
+    {
+      "code": 6017,
+      "name": "CursorAlreadyProcessed",
+      "msg": "This reward has already been processed."
+    },
+    {
+      "code": 6018,
+      "name": "NotStakedDuringDrop",
+      "msg": "The account was not staked at the time of this reward."
+    },
+    {
+      "code": 6019,
+      "name": "VendorNotYetExpired",
+      "msg": "The vendor is not yet eligible for expiry."
+    },
+    {
+      "code": 6020,
+      "name": "RewardsNeedsProcessing",
+      "msg": "Please collect your reward before otherwise using the program."
+    },
+    {
+      "code": 6021,
+      "name": "ExpectedLockedVendor",
+      "msg": "Locked reward vendor expected but an unlocked vendor was given."
+    },
+    {
+      "code": 6022,
+      "name": "ExpectedUnlockedVendor",
+      "msg": "Unlocked reward vendor expected but a locked vendor was given."
+    },
+    {
+      "code": 6023,
+      "name": "InvalidVestingSigner",
+      "msg": "Locked deposit from an invalid deposit authority."
+    },
+    {
+      "code": 6024,
+      "name": "UnrealizedReward",
+      "msg": "Locked rewards cannot be realized until one unstaked all tokens."
+    },
+    {
+      "code": 6025,
+      "name": "InvalidBeneficiary",
+      "msg": "The beneficiary doesn't match."
+    },
+    {
+      "code": 6026,
+      "name": "InvalidRealizorMetadata",
+      "msg": "The given member account does not match the realizor metadata."
+    },
+    {
+      "code": 6027,
+      "name": "InvalidVestingSchedule",
+      "msg": "Invalid vesting schedule for the locked reward."
+    },
+    {
+      "code": 6028,
+      "name": "InvalidProgramAuthority",
+      "msg": "Please specify the correct authority for this program."
+    }
+  ],
+  "types": [
+    {
+      "name": "CreateStakePoolParameters",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "name", "type": "string" },
+          { "name": "symbol", "type": "string" },
+          { "name": "uri", "type": "string" },
+          { "name": "withdrawal_timelock", "type": "i64" }
+        ]
+      }
+    },
+    {
+      "name": "EvtCreateStakePool",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "stake_pool", "type": "pubkey" },
+          { "name": "stake_mint", "type": "pubkey" },
+          { "name": "lp_mint", "type": "pubkey" },
+          { "name": "withdrawal_timelock", "type": "i64" }
+        ]
+      }
+    },
+    {
+      "name": "StakePool",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "withdrawal_timelock",
+            "docs": [
+              "Number of seconds that must pass for a withdrawal to complete."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "mint",
+            "docs": ["Mint of the tokens that can be staked."],
+            "type": "pubkey"
+          },
+          {
+            "name": "lp_mint",
+            "docs": ["Staking pool token mint."],
+            "type": "pubkey"
+          },
+          { "name": "total_staked_amount", "type": "u64" },
+          { "name": "liquid_staked_amount", "type": "u64" },
+          { "name": "pending_staked_amount", "type": "u64" },
+          { "name": "penalty_staked_amount", "type": "u64" },
+          { "name": "lp_amount", "type": "u64" },
+          { "name": "bump", "docs": ["Bump"], "type": "u8" }
+        ]
+      }
+    },
+    {
+      "name": "Withdrawal",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "stake_pool",
+            "docs": ["Stake Pool this account belongs to."],
+            "type": "pubkey"
+          },
+          {
+            "name": "receiver",
+            "docs": ["Account that is to receive the withdrawal"],
+            "type": "pubkey"
+          },
+          {
+            "name": "burned",
+            "docs": [
+              "One time token. True if the withdrawal has been completed."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "start_ts",
+            "docs": ["Unix timestamp when this account was initialized."],
+            "type": "i64"
+          },
+          {
+            "name": "end_ts",
+            "docs": ["Timestamp when the pending withdrawal completes."],
+            "type": "i64"
+          },
+          {
+            "name": "claim_ts",
+            "docs": ["Timestamp when withdrawal has been claimed."],
+            "type": "i64"
+          },
+          {
+            "name": "amount",
+            "docs": ["The number of tokens redeemed from the staking pool."],
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ]
+}

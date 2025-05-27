@@ -179,6 +179,7 @@ import * as pumpfun from './plugins/pumpfun';
 import * as helium from './plugins/helium';
 import * as carrot from './plugins/carrot';
 import * as glow from './plugins/glow';
+import * as candle from './plugins/candle';
 
 import { solanaSimpleFetcher } from './plugins/tokens';
 
@@ -371,6 +372,7 @@ const modules = [
   helium,
   carrot,
   glow,
+  candle,
 ];
 
 // JOBS //
