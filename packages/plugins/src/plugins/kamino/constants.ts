@@ -1,10 +1,14 @@
 import { PublicKey } from '@solana/web3.js';
-import { solanaNativeWrappedAddress } from '@sonarwatch/portfolio-core';
-import { LendingMarketConfig } from './types';
+import {
+  NetworkId,
+  solanaNativeWrappedAddress,
+} from '@sonarwatch/portfolio-core';
+import { LendingMarketConfig, ReserveDataEnhanced } from './types';
 import { AirdropStatics } from '../../AirdropFetcher';
 import { mSOLMint } from '../marinade/constants';
 import { usdcSolanaMint } from '../../utils/solana';
 import { jitoSOLMint } from '../jito/constants';
+import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 
 export const platformId = 'kamino';
 export const kmnoMint = 'KMNo3nJsBXfcpJTVhZcXLW7RmTwTt4GVFE7suUBo9sS';
@@ -22,6 +26,12 @@ export const klendProgramId = new PublicKey(
 );
 export const farmProgramId = new PublicKey(
   'FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr'
+);
+export const limitOrderProgramId = new PublicKey(
+  'LiMoM9rMhrdYrfzUCxQppvxCSG1FcrUK9G8uLq4A1GF'
+);
+export const vaultProgramId = new PublicKey(
+  'KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd'
 );
 export const farmsKey = 'farms';
 export const elevationGroupsKey = 'elevatorGroups';
@@ -242,6 +252,9 @@ export const airdropStaticsS2: AirdropStatics = {
   name: 'S2',
 };
 
-export const limitOrderProgramId = new PublicKey(
-  'LiMoM9rMhrdYrfzUCxQppvxCSG1FcrUK9G8uLq4A1GF'
-);
+export const reservesMemo = new MemoizedCache<
+  Record<string, ReserveDataEnhanced>
+>(reservesKey, {
+  prefix: platformId,
+  networkId: NetworkId.solana,
+});

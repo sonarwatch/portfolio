@@ -8,14 +8,13 @@ import {
   elevationGroupsKey,
   lendingConfigs,
   marketsKey,
-  reservesKey,
   platformId,
+  reservesMemo,
 } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { Cache } from '../../Cache';
 import { getClientSolana } from '../../utils/clients';
 import { ElevationGroup, obligationStruct } from './structs/klend';
-import { ReserveDataEnhanced } from './types';
 import { getParsedMultipleAccountsInfo } from '../../utils/solana';
 import {
   getLendingPda,
@@ -44,14 +43,6 @@ const elevationGroupsAccountsMemo = new MemoizedCache<
     networkId: NetworkId.solana,
   },
   (arr) => arrayToMap<ElevationGroup, number>(arr || [], 'id')
-);
-
-const reservesMemo = new MemoizedCache<Record<string, ReserveDataEnhanced>>(
-  reservesKey,
-  {
-    prefix: platformId,
-    networkId: NetworkId.solana,
-  }
 );
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {

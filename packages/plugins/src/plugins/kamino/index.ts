@@ -12,8 +12,15 @@ import {
   fetcher as s1Fetcher,
 } from './s1AirdropFetcher';
 import ordersFetcher from './ordersFetcher';
+import vaultsJob from './vaultsJob';
 
-export const jobs: Job[] = [poolsJob, reservesJob, farmsJob, marketsJob];
+export const jobs: Job[] = [
+  poolsJob,
+  reservesJob,
+  farmsJob,
+  marketsJob,
+  vaultsJob,
+];
 export const fetchers: Fetcher[] = [
   lendsFetcher,
   farmsFetcher,
