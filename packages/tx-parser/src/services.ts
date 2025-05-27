@@ -308,8 +308,8 @@ export const services: ServiceDefinition[] = [
   .flat();
 
 export const sortedServiceDefinitions = services.sort((a, b) => {
-  const prioA = a.priority || ServicePriority.default;
-  const prioB = b.priority || ServicePriority.default;
+  const prioA = a.priority === undefined ? ServicePriority.default : a.priority;
+  const prioB = b.priority === undefined ? ServicePriority.default : b.priority;
 
   const countContractsB = b.contracts?.length || 0;
   const countContractsA = a.contracts?.length || 0;
@@ -325,7 +325,7 @@ export const sortedServiceDefinitions = services.sort((a, b) => {
   if (a.matchTransaction && b.matchTransaction) {
     // sort by priority first
     if (prioA !== prioB) {
-      return prioA - prioB;
+      return prioB - prioA;
     }
     // then by number of contracts
     return countContractsB - countContractsA;

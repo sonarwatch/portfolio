@@ -38,13 +38,6 @@ const executor: JobExecutor = async (cache: Cache) => {
   const tokenYields: TokenYield[] = [];
 
   accounts.forEach((account) => {
-    /* if (
-      account.sharesMint.toString() !==
-      'BDh5h1uqhdL3pdCcTB1AEc2dyRsorDx9fF8Y72H1XZu8'
-    )
-      return; */
-    console.log(account.pubkey.toString(), account.vaultFarm.toString());
-
     const tokenMintPrice = tokenPrices.get(account.tokenMint.toString());
     if (!tokenMintPrice) return;
 
@@ -132,8 +125,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   await cache.setTokenPriceSources(tokenPriceSources);
   await cache.setTokenYields(tokenYields);
-
-  // TODO farm
 };
 
 const job: Job = {

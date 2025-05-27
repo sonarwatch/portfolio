@@ -1,6 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
 import { VSRInfos } from './types';
-import { platformId as humaPlatformId } from '../huma/constants';
 
 export const platformId = 'realms';
 
@@ -24,12 +23,6 @@ export const realmsCustomVsrInfo: VSRInfos[] = [
   {
     programId: new PublicKey('5sWzuuYkeWLBdAv3ULrBfqA51zF7Y4rnVzereboNDCPn'), // Xandeum L1
     mint: '2j437Lt84XvysJiYbXTSJfAMy26Et9HiVGFvGFp8nYWH',
-  },
-  {
-    programId: new PublicKey('vsRJM68m7i18PwzTFphgPYXTujCgxEi28knpUwSmg3q'), // Huma
-    mint: 'HUMA1821qVDKta3u2ovmfDQeW2fSQouSKE8fkF44wvGw',
-    platformId: humaPlatformId,
-    link: 'https://app.huma.finance/HUMA',
   },
 ];
 
