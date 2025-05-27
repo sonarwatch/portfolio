@@ -575,3 +575,118 @@ export const farmStateStruct = new BeetStruct<FarmState>(
   ],
   (args) => args as FarmState
 );
+
+export type VaultAllocation = {
+  reserve: PublicKey;
+  ctokenVault: PublicKey;
+  targetAllocationWeight: BigNumber;
+  tokenAllocationCap: BigNumber;
+  ctokenVaultBump: BigNumber;
+  configPadding: BigNumber[];
+  ctokenAllocation: BigNumber;
+  lastInvestSlot: BigNumber;
+  tokenTargetAllocationSf: BigNumber;
+  statePadding: BigNumber[];
+};
+
+export const vaultAllocationStruct = new BeetStruct<VaultAllocation>(
+  [
+    ['reserve', publicKey],
+    ['ctokenVault', publicKey],
+    ['targetAllocationWeight', u64],
+    ['tokenAllocationCap', u64],
+    ['ctokenVaultBump', u64],
+    ['configPadding', uniformFixedSizeArray(u64, 127)],
+    ['ctokenAllocation', u64],
+    ['lastInvestSlot', u64],
+    ['tokenTargetAllocationSf', u128],
+    ['statePadding', uniformFixedSizeArray(u64, 128)],
+  ],
+  (args) => args as VaultAllocation
+);
+
+export type VaultState = {
+  accountDiscriminator: number[];
+  vaultAdminAuthority: PublicKey;
+  baseVaultAuthority: PublicKey;
+  baseVaultAuthorityBump: BigNumber;
+  tokenMint: PublicKey;
+  tokenMintDecimals: BigNumber;
+  tokenVault: PublicKey;
+  tokenProgram: PublicKey;
+  sharesMint: PublicKey;
+  sharesMintDecimals: BigNumber;
+  tokenAvailable: BigNumber;
+  sharesIssued: BigNumber;
+  availableCrankFunds: BigNumber;
+  padding0: BigNumber;
+  performanceFeeBps: BigNumber;
+  managementFeeBps: BigNumber;
+  lastFeeChargeTimestamp: BigNumber;
+  prevAumSf: BigNumber;
+  pendingFeesSf: BigNumber;
+  vaultAllocationStrategy: VaultAllocation[];
+  padding1: BigNumber[];
+  minDepositAmount: BigNumber;
+  minWithdrawAmount: BigNumber;
+  minInvestAmount: BigNumber;
+  minInvestDelaySlots: BigNumber;
+  crankFundFeePerReserve: BigNumber;
+  pendingAdmin: PublicKey;
+  cumulativeEarnedInterestSf: BigNumber;
+  cumulativeMgmtFeesSf: BigNumber;
+  cumulativePerfFeesSf: BigNumber;
+  name: number[];
+  vaultLookupTable: PublicKey;
+  vaultFarm: PublicKey;
+  creationTimestamp: BigNumber;
+  padding2: BigNumber;
+  allocationAdmin: PublicKey;
+  padding3: BigNumber[];
+};
+
+export const vaultStateStruct = new BeetStruct<VaultState>(
+  [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+    ['vaultAdminAuthority', publicKey],
+    ['baseVaultAuthority', publicKey],
+    ['baseVaultAuthorityBump', u64],
+    ['tokenMint', publicKey],
+    ['tokenMintDecimals', u64],
+    ['tokenVault', publicKey],
+    ['tokenProgram', publicKey],
+    ['sharesMint', publicKey],
+    ['sharesMintDecimals', u64],
+    ['tokenAvailable', u64],
+    ['sharesIssued', u64],
+    ['availableCrankFunds', u64],
+    ['padding0', u64],
+    ['performanceFeeBps', u64],
+    ['managementFeeBps', u64],
+    ['lastFeeChargeTimestamp', u64],
+    ['prevAumSf', u128],
+    ['pendingFeesSf', u128],
+    [
+      'vaultAllocationStrategy',
+      uniformFixedSizeArray(vaultAllocationStruct, 25),
+    ],
+    ['padding1', uniformFixedSizeArray(u128, 256)],
+    ['minDepositAmount', u64],
+    ['minWithdrawAmount', u64],
+    ['minInvestAmount', u64],
+    ['minInvestDelaySlots', u64],
+    ['crankFundFeePerReserve', u64],
+    ['pendingAdmin', publicKey],
+    ['cumulativeEarnedInterestSf', u128],
+    ['cumulativeMgmtFeesSf', u128],
+    ['cumulativePerfFeesSf', u128],
+    ['name', uniformFixedSizeArray(u8, 40)],
+    ['vaultLookupTable', publicKey],
+    ['vaultFarm', publicKey],
+    ['creationTimestamp', u64],
+    ['padding2', u64],
+    ['allocationAdmin', publicKey],
+    ['padding3', uniformFixedSizeArray(u128, 242)],
+  ],
+  (args) => args as VaultState
+);
