@@ -36,42 +36,42 @@ const twoWayPegContract = {
 
 
 const bootstrapperService: ServiceDefinition = {
-  id: `${platformId}-delegator`,
+  id: `${platformId}-bootstrapper`,
   name: 'Bootstrapper',
   platformId,
   networkId: NetworkId.solana,
   contracts: [bootstrapperContract],
 };
 const bitcoinSPVService: ServiceDefinition = {
-  id: `${platformId}-delegator`,
+  id: `${platformId}-bitcoin-spv`,
   name: 'BitcoinSPV',
   platformId,
   networkId: NetworkId.solana,
   contracts: [bitcoinSPVContract],
 };
 const layerCAService: ServiceDefinition = {
-  id: `${platformId}-delegator`,
+  id: `${platformId}-layer-ca`,
   name: 'LayerCA',
   platformId,
   networkId: NetworkId.solana,
   contracts: [layerCAContract],
 };
 const stakingService: ServiceDefinition = {
-  id: `${platformId}-delegator`,
+  id: `${platformId}-staking`,
   name: 'Staking',
   platformId,
   networkId: NetworkId.solana,
   contracts: [delegatorContract],
 };
 const liquidityManagementService: ServiceDefinition = {
-  id: `${platformId}-delegator`,
+  id: `${platformId}-liquidity-management`,
   name: 'LiquidityManagement',
   platformId,
   networkId: NetworkId.solana,
   contracts: [liquidityManagementContract],
 };
 const twoWayPegService: ServiceDefinition = {
-  id: `${platformId}-delegator`,
+  id: `${platformId}-two-way-peg`,
   name: 'TwoWayPeg',
   platformId,
   networkId: NetworkId.solana,
