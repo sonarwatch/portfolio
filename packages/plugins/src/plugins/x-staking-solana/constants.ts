@@ -7,7 +7,6 @@ import {
   xAuryMint,
 } from '../aurory/constants';
 import { platformId as allbridgePlatformId } from '../allbridge/constants';
-import { platformId as sanctumPlatformId } from '../sanctum/constants';
 
 export const xStakingConfigs: StakingConfig[] = [
   {
@@ -64,8 +63,9 @@ export const xStakingConfigs: StakingConfig[] = [
     vault: '5jbzpJeGZFpPFrwXAdeWn25UJiParK8rayQYJY3r14cv',
     xMint: 'sc1dNAxRBj5CNWaGC26AR7PEW75R36Umzt1V8vuP8kZ',
     xDecimals: 9,
-    platformId: sanctumPlatformId,
-    label: 'Staked',
+    // Had to remove because mobile app have a price for sCLOUD so it's double counting
+    // platformId: sanctumPlatformId,
+    // label: 'Staked',
   },
   {
     mint: 'A8bcY1eSenMiMy75vgSnp6ShMfWHRHjeM6JxfM1CNDL',
