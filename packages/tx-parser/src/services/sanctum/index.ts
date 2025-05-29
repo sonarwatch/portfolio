@@ -32,6 +32,12 @@ const routerContract = {
   platformId,
 };
 
+const asrContract = {
+  name: 'ASR',
+  address: '9R2CZDyVjBBK2bxx6NfKdnYMYfh8TQEphUUgZ4861XqJ',
+  platformId,
+};
+
 const voteService: ServiceDefinition = {
   id: `${platformId}-vote`,
   name: 'Vote',
@@ -73,11 +79,20 @@ const tradeService: ServiceDefinition = {
   contracts: [infContract],
 };
 
+const asrService: ServiceDefinition = {
+  id: `${platformId}-asr`,
+  name: 'ASR',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [asrContract],
+};
+
 export const services: ServiceDefinition[] = [
   voteService,
   stakingService,
   poolService,
   routerService,
   tradeService,
+  asrService,
 ];
 export default services;
