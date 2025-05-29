@@ -40,9 +40,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     address: jupMint,
     amount: escrowAccount.amount,
     attributes: {
-      lockedUntil: escrowAccount.escrowStartedAt.isZero()
-        ? undefined
-        : escrowAccount.escrowEndsAt.times(1000).toNumber(),
+      lockedUntil: -1,
     },
     ref: escrowAccount.pubkey.toString(),
   });
