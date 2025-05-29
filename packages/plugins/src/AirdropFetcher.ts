@@ -27,6 +27,7 @@ import {
   compareName,
   formatTokenAddress,
   promiseTimeout,
+  Claim,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from './Cache';
 import { Fetcher } from './Fetcher';
@@ -160,8 +161,10 @@ function enhanceAirdropItem(
     status: getAirdropItemStatus(
       airdropStatus,
       airdropItem.amount,
-      airdropItem.isClaimed
+      airdropItem.isClaimed,
+      airdropItem.claims
     ),
+    claims: airdropItem.claims,
     value: price ? price * airdropItem.amount : null,
     owner,
   };
@@ -188,7 +191,7 @@ export async function runAirdropFetchersByNetworkId(
 
 export type AirdropStatics = Omit<AirdropRaw, 'status' | 'items'>;
 
-export function getAirdropRaw(params: {
+export type AirdropRawParams = {
   statics: AirdropStatics;
   items: {
     amount: number;
@@ -196,8 +199,12 @@ export function getAirdropRaw(params: {
     imageUri?: string;
     address?: string;
     isClaimed: IsClaimed;
+    claims?: Claim[];
+    ref?: string;
   }[];
-}): AirdropRaw {
+};
+
+export function getAirdropRaw(params: AirdropRawParams): AirdropRaw {
   return {
     ...params.statics,
     items: getAirdropItems(params.items),
@@ -211,6 +218,8 @@ function getAirdropItems(
     imageUri?: string;
     address?: string;
     isClaimed: IsClaimed;
+    claims?: Claim[];
+    ref?: string;
   }[]
 ): AirdropItemRaw[] {
   return items.map((item) => {
@@ -222,6 +231,8 @@ function getAirdropItems(
       label: item.label,
       address: item.address,
       imageUri: item.imageUri,
+      claims: item.claims,
+      ref: item.ref,
     };
   });
 }
@@ -381,24 +392,32 @@ export function airdropFetcherToFetcher(
       airdrop.items.forEach((item) => {
         if (
           item.status !== AirdropItemStatus.claimable &&
-          item.status !== AirdropItemStatus.claimableLater
+          item.status !== AirdropItemStatus.claimableLater &&
+          item.status !== AirdropItemStatus.partiallyClaimed
         )
           return;
 
+        const amountLeftToClaim = item.claims
+          ? item.claims.reduce((acc, c) => acc - c.amount, item.amount)
+          : item.amount;
+
         const asset: PortfolioAssetGeneric | PortfolioAssetToken = item.address
-          ? tokenPriceToAssetToken(
-              item.address,
-              item.amount,
-              airdropFetcher.networkId,
-              undefined,
-              item.price || undefined,
-              { isClaimable: true, lockedUntil: airdrop.claimStart },
-              airdrop.claimLink
-            )
+          ? {
+              ...tokenPriceToAssetToken(
+                item.address,
+                amountLeftToClaim,
+                airdropFetcher.networkId,
+                undefined,
+                item.price || undefined,
+                { isClaimable: true, lockedUntil: airdrop.claimStart },
+                airdrop.claimLink
+              ),
+              ref: item.ref,
+            }
           : {
               type: PortfolioAssetType.generic,
               data: {
-                amount: item.amount,
+                amount: amountLeftToClaim,
                 price: item.price,
               },
               name: item.label,
@@ -410,6 +429,7 @@ export function airdropFetcherToFetcher(
               value: item.value,
               imageUri: item.imageUri,
               link: airdrop.claimLink,
+              ref: item.ref,
             };
         assets.push(asset);
       });
