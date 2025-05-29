@@ -618,5 +618,16 @@
     "intervalMs": 10800000,
     "poolInfos": true,
     "ttl": "NOT_DEFINED"
+  },
+  "save-savesol-price": {
+    "intervalMs": 10800000,
+    "tokenPrice": true,
+    "ttl": "NOT_DEFINED"
+  },
+  "kamino-vaults": {
+    "intervalMs": 10800000,
+    "tokenPrice": true,
+    "yields": true,
+    "ttl": "NOT_DEFINED"
   }
 }
