@@ -50,10 +50,11 @@ const executor: JobExecutor = async (cache: Cache) => {
       decimals: config.xDecimals,
       id: config.vault,
       networkId: NetworkId.solana,
-      platformId: walletTokensPlatformId,
+      platformId: config.platformId ?? walletTokensPlatformId,
       price: xPrice.toNumber(),
       timestamp: Date.now(),
       weight: 1,
+      label: config.label,
     });
   }
 };

@@ -60,8 +60,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   splGovAccounts.forEach((account) => mintsSet.add(account.mint.toString()));
 
-  const registry = new ElementRegistry(NetworkId.solana, platformId);
-  const depositElement = registry.addElementMultiple({
+  const realmsRegistry = new ElementRegistry(NetworkId.solana, platformId);
+  const depositElement = realmsRegistry.addElementMultiple({
     label: 'Deposit',
     link: 'https://app.realms.today/realms',
   });
@@ -73,6 +73,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       ref: voteAccount.pubkey.toString(),
     });
   }
+
+  const registries: ElementRegistry[] = [];
 
   for (const voterAccount of voterAccounts) {
     if (!voterAccount) continue;
@@ -88,20 +90,46 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
           deposit.lockup.kind
         );
 
-        depositElement.addAsset({
-          address: mint,
-          amount: deposit.amountDepositedNative,
-          ref: voterAccount.pubkey.toString(),
-          attributes: {
-            lockedUntil,
-          },
-          sourceRefs: [{ name: 'Vault', address: registrar.pubkey }],
-        });
+        if (registrar.platformId) {
+          const platformRegistry = new ElementRegistry(
+            NetworkId.solana,
+            registrar.platformId
+          );
+          const platformDeposit = platformRegistry.addElementMultiple({
+            label: 'Deposit',
+            link: registrar.link,
+          });
+
+          platformDeposit.addAsset({
+            address: mint,
+            amount: deposit.amountDepositedNative,
+            ref: voterAccount.pubkey.toString(),
+            attributes: {
+              lockedUntil,
+            },
+            sourceRefs: [{ name: 'Vault', address: registrar.pubkey }],
+          });
+          registries.push(platformRegistry);
+        } else {
+          depositElement.addAsset({
+            address: mint,
+            amount: deposit.amountDepositedNative,
+            ref: voterAccount.pubkey.toString(),
+            attributes: {
+              lockedUntil,
+            },
+            sourceRefs: [{ name: 'Vault', address: registrar.pubkey }],
+          });
+        }
       }
     }
   }
+  const elements = await Promise.all([
+    ...registries.flatMap((registry) => registry.getElements(cache)),
+    realmsRegistry.getElements(cache),
+  ]);
 
-  return registry.getElements(cache);
+  return elements.flat();
 };
 
 const fetcher: Fetcher = {

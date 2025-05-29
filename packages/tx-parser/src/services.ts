@@ -17,6 +17,7 @@ import * as bonkrewards from './services/bonkrewards';
 import * as boop from './services/boop';
 import * as bouncebit from './services/bouncebit';
 import * as bskt from './services/bskt';
+import * as candle from './services/candle';
 import * as carrot from './services/carrot';
 import * as circle from './services/circle';
 import * as citrus from './services/citrus';
@@ -171,6 +172,7 @@ export const services: ServiceDefinition[] = [
   boop,
   bouncebit,
   bskt,
+  candle,
   carrot,
   circle,
   citrus,
@@ -308,8 +310,8 @@ export const services: ServiceDefinition[] = [
   .flat();
 
 export const sortedServiceDefinitions = services.sort((a, b) => {
-  const prioA = a.priority || ServicePriority.default;
-  const prioB = b.priority || ServicePriority.default;
+  const prioA = a.priority === undefined ? ServicePriority.default : a.priority;
+  const prioB = b.priority === undefined ? ServicePriority.default : b.priority;
 
   const countContractsB = b.contracts?.length || 0;
   const countContractsA = a.contracts?.length || 0;
@@ -325,7 +327,7 @@ export const sortedServiceDefinitions = services.sort((a, b) => {
   if (a.matchTransaction && b.matchTransaction) {
     // sort by priority first
     if (prioA !== prioB) {
-      return prioA - prioB;
+      return prioB - prioA;
     }
     // then by number of contracts
     return countContractsB - countContractsA;

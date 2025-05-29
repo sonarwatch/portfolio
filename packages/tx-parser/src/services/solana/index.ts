@@ -24,6 +24,12 @@ const solanaStakingContract = {
   platformId,
 };
 
+const addressLookupTableContract = {
+  name: 'Address Lookup Table',
+  address: 'AddressLookupTab1e1111111111111111111111111',
+  platformId,
+};
+
 export const solanaAssociatedTokenContract = {
   name: 'Associated Token Account',
   address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
@@ -78,8 +84,8 @@ const closeAccountService: ServiceDefinition = {
 };
 
 const createAccountService: ServiceDefinition = {
-  id: `${platformId}-create`,
-  name: 'Create Token Account',
+  id: `${platformId}-token-account`,
+  name: 'Token Account',
   platformId,
   networkId: NetworkId.solana,
   priority: ServicePriority.low,
@@ -92,6 +98,22 @@ const createAccountService: ServiceDefinition = {
         solanaAssociatedTokenContract.address &&
       isParsedInstruction(instructions[0]) &&
       instructions[0].parsed.type === 'create'
+    );
+  },
+};
+
+const addressLookupTableService: ServiceDefinition = {
+  id: `${platformId}-address-lookup-table`,
+  name: 'Address Lookup Table',
+  platformId,
+  networkId: NetworkId.solana,
+  priority: ServicePriority.low,
+  matchTransaction: (txn: ParsedTransactionWithMeta) => {
+    const instructions = getRelevantInstructions(txn);
+    return (
+      instructions.length === 1 &&
+      instructions[0].programId.toString() ===
+        addressLookupTableContract.address
     );
   },
 };
@@ -163,6 +185,7 @@ export const services: ServiceDefinition[] = [
   stakePoolService,
   createAccountService,
   closeAccountService,
+  addressLookupTableService,
   transferService,
   burnService,
 ];
