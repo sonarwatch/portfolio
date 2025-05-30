@@ -2,6 +2,7 @@ import {
   Cache,
   fetchersByAddressSystem,
   runFetchersByNetworkId,
+  runFetcher
 } from '@sonarwatch/portfolio-plugins';
 import { NetworkId, NetworkIdType } from '@sonarwatch/portfolio-core';
 import { logger } from '../logger/logger';
@@ -61,6 +62,18 @@ class PortfolioService {
     }, {} as Record<string, Token>);
     return { ...result, tokenInfo: { solana: tokenInfoMap } };
   };
+
+  public getDefiPortfolio = async (address: string, fetcherId: string) => {
+    const fetchers = fetchersByAddressSystem['solana'];
+    const fetcher = fetchers.find(f => f.id === fetcherId);
+
+    if (!fetcher) {
+      throw new Error(`Fetcher not found. Id=${fetcherId}`);
+    }
+
+    return await runFetcher(address, fetcher, this.cache);
+  };
+
 }
 
 export default PortfolioService.getInstance();

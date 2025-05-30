@@ -49,6 +49,36 @@ export function getRpcEndpoints(): Record<NetworkIdType, RpcEndpoint> {
   ) as Record<NetworkIdType, RpcEndpoint>;
 }
 
+const endpointIndices: Partial<Record<NetworkIdType, number>> = {};
+const fallBackEndpointIndices: Partial<Record<NetworkIdType, number>> = {};
+
 export function getRpcEndpoint(networkId: NetworkIdType): RpcEndpoint {
-  return getRpcEndpoints()[networkId];
+  const useFallback = Math.random() < 0.2 && !!process.env['PORTFOLIO_SOLANA_FALLBACK_RPC'];
+
+  let endpoint;
+  let indices;
+  if (useFallback) {
+    endpoint = { url: process.env['PORTFOLIO_SOLANA_FALLBACK_RPC']! };
+    indices = fallBackEndpointIndices;
+  } else {
+    endpoint = getRpcEndpoints()[networkId];
+    indices = endpointIndices;
+  }
+
+  if (!endpoint.url.includes(',')) {
+    return endpoint;
+  }
+
+  if (indices[networkId] === undefined) {
+    indices[networkId] = 0;
+  }
+
+  const index = indices[networkId]!;
+  const endpoints = endpoint.url.split(',');
+  const selectedUrl = endpoints[index];
+  indices[networkId] = (index + 1) % endpoints.length;
+
+  return {
+    url: selectedUrl,
+  };
 }

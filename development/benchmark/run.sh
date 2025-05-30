@@ -124,7 +124,7 @@ export default function () {
 
   const url = \`\${baseUrl}/api/v1/addresses/\${address}/portfolio?noCache=\${noCache}\`;
 
-  http.get(url);
+  http.get(url, { timeout: '65s' });
   sleep(1);
 }
 EOF

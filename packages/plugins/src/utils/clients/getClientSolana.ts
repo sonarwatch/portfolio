@@ -8,6 +8,12 @@ export type SolanaClientParams = {
   commitment?: Commitment;
 };
 
+const reqs: Record<string, Record<string, number>> = {
+  all: {
+    total: 0,
+  },
+};
+
 export default function getClientSolana(
   params?: SolanaClientParams
 ): SolanaClient {
@@ -21,16 +27,29 @@ export default function getClientSolana(
 
   let fetchMiddleware: FetchMiddleware | undefined;
   if (process.env['PORTFOLIO_RPC_LOGS'] === 'true') {
-    const reqs: Record<string, number> = {
-      total: 0,
-    };
     fetchMiddleware = (info, init, fetch) => {
       const { method } = JSON.parse(init?.body?.toString() || '{}');
-      if (typeof method !== 'string') return;
-      if (!reqs[method]) reqs[method] = 0;
-      reqs[method] += 1;
-      reqs['total'] += 1;
-      if (reqs['total'] % 5 === 1) {
+      if (typeof method !== 'string') {
+        return;
+      }
+      if (!reqs['all'][method]) {
+        reqs['all'][method] = 0;
+      }
+      reqs['all'][method] += 1;
+      reqs['all']['total'] += 1;
+
+      if (typeof info === 'string') {
+        if (!reqs[info]) {
+          reqs[info] = { total: 0 };
+        }
+        if (!reqs[info][method]) {
+          reqs[info][method] = 0;
+        }
+        reqs[info][method] += 1;
+        reqs[info]['total'] += 1;
+      }
+
+      if (reqs['all']['total'] % 5 === 1) {
         // eslint-disable-next-line no-console
         console.log(`RPC Requests: ${JSON.stringify(reqs, undefined, 2)}`);
       }
