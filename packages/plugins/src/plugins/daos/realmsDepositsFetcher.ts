@@ -45,6 +45,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const hasValidVoter = tempVoterAccounts.some(Boolean);
 
   let splGovAccounts: ParsedAccount<Vote>[] = [];
+  // In a real-time portfolio context, we skip governance vote account fetching unless there are active voter accounts with deposits,
+  // since governance votes themselves do not impact portfolio value.
   if (hasValidVoter) {
     const getAccountSplGovPromises = splGovPrograms.map((program) =>
       getParsedProgramAccounts(
