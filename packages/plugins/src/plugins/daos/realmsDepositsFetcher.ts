@@ -6,9 +6,9 @@ import { platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import {
   getParsedMultipleAccountsInfo,
-  getParsedProgramAccounts,
+  getParsedProgramAccounts, ParsedAccount
 } from '../../utils/solana';
-import { voteStruct, voterStruct } from './structs/realms';
+import { voteStruct, voterStruct, Vote } from './structs/realms';
 import { voteFilters } from './filters';
 import { getLockedUntil, getVoterPda } from './helpers';
 import { RealmData, RegistrarInfo } from './types';
@@ -36,28 +36,30 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     registrarById.set(registrarInfo.pubkey, registrarInfo);
   });
 
-  const getAccountSplGovPromises = [];
-  if (splGovPrograms) {
-    for (const program of splGovPrograms) {
-      getAccountSplGovPromises.push(
-        getParsedProgramAccounts(
-          client,
-          voteStruct,
-          new PublicKey(program),
-          voteFilters(owner)
-        )
-      );
-    }
+  const tempVoterAccounts = await getParsedMultipleAccountsInfo(
+    client,
+    voterStruct,
+    voterAccountsPubKeys
+  );
+
+  const hasValidVoter = tempVoterAccounts.some(Boolean);
+
+  let splGovAccounts: ParsedAccount<Vote>[] = [];
+  if (hasValidVoter) {
+    const getAccountSplGovPromises = splGovPrograms.map((program) =>
+      getParsedProgramAccounts(
+        client,
+        voteStruct,
+        new PublicKey(program),
+        voteFilters(owner)
+      )
+    );
+    splGovAccounts = (await Promise.all(getAccountSplGovPromises)).flat();
   }
 
-  const [splGovAccounts, tempVoterAccounts] = await Promise.all([
-    (await Promise.all(getAccountSplGovPromises)).flat(),
-    getParsedMultipleAccountsInfo(client, voterStruct, voterAccountsPubKeys),
-  ]);
+  if (!hasValidVoter && splGovAccounts.length === 0) return [];
 
   const voterAccounts = tempVoterAccounts;
-  if (tempVoterAccounts.length === 0 && splGovAccounts.length === 0) return [];
-
   splGovAccounts.forEach((account) => mintsSet.add(account.mint.toString()));
 
   const realmsRegistry = new ElementRegistry(NetworkId.solana, platformId);
