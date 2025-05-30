@@ -45,8 +45,16 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const hasValidVoter = tempVoterAccounts.some(Boolean);
 
   let splGovAccounts: ParsedAccount<Vote>[] = [];
-  // In a real-time portfolio context, we skip governance vote account fetching unless there are active voter accounts with deposits,
-  // since governance votes themselves do not impact portfolio value.
+  // In a real-time portfolio context, we skip fetching governance vote accounts
+  // unless there are active voter accounts with deposits,
+  // because governance votes do not directly impact portfolio value.
+  //
+  // VoterAccount → Represents tokens locked in the contract under governance control.
+  // VoteAccount → A historical record indicating that a vote was cast.
+  //
+  // VoteAccounts are not deposits themselves — they are results of participation that
+  // reference the original deposit.
+  // The actual deposit is stored in VoterAccount.deposits.
   if (hasValidVoter) {
     const getAccountSplGovPromises = splGovPrograms.map((program) =>
       getParsedProgramAccounts(
