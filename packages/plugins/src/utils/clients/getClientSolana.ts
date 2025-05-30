@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Connection, FetchMiddleware, Commitment } from '@solana/web3.js';
 import { getBasicAuthHeaders } from '../misc/getBasicAuthHeaders';
@@ -39,14 +40,15 @@ export default function getClientSolana(
       reqs['all']['total'] += 1;
 
       if (typeof info === 'string') {
-        if (!reqs[info]) {
-          reqs[info] = { total: 0 };
+        const hash = createHash('sha256').update(info).digest('hex')
+        if (!reqs[hash]) {
+          reqs[hash] = { total: 0 };
         }
-        if (!reqs[info][method]) {
-          reqs[info][method] = 0;
+        if (!reqs[hash][method]) {
+          reqs[hash][method] = 0;
         }
-        reqs[info][method] += 1;
-        reqs[info]['total'] += 1;
+        reqs[hash][method] += 1;
+        reqs[hash]['total'] += 1;
       }
 
       if (reqs['all']['total'] % 5 === 1) {
