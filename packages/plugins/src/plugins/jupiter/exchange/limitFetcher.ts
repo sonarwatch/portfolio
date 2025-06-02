@@ -127,7 +127,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const initialInputAmount = orderAcc.oriMakingAmount
       .div(10 ** inputDecimals)
       .toNumber();
-    const expectedOutputAmount = orderAcc.oriTakingAmount
+    const expectedOutputAmount = (
+      accountv2 && accountv2.sl_taking_amount.isPositive()
+        ? accountv2.sl_taking_amount
+        : orderAcc.oriTakingAmount
+    )
       .div(10 ** outputDecimals)
       .toNumber();
 
