@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.20](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.19...plugins-0.15.20) (2025-06-02)
+
+
+### Bug Fixes
+
+* update lockedUntil attribute ([6c87db2](https://github.com/sonarwatch/portfolio/commit/6c87db209f31d0049166c40d0649da4a9022f6a6))
+
+
+
 ## [0.15.19](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.18...plugins-0.15.19) (2025-05-27)
 
 
