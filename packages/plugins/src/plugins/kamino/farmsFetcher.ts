@@ -1,25 +1,17 @@
+import { PublicKey } from '@solana/web3.js';
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { farmProgramId, farmsKey, kmnoMint, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
-import { getParsedProgramAccounts } from '../../utils/solana';
+import { getParsedMultipleAccountsInfo } from '../../utils/solana';
 import { userStateStruct } from './structs/vaults';
-import { userStateFilter } from './filters';
 import { FarmInfo } from './types';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { arrayToMap } from '../../utils/misc/arrayToMap';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
-
-  const userStates = await getParsedProgramAccounts(
-    client,
-    userStateStruct,
-    farmProgramId,
-    userStateFilter(owner)
-  );
-  if (!userStates) return [];
 
   const farmsInfo = await cache.getItem<FarmInfo[]>(farmsKey, {
     prefix: platformId,
@@ -29,13 +21,29 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const farmsById = arrayToMap(farmsInfo, 'pubkey');
 
+  const possibleUsers = farmsInfo.map(
+    (f) =>
+      PublicKey.findProgramAddressSync(
+        [
+          Buffer.from('user', 'utf-8'),
+          new PublicKey(f.pubkey).toBuffer(),
+          new PublicKey(owner).toBuffer(),
+        ],
+        farmProgramId
+      )[0]
+  );
+  const userStates = (
+    await getParsedMultipleAccountsInfo(client, userStateStruct, possibleUsers)
+  ).filter(Boolean);
+  if (!userStates) return [];
+
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
   const element = elementRegistry.addElementLiquidity({
     label: 'Farming',
   });
 
   for (const userState of userStates) {
-    if (userState.activeStakeScaled.isZero()) continue;
+    if (!userState || userState.activeStakeScaled.isZero()) continue;
 
     const farm = farmsById.get(userState.farmState.toString());
     if (!farm) continue;
