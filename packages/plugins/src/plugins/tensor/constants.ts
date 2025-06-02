@@ -23,7 +23,7 @@ export const s4Statics: AirdropStatics = {
 
 export const powerUsersStatics: AirdropStatics = {
   claimStart: 1730851200000,
-  claimEnd: 1746489600000,
+  // claimEnd: 1746489600000,
   id: 'tensor-power-user',
   emitterName: 'Tensor',
   emitterLink: 'https://www.tensor.trade/',
