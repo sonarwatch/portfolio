@@ -5,3 +5,8 @@ export type RpcEndpoint = {
     password: string;
   };
 };
+
+export enum ClientType {
+  NORMAL = 'NORMAL',
+  FAST_LIMITED = 'FAST_LIMITED'
+}

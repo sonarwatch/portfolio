@@ -1,12 +1,13 @@
 import { createHash } from 'crypto';
-import { NetworkId } from '@sonarwatch/portfolio-core';
-import { Connection, FetchMiddleware, Commitment } from '@solana/web3.js';
+import { ClientType, NetworkId } from '@sonarwatch/portfolio-core';
+import { Commitment, Connection, FetchMiddleware } from '@solana/web3.js';
 import { getBasicAuthHeaders } from '../misc/getBasicAuthHeaders';
 import { getRpcEndpoint } from './constants';
 import { SolanaClient } from './types';
 
 export type SolanaClientParams = {
   commitment?: Commitment;
+  clientType?: ClientType;
 };
 
 const reqs: Record<string, Record<string, number>> = {
@@ -18,7 +19,7 @@ const reqs: Record<string, Record<string, number>> = {
 export default function getClientSolana(
   params?: SolanaClientParams
 ): SolanaClient {
-  const rpcEndpoint = getRpcEndpoint(NetworkId.solana);
+  const rpcEndpoint = getRpcEndpoint(NetworkId.solana, params?.clientType);
   const httpHeaders = rpcEndpoint.basicAuth
     ? getBasicAuthHeaders(
         rpcEndpoint.basicAuth.username,
@@ -40,7 +41,7 @@ export default function getClientSolana(
       reqs['all']['total'] += 1;
 
       if (typeof info === 'string') {
-        const hash = createHash('sha256').update(info).digest('hex')
+        const hash = createHash('sha256').update(info).digest('hex');
         if (!reqs[hash]) {
           reqs[hash] = { total: 0 };
         }
