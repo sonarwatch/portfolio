@@ -127,6 +127,7 @@ import * as solcasino from './services/solcasino';
 import * as solincinerator from './services/solincinerator';
 import * as solsea from './services/solsea';
 import * as sonic from './services/sonic';
+import * as spice from './services/spice';
 import * as spiderswap from './services/spiderswap';
 import * as squads from './services/squads';
 import * as stabble from './services/stabble';
@@ -282,6 +283,7 @@ export const services: ServiceDefinition[] = [
   solincinerator,
   solsea,
   sonic,
+  spice,
   spiderswap,
   squads,
   stabble,

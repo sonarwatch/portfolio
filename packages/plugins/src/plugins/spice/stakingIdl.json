@@ -1,0 +1,191 @@
+{
+  "version": "0.1.0",
+  "name": "pvp_staking",
+  "accounts": [
+    {
+      "name": "PoolAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "poolMint",
+            "type": "publicKey"
+          },
+          {
+            "name": "poolTokenAccount",
+            "type": "publicKey"
+          },
+          {
+            "name": "rewardMint",
+            "type": "publicKey"
+          },
+          {
+            "name": "rewardTokenAccount",
+            "type": "publicKey"
+          },
+          {
+            "name": "rewardPerSecond",
+            "type": "u128"
+          },
+          {
+            "name": "startTime",
+            "type": "i64"
+          },
+          {
+            "name": "lastRewardTime",
+            "type": "i64"
+          },
+          {
+            "name": "accPerShare",
+            "type": "u128"
+          },
+          {
+            "name": "supply",
+            "type": "u128"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PoolLockedAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "poolAccount",
+            "type": "publicKey"
+          },
+          {
+            "name": "poolLock",
+            "type": {
+              "vec": {
+                "defined": "PoolLock"
+              }
+            }
+          },
+          {
+            "name": "supply",
+            "type": "u128"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "StakeAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "depositAmount",
+            "type": "u128"
+          },
+          {
+            "name": "reward",
+            "type": "u128"
+          },
+          {
+            "name": "rewardDebt",
+            "type": "u128"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "multiplierAmount",
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "StakeLockedAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "stakeLock",
+            "type": {
+              "vec": {
+                "defined": "StakeLock"
+              }
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "PoolLock",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "servingPeriod",
+            "type": "i64"
+          },
+          {
+            "name": "multiplier",
+            "type": "u128"
+          },
+          {
+            "name": "supply",
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "StakeLock",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "depositAmount",
+            "type": "u128"
+          },
+          {
+            "name": "servingPeriod",
+            "type": "i64"
+          },
+          {
+            "name": "startTime",
+            "type": "i64"
+          }
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "address": "DQtwoVmEgaGe3hCuefpnBR1rjtLJLJ7sKjVZbUEsSseC"
+  }
+}
