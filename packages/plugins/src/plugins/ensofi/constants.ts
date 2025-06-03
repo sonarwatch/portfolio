@@ -15,6 +15,9 @@ export const loansCacheKey = 'loans';
 export const ensofiLendingProgramId = new PublicKey(
   'ensoQXKf4MvNuEC3M9xmcqUqgucFNd5UzAonDdUtgqn'
 );
+export const ensofiLendingFlexProgramId = new PublicKey(
+  'enseM1J4dGgwEw3qDyuVBi7YsjgwqvKzuX3ZLaboLGv'
+);
 
 export const ensofiLiquidityPid = new PublicKey(
   'ensSuXMeaUhRC7Re3ukaxLcX2E4qmd2LZxbxsK9XcWz'

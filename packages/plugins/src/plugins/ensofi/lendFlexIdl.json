@@ -1,0 +1,1564 @@
+{
+  "address": "enseM1J4dGgwEw3qDyuVBi7YsjgwqvKzuX3ZLaboLGv",
+  "metadata": {
+    "name": "elend",
+    "version": "0.1.6",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "accounts": [
+    {
+      "name": "LendingAuthority",
+      "discriminator": [
+        156,
+        77,
+        250,
+        102,
+        116,
+        53,
+        39,
+        29
+      ]
+    },
+    {
+      "name": "Obligation",
+      "discriminator": [
+        168,
+        206,
+        141,
+        106,
+        88,
+        76,
+        172,
+        167
+      ]
+    },
+    {
+      "name": "PriceUpdateV2",
+      "discriminator": [
+        34,
+        241,
+        35,
+        99,
+        157,
+        126,
+        244,
+        205
+      ]
+    },
+    {
+      "name": "Reserve",
+      "discriminator": [
+        43,
+        242,
+        204,
+        202,
+        26,
+        247,
+        59,
+        127
+      ]
+    },
+    {
+      "name": "Whirlpool",
+      "discriminator": [
+        63,
+        149,
+        209,
+        12,
+        225,
+        128,
+        99,
+        9
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "AccountsType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "TransferHookA"
+          },
+          {
+            "name": "TransferHookB"
+          },
+          {
+            "name": "TransferHookReward"
+          },
+          {
+            "name": "TransferHookInput"
+          },
+          {
+            "name": "TransferHookIntermediate"
+          },
+          {
+            "name": "TransferHookOutput"
+          },
+          {
+            "name": "SupplementalTickArrays"
+          },
+          {
+            "name": "SupplementalTickArraysOne"
+          },
+          {
+            "name": "SupplementalTickArraysTwo"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BigFractionBytes",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "value",
+            "type": {
+              "array": [
+                "u64",
+                4
+              ]
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u64",
+                2
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "BorrowObligationLiquidityEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "obligation_owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "reserve",
+            "type": "pubkey"
+          },
+          {
+            "name": "borrow_amount",
+            "type": "u64"
+          },
+          {
+            "name": "total_reserve_borrowed_sf",
+            "type": "u128"
+          },
+          {
+            "name": "borrowed_amount_obligation_sf",
+            "type": "u128"
+          },
+          {
+            "name": "new_cumulative_borrow_rate_bsf",
+            "type": {
+              "array": [
+                "u64",
+                4
+              ]
+            }
+          },
+          {
+            "name": "has_debt",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DepositReserveAndObligationEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "obligation_owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "reserve",
+            "type": "pubkey"
+          },
+          {
+            "name": "deposit_amount",
+            "type": "u64"
+          },
+          {
+            "name": "mint_collateral_amount",
+            "type": "u64"
+          },
+          {
+            "name": "deposited_collateral_amount_obligation",
+            "type": "u64"
+          },
+          {
+            "name": "total_reserve_supplied_sf",
+            "type": "u128"
+          },
+          {
+            "name": "total_reserve_mint_collateral",
+            "type": "u64"
+          },
+          {
+            "name": "new_cumulative_borrow_rate_bsf",
+            "type": {
+              "array": [
+                "u64",
+                4
+              ]
+            }
+          },
+          {
+            "name": "has_debt",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitLendingAuthorityEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "lending_authority",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitObligationEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "obligation_owner",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitReserveEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "reserve",
+            "type": "pubkey"
+          },
+          {
+            "name": "reserve_liquidity_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "reserve_collateral_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "asset_tier",
+            "type": "u8"
+          },
+          {
+            "name": "base_fixed_interest_rate_bps",
+            "type": "u16"
+          },
+          {
+            "name": "reserve_factor_rate_pct",
+            "type": "u8"
+          },
+          {
+            "name": "loan_to_value_pct",
+            "type": "u8"
+          },
+          {
+            "name": "liquidation_penalty_bps",
+            "type": "u16"
+          },
+          {
+            "name": "borrow_rate_at_optimal_bps",
+            "type": "u16"
+          },
+          {
+            "name": "borrow_factor_pct",
+            "type": "u64"
+          },
+          {
+            "name": "borrow_fee_bps",
+            "type": "u64"
+          },
+          {
+            "name": "deposit_limit",
+            "type": "u64"
+          },
+          {
+            "name": "borrow_limit",
+            "type": "u64"
+          },
+          {
+            "name": "utilization_optimal_pct",
+            "type": "u8"
+          },
+          {
+            "name": "min_net_value_in_obligation_sf",
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitReserveVaultEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "reserve_vault",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LastUpdate",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c",
+        "packed": true
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "slot",
+            "type": "u64"
+          },
+          {
+            "name": "stale",
+            "type": "u8"
+          },
+          {
+            "name": "price_status",
+            "type": "u8"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                6
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "LendingAuthority",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LiquidationEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "obligation_owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "liquidate_reserve",
+            "type": "pubkey"
+          },
+          {
+            "name": "repay_reserve",
+            "type": "pubkey"
+          },
+          {
+            "name": "repay_liquidity_amount",
+            "type": "u64"
+          },
+          {
+            "name": "withdraw_liquidity_amount",
+            "type": "u64"
+          },
+          {
+            "name": "burn_collateral_amount",
+            "type": "u64"
+          },
+          {
+            "name": "remaining_deposited_amount_obligation",
+            "type": "u64"
+          },
+          {
+            "name": "remaining_borrowed_amount_obligation_sf",
+            "type": "u128"
+          },
+          {
+            "name": "total_withdraw_reserve_supplied_sf",
+            "type": "u128"
+          },
+          {
+            "name": "total_withdraw_reserve_mint_collateral",
+            "type": "u64"
+          },
+          {
+            "name": "total_repay_reserve_supplied_sf",
+            "type": "u128"
+          },
+          {
+            "name": "total_repay_reserve_borrowed_sf",
+            "type": "u128"
+          },
+          {
+            "name": "new_repay_reserve_cumulative_borrow_rate_bsf",
+            "type": {
+              "array": [
+                "u64",
+                4
+              ]
+            }
+          },
+          {
+            "name": "new_withdraw_reserve_cumulative_borrow_rate_bsf",
+            "type": {
+              "array": [
+                "u64",
+                4
+              ]
+            }
+          },
+          {
+            "name": "has_debt",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LockReserveEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "obligation",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Obligation",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c",
+        "packed": true
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "lowest_reserve_deposit_liquidation_ltv",
+            "type": "u64"
+          },
+          {
+            "name": "total_deposited_value_sf",
+            "type": "u128"
+          },
+          {
+            "name": "deposits",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "ObligationCollateral"
+                  }
+                },
+                3
+              ]
+            }
+          },
+          {
+            "name": "padding_1",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "ObligationCollateral"
+                  }
+                },
+                10
+              ]
+            }
+          },
+          {
+            "name": "borrow_factor_adjusted_debt_value_sf",
+            "type": "u128"
+          },
+          {
+            "name": "borrowed_assets_market_value_sf",
+            "type": "u128"
+          },
+          {
+            "name": "highest_borrow_factor_pct",
+            "type": "u64"
+          },
+          {
+            "name": "allowed_borrow_value_sf",
+            "type": "u128"
+          },
+          {
+            "name": "unhealthy_borrow_value_sf",
+            "type": "u128"
+          },
+          {
+            "name": "borrows",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "ObligationLiquidity"
+                  }
+                },
+                3
+              ]
+            }
+          },
+          {
+            "name": "padding_2",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "ObligationLiquidity"
+                  }
+                },
+                10
+              ]
+            }
+          },
+          {
+            "name": "deposit_asset_tier",
+            "type": {
+              "array": [
+                "u8",
+                3
+              ]
+            }
+          },
+          {
+            "name": "padding_3",
+            "type": {
+              "array": [
+                "u8",
+                10
+              ]
+            }
+          },
+          {
+            "name": "borrow_asset_tier",
+            "type": {
+              "array": [
+                "u8",
+                3
+              ]
+            }
+          },
+          {
+            "name": "padding_4",
+            "type": {
+              "array": [
+                "u8",
+                10
+              ]
+            }
+          },
+          {
+            "name": "num_of_obsolete_reserves",
+            "type": "u8"
+          },
+          {
+            "name": "has_debt",
+            "type": "u8"
+          },
+          {
+            "name": "last_update",
+            "type": {
+              "defined": {
+                "name": "LastUpdate"
+              }
+            }
+          },
+          {
+            "name": "locking",
+            "type": "u8"
+          },
+          {
+            "name": "liquidating_asset_position",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ObligationCollateral",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c",
+        "packed": true
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "reserve_storage",
+            "type": "pubkey"
+          },
+          {
+            "name": "deposited_amount",
+            "type": "u64"
+          },
+          {
+            "name": "market_value_sf",
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ObligationLiquidity",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c",
+        "packed": true
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "reserve_storage",
+            "type": "pubkey"
+          },
+          {
+            "name": "cumulative_borrow_rate_bsf",
+            "type": {
+              "defined": {
+                "name": "BigFractionBytes"
+              }
+            }
+          },
+          {
+            "name": "borrowed_amount_sf",
+            "type": "u128"
+          },
+          {
+            "name": "market_value_sf",
+            "type": "u128"
+          },
+          {
+            "name": "borrow_factor_adjusted_market_value_sf",
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PriceFeedMessage",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "feed_id",
+            "docs": [
+              "`FeedId` but avoid the type alias because of compatibility issues with Anchor\'s `idl-build` feature."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "price",
+            "type": "i64"
+          },
+          {
+            "name": "conf",
+            "type": "u64"
+          },
+          {
+            "name": "exponent",
+            "type": "i32"
+          },
+          {
+            "name": "publish_time",
+            "docs": [
+              "The timestamp of this price update in seconds"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "prev_publish_time",
+            "docs": [
+              "The timestamp of the previous price update. This field is intended to allow users to",
+              "identify the single unique price update for any moment in time:",
+              "for any time t, the unique update is the one such that prev_publish_time < t <= publish_time.",
+              "",
+              "Note that there may not be such an update while we are migrating to the new message-sending logic,",
+              "as some price updates on pythnet may not be sent to other chains (because the message-sending",
+              "logic may not have triggered). We can solve this problem by making the message-sending mandatory",
+              "(which we can do once publishers have migrated over).",
+              "",
+              "Additionally, this field may be equal to publish_time if the message is sent on a slot where",
+              "where the aggregation was unsuccesful. This problem will go away once all publishers have",
+              "migrated over to a recent version of pyth-agent."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "ema_price",
+            "type": "i64"
+          },
+          {
+            "name": "ema_conf",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PriceHeuristic",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "lower",
+            "type": "u64"
+          },
+          {
+            "name": "upper",
+            "type": "u64"
+          },
+          {
+            "name": "exp",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PriceUpdateV2",
+      "docs": [
+        "A price update account. This account is used by the Pyth Receiver program to store a verified price update from a Pyth price feed.",
+        "It contains:",
+        "- `write_authority`: The write authority for this account. This authority can close this account to reclaim rent or update the account to contain a different price update.",
+        "- `verification_level`: The [`VerificationLevel`] of this price update. This represents how many Wormhole guardian signatures have been verified for this price update.",
+        "- `price_message`: The actual price update.",
+        "- `posted_slot`: The slot at which this price update was posted."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "write_authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "verification_level",
+            "type": {
+              "defined": {
+                "name": "VerificationLevel"
+              }
+            }
+          },
+          {
+            "name": "price_message",
+            "type": {
+              "defined": {
+                "name": "PriceFeedMessage"
+              }
+            }
+          },
+          {
+            "name": "posted_slot",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RefreshReserveEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "reserve",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_supply_sf",
+            "type": "u128"
+          },
+          {
+            "name": "total_borrow_sf",
+            "type": "u128"
+          },
+          {
+            "name": "total_mint_collateral",
+            "type": "u64"
+          },
+          {
+            "name": "borrow_rate",
+            "type": "u64"
+          },
+          {
+            "name": "supply_rate",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RemainingAccountsInfo",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "slices",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "RemainingAccountsSlice"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RemainingAccountsSlice",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "accounts_type",
+            "type": {
+              "defined": {
+                "name": "AccountsType"
+              }
+            }
+          },
+          {
+            "name": "length",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RepayObligationLiquidityEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "obligation_owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "reserve",
+            "type": "pubkey"
+          },
+          {
+            "name": "repay_amount",
+            "type": "u64"
+          },
+          {
+            "name": "total_reserve_supplied_sf",
+            "type": "u128"
+          },
+          {
+            "name": "total_reserve_borrowed_sf",
+            "type": "u128"
+          },
+          {
+            "name": "remaining_borrowed_amount_obligation_sf",
+            "type": "u128"
+          },
+          {
+            "name": "new_cumulative_borrow_rate_bsf",
+            "type": {
+              "array": [
+                "u64",
+                4
+              ]
+            }
+          },
+          {
+            "name": "has_debt",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Reserve",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c",
+        "packed": true
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                7
+              ]
+            }
+          },
+          {
+            "name": "liquidity",
+            "type": {
+              "defined": {
+                "name": "ReserveLiquidity"
+              }
+            }
+          },
+          {
+            "name": "collateral",
+            "type": {
+              "defined": {
+                "name": "ReserveCollateral"
+              }
+            }
+          },
+          {
+            "name": "config",
+            "type": {
+              "defined": {
+                "name": "ReserveConfig"
+              }
+            }
+          },
+          {
+            "name": "last_update",
+            "type": {
+              "defined": {
+                "name": "LastUpdate"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ReserveCollateral",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c",
+        "packed": true
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint_total_supply",
+            "type": "u64"
+          },
+          {
+            "name": "supply_vault",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ReserveConfig",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c",
+        "packed": true
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "status",
+            "type": "u8"
+          },
+          {
+            "name": "asset_tier",
+            "type": "u8"
+          },
+          {
+            "name": "base_fixed_interest_rate_bps",
+            "type": "u16"
+          },
+          {
+            "name": "reserve_factor_rate_pct",
+            "type": "u8"
+          },
+          {
+            "name": "max_interest_rate_bps",
+            "type": "u16"
+          },
+          {
+            "name": "loan_to_value_pct",
+            "type": "u8"
+          },
+          {
+            "name": "liquidation_threshold_pct",
+            "type": "u8"
+          },
+          {
+            "name": "liquidation_max_debt_close_factor_pct",
+            "type": "u8"
+          },
+          {
+            "name": "liquidation_penalty_bps",
+            "type": "u16"
+          },
+          {
+            "name": "borrow_rate_at_optimal_bps",
+            "type": "u16"
+          },
+          {
+            "name": "borrow_factor_pct",
+            "type": "u64"
+          },
+          {
+            "name": "borrow_fee_bps",
+            "type": "u64"
+          },
+          {
+            "name": "deposit_limit",
+            "type": "u64"
+          },
+          {
+            "name": "borrow_limit",
+            "type": "u64"
+          },
+          {
+            "name": "token_info",
+            "type": {
+              "defined": {
+                "name": "TokenInfo"
+              }
+            }
+          },
+          {
+            "name": "deposit_withdrawal_cap",
+            "type": {
+              "defined": {
+                "name": "WithdrawalCaps"
+              }
+            }
+          },
+          {
+            "name": "debt_withdrawal_cap",
+            "type": {
+              "defined": {
+                "name": "WithdrawalCaps"
+              }
+            }
+          },
+          {
+            "name": "utilization_optimal_pct",
+            "type": "u8"
+          },
+          {
+            "name": "utilization_limit_block_borrowing_above_pct",
+            "type": "u8"
+          },
+          {
+            "name": "min_net_value_in_obligation_sf",
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ReserveLiquidity",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c",
+        "packed": true
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "supply_vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "available_amount",
+            "type": "u64"
+          },
+          {
+            "name": "borrowed_amount_sf",
+            "type": "u128"
+          },
+          {
+            "name": "market_price_sf",
+            "type": "u128"
+          },
+          {
+            "name": "market_price_last_updated_ts",
+            "type": "u64"
+          },
+          {
+            "name": "mint_decimals",
+            "type": "u8"
+          },
+          {
+            "name": "deposit_limit_crossed_ts",
+            "type": "u64"
+          },
+          {
+            "name": "borrow_limit_crossed_ts",
+            "type": "u64"
+          },
+          {
+            "name": "cumulative_borrow_rate_bsf",
+            "type": {
+              "defined": {
+                "name": "BigFractionBytes"
+              }
+            }
+          },
+          {
+            "name": "accumulated_protocol_fees_sf",
+            "type": "u128"
+          },
+          {
+            "name": "token_program",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenInfo",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c",
+        "packed": true
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "symbol",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "heuristic",
+            "type": {
+              "defined": {
+                "name": "PriceHeuristic"
+              }
+            }
+          },
+          {
+            "name": "max_twap_divergence_bps",
+            "type": "u64"
+          },
+          {
+            "name": "max_age_price_seconds",
+            "type": "u64"
+          },
+          {
+            "name": "max_age_twap_seconds",
+            "type": "u64"
+          },
+          {
+            "name": "price_feed_id",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "price_feed_account",
+            "type": "pubkey"
+          },
+          {
+            "name": "block_price_usage",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateReserveEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "reserve",
+            "type": "pubkey"
+          },
+          {
+            "name": "asset_tier",
+            "type": "u8"
+          },
+          {
+            "name": "base_fixed_interest_rate_bps",
+            "type": "u16"
+          },
+          {
+            "name": "reserve_factor_rate_pct",
+            "type": "u8"
+          },
+          {
+            "name": "loan_to_value_pct",
+            "type": "u8"
+          },
+          {
+            "name": "liquidation_penalty_bps",
+            "type": "u16"
+          },
+          {
+            "name": "borrow_rate_at_optimal_bps",
+            "type": "u16"
+          },
+          {
+            "name": "borrow_factor_pct",
+            "type": "u64"
+          },
+          {
+            "name": "borrow_fee_bps",
+            "type": "u64"
+          },
+          {
+            "name": "deposit_limit",
+            "type": "u64"
+          },
+          {
+            "name": "borrow_limit",
+            "type": "u64"
+          },
+          {
+            "name": "utilization_optimal_pct",
+            "type": "u8"
+          },
+          {
+            "name": "min_net_value_in_obligation_sf",
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VerificationLevel",
+      "docs": [
+        "Pyth price updates are bridged to all blockchains via Wormhole.",
+        "Using the price updates on another chain requires verifying the signatures of the Wormhole guardians.",
+        "The usual process is to check the signatures for two thirds of the total number of guardians, but this can be cumbersome on Solana because of the transaction size limits,",
+        "so we also allow for partial verification.",
+        "",
+        "This enum represents how much a price update has been verified:",
+        "- If `Full`, we have verified the signatures for two thirds of the current guardians.",
+        "- If `Partial`, only `num_signatures` guardian signatures have been checked.",
+        "",
+        "# Warning",
+        "Using partially verified price updates is dangerous, as it lowers the threshold of guardians that need to collude to produce a malicious price update."
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Partial",
+            "fields": [
+              {
+                "name": "num_signatures",
+                "type": "u8"
+              }
+            ]
+          },
+          {
+            "name": "Full"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Whirlpool",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "whirlpools_config",
+            "type": "pubkey"
+          },
+          {
+            "name": "whirlpool_bump",
+            "type": {
+              "array": [
+                "u8",
+                1
+              ]
+            }
+          },
+          {
+            "name": "tick_spacing",
+            "type": "u16"
+          },
+          {
+            "name": "tick_spacing_seed",
+            "type": {
+              "array": [
+                "u8",
+                2
+              ]
+            }
+          },
+          {
+            "name": "fee_rate",
+            "type": "u16"
+          },
+          {
+            "name": "protocol_fee_rate",
+            "type": "u16"
+          },
+          {
+            "name": "liquidity",
+            "type": "u128"
+          },
+          {
+            "name": "sqrt_price",
+            "type": "u128"
+          },
+          {
+            "name": "tick_current_index",
+            "type": "i32"
+          },
+          {
+            "name": "protocol_fee_owed_a",
+            "type": "u64"
+          },
+          {
+            "name": "protocol_fee_owed_b",
+            "type": "u64"
+          },
+          {
+            "name": "token_mint_a",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_vault_a",
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_growth_global_a",
+            "type": "u128"
+          },
+          {
+            "name": "token_mint_b",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_vault_b",
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_growth_global_b",
+            "type": "u128"
+          },
+          {
+            "name": "reward_last_updated_timestamp",
+            "type": "u64"
+          },
+          {
+            "name": "reward_infos",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "WhirlpoolRewardInfo"
+                  }
+                },
+                3
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "WhirlpoolRewardInfo",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "emissions_per_second_x64",
+            "type": "u128"
+          },
+          {
+            "name": "growth_global_x64",
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WithdrawObligationCollateralEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "obligation_owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "reserve",
+            "type": "pubkey"
+          },
+          {
+            "name": "withdraw_amount",
+            "type": "u64"
+          },
+          {
+            "name": "burn_collateral_amount",
+            "type": "u64"
+          },
+          {
+            "name": "remaining_deposited_amount_obligation",
+            "type": "u64"
+          },
+          {
+            "name": "remaining_reserve_supplied_sf",
+            "type": "u128"
+          },
+          {
+            "name": "remaining_reserve_mint_collateral",
+            "type": "u64"
+          },
+          {
+            "name": "new_cumulative_borrow_rate_bsf",
+            "type": {
+              "array": [
+                "u64",
+                4
+              ]
+            }
+          },
+          {
+            "name": "has_debt",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WithdrawalCaps",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "config_capacity",
+            "type": "i64"
+          },
+          {
+            "name": "current_total",
+            "type": "i64"
+          },
+          {
+            "name": "last_interval_start_timestamp",
+            "type": "u64"
+          },
+          {
+            "name": "config_interval_length_seconds",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ]
+}
