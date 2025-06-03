@@ -2,9 +2,9 @@ import {
   NetworkIdType,
   PortfolioAssetCollectible,
   PortfolioAssetType,
+  TokenPriceMap,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
-import { TokenPriceMap } from '../../TokenPriceMap';
 import { AssetBuilder } from './AssetBuilder';
 import { PortfolioAssetCollectibleParams } from './Params';
 

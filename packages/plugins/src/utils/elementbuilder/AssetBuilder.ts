@@ -1,5 +1,8 @@
-import { NetworkIdType, PortfolioAsset } from '@sonarwatch/portfolio-core';
-import { TokenPriceMap } from '../../TokenPriceMap';
+import {
+  NetworkIdType,
+  PortfolioAsset,
+  TokenPriceMap,
+} from '@sonarwatch/portfolio-core';
 
 export abstract class AssetBuilder {
   abstract tokenAddresses(): string[];

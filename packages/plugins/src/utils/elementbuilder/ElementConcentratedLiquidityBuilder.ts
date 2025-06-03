@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js';
 import {
   NetworkIdType,
   PortfolioElementLiquidity,
+  TokenPriceMap,
   yieldFromApr,
 } from '@sonarwatch/portfolio-core';
 import { ElementLiquidityBuilder } from './ElementLiquidityBuilder';
@@ -9,7 +10,6 @@ import { LiquidityBuilder } from './LiquidityBuilder';
 import { getTokenAmountsFromLiquidity } from '../clmm/tokenAmountFromLiquidity';
 import { estPositionAPRWithDeltaMethod } from '../clmm/estPositionAPRWithDeltaMethod';
 import { toBN } from '../misc/toBN';
-import { TokenPriceMap } from '../../TokenPriceMap';
 import { ConcentratedLiquidityParams, LiquidityParams } from './Params';
 
 export class ElementConcentratedLiquidityBuilder extends ElementLiquidityBuilder {

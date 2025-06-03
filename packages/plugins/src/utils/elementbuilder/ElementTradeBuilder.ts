@@ -3,11 +3,11 @@ import {
   NetworkIdType,
   PortfolioElementTrade,
   PortfolioElementType,
+  TokenPriceMap,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { ElementBuilder } from './ElementBuilder';
 import { Params, TradeParams } from './Params';
-import { TokenPriceMap } from '../../TokenPriceMap';
 import { AssetTokenBuilder } from './AssetTokenBuilder';
 
 export class ElementTradeBuilder extends ElementBuilder {
