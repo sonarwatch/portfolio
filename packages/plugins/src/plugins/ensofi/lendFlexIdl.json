@@ -707,7 +707,7 @@
           {
             "name": "feed_id",
             "docs": [
-              "`FeedId` but avoid the type alias because of compatibility issues with Anchor\'s `idl-build` feature."
+              "`FeedId` but avoid the type alias because of compatibility issues with Anchor's `idl-build` feature."
             ],
             "type": {
               "array": [
