@@ -1,4 +1,5 @@
 import {
+  ClientType,
   getUsdValueSum,
   NetworkId,
   PortfolioAsset,
@@ -35,7 +36,7 @@ import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 import { ParsedGpa } from '../../../utils/solana/beets/ParsedGpa';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
 
   const userPubKey = new PublicKey(owner);
 

@@ -1,4 +1,8 @@
-import { NetworkId, PortfolioElementType } from '@sonarwatch/portfolio-core';
+import {
+  ClientType,
+  NetworkId,
+  PortfolioElementType
+} from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -10,7 +14,7 @@ import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
 
   const [stakingAccounts, tokenPrice] = await Promise.all([
     client.getProgramAccounts(stakingProgramId, {

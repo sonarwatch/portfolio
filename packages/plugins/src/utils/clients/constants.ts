@@ -1,9 +1,10 @@
 import {
+  ClientType,
   EvmNetworkIdType,
   NetworkIdType,
   RpcEndpoint,
 } from '@sonarwatch/portfolio-core';
-import { Chain, avalanche, mainnet, polygon, bsc } from 'viem/chains';
+import { avalanche, bsc, Chain, mainnet, polygon } from 'viem/chains';
 import urlToRpcEndpoint from './urlToRpcEndpoint';
 
 export const viemChainsByNetworkId: Record<EvmNetworkIdType, Chain> = {
@@ -52,13 +53,14 @@ export function getRpcEndpoints(): Record<NetworkIdType, RpcEndpoint> {
 const endpointIndices: Partial<Record<NetworkIdType, number>> = {};
 const fallBackEndpointIndices: Partial<Record<NetworkIdType, number>> = {};
 
-export function getRpcEndpoint(networkId: NetworkIdType): RpcEndpoint {
-  const useFallback = Math.random() < 0.2 && !!process.env['PORTFOLIO_SOLANA_FALLBACK_RPC'];
-
+export function getRpcEndpoint(
+  networkId: NetworkIdType,
+  clientType?: ClientType
+): RpcEndpoint {
   let endpoint;
   let indices;
-  if (useFallback) {
-    endpoint = { url: process.env['PORTFOLIO_SOLANA_FALLBACK_RPC']! };
+  if (clientType === ClientType.FAST_LIMITED) {
+    endpoint = { url: process.env['PORTFOLIO_SOLANA_FAST_LIMITED_RPC']! };
     indices = fallBackEndpointIndices;
   } else {
     endpoint = getRpcEndpoints()[networkId];
