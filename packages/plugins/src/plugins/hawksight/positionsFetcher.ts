@@ -26,15 +26,12 @@ import { hasTransactions } from '../../utils/hasTransactions';
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const derivedAddresses = getHawksightUserPdas(new PublicKey(owner));
 
-  if (
-    !(await hasTransactions(derivedAddresses[0].toString(), NetworkId.solana))
-  )
-    return [];
+  const hasAnyTransactions = await Promise.all([
+    hasTransactions(derivedAddresses[0].toString(), NetworkId.solana),
+    hasTransactions(derivedAddresses[1].toString(), NetworkId.solana),
+  ]).then((results) => results[0] || results[1]);
 
-  if (
-    !(await hasTransactions(derivedAddresses[1].toString(), NetworkId.solana))
-  )
-    return [];
+  if (!hasAnyTransactions) return [];
 
   const dasUrl = getSolanaDasEndpoint();
 

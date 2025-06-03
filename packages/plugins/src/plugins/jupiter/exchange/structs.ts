@@ -69,15 +69,17 @@ export type LimitOrderV2 = {
   makingAmount: BigNumber;
   takingAmount: BigNumber;
   borrowMakingAmount: BigNumber;
-  expiredAt: BigNumber;
+  expiredAt: COption<BigNumber>;
   feeBps: number;
   feeAccount: PublicKey;
   createdAt: BigNumber;
   updatedAt: BigNumber;
   bump: number;
+  slippage_bps: number;
+  sl_taking_amount: BigNumber;
 };
 
-export const limitOrderV2Struct = new BeetStruct<LimitOrderV2>(
+export const limitOrderV2Struct = new FixableBeetStruct<LimitOrderV2>(
   [
     ['buffer', blob(8)],
     ['maker', publicKey],
@@ -92,12 +94,14 @@ export const limitOrderV2Struct = new BeetStruct<LimitOrderV2>(
     ['makingAmount', u64],
     ['takingAmount', u64],
     ['borrowMakingAmount', u64],
-    ['expiredAt', i64],
+    ['expiredAt', coption(i64)],
     ['feeBps', u16],
     ['feeAccount', publicKey],
     ['createdAt', i64],
     ['updatedAt', i64],
     ['bump', u8],
+    ['slippage_bps', u16],
+    ['sl_taking_amount', u64],
   ],
   (args) => args as LimitOrderV2
 );

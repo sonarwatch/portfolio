@@ -23,6 +23,7 @@ export enum AirdropItemStatus {
   claimed = '3_claimed',
   claimExpired = '4_claimExpired',
   ineligible = '5_ineligible',
+  partiallyClaimed = '6_partiallyClaimed',
 }
 
 export function isEligibleAmount(amount: number): boolean {
@@ -44,7 +45,8 @@ export function getAirdropStatus(
 export function getAirdropItemStatus(
   airdropStatus: AirdropStatus,
   amount: number,
-  isClaimed: IsClaimed
+  isClaimed: IsClaimed,
+  claims?: Claim[]
 ): AirdropItemStatus {
   if (!isEligibleAmount(amount)) return AirdropItemStatus.ineligible;
 
@@ -63,6 +65,13 @@ export function getAirdropItemStatus(
   if (airdropStatus === AirdropStatus.closed)
     return AirdropItemStatus.claimExpired;
 
+  if (claims && airdropStatus === AirdropStatus.open) {
+    const claimedAmount = claims.reduce((acc, claim) => acc + claim.amount, 0);
+    if (claimedAmount >= amount) return AirdropItemStatus.claimed;
+
+    if (claimedAmount > 0) return AirdropItemStatus.partiallyClaimed;
+  }
+
   return AirdropItemStatus.claimable;
 }
 
@@ -72,7 +81,7 @@ export type AirdropRaw = {
    */
   id: string;
   /**
-   * A name for the airdrop. Should not container the emitter name. (e.g. 'Season #1')
+   * A name for the airdrop. Should not contain the emitter name. (e.g. 'Season #1')
    */
   name?: string;
   /**
@@ -116,6 +125,10 @@ export type AirdropItemRaw = {
    */
   isClaimed: IsClaimed;
   /**
+   * The airdrop item claim proofs.
+   */
+  claims?: Claim[];
+  /**
    * The airdropped item address.
    */
   address?: string;
@@ -132,6 +145,10 @@ export type AirdropItemRaw = {
    * The airdropped item image uri.
    */
   imageUri?: string;
+  /**
+   * The potential on-chain account address which represent the claim status.
+   */
+  ref?: string;
 };
 
 export type Airdrop = Omit<AirdropRaw, 'items'> & {
@@ -178,6 +195,26 @@ export type AirdropItem = AirdropItemRaw & {
    * The airdrop status.
    */
   value: UsdValue;
+};
+
+/**
+ * Represents a claim proof.
+ * It contains the timestamp of the claim and the amount of tokens claimed.
+ * The txId is optional and can be used to track the transaction.
+ */
+export type Claim = {
+  /**
+   * Timestamp of the claim (in ms).
+   */
+  date: number;
+  /**
+   * The claim amount.
+   */
+  amount: number;
+  /**
+   * The claim txId.
+   */
+  txId?: string;
 };
 
 /**

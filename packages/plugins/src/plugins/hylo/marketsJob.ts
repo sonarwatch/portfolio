@@ -30,6 +30,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     shyUsdDecimals,
     solTokenPrice,
     stakedHyUsd,
+    stakedXSol,
   ] = await Promise.all([
     client.getTokenSupply(hylo.levercoin_mint),
     client.getTokenSupply(hylo.stablecoin_mint),
@@ -49,9 +50,13 @@ const executor: JobExecutor = async (cache: Cache) => {
     client.getTokenAccountBalance(
       new PublicKey('EqozKyMj7FVnLHc2cJj3VC25aBr4AhVh1cGM2WDajGe9')
     ),
+    client.getTokenAccountBalance(
+      new PublicKey('4GPXVXuzk8ABAUkoXeBJg8r9kccEXQjoi5vqSxE9rhk1')
+    ),
   ]);
 
   // xSOL
+  let xSolPrice: number | undefined;
   if (
     solTokenPrice &&
     hyUsdSupply.value.uiAmount &&
@@ -62,7 +67,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       .shiftedBy(hylo.total_sol_cache.total_sol.exp)
       .multipliedBy(solTokenPrice.price);
 
-    const xSolPrice =
+    xSolPrice =
       (collateralTvl.toNumber() - hyUsdSupply.value.uiAmount) /
       xSolSupply.value.uiAmount;
 
@@ -98,7 +103,9 @@ const executor: JobExecutor = async (cache: Cache) => {
   if (
     shyUsdDecimals &&
     shyUsdSupply.value.uiAmount &&
-    stakedHyUsd.value.uiAmount
+    stakedHyUsd.value.uiAmount &&
+    stakedXSol.value.uiAmount &&
+    xSolPrice
   ) {
     await cache.setTokenPriceSource({
       address: shyUsdMint,
@@ -106,7 +113,9 @@ const executor: JobExecutor = async (cache: Cache) => {
       id: hylo.pubkey.toString(),
       platformId,
       networkId: NetworkId.solana,
-      price: stakedHyUsd.value.uiAmount / shyUsdSupply.value.uiAmount,
+      price:
+        (stakedHyUsd.value.uiAmount + stakedXSol.value.uiAmount * xSolPrice) /
+        shyUsdSupply.value.uiAmount,
       timestamp: Date.now(),
       weight: 0.5,
       link: 'https://hylo.so/hyusd',

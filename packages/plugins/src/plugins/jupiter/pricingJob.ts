@@ -64,8 +64,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   const prices = await getJupiterPrices([...mintsPk], new PublicKey(vsToken));
 
-  console.log(prices.get('SAVEDpx3nFNdzG3ymJfShYnrBuYy7LtQEABZQ3qtTFt'));
-
   const sources: TokenPriceSource[] = [];
   prices.forEach((price, mint) => {
     const decimals = decimalsMap.get(mint);

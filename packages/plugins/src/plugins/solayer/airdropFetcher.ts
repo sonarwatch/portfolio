@@ -2,6 +2,12 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
 import BigNumber from 'bignumber.js';
 import {
+  getTransactions,
+  parseTransaction,
+  getSignatures,
+} from '@sonarwatch/tx-parser';
+import { PublicKey } from '@solana/web3.js';
+import {
   AirdropFetcher,
   AirdropFetcherExecutor,
   airdropFetcherToFetcher,
@@ -18,7 +24,8 @@ import { AirdropResponse } from './types';
 import { getClientSolana } from '../../utils/clients';
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
-  const epoch = await getClientSolana().getEpochInfo();
+  const client = getClientSolana();
+
   let res: AxiosResponse<AirdropResponse>;
   try {
     res = await axios.get(airdropApi + owner);
@@ -49,51 +56,44 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
       ],
     });
 
-  const claimedAmount = new BigNumber(res.data.claimedAmount);
   const totalAmount = new BigNumber(res.data.totalAmount);
-  const { startEpoch } = res.data;
-  const { endEpoch } = res.data;
 
-  if (epoch.epoch >= startEpoch && endEpoch >= startEpoch) {
-    const diffAirDropEpoch = endEpoch - startEpoch;
-    const diffCurrentEpoch = epoch.epoch - startEpoch;
-
-    const ratio = diffCurrentEpoch / diffAirDropEpoch;
-
-    if (diffAirDropEpoch > 0 && diffCurrentEpoch > 0) {
-      const availableAmount = totalAmount
-        .times(ratio)
-        .minus(claimedAmount)
-        .decimalPlaces(0, BigNumber.ROUND_DOWN);
-
-      return getAirdropRaw({
-        statics: airdropStatics,
-        items: [
-          {
-            amount: availableAmount.dividedBy(10 ** layerDecimals).toNumber(),
-            isClaimed: false,
-            label: 'LAYER',
-            address: layerMint,
-          },
-          {
-            amount: claimedAmount.dividedBy(10 ** layerDecimals).toNumber(),
-            isClaimed: true,
-            label: 'LAYER',
-            address: layerMint,
-          },
-        ],
-      });
-    }
-  }
+  // This is for test purpose
+  const claimAccount = new PublicKey(
+    '35YYQV8wTUWxKoyMSAzhLSshxYSuiWZmtnsb94asAZfk'
+  );
+  const claimSignatures = await getSignatures(client, claimAccount.toString());
+  const claimTransaction = await getTransactions(
+    client,
+    claimSignatures.map((s) => s.signature)
+  );
+  const claimTransactionParsed = claimTransaction.map((t) =>
+    parseTransaction(t, owner)
+  );
 
   return getAirdropRaw({
     statics: airdropStatics,
     items: [
       {
-        amount: claimedAmount.dividedBy(10 ** layerDecimals).toNumber(),
-        isClaimed: true,
+        amount: totalAmount.dividedBy(10 ** layerDecimals).toNumber(),
+        isClaimed: false,
         label: 'LAYER',
         address: layerMint,
+        claims: claimTransactionParsed.flatMap((t) => {
+          if (t && t.blockTime) {
+            const layerChange = t?.balanceChanges.find(
+              (b) => b.address === layerMint
+            )?.change;
+            if (layerChange)
+              return {
+                amount: layerChange,
+                date: t.blockTime * 1000,
+                txId: t.signature,
+              };
+          }
+          return [];
+        }),
+        ref: '35YYQV8wTUWxKoyMSAzhLSshxYSuiWZmtnsb94asAZfk',
       },
     ],
   });

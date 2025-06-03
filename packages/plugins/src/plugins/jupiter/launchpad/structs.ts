@@ -22,6 +22,8 @@ export type Escrow = {
   escrowEndsAt: BigNumber;
   voteDelegate: PublicKey;
   isMaxLock: boolean;
+  partialUnstakingAmount: BigNumber;
+  padding: BigNumber;
   buffers: BigNumber[];
 };
 
@@ -37,7 +39,9 @@ export const escrowStruct = new BeetStruct<Escrow>(
     ['escrowEndsAt', i64],
     ['voteDelegate', publicKey],
     ['isMaxLock', bool],
-    ['buffers', uniformFixedSizeArray(u128, 10)],
+    ['partialUnstakingAmount', u64],
+    ['padding', u64],
+    ['buffers', uniformFixedSizeArray(u128, 9)],
   ],
   (args) => args as Escrow
 );
