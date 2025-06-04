@@ -18,6 +18,8 @@ export const applyPricesToElement = (
   element: PortfolioElement,
   tokenPrices: TokenPriceMap
 ): PortfolioElement => {
+  if (element.networkId !== tokenPrices.networkId) return element;
+
   if (element.type === PortfolioElementType.multiple) {
     return {
       ...element,
