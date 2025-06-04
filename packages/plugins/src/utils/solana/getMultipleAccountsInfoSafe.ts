@@ -7,6 +7,14 @@ import {
 
 const MAX_ACCOUNT = 100;
 
+function chunkArray<T>(array: T[], chunkSize: number): T[][] {
+  const chunks: T[][] = [];
+  for (let i = 0; i < array.length; i += chunkSize) {
+    chunks.push(array.slice(i, i + chunkSize));
+  }
+  return chunks;
+}
+
 export async function getMultipleAccountsInfoSafe(
   connection: Connection,
   publicKeys: PublicKey[],
@@ -15,15 +23,14 @@ export async function getMultipleAccountsInfoSafe(
   if (publicKeys.length <= MAX_ACCOUNT) {
     return connection.getMultipleAccountsInfo(publicKeys, commitmentOrConfig);
   }
-  const accountsInfo = [];
-  const publicKeysToFetch = [...publicKeys];
-  while (publicKeysToFetch.length !== 0) {
-    const currPublicKeysToFetch = publicKeysToFetch.splice(0, MAX_ACCOUNT);
-    const accountsInfoRes = await connection.getMultipleAccountsInfo(
-      currPublicKeysToFetch,
-      commitmentOrConfig
-    );
-    accountsInfo.push(...accountsInfoRes);
-  }
-  return accountsInfo;
+
+  const chunks = chunkArray(publicKeys, MAX_ACCOUNT);
+
+  const results = await Promise.all(
+    chunks.map(chunk =>
+      connection.getMultipleAccountsInfo(chunk, commitmentOrConfig)
+    )
+  );
+
+  return results.flat();
 }

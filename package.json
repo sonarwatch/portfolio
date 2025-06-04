@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "build": "nx build",
+    "build:webapp": "nx build webapp --with-deps",
     "nx:version": "run-s nx:version:core nx:version:plugins postversion",
     "nx:version:plugins": "nx run plugins:version --releaseAs=patch",
     "nx:version:core": "nx run core:version --releaseAs=patch",
