@@ -491,7 +491,14 @@ export function getCacheConfig(): CacheConfig {
   }
 }
 
+let cache: Cache | undefined;
+
 export function getCache() {
+  if (cache) {
+    return cache;
+  }
+
   const cacheConfig = getCacheConfig();
-  return new Cache(cacheConfig);
+  cache =  new Cache(cacheConfig);
+  return cache;
 }

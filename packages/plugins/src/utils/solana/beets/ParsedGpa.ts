@@ -2,6 +2,7 @@ import { GpaBuilder } from '@metaplex-foundation/beet-solana';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { BeetField } from '@metaplex-foundation/beet';
 import { GlobalBeetStruct, ParsedAccount } from '../types';
+import { getProgramAccounts } from '../getProgramAccounts';
 
 export class ParsedGpa<T> {
   protected gpaBuilder;
@@ -51,8 +52,12 @@ export class ParsedGpa<T> {
   }
 
   async run() {
-    const accounts = await this.gpaBuilder.run(this.connection);
-    return accounts.map(
+    const accountsRes = await getProgramAccounts(
+      this.connection,
+      this.programId,
+      this.gpaBuilder.config.filters
+    );
+    return accountsRes.map(
       (account) =>
         ({
           pubkey: account.pubkey,
