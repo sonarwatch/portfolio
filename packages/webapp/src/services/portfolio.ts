@@ -12,6 +12,8 @@ import { Token, TokenRegistry } from '@sonarwatch/token-registry';
 
 class PortfolioService {
   private static instance: PortfolioService;
+  private static readonly NETWORK = NetworkId.solana;
+  private static readonly PREFIX = 'portfolio';
 
   private readonly cache: Cache;
   private readonly registry: TokenRegistry;
@@ -29,6 +31,15 @@ class PortfolioService {
   }
 
   public getPortfolio = async (address: string) => {
+    const cachedPortfolio = await this.cache.getItem(`${address}`, {
+      networkId: PortfolioService.NETWORK,
+      prefix: PortfolioService.PREFIX
+    });
+
+    if (cachedPortfolio) {
+      return cachedPortfolio
+    }
+
     const fetchers = fetchersByAddressSystem['solana'];
     const result = await runFetchersByNetworkId(
       address,
@@ -60,7 +71,19 @@ class PortfolioService {
 
       return acc;
     }, {} as Record<string, Token>);
-    return { ...result, tokenInfo: { solana: tokenInfoMap } };
+
+    const walletPortfolio = {
+      ...result,
+      tokenInfo: { solana: tokenInfoMap }
+    };
+
+    await this.cache.setItem(`${address}`, walletPortfolio, {
+      networkId: PortfolioService.NETWORK,
+      prefix: PortfolioService.PREFIX,
+      ttl: 10000
+    });
+
+    return walletPortfolio;
   };
 
   public getDefiPortfolio = async (address: string, fetcherId: string) => {
