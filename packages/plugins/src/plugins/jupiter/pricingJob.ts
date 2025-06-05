@@ -56,10 +56,10 @@ const executor: JobExecutor = async (cache: Cache) => {
     decimalsMap.set(token.address, Number(token.decimals));
   });
 
-  const prices = await getJupiterPrices([...mintsPk]);
+  const assets = await getJupiterPrices([...mintsPk]);
 
   const sources: TokenPriceSource[] = [];
-  prices.forEach((price, mint) => {
+  assets.forEach((asset, mint) => {
     const decimals = decimalsMap.get(mint);
     if (!decimals) return;
     const source: TokenPriceSource = {
@@ -68,7 +68,8 @@ const executor: JobExecutor = async (cache: Cache) => {
       id: jupiterSourceId,
       networkId: NetworkId.solana,
       timestamp: Date.now(),
-      price,
+      price: asset.usdPrice,
+      priceChange24h: asset.priceChange24h,
       platformId: walletTokensPlatformId,
       weight: 1,
     };

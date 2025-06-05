@@ -1,6 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import axios, { AxiosResponse } from 'axios';
-import { DatapiAssetsResponse } from './types';
+import { DatapiAsset, DatapiAssetsResponse } from './types';
 import { jupDatapiHeaderKey, jupDatapiHeaderValue } from './constants';
 
 const maxIdsPerRequest = 50;
@@ -40,10 +40,10 @@ export async function getJupiterPrices(mints: PublicKey[]) {
     pricesData.push(res.data.assets);
   } while (uniqueMints.at(start));
 
-  const prices: Map<string, number> = new Map();
+  const prices: Map<string, DatapiAsset> = new Map();
   for (const priceData of pricesData) {
-    for (const [, value] of Object.entries(priceData)) {
-      if (value.usdPrice) prices.set(value.id, value.usdPrice);
+    for (const [, asset] of Object.entries(priceData)) {
+      if (asset.usdPrice) prices.set(asset.id, asset);
     }
   }
 

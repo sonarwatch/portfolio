@@ -118,17 +118,19 @@ export type AsrResponse = {
   claim: ClaimProof[];
 };
 
+export type DatapiAsset = {
+  id: string;
+  chain: string;
+  symbol: string;
+  icon: string;
+  decimals: number;
+  usdPrice: number;
+  circSupply: number;
+  priceChange24h: number;
+};
+
 export type DatapiAssetsResponse = {
-  assets: {
-    id: string;
-    chain: string;
-    symbol: string;
-    icon: string;
-    decimals: number;
-    usdPrice: number;
-    circSupply: number;
-    priceChange24h: number;
-  }[];
+  assets: DatapiAsset[];
 };
 
 export type TokenResponse = {
