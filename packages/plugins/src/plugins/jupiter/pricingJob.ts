@@ -69,7 +69,9 @@ const executor: JobExecutor = async (cache: Cache) => {
       networkId: NetworkId.solana,
       timestamp: Date.now(),
       price: asset.usdPrice,
-      priceChange24h: asset.priceChange24h,
+      priceChange24h: asset.priceChange24h
+        ? asset.priceChange24h / 100
+        : undefined,
       platformId: walletTokensPlatformId,
       weight: 1,
     };
