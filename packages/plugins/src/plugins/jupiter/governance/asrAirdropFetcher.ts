@@ -8,6 +8,7 @@ import { getClientSolana } from '../../../utils/clients';
 import { lfgDisProgram } from '../launchpad/constants';
 import { deriveClaimStatus } from '../../../utils/solana/jupiter/deriveClaimStatus';
 import { jupMint } from '../constants';
+import { getClaimTransactions } from '../../../utils/solana/jupiter/getClaimTransactions';
 
 function getInegibleItems(items: AsrItems) {
   return Array.from(items).map(([address, { label }]) => ({
@@ -65,8 +66,12 @@ export function getAsrAirdropExecutor(
       claimAddresses
     );
 
-    const txClaimAccounts = await Promise.all([
-      ...claimAddresses.map((add) => client.getSignaturesForAddress(add)),
+    const allClaimA = await Promise.all([
+      ...claimAddresses.map((add, i) => {
+        const claimProofRes = claimsProof.data.claim[i];
+        if (!claimProofRes.mint) return [];
+        return getClaimTransactions(owner, add, claimProofRes.mint);
+      }),
     ]);
 
     return getAirdropRaw({
@@ -78,7 +83,7 @@ export function getAsrAirdropExecutor(
           const asrItem = config.items.get(claimProofRes.mint);
           if (!asrItem) return [];
 
-          const claimTx = txClaimAccounts[i][0];
+          const claims = allClaimA[i];
           const { label, decimals } = asrItem;
 
           const amount = new BigNumber(claimProofRes.amount)
@@ -91,16 +96,7 @@ export function getAsrAirdropExecutor(
               label,
               address: claimProofRes.mint,
               ref: claimAcc ? claimAddresses[i].toString() : undefined,
-              claims:
-                claimAcc && claimTx && claimTx.blockTime
-                  ? [
-                      {
-                        date: claimTx.blockTime * 1000,
-                        amount,
-                        txId: claimTx.signature,
-                      },
-                    ]
-                  : undefined,
+              claims,
             },
           ];
         })
