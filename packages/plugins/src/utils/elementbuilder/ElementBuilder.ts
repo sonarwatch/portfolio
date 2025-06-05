@@ -4,10 +4,10 @@ import {
   PortfolioElementLabel,
   PortfolioElementTypeType,
   SourceRef,
+  TokenPriceMap,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Params } from './Params';
-import { TokenPriceMap } from '../../TokenPriceMap';
 
 export abstract class ElementBuilder {
   readonly type: PortfolioElementTypeType;

@@ -4,8 +4,14 @@ import { ServiceDefinition } from '../../ServiceDefinition';
 const platformId = 'ensofi';
 
 const lendingContract: Contract = {
-  name: 'Lending',
+  name: 'Lending Fixed Terms',
   address: 'ensoQXKf4MvNuEC3M9xmcqUqgucFNd5UzAonDdUtgqn',
+  platformId,
+};
+
+const lendingFlexContract: Contract = {
+  name: 'Lending Flexible Terms',
+  address: 'enseM1J4dGgwEw3qDyuVBi7YsjgwqvKzuX3ZLaboLGv',
   platformId,
 };
 
@@ -23,6 +29,14 @@ const lendingService: ServiceDefinition = {
   contracts: [lendingContract],
 };
 
+const lendingFlexService: ServiceDefinition = {
+  id: `${platformId}-lending-flex`,
+  name: 'Lending',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [lendingFlexContract],
+};
+
 const liquidityService: ServiceDefinition = {
   id: `${platformId}-liquidity`,
   name: 'Liquidity',
@@ -31,5 +45,9 @@ const liquidityService: ServiceDefinition = {
   contracts: [liquidityContract],
 };
 
-export const services: ServiceDefinition[] = [lendingService, liquidityService];
+export const services: ServiceDefinition[] = [
+  lendingService,
+  lendingFlexService,
+  liquidityService,
+];
 export default services;

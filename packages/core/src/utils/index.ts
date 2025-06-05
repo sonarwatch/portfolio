@@ -45,3 +45,5 @@ export * from './healthRatioToHealthFactor';
 export * from './promiseTimeout';
 export * from './isPortfolioElement';
 export * from './getIsVerifiedFromAsset';
+export * from './TokenPriceMap';
+export * from './applyPricesToElements';

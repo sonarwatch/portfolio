@@ -11,6 +11,7 @@ import {
   pushTokenPriceSource,
   TokenPrice,
   tokenPriceFromSources,
+  TokenPriceMap,
   TokenPriceSource,
   tokenPriceSourceTtl,
   TokenYield,
@@ -22,7 +23,6 @@ import memoryDriver, {
   MemoryDriver,
 } from './memoryDriver';
 import runInBatch from './utils/misc/runInBatch';
-import { TokenPriceMap } from './TokenPriceMap';
 import { TokenYieldMap } from './TokenYieldMap';
 
 export type TransactionOptions = {

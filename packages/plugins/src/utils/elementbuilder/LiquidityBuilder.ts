@@ -3,9 +3,9 @@ import {
   NetworkIdType,
   PortfolioAsset,
   PortfolioLiquidity,
+  TokenPriceMap,
   Yield,
 } from '@sonarwatch/portfolio-core';
-import { TokenPriceMap } from '../../TokenPriceMap';
 import { AssetTokenBuilder } from './AssetTokenBuilder';
 import { LiquidityParams, PortfolioAssetTokenParams } from './Params';
 

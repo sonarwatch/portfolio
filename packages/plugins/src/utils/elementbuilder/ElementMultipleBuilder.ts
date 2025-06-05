@@ -4,6 +4,7 @@ import {
   PortfolioAsset,
   PortfolioElementMultiple,
   PortfolioElementType,
+  TokenPriceMap,
 } from '@sonarwatch/portfolio-core';
 import { ElementBuilder } from './ElementBuilder';
 import { AssetTokenBuilder } from './AssetTokenBuilder';
@@ -12,7 +13,6 @@ import {
   PortfolioAssetGenericParams,
   PortfolioAssetTokenParams,
 } from './Params';
-import { TokenPriceMap } from '../../TokenPriceMap';
 import { AssetBuilder } from './AssetBuilder';
 import { AssetGenericBuilder } from './AssetGenericBuilder';
 

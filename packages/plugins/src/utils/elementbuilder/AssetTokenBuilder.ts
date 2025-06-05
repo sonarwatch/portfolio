@@ -3,11 +3,11 @@ import {
   PortfolioAsset,
   PortfolioAssetAttributes,
   SourceRef,
+  TokenPriceMap,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
 import tokenPriceToAssetToken from '../misc/tokenPriceToAssetToken';
-import { TokenPriceMap } from '../../TokenPriceMap';
 import tokenPriceToAssetTokens from '../misc/tokenPriceToAssetTokens';
 import { AssetBuilder } from './AssetBuilder';
 import { PortfolioAssetTokenParams } from './Params';

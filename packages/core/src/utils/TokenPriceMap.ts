@@ -1,8 +1,6 @@
-import {
-  formatTokenAddress,
-  NetworkIdType,
-  TokenPrice,
-} from '@sonarwatch/portfolio-core';
+import { NetworkIdType } from '../Network';
+import { TokenPrice } from '../TokenPrice';
+import { formatTokenAddress } from './formatTokenAddress';
 
 export class TokenPriceMap extends Map<string, TokenPrice> {
   readonly networkId: NetworkIdType;

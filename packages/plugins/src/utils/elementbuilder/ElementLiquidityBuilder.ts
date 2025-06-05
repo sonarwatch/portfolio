@@ -4,10 +4,10 @@ import {
   PortfolioElementLiquidity,
   PortfolioElementType,
   PortfolioLiquidity,
+  TokenPriceMap,
 } from '@sonarwatch/portfolio-core';
 import { ElementBuilder } from './ElementBuilder';
 import { LiquidityParams, Params } from './Params';
-import { TokenPriceMap } from '../../TokenPriceMap';
 import { LiquidityBuilder } from './LiquidityBuilder';
 
 export class ElementLiquidityBuilder extends ElementBuilder {

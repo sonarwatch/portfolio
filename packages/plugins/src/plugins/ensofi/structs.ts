@@ -254,3 +254,199 @@ export const protocolPositionStateStruct =
     ],
     (args) => args as ProtocolPositionState
   );
+
+export type BigFractionBytes = {
+  value0: BigNumber;
+  value1: BigNumber;
+  value2: BigNumber;
+  value3: BigNumber;
+  padding: BigNumber;
+  padding1: BigNumber;
+};
+
+const bigFractionBytesStruct = new BeetStruct<BigFractionBytes>(
+  [
+    ['value0', u64],
+    ['value1', u64],
+    ['value2', u64],
+    ['value3', u64],
+    ['padding', u64],
+    ['padding1', u64],
+  ],
+  (args) => args as BigFractionBytes
+);
+
+type LastUpdate = {
+  slot: BigNumber;
+  stale: number;
+  price_status: number;
+  padding: number[];
+};
+
+const lastUpdateStruct = new BeetStruct<LastUpdate>(
+  [
+    ['slot', u64],
+    ['stale', u8],
+    ['price_status', u8],
+    ['padding', uniformFixedSizeArray(u8, 6)],
+  ],
+  (args) => args as LastUpdate
+);
+
+type ObligationCollateral = {
+  reserve_storage: PublicKey;
+  deposited_amount: BigNumber;
+  market_value_sf: BigNumber;
+};
+
+const obligationCollateralStruct = new BeetStruct<ObligationCollateral>(
+  [
+    ['reserve_storage', publicKey],
+    ['deposited_amount', u64],
+    ['market_value_sf', u128],
+  ],
+  (args) => args as ObligationCollateral
+);
+
+type ObligationLiquidity = {
+  reserve_storage: PublicKey;
+  cumulative_borrow_rate_bsf: BigFractionBytes;
+  borrowed_amount_sf: BigNumber;
+  market_value_sf: BigNumber;
+  borrow_factor_adjusted_market_value_sf: BigNumber;
+};
+
+const obligationLiquidityStruct = new BeetStruct<ObligationLiquidity>(
+  [
+    ['reserve_storage', publicKey],
+    ['cumulative_borrow_rate_bsf', bigFractionBytesStruct],
+    ['borrowed_amount_sf', u128],
+    ['market_value_sf', u128],
+    ['borrow_factor_adjusted_market_value_sf', u128],
+  ],
+  (args) => args as ObligationLiquidity
+);
+
+export type ObligationFlex = {
+  accountDiscriminator: number[];
+  version: number;
+  owner: PublicKey;
+  lowest_reserve_deposit_liquidation_ltv: BigNumber;
+  total_deposited_value_sf: BigNumber;
+  deposits: ObligationCollateral[];
+  padding_1: ObligationCollateral[];
+  borrow_factor_adjusted_debt_value_sf: BigNumber;
+  borrowed_assets_market_value_sf: BigNumber;
+  highest_borrow_factor_pct: BigNumber;
+  allowed_borrow_value_sf: BigNumber;
+  unhealthy_borrow_value_sf: BigNumber;
+  borrows: ObligationLiquidity[];
+  padding_2: ObligationLiquidity[];
+  deposit_asset_tier: number[];
+  padding_3: number[];
+  borrow_asset_tier: number[];
+  padding_4: number[];
+  num_of_obsolete_reserves: number;
+  has_debt: number;
+  last_update: LastUpdate;
+  locking: number;
+  liquidating_asset_position: number;
+};
+
+export const obligationFlexStruct = new FixableBeetStruct<ObligationFlex>(
+  [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+    ['version', u8],
+    ['owner', publicKey],
+    ['lowest_reserve_deposit_liquidation_ltv', u64],
+    ['total_deposited_value_sf', u128],
+    ['deposits', uniformFixedSizeArray(obligationCollateralStruct, 3)],
+    ['padding_1', uniformFixedSizeArray(obligationCollateralStruct, 10)],
+    ['borrow_factor_adjusted_debt_value_sf', u128],
+    ['borrowed_assets_market_value_sf', u128],
+    ['highest_borrow_factor_pct', u64],
+    ['allowed_borrow_value_sf', u128],
+    ['unhealthy_borrow_value_sf', u128],
+    ['borrows', uniformFixedSizeArray(obligationLiquidityStruct, 3)],
+    ['padding_2', uniformFixedSizeArray(obligationLiquidityStruct, 10)],
+    ['deposit_asset_tier', uniformFixedSizeArray(u8, 3)],
+    ['padding_3', uniformFixedSizeArray(u8, 10)],
+    ['borrow_asset_tier', uniformFixedSizeArray(u8, 3)],
+    ['padding_4', uniformFixedSizeArray(u8, 10)],
+    ['num_of_obsolete_reserves', u8],
+    ['has_debt', u8],
+    ['last_update', lastUpdateStruct],
+    ['locking', u8],
+    ['liquidating_asset_position', u8],
+  ],
+  (args) => args as ObligationFlex
+);
+
+type ReserveLiquidity = {
+  token_mint: PublicKey;
+  supply_vault: PublicKey;
+  fee_vault: PublicKey;
+  available_amount: BigNumber;
+  borrowed_amount_sf: BigNumber;
+  market_price_sf: BigNumber;
+  market_price_last_updated_ts: BigNumber;
+  mint_decimals: number;
+  deposit_limit_crossed_ts: BigNumber;
+  borrow_limit_crossed_ts: BigNumber;
+  cumulative_borrow_rate_bsf: BigFractionBytes;
+  accumulated_protocol_fees_sf: BigNumber;
+  token_program: PublicKey;
+};
+
+const reserveLiquidityStruct = new BeetStruct<ReserveLiquidity>(
+  [
+    ['token_mint', publicKey],
+    ['supply_vault', publicKey],
+    ['fee_vault', publicKey],
+    ['available_amount', u64],
+    ['borrowed_amount_sf', u128],
+    ['market_price_sf', u128],
+    ['market_price_last_updated_ts', u64],
+    ['mint_decimals', u8],
+    ['deposit_limit_crossed_ts', u64],
+    ['borrow_limit_crossed_ts', u64],
+    ['cumulative_borrow_rate_bsf', bigFractionBytesStruct],
+    ['accumulated_protocol_fees_sf', u128],
+    ['token_program', publicKey],
+  ],
+  (args) => args as ReserveLiquidity
+);
+
+type ReserveCollateral = {
+  token_mint: PublicKey;
+  mint_total_supply: BigNumber;
+  supply_vault: PublicKey;
+};
+
+const reserveCollateralStruct = new BeetStruct<ReserveCollateral>(
+  [
+    ['token_mint', publicKey],
+    ['mint_total_supply', u64],
+    ['supply_vault', publicKey],
+  ],
+  (args) => args as ReserveCollateral
+);
+
+export type Reserve = {
+  accountDiscriminator: number[];
+  version: number;
+  padding: number[];
+  liquidity: ReserveLiquidity;
+  collateral: ReserveCollateral;
+};
+
+export const reserveStruct = new FixableBeetStruct<Reserve>(
+  [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+    ['version', u8],
+    ['padding', uniformFixedSizeArray(u8, 7)],
+    ['liquidity', reserveLiquidityStruct],
+    ['collateral', reserveCollateralStruct],
+  ],
+  (args) => args as Reserve
+);

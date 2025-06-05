@@ -5,6 +5,7 @@ import {
   PortfolioAsset,
   PortfolioElementLeverage,
   PortfolioElementType,
+  TokenPriceMap,
 } from '@sonarwatch/portfolio-core';
 import { ElementBuilder } from './ElementBuilder';
 import {
@@ -13,7 +14,6 @@ import {
   Params,
   PortfolioAssetTokenParams,
 } from './Params';
-import { TokenPriceMap } from '../../TokenPriceMap';
 import {
   CrossLevPositionBuilder,
   IsoLevPositionBuilder,

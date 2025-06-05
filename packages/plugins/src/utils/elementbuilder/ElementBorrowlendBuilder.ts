@@ -5,6 +5,7 @@ import {
   PortfolioAssetGeneric,
   PortfolioElementBorrowLend,
   PortfolioElementType,
+  TokenPriceMap,
   UsdValue,
   Yield,
 } from '@sonarwatch/portfolio-core';
@@ -16,7 +17,6 @@ import {
   PortfolioAssetGenericParams,
   PortfolioAssetTokenParams,
 } from './Params';
-import { TokenPriceMap } from '../../TokenPriceMap';
 import { AssetBuilder } from './AssetBuilder';
 import { AssetTokenBuilder } from './AssetTokenBuilder';
 import { AssetGenericBuilder } from './AssetGenericBuilder';
