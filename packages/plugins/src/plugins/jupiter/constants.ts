@@ -1,6 +1,10 @@
 import { PublicKey } from '@solana/web3.js';
 
 export const jupApiParams = process.env['PORTFOLIO_JUP_API_PARAM'];
+export const jupDatapiHeaderKey =
+  process.env['PORTFOLIO_JUP_DATAPI_HEADER_KEY'];
+export const jupDatapiHeaderValue =
+  process.env['PORTFOLIO_JUP_DATAPI_HEADER_VALUE'];
 
 export const voteProgramId = new PublicKey(
   'voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj'

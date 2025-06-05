@@ -118,18 +118,19 @@ export type AsrResponse = {
   claim: ClaimProof[];
 };
 
-export type PriceResponse = {
-  data: Record<
-    string,
-    {
-      id: string;
-      mintSymbol: string;
-      vsToken: string;
-      vsTokenSymbol: string;
-      price: number;
-    } | null
-  >;
-  timeTaken: number;
+export type DatapiAsset = {
+  id: string;
+  chain: string;
+  symbol: string;
+  icon: string;
+  decimals: number;
+  usdPrice: number;
+  circSupply: number;
+  priceChange24h: number;
+};
+
+export type DatapiAssetsResponse = {
+  assets: DatapiAsset[];
 };
 
 export type TokenResponse = {
