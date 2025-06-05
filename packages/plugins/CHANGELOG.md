@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.27](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.26...plugins-0.15.27) (2025-06-05)
+
+
+### Bug Fixes
+
+* **plugins:** correct priceChange24h calculation in pricingJob ([a7aa2ef](https://github.com/sonarwatch/portfolio/commit/a7aa2efb6df687e30f57fde2e6e986bdf55b5091))
+
+
+
 ## [0.15.26](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.25...plugins-0.15.26) (2025-06-05)
 
 
