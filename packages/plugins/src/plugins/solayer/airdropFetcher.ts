@@ -1,11 +1,6 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { Claim, NetworkId } from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
 import BigNumber from 'bignumber.js';
-import {
-  getTransactions,
-  parseTransaction,
-  getSignatures,
-} from '@sonarwatch/tx-parser';
 import { PublicKey } from '@solana/web3.js';
 import {
   AirdropFetcher,
@@ -22,6 +17,8 @@ import {
 } from './constants';
 import { AirdropResponse } from './types';
 import { getClientSolana } from '../../utils/clients';
+import { getClaimTransactions } from '../../utils/solana/jupiter/getClaimTransactions';
+import { getProgramAccounts } from '../../utils/solana';
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
   const client = getClientSolana();
@@ -58,18 +55,30 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
 
   const totalAmount = new BigNumber(res.data.totalAmount);
 
-  // This is for test purpose
-  const claimAccount = new PublicKey(
-    '35YYQV8wTUWxKoyMSAzhLSshxYSuiWZmtnsb94asAZfk'
-  );
-  const claimSignatures = await getSignatures(client, claimAccount.toString());
-  const claimTransaction = await getTransactions(
+  const claimAccounts = await getProgramAccounts(
     client,
-    claimSignatures.map((s) => s.signature)
+    new PublicKey('ARDPkhymCbfdan375FCgPnBJQvUfHeb7nHVdBfwWSxrp'),
+    [
+      {
+        memcmp: {
+          offset: 0,
+          bytes: 'NiUarf1ngHA',
+        },
+      },
+      {
+        memcmp: {
+          offset: 9,
+          bytes: owner,
+        },
+      },
+    ]
   );
-  const claimTransactionParsed = claimTransaction.map((t) =>
-    parseTransaction(t, owner)
-  );
+  const claimAccount = claimAccounts[0];
+
+  let claims: Claim[] = [];
+  if (claimAccount) {
+    claims = await getClaimTransactions(owner, claimAccount.pubkey, layerMint);
+  }
 
   return getAirdropRaw({
     statics: airdropStatics,
@@ -79,21 +88,8 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
         isClaimed: false,
         label: 'LAYER',
         address: layerMint,
-        claims: claimTransactionParsed.flatMap((t) => {
-          if (t && t.blockTime) {
-            const layerChange = t?.balanceChanges.find(
-              (b) => b.address === layerMint
-            )?.change;
-            if (layerChange)
-              return {
-                amount: layerChange,
-                date: t.blockTime * 1000,
-                txId: t.signature,
-              };
-          }
-          return [];
-        }),
-        ref: '35YYQV8wTUWxKoyMSAzhLSshxYSuiWZmtnsb94asAZfk',
+        claims,
+        ref: claimAccount ? claimAccount.pubkey.toString() : undefined,
       },
     ],
   });

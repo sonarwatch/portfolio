@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { Claim, NetworkId } from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
 import {
   AirdropFetcher,
@@ -10,6 +10,7 @@ import { airdropApi, airdropStatics, grassMint, platformId } from './constants';
 import { AirdropResponse } from './types';
 import { getClientSolana } from '../../utils/clients';
 import { deriveClaimStatus } from './helpers';
+import { getClaimTransactions } from '../../utils/solana/jupiter/getClaimTransactions';
 
 const distributor = '6op4vvD7he9Nqs6eXCQvRmDtGYzMkRoDYcFUfF7pK5YS';
 const executor: AirdropFetcherExecutor = async (owner: string) => {
@@ -45,10 +46,22 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
   const claimStatus = deriveClaimStatus(owner, distributor);
   const claimAccount = await client.getAccountInfo(claimStatus);
 
+  let claims: Claim[] = [];
+  if (claimAccount) {
+    claims = await getClaimTransactions(owner, claimStatus, grassMint);
+  }
+
   return getAirdropRaw({
     statics: airdropStatics,
     items: [
-      { amount, isClaimed: !!claimAccount, label: 'GRASS', address: grassMint },
+      {
+        amount,
+        isClaimed: !!claimAccount,
+        label: 'GRASS',
+        address: grassMint,
+        claims,
+        ref: claimAccount ? claimStatus.toString() : undefined,
+      },
     ],
   });
 };
