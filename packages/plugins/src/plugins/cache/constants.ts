@@ -13,7 +13,7 @@ export const CACHE_CONFIG: Record<ProgramCacheCategory, { ttlHours: number; maxA
   },
   [ProgramCacheCategory.LARGE]: {
     ttlHours: 1,
-    maxAccounts: 15000,
+    maxAccounts: 80000,
   },
   [ProgramCacheCategory.DENY]: {
     ttlHours: 0,
@@ -26,37 +26,36 @@ export const programs = [
   'MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD',
   // 'MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA', Cannot create a string longer than 0x1fffffe8 characters
   // 'So1endDq2YkqhipRh3WViPa8hdiSpxWy6z3Z6tMCpAo', Cannot create a string longer than 0x1fffffe8 characters
-  // 'EhhTKczWMGQt46ynNeRX1WfeagwwJd7ufHvCDjRxjo5Q', bad 308k items
   'CBuCnLe26faBpcBP2fktp4rp8abpcAnTWft6ZrP5Q4T',
   // '9KEPoZmtHUrBbhWN1v1KWLMkkvwY6WLtAVUCPRtRjP4z', bad 257k items
   // 'EhhTKczWMGQt46ynNeRX1WfeagwwJd7ufHvCDjRxjo5Q', bad 380k items
-  // 'FarmqiPv5eAj3j1GMdMCMUGXqPUvmquZtMy86QH6rzhG', bad 30k items
+  'FarmqiPv5eAj3j1GMdMCMUGXqPUvmquZtMy86QH6rzhG',
   // 'LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo', Cannot create a string longer than 0x1fffffe8 characters 2x
-  // 'vaU6kP7iNEGkbmPkLmZfGwiGxd4Mob24QQCie5R9kd2', bad 75k items
+  'vaU6kP7iNEGkbmPkLmZfGwiGxd4Mob24QQCie5R9kd2',
   // 'FEESngU3neckdwib9X3KWqdL7Mjmqk9XNp3uh5JbP4KP', bad 90k items
-  // 'TSWAPaqyCSx2KABk68Shruf4rp7CxcNi8hAsbdwmHbN', bad 34k items
+  'TSWAPaqyCSx2KABk68Shruf4rp7CxcNi8hAsbdwmHbN',
   '4MangoMjqJ2firMokCjjGgoK8d4MXcrgL7XJaL3w6fVg',
   'zF2vSz6V9g1YHGmfrzsY497NJzbRr84QUrPry4bLQ25',
   'LiMoM9rMhrdYrfzUCxQppvxCSG1FcrUK9G8uLq4A1GF',
   // 'PERPHjGBqRHArX4DySjwM6UJHiR3sWAatqfdBS2qQJu', bad 684k items
   'VALaaymxQh2mNy2trH9jUqHT1mTow76wpTcGmSWSwJe',
-  // 'jupoNjAxXgZ4rjzxzPMP4oxduvQsQtZzyknqvzYNrNu', bad 54k items
+  'jupoNjAxXgZ4rjzxzPMP4oxduvQsQtZzyknqvzYNrNu',
   // 'j1o2qRpjcyUwEvwtcfhEQefh773ZgjxcVRry7LDqg5X', bad 230k items
-  // 'DCA265Vj8a9CEuX1eb1LWRnDT7uK6q1xMipnNyatn23M', bad 26k items
-  // 'LocpQgucEQHbqNABEYvBvwoxCPsSbG91A1QaQhQQqjn', bad 31k items
+  'DCA265Vj8a9CEuX1eb1LWRnDT7uK6q1xMipnNyatn23M',
+  'LocpQgucEQHbqNABEYvBvwoxCPsSbG91A1QaQhQQqjn',
   'GFXsSL5sSaDfNFQUYsHekbWBW1TsFdjDYzACh62tEHxn',
   'STKRWxT4irmTthSJydggspWmkc3ovYHx62DHLPVv1f1',
   'GAMMA7meSFWaBXF25oSUgmGRwaW6sCMFLmBNiMSdbHVT',
-  // 'rDeFiHPjHZRLiz4iBzMw3zv6unZs4VwdU6qQcVd3NSK', bad 65k items 2x
-  // 'rNfTQD84kwMbcRpWpLR92BVmxbuwrZc3o5HTauAZiXs', abd 23k items 2x
+  'rDeFiHPjHZRLiz4iBzMw3zv6unZs4VwdU6qQcVd3NSK',
+  'rNfTQD84kwMbcRpWpLR92BVmxbuwrZc3o5HTauAZiXs',
   'rain2M5b9GeFCk792swkwUu51ZihHJb3SUQ8uHxSRJf',
   'LLoc8JX5dLAMVzbzTNKG6EFpkyJ9XCsVAGkqwQKUJoa',
-  // 'Port7uDYB3wk6GJAw4KT1WpTeMtSu9bTcChBHkX2LfR', bad 32k items
+  'Port7uDYB3wk6GJAw4KT1WpTeMtSu9bTcChBHkX2LfR',
   // 'strmRqUCoQUgGUan5YhzUZa6KqdzwX5L6FpUxfmKg5m', bad 191k items
   // '3parcLrT7WnXAcyPfkCz49oofuuf2guUKkjuFkAhZW8Y', bad 306k items
-  // '2gWf5xLAzZaKX9tQj9vuXsaxTWtzTZDFRn21J3zjNVgu', bad 33k items
+  '2gWf5xLAzZaKX9tQj9vuXsaxTWtzTZDFRn21J3zjNVgu',
   // 'pytS9TjG1qyAZypk7n8rw8gfW9sUaqqYyMhJQ4E7JCQ',  Cannot create a string longer than 0x1fffffe8 characters
-  // 'vAuLTsyrvSfZRuRB3XgvkPwNGgYSs9YRYymVebLKoxR', bad 22k items
+  'vAuLTsyrvSfZRuRB3XgvkPwNGgYSs9YRYymVebLKoxR',
   '9Fcn3Fd4d5ocrb12xCUtEvezxcjFEAyHBPfrZDiPt9Qj',
   'EuSLjg23BrtwYAk1t4TFe5ArYSXCVXLBqrHRBfWQiTeJ',
   'BVddkVtFJLCihbVrtLo8e3iEd9NftuLunaznAxFFW8vf',
@@ -70,7 +69,7 @@ export const programs = [
   'TLPv2tuSVvn3fSk8RgW3yPddkp5oFivzZV3rA9hQxtX',
   // 'PhoeNiXZ8ByJGLkxNfZRnkUfjvmuYqLR89jjFHGqdXY', bad 107k items
   'UXDSkps5NR8Lu1HB5uPLFfuB34hZ6DCk7RhYZZtGzbF',
-  // 'MGoV9M6YUsdhJzjzH9JMCW2tRe1LLxF1CjwqKC7DR1B', bad 16k items
+  'MGoV9M6YUsdhJzjzH9JMCW2tRe1LLxF1CjwqKC7DR1B',
   // '4tdmkuY6EStxbS6Y8s5ueznL3VPMSugrvQuDeAHGZhSt', bad 213k items x4
   'BanxxEcFZPJLKhS59EkwTa8SZez8vDYTiJVN78mGHWDi',
   'Vau1t6sLNxnzB7ZDsef8TLbPLfyZMYXH8WTNqUdm9g8',
@@ -79,15 +78,15 @@ export const programs = [
   'HYzrD877vEcBgd6ySKPpa3pcMbqYEmwEF1GFQmvuswcC',
   // 'stPdYNaJNsV3ytS9Xtx4GXXXRcVqVS6x66ZFa26K39S', bad 116k x3
   // 'JCFRaPv7852ESRwJJGRy2mysUMydXZgVVhrMLmExvmVp', bad 134k x2
-  // 'SHARKobtfF1bHhxD2eqftjHBdVSCbKo9JtgK71FhELP', bad 19k x5
+  'SHARKobtfF1bHhxD2eqftjHBdVSCbKo9JtgK71FhELP',
   'bon4Kh3x1uQK16w9b9DKgz3Aw4AP1pZxBJk55Q6Sosb',
-  // '8BYmYs3zsBhftNELJdiKsCN2WyCBbrTwXd6WG4AFPr6n', bad 15+k
+  '8BYmYs3zsBhftNELJdiKsCN2WyCBbrTwXd6WG4AFPr6n',
   'FoXpJL1exLBJgHVvdSHNKyKu2xX2uatctH9qp6dLmfpP',
   's1aysqpEyZyijPybUV89oBGeooXrR22wMNLjnG2SWJA',
   'QMMD16kjauP5knBwxNUJRZ1Z5o3deBuFrqVjBVmmqto',
   // 'QMNeHCGYnLVDn1icRAfQZpjPLBNkfGbSKRB83G5d8KB', bad 165k
   'rev31KMq4qzt1y1iw926p694MHVVWT57caQrsHLFA4x',
-  // '1oopBoJG58DgkUVKkEzKgyG9dvRmpgeEm1AVjoHkF78', bad 15k+ x3
+  '1oopBoJG58DgkUVKkEzKgyG9dvRmpgeEm1AVjoHkF78',
   '6UBsNdYq3MEao1m9NXQD1VEmXvptUXhfMwdHANGAo4bs',
   'B3FS1X2PZPBrtBZiyAN9oqABnu3o5YWwdY5ioqoVh64P',
   'SkFLfp7eSRsan13dEUZSVzMBj3vdyZnhaasFKQTzuiE',
@@ -101,15 +100,15 @@ export const programs = [
   '8F2VM13kdMBaHtcXPHmArtLueg7rfsa3gnrgGjAy4oCu',
   'ensoQXKf4MvNuEC3M9xmcqUqgucFNd5UzAonDdUtgqn',
   'ensSuXMeaUhRC7Re3ukaxLcX2E4qmd2LZxbxsK9XcWz',
-  // 'poo1sKMYsZtDDS7og73L68etJQYyn6KXhXTLz1hizJc', bad 24k
+  'poo1sKMYsZtDDS7og73L68etJQYyn6KXhXTLz1hizJc',
   'KJ6b6PswEZeNSwEh1po51wxnbX1C3FPhQPhg8eD2Y6E',
-  // 'dvyFwAPniptQNb1ey4eM12L8iLHrzdiDsPPDndd6xAR', bad 24k x2
-  // 'ExponentnaRg3CQbW6dqQNZKXp7gtZ9DGMp1cwC4HAS7', bad 41k x2
-  // 'tuna4uSQZncNeeiAMKbstuxA9CUkHH6HmC64wgmnogD', bad 15k+ x2
+  'dvyFwAPniptQNb1ey4eM12L8iLHrzdiDsPPDndd6xAR',
+  'ExponentnaRg3CQbW6dqQNZKXp7gtZ9DGMp1cwC4HAS7',
+  'tuna4uSQZncNeeiAMKbstuxA9CUkHH6HmC64wgmnogD',
   '3i8rGP3ex8cjs7YYWrQeE4nWizuaStsVNUXpRGtMbs3H',
   'g3yMgSB3Q7gNjMfSoCm1PiJihqHdNJeUuPHvRyf45qY',
   '5UFYdXHgXLMsDzHyv6pQW9zv3fNkRSNqHwhR7UPnkhzy',
-  // 'HE6bCtjsrra8DRbJnexKoVPSr5dYs57s3cuGHfotiQbq', bad 16k
+  'HE6bCtjsrra8DRbJnexKoVPSr5dYs57s3cuGHfotiQbq',
   'q8gz8Sww7Xexpqk9DrEMjNXMHnFx6dB3EYe32PwHHd6',
   'TRDwq3BN4mP3m9KsuNUWSN6QDff93VKGSwE95Jbr9Ss',
   'TRDwq3BN4mP3m9KsuNUWSN6QDff93VKGSwE95Jbr9Ss',
@@ -120,13 +119,13 @@ export const programs = [
   'vsRJM68m7i18PwzTFphgPYXTujCgxEi28knpUwSmg3q',
   'F1pkXm8W1WNbRvMoZTuKftHJ92ffuzddCCSRKKvCVL7n',
   '1avaAUcjccXCjSZzwUvB2gS3DzkkieV2Mw8CjdN65uu',
-  // 'CRSeeBqjDnm3UPefJ9gxrtngTsnQRhEJiTA345Q83X3v', bad 45k
+  'CRSeeBqjDnm3UPefJ9gxrtngTsnQRhEJiTA345Q83X3v',
   'HYDqq5GfUj4aBuPpSCs4fkmeS7jZHRhrrQ3q72KsJdD4',
   'C73nDAFn23RYwiFa6vtHshSbcg8x6BLYjw3bERJ3vHxf',
   'GLoWMgcn3VbyFKiC2FGMgfKxYSyTJS7uKFwKY2CSkq9X',
   'CNDL7Y1SYqvSF34aXayqHjm2JZrHB7BfhhVi3TUan3fe',
   'STAKEGztX7S1MUHxcQHieZhELCntb9Ys9BgUbeEtMu1',
-  // 'STAKEvGqQTtzJZH6BWDcbpzXXn2BBerPAgQ3EGLN2GH', bad 35k
+  'STAKEvGqQTtzJZH6BWDcbpzXXn2BBerPAgQ3EGLN2GH',
   'NXFiKimQN3QSL3CDhCXddyVmLfrai8HK36bHKaAzK7g',
   '13gDzEXCdocbj8iAiqrScGo47NiSuYENGsRqi3SEAwet',
   '6M3fyRE18t6c7f9qes3eQMzR4QyPRMFZiyNQcApENCYf',

@@ -1,4 +1,5 @@
 import {
+  ClientType,
   getUsdValueSum,
   NetworkId,
   PortfolioElementTrade,
@@ -14,14 +15,17 @@ import {
   TokenAccount,
   tokenAccountStruct,
 } from '../../../utils/solana';
-import { platformId, limitV1ProgramId, limitV2ProgramId } from './constants';
+import { limitV1ProgramId, limitV2ProgramId, platformId } from './constants';
 import { limitFilters } from './filters';
 import { limitOrderStruct, LimitOrderV2, limitOrderV2Struct } from './structs';
 import { getCachedDecimalsForToken } from '../../../utils/misc/getCachedDecimalsForToken';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana({ commitment: 'processed' });
+  const client = getClientSolana({
+    commitment: 'processed',
+    clientType: ClientType.FAST_LIMITED,
+  });
 
   const [ordersAccV1, ordersAccV2] = await Promise.all([
     // V1

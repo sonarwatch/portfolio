@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ClientType, NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSolana } from '../../../utils/clients';
@@ -12,7 +12,7 @@ import { ElementRegistry } from '../../../utils/elementbuilder/ElementRegistry';
 import { jupMint, voteProgramId } from '../constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
 
   const escrowPubkey = getVotePda(owner);
   const escrowAccount = await getParsedAccountInfo(

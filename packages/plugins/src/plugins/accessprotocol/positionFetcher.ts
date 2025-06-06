@@ -1,8 +1,9 @@
 import {
+  ClientType,
   getUsdValueSum,
   NetworkId,
   PortfolioAsset,
-  PortfolioElementType
+  PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
 import { AccountInfo, PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
@@ -12,7 +13,7 @@ import {
   cachePrefix,
   platformId,
   stakePid,
-  stakingPoolsCacheKey
+  stakingPoolsCacheKey,
 } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
@@ -20,17 +21,18 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { StakeAccount, stakeAccountStruct } from './structs';
 import { getParsedProgramAccounts, ParsedAccount } from '../../utils/solana';
 import { stakeAccountStructFilter } from './filters';
-import {
-  getMultipleAccountsInfoSafe
-} from '../../utils/solana/getMultipleAccountsInfoSafe';
+import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 import { getStakeAccountPda } from './helpers';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const accounts: ParsedAccount<StakeAccount>[] = await getStakeAccounts(owner, cache);
+  const accounts: ParsedAccount<StakeAccount>[] = await getStakeAccounts(
+    owner,
+    cache
+  );
   const acsTokenPrice = await cache.getTokenPrice(acsMint, NetworkId.solana);
   const assets: PortfolioAsset[] = accounts
-    .filter(acc => !acc.stakeAmount.isZero())
-    .map(account => ({
+    .filter((acc) => !acc.stakeAmount.isZero())
+    .map((account) => ({
       ...tokenPriceToAssetToken(
         acsMint,
         account.stakeAmount.dividedBy(10 ** acsDecimals).toNumber(),
@@ -39,7 +41,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       ),
       attributes: {},
       link: `https://hub.accessprotocol.co/en/creators/${account.stakePool.toString()}`,
-      ref: account.pubkey.toString()
+      ref: account.pubkey.toString(),
     }));
 
   if (assets.length === 0) return [];
@@ -50,13 +52,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       networkId: NetworkId.solana,
       platformId,
       data: { assets },
-      value: getUsdValueSum(assets.map((asset) => asset.value))
-    }
+      value: getUsdValueSum(assets.map((asset) => asset.value)),
+    },
   ];
 };
 
 export async function getStakeAccounts(owner: string, cache: Cache) {
-  const client = getClientSolana();
+  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED});
 
   const stakingPools = await cache.getItem<PublicKey[]>(stakingPoolsCacheKey, {
     prefix: cachePrefix,

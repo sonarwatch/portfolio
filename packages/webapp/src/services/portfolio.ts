@@ -62,11 +62,11 @@ class PortfolioService {
     });
 
     const tokens = await this.registry.getTokens(addresses);
-    const tokenInfoMap = tokens.reduce((acc, token: Token | null) => {
+    const tokenInfoMap = tokens.reduce((acc, token: Token | null, i) => {
       if (token) {
         acc[token.address] = token;
       } else {
-        logger.warn(`Token meta not found for address. Address=${address}`);
+        logger.warn(`Token meta not found for address. Address=${addresses?.[i]?.address}`);
       }
 
       return acc;

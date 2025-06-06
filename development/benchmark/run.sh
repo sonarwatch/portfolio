@@ -124,11 +124,20 @@ export default function () {
 
   const url = \`\${baseUrl}/api/v1/addresses/\${address}/portfolio?noCache=\${noCache}\`;
 
-  http.get(url, { timeout: '65s' });
+  const start = Date.now()
+  const res = http.get(url, { timeout: '65s' });
+
+  console.log({
+    url,
+    duration: Date.now() - start,
+    status: res.status,
+    body: JSON.parse(res.body),
+  });
+
   sleep(1);
 }
 EOF
 
-k6 run --summary-export="$OUTPUT_JSON" load-test.js
+k6 run --summary-export="$OUTPUT_JSON" --console-output=responses.txt load-test.js
 
 rm load-test.js

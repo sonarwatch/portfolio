@@ -177,6 +177,11 @@
     "elevationGroups": true,
     "ttl": "NOT_DEFINED"
   },
+  "accessprotocol-staking-pools": {
+    "intervalMs": 10800000,
+    "pools": true,
+    "ttl": "NOT_DEFINED"
+  },
   "realms-programs": {
     "intervalMs": 10800000,
     "goPrograms": true,

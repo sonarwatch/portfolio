@@ -1,8 +1,9 @@
 import {
+  ClientType,
+  getUsdValueSum,
   NetworkId,
   PortfolioElementType,
   PortfolioLiquidity,
-  getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -17,7 +18,7 @@ import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccou
 import { getTraderState } from './helpers/deserializeMarketData';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const connection = getClientSolana();
+  const connection = getClientSolana({ clientType: ClientType.FAST_LIMITED });
   const accounts = await getParsedProgramAccounts(
     connection,
     seatStruct,

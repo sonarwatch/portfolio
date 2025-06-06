@@ -1,4 +1,8 @@
-import { NetworkId, solanaNativeAddress } from '@sonarwatch/portfolio-core';
+import {
+  ClientType,
+  NetworkId,
+  solanaNativeAddress,
+} from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -20,7 +24,7 @@ import {
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const connection = getClientSolana();
+  const connection = getClientSolana({ clientType: ClientType.FAST_LIMITED });
 
   const accounts = (
     await ParsedGpa.build(connection, bondOfferv3Struct, banxPid)

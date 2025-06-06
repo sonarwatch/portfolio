@@ -1,4 +1,5 @@
 import {
+  ClientType,
   getUsdValueSum,
   NetworkId,
   PortfolioAssetToken,
@@ -29,12 +30,12 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import tokenPriceToAssetTokens from '../../utils/misc/tokenPriceToAssetTokens';
 import { calculatePositions } from './calculatePositions';
 import {
-  mergeMinerStruct,
   MergeMiner,
-  minerStruct,
+  mergeMinerStruct,
   Miner,
-  quarryStruct,
+  minerStruct,
   Quarry,
+  quarryStruct,
 } from './structs';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 
@@ -44,7 +45,7 @@ const rewardersMemo = new MemoizedCache<Rewarder[]>(rewardersCacheKey, {
 });
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const connection = getClientSolana();
+  const connection = getClientSolana({clientType: ClientType.FAST_LIMITED});
 
   const [mergeMinerAccounts, minerAccounts] = await Promise.all([
     ParsedGpa.build(connection, mergeMinerStruct, mergeMineProgramId)

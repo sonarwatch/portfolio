@@ -1,7 +1,8 @@
 import {
+  ClientType,
+  collectibleFreezedTag,
   NetworkId,
   solanaNativeAddress,
-  collectibleFreezedTag,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
@@ -36,7 +37,7 @@ const collectionsMemo = new MemoizedCache<
 );
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const connection = getClientSolana();
+  const connection = getClientSolana({clientType: ClientType.FAST_LIMITED});
 
   const allAccounts = (
     await Promise.all([

@@ -1,10 +1,11 @@
 import {
+  ClientType,
+  getUsdValueSum,
   NetworkId,
   PortfolioAsset,
   PortfolioElement,
   PortfolioElementType,
   SourceRefName,
-  getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
@@ -19,18 +20,18 @@ import {
 import {
   Offer,
   OfferStatus,
-  OfferType,
-  TokenConfig,
   offerStruct,
+  OfferType,
   orderStruct,
+  TokenConfig,
   tokenConfigStruct,
 } from './structs';
-import { offerFilter, buyOrderFilter, sellOrderFilter } from './filters';
+import { buyOrderFilter, offerFilter, sellOrderFilter } from './filters';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { Category, Token } from './types';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
 
   const [offers, buyOrders, sellOrders, tokensInfo] = await Promise.all([
     getParsedProgramAccounts(client, offerStruct, pid, offerFilter(owner)),

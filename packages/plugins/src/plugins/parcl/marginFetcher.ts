@@ -1,8 +1,9 @@
 import {
+  ClientType,
+  getUsdValueSum,
   NetworkId,
   PortfolioAsset,
   PortfolioElementType,
-  getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { platformId, programId } from './constants';
@@ -18,7 +19,7 @@ import { marginAccountFilter } from './filters';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
   const [accounts, usdcTokenPrice] = await Promise.all([
     getParsedProgramAccounts(
       client,

@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ClientType, NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { bonkMint, platformId, stakePid } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -9,7 +9,7 @@ import { stakeDepositReceiptFilter } from './filters';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
 
   const accounts = await getParsedProgramAccounts(
     client,

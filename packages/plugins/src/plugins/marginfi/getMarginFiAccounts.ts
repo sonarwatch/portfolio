@@ -10,6 +10,7 @@ import { Cache } from '../../Cache';
 import { ParsedAccount } from '../../utils/solana';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import { BankInfo } from './types';
+import { ClientType } from '@sonarwatch/portfolio-core';
 
 export const getMarginFiAccounts = async (
   authority: string,
@@ -30,7 +31,7 @@ export const getMarginFiAccounts = async (
     | null
   )[]
 > => {
-  const client = getClientSolana();
+  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
   const accounts = await ParsedGpa.build(
     client,
     marginfiAccountStruct,

@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ClientType, NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId } from './constants';
@@ -12,7 +12,7 @@ import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { LiquidityParams } from '../../utils/elementbuilder/Params';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
 
   const userFarmAccountsPromises = userFarmConfigs.map((userFarmConfig) =>
     getParsedProgramAccounts(

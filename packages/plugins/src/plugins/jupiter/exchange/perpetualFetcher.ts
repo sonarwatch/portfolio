@@ -1,10 +1,11 @@
 import {
+  ClientType,
+  getUsdValueSum,
   IsoLevPosition,
   LeverageSide,
   NetworkId,
   PortfolioElementLeverage,
   PortfolioElementType,
-  getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
@@ -12,7 +13,7 @@ import { BN } from 'bn.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSolana } from '../../../utils/clients';
-import { ParsedAccount, getParsedProgramAccounts } from '../../../utils/solana';
+import { getParsedProgramAccounts, ParsedAccount } from '../../../utils/solana';
 import { perpetualsPositionsFilter, positionRequestFilters } from '../filters';
 import { CustodyInfo, PerpetualPoolInfo } from '../types';
 import {
@@ -21,7 +22,7 @@ import {
   perpsProgramId,
   platformId,
 } from './constants';
-import { Side, positionRequestStruct, positionStruct } from './structs';
+import { positionRequestStruct, positionStruct, Side } from './structs';
 import {
   custodyToBN,
   getFeeAmount,
@@ -36,7 +37,10 @@ const executor: FetcherExecutor = async (
   owner: string,
   cache: Cache
 ): Promise<PortfolioElementLeverage[]> => {
-  const client = getClientSolana({ commitment: 'processed' });
+  const client = getClientSolana({
+    commitment: 'processed',
+    clientType: ClientType.FAST_LIMITED,
+  });
 
   const positionAccounts = await getParsedProgramAccounts(
     client,

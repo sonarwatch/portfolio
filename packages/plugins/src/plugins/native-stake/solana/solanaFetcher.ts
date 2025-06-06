@@ -1,9 +1,10 @@
 import {
+  ClientType,
+  getUsdValueSum,
+  nativeStakePlatformId,
   NetworkId,
   PortfolioAsset,
   PortfolioElement,
-  getUsdValueSum,
-  nativeStakePlatformId,
   solanaNetwork,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
@@ -37,7 +38,7 @@ const validatorsMemo = new MemoizedCache<Validator[], Map<string, Validator>>(
 );
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
   const filters = stakeAccountsFilter(owner.toString());
 
   const stakeAccounts = await getParsedProgramAccounts(

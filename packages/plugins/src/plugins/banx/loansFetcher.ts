@@ -1,4 +1,5 @@
 import {
+  ClientType,
   collectibleFreezedTag,
   NetworkId,
   solanaNativeAddress,
@@ -36,7 +37,7 @@ import {
 } from '../../utils/elementbuilder/Params';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const connection = getClientSolana();
+  const connection = getClientSolana({ clientType: ClientType.FAST_LIMITED });
 
   const accounts = (
     await Promise.all([
