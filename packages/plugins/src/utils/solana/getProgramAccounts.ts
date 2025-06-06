@@ -9,6 +9,7 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import { programCachePrefix } from './constants';
 import { getCache } from '../../Cache';
 import { withTiming } from '../performance/timing';
+import { decompress } from '../compression/compression';
 
 export const MAX_TIME_MS_EXECUTION_TO_LOG = 15 * 1000;
 export const MAX_TIME_FILTERING_TO_LOG = 1;
@@ -20,7 +21,7 @@ export async function getProgramAccounts(
   maxAccounts = 0
 ) {
   return withTiming(`getProgramAccounts ${programId.toString()}`, async () => {
-    const cachedAccounts: any[] | undefined = await withTiming(`RedisLoading. ${programId.toString()}`, async () => getCache().getItem(
+    const compressedAccounts: string | undefined = await withTiming(`RedisLoading. ${programId.toString()}`, async () => getCache().getItem(
       `${programId.toString()}`,
       {
         networkId: NetworkId.solana,
@@ -28,64 +29,13 @@ export async function getProgramAccounts(
       }
     ), MAX_TIME_FILTERING_TO_LOG);
 
-    if (cachedAccounts?.length) {
+    if (compressedAccounts) {
+      const cachedAccounts: any[] = await decompress(compressedAccounts)
       console.log(
         `Program Accounts are loaded from cache for program ${programId}`
       );
 
-      const optimizedResult = await withTiming(`OptimizedFilter. ${programId.toString()}`, async () => {
-        const preprocessedFilters = filters?.map((filter) => {
-          if ('memcmp' in filter) {
-            return {
-              ...filter,
-              memcmp: {
-                ...filter.memcmp,
-                decodedBytes: bs58.decode(filter.memcmp.bytes),
-              },
-            };
-          }
-          return filter;
-        });
-
-        const testResult: any[] = [];
-        for (const acc of cachedAccounts) {
-          const dataBuffer = Buffer.from(acc.account.data.data);
-
-          const matches = preprocessedFilters?.every((filter) => {
-            if ('dataSize' in filter) {
-              return dataBuffer.length === filter.dataSize;
-            }
-
-            if ('memcmp' in filter) {
-              const { offset, decodedBytes } = filter.memcmp;
-              const segment = dataBuffer.subarray(
-                offset,
-                offset + decodedBytes.length
-              );
-              return segment.equals(decodedBytes);
-            }
-
-            return true;
-          });
-
-          if (matches) {
-            testResult.push({
-              pubkey: new PublicKey(acc.pubkey),
-              account: {
-                data: dataBuffer,
-                executable: acc.account.executable,
-                lamports: acc.account.lamports,
-                owner: new PublicKey(acc.account.owner),
-                rentEpoch: acc.account.rentEpoch,
-                space: acc.account.space,
-              },
-            });
-          }
-        }
-        return testResult;
-      });
-
-      const result = await withTiming(`NotOptimizedFilter. ${programId.toString()}`, async () => cachedAccounts
+      return cachedAccounts
         .filter(({ account }) => {
           const data = Buffer.from(account.data.data);
           return filters?.every((filter) => {
@@ -114,10 +64,7 @@ export async function getProgramAccounts(
             rentEpoch: account.account.rentEpoch,
             space: account.account.space,
           },
-        })), MAX_TIME_FILTERING_TO_LOG);
-
-      console.log(`FilteringResults. Optimized=${optimizedResult.length} Old=${result.length}`)
-      return result;
+        }));
     }
 
     const config: GetProgramAccountsConfig = {

@@ -10,6 +10,7 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import { getClientSolana } from '../../utils/clients';
 import { getProgramAccounts, programCachePrefix } from '../../utils/solana';
 import { classifyProgram } from './helpers';
+import { compress } from '../../utils/compression/compression';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -32,7 +33,8 @@ const executor: JobExecutor = async (cache: Cache) => {
       }
 
       const config = CACHE_CONFIG[programCategory];
-      await cache.setItem(program, dataToCache, {
+      const compressedData = await compress(dataToCache);
+      await cache.setItem(program, compressedData, {
         networkId: NetworkId.solana,
         prefix: programCachePrefix,
         ttl: config.ttlHours * 60 * 60 * 1000,
