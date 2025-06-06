@@ -24,6 +24,9 @@ export async function getProgramAccounts(
   );
 
   if (cachedAccounts?.length) {
+    console.log(
+      `Program Accounts are loaded from cache for program ${programId}`
+    );
     return cachedAccounts
       .filter(({ account }) => {
         const data = Buffer.from(account.data.data);

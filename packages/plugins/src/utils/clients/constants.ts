@@ -57,14 +57,15 @@ export function getRpcEndpoint(
   networkId: NetworkIdType,
   clientType?: ClientType
 ): RpcEndpoint {
-  let endpoint;
-  let indices;
-  if (clientType === ClientType.FAST_LIMITED) {
-    endpoint = { url: process.env['PORTFOLIO_SOLANA_FAST_LIMITED_RPC']! };
+  let endpoint = getRpcEndpoints()[networkId];
+  let indices = endpointIndices;
+
+  if (
+    clientType === ClientType.FAST_LIMITED &&
+    process.env['PORTFOLIO_SOLANA_FAST_LIMITED_RPC']
+  ) {
+    endpoint = { url: process.env['PORTFOLIO_SOLANA_FAST_LIMITED_RPC'] };
     indices = fallBackEndpointIndices;
-  } else {
-    endpoint = getRpcEndpoints()[networkId];
-    indices = endpointIndices;
   }
 
   if (!endpoint.url.includes(',')) {

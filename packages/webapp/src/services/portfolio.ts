@@ -9,6 +9,7 @@ import { logger } from '../logger/logger';
 import portfolioCache from '../cache/cache';
 import tokenCache from '../cache/token';
 import { Token, TokenRegistry } from '@sonarwatch/token-registry';
+import compressionService from './compression';
 
 class PortfolioService {
   private static instance: PortfolioService;
@@ -31,13 +32,14 @@ class PortfolioService {
   }
 
   public getPortfolio = async (address: string) => {
-    const cachedPortfolio = await this.cache.getItem(`${address}`, {
+    const cachedPortfolio = await this.cache.getItem<string>(`${address}`, {
       networkId: PortfolioService.NETWORK,
       prefix: PortfolioService.PREFIX
     });
 
     if (cachedPortfolio) {
-      return cachedPortfolio
+      logger.info(`Portfolio loaded from cache. Address=${address}`);
+      return await compressionService.decompress(cachedPortfolio)
     }
 
     const fetchers = fetchersByAddressSystem['solana'];
@@ -77,10 +79,11 @@ class PortfolioService {
       tokenInfo: { solana: tokenInfoMap }
     };
 
-    await this.cache.setItem(`${address}`, walletPortfolio, {
+    const compressed = await compressionService.compress(walletPortfolio);
+    await this.cache.setItem(`${address}`, compressed, {
       networkId: PortfolioService.NETWORK,
       prefix: PortfolioService.PREFIX,
-      ttl: 10000
+      ttl: 10000,
     });
 
     return walletPortfolio;
