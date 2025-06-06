@@ -33,6 +33,7 @@ import * as auxexchange from './plugins/auxexchange';
 import * as maker from './plugins/maker';
 import * as kamino from './plugins/kamino';
 import * as bucket from './plugins/bucket';
+import * as cache from './plugins/cache';
 import * as navi from './plugins/navi';
 import * as scallop from './plugins/scallop';
 import * as rocketpool from './plugins/rocket-pool';
@@ -227,6 +228,7 @@ const modules = [
   maker,
   kamino,
   bucket,
+  cache,
   navi,
   scallop,
   rocketpool,

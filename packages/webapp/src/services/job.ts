@@ -2,6 +2,7 @@ import { Cache, jobs } from '@sonarwatch/portfolio-plugins';
 import { logger } from '../logger/logger';
 import { ScheduleJobRequest } from '../model/job';
 import portfolioCache from '../cache/cache';
+import { JobPriority } from '../enum/job';
 
 class JobRunner {
   private static instance: JobRunner;
@@ -69,10 +70,15 @@ class JobRunner {
       }
     };
 
-    const randomDelay = Math.floor(Math.random() * 120_000);
-    setTimeout(() => {
+    if (config.priority === JobPriority.HIGH) {
       runWithThrottle();
-    }, randomDelay);
+    } else {
+      const randomDelay = Math.floor(Math.random() * 120_000);
+      setTimeout(() => {
+        runWithThrottle();
+      }, randomDelay);
+    }
+
 
     const timer = setInterval(() => {
       runWithThrottle();

@@ -1,3 +1,5 @@
+import { JobPriority } from '../enum/job';
+
 export interface ScheduleJobRequest {
   jobName: string;
   config: JobConfig;
@@ -5,4 +7,5 @@ export interface ScheduleJobRequest {
 
 export interface JobConfig {
   intervalMs: number;
+  priority?: JobPriority;
 }

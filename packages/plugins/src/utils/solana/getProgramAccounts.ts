@@ -23,7 +23,7 @@ export async function getProgramAccounts(
     }
   );
 
-  if (cachedAccounts) {
+  if (cachedAccounts?.length) {
     return cachedAccounts
       .filter(({ account }) => {
         const data = Buffer.from(account.data.data);
