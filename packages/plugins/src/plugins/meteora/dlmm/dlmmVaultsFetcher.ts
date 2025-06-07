@@ -16,7 +16,7 @@ import { ElementRegistry } from '../../../utils/elementbuilder/ElementRegistry';
 // const slot: number | null = null;
 // const slotUpdate = 0;
 
-const dustFilter = 0.00001;
+const dustFilter = 0.0001;
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
@@ -43,6 +43,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
   if (!vaults) throw new Error('Vaults not cached');
 
+  const tokenPrices = await cache.getTokenPricesAsMap(
+    Object.values(vaults)
+      .map((v) => v && [v.baseMint, v.quoteMint])
+      .flat(),
+    NetworkId.solana
+  );
+
   const time = Date.now();
 
   // Looks like Meteora is using timesteamp instead of slot now inside their accounts
@@ -54,10 +61,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 
-  accounts.forEach((escrow) => {
+  for (const escrow of accounts) {
     const vault = vaults[escrow.dlmmVault.toString()];
-    if (!vault || !vault.endVestingTs || !vault.startVestingTs) return;
-    // if (time > Number(vault.endVestingTs)) return;
+    if (!vault || !vault.endVestingTs || !vault.startVestingTs) continue;
 
     const element = elementRegistry.addElementMultiple({
       label: 'Vesting',
@@ -76,80 +82,86 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       link: `https://app.meteora.ag/dlmm/${vault.lbPair}`,
     });
 
-    // Vesting not started yet
-    if (time < Number(vault.startVestingTs) * 1000 && escrow.refunded === 0) {
-      element.addAsset({
-        address: vault.quoteMint,
-        amount: escrow.totalDeposit,
-      });
-    } else if (vault.startVestingTs === vault.endVestingTs) {
-      // Unlock immediately after endVesting
-      const shares = new BigNumber(escrow.totalDeposit).div(vault.totalDeposit);
-      const totalAmount = new BigNumber(vault.boughtToken).times(shares);
-      element.addAsset({
-        address: vault.baseMint,
-        amount: totalAmount,
-        attributes: {
-          lockedUntil: Number(vault.endVestingTs) * 1000,
-        },
-      });
-    } else {
-      // Vesting started
-      // If not refunded yet
-      const filledRatio = new BigNumber(vault.totalDeposit)
-        .div(vault.maxCap)
-        .toNumber();
+    const baseTokenPrice = tokenPrices.get(vault.baseMint);
+    const quoteTokenPrice = tokenPrices.get(vault.quoteMint);
 
-      if (escrow.refunded === 0 && filledRatio > 1) {
-        const amount = new BigNumber(escrow.totalDeposit).times(
-          1 - 1 / filledRatio
-        );
+    const filledRatio = new BigNumber(vault.totalDeposit)
+      .div(vault.maxCap)
+      .toNumber();
 
-        if (amount.isGreaterThan(dustFilter))
-          element.addAsset({
-            address: vault.quoteMint,
-            amount,
-          });
-      }
+    if (escrow.refunded === 0 && filledRatio > 1) {
+      const amount = new BigNumber(escrow.totalDeposit).times(
+        1 - 1 / filledRatio
+      );
 
-      const shares = new BigNumber(escrow.totalDeposit).div(vault.totalDeposit);
-      const totalAmount = new BigNumber(vault.boughtToken).times(shares);
-      const remainingAmount = totalAmount.minus(escrow.claimedToken);
-      if (remainingAmount.isLessThan(dustFilter)) return;
-
-      let claimableAmount = new BigNumber(remainingAmount.toString());
-      if (time < Number(vault.endVestingTs)) {
-        const amountPerSec = new BigNumber(totalAmount).div(
-          Number(vault.endVestingTs) - Number(vault.startVestingTs)
-        );
-        let lastClaimedTs = escrow.lastClaimedTs.isZero()
-          ? Number(vault.startVestingTs)
-          : escrow.lastClaimedTs.toNumber();
-        if (lastClaimedTs > time) lastClaimedTs = time;
-        claimableAmount = amountPerSec.times(
-          Math.min(time, Number(vault.endVestingTs)) - lastClaimedTs
-        );
-      }
-
-      if (claimableAmount.isGreaterThan(dustFilter)) {
+      if (
+        quoteTokenPrice &&
+        amount
+          .shiftedBy(-quoteTokenPrice.decimals)
+          .multipliedBy(quoteTokenPrice.price)
+          .isGreaterThan(dustFilter)
+      ) {
         element.addAsset({
-          address: vault.baseMint,
-          amount: claimableAmount,
+          address: vault.quoteMint,
+          amount,
           attributes: {
             isClaimable: true,
           },
         });
       }
-
-      const vestingAmount = remainingAmount.minus(claimableAmount);
-      if (vestingAmount.isGreaterThan(dustFilter)) {
-        element.addAsset({
-          address: vault.baseMint,
-          amount: vestingAmount,
-        });
-      }
     }
-  });
+
+    const shares = new BigNumber(escrow.totalDeposit).div(vault.totalDeposit);
+    const totalAmount = new BigNumber(vault.boughtToken).times(shares);
+    const remainingAmount = totalAmount.minus(escrow.claimedToken);
+    if (remainingAmount.isLessThan(dustFilter)) continue;
+
+    let claimableAmount = new BigNumber(remainingAmount.toString());
+    if (time < Number(vault.endVestingTs)) {
+      const amountPerSec = new BigNumber(totalAmount).div(
+        Number(vault.endVestingTs) - Number(vault.startVestingTs)
+      );
+      let lastClaimedTs = escrow.lastClaimedTs.isZero()
+        ? Number(vault.startVestingTs)
+        : escrow.lastClaimedTs.toNumber();
+      if (lastClaimedTs > time) lastClaimedTs = time;
+      claimableAmount = amountPerSec.times(
+        Math.min(time, Number(vault.endVestingTs)) - lastClaimedTs
+      );
+    }
+
+    if (
+      baseTokenPrice &&
+      claimableAmount
+        .shiftedBy(-baseTokenPrice.decimals)
+        .multipliedBy(baseTokenPrice.price)
+        .isGreaterThan(dustFilter)
+    ) {
+      element.addAsset({
+        address: vault.baseMint,
+        amount: claimableAmount,
+        attributes: {
+          isClaimable: Number(vault.endVestingTs) * 1000 < Date.now(),
+          lockedUntil: Number(vault.endVestingTs) * 1000,
+        },
+      });
+    }
+
+    const vestingAmount = remainingAmount.minus(claimableAmount);
+
+    if (
+      baseTokenPrice &&
+      vestingAmount
+        .shiftedBy(-baseTokenPrice.decimals)
+        .multipliedBy(baseTokenPrice.price)
+        .isGreaterThan(dustFilter)
+    ) {
+      element.addAsset({
+        address: vault.baseMint,
+        amount: vestingAmount,
+      });
+    }
+  }
 
   return elementRegistry.getElements(cache);
 };
