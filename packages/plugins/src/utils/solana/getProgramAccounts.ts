@@ -1,3 +1,4 @@
+import TTLCache from '@isaacs/ttlcache';
 import {
   Connection,
   GetProgramAccountsConfig,
@@ -11,7 +12,9 @@ import { getCache } from '../../Cache';
 import { withTiming } from '../performance/timing';
 import { decompress } from '../compression/compression';
 
-export const MAX_TIME_MS_EXECUTION_TO_LOG = 15 * 1000;
+const programsCache = new TTLCache<string, string>({ max: 200, ttl: 600_000 });
+
+export const MAX_TIME_MS_EXECUTION_TO_LOG = 15_000;
 export const MAX_TIME_FILTERING_TO_LOG = 1;
 
 export async function getProgramAccounts(
@@ -24,15 +27,8 @@ export async function getProgramAccounts(
     `getProgramAccounts ${programId.toString()}`,
     async () => {
       try {
-        const compressedAccounts: string | undefined = await withTiming(
-          `RedisLoading. ${programId.toString()}`,
-          async () =>
-            getCache().getItem(`${programId.toString()}`, {
-              networkId: NetworkId.solana,
-              prefix: programCachePrefix,
-            }),
-          MAX_TIME_FILTERING_TO_LOG
-        );
+        const programIdStr = programId.toString();
+        const compressedAccounts: string | undefined = await loadFromCache(programIdStr);
 
         if (compressedAccounts) {
           const cachedAccounts: any[] = await decompress(compressedAccounts);
@@ -99,4 +95,32 @@ export async function getProgramAccounts(
     },
     MAX_TIME_MS_EXECUTION_TO_LOG
   );
+}
+
+async function loadFromCache(key: string): Promise<string | undefined> {
+  const cachedInMemory:string | undefined = programsCache.get(key);
+  if (cachedInMemory) {
+    console.log(`[MEMORY] hit: ${key}`);
+    return cachedInMemory;
+  }
+
+  console.log(`[MEMORY] miss: ${key}, loading from Redis...`);
+  const cachedInRedis:string | undefined =  await withTiming(
+    `RedisLoading. ${key}`,
+    async () =>
+      getCache().getItem(key, {
+        prefix: programCachePrefix,
+        networkId: NetworkId.solana,
+      }),
+    MAX_TIME_FILTERING_TO_LOG
+  );
+
+  if (cachedInRedis) {
+    programsCache.set(key, cachedInRedis);
+    console.log(`[REDIS] loaded and saved to memory: ${key}`);
+    return cachedInRedis;
+  }
+
+  console.log(`[REDIS] miss: ${key}`);
+  return undefined;
 }
