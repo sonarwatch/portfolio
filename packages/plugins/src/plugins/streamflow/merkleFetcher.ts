@@ -3,12 +3,12 @@ import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
-import { getParsedMultipleAccountsInfo } from '../../utils/solana';
 import { claimStatusStruct } from './structs';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import { getPdas } from './helpers';
 import { MerkleInfo } from './types';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 
 const merkleMemo = new MemoizedCache<MerkleInfo[]>('merkles', {
   prefix: platformId,
@@ -27,15 +27,21 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   // This will only return accounts that exist
   // meaning if the user didn't start to claim we won't but able to find his account
-  const claimAccounts = await getParsedMultipleAccountsInfo(
-    client,
-    claimStatusStruct,
-    pdas
-  );
+  const claimsAccounts = await getMultipleAccountsInfoSafe(client, pdas);
+
+  const claimsStatuses = claimsAccounts.flatMap((claim, index) => {
+    if (!claim) return [];
+    // fully claimed, it's a CompressedClaimStatus
+    if (claim.data.byteLength === 9) return [];
+    return {
+      ...claimStatusStruct.deserialize(claim.data)[0],
+      pubkey: pdas[index],
+    };
+  });
 
   const registry = new ElementRegistry(NetworkId.solana, platformId);
-  for (let i = 0; i < claimAccounts.length; i += 1) {
-    const claim = claimAccounts[i];
+  for (let i = 0; i < claimsStatuses.length; i += 1) {
+    const claim = claimsStatuses[i];
     if (!claim) continue;
 
     const merkle = merkles[i];
