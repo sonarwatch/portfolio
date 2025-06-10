@@ -9,6 +9,7 @@ axios.defaults.timeout = 120000;
 
 import { fastifyLogger, logger } from './logger/logger';
 import { initPortfolioRoutes } from './routes/portfolio';
+import programService from './services/program';
 import { scheduleJobs } from './schedulers/job';
 
 const start = async () => {
@@ -44,6 +45,10 @@ const start = async () => {
     } else {
       logger.info('Running in web-api mode.');
       initPortfolioRoutes(mainServer);
+
+      mainServer.addHook('onListen', async () => {
+        await programService.warmupProgramsCache();
+      });
     }
 
     const port = Number(process.env['PORTFOLIO_PORT'] || 3001);

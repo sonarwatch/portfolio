@@ -26,6 +26,57 @@ export async function getProgramAccounts(
   return withTiming(
     `getProgramAccounts ${programId.toString()}`,
     async () => {
+      try {
+        const programIdStr = programId.toString();
+        const compressedAccounts: string | undefined = await loadFromCache(
+          programIdStr
+        );
+        console.log(`Cache size. Size=${programsCache.size}`);
+
+        if (compressedAccounts) {
+          const cachedAccounts: any[] = await decompress(compressedAccounts);
+          console.log(
+            `Program Accounts are loaded from cache for program ${programId}`
+          );
+
+          return cachedAccounts
+            .filter(({ account }) => {
+              const data = Buffer.from(account.data.data);
+              return filters?.every((filter) => {
+                if ('dataSize' in filter) {
+                  return data.length === filter['dataSize'];
+                }
+                if ('memcmp' in filter) {
+                  const bytes = bs58.decode(filter['memcmp'].bytes);
+                  const segment = data.subarray(
+                    filter['memcmp'].offset,
+                    filter['memcmp'].offset + bytes.length
+                  );
+
+                  return segment.equals(bytes);
+                }
+                return true;
+              });
+            })
+            .map((account) => ({
+              pubkey: new PublicKey(account.pubkey),
+              account: {
+                data: Buffer.from(account.account.data.data),
+                executable: account.account.executable,
+                lamports: account.account.lamports,
+                owner: new PublicKey(account.account.owner),
+                rentEpoch: account.account.rentEpoch,
+                space: account.account.space,
+              },
+            }));
+        }
+      } catch (err) {
+        console.error(
+          `Failed to extract cached data for ${programId.toString()}`,
+          err
+        );
+      }
+
       const config: GetProgramAccountsConfig = {
         encoding: 'base64',
         filters,
@@ -49,15 +100,17 @@ export async function getProgramAccounts(
   );
 }
 
-async function loadFromCache(key: string): Promise<string | undefined> {
-  const cachedInMemory:string | undefined = programsCache.get(key);
+export async function loadFromCache(key: string): Promise<string | undefined> {
+  const cachedInMemory: string | undefined = programsCache.get(key);
   if (cachedInMemory) {
-    console.log(`[MEMORY] hit: ${key}`);
+    console.log(
+      `[MEMORY] hit: ${key} Size: ${cachedInMemory.length / 1024 / 1024} Mb`
+    );
     return cachedInMemory;
   }
 
   console.log(`[MEMORY] miss: ${key}, loading from Redis...`);
-  const cachedInRedis:string | undefined =  await withTiming(
+  const cachedInRedis: string | undefined = await withTiming(
     `RedisLoading. ${key}`,
     async () =>
       getCache().getItem(key, {
@@ -69,7 +122,11 @@ async function loadFromCache(key: string): Promise<string | undefined> {
 
   if (cachedInRedis) {
     programsCache.set(key, cachedInRedis);
-    console.log(`[REDIS] loaded and saved to memory: ${key}`);
+    console.log(
+      `[REDIS] loaded and saved to memory: ${key} Size: ${
+        cachedInRedis.length / 1024 / 1024
+      } Mb`
+    );
     return cachedInRedis;
   }
 

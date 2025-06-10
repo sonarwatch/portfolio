@@ -9,10 +9,11 @@ export const compress = async (data: any): Promise<string> => {
   return compressed.toString('base64');
 };
 
-export const decompress = async (
-  compressed: string
-): Promise<any> => {
+export const decompress = async (compressed: string): Promise<any> => {
   const dataBuffer = Buffer.from(compressed, 'base64');
   const decompressed = await zstdDecompress(dataBuffer);
+  console.log(
+    `Decompressed size. Size=${decompressed.length / 1024 / 1024} Mb`
+  );
   return JSON.parse(decompressed.toString('utf-8'));
 };

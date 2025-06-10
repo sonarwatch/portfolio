@@ -194,8 +194,10 @@ export * from './Job';
 export * from './utils/name-service';
 export * from './utils/hasTransactions';
 
+export { cachedPrograms } from './plugins/cache'
 export { getLlamaProtocolsJob } from './plugins/llama-protocols';
 export { jupFetcherIds } from './plugins/jupiter';
+export { loadFromCache } from './utils/solana/getProgramAccounts';
 export { solanaSimpleFetcher };
 
 const modules = [
