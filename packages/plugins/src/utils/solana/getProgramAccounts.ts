@@ -26,54 +26,6 @@ export async function getProgramAccounts(
   return withTiming(
     `getProgramAccounts ${programId.toString()}`,
     async () => {
-      try {
-        const programIdStr = programId.toString();
-        const compressedAccounts: string | undefined = await loadFromCache(programIdStr);
-
-        if (compressedAccounts) {
-          const cachedAccounts: any[] = await decompress(compressedAccounts);
-          console.log(
-            `Program Accounts are loaded from cache for program ${programId}`
-          );
-
-          return cachedAccounts
-            .filter(({ account }) => {
-              const data = Buffer.from(account.data.data);
-              return filters?.every((filter) => {
-                if ('dataSize' in filter) {
-                  return data.length === filter['dataSize'];
-                }
-                if ('memcmp' in filter) {
-                  const bytes = bs58.decode(filter['memcmp'].bytes);
-                  const segment = data.subarray(
-                    filter['memcmp'].offset,
-                    filter['memcmp'].offset + bytes.length
-                  );
-
-                  return segment.equals(bytes);
-                }
-                return true;
-              });
-            })
-            .map((account) => ({
-              pubkey: new PublicKey(account.pubkey),
-              account: {
-                data: Buffer.from(account.account.data.data),
-                executable: account.account.executable,
-                lamports: account.account.lamports,
-                owner: new PublicKey(account.account.owner),
-                rentEpoch: account.account.rentEpoch,
-                space: account.account.space,
-              },
-            }));
-        }
-      } catch (err) {
-        console.error(
-          `Failed to extract cached data for ${programId.toString()}`,
-          err
-        );
-      }
-
       const config: GetProgramAccountsConfig = {
         encoding: 'base64',
         filters,
