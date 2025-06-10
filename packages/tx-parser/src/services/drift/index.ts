@@ -14,12 +14,6 @@ const proxyContract = {
   platformId,
 };
 
-const airdropContract = {
-  name: 'Airdrop',
-  address: 'E7HtfkEMhmn9uwL7EFNydcXBWy5WCYN1vFmKKjipEH1x',
-  platformId,
-};
-
 const perpsService: ServiceDefinition = {
   id: `${platformId}-perps`,
   name: 'Perps',
@@ -36,17 +30,5 @@ const marketMakerService: ServiceDefinition = {
   contracts: [proxyContract],
 };
 
-export const airdropService: ServiceDefinition = {
-  id: `${platformId}-airdrop`,
-  name: 'Airdrop',
-  platformId,
-  networkId: NetworkId.solana,
-  contracts: [airdropContract],
-};
-
-export const services: ServiceDefinition[] = [
-  perpsService,
-  marketMakerService,
-  airdropService,
-];
+export const services: ServiceDefinition[] = [perpsService, marketMakerService];
 export default services;

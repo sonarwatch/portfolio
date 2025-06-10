@@ -4,7 +4,6 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import {
   airdropStatics,
   airdropUrl,
-  distributor,
   driftDecimals,
   driftMint,
 } from './constants';
@@ -13,8 +12,6 @@ import {
   AirdropFetcherExecutor,
   getAirdropRaw,
 } from '../../AirdropFetcher';
-import { deriveClaimStatus } from '../../utils/solana/jupiter/deriveClaimStatus';
-import { getClaimTransactions } from '../../utils/solana/jupiter/getClaimTransactions';
 
 const driftFactor = new BigNumber(10 ** driftDecimals);
 type AirdropInfo = {
@@ -70,35 +67,16 @@ export async function fetchAirdropInfo(owner: string): Promise<AirdropInfo> {
 
 const fetchAirdropExecutor: AirdropFetcherExecutor = async (owner: string) => {
   const airdropInfo = await fetchAirdropInfo(owner);
-  const { isClaimed, amount, merkle } = airdropInfo;
-
-  if (merkle) {
-    const pda = deriveClaimStatus(owner, merkle, distributor);
-    const claims = await getClaimTransactions(owner, pda, driftMint);
-    return getAirdropRaw({
-      statics: airdropStatics,
-      items: [
-        {
-          amount,
-          label: 'DRIFT',
-          address: driftMint,
-          isClaimed,
-          ref: pda.toString(),
-          claims,
-        },
-      ],
-    });
-  }
+  const { isClaimed, amount } = airdropInfo;
 
   return getAirdropRaw({
     statics: airdropStatics,
     items: [
       {
-        amount: 0,
+        amount,
         label: 'DRIFT',
         address: driftMint,
-        isClaimed: false,
-        ref: undefined,
+        isClaimed,
       },
     ],
   });
