@@ -5,7 +5,7 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedMultipleAccountsInfo } from '../../utils/solana';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
-import { ParsedBoost, stakeStruct } from './structs';
+import { ParsedBoost, stakeStruct, Config } from './structs';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
 import { getStakePdas } from './helpers';
 
@@ -13,10 +13,17 @@ const boostMemo = new MemoizedCache<ParsedBoost[]>('boosts', {
   prefix: platformId,
   networkId: NetworkId.solana,
 });
+const configMemo = new MemoizedCache<Config>('config', {
+  prefix: platformId,
+  networkId: NetworkId.solana,
+});
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
-  const boostAccounts = await boostMemo.getItem(cache);
+  const [boostAccounts, config] = await Promise.all([
+    boostMemo.getItem(cache),
+    configMemo.getItem(cache),
+  ]);
   if (!boostAccounts) throw new Error('Boosts not found in cache');
 
   const stakeAccounts = await getParsedMultipleAccountsInfo(
