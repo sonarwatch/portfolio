@@ -18,6 +18,7 @@ export const oracleToMintKey = 'oracle-to-mint';
 
 export const airdropUrl = 'https://airdrop.drift.trade/eligibility/';
 export const driftDecimals = 6;
+export const distributor = 'E7HtfkEMhmn9uwL7EFNydcXBWy5WCYN1vFmKKjipEH1x';
 
 export const airdropStatics: AirdropStatics = {
   id: 'drift-airdrop-1',
