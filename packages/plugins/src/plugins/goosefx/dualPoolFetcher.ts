@@ -48,19 +48,21 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       link: 'https://app.goosefx.io/gamma',
     });
 
+    const token0Amount = account.lpTokensOwned
+      .times(poolState.token0VaultAmount)
+      .dividedBy(poolState.lpSupply);
     const liq = liqElement.addLiquidity({});
     liq.addAsset({
       address: poolState.token0Mint.toString(),
-      amount: account.token0Deposited
-        .minus(account.token0Withdrawn)
-        .dividedBy(10 ** poolState.mint0Decimals),
+      amount: token0Amount.dividedBy(10 ** poolState.mint0Decimals),
       alreadyShifted: true,
     });
+    const token1Amount = account.lpTokensOwned
+      .times(poolState.token1VaultAmount)
+      .dividedBy(poolState.lpSupply);
     liq.addAsset({
       address: poolState.token1Mint.toString(),
-      amount: account.token1Deposited
-        .minus(account.token1Withdrawn)
-        .dividedBy(10 ** poolState.mint1Decimals),
+      amount: token1Amount.dividedBy(10 ** poolState.mint1Decimals),
       alreadyShifted: true,
     });
   }
