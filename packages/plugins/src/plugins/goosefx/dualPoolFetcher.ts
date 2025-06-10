@@ -34,6 +34,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const registry = new ElementRegistry(NetworkId.solana, platformId);
 
   for (const account of userLiquidities) {
+    if (account.lpTokensOwned.isZero()) continue;
+
     const poolState = cachedPoolStates.find(
       (pool) => pool?.pubkey.toString() === account.poolState.toString()
     );
