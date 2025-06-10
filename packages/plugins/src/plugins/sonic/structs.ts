@@ -4,6 +4,7 @@ import {
   u16,
   u32,
   u8,
+  uniformFixedSizeArray,
 } from '@metaplex-foundation/beet';
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { PublicKey } from '@solana/web3.js';
@@ -48,4 +49,21 @@ export const userStakeIndexStruct = new FixableBeetStruct<UserStakeIndex>(
     ['index', u32],
   ],
   (args) => args as UserStakeIndex
+);
+
+export type AirdropProof = {
+  discriminator: number[];
+  offset: Buffer;
+  user: PublicKey;
+  padding: Buffer;
+};
+
+export const airdropProofStruct = new FixableBeetStruct<AirdropProof>(
+  [
+    ['discriminator', uniformFixedSizeArray(u8, 8)],
+    ['offset', blob(77)],
+    ['user', publicKey],
+    ['padding', blob(10)],
+  ],
+  (args) => args as AirdropProof
 );

@@ -1,7 +1,7 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import {
-  magmaProgramId,
+  magnaProgramId,
   platformId,
   powerUsersStatics,
   tnsrMint,
@@ -41,7 +41,7 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
   const accounts = await getParsedProgramAccounts(
     connection,
     vestingAccountStruct,
-    new PublicKey(magmaProgramId),
+    new PublicKey(magnaProgramId),
     vestingFilter(owner),
     1
   );
