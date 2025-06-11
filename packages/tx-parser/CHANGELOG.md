@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.2.4](https://github.com/sonarwatch/portfolio/compare/tx-parser-1.2.3...tx-parser-1.2.4) (2025-06-05)
+
+
+### Features
+
+* **services:** add ASR contract and service definition ([f5c85d1](https://github.com/sonarwatch/portfolio/commit/f5c85d12404a93a82accf9681d46f3e978953ba1))
+
+
+
 ## [1.2.3](https://github.com/sonarwatch/portfolio/compare/tx-parser-1.2.2...tx-parser-1.2.3) (2025-05-27)
 
 

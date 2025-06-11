@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { Claim, NetworkId } from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
 import {
   AirdropFetcher,
@@ -16,6 +16,7 @@ import {
 import { AirdropResponse } from './types';
 import { getClientSolana } from '../../utils/clients';
 import { deriveClaimStatus } from '../../utils/solana/jupiter/deriveClaimStatus';
+import { getClaimTransactions } from '../../utils/solana/jupiter/getClaimTransactions';
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
   try {
@@ -44,6 +45,11 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
     );
     const claimAccount = await client.getAccountInfo(claimStatus);
 
+    let claims: Claim[] = [];
+    if (claimAccount) {
+      claims = await getClaimTransactions(owner, claimStatus, humaMint);
+    }
+
     return getAirdropRaw({
       statics: airdropStatics,
       items: [
@@ -52,6 +58,8 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
           isClaimed: !!claimAccount,
           label: 'HUMA',
           address: humaMint,
+          claims,
+          ref: claimAccount ? claimStatus.toString() : undefined,
         },
       ],
     });

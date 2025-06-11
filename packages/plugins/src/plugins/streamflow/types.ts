@@ -15,9 +15,20 @@ export type Data = {
   allocation: string;
 };
 
+export type AirdropsResponse = {
+  chain: string;
+  distributorAddress: string;
+  address: string;
+  amountUnlocked: string;
+  amountLocked: string;
+  amountClaimed: string;
+  proof: number[];
+};
+
 export type MerkleInfo = {
   address: string;
   mint: string;
   unlockPeriod?: BigNumber;
 };
+
 export type StakePoolInfo = MerkleInfo & { stakeMint: string };

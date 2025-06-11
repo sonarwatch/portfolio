@@ -11,7 +11,7 @@ export const tensorPid = new PublicKey(
   'TSWAPaqyCSx2KABk68Shruf4rp7CxcNi8hAsbdwmHbN'
 );
 
-export const magmaProgramId = '3zK38YBP6u3BpLUpaa6QhRHh4VXdv3J8cmD24fFpuyqy';
+export const magnaProgramId = '3zK38YBP6u3BpLUpaa6QhRHh4VXdv3J8cmD24fFpuyqy';
 
 export const s4Statics: AirdropStatics = {
   claimStart: 1738281600000,

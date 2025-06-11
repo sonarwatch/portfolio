@@ -19,6 +19,8 @@ export const stakePid = new PublicKey(
 export const airdropApi =
   'https://api.streamflow.foundation/v2/api/airdrop-recipients/check-eligibility';
 
+export const streamflowApi = 'https://api-public.streamflow.finance/v2/api/';
+
 export const airdropStatics: AirdropStatics = {
   claimLink: 'https://streamflow.foundation/',
   emitterLink: 'https://streamflow.foundation/',

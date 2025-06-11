@@ -24,6 +24,7 @@ export type TokenPriceSource = {
   platformId: string;
   decimals: number;
   price: number;
+  priceChange24h?: number;
   label?: PortfolioElementLabel;
   elementName?: string;
   liquidityName?: string;
@@ -39,6 +40,7 @@ export type TokenPrice = {
   platformId: string;
   decimals: number;
   price: number;
+  priceChange24h?: number;
   label?: PortfolioElementLabel;
   elementName?: string;
   liquidityName?: string;
@@ -77,6 +79,7 @@ export function tokenPriceFromSources(
   });
 
   let price: number;
+  let priceChange24h: number | undefined;
 
   const jupiterSource = updatedSources.find(
     (source) => source.id === jupiterSourceId
@@ -86,6 +89,8 @@ export function tokenPriceFromSources(
   );
   if (jupiterSource) {
     price = jupiterSource.price;
+    if (jupiterSource.priceChange24h)
+      priceChange24h = jupiterSource.priceChange24h;
   } else if (coingeckoSource) {
     price = coingeckoSource.price;
   } else {
@@ -104,6 +109,7 @@ export function tokenPriceFromSources(
     platformId: bestSource.platformId,
     decimals: bestSource.decimals,
     price,
+    priceChange24h,
     underlyings: bestSource.underlyings,
     elementName: bestSource.elementName,
     label: bestSource.label,

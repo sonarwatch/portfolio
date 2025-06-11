@@ -17,8 +17,8 @@ export function getPda(owner: string, distributor: string): PublicKey {
   return PublicKey.findProgramAddressSync(
     [
       Buffer.from([67, 108, 97, 105, 109, 83, 116, 97, 116, 117, 115]),
-      Buffer.from(owner),
-      Buffer.from(distributor),
+      new PublicKey(owner).toBuffer(),
+      new PublicKey(distributor).toBuffer(),
     ],
     merklePid
   )[0];

@@ -228,7 +228,7 @@ export const partnerInfoStruct = new BeetStruct<PartnerInfo>(
 );
 
 export type PoolState = {
-  buffer: Buffer;
+  accountDiscriminator: number[];
   lpMint: PublicKey;
   tokenAMint: PublicKey;
   tokenBMint: PublicKey;
@@ -238,7 +238,7 @@ export type PoolState = {
   bVaultLp: PublicKey;
   aVaultLpBump: number;
   enabled: boolean;
-  adminTokenAFee: PublicKey;
+  /* adminTokenAFee: PublicKey;
   adminTokenBFee: PublicKey;
   admin: PublicKey;
   feeLastUpdatedAt?: BigNumber;
@@ -251,12 +251,12 @@ export type PoolState = {
   partnerInfo?: PartnerInfo;
   padding2?: Padding2;
   padding: Padding;
-  curveType: CurveType;
+  curveType: CurveType; */
 };
 
 export const poolStateStruct = new FixableBeetStruct<PoolState>(
   [
-    ['buffer', blob(8)],
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
     ['lpMint', publicKey],
     ['tokenAMint', publicKey],
     ['tokenBMint', publicKey],
@@ -266,31 +266,7 @@ export const poolStateStruct = new FixableBeetStruct<PoolState>(
     ['bVaultLp', publicKey],
     ['aVaultLpBump', u8],
     ['enabled', bool],
-    ['adminTokenAFee', publicKey],
-    ['adminTokenBFee', publicKey],
-    ['admin', publicKey],
-    ['fees', poolFeesStruct],
-    ['poolType', u8],
-    ['stake', publicKey],
-    ['padding', paddingStruct],
-    ['curveType', u8],
-  ],
-  (args) => args as PoolState
-);
-
-export const poolStateV2Struct = new FixableBeetStruct<PoolState>(
-  [
-    ['buffer', blob(8)],
-    ['lpMint', publicKey],
-    ['tokenAMint', publicKey],
-    ['tokenBMint', publicKey],
-    ['aVault', publicKey],
-    ['bVault', publicKey],
-    ['aVaultLp', publicKey],
-    ['bVaultLp', publicKey],
-    ['aVaultLpBump', u8],
-    ['enabled', bool],
-    ['adminTokenAFee', publicKey],
+    /* ['adminTokenAFee', publicKey],
     ['adminTokenBFee', publicKey],
     ['feeLastUpdatedAt', u64],
     ['padding0', uniformFixedSizeArray(u8, 24)],
@@ -301,7 +277,7 @@ export const poolStateV2Struct = new FixableBeetStruct<PoolState>(
     ['bootstrapping', boostrappingStruct],
     ['partnerInfo', partnerInfoStruct],
     ['padding2', padding2Struct],
-    ['curveType', u8],
+    ['curveType', u8], */
   ],
   (args) => args as PoolState
 );

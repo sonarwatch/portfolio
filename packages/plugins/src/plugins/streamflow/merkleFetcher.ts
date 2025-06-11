@@ -1,15 +1,12 @@
-import BigNumber from 'bignumber.js';
-
 import { NetworkId } from '@sonarwatch/portfolio-core';
+import axios from 'axios';
+import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId } from './constants';
-import { getClientSolana } from '../../utils/clients';
-import { getParsedMultipleAccountsInfo } from '../../utils/solana';
-import { ClaimStatus, claimStatusStruct } from './structs';
+import { platformId, streamflowApi } from './constants';
 import { MemoizedCache } from '../../utils/misc/MemoizedCache';
-import { getPdas } from './helpers';
-import { MerkleInfo } from './types';
+import { getPda } from './helpers';
+import { AirdropsResponse, MerkleInfo } from './types';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const merkleMemo = new MemoizedCache<MerkleInfo[]>('merkles', {
@@ -17,77 +14,43 @@ const merkleMemo = new MemoizedCache<MerkleInfo[]>('merkles', {
   networkId: NetworkId.solana,
 });
 
-function calculateTotalClaimable(
-  claim: ClaimStatus,
-  unlockPeriod?: string
-): BigNumber {
-  if (!unlockPeriod) {
-    return BigNumber(0);
-  }
-  const now = Math.floor(Date.now() / 1000);
-  const elapsed = now - Number(claim.lastClaimTs);
-  const unlockPeriodNumber = parseInt(unlockPeriod, 10);
-
-  const periods = Math.floor(elapsed / unlockPeriodNumber);
-  const totalUnlocked = new BigNumber(periods).multipliedBy(
-    claim.lastAmountPerUnlock
-  );
-  const remaining = new BigNumber(claim.lockedAmount).minus(
-    claim.lockedAmountWithdrawn
-  );
-
-  return BigNumber.max(BigNumber.min(totalUnlocked, remaining), BigNumber(0));
-}
-
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
   const merkles = await merkleMemo.getItem(cache);
   if (!merkles) throw new Error('No active merkles found in cache');
 
-  const pdas = getPdas(
-    owner,
-    merkles.map((m) => m.address)
-  );
-
-  // This will only return accounts that exist
-  // meaning if the user didn't start to claim we won't but able to find his account
-  const claimAccounts = await getParsedMultipleAccountsInfo(
-    client,
-    claimStatusStruct,
-    pdas
+  const apiResponses = await Promise.all(
+    merkles.map((merkle) =>
+      axios
+        .get(`${streamflowApi}/airdrops/${merkle.address}/claimants/${owner}`)
+        .then((response) => response.data as AirdropsResponse)
+        .catch(() => undefined)
+    )
   );
 
   const registry = new ElementRegistry(NetworkId.solana, platformId);
-  for (let i = 0; i < claimAccounts.length; i += 1) {
-    const claim = claimAccounts[i];
-    if (!claim) continue;
+  for (let i = 0; i < apiResponses.length; i += 1) {
+    const allocationStatus = apiResponses[i];
+    if (!allocationStatus) continue;
 
     const merkle = merkles[i];
-    if (claim.closed) continue;
+    if (allocationStatus.chain !== 'SOLANA') continue;
 
     const element = registry.addElementMultiple({
       label: 'Airdrop',
       link: `https://app.streamflow.finance/airdrops/solana/mainnet/${merkle.address}`,
-      ref: claim.pubkey.toString(),
+      ref: getPda(owner, allocationStatus.distributorAddress),
       sourceRefs: [{ address: merkle.address, name: 'Distributor' }],
     });
-
-    const claimable = calculateTotalClaimable(
-      claim,
-      merkle?.unlockPeriod?.toString()
-    );
-
-    if (claimable.gt(0)) {
-      element.addAsset({
-        address: merkle.mint,
-        amount: claimable,
-        attributes: { isClaimable: true },
-      });
-    }
-
     element.addAsset({
       address: merkle.mint,
-      amount: claim.lockedAmount.minus(claim.lockedAmountWithdrawn),
+      amount: new BigNumber(allocationStatus.amountUnlocked).minus(
+        allocationStatus.amountClaimed
+      ),
+      attributes: { isClaimable: true },
+    });
+    element.addAsset({
+      address: merkle.mint,
+      amount: new BigNumber(allocationStatus.amountLocked),
       attributes: { lockedUntil: -1 },
     });
   }

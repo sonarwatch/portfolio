@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.13](https://github.com/sonarwatch/portfolio/compare/core-0.15.12...core-0.15.13) (2025-06-05)
+
+
+### Bug Fixes
+
+* **core:** ensure applyPricesToElements respects networkId consistency ([0928056](https://github.com/sonarwatch/portfolio/commit/0928056a93285dc9f669c1c4229be56562f95460))
+
+
+
 ## [0.15.12](https://github.com/sonarwatch/portfolio/compare/core-0.15.11...core-0.15.12) (2025-06-03)
 
 

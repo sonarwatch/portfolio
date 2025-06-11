@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import axios, { AxiosResponse } from 'axios';
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { Claim, NetworkId } from '@sonarwatch/portfolio-core';
 import { jupApiParams } from '../jupiter/constants';
 import {
   AirdropFetcher,
@@ -18,6 +18,7 @@ import {
   cloudDecimals,
   platformId,
 } from './constants';
+import { getClaimTransactions } from '../../utils/solana/jupiter/getClaimTransactions';
 
 const claimStart = new BigNumber(1721314800000);
 const earnestClaimDuration = 172 * 24 * 60 * 60 * 1000;
@@ -64,11 +65,10 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
 
   let capitalAmount = new BigNumber(0);
   let claimedTs;
-  let firstTx;
+  let claims: Claim[] = [];
   if (claimStatusAccount) {
-    const txs = await client.getSignaturesForAddress(claimStatusAddress);
-    [firstTx] = txs;
-    claimedTs = firstTx.blockTime;
+    claims = await getClaimTransactions(owner, claimStatusAddress, cloudMint);
+
     if (claimedTs) {
       const ratio = new BigNumber(claimedTs * 1000)
         .minus(claimStart)
@@ -94,16 +94,7 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
       isClaimed: claimStatusAccount !== null,
       label: 'CLOUD',
       address: cloudMint,
-      claims:
-        claimedTs && firstTx
-          ? [
-              {
-                date: claimedTs,
-                amount: capitalAmount.div(10 ** cloudDecimals).toNumber(),
-                txId: firstTx.signature,
-              },
-            ]
-          : undefined,
+      claims,
       ref: claimStatusAccount ? claimStatusAddress.toString() : undefined,
     },
   ];
@@ -137,17 +128,20 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
     );
 
     let earnestAmount = new BigNumber(0);
-    let earnestClaimTx;
     let earnestClaimTime;
+    let earnestClaims: Claim[] = [];
     if (earnClaimStatusAccount) {
-      const txs = await client.getSignaturesForAddress(earnClaimStatusAddress);
-      [earnestClaimTx] = txs;
-      earnestClaimTime = earnestClaimTx.blockTime;
+      earnestClaims = await getClaimTransactions(
+        owner,
+        earnClaimStatusAddress,
+        cloudMint
+      );
+      earnestClaimTime = earnestClaims[0].date;
       if (earnestClaimTime) {
-        if (earnestClaimEnd.isLessThanOrEqualTo(earnestClaimTime * 1000))
+        if (earnestClaimEnd.isLessThanOrEqualTo(earnestClaimTime))
           earnestAmount = new BigNumber(claimProofEarn.data.amount).times(2);
         else {
-          const ratio = new BigNumber(earnestClaimTime * 1000)
+          const ratio = new BigNumber(earnestClaimTime)
             .minus(claimStart)
             .dividedBy(earnestClaimDuration)
             .plus(1);
@@ -172,16 +166,7 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
       isClaimed: earnClaimStatusAccount !== null,
       label: 'CLOUD',
       address: cloudMint,
-      claims:
-        earnestClaimTime && earnestClaimTx
-          ? [
-              {
-                date: earnestClaimTime,
-                amount: earnestAmount.div(10 ** cloudDecimals).toNumber(),
-                txId: earnestClaimTx.signature,
-              },
-            ]
-          : undefined,
+      claims: earnestClaims,
       ref: earnClaimStatusAccount
         ? earnClaimStatusAddress.toString()
         : undefined,
