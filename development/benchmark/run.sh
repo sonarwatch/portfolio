@@ -14,6 +14,7 @@ export let options = {
 
 const addresses = [
   ['Hp8SsZZZot8UB28HTfEuxxCXECoSiwHfpzqwenjrMPKF'],
+  ['AVAZvHLR2PcWpDf8BXY4rVxNHYRBytycHkcB5z5QNXYm'],
   ['GeVPPqUvfpTJnh9NzhdFBcPpFPxmTVR5oHt6jRRdgrBE'],
   ['71hhezkHQ2dhmPySsHVCCkLggfWzPFEBdfEjbn4NCXMG'],
   ['BBkoocctRizBPsu2WRHx5xvpd21UHx6ARVEDGVw7sAFa'],

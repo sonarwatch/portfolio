@@ -29,7 +29,7 @@ export const programs = [
   'CBuCnLe26faBpcBP2fktp4rp8abpcAnTWft6ZrP5Q4T',
   // '9KEPoZmtHUrBbhWN1v1KWLMkkvwY6WLtAVUCPRtRjP4z', bad 257k items
   // 'EhhTKczWMGQt46ynNeRX1WfeagwwJd7ufHvCDjRxjo5Q', bad 380k items
-  'FarmqiPv5eAj3j1GMdMCMUGXqPUvmquZtMy86QH6rzhG',
+  // 'FarmqiPv5eAj3j1GMdMCMUGXqPUvmquZtMy86QH6rzhG',  too large payloads
   // 'LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo', Cannot create a string longer than 0x1fffffe8 characters 2x
   // 'vaU6kP7iNEGkbmPkLmZfGwiGxd4Mob24QQCie5R9kd2', too large payload
   // 'FEESngU3neckdwib9X3KWqdL7Mjmqk9XNp3uh5JbP4KP', bad 90k items
@@ -41,13 +41,13 @@ export const programs = [
   'VALaaymxQh2mNy2trH9jUqHT1mTow76wpTcGmSWSwJe',
   // 'jupoNjAxXgZ4rjzxzPMP4oxduvQsQtZzyknqvzYNrNu', too large payload
   // 'j1o2qRpjcyUwEvwtcfhEQefh773ZgjxcVRry7LDqg5X', bad 230k items
-  'DCA265Vj8a9CEuX1eb1LWRnDT7uK6q1xMipnNyatn23M',
-  'LocpQgucEQHbqNABEYvBvwoxCPsSbG91A1QaQhQQqjn',
+  // 'DCA265Vj8a9CEuX1eb1LWRnDT7uK6q1xMipnNyatn23M', too large payloads
+  // 'LocpQgucEQHbqNABEYvBvwoxCPsSbG91A1QaQhQQqjn', too large payloads
   'GFXsSL5sSaDfNFQUYsHekbWBW1TsFdjDYzACh62tEHxn',
   'STKRWxT4irmTthSJydggspWmkc3ovYHx62DHLPVv1f1',
   'GAMMA7meSFWaBXF25oSUgmGRwaW6sCMFLmBNiMSdbHVT',
   // 'rDeFiHPjHZRLiz4iBzMw3zv6unZs4VwdU6qQcVd3NSK', too large payload
-  'rNfTQD84kwMbcRpWpLR92BVmxbuwrZc3o5HTauAZiXs',
+  // 'rNfTQD84kwMbcRpWpLR92BVmxbuwrZc3o5HTauAZiXs', too large payloads
   'rain2M5b9GeFCk792swkwUu51ZihHJb3SUQ8uHxSRJf',
   'LLoc8JX5dLAMVzbzTNKG6EFpkyJ9XCsVAGkqwQKUJoa',
   // 'Port7uDYB3wk6GJAw4KT1WpTeMtSu9bTcChBHkX2LfR', too large payload
@@ -55,7 +55,7 @@ export const programs = [
   // '3parcLrT7WnXAcyPfkCz49oofuuf2guUKkjuFkAhZW8Y', bad 306k items
   // '2gWf5xLAzZaKX9tQj9vuXsaxTWtzTZDFRn21J3zjNVgu', too large payload
   // 'pytS9TjG1qyAZypk7n8rw8gfW9sUaqqYyMhJQ4E7JCQ',  Cannot create a string longer than 0x1fffffe8 characters
-  'vAuLTsyrvSfZRuRB3XgvkPwNGgYSs9YRYymVebLKoxR',
+  // 'vAuLTsyrvSfZRuRB3XgvkPwNGgYSs9YRYymVebLKoxR', too large payloads
   '9Fcn3Fd4d5ocrb12xCUtEvezxcjFEAyHBPfrZDiPt9Qj',
   'EuSLjg23BrtwYAk1t4TFe5ArYSXCVXLBqrHRBfWQiTeJ',
   'BVddkVtFJLCihbVrtLo8e3iEd9NftuLunaznAxFFW8vf',
@@ -102,7 +102,7 @@ export const programs = [
   'poo1sKMYsZtDDS7og73L68etJQYyn6KXhXTLz1hizJc',
   'KJ6b6PswEZeNSwEh1po51wxnbX1C3FPhQPhg8eD2Y6E',
   'dvyFwAPniptQNb1ey4eM12L8iLHrzdiDsPPDndd6xAR',
-  'ExponentnaRg3CQbW6dqQNZKXp7gtZ9DGMp1cwC4HAS7',
+  // 'ExponentnaRg3CQbW6dqQNZKXp7gtZ9DGMp1cwC4HAS7', too large payloads
   'tuna4uSQZncNeeiAMKbstuxA9CUkHH6HmC64wgmnogD',
   '3i8rGP3ex8cjs7YYWrQeE4nWizuaStsVNUXpRGtMbs3H',
   'g3yMgSB3Q7gNjMfSoCm1PiJihqHdNJeUuPHvRyf45qY',
@@ -114,17 +114,17 @@ export const programs = [
   'ARFxpgenuFNbyoysFdqEwTgEdxtLtHbTHwCWHJjqWHTb',
   'NirvHuZvrm2zSxjkBvSbaF2tHfP5j7cvMj9QmdoHVwb',
   'gp8fqiE5cwX3JRT8unpKeFutNdMihyisAe3nx6L3S1p',
-  'vsRJM68m7i18PwzTFphgPYXTujCgxEi28knpUwSmg3q',
+  // 'vsRJM68m7i18PwzTFphgPYXTujCgxEi28knpUwSmg3q',
   'F1pkXm8W1WNbRvMoZTuKftHJ92ffuzddCCSRKKvCVL7n',
   '1avaAUcjccXCjSZzwUvB2gS3DzkkieV2Mw8CjdN65uu',
-  'CRSeeBqjDnm3UPefJ9gxrtngTsnQRhEJiTA345Q83X3v',
+  // 'CRSeeBqjDnm3UPefJ9gxrtngTsnQRhEJiTA345Q83X3v', too large payloads
   'HYDqq5GfUj4aBuPpSCs4fkmeS7jZHRhrrQ3q72KsJdD4',
   'C73nDAFn23RYwiFa6vtHshSbcg8x6BLYjw3bERJ3vHxf',
   'GLoWMgcn3VbyFKiC2FGMgfKxYSyTJS7uKFwKY2CSkq9X',
   'CNDL7Y1SYqvSF34aXayqHjm2JZrHB7BfhhVi3TUan3fe',
   'STAKEGztX7S1MUHxcQHieZhELCntb9Ys9BgUbeEtMu1',
-  'STAKEvGqQTtzJZH6BWDcbpzXXn2BBerPAgQ3EGLN2GH',
-  'NXFiKimQN3QSL3CDhCXddyVmLfrai8HK36bHKaAzK7g',
+  // 'STAKEvGqQTtzJZH6BWDcbpzXXn2BBerPAgQ3EGLN2GH', too large payloads
+  // 'NXFiKimQN3QSL3CDhCXddyVmLfrai8HK36bHKaAzK7g', too large payloads
   '13gDzEXCdocbj8iAiqrScGo47NiSuYENGsRqi3SEAwet',
   '6M3fyRE18t6c7f9qes3eQMzR4QyPRMFZiyNQcApENCYf',
   // 'voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj', bad 433k
