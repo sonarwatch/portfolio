@@ -12,7 +12,7 @@ import { getCache } from '../../Cache';
 import { withTiming } from '../performance/timing';
 import { decompress } from '../compression/compression';
 
-const programsCache = new TTLCache<string, string>({ max: 200, ttl: 600_000 });
+const programsCache = new TTLCache<string, any[]>({ max: 200, ttl: 600_000 });
 
 export const MAX_TIME_MS_EXECUTION_TO_LOG = 15_000;
 export const MAX_TIME_FILTERING_TO_LOG = 1;
@@ -28,13 +28,12 @@ export async function getProgramAccounts(
     async () => {
       try {
         const programIdStr = programId.toString();
-        const compressedAccounts: string | undefined = await loadFromCache(
+        const cachedAccounts: any[] | undefined = await loadFromCache(
           programIdStr
         );
         console.log(`Cache size. Size=${programsCache.size}`);
 
-        if (compressedAccounts) {
-          const cachedAccounts: any[] = await decompress(compressedAccounts);
+        if (cachedAccounts) {
           console.log(
             `Program Accounts are loaded from cache for program ${programId}`
           );
@@ -100,11 +99,11 @@ export async function getProgramAccounts(
   );
 }
 
-export async function loadFromCache(key: string): Promise<string | undefined> {
-  const cachedInMemory: string | undefined = programsCache.get(key);
+export async function loadFromCache(key: string): Promise<any[] | undefined> {
+  const cachedInMemory: any[] | undefined = programsCache.get(key);
   if (cachedInMemory) {
     console.log(
-      `[MEMORY] hit: ${key} Size: ${cachedInMemory.length / 1024 / 1024} Mb`
+      `[MEMORY] hit: ${key} ItemsCount: ${cachedInMemory.length}`
     );
     return cachedInMemory;
   }
@@ -121,13 +120,14 @@ export async function loadFromCache(key: string): Promise<string | undefined> {
   );
 
   if (cachedInRedis) {
-    programsCache.set(key, cachedInRedis);
+    const cachedAccounts: any[] = await decompress(cachedInRedis);
+    programsCache.set(key, cachedAccounts);
     console.log(
       `[REDIS] loaded and saved to memory: ${key} Size: ${
         cachedInRedis.length / 1024 / 1024
       } Mb`
     );
-    return cachedInRedis;
+    return cachedAccounts;
   }
 
   console.log(`[REDIS] miss: ${key}`);

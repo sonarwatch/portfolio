@@ -82,7 +82,6 @@ export const programs = [
   'bon4Kh3x1uQK16w9b9DKgz3Aw4AP1pZxBJk55Q6Sosb',
   '8BYmYs3zsBhftNELJdiKsCN2WyCBbrTwXd6WG4AFPr6n',
   'FoXpJL1exLBJgHVvdSHNKyKu2xX2uatctH9qp6dLmfpP',
-  's1aysqpEyZyijPybUV89oBGeooXrR22wMNLjnG2SWJA',
   'QMMD16kjauP5knBwxNUJRZ1Z5o3deBuFrqVjBVmmqto',
   // 'QMNeHCGYnLVDn1icRAfQZpjPLBNkfGbSKRB83G5d8KB', bad 165k
   'rev31KMq4qzt1y1iw926p694MHVVWT57caQrsHLFA4x',
@@ -110,7 +109,6 @@ export const programs = [
   '5UFYdXHgXLMsDzHyv6pQW9zv3fNkRSNqHwhR7UPnkhzy',
   'HE6bCtjsrra8DRbJnexKoVPSr5dYs57s3cuGHfotiQbq',
   'q8gz8Sww7Xexpqk9DrEMjNXMHnFx6dB3EYe32PwHHd6',
-  'TRDwq3BN4mP3m9KsuNUWSN6QDff93VKGSwE95Jbr9Ss',
   'TRDwq3BN4mP3m9KsuNUWSN6QDff93VKGSwE95Jbr9Ss',
   'ZPLt7XEyRvRxEZcGFGnRKGLBymFjQbwmgTZhMAMfGAU',
   'ARFxpgenuFNbyoysFdqEwTgEdxtLtHbTHwCWHJjqWHTb',
