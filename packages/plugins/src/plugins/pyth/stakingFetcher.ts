@@ -8,7 +8,7 @@ import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId, pythMint, stakingProgramId } from './constants';
 import { getClientSolana } from '../../utils/clients';
-import { tokenAccountStruct } from '../../utils/solana';
+import { getProgramAccounts, tokenAccountStruct } from '../../utils/solana';
 import { positionsDataFilter } from './filters';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
@@ -17,9 +17,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
 
   const [stakingAccounts, tokenPrice] = await Promise.all([
-    client.getProgramAccounts(stakingProgramId, {
-      filters: positionsDataFilter(owner),
-    }),
+    getProgramAccounts(client, stakingProgramId, positionsDataFilter(owner)),
     cache.getTokenPrice(pythMint, NetworkId.solana),
   ]);
 

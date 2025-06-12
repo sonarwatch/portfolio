@@ -8,6 +8,12 @@ dotenv.config();
 axios.defaults.timeout = 120000;
 
 import { fastifyLogger, logger } from './logger/logger';
+
+console.log = (...args) => logger.info(args.join(' '));
+console.info = (...args) => logger.info(args.join(' '));
+console.warn = (...args) => logger.warn(args.join(' '));
+console.error = (...args) => logger.error(args.join(' '));
+
 import { initPortfolioRoutes } from './routes/portfolio';
 import programService from './services/program';
 import { scheduleJobs } from './schedulers/job';

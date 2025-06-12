@@ -14,7 +14,7 @@ import { decompress } from '../compression/compression';
 
 const programsCache = new TTLCache<string, any[]>({ max: 200, ttl: 600_000 });
 
-export const MAX_TIME_MS_EXECUTION_TO_LOG = 15_000;
+export const MAX_TIME_MS_EXECUTION_TO_LOG = 1;
 export const MAX_TIME_FILTERING_TO_LOG = 1;
 
 export async function getProgramAccounts(
@@ -24,20 +24,15 @@ export async function getProgramAccounts(
   maxAccounts = 0
 ) {
   return withTiming(
-    `getProgramAccounts ${programId.toString()}`,
+    `[All] getProgramAccounts ${programId.toString()}`,
     async () => {
       try {
         const programIdStr = programId.toString();
         const cachedAccounts: any[] | undefined = await loadFromCache(
           programIdStr
         );
-        console.log(`Cache size. Size=${programsCache.size}`);
 
         if (cachedAccounts) {
-          console.log(
-            `Program Accounts are loaded from cache for program ${programId}`
-          );
-
           return cachedAccounts
             .filter(({ account }) => {
               const data = Buffer.from(account.data.data);
@@ -76,60 +71,77 @@ export async function getProgramAccounts(
         );
       }
 
-      const config: GetProgramAccountsConfig = {
-        encoding: 'base64',
-        filters,
-      };
+      return withTiming(`[RPC-Node] getProgramAccounts ${programId.toString()}`, async () => {
+        const config: GetProgramAccountsConfig = {
+          encoding: 'base64',
+          filters,
+        };
 
-      if (maxAccounts <= 0) {
+        if (maxAccounts <= 0) {
+          return connection.getProgramAccounts(programId, config);
+        }
+
+        const accountsRes = await connection.getProgramAccounts(programId, {
+          ...config,
+          dataSlice: { offset: 0, length: 0 },
+        });
+
+        if (accountsRes.length > maxAccounts)
+          throw new Error(`Too much accounts to get (${accountsRes.length})`);
+
         return connection.getProgramAccounts(programId, config);
-      }
-
-      const accountsRes = await connection.getProgramAccounts(programId, {
-        ...config,
-        dataSlice: { offset: 0, length: 0 },
       });
-
-      if (accountsRes.length > maxAccounts)
-        throw new Error(`Too much accounts to get (${accountsRes.length})`);
-
-      return connection.getProgramAccounts(programId, config);
     },
     MAX_TIME_MS_EXECUTION_TO_LOG
   );
 }
 
 export async function loadFromCache(key: string): Promise<any[] | undefined> {
-  const cachedInMemory: any[] | undefined = programsCache.get(key);
-  if (cachedInMemory) {
-    console.log(
-      `[MEMORY] hit: ${key} ItemsCount: ${cachedInMemory.length}`
-    );
-    return cachedInMemory;
+  const cacheLevel = process.env['PROGRAMS_CACHE_LEVEL'] || 'NONE'
+  if (cacheLevel === 'NONE') {
+    return undefined;
   }
 
-  console.log(`[MEMORY] miss: ${key}, loading from Redis...`);
-  const cachedInRedis: string | undefined = await withTiming(
-    `RedisLoading. ${key}`,
-    async () =>
-      getCache().getItem(key, {
-        prefix: programCachePrefix,
-        networkId: NetworkId.solana,
-      }),
-    MAX_TIME_FILTERING_TO_LOG
-  );
+  if (cacheLevel === 'MEMORY') {
+    const cachedInMemory: any[] | undefined = programsCache.get(key);
+    if (cachedInMemory) {
+      console.log(
+        `[MEMORY] hit: ${key} ItemsCount: ${cachedInMemory.length}`
+      );
+      return cachedInMemory;
+    }
 
-  if (cachedInRedis) {
-    const cachedAccounts: any[] = await decompress(cachedInRedis);
-    programsCache.set(key, cachedAccounts);
-    console.log(
-      `[REDIS] loaded and saved to memory: ${key} Size: ${
-        cachedInRedis.length / 1024 / 1024
-      } Mb`
-    );
-    return cachedAccounts;
+    console.log(`[MEMORY] miss: ${key}, loading from Redis...`);
   }
 
-  console.log(`[REDIS] miss: ${key}`);
+  if (cacheLevel === 'MEMORY' || cacheLevel === 'REDIS') {
+    const cachedInRedis: string | undefined = await withTiming(
+      `RedisLoading. ${key}`,
+      async () =>
+        getCache().getItem(key, {
+          prefix: programCachePrefix,
+          networkId: NetworkId.solana,
+        }),
+      MAX_TIME_FILTERING_TO_LOG
+    );
+
+    if (cachedInRedis) {
+      const cachedAccounts: any[] = await decompress(cachedInRedis);
+
+      if (cacheLevel === 'MEMORY') {
+        programsCache.set(key, cachedAccounts);
+      }
+
+      console.log(
+        `[REDIS] loaded and saved to memory: ${key} Size: ${
+          cachedInRedis.length / 1024 / 1024
+        } Mb`
+      );
+      return cachedAccounts;
+    }
+
+    console.log(`[REDIS] miss: ${key}`);
+  }
+
   return undefined;
 }

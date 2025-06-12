@@ -118,15 +118,14 @@ const addresses = [
 ];
 
 export default function () {
-  const baseUrl = 'https://portfolio-api.lambda.p2p.org';
+  const baseUrl = 'https://api.lambda.p2p.org';
   const index = __ITER * options.vus + __VU - 1;
   const [address] = addresses[index % addresses.length];
   const noCache = Date.now() + Math.floor(Math.random() * 5000);
-
-  const url = \`\${baseUrl}/api/v1/addresses/\${address}/portfolio?noCache=\${noCache}\`;
+  const url = \`\${baseUrl}/api/v1/chains/solana/wallets/\${address}/balances?noCache=\${noCache}\`;
 
   const start = Date.now()
-  const res = http.get(url, { timeout: '65s' });
+  const res = http.get(url, { timeout: '65s', headers: { 'Authorization': '' } });
 
   console.log({
     url,
@@ -139,6 +138,10 @@ export default function () {
 }
 EOF
 
-k6 run --summary-export="$OUTPUT_JSON" --console-output=responses.txt load-test.js
+k6 run \
+    --summary-export=tmp/summary.json \
+    --console-output=tmp/responses.txt \
+    --out json=tmp/result.json \
+    load-test.js
 
 rm load-test.js
