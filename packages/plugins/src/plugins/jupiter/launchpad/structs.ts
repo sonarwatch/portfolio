@@ -67,7 +67,7 @@ export const partialUnstakeStruct = new FixableBeetStruct<PartialUnstake>(
 );
 
 export type ClaimStatus = {
-  buffer: Buffer;
+  accountDiscriminator: number[];
   claimant: PublicKey;
   lockedAmount: BigNumber;
   lockedAmountWithdrawn: BigNumber;
@@ -78,7 +78,7 @@ export type ClaimStatus = {
 
 export const claimStatusStruct = new BeetStruct<ClaimStatus>(
   [
-    ['buffer', blob(8)],
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
     ['claimant', publicKey],
     ['lockedAmount', u64],
     ['lockedAmountWithdrawn', u64],

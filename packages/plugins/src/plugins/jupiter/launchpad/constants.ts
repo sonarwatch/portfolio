@@ -1,5 +1,4 @@
 import { AirdropConfig } from './types';
-import { platformId as kaminoPlatformId } from '../../kamino/constants';
 import { jupApiParams } from '../constants';
 
 export const platformId = 'jupiter-launchpad';
@@ -153,26 +152,6 @@ export const airdropConfigs: AirdropConfig[] = [
       claimLink: 'https://jupuary.jup.ag/',
       image: platformImage,
       name: 'Jupuary 2025',
-    },
-  },
-  {
-    mint: 'KMNo3nJsBXfcpJTVhZcXLW7RmTwTt4GVFE7suUBo9sS',
-    decimals: 6,
-    distributorProgram: 'KdisqEcXbXKaTrBFqeDLhMmBvymLTwj9GmhDcdJyGat',
-    label: 'KMNO',
-    platformId: kaminoPlatformId,
-    getApiPath: (owner: string) =>
-      `https://api.kamino.finance/distributor/user/${owner}`,
-    statics: {
-      claimStart: 1748520000000,
-      claimEnd: undefined,
-      id: 'kamino-s3',
-      emitterName: 'Kamino',
-      emitterLink: 'https://app.kamino.finance/',
-      claimLink: 'https://app.kamino.finance/season-3-airdrop',
-      image:
-        'https://sonarwatch.github.io/portfolio/assets/images/platforms/kamino.webp',
-      name: 'S3',
     },
   },
 ];

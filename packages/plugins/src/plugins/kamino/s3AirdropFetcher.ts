@@ -6,12 +6,12 @@ import {
   airdropFetcherToFetcher,
   getAirdropRaw,
 } from '../../AirdropFetcher';
-import { airdropStaticsS1, kmnoMint, platformId } from './constants';
+import { airdropStaticsS3, kmnoMint, platformId } from './constants';
 import { AllocationsApiRes } from './types';
 import { getCachedClaims } from './airdropHelpers';
 
-const statics = airdropStaticsS1;
-const season = 1;
+const statics = airdropStaticsS3;
+const season = 3;
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
   const response = await axios.get<unknown, AxiosResponse<AllocationsApiRes>>(
