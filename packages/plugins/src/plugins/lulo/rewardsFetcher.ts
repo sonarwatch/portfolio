@@ -1,4 +1,8 @@
-import { NetworkId, PortfolioElement } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  PortfolioElement,
+  PortfolioElementMultiple,
+} from '@sonarwatch/portfolio-core';
 import { platformId } from './constants';
 import driftAirdropFetcher from '../drift/airdropFetcher';
 import solendRewardsFetcher from '../save/rewardsFetcher';
@@ -23,11 +27,15 @@ const executor: FetcherExecutor = async (
     ])
   ).flat();
 
-  return res.map((element) => ({
-    ...element,
-    platformId,
-    label: 'Rewards',
-  }));
+  return res.map((element) => {
+    const tmpElement = element as PortfolioElementMultiple;
+    tmpElement.data.link = `https://app.lulo.fi/rewards?address=${owner}`;
+    return {
+      ...tmpElement,
+      platformId,
+      label: 'Rewards',
+    };
+  });
 };
 
 const fetcher: Fetcher = {
