@@ -17,6 +17,7 @@ import {
   airdropFetcherToFetcher,
   getAirdropRaw,
 } from '../../AirdropFetcher';
+import { getClaimTransactions } from '../../utils/solana/jupiter/getClaimTransactions';
 
 const query = gql`
   query GetAirdropFinalFrontend($authority: String!) {
@@ -77,12 +78,23 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
   const claimStatuses = deriveZetaClaimStatuses(owner, distributors);
 
   const client = getClientSolana();
+
   const claimStatusesAccount = await getMultipleAccountsInfoSafe(
     client,
     claimStatuses
   );
 
-  if (claimStatusesAccount.some((account) => account))
+  if (claimStatusesAccount.length) {
+    const claims = (
+      await Promise.all(
+        claimStatusesAccount.map((claimAccount, i) =>
+          claimAccount
+            ? getClaimTransactions(owner, claimStatuses[i], zexMint)
+            : []
+        )
+      )
+    ).flat();
+
     return getAirdropRaw({
       statics: airdropStatics,
       items: [
@@ -91,9 +103,11 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
           isClaimed: true,
           label: 'ZEX',
           address: zexMint,
+          claims,
         },
       ],
     });
+  }
 
   return getAirdropRaw({
     statics: airdropStatics,
