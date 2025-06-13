@@ -7,14 +7,8 @@ import reservesJob from './reservesJob';
 import marketsJob from './marketsJob';
 import lendsFetcher from './lendsFetcher';
 import farmsFetcher from './farmsFetcher';
-import {
-  airdropFetcher as s1AirdropFetcher,
-  fetcher as s1Fetcher,
-} from './s1AirdropFetcher';
-import {
-  airdropFetcher as s2AirdropFetcher,
-  fetcher as s2Fetcher,
-} from './s2AirdropFetcher';
+import { airdropFetcher as s1AirdropFetcher } from './s1AirdropFetcher';
+import { airdropFetcher as s2AirdropFetcher } from './s2AirdropFetcher';
 import {
   airdropFetcher as s3AirdropFetcher,
   fetcher as s3Fetcher,
@@ -32,8 +26,6 @@ export const jobs: Job[] = [
 export const fetchers: Fetcher[] = [
   lendsFetcher,
   farmsFetcher,
-  s1Fetcher,
-  s2Fetcher,
   s3Fetcher,
   ordersFetcher,
 ];
