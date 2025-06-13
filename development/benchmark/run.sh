@@ -2,6 +2,10 @@
 
 command -v k6 >/dev/null 2>&1 || { echo "k6 is not installed. Please install k6 'brew install k6'." >&2; exit 1; }
 
+rf -rf tmp/summary.json
+rf -rf tmp/responses.txt
+rf -rf tmp/result.json
+
 cat <<EOF > load-test.js
 import http from 'k6/http';
 import { sleep } from 'k6';
@@ -118,11 +122,15 @@ const addresses = [
 ];
 
 export default function () {
-  const baseUrl = 'https://api.lambda.p2p.org';
   const index = __ITER * options.vus + __VU - 1;
   const [address] = addresses[index % addresses.length];
   const noCache = Date.now() + Math.floor(Math.random() * 5000);
+
+  const baseUrl = 'https://api.lambda.p2p.org';
   const url = \`\${baseUrl}/api/v1/chains/solana/wallets/\${address}/balances?noCache=\${noCache}\`;
+
+  //const baseUrl = 'https://portfolio-api.lambda.p2p.org';
+  //const url = \`\${baseUrl}/api/v1/addresses/\${address}/portfolio?noCache=\${noCache}\`;
 
   const start = Date.now()
   const res = http.get(url, { timeout: '65s', headers: { 'Authorization': '' } });

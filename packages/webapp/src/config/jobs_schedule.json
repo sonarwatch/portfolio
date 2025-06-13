@@ -1,6 +1,11 @@
 {
-  "program-id-cache": {
-    "intervalMs": 3600000,
+  "program-id-cache-medium": {
+    "intervalMs": 3000000,
+    "priority": "HIGH",
+    "ttl": "1h"
+  },
+  "program-id-cache-small": {
+    "intervalMs": 10200000,
     "priority": "HIGH",
     "ttl": "1h"
   },

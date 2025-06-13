@@ -1,7 +1,15 @@
 import { Fetcher } from '../../Fetcher';
 import { Job } from '../../Job';
-import programCacheJob from './programsCacheJob';
-export { programs as cachedPrograms } from './constants'
+import getProgramCacheJob from './programsCacheJob';
+import {
+  mediumPrograms,
+  ProgramCacheCategory,
+  smallPrograms
+} from './constants';
 
-export const jobs: Job[] = [programCacheJob];
+export const cachedPrograms = [...mediumPrograms, ...smallPrograms];
+export const jobs: Job[] = [
+  getProgramCacheJob(ProgramCacheCategory.SMALL, smallPrograms),
+  getProgramCacheJob(ProgramCacheCategory.MEDIUM, mediumPrograms)
+];
 export const fetchers: Fetcher[] = [];
