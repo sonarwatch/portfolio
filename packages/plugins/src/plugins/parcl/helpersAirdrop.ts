@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import BigNumber from 'bignumber.js';
-import { AirdropRaw, IsClaimed, NetworkId } from '@sonarwatch/portfolio-core';
+import { AirdropRaw, Claim, NetworkId } from '@sonarwatch/portfolio-core';
 import {
   airdropApi,
   airdropStatics,
@@ -17,6 +17,7 @@ import { SolanaClient } from '../../utils/clients/types';
 import { claimStatusStruct } from '../jupiter/launchpad/structs';
 import { AirdropFetcher, getAirdropRaw } from '../../AirdropFetcher';
 import { getClientSolana } from '../../utils/clients';
+import { getClaimTransactions } from '../../utils/solana/jupiter/getClaimTransactions';
 
 async function fetchAllocation(
   owner: string,
@@ -75,19 +76,24 @@ async function fetchAirdrop(
   const allocation = await fetchAllocation(owner, cache);
   const amount = !allocation.merkleTree ? 0 : allocation.amount;
 
-  let isClaimed: IsClaimed = false;
+  let claims: Claim[] = [];
+  let claimStatusPubkey;
+  let claimStatusAccount;
   if (amount > 0 && allocation.merkleTree) {
-    const claimStatusPubkey = deriveClaimStatus(
+    claimStatusPubkey = deriveClaimStatus(
       owner,
       allocation.merkleTree,
       distributorProgram
     );
-    const claimStatusAccount = await getParsedAccountInfo(
+    claimStatusAccount = await getParsedAccountInfo(
       client,
       claimStatusStruct,
       claimStatusPubkey
     );
-    isClaimed = claimStatusAccount !== null;
+
+    if (claimStatusAccount) {
+      claims = await getClaimTransactions(owner, claimStatusPubkey, prclMint);
+    }
   }
 
   return getAirdropRaw({
@@ -95,9 +101,14 @@ async function fetchAirdrop(
     items: [
       {
         amount,
-        isClaimed,
+        isClaimed: claimStatusAccount !== null,
         label: 'PRCL',
         address: prclMint,
+        claims,
+        ref:
+          claimStatusAccount && claimStatusPubkey
+            ? claimStatusPubkey.toString()
+            : undefined,
       },
     ],
   });

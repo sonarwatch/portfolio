@@ -229,27 +229,40 @@ export const lendingConfigs: Map<string, LendingMarketConfig> = new Map([
 
 export const marketsKey = `markets`;
 export const reservesKey = `reserves`;
+
+export const kaminoAirdropProgram = new PublicKey(
+  'KdisqEcXbXKaTrBFqeDLhMmBvymLTwj9GmhDcdJyGat'
+);
 export const airdropStaticsS1: AirdropStatics = {
   claimStart: 1714478400000,
   claimEnd: 1723791000000,
   id: 'kamino-s1',
   emitterName: 'Kamino',
   emitterLink: 'https://app.kamino.finance/',
-  claimLink: 'https://app.kamino.finance/genesis',
   image:
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/kamino.webp',
   name: 'S1',
 };
 export const airdropStaticsS2: AirdropStatics = {
   claimStart: 1724340000000,
-  claimEnd: undefined,
+  claimEnd: 1748520000000,
   id: 'kamino-s2',
   emitterName: 'Kamino',
   emitterLink: 'https://app.kamino.finance/',
-  claimLink: 'https://app.kamino.finance/season-2-airdrop',
   image:
     'https://sonarwatch.github.io/portfolio/assets/images/platforms/kamino.webp',
   name: 'S2',
+};
+export const airdropStaticsS3: AirdropStatics = {
+  claimStart: 1748520000000,
+  claimEnd: undefined,
+  id: 'kamino-s3',
+  emitterName: 'Kamino',
+  emitterLink: 'https://app.kamino.finance/',
+  claimLink: 'https://app.kamino.finance/season-3-airdrop',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/kamino.webp',
+  name: 'S3',
 };
 
 export const reservesMemo = new MemoizedCache<

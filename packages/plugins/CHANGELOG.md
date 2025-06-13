@@ -2,6 +2,24 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.28](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.27...plugins-0.15.28) (2025-06-12)
+
+
+### Bug Fixes
+
+* correct variable name ([d22beb9](https://github.com/sonarwatch/portfolio/commit/d22beb9fa29220b37f2abade6d1f13180204f0ed))
+* **jupiter:** replace `isPositive` with `isGreaterThan(0)` for sl_taking_amount check in limitFetcher ([824952c](https://github.com/sonarwatch/portfolio/commit/824952c9f6ec3a0cc5459d37179641252a498fc1))
+* **plugins:** prevent processing of accounts with zero LP tokens ([23cfc2e](https://github.com/sonarwatch/portfolio/commit/23cfc2ef35a2432489d2a8fe8c944e9762bc907d))
+* **plugins:** update liquidity calculation in dualPoolFetcher ([99068cf](https://github.com/sonarwatch/portfolio/commit/99068cf366fe68b7f9d847cb1049344d539f756a))
+
+
+### Features
+
+* **plugins:** add claims and remove API call ([6768d7c](https://github.com/sonarwatch/portfolio/commit/6768d7c46f8118ad3faee3277ca948fa554fe38c))
+* **plugins:** enhance grass and solayer airdropFetchers with claim transactions ([19f07c1](https://github.com/sonarwatch/portfolio/commit/19f07c129e750b2df9a85195e2b045efba3fa9d5))
+
+
+
 ## [0.15.27](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.26...plugins-0.15.27) (2025-06-05)
 
 

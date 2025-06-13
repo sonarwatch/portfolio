@@ -2,7 +2,7 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { magmaProgramId, platformId, tnsrMint } from './constants';
+import { magnaProgramId, platformId, tnsrMint } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { vestingAccountStruct } from './struct';
@@ -18,7 +18,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const accounts = await getParsedProgramAccounts(
     connection,
     vestingAccountStruct,
-    new PublicKey(magmaProgramId),
+    new PublicKey(magnaProgramId),
     vestingFilter(owner),
     1
   );

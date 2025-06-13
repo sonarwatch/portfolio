@@ -1,20 +1,31 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import axios, { AxiosResponse } from 'axios';
+import { PublicKey } from '@solana/web3.js';
 import {
   AirdropFetcher,
   AirdropFetcherExecutor,
   airdropFetcherToFetcher,
   getAirdropRaw,
 } from '../../AirdropFetcher';
-import { airdropApi, airdropStatics, platformId, sonicMint } from './constants';
-import { AirdropResponse } from './types';
+import { airdropStatics, platformId, sonicMint } from './constants';
+import { getClientSolana } from '../../utils/clients';
+import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
+import { airdropProofStruct } from './structs';
+import { getClaimTransactions } from '../../utils/solana/jupiter/getClaimTransactions';
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
-  const res: AxiosResponse<AirdropResponse[]> = await axios.get(
-    airdropApi + owner
-  );
+  const client = getClientSolana();
 
-  if (!res.data.length)
+  const account = await ParsedGpa.build(
+    client,
+    airdropProofStruct,
+    new PublicKey('magnaSHyv8zzKJJmr8NSz5JXmtdGDTTFPEADmvNAwbj')
+  )
+    .addDataSizeFilter(127)
+    .addFilter('discriminator', [7, 25, 94, 15, 208, 170, 4, 103])
+    .addFilter('user', new PublicKey(owner))
+    .run();
+
+  if (!account.length)
     return getAirdropRaw({
       statics: airdropStatics,
       items: [
@@ -27,21 +38,23 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
       ],
     });
 
-  let amount = 0;
-  let claimedAmount = 0;
-  for (const airdrop of res.data) {
-    amount += airdrop.total;
-    claimedAmount += airdrop.claimed;
-  }
+  const claims = (
+    await Promise.all(
+      account.map((acc) =>
+        getClaimTransactions(owner, acc.pubkey.toString(), sonicMint)
+      )
+    )
+  ).flat();
 
   return getAirdropRaw({
     statics: airdropStatics,
     items: [
       {
-        amount,
-        isClaimed: claimedAmount === amount,
+        amount: claims.reduce((acc, claim) => acc + claim.amount, 0),
+        isClaimed: true,
         label: 'SONIC',
         address: sonicMint,
+        claims,
       },
     ],
   });
