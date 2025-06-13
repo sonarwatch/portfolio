@@ -1,0 +1,529 @@
+{
+  "version": "0.1.0",
+  "name": "ring_contract",
+  "constants": [
+    {
+      "name": "AIRDROP_ADMIN_SEED",
+      "type": "bytes",
+      "value": "[99, 95, 97, 105, 114, 100, 114, 111, 112, 95, 97, 100, 109, 105, 110, 95, 118, 50]"
+    },
+    {
+      "name": "AIRDROP_LIST_SEED",
+      "type": "bytes",
+      "value": "[99, 95, 97, 105, 114, 100, 114, 111, 112, 95, 108, 105, 115, 116, 105, 110, 103, 95, 118, 51]"
+    },
+    {
+      "name": "AIRDROP_VAULT_SEED",
+      "type": "bytes",
+      "value": "[99, 95, 118, 97, 117, 108, 116, 95, 97, 100, 109, 105, 110, 95, 118, 50]"
+    },
+    {
+      "name": "MARKET_CONFIG_SEED",
+      "type": "bytes",
+      "value": "[109, 45, 99, 111, 110, 102, 105, 103]"
+    },
+    {
+      "name": "MARKET_FEEVAULT_SEED",
+      "type": "bytes",
+      "value": "[109, 45, 102, 101, 101, 118, 97, 117, 108, 116]"
+    },
+    {
+      "name": "NFT_LISTING_SEED",
+      "type": "bytes",
+      "value": "[99, 45, 108, 105, 115, 116, 105, 110, 103]"
+    },
+    {
+      "name": "OFFER_SEED",
+      "type": "bytes",
+      "value": "[111, 102, 102, 101, 114]"
+    },
+    {
+      "name": "STAKE_DIR_SEED",
+      "type": "bytes",
+      "value": "[99, 95, 115, 116, 97, 107, 101, 95, 100, 105, 114, 95, 118, 51]"
+    },
+    {
+      "name": "STAKE_RECORD_SEED",
+      "type": "bytes",
+      "value": "[99, 95, 115, 116, 97, 107, 101, 95, 114, 101, 99, 111, 114, 100, 95, 118, 51]"
+    },
+    {
+      "name": "STAKE_VAULT_SEED",
+      "type": "bytes",
+      "value": "[99, 95, 115, 116, 97, 107, 101, 95, 118, 97, 117, 108, 116, 95, 118, 51]"
+    },
+    {
+      "name": "TERM_LIST_SEED",
+      "type": "bytes",
+      "value": "[99, 95, 116, 101, 114, 109, 95, 108, 105, 115, 116, 95, 118, 53]"
+    },
+    {
+      "name": "TOTAL_STAKE_EARNINGS_SEED",
+      "type": "bytes",
+      "value": "[99, 95, 116, 111, 116, 97, 108, 95, 115, 116, 97, 107, 101, 95, 101, 97, 114, 110, 105, 110, 103, 115, 95, 118, 49]"
+    }
+  ],
+  "instructions": [
+    {
+      "name": "buy",
+      "accounts": [
+        { "name": "stakerStats", "isMut": true, "isSigner": false },
+        { "name": "buyer", "isMut": true, "isSigner": true },
+        { "name": "mulSigAddress", "isMut": true, "isSigner": false },
+        { "name": "adminStats", "isMut": true, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "buyAmount", "type": "u64" }]
+    },
+    {
+      "name": "adminWithdraw",
+      "accounts": [
+        { "name": "adminStats", "isMut": true, "isSigner": false },
+        { "name": "admin", "isMut": true, "isSigner": true }
+      ],
+      "args": [{ "name": "amount", "type": "u64" }]
+    },
+    {
+      "name": "signIn",
+      "accounts": [
+        { "name": "signer", "isMut": true, "isSigner": true },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    },
+    {
+      "name": "listingNft",
+      "accounts": [
+        { "name": "payer", "isMut": true, "isSigner": true },
+        {
+          "name": "transferCtx",
+          "accounts": [
+            { "name": "payer", "isMut": true, "isSigner": true },
+            { "name": "mint", "isMut": true, "isSigner": false },
+            { "name": "tokenAccount", "isMut": true, "isSigner": false },
+            { "name": "destinationAccount", "isMut": true, "isSigner": false },
+            { "name": "payee", "isMut": true, "isSigner": false },
+            { "name": "tokenProgram", "isMut": false, "isSigner": false },
+            {
+              "name": "associatedTokenProgram",
+              "isMut": false,
+              "isSigner": false
+            }
+          ]
+        },
+        { "name": "nftListing", "isMut": true, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    },
+    {
+      "name": "listingCnft",
+      "accounts": [
+        { "name": "seller", "isMut": true, "isSigner": true },
+        { "name": "nftListing", "isMut": true, "isSigner": false },
+        { "name": "treeConfig", "isMut": true, "isSigner": false },
+        { "name": "merkleTree", "isMut": true, "isSigner": false },
+        { "name": "newLeafOwner", "isMut": true, "isSigner": false },
+        { "name": "mplBubblegumProgram", "isMut": false, "isSigner": false },
+        { "name": "splCompressionProgram", "isMut": false, "isSigner": false },
+        { "name": "logWrapperProgram", "isMut": false, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "args", "type": { "defined": "ListingCnftArgs" } }]
+    },
+    {
+      "name": "userPurchaseNft",
+      "accounts": [
+        { "name": "signer", "isMut": true, "isSigner": true },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "mintAddress", "type": "string" }]
+    },
+    {
+      "name": "buyNft",
+      "accounts": [
+        { "name": "signer", "isMut": true, "isSigner": true },
+        { "name": "nftReceiptAddress", "isMut": true, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "buyAmount", "type": "u64" },
+        { "name": "orderNo", "type": "string" },
+        { "name": "nftAddress", "type": { "vec": "string" } }
+      ]
+    },
+    {
+      "name": "initializeAirdropAdmin",
+      "accounts": [
+        { "name": "adminState", "isMut": true, "isSigner": false },
+        { "name": "payer", "isMut": true, "isSigner": true },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "airdropListAdmin", "type": "publicKey" },
+        { "name": "airdropVaultAdmin", "type": "publicKey" },
+        { "name": "stakeVaultAdmin", "type": "publicKey" }
+      ]
+    },
+    {
+      "name": "airdropList",
+      "accounts": [
+        { "name": "payer", "isMut": true, "isSigner": true },
+        { "name": "airdropListing", "isMut": true, "isSigner": false },
+        { "name": "userPubkey", "isMut": false, "isSigner": false },
+        { "name": "adminState", "isMut": false, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "amount", "type": "u64" },
+        { "name": "deadline", "type": "i64" }
+      ]
+    },
+    {
+      "name": "initializeVault",
+      "accounts": [
+        { "name": "vault", "isMut": true, "isSigner": false },
+        { "name": "admin", "isMut": true, "isSigner": true },
+        { "name": "tokenMint", "isMut": false, "isSigner": false },
+        { "name": "adminState", "isMut": false, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "status", "type": "bool" }]
+    },
+    {
+      "name": "claimAirdrop",
+      "accounts": [
+        { "name": "user", "isMut": false, "isSigner": true },
+        { "name": "vault", "isMut": false, "isSigner": false },
+        { "name": "vaultTokenAccount", "isMut": true, "isSigner": false },
+        { "name": "userTokenAccount", "isMut": true, "isSigner": false },
+        { "name": "vaultAuthority", "isMut": false, "isSigner": false },
+        { "name": "tokenMint", "isMut": false, "isSigner": false },
+        { "name": "airdropListing", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    },
+    {
+      "name": "upsertTerms",
+      "accounts": [
+        { "name": "termList", "isMut": true, "isSigner": false },
+        { "name": "authority", "isMut": true, "isSigner": true },
+        { "name": "tokenMint", "isMut": false, "isSigner": false },
+        { "name": "adminState", "isMut": false, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "terms", "type": { "vec": { "defined": "TermData" } } },
+        { "name": "bump", "type": "u8" }
+      ]
+    },
+    {
+      "name": "initializeStakeVault",
+      "accounts": [
+        { "name": "stakeVault", "isMut": true, "isSigner": false },
+        { "name": "authority", "isMut": true, "isSigner": true },
+        { "name": "tokenMint", "isMut": false, "isSigner": false },
+        { "name": "adminState", "isMut": false, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "stakeStatus", "type": "bool" },
+        { "name": "unstakeStatus", "type": "bool" },
+        { "name": "bump", "type": "u8" }
+      ]
+    },
+    {
+      "name": "initializeTotalStakeEarnings",
+      "accounts": [
+        { "name": "globalStats", "isMut": true, "isSigner": false },
+        { "name": "authority", "isMut": true, "isSigner": true },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "bump", "type": "u8" }]
+    },
+    {
+      "name": "airdropStake",
+      "accounts": [
+        { "name": "user", "isMut": true, "isSigner": true },
+        { "name": "stakeVault", "isMut": false, "isSigner": false },
+        { "name": "vaultTokenAccount", "isMut": true, "isSigner": false },
+        { "name": "vaultAuthority", "isMut": false, "isSigner": false },
+        { "name": "termList", "isMut": false, "isSigner": false },
+        { "name": "userTokenAccount", "isMut": true, "isSigner": false },
+        { "name": "stakeRecord", "isMut": true, "isSigner": false },
+        { "name": "stakeDir", "isMut": true, "isSigner": false },
+        { "name": "globalStats", "isMut": true, "isSigner": false },
+        { "name": "tokenMint", "isMut": false, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "amountToken", "type": "u64" },
+        { "name": "stakeId", "type": "u8" },
+        { "name": "recordId", "type": "u8" },
+        { "name": "recordBump", "type": "u8" }
+      ]
+    },
+    {
+      "name": "unstakeToken",
+      "accounts": [
+        { "name": "user", "isMut": true, "isSigner": true },
+        { "name": "stakeVault", "isMut": false, "isSigner": false },
+        { "name": "vaultTokenAccount", "isMut": true, "isSigner": false },
+        { "name": "vaultAuthority", "isMut": false, "isSigner": false },
+        { "name": "userTokenAccount", "isMut": true, "isSigner": false },
+        { "name": "stakeRecord", "isMut": true, "isSigner": false },
+        { "name": "tokenMint", "isMut": false, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "recordId", "type": "u8" }]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "UserStakeDirectory",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "user", "type": "publicKey" },
+          { "name": "stakeCount", "type": "u8" },
+          { "name": "stakeIds", "type": { "array": ["u8", 10] } }
+        ]
+      }
+    },
+    {
+      "name": "Vault",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "tokenMint", "type": "publicKey" },
+          { "name": "admin", "type": "publicKey" },
+          { "name": "status", "type": "bool" },
+          { "name": "bump", "type": "u8" }
+        ]
+      }
+    },
+    {
+      "name": "AdminStats",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "stakePaused", "type": "bool" },
+          { "name": "withdrawPaused", "type": "bool" },
+          { "name": "bump", "type": "u8" },
+          { "name": "stakeCount", "type": "u64" },
+          { "name": "lockTime", "type": "i64" },
+          { "name": "stakeAmount", "type": "u64" },
+          { "name": "stakerCount", "type": "u32" },
+          { "name": "buyPaused", "type": "bool" },
+          { "name": "buyAmount", "type": "u64" },
+          { "name": "buyerCount", "type": "u32" }
+        ]
+      }
+    },
+    {
+      "name": "StakerStats",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "stakeAmount", "type": "u64" },
+          { "name": "buyAmount", "type": "u64" }
+        ]
+      }
+    },
+    {
+      "name": "AirdropAdmin",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "airdropListAdmin", "type": "publicKey" },
+          { "name": "airdropVaultAdmin", "type": "publicKey" },
+          { "name": "stakeVaultAdmin", "type": "publicKey" }
+        ]
+      }
+    },
+    {
+      "name": "AirdropListing",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "publicKey", "type": "publicKey" },
+          { "name": "amount", "type": "u64" },
+          { "name": "isClaimed", "type": "bool" },
+          { "name": "deadline", "type": "i64" },
+          { "name": "bump", "type": "u8" }
+        ]
+      }
+    },
+    {
+      "name": "GlobalStakeStats",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "totalEarnings", "type": "u64" },
+          { "name": "bump", "type": "u8" }
+        ]
+      }
+    },
+    {
+      "name": "StakeVault",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "tokenMint", "type": "publicKey" },
+          { "name": "vaultAuthority", "type": "publicKey" },
+          { "name": "stakeStatus", "type": "bool" },
+          { "name": "unstakeStatus", "type": "bool" },
+          { "name": "bump", "type": "u8" }
+        ]
+      }
+    },
+    {
+      "name": "TermList",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "authority", "type": "publicKey" },
+          {
+            "name": "terms",
+            "type": { "array": [{ "defined": "TermData" }, 5] }
+          },
+          { "name": "termCount", "type": "u8" },
+          { "name": "bump", "type": "u8" }
+        ]
+      }
+    },
+    {
+      "name": "UserStakeRecord",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "recordId", "type": "u8" },
+          { "name": "user", "type": "publicKey" },
+          { "name": "amount", "type": "u64" },
+          { "name": "term", "type": "u16" },
+          { "name": "apy", "type": "u64" },
+          { "name": "earnings", "type": "u64" },
+          { "name": "startTs", "type": "i64" },
+          { "name": "endTs", "type": "i64" },
+          { "name": "isUnstake", "type": "bool" },
+          { "name": "bump", "type": "u8" }
+        ]
+      }
+    },
+    {
+      "name": "NftListing",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "seller", "type": "publicKey" },
+          { "name": "assetId", "type": "publicKey" },
+          { "name": "price", "type": "u64" },
+          { "name": "listingTime", "type": "i64" },
+          { "name": "bump", "type": "u8" }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "TermData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "id", "type": "u8" },
+          { "name": "term", "type": "u16" },
+          { "name": "apy", "type": "u64" }
+        ]
+      }
+    },
+    {
+      "name": "CnftArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "root", "type": { "array": ["u8", 32] } },
+          { "name": "dataHash", "type": { "array": ["u8", 32] } },
+          { "name": "creatorHash", "type": { "array": ["u8", 32] } },
+          { "name": "nonce", "type": "u64" },
+          { "name": "index", "type": "u32" }
+        ]
+      }
+    },
+    {
+      "name": "ListingCnftArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "assetId", "type": "publicKey" },
+          { "name": "price", "type": "u64" },
+          { "name": "cnftArgs", "type": { "defined": "CnftArgs" } }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "name": "AirdropClaimed",
+      "fields": [
+        { "name": "user", "type": "publicKey", "index": false },
+        { "name": "amount", "type": "u64", "index": false },
+        { "name": "timestamp", "type": "i64", "index": false }
+      ]
+    },
+    {
+      "name": "AirdropListCreated",
+      "fields": [
+        { "name": "user", "type": "publicKey", "index": false },
+        { "name": "amount", "type": "u64", "index": false },
+        { "name": "deadline", "type": "i64", "index": false }
+      ]
+    },
+    {
+      "name": "StakeCreated",
+      "fields": [
+        { "name": "user", "type": "publicKey", "index": false },
+        { "name": "amount", "type": "u64", "index": false },
+        { "name": "termDays", "type": "u16", "index": false },
+        { "name": "apy", "type": "u64", "index": false },
+        { "name": "endTimestamp", "type": "i64", "index": false },
+        { "name": "recordId", "type": "u8", "index": false }
+      ]
+    },
+    {
+      "name": "TokenUnstaked",
+      "fields": [
+        { "name": "user", "type": "publicKey", "index": false },
+        { "name": "recordId", "type": "u8", "index": false },
+        { "name": "principalAmount", "type": "u64", "index": false },
+        { "name": "earningsAmount", "type": "u64", "index": false },
+        { "name": "totalAmount", "type": "u64", "index": false },
+        { "name": "timestamp", "type": "i64", "index": false }
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "AmountMustBeGreaterThanZero",
+      "msg": "Amount must be greater than 0"
+    },
+    { "code": 6001, "name": "InvalidUri", "msg": "Invalid uri" },
+    {
+      "code": 6002,
+      "name": "LockTimeNotReached",
+      "msg": "Lock time not reached"
+    },
+    { "code": 6003, "name": "NotEnoughAmount", "msg": "Not enough amount" },
+    { "code": 6004, "name": "MintMustNotExist", "msg": "Mint must not exsit" },
+    {
+      "code": 6005,
+      "name": "LockTimeInvalid",
+      "msg": "Lock time must in range 1s - 180 days"
+    },
+    { "code": 6006, "name": "NotInWhiteList", "msg": "Not in white list" }
+  ],
+  "metadata": { "address": "H3tzuPeKMHd1Wee4JyuYbwKX6pHTcKGDgPw8caVNTvQu" }
+}

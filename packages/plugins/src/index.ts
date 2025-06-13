@@ -181,6 +181,7 @@ import * as carrot from './plugins/carrot';
 import * as glow from './plugins/glow';
 import * as candle from './plugins/candle';
 import * as spice from './plugins/spice';
+import * as cudis from './plugins/cudis';
 
 import { solanaSimpleFetcher } from './plugins/tokens';
 
@@ -375,6 +376,7 @@ const modules = [
   glow,
   candle,
   spice,
+  cudis,
 ];
 
 // JOBS //
