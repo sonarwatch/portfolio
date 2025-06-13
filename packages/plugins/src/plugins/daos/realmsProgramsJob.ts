@@ -36,12 +36,20 @@ const executor: JobExecutor = async (cache: Cache) => {
     })
   );
   for (const vsrInfo of realmsCustomVsrInfo) {
-    const customRegistrars = await getParsedProgramAccounts(
-      client,
-      registrarStruct,
+    const customRegistrars = await client.getProgramAccounts(
       new PublicKey(vsrInfo.programId),
-      registrarFilters()
+      {
+        filters: vsrInfo.filters ?? registrarFilters(),
+      }
     );
+
+    // await getParsedProgramAccounts(
+    //   client,
+    //   vsrInfo.struct ?? registrarStruct,
+    //   new PublicKey(vsrInfo.programId),
+    //   vsrInfo.filters ?? registrarFilters()
+    // );
+
     customRegistrars.forEach((registrar) =>
       registrars.push({
         pubkey: registrar.pubkey.toString(),
