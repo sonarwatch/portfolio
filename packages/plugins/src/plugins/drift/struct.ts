@@ -345,6 +345,15 @@ export type SpotMarket = {
   flashLoanAmount: BigNumber;
   flashLoanInitialTokenAmount: BigNumber;
   totalSwapFee: BigNumber;
+  scaleInitialAssetWeightStart: BigNumber;
+  minBorrowRate: number;
+  fuelBoostDeposits: number;
+  fuelBoostBorrows: number;
+  fuelBoostTaker: number;
+  fuelBoostMaker: number;
+  fuelBoostInsurance: number;
+  tokenProgram: number;
+  poolId: number;
   padding: Buffer[];
 };
 
@@ -402,7 +411,16 @@ export const spotMarketStruct = new BeetStruct<SpotMarket>(
     ['flashLoanAmount', u64],
     ['flashLoanInitialTokenAmount', u64],
     ['totalSwapFee', u64],
-    ['padding', uniformFixedSizeArray(u8, 56)],
+    ['scaleInitialAssetWeightStart', u64],
+    ['minBorrowRate', u8],
+    ['fuelBoostDeposits', u8],
+    ['fuelBoostBorrows', u8],
+    ['fuelBoostTaker', u8],
+    ['fuelBoostMaker', u8],
+    ['fuelBoostInsurance', u8],
+    ['tokenProgram', u8],
+    ['poolId', u8],
+    ['padding', uniformFixedSizeArray(u8, 40)],
   ],
   (args) => args as SpotMarket
 );

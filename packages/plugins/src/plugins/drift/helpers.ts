@@ -117,37 +117,65 @@ export function calculateInterestRate(
   delta = ZERO
 ): BigNumber {
   const utilization = calculateUtilization(bank, delta);
-  let interestRate: BigNumber;
-  if (utilization.gt(new BigNumber(bank.optimalUtilization))) {
-    const surplusUtilization = utilization.minus(
-      new BigNumber(bank.optimalUtilization)
-    );
-    const borrowRateSlope = new BigNumber(
-      bank.maxBorrowRate - bank.optimalBorrowRate
-    )
-      .multipliedBy(SPOT_MARKET_UTILIZATION_PRECISION)
-      .div(
-        SPOT_MARKET_UTILIZATION_PRECISION.minus(
-          new BigNumber(bank.optimalUtilization)
-        )
-      );
 
-    interestRate = new BigNumber(bank.optimalBorrowRate).plus(
-      surplusUtilization
-        .multipliedBy(borrowRateSlope)
-        .div(SPOT_MARKET_UTILIZATION_PRECISION)
-    );
-  } else {
-    const borrowRateSlope = new BigNumber(bank.optimalBorrowRate)
-      .multipliedBy(SPOT_MARKET_UTILIZATION_PRECISION)
-      .div(new BigNumber(bank.optimalUtilization));
+  const optimalUtil = new BigNumber(bank.optimalUtilization);
+  const optimalRate = new BigNumber(bank.optimalBorrowRate);
+  const maxRate = new BigNumber(bank.maxBorrowRate);
+  const minRate = new BigNumber(bank.minBorrowRate).multipliedBy(
+    PERCENTAGE_PRECISION.div(200)
+  );
 
-    interestRate = utilization
-      .multipliedBy(borrowRateSlope)
+  const weightsDivisor = new BigNumber(1000);
+  const segments: [BigNumber, BigNumber][] = [
+    [new BigNumber(850_000), new BigNumber(50)],
+    [new BigNumber(900_000), new BigNumber(100)],
+    [new BigNumber(950_000), new BigNumber(150)],
+    [new BigNumber(990_000), new BigNumber(200)],
+    [new BigNumber(995_000), new BigNumber(250)],
+    [SPOT_MARKET_UTILIZATION_PRECISION, new BigNumber(250)],
+  ];
+
+  let rate: BigNumber;
+  if (utilization.lte(optimalUtil)) {
+    // below optimal: linear ramp from 0 to optimalRate
+    const slope = optimalRate
+      .multipliedBy(SPOT_MARKET_UTILIZATION_PRECISION)
+      .div(optimalUtil);
+    rate = utilization
+      .multipliedBy(slope)
       .div(SPOT_MARKET_UTILIZATION_PRECISION);
+  } else {
+    // above optimal: piecewise segments
+    const totalExtraRate = maxRate.minus(optimalRate);
+
+    rate = new BigNumber(optimalRate);
+    let prevUtil = BigNumber(optimalUtil);
+
+    for (const [bp, weight] of segments) {
+      const segmentEnd = bp.gt(SPOT_MARKET_UTILIZATION_PRECISION)
+        ? SPOT_MARKET_UTILIZATION_PRECISION
+        : bp;
+      const segmentRange = segmentEnd.minus(prevUtil);
+
+      const segmentRateTotal = totalExtraRate
+        .multipliedBy(weight)
+        .div(weightsDivisor);
+
+      if (utilization.lte(segmentEnd)) {
+        const partialUtil = utilization.minus(prevUtil);
+        const partialRate = segmentRateTotal
+          .multipliedBy(partialUtil)
+          .div(segmentRange);
+        rate = rate.plus(partialRate);
+        break;
+      } else {
+        rate = rate.plus(segmentRateTotal);
+        prevUtil = segmentEnd;
+      }
+    }
   }
 
-  return interestRate;
+  return BigNumber.max(minRate, rate);
 }
 
 export function isSpotPositionAvailable(position: SpotPosition): boolean {
