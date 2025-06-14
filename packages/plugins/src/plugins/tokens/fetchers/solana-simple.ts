@@ -13,6 +13,7 @@ import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSolana } from '../../../utils/clients';
 import { solanaToken2022PidPk, solanaTokenPidPk } from '../../../utils/solana';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
+import { zeroDecimalMints } from '../../../utils/solana/zeroDecimalMints';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = await getClientSolana();
@@ -28,8 +29,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const res = await Promise.all(promises);
   const accounts = [...res[0].value, ...res[1].value].filter(
     (acc) =>
-      acc.account.data.parsed.info.tokenAmount.decimals !== 0 &&
-      acc.account.data.parsed.info.tokenAmount.uiAmount !== 0
+      acc.account.data.parsed.info.tokenAmount.uiAmount !== 0 &&
+      (acc.account.data.parsed.info.tokenAmount.decimals !== 0 ||
+        zeroDecimalMints.has(acc.account.data.parsed.info.mint))
   );
 
   const tokenPrices = await cache.getTokenPricesAsMap(
@@ -40,8 +42,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const tokenAssets: PortfolioAssetToken[] = [];
   accounts.forEach((acc) => {
     const { mint, tokenAmount } = acc.account.data.parsed.info;
-    const { uiAmount: amount, decimals } = tokenAmount;
-    if (decimals === 0) return;
+    const { uiAmount: amount } = tokenAmount;
 
     const tokenPrice = tokenPrices.get(mint);
 
