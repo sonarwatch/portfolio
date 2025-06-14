@@ -42,6 +42,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       new PublicKey(vsrInfo.programId),
       registrarFilters()
     );
+
     customRegistrars.forEach((registrar) =>
       registrars.push({
         pubkey: registrar.pubkey.toString(),
