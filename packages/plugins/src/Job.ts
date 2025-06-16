@@ -7,6 +7,7 @@ export type JobLabel =
   | 'coingecko'
   | 'realtime'
   | 'evm'
+  | 'slow'
   | NetworkIdType;
 export type Job = {
   id: string;
