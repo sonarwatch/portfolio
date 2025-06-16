@@ -1,7 +1,6 @@
 import { NetworkId, networksAsArray } from '@sonarwatch/portfolio-core';
 import { Job } from '../../Job';
 import { Fetcher } from '../../Fetcher';
-import {} from 'graphql';
 
 import jobGenerator from './jobGenerator';
 import aptosFetcher from './fetchers/aptos';
