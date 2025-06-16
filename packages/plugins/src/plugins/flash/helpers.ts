@@ -86,10 +86,16 @@ export async function getLpTokenPrice(
   const data = Buffer.concat([anchorSighash('global', method)]);
   const recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
 
-  const prefixResponse: AxiosResponse<Prefix> = await axios.get(
-    `https://api.prod.flash.trade/backup-oracle/prices?poolAddress=${pool.pubkey.toString()}`
-  );
-  if (!prefixResponse.data) return null;
+  let prefixResponse: AxiosResponse<Prefix> | null = null;
+  try {
+    prefixResponse = await axios.get(
+      `https://api.prod.flash.trade/backup-oracle/prices?poolAddress=${pool.pubkey.toString()}`,
+      { timeout: 5000 }
+    );
+  } catch (err) {
+    return null;
+  }
+  if (!prefixResponse || !prefixResponse.data) return null;
 
   const addressLookupTable = (
     await connection.getAddressLookupTable(
