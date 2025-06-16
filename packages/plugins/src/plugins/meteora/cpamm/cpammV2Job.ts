@@ -52,8 +52,8 @@ const executor: JobExecutor = async (cache: Cache) => {
     );
 
     const tokensMissingDecimals = [
-      ...tokensA.filter((t) => !mints.has(t)),
-      ...tokensB.filter((t) => !mints.has(t)),
+      ...tokensA.filter((t) => !tokenPrices.get(t)),
+      ...tokensB.filter((t) => !tokenPrices.get(t)),
     ];
 
     const missingDecimals = await Promise.all([
