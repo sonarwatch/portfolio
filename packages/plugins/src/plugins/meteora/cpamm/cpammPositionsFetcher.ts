@@ -13,12 +13,12 @@ import {
 import { poolStruct, positionStruct } from './structs';
 import { Rounding } from '../dlmm/dlmmHelper';
 import { ElementRegistry } from '../../../utils/elementbuilder/ElementRegistry';
-import { getTokenAccountsByOwner } from '../../../utils/solana/getTokenAccountsByOwner';
+import { getTokenAccountsByOwnerMemo } from '../../../utils/solana/getTokenAccountsByOwner';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const nftAccounts = (await getTokenAccountsByOwner(owner)).filter((x) =>
+  const nftAccounts = (await getTokenAccountsByOwnerMemo(owner)).filter((x) =>
     x.amount.isEqualTo(1)
   );
 

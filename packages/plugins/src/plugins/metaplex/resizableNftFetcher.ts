@@ -11,7 +11,7 @@ import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { getClientSolana } from '../../utils/clients';
 import { getEditionPubkeyOfNft, getMetadataPubkey } from './helpers';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
-import { getTokenAccountsByOwner } from '../../utils/solana/getTokenAccountsByOwner';
+import { getTokenAccountsByOwnerMemo } from '../../utils/solana/getTokenAccountsByOwner';
 
 const resizeExpiration = 1745582400000;
 
@@ -19,7 +19,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (Date.now() > resizeExpiration) return [];
   const client = getClientSolana();
 
-  const tokenAccounts = (await getTokenAccountsByOwner(owner)).filter(
+  const tokenAccounts = (await getTokenAccountsByOwnerMemo(owner)).filter(
     (tA) => !tA.amount.isZero()
   );
 

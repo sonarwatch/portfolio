@@ -2,20 +2,15 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import { platformId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { Cache } from '../../Cache';
-import { getPositionAddress } from './helpers';
 import { getOrcaPositions } from './getWhirlpoolPositions';
-import { getTokenAccountsByOwner } from '../../utils/solana/getTokenAccountsByOwner';
+import { getTokenAccountsByOwnerMemo } from '../../utils/solana/getTokenAccountsByOwner';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const potentialTokens = (await getTokenAccountsByOwner(owner)).filter((x) =>
-    x.amount.isEqualTo(1)
+  const potentialTokens = (await getTokenAccountsByOwnerMemo(owner)).filter(
+    (x) => x.amount.isEqualTo(1)
   );
 
-  const positionAddresses = potentialTokens.map((x) =>
-    getPositionAddress(x.mint)
-  );
-
-  return getOrcaPositions(platformId)(positionAddresses, cache);
+  return getOrcaPositions(platformId)(potentialTokens, cache);
 };
 
 const whirlpoolFetcher: Fetcher = {
