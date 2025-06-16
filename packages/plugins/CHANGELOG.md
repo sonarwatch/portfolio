@@ -2,6 +2,22 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.29](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.28...plugins-0.15.29) (2025-06-16)
+
+
+### Features
+
+* **drift:** add new fields to `SpotMarket` struct and enhance interest rate calculation logic ([27a30ca](https://github.com/sonarwatch/portfolio/commit/27a30caaa92034fc2b7fbe707e3ce2e7c7360387))
+* **plugins:** add claim transactions to snsAirdropFetcher and improve claim handling ([4978eb4](https://github.com/sonarwatch/portfolio/commit/4978eb43911353d0e77859055602d8d8c584f704))
+* **plugins:** add claim transactions to snsAirdropFetcher and improve claim handling ([a17e515](https://github.com/sonarwatch/portfolio/commit/a17e5150dfd1eb5208a8f2730881ccbe2216da68))
+* **plugins:** add CUDIS airdrop and staking ([d43c497](https://github.com/sonarwatch/portfolio/commit/d43c497e53af8f34ef78a0a930b3e113ddec15b6))
+* **plugins:** add DAO functionality with fetcher, job, and service integration ([4298a7d](https://github.com/sonarwatch/portfolio/commit/4298a7d0962d5c03aac69fa1206e7232cd394aed))
+* **plugins:** add magna info ([05ac972](https://github.com/sonarwatch/portfolio/commit/05ac972ebfffc3c105df1dd8f415148de6d18f5c))
+* **plugins:** integrate claim transactions in kaminoAirdropFetcher for S1, S2, and S3 and enhance claim handling ([6fe7c47](https://github.com/sonarwatch/portfolio/commit/6fe7c4770a443315d24e9de0e173c820abaf6839))
+* **plugins:** integrate claim transactions in parclAirdropFetcher and refine claim handling ([a9f5669](https://github.com/sonarwatch/portfolio/commit/a9f566921abaf8b0ba3ed7bdcd7c5ab9d3de7f23))
+
+
+
 ## [0.15.28](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.27...plugins-0.15.28) (2025-06-12)
 
 
