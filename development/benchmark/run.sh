@@ -2,9 +2,9 @@
 
 command -v k6 >/dev/null 2>&1 || { echo "k6 is not installed. Please install k6 'brew install k6'." >&2; exit 1; }
 
-rf -rf tmp/summary.json
-rf -rf tmp/responses.txt
-rf -rf tmp/result.json
+rm -rf tmp/summary.json
+rm -rf tmp/responses.txt
+rm -rf tmp/result.json
 
 cat <<EOF > load-test.js
 import http from 'k6/http';

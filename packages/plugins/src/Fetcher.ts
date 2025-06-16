@@ -60,7 +60,7 @@ export async function runFetchers(
       fReport = {
         id: fetchers[index].id,
         status: 'failed',
-        duration: undefined,
+        duration: r.reason.duration,
         error: r.reason.message || 'Unknown error',
       };
     }
@@ -110,9 +110,14 @@ export async function runFetcher(
       elements: elements.map((e) => sortPortfolioElement(e)),
     })
   );
-  return promiseTimeout(
-    fetcherPromise,
-    runFetcherTimeout,
-    `Fetcher timed out: ${fetcher.id}`
-  );
+  try {
+    return await promiseTimeout(
+      fetcherPromise,
+      runFetcherTimeout,
+      `Fetcher timed out: ${fetcher.id}`
+    );
+  } catch (err: any) {
+    err.duration = Date.now() - startDate;
+    throw err;
+  }
 }

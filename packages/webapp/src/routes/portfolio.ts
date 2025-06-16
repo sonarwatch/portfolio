@@ -1,6 +1,7 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { logger } from '../logger/logger';
 import portfolioService from '../services/portfolio';
+import { AssetType } from '../enum/portfolio';
 
 const initPortfolioRoutes = (app: FastifyInstance) => {
   app.get(
@@ -13,14 +14,23 @@ const initPortfolioRoutes = (app: FastifyInstance) => {
             address: { type: 'string' },
           },
         },
+        querystring: {
+          type: 'object',
+          properties: {
+            assetType: { type: 'string', enum: Object.values(AssetType) },
+          },
+        },
       },
     },
     async (req: FastifyRequest, reply: FastifyReply) => {
       const { address } = req.params as any;
-      logger.info(`Portfolio requested. Address: ${address}`);
-      const result = await portfolioService.getPortfolio(address);
+      const { assetType } = req.query as any;
+      logger.info(
+        `Portfolio requested. Address: ${address} AssetTye: ${assetType}`
+      );
+      const result = await portfolioService.getPortfolio(address, assetType);
       return reply.send(result);
-    },
+    }
   );
 
   app.get(
