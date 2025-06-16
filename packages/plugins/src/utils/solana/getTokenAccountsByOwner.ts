@@ -5,7 +5,7 @@ import { getClientSolana } from '../clients';
 import { ParsedAccount } from './types';
 import { MemoryCache } from '../misc/MemoryCache';
 
-const getTokenAccountsByOwnerSync = async (owner: string) => {
+export const getTokenAccountsByOwner = async (owner: string) => {
   const client = getClientSolana();
   const tokenAccounts = await Promise.all([
     client.getTokenAccountsByOwner(new PublicKey(owner), {
@@ -24,8 +24,8 @@ const getTokenAccountsByOwnerSync = async (owner: string) => {
 };
 
 const memoCollection = new MemoryCache<ParsedAccount<TokenAccount>[]>(
-  getTokenAccountsByOwnerSync
+  getTokenAccountsByOwner
 );
 
-export const getTokenAccountsByOwner = async (owner: string) =>
+export const getTokenAccountsByOwnerMemo = async (owner: string) =>
   memoCollection.getItem(owner);
