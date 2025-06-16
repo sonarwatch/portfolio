@@ -1,10 +1,14 @@
 import {
   Cache,
+  Fetcher,
   fetchersByAddressSystem,
-  runFetchersByNetworkId,
-  runFetcher
+  runFetchers,
 } from '@sonarwatch/portfolio-plugins';
-import { NetworkId, NetworkIdType } from '@sonarwatch/portfolio-core';
+import {
+  FetchersResult,
+  NetworkId,
+  NetworkIdType,
+} from '@sonarwatch/portfolio-core';
 import { logger } from '../logger/logger';
 import portfolioCache from '../cache/cache';
 import tokenCache from '../cache/token';
@@ -18,10 +22,14 @@ class PortfolioService {
 
   private readonly cache: Cache;
   private readonly registry: TokenRegistry;
+  private readonly portfolioFetchers: Array<Fetcher>;
 
   private constructor() {
     this.cache = portfolioCache.getCache();
     this.registry = tokenCache.getRegistry();
+    this.portfolioFetchers = fetchersByAddressSystem['solana'].filter(
+      (f) => f.id != 'wallet-tokens-solana-nfts-underlyings'
+    );
   }
 
   public static getInstance(): PortfolioService {
@@ -34,20 +42,37 @@ class PortfolioService {
   public getPortfolio = async (address: string) => {
     const cachedPortfolio = await this.cache.getItem<string>(`${address}`, {
       networkId: PortfolioService.NETWORK,
-      prefix: PortfolioService.PREFIX
+      prefix: PortfolioService.PREFIX,
     });
 
     if (cachedPortfolio) {
       logger.info(`Portfolio loaded from cache. Address=${address}`);
-      return await compressionService.decompress(cachedPortfolio)
+      return await compressionService.decompress(cachedPortfolio);
     }
 
-    const fetchers = fetchersByAddressSystem['solana'];
-    const result = await runFetchersByNetworkId(
+    const result = await runFetchers(
       address,
       'solana',
-      fetchers,
+      this.portfolioFetchers,
       this.cache
+    );
+
+    const stats = result.fetcherReports.reduce(
+      (acc, report) => {
+        if (report.status === 'failed') {
+          acc.failed.push(report.id);
+        }
+        if (report.duration && report.duration > acc.longestDuration) {
+          acc.longest = report.id;
+          acc.longestDuration = report.duration;
+        }
+        return acc;
+      },
+      { failed: [], longest: '', longestDuration: 0 } as any
+    );
+    logger.info(
+      `Data fetched. Address=${address} Failed=${stats.failed} ` +
+        `Longest=${stats.longest} LongestDuration=${stats.longestDuration}`
     );
     const addresses: Array<{ address: string; networkId: NetworkIdType }> = [];
     result.elements.forEach((element) => {
@@ -68,15 +93,22 @@ class PortfolioService {
       if (token) {
         acc[token.address] = token;
       } else {
-        logger.warn(`Token meta not found for address. Address=${addresses?.[i]?.address}`);
+        logger.warn(
+          `Token meta not found for address. Address=${addresses?.[i]?.address}`
+        );
       }
 
       return acc;
     }, {} as Record<string, Token>);
 
-    const walletPortfolio = {
+    const elements = result.elements.filter(
+      (e) => e.platformId !== 'wallet-nfts'
+    );
+
+    const walletPortfolio: FetchersResult = {
       ...result,
-      tokenInfo: { solana: tokenInfoMap }
+      elements,
+      tokenInfo: { solana: tokenInfoMap },
     };
 
     const compressed = await compressionService.compress(walletPortfolio);
@@ -91,15 +123,14 @@ class PortfolioService {
 
   public getDefiPortfolio = async (address: string, fetcherId: string) => {
     const fetchers = fetchersByAddressSystem['solana'];
-    const fetcher = fetchers.find(f => f.id === fetcherId);
+    const fetcher = fetchers.find((f) => f.id === fetcherId);
 
     if (!fetcher) {
       throw new Error(`Fetcher not found. Id=${fetcherId}`);
     }
 
-    return await runFetcher(address, fetcher, this.cache);
+    return await runFetchers(address, 'solana', [fetcher], this.cache);
   };
-
 }
 
 export default PortfolioService.getInstance();

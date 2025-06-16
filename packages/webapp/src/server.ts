@@ -17,6 +17,7 @@ console.error = (...args) => logger.error(args.join(' '));
 import { initPortfolioRoutes } from './routes/portfolio';
 import programService from './services/program';
 import { scheduleJobs } from './schedulers/job';
+import { initNftRoutes } from './routes/nft';
 
 const start = async () => {
   try {
@@ -51,6 +52,7 @@ const start = async () => {
     } else {
       logger.info('Running in web-api mode.');
       initPortfolioRoutes(mainServer);
+      initNftRoutes(mainServer);
 
       mainServer.addHook('onListen', async () => {
         await programService.warmupProgramsCache();
