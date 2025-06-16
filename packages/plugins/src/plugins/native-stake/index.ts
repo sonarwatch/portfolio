@@ -7,13 +7,13 @@ import seiFetcher from './seiFetcher';
 import activeValidatorsAptosJob from './activeValidatorsAptosJob';
 import solanaEpochJob from './solana/solanaEpochJob';
 import solanaValidatorsJob from './solana/solanaValidatorsJob';
-import suiValidatorsJob from './activeValidatorsSuiJob';
+// import suiValidatorsJob from './activeValidatorsSuiJob';
 
 export const jobs: Job[] = [
   activeValidatorsAptosJob,
   solanaEpochJob,
   solanaValidatorsJob,
-  suiValidatorsJob,
+  // suiValidatorsJob,
 ];
 export const fetchers: Fetcher[] = [
   suiFetcher,

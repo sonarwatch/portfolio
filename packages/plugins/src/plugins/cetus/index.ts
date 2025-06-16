@@ -10,7 +10,12 @@ import poolsStatsJob from './poolsStatsJob';
 import stakingFetcher from './stakingFetcher';
 import xcetusJob from './xcetusJob';
 
-export const jobs: Job[] = [poolsJob, poolsStatsJob, vaultsJob, xcetusJob];
+export const jobs: Job[] = [
+  // poolsJob,
+  poolsStatsJob,
+  vaultsJob,
+  xcetusJob,
+];
 export const fetchers: Fetcher[] = [
   clmmPositionFetcher,
   farmsFetcher,
