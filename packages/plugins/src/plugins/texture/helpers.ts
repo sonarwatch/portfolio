@@ -2,21 +2,8 @@ import { PublicKey } from '@solana/web3.js';
 import { getClientSolana } from '../../utils/clients';
 import { userStruct } from './structs';
 import { lendyProgramId } from './constants';
-import { Memoized } from '../../utils/misc/Memoized';
 import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
-
-const textureUsersMemo: { [key: string]: Memoized<string | null> } = {};
-
-export const getMemoizedUser = async (
-  owner: string
-): Promise<string | null> => {
-  if (!textureUsersMemo[owner]) {
-    textureUsersMemo[owner] = new Memoized<string | null>(async () =>
-      getUser(owner)
-    );
-  }
-  return textureUsersMemo[owner].getItem();
-};
+import { MemoryCache } from '../../utils/misc/MemoryCache';
 
 const getUser = async (owner: string): Promise<string | null> => {
   const userPk = PublicKey.findProgramAddressSync(
@@ -29,3 +16,8 @@ const getUser = async (owner: string): Promise<string | null> => {
 
   return account?.pubkey.toString() || null;
 };
+
+const memoCollection = new MemoryCache<string | null>(getUser);
+
+export const getMemoizedUser = async (owner: string) =>
+  memoCollection.getItem(owner);

@@ -5,17 +5,7 @@ import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 import { getClientSolana } from '../../utils/clients';
 import { getClaimTransactions } from '../../utils/solana/jupiter/getClaimTransactions';
 import { claimStatusStruct } from '../jupiter/launchpad/structs';
-import { Memoized } from '../../utils/misc/Memoized';
-
-const claimsMemos: { [key: string]: Memoized<Claim[]> } = {};
-
-export const getCachedClaims = async (owner: string) => {
-  if (!claimsMemos[owner]) {
-    claimsMemos[owner] = new Memoized(() => getClaims(owner));
-  }
-
-  return claimsMemos[owner].getItem();
-};
+import { MemoryCache } from '../../utils/misc/MemoryCache';
 
 const getClaims = async (owner: string) => {
   const client = getClientSolana();
@@ -46,3 +36,8 @@ const getClaims = async (owner: string) => {
   }
   return claims;
 };
+
+const memoCollection = new MemoryCache<Claim[]>(getClaims);
+
+export const getCachedClaims = async (owner: string) =>
+  memoCollection.getItem(owner);
