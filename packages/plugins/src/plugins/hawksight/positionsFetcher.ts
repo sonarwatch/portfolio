@@ -1,7 +1,6 @@
 import {
   NetworkId,
   PortfolioAsset,
-  PortfolioAssetCollectible,
   PortfolioElement,
   PortfolioElementType,
   getUsdValueSum,
@@ -15,13 +14,9 @@ import { getHawksightUserPdas } from './helper';
 import obligationsFetcher from '../save/obligationsFetcher';
 import dlmmPositionFetcher from '../meteora/dlmm/dlmmPositionsFetcher';
 import tokenFetcher from '../tokens/fetchers/solana';
-import { getWhirlpoolPositions } from '../orca/getWhirlpoolPositions';
-import getSolanaDasEndpoint from '../../utils/clients/getSolanaDasEndpoint';
-import { getAssetsByOwnerDas } from '../../utils/solana/das/getAssetsByOwnerDas';
-import { DisplayOptions } from '../../utils/solana/das/types';
-import { heliusAssetToAssetCollectible } from '../../utils/solana/das/heliusAssetToAssetCollectible';
 import { mSOLMint } from '../marinade/constants';
 import { hasTransactions } from '../../utils/hasTransactions';
+import whirlpoolFetcher from '../orca/whirlpoolFetcher';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const derivedAddresses = getHawksightUserPdas(new PublicKey(owner));
@@ -33,45 +28,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (!hasAnyTransactions) return [];
 
-  const dasUrl = getSolanaDasEndpoint();
-
-  const displayOptions: DisplayOptions = {
-    showCollectionMetadata: true,
-    showUnverifiedCollections: true,
-    showInscription: false,
-    showNativeBalance: false,
-    showGrandTotal: false,
-    showFungible: true,
-  };
-
-  const heliusAssets = (
-    await Promise.all([
-      getAssetsByOwnerDas(
-        dasUrl,
-        derivedAddresses[0].toString(),
-        displayOptions
-      ),
-      getAssetsByOwnerDas(
-        dasUrl,
-        derivedAddresses[1].toString(),
-        displayOptions
-      ),
-    ])
-  ).flat();
-
-  const collectibles: PortfolioAssetCollectible[] = [];
-  heliusAssets.forEach((asset) => {
-    const collectible = heliusAssetToAssetCollectible(asset);
-    if (collectible) collectibles.push(collectible);
-  });
-
   const portfolioElements = (
     await Promise.all([
       // This handles Kamino, Saber, Marinade
       tokenFetcher.executor(derivedAddresses[0].toString(), cache),
       tokenFetcher.executor(derivedAddresses[1].toString(), cache),
       // This handles Orca
-      getWhirlpoolPositions(cache, collectibles),
+      whirlpoolFetcher.executor(derivedAddresses[0].toString(), cache),
+      whirlpoolFetcher.executor(derivedAddresses[1].toString(), cache),
       // This handles Save
       obligationsFetcher.executor(derivedAddresses[0].toString(), cache),
       obligationsFetcher.executor(derivedAddresses[1].toString(), cache),

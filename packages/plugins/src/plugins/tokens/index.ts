@@ -11,7 +11,6 @@ import seiFetcher from './fetchers/sei';
 import bitcoinFetcher from './fetchers/bitcoin';
 import solanaFetcher from './fetchers/solana';
 import solanaNativeFetcher from './fetchers/solana-native';
-import solanaNftsUnderlyingsFetcher from './fetchers/solana-nfts-underlyings';
 import { fetchers as evmFetchers } from './fetchers/evms';
 import getTokenListsJob from './getTokenListsJob';
 
@@ -34,7 +33,6 @@ export const fetchers: Fetcher[] = [
   aptosFetcher,
   solanaFetcher,
   solanaNativeFetcher,
-  solanaNftsUnderlyingsFetcher,
   suiFetcher,
   suiNftsFetcher,
   seiFetcher,

@@ -7,6 +7,7 @@ import farmsJob from './farmsJob';
 import farmsFetcher from './farmsFetcher';
 import farmsV6Fetcher from './farmsV6Fetcher';
 import farmsV6Job from './farmsV6Job';
+import clmmFetcher from './clmmFetcher';
 
 export const jobs: Job[] = [
   lpTokensApiJob,
@@ -15,4 +16,4 @@ export const jobs: Job[] = [
   clmmJob,
   cpmmJob,
 ];
-export const fetchers: Fetcher[] = [farmsFetcher, farmsV6Fetcher];
+export const fetchers: Fetcher[] = [farmsFetcher, farmsV6Fetcher, clmmFetcher];
