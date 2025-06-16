@@ -5,18 +5,24 @@ import { getClientSolana } from '../../utils/clients';
 import {
   ParsedAccount,
   getParsedMultipleAccountsInfo,
+  TokenAccount,
 } from '../../utils/solana';
 import { Cache } from '../../Cache';
 import { Whirlpool, positionStruct } from './structs/whirlpool';
 import { calcFeesAndRewards, getTickArraysAsMap } from './helpers_fees';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { WhirlpoolStat } from './types';
+import { getPositionAddress } from './helpers';
 
-export function getOrcaPositions(platformId: string) {
+export function getOrcaPositions(platformId: string, programId?: PublicKey) {
   return async (
-    positionsProgramAddress: PublicKey[],
+    potentialTokens: ParsedAccount<TokenAccount>[],
     cache: Cache
   ): Promise<PortfolioElement[]> => {
+    const positionsProgramAddress = potentialTokens.map((x) =>
+      getPositionAddress(x.mint, programId)
+    );
+
     if (positionsProgramAddress.length === 0) return [];
 
     const client = getClientSolana();
