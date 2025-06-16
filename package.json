@@ -60,7 +60,7 @@
     "@bonfida/spl-name-service": "^3.0.8",
     "@cosmjs/cosmwasm-stargate": "^0.31.1",
     "@drift-labs/sdk": "^2.118.0-beta.7",
-    "@drift-labs/vaults-sdk": "^0.6.29",
+    "@drift-labs/vaults-sdk": "^0.9.8",
     "@ethersproject/address": "^5.7.0",
     "@ethersproject/bignumber": "^5.7.0",
     "@ethersproject/bytes": "^5.7.0",
