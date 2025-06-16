@@ -3,7 +3,7 @@ import { Cache } from '../../Cache';
 import { MemoizedCache } from './MemoizedCache';
 import { getDecimalsForToken } from './getDecimalsForToken';
 
-type Decimal = number | null;
+export type Decimal = number | null;
 const ttl = 60 * 60 * 24;
 
 const decimalsMemo: Map<string, MemoizedCache<Decimal>> = new Map();
