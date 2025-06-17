@@ -4,7 +4,8 @@ import { Job } from '../../Job';
 import escrowFetcher from './escrowFetcher';
 import stakingFetcher from './stakingFetcher';
 import { airdropFetcher } from './airdropFetcher';
+import bidsFetcher from './bidsFetcher';
 
 export const jobs: Job[] = [];
-export const fetchers: Fetcher[] = [escrowFetcher, stakingFetcher];
+export const fetchers: Fetcher[] = [escrowFetcher, stakingFetcher, bidsFetcher];
 export const airdropFetchers: AirdropFetcher[] = [airdropFetcher];
