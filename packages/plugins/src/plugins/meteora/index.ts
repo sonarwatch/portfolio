@@ -11,7 +11,6 @@ import dlmmVaultsFetcher from './dlmm/dlmmVaultsFetcher';
 import stakeForFeeFetcher from './stake2earn/stakeForFeeFetcher';
 import stakeForFeeVaultsJob from './stake2earn/stakeForFeeVaultsJob';
 import dammV2Job from './cpamm/cpammV2Job';
-import cpammPositionFetcher from './cpamm/cpammPositionsFetcher';
 import dlmmJob from './dlmm/dlmmJob';
 
 export const jobs: Job[] = [
@@ -29,5 +28,4 @@ export const fetchers: Fetcher[] = [
   dlmmPositionFetcher,
   dlmmVaultsFetcher,
   stakeForFeeFetcher,
-  cpammPositionFetcher,
 ];

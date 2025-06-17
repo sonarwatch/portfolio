@@ -14,9 +14,11 @@ import { heliumPlatformId } from '../daos/constants';
 import { getLockedUntil } from '../daos/helpers';
 
 export const getHeliumPositions = async (
-  potentialTokens: ParsedAccount<TokenAccount>[],
+  tokenAccounts: ParsedAccount<TokenAccount>[],
   cache: Cache
 ) => {
+  const potentialTokens = tokenAccounts.filter((x) => x.amount.isEqualTo(1));
+
   if (!potentialTokens.length) return [];
 
   const positionsProgramAddress = potentialTokens.map(

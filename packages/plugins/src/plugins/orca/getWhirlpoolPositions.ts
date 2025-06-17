@@ -16,14 +16,15 @@ import { getPositionAddress } from './helpers';
 
 export function getOrcaPositions(platformId: string, programId?: PublicKey) {
   return async (
-    potentialTokens: ParsedAccount<TokenAccount>[],
+    tokenAccounts: ParsedAccount<TokenAccount>[],
     cache: Cache
   ): Promise<PortfolioElement[]> => {
+    const potentialTokens = tokenAccounts.filter((x) => x.amount.isEqualTo(1));
+    if (!potentialTokens.length) return [];
+
     const positionsProgramAddress = potentialTokens.map((x) =>
       getPositionAddress(x.mint, programId)
     );
-
-    if (positionsProgramAddress.length === 0) return [];
 
     const client = getClientSolana();
 

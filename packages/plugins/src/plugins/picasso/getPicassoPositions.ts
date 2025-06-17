@@ -12,9 +12,11 @@ import { Cache } from '../../Cache';
 import { vaultStruct } from './structs';
 
 export const getPicassoPositions = async (
-  potentialTokens: ParsedAccount<TokenAccount>[],
+  tokenAccounts: ParsedAccount<TokenAccount>[],
   cache: Cache
 ) => {
+  const potentialTokens = tokenAccounts.filter((x) => x.amount.isEqualTo(1));
+
   if (!potentialTokens.length) return [];
 
   const positionsProgramAddress = potentialTokens.map(
