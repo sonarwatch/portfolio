@@ -6,9 +6,7 @@ import { getOrcaPositions } from './getWhirlpoolPositions';
 import { getTokenAccountsByOwnerMemo } from '../../utils/solana/getTokenAccountsByOwner';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const potentialTokens = (await getTokenAccountsByOwnerMemo(owner)).filter(
-    (x) => x.amount.isEqualTo(1)
-  );
+  const potentialTokens = await getTokenAccountsByOwnerMemo(owner);
 
   return getOrcaPositions(platformId)(potentialTokens, cache);
 };

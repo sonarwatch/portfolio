@@ -4,6 +4,7 @@ import {
   PortfolioAssetAttributes,
   SourceRef,
   TokenPriceMap,
+  TokenYield,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
@@ -20,6 +21,7 @@ export class AssetTokenBuilder extends AssetBuilder {
   sourceRefs?: SourceRef[];
   ref?: string | PublicKey;
   link?: string;
+  tokenYield?: TokenYield;
 
   constructor(params: PortfolioAssetTokenParams) {
     super();
@@ -30,6 +32,7 @@ export class AssetTokenBuilder extends AssetBuilder {
     this.ref = params.ref;
     this.sourceRefs = params.sourceRefs;
     this.link = params.link;
+    this.tokenYield = params.tokenYield;
   }
 
   tokenAddresses(): string[] {
@@ -81,7 +84,8 @@ export class AssetTokenBuilder extends AssetBuilder {
         tokenPrice,
         undefined,
         this.attributes,
-        this.link
+        this.link,
+        this.tokenYield
       ),
       sourceRefs: this.sourceRefs,
       ref: this.ref?.toString(),

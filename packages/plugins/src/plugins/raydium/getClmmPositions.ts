@@ -18,9 +18,11 @@ import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { Cache } from '../../Cache';
 
 export const getClmmPositions = async (
-  potentialTokens: ParsedAccount<TokenAccount>[],
+  tokenAccounts: ParsedAccount<TokenAccount>[],
   cache: Cache
 ) => {
+  const potentialTokens = tokenAccounts.filter((x) => x.amount.isEqualTo(1));
+
   if (!potentialTokens.length) return [];
 
   const positionsProgramAddress = potentialTokens.map(

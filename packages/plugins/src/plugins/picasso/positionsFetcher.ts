@@ -6,9 +6,7 @@ import { getTokenAccountsByOwnerMemo } from '../../utils/solana/getTokenAccounts
 import { getPicassoPositions } from './getPicassoPositions';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const potentialTokens = (await getTokenAccountsByOwnerMemo(owner)).filter(
-    (x) => x.amount.isEqualTo(1)
-  );
+  const potentialTokens = await getTokenAccountsByOwnerMemo(owner);
 
   return getPicassoPositions(potentialTokens, cache);
 };
