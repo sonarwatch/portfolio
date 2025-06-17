@@ -15,12 +15,14 @@ export const getTokenAccountsByOwner = async (owner: string) => {
       programId: solanaToken2022PidPk,
     }),
   ]);
-  return [...tokenAccounts[0].value, ...tokenAccounts[1].value].map((x) => ({
-    ...tokenAccountStruct.deserialize(x.account.data)[0],
-    pubkey: x.pubkey,
-    lamports: x.account.lamports,
-    tokenProgram: x.account.owner,
-  })) as ParsedAccount<TokenAccount>[];
+  return [...tokenAccounts[0].value, ...tokenAccounts[1].value]
+    .map((x) => ({
+      ...tokenAccountStruct.deserialize(x.account.data)[0],
+      pubkey: x.pubkey,
+      lamports: x.account.lamports,
+      tokenProgram: x.account.owner,
+    }))
+    .filter((a) => !a.amount.isZero()) as ParsedAccount<TokenAccount>[];
 };
 
 const memoCollection = new MemoryCache<ParsedAccount<TokenAccount>[]>(
