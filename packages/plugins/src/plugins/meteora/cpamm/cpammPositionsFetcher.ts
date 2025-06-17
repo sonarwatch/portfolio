@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ClientType, NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
@@ -20,7 +20,7 @@ import { Rounding } from '../dlmm/dlmmHelper';
 import { ElementRegistry } from '../../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
 
   const tokenAccounts = await client.getTokenAccountsByOwner(
     new PublicKey(owner),
