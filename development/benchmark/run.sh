@@ -163,7 +163,7 @@ const prepareSuccessReport = (url, start, res) => {
         });
     }
 
-    const slowestFastFetchers = result.fetcherReports
+    const slowestHeliusFetchers = result.fetcherReports
         .filter(r => fastFetchers.includes(r.id))
         .filter(r => r.duration)
         .filter(r => r.status === 'succeeded')
@@ -171,12 +171,12 @@ const prepareSuccessReport = (url, start, res) => {
         .splice(0, 5)
         .map(r => \`\${r.id} => \${r.duration}\`);
 
-    const failedFast = result.fetcherReports
+    const failedHelius = result.fetcherReports
         .filter(r => fastFetchers.includes(r.id))
         .filter(r => r.status === 'failed')
-        .map(r => r.id)
+        .map(r => \`\${r.id} => \${r.duration}\`)
 
-    const slowestGenericFetchers = result.fetcherReports
+    const slowestGetBlockFetchers = result.fetcherReports
         .filter(r => !fastFetchers.includes(r.id))
         .filter(r => r.duration)
         .filter(r => r.status === 'succeeded')
@@ -184,19 +184,19 @@ const prepareSuccessReport = (url, start, res) => {
         .splice(0, 5)
         .map(r => \`\${r.id} => \${r.duration}\`);
 
-    const failedGeneric = result.fetcherReports
+    const failedGetBlock = result.fetcherReports
         .filter(r => !fastFetchers.includes(r.id))
         .filter(r => r.status === 'failed')
-        .map(r => r.id)
+        .map(r => \`\${r.id} => \${r.duration}\`)
 
     console.log({
         url,
         duration,
         status: res.status,
-        slowestFastFetchers,
-        slowestGenericFetchers,
-        failedFast,
-        failedGeneric
+        slowestHeliusFetchers,
+        slowestGetBlockFetchers,
+        failedHelius,
+        failedGetBlock
     });
 }
 

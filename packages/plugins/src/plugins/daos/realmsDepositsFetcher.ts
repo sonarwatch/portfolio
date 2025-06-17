@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ClientType, NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -6,16 +6,17 @@ import { platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import {
   getParsedMultipleAccountsInfo,
-  getParsedProgramAccounts, ParsedAccount
+  getParsedProgramAccounts,
+  ParsedAccount,
 } from '../../utils/solana';
-import { voteStruct, voterStruct, Vote } from './structs/realms';
+import { Vote, voterStruct, voteStruct } from './structs/realms';
 import { voteFilters } from './filters';
 import { getLockedUntil, getVoterPda } from './helpers';
 import { RealmData, RegistrarInfo } from './types';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
   const realmData = await cache.getItem<RealmData>('data', {
     prefix: platformId,
     networkId: NetworkId.solana,

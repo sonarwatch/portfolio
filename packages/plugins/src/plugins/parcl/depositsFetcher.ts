@@ -1,8 +1,9 @@
 import {
+  ClientType,
+  getUsdValueSum,
   NetworkId,
   PortfolioAsset,
   PortfolioElementType,
-  getUsdValueSum,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -28,7 +29,7 @@ import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 const thirtyDays = 30 * 1000 * 60 * 60 * 24;
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
 
   const oldLpAccount = await getParsedAccountInfo(
     client,

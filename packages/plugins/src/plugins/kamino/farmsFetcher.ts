@@ -1,5 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ClientType, NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { farmProgramId, farmsKey, kmnoMint, platformId } from './constants';
@@ -11,7 +11,7 @@ import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { arrayToMap } from '../../utils/misc/arrayToMap';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
 
   const farmsInfo = await cache.getItem<FarmInfo[]>(farmsKey, {
     prefix: platformId,
