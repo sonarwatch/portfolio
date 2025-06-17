@@ -169,6 +169,7 @@ class PortfolioService {
         if (filter.excludePlatforms) {
           return !filter?.excludePlatforms.includes(e.platformId)
         }
+        return true;
       });
 
     const walletPortfolio: FetchersResult = {
