@@ -28,7 +28,9 @@ const nftsUnderlyingsMap: Map<string, NftFetcher> = new Map([
 ]);
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const tokenAccounts = await getTokenAccountsByOwner(owner);
+  const tokenAccounts = (await getTokenAccountsByOwner(owner)).filter((x) =>
+    x.amount.isEqualTo(1)
+  );
 
   const results: Promise<PortfolioElement[]>[] = [];
   for (const nftsUnderlyingsMapElement of nftsUnderlyingsMap) {
