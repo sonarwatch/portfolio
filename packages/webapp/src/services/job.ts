@@ -3,6 +3,7 @@ import { logger } from '../logger/logger';
 import { ScheduleJobRequest } from '../model/job';
 import portfolioCache from '../cache/cache';
 import { JobPriority } from '../enum/job';
+import dotenv from 'dotenv';
 
 class JobRunner {
   private static instance: JobRunner;
@@ -15,7 +16,10 @@ class JobRunner {
   private runningJobsCount: number;
 
   private constructor() {
-    this.jobsLimit = 10;
+    dotenv.config();
+    this.jobsLimit = process.env['PORTFOLIO_JOB_PARALLEL_RUNS']
+      ? parseInt(process.env['PORTFOLIO_JOB_PARALLEL_RUNS'], 10)
+      : 10;
     this.runningJobsCount = 0;
     this.jobsQueue = [];
     this.scheduledTasks = [];
