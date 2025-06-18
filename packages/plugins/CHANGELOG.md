@@ -2,18 +2,48 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.33](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.32...plugins-0.15.33) (2025-06-18)
+
+
+
+## [0.15.32](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.31...plugins-0.15.32) (2025-06-18)
+
+
+
+## [0.15.31](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.30...plugins-0.15.31) (2025-06-18)
+
+
+
 ## [0.15.30](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.29...plugins-0.15.30) (2025-06-18)
 
 
 ### Bug Fixes
 
+* **plugins:** add condition to skip stake entries with unstake timestamp ([332e754](https://github.com/sonarwatch/portfolio/commit/332e754422862a5f463b909544d7f692ab7bc8b2))
 * **plugins:** filter token accounts by amount to ensure accurate Solana NFT underlying fetch results ([788e308](https://github.com/sonarwatch/portfolio/commit/788e3088e77d7e41ab72326d9e3f2909933b9e74))
 * **plugins:** filter token accounts with zero amounts in Solana fetcher to ensure accurate results ([a0fcd13](https://github.com/sonarwatch/portfolio/commit/a0fcd1306d6e0bc9caf0e5ecb641a27202317984))
 
 
-### Features
 
-* **plugins:** add resizable NFT fetcher to metaplex plugin ([28c3cd1](https://github.com/sonarwatch/portfolio/commit/28c3cd17198957d8b28a3ffa26790980c26f1b20))
+## [0.15.30](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.29...plugins-0.15.30) (2025-06-18)
+
+
+### Bug Fixes
+
+* **plugins:** add condition to skip stake entries with unstake timestamp ([332e754](https://github.com/sonarwatch/portfolio/commit/332e754422862a5f463b909544d7f692ab7bc8b2))
+* **plugins:** filter token accounts by amount to ensure accurate Solana NFT underlying fetch results ([788e308](https://github.com/sonarwatch/portfolio/commit/788e3088e77d7e41ab72326d9e3f2909933b9e74))
+* **plugins:** filter token accounts with zero amounts in Solana fetcher to ensure accurate results ([a0fcd13](https://github.com/sonarwatch/portfolio/commit/a0fcd1306d6e0bc9caf0e5ecb641a27202317984))
+
+
+
+## [0.15.30](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.29...plugins-0.15.30) (2025-06-18)
+
+
+### Bug Fixes
+
+* **plugins:** add condition to skip stake entries with unstake timestamp ([332e754](https://github.com/sonarwatch/portfolio/commit/332e754422862a5f463b909544d7f692ab7bc8b2))
+* **plugins:** filter token accounts by amount to ensure accurate Solana NFT underlying fetch results ([788e308](https://github.com/sonarwatch/portfolio/commit/788e3088e77d7e41ab72326d9e3f2909933b9e74))
+* **plugins:** filter token accounts with zero amounts in Solana fetcher to ensure accurate results ([a0fcd13](https://github.com/sonarwatch/portfolio/commit/a0fcd1306d6e0bc9caf0e5ecb641a27202317984))
 
 
 

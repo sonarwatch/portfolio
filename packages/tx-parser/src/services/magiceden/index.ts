@@ -4,6 +4,12 @@ import { matchAnyInstructionWithPrograms } from '../../utils/parseTransaction/ma
 
 const platformId = 'magiceden';
 
+const ammContract = {
+  name: 'AMM',
+  address: 'mmm3XBJg5gk8XJxEKBvdgptZz6SgK4tXvn36sodowMc',
+  platformId,
+};
+
 const airdropContract = {
   name: 'Magic Claim',
   address: 'mcmexbLZHASMjxjARNvDhXnEQT8vMP4uWnBi1Et8RdX',
@@ -98,6 +104,14 @@ const launchpadService: ServiceDefinition = {
   contracts: [candyMachineContract],
 };
 
+const ammService: ServiceDefinition = {
+  id: `${platformId}-amm`,
+  name: 'AMM',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [ammContract],
+};
+
 export const services: ServiceDefinition[] = [
   airdropService,
   escrowService,
@@ -105,5 +119,6 @@ export const services: ServiceDefinition[] = [
   auctionService,
   cnftService,
   launchpadService,
+  ammService,
 ];
 export default services;
