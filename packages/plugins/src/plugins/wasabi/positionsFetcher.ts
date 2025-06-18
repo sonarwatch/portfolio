@@ -1,5 +1,10 @@
-import { LeverageSide, NetworkId } from '@sonarwatch/portfolio-core';
+import {
+  LeverageSide,
+  NetworkId,
+  solanaNativeWrappedAddress,
+} from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
+import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { pid, platformId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -7,6 +12,7 @@ import { getClientSolana } from '../../utils/clients';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { positionStruct } from './structs';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
+import { usdcSolanaMint } from '../../utils/solana';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const connection = getClientSolana();
@@ -19,9 +25,18 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (!accounts.length) return [];
 
   const tokenPricesMap = await cache.getTokenPricesAsMap(
-    accounts.map((acc) => acc.collateral.toString()),
+    [
+      ...accounts.flatMap((acc) => [
+        acc.collateral.toString(),
+        acc.currency.toString(),
+      ]),
+      solanaNativeWrappedAddress,
+    ],
     NetworkId.solana
   );
+
+  const solTokenPrice = tokenPricesMap.get(solanaNativeWrappedAddress);
+  if (!solTokenPrice) return [];
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 
@@ -35,27 +50,61 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const principalPrice = tokenPricesMap.get(position.currency.toString());
     if (!collatPrice || !principalPrice) return;
 
-    const collateralValue = position.collateralAmount.times(collatPrice.price);
-    const principalValue = position.principal.times(principalPrice.price);
+    const collateralValue = position.collateralAmount
+      .times(collatPrice.price)
+      .dividedBy(10 ** collatPrice.decimals);
+    // const principalValue = position.principal.times(principalPrice.price);
 
-    const leverage = collateralValue
-      .plus(principalValue)
-      .dividedBy(collateralValue)
-      .toNumber();
+    const isLong =
+      position.currency.toString() === usdcSolanaMint ||
+      (position.currency.toString() === solanaNativeWrappedAddress &&
+        position.collateral.toString() !== usdcSolanaMint);
+
+    const isEntryPriceSolPrice =
+      (isLong && position.currency.toString() === solanaNativeWrappedAddress) ||
+      (!isLong &&
+        position.collateral.toString() === solanaNativeWrappedAddress);
+
+    const entryPriceRaw = isLong
+      ? position.principal
+          .plus(position.downPayment)
+          .dividedBy(position.collateralAmount)
+      : position.collateralAmount
+          .minus(position.downPayment)
+          .dividedBy(position.principal);
+
+    const entryPrice = isEntryPriceSolPrice
+      ? entryPriceRaw.times(solTokenPrice.price)
+      : entryPriceRaw;
+
+    const leverage = isLong
+      ? position.principal.dividedBy(position.downPayment)
+      : position.collateralAmount.dividedBy(position.downPayment).minus(1);
+
+    const interestOwed = new BigNumber(Date.now())
+      .dividedBy(1000)
+      .minus(position.lastFundingTimestamp)
+      .times(0.3)
+      .dividedBy(365 * 24 * 60 * 60);
+
+    const pnlValue =
+      principalPrice.price - entryPrice.toNumber() - interestOwed.toNumber();
+
+    const side = isLong ? LeverageSide.long : LeverageSide.short;
 
     element.addIsoPosition({
       collateralValue: collateralValue.toNumber(),
       address: position.collateral.toString(),
-      entryPrice: 0, // missing
-      leverage,
+      entryPrice: entryPrice.toNumber(),
+      leverage: leverage.toNumber(),
       markPrice: principalPrice.price,
-      liquidationPrice: 0, // missing
-      side: LeverageSide.long, // missing
+      liquidationPrice: 0,
+      side,
       size: position.collateralAmount
         .dividedBy(10 ** collatPrice.decimals)
         .toNumber(),
       sizeValue: collateralValue.toNumber(),
-      pnlValue: 0, // missing
+      pnlValue,
     });
   });
 
