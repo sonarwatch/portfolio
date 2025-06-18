@@ -63,19 +63,6 @@ export default function getClientSolana(
   return new Connection(rpcEndpoint.url, {
     commitment: params?.commitment || 'confirmed',
     httpHeaders,
-    fetchMiddleware,
-    async fetch(input, init?) {
-      for (let i = 0; i < 5; i++) {
-        try {
-          return await fetch(input, init);
-        } catch (err: any) {
-          if (err?.cause?.code !== 'UND_ERR_CONNECT_TIMEOUT' || i === 4) {
-            throw err;
-          }
-          console.log(`Retrying connection timeout. Attempt=${i}`);
-        }
-      }
-      throw new Error("Failed to fetch data");
-    },
+    fetchMiddleware
   });
 }
