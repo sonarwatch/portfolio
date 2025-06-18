@@ -40,25 +40,26 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 
+  const element = elementRegistry.addElementLeverage({
+    label: 'Leverage',
+  });
   accounts.forEach((position) => {
-    const element = elementRegistry.addElementLeverage({
-      label: 'Leverage',
-      ref: position.pubkey,
-    });
+    const isLong =
+      position.currency.toString() === usdcSolanaMint ||
+      (position.currency.toString() === solanaNativeWrappedAddress &&
+        position.collateral.toString() !== usdcSolanaMint);
 
     const collatPrice = tokenPricesMap.get(position.collateral.toString());
     const principalPrice = tokenPricesMap.get(position.currency.toString());
     if (!collatPrice || !principalPrice) return;
 
-    const collateralValue = position.collateralAmount
-      .times(collatPrice.price)
-      .dividedBy(10 ** collatPrice.decimals);
-    // const principalValue = position.principal.times(principalPrice.price);
-
-    const isLong =
-      position.currency.toString() === usdcSolanaMint ||
-      (position.currency.toString() === solanaNativeWrappedAddress &&
-        position.collateral.toString() !== usdcSolanaMint);
+    const collateralValue = isLong
+      ? position.downPayment
+          .times(principalPrice.price)
+          .dividedBy(10 ** principalPrice.decimals)
+      : position.downPayment
+          .times(collatPrice.price)
+          .dividedBy(10 ** collatPrice.decimals);
 
     const isEntryPriceSolPrice =
       (isLong && position.currency.toString() === solanaNativeWrappedAddress) ||
@@ -78,7 +79,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       : entryPriceRaw;
 
     const leverage = isLong
-      ? position.principal.dividedBy(position.downPayment)
+      ? position.principal.dividedBy(position.downPayment).plus(1)
       : position.collateralAmount.dividedBy(position.downPayment).minus(1);
 
     const interestOwed = new BigNumber(Date.now())
@@ -87,17 +88,22 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       .times(0.3)
       .dividedBy(365 * 24 * 60 * 60);
 
-    const pnlValue =
-      principalPrice.price - entryPrice.toNumber() - interestOwed.toNumber();
+    const rawPnl = isLong
+      ? collatPrice.price - entryPrice.toNumber() - interestOwed.toNumber()
+      : entryPrice.toNumber() - principalPrice.price + interestOwed.toNumber();
+
+    const pnlValue = new BigNumber(rawPnl).times(leverage).toNumber();
 
     const side = isLong ? LeverageSide.long : LeverageSide.short;
 
     element.addIsoPosition({
       collateralValue: collateralValue.toNumber(),
-      address: position.collateral.toString(),
+      address: isLong
+        ? position.collateral.toString()
+        : position.currency.toString(),
       entryPrice: entryPrice.toNumber(),
       leverage: leverage.toNumber(),
-      markPrice: principalPrice.price,
+      markPrice: isLong ? collatPrice.price : principalPrice.price,
       liquidationPrice: 0,
       side,
       size: position.collateralAmount
@@ -105,6 +111,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         .toNumber(),
       sizeValue: collateralValue.toNumber(),
       pnlValue,
+      ref: position.pubkey.toString(),
     });
   });
 
