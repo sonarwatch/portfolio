@@ -21,10 +21,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (!accounts || accounts.length === 0) return [];
 
   const totalAmount = accounts.reduce((sum, acc) => {
-    // This means it will use the escrow account to fund the bid
-    // We don't count it because we already cover it in the escrow fetcher
-    if (acc.sharedEscrowCount.toNumber() === 1) return sum;
-    if (acc.expiry.toNumber() > Date.now() / 1000) return sum;
+    if (acc.expiry.toNumber() < Date.now() / 1000) return sum;
 
     return sum.plus(acc.spotPrice);
   }, new BigNumber(0));
