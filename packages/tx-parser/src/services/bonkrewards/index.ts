@@ -26,6 +26,12 @@ const bonkMasContract = {
   platformId,
 };
 
+const daoContract = {
+  name: 'DAO',
+  address: 'HA99cuBQCCzZu1zuHN2qBxo2FBo1cxNLwKkdt6Prhy8v',
+  platformId,
+};
+
 const stakingService: ServiceDefinition = {
   id: `${platformId}-staking`,
   name: 'Staking',
@@ -58,10 +64,19 @@ const bonkMasService: ServiceDefinition = {
   contracts: [bonkMasContract],
 };
 
+const daoService: ServiceDefinition = {
+  id: `${platformId}-dao`,
+  name: 'DAO',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [daoContract],
+};
+
 export const services: ServiceDefinition[] = [
   stakingService,
   fireService,
   swapService,
   bonkMasService,
+  daoService,
 ];
 export default services;

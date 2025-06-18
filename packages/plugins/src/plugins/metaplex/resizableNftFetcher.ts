@@ -9,9 +9,9 @@ import {
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { getClientSolana } from '../../utils/clients';
-import { solanaTokenPid, tokenAccountStruct } from '../../utils/solana';
 import { getEditionPubkeyOfNft, getMetadataPubkey } from './helpers';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
+import { getTokenAccountsByOwnerMemo } from '../../utils/solana/getTokenAccountsByOwner';
 
 const resizeExpiration = 1745582400000;
 
@@ -19,13 +19,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   if (Date.now() > resizeExpiration) return [];
   const client = getClientSolana();
 
-  const asset = await client.getTokenAccountsByOwner(new PublicKey(owner), {
-    programId: new PublicKey(solanaTokenPid),
-  });
-
-  const tokenAccounts = asset.value
-    .map((account) => tokenAccountStruct.deserialize(account.account.data)[0])
-    .filter((tA) => !tA.amount.isZero());
+  const tokenAccounts = (await getTokenAccountsByOwnerMemo(owner)).filter(
+    (tA) => !tA.amount.isZero()
+  );
 
   const metadataPubkeys: PublicKey[] = [];
   const editionPubkeys: PublicKey[] = [];

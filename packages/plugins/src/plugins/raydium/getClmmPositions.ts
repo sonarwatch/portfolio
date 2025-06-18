@@ -1,41 +1,39 @@
-import {
-  NetworkId,
-  PortfolioAssetCollectible,
-  PortfolioElement,
-} from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
-import { platformId, poolStatsPrefix, raydiumProgram } from './constants';
-import { getParsedMultipleAccountsInfo } from '../../utils/solana';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { getClientSolana } from '../../utils/clients';
 import {
+  getParsedMultipleAccountsInfo,
+  ParsedAccount,
+  TokenAccount,
+} from '../../utils/solana';
+import {
   personalPositionStateStruct,
-  tickArrayStatetruct,
   poolStateStruct,
+  tickArrayStatetruct,
 } from './structs/clmms';
-import { Cache } from '../../Cache';
+import { WhirlpoolStat } from '../orca/types';
+import { platformId, poolStatsPrefix, raydiumProgram } from './constants';
 import { getFeesAndRewardsBalance, getTickArrayAddress } from './helpers';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
-import { WhirlpoolStat } from '../orca/types';
+import { Cache } from '../../Cache';
 
-export async function getRaydiumCLMMPositions(
-  cache: Cache,
-  nfts: PortfolioAssetCollectible[]
-): Promise<PortfolioElement[]> {
-  const client = getClientSolana();
+export const getClmmPositions = async (
+  potentialTokens: ParsedAccount<TokenAccount>[],
+  cache: Cache
+) => {
+  if (!potentialTokens.length) return [];
 
-  const positionsProgramAddress: PublicKey[] = [];
-  nfts.forEach((nft) => {
-    const address = new PublicKey(nft.data.address);
+  const positionsProgramAddress = potentialTokens.map(
+    (address) =>
+      PublicKey.findProgramAddressSync(
+        [Buffer.from('position'), address.mint.toBuffer()],
+        raydiumProgram
+      )[0]
+  );
 
-    const positionSeed = [Buffer.from('position'), address.toBuffer()];
-
-    const [programAddress] = PublicKey.findProgramAddressSync(
-      positionSeed,
-      raydiumProgram
-    );
-    positionsProgramAddress.push(programAddress);
-  });
   if (positionsProgramAddress.length === 0) return [];
+
+  const client = getClientSolana();
 
   const personalPositionsInfo = await getParsedMultipleAccountsInfo(
     client,
@@ -82,12 +80,13 @@ export async function getRaydiumCLMMPositions(
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 
   for (let index = 0; index < personalPositionsInfo.length; index++) {
-    const poolStateInfo = poolStatesInfo[index];
-
-    if (!poolStateInfo) continue;
-
     const personalPositionInfo = personalPositionsInfo[index];
     if (!personalPositionInfo) continue;
+
+    const poolStateInfo = poolStatesInfo.find(
+      (p) => p && personalPositionInfo.poolId.toString() === p.pubkey.toString()
+    );
+    if (!poolStateInfo) continue;
 
     const element = elementRegistry.addElementConcentratedLiquidity({
       link: 'https://raydium.io/portfolio/?position_tab=concentrated',
@@ -155,4 +154,4 @@ export async function getRaydiumCLMMPositions(
   }
 
   return elementRegistry.getElements(cache);
-}
+};

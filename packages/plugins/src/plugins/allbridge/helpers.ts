@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
+import { BN } from 'bn.js';
 import { Pools } from './types';
 
 export const getEarned = (
@@ -8,12 +9,11 @@ export const getEarned = (
   accRewardPerShareP: string,
   p: number
 ): BigNumber => {
-  const accRewardPerSharePBN = new BigNumber(accRewardPerShareP);
-  const rewards = userLpAmountBN
-    .multipliedBy(accRewardPerSharePBN)
-    .dividedBy(10 ** p);
-
-  return rewards.minus(userRewardDebtBN);
+  const accRewardPerShare = new BN(accRewardPerShareP);
+  const lpAmount = new BN(userLpAmountBN.toString());
+  const rewardDebt = new BN(userRewardDebtBN.toString());
+  const rewards = lpAmount.mul(accRewardPerShare).shrn(p).sub(rewardDebt);
+  return new BigNumber(rewards.toNumber());
 };
 
 export const getUserDepositPublicKeys = (poolInfo: Pools, owner: string) =>

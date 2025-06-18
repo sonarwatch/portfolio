@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { Claim, NetworkId } from '@sonarwatch/portfolio-core';
 import { platformId, snsAirdropStatics, snsMint } from './constants';
 import {
   AirdropFetcher,
@@ -9,6 +9,7 @@ import {
 import { snsAllocation } from './SNS_allocation';
 import { getClaimStatusPda } from './helpers';
 import { getClientSolana } from '../../utils/clients';
+import { getClaimTransactions } from '../../utils/solana/jupiter/getClaimTransactions';
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
   const alloc = snsAllocation[owner];
@@ -27,19 +28,25 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
     });
   }
 
-  const claimed = await getClientSolana().getAccountInfo(
-    getClaimStatusPda(owner)
-  );
+  const claimStatus = getClaimStatusPda(owner);
+  const claimAccount = await getClientSolana().getAccountInfo(claimStatus);
+
+  let claims: Claim[] = [];
+  if (claimAccount) {
+    claims = await getClaimTransactions(owner, claimStatus, snsMint);
+  }
 
   return getAirdropRaw({
     statics: snsAirdropStatics,
     items: [
       {
         amount: alloc,
-        isClaimed: !!claimed,
+        isClaimed: !!claimAccount,
         label: 'SNS',
         address: snsMint,
         imageUri: snsAirdropStatics.image,
+        claims,
+        ref: claimAccount ? claimStatus.toString() : undefined,
       },
     ],
   });

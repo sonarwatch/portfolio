@@ -3,7 +3,10 @@ import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSolana } from '../../utils/clients';
 import { u8ArrayToString } from '../../utils/solana';
-import { keySpotMarkets, platformId } from '../drift/constants';
+import {
+  keySpotMarkets,
+  platformId as driftPlatformId,
+} from '../drift/constants';
 import {
   vaultsProgramIds,
   platformIdByVaultManager,
@@ -12,6 +15,7 @@ import {
 } from './constants';
 import { vaultFilter } from './filters';
 import { SpotMarketEnhanced } from '../drift/types';
+
 import { getVaultClient } from './helpers';
 import { VaultInfo } from './types';
 
@@ -28,7 +32,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       )
     ),
     cache.getItem<SpotMarketEnhanced[]>(keySpotMarkets, {
-      prefix: platformId,
+      prefix: driftPlatformId,
       networkId: NetworkId.solana,
     }),
   ]);
@@ -52,10 +56,10 @@ const executor: JobExecutor = async (cache: Cache) => {
       );
       if (!spotMarket) continue;
       const pubkey = vault.pubkey.toString();
-      const vaultPlatformId = platformIdByVaultManager.get(
+      let vaultPlatformId = platformIdByVaultManager.get(
         vault.manager.toString()
       );
-      if (!vaultPlatformId) continue;
+      if (!vaultPlatformId) vaultPlatformId = driftPlatformId;
 
       const link = linksByPlatformId.get(vaultPlatformId);
       const totalTokens = await vaultClient.calculateVaultEquityInDepositAsset({
@@ -92,9 +96,9 @@ const executor: JobExecutor = async (cache: Cache) => {
 };
 
 const job: Job = {
-  id: `${platformId}-market-maker-vaults`,
-  networkIds: [NetworkId.solana],
+  id: `${driftPlatformId}-market-maker-vaults`,
   executor,
+  networkIds: [NetworkId.solana],
   labels: ['realtime', NetworkId.solana],
 };
 export default job;

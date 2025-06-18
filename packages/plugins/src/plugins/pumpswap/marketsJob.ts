@@ -11,6 +11,7 @@ import {
 } from '../../utils/solana';
 import { getLpTokenSourceRaw } from '../../utils/misc/getLpTokenSourceRaw';
 import { getCachedDecimalsForToken } from '../../utils/misc/getCachedDecimalsForToken';
+import sleep from '../../utils/misc/sleep';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
@@ -21,11 +22,13 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   if (!markets) throw new Error('No Markets found');
 
+  await sleep(5000);
+
   const MARKETS_BATCH_SIZE = 100;
 
+  const batchSources: TokenPriceSource[] = [];
   for (let offset = 0; offset < markets.length; offset += MARKETS_BATCH_SIZE) {
     const marketsBatch = markets.slice(offset, offset + MARKETS_BATCH_SIZE);
-    const batchSources: TokenPriceSource[] = [];
 
     const [tokenPrices, baseTokenAccounts, quoteTokenAccounts] =
       await Promise.all([
@@ -122,15 +125,14 @@ const executor: JobExecutor = async (cache: Cache) => {
 
       batchSources.push(...lpSources);
     });
-
-    await cache.setTokenPriceSources(batchSources);
   }
+  await cache.setTokenPriceSources(batchSources);
 };
 
 const job: Job = {
   id: `${platformId}-markets`,
   networkIds: [NetworkId.solana],
   executor,
-  labels: ['normal', NetworkId.solana],
+  labels: [NetworkId.solana, 'slow'],
 };
 export default job;

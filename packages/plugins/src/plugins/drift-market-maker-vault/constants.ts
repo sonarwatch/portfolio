@@ -11,6 +11,7 @@ export const hedgyPlatformId = 'hedgy';
 export const m1CapitalPlatformId = 'm1capital';
 export const knightradePlatformId = 'knightrade';
 export const luckyperpPlatformId = 'luckyperp';
+export const cushionPlatformId = 'cushion';
 
 export const vaultsProgramIds = [
   new PublicKey('vAuLTsyrvSfZRuRB3XgvkPwNGgYSs9YRYymVebLKoxR'), // from Drift
@@ -43,6 +44,7 @@ export const platformIdByVaultManager: Map<string, string> = new Map([
   ['ESRL2Rj2z7UTUzzRQQEGQbnHyJxcBEqP4BXxjBvZkzjR', knightradePlatformId],
   ['7n1eiWbLWRC3a7cggUcnM9gnudtwVJc8Xrs41ELGwGbE', luckyperpPlatformId],
   ['8KX7LUPnn94R2nXguftRJwyiDHFob4AS8DrNDYx7H3o5', nxFinancePlatformId],
+  ['CcfwPEzivuWSUYndGhL8XGw19s46fCaeB8e5nQBSzpEH', cushionPlatformId],
 ]);
 
 export const linksByPlatformId: Map<string, string> = new Map([
@@ -50,4 +52,5 @@ export const linksByPlatformId: Map<string, string> = new Map([
   [moosePlatformId, 'https://moose.market/'],
   [neutralPlatformId, 'https://www.app.neutral.trade/'],
   [vectisPlatformId, 'https://app.vectis.finance/vault/'],
+  [cushionPlatformId, 'https://app.cushion.trade/vaults'],
 ]);

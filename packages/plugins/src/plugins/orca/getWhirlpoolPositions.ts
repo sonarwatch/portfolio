@@ -1,54 +1,31 @@
-import {
-  NetworkId,
-  PortfolioAssetCollectible,
-  PortfolioElement,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId, PortfolioElement } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
-import {
-  platformId as orcaPlatformId,
-  whirlpoolPrefix,
-  whirlpoolProgram,
-} from './constants';
+import { whirlpoolPrefix } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import {
   ParsedAccount,
   getParsedMultipleAccountsInfo,
+  TokenAccount,
 } from '../../utils/solana';
 import { Cache } from '../../Cache';
 import { Whirlpool, positionStruct } from './structs/whirlpool';
-import { NftFetcher } from '../tokens/types';
 import { calcFeesAndRewards, getTickArraysAsMap } from './helpers_fees';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { WhirlpoolStat } from './types';
+import { getPositionAddress } from './helpers';
 
-export const getWhirlpoolPositions = getOrcaNftFetcher(
-  orcaPlatformId,
-  whirlpoolProgram
-);
-
-export function getOrcaNftFetcher(
-  platformId: string,
-  programId: PublicKey
-): NftFetcher {
+export function getOrcaPositions(platformId: string, programId?: PublicKey) {
   return async (
-    cache: Cache,
-    nfts: PortfolioAssetCollectible[]
+    potentialTokens: ParsedAccount<TokenAccount>[],
+    cache: Cache
   ): Promise<PortfolioElement[]> => {
-    const client = getClientSolana();
-    const positionsProgramAddress: PublicKey[] = [];
+    const positionsProgramAddress = potentialTokens.map((x) =>
+      getPositionAddress(x.mint, programId)
+    );
 
-    nfts.forEach((nft) => {
-      const address = new PublicKey(nft.data.address);
-
-      const positionSeed = [Buffer.from('position'), address.toBuffer()];
-
-      const [programAddress] = PublicKey.findProgramAddressSync(
-        positionSeed,
-        programId
-      );
-      positionsProgramAddress.push(programAddress);
-    });
     if (positionsProgramAddress.length === 0) return [];
+
+    const client = getClientSolana();
 
     const positionsInfo = await getParsedMultipleAccountsInfo(
       client,

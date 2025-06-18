@@ -1,14 +1,11 @@
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { ClientType, NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { platformId } from '../constants';
 import { getClientSolana } from '../../../utils/clients';
-import {
-  getParsedMultipleAccountsInfo,
-  solanaToken2022PidPk,
-  tokenAccountStruct,
-} from '../../../utils/solana';
+import { getParsedMultipleAccountsInfo } from '../../../utils/solana';
 import {
   derivePositionAddress,
   getAmountAFromLiquidityDelta,
@@ -18,25 +15,14 @@ import {
 import { poolStruct, positionStruct } from './structs';
 import { Rounding } from '../dlmm/dlmmHelper';
 import { ElementRegistry } from '../../../utils/elementbuilder/ElementRegistry';
+import { getTokenAccountsByOwnerMemo } from '../../../utils/solana/getTokenAccountsByOwner';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
 
-  const tokenAccounts = await client.getTokenAccountsByOwner(
-    new PublicKey(owner),
-    {
-      programId: solanaToken2022PidPk,
-    }
+  const nftAccounts = (await getTokenAccountsByOwnerMemo(owner)).filter((x) =>
+    x.amount.isEqualTo(1)
   );
-
-  const nftAccounts = tokenAccounts.value.map((account) => {
-    const parsedAccount = tokenAccountStruct.deserialize(
-      account.account.data
-    )[0];
-    if (parsedAccount.amount.toNumber() === 1)
-      return { ...parsedAccount, pubkey: account.pubkey };
-    return undefined;
-  });
 
   const pdas = nftAccounts
     .map((account) => (account ? derivePositionAddress(account.mint) : []))

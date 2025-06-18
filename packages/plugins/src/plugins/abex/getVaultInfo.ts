@@ -1,28 +1,28 @@
-import { Memoized } from '../../utils/misc/Memoized';
 import { IReservingFeeModel, IVaultInfo } from './types';
 import { SuiClient } from '../../utils/clients/types';
 import { getDynamicFieldObject } from '../../utils/sui/getDynamicFieldObject';
 import { corePackage, vaultsParent } from './constants';
 import { getObject } from '../../utils/sui/getObject';
 import { parseValue } from './parseValue';
+import { MemoryCache } from '../../utils/misc/MemoryCache';
+import { getClientSui } from '../../utils/clients';
 
-const vaultsMemo: { [key: string]: Memoized<IVaultInfo> } = {};
-
-export const getVaultInfo = async (client: SuiClient, vaultToken: string) => {
-  if (!vaultsMemo[vaultToken]) {
-    vaultsMemo[vaultToken] = new Memoized<IVaultInfo>(async () => {
-      const rawData = await getDynamicFieldObject(client, {
-        parentId: vaultsParent,
-        name: {
-          type: `${corePackage}::market::VaultName<${vaultToken}>`,
-          value: { dummy_field: false },
-        },
-      });
-      return parseVaultInfo(client, rawData);
+const memoCollection = new MemoryCache<IVaultInfo>(
+  async (vaultToken: string) => {
+    const client = getClientSui();
+    const rawData = await getDynamicFieldObject(client, {
+      parentId: vaultsParent,
+      name: {
+        type: `${corePackage}::market::VaultName<${vaultToken}>`,
+        value: { dummy_field: false },
+      },
     });
+    return parseVaultInfo(client, rawData);
   }
-  return vaultsMemo[vaultToken].getItem();
-};
+);
+
+export const getVaultInfo = async (vaultToken: string) =>
+  memoCollection.getItem(vaultToken);
 
 const parseVaultInfo = async (
   client: SuiClient,

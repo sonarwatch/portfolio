@@ -5,15 +5,19 @@ import { Job, JobExecutor } from '../../Job';
 import { fluxbeamPoolsPid, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import {
-  MintAccount,
   ParsedAccount,
   TokenAccount,
   getParsedMultipleAccountsInfo,
   mintAccountStruct,
   tokenAccountStruct,
 } from '../../utils/solana';
-import { Pool, poolStruct } from './structs';
+import { poolStruct } from './structs';
 import { getLpTokenSourceRaw } from '../../utils/misc/getLpTokenSourceRaw';
+import {
+  Decimal,
+  getCachedDecimalsForToken,
+} from '../../utils/misc/getCachedDecimalsForToken';
+import sleep from '../../utils/misc/sleep';
 
 const tokenAccountsToExclude = [
   'F5LQTC4G9kBsMKsXtHgf9RqR15k3JB8K3smR73VB9pzY',
@@ -31,31 +35,28 @@ const executor: JobExecutor = async (cache: Cache) => {
     }
   );
 
+  await sleep(5000);
+
   const step = 100;
-  let tempPools: (ParsedAccount<Pool> | null)[];
   const sources = [];
   for (let offset = 0; offset < allPoolsPubkeys.length; offset += step) {
     const tempTokenAccountsMap: Map<
       string,
       ParsedAccount<TokenAccount>
     > = new Map();
-    const tempTokenMintsAccountsMap: Map<
-      string,
-      ParsedAccount<MintAccount>
-    > = new Map();
     const tempTokenMints: PublicKey[] = [];
     const tempTokenAddresses: Set<string> = new Set();
     const tempsReserveAccounts: PublicKey[] = [];
     const tempsPoolMints: PublicKey[] = [];
-    tempPools = await getParsedMultipleAccountsInfo(
+
+    const tempPools = await getParsedMultipleAccountsInfo(
       connection,
       poolStruct,
       allPoolsPubkeys.slice(offset, offset + step).map((res) => res.pubkey)
     );
-    tempPools = tempPools.filter((pool) => pool?.isInitialized);
 
     tempPools.forEach((pool) => {
-      if (pool) {
+      if (pool && pool.isInitialized) {
         tempTokenMints.push(...[pool.tokenAMint, pool.tokenBMint]);
         tempTokenAddresses.add(pool.tokenAMint.toString());
         tempTokenAddresses.add(pool.tokenBMint.toString());
@@ -63,46 +64,41 @@ const executor: JobExecutor = async (cache: Cache) => {
         tempsPoolMints.push(...[pool.poolMint]);
       }
     });
-    const [
-      tokenAccounts,
-      poolMintsAccounts,
-      tokenMintsAccounts,
-      tokenPriceById,
-    ] = await Promise.all([
-      getParsedMultipleAccountsInfo(
-        connection,
-        tokenAccountStruct,
-        tempsReserveAccounts
-      ),
-      getParsedMultipleAccountsInfo(
-        connection,
-        mintAccountStruct,
-        tempsPoolMints
-      ),
-      getParsedMultipleAccountsInfo(
-        connection,
-        mintAccountStruct,
-        Array.from(tempTokenAddresses)
-          .map((t) => {
-            if (!tokenAccountsToExclude.includes(t)) {
-              return new PublicKey(t);
-            }
-            return [];
-          })
-          .flat()
-      ),
-      cache.getTokenPricesAsMap(tempTokenAddresses, NetworkId.solana),
-    ]);
 
-    if (!tokenMintsAccounts) continue;
+    const tokenPrices = await cache.getTokenPricesAsMap(
+      tempTokenAddresses,
+      NetworkId.solana
+    );
 
-    tokenMintsAccounts.forEach((tokenMintAccount) => {
-      if (!tokenMintAccount) return;
-      tempTokenMintsAccountsMap.set(
-        tokenMintAccount.pubkey.toString(),
-        tokenMintAccount
-      );
+    const tokensMissingDecimals = Array.from(tempTokenAddresses).filter(
+      (t) => !tokenPrices.get(t) && !tokenAccountsToExclude.includes(t)
+    );
+
+    const missingDecimals = await Promise.all(
+      tokensMissingDecimals.map((t) =>
+        getCachedDecimalsForToken(cache, t, NetworkId.solana)
+      )
+    );
+
+    const decimalsByMissingToken: Map<string, Decimal> = new Map();
+    missingDecimals.forEach((d, index) => {
+      decimalsByMissingToken.set(tokensMissingDecimals[index], d);
     });
+
+    const [tokenAccounts, poolMintsAccounts, tokenPriceById] =
+      await Promise.all([
+        getParsedMultipleAccountsInfo(
+          connection,
+          tokenAccountStruct,
+          tempsReserveAccounts
+        ),
+        getParsedMultipleAccountsInfo(
+          connection,
+          mintAccountStruct,
+          tempsPoolMints
+        ),
+        cache.getTokenPricesAsMap(tempTokenAddresses, NetworkId.solana),
+      ]);
 
     tokenAccounts.forEach((tokenAccount) => {
       if (!tokenAccount) return;
@@ -119,13 +115,16 @@ const executor: JobExecutor = async (cache: Cache) => {
       const tokenAccountA = tempTokenAccountsMap.get(pool.tokenA.toString());
       const tokenAccountB = tempTokenAccountsMap.get(pool.tokenB.toString());
       if (!tokenAccountA || !tokenAccountB) continue;
-      const mintAccountA = tempTokenMintsAccountsMap.get(
-        pool.tokenAMint.toString()
-      );
-      const mintAccountB = tempTokenMintsAccountsMap.get(
-        pool.tokenBMint.toString()
-      );
-      if (!mintAccountA || !mintAccountB) continue;
+
+      const decimalA =
+        tokenPriceById.get(pool.tokenAMint.toString())?.decimals ||
+        decimalsByMissingToken.get(pool.tokenAMint.toString());
+
+      const decimalB =
+        tokenPriceById.get(pool.tokenBMint.toString())?.decimals ||
+        decimalsByMissingToken.get(pool.tokenBMint.toString());
+      if (!decimalA || !decimalB) continue;
+
       const tokenPriceA = tokenPriceById.get(pool.tokenAMint.toString());
       const tokenPriceB = tokenPriceById.get(pool.tokenBMint.toString());
 
@@ -141,14 +140,14 @@ const executor: JobExecutor = async (cache: Cache) => {
         poolUnderlyingsRaw: [
           {
             address: pool.tokenAMint.toString(),
-            decimals: mintAccountA.decimals,
+            decimals: decimalA,
             reserveAmountRaw: tokenAccountA.amount,
             tokenPrice: tokenPriceA,
             weight: 0.5,
           },
           {
             address: pool.tokenBMint.toString(),
-            decimals: mintAccountB.decimals,
+            decimals: decimalB,
             reserveAmountRaw: tokenAccountB.amount,
             tokenPrice: tokenPriceB,
             weight: 0.5,
@@ -167,6 +166,6 @@ const job: Job = {
   id: `${platformId}-pools`,
   networkIds: [NetworkId.solana],
   executor,
-  labels: ['normal', NetworkId.solana],
+  labels: [NetworkId.solana, 'slow'],
 };
 export default job;

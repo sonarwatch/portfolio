@@ -7,3 +7,7 @@ export const stakePid = new PublicKey(
 );
 export const stakePool = '9AdEE8AAm1XgJrPEs4zkTPozr3o4U5iGbgvPwkNdLDJ3';
 export const bonkDecimals = 5;
+export const daoPid = new PublicKey(
+  'HA99cuBQCCzZu1zuHN2qBxo2FBo1cxNLwKkdt6Prhy8v'
+);
+export const registrarsKey = 'registrars';

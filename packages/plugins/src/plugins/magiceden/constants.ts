@@ -17,6 +17,9 @@ export const stakingPid = new PublicKey(
 export const airdropApi =
   'https://mefoundation.com/api/trpc/allocation.queryClaimStatus?input=';
 
+export const ammPid = new PublicKey(
+  'mmm3XBJg5gk8XJxEKBvdgptZz6SgK4tXvn36sodowMc'
+);
 export const airdropStatics: AirdropStatics = {
   claimLink: 'https://mefoundation.com/link',
   emitterLink: 'https://mefoundation.com/',

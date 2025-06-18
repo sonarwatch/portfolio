@@ -39,6 +39,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     if (!stakePool) continue;
     if (stakeEntry.amount.isZero()) continue;
 
+    if (!stakeEntry.unstakeTs.isZero()) continue;
+
     const element = registry.addElementMultiple({
       label: 'Staked',
       link: `https://app.streamflow.finance/staking/solana/mainnet/${stakeEntry.stakePool.toString()}`,

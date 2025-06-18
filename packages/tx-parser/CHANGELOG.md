@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.2.5](https://github.com/sonarwatch/portfolio/compare/tx-parser-1.2.4...tx-parser-1.2.5) (2025-06-16)
+
+
+### Features
+
+* **plugins:** add CUDIS airdrop and staking ([d43c497](https://github.com/sonarwatch/portfolio/commit/d43c497e53af8f34ef78a0a930b3e113ddec15b6))
+* **plugins:** add DAO functionality with fetcher, job, and service integration ([4298a7d](https://github.com/sonarwatch/portfolio/commit/4298a7d0962d5c03aac69fa1206e7232cd394aed))
+
+
+
 ## [1.2.4](https://github.com/sonarwatch/portfolio/compare/tx-parser-1.2.3...tx-parser-1.2.4) (2025-06-05)
 
 

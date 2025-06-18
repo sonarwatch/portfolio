@@ -2,6 +2,85 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.33](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.32...plugins-0.15.33) (2025-06-18)
+
+
+
+## [0.15.32](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.31...plugins-0.15.32) (2025-06-18)
+
+
+
+## [0.15.31](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.30...plugins-0.15.31) (2025-06-18)
+
+
+
+## [0.15.30](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.29...plugins-0.15.30) (2025-06-18)
+
+
+### Bug Fixes
+
+* **plugins:** add condition to skip stake entries with unstake timestamp ([332e754](https://github.com/sonarwatch/portfolio/commit/332e754422862a5f463b909544d7f692ab7bc8b2))
+* **plugins:** filter token accounts by amount to ensure accurate Solana NFT underlying fetch results ([788e308](https://github.com/sonarwatch/portfolio/commit/788e3088e77d7e41ab72326d9e3f2909933b9e74))
+* **plugins:** filter token accounts with zero amounts in Solana fetcher to ensure accurate results ([a0fcd13](https://github.com/sonarwatch/portfolio/commit/a0fcd1306d6e0bc9caf0e5ecb641a27202317984))
+
+
+
+## [0.15.30](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.29...plugins-0.15.30) (2025-06-18)
+
+
+### Bug Fixes
+
+* **plugins:** add condition to skip stake entries with unstake timestamp ([332e754](https://github.com/sonarwatch/portfolio/commit/332e754422862a5f463b909544d7f692ab7bc8b2))
+* **plugins:** filter token accounts by amount to ensure accurate Solana NFT underlying fetch results ([788e308](https://github.com/sonarwatch/portfolio/commit/788e3088e77d7e41ab72326d9e3f2909933b9e74))
+* **plugins:** filter token accounts with zero amounts in Solana fetcher to ensure accurate results ([a0fcd13](https://github.com/sonarwatch/portfolio/commit/a0fcd1306d6e0bc9caf0e5ecb641a27202317984))
+
+
+
+## [0.15.30](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.29...plugins-0.15.30) (2025-06-18)
+
+
+### Bug Fixes
+
+* **plugins:** add condition to skip stake entries with unstake timestamp ([332e754](https://github.com/sonarwatch/portfolio/commit/332e754422862a5f463b909544d7f692ab7bc8b2))
+* **plugins:** filter token accounts by amount to ensure accurate Solana NFT underlying fetch results ([788e308](https://github.com/sonarwatch/portfolio/commit/788e3088e77d7e41ab72326d9e3f2909933b9e74))
+* **plugins:** filter token accounts with zero amounts in Solana fetcher to ensure accurate results ([a0fcd13](https://github.com/sonarwatch/portfolio/commit/a0fcd1306d6e0bc9caf0e5ecb641a27202317984))
+
+
+
+## [0.15.29](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.28...plugins-0.15.29) (2025-06-16)
+
+
+### Features
+
+* **drift:** add new fields to `SpotMarket` struct and enhance interest rate calculation logic ([27a30ca](https://github.com/sonarwatch/portfolio/commit/27a30caaa92034fc2b7fbe707e3ce2e7c7360387))
+* **plugins:** add claim transactions to snsAirdropFetcher and improve claim handling ([4978eb4](https://github.com/sonarwatch/portfolio/commit/4978eb43911353d0e77859055602d8d8c584f704))
+* **plugins:** add claim transactions to snsAirdropFetcher and improve claim handling ([a17e515](https://github.com/sonarwatch/portfolio/commit/a17e5150dfd1eb5208a8f2730881ccbe2216da68))
+* **plugins:** add CUDIS airdrop and staking ([d43c497](https://github.com/sonarwatch/portfolio/commit/d43c497e53af8f34ef78a0a930b3e113ddec15b6))
+* **plugins:** add DAO functionality with fetcher, job, and service integration ([4298a7d](https://github.com/sonarwatch/portfolio/commit/4298a7d0962d5c03aac69fa1206e7232cd394aed))
+* **plugins:** add magna info ([05ac972](https://github.com/sonarwatch/portfolio/commit/05ac972ebfffc3c105df1dd8f415148de6d18f5c))
+* **plugins:** integrate claim transactions in kaminoAirdropFetcher for S1, S2, and S3 and enhance claim handling ([6fe7c47](https://github.com/sonarwatch/portfolio/commit/6fe7c4770a443315d24e9de0e173c820abaf6839))
+* **plugins:** integrate claim transactions in parclAirdropFetcher and refine claim handling ([a9f5669](https://github.com/sonarwatch/portfolio/commit/a9f566921abaf8b0ba3ed7bdcd7c5ab9d3de7f23))
+
+
+
+## [0.15.28](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.27...plugins-0.15.28) (2025-06-12)
+
+
+### Bug Fixes
+
+* correct variable name ([d22beb9](https://github.com/sonarwatch/portfolio/commit/d22beb9fa29220b37f2abade6d1f13180204f0ed))
+* **jupiter:** replace `isPositive` with `isGreaterThan(0)` for sl_taking_amount check in limitFetcher ([824952c](https://github.com/sonarwatch/portfolio/commit/824952c9f6ec3a0cc5459d37179641252a498fc1))
+* **plugins:** prevent processing of accounts with zero LP tokens ([23cfc2e](https://github.com/sonarwatch/portfolio/commit/23cfc2ef35a2432489d2a8fe8c944e9762bc907d))
+* **plugins:** update liquidity calculation in dualPoolFetcher ([99068cf](https://github.com/sonarwatch/portfolio/commit/99068cf366fe68b7f9d847cb1049344d539f756a))
+
+
+### Features
+
+* **plugins:** add claims and remove API call ([6768d7c](https://github.com/sonarwatch/portfolio/commit/6768d7c46f8118ad3faee3277ca948fa554fe38c))
+* **plugins:** enhance grass and solayer airdropFetchers with claim transactions ([19f07c1](https://github.com/sonarwatch/portfolio/commit/19f07c129e750b2df9a85195e2b045efba3fa9d5))
+
+
+
 ## [0.15.27](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.26...plugins-0.15.27) (2025-06-05)
 
 

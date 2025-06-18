@@ -4,7 +4,8 @@ import BN from 'bn.js';
 import Decimal from 'decimal.js';
 
 import { PortfolioAssetCollectible } from '@sonarwatch/portfolio-core';
-import { positionsIdentifiers } from './constants';
+import { PublicKey } from '@solana/web3.js';
+import { positionsIdentifiers, whirlpoolProgram } from './constants';
 
 export function isAnOrcaPosition(nft: PortfolioAssetCollectible): boolean {
   return positionsIdentifiers.some((identifier) =>
@@ -341,4 +342,14 @@ export function sqrtPriceX64ToPrice(
   return fromX64Decimal(new Decimal(sqrtPriceX64.toString()))
     .pow(2)
     .mul(Decimal.pow(10, decimalsA - decimalsB));
+}
+
+export function getPositionAddress(
+  positionMint: PublicKey,
+  programId?: PublicKey
+): PublicKey {
+  return PublicKey.findProgramAddressSync(
+    [Buffer.from('position'), positionMint.toBuffer()],
+    programId || whirlpoolProgram
+  )[0];
 }

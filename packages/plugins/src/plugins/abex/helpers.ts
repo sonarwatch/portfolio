@@ -247,7 +247,7 @@ const parsePositionInfo = async (
     openFeeBps: parseValue(positionFields.config.fields.open_fee_bps),
   };
 
-  const vaultInfo = await getVaultInfo(client, positionInfo.collateralToken);
+  const vaultInfo = await getVaultInfo(positionInfo.collateralToken);
 
   positionInfo.reservingFeeAmount = calculatePositionReserveFee(
     positionInfo,

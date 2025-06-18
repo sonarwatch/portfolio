@@ -146,6 +146,7 @@ import * as unknown from './services/unknown';
 import * as uxd from './services/uxd';
 import * as vaultka from './services/vaultka';
 import * as vidar from './services/vidar';
+import * as wasabi from './services/wasabi';
 import * as whalesmarket from './services/whalesmarket';
 import * as wormhole from './services/wormhole';
 import * as zelo from './services/zelo';
@@ -302,6 +303,7 @@ export const services: ServiceDefinition[] = [
   uxd,
   vaultka,
   vidar,
+  wasabi,
   whalesmarket,
   wormhole,
   zelo,
