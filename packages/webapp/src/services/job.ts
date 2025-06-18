@@ -2,6 +2,7 @@ import { Cache, jobs } from '@sonarwatch/portfolio-plugins';
 import { logger } from '../logger/logger';
 import { ScheduleJobRequest } from '../model/job';
 import portfolioCache from '../cache/cache';
+import metricsService from '../metrics/metrics';
 import { JobPriority } from '../enum/job';
 import dotenv from 'dotenv';
 
@@ -47,13 +48,16 @@ class JobRunner {
       try {
         const startDate = Date.now();
         logger.info(`Running job. Id=${jobName}`);
+        metricsService.incrementJobRun(jobName);
         await job.executor(this.cache);
         const duration = ((Date.now() - startDate) / 1000).toFixed(2);
         logger.info(
           `Job finished. Id=${jobName} Duration=(${duration}s) Queue=${this.jobsQueue.length} RunningJobs=${this.runningJobsCount}`
         );
+        metricsService.setJobSuccess(jobName, Date.now());
       } catch (err) {
         logger.error({ error: err }, `Job failed. Name=${jobName}`);
+        metricsService.incrementJobError(jobName);
       } finally {
         this.runningJobsCount--;
         this.tryNext();
