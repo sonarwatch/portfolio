@@ -1,6 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
 import { ClientType, NetworkId } from '@sonarwatch/portfolio-core';
-import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { platformId } from '../constants';

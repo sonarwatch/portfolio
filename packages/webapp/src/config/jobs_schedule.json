@@ -644,5 +644,15 @@
     "tokenPrice": true,
     "yields": true,
     "ttl": "NOT_DEFINED"
+  },
+  "bonkrewards-dao": {
+    "intervalMs": 10800000,
+    "registrars": true,
+    "ttl": "NOT_DEFINED"
+  },
+  "wasabi-lp-vaults": {
+    "intervalMs": 10800000,
+    "tokenPrice": true,
+    "ttl": "NOT_DEFINED"
   }
 }
