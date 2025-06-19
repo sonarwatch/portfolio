@@ -15,7 +15,6 @@ console.warn = (...args) => logger.warn(args.join(' '));
 console.error = (...args) => logger.error(args.join(' '));
 
 import { initPortfolioRoutes } from './routes/portfolio';
-import programService from './services/program';
 import { scheduleJobs } from './schedulers/job';
 import { initNftRoutes } from './routes/nft';
 
@@ -53,10 +52,6 @@ const start = async () => {
       logger.info('Running in web-api mode.');
       initPortfolioRoutes(mainServer);
       initNftRoutes(mainServer);
-
-      mainServer.addHook('onListen', async () => {
-        await programService.warmupProgramsCache();
-      });
     }
 
     const port = Number(process.env['PORTFOLIO_PORT'] || 3001);

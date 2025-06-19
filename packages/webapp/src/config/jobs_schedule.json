@@ -1,14 +1,4 @@
 {
-  "program-id-cache-medium": {
-    "intervalMs": 3000000,
-    "priority": "HIGH",
-    "ttl": "1h"
-  },
-  "program-id-cache-small": {
-    "intervalMs": 10200000,
-    "priority": "HIGH",
-    "ttl": "1h"
-  },
   "wallet-tokens-solana": {
     "intervalMs": 10800000,
     "tokenPrice": true

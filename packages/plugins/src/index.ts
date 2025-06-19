@@ -33,7 +33,6 @@ import * as auxexchange from './plugins/auxexchange';
 import * as maker from './plugins/maker';
 import * as kamino from './plugins/kamino';
 import * as bucket from './plugins/bucket';
-import * as cache from './plugins/cache';
 import * as navi from './plugins/navi';
 import * as scallop from './plugins/scallop';
 import * as rocketpool from './plugins/rocket-pool';
@@ -195,10 +194,8 @@ export * from './Job';
 export * from './utils/name-service';
 export * from './utils/hasTransactions';
 
-export { cachedPrograms } from './plugins/cache'
 export { getLlamaProtocolsJob } from './plugins/llama-protocols';
 export { jupFetcherIds } from './plugins/jupiter';
-export { loadFromCache } from './utils/solana/getProgramAccounts';
 export { solanaSimpleFetcher };
 
 const modules = [
@@ -231,7 +228,6 @@ const modules = [
   maker,
   kamino,
   bucket,
-  cache,
   navi,
   scallop,
   rocketpool,
