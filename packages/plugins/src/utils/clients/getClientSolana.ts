@@ -21,16 +21,16 @@ export interface ConnectionManagerConfig {
 export class SolanaConnectionManager {
   private connectionPool: TTLCache<string, Connection>;
   private reqs: Record<string, Record<string, number>> = {
-    all: { total: 0 },
+    all: { total: 0 }
   };
   private config: Required<ConnectionManagerConfig>;
 
   constructor(config: ConnectionManagerConfig = {}) {
     this.config = {
-      maxConnections: config.maxConnections ?? 5,
+      maxConnections: config.maxConnections ?? 100,
       ttlMs: config.ttlMs ?? 1_800_000, // 30 minutes
       enableLogging: config.enableLogging ?? process.env['PORTFOLIO_RPC_LOGS'] === 'true',
-      logInterval: config.logInterval ?? 5,
+      logInterval: config.logInterval ?? 5
     };
 
     this.connectionPool = new TTLCache<string, Connection>({
@@ -40,7 +40,7 @@ export class SolanaConnectionManager {
         if (this.config.enableLogging) {
           console.log(`[SolanaConnectionManager] Evicted connection: ${key}`);
         }
-      },
+      }
     });
   }
 
@@ -88,7 +88,7 @@ export class SolanaConnectionManager {
         console.log(`[SolanaConnectionManager] RPC Stats:`, {
           totalRequests: this.reqs['all']['total'],
           poolSize: this.connectionPool.size,
-          topMethods: this.getTopMethods(5),
+          topMethods: this.getTopMethods(5)
         });
       }
 
@@ -96,7 +96,10 @@ export class SolanaConnectionManager {
     };
   }
 
-  private getTopMethods(limit: number): Array<{ method: string; count: number }> {
+  private getTopMethods(limit: number): Array<{
+    method: string;
+    count: number
+  }> {
     return Object.entries(this.reqs['all'])
       .filter(([method]) => method !== 'total')
       .map(([method, count]) => ({ method, count }))
@@ -128,7 +131,7 @@ export class SolanaConnectionManager {
         connection = new Connection(rpcEndpoint.url, {
           commitment,
           httpHeaders,
-          fetchMiddleware: this.createFetchMiddleware(),
+          fetchMiddleware: this.createFetchMiddleware()
         });
 
         this.connectionPool.set(connectionKey, connection);
