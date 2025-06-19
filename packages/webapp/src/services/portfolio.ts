@@ -29,9 +29,7 @@ class PortfolioService {
   private constructor() {
     this.cache = portfolioCache.getCache();
     this.registry = tokenCache.getRegistry();
-    this.portfolioFetchers = fetchersByAddressSystem['solana'].filter(
-      (f) => f.id != 'wallet-tokens-solana-nfts-underlyings'
-    );
+    this.portfolioFetchers = fetchersByAddressSystem['solana'];
     this.fetcherFilter = {
       [AssetType.ALL]: {},
       [AssetType.TOKEN]: {

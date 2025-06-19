@@ -21,10 +21,7 @@ class NftService {
     this.cache = portfolioCache.getCache();
 
     this.nftFetchers = fetchersByAddressSystem['solana'].filter((f) =>
-      [
-        'wallet-tokens-solana',
-        'wallet-tokens-solana-nfts-underlyings',
-      ].includes(f.id)
+      ['wallet-tokens-solana'].includes(f.id)
     );
   }
 
@@ -53,8 +50,7 @@ class NftService {
       this.cache
     );
 
-    const nfts = result.elements
-      .filter(e => e.platformId === 'wallet-nfts')
+    const nfts = result.elements.filter((e) => e.platformId === 'wallet-nfts');
 
     const walletPortfolio: FetchersResult = {
       ...result,
