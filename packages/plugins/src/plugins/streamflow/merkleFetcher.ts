@@ -21,7 +21,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const apiResponses = await Promise.all(
     merkles.map((merkle) =>
       axios
-        .get(`${streamflowApi}/airdrops/${merkle.address}/claimants/${owner}`)
+        .get(`${streamflowApi}/airdrops/${merkle.address}/claimants/${owner}`, {
+          timeout: 7000
+        })
         .then((response) => response.data as AirdropsResponse)
         .catch(() => undefined)
     )

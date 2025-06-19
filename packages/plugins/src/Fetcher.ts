@@ -57,6 +57,7 @@ export async function runFetchers(
         error: undefined,
       };
     } else {
+      console.error({ error: r.reason }, `Failed to execute fetcher. Address: ${owner} Fetcher: ${fetchers[index].id}`);
       fReport = {
         id: fetchers[index].id,
         status: 'failed',
