@@ -87,25 +87,25 @@ export class SolanaConnectionManager {
         this.reqs[hash]['total'] += 1;
       }
       if (this.reqs['all']['total'] % this.config.logInterval === 1) {
-        console.log(`[SolanaConnectionManager] RPC Stats:`, {
-          totalRequests: this.reqs['all']['total'],
-          poolSize: this.connectionPool.size,
-          topMethods: this.getTopMethods(5)
-        });
+        console.log(
+          `[SolanaConnectionManager] RPC Stats. TotalRequests: ${
+            this.reqs['all']['total']
+          } PoolSize=${
+            this.connectionPool.size
+          } topMethods=${this.getTopMethods(5)}`
+        );
       }
 
       return fetch(info, init);
     };
   }
 
-  private getTopMethods(limit: number): Array<{
-    method: string;
-    count: number
-  }> {
+  private getTopMethods(limit: number): Array<string> {
     return Object.entries(this.reqs['all'])
       .filter(([method]) => method !== 'total')
       .map(([method, count]) => ({ method, count }))
       .sort((a, b) => b.count - a.count)
+      .map(a => `${a.method}: ${a.count}`)
       .slice(0, limit);
   }
 
@@ -153,4 +153,5 @@ export class SolanaConnectionManager {
 }
 
 export const solanaConnectionManager = new SolanaConnectionManager();
-export const getClientSolana = solanaConnectionManager.getClientSolana.bind(solanaConnectionManager);
+const getClientSolana = solanaConnectionManager.getClientSolana.bind(solanaConnectionManager);
+export default getClientSolana;
