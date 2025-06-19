@@ -1,6 +1,7 @@
 import { PortfolioAsset } from '../Portfolio';
 import { UsdValue } from '../UsdValue';
 import { getUsdValueSumStrict } from './getUsdValueSumStrict';
+import { fixUsdValue } from './fixUsdValue';
 
 function getHealthRatio(
   suppliedAssets: PortfolioAsset[],
@@ -87,11 +88,11 @@ export function getElementLendingValues(params: {
   if (unsettledValue !== null && value !== null) value += unsettledValue;
 
   return {
-    borrowedValue,
-    suppliedValue,
-    rewardValue,
+    borrowedValue: fixUsdValue(borrowedValue),
+    suppliedValue: fixUsdValue(suppliedValue),
+    rewardValue: fixUsdValue(rewardValue),
     healthRatio,
-    unsettledValue,
-    value,
+    unsettledValue: fixUsdValue(unsettledValue),
+    value: fixUsdValue(value),
   };
 }

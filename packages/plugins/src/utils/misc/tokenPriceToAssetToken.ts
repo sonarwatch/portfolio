@@ -8,6 +8,7 @@ import {
   TokenYield,
   UsdValue,
   formatTokenAddress,
+  fixUsdValue,
 } from '@sonarwatch/portfolio-core';
 
 export default function tokenPriceToAssetToken(
@@ -24,7 +25,7 @@ export default function tokenPriceToAssetToken(
   return {
     type: PortfolioAssetType.token,
     networkId,
-    value: fPrice ? fPrice * amount : null,
+    value: fixUsdValue(fPrice ? fPrice * amount : null),
     data: {
       address: formatTokenAddress(address, networkId),
       amount,

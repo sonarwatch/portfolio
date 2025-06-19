@@ -1,4 +1,5 @@
 import {
+  fixUsdValue,
   NetworkIdType,
   PortfolioAssetCollectible,
   PortfolioAssetType,
@@ -29,9 +30,11 @@ export class AssetCollectibleBuilder extends AssetBuilder {
     return {
       type: PortfolioAssetType.collectible,
       networkId,
-      value: new BigNumber(this.params.collection.floorPrice)
-        .multipliedBy(new BigNumber(this.params.amount || 1))
-        .toNumber(),
+      value: fixUsdValue(
+        new BigNumber(this.params.collection.floorPrice)
+          .multipliedBy(new BigNumber(this.params.amount || 1))
+          .toNumber()
+      ),
       name: this.params.name || this.params.collection.name,
       data: {
         address: this.params.address.toString(),
