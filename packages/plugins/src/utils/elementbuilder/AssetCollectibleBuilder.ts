@@ -27,22 +27,21 @@ export class AssetCollectibleBuilder extends AssetBuilder {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     tokenPrices: TokenPriceMap
   ): PortfolioAssetCollectible | null {
+    const amount = new BigNumber(this.params.amount || 1).toFixed(1);
     return {
       type: PortfolioAssetType.collectible,
       networkId,
       value: fixUsdValue(
         new BigNumber(this.params.collection.floorPrice)
-          .multipliedBy(new BigNumber(this.params.amount || 1))
+          .multipliedBy(amount)
           .toNumber()
       ),
       name: this.params.name || this.params.collection.name,
       data: {
         address: this.params.address.toString(),
-        amount: new BigNumber(this.params.amount || 1).toNumber(),
+        amount: Number(amount),
         price: new BigNumber(this.params.collection.floorPrice).toNumber(),
         name: this.params.name || this.params.collection.name,
-        /* dataUri: asset.content.json_uri,
-        attributes: asset.content.metadata.attributes, */
         collection: {
           name: this.params.collection.name,
           floorPrice: new BigNumber(
