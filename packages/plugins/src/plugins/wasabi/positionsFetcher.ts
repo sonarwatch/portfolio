@@ -44,43 +44,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     label: 'Leverage',
   });
   accounts.forEach((position) => {
+    const collatPrice = tokenPricesMap.get(position.collateral.toString());
+    const principalPrice = tokenPricesMap.get(position.currency.toString());
+    if (!collatPrice || !principalPrice) return;
+
     const isLong =
       position.currency.toString() === usdcSolanaMint ||
       (position.currency.toString() === solanaNativeWrappedAddress &&
         position.collateral.toString() !== usdcSolanaMint);
 
-    const collatPrice = tokenPricesMap.get(position.collateral.toString());
-    const principalPrice = tokenPricesMap.get(position.currency.toString());
-    if (!collatPrice || !principalPrice) return;
-
-    const collateralValue = isLong
-      ? position.downPayment
-          .times(principalPrice.price)
-          .dividedBy(10 ** principalPrice.decimals)
-      : position.downPayment
-          .times(collatPrice.price)
-          .dividedBy(10 ** collatPrice.decimals);
-
     const isEntryPriceSolPrice =
       (isLong && position.currency.toString() === solanaNativeWrappedAddress) ||
       (!isLong &&
         position.collateral.toString() === solanaNativeWrappedAddress);
-
-    const entryPriceRaw = isLong
-      ? position.principal
-          .plus(position.downPayment)
-          .dividedBy(position.collateralAmount)
-      : position.collateralAmount
-          .minus(position.downPayment)
-          .dividedBy(position.principal);
-
-    const entryPrice = isEntryPriceSolPrice
-      ? entryPriceRaw.times(solTokenPrice.price)
-      : entryPriceRaw;
-
-    const leverage = isLong
-      ? position.principal.dividedBy(position.downPayment).plus(1)
-      : position.collateralAmount.dividedBy(position.downPayment).minus(1);
 
     const interestOwed = new BigNumber(Date.now())
       .dividedBy(1000)
@@ -88,30 +64,98 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       .times(0.3)
       .dividedBy(365 * 24 * 60 * 60);
 
-    const rawPnl = isLong
-      ? collatPrice.price - entryPrice.toNumber() - interestOwed.toNumber()
-      : entryPrice.toNumber() - principalPrice.price + interestOwed.toNumber();
+    const usdValue = position.collateralAmount
+      .dividedBy(10 ** collatPrice.decimals)
+      .times(collatPrice.price)
+      .minus(
+        position.principal
+          .dividedBy(10 ** principalPrice.decimals)
+          .plus(interestOwed)
+          .times(principalPrice.price)
+      )
+      .minus(position.feesToBePaid.dividedBy(10 ** principalPrice.decimals));
 
-    const pnlValue = new BigNumber(rawPnl).times(leverage).toNumber();
+    const pnlValue = usdValue.minus(position.downPayment.dividedBy(10 ** 6));
 
-    const side = isLong ? LeverageSide.long : LeverageSide.short;
+    let collateralValue;
+    let entryPrice;
+    let markPrice;
+    let leverage;
+    let size;
+    let side;
+    let sizeValue;
+    let liquidationPrice;
+    let address;
+
+    if (isLong) {
+      address = position.collateral.toString();
+      collateralValue = position.downPayment
+        .times(principalPrice.price)
+        .dividedBy(10 ** principalPrice.decimals);
+
+      size = position.collateralAmount.dividedBy(10 ** collatPrice.decimals);
+      sizeValue = size.times(collatPrice.price).toNumber();
+
+      const entryPriceRaw = position.principal
+        .plus(position.downPayment)
+        .dividedBy(position.collateralAmount);
+
+      entryPrice = isEntryPriceSolPrice
+        ? entryPriceRaw.times(solTokenPrice.price)
+        : entryPriceRaw;
+
+      markPrice = collatPrice.price;
+
+      liquidationPrice = position.principal
+        .times(1.05)
+        .dividedBy(position.collateralAmount);
+
+      leverage = position.principal.dividedBy(position.downPayment).plus(1);
+
+      side = LeverageSide.long;
+    } else {
+      address = position.currency.toString();
+      collateralValue = position.downPayment
+        .times(collatPrice.price)
+        .dividedBy(10 ** collatPrice.decimals);
+
+      size = position.principal.dividedBy(10 ** principalPrice.decimals);
+      sizeValue = size.times(principalPrice.price).toNumber();
+
+      const entryPriceRaw = position.collateralAmount
+        .minus(position.downPayment)
+        .dividedBy(position.principal);
+
+      entryPrice = isEntryPriceSolPrice
+        ? entryPriceRaw.times(solTokenPrice.price)
+        : entryPriceRaw;
+
+      markPrice = principalPrice.price;
+
+      liquidationPrice = position.collateralAmount
+        .minus(0.95)
+        .dividedBy(position.principal.plus(interestOwed));
+
+      leverage = position.collateralAmount
+        .dividedBy(position.downPayment)
+        .minus(1);
+
+      side = LeverageSide.short;
+    }
 
     element.addIsoPosition({
       collateralValue: collateralValue.toNumber(),
-      address: isLong
-        ? position.collateral.toString()
-        : position.currency.toString(),
+      address,
       entryPrice: entryPrice.toNumber(),
       leverage: leverage.toNumber(),
-      markPrice: isLong ? collatPrice.price : principalPrice.price,
-      liquidationPrice: 0,
+      markPrice,
+      liquidationPrice: liquidationPrice.toNumber(),
       side,
-      size: position.collateralAmount
-        .dividedBy(10 ** collatPrice.decimals)
-        .toNumber(),
-      sizeValue: collateralValue.toNumber(),
-      pnlValue,
+      size: size.toNumber(),
+      sizeValue,
+      pnlValue: pnlValue.toNumber(),
       ref: position.pubkey.toString(),
+      value: usdValue.toNumber(),
     });
   });
 
