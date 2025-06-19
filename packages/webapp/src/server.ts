@@ -9,10 +9,10 @@ axios.defaults.timeout = 120000;
 
 import { fastifyLogger, logger } from './logger/logger';
 
-console.log = (...args) => logger.info(args.join(' '));
-console.info = (...args) => logger.info(args.join(' '));
-console.warn = (...args) => logger.warn(args.join(' '));
-console.error = (...args) => logger.error(args.join(' '));
+console.log = (...args) => logger.info(...args);
+console.info = (...args) => logger.info(...args);
+console.warn = (...args) => logger.warn(...args);
+console.error = (...args) => logger.error(...args);
 
 import { initPortfolioRoutes } from './routes/portfolio';
 import { scheduleJobs } from './schedulers/job';
