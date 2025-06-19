@@ -1,17 +1,14 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { cpmmProgramId, platformId } from './constants';
-import {
-  ParsedAccount,
-  getParsedMultipleAccountsInfo,
-  tokenAccountStruct,
-} from '../../utils/solana';
+import { ParsedAccount, tokenAccountStruct } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import { Job, JobExecutor } from '../../Job';
 import { Cache } from '../../Cache';
 import { cpmmPoolsStateFilter } from './filters';
 import { PoolState, poolStateStruct } from './structs/cpmm';
 import { getLpTokenSourceRaw } from '../../utils/misc/getLpTokenSourceRaw';
+import { getParsedMultipleAccountsInfoSafe } from '../../utils/solana/getParsedMultipleAccountsInfoWithFixedSize';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -30,9 +27,10 @@ const executor: JobExecutor = async (cache: Cache) => {
     const tokenAccountsPkeys: PublicKey[] = [];
     const mints: Set<string> = new Set();
 
-    cpmmPoolsInfo = await getParsedMultipleAccountsInfo(
+    cpmmPoolsInfo = await getParsedMultipleAccountsInfoSafe(
       client,
       poolStateStruct,
+      poolStateStruct.byteSize,
       allPoolsPubkeys.slice(offset, offset + step).map((res) => res.pubkey)
     );
 
@@ -44,9 +42,10 @@ const executor: JobExecutor = async (cache: Cache) => {
     });
 
     [tokenAccounts, tokenPriceById] = await Promise.all([
-      getParsedMultipleAccountsInfo(
+      getParsedMultipleAccountsInfoSafe(
         client,
         tokenAccountStruct,
+        tokenAccountStruct.byteSize,
         tokenAccountsPkeys
       ),
       cache.getTokenPricesAsMap(Array.from(mints), NetworkId.solana),

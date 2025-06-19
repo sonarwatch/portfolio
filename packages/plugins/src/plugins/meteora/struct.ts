@@ -254,7 +254,7 @@ export type PoolState = {
   curveType: CurveType; */
 };
 
-export const poolStateStruct = new FixableBeetStruct<PoolState>(
+export const poolStateStruct = new BeetStruct<PoolState>(
   [
     ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
     ['lpMint', publicKey],

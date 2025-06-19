@@ -1,14 +1,12 @@
 import { TokenPriceSource } from '@sonarwatch/portfolio-core';
 import { platformId, poolsProgramId } from '../constants';
 import { getClientSolana } from '../../../utils/clients';
-import {
-  ParsedAccount,
-  getParsedMultipleAccountsInfo,
-} from '../../../utils/solana';
+import { ParsedAccount } from '../../../utils/solana';
 import { PoolState, poolStateStruct } from '../struct';
 import { Cache } from '../../../Cache';
 import { Job, JobExecutor } from '../../../Job';
 import { getLpTokenPricesFromPoolsStates } from '../helpers';
+import { getParsedMultipleAccountsInfoSafe } from '../../../utils/solana/getParsedMultipleAccountsInfoWithFixedSize';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -33,9 +31,10 @@ const executor: JobExecutor = async (cache: Cache) => {
   let poolsAccounts: (ParsedAccount<PoolState> | null)[];
 
   for (let offset = 0; offset < poolsPubKeys.length; offset += step) {
-    poolsAccounts = await getParsedMultipleAccountsInfo(
+    poolsAccounts = await getParsedMultipleAccountsInfoSafe(
       client,
       poolStateStruct,
+      poolStateStruct.byteSize,
       poolsPubKeys.slice(offset, offset + step).map((key) => key)
     );
 
