@@ -13,6 +13,7 @@ import { u8ArrayToString } from '../../utils/solana';
 
 import { vaultStateStruct } from './structs/vaults';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
+import { sfToValue } from './helpers/common';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -74,7 +75,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     const totalInvested = investedInReserve.shiftedBy(
       -account.tokenMintDecimals
     );
-    const pendingFees = account.pendingFeesSf.shiftedBy(
+    const pendingFees = sfToValue(account.pendingFeesSf).shiftedBy(
       -account.tokenMintDecimals
     );
 

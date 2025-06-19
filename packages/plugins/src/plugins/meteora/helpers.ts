@@ -4,7 +4,6 @@ import { farmProgramId, platformId } from './constants';
 import { Farm, PoolState } from './struct';
 import { FormattedFarm } from './types';
 import {
-  getParsedMultipleAccountsInfo,
   MintAccount,
   mintAccountStruct,
   ParsedAccount,
@@ -14,6 +13,7 @@ import {
 import { SolanaClient } from '../../utils/clients/types';
 import { Cache } from '../../Cache';
 import { getLpTokenSourceRaw } from '../../utils/misc/getLpTokenSourceRaw';
+import { getParsedMultipleAccountsInfoSafe } from '../../utils/solana/getParsedMultipleAccountsInfoSafe';
 
 export function getStakingAccounts(
   owner: string,
@@ -88,9 +88,10 @@ export async function getLpTokenPricesFromPoolsStates(
   );
 
   // Get all vaults token accounts
-  const tokensAccounts = await getParsedMultipleAccountsInfo(
+  const tokensAccounts = await getParsedMultipleAccountsInfoSafe(
     client,
     tokenAccountStruct,
+    tokenAccountStruct.byteSize,
     Array.from(vaultsLpAddresses)
   );
   if (!tokensAccounts) return [];
@@ -101,9 +102,10 @@ export async function getLpTokenPricesFromPoolsStates(
   });
 
   // Get all mints account
-  const mintsAccounts = await getParsedMultipleAccountsInfo(
+  const mintsAccounts = await getParsedMultipleAccountsInfoSafe(
     client,
     mintAccountStruct,
+    mintAccountStruct.byteSize,
     [
       ...Array.from(lpMints),
       ...Array.from(tokensMint).map((tM) => new PublicKey(tM)),

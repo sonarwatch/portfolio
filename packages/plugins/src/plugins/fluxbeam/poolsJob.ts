@@ -18,6 +18,7 @@ import {
   getCachedDecimalsForToken,
 } from '../../utils/misc/getCachedDecimalsForToken';
 import sleep from '../../utils/misc/sleep';
+import { getParsedMultipleAccountsInfoSafe } from '../../utils/solana/getParsedMultipleAccountsInfoSafe';
 
 const tokenAccountsToExclude = [
   'F5LQTC4G9kBsMKsXtHgf9RqR15k3JB8K3smR73VB9pzY',
@@ -49,9 +50,10 @@ const executor: JobExecutor = async (cache: Cache) => {
     const tempsReserveAccounts: PublicKey[] = [];
     const tempsPoolMints: PublicKey[] = [];
 
-    const tempPools = await getParsedMultipleAccountsInfo(
+    const tempPools = await getParsedMultipleAccountsInfoSafe(
       connection,
       poolStruct,
+      poolStruct.byteSize,
       allPoolsPubkeys.slice(offset, offset + step).map((res) => res.pubkey)
     );
 

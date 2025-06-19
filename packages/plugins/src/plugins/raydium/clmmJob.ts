@@ -9,7 +9,6 @@ import { platformId, raydiumProgram } from './constants';
 import {
   ParsedAccount,
   TokenAccount,
-  getParsedMultipleAccountsInfo,
   tokenAccountStruct,
 } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
@@ -21,6 +20,7 @@ import { clmmPoolsStateFilter } from './filters';
 import { defaultAcceptedPairs } from '../../utils/misc/getLpUnderlyingTokenSource';
 import { minimumReserveValue } from '../../utils/misc/constants';
 import getSourceWeight from '../../utils/misc/getSourceWeight';
+import { getParsedMultipleAccountsInfoSafe } from '../../utils/solana/getParsedMultipleAccountsInfoSafe';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -42,9 +42,10 @@ const executor: JobExecutor = async (cache: Cache) => {
     const tokenAccountsPkeys: PublicKey[] = [];
     const mints: Set<string> = new Set();
 
-    clmmPoolsInfo = await getParsedMultipleAccountsInfo(
+    clmmPoolsInfo = await getParsedMultipleAccountsInfoSafe(
       client,
       poolStateStruct,
+      poolStateStruct.byteSize,
       allPoolsPubkeys.slice(offset, offset + step).map((res) => res.pubkey)
     );
 
@@ -56,9 +57,10 @@ const executor: JobExecutor = async (cache: Cache) => {
     });
 
     [tokenAccounts, tokenPriceById] = await Promise.all([
-      getParsedMultipleAccountsInfo(
+      getParsedMultipleAccountsInfoSafe(
         client,
         tokenAccountStruct,
+        tokenAccountStruct.byteSize,
         tokenAccountsPkeys
       ),
       cache.getTokenPricesAsMap(Array.from(mints), NetworkId.solana),

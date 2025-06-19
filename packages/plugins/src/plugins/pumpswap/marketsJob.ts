@@ -5,13 +5,11 @@ import { platformId, programId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { marketStruct } from './structs';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
-import {
-  getParsedMultipleAccountsInfo,
-  tokenAccountStruct,
-} from '../../utils/solana';
+import { tokenAccountStruct } from '../../utils/solana';
 import { getLpTokenSourceRaw } from '../../utils/misc/getLpTokenSourceRaw';
 import { getCachedDecimalsForToken } from '../../utils/misc/getCachedDecimalsForToken';
 import sleep from '../../utils/misc/sleep';
+import { getParsedMultipleAccountsInfoSafe } from '../../utils/solana/getParsedMultipleAccountsInfoSafe';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
@@ -41,14 +39,16 @@ const executor: JobExecutor = async (cache: Cache) => {
             .flat(),
           NetworkId.solana
         ),
-        getParsedMultipleAccountsInfo(
+        getParsedMultipleAccountsInfoSafe(
           connection,
           tokenAccountStruct,
+          tokenAccountStruct.byteSize,
           marketsBatch.map((market) => market.pool_base_token_account)
         ),
-        getParsedMultipleAccountsInfo(
+        getParsedMultipleAccountsInfoSafe(
           connection,
           tokenAccountStruct,
+          tokenAccountStruct.byteSize,
           marketsBatch.map((market) => market.pool_quote_token_account)
         ),
       ]);
