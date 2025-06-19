@@ -3,16 +3,17 @@ import {
   FetcherReport,
   FetcherResult,
   FetchersResult,
-  NetworkIdType,
-  PortfolioElement,
   formatAddress,
   formatAddressByNetworkId,
   getUsdValueSum,
+  NetworkIdType,
   networks,
-  sortPortfolioElement,
+  PortfolioElement,
   promiseTimeout,
+  sortPortfolioElement,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from './Cache';
+import pLimit from 'p-limit';
 
 const runFetcherTimeout = 60000;
 
@@ -33,6 +34,10 @@ export async function runFetchers(
   fetchers: Fetcher[],
   cache: Cache
 ): Promise<FetchersResult> {
+  const concurrency = process.env['PORTFOLIO_PARALLEL_FETCHERS_LIMIT']
+    ? parseInt(process.env['PORTFOLIO_PARALLEL_FETCHERS_LIMIT'], 10)
+    : 50;
+  const limit = pLimit(concurrency);
   const fOwner = formatAddress(owner, addressSystem);
   const isFetchersValids = fetchers.every(
     (f) => networks[f.networkId].addressSystem === addressSystem
@@ -43,7 +48,9 @@ export async function runFetchers(
     );
 
   const startDate = Date.now();
-  const promises = fetchers.map((f) => runFetcher(fOwner, f, cache));
+  const promises = fetchers.map((f) =>
+    limit(() => runFetcher(fOwner, f, cache))
+  );
   const result = await Promise.allSettled(promises);
 
   const fReports: FetcherReport[] = [];
@@ -57,7 +64,10 @@ export async function runFetchers(
         error: undefined,
       };
     } else {
-      console.error({ error: r.reason }, `Failed to execute fetcher. Address: ${owner} Fetcher: ${fetchers[index].id}`);
+      console.error(
+        { error: r.reason },
+        `Failed to execute fetcher. Address: ${owner} Fetcher: ${fetchers[index].id}`
+      );
       fReport = {
         id: fetchers[index].id,
         status: 'failed',

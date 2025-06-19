@@ -85,7 +85,7 @@ class PortfolioService {
     });
 
     logger.info(
-      `Loading portfolio. Address=${address} Fetchers=${filteredFetchers.length}`
+      `Loading portfolio. Address=${address} Fetchers=${filteredFetchers.length} Limit=${process.env['PORTFOLIO_PARALLEL_FETCHERS_LIMIT']}`
     );
 
     const result = await runFetchers(
