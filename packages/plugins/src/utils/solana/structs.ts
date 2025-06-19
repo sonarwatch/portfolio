@@ -48,6 +48,13 @@ export type TokenAccount = {
   readonly closeAuthority: PublicKey;
 };
 
+export type TokenAccountWithMetadata = TokenAccount & {
+  readonly metadata?: {
+    name: string;
+    symbol: string;
+  };
+};
+
 export const tokenAccountStruct = new BeetStruct<TokenAccount>(
   [
     ['mint', publicKey],

@@ -1,11 +1,11 @@
 import { NetworkId, PortfolioElement } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
-import { whirlpoolPrefix } from './constants';
+import { positionsIdentifiers, whirlpoolPrefix } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import {
   ParsedAccount,
   getParsedMultipleAccountsInfo,
-  TokenAccount,
+  TokenAccountWithMetadata,
 } from '../../utils/solana';
 import { Cache } from '../../Cache';
 import { Whirlpool, positionStruct } from './structs/whirlpool';
@@ -16,10 +16,16 @@ import { getPositionAddress } from './helpers';
 
 export function getOrcaPositions(platformId: string, programId?: PublicKey) {
   return async (
-    tokenAccounts: ParsedAccount<TokenAccount>[],
+    tokenAccounts: ParsedAccount<TokenAccountWithMetadata>[],
     cache: Cache
   ): Promise<PortfolioElement[]> => {
-    const potentialTokens = tokenAccounts.filter((x) => x.amount.isEqualTo(1));
+    const potentialTokens = tokenAccounts.filter(
+      (x) =>
+        x.amount.isEqualTo(1) &&
+        positionsIdentifiers.some((identifier) =>
+          x.metadata?.name.includes(identifier)
+        )
+    );
     if (!potentialTokens.length) return [];
 
     const positionsProgramAddress = potentialTokens.map((x) =>

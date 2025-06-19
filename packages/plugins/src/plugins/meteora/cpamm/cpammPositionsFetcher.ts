@@ -6,7 +6,7 @@ import { getClientSolana } from '../../../utils/clients';
 import {
   getParsedMultipleAccountsInfo,
   ParsedAccount,
-  TokenAccount,
+  TokenAccountWithMetadata,
 } from '../../../utils/solana';
 import {
   derivePositionAddress,
@@ -20,7 +20,7 @@ import { ElementRegistry } from '../../../utils/elementbuilder/ElementRegistry';
 import { getTokenAccountsByOwner } from '../../../utils/solana/getTokenAccountsByOwner';
 
 export const getMeteoraCpammPositions = async (
-  tokenAccounts: ParsedAccount<TokenAccount>[],
+  tokenAccounts: ParsedAccount<TokenAccountWithMetadata>[],
   cache: Cache
 ) => {
   const nftAccounts = tokenAccounts.filter((x) => x.amount.isEqualTo(1));
