@@ -6,9 +6,7 @@ import { getTokenAccountsByOwner } from '../../utils/solana/getTokenAccountsByOw
 import { getHeliumPositions } from './getHeliumPositions';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const potentialTokens = (await getTokenAccountsByOwner(owner)).filter((x) =>
-    x.amount.isEqualTo(1)
-  );
+  const potentialTokens = await getTokenAccountsByOwner(owner);
 
   return getHeliumPositions(potentialTokens, cache);
 };

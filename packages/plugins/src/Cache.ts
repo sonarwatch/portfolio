@@ -205,16 +205,27 @@ export class Cache {
     addresses: string[] | Set<string>,
     networkId: NetworkIdType
   ): Promise<TokenPriceMap> {
-    const tokenPrices = await this.getTokenPrices(
-      [...(addresses instanceof Set ? addresses : new Set(addresses))],
-      networkId
-    ).then(
-      (values) =>
-        values.filter((tokenPrice) => tokenPrice !== undefined) as TokenPrice[]
+    const uniqueAddresses = new Set(
+      addresses instanceof Set ? addresses : addresses
     );
+    if (uniqueAddresses.size === 0) {
+      return new TokenPriceMap(networkId, []);
+    }
+
+    const tokenPriceSources = await this.getTokenPricesSources(
+      [...uniqueAddresses],
+      networkId
+    );
+
+    const tokenPrices = tokenPriceSources
+      .map((sources) =>
+        sources?.length ? tokenPriceFromSources(sources) : undefined
+      )
+      .filter((price): price is TokenPrice => price !== undefined);
+
     return new TokenPriceMap(
       networkId,
-      tokenPrices.map((tokenPrice) => [tokenPrice.address, tokenPrice])
+      tokenPrices.map((price) => [price.address, price])
     );
   }
 

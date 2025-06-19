@@ -2,13 +2,11 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import { clmmPid, platformId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { Cache } from '../../Cache';
-import { getTokenAccountsByOwnerMemo } from '../../utils/solana/getTokenAccountsByOwner';
+import { getTokenAccountsByOwner } from '../../utils/solana/getTokenAccountsByOwner';
 import { getOrcaPositions } from '../orca/getWhirlpoolPositions';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const potentialTokens = (await getTokenAccountsByOwnerMemo(owner)).filter(
-    (x) => x.amount.isEqualTo(1)
-  );
+  const potentialTokens = await getTokenAccountsByOwner(owner);
 
   return getOrcaPositions(platformId, clmmPid)(potentialTokens, cache);
 };

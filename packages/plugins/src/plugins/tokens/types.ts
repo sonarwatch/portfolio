@@ -44,7 +44,7 @@ export type Token = {
   };
 };
 
-export type NftFetcher = (
+export type TokenFetcher = (
   potentialTokens: ParsedAccount<TokenAccount>[],
   cache: Cache
 ) => Promise<PortfolioElement[]>;

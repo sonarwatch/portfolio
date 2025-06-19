@@ -11,17 +11,17 @@ import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { getClientSolana } from '../../utils/clients';
 import { getEditionPubkeyOfNft, getMetadataPubkey } from './helpers';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
-import { getTokenAccountsByOwnerMemo } from '../../utils/solana/getTokenAccountsByOwner';
+import { getTokenAccountsByOwner } from '../../utils/solana/getTokenAccountsByOwner';
+import { ParsedAccount, TokenAccount } from '../../utils/solana';
 
-const resizeExpiration = 1745582400000;
+const resizeExpiration = 1755426940000;
 
-const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
+export const getResizableNfts = async (
+  tokenAccounts: ParsedAccount<TokenAccount>[],
+  cache: Cache
+) => {
   if (Date.now() > resizeExpiration) return [];
   const client = getClientSolana();
-
-  const tokenAccounts = (await getTokenAccountsByOwnerMemo(owner)).filter(
-    (tA) => !tA.amount.isZero()
-  );
 
   const metadataPubkeys: PublicKey[] = [];
   const editionPubkeys: PublicKey[] = [];
@@ -70,6 +70,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   });
 
   return elementRegistry.getElements(cache);
+};
+
+const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
+  const tokenAccounts = await getTokenAccountsByOwner(owner);
+  return getResizableNfts(tokenAccounts, cache);
 };
 
 const fetcher: Fetcher = {

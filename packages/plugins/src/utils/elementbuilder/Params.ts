@@ -5,6 +5,7 @@ import {
   PortfolioElementLabel,
   PortfolioElementTypeType,
   SourceRef,
+  TokenYield,
   UsdValue,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
@@ -82,6 +83,7 @@ export type PortfolioAssetTokenParams = {
   sourceRefs?: SourceRef[];
   ref?: string | PublicKey;
   link?: string;
+  tokenYield?: TokenYield;
 };
 
 export type TradeParams = {
