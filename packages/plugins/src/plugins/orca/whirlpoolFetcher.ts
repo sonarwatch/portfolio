@@ -4,9 +4,13 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { Cache } from '../../Cache';
 import { getOrcaPositions } from './getWhirlpoolPositions';
 import { getTokenAccountsByOwner } from '../../utils/solana/getTokenAccountsByOwner';
+import { getClientSolana } from '../../utils/clients';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const potentialTokens = await getTokenAccountsByOwner(owner);
+  const potentialTokens = await getTokenAccountsByOwner(
+    getClientSolana(),
+    owner
+  );
 
   return getOrcaPositions(platformId)(potentialTokens, cache);
 };

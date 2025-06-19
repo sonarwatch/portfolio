@@ -73,7 +73,7 @@ export const getResizableNfts = async (
 };
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const tokenAccounts = await getTokenAccountsByOwner(owner);
+  const tokenAccounts = await getTokenAccountsByOwner(getClientSolana(), owner);
   return getResizableNfts(tokenAccounts, cache);
 };
 

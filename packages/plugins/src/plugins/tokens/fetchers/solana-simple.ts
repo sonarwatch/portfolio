@@ -4,9 +4,10 @@ import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getTokenAccountsByOwner } from '../../../utils/solana/getTokenAccountsByOwner';
 import { getSolanaTokens } from './solana';
+import { getClientSolana } from '../../../utils/clients';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const tokenAccounts = await getTokenAccountsByOwner(owner);
+  const tokenAccounts = await getTokenAccountsByOwner(getClientSolana(), owner);
 
   return getSolanaTokens(true)(tokenAccounts, cache);
 };

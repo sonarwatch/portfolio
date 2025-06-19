@@ -23,6 +23,7 @@ import { getPicassoPositions } from '../../picasso/getPicassoPositions';
 import { getMeteoraCpammPositions } from '../../meteora/cpamm/cpammPositionsFetcher';
 import { getRaydiumClmmPositions } from '../../raydium/clmmFetcher';
 import { getResizableNfts } from '../../metaplex/resizableNftFetcher';
+import { getClientSolana } from '../../../utils/clients';
 
 export const getSolanaTokens =
   (simple?: boolean) =>
@@ -121,7 +122,7 @@ const tokensFetchers: TokenFetcher[] = [
 ];
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const tokenAccounts = await getTokenAccountsByOwner(owner);
+  const tokenAccounts = await getTokenAccountsByOwner(getClientSolana(), owner);
 
   const results: Promise<PortfolioElement[]>[] = [];
   for (const tokensFetcher of tokensFetchers) {

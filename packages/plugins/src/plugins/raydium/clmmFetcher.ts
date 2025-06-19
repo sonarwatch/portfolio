@@ -161,7 +161,10 @@ export const getRaydiumClmmPositions = async (
 };
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const potentialTokens = await getTokenAccountsByOwner(owner);
+  const potentialTokens = await getTokenAccountsByOwner(
+    getClientSolana(),
+    owner
+  );
 
   return getRaydiumClmmPositions(potentialTokens, cache);
 };

@@ -1,12 +1,15 @@
 import { PublicKey } from '@solana/web3.js';
 import { solanaToken2022PidPk, solanaTokenPidPk } from './constants';
 import { TokenAccount, tokenAccountStruct } from './structs';
-import { getClientSolana } from '../clients';
 import { ParsedAccount } from './types';
 import { MemoryCache } from '../misc/MemoryCache';
+import { SolanaClient } from '../clients/types';
+import { getClientSolana } from '../clients';
 
-export const getTokenAccountsByOwner = async (owner: string) => {
-  const client = getClientSolana();
+export const getTokenAccountsByOwner = async (
+  client: SolanaClient,
+  owner: string
+) => {
   const tokenAccounts = await Promise.all([
     client.getTokenAccountsByOwner(new PublicKey(owner), {
       programId: solanaTokenPidPk,
@@ -26,7 +29,7 @@ export const getTokenAccountsByOwner = async (owner: string) => {
 };
 
 const memoCollection = new MemoryCache<ParsedAccount<TokenAccount>[]>(
-  getTokenAccountsByOwner
+  (owner: string) => getTokenAccountsByOwner(getClientSolana(), owner)
 );
 
 export const getTokenAccountsByOwnerMemo = async (owner: string) =>
