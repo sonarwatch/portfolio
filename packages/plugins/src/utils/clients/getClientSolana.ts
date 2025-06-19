@@ -5,6 +5,7 @@ import { ClientType, NetworkId } from '@sonarwatch/portfolio-core';
 import { getRpcEndpoint } from './constants';
 import { getBasicAuthHeaders } from '../misc/getBasicAuthHeaders';
 import { SolanaClient } from './types';
+import dotenv from 'dotenv';
 
 export type SolanaClientParams = {
   commitment?: Commitment;
@@ -26,6 +27,7 @@ export class SolanaConnectionManager {
   private config: Required<ConnectionManagerConfig>;
 
   constructor(config: ConnectionManagerConfig = {}) {
+    dotenv.config();
     this.config = {
       maxConnections: config.maxConnections ?? 100,
       ttlMs: config.ttlMs ?? 1_800_000, // 30 minutes
