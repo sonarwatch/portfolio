@@ -8,7 +8,7 @@ import { Cache } from '../../Cache';
 import { cpmmPoolsStateFilter } from './filters';
 import { PoolState, poolStateStruct } from './structs/cpmm';
 import { getLpTokenSourceRaw } from '../../utils/misc/getLpTokenSourceRaw';
-import { getParsedMultipleAccountsInfoSafe } from '../../utils/solana/getParsedMultipleAccountsInfoWithFixedSize';
+import { getParsedMultipleAccountsInfoSafe } from '../../utils/solana/getParsedMultipleAccountsInfoSafe';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();

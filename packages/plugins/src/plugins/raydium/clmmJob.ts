@@ -20,7 +20,7 @@ import { clmmPoolsStateFilter } from './filters';
 import { defaultAcceptedPairs } from '../../utils/misc/getLpUnderlyingTokenSource';
 import { minimumReserveValue } from '../../utils/misc/constants';
 import getSourceWeight from '../../utils/misc/getSourceWeight';
-import { getParsedMultipleAccountsInfoSafe } from '../../utils/solana/getParsedMultipleAccountsInfoWithFixedSize';
+import { getParsedMultipleAccountsInfoSafe } from '../../utils/solana/getParsedMultipleAccountsInfoSafe';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();

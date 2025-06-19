@@ -18,7 +18,7 @@ import {
   getCachedDecimalsForToken,
 } from '../../utils/misc/getCachedDecimalsForToken';
 import sleep from '../../utils/misc/sleep';
-import { getParsedMultipleAccountsInfoSafe } from '../../utils/solana/getParsedMultipleAccountsInfoWithFixedSize';
+import { getParsedMultipleAccountsInfoSafe } from '../../utils/solana/getParsedMultipleAccountsInfoSafe';
 
 const tokenAccountsToExclude = [
   'F5LQTC4G9kBsMKsXtHgf9RqR15k3JB8K3smR73VB9pzY',

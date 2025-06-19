@@ -9,7 +9,7 @@ import { tokenAccountStruct } from '../../utils/solana';
 import { getLpTokenSourceRaw } from '../../utils/misc/getLpTokenSourceRaw';
 import { getCachedDecimalsForToken } from '../../utils/misc/getCachedDecimalsForToken';
 import sleep from '../../utils/misc/sleep';
-import { getParsedMultipleAccountsInfoSafe } from '../../utils/solana/getParsedMultipleAccountsInfoWithFixedSize';
+import { getParsedMultipleAccountsInfoSafe } from '../../utils/solana/getParsedMultipleAccountsInfoSafe';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();

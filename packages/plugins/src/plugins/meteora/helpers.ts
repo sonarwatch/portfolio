@@ -13,7 +13,7 @@ import {
 import { SolanaClient } from '../../utils/clients/types';
 import { Cache } from '../../Cache';
 import { getLpTokenSourceRaw } from '../../utils/misc/getLpTokenSourceRaw';
-import { getParsedMultipleAccountsInfoSafe } from '../../utils/solana/getParsedMultipleAccountsInfoWithFixedSize';
+import { getParsedMultipleAccountsInfoSafe } from '../../utils/solana/getParsedMultipleAccountsInfoSafe';
 
 export function getStakingAccounts(
   owner: string,

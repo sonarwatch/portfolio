@@ -6,7 +6,7 @@ import { PoolState, poolStateStruct } from '../struct';
 import { Cache } from '../../../Cache';
 import { Job, JobExecutor } from '../../../Job';
 import { getLpTokenPricesFromPoolsStates } from '../helpers';
-import { getParsedMultipleAccountsInfoSafe } from '../../../utils/solana/getParsedMultipleAccountsInfoWithFixedSize';
+import { getParsedMultipleAccountsInfoSafe } from '../../../utils/solana/getParsedMultipleAccountsInfoSafe';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
