@@ -1,6 +1,6 @@
 {
   "name": "@sonarwatch/portfolio-core",
-  "version": "0.15.14",
+  "version": "0.15.15",
   "type": "commonjs",
   "types": "./src/index.d.ts",
   "dependencies": {
