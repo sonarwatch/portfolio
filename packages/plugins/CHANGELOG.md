@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.36](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.35...plugins-0.15.36) (2025-06-20)
+
+
+### Bug Fixes
+
+* **bidsFetcher:** update totalAmount calculation to use buysidePaymentAmount instead of spotPrice ([5fe425b](https://github.com/sonarwatch/portfolio/commit/5fe425bd61039243b1cfc0f8dcb4f2c8a8ba44f1))
+
+
+### Features
+
+* **plugins:** replace splGovernanceUrl with splGovernancePrograms in realmsData ([f548f8b](https://github.com/sonarwatch/portfolio/commit/f548f8ba026fa4d1112a7419ce4aec24129a9191))
+
+
+
 ## [0.15.35](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.34...plugins-0.15.35) (2025-06-20)
 
 
