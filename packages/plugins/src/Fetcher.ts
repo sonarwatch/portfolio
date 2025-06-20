@@ -28,16 +28,14 @@ export type Fetcher = {
   executor: FetcherExecutor;
 };
 
+let limiter: pLimit.Limit;
+
 export async function runFetchers(
   owner: string,
   addressSystem: AddressSystemType,
   fetchers: Fetcher[],
   cache: Cache
 ): Promise<FetchersResult> {
-  const concurrency = process.env['PORTFOLIO_PARALLEL_FETCHERS_LIMIT']
-    ? parseInt(process.env['PORTFOLIO_PARALLEL_FETCHERS_LIMIT'], 10)
-    : 50;
-  const limit = pLimit(concurrency);
   const fOwner = formatAddress(owner, addressSystem);
   const isFetchersValids = fetchers.every(
     (f) => networks[f.networkId].addressSystem === addressSystem
@@ -47,9 +45,16 @@ export async function runFetchers(
       `Not all fetchers have the right address system: ${addressSystem}`
     );
 
+  if (!limiter) {
+    const concurrency = process.env['PORTFOLIO_PARALLEL_FETCHERS_LIMIT']
+    ? parseInt(process.env['PORTFOLIO_PARALLEL_FETCHERS_LIMIT'], 10)
+    : 50;
+    limiter = pLimit(concurrency);
+  }
+
   const startDate = Date.now();
   const promises = fetchers.map((f) =>
-    limit(() => runFetcher(fOwner, f, cache))
+    limiter(() => runFetcher(fOwner, f, cache))
   );
   const result = await Promise.allSettled(promises);
 
