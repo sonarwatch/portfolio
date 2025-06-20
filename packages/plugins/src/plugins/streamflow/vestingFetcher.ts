@@ -1,5 +1,4 @@
 import {
-  ClientType,
   getUsdValueSum,
   NetworkId,
   PortfolioAsset,
@@ -16,7 +15,7 @@ import { vestingAccountStruct } from './structs';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
+  const client = getClientSolana();
 
   const vestingAccounts = await getParsedProgramAccounts(
     client,

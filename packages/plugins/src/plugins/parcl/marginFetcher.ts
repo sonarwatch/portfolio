@@ -1,5 +1,4 @@
 import {
-  ClientType,
   getUsdValueSum,
   NetworkId,
   PortfolioAsset,
@@ -19,7 +18,7 @@ import { marginAccountFilter } from './filters';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
+  const client = getClientSolana();
   const [accounts, usdcTokenPrice] = await Promise.all([
     getParsedProgramAccounts(
       client,

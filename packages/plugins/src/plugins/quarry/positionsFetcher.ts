@@ -1,5 +1,4 @@
 import {
-  ClientType,
   getUsdValueSum,
   NetworkId,
   PortfolioAssetToken,
@@ -45,7 +44,7 @@ const rewardersMemo = new MemoizedCache<Rewarder[]>(rewardersCacheKey, {
 });
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const connection = getClientSolana({clientType: ClientType.FAST_LIMITED});
+  const connection = getClientSolana();
 
   const [mergeMinerAccounts, minerAccounts] = await Promise.all([
     ParsedGpa.build(connection, mergeMinerStruct, mergeMineProgramId)

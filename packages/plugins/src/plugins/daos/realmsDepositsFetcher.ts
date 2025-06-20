@@ -1,4 +1,4 @@
-import { ClientType, NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -16,7 +16,7 @@ import { RealmData, RegistrarInfo } from './types';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
+  const client = getClientSolana();
   const realmData = await cache.getItem<RealmData>('data', {
     prefix: platformId,
     networkId: NetworkId.solana,

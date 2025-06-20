@@ -1,5 +1,4 @@
 import {
-  ClientType,
   getUsdValueSum,
   NetworkId,
   PortfolioAsset,
@@ -58,7 +57,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 };
 
 export async function getStakeAccounts(owner: string, cache: Cache) {
-  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED});
+  const client = getClientSolana();
 
   const stakingPools = await cache.getItem<PublicKey[]>(stakingPoolsCacheKey, {
     prefix: cachePrefix,

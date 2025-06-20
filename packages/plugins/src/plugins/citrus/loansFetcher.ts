@@ -1,5 +1,4 @@
 import {
-  ClientType,
   collectibleFreezedTag,
   NetworkId,
   solanaNativeAddress,
@@ -37,7 +36,7 @@ const collectionsMemo = new MemoizedCache<
 );
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const connection = getClientSolana({clientType: ClientType.FAST_LIMITED});
+  const connection = getClientSolana();
 
   const allAccounts = (
     await Promise.all([

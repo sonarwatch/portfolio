@@ -4,7 +4,7 @@ import {
   getTransactions,
   parseTransaction,
 } from '@sonarwatch/tx-parser';
-import { Claim, ClientType } from '@sonarwatch/portfolio-core';
+import { Claim } from '@sonarwatch/portfolio-core';
 import { getClientSolana } from '../../clients';
 
 export const getClaimTransactions = async (
@@ -12,7 +12,7 @@ export const getClaimTransactions = async (
   claimStatusPk: PublicKey | string,
   mint: PublicKey | string
 ): Promise<Claim[]> => {
-  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
+  const client = getClientSolana();
 
   const signatures = await getSignatures(client, claimStatusPk.toString());
   const transactions = await getTransactions(

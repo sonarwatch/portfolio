@@ -1,5 +1,4 @@
 import {
-  ClientType,
   getUsdValueSum,
   NetworkId,
   PortfolioAsset,
@@ -29,7 +28,7 @@ import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 const thirtyDays = 30 * 1000 * 60 * 60 * 24;
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
+  const client = getClientSolana();
 
   const oldLpAccount = await getParsedAccountInfo(
     client,

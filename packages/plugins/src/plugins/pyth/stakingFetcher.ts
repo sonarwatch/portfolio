@@ -1,7 +1,7 @@
 import {
   ClientType,
   NetworkId,
-  PortfolioElementType
+  PortfolioElementType,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';

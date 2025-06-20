@@ -1,9 +1,4 @@
-import {
-  aprToApy,
-  ClientType,
-  LeverageSide,
-  NetworkId,
-} from '@sonarwatch/portfolio-core';
+import { aprToApy, LeverageSide, NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
@@ -57,7 +52,7 @@ export const spotMarketsMemo = new MemoizedCache<SpotMarketEnhanced[]>(
 );
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
+  const client = getClientSolana();
 
   const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 

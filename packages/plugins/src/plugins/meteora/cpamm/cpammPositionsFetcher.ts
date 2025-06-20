@@ -1,4 +1,4 @@
-import { ClientType, NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { platformId } from '../constants';
@@ -27,7 +27,7 @@ export const getMeteoraCpammPositions = async (
 
   if (!nftAccounts.length) return [];
 
-  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
+  const client = getClientSolana();
 
   const pdas = nftAccounts
     .map((account) => (account ? derivePositionAddress(account.mint) : []))

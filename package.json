@@ -10,7 +10,7 @@
     "nx:version:core": "nx run core:version --releaseAs=patch",
     "nx:version:tx-parser": "nx run tx-parser:version --releaseAs=patch",
     "postversion": "git push && git push --tags",
-    "test": "npx nx run plugins:run-fetcher armada-staking-program FjaZrs2xszaQovAPdMgFvjVGxEdgAu6J5Z5m7jpvgcwH"
+    "test": "npx nx run plugins:run-fetcher meteora-dlmm-positions 4ja2N12Zczh9K25zGFTfao6yPdTZSfA5Bw4QueSmQCYJ"
   },
   "engines": {
     "node": ">18"

@@ -1,7 +1,6 @@
 import {
   AddressSystem,
   assertAddress,
-  ClientType,
   EvmNetworkIdType,
   getAddressSystemFromNetworkId,
   NetworkId,
@@ -28,10 +27,7 @@ export async function hasTransactions(
     case NetworkId.aptos:
       return hasTransactionsAptos(address, getClientAptos());
     case NetworkId.solana:
-      return hasTransactionsSolana(
-        address,
-        getClientSolana({ clientType: ClientType.FAST_LIMITED })
-      );
+      return hasTransactionsSolana(address, getClientSolana());
     default:
       throw new Error(`Network ${networkId} not supported`);
   }

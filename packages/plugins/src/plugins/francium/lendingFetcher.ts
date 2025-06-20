@@ -1,4 +1,4 @@
-import { ClientType, NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
@@ -10,7 +10,7 @@ import { TOKENS } from './tokens';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
+  const client = getClientSolana();
 
   const [rewardsList, balanceList] = await Promise.all([
     getUserRewardPosition(client, new PublicKey(owner)),

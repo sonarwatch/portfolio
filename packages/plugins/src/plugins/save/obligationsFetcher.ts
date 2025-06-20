@@ -1,4 +1,4 @@
-import { ClientType, NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { marketsKey, pid, platformId, reservesPrefix } from './constants';
@@ -9,7 +9,7 @@ import { getClientSolana } from '../../utils/clients';
 import { Obligation, obligationStruct } from './structs';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
+  const client = getClientSolana();
 
   const obligationsRaw = await getParsedProgramAccounts(
     client,

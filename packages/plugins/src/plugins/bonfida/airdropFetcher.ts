@@ -1,5 +1,4 @@
 import {
-  ClientType,
   NetworkId,
   PortfolioElementMultiple,
   PortfolioElementType,
@@ -28,7 +27,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     .catch(() => null);
   if (!apiRes || apiRes.data.error) return [];
 
-  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
+  const client = getClientSolana();
   const claimStatus = await getParsedProgramAccounts(
     client,
     claimStatusStruct,

@@ -1,5 +1,4 @@
 import {
-  ClientType,
   getUsdValueSum,
   NetworkId,
   PortfolioAsset,
@@ -31,7 +30,7 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { Category, Token } from './types';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana({ clientType: ClientType.FAST_LIMITED });
+  const client = getClientSolana();
 
   const [offers, buyOrders, sellOrders, tokensInfo] = await Promise.all([
     getParsedProgramAccounts(client, offerStruct, pid, offerFilter(owner)),

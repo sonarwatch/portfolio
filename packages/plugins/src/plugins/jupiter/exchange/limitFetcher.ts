@@ -1,5 +1,4 @@
 import {
-  ClientType,
   getUsdValueSum,
   NetworkId,
   PortfolioElementTrade,
@@ -24,7 +23,6 @@ import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana({
     commitment: 'processed',
-    clientType: ClientType.FAST_LIMITED,
   });
 
   const [ordersAccV1, ordersAccV2] = await Promise.all([
