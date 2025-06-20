@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.35](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.34...plugins-0.15.35) (2025-06-20)
+
+
+### Features
+
+* **depositsFetcher:** update allocation handling to use usdcSolanaMint and limit regularAllocations to first item ([9c4faf7](https://github.com/sonarwatch/portfolio/commit/9c4faf7c6f5f32f273d1fa245ee085b5e9ed79d8))
+* **plugins:** implement getParsedMultipleAccountsInfoSafe for improved account parsing ([9aa4101](https://github.com/sonarwatch/portfolio/commit/9aa41012f7e50544da8eee30b327fc9868ce0d92))
+
+
+
 ## [0.15.34](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.33...plugins-0.15.34) (2025-06-18)
 
 
