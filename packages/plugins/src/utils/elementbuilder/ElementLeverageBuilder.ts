@@ -1,4 +1,5 @@
 import {
+  fixUsdValue,
   getUsdValueSum,
   getUsdValueSumStrict,
   NetworkIdType,
@@ -102,7 +103,7 @@ export class ElementLeverageBuilder extends ElementBuilder {
       data: {
         isolated: {
           positions: isoPositions,
-          value: isoValue,
+          value: fixUsdValue(isoValue),
         },
         cross: {
           positions: crossPositions,
@@ -110,7 +111,7 @@ export class ElementLeverageBuilder extends ElementBuilder {
           collateralValue: getUsdValueSum(
             crossCollateralAssets.map((a) => a.value)
           ),
-          value: crossValue,
+          value: fixUsdValue(crossValue),
           leverage: crossLeverage,
         },
         value,

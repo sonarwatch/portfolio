@@ -1,4 +1,5 @@
 import {
+  fixUsdValue,
   NetworkIdType,
   PortfolioAssetGeneric,
   PortfolioAssetType,
@@ -38,7 +39,7 @@ export class AssetGenericBuilder extends AssetBuilder {
     return {
       type: PortfolioAssetType.generic,
       networkId,
-      value: value.isZero() ? null : value.toNumber(),
+      value: value.isZero() ? null : fixUsdValue(value.toNumber()),
       name: this.params.name,
       data: {
         address: this.params.address

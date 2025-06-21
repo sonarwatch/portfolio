@@ -47,3 +47,4 @@ export * from './isPortfolioElement';
 export * from './getIsVerifiedFromAsset';
 export * from './TokenPriceMap';
 export * from './applyPricesToElements';
+export * from './fixUsdValue';
