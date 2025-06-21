@@ -38,6 +38,7 @@ export type PersonalPositionState = {
   tokenFeesOwed0: BigNumber;
   tokenFeesOwed1: BigNumber;
   rewardInfos: PositionRewardInfo[];
+  recent_epoch: BigNumber;
   padding: BigNumber[];
 };
 
@@ -56,7 +57,8 @@ export const personalPositionStateStruct =
       ['tokenFeesOwed0', u64],
       ['tokenFeesOwed1', u64],
       ['rewardInfos', uniformFixedSizeArray(positionRewardInfoStruct, 3)],
-      ['padding', uniformFixedSizeArray(u64, 8)],
+      ['recent_epoch', u64],
+      ['padding', uniformFixedSizeArray(u64, 7)],
     ],
     (args) => args as PersonalPositionState
   );
