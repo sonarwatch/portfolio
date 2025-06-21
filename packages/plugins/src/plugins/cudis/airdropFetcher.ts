@@ -27,7 +27,6 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
     ParsedGpa.build(getClientSolana(), airdropProofStruct, airdropPid)
       .addFilter('discriminator', [7, 25, 94, 15, 208, 170, 4, 103])
       .addFilter('user', new PublicKey(owner))
-      .debug()
       .run(),
   ]);
 

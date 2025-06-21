@@ -4,9 +4,9 @@ import { getClientSolana } from '../../utils/clients';
 import {
   getParsedMultipleAccountsInfo,
   ParsedAccount,
-  TokenAccount,
+  TokenAccountWithMetadata,
 } from '../../utils/solana';
-import { stakeRegistryId } from './constants';
+import { nftIdentifier, stakeRegistryId } from './constants';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { Cache } from '../../Cache';
 import { positionDataStruct } from './structs';
@@ -14,9 +14,13 @@ import { heliumPlatformId } from '../daos/constants';
 import { getLockedUntil } from '../daos/helpers';
 
 export const getHeliumPositions = async (
-  potentialTokens: ParsedAccount<TokenAccount>[],
+  tokenAccounts: ParsedAccount<TokenAccountWithMetadata>[],
   cache: Cache
 ) => {
+  const potentialTokens = tokenAccounts.filter(
+    (x) => x.amount.isEqualTo(1) && x.metadata?.name === nftIdentifier
+  );
+
   if (!potentialTokens.length) return [];
 
   const positionsProgramAddress = potentialTokens.map(

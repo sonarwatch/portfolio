@@ -1,6 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import { PortfolioAssetCollectible } from '@sonarwatch/portfolio-core';
-import { restakingProgramId } from './constants';
+import { nftIdentifier, restakingProgramId } from './constants';
 
 export const getPositionPublicKey = (ei: PublicKey) => {
   const [vaultParamsPDA] = PublicKey.findProgramAddressSync(
@@ -11,4 +11,4 @@ export const getPositionPublicKey = (ei: PublicKey) => {
 };
 
 export const isPicassoPosition = (asset: PortfolioAssetCollectible): boolean =>
-  asset.name === 'Composable Restaking Position';
+  asset.name === nftIdentifier;

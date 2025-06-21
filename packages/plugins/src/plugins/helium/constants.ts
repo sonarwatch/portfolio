@@ -8,3 +8,5 @@ export const programId = new PublicKey(
 export const stakeRegistryId = new PublicKey(
   'hvsrNC3NKbcryqDs2DocYHZ9yPKEVzdSjQG6RVtK1s8'
 );
+
+export const nftIdentifier = 'Voting Escrow Token Position';

@@ -3,15 +3,8 @@ import BigNumber from 'bignumber.js';
 import BN from 'bn.js';
 import Decimal from 'decimal.js';
 
-import { PortfolioAssetCollectible } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
-import { positionsIdentifiers, whirlpoolProgram } from './constants';
-
-export function isAnOrcaPosition(nft: PortfolioAssetCollectible): boolean {
-  return positionsIdentifiers.some((identifier) =>
-    nft.name?.includes(identifier)
-  );
-}
+import { whirlpoolProgram } from './constants';
 
 export function signedShiftRight(n0: BN, shiftBy: number, bitWidth: number) {
   const twoN0 = n0.toTwos(bitWidth).shrn(shiftBy);

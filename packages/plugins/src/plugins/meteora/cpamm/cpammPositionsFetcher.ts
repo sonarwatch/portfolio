@@ -3,7 +3,11 @@ import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { platformId } from '../constants';
 import { getClientSolana } from '../../../utils/clients';
-import { getParsedMultipleAccountsInfo } from '../../../utils/solana';
+import {
+  getParsedMultipleAccountsInfo,
+  ParsedAccount,
+  TokenAccountWithMetadata,
+} from '../../../utils/solana';
 import {
   derivePositionAddress,
   getAmountAFromLiquidityDelta,
@@ -13,14 +17,17 @@ import {
 import { poolStruct, positionStruct } from './structs';
 import { Rounding } from '../dlmm/dlmmHelper';
 import { ElementRegistry } from '../../../utils/elementbuilder/ElementRegistry';
-import { getTokenAccountsByOwnerMemo } from '../../../utils/solana/getTokenAccountsByOwner';
+import { getTokenAccountsByOwner } from '../../../utils/solana/getTokenAccountsByOwner';
 
-const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
+export const getMeteoraCpammPositions = async (
+  tokenAccounts: ParsedAccount<TokenAccountWithMetadata>[],
+  cache: Cache
+) => {
+  const nftAccounts = tokenAccounts.filter((x) => x.amount.isEqualTo(1));
+
+  if (!nftAccounts.length) return [];
+
   const client = getClientSolana();
-
-  const nftAccounts = (await getTokenAccountsByOwnerMemo(owner)).filter((x) =>
-    x.amount.isEqualTo(1)
-  );
 
   const pdas = nftAccounts
     .map((account) => (account ? derivePositionAddress(account.mint) : []))
@@ -97,6 +104,15 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   }
 
   return registry.getElements(cache);
+};
+
+const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
+  const potentialTokens = await getTokenAccountsByOwner(
+    getClientSolana(),
+    owner
+  );
+
+  return getMeteoraCpammPositions(potentialTokens, cache);
 };
 
 const fetcher: Fetcher = {

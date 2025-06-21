@@ -4,10 +4,12 @@ import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { Cache } from '../../Cache';
 import { getTokenAccountsByOwner } from '../../utils/solana/getTokenAccountsByOwner';
 import { getHeliumPositions } from './getHeliumPositions';
+import { getClientSolana } from '../../utils/clients';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const potentialTokens = (await getTokenAccountsByOwner(owner)).filter((x) =>
-    x.amount.isEqualTo(1)
+  const potentialTokens = await getTokenAccountsByOwner(
+    getClientSolana(),
+    owner
   );
 
   return getHeliumPositions(potentialTokens, cache);

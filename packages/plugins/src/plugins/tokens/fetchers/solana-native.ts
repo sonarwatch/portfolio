@@ -1,7 +1,5 @@
 import {
   NetworkId,
-  PortfolioElementMultiple,
-  PortfolioElementType,
   solanaNetwork,
   walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
@@ -9,40 +7,29 @@ import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { getClientSolana } from '../../../utils/clients';
-import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
-
-const solFactor = 10 ** solanaNetwork.native.decimals;
+import { ElementRegistry } from '../../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
-  const ownerPubKey = new PublicKey(owner);
 
-  const amountLamports = await client.getBalance(ownerPubKey);
-  if (amountLamports === 0) return [];
+  const amount = await client.getBalance(new PublicKey(owner));
+  if (amount === 0) return [];
 
-  const amount = amountLamports / solFactor;
-  const solTokenPrice = await cache.getTokenPrice(
-    solanaNetwork.native.address,
-    NetworkId.solana
-  );
-
-  const asset = tokenPriceToAssetToken(
-    solanaNetwork.native.address,
-    amount,
+  const elementRegistry = new ElementRegistry(
     NetworkId.solana,
-    solTokenPrice
+    walletTokensPlatformId
   );
-  const element: PortfolioElementMultiple = {
-    type: PortfolioElementType.multiple,
-    networkId: NetworkId.solana,
-    platformId: walletTokensPlatformId,
+
+  const element = elementRegistry.addElementMultiple({
     label: 'Wallet',
-    value: asset.value,
-    data: {
-      assets: [asset],
-    },
-  };
-  return [element];
+  });
+
+  element.addAsset({
+    address: solanaNetwork.native.address,
+    amount,
+  });
+
+  return elementRegistry.getElements(cache);
 };
 
 const fetcher: Fetcher = {
