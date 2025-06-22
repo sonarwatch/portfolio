@@ -1,7 +1,7 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ClientType, NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../../Cache';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
-import { feeVaultsKey, stakeForFeeProgramId, platformId } from '../constants';
+import { feeVaultsKey, platformId, stakeForFeeProgramId } from '../constants';
 import { getClientSolana } from '../../../utils/clients';
 import { ElementRegistry } from '../../../utils/elementbuilder/ElementRegistry';
 import { getParsedProgramAccounts, ParsedAccount } from '../../../utils/solana';
@@ -18,7 +18,7 @@ const feeVaultsMemo = new MemoizedCache<ParsedAccount<FeeVault>[]>(
 );
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({clientType: ClientType.SLOW});
 
   const stakeEscrows = await getParsedProgramAccounts(
     client,

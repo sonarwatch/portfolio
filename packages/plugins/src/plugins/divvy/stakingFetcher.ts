@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ClientType, NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { divvyProgram, dvyMint, platformId } from './constants';
@@ -9,7 +9,7 @@ import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 import { minerStruct } from './structs';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const connection = getClientSolana();
+  const connection = getClientSolana({ clientType: ClientType.SLOW });
 
   const accounts = await ParsedGpa.build(connection, minerStruct, divvyProgram)
     .addFilter('accountDiscriminator', [223, 113, 15, 54, 123, 122, 140, 100])

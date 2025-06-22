@@ -1,10 +1,11 @@
 import {
+  ClientType,
+  getElementLendingValues,
   NetworkId,
   PortfolioAsset,
   PortfolioElement,
   PortfolioElementType,
   Yield,
-  getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
@@ -19,7 +20,7 @@ import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 import { mSOLMint } from '../marinade/constants';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({ clientType: ClientType.SLOW });
   const pda = getPda(new PublicKey(owner));
   const account = await getParsedAccountInfo(client, marginStruct, pda);
 

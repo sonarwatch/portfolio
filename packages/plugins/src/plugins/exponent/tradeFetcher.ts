@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ClientType, NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { exponentCoreProgram, marketsMemo, platformId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -8,7 +8,7 @@ import { getClientSolana } from '../../utils/clients';
 import { yieldTokenStruct } from './structs';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const connection = getClientSolana();
+  const connection = getClientSolana({ clientType: ClientType.SLOW });
 
   const accounts = await getParsedProgramAccounts(
     connection,

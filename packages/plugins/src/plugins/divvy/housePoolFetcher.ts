@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ClientType, NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { divvyProgram, houseCacheKey, platformId } from './constants';
@@ -24,7 +24,7 @@ const housesMemo = new MemoizedCache<
 );
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const connection = getClientSolana();
+  const connection = getClientSolana({ clientType: ClientType.SLOW });
 
   const accounts = await ParsedGpa.build(
     connection,

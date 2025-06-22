@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ClientType, NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -32,7 +32,7 @@ const marketsMemo = new MemoizedCache<
 );
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({clientType: ClientType.SLOW});
 
   const accounts = await ParsedGpa.build(client, obligationStruct, programId)
     .addFilter('accountDiscriminator', [168, 206, 141, 106, 88, 76, 172, 167])

@@ -1,4 +1,4 @@
-import { Claim, NetworkId } from '@sonarwatch/portfolio-core';
+import { Claim, ClientType, NetworkId } from '@sonarwatch/portfolio-core';
 import axios, { AxiosResponse } from 'axios';
 import {
   AirdropFetcher,
@@ -37,7 +37,7 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
         ],
       });
 
-    const client = getClientSolana();
+    const client = getClientSolana({ clientType: ClientType.SLOW });
     const claimStatus = deriveClaimStatus(
       owner,
       res.data.distributorPubkey,

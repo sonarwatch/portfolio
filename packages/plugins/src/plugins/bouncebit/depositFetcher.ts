@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ClientType, NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import axios from 'axios';
 import { Cache } from '../../Cache';
@@ -11,7 +11,7 @@ import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { Reward } from './types';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const connection = getClientSolana();
+  const connection = getClientSolana({ clientType: ClientType.SLOW });
 
   const openRequests = await getParsedMultipleAccountsInfo(
     connection,

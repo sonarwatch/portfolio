@@ -1,4 +1,5 @@
 import {
+  ClientType,
   getUsdValueSum,
   NetworkId,
   PortfolioAssetToken,
@@ -13,14 +14,17 @@ import {
   getParsedProgramAccounts,
   tokenAccountStruct,
 } from '../../../utils/solana';
-import { platformId, dcaProgramId } from './constants';
+import { dcaProgramId, platformId } from './constants';
 import { dcaStruct } from './structs';
 import { DCAFilters } from './filters';
 import { getCachedDecimalsForToken } from '../../../utils/misc/getCachedDecimalsForToken';
 import tokenPriceToAssetToken from '../../../utils/misc/tokenPriceToAssetToken';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana({ commitment: 'processed' });
+  const client = getClientSolana({
+    commitment: 'processed',
+    clientType: ClientType.SLOW,
+  });
 
   const accounts = await getParsedProgramAccounts(
     client,

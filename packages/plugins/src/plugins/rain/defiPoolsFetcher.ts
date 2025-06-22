@@ -1,15 +1,15 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ClientType, NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, defiLendingProgramId } from './constants';
+import { defiLendingProgramId, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { defiLoanStruct, LoanStatus, poolStruct } from './structs';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({ clientType: ClientType.SLOW });
 
   const pools = await ParsedGpa.build(client, poolStruct, defiLendingProgramId)
     .addFilter('accountDiscriminator', [241, 154, 109, 4, 17, 177, 109, 188])

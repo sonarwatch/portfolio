@@ -1,4 +1,4 @@
-import { Claim, NetworkId } from '@sonarwatch/portfolio-core';
+import { Claim, ClientType, NetworkId } from '@sonarwatch/portfolio-core';
 import { platformId, snsAirdropStatics, snsMint } from './constants';
 import {
   AirdropFetcher,
@@ -29,7 +29,9 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
   }
 
   const claimStatus = getClaimStatusPda(owner);
-  const claimAccount = await getClientSolana().getAccountInfo(claimStatus);
+  const claimAccount = await getClientSolana({
+    clientType: ClientType.SLOW,
+  }).getAccountInfo(claimStatus);
 
   let claims: Claim[] = [];
   if (claimAccount) {

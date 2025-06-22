@@ -1,15 +1,15 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ClientType, NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, defiLendingProgramId } from './constants';
+import { defiLendingProgramId, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 import { defiLoanStruct, LoanStatus } from './structs';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({ clientType: ClientType.SLOW });
 
   const loans = await ParsedGpa.build(
     client,

@@ -1,4 +1,5 @@
 import {
+  ClientType,
   collectibleFreezedTag,
   NetworkId,
   solanaNativeAddress,
@@ -7,14 +8,14 @@ import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId, nftLendingProgramId, collectionsMemo } from './constants';
+import { collectionsMemo, nftLendingProgramId, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { LoanStatus, nftLoanStruct, poolStruct } from './structs';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({ clientType: ClientType.SLOW });
 
   const pools = await ParsedGpa.build(client, poolStruct, nftLendingProgramId)
     .addFilter('accountDiscriminator', [241, 154, 109, 4, 17, 177, 109, 188])

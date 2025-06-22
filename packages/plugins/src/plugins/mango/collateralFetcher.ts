@@ -1,20 +1,21 @@
 import {
+  aprToApy,
+  ClientType,
+  getElementLendingValues,
   NetworkId,
   PortfolioAsset,
   PortfolioElement,
   PortfolioElementType,
   TokenPrice,
   Yield,
-  aprToApy,
-  getElementLendingValues,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
+  banksKey,
   mangoV4Pid,
   platformId,
-  banksKey,
   yieldFanPlatformId,
 } from './constants';
 import { getClientSolana } from '../../utils/clients';
@@ -26,7 +27,7 @@ import runInBatch from '../../utils/misc/runInBatch';
 import { BankEnhanced } from './types';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({ clientType: ClientType.SLOW });
   const userAccounts = await getParsedProgramAccounts(
     client,
     mangoAccountStruct,

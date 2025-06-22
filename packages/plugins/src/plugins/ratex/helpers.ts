@@ -17,12 +17,13 @@ import {
   userStruct,
 } from './structs';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
+import { ClientType } from '@sonarwatch/portfolio-core';
 
 export const getUserStatsByProgram = async (
   programs: Program[],
   owner: string
 ): Promise<Map<string, UserStats>> => {
-  const connection = getClientSolana();
+  const connection = getClientSolana({ clientType: ClientType.SLOW });
 
   const userStatsPdas = programs.map((program) => {
     const [userStatsPda] = PublicKey.findProgramAddressSync(

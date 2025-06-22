@@ -1,4 +1,4 @@
-import { apyToApr, NetworkId } from '@sonarwatch/portfolio-core';
+import { apyToApr, ClientType, NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { earnVaultsKey, platformId } from './constants';
@@ -19,7 +19,7 @@ const earnVaultsMemo = new MemoizedCache<ParsedAccount<VaultEarn>[]>(
 );
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({ clientType: ClientType.SLOW });
 
   const accounts = await getLenders(client, owner);
   if (!accounts) return [];

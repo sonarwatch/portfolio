@@ -1,4 +1,5 @@
 import {
+  ClientType,
   NetworkId,
   PortfolioElementType,
   solanaNativeAddress,
@@ -16,7 +17,7 @@ import { poolStruct } from './struct';
 import tokenPriceToAssetToken from '../../utils/misc/tokenPriceToAssetToken';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({ clientType: ClientType.SLOW });
 
   const bidsAccounts = await getParsedProgramAccounts(
     client,

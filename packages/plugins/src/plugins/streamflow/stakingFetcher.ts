@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ClientType, NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -16,7 +16,7 @@ const stakePoolsMemo = new MemoizedCache<StakePoolInfo[]>('stakePools', {
 });
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({clientType: ClientType.SLOW});
   const stakePools = await stakePoolsMemo.getItem(cache);
   if (stakePools.length === 0) throw new Error('No stakePools found in cache');
 

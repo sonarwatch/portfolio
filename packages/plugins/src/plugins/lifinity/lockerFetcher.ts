@@ -1,7 +1,7 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { ClientType, NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { LifinityLockerProgramId, platformId, lfntyMint } from './constants';
+import { lfntyMint, LifinityLockerProgramId, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getParsedProgramAccounts } from '../../utils/solana';
 import { escrowStruct } from './structs';
@@ -9,7 +9,7 @@ import { escrowFilter } from './filters';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({ clientType: ClientType.SLOW });
 
   const accounts = await getParsedProgramAccounts(
     client,

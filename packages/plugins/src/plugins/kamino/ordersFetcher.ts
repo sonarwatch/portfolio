@@ -1,4 +1,8 @@
-import { NetworkId, solanaNativeAddress } from '@sonarwatch/portfolio-core';
+import {
+  ClientType,
+  NetworkId,
+  solanaNativeAddress,
+} from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { limitOrderProgramId, platformId } from './constants';
@@ -8,7 +12,7 @@ import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { orderStruct, Status } from './structs/order';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({ clientType: ClientType.SLOW });
 
   const accounts = await getParsedProgramAccounts(
     client,

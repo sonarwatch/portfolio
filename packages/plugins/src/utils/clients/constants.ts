@@ -51,7 +51,8 @@ export function getRpcEndpoints(): Record<NetworkIdType, RpcEndpoint> {
 }
 
 const endpointIndices: Partial<Record<NetworkIdType, number>> = {};
-const fallBackEndpointIndices: Partial<Record<NetworkIdType, number>> = {};
+const fastEndpointIndices: Partial<Record<NetworkIdType, number>> = {};
+const slowEndpointIndices: Partial<Record<NetworkIdType, number>> = {};
 
 export function getRpcEndpoint(
   networkId: NetworkIdType,
@@ -65,7 +66,13 @@ export function getRpcEndpoint(
     process.env['PORTFOLIO_SOLANA_FAST_LIMITED_RPC']
   ) {
     endpoint = { url: process.env['PORTFOLIO_SOLANA_FAST_LIMITED_RPC'] };
-    indices = fallBackEndpointIndices;
+    indices = fastEndpointIndices;
+  } else if (
+    clientType === ClientType.SLOW &&
+    process.env['PORTFOLIO_SOLANA_SLOW_RPC']
+  ) {
+    endpoint = { url: process.env['PORTFOLIO_SOLANA_SLOW_RPC'] };
+    indices = slowEndpointIndices;
   }
 
   if (!endpoint.url.includes(',')) {

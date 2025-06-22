@@ -1,4 +1,4 @@
-import { apyToApr, NetworkId } from '@sonarwatch/portfolio-core';
+import { apyToApr, ClientType, NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { exponentCoreProgram, marketsMemo, platformId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -9,7 +9,7 @@ import { lpPositionStruct } from './structs';
 import { calculateWeightedAPY } from './helpers';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const connection = getClientSolana();
+  const connection = getClientSolana({ clientType: ClientType.SLOW });
 
   const accounts = await getParsedProgramAccounts(
     connection,

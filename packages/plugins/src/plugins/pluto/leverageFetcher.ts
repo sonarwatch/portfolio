@@ -1,4 +1,4 @@
-import { apyToApr, NetworkId } from '@sonarwatch/portfolio-core';
+import { apyToApr, ClientType, NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import {
@@ -32,7 +32,7 @@ const leverageVaultsApiMemo = new MemoizedCache<LeverageVaultAddress[]>(
 );
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const client = getClientSolana();
+  const client = getClientSolana({ clientType: ClientType.SLOW });
 
   const accounts = await getLeverageObligations(client, owner);
   if (!accounts.length) return [];

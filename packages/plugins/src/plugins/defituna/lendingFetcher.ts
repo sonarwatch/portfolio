@@ -1,4 +1,4 @@
-import { apyToApr, NetworkId } from '@sonarwatch/portfolio-core';
+import { apyToApr, ClientType, NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { defiTunaProgram, platformId, poolsMemo } from './constants';
@@ -9,7 +9,7 @@ import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { lendingStruct } from './structs';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const connection = getClientSolana();
+  const connection = getClientSolana({ clientType: ClientType.SLOW});
 
   const accounts = await getParsedProgramAccounts(
     connection,

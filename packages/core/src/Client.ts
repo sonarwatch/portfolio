@@ -8,5 +8,6 @@ export type RpcEndpoint = {
 
 export enum ClientType {
   NORMAL = 'NORMAL',
-  FAST_LIMITED = 'FAST_LIMITED'
+  FAST_LIMITED = 'FAST_LIMITED',
+  SLOW = 'SLOW',
 }
