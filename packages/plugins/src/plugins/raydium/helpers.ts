@@ -26,6 +26,7 @@ const U64Resolution = 64;
 const MaxUint128 = Q128.subn(1);
 const MIN_TICK = -307200;
 const MAX_TICK = -MIN_TICK;
+const U64_IGNORE_RANGE = new BN('18446744073700000000');
 
 function signedRightShift(n0: BN, shiftBy: number, bitWidth: number) {
   const twoN0 = n0.toTwos(bitWidth).shrn(shiftBy);
@@ -471,7 +472,7 @@ function getfeeGrowthInside(
   >,
   tickLowerState: Tick,
   tickUpperState: Tick
-): { feeGrowthInsideX64A: BN; feeGrowthInsideBX64: BN } {
+): { feeGrowthInsideX64A: BN; feeGrowthInsideX64B: BN } {
   let feeGrowthBelowX64A = new BN(0);
   let feeGrowthBelowX64B = new BN(0);
   if (poolState.tickCurrent >= tickLowerState.tick) {
@@ -504,11 +505,11 @@ function getfeeGrowthInside(
     wrappingSubU128(poolState.feeGrowthGlobalX64A, feeGrowthBelowX64A),
     feeGrowthAboveX64A
   );
-  const feeGrowthInsideBX64 = wrappingSubU128(
+  const feeGrowthInsideX64B = wrappingSubU128(
     wrappingSubU128(poolState.feeGrowthGlobalX64B, feeGrowthBelowX64B),
     feeGrowthAboveX64B
   );
-  return { feeGrowthInsideX64A, feeGrowthInsideBX64 };
+  return { feeGrowthInsideX64A, feeGrowthInsideX64B };
 }
 
 function GetPositionFeesV2(
@@ -530,7 +531,7 @@ function GetPositionFeesV2(
   tickLowerState: Tick,
   tickUpperState: Tick
 ): { tokenFeeAmountA: BN; tokenFeeAmountB: BN } {
-  const { feeGrowthInsideX64A, feeGrowthInsideBX64 } = getfeeGrowthInside(
+  const { feeGrowthInsideX64A, feeGrowthInsideX64B } = getfeeGrowthInside(
     ammPool,
     tickLowerState,
     tickUpperState
@@ -544,7 +545,7 @@ function GetPositionFeesV2(
   const tokenFeeAmountA = positionState.tokenFeesOwedA.add(feeGrowthdeltaA);
 
   const feeGrowthdelta1 = mulDivFloor(
-    wrappingSubU128(feeGrowthInsideBX64, positionState.feeGrowthInsideLastX64B),
+    wrappingSubU128(feeGrowthInsideX64B, positionState.feeGrowthInsideLastX64B),
     positionState.liquidity,
     Q64
   );
@@ -645,8 +646,20 @@ export const getFeesAndRewardsBalance = (
   );
 
   return {
-    tokenFeeAmountA: new BigNumber(fees.tokenFeeAmountA.toString(10)),
-    tokenFeeAmountB: new BigNumber(fees.tokenFeeAmountB.toString(10)),
-    rewards: rewards.map((bn) => new BigNumber(bn.toString(10))),
+    tokenFeeAmountA:
+      fees.tokenFeeAmountA.gte(ZERO) &&
+      fees.tokenFeeAmountA.lt(U64_IGNORE_RANGE)
+        ? new BigNumber(fees.tokenFeeAmountA.toString(10))
+        : new BigNumber(0),
+    tokenFeeAmountB:
+      fees.tokenFeeAmountB.gte(ZERO) &&
+      fees.tokenFeeAmountB.lt(U64_IGNORE_RANGE)
+        ? new BigNumber(fees.tokenFeeAmountB.toString(10))
+        : new BigNumber(0),
+    rewards: rewards.map((bn) =>
+      bn.gte(ZERO) && bn.lt(U64_IGNORE_RANGE)
+        ? new BigNumber(bn.toString(10))
+        : new BigNumber(0)
+    ),
   };
 };
