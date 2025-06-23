@@ -2,12 +2,14 @@ import { NetworkId } from '@sonarwatch/portfolio-core';
 import { platformId } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { Cache } from '../../Cache';
-import { getTokenAccountsByOwnerMemo } from '../../utils/solana/getTokenAccountsByOwner';
+import { getTokenAccountsByOwner } from '../../utils/solana/getTokenAccountsByOwner';
 import { getPicassoPositions } from './getPicassoPositions';
+import { getClientSolana } from '../../utils/clients';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const potentialTokens = (await getTokenAccountsByOwnerMemo(owner)).filter(
-    (x) => x.amount.isEqualTo(1)
+  const potentialTokens = await getTokenAccountsByOwner(
+    getClientSolana(),
+    owner
   );
 
   return getPicassoPositions(potentialTokens, cache);

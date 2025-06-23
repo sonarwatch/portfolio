@@ -1,6 +1,6 @@
 import { PortfolioElement } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
-import { ParsedAccount, TokenAccount } from '../../utils/solana';
+import { ParsedAccount, TokenAccountWithMetadata } from '../../utils/solana';
 
 export type TokenData = {
   address: string;
@@ -44,7 +44,7 @@ export type Token = {
   };
 };
 
-export type NftFetcher = (
-  potentialTokens: ParsedAccount<TokenAccount>[],
+export type TokenFetcher = (
+  potentialTokens: ParsedAccount<TokenAccountWithMetadata>[],
   cache: Cache
 ) => Promise<PortfolioElement[]>;

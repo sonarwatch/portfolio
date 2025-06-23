@@ -1,6 +1,7 @@
 /* eslint-disable max-classes-per-file */
 import {
   CrossLevPosition,
+  fixUsdValue,
   formatTokenAddress,
   getUsdValueSum,
   IsoLevPosition,
@@ -21,9 +22,10 @@ export class IsoLevPositionBuilder {
       address: this.params.address
         ? formatTokenAddress(this.params.address, networkId)
         : undefined,
-      value:
+      value: fixUsdValue(
         this.params.value ||
-        getUsdValueSum([this.params.collateralValue, this.params.pnlValue]),
+          getUsdValueSum([this.params.collateralValue, this.params.pnlValue])
+      ),
     };
   }
 
