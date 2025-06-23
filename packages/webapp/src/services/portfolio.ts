@@ -8,6 +8,7 @@ import {
   FetchersResult,
   NetworkId,
   NetworkIdType,
+  PortfolioAsset,
 } from '@sonarwatch/portfolio-core';
 import { logger } from '../logger/logger';
 import portfolioCache from '../cache/cache';
@@ -40,9 +41,7 @@ class PortfolioService {
         includePlatforms: ['wallet-tokens'],
       },
       [AssetType.DEFI]: {
-        excludeFetchers: [
-          'wallet-tokens-solana-native',
-        ],
+        excludeFetchers: ['wallet-tokens-solana-native'],
         excludePlatforms: ['wallet-tokens'],
       },
     };
@@ -134,14 +133,18 @@ class PortfolioService {
     const addresses: Array<{ address: string; networkId: NetworkIdType }> = [];
     result.elements.forEach((element) => {
       if (element.type === 'multiple') {
-        element.data.assets
-          .filter((a) => a.type === 'token' && a.data.address)
-          .forEach((a) =>
-            addresses.push({
-              address: a.data.address!,
-              networkId: NetworkId.solana,
-            })
-          );
+        addresses.push(...this.convertAssets(element.data.assets));
+      }
+      if (element.type === 'liquidity') {
+        element.data.liquidities.forEach((liq) => {
+          addresses.push(...this.convertAssets(liq.assets));
+          addresses.push(...this.convertAssets(liq.rewardAssets));
+        });
+      }
+      if (element.type === 'borrowlend') {
+        addresses.push(...this.convertAssets(element.data.suppliedAssets));
+        addresses.push(...this.convertAssets(element.data.borrowedAssets));
+        addresses.push(...this.convertAssets(element.data.rewardAssets));
       }
     });
 
@@ -162,10 +165,10 @@ class PortfolioService {
       .filter((e) => e.platformId !== 'wallet-nfts')
       .filter((e) => {
         if (filter?.includePlatforms) {
-          return filter?.includePlatforms.includes(e.platformId)
+          return filter?.includePlatforms.includes(e.platformId);
         }
         if (filter.excludePlatforms) {
-          return !filter?.excludePlatforms.includes(e.platformId)
+          return !filter?.excludePlatforms.includes(e.platformId);
         }
         return true;
       });
@@ -196,6 +199,15 @@ class PortfolioService {
 
     return await runFetchers(address, 'solana', [fetcher], this.cache);
   };
+
+  private convertAssets(assets: PortfolioAsset[]) {
+    return assets
+      .filter((a) => a.type === 'token' && a.data.address)
+      .map((a) => ({
+        address: a.data.address!,
+        networkId: NetworkId.solana,
+      }));
+  }
 }
 
 export default PortfolioService.getInstance();

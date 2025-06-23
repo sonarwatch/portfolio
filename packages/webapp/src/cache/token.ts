@@ -37,7 +37,7 @@ class TokenCache {
   public async initRegistry() {
     const jobs = getJobs();
     const jupiter = jobs.find((j) => j.id === 'jupiter');
-    logger.info(`Initializing tokens registry. Job=${jupiter}`);
+    logger.info(`Initializing tokens registry. Job=${jupiter?.id}`);
     if (jupiter) {
       logger.info(`Loading tokens...`);
       try {
