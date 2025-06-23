@@ -21,7 +21,10 @@ import { obligationStruct } from '../save/structs';
 import { mainMarket, marketsPrefix, reservesPrefix } from '../save/constants';
 import { MarketInfo, ReserveInfo, ReserveInfoExtended } from '../save/types';
 import { getElementsFromObligations } from '../save/helpers';
-import { getParsedMultipleAccountsInfo } from '../../utils/solana';
+import {
+  getParsedMultipleAccountsInfo,
+  usdcSolanaMint,
+} from '../../utils/solana';
 import { AllocationInfo } from './poolsJob';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
@@ -170,13 +173,14 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       }
     }
 
-    for (let i = 0; i < userAccount.regularAllocations.length; i++) {
+    // Lulo team asked to only take the first item of regularAllocations
+    for (let i = 0; i < 1; i++) {
       const allocationInfo = allocationsInfo?.at(i);
       if (!allocationInfo) continue;
 
       const userBoostedAllocation = userAccount.regularAllocations[i];
       lendingElement.addSuppliedAsset({
-        address: allocationInfo.mint,
+        address: usdcSolanaMint,
         amount: userBoostedAllocation.times(allocationInfo.lPrice).toNumber(),
         attributes: {
           tags: ['Boosted'],
@@ -192,7 +196,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       const userProtectedAllocation = userAccount.protectedAllocations[i];
 
       lendingElement.addSuppliedAsset({
-        address: allocationInfo.mint,
+        address: usdcSolanaMint,
         amount: userProtectedAllocation.times(allocationInfo.pPrice).toNumber(),
         attributes: {
           tags: ['Protected'],

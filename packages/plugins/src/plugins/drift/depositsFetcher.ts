@@ -171,7 +171,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       label: 'Lending',
       name: u8ArrayToString(userAccount.name),
       ref: userAccount.pubkey,
-      link: 'https://app.drift.trade/',
+      link: 'https://app.drift.trade/earn/borrow-lend',
     });
 
     for (const perpPosition of userAccount.perpPositions) {

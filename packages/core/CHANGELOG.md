@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.16](https://github.com/sonarwatch/portfolio/compare/core-0.15.15...core-0.15.16) (2025-06-23)
+
+
+### Bug Fixes
+
+* **utils:** use `fixUsdValue` for consistent USD value formatting in `applyPricesToElements` ([e799fef](https://github.com/sonarwatch/portfolio/commit/e799fef5477b937532211b914a271258e5877e43))
+
+
+
+## [0.15.15](https://github.com/sonarwatch/portfolio/compare/core-0.15.14...core-0.15.15) (2025-06-20)
+
+
+
 ## [0.15.14](https://github.com/sonarwatch/portfolio/compare/core-0.15.13...core-0.15.14) (2025-06-18)
 
 

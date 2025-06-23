@@ -5,6 +5,7 @@ import {
   PortfolioElementType,
 } from '../Portfolio';
 import { TokenPriceMap } from './TokenPriceMap';
+import { fixUsdValue } from './fixUsdValue';
 
 export const applyPricesToElements = (
   elements: PortfolioElement[],
@@ -36,7 +37,7 @@ export const applyPricesToElement = (
                 ...asset.data,
                 price: tokenPrice.price,
               },
-              value: tokenPrice.price * asset.data.amount,
+              value: fixUsdValue(tokenPrice.price * asset.data.amount),
             };
           }
           return asset;

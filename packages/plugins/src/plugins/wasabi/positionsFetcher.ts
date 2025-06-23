@@ -97,8 +97,11 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       sizeValue = size.times(collatPrice.price).toNumber();
 
       const entryPriceRaw = position.principal
-        .plus(position.downPayment)
-        .dividedBy(position.collateralAmount);
+        .dividedBy(10 ** principalPrice.decimals)
+        .plus(position.downPayment.dividedBy(10 ** principalPrice.decimals))
+        .dividedBy(
+          position.collateralAmount.dividedBy(10 ** collatPrice.decimals)
+        );
 
       entryPrice = isEntryPriceSolPrice
         ? entryPriceRaw.times(solTokenPrice.price)
@@ -123,8 +126,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       sizeValue = size.times(principalPrice.price).toNumber();
 
       const entryPriceRaw = position.collateralAmount
-        .minus(position.downPayment)
-        .dividedBy(position.principal);
+        .dividedBy(10 ** collatPrice.decimals)
+        .minus(position.downPayment.dividedBy(10 ** collatPrice.decimals))
+        .dividedBy(position.principal.dividedBy(10 ** principalPrice.decimals));
 
       entryPrice = isEntryPriceSolPrice
         ? entryPriceRaw.times(solTokenPrice.price)
@@ -133,7 +137,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       markPrice = principalPrice.price;
 
       liquidationPrice = position.collateralAmount
-        .minus(0.95)
+        .times(0.95)
         .dividedBy(position.principal.plus(interestOwed));
 
       leverage = position.collateralAmount
@@ -155,7 +159,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       sizeValue,
       pnlValue: pnlValue.toNumber(),
       ref: position.pubkey.toString(),
-      value: usdValue.toNumber(),
+      value: usdValue.plus(pnlValue).toNumber(),
     });
   });
 

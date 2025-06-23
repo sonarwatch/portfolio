@@ -4,18 +4,20 @@ import { getClientSolana } from '../../utils/clients';
 import {
   getParsedMultipleAccountsInfo,
   ParsedAccount,
-  TokenAccount,
+  TokenAccountWithMetadata,
 } from '../../utils/solana';
-import { platformId, restakingProgramId } from './constants';
+import { nftIdentifier, platformId, restakingProgramId } from './constants';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { Cache } from '../../Cache';
 import { vaultStruct } from './structs';
 
 export const getPicassoPositions = async (
-  tokenAccounts: ParsedAccount<TokenAccount>[],
+  tokenAccounts: ParsedAccount<TokenAccountWithMetadata>[],
   cache: Cache
 ) => {
-  const potentialTokens = tokenAccounts.filter((x) => x.amount.isEqualTo(1));
+  const potentialTokens = tokenAccounts.filter(
+    (x) => x.amount.isEqualTo(1) && x.metadata?.name === nftIdentifier
+  );
 
   if (!potentialTokens.length) return [];
 

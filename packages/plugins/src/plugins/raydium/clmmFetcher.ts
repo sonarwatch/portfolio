@@ -1,13 +1,18 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
-import { platformId, poolStatsPrefix, raydiumProgram } from './constants';
+import {
+  platformId,
+  poolStatsPrefix,
+  positionsIdentifier,
+  raydiumProgram,
+} from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { Cache } from '../../Cache';
 import { getTokenAccountsByOwner } from '../../utils/solana/getTokenAccountsByOwner';
 import {
   getParsedMultipleAccountsInfo,
   ParsedAccount,
-  TokenAccount,
+  TokenAccountWithMetadata,
 } from '../../utils/solana';
 import { getClientSolana } from '../../utils/clients';
 import {
@@ -20,10 +25,12 @@ import { getFeesAndRewardsBalance, getTickArrayAddress } from './helpers';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 export const getRaydiumClmmPositions = async (
-  tokenAccounts: ParsedAccount<TokenAccount>[],
+  tokenAccounts: ParsedAccount<TokenAccountWithMetadata>[],
   cache: Cache
 ) => {
-  const potentialTokens = tokenAccounts.filter((x) => x.amount.isEqualTo(1));
+  const potentialTokens = tokenAccounts.filter(
+    (x) => x.metadata?.name === positionsIdentifier
+  );
 
   if (!potentialTokens.length) return [];
 
@@ -34,8 +41,6 @@ export const getRaydiumClmmPositions = async (
         raydiumProgram
       )[0]
   );
-
-  if (positionsProgramAddress.length === 0) return [];
 
   const client = getClientSolana();
 
@@ -161,7 +166,10 @@ export const getRaydiumClmmPositions = async (
 };
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const potentialTokens = await getTokenAccountsByOwner(owner);
+  const potentialTokens = await getTokenAccountsByOwner(
+    getClientSolana(),
+    owner
+  );
 
   return getRaydiumClmmPositions(potentialTokens, cache);
 };
