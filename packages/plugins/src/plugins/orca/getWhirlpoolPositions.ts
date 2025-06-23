@@ -107,6 +107,7 @@ export function getOrcaPositions(platformId: string, programId?: PublicKey) {
             address: whirlpoolInfo.pubkey.toString(),
           },
         ],
+        link: `https://www.orca.so/pools/${whirlpoolInfo.pubkey.toString()}`,
       });
 
       const feesAndRewards = calcFeesAndRewards(
