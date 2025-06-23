@@ -41,9 +41,7 @@ export const getTokenAccountsByOwner = async (
   const metadataAccounts = await getParsedMultipleAccountsInfo(
     client,
     metadataAccountStruct,
-    tokenAccountsInfo
-      .filter((t) => t.amount.isEqualTo(1))
-      .map((t) => getMetadataPubkey(t.mint))
+    tokenAccountsInfo.map((t) => getMetadataPubkey(t.mint))
   );
 
   return tokenAccountsInfo.map((t, i) => {

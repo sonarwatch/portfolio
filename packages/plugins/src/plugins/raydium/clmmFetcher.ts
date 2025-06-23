@@ -1,6 +1,11 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
-import { platformId, poolStatsPrefix, raydiumProgram } from './constants';
+import {
+  platformId,
+  poolStatsPrefix,
+  positionsIdentifier,
+  raydiumProgram,
+} from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { Cache } from '../../Cache';
 import { getTokenAccountsByOwner } from '../../utils/solana/getTokenAccountsByOwner';
@@ -23,9 +28,13 @@ export const getRaydiumClmmPositions = async (
   tokenAccounts: ParsedAccount<TokenAccountWithMetadata>[],
   cache: Cache
 ) => {
-  if (!tokenAccounts.length) return [];
+  const potentialTokens = tokenAccounts.filter(
+    (x) => x.metadata?.name === positionsIdentifier
+  );
 
-  const positionsProgramAddress = tokenAccounts.map(
+  if (!potentialTokens.length) return [];
+
+  const positionsProgramAddress = potentialTokens.map(
     (address) =>
       PublicKey.findProgramAddressSync(
         [Buffer.from('position'), address.mint.toBuffer()],
