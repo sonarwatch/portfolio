@@ -1,4 +1,5 @@
 import {
+  fixUsdValue,
   getUsdValueSum,
   NetworkIdType,
   PortfolioLiquidity,
@@ -22,10 +23,10 @@ export default function tokenPriceToLiquidity(
   );
   return {
     assets,
-    assetsValue: getUsdValueSum(assets.map((a) => a.value)),
+    assetsValue: fixUsdValue(getUsdValueSum(assets.map((a) => a.value))),
     rewardAssets: [],
     rewardAssetsValue: 0,
-    value: getUsdValueSum(assets.map((a) => a.value)),
+    value: fixUsdValue(getUsdValueSum(assets.map((a) => a.value))),
     yields: tokenYield ? [tokenYield.yield] : [],
     name: tokenPrice.liquidityName,
     link: tokenPrice.link,
