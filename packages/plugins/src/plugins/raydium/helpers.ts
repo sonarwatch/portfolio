@@ -5,14 +5,9 @@
 /* eslint-disable no-bitwise */
 import BigNumber from 'bignumber.js';
 import BN from 'bn.js';
-import {
-  aprToApy,
-  PortfolioAssetCollectible,
-  TokenPrice,
-  Yield,
-} from '@sonarwatch/portfolio-core';
+import { aprToApy, TokenPrice, Yield } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
-import { AMM_PROGRAM_ID_V3, positionsIdentifier } from './constants';
+import { AMM_PROGRAM_ID_V3 } from './constants';
 import { ClmmPoolInfo, ClmmPoolRewardInfo, Tick } from './types';
 import { toBN } from '../../utils/misc/toBN';
 import {
@@ -22,10 +17,6 @@ import {
 } from './structs/clmms';
 import { ParsedAccount } from '../../utils/solana';
 import { PortfolioAssetTokenParams } from '../../utils/elementbuilder/Params';
-
-export function isARaydiumPosition(nft: PortfolioAssetCollectible): boolean {
-  return nft.name === positionsIdentifier;
-}
 
 const ZERO = new BN(0);
 const ONE = new BN(1);

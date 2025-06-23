@@ -1,21 +1,21 @@
 import { PublicKey } from '@solana/web3.js';
-import { metadatProgram } from './constants';
+import { metadataProgram } from './constants';
 
 export function getEditionPubkeyOfNft(mint: PublicKey): PublicKey {
   return PublicKey.findProgramAddressSync(
     [
       Buffer.from('metadata'),
-      metadatProgram.toBuffer(),
+      metadataProgram.toBuffer(),
       mint.toBuffer(),
       Buffer.from('edition'),
     ],
-    metadatProgram
+    metadataProgram
   )[0];
 }
 
 export function getMetadataPubkey(mint: PublicKey): PublicKey {
   return PublicKey.findProgramAddressSync(
-    [Buffer.from('metadata'), metadatProgram.toBuffer(), mint.toBuffer()],
-    metadatProgram
+    [Buffer.from('metadata'), metadataProgram.toBuffer(), mint.toBuffer()],
+    metadataProgram
   )[0];
 }
