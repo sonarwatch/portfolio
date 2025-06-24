@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.40](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.39...plugins-0.15.40) (2025-06-24)
+
+
+### Bug Fixes
+
+* **plugins:** update positions fetching logic to use getTokenAccountsByOwner and enhance getOrcaPositions with identifier option ([57ae3ae](https://github.com/sonarwatch/portfolio/commit/57ae3aea4b1b9ddfb55eb42342cb2ab9da055d86))
+
+
+
 ## [0.15.39](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.38...plugins-0.15.39) (2025-06-23)
 
 
