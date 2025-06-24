@@ -48,3 +48,4 @@ export * from './getIsVerifiedFromAsset';
 export * from './TokenPriceMap';
 export * from './applyPricesToElements';
 export * from './fixUsdValue';
+export * from './calcYieldSummary';

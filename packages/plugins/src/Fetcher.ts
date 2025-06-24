@@ -11,6 +11,7 @@ import {
   networks,
   sortPortfolioElement,
   promiseTimeout,
+  calcYieldSummary,
 } from '@sonarwatch/portfolio-core';
 import { Cache } from './Cache';
 
@@ -77,6 +78,7 @@ export async function runFetchers(
     value: getUsdValueSum(elements.map((e) => e.value)),
     elements,
     duration: Date.now() - startDate,
+    yieldSummary: calcYieldSummary(elements),
   };
 }
 
