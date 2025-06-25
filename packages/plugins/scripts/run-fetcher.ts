@@ -1,5 +1,9 @@
 import util from 'node:util';
-import { isAddress, networks } from '@sonarwatch/portfolio-core';
+import {
+  calcYieldSummary,
+  isAddress,
+  networks,
+} from '@sonarwatch/portfolio-core';
 import { fetchers, getCache, solanaSimpleFetcher } from '../src';
 import durationForHumans from '../src/utils/misc/durationForHumans';
 import { runFetcher } from '../src/Fetcher';
@@ -41,6 +45,9 @@ async function main(owner: string, fetcherId: string) {
   console.log('Fetching...');
   const fetcherResult = await runFetcher(fOwner, fetcher, cache);
   console.log(util.inspect(fetcherResult.elements, false, null, true));
+  console.log(
+    util.inspect(calcYieldSummary(fetcherResult.elements), false, null, true)
+  );
   console.log(`Finished in: ${durationForHumans(fetcherResult.duration)}s`);
   await cache.dispose();
   await sleep(100);
