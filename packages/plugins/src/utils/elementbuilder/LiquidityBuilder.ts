@@ -8,6 +8,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { AssetTokenBuilder } from './AssetTokenBuilder';
 import { LiquidityParams, PortfolioAssetTokenParams } from './Params';
+import { TokenYieldMap } from '../../TokenYieldMap';
 
 export class LiquidityBuilder {
   private readonly params?: LiquidityParams;
@@ -43,14 +44,15 @@ export class LiquidityBuilder {
 
   get(
     networkId: NetworkIdType,
-    tokenPrices: TokenPriceMap
+    tokenPrices: TokenPriceMap,
+    tokenYields: TokenYieldMap
   ): PortfolioLiquidity | null {
     const assets = this.assets
-      .map((a) => a.getUnderlyings(networkId, tokenPrices))
+      .map((a) => a.getUnderlyings(networkId, tokenPrices, tokenYields))
       .flat()
       .filter((a) => a !== null) as PortfolioAsset[];
     const rewardAssets = this.rewardAssets
-      .map((a) => a.get(networkId, tokenPrices))
+      .map((a) => a.get(networkId, tokenPrices, tokenYields))
       .filter((a) => a !== null) as PortfolioAsset[];
 
     if (assets.length === 0 && rewardAssets.length === 0) return null;

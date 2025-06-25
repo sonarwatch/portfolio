@@ -15,6 +15,7 @@ import {
 } from './Params';
 import { AssetBuilder } from './AssetBuilder';
 import { AssetGenericBuilder } from './AssetGenericBuilder';
+import { TokenYieldMap } from '../../TokenYieldMap';
 
 export class ElementMultipleBuilder extends ElementBuilder {
   assets: AssetBuilder[];
@@ -39,10 +40,11 @@ export class ElementMultipleBuilder extends ElementBuilder {
   get(
     networkId: NetworkIdType,
     platformId: string,
-    tokenPrices: TokenPriceMap
+    tokenPrices: TokenPriceMap,
+    tokenYields: TokenYieldMap
   ): PortfolioElementMultiple | null {
     const assets = this.assets
-      .map((a) => a.get(networkId, tokenPrices))
+      .map((a) => a.get(networkId, tokenPrices, tokenYields))
       .filter((a) => a !== null) as PortfolioAsset[];
 
     if (assets.length === 0) return null;

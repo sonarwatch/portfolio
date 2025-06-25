@@ -9,6 +9,7 @@ import {
 import { ElementBuilder } from './ElementBuilder';
 import { LiquidityParams, Params } from './Params';
 import { LiquidityBuilder } from './LiquidityBuilder';
+import { TokenYieldMap } from '../../TokenYieldMap';
 
 export class ElementLiquidityBuilder extends ElementBuilder {
   liquidities: LiquidityBuilder[];
@@ -31,10 +32,11 @@ export class ElementLiquidityBuilder extends ElementBuilder {
   override get(
     networkId: NetworkIdType,
     platformId: string,
-    tokenPrices: TokenPriceMap
+    tokenPrices: TokenPriceMap,
+    tokenYields: TokenYieldMap
   ): PortfolioElementLiquidity | null {
     const liquidities = this.liquidities
-      .map((l) => l.get(networkId, tokenPrices))
+      .map((l) => l.get(networkId, tokenPrices, tokenYields))
       .filter((a) => a !== null) as PortfolioLiquidity[];
 
     if (liquidities.length === 0) return null;
