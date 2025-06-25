@@ -1,15 +1,11 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import {
-  AirdropFetcher,
-  AirdropFetcherExecutor,
-  // airdropFetcherToFetcher,
-} from '../../AirdropFetcher';
+import { AirdropFetcher, AirdropFetcherExecutor } from '../../AirdropFetcher';
 
-import { getAirdropItems } from './helpers';
+import { getAirdropItems, getSolanaAirdropItems } from './helpers';
 import { airdropStatics } from './constants';
 
 const solanaExecutor: AirdropFetcherExecutor = async (owner: string) =>
-  getAirdropItems(owner, NetworkId.solana);
+  getSolanaAirdropItems(owner);
 
 const aptosExecutor: AirdropFetcherExecutor = async (owner: string) =>
   getAirdropItems(owner, NetworkId.aptos);
@@ -42,10 +38,3 @@ export const airdropFetcherEthereum: AirdropFetcher = {
   networkId: NetworkId.ethereum,
   executor: ethereumExecutor,
 };
-
-// export const fetcher = airdropFetcherToFetcher(
-//   airdropFetcher,
-//   platform.id,
-//   'suilend-airdrop',
-//   airdropStatics.claimEnd
-// );

@@ -11,7 +11,7 @@ import { publicKey } from '@metaplex-foundation/beet-solana';
 import { blob, u64 } from '../../utils/solana';
 
 export type ClaimStatus = {
-  buffer: Buffer;
+  discriminator: number[];
   claimant: PublicKey;
   lockedAmount: BigNumber;
   lockedAmountWithdrawn: BigNumber;
@@ -20,7 +20,7 @@ export type ClaimStatus = {
 
 export const claimStatusStruct = new BeetStruct<ClaimStatus>(
   [
-    ['buffer', blob(8)],
+    ['discriminator', uniformFixedSizeArray(u8, 8)],
     ['claimant', publicKey],
     ['lockedAmount', u64],
     ['lockedAmountWithdrawn', u64],

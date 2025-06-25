@@ -21,6 +21,7 @@ import { AssetBuilder } from './AssetBuilder';
 import { AssetTokenBuilder } from './AssetTokenBuilder';
 import { AssetGenericBuilder } from './AssetGenericBuilder';
 import { AssetCollectibleBuilder } from './AssetCollectibleBuilder';
+import { TokenYieldMap } from '../../TokenYieldMap';
 
 export class ElementBorrowlendBuilder extends ElementBuilder {
   borrowedAssets: AssetBuilder[];
@@ -118,11 +119,12 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
   get(
     networkId: NetworkIdType,
     platformId: string,
-    tokenPrices: TokenPriceMap
+    tokenPrices: TokenPriceMap,
+    tokenYields: TokenYieldMap
   ): PortfolioElementBorrowLend | null {
     const suppliedAssets = this.suppliedAssets
       .map((sAB, i) => {
-        const sA = sAB.get(networkId, tokenPrices);
+        const sA = sAB.get(networkId, tokenPrices, tokenYields);
         if (sA === null) {
           this.suppliedYields.splice(i, 1);
           this.suppliedLtvs.splice(i, 1);
@@ -133,7 +135,7 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
 
     const borrowedAssets = this.borrowedAssets
       .map((bAB, i) => {
-        const bA = bAB.get(networkId, tokenPrices);
+        const bA = bAB.get(networkId, tokenPrices, tokenYields);
         if (bA === null) {
           this.borrowedYields.splice(i, 1);
           this.borrowedWeights.splice(i, 1);
@@ -145,7 +147,7 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
       ) as PortfolioAsset[];
 
     const rewardAssets = this.rewardAssets
-      .map((a) => a.get(networkId, tokenPrices))
+      .map((a) => a.get(networkId, tokenPrices, tokenYields))
       .filter((a) => a !== null) as PortfolioAsset[];
     const unsettledAssets = this.unsettledAssets
       .map((a) => a.get(networkId, tokenPrices))

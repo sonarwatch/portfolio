@@ -10,7 +10,6 @@ import { getTokenAccountsByOwner } from '../../../utils/solana/getTokenAccountsB
 import { ElementRegistry } from '../../../utils/elementbuilder/ElementRegistry';
 import { ElementLiquidityBuilder } from '../../../utils/elementbuilder/ElementLiquidityBuilder';
 import { ParsedAccount, TokenAccount } from '../../../utils/solana';
-import { TokenYieldMap } from '../../../TokenYieldMap';
 import { TokenFetcher } from '../types';
 import { getOrcaPositions } from '../../orca/getWhirlpoolPositions';
 import { platformId as orcaPlatformId } from '../../orca/constants';
@@ -35,13 +34,6 @@ export const getSolanaTokens =
       NetworkId.solana
     );
 
-    const tokenYields = !simple
-      ? await cache.getTokenYieldsAsMap(
-          [...tokenPrices.keys()],
-          NetworkId.solana
-        )
-      : new TokenYieldMap(NetworkId.solana);
-
     const elementRegistry = new ElementRegistry(
       NetworkId.solana,
       walletTokensPlatformId
@@ -57,8 +49,6 @@ export const getSolanaTokens =
       const tokenPrice = tokenPrices.get(address);
       if (!tokenPrice) return;
 
-      const tokenYield = tokenYields.get(address);
-
       const amount = tokenAccount.amount.shiftedBy(-tokenPrice.decimals);
 
       if (tokenPrice.platformId === walletTokensPlatformId) {
@@ -70,7 +60,6 @@ export const getSolanaTokens =
           ref: tokenAccount.pubkey,
           link: tokenPrice.link,
           sourceRefs: tokenPrice.sourceRefs,
-          tokenYield,
         });
       } else if (!simple) {
         // it's an LP Token
@@ -100,7 +89,6 @@ export const getSolanaTokens =
           ref: tokenAccount.pubkey,
           link: tokenPrice.link,
           sourceRefs: tokenPrice.sourceRefs,
-          tokenYield,
         });
 
         elementsLiquidity.set(tag, elementLiquidity);
