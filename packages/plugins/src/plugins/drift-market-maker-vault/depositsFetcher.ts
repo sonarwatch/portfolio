@@ -67,7 +67,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const { name, mint, platformId, link } = vaultInfo;
 
-    const element = elementRegistry.addElementMultiple({
+    const element = elementRegistry.addElementLiquidity({
       label: 'Deposit',
       platformId,
       name,
@@ -81,6 +81,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       ],
       ref: depositAccount.pubkey,
     });
+
+    const liquidity = element.addLiquidity();
 
     const pricePerShare = new BigNumber(vaultInfo.totalTokens).dividedBy(
       vaultInfo.totalShares
@@ -101,7 +103,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         }
       : undefined;
 
-    element.addAsset({
+    liquidity.addAsset({
       address: mint,
       amount: netDeposits.minus(depositAccount.lastWithdrawRequest?.value || 0),
       tokenYield,
@@ -114,7 +116,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       );
       if (profitShareFees.isPositive()) {
         hasPendingFees = true;
-        element.addAsset({
+        liquidity.addAsset({
           address: mint,
           amount: profitShareFees.negated(),
           attributes: {
@@ -124,7 +126,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       }
     }
 
-    element.addAsset({
+    liquidity.addAsset({
       address: mint,
       amount: PnL,
       attributes: {
@@ -142,7 +144,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         ? oneDay
         : sevenDays;
 
-      element.addAsset({
+      liquidity.addAsset({
         address: mint,
         amount: depositAccount.lastWithdrawRequest.value,
         attributes: {
