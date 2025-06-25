@@ -11,6 +11,7 @@ import { getTokenAmountsFromLiquidity } from '../clmm/tokenAmountFromLiquidity';
 import { estPositionAPRWithDeltaMethod } from '../clmm/estPositionAPRWithDeltaMethod';
 import { toBN } from '../misc/toBN';
 import { ConcentratedLiquidityParams, LiquidityParams } from './Params';
+import { TokenYieldMap } from '../../TokenYieldMap';
 
 export class ElementConcentratedLiquidityBuilder extends ElementLiquidityBuilder {
   concentratedLiquidityParams?: ConcentratedLiquidityParams;
@@ -44,7 +45,8 @@ export class ElementConcentratedLiquidityBuilder extends ElementLiquidityBuilder
   override get(
     networkId: NetworkIdType,
     platformId: string,
-    tokenPrices: TokenPriceMap
+    tokenPrices: TokenPriceMap,
+    tokenYields: TokenYieldMap
   ): PortfolioElementLiquidity | null {
     if (!this.liquidities[0] || !this.concentratedLiquidityParams) return null;
 
@@ -113,6 +115,6 @@ export class ElementConcentratedLiquidityBuilder extends ElementLiquidityBuilder
     if (tokenAmountA.isZero() || tokenAmountB.isZero())
       this.addTag('Out Of Range');
 
-    return super.get(networkId, platformId, tokenPrices);
+    return super.get(networkId, platformId, tokenPrices, tokenYields);
   }
 }
