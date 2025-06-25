@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId, yieldFromApy } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -67,7 +67,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const { name, mint, platformId, link } = vaultInfo;
 
-    const element = elementRegistry.addElementMultiple({
+    const element = elementRegistry.addElementLiquidity({
       label: 'Deposit',
       platformId,
       name,
@@ -82,6 +82,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       ref: depositAccount.pubkey,
     });
 
+    const liquidity = element.addLiquidity();
+
     const pricePerShare = new BigNumber(vaultInfo.totalTokens).dividedBy(
       vaultInfo.totalShares
     );
@@ -92,10 +94,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const PnL = userSharesValue.minus(netDeposits);
 
-    element.addAsset({
+    liquidity.addAsset({
       address: mint,
       amount: netDeposits.minus(depositAccount.lastWithdrawRequest?.value || 0),
     });
+    if (vaultInfo.apy90d) {
+      liquidity.addYield(yieldFromApy(vaultInfo.apy90d));
+    }
 
     let hasPendingFees = false;
     if (PnL.isPositive()) {
@@ -104,23 +109,29 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       );
       if (profitShareFees.isPositive()) {
         hasPendingFees = true;
-        element.addAsset({
+        liquidity.addAsset({
           address: mint,
           amount: profitShareFees.negated(),
           attributes: {
             tags: [`Pending ${performanceFee.shiftedBy(2)}% Performance Fee`],
           },
         });
+        if (vaultInfo.apy90d) {
+          liquidity.addYield(yieldFromApy(vaultInfo.apy90d));
+        }
       }
     }
 
-    element.addAsset({
+    liquidity.addAsset({
       address: mint,
       amount: PnL,
       attributes: {
         tags: [hasPendingFees ? 'PnL before Fees' : 'PnL'],
       },
     });
+    if (vaultInfo.apy90d) {
+      liquidity.addYield(yieldFromApy(vaultInfo.apy90d));
+    }
 
     if (!depositAccount.lastWithdrawRequest?.value.isZero()) {
       const withdrawCooldown = [
@@ -131,7 +142,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         ? oneDay
         : sevenDays;
 
-      element.addAsset({
+      liquidity.addAsset({
         address: mint,
         amount: depositAccount.lastWithdrawRequest.value,
         attributes: {
@@ -141,6 +152,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             .toNumber(),
         },
       });
+      if (vaultInfo.apy90d) {
+        liquidity.addYield(yieldFromApy(0));
+      }
     }
   }
 

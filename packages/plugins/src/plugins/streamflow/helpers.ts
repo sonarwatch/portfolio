@@ -12,6 +12,10 @@ import {
 import { getAirdropRaw } from '../../AirdropFetcher';
 import { AirdropResponse } from './types';
 import { eligibleAddresses } from './airdropAddresses';
+import { claimStatusStruct } from './structs';
+import { getClientSolana } from '../../utils/clients';
+import { getClaimTransactions } from '../../utils/solana/jupiter/getClaimTransactions';
+import { getParsedAccountInfo } from '../../utils/solana/getParsedAccountInfo';
 
 export function getPda(owner: string, distributor: string): PublicKey {
   return PublicKey.findProgramAddressSync(
@@ -124,5 +128,69 @@ export async function getAirdropItems(
         imageUri: platformImg,
       },
     ],
+  });
+}
+
+export async function getSolanaAirdropItems(
+  owner: string
+): Promise<AirdropRaw> {
+  const client = getClientSolana();
+  const [initialAirdropPda, vestedAirdropPda] = [
+    getPda(owner, 'BsL9EiaD1FLhvE1z27s2vSLPCFU9yUY8bphscbunnRag'),
+    getPda(owner, '2nQBWuizQsa3XGX9k6f3wisAzbx1Hf8n4PFwafhyAtsh'),
+  ];
+
+  const [initialAirdropAccount, vestedAirdropAccount] = await Promise.all([
+    getParsedAccountInfo(client, claimStatusStruct, initialAirdropPda),
+    getParsedAccountInfo(client, claimStatusStruct, vestedAirdropPda),
+  ]);
+
+  if (!initialAirdropAccount && !vestedAirdropAccount)
+    return getAirdropRaw({
+      statics: airdropStatics,
+      items: [
+        {
+          amount: 0,
+          isClaimed: false,
+          label: 'STREAM',
+          address: streamMint,
+          imageUri: platformImg,
+        },
+      ],
+    });
+
+  const [initialClaims, vestedClaims] = await Promise.all([
+    getClaimTransactions(owner, initialAirdropPda, streamMint),
+    getClaimTransactions(owner, vestedAirdropPda, streamMint),
+  ]);
+
+  return getAirdropRaw({
+    statics: airdropStatics,
+    items: [
+      initialAirdropAccount
+        ? {
+            amount: initialAirdropAccount.unlockedAmount
+              .div(10 ** 6)
+              .toNumber(),
+            isClaimed: !initialAirdropAccount.lastClaimTs.isZero(),
+            label: 'STREAM',
+            address: streamMint,
+            imageUri: platformImg,
+            claims: initialClaims,
+          }
+        : [],
+      vestedAirdropAccount
+        ? {
+            amount: vestedAirdropAccount.lockedAmount.div(10 ** 6).toNumber(),
+            isClaimed: vestedAirdropAccount.lockedAmount.isEqualTo(
+              vestedAirdropAccount.lockedAmountWithdrawn
+            ),
+            label: 'STREAM',
+            address: streamMint,
+            imageUri: platformImg,
+            claims: vestedClaims,
+          }
+        : [],
+    ].flat(),
   });
 }

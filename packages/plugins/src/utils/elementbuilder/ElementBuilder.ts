@@ -8,6 +8,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Params } from './Params';
+import { TokenYieldMap } from '../../TokenYieldMap';
 
 export abstract class ElementBuilder {
   readonly type: PortfolioElementTypeType;
@@ -44,6 +45,7 @@ export abstract class ElementBuilder {
   abstract get(
     networkId: NetworkIdType,
     platformId: string,
-    tokenPrices: TokenPriceMap
+    tokenPrices: TokenPriceMap,
+    tokenYields: TokenYieldMap
   ): PortfolioElement | null;
 }

@@ -9,6 +9,7 @@ import BigNumber from 'bignumber.js';
 import { ElementBuilder } from './ElementBuilder';
 import { Params, TradeParams } from './Params';
 import { AssetTokenBuilder } from './AssetTokenBuilder';
+import { TokenYieldMap } from '../../TokenYieldMap';
 
 export class ElementTradeBuilder extends ElementBuilder {
   params?: TradeParams;
@@ -36,7 +37,8 @@ export class ElementTradeBuilder extends ElementBuilder {
   get(
     networkId: NetworkIdType,
     platformId: string,
-    tokenPrices: TokenPriceMap
+    tokenPrices: TokenPriceMap,
+    tokenYields: TokenYieldMap
   ): PortfolioElementTrade | null {
     if (!this.params) return null;
 
@@ -54,12 +56,12 @@ export class ElementTradeBuilder extends ElementBuilder {
     const inputAsset = new AssetTokenBuilder({
       address: this.params.inputAsset.address.toString(),
       amount: inputAmount.toNumber(),
-    }).get(networkId, tokenPrices);
+    }).get(networkId, tokenPrices, tokenYields);
 
     const outputAsset = new AssetTokenBuilder({
       address: this.params.outputAsset.address.toString(),
       amount: outputAmount.toNumber(),
-    }).get(networkId, tokenPrices);
+    }).get(networkId, tokenPrices, tokenYields);
 
     const inputPrice = tokenPrices.get(
       this.params.inputAsset.address.toString()

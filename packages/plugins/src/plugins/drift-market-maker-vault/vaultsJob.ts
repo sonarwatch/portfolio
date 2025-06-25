@@ -1,4 +1,5 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
+import axios from 'axios';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSolana } from '../../utils/clients';
@@ -22,7 +23,7 @@ import { VaultInfo } from './types';
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
 
-  const [vaultIdsByProgram, spotMarkets] = await Promise.all([
+  const [vaultIdsByProgram, spotMarkets, apys] = await Promise.all([
     Promise.all(
       vaultsProgramIds.map((vaultsPid) =>
         client.getProgramAccounts(vaultsPid, {
@@ -35,6 +36,9 @@ const executor: JobExecutor = async (cache: Cache) => {
       prefix: driftPlatformId,
       networkId: NetworkId.solana,
     }),
+    axios.get<{
+      [key: string]: { apys: { '7d': number; '30d': number; '90d': number } };
+    }>(`https://app.drift.trade/api/vaults`),
   ]);
 
   if (!spotMarkets) return;
@@ -78,6 +82,9 @@ const executor: JobExecutor = async (cache: Cache) => {
         user: vault.user.toString(),
         profitShare: vault.profitShare,
         link,
+        apy90d: apys.data[pubkey]
+          ? apys.data[pubkey].apys['90d'] / 100
+          : undefined,
       };
 
       cachedItems.push({

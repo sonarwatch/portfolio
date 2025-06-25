@@ -17,6 +17,7 @@ import { getClientSolana } from '../../utils/clients';
 import distributions from './distributions.json';
 import { getMultipleAccountsInfoSafe } from '../../utils/solana/getMultipleAccountsInfoSafe';
 import { getEvmReceiptPdaBySeason, getSolReceiptPdaBySeason } from './helpers';
+import { getClaimTransactions } from '../../utils/solana/jupiter/getClaimTransactions';
 
 const distributionByWallet = distributions as {
   [key: string]: {
@@ -34,6 +35,8 @@ const executorDis1: AirdropFetcherExecutor = async (owner: string) => {
 
   const receipt: AccountInfo<Buffer> | null =
     await getClientSolana().getAccountInfo(pda);
+
+  const claims = await getClaimTransactions(owner, pda, dbrMint);
 
   if (!walletDistributions || !walletDistributions.one) {
     return getAirdropRaw({
@@ -59,6 +62,8 @@ const executorDis1: AirdropFetcherExecutor = async (owner: string) => {
         label: 'DBR',
         address: isEvm ? undefined : dbrMint,
         imageUri: isEvm ? dbrImg : undefined,
+        claims,
+        ref: pda.toString(),
       },
     ],
   });
@@ -76,6 +81,9 @@ const executorDis2: AirdropFetcherExecutor = async (owner: string) => {
     await getMultipleAccountsInfoSafe(getClientSolana(), pdas);
 
   const isClaimed = receipts.some((receipt) => !!receipt);
+  const claims = await Promise.all(
+    pdas.map((pda) => getClaimTransactions(owner, pda, dbrMint))
+  );
 
   if (!walletDistributions || !walletDistributions.two) {
     return getAirdropRaw({
@@ -101,6 +109,7 @@ const executorDis2: AirdropFetcherExecutor = async (owner: string) => {
         label: 'DBR',
         address: isEvm ? undefined : dbrMint,
         imageUri: isEvm ? dbrImg : undefined,
+        claims: claims.flat(),
       },
     ],
   });

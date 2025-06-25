@@ -1,13 +1,13 @@
 import { Fetcher } from '../../Fetcher';
 import { Job } from '../../Job';
 import offersFetcher from './offersFetcher';
-import airdropFetcher from './airdropFetcher';
+import { airdropFetcher as fidaAirdropFetcher } from './airdropFetcher';
 import {
   airdropFetcher as snsAirdropFetcher,
-  fetcher,
+  fetcher as snsFetcher,
 } from './snsAirdropFetcher';
 
 export const jobs: Job[] = [];
-export const fetchers: Fetcher[] = [offersFetcher, airdropFetcher, fetcher];
+export const fetchers: Fetcher[] = [offersFetcher, snsFetcher];
 
-export const airdropFetchers = [snsAirdropFetcher];
+export const airdropFetchers = [snsAirdropFetcher, fidaAirdropFetcher];
