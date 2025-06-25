@@ -14,18 +14,24 @@ import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { WhirlpoolStat } from './types';
 import { getPositionAddress } from './helpers';
 
-export function getOrcaPositions(platformId: string, programId?: PublicKey) {
+export function getOrcaPositions(
+  platformId: string,
+  programId?: PublicKey,
+  useIdentifier = true
+) {
   return async (
     tokenAccounts: ParsedAccount<TokenAccountWithMetadata>[],
     cache: Cache
   ): Promise<PortfolioElement[]> => {
-    const potentialTokens = tokenAccounts.filter(
-      (x) =>
-        x.amount.isEqualTo(1) &&
-        positionsIdentifiers.some((identifier) =>
-          x.metadata?.name.includes(identifier)
+    const potentialTokens = useIdentifier
+      ? tokenAccounts.filter(
+          (x) =>
+            x.amount.isEqualTo(1) &&
+            positionsIdentifiers.some((identifier) =>
+              x.metadata?.name.includes(identifier)
+            )
         )
-    );
+      : tokenAccounts;
     if (!potentialTokens.length) return [];
 
     const positionsProgramAddress = potentialTokens.map((x) =>
@@ -114,6 +120,7 @@ export function getOrcaPositions(platformId: string, programId?: PublicKey) {
             address: whirlpoolInfo.pubkey.toString(),
           },
         ],
+        link: `https://www.orca.so/pools/${whirlpoolInfo.pubkey.toString()}`,
       });
 
       const feesAndRewards = calcFeesAndRewards(

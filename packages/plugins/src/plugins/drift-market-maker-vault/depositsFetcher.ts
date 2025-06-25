@@ -1,4 +1,4 @@
-import { NetworkId } from '@sonarwatch/portfolio-core';
+import { NetworkId, yieldFromApy } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -92,9 +92,19 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const PnL = userSharesValue.minus(netDeposits);
 
+    const tokenYield = vaultInfo.apy90d
+      ? {
+          address: mint,
+          networkId: NetworkId.solana,
+          yield: yieldFromApy(vaultInfo.apy90d),
+          timestamp: Date.now(),
+        }
+      : undefined;
+
     element.addAsset({
       address: mint,
       amount: netDeposits.minus(depositAccount.lastWithdrawRequest?.value || 0),
+      tokenYield,
     });
 
     let hasPendingFees = false;
@@ -120,6 +130,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       attributes: {
         tags: [hasPendingFees ? 'PnL before Fees' : 'PnL'],
       },
+      tokenYield,
     });
 
     if (!depositAccount.lastWithdrawRequest?.value.isZero()) {

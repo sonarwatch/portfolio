@@ -1,10 +1,13 @@
 import { NetworkId, NetworkIdType } from '@sonarwatch/portfolio-core';
+import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
 import { platformId, wMint } from './constants';
 import { getClientSolana } from '../../utils/clients';
-import { getAccountPubkey, getAllocation } from './helpers';
+import { getAllocation } from './helpers';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
+import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
+import { claimInfoStruct } from './structs';
 
 export default function getPositionsV2Fetcher(
   networkId: NetworkIdType
@@ -14,9 +17,17 @@ export default function getPositionsV2Fetcher(
     if (allocation === 0) return [];
 
     const client = getClientSolana();
-    const account = await client.getAccountInfo(getAccountPubkey(owner));
-
-    if (account) return [];
+    const accounts = await ParsedGpa.build(
+      client,
+      claimInfoStruct,
+      new PublicKey('Wapq3Hpv2aSKjWrh4pM8eweh8jVJB7D1nLBw9ikjVYx')
+    )
+      .addFilter('identity', {
+        __kind: 'Solana',
+        pubkey: Array.from(new PublicKey(owner).toBytes()),
+      })
+      .run();
+    if (accounts) return [];
 
     const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
 

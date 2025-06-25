@@ -1,6 +1,6 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
-import axios, { AxiosResponse } from 'axios';
 import BigNumber from 'bignumber.js';
+import { PublicKey } from '@solana/web3.js';
 import {
   AirdropFetcher,
   AirdropFetcherExecutor,
@@ -8,24 +8,31 @@ import {
   airdropFetcherToFetcher,
 } from '../../AirdropFetcher';
 
-import { airdropApi, airdropStatics, meMint, platformId } from './constants';
-import { AirdropResponse } from './types';
+import { airdropStatics, meMint, platformId, stakingPid } from './constants';
+import { getClientSolana } from '../../utils/clients';
+import { ParsedGpa } from '../../utils/solana/beets/ParsedGpa';
+import { distributionClaimStruct } from './structs';
+import { getClaimTransactions } from '../../utils/solana/jupiter/getClaimTransactions';
 
 const executor: AirdropFetcherExecutor = async (owner: string) => {
-  const input = JSON.stringify({
-    json: {
-      claimWallet: owner,
-      token: meMint,
-      allocationEvent: 'tge-airdrop-final',
-    },
-  });
+  const client = getClientSolana();
+  // const input = JSON.stringify({
+  //   json: {
+  //     claimWallet: owner,
+  //     token: meMint,
+  //     allocationEvent: 'tge-airdrop-final',
+  //   },
+  // });
+  const claimStatus = await ParsedGpa.build(
+    client,
+    distributionClaimStruct,
+    stakingPid
+  )
+    .addFilter('claimant', new PublicKey(owner))
+    .addFilter('discriminator', [239, 137, 48, 156, 94, 143, 205, 29])
+    .run();
 
-  const encodedInput = encodeURIComponent(input);
-  const res: AxiosResponse<AirdropResponse> = await axios.get(
-    airdropApi + encodedInput
-  );
-
-  if (!res.data)
+  if (claimStatus.length === 0) {
     return getAirdropRaw({
       statics: airdropStatics,
       items: [
@@ -37,22 +44,52 @@ const executor: AirdropFetcherExecutor = async (owner: string) => {
         },
       ],
     });
+  }
 
-  const isClaimed = res.data.result.data.json.claimStatus === 'claimed';
-  const amount = new BigNumber(res.data.result.data.json.availableTokenAmount)
-    .dividedBy(10 ** 6)
-    .toNumber();
+  // const encodedInput = encodeURIComponent(input);
+  // const res: AxiosResponse<AirdropResponse> = await axios.get(
+  //   airdropApi + encodedInput
+  // );
+
+  // if (!res.data)
+  //   return getAirdropRaw({
+  //     statics: airdropStatics,
+  //     items: [
+  //       {
+  //         amount: 0,
+  //         isClaimed: false,
+  //         label: 'ME',
+  //         address: meMint,
+  //       },
+  //     ],
+  //   });
+
+  const claims = await Promise.all([
+    ...claimStatus.map((cS) => getClaimTransactions(owner, cS.pubkey, meMint)),
+  ]);
+
+  const claimedAmount = claims.reduce(
+    (acc, claim) =>
+      acc.plus(
+        claim.reduce((sum, tx) => sum.plus(tx.amount), new BigNumber(0))
+      ),
+    new BigNumber(0)
+  );
+
+  // const isClaimed = res.data.result.data.json.claimStatus === 'claimed';
+  // const amount = new BigNumber(res.data.result.data.json.availableTokenAmount)
+  //   .dividedBy(10 ** 6)
+  //   .toNumber();
 
   return getAirdropRaw({
     statics: airdropStatics,
     items: [
       {
-        // We have no way to know if a user was eligible and claimed
-        // We can only know if user claimed, or didn't claimed + amount.
-        amount,
-        isClaimed,
+        amount: claimedAmount.toNumber(),
+        isClaimed: true,
         label: 'ME',
         address: meMint,
+        claims: claims.flat(),
       },
     ],
   });
