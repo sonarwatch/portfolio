@@ -5,14 +5,27 @@ import {
   isPortfolioElementMultiple,
 } from './isPortfolioElement';
 import { PortfolioAssetType, PortfolioElement } from '../Portfolio';
-import { YieldItem, YieldSummary } from '../Yield';
+import { apyToApr, yieldFromApy, YieldItem, YieldSummary } from '../Yield';
+
+const reduceYieldItems = (yieldItems: YieldItem[]) => {
+  const value = getUsdValueSum(yieldItems.map((ye) => ye.value));
+  const apy = yieldItems.reduce(
+    (sum, ye) => sum + (ye.yield.apr * ye.value) / value,
+    0
+  );
+  return {
+    value,
+    apy,
+  };
+};
 
 export const calcYieldSummary = (
   elements: PortfolioElement[]
 ): YieldSummary => {
-  const yieldElements: YieldItem[] = [];
+  const yieldItems: YieldItem[] = [];
 
   elements.forEach((element) => {
+    if (!element.value) return;
     if (isPortfolioElementMultiple(element)) {
       element.data.assets.forEach((asset) => {
         if (
@@ -20,7 +33,7 @@ export const calcYieldSummary = (
           asset.data.yield &&
           asset.value
         ) {
-          yieldElements.push({
+          yieldItems.push({
             yield: asset.data.yield,
             value: asset.value,
             platformId: element.platformId,
@@ -30,64 +43,78 @@ export const calcYieldSummary = (
     } else if (isPortfolioElementLiquidity(element)) {
       element.data.liquidities.forEach((liquidity) => {
         liquidity.assets.forEach((asset, i) => {
-          if (liquidity.yields[i] && liquidity.value) {
-            yieldElements.push({
+          if (liquidity.yields[i] && liquidity.value && asset.value) {
+            yieldItems.push({
               yield: liquidity.yields[i],
-              value: liquidity.value,
+              value: asset.value,
               platformId: element.platformId,
             });
           }
         });
       });
     } else if (isPortfolioElementBorrowLend(element)) {
+      const borrowLendYieldItems: YieldItem[] = [];
+
       element.data.suppliedAssets.forEach((asset, i) => {
-        if (element.data.suppliedYields[i] && asset.value) {
-          yieldElements.push({
+        if (
+          asset.type === PortfolioAssetType.token &&
+          asset.data.yield &&
+          asset.value
+        ) {
+          borrowLendYieldItems.push({
+            yield: asset.data.yield,
+            value: asset.value,
+            platformId: element.platformId,
+          });
+        }
+        if (
+          element.data.suppliedYields[i] &&
+          element.data.suppliedYields[i][0].apy > 0 &&
+          asset.value
+        ) {
+          borrowLendYieldItems.push({
             yield: element.data.suppliedYields[i][0],
             value: asset.value,
             platformId: element.platformId,
           });
         }
       });
+      element.data.borrowedAssets.forEach((asset, i) => {
+        if (element.data.borrowedYields[i] && asset.value) {
+          borrowLendYieldItems.push({
+            yield: element.data.borrowedYields[i][0],
+            value: asset.value,
+            platformId: element.platformId,
+          });
+        }
+      });
+      const { apy } = reduceYieldItems(borrowLendYieldItems);
+      yieldItems.push({
+        yield: yieldFromApy(apy),
+        value: element.value,
+        platformId: element.platformId,
+      });
     }
   });
 
+  const { apy } = reduceYieldItems(yieldItems);
+  const apr = apyToApr(apy);
   const value = getUsdValueSum(elements.map((e) => e.value));
 
-  const monthlyYield = {
+  const yearlyYield = {
     yield: {
-      apr:
-        yieldElements.reduce(
-          (sum, ye) => sum + (ye.yield.apr * ye.value) / value,
-          0
-        ) / 12,
-      apy:
-        yieldElements.reduce(
-          (sum, ye) => sum + (ye.yield.apy * ye.value) / value,
-          0
-        ) / 12,
+      apr,
+      apy,
     },
     revenue: {
-      apr: yieldElements
-        .map((ye) => (ye.yield.apr / 12) * ye.value)
-        .reduce(
-          (sum: number, currUsdValue) =>
-            currUsdValue !== null ? sum + currUsdValue : sum,
-          0
-        ),
-      apy: yieldElements
-        .map((ye) => (ye.yield.apy / 12) * ye.value)
-        .reduce(
-          (sum: number, currUsdValue) =>
-            currUsdValue !== null ? sum + currUsdValue : sum,
-          0
-        ),
+      apr: value * apr,
+      apy: value * apy,
     },
   };
 
   return {
     value,
-    monthly: monthlyYield,
-    items: yieldElements,
+    yearly: yearlyYield,
+    items: yieldItems,
   };
 };

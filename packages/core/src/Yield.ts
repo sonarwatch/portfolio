@@ -60,8 +60,8 @@ export const yieldFromApy = (apy: number): Yield => ({
 });
 
 export type YieldRevenue = {
-  apr: number;
-  apy: number;
+  apr: UsdValue;
+  apy: UsdValue;
 };
 
 export type YieldItem = {
@@ -72,7 +72,7 @@ export type YieldItem = {
 
 export type YieldSummary = {
   value: UsdValue;
-  monthly: {
+  yearly: {
     yield: Yield;
     revenue: YieldRevenue;
   };
