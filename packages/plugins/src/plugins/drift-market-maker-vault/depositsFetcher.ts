@@ -94,20 +94,13 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const PnL = userSharesValue.minus(netDeposits);
 
-    const tokenYield = vaultInfo.apy90d
-      ? {
-          address: mint,
-          networkId: NetworkId.solana,
-          yield: yieldFromApy(vaultInfo.apy90d),
-          timestamp: Date.now(),
-        }
-      : undefined;
-
     liquidity.addAsset({
       address: mint,
       amount: netDeposits.minus(depositAccount.lastWithdrawRequest?.value || 0),
-      tokenYield,
     });
+    if (vaultInfo.apy90d) {
+      liquidity.addYield(yieldFromApy(vaultInfo.apy90d));
+    }
 
     let hasPendingFees = false;
     if (PnL.isPositive()) {
@@ -123,6 +116,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             tags: [`Pending ${performanceFee.shiftedBy(2)}% Performance Fee`],
           },
         });
+        if (vaultInfo.apy90d) {
+          liquidity.addYield(yieldFromApy(vaultInfo.apy90d));
+        }
       }
     }
 
@@ -132,8 +128,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       attributes: {
         tags: [hasPendingFees ? 'PnL before Fees' : 'PnL'],
       },
-      tokenYield,
     });
+    if (vaultInfo.apy90d) {
+      liquidity.addYield(yieldFromApy(vaultInfo.apy90d));
+    }
 
     if (!depositAccount.lastWithdrawRequest?.value.isZero()) {
       const withdrawCooldown = [
@@ -154,6 +152,9 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
             .toNumber(),
         },
       });
+      if (vaultInfo.apy90d) {
+        liquidity.addYield(yieldFromApy(0));
+      }
     }
   }
 
