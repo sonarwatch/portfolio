@@ -103,3 +103,28 @@ export const poolStruct = new BeetStruct<Pool>(
   ],
   (args) => args as Pool
 );
+
+export type DistributionClaim = {
+  discriminator: number[];
+  ns: PublicKey;
+  distribution: PublicKey;
+  claimant: PublicKey;
+  distributionTokenMint: PublicKey;
+  amount: BigNumber;
+  cosignedMsg: number[];
+  padding: number[];
+};
+
+export const distributionClaimStruct = new BeetStruct<DistributionClaim>(
+  [
+    ['discriminator', uniformFixedSizeArray(u8, 8)],
+    ['ns', publicKey],
+    ['distribution', publicKey],
+    ['claimant', publicKey],
+    ['distributionTokenMint', publicKey],
+    ['amount', u64],
+    ['cosignedMsg', uniformFixedSizeArray(u8, 32)],
+    ['padding', uniformFixedSizeArray(u8, 240)],
+  ],
+  (args) => args as DistributionClaim
+);
