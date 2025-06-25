@@ -18,6 +18,12 @@ const restakingContract = {
   platformId,
 };
 
+const airdropContract = {
+  name: 'Airdrop',
+  address: 'mERKcfxMC5SqJn4Ld4BUris3WKZZ1ojjWJ3A3J5CKxv',
+  platformId,
+};
+
 const service: ServiceDefinition = {
   id: `${platformId}-governance`,
   name: 'Governance',
@@ -47,9 +53,18 @@ const tipService: ServiceDefinition = {
   },
 };
 
+const airdropService: ServiceDefinition = {
+  id: `${platformId}-airdrop`,
+  name: 'Airdrop',
+  platformId,
+  networkId: NetworkId.solana,
+  contracts: [airdropContract],
+};
+
 export const services: ServiceDefinition[] = [
   service,
   restakingService,
   tipService,
+  airdropService,
 ];
 export default services;
