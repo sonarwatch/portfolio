@@ -4,13 +4,13 @@ import { ServiceDefinition } from '../../ServiceDefinition';
 
 const platformId = 'lavarage';
 
-const usdcContract = {
+export const lavarageUsdcContract = {
   name: 'USDC Leverage',
   address: '1avaAUcjccXCjSZzwUvB2gS3DzkkieV2Mw8CjdN65uu',
   platformId,
 };
 
-const solContract = {
+export const lavarageSolContract = {
   name: 'SOL Leverage',
   address: 'CRSeeBqjDnm3UPefJ9gxrtngTsnQRhEJiTA345Q83X3v',
   platformId,
@@ -23,7 +23,9 @@ const service: ServiceDefinition = {
   networkId: NetworkId.solana,
   matchTransaction: (txn: ParsedTransactionWithMeta, contracts: string[]) =>
     contracts.some((contract) =>
-      [usdcContract.address, solContract.address].includes(contract)
+      [lavarageUsdcContract.address, lavarageSolContract.address].includes(
+        contract
+      )
     ),
 };
 

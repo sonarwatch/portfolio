@@ -75,6 +75,7 @@ import * as maestro from './services/maestro';
 import * as magiceden from './services/magiceden';
 import * as marginfi from './services/marginfi';
 import * as marinade from './services/marinade';
+import * as maxbid from './services/maxbid';
 import * as mayan from './services/mayan';
 import * as metaplex from './services/metaplex';
 import * as magna from './services/magna';
@@ -232,6 +233,7 @@ export const services: ServiceDefinition[] = [
   magiceden,
   marginfi,
   marinade,
+  maxbid,
   mayan,
   metaplex,
   magna,

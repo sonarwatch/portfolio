@@ -26,15 +26,15 @@ const executor: JobExecutor = async (cache: Cache) => {
   const connection = getClientSolana();
 
   // Solayer LST pricing
-  const solTokenPrice = await cache.getTokenPrice(
-    solanaNativeAddress,
-    NetworkId.solana
-  );
-  const stakePool = await getParsedAccountInfo(
-    connection,
-    stakePoolStruct,
-    new PublicKey(solayerLstPool)
-  );
+  const [solTokenPrice, stakePool] = await Promise.all([
+    cache.getTokenPrice(solanaNativeAddress, NetworkId.solana),
+    getParsedAccountInfo(
+      connection,
+      stakePoolStruct,
+      new PublicKey(solayerLstPool)
+    ),
+  ]);
+
   if (solTokenPrice && stakePool) {
     const ratio = stakePool.totalLamports
       .div(stakePool.poolTokenSupply)

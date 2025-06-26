@@ -61,9 +61,11 @@ const executor: JobExecutor = async (cache: Cache) => {
         },
       ],
       timestamp: Date.now(),
+      link: 'https://www.meteora.ag/vaults',
     };
     lpSources.push(lpSource);
   }
+
   await cache.setTokenPriceSources(lpSources);
 };
 

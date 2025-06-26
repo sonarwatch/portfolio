@@ -80,15 +80,15 @@ export const getSolanaTokens =
 
         const liquidity = elementLiquidity.addLiquidity({
           name: tokenPrice.liquidityName,
+          link: tokenPrice.link,
+          ref: tokenAccount.pubkey,
+          sourceRefs: tokenPrice.sourceRefs,
         });
 
         liquidity.addAsset({
           address,
           amount,
           alreadyShifted: true,
-          ref: tokenAccount.pubkey,
-          link: tokenPrice.link,
-          sourceRefs: tokenPrice.sourceRefs,
         });
 
         elementsLiquidity.set(tag, elementLiquidity);
