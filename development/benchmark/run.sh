@@ -122,32 +122,12 @@ const addresses = [
 ];
 
 const fastFetchers = [
-    'accessprotocol-staking',
-    'banx-loans',
-    'banx-offers',
-    'bonkrewards-staking',
-    'citrus-loans',
-    'jupiter-exchange-limit',
     'jupiter-exchange-perpetual',
-    'jupiter-governance-vote',
     'marginfi-deposits',
-    'vaultka-deposits',
     'meteora-dlmm-positions',
     'native-stake-solana',
-    'parcl-margin',
     'phoenix-positions',
-    'pyth-staking',
-    'quarry-positions',
-    'raydium-farms',
-    'save-obligations',
-    'streamflow-vesting',
-    'whalesmarket-deposit',
-    'hawksight-positions',
-    'francium-lending',
-    'meteora-cpamm-positions',
-    'sns-airdrop',
-    'banx-staking',
-    'bouncebit-deposit'
+    'pyth-staking'
 ]
 
 const prepareSuccessReport = (url, start, res) => {

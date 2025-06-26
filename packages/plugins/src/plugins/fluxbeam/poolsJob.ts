@@ -23,6 +23,7 @@ import { getParsedMultipleAccountsInfoSafe } from '../../utils/solana/getParsedM
 const tokenAccountsToExclude = [
   'F5LQTC4G9kBsMKsXtHgf9RqR15k3JB8K3smR73VB9pzY',
   '3zAvJPHBX42kc1htJc6RFihhpnQxP5KqpqqkrTEUhZ9S',
+  '4xLaHwEgqPX6JGeNSK8T56RTCGd5oqdUrc4Rq3WvBdCA'
 ];
 
 const executor: JobExecutor = async (cache: Cache) => {

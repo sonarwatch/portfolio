@@ -1,7 +1,11 @@
 import { PublicKey } from '@solana/web3.js';
 import axios, { AxiosResponse } from 'axios';
 import { DatapiAsset, DatapiAssetsResponse } from './types';
-import { jupDatapiHeaderKey, jupDatapiHeaderValue } from './constants';
+import {
+  jupDatapiHeaderKey,
+  jupDatapiHeaderValue,
+  portfolioUserAgent
+} from './constants';
 
 const maxIdsPerRequest = 50;
 const jupDatapiAssetsUrl = 'https://datapi.jup.ag/v1/assets';
@@ -19,7 +23,9 @@ export async function getJupiterPrices(mints: PublicKey[]) {
   do {
     subMints = uniqueMints.slice(start, end);
 
-    let headers = {};
+    let headers: Record<string, string> = {
+      'User-Agent': portfolioUserAgent
+    };
     if (jupDatapiHeaderKey && jupDatapiHeaderValue)
       headers = {
         [jupDatapiHeaderKey]: jupDatapiHeaderValue,

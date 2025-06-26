@@ -110,11 +110,6 @@
     "intervalMs": 10800000,
     "tokenPrice": true
   },
-  "tensor-top-collections": {
-    "intervalMs": 5400000,
-    "nftCollections": true,
-    "ttl": "2H"
-  },
   "drift-spotMarkets": {
     "intervalMs": 10800000,
     "oracleToMint": true,
@@ -583,18 +578,13 @@
     "ttl": "NOT_DEFINED"
   },
   "coingecko-fiat": {
-    "intervalMs": 10800000,
+    "intervalMs": 900000,
     "pricedCurrencies": true,
     "ttl": "NOT_DEFINED"
   },
   "pumpswap-markets": {
     "intervalMs": 10800000,
     "tokenPrice": true,
-    "ttl": "NOT_DEFINED"
-  },
-  "texture-pairs": {
-    "intervalMs": 10800000,
-    "pairs": true,
     "ttl": "NOT_DEFINED"
   },
   "hylo-markets": {

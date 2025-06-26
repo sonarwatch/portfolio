@@ -5,6 +5,7 @@ export const jupDatapiHeaderKey =
   process.env['PORTFOLIO_JUP_DATAPI_HEADER_KEY'];
 export const jupDatapiHeaderValue =
   process.env['PORTFOLIO_JUP_DATAPI_HEADER_VALUE'];
+export const portfolioUserAgent = 'Portfolio API';
 
 export const voteProgramId = new PublicKey(
   'voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj'

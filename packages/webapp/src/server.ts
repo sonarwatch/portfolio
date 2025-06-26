@@ -21,11 +21,11 @@ import { initNftRoutes } from './routes/nft';
 const start = async () => {
   try {
     process.on('unhandledRejection', (reason, promise) => {
-      console.error('⚠️ Unhandled Rejection:', reason);
+      logger.error({ error: reason }, '⚠️ Unhandled Rejection.');
     });
 
     process.on('uncaughtException', (err) => {
-      console.error('🔥 Uncaught Exception:', err);
+      logger.error({ error: err }, '🔥 Uncaught Exception.');
     });
 
     const mainServer = Fastify({ logger: fastifyLogger });

@@ -45,8 +45,8 @@ class JobRunner {
 
     const runTask = async () => {
       this.runningJobsCount++;
+      const startDate = Date.now();
       try {
-        const startDate = Date.now();
         logger.info(`Running job. Id=${jobName}`);
         metricsService.incrementJobRun(jobName);
         await job.executor(this.cache);
@@ -56,7 +56,8 @@ class JobRunner {
         );
         metricsService.setJobSuccess(jobName, Date.now());
       } catch (err) {
-        logger.error({ error: err }, `Job failed. Name=${jobName}`);
+        const duration = ((Date.now() - startDate) / 1000).toFixed(2);
+        logger.error({ error: err }, `Job failed. Id=${jobName} Duration=(${duration}s)`);
         metricsService.incrementJobError(jobName);
       } finally {
         this.runningJobsCount--;
