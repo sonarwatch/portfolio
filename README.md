@@ -165,6 +165,8 @@ npx nx run plugins:run-fetcher wallet-tokens-ethereum-top \"0xd8dA6BF26964aF9D7e
 npx nx run plugins:run-fetcher wallet-tokens-ethereum-top d8dA6BF26964aF9D7eEd9e03E53415D37aA96045
 npx nx run plugins:run-fetcher wallet-tokens-solana d8dA6BF26964aF9D7eEd9e03E53415D37aA96045
 
+npx nx run plugins:run-fetchers-by-network-id solana DemoSX9F2zXfQLtBr56Yr5he15P7viZWsYJpSDAX3tKG
+
 # Run a airdrop fetcher
 npx nx run plugins:run-airdrop-fetcher drift-airdrop-1 DemoSX9F2zXfQLtBr56Yr5he15P7viZWsYJpSDAX3tKG
 
