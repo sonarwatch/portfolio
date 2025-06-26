@@ -1,5 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import { platformId as fragmetricPlatformId } from '../fragmetric/constants';
+import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'jito';
 export const jtoMint = 'jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL';
@@ -23,3 +24,14 @@ export const platformIdByVault = new Map([
   ['CQpvXgoaaawDCLh8FwMZEwQqnPakRUZ5BnzhjnEBPJv', kyrosPlatformId],
   ['HR1ANmDHjaEhknvsTaK48M5xZtbBiwNdXM5NTiWhAb4S', fragmetricPlatformId],
 ]);
+
+export const airdropStatics: AirdropStatics = {
+  claimLink: 'https://jito.network/airdrop',
+  emitterLink: 'https://jito.network/',
+  emitterName: 'Jito',
+  id: 'jito-airdrop',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/jito.webp',
+  claimStart: 1701964800000,
+  claimEnd: 1749312000000,
+};
