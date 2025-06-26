@@ -2,6 +2,70 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.40](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.39...plugins-0.15.40) (2025-06-24)
+
+
+### Bug Fixes
+
+* **plugins:** update positions fetching logic to use getTokenAccountsByOwner and enhance getOrcaPositions with identifier option ([57ae3ae](https://github.com/sonarwatch/portfolio/commit/57ae3aea4b1b9ddfb55eb42342cb2ab9da055d86))
+
+
+
+## [0.15.39](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.38...plugins-0.15.39) (2025-06-23)
+
+
+
+## [0.15.38](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.37...plugins-0.15.38) (2025-06-23)
+
+
+
+## [0.15.37](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.36...plugins-0.15.37) (2025-06-23)
+
+
+### Bug Fixes
+
+* **utils:** fix amount with token decimals in tokenPriceToAssetToken ([aa0c63b](https://github.com/sonarwatch/portfolio/commit/aa0c63bb2ee15f9edc559a0f780adb9fb82bd13f))
+
+
+### Features
+
+* **plugins:** add `recent_epoch` field to Raydium PersonalPositionState struct for improved data tracking ([100b0b4](https://github.com/sonarwatch/portfolio/commit/100b0b464c76fd28a9967e2d2511f44a27e334f1))
+
+
+
+## [0.15.30](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.29...plugins-0.15.30) (2025-06-18)
+
+
+### Features
+
+* **plugins:** add resizable NFT fetcher to metaplex plugin ([28c3cd1](https://github.com/sonarwatch/portfolio/commit/28c3cd17198957d8b28a3ffa26790980c26f1b20))
+
+
+
+## [0.15.36](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.35...plugins-0.15.36) (2025-06-20)
+
+
+### Bug Fixes
+
+* **bidsFetcher:** update totalAmount calculation to use buysidePaymentAmount instead of spotPrice ([5fe425b](https://github.com/sonarwatch/portfolio/commit/5fe425bd61039243b1cfc0f8dcb4f2c8a8ba44f1))
+
+
+### Features
+
+* **plugins:** replace splGovernanceUrl with splGovernancePrograms in realmsData ([f548f8b](https://github.com/sonarwatch/portfolio/commit/f548f8ba026fa4d1112a7419ce4aec24129a9191))
+
+
+
+## [0.15.35](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.34...plugins-0.15.35) (2025-06-20)
+
+
+### Features
+
+* **depositsFetcher:** update allocation handling to use usdcSolanaMint and limit regularAllocations to first item ([9c4faf7](https://github.com/sonarwatch/portfolio/commit/9c4faf7c6f5f32f273d1fa245ee085b5e9ed79d8))
+* **plugins:** implement getParsedMultipleAccountsInfoSafe for improved account parsing ([9aa4101](https://github.com/sonarwatch/portfolio/commit/9aa41012f7e50544da8eee30b327fc9868ce0d92))
+
+
+
 ## [0.15.34](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.33...plugins-0.15.34) (2025-06-18)
 
 

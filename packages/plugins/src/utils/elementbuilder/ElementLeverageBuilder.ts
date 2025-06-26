@@ -1,4 +1,5 @@
 import {
+  fixUsdValue,
   getUsdValueSum,
   getUsdValueSumStrict,
   NetworkIdType,
@@ -19,6 +20,7 @@ import {
   IsoLevPositionBuilder,
 } from './LevPositionBuilder';
 import { AssetTokenBuilder } from './AssetTokenBuilder';
+import { TokenYieldMap } from '../../TokenYieldMap';
 
 export class ElementLeverageBuilder extends ElementBuilder {
   isoPositions: IsoLevPositionBuilder[];
@@ -65,7 +67,8 @@ export class ElementLeverageBuilder extends ElementBuilder {
   get(
     networkId: NetworkIdType,
     platformId: string,
-    tokenPrices: TokenPriceMap
+    tokenPrices: TokenPriceMap,
+    tokenYields: TokenYieldMap
   ): PortfolioElementLeverage | null {
     if (
       this.isoPositions.length === 0 &&
@@ -78,7 +81,7 @@ export class ElementLeverageBuilder extends ElementBuilder {
     const isoValue = getUsdValueSum([...isoPositions.map((a) => a.value)]);
     const crossPositions = this.crossPositions.map((p) => p.get(networkId));
     const crossCollateralAssets = this.crossCollateralAssets
-      .map((p) => p.get(networkId, tokenPrices))
+      .map((p) => p.get(networkId, tokenPrices, tokenYields))
       .filter((a) => a !== null) as PortfolioAsset[];
     const crossValue = getUsdValueSum([
       ...crossCollateralAssets.map((a) => a.value),
@@ -102,7 +105,7 @@ export class ElementLeverageBuilder extends ElementBuilder {
       data: {
         isolated: {
           positions: isoPositions,
-          value: isoValue,
+          value: fixUsdValue(isoValue),
         },
         cross: {
           positions: crossPositions,
@@ -110,7 +113,7 @@ export class ElementLeverageBuilder extends ElementBuilder {
           collateralValue: getUsdValueSum(
             crossCollateralAssets.map((a) => a.value)
           ),
-          value: crossValue,
+          value: fixUsdValue(crossValue),
           leverage: crossLeverage,
         },
         value,

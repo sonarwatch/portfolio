@@ -4,6 +4,7 @@ import {
   PortfolioAssetAttributes,
   SourceRef,
   TokenPriceMap,
+  TokenYield,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
@@ -11,6 +12,7 @@ import tokenPriceToAssetToken from '../misc/tokenPriceToAssetToken';
 import tokenPriceToAssetTokens from '../misc/tokenPriceToAssetTokens';
 import { AssetBuilder } from './AssetBuilder';
 import { PortfolioAssetTokenParams } from './Params';
+import { TokenYieldMap } from '../../TokenYieldMap';
 
 export class AssetTokenBuilder extends AssetBuilder {
   address: string;
@@ -20,6 +22,7 @@ export class AssetTokenBuilder extends AssetBuilder {
   sourceRefs?: SourceRef[];
   ref?: string | PublicKey;
   link?: string;
+  tokenYield?: TokenYield;
 
   constructor(params: PortfolioAssetTokenParams) {
     super();
@@ -30,6 +33,7 @@ export class AssetTokenBuilder extends AssetBuilder {
     this.ref = params.ref;
     this.sourceRefs = params.sourceRefs;
     this.link = params.link;
+    this.tokenYield = params.tokenYield;
   }
 
   tokenAddresses(): string[] {
@@ -38,7 +42,9 @@ export class AssetTokenBuilder extends AssetBuilder {
 
   getUnderlyings(
     networkId: NetworkIdType,
-    tokenPrices: TokenPriceMap
+    tokenPrices: TokenPriceMap,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    tokenYields: TokenYieldMap
   ): PortfolioAsset[] {
     const tokenPrice = tokenPrices.get(this.address);
     if (!tokenPrice) return [];
@@ -62,7 +68,8 @@ export class AssetTokenBuilder extends AssetBuilder {
 
   get(
     networkId: NetworkIdType,
-    tokenPrices: TokenPriceMap
+    tokenPrices: TokenPriceMap,
+    tokenYields: TokenYieldMap
   ): PortfolioAsset | null {
     let amount = new BigNumber(this.amount);
     if (amount.isZero()) return null;
@@ -73,6 +80,8 @@ export class AssetTokenBuilder extends AssetBuilder {
     if (!this.alreadyShifted && tokenPrice)
       amount = amount.dividedBy(10 ** tokenPrice.decimals);
 
+    const tokenYield = this.tokenYield || tokenYields.get(this.address);
+
     return {
       ...tokenPriceToAssetToken(
         this.address,
@@ -81,7 +90,8 @@ export class AssetTokenBuilder extends AssetBuilder {
         tokenPrice,
         undefined,
         this.attributes,
-        this.link
+        this.link,
+        tokenYield
       ),
       sourceRefs: this.sourceRefs,
       ref: this.ref?.toString(),

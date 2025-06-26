@@ -9,4 +9,5 @@ export type VaultInfo = {
   user: string;
   profitShare: number;
   link?: string;
+  apy90d?: number;
 };

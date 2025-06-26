@@ -10,3 +10,5 @@ export const restakingProgramId = new PublicKey(
 );
 
 export const unstakingOwner = 'BoNnRkatYrN7ckA9oAU4e7cHYfwKPgLEuzkKg4LWaHeH';
+
+export const nftIdentifier = 'Composable Restaking Position';

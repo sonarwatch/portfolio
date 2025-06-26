@@ -1,11 +1,11 @@
 import { NetworkId, PortfolioElement } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
-import { whirlpoolPrefix } from './constants';
+import { positionsIdentifiers, whirlpoolPrefix } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import {
   ParsedAccount,
   getParsedMultipleAccountsInfo,
-  TokenAccount,
+  TokenAccountWithMetadata,
 } from '../../utils/solana';
 import { Cache } from '../../Cache';
 import { Whirlpool, positionStruct } from './structs/whirlpool';
@@ -14,16 +14,29 @@ import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { WhirlpoolStat } from './types';
 import { getPositionAddress } from './helpers';
 
-export function getOrcaPositions(platformId: string, programId?: PublicKey) {
+export function getOrcaPositions(
+  platformId: string,
+  programId?: PublicKey,
+  useIdentifier = true
+) {
   return async (
-    potentialTokens: ParsedAccount<TokenAccount>[],
+    tokenAccounts: ParsedAccount<TokenAccountWithMetadata>[],
     cache: Cache
   ): Promise<PortfolioElement[]> => {
+    const potentialTokens = useIdentifier
+      ? tokenAccounts.filter(
+          (x) =>
+            x.amount.isEqualTo(1) &&
+            positionsIdentifiers.some((identifier) =>
+              x.metadata?.name.includes(identifier)
+            )
+        )
+      : tokenAccounts;
+    if (!potentialTokens.length) return [];
+
     const positionsProgramAddress = potentialTokens.map((x) =>
       getPositionAddress(x.mint, programId)
     );
-
-    if (positionsProgramAddress.length === 0) return [];
 
     const client = getClientSolana();
 
@@ -107,6 +120,7 @@ export function getOrcaPositions(platformId: string, programId?: PublicKey) {
             address: whirlpoolInfo.pubkey.toString(),
           },
         ],
+        link: `https://www.orca.so/pools/${whirlpoolInfo.pubkey.toString()}`,
       });
 
       const feesAndRewards = calcFeesAndRewards(

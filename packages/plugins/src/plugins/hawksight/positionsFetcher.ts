@@ -16,9 +16,12 @@ import dlmmPositionFetcher from '../meteora/dlmm/dlmmPositionsFetcher';
 import tokenFetcher from '../tokens/fetchers/solana';
 import { mSOLMint } from '../marinade/constants';
 import { hasTransactions } from '../../utils/hasTransactions';
-import whirlpoolFetcher from '../orca/whirlpoolFetcher';
+import { getTokenAccountsByOwner } from '../../utils/solana/getTokenAccountsByOwner';
+import { getClientSolana } from '../../utils/clients';
+import { getOrcaPositions } from '../orca/getWhirlpoolPositions';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
+  const client = getClientSolana();
   const derivedAddresses = getHawksightUserPdas(new PublicKey(owner));
 
   const hasAnyTransactions = await Promise.all([
@@ -28,14 +31,20 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
   if (!hasAnyTransactions) return [];
 
+  const potentialTokens = (
+    await Promise.all([
+      getTokenAccountsByOwner(client, derivedAddresses[0].toString()),
+      getTokenAccountsByOwner(client, derivedAddresses[1].toString()),
+    ])
+  ).flat();
+
   const portfolioElements = (
     await Promise.all([
       // This handles Kamino, Saber, Marinade
       tokenFetcher.executor(derivedAddresses[0].toString(), cache),
       tokenFetcher.executor(derivedAddresses[1].toString(), cache),
       // This handles Orca
-      whirlpoolFetcher.executor(derivedAddresses[0].toString(), cache),
-      whirlpoolFetcher.executor(derivedAddresses[1].toString(), cache),
+      getOrcaPositions(platformId, undefined, false)(potentialTokens, cache),
       // This handles Save
       obligationsFetcher.executor(derivedAddresses[0].toString(), cache),
       obligationsFetcher.executor(derivedAddresses[1].toString(), cache),

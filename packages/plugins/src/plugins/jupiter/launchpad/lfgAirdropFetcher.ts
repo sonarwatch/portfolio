@@ -10,6 +10,7 @@ import { AirdropConfig } from './types';
 import { ClaimProofResponse } from '../types';
 import { deriveClaimStatus } from '../../../utils/solana/jupiter/deriveClaimStatus';
 import { getClientSolana } from '../../../utils/clients';
+import { getClaimTransactions } from '../../../utils/solana/jupiter/getClaimTransactions';
 
 export function getLfgAirdropFetcher(aConfig: AirdropConfig): AirdropFetcher {
   const executor: AirdropFetcherExecutor = async (owner: string) => {
@@ -46,7 +47,10 @@ export function getLfgAirdropFetcher(aConfig: AirdropConfig): AirdropFetcher {
       claimProof.data.merkle_tree,
       aConfig.distributorProgram
     );
-    const claimStatusAaccount = await client.getAccountInfo(claimStatusAddress);
+    const [claims, claimStatusAccount] = await Promise.all([
+      getClaimTransactions(owner, claimStatusAddress, aConfig.mint),
+      client.getAccountInfo(claimStatusAddress),
+    ]);
 
     return getAirdropRaw({
       statics: aConfig.statics,
@@ -55,9 +59,10 @@ export function getLfgAirdropFetcher(aConfig: AirdropConfig): AirdropFetcher {
           amount: new BigNumber(claimProof.data.amount)
             .div(10 ** aConfig.decimals)
             .toNumber(),
-          isClaimed: claimStatusAaccount !== null,
+          isClaimed: claimStatusAccount !== null,
           label: aConfig.label,
           address: aConfig.mint,
+          claims,
         },
       ],
     });

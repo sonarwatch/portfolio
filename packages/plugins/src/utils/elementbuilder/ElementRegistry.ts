@@ -88,9 +88,12 @@ export class ElementRegistry {
   async getElements(cache: Cache): Promise<PortfolioElement[]> {
     const mints = this.elements.map((e) => e.tokenAddresses()).flat();
     const tokenPrices = await cache.getTokenPricesAsMap(mints, this.networkId);
+    const tokenYields = await cache.getTokenYieldsAsMap(mints, this.networkId);
 
     return this.elements
-      .map((e) => e.get(this.networkId, this.platformId, tokenPrices))
+      .map((e) =>
+        e.get(this.networkId, this.platformId, tokenPrices, tokenYields)
+      )
       .filter((e) => {
         if (
           e &&

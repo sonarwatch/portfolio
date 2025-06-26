@@ -25,5 +25,16 @@ export const snsAirdropStatics: AirdropStatics = {
   claimStart: 1747137600000,
   claimEnd: 1754913600000,
   image:
-    'https://sonarwatch.github.io/portfolio/assets/images/platforms/debridge.webp',
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/sns.webp',
+};
+
+export const fidaAirdropStatics: AirdropStatics = {
+  emitterLink: 'https://bonfida.id/',
+  emitterName: 'bonfida',
+  id: 'bonfida-airdrop',
+  claimLink: 'https://www.bonfida.org/',
+  claimStart: 1718452800000,
+  claimEnd: 1723723200000,
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/sns.webp',
 };

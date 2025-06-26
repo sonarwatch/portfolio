@@ -23,7 +23,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const totalAmount = accounts.reduce((sum, acc) => {
     if (acc.expiry.toNumber() < Date.now() / 1000) return sum;
 
-    return sum.plus(acc.spotPrice);
+    return sum.plus(acc.buysidePaymentAmount);
   }, new BigNumber(0));
 
   const registry = new ElementRegistry(NetworkId.solana, platformId);
