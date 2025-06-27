@@ -225,6 +225,36 @@ export const lendingConfigs: Map<string, LendingMarketConfig> = new Map([
       ],
     },
   ],
+  [
+    '6WEGfej9B9wjxRs6t4BYpb9iCXd8CpTpJ8fVSNzHCC5y',
+    {
+      name: 'Maple',
+      multiplyPairs: [
+        [
+          'AvZZF1YaZDziPY2RCK4oJrRVrbN3mTD9NL24hPeaZeUj',
+          '2u1tszSeqZ3qBWF3uNGPFc8TzMk2tdiwknnRMWGWjGWH',
+        ],
+      ],
+    },
+  ],
+  [
+    'F4Pn9mAvbUazDmWET5yYATTiyLHLaCRTWgGex4tiMXAs',
+    {
+      name: 'Exponent Market',
+    },
+  ],
+  [
+    'SZ8MbzSojH84K41jYGUvMJDSCTCWgemh3vanWtCx181',
+    {
+      name: 'rstSOL Market',
+      multiplyPairs: [
+        [
+          '7qhJsFDPfx4v6eoo3461Um3oL4J8AE2hoB95aqMb7oxE',
+          solanaNativeWrappedAddress,
+        ],
+      ],
+    },
+  ],
 ]);
 
 export const marketsKey = `markets`;
