@@ -184,6 +184,7 @@ import * as spice from './plugins/spice';
 import * as cudis from './plugins/cudis';
 import * as wasabi from './plugins/wasabi';
 import { solanaSimpleFetcher } from './plugins/tokens';
+import { solanaNftFetcher } from './plugins/tokens';
 
 export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
 
@@ -196,7 +197,7 @@ export * from './utils/hasTransactions';
 
 export { getLlamaProtocolsJob } from './plugins/llama-protocols';
 export { jupFetcherIds } from './plugins/jupiter';
-export { solanaSimpleFetcher };
+export { solanaSimpleFetcher, solanaNftFetcher };
 
 const modules = [
   tokens,
@@ -405,7 +406,7 @@ export const defaultFetchers: Fetcher[] = modules
  * @deprecated Use `defaultFetchers` instead.
  */
 export const fetchers: Fetcher[] = defaultFetchers;
-export const allFetchers = [...defaultFetchers, solanaSimpleFetcher];
+export const allFetchers = [...defaultFetchers, solanaSimpleFetcher, solanaNftFetcher];
 export const fetchersByAddressSystem =
   getFetchersByAddressSystem(defaultFetchers);
 export const allFetchersByAddressSystem =

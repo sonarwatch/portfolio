@@ -1,7 +1,7 @@
 import {
   Cache,
   Fetcher,
-  fetchersByAddressSystem,
+  solanaNftFetcher,
   runFetchers,
 } from '@sonarwatch/portfolio-plugins';
 import { FetchersResult, NetworkId } from '@sonarwatch/portfolio-core';
@@ -20,9 +20,7 @@ class NftService {
   private constructor() {
     this.cache = portfolioCache.getCache();
 
-    this.nftFetchers = fetchersByAddressSystem['solana'].filter((f) =>
-      ['wallet-tokens-solana'].includes(f.id)
-    );
+    this.nftFetchers = [solanaNftFetcher];
   }
 
   public static getInstance(): NftService {

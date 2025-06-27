@@ -1,6 +1,6 @@
 import util from 'node:util';
 import { isAddress, networks } from '@sonarwatch/portfolio-core';
-import { fetchers, getCache, solanaSimpleFetcher } from '../src';
+import { allFetchers, getCache } from '../src';
 import durationForHumans from '../src/utils/misc/durationForHumans';
 import { runFetcher } from '../src/Fetcher';
 import sleep from '../src/utils/misc/sleep';
@@ -19,7 +19,7 @@ if (!argOwner || argOwner === '') {
 
 async function main(owner: string, fetcherId: string) {
   let fOwner = owner;
-  const fetcher = [...fetchers, solanaSimpleFetcher].find(
+  const fetcher = allFetchers.find(
     (f) => f.id === fetcherId
   );
   if (!fetcher) {
