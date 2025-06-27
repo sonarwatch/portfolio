@@ -634,5 +634,20 @@
     "intervalMs": 10800000,
     "tokenPrice": true,
     "ttl": "NOT_DEFINED"
+  },
+  "solayer-pools-yield": {
+    "intervalMs": 82800000,
+    "yields": true,
+    "ttl": "NOT_DEFINED_DEFAULT_24H"
+  },
+  "flash-pools-yield": {
+    "intervalMs": 82800000,
+    "yields": true,
+    "ttl": "NOT_DEFINED_DEFAULT_24H"
+  },
+  "huma-pst-yield": {
+    "intervalMs": 82800000,
+    "yields": true,
+    "ttl": "NOT_DEFINED_DEFAULT_24H"
   }
 }
