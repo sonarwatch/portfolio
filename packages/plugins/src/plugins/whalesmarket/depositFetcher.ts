@@ -20,6 +20,7 @@ import {
   Offer,
   OfferStatus,
   OfferType,
+  OrderStatus,
   TokenConfig,
   offerStruct,
   orderStruct,
@@ -160,6 +161,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const isEnded = tokenInfo.status === 'ended';
     if (isEnded && offer.status === OfferStatus.Closed) continue;
+    if (isEnded && order.status === OrderStatus.Closed) continue;
 
     const mint = offer.exToken.toString();
     const tokenPrice = tokenPriceById.get(mint);
