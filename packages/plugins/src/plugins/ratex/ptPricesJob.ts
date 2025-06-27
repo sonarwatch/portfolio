@@ -1,5 +1,10 @@
 import axios, { AxiosResponse } from 'axios';
-import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  TokenPriceSource,
+  TokenYield,
+  yieldFromApy,
+} from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { platformId } from './constants';
@@ -15,6 +20,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   });
 
   const tokenPriceSources: TokenPriceSource[] = [];
+  const tokenYieldsSources: TokenYield[] = [];
 
   res.data.data.forEach((ptToken) => {
     const tokenPriceSource: TokenPriceSource = {
@@ -29,11 +35,20 @@ const executor: JobExecutor = async (cache: Cache) => {
       elementName: 'Earn',
       label: 'Staked',
     };
+    tokenYieldsSources.push({
+      address: ptToken.pt_mint,
+      networkId: NetworkId.solana,
+      yield: yieldFromApy(ptToken.pt_yield),
+      timestamp: Date.now(),
+    });
 
     tokenPriceSources.push(tokenPriceSource);
   });
 
-  await cache.setTokenPriceSources(tokenPriceSources);
+  await Promise.all([
+    cache.setTokenPriceSources(tokenPriceSources),
+    cache.setTokenYields(tokenYieldsSources),
+  ]);
 };
 
 const job: Job = {
