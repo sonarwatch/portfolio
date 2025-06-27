@@ -1,12 +1,7 @@
 import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
-import {
-  aquafarmsProgram,
-  orcaStakingPlatformId,
-  platformId,
-  poolsProgram,
-} from './constants';
+import { aquafarmsProgram, platformId, poolsProgram } from './constants';
 import { poolsFilters, aquafarmFilters } from './filters';
 import { getClientSolana } from '../../utils/clients';
 import { aquafarmStruct, poolInfoStruct } from './structs/oldLiquidities';
@@ -234,7 +229,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       'DJseRvvLM53GrowUcjjCRYXJSzMH7dN5jrkGWaFAU3fm'
     ) {
       sources.push({
-        id: orcaStakingPlatformId,
+        id: platformId,
         elementName: '(deprecated)',
         weight: 1,
         address: farmMint.toString(),
@@ -246,6 +241,7 @@ const executor: JobExecutor = async (cache: Cache) => {
           { ...baseTokenPrice, amountPerLp: 1 },
         ],
         timestamp: Date.now(),
+        link: 'https://v1.orca.so/staking',
       });
       continue;
     }

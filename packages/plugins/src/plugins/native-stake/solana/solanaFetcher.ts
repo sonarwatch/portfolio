@@ -188,6 +188,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       name: `MEV Rewards`,
       value: solTokenPrice ? mevRewards * solTokenPrice.price : null,
       data: {
+        link: 'https://jito.network/harvest',
         assets: [
           {
             ...tokenPriceToAssetToken(

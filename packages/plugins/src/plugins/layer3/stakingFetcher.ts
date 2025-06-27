@@ -44,7 +44,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const element = elementRegistry.addElementMultiple({
       label: 'Staked',
       ref: stakeAccount.pubkey,
-      link: 'https://solana.layer3.xyz/rewards?tab=staking',
+      link: 'https://app.layer3.xyz/staking',
     });
 
     element.addAsset({

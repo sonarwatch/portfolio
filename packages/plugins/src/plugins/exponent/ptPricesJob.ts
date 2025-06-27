@@ -1,9 +1,19 @@
 import axios, { AxiosResponse } from 'axios';
-import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  TokenPriceSource,
+  TokenYield,
+  yieldFromApy,
+} from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { platformId, ptTokensApiUrl } from './constants';
 import { PtToken } from './types';
+
+type PriceHistoryDatum = {
+  v: number;
+  t: number;
+};
 
 const executor: JobExecutor = async (cache: Cache) => {
   const res: AxiosResponse<{
@@ -16,8 +26,9 @@ const executor: JobExecutor = async (cache: Cache) => {
   ); */
 
   const tokenPriceSources: TokenPriceSource[] = [];
+  const tokenYieldsSources: TokenYield[] = [];
 
-  res.data.data.forEach((ptToken) => {
+  for (const ptToken of res.data.data) {
     // const baseTokenPrice = tokenPrices.get(ptToken.baseAssetMint);
     const tokenPriceSource: TokenPriceSource = {
       address: ptToken.mint,
@@ -32,6 +43,26 @@ const executor: JobExecutor = async (cache: Cache) => {
       label: 'Deposit',
       link: 'https://www.exponent.finance/income',
     };
+
+    const marketHistory = await axios.get<{
+      data: { ptYield: { week: PriceHistoryDatum[] } };
+    }>(
+      `https://web-api.exponent.finance/api/market-history/${ptToken.marketAddress}`
+    );
+
+    if (marketHistory.data.data?.ptYield?.week) {
+      const priceHistoryDatum = marketHistory.data.data.ptYield.week.reduce(
+        (max, item) => (item.t > max.t ? item : max)
+      );
+
+      tokenYieldsSources.push({
+        address: ptToken.mint,
+        networkId: NetworkId.solana,
+        yield: yieldFromApy(priceHistoryDatum.v),
+        timestamp: Date.now(),
+      });
+    }
+
     /* if (baseTokenPrice) {
       tokenPriceSource.underlyings = [
         {
@@ -45,9 +76,12 @@ const executor: JobExecutor = async (cache: Cache) => {
     } */
 
     tokenPriceSources.push(tokenPriceSource);
-  });
+  }
 
-  await cache.setTokenPriceSources(tokenPriceSources);
+  await Promise.all([
+    cache.setTokenPriceSources(tokenPriceSources),
+    cache.setTokenYields(tokenYieldsSources),
+  ]);
 };
 
 const job: Job = {
