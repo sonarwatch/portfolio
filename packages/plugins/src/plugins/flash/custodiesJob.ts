@@ -56,8 +56,14 @@ const executor: JobExecutor = async (cache: Cache) => {
     if (!colCustody || !targetcustody) continue;
     marketsInfo.push({
       ...market,
-      collateralCustodyAccount: colCustody,
-      targetCustodyAccount: targetcustody,
+      collateralCustodyAccount: {
+        pubkey: market.collateralCustody.toString(),
+        ...colCustody,
+      },
+      targetCustodyAccount: {
+        pubkey: market.targetCustody.toString(),
+        ...targetcustody,
+      },
     });
   }
 

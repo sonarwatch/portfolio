@@ -43,6 +43,7 @@ export const getPicassoPositions = async (
 
   const element = elementRegistry.addElementMultiple({
     label: 'Staked',
+    link: 'https://app.picasso.network/restake',
   });
 
   vaults.forEach((item, i) => {

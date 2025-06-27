@@ -30,6 +30,58 @@ export type Fetcher = {
 
 let limiter: pLimit.Limit;
 
+export function getFetchersResult(
+  owner: string,
+  addressSystem: AddressSystemType,
+  results: FetcherResult[]
+): FetchersResult {
+  const fOwner = formatAddress(owner, addressSystem);
+  const isValid = results.every(
+    (r) =>
+      networks[r.networdkId].addressSystem === addressSystem &&
+      fOwner === r.owner
+  );
+  if (!isValid) {
+    throw new Error(
+      `Not all results have the right address system: ${addressSystem} or same owner: ${fOwner}`
+    );
+  }
+
+  const elements: PortfolioElement[] = [];
+  const fReports: FetcherReport[] = [];
+  results.forEach((r) => {
+    elements.push(...r.elements);
+
+    let fReport: FetcherReport;
+    if (r.error === undefined) {
+      fReport = {
+        id: r.fetcherId,
+        status: 'succeeded',
+        duration: r.duration,
+        error: undefined,
+      };
+    } else {
+      fReport = {
+        id: r.fetcherId,
+        status: 'failed',
+        duration: undefined,
+        error: r.error,
+      };
+    }
+    fReports.push(fReport);
+  });
+
+  return {
+    date: Date.now(),
+    owner: fOwner,
+    addressSystem,
+    fetcherReports: fReports,
+    value: getUsdValueSum(elements.map((e) => e.value)),
+    elements,
+    duration: 0,
+  };
+}
+
 export async function runFetchers(
   owner: string,
   addressSystem: AddressSystemType,
@@ -135,5 +187,25 @@ export async function runFetcher(
   } catch (err: any) {
     err.duration = Date.now() - startDate;
     throw err;
+  }
+}
+
+export async function runFetcherSafe(
+  owner: string,
+  fetcher: Fetcher,
+  cache: Cache
+): Promise<FetcherResult> {
+  const startDate = Date.now();
+  try {
+    return await runFetcher(owner, fetcher, cache);
+  } catch (e) {
+    return {
+      owner: formatAddressByNetworkId(owner, fetcher.networkId),
+      fetcherId: fetcher.id,
+      networdkId: fetcher.networkId,
+      duration: Date.now() - startDate,
+      elements: [],
+      error: e instanceof Error ? e.message : 'Ukn error runFetcherSafe',
+    };
   }
 }

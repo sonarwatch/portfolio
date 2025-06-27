@@ -182,6 +182,7 @@ export type SourceRefName =
   | 'Proposal'
   | 'Distributor'
   | 'Locker'
+  | 'Custody'
   | 'Pair';
 
 /**
@@ -486,6 +487,7 @@ export type FetcherResult = {
   networdkId: NetworkIdType;
   duration: number;
   elements: PortfolioElement[];
+  error?: string;
 };
 
 /**

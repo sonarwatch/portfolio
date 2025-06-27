@@ -1,11 +1,4 @@
-import {
-  NetworkId,
-  PortfolioAsset,
-  PortfolioElement,
-  PortfolioElementType,
-  Yield,
-  getElementLendingValues,
-} from '@sonarwatch/portfolio-core';
+import { LeverageSide, NetworkId } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
@@ -20,6 +13,7 @@ import { perpetualsPositionsFilter } from './filters';
 import { customOracleStruct, positionStruct } from './structs';
 import { MarketInfo } from './types';
 import { Side } from '../jupiter/exchange/structs';
+import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
 const usdFactor = new BigNumber(10 ** 6);
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
@@ -31,6 +25,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     flashPid,
     perpetualsPositionsFilter(owner)
   );
+
   if (
     perpetualsPositions.length === 0 ||
     !perpetualsPositions.some((perp) => perp.sizeUsd.isGreaterThan(0))
@@ -70,7 +65,10 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     );
   });
 
-  const elements: PortfolioElement[] = [];
+  const registry = new ElementRegistry(NetworkId.solana, platformId);
+  const levElement = registry.addElementLeverage({
+    label: 'Leverage',
+  });
   for (const position of perpetualsPositions) {
     if (position.sizeUsd.isLessThanOrEqualTo(0)) continue;
 
@@ -81,13 +79,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const isLong = Number(market.side) === Side.Long;
     const collateralCustody = market.collateralCustodyAccount;
     const targetCustody = market.targetCustodyAccount;
-    if (!market || !collateralCustody) continue;
+    if (!market || !collateralCustody || !targetCustody) continue;
 
-    const borrowedAssets: PortfolioAsset[] = [];
-    const borrowedYields: Yield[][] = [];
-    const suppliedAssets: PortfolioAsset[] = [];
-    const suppliedYields: Yield[][] = [];
-    const rewardAssets: PortfolioAsset[] = [];
     const { collateralUsd, sizeUsd, entryPrice: oraclePrice } = position;
     const openingPrice = oraclePrice.price.multipliedBy(
       10 ** oraclePrice.exponent
@@ -107,8 +100,8 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
       .dividedBy(usdFactor);
     const collatValue = collateralUsd.dividedBy(usdFactor).toNumber();
 
-    const targetAmount = collatAmount.times(leverage);
-    const targetValue = sizeUsd.dividedBy(usdFactor).toNumber();
+    const size = collatAmount.times(leverage);
+    const sizeValue = sizeUsd.dividedBy(usdFactor).toNumber();
 
     const priceDelta = isLong
       ? currentPrice.minus(openingPrice)
@@ -117,75 +110,36 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
 
     const pnl = priceVar.times(collatValue).times(leverage).toNumber();
 
-    suppliedAssets.push({
-      type: 'token',
-      networkId: NetworkId.solana,
-      value: collatValue,
-      attributes: {},
-      data: {
-        amount: collatAmount.toNumber(),
-        address: collateralCustody.mint,
-        price: collateralCustodyPrice,
-      },
-    });
-    borrowedAssets.push({
-      type: 'token',
-      networkId: NetworkId.solana,
-      value: targetValue,
-      attributes: {},
-      data: {
-        amount: targetAmount.toNumber(),
-        address: targetCustody.mint,
-        price: targetPrice,
-      },
-    });
-    rewardAssets.push({
-      type: 'generic',
-      networkId: NetworkId.solana,
-      value: pnl,
-      attributes: {},
-      name: 'PNL ($)',
-      data: { amount: pnl, price: null },
-    });
-    // rewardAssets.push({
-    //   type: 'generic',
-    //   networkId: NetworkId.solana,
-    //   value: fees,
-    //   attributes: {},
-    //   data: { name: 'Fees O/C ($)', amount: fees },
-    // });
-
-    if (suppliedAssets.length === 0 && borrowedAssets.length === 0) continue;
-
-    const { borrowedValue, suppliedValue, healthRatio, rewardValue } =
-      getElementLendingValues({ suppliedAssets, borrowedAssets, rewardAssets });
-
-    const value = collateralUsd.dividedBy(usdFactor).plus(pnl).toNumber();
-    const side = isLong ? 'Long' : 'Short';
-
-    elements.push({
-      type: PortfolioElementType.borrowlend,
-      networkId: NetworkId.solana,
-      platformId,
-      label: 'Leverage',
-      value,
-      name: `${side} ${leverage.decimalPlaces(2)}x`,
-      data: {
-        borrowedAssets,
-        borrowedValue,
-        borrowedYields,
-        suppliedAssets,
-        suppliedValue,
-        suppliedYields,
-        rewardAssets,
-        rewardValue,
-        healthRatio,
-        value,
-      },
+    levElement.addIsoPosition({
+      address: targetCustody.mint.toString(),
+      collateralValue: collatValue,
+      entryPrice: openingPrice.toNumber(),
+      markPrice: currentPrice.toNumber(),
+      leverage: leverage.toNumber(),
+      pnlValue: pnl,
+      side: isLong ? LeverageSide.long : LeverageSide.short,
+      sizeValue,
+      size: size.toNumber(),
+      liquidationPrice: 0,
+      ref: position.pubkey.toString(),
+      sourceRefs: [
+        {
+          address: market.pubkey,
+          name: 'Market',
+        },
+        {
+          address: targetCustody.pubkey,
+          name: 'Custody',
+        },
+        {
+          address: collateralCustody.pubkey,
+          name: 'Custody',
+        },
+      ],
     });
   }
 
-  return elements;
+  return registry.getElements(cache);
 };
 
 const fetcher: Fetcher = {

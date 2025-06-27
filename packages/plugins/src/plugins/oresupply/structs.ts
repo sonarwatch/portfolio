@@ -105,3 +105,22 @@ export const stakeStruct = new BeetStruct<Stake>(
   ],
   (args) => args as Stake
 );
+
+export type Proof = {
+  accountDiscriminator: number[];
+  authority: PublicKey;
+  balance: BigNumber;
+  balance1: BigNumber;
+  buffer: number[];
+};
+
+export const proofStruct = new BeetStruct<Proof>(
+  [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+    ['authority', publicKey], // 168-32 = 136 bytes
+    ['balance', u64], // 136 - 8 = 128 bytes
+    ['balance1', u64], // 136 - 8 = 128 bytes
+    ['buffer', uniformFixedSizeArray(u8, 120)],
+  ],
+  (args) => args as Proof
+);
