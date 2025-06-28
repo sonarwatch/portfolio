@@ -4,6 +4,8 @@ import { YieldMarket } from './structs';
 export type Program = {
   programId: string;
   mint: string;
+  version: number;
+  name: string;
 };
 
 export type PtToken = {

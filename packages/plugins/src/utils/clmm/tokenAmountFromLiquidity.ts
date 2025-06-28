@@ -289,6 +289,22 @@ export function getTokenAmountsFromLiquidity(
   const lowerSqrtPrice = tickIndexToSqrtPriceX64(tickLowerIndex);
   const upperSqrtPrice = tickIndexToSqrtPriceX64(tickUpperIndex);
 
+  return getTokenAmountFromSqrtPrice(
+    liquidity,
+    currentSqrtPrice,
+    lowerSqrtPrice,
+    upperSqrtPrice,
+    roundUp
+  );
+}
+
+export function getTokenAmountFromSqrtPrice(
+  liquidity: BigNumber,
+  currentSqrtPrice: BigNumber,
+  lowerSqrtPrice: BigNumber,
+  upperSqrtPrice: BigNumber,
+  roundUp: boolean
+): { tokenAmountA: BigNumber; tokenAmountB: BigNumber } {
   const decLiquidity = new Decimal(liquidity.toString());
   const currentPrice = new Decimal(currentSqrtPrice.toString());
   const lowerPrice = new Decimal(lowerSqrtPrice.toString());
