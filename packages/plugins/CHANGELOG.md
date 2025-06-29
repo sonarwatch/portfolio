@@ -2,6 +2,40 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.44](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.43...plugins-0.15.44) (2025-06-28)
+
+
+
+## [0.15.43](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.42...plugins-0.15.43) (2025-06-28)
+
+
+
+## [0.15.42](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.41...plugins-0.15.42) (2025-06-28)
+
+
+
+## [0.15.41](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.40...plugins-0.15.41) (2025-06-28)
+
+
+### Bug Fixes
+
+* **helpers:** correct typo in variable name 'networdkId' to 'networkId' ([4108a3a](https://github.com/sonarwatch/portfolio/commit/4108a3aaaa2e0fbdce757a2a499b6faf93c26019))
+
+
+### Features
+
+* **airdrop:** add claims info ([4a5760a](https://github.com/sonarwatch/portfolio/commit/4a5760a99510c8ce29df6173687eaf5793028a0e))
+* **airdrop:** add claims info ([54da11f](https://github.com/sonarwatch/portfolio/commit/54da11ff036c979ac27c0cbe897e2406ffc6e93c))
+* **airdrop:** add claims info for Streamflow Solana airdrop ([3d0a2b5](https://github.com/sonarwatch/portfolio/commit/3d0a2b5cab483322fa7d0e28ccd12c3736639b51))
+* **airdrop:** add DNR claims info ([c5bc8c7](https://github.com/sonarwatch/portfolio/commit/c5bc8c72677d9dd29e8a11c1395fc2e15c2d079e))
+* **airdrop:** add FIDA claims ([284a533](https://github.com/sonarwatch/portfolio/commit/284a533f9a190370afe488dd24c1598c877cd01f))
+* **airdrop:** add JITO claims info ([7e88d32](https://github.com/sonarwatch/portfolio/commit/7e88d323bc30f68117fda4005aae15dd0a8b3436))
+* **airdrop:** implement distribution claim logic and add distributionClaimStruct ([3a4f244](https://github.com/sonarwatch/portfolio/commit/3a4f24423d87e9b7452bbeaca09f9af7f0a24ce9))
+* **fetchers:** add error handling and validation in getFetchersResult and runFetcherSafe ([7086461](https://github.com/sonarwatch/portfolio/commit/7086461d8864bdaefe4d7dda9db83727924de409))
+* **fetchers:** update fetchers import to use defaultFetchers in run-fetchers-by-network-id script ([d6a1bb3](https://github.com/sonarwatch/portfolio/commit/d6a1bb3e27d7ec2036638a4aefca21510e9a17ff))
+
+
+
 ## [0.15.43](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.42...plugins-0.15.43) (2025-06-27)
 
 

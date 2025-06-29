@@ -1,5 +1,5 @@
 {
-  "address": "",
+  "address": "7Dprfa5tKDK6XQi9kMHyZSixc6RxEMoVwe7hZhVskDvh",
   "metadata": {
     "name": "ratex_contracts",
     "version": "0.1.0",
@@ -125,6 +125,19 @@
       ]
     },
     {
+      "name": "UnifiedPosition",
+      "discriminator": [
+        182,
+        114,
+        26,
+        146,
+        21,
+        76,
+        138,
+        109
+      ]
+    },
+    {
       "name": "User",
       "discriminator": [
         159,
@@ -219,19 +232,20 @@
             "type": "u128"
           },
           {
-            "name": "reward_last_updated_timestamp",
-            "type": "u64"
-          },
-          {
-            "name": "reward_infos",
+            "name": "padding1",
             "type": {
               "array": [
-                {
-                  "defined": {
-                    "name": "AmmpoolRewardInfo"
-                  }
-                },
-                3
+                "u64",
+                32
+              ]
+            }
+          },
+          {
+            "name": "padding2",
+            "type": {
+              "array": [
+                "u64",
+                17
               ]
             }
           },
@@ -292,56 +306,6 @@
                 7
               ]
             }
-          }
-        ]
-      }
-    },
-    {
-      "name": "AmmpoolRewardInfo",
-      "docs": [
-        "Stores the state relevant for tracking liquidity mining rewards at the `Ammpool` level.",
-        "These values are used in conjunction with `PositionRewardInfo`, `Tick.reward_growths_outside`,",
-        "and `Ammpool.reward_last_updated_timestamp` to determine how many rewards are earned by open",
-        "positions."
-      ],
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "mint",
-            "docs": [
-              "Reward token mint."
-            ],
-            "type": "pubkey"
-          },
-          {
-            "name": "vault",
-            "docs": [
-              "Reward vault token account."
-            ],
-            "type": "pubkey"
-          },
-          {
-            "name": "authority",
-            "docs": [
-              "Authority account that has permission to initialize the reward and set emissions."
-            ],
-            "type": "pubkey"
-          },
-          {
-            "name": "emissions_per_second_x64",
-            "docs": [
-              "Q64.64 number that indicates how many tokens per second are earned per unit of liquidity."
-            ],
-            "type": "u128"
-          },
-          {
-            "name": "growth_global_x64",
-            "docs": [
-              "Q64.64 number that tracks the total tokens earned per unit of liquidity since the reward",
-              "emissions were turned on."
-            ],
-            "type": "u128"
           }
         ]
       }
@@ -440,6 +404,18 @@
           {
             "name": "amount",
             "type": "i64"
+          },
+          {
+            "name": "base_amount_held",
+            "type": "i64"
+          },
+          {
+            "name": "quote_amount_held",
+            "type": "i64"
+          },
+          {
+            "name": "total_balance",
+            "type": "i64"
           }
         ]
       }
@@ -522,6 +498,30 @@
       }
     },
     {
+      "name": "CollectLpYieldFeeRecord",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "lp_margin_market_vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "fee",
+            "type": "u64"
+          },
+          {
+            "name": "fee_amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
       "name": "CollectProtocolFeesRecord",
       "type": {
         "kind": "struct",
@@ -536,6 +536,30 @@
           },
           {
             "name": "fee_b",
+            "type": "u64"
+          },
+          {
+            "name": "fee_amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CollectTraderYieldFeeRecord",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "margin_market_vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "fee",
             "type": "u64"
           },
           {
@@ -1145,19 +1169,13 @@
             "name": "Begin"
           },
           {
-            "name": "Remove"
-          },
-          {
-            "name": "ChangePrice"
-          },
-          {
             "name": "Expiry"
           },
           {
             "name": "ExpiryApply"
           },
           {
-            "name": "Add"
+            "name": "Update"
           },
           {
             "name": "End"
@@ -1382,6 +1400,22 @@
           {
             "name": "default_fee_rate",
             "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitializeLpEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "yield_market",
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
           }
         ]
       }
@@ -1799,6 +1833,14 @@
             "type": "i64"
           },
           {
+            "name": "settled_base_amount",
+            "type": "i64"
+          },
+          {
+            "name": "settled_quote_amount",
+            "type": "i64"
+          },
+          {
             "name": "total_quote_asset_amount",
             "docs": [
               "total_minted_quote_amount"
@@ -1823,6 +1865,18 @@
           {
             "name": "social_loss_quote_amount_filled",
             "type": "i64"
+          },
+          {
+            "name": "last_rate",
+            "type": "u64"
+          },
+          {
+            "name": "last_liquidity",
+            "type": "u128"
+          },
+          {
+            "name": "last_ratio",
+            "type": "u64"
           }
         ]
       }
@@ -1934,21 +1988,55 @@
             "type": "pubkey"
           },
           {
-            "name": "amm_position",
+            "name": "ammpool",
+            "type": "pubkey"
+          },
+          {
+            "name": "position",
+            "type": "pubkey"
+          },
+          {
+            "name": "last_rate",
+            "type": "u64"
+          },
+          {
+            "name": "last_liquidity",
             "docs": [
               "The user's liquidity"
             ],
+            "type": "u128"
+          },
+          {
+            "name": "last_ratio",
+            "type": "u64"
+          },
+          {
+            "name": "last_fee_growth_global_a",
+            "type": "u128"
+          },
+          {
+            "name": "fee_owed_a",
+            "type": "u64"
+          },
+          {
+            "name": "last_fee_growth_global_b",
+            "type": "u128"
+          },
+          {
+            "name": "fee_owed_b",
+            "type": "u64"
+          },
+          {
+            "name": "padding",
             "type": {
-              "defined": {
-                "name": "Position"
-              }
+              "array": [
+                "u8",
+                48
+              ]
             }
           },
           {
             "name": "reserve_quote_amount",
-            "docs": [
-              "The user's yield positions"
-            ],
             "type": "i64"
           },
           {
@@ -1978,19 +2066,11 @@
             "type": "bool"
           },
           {
-            "name": "state",
-            "type": {
-              "defined": {
-                "name": "LpStatus"
-              }
-            }
-          },
-          {
             "name": "padding1",
             "type": {
               "array": [
                 "u8",
-                7
+                8
               ]
             }
           },
@@ -2019,18 +2099,21 @@
       }
     },
     {
-      "name": "LpStatus",
-      "repr": {
-        "kind": "rust"
-      },
+      "name": "LpUpdateRecord",
       "type": {
-        "kind": "enum",
-        "variants": [
+        "kind": "struct",
+        "fields": [
           {
-            "name": "Active"
+            "name": "last_rate",
+            "type": "u64"
           },
           {
-            "name": "Updating"
+            "name": "last_liquidity",
+            "type": "u128"
+          },
+          {
+            "name": "last_ratio",
+            "type": "u64"
           }
         ]
       }
@@ -2139,28 +2222,11 @@
             }
           },
           {
-            "name": "bump",
-            "type": "u8"
-          },
-          {
-            "name": "padding2",
-            "type": {
-              "array": [
-                "u8",
-                2
-              ]
-            }
-          },
-          {
-            "name": "delegate_vault",
-            "type": "pubkey"
-          },
-          {
             "name": "padding",
             "type": {
               "array": [
                 "u8",
-                32
+                64
               ]
             }
           }
@@ -2837,86 +2903,6 @@
       }
     },
     {
-      "name": "Position",
-      "repr": {
-        "kind": "c"
-      },
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "ammpool",
-            "type": "pubkey"
-          },
-          {
-            "name": "liquidity",
-            "type": "u128"
-          },
-          {
-            "name": "tick_lower_index",
-            "type": "i32"
-          },
-          {
-            "name": "tick_upper_index",
-            "type": "i32"
-          },
-          {
-            "name": "lower_rate",
-            "type": "u64"
-          },
-          {
-            "name": "upper_rate",
-            "type": "u64"
-          },
-          {
-            "name": "fee_growth_checkpoint_a",
-            "type": "u128"
-          },
-          {
-            "name": "fee_owed_a",
-            "type": "u64"
-          },
-          {
-            "name": "fee_growth_checkpoint_b",
-            "type": "u128"
-          },
-          {
-            "name": "fee_owed_b",
-            "type": "u64"
-          },
-          {
-            "name": "reward_infos",
-            "type": {
-              "array": [
-                {
-                  "defined": {
-                    "name": "PositionRewardInfo"
-                  }
-                },
-                3
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "name": "PositionRewardInfo",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "growth_inside_checkpoint",
-            "type": "u128"
-          },
-          {
-            "name": "amount_owed",
-            "type": "u64"
-          }
-        ]
-      }
-    },
-    {
       "name": "PositionValue",
       "type": {
         "kind": "struct",
@@ -3278,11 +3264,11 @@
             "type": "u128"
           },
           {
-            "name": "reward_growths_outside",
+            "name": "padding",
             "type": {
               "array": [
-                "u128",
-                3
+                "u16",
+                24
               ]
             }
           }
@@ -3469,6 +3455,111 @@
           },
           {
             "name": "realized_pnl",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UnifiedPosition",
+      "serialization": "bytemuckunsafe",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "ammpool",
+            "type": "pubkey"
+          },
+          {
+            "name": "tick_lower_index",
+            "type": "i32"
+          },
+          {
+            "name": "tick_upper_index",
+            "type": "i32"
+          },
+          {
+            "name": "lower_rate",
+            "type": "u64"
+          },
+          {
+            "name": "upper_rate",
+            "type": "u64"
+          },
+          {
+            "name": "ratio",
+            "type": "u64"
+          },
+          {
+            "name": "settled_base_amount",
+            "type": "i64"
+          },
+          {
+            "name": "settled_quote_amount",
+            "type": "i64"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UnifiedPositionSettledUpdateRecord",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "settled_base_amount",
+            "type": "i64"
+          },
+          {
+            "name": "settled_quote_amount",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UnifiedPositionUpdateRecord",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "tick_lower_index",
+            "type": "i32"
+          },
+          {
+            "name": "tick_upper_index",
+            "type": "i32"
+          },
+          {
+            "name": "lower_rate",
+            "type": "u64"
+          },
+          {
+            "name": "upper_rate",
+            "type": "u64"
+          },
+          {
+            "name": "ratio",
+            "type": "u64"
+          },
+          {
+            "name": "settled_base_amount",
+            "type": "i64"
+          },
+          {
+            "name": "settled_quote_amount",
             "type": "i64"
           }
         ]
@@ -3971,8 +4062,12 @@
             }
           },
           {
-            "name": "social_loss",
-            "type": "i64"
+            "name": "tick_lower_index",
+            "type": "i32"
+          },
+          {
+            "name": "tick_upper_index",
+            "type": "i32"
           },
           {
             "name": "insurance_margin_position",
@@ -4001,7 +4096,7 @@
             "type": "i64"
           },
           {
-            "name": "lp_accounts_processed",
+            "name": "lp_position_processed",
             "type": "u64"
           },
           {
@@ -4044,7 +4139,7 @@
             "type": "i64"
           },
           {
-            "name": "total_reserve_base_amount",
+            "name": "effective_reserve_base_amount",
             "type": "i64"
           },
           {
@@ -4077,7 +4172,7 @@
             "type": "i64"
           },
           {
-            "name": "total_base_quota",
+            "name": "total_sloss_quote_quota",
             "type": "i64"
           },
           {
@@ -4085,11 +4180,80 @@
             "type": "i64"
           },
           {
-            "name": "padding",
+            "name": "total_reserve_quote_amount",
+            "type": "i64"
+          },
+          {
+            "name": "sloss_base_amount_filled",
+            "type": "i64"
+          },
+          {
+            "name": "sloss_quote_amount_filled",
+            "type": "i64"
+          },
+          {
+            "name": "lower_rate_bound",
+            "type": "u64"
+          },
+          {
+            "name": "upper_rate_bound",
+            "type": "u64"
+          },
+          {
+            "name": "sqrt_price_lower_bound",
+            "type": "u128"
+          },
+          {
+            "name": "sqrt_price_upper_bound",
+            "type": "u128"
+          },
+          {
+            "name": "bound_percentage",
+            "type": "u64"
+          },
+          {
+            "name": "epoch_price_gap_x64",
+            "type": "u128"
+          },
+          {
+            "name": "total_reserve_base_amount",
+            "type": "i64"
+          },
+          {
+            "name": "protocol_trader_fee",
+            "type": {
+              "defined": {
+                "name": "YieldPosition"
+              }
+            }
+          },
+          {
+            "name": "protocol_lp_fee",
+            "type": {
+              "defined": {
+                "name": "YieldPosition"
+              }
+            }
+          },
+          {
+            "name": "unified_position_processed",
+            "type": "bool"
+          },
+          {
+            "name": "padding4",
             "type": {
               "array": [
                 "u8",
-                42
+                7
+              ]
+            }
+          },
+          {
+            "name": "padding5",
+            "type": {
+              "array": [
+                "u8",
+                90
               ]
             }
           }
