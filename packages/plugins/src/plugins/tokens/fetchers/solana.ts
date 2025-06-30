@@ -1,4 +1,5 @@
 import {
+  ClientType,
   NetworkId,
   PortfolioElement,
   walletTokensPlatformId,
@@ -110,7 +111,7 @@ const tokensFetchers: TokenFetcher[] = [
 ];
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const tokenAccounts = await getTokenAccountsByOwner(getClientSolana(), owner);
+  const tokenAccounts = await getTokenAccountsByOwner(getClientSolana({clientType: ClientType.FAST_LIMITED}), owner);
 
   const results: Promise<PortfolioElement[]>[] = [];
   for (const tokensFetcher of tokensFetchers) {
