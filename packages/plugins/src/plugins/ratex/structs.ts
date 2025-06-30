@@ -56,10 +56,30 @@ export const stateStruct = new FixableBeetStruct<State>(
   (args) => args as State
 );
 
+export enum MarketStatus {
+  Initialized,
+  Active,
+  Paused,
+  ReduceOnly,
+  Updating,
+  Expired,
+  Settlement,
+}
+
 export type MarginMarket = {
   accountDiscriminator: number[];
   pubkey: PublicKey;
   mint: PublicKey;
+  vault: PublicKey;
+  name: number[];
+  market_index: number;
+  padding: number[];
+  deposit_balance: BigNumber;
+  next_deposit_record_id: BigNumber;
+  flash_loan_amount: BigNumber;
+  flash_loan_initial_token_amount: BigNumber;
+  decimals: number;
+  status: MarketStatus;
 };
 
 export const marginMarketStruct = new FixableBeetStruct<MarginMarket>(
@@ -67,6 +87,16 @@ export const marginMarketStruct = new FixableBeetStruct<MarginMarket>(
     ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
     ['pubkey', publicKey],
     ['mint', publicKey],
+    ['vault', publicKey],
+    ['name', uniformFixedSizeArray(u8, 32)],
+    ['market_index', u32],
+    ['padding', uniformFixedSizeArray(u8, 4)],
+    ['deposit_balance', i64],
+    ['next_deposit_record_id', u64],
+    ['flash_loan_amount', u64],
+    ['flash_loan_initial_token_amount', u64],
+    ['decimals', u32],
+    ['status', u8],
   ],
   (args) => args as MarginMarket
 );
@@ -429,7 +459,7 @@ export type LP = {
   reserveQuoteAmount: BigNumber;
   reserveBaseAmount: BigNumber;
   lastActiveSlot: BigNumber;
-  subAccountId: BigNumber;
+  subAccountId: number;
   idle: boolean;
   state: LpStatus;
   padding1: number[];
@@ -451,4 +481,80 @@ export const lpStruct = new BeetStruct<LP>(
     ['padding2', uniformFixedSizeArray(u8, 72)],
   ],
   (args) => args as LP
+);
+
+export type LPV2 = {
+  accountDiscriminator: number[];
+  authority: PublicKey;
+  ammpool: PublicKey;
+  position: PublicKey;
+  lastRate: BigNumber;
+  lastLiquidity: BigNumber;
+  lastRatio: BigNumber;
+  last_fee_growth_global_a: BigNumber;
+  fee_owed_a: BigNumber;
+  last_fee_growth_global_b: BigNumber;
+  fee_owed_b: BigNumber;
+  padding: number[];
+  reserveQuoteAmount: BigNumber;
+  reserveBaseAmount: BigNumber;
+  lastActiveSlot: BigNumber;
+  subAccountId: number;
+  idle: boolean;
+  padding1: number[];
+  padding2: number[];
+};
+
+export const lpV2Struct = new BeetStruct<LPV2>(
+  [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+    ['authority', publicKey],
+    ['ammpool', publicKey],
+    ['position', publicKey],
+    ['lastRate', u64],
+    ['lastLiquidity', u128],
+    ['lastRatio', u64],
+    ['last_fee_growth_global_a', u128],
+    ['fee_owed_a', u64],
+    ['last_fee_growth_global_b', u128],
+    ['fee_owed_b', u64],
+    ['padding', uniformFixedSizeArray(u8, 48)],
+    ['reserveQuoteAmount', i64],
+    ['reserveBaseAmount', i64],
+    ['lastActiveSlot', u64],
+    ['subAccountId', u16],
+    ['idle', bool],
+    ['padding1', uniformFixedSizeArray(u8, 8)],
+    ['padding2', uniformFixedSizeArray(u8, 72)],
+  ],
+  (args) => args as LPV2
+);
+
+export type UnifiedPosition = {
+  accountDiscriminator: number[];
+  ammpool: PublicKey;
+  tickLowerIndex: number;
+  tickUpperIndex: number;
+  lowerRate: BigNumber;
+  upperRate: BigNumber;
+  ratio: BigNumber;
+  settledBaseAmount: BigNumber;
+  settledQuoteAmount: BigNumber;
+  padding: number[];
+};
+
+export const unifiedPositionStruct = new BeetStruct<UnifiedPosition>(
+  [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+    ['ammpool', publicKey],
+    ['tickLowerIndex', i32],
+    ['tickUpperIndex', i32],
+    ['lowerRate', u64],
+    ['upperRate', u64],
+    ['ratio', u64],
+    ['settledBaseAmount', i64],
+    ['settledQuoteAmount', i64],
+    ['padding', uniformFixedSizeArray(u8, 64)],
+  ],
+  (args) => args as UnifiedPosition
 );

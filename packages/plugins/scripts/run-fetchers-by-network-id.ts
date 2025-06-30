@@ -1,6 +1,6 @@
 import util from 'node:util';
 import { assertNetworkId, calcYieldSummary } from '@sonarwatch/portfolio-core';
-import { fetchers, getCache } from '../src';
+import { defaultFetchers, getCache } from '../src';
 import { runFetchersByNetworkId } from '../src/Fetcher';
 import sleep from '../src/utils/misc/sleep';
 
@@ -14,7 +14,7 @@ const fNetworkId = assertNetworkId(networkId);
 const owner = process.argv.at(3);
 
 async function main() {
-  const fFetchers = fetchers.filter((f) => f.networkId === fNetworkId);
+  const fFetchers = defaultFetchers.filter((f) => f.networkId === fNetworkId);
   if (!owner || owner === '') {
     console.error('Owner is missing');
     process.exit(1);

@@ -5,3 +5,5 @@ export const boostProgramId = new PublicKey(
   'C73nDAFn23RYwiFa6vtHshSbcg8x6BLYjw3bERJ3vHxf'
 );
 export const banksCacheKey = 'banks';
+
+export const crtMint = 'CRTx1JouZhzSU6XytsE42UQraoGqiHgxabocVfARTy2s';

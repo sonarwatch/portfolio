@@ -1,6 +1,6 @@
 {
   "name": "@sonarwatch/portfolio-plugins",
-  "version": "0.15.40",
+  "version": "0.15.46",
   "type": "commonjs",
   "types": "./src/index.d.ts",
   "peerDependencies": {
@@ -27,8 +27,9 @@
     "@project-serum/anchor": "^0.26.0",
     "@sei-js/core": "^3.2.1",
     "@sei-js/proto": "^3.1.0",
-    "@sonarwatch/tx-parser": "^1.2.3",
+    "@solana/spl-token": "^0.4.13",
     "@solana/web3.js": "^1.98.0",
+    "@sonarwatch/tx-parser": "^1.2.3",
     "axios": "^1.7.9",
     "bignumber.js": "^9.1.2",
     "bn.js": "^5.2.1",

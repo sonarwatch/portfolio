@@ -180,6 +180,7 @@ export type SourceRefName =
   | 'Proposal'
   | 'Distributor'
   | 'Locker'
+  | 'Custody'
   | 'Pair';
 
 /**

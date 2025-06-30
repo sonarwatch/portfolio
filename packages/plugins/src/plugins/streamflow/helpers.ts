@@ -60,15 +60,15 @@ export function getAirdropApiUrlFromNetworkId(
   }
 }
 
-function isElible(owner: string, networdkId: NetworkIdType) {
-  return eligibleAddresses[networdkId]?.includes(owner);
+function isElible(owner: string, networkId: NetworkIdType) {
+  return eligibleAddresses[networkId]?.includes(owner);
 }
 
 export async function getAirdropItems(
   owner: string,
-  networdkId: NetworkIdType
+  networkId: NetworkIdType
 ): Promise<AirdropRaw> {
-  if (!isElible(owner, networdkId))
+  if (!isElible(owner, networkId))
     return getAirdropRaw({
       statics: airdropStatics,
       items: [
@@ -82,7 +82,7 @@ export async function getAirdropItems(
       ],
     });
 
-  const link = getAirdropApiUrlFromNetworkId(owner, networdkId);
+  const link = getAirdropApiUrlFromNetworkId(owner, networkId);
 
   if (!link)
     return getAirdropRaw({

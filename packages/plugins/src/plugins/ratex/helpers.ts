@@ -11,6 +11,8 @@ import { Cache } from '../../Cache';
 import {
   LP,
   lpStruct,
+  LPV2,
+  lpV2Struct,
   User,
   UserStats,
   userStatsStruct,
@@ -80,22 +82,18 @@ export const getLpDatasByProgram = async (
   programs: Program[],
   userStatsByProgram: Map<string, UserStats>,
   owner: string
-): Promise<Map<string, ParsedAccount<LP>[]>> => {
+): Promise<Map<string, ParsedAccount<LP | LPV2>[]>> => {
   const lpDatass = await Promise.all(
     programs.map((program) => {
       const userStats = userStatsByProgram.get(program.programId);
       if (!userStats || userStats.numberOfSubAccountsCreated === 0) return null;
-      return getLpDatas(
-        owner,
-        userStats.numberOfSubAccountsCreated,
-        new PublicKey(program.programId)
-      );
+      return getLpDatas(owner, userStats.numberOfSubAccountsCreated, program);
     })
   );
 
   const lpDatasByProgram = new Map();
   programs.forEach((program, i) => {
-    const lpDatas = lpDatass[i];
+    const lpDatas = (lpDatass[i] || []).filter((n) => n !== null);
     if (!lpDatas) return;
 
     lpDatasByProgram.set(program.programId, lpDatas);
@@ -105,7 +103,7 @@ export const getLpDatasByProgram = async (
 
 export const getPools = async (
   programs: Program[],
-  lpDatasByProgram: Map<string, ParsedAccount<LP>[]>,
+  lpDatasByProgram: Map<string, ParsedAccount<LP | LPV2>[]>,
   cache: Cache
 ): Promise<Map<string, YieldMarketWithOracle>> => {
   const pools = new Map();
@@ -115,10 +113,13 @@ export const getPools = async (
       if (!lpDatas) return null;
 
       return Promise.all(
-        lpDatas.map(
-          (lpData) =>
-            lpData && getPool(new PublicKey(lpData.ammPosition.ammpool), cache)
-        )
+        lpDatas.map((lpData) => {
+          const ammPoolAddress =
+            'ammPosition' in lpData
+              ? lpData.ammPosition.ammpool
+              : lpData.ammpool;
+          return getPool(new PublicKey(ammPoolAddress), cache);
+        })
       ).then((lpDatasPools) => {
         lpDatasPools.forEach((p) => {
           if (p) {
@@ -170,7 +171,7 @@ export const getUsers = async (
 export const getLpDatas = async (
   owner: string,
   numberOfSubAccountsCreated: number,
-  programId: PublicKey
+  program: Program
 ) => {
   const lpPdas: PublicKey[] = [];
   for (
@@ -184,10 +185,12 @@ export const getLpDatas = async (
         new PublicKey(owner).toBuffer(),
         new BN(subaccountId).toArrayLike(Buffer, 'le', 2),
       ],
-      programId
+      new PublicKey(program.programId)
     );
     lpPdas.push(lpPda);
   }
 
-  return getParsedMultipleAccountsInfo(getClientSolana(), lpStruct, lpPdas);
+  return program.version === 1
+    ? getParsedMultipleAccountsInfo(getClientSolana(), lpStruct, lpPdas)
+    : getParsedMultipleAccountsInfo(getClientSolana(), lpV2Struct, lpPdas);
 };
