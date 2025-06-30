@@ -1,6 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 
 export const platformId = 'raydium';
+export const farmsKey = 'all-farms';
 export const rayMint = '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R';
 
 export const poolStatsPrefix = 'raydium-pool-stats';
