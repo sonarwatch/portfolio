@@ -649,5 +649,10 @@
     "intervalMs": 82800000,
     "yields": true,
     "ttl": "NOT_DEFINED_DEFAULT_24H"
+  },
+  "carrot-crt-yield": {
+    "intervalMs": 82800000,
+    "yields": true,
+    "ttl": "NOT_DEFINED_DEFAULT_24H"
   }
 }
