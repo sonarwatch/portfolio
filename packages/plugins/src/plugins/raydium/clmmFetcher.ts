@@ -1,9 +1,9 @@
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import {
-  platformId,
+  platformId as raydiumPlatformId,
   poolStatsPrefix,
-  positionsIdentifier,
+  raydiumPositionsIdentifier,
   raydiumProgram,
 } from './constants';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
@@ -24,160 +24,171 @@ import { WhirlpoolStat } from '../orca/types';
 import { getFeesAndRewardsBalance, getTickArrayAddress } from './helpers';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 
-export const getRaydiumClmmPositions = async (
-  tokenAccounts: ParsedAccount<TokenAccountWithMetadata>[],
-  cache: Cache
-) => {
-  const potentialTokens = tokenAccounts.filter(
-    (x) => x.metadata?.name === positionsIdentifier
-  );
-
-  if (!potentialTokens.length) return [];
-
-  const positionsProgramAddress = potentialTokens.map(
-    (address) =>
-      PublicKey.findProgramAddressSync(
-        [Buffer.from('position'), address.mint.toBuffer()],
-        raydiumProgram
-      )[0]
-  );
-
-  const client = getClientSolana();
-
-  const personalPositionsInfo = await getParsedMultipleAccountsInfo(
-    client,
-    personalPositionStateStruct,
-    positionsProgramAddress
-  );
-  if (!personalPositionsInfo || personalPositionsInfo.length === 0) return [];
-
-  const poolsIds: PublicKey[] = personalPositionsInfo.flatMap((position) =>
-    position ? position.poolId : []
-  );
-
-  const [poolStatesInfo, poolsStats] = await Promise.all([
-    getParsedMultipleAccountsInfo(client, poolStateStruct, poolsIds),
-    cache.getItems<WhirlpoolStat>(
-      poolsIds.map((p) => p.toString()),
-      { prefix: poolStatsPrefix, networkId: NetworkId.solana }
-    ),
-  ]);
-
-  const tickArrays = await Promise.all(
-    personalPositionsInfo.map((personalPositionInfo, index) => {
-      if (!personalPositionInfo) return [];
-      const poolStateInfo = poolStatesInfo[index];
-      if (!poolStateInfo) return [];
-
-      return getParsedMultipleAccountsInfo(client, tickArrayStatetruct, [
-        getTickArrayAddress(
-          raydiumProgram.toString(),
-          poolStateInfo.pubkey.toString(),
-          personalPositionInfo.tickLowerIndex,
-          poolStateInfo.tickSpacing
-        ),
-        getTickArrayAddress(
-          raydiumProgram.toString(),
-          poolStateInfo.pubkey.toString(),
-          personalPositionInfo.tickUpperIndex,
-          poolStateInfo.tickSpacing
-        ),
-      ]);
-    })
-  );
-
-  const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
-
-  for (let index = 0; index < personalPositionsInfo.length; index++) {
-    const personalPositionInfo = personalPositionsInfo[index];
-    if (!personalPositionInfo) continue;
-
-    const poolStateInfo = poolStatesInfo.find(
-      (p) => p && personalPositionInfo.poolId.toString() === p.pubkey.toString()
-    );
-    if (!poolStateInfo) continue;
-
-    const element = elementRegistry.addElementConcentratedLiquidity({
-      link: 'https://raydium.io/portfolio/?position_tab=concentrated',
-    });
-
-    const poolStats = poolsStats.find(
-      (p) => p?.address === personalPositionInfo.poolId.toString()
+export function getRaydiumClmmPositions(
+  platformId: string = raydiumPlatformId,
+  positionsIdentifier = raydiumPositionsIdentifier,
+  programId: PublicKey = raydiumProgram,
+  link = 'https://raydium.io/portfolio/?position_tab=concentrated'
+) {
+  return async (
+    tokenAccounts: ParsedAccount<TokenAccountWithMetadata>[],
+    cache: Cache
+  ) => {
+    const potentialTokens = tokenAccounts.filter(
+      (x) => x.metadata?.name === positionsIdentifier
     );
 
-    const liquidity = element.setLiquidity({
-      addressA: poolStateInfo.tokenMint0,
-      addressB: poolStateInfo.tokenMint1,
-      liquidity: personalPositionInfo.liquidity,
-      tickCurrentIndex: poolStateInfo.tickCurrent,
-      tickLowerIndex: personalPositionInfo.tickLowerIndex,
-      tickUpperIndex: personalPositionInfo.tickUpperIndex,
-      ref: personalPositionInfo.pubkey,
-      swapVolume24h: poolStats?.stats['24h'].volume,
-      feeRate: poolStats?.feeRate,
-      currentSqrtPrice: poolStateInfo.sqrtPriceX64,
-      poolLiquidity: poolStateInfo.liquidity,
-      sourceRefs: [
-        {
-          name: 'Pool',
-          address: personalPositionInfo.poolId.toString(),
-        },
-        {
-          name: 'NFT Mint',
-          address: personalPositionInfo.nftMint.toString(),
-        },
-      ],
-    });
+    if (!potentialTokens.length) return [];
 
-    const feesAndRewardsBalances = getFeesAndRewardsBalance(
-      personalPositionInfo,
-      poolStateInfo,
-      tickArrays[index]
+    const positionsProgramAddress = potentialTokens.map(
+      (address) =>
+        PublicKey.findProgramAddressSync(
+          [Buffer.from('position'), address.mint.toBuffer()],
+          programId
+        )[0]
     );
 
-    if (feesAndRewardsBalances) {
-      liquidity.addRewardAsset({
-        address: poolStateInfo.tokenMint0,
-        amount: feesAndRewardsBalances.tokenFeeAmountA,
+    const client = getClientSolana();
+
+    const personalPositionsInfo = await getParsedMultipleAccountsInfo(
+      client,
+      personalPositionStateStruct,
+      positionsProgramAddress
+    );
+    if (!personalPositionsInfo || personalPositionsInfo.length === 0) return [];
+
+    const poolsIds: PublicKey[] = personalPositionsInfo.flatMap((position) =>
+      position ? position.poolId : []
+    );
+
+    const [poolStatesInfo, poolsStats] = await Promise.all([
+      getParsedMultipleAccountsInfo(client, poolStateStruct, poolsIds),
+      cache.getItems<WhirlpoolStat>(
+        poolsIds.map((p) => p.toString()),
+        { prefix: poolStatsPrefix, networkId: NetworkId.solana }
+      ),
+    ]);
+
+    const tickArrays = await Promise.all(
+      personalPositionsInfo.map((personalPositionInfo, index) => {
+        if (!personalPositionInfo) return [];
+        const poolStateInfo = poolStatesInfo[index];
+        if (!poolStateInfo) return [];
+
+        return getParsedMultipleAccountsInfo(client, tickArrayStatetruct, [
+          getTickArrayAddress(
+            raydiumProgram.toString(),
+            poolStateInfo.pubkey.toString(),
+            personalPositionInfo.tickLowerIndex,
+            poolStateInfo.tickSpacing
+          ),
+          getTickArrayAddress(
+            raydiumProgram.toString(),
+            poolStateInfo.pubkey.toString(),
+            personalPositionInfo.tickUpperIndex,
+            poolStateInfo.tickSpacing
+          ),
+        ]);
+      })
+    );
+
+    const elementRegistry = new ElementRegistry(NetworkId.solana, platformId);
+
+    for (let index = 0; index < personalPositionsInfo.length; index++) {
+      const personalPositionInfo = personalPositionsInfo[index];
+      if (!personalPositionInfo) continue;
+
+      const poolStateInfo = poolStatesInfo.find(
+        (p) =>
+          p && personalPositionInfo.poolId.toString() === p.pubkey.toString()
+      );
+      if (!poolStateInfo) continue;
+
+      const element = elementRegistry.addElementConcentratedLiquidity({
+        link,
       });
 
-      liquidity.addRewardAsset({
-        address: poolStateInfo.tokenMint1,
-        amount: feesAndRewardsBalances.tokenFeeAmountB,
+      const poolStats = poolsStats.find(
+        (p) => p?.address === personalPositionInfo.poolId.toString()
+      );
+
+      const liquidity = element.setLiquidity({
+        addressA: poolStateInfo.tokenMint0,
+        addressB: poolStateInfo.tokenMint1,
+        liquidity: personalPositionInfo.liquidity,
+        tickCurrentIndex: poolStateInfo.tickCurrent,
+        tickLowerIndex: personalPositionInfo.tickLowerIndex,
+        tickUpperIndex: personalPositionInfo.tickUpperIndex,
+        ref: personalPositionInfo.pubkey,
+        swapVolume24h: poolStats?.stats['24h'].volume,
+        feeRate: poolStats?.feeRate,
+        currentSqrtPrice: poolStateInfo.sqrtPriceX64,
+        poolLiquidity: poolStateInfo.liquidity,
+        sourceRefs: [
+          {
+            name: 'Pool',
+            address: personalPositionInfo.poolId.toString(),
+          },
+          {
+            name: 'NFT Mint',
+            address: personalPositionInfo.nftMint.toString(),
+          },
+        ],
       });
 
-      feesAndRewardsBalances.rewards.forEach((rewardBalance, i) => {
-        if (
-          rewardBalance.isZero() ||
-          poolStateInfo.rewardInfos[i].tokenMint.toString() ===
-            '11111111111111111111111111111111'
-        )
-          return;
+      const feesAndRewardsBalances = getFeesAndRewardsBalance(
+        personalPositionInfo,
+        poolStateInfo,
+        tickArrays[index]
+      );
+
+      if (feesAndRewardsBalances) {
+        liquidity.addRewardAsset({
+          address: poolStateInfo.tokenMint0,
+          amount: feesAndRewardsBalances.tokenFeeAmountA,
+        });
 
         liquidity.addRewardAsset({
-          address: poolStateInfo.rewardInfos[i].tokenMint,
-          amount: rewardBalance,
+          address: poolStateInfo.tokenMint1,
+          amount: feesAndRewardsBalances.tokenFeeAmountB,
         });
-      });
+
+        feesAndRewardsBalances.rewards.forEach((rewardBalance, i) => {
+          if (
+            rewardBalance.isZero() ||
+            poolStateInfo.rewardInfos[i].tokenMint.toString() ===
+              '11111111111111111111111111111111'
+          )
+            return;
+
+          liquidity.addRewardAsset({
+            address: poolStateInfo.rewardInfos[i].tokenMint,
+            amount: rewardBalance,
+          });
+        });
+      }
     }
-  }
 
-  return elementRegistry.getElements(cache);
-};
+    return elementRegistry.getElements(cache);
+  };
+}
 
-const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
+const raydiumExecutor: FetcherExecutor = async (
+  owner: string,
+  cache: Cache
+) => {
   const potentialTokens = await getTokenAccountsByOwner(
     getClientSolana(),
     owner
   );
 
-  return getRaydiumClmmPositions(potentialTokens, cache);
+  return getRaydiumClmmPositions()(potentialTokens, cache);
 };
 
 const fetcher: Fetcher = {
-  id: `${platformId}-clmm`,
+  id: `${raydiumPlatformId}-clmm`,
   networkId: NetworkId.solana,
-  executor,
+  executor: raydiumExecutor,
 };
 
 export default fetcher;
