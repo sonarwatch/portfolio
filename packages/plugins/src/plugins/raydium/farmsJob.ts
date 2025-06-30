@@ -3,7 +3,7 @@ import { NetworkId, TokenPrice } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { getClientSolana } from '../../utils/clients';
-import { platformId } from './constants';
+import { farmsKey, platformId } from './constants';
 import {
   TokenAccount,
   getParsedMultipleAccountsInfo,
@@ -111,7 +111,11 @@ const executor: JobExecutor = async (cache: Cache) => {
   );
   const farmAccounts = (await Promise.all(farmAccountsPromises))
     .map((farmAccountsArray, i) =>
-      farmAccountsArray.map((fa) => ({ ...fa, d: farmConfigs[i].d }))
+      farmAccountsArray.map((fa) => ({
+        ...fa,
+        d: farmConfigs[i].d,
+        programId: farmConfigs[i].programId,
+      }))
     )
     .flat(1);
 
@@ -154,6 +158,7 @@ const executor: JobExecutor = async (cache: Cache) => {
   );
 
   const promises = [];
+  const farms = [];
   for (let i = 0; i < farmAccounts.length; i += 1) {
     const farmAccount = farmAccounts[i];
     const poolLpTokenAccount = tokenAccountsMap.get(
@@ -213,6 +218,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       d: farmAccount.d,
     };
 
+    farms.push(farmInfo);
     promises.push(
       cache.setItem(farmAccount.pubkey.toString(), farmInfo, {
         prefix: `${platformId}/farm`,
@@ -220,6 +226,11 @@ const executor: JobExecutor = async (cache: Cache) => {
       })
     );
   }
+
+  await cache.setItem(farmsKey, farms, {
+    prefix: `${platformId}`,
+    networkId: NetworkId.solana,
+  });
 
   await Promise.allSettled(promises);
 };

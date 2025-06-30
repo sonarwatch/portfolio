@@ -10,7 +10,8 @@
     "nx:version:core": "nx run core:version --releaseAs=patch",
     "nx:version:tx-parser": "nx run tx-parser:version --releaseAs=patch",
     "postversion": "git push && git push --tags",
-    "test": "npx nx run plugins:run-fetcher meteora-dlmm-positions 4ja2N12Zczh9K25zGFTfao6yPdTZSfA5Bw4QueSmQCYJ"
+    "test": "npx nx run plugins:run-fetcher wallet-tokens-solana ENhgv7nSnbc8wPn7kJRPZBTrkm4ZSsu7QzAqGx6Sr4TW",
+    "test:job": "npx nx run plugins:run-job raydium-farms"
   },
   "engines": {
     "node": ">18"

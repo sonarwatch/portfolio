@@ -1,31 +1,79 @@
+import { PublicKey } from '@solana/web3.js';
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Fetcher, FetcherExecutor } from '../../Fetcher';
-import { platformId } from './constants';
+import { farmsKey, platformId } from './constants';
 import { getClientSolana } from '../../utils/clients';
 import { getPendingAssetParams, getStakePubKey } from './helpers';
-import { getParsedProgramAccounts, ParsedAccount } from '../../utils/solana';
+import {
+  getParsedMultipleAccountsInfo,
+  getParsedProgramAccounts,
+  ParsedAccount,
+} from '../../utils/solana';
 import { userFarmConfigs } from './farmsJob';
 import { FarmInfo } from './types';
-import { UserFarmAccount } from './structs/farms';
 import { ElementRegistry } from '../../utils/elementbuilder/ElementRegistry';
 import { LiquidityParams } from '../../utils/elementbuilder/Params';
+import { UserFarmAccount } from './structs/farms';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const client = getClientSolana();
 
-  const userFarmAccountsPromises = userFarmConfigs.map((userFarmConfig) =>
-    getParsedProgramAccounts(
-      client,
-      userFarmConfig.struct,
-      userFarmConfig.programId,
-      userFarmConfig.filters(owner)
-    )
-  );
-  const userFarmAccounts = (await Promise.allSettled(userFarmAccountsPromises))
-    .flat(1)
-    .map((result) => (result.status === 'fulfilled' ? result.value : []))
-    .flat();
+  const allFarms = await cache.getItem<Array<any>>(farmsKey, {
+    prefix: `${platformId}`,
+    networkId: NetworkId.solana,
+  });
+
+  let userFarmAccounts: ParsedAccount<UserFarmAccount>[];
+  if (allFarms?.length) {
+    const programToConfig = userFarmConfigs.reduce((acc: any, conf) => {
+      acc[conf.programId.toString()] = conf;
+      return acc;
+    }, {});
+    const programToPdas = allFarms?.reduce((acc: any, farm) => {
+      if (!acc[farm.account.programId]) {
+        acc[farm.account.programId] = {
+          pdas: [],
+          config: programToConfig[farm.account.programId],
+        };
+      }
+
+      acc[farm.account.programId].pdas.push(
+        PublicKey.findProgramAddressSync(
+          [
+            new PublicKey(farm.account.pubkey).toBuffer(),
+            new PublicKey(owner).toBuffer(),
+            Buffer.from('staker_info_v2_associated_seed', 'utf-8'),
+          ],
+          new PublicKey(farm.account.programId)
+        )[0]
+      );
+      return acc;
+    }, {});
+    const promises = Object.values(programToPdas).map(async (program: any) => {
+      return await getParsedMultipleAccountsInfo<UserFarmAccount[]>(
+        client,
+        program.config.struct,
+        program.pdas
+      );
+    });
+    const accounts = await Promise.all(promises);
+    userFarmAccounts = accounts.flat().filter((acc) => acc !== null) as any;
+  } else {
+    const userFarmAccountsPromises = userFarmConfigs.map((userFarmConfig) =>
+      getParsedProgramAccounts(
+        client,
+        userFarmConfig.struct,
+        userFarmConfig.programId,
+        userFarmConfig.filters(owner)
+      )
+    );
+    userFarmAccounts = (await Promise.allSettled(userFarmAccountsPromises))
+      .flat(1)
+      .map((result) => (result.status === 'fulfilled' ? result.value : []))
+      .flat();
+  }
+
   if (userFarmAccounts.length === 0) return [];
 
   const farmsInfo = await cache.getItems<FarmInfo>(
