@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.46](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.45...plugins-0.15.46) (2025-06-29)
+
+
+
+## [0.15.45](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.44...plugins-0.15.45) (2025-06-29)
+
+
+### Features
+
+* **plugins:** enhance token account metadata handling for Solana by supporting Token 2022 accounts ([362dc3f](https://github.com/sonarwatch/portfolio/commit/362dc3f8e7512c4c074a16672ac4ff88d3d36077))
+
+
+
 ## [0.15.44](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.43...plugins-0.15.44) (2025-06-28)
 
 

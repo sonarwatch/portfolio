@@ -79,6 +79,7 @@
     "@project-serum/anchor": "^0.26.0",
     "@sei-js/core": "^3.2.1",
     "@sei-js/proto": "^3.1.0",
+    "@solana/spl-token": "^0.4.13",
     "@solana/web3.js": "^1.98.0",
     "axios": "^1.7.9",
     "bignumber.js": "^9.1.2",

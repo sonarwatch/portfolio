@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.2.7](https://github.com/sonarwatch/portfolio/compare/tx-parser-1.2.6...tx-parser-1.2.7) (2025-06-30)
+
+
+### Features
+
+* **services:** add JITO airdrop service definition and contract ([a1208ca](https://github.com/sonarwatch/portfolio/commit/a1208cae80730f27377839155a7769a0cba3258d))
+
+
+
 ## [1.2.6](https://github.com/sonarwatch/portfolio/compare/tx-parser-1.2.5...tx-parser-1.2.6) (2025-06-23)
 
 
