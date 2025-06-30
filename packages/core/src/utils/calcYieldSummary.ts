@@ -104,6 +104,8 @@ const calcYieldItem = (element: PortfolioElement): YieldItem[] => {
     });
   }
 
+  if (yieldItems.length === 0) return [];
+
   return [
     {
       yield: yieldFromApy(reduceYieldItems(yieldItems)),
@@ -139,8 +141,8 @@ export const calcYieldSummary = (
       apy,
     },
     revenue: {
-      apr: value * apr,
-      apy: value * apy,
+      apr: (value * apr) / 100,
+      apy: (value * apy) / 100,
     },
   };
 
