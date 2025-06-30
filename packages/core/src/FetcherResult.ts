@@ -14,6 +14,7 @@ export type FetcherResult = {
   networdkId: NetworkIdType;
   duration: number;
   elements: PortfolioElement[];
+  error?: string;
 };
 
 /**
