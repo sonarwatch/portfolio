@@ -7,6 +7,12 @@ const contract = {
   platformId: 'fragmetric',
 };
 
+const airdropContract = {
+  name: 'Airdrop',
+  address: 'fdropWhSi5xVKa9z26qKXveXoHDePDXfb5zxt3RKvKx',
+  platformId: 'fragmetric',
+};
+
 const service: ServiceDefinition = {
   id: 'fragmetric',
   name: 'Fragmetric',
@@ -15,5 +21,13 @@ const service: ServiceDefinition = {
   contracts: [contract],
 };
 
-export const services: ServiceDefinition[] = [service];
+export const airdropService: ServiceDefinition = {
+  id: 'fragmetric-airdrop',
+  name: 'Fragmetric Airdrop',
+  platformId: 'fragmetric',
+  networkId: NetworkId.solana,
+  contracts: [airdropContract],
+};
+
+export const services: ServiceDefinition[] = [service, airdropService];
 export default services;
