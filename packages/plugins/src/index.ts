@@ -184,6 +184,7 @@ import * as spice from './plugins/spice';
 import * as cudis from './plugins/cudis';
 import * as wasabi from './plugins/wasabi';
 import * as byreal from './plugins/byreal';
+import * as voltr from './plugins/voltr';
 
 import { solanaSimpleFetcher } from './plugins/tokens';
 
@@ -381,6 +382,7 @@ const modules = [
   cudis,
   wasabi,
   byreal,
+  voltr,
 ];
 
 // JOBS //
