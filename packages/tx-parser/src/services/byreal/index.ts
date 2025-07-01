@@ -29,7 +29,7 @@ const rfqContract = {
 const clmmService: ServiceDefinition = {
   id: 'byreal-clmm',
   networkId: NetworkId.solana,
-  name: 'ByReal CLMM',
+  name: 'CLMM',
   contracts: [clmmContract],
   platformId,
 };
@@ -37,7 +37,7 @@ const clmmService: ServiceDefinition = {
 const resetService: ServiceDefinition = {
   id: 'byreal-reset',
   networkId: NetworkId.solana,
-  name: 'ByReal Reset',
+  name: 'Reset Launchpad',
   contracts: [resetContract],
   platformId,
 };
@@ -45,7 +45,7 @@ const resetService: ServiceDefinition = {
 const routerService: ServiceDefinition = {
   id: 'byreal-router',
   networkId: NetworkId.solana,
-  name: 'ByReal Router',
+  name: 'Router',
   contracts: [routerContract],
   platformId,
 };
@@ -53,7 +53,7 @@ const routerService: ServiceDefinition = {
 const rfqService: ServiceDefinition = {
   id: 'byreal-rfq',
   networkId: NetworkId.solana,
-  name: 'ByReal RFQ',
+  name: 'RFQ',
   contracts: [rfqContract],
   platformId,
 };
