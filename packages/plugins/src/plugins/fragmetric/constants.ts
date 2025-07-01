@@ -25,4 +25,10 @@ export const vaults = [
     tokenMint: 'zBTCug3er3tLyffELcvDNrKkCymbPWysGcWihESYfLg',
     reserveAccount: 'B5eYu4dKBS8bTvLdeZungomcaQx52rDprdKEcyHzgbBD',
   },
+  {
+    // vaultProgramAddress: 'BmJvUzoiiNBRx3v2Gqsix9WvVtw8FaztrfBHQyqpMbTd',
+    receiptToken: 'FRAG2gPNXozPpYcn2a8zK7YdtfNXCLsioZNwZXwTQ3cP',
+    tokenMint: 'FRAGMEWj2z65qM62zqKhNtwNFskdfKs4ekDUDX3b4VD5',
+    reserveAccount: '7q7YjoiDCeWudGrRJuL8PoajYYiEB7KAdTURDJi7aTtd',
+  },
 ];
