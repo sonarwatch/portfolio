@@ -1,9 +1,22 @@
 import { PublicKey } from '@solana/web3.js';
+import { AirdropStatics } from '../../AirdropFetcher';
 
 export const platformId = 'fragmetric';
 export const fragmetricPid = new PublicKey(
   'fragnAis7Bp6FTsMoa6YcH8UffhEw43Ph79qAiK3iF3'
 );
+export const fragMint = 'FRAGMEWj2z65qM62zqKhNtwNFskdfKs4ekDUDX3b4VD5';
+export const distributorPid = 'fdropWhSi5xVKa9z26qKXveXoHDePDXfb5zxt3RKvKx';
+export const airdropStatics: AirdropStatics = {
+  claimLink: 'https://airdrop.fragmetric.xyz/',
+  emitterLink: 'https://fragmetric.xyz/',
+  emitterName: 'Fragmetric',
+  id: 'fragmetric-airdrop',
+  image:
+    'https://sonarwatch.github.io/portfolio/assets/images/platforms/fragmetric.webp',
+  claimStart: 1751355000000,
+  claimEnd: 1754033400000,
+};
 
 // https://api.fragmetric.xyz/v1/graphql operationName "fragmetricStats"
 export const vaults = [
