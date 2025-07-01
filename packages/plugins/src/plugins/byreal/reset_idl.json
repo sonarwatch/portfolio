@@ -1,0 +1,1122 @@
+{
+  "address": "REALdpFGDDsiD9tvxYsXBTDpgH1gGQEqJ8YSLdYQWGD",
+  "metadata": {
+    "name": "reset_program",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "claim",
+      "docs": [
+        "User claims tokens with flexible amounts (merged claim functionality)"
+      ],
+      "discriminator": [62, 198, 214, 193, 213, 159, 108, 210],
+      "accounts": [
+        { "name": "user", "writable": true, "signer": true },
+        {
+          "name": "auction",
+          "docs": ["auction account to commit to"],
+          "writable": true
+        },
+        {
+          "name": "vault",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97, 117, 99, 116, 105, 111, 110, 95, 118, 97, 117, 108, 116
+                ]
+              },
+              { "kind": "account", "path": "auction" }
+            ]
+          },
+          "relations": ["auction"]
+        },
+        {
+          "name": "commit_status",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99, 111, 109, 109, 105, 116, 95, 115, 116, 97, 116, 117, 115
+                ]
+              },
+              { "kind": "account", "path": "auction" },
+              { "kind": "account", "path": "user" }
+            ]
+          }
+        },
+        {
+          "name": "user_list_token_account",
+          "docs": ["Vault to hold list token (the token being auctioned)"],
+          "writable": true
+        },
+        {
+          "name": "user_quote_token_account",
+          "docs": ["Vault to hold payment tokens (quote token)"],
+          "writable": true
+        },
+        {
+          "name": "vault_list_token_account",
+          "docs": ["Vault to hold list token"],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "vault" },
+              { "kind": "account", "path": "list_token_program" },
+              { "kind": "account", "path": "list_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "vault_quote_token_account",
+          "docs": ["Vault to hold payment tokens (quote token)"],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "vault" },
+              { "kind": "account", "path": "quote_token_program" },
+              { "kind": "account", "path": "quote_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "list_mint",
+          "docs": ["Sale token mint-account (the token being auctioned)"],
+          "relations": ["auction"]
+        },
+        {
+          "name": "quote_mint",
+          "docs": [
+            "Payment token mint-account (the token used to pay for the auction)"
+          ],
+          "relations": ["auction"]
+        },
+        {
+          "name": "list_token_program",
+          "docs": ["Spl token program or token program 2022"]
+        },
+        {
+          "name": "quote_token_program",
+          "docs": ["Spl token program or token program 2022"]
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        { "name": "bin_id", "type": "u8" },
+        { "name": "quote_token_amount", "type": "u64" }
+      ]
+    },
+    {
+      "name": "close_auction",
+      "docs": ["close auction and"],
+      "discriminator": [225, 129, 91, 48, 215, 73, 203, 172],
+      "accounts": [
+        { "name": "user", "writable": true },
+        {
+          "name": "authority",
+          "docs": ["Launchpad admin authority,must be the signer"],
+          "signer": true,
+          "address": "48fcHTG4Y2xLSNUyH3CtLEL67ZseJyQes1trLgLtNNSp"
+        },
+        {
+          "name": "auction",
+          "docs": ["auction account to commit to"],
+          "writable": true
+        },
+        {
+          "name": "vault",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97, 117, 99, 116, 105, 111, 110, 95, 118, 97, 117, 108, 116
+                ]
+              },
+              { "kind": "account", "path": "auction" }
+            ]
+          },
+          "relations": ["auction"]
+        },
+        {
+          "name": "user_list_token_account",
+          "docs": ["Vault to hold sale tokens (list token)"],
+          "writable": true
+        },
+        {
+          "name": "user_quote_token_account",
+          "docs": ["Vault to hold payment tokens (quote token)"],
+          "writable": true
+        },
+        {
+          "name": "vault_list_token_account",
+          "docs": ["Vault to hold sale tokens (list token)"],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "vault" },
+              { "kind": "account", "path": "list_token_program" },
+              { "kind": "account", "path": "list_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "vault_quote_token_account",
+          "docs": ["Vault to hold payment tokens (quote token)"],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "vault" },
+              { "kind": "account", "path": "quote_token_program" },
+              { "kind": "account", "path": "quote_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "list_mint",
+          "docs": ["Sale token mint-account (the token being auctioned)"],
+          "relations": ["auction"]
+        },
+        {
+          "name": "quote_mint",
+          "docs": [
+            "Payment token mint-account (the token used to pay for the auction)"
+          ],
+          "relations": ["auction"]
+        },
+        {
+          "name": "list_token_program",
+          "docs": ["Spl token program or token program 2022"]
+        },
+        {
+          "name": "quote_token_program",
+          "docs": ["Spl token program or token program 2022"]
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "collect_fees",
+      "docs": ["Admin collected fees from auction accounts"],
+      "discriminator": [164, 152, 207, 99, 30, 186, 19, 182],
+      "accounts": [
+        { "name": "user", "writable": true },
+        {
+          "name": "authority",
+          "docs": ["Launchpad admin authority,must be the signer"],
+          "signer": true,
+          "address": "48fcHTG4Y2xLSNUyH3CtLEL67ZseJyQes1trLgLtNNSp"
+        },
+        {
+          "name": "auction",
+          "docs": ["auction account to commit to"],
+          "writable": true
+        },
+        {
+          "name": "vault",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97, 117, 99, 116, 105, 111, 110, 95, 118, 97, 117, 108, 116
+                ]
+              },
+              { "kind": "account", "path": "auction" }
+            ]
+          },
+          "relations": ["auction"]
+        },
+        {
+          "name": "user_list_token_account",
+          "docs": ["Vault to hold sale tokens (list token)"],
+          "writable": true
+        },
+        {
+          "name": "vault_list_token_account",
+          "docs": ["Vault to hold sale tokens (list token)"],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "vault" },
+              { "kind": "account", "path": "list_token_program" },
+              { "kind": "account", "path": "list_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "list_mint",
+          "docs": ["Sale token mint-account (the token being auctioned)"],
+          "relations": ["auction"]
+        },
+        {
+          "name": "list_token_program",
+          "docs": ["Spl token program or token program 2022"]
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        }
+      ],
+      "args": [{ "name": "amount", "type": "u64" }]
+    },
+    {
+      "name": "emerg_ctrl",
+      "docs": ["Emergency control for pausing/resuming auction operations"],
+      "discriminator": [1, 43, 102, 235, 196, 164, 145, 141],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": ["Only auction authority can control emergency state"],
+          "signer": true,
+          "address": "48fcHTG4Y2xLSNUyH3CtLEL67ZseJyQes1trLgLtNNSp"
+        },
+        { "name": "auction", "writable": true }
+      ],
+      "args": [{ "name": "status", "type": "u8" }]
+    },
+    {
+      "name": "incr_commit",
+      "docs": ["User increase commits to an auction bin"],
+      "discriminator": [241, 248, 57, 100, 192, 110, 1, 247],
+      "accounts": [
+        { "name": "user", "writable": true, "signer": true },
+        {
+          "name": "auction",
+          "docs": ["auction account to commit to"],
+          "writable": true
+        },
+        {
+          "name": "vault",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97, 117, 99, 116, 105, 111, 110, 95, 118, 97, 117, 108, 116
+                ]
+              },
+              { "kind": "account", "path": "auction" }
+            ]
+          },
+          "relations": ["auction"]
+        },
+        {
+          "name": "commit_status",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99, 111, 109, 109, 105, 116, 95, 115, 116, 97, 116, 117, 115
+                ]
+              },
+              { "kind": "account", "path": "auction" },
+              { "kind": "account", "path": "user" }
+            ]
+          }
+        },
+        {
+          "name": "user_quote_token_account",
+          "docs": ["User's payment token account (quote token)"],
+          "writable": true
+        },
+        {
+          "name": "vault_quote_token_account",
+          "docs": ["Vault to hold payment tokens (quote token)"],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "vault" },
+              { "kind": "account", "path": "quote_token_program" },
+              { "kind": "account", "path": "quote_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "quote_mint",
+          "docs": [
+            "Payment token mint-account (the token used to pay for the auction)"
+          ],
+          "relations": ["auction"]
+        },
+        {
+          "name": "sysvar_instructions",
+          "docs": [
+            "when we need check off-chain signatures,we will use this sysvar to read the previous instruction"
+          ],
+          "optional": true,
+          "address": "Sysvar1nstructions1111111111111111111111111"
+        },
+        {
+          "name": "quote_token_program",
+          "docs": ["Spl token program or token program 2022"]
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": { "defined": { "name": "IncrCommitParams" } }
+        }
+      ]
+    },
+    {
+      "name": "init_auction",
+      "docs": ["Create a new auction with automatic vault creation"],
+      "discriminator": [73, 108, 200, 53, 221, 115, 20, 41],
+      "accounts": [
+        {
+          "name": "payer",
+          "docs": ["payer of the auction,who will fund the vaults"],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "authority",
+          "docs": ["Launchpad admin authority,must be the signer"],
+          "signer": true,
+          "address": "48fcHTG4Y2xLSNUyH3CtLEL67ZseJyQes1trLgLtNNSp"
+        },
+        {
+          "name": "auction",
+          "docs": ["auction account to be initialized"],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [97, 117, 99, 116, 105, 111, 110] },
+              { "kind": "account", "path": "list_mint" },
+              { "kind": "account", "path": "quote_mint" }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97, 117, 99, 116, 105, 111, 110, 95, 118, 97, 117, 108, 116
+                ]
+              },
+              { "kind": "account", "path": "auction" }
+            ]
+          }
+        },
+        {
+          "name": "payer_list_token_account",
+          "docs": ["list token account of the payer"],
+          "writable": true
+        },
+        {
+          "name": "vault_list_token_account",
+          "docs": ["Vault to hold sale tokens (list token)"],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "vault" },
+              { "kind": "account", "path": "list_token_program" },
+              { "kind": "account", "path": "list_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "vault_quote_token_account",
+          "docs": ["Vault to hold payment tokens (quote token)"],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "vault" },
+              { "kind": "account", "path": "quote_token_program" },
+              { "kind": "account", "path": "quote_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "list_mint",
+          "docs": ["Sale token mint-account (the token being auctioned)"]
+        },
+        {
+          "name": "quote_mint",
+          "docs": [
+            "Payment token mint-account (the token used to pay for the auction)"
+          ]
+        },
+        {
+          "name": "list_token_program",
+          "docs": ["Spl token program or token program 2022"]
+        },
+        {
+          "name": "quote_token_program",
+          "docs": ["Spl token program or token program 2022"]
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": { "defined": { "name": "InitAuctionParams" } }
+        }
+      ]
+    },
+    {
+      "name": "update_price",
+      "docs": ["Admin sets new price for a bin"],
+      "discriminator": [61, 34, 117, 155, 75, 34, 123, 208],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": ["Launchpad admin authority,must be the signer"],
+          "signer": true,
+          "address": "48fcHTG4Y2xLSNUyH3CtLEL67ZseJyQes1trLgLtNNSp"
+        },
+        {
+          "name": "auction",
+          "docs": ["auction account to commit to"],
+          "writable": true
+        }
+      ],
+      "args": [
+        { "name": "bin_id", "type": "u8" },
+        { "name": "new_price", "type": "u64" }
+      ]
+    },
+    {
+      "name": "withdraw_funds",
+      "docs": ["Admin withdraws funds from all auction bins"],
+      "discriminator": [241, 36, 29, 111, 208, 31, 104, 217],
+      "accounts": [
+        { "name": "user", "writable": true },
+        {
+          "name": "authority",
+          "docs": ["Launchpad admin authority,must be the signer"],
+          "signer": true,
+          "address": "48fcHTG4Y2xLSNUyH3CtLEL67ZseJyQes1trLgLtNNSp"
+        },
+        {
+          "name": "auction",
+          "docs": ["auction account to commit to"],
+          "writable": true
+        },
+        {
+          "name": "vault",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97, 117, 99, 116, 105, 111, 110, 95, 118, 97, 117, 108, 116
+                ]
+              },
+              { "kind": "account", "path": "auction" }
+            ]
+          },
+          "relations": ["auction"]
+        },
+        {
+          "name": "user_list_token_account",
+          "docs": ["Vault to hold sale tokens (list token)"],
+          "writable": true
+        },
+        {
+          "name": "user_quote_token_account",
+          "docs": ["Vault to hold payment tokens (quote token)"],
+          "writable": true
+        },
+        {
+          "name": "vault_list_token_account",
+          "docs": ["Vault to hold sale tokens (list token)"],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "vault" },
+              { "kind": "account", "path": "list_token_program" },
+              { "kind": "account", "path": "list_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "vault_quote_token_account",
+          "docs": ["Vault to hold payment tokens (quote token)"],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "vault" },
+              { "kind": "account", "path": "quote_token_program" },
+              { "kind": "account", "path": "quote_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "list_mint",
+          "docs": ["Sale token mint-account (the token being auctioned)"],
+          "relations": ["auction"]
+        },
+        {
+          "name": "quote_mint",
+          "docs": [
+            "Payment token mint-account (the token used to pay for the auction)"
+          ],
+          "relations": ["auction"]
+        },
+        {
+          "name": "list_token_program",
+          "docs": ["Spl token program or token program 2022"]
+        },
+        {
+          "name": "quote_token_program",
+          "docs": ["Spl token program or token program 2022"]
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Auction",
+      "discriminator": [218, 94, 247, 242, 126, 233, 131, 81]
+    },
+    {
+      "name": "CommitStatus",
+      "discriminator": [25, 194, 13, 113, 31, 254, 29, 14]
+    }
+  ],
+  "events": [
+    {
+      "name": "ClaimEvent",
+      "discriminator": [93, 15, 70, 170, 48, 140, 212, 219]
+    },
+    {
+      "name": "CommitEvent",
+      "discriminator": [252, 78, 246, 83, 244, 83, 218, 56]
+    },
+    {
+      "name": "WithdrawFundsEvent",
+      "discriminator": [58, 194, 121, 69, 49, 139, 53, 200]
+    }
+  ],
+  "errors": [
+    { "code": 6000, "name": "CommitDisabled", "msg": "Disable commit" },
+    { "code": 6001, "name": "ClaimDisabled", "msg": "Disable claim" },
+    {
+      "code": 6002,
+      "name": "OnlyLaunchpadAdmin",
+      "msg": "Only admin can do this"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidAccountOwner",
+      "msg": "Invalid account owner"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidAccount",
+      "msg": "Invalid account contents"
+    },
+    { "code": 6005, "name": "MathOverflow", "msg": "Math overflow" },
+    { "code": 6006, "name": "MathUnderflow", "msg": "Math underflow" },
+    { "code": 6007, "name": "InvalidTimeRange", "msg": "Invalid time range" },
+    { "code": 6008, "name": "BinsLengthExceed", "msg": "Bins length exceed" },
+    { "code": 6009, "name": "InvalidClaimFee", "msg": "Invalid claim fee" },
+    {
+      "code": 6010,
+      "name": "ZeroValueNotAllowed",
+      "msg": "Not allow zero value"
+    },
+    { "code": 6011, "name": "NotInCommitTime", "msg": "Not in commit time" },
+    { "code": 6012, "name": "InvalidBinId", "msg": "Invalid bin-id" },
+    { "code": 6013, "name": "ClaimNotStart", "msg": "Claim not start" },
+    {
+      "code": 6014,
+      "name": "ClaimMoreThanCommit",
+      "msg": "Claim more than commit"
+    },
+    {
+      "code": 6015,
+      "name": "ClaimMoreThanSupply",
+      "msg": "Claim more than supply"
+    },
+    { "code": 6016, "name": "CommitCapExceeded", "msg": "Commit cap exceeded" },
+    { "code": 6017, "name": "UserCommitNotInit", "msg": "UserCommit not init" },
+    { "code": 6018, "name": "CommitNotEnd", "msg": "Commit not end" },
+    {
+      "code": 6019,
+      "name": "DoubleWithdrawFunds",
+      "msg": "Double withdraw funds"
+    },
+    {
+      "code": 6020,
+      "name": "MissingSysvarAccount",
+      "msg": "Missing sysvar account"
+    },
+    {
+      "code": 6021,
+      "name": "MissingEd25519Instruction",
+      "msg": "Missing ed25519 instruction"
+    },
+    {
+      "code": 6022,
+      "name": "InvalidEd25519Instruction",
+      "msg": "Invalid ed25519 instruction"
+    },
+    { "code": 6023, "name": "SignatureExpired", "msg": "Signature expired" },
+    {
+      "code": 6024,
+      "name": "MissingSignatureData",
+      "msg": "Missing signature Data"
+    },
+    { "code": 6025, "name": "MissingExpireTime", "msg": "Missing expire time" },
+    { "code": 6026, "name": "SerializationError", "msg": "Serialization error" }
+  ],
+  "types": [
+    {
+      "name": "Auction",
+      "docs": ["Core auction data account"],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "auction_id",
+            "docs": ["Unique identifier for this auction, account-pubkey"],
+            "type": "pubkey"
+          },
+          {
+            "name": "list_mint",
+            "docs": ["Sale token mint"],
+            "type": "pubkey"
+          },
+          {
+            "name": "quote_mint",
+            "docs": ["Payment token mint"],
+            "type": "pubkey"
+          },
+          {
+            "name": "vault",
+            "docs": ["vault that holds tokens for this auction"],
+            "type": "pubkey"
+          },
+          { "name": "vault_bump", "type": { "array": ["u8", 1] } },
+          {
+            "name": "commit_start_time",
+            "docs": ["Auction timeline"],
+            "type": "u64"
+          },
+          { "name": "commit_end_time", "type": "u64" },
+          { "name": "claim_start_time", "type": "u64" },
+          { "name": "bin_count", "type": "u8" },
+          {
+            "name": "bins",
+            "docs": ["Auction bins"],
+            "type": { "array": [{ "defined": { "name": "AuctionBin" } }, 20] }
+          },
+          { "name": "status", "docs": ["auction control flags"], "type": "u8" },
+          {
+            "name": "total_participants",
+            "docs": ["Total number of unique participants in this auction"],
+            "type": "u64"
+          },
+          {
+            "name": "finish_claim_participants",
+            "docs": [
+              "Total number of participants who finished claiming tokens"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "total_fees_collected",
+            "docs": ["Total fees collected from claimed sale tokens"],
+            "type": "u64"
+          },
+          {
+            "name": "custody_authority",
+            "docs": ["Custody authority for access control, must set"],
+            "type": "pubkey"
+          },
+          {
+            "name": "whitelist_authority",
+            "docs": ["Whitelist authority for access control (if not default)"],
+            "type": "pubkey"
+          },
+          {
+            "name": "user_commit_cap_limit",
+            "docs": ["Per-user commitment cap limit (if bigger than zero)"],
+            "type": "u64"
+          },
+          {
+            "name": "claim_fee_basis",
+            "docs": ["Claim fee rate (in basis points, 10000 = 100%)"],
+            "type": "u64"
+          },
+          {
+            "name": "has_withdraw_funds",
+            "docs": [
+              "Whether the unsold sale tokens and effective payment tokens have been",
+              "withdrawn, which is used to prevent double withdrawal by `withdraw_funds`"
+            ],
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AuctionBin",
+      "docs": ["Individual auction bin data"],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "unit_price",
+            "docs": [
+              "Price per token (in quote tokens) * LIST_TOKEN_PRICE_DENOMINATOR",
+              "Example: if 1 list_token = 0.5 quote_token, then unit_price = 0.5 * 1_000_000_000"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "total_supply",
+            "docs": ["Maximum list tokens available for sale in this bin"],
+            "type": "u64"
+          },
+          {
+            "name": "total_committed",
+            "docs": ["Total quote tokens committed by all users in this bin"],
+            "type": "u64"
+          },
+          {
+            "name": "claimed_list_token_amount",
+            "docs": ["Total list tokens that have been claimed from this bin"],
+            "type": "u64"
+          },
+          {
+            "name": "claimed_quote_token_amount",
+            "docs": [
+              "Amount of quote tokens already claimed from this bin",
+              "when the user claim quote token, they will get quote token (maybe) and list token at the same time"
+            ],
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AuctionBinParams",
+      "docs": ["Parameters for creating auction bins"],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "unit_price",
+            "docs": [
+              "Price per token (in quote tokens) * LIST_TOKEN_PRICE_DENOMINATOR"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "total_supply",
+            "docs": ["Maximum tokens available for sale in this bin"],
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ClaimEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "docs": ["User who made the claim"],
+            "type": "pubkey"
+          },
+          { "name": "auction", "docs": ["Auction address"], "type": "pubkey" },
+          {
+            "name": "quote_token_amount",
+            "docs": ["Amount of quote tokens claimed by the user"],
+            "type": "u64"
+          },
+          {
+            "name": "list_token_amount",
+            "docs": ["Amount of list tokens claimed by the user"],
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CommitBin",
+      "docs": ["Individual bin commitment data within a user's commitment"],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "commit_quote_token_amount",
+            "docs": ["Amount of payment tokens committed to this bin"],
+            "type": "u64"
+          },
+          {
+            "name": "claimed_quote_token_amount",
+            "docs": [
+              "Amount of quote tokens already claimed from this bin",
+              "when the user claim quote token, they will get quote token (maybe) and list token at the same time"
+            ],
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CommitEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "docs": ["User who made the commitment"],
+            "type": "pubkey"
+          },
+          { "name": "auction", "docs": ["Auction address"], "type": "pubkey" },
+          {
+            "name": "quote_token_amount",
+            "docs": [
+              "every bin's quote token amount committed by the user",
+              "(indexed by bin_id)"
+            ],
+            "type": { "array": ["u64", 20] }
+          }
+        ]
+      }
+    },
+    {
+      "name": "CommitStatus",
+      "docs": ["User commitment data for all auction bins"],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "initialized",
+            "docs": ["has this user initialized the commitment"],
+            "type": "bool"
+          },
+          {
+            "name": "auction",
+            "docs": ["Reference to the auction account"],
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "docs": ["User who made the commitment"],
+            "type": "pubkey"
+          },
+          {
+            "name": "bins",
+            "docs": ["All bins info for this user's commitment"],
+            "type": { "array": [{ "defined": { "name": "CommitBin" } }, 20] }
+          }
+        ]
+      }
+    },
+    {
+      "name": "IncrCommitParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "bin_id", "docs": ["Bin ID to commit to"], "type": "u8" },
+          {
+            "name": "quote_token_amount",
+            "docs": ["Amount of payment tokens committed to this bin"],
+            "type": "u64"
+          },
+          {
+            "name": "is_custody",
+            "docs": [
+              "is this a custody authorized commit",
+              "if it is true,then we will check the custody off-chain signature",
+              "if it is false,and the auction has whitelist enabled,we will check the whitelist off-chain signature",
+              "if it is false and the auction does not have whitelist enabled,we will skip the off-chain signature check"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "expire_time",
+            "docs": ["expire time used in the off-chain signature"],
+            "type": { "option": "u64" }
+          },
+          {
+            "name": "signature",
+            "docs": ["Off-chain signature data,if any"],
+            "type": { "option": "bytes" }
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitAuctionParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "commit_start_time",
+            "docs": ["Auction timeline"],
+            "type": "u64"
+          },
+          { "name": "commit_end_time", "type": "u64" },
+          { "name": "claim_start_time", "type": "u64" },
+          {
+            "name": "custody_authority",
+            "docs": ["Custody authority for access control,must set"],
+            "type": "pubkey"
+          },
+          {
+            "name": "whitelist_authority",
+            "docs": ["Whitelist authority for access control (if not default)"],
+            "type": { "option": "pubkey" }
+          },
+          {
+            "name": "user_commit_cap_limit",
+            "docs": ["Per-user commitment cap limit (if bigger than zero)"],
+            "type": { "option": "u64" }
+          },
+          {
+            "name": "claim_fee_basis",
+            "docs": ["Claim fee rate (in basis points,10000 = 100%)"],
+            "type": { "option": "u64" }
+          },
+          {
+            "name": "bins",
+            "docs": ["Bins for this auction"],
+            "type": { "vec": { "defined": { "name": "AuctionBinParams" } } }
+          }
+        ]
+      }
+    },
+    {
+      "name": "WithdrawFundsEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "auction", "type": "pubkey" },
+          { "name": "unsold_list_token_amount", "type": "u64" },
+          { "name": "effective_payment_token_amount", "type": "u64" }
+        ]
+      }
+    }
+  ]
+}

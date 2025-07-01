@@ -183,6 +183,8 @@ import * as candle from './plugins/candle';
 import * as spice from './plugins/spice';
 import * as cudis from './plugins/cudis';
 import * as wasabi from './plugins/wasabi';
+import * as byreal from './plugins/byreal';
+
 import { solanaSimpleFetcher } from './plugins/tokens';
 
 export { getFetchersByAddressSystem } from './utils/misc/getFetchersByAddressSystem';
@@ -378,6 +380,7 @@ const modules = [
   spice,
   cudis,
   wasabi,
+  byreal,
 ];
 
 // JOBS //
