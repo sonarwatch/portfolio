@@ -1,9 +1,5 @@
 import util from 'node:util';
-import {
-  calcYieldSummary,
-  isAddress,
-  networks,
-} from '@sonarwatch/portfolio-core';
+import { isAddress, networks } from '@sonarwatch/portfolio-core';
 import { fetchers, getCache, solanaSimpleFetcher } from '../src';
 import durationForHumans from '../src/utils/misc/durationForHumans';
 import { runFetcher } from '../src/Fetcher';
