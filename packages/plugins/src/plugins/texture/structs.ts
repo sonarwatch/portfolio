@@ -7,7 +7,7 @@ import {
 import { publicKey } from '@metaplex-foundation/beet-solana';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { blob, u64 } from '../../utils/solana';
+import { blob, u128, u64 } from '../../utils/solana';
 
 export type User = {
   accountDiscriminator: number[];
@@ -107,4 +107,159 @@ export const offerStruct = new BeetStruct<Offer>(
     ['_padding1', blob(32 * 4)],
   ],
   (args) => args as Offer
+);
+
+export type LastUpdate = {
+  slot: BigNumber;
+  timestamp: BigNumber;
+  stale: number;
+  _padding: Uint8Array;
+};
+
+const lastUpdateStruct = new BeetStruct<LastUpdate>(
+  [
+    ['slot', u64],
+    ['timestamp', u64],
+    ['stale', u8],
+    ['_padding', blob(15)],
+  ],
+  (args) => args as LastUpdate
+);
+
+export type DepositedCollateral = {
+  deposit_reserve: PublicKey;
+  entry_market_value: BigNumber;
+  market_value: BigNumber;
+  deposited_amount: BigNumber;
+  memo: Uint8Array;
+};
+
+const depositedCollateralStruct = new BeetStruct<DepositedCollateral>(
+  [
+    ['deposit_reserve', publicKey],
+    ['entry_market_value', u128],
+    ['market_value', u128],
+    ['deposited_amount', u64],
+    ['memo', blob(24)],
+  ],
+  (args) => args as DepositedCollateral
+);
+
+export type BorrowedLiquidity = {
+  borrow_reserve: PublicKey;
+  cumulative_borrow_rate: BigNumber;
+  borrowed_amount: BigNumber;
+  market_value: BigNumber;
+  entry_market_value: BigNumber;
+  memo: Uint8Array;
+};
+
+const borrowedLiquidityStruct = new BeetStruct<BorrowedLiquidity>(
+  [
+    ['borrow_reserve', publicKey],
+    ['cumulative_borrow_rate', u128],
+    ['borrowed_amount', u128],
+    ['market_value', u128],
+    ['market_value', u128],
+    ['memo', blob(32)],
+  ],
+  (args) => args as BorrowedLiquidity
+);
+
+export type Position = {
+  accountDiscriminator: number[];
+  version: number;
+  position_type: number;
+  _flags: Buffer;
+  last_update: LastUpdate;
+  pool: PublicKey;
+  owner: PublicKey;
+  collateral: DepositedCollateral[];
+  borrows: BorrowedLiquidity[];
+};
+
+export const positionStruct = new BeetStruct<Position>(
+  [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+    ['version', u8],
+    ['position_type', u8],
+    ['_flags', blob(6)],
+    ['last_update', lastUpdateStruct],
+    ['pool', publicKey],
+    ['owner', publicKey],
+    ['collateral', uniformFixedSizeArray(depositedCollateralStruct, 10)],
+    ['borrows', uniformFixedSizeArray(borrowedLiquidityStruct, 10)],
+  ],
+  (args) => args as Position
+);
+
+export type ReserveLiquidity = {
+  mint: PublicKey;
+  borrowed_amount_wads: BigNumber;
+  cumulative_borrow_rate_wads: BigNumber;
+  market_price: BigNumber;
+  curator_performance_fee_wads: BigNumber;
+  texture_performance_fee_wads: BigNumber;
+  borrow_rate: BigNumber;
+  available_amount: BigNumber;
+  _padding: BigNumber;
+  mint_decimals: number;
+  _padding1: Uint8Array;
+};
+
+export const reserveLiquidityStruct = new BeetStruct<ReserveLiquidity>(
+  [
+    ['mint', publicKey],
+    ['borrowed_amount_wads', u128],
+    ['cumulative_borrow_rate_wads', u128],
+    ['market_price', u128],
+    ['curator_performance_fee_wads', u128],
+    ['texture_performance_fee_wads', u128],
+    ['borrow_rate', u128],
+    ['available_amount', u64],
+    ['_padding', u64],
+    ['mint_decimals', u8],
+    ['_padding1', blob(15 + 32 * 2)],
+  ],
+  (args) => args as ReserveLiquidity
+);
+
+export type ReserveCollateral = {
+  lp_total_supply: BigNumber;
+  _padding: BigNumber;
+};
+
+const reserveCollateralStruct = new BeetStruct<ReserveCollateral>(
+  [
+    ['lp_total_supply', u64],
+    ['_padding', u64],
+  ],
+  (args) => args as ReserveCollateral
+);
+
+export type Reserve = {
+  accountDiscriminator: number[];
+  version: number;
+  reserve_type: number;
+  mode: number;
+  _flags: Uint8Array;
+  last_update: LastUpdate;
+  pool: PublicKey;
+  liquidity: ReserveLiquidity;
+  collateral: ReserveCollateral;
+};
+
+export const reserveStruct = new BeetStruct<Reserve>(
+  [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+    ['version', u8],
+    ['reserve_type', u8],
+    ['mode', u8],
+    ['_flags', blob(5)],
+    ['last_update', lastUpdateStruct],
+    ['pool', publicKey],
+    ['liquidity', reserveLiquidityStruct],
+    ['collateral', reserveCollateralStruct],
+  ],
+  (args) => args as Reserve
 );

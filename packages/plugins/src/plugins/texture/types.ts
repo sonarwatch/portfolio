@@ -9,3 +9,9 @@ export type Pair = {
     mint: string;
   };
 };
+
+export type ReserveInfo = {
+  pubkey: string;
+  exchange_rate: number;
+  mint: string;
+};
