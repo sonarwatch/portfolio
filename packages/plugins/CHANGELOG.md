@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.48](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.47...plugins-0.15.48) (2025-07-02)
+
+
+### Features
+
+* **plugins:** add voltr pricing job ([9c2a555](https://github.com/sonarwatch/portfolio/commit/9c2a5559c37083f2671c17c01bfeb2066ec19ae0))
+* **plugins:** fragmetric skip processing for default PublicKey in pricingJob ([5bcb646](https://github.com/sonarwatch/portfolio/commit/5bcb646b80fbe8b778c1d587e9b1f78bb18ae159))
+
+
+
 ## [0.15.47](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.46...plugins-0.15.47) (2025-07-01)
 
 
