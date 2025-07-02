@@ -89,6 +89,10 @@ export const lendingConfigs: Map<string, LendingMarketConfig> = new Map([
           'Bybit2vBJGhPF52GBdNaQfUJ6ZpThSgHBobjWZpLPb4B',
           solanaNativeWrappedAddress,
         ],
+        [
+          'strng7mqqc1MBJJV6vMzYbEqnwVGvKKGKedeCvtktWA',
+          solanaNativeWrappedAddress,
+        ],
       ],
       leveragePairs: [
         ['6DNSN2BJsaPFdFFc1zP37kkeNe4Usc1Sqkzr9C9vPWcU', usdcSolanaMint],

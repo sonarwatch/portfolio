@@ -124,6 +124,10 @@ const executor: JobExecutor = async (cache: Cache) => {
   );
 
   for (const fundAccount of fundsAccounts) {
+    if (
+      fundAccount.wrapped_token.mint.toString() === PublicKey.default.toString()
+    )
+      continue;
     const receiptTokenPriceSource = sources.find(
       (source) => source.address === fundAccount.receipt_token_mint.toString()
     );

@@ -25,6 +25,6 @@ export const cpmmProgramId = new PublicKey(
   'CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C'
 );
 
-export const positionsIdentifier = 'Raydium Concentrated Liquidity';
+export const raydiumPositionsIdentifier = 'Raydium Concentrated Liquidity';
 
 export const rayDecimals = 6;
