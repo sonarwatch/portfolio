@@ -62,6 +62,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   accounts.forEach((acc) => {
     acc.orders.forEach((order) => {
       if (order.status === OrderStatus.Init) return;
+      if (order.status === OrderStatus.Closed) return;
 
       const market = markets.find(
         (m) => m && m.market_id.toString() === order.market_id.toString()
