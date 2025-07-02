@@ -15,7 +15,8 @@ import {
   asr2AirdropFetcher,
   asr3AirdropFetcher,
   asr4AirdropFetcher,
-  asr4Fetcher,
+  asr5AirdropFetcher,
+  asr5Fetcher,
 } from './governance';
 import { lfgAirdropFetchers, lfgFetchers } from './launchpad';
 import verifiedJob from './verifiedJob';
@@ -28,7 +29,7 @@ export const fetchers: Fetcher[] = [
   dcaFetcher,
   lockFetcher,
   voteFetcher,
-  asr4Fetcher,
+  asr5Fetcher,
   ...lfgFetchers,
 ];
 export const airdropFetchers: AirdropFetcher[] = [
@@ -36,6 +37,7 @@ export const airdropFetchers: AirdropFetcher[] = [
   asr2AirdropFetcher,
   asr3AirdropFetcher,
   asr4AirdropFetcher,
+  asr5AirdropFetcher,
   ...lfgAirdropFetchers,
 ];
 
