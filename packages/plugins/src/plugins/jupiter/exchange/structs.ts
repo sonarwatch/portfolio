@@ -623,3 +623,32 @@ export const positionStruct = new BeetStruct<Position>(
   ],
   (args) => args as Position
 );
+
+export type BorrowPosition = {
+  accountDiscriminator: number[];
+  owner: PublicKey;
+  pool: PublicKey;
+  custody: PublicKey;
+  openTime: BigNumber;
+  updateTime: BigNumber;
+  borrowSize: BigNumber;
+  cumulativeCompoundedInterestSnapshot: BigNumber;
+  lockedCollateral: BigNumber;
+  bump: number;
+};
+
+export const borrowPositionStruct = new BeetStruct<BorrowPosition>(
+  [
+    ['accountDiscriminator', uniformFixedSizeArray(u8, 8)],
+    ['owner', publicKey],
+    ['pool', publicKey],
+    ['custody', publicKey],
+    ['openTime', i64],
+    ['updateTime', i64],
+    ['borrowSize', u128],
+    ['cumulativeCompoundedInterestSnapshot', u128],
+    ['lockedCollateral', u64],
+    ['bump', u8],
+  ],
+  (args) => args as BorrowPosition
+);

@@ -26,5 +26,10 @@ export const jlpPoolPk = new PublicKey(
   '5BUwFW4nRbftYTDMbgxykoFWqWHPzahFSNAaaaJtVKsq'
 );
 
+export const USDC_CUSTODY_PUBLIC_KEY = new PublicKey(
+  'G18jKKXQwBbrHeiK3C9MRXhkHsLHf7XgCSisykV46EZa'
+);
+
 export const custodiesKey = 'custodies';
 export const perpPoolsKey = 'perppools';
+export const perpBorrowAprCacheKey = 'perpborrowapr';

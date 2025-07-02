@@ -19,10 +19,18 @@ import {
 } from './governance';
 import { lfgAirdropFetchers, lfgFetchers } from './launchpad';
 import verifiedJob from './verifiedJob';
+import perpetualBorrowFetcher from './exchange/perpetualBorrowFetcher';
+import perpetualBorrowJob from './exchange/perpetualBorrowJob';
 
-export const jobs: Job[] = [custodiesJob, verifiedJob, pricingJob];
+export const jobs: Job[] = [
+  custodiesJob,
+  verifiedJob,
+  pricingJob,
+  perpetualBorrowJob,
+];
 export const fetchers: Fetcher[] = [
   perpetualFetcher,
+  perpetualBorrowFetcher,
   valueAverageFetcher,
   limitFetcher,
   dcaFetcher,
