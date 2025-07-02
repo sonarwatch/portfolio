@@ -1,0 +1,588 @@
+{
+  "address": "3BufioDyECNwuFJLRGCXNbZFrsnJnCsALMfDKjQEnk8x",
+  "metadata": {
+    "name": "voltr_adaptor",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "create_strategy",
+      "discriminator": [
+        152,
+        160,
+        107,
+        148,
+        245,
+        190,
+        127,
+        224
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "admin",
+          "signer": true
+        },
+        {
+          "name": "counterparty_asset_ta",
+          "writable": true
+        },
+        {
+          "name": "strategy",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  114,
+                  97,
+                  116,
+                  101,
+                  103,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "counterparty_asset_ta"
+              }
+            ]
+          }
+        },
+        {
+          "name": "protocol_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "strategy_type",
+          "type": {
+            "defined": {
+              "name": "StrategyType"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "deposit",
+      "discriminator": [
+        242,
+        35,
+        198,
+        137,
+        82,
+        225,
+        242,
+        182
+      ],
+      "accounts": [
+        {
+          "name": "vault_asset_idle_auth",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "strategy"
+        },
+        {
+          "name": "vault_strategy",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  115,
+                  116,
+                  114,
+                  97,
+                  116,
+                  101,
+                  103,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault_asset_idle_auth"
+              },
+              {
+                "kind": "account",
+                "path": "strategy"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_asset_mint",
+          "writable": true
+        },
+        {
+          "name": "vault_asset_idle_ata",
+          "docs": [
+            "The vault's associated token account for asset."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "vault_asset_idle_auth"
+              },
+              {
+                "kind": "account",
+                "path": "asset_token_program"
+              },
+              {
+                "kind": "account",
+                "path": "vault_asset_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "counterparty_asset_ta",
+          "writable": true
+        },
+        {
+          "name": "protocol_program"
+        },
+        {
+          "name": "asset_token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault_asset_idle_auth",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "strategy"
+        },
+        {
+          "name": "vault_strategy",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  115,
+                  116,
+                  114,
+                  97,
+                  116,
+                  101,
+                  103,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault_asset_idle_auth"
+              },
+              {
+                "kind": "account",
+                "path": "strategy"
+              }
+            ]
+          }
+        },
+        {
+          "name": "protocol_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "withdraw",
+      "discriminator": [
+        183,
+        18,
+        70,
+        156,
+        148,
+        109,
+        161,
+        34
+      ],
+      "accounts": [
+        {
+          "name": "vault_asset_idle_auth",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "strategy"
+        },
+        {
+          "name": "vault_strategy",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  115,
+                  116,
+                  114,
+                  97,
+                  116,
+                  101,
+                  103,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault_asset_idle_auth"
+              },
+              {
+                "kind": "account",
+                "path": "strategy"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_asset_mint",
+          "writable": true
+        },
+        {
+          "name": "vault_asset_idle_ata",
+          "docs": [
+            "The vault's associated token account for asset."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "vault_asset_idle_auth"
+              },
+              {
+                "kind": "account",
+                "path": "asset_token_program"
+              },
+              {
+                "kind": "account",
+                "path": "vault_asset_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "counterparty_asset_ta",
+          "writable": true
+        },
+        {
+          "name": "counterparty_asset_ta_auth",
+          "writable": true
+        },
+        {
+          "name": "protocol_program"
+        },
+        {
+          "name": "asset_token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Strategy",
+      "discriminator": [
+        174,
+        110,
+        39,
+        119,
+        82,
+        106,
+        169,
+        102
+      ]
+    },
+    {
+      "name": "VaultStrategy",
+      "discriminator": [
+        116,
+        9,
+        73,
+        37,
+        73,
+        192,
+        63,
+        215
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidAmount",
+      "msg": "Invalid amount provided."
+    },
+    {
+      "code": 6001,
+      "name": "InvalidAccountOwner",
+      "msg": "Invalid account owner."
+    },
+    {
+      "code": 6002,
+      "name": "AlreadyInitialized",
+      "msg": "Already initialized."
+    },
+    {
+      "code": 6003,
+      "name": "InvalidTokenMint",
+      "msg": "Invalid token mint."
+    },
+    {
+      "code": 6004,
+      "name": "InvalidAccountInput",
+      "msg": "Invalid account input."
+    },
+    {
+      "code": 6005,
+      "name": "NotRentExempt",
+      "msg": "Not rent exempt."
+    },
+    {
+      "code": 6006,
+      "name": "MathOverflow",
+      "msg": "Math overflow."
+    },
+    {
+      "code": 6007,
+      "name": "KaminoDepositFailed",
+      "msg": "Kamino deposit failed."
+    },
+    {
+      "code": 6008,
+      "name": "KaminoInitializeFailed",
+      "msg": "Kamino initialize failed."
+    },
+    {
+      "code": 6009,
+      "name": "MarginfiInitializeFailed",
+      "msg": "Marginfi initialize failed."
+    },
+    {
+      "code": 6010,
+      "name": "SolendInitializeFailed",
+      "msg": "Solend initialize failed."
+    },
+    {
+      "code": 6011,
+      "name": "InvalidRemainingAccounts",
+      "msg": "Invalid remaining accounts."
+    }
+  ],
+  "types": [
+    {
+      "name": "Strategy",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "counterparty_asset_ta",
+            "type": "pubkey"
+          },
+          {
+            "name": "protocol_program",
+            "type": "pubkey"
+          },
+          {
+            "name": "strategy_type",
+            "type": {
+              "defined": {
+                "name": "StrategyType"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "StrategyType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Solend"
+          },
+          {
+            "name": "Drift"
+          },
+          {
+            "name": "Marginfi"
+          },
+          {
+            "name": "Kamino"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultStrategy",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault_asset_idle_auth",
+            "type": "pubkey"
+          },
+          {
+            "name": "strategy",
+            "type": "pubkey"
+          },
+          {
+            "name": "current_amount",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ]
+}

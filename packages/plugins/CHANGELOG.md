@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.47](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.46...plugins-0.15.47) (2025-07-01)
+
+
+### Features
+
+* **plugins:** add strongSOL multiply ([4696088](https://github.com/sonarwatch/portfolio/commit/46960889e89b6455ac2211f3fdbd824acf4df875))
+
+
+
 ## [0.15.46](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.45...plugins-0.15.46) (2025-06-29)
 
 

@@ -1,0 +1,2013 @@
+{
+  "address": "EwAei87GBsgeLueC7mShT2TNbH3BYumP4RskusxUFBn6",
+  "metadata": {
+    "name": "voltr_vault",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "add_strategy",
+      "discriminator": [
+        64,
+        123,
+        127,
+        227,
+        192,
+        234,
+        198,
+        20
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "admin",
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "adaptor_strategy",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  100,
+                  97,
+                  112,
+                  116,
+                  111,
+                  114,
+                  95,
+                  115,
+                  116,
+                  114,
+                  97,
+                  116,
+                  101,
+                  103,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "strategy"
+              }
+            ]
+          }
+        },
+        {
+          "name": "strategy"
+        },
+        {
+          "name": "adaptor_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "deposit",
+      "discriminator": [
+        242,
+        35,
+        198,
+        137,
+        82,
+        225,
+        242,
+        182
+      ],
+      "accounts": [
+        {
+          "name": "user_transfer_authority",
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "vault_asset_mint"
+        },
+        {
+          "name": "vault_lp_mint",
+          "writable": true
+        },
+        {
+          "name": "user_asset_ata",
+          "docs": [
+            "The user's asset ATA from which they are depositing tokens."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "user_transfer_authority"
+              },
+              {
+                "kind": "account",
+                "path": "asset_token_program"
+              },
+              {
+                "kind": "account",
+                "path": "vault_asset_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "vault_asset_idle_ata",
+          "docs": [
+            "The vault's associated token account for asset."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "vault_asset_idle_auth"
+              },
+              {
+                "kind": "account",
+                "path": "asset_token_program"
+              },
+              {
+                "kind": "account",
+                "path": "vault_asset_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "vault_asset_idle_auth",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  97,
+                  115,
+                  115,
+                  101,
+                  116,
+                  95,
+                  105,
+                  100,
+                  108,
+                  101,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_lp_ata",
+          "docs": [
+            "The user's LP ATA where we will mint LP tokens."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "user_transfer_authority"
+              },
+              {
+                "kind": "account",
+                "path": "lp_token_program"
+              },
+              {
+                "kind": "account",
+                "path": "vault_lp_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "vault_lp_mint_auth",
+          "docs": [
+            "The PDA authority used to sign mint instructions for LP tokens."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  108,
+                  112,
+                  95,
+                  109,
+                  105,
+                  110,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "clock",
+          "address": "SysvarC1ock11111111111111111111111111111111"
+        },
+        {
+          "name": "asset_token_program"
+        },
+        {
+          "name": "lp_token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "deposit_strategy",
+      "discriminator": [
+        246,
+        82,
+        57,
+        226,
+        131,
+        222,
+        253,
+        249
+      ],
+      "accounts": [
+        {
+          "name": "manager",
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "adaptor_strategy",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  100,
+                  97,
+                  112,
+                  116,
+                  111,
+                  114,
+                  95,
+                  115,
+                  116,
+                  114,
+                  97,
+                  116,
+                  101,
+                  103,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "strategy"
+              }
+            ]
+          }
+        },
+        {
+          "name": "strategy",
+          "docs": [
+            "CHECK"
+          ],
+          "writable": true
+        },
+        {
+          "name": "vault_strategy",
+          "writable": true
+        },
+        {
+          "name": "adaptor_program",
+          "docs": [
+            "CHECK"
+          ]
+        },
+        {
+          "name": "vault_asset_idle_auth",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  97,
+                  115,
+                  115,
+                  101,
+                  116,
+                  95,
+                  105,
+                  100,
+                  108,
+                  101,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_lp_fee_auth",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  108,
+                  112,
+                  95,
+                  102,
+                  101,
+                  101,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_asset_mint",
+          "writable": true
+        },
+        {
+          "name": "vault_lp_mint",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  108,
+                  112,
+                  95,
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_asset_idle_ata",
+          "docs": [
+            "The vault's associated token account for asset."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "vault_asset_idle_auth"
+              },
+              {
+                "kind": "account",
+                "path": "asset_token_program"
+              },
+              {
+                "kind": "account",
+                "path": "vault_asset_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "vault_lp_fee_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "vault_lp_fee_auth"
+              },
+              {
+                "kind": "account",
+                "path": "lp_token_program"
+              },
+              {
+                "kind": "account",
+                "path": "vault_lp_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "vault_lp_mint_auth",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  108,
+                  112,
+                  95,
+                  109,
+                  105,
+                  110,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "counterparty_asset_ta",
+          "writable": true
+        },
+        {
+          "name": "asset_token_program"
+        },
+        {
+          "name": "lp_token_program"
+        },
+        {
+          "name": "protocol_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "manager"
+        },
+        {
+          "name": "admin"
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault_lp_mint",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  108,
+                  112,
+                  95,
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_asset_mint"
+        },
+        {
+          "name": "vault_asset_idle_ata",
+          "writable": true
+        },
+        {
+          "name": "vault_lp_fee_ata",
+          "writable": true
+        },
+        {
+          "name": "vault_lp_mint_auth",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  108,
+                  112,
+                  95,
+                  109,
+                  105,
+                  110,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_asset_idle_auth",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  97,
+                  115,
+                  115,
+                  101,
+                  116,
+                  95,
+                  105,
+                  100,
+                  108,
+                  101,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_lp_fee_auth",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  108,
+                  112,
+                  95,
+                  102,
+                  101,
+                  101,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "clock",
+          "address": "SysvarC1ock11111111111111111111111111111111"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "asset_token_program"
+        },
+        {
+          "name": "lp_token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "config",
+          "type": {
+            "defined": {
+              "name": "VaultConfiguration"
+            }
+          }
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "initialize_strategy",
+      "discriminator": [
+        208,
+        119,
+        144,
+        145,
+        178,
+        57,
+        105,
+        252
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "manager",
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "adaptor_strategy",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  100,
+                  97,
+                  112,
+                  116,
+                  111,
+                  114,
+                  95,
+                  115,
+                  116,
+                  114,
+                  97,
+                  116,
+                  101,
+                  103,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "strategy"
+              }
+            ]
+          }
+        },
+        {
+          "name": "strategy",
+          "docs": [
+            "CHECK"
+          ]
+        },
+        {
+          "name": "vault_strategy",
+          "writable": true
+        },
+        {
+          "name": "adaptor_program",
+          "docs": [
+            "CHECK"
+          ]
+        },
+        {
+          "name": "vault_asset_idle_auth",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  97,
+                  115,
+                  115,
+                  101,
+                  116,
+                  95,
+                  105,
+                  100,
+                  108,
+                  101,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "protocol_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "remove_strategy",
+      "discriminator": [
+        185,
+        238,
+        33,
+        91,
+        134,
+        210,
+        97,
+        26
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "adaptor_strategy",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  100,
+                  97,
+                  112,
+                  116,
+                  111,
+                  114,
+                  95,
+                  115,
+                  116,
+                  114,
+                  97,
+                  116,
+                  101,
+                  103,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "strategy"
+              }
+            ]
+          }
+        },
+        {
+          "name": "strategy"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "withdraw",
+      "discriminator": [
+        183,
+        18,
+        70,
+        156,
+        148,
+        109,
+        161,
+        34
+      ],
+      "accounts": [
+        {
+          "name": "user_transfer_authority",
+          "docs": [
+            "The authority that owns the LP tokens and wants to redeem them"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "vault_asset_mint"
+        },
+        {
+          "name": "vault_lp_mint",
+          "writable": true
+        },
+        {
+          "name": "user_lp_ata",
+          "docs": [
+            "The user's LP token account from which LP tokens will be burned."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "user_transfer_authority"
+              },
+              {
+                "kind": "account",
+                "path": "lp_token_program"
+              },
+              {
+                "kind": "account",
+                "path": "vault_lp_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "vault_asset_idle_ata",
+          "docs": [
+            "The vault's associated token account for asset."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "vault_asset_idle_auth"
+              },
+              {
+                "kind": "account",
+                "path": "asset_token_program"
+              },
+              {
+                "kind": "account",
+                "path": "vault_asset_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "vault_asset_idle_auth",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  97,
+                  115,
+                  115,
+                  101,
+                  116,
+                  95,
+                  105,
+                  100,
+                  108,
+                  101,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_asset_ata",
+          "docs": [
+            "The user's asset ATA to which asset tokens will be sent."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "user_transfer_authority"
+              },
+              {
+                "kind": "account",
+                "path": "asset_token_program"
+              },
+              {
+                "kind": "account",
+                "path": "vault_asset_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "clock",
+          "address": "SysvarC1ock11111111111111111111111111111111"
+        },
+        {
+          "name": "asset_token_program"
+        },
+        {
+          "name": "lp_token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "withdraw_strategy",
+      "discriminator": [
+        31,
+        45,
+        162,
+        5,
+        193,
+        217,
+        134,
+        188
+      ],
+      "accounts": [
+        {
+          "name": "manager",
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "adaptor_strategy",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  100,
+                  97,
+                  112,
+                  116,
+                  111,
+                  114,
+                  95,
+                  115,
+                  116,
+                  114,
+                  97,
+                  116,
+                  101,
+                  103,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "strategy"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_strategy",
+          "writable": true
+        },
+        {
+          "name": "strategy",
+          "docs": [
+            "CHECK"
+          ],
+          "writable": true
+        },
+        {
+          "name": "adaptor_program",
+          "docs": [
+            "CHECK"
+          ]
+        },
+        {
+          "name": "vault_asset_idle_auth",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  97,
+                  115,
+                  115,
+                  101,
+                  116,
+                  95,
+                  105,
+                  100,
+                  108,
+                  101,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_lp_fee_auth",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  108,
+                  112,
+                  95,
+                  102,
+                  101,
+                  101,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_asset_mint",
+          "writable": true
+        },
+        {
+          "name": "vault_lp_mint",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  108,
+                  112,
+                  95,
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_asset_idle_ata",
+          "docs": [
+            "The vault's associated token account for asset."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "vault_asset_idle_auth"
+              },
+              {
+                "kind": "account",
+                "path": "asset_token_program"
+              },
+              {
+                "kind": "account",
+                "path": "vault_asset_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "vault_lp_fee_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "vault_lp_fee_auth"
+              },
+              {
+                "kind": "account",
+                "path": "lp_token_program"
+              },
+              {
+                "kind": "account",
+                "path": "vault_lp_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "vault_lp_mint_auth",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  108,
+                  112,
+                  95,
+                  109,
+                  105,
+                  110,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "counterparty_asset_ta",
+          "writable": true
+        },
+        {
+          "name": "counterparty_asset_ta_auth",
+          "writable": true
+        },
+        {
+          "name": "asset_token_program"
+        },
+        {
+          "name": "lp_token_program"
+        },
+        {
+          "name": "protocol_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "AdaptorStrategy",
+      "discriminator": [
+        142,
+        12,
+        85,
+        77,
+        46,
+        110,
+        192,
+        204
+      ]
+    },
+    {
+      "name": "Vault",
+      "discriminator": [
+        211,
+        8,
+        232,
+        43,
+        2,
+        152,
+        117,
+        119
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidAmount",
+      "msg": "Invalid amount provided."
+    },
+    {
+      "code": 6001,
+      "name": "InvalidAccountOwner",
+      "msg": "Invalid account owner."
+    },
+    {
+      "code": 6002,
+      "name": "AlreadyInitialized",
+      "msg": "Already initialized."
+    },
+    {
+      "code": 6003,
+      "name": "InvalidTokenMint",
+      "msg": "Invalid token mint."
+    },
+    {
+      "code": 6004,
+      "name": "InvalidAccountInput",
+      "msg": "Invalid account input."
+    },
+    {
+      "code": 6005,
+      "name": "NotRentExempt",
+      "msg": "Not rent exempt."
+    },
+    {
+      "code": 6006,
+      "name": "MathOverflow",
+      "msg": "Math overflow."
+    },
+    {
+      "code": 6007,
+      "name": "MaxCapExceeded",
+      "msg": "Max cap exceeded."
+    },
+    {
+      "code": 6008,
+      "name": "StrategyNotEmpty",
+      "msg": "Strategy not empty."
+    }
+  ],
+  "types": [
+    {
+      "name": "AdaptorStrategy",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "adaptor_program",
+            "type": "pubkey"
+          },
+          {
+            "name": "strategy",
+            "type": "pubkey"
+          },
+          {
+            "name": "vault",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Vault",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "description",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          },
+          {
+            "name": "asset",
+            "type": {
+              "defined": {
+                "name": "VaultAsset"
+              }
+            }
+          },
+          {
+            "name": "lp",
+            "type": {
+              "defined": {
+                "name": "VaultLp"
+              }
+            }
+          },
+          {
+            "name": "manager",
+            "type": "pubkey"
+          },
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "configuration",
+            "type": {
+              "defined": {
+                "name": "VaultConfiguration"
+              }
+            }
+          },
+          {
+            "name": "last_update_slot",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultAsset",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "asset_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "idle_ata",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultConfiguration",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "management_fee",
+            "type": "u16"
+          },
+          {
+            "name": "performance_fee",
+            "type": "u16"
+          },
+          {
+            "name": "max_cap",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultLp",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "lp_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_ata",
+            "type": "pubkey"
+          }
+        ]
+      }
+    }
+  ]
+}

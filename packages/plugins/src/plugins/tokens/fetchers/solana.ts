@@ -23,6 +23,7 @@ import { getMeteoraCpammPositions } from '../../meteora/cpamm/cpammPositionsFetc
 import { getRaydiumClmmPositions } from '../../raydium/clmmFetcher';
 import { getResizableNfts } from '../../metaplex/resizableNftFetcher';
 import { getClientSolana } from '../../../utils/clients';
+import { getByrealClmmPositions } from '../../byreal/constants';
 
 export const getSolanaTokens =
   (simple?: boolean) =>
@@ -99,7 +100,8 @@ export const getSolanaTokens =
   };
 
 const tokensFetchers: TokenFetcher[] = [
-  getRaydiumClmmPositions,
+  getRaydiumClmmPositions(),
+  getByrealClmmPositions,
   getMeteoraCpammPositions,
   getOrcaPositions(orcaPlatformId),
   getOrcaPositions(cropperPlatformId, clmmPid),
