@@ -19,6 +19,7 @@ export abstract class ElementBuilder {
   sourceRefs?: SourceRef[];
   ref?: string | PublicKey;
   link?: string;
+  netApy?: number;
 
   protected constructor(params: Params) {
     this.type = params.type;
@@ -29,6 +30,7 @@ export abstract class ElementBuilder {
     this.sourceRefs = params.sourceRefs;
     this.ref = params.ref;
     this.link = params.link;
+    this.netApy = params.netApy;
   }
 
   addTag(tag: string) {
@@ -38,6 +40,10 @@ export abstract class ElementBuilder {
 
   setName(name: string) {
     this.name = name;
+  }
+
+  setNetApy(netApy?: number) {
+    this.netApy = netApy;
   }
 
   abstract tokenAddresses(): string[];

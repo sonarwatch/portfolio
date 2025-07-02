@@ -21,6 +21,7 @@ export type Params = {
   sourceRefs?: SourceRef[];
   ref?: string | PublicKey;
   link?: string;
+  netApy?: number;
 };
 
 export type LiquidityParams = {

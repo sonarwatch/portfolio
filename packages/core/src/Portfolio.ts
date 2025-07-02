@@ -203,6 +203,13 @@ export type PortfolioElementCommon = {
   name?: string;
   tags?: string[];
   proxyInfo?: ProxyInfo;
+  /**
+   * Net APY (Annual Percentage Yield) as fraction.
+   * Includes internal token yields
+   * 0.28 means 28% APY
+   * -0.28 means -28% APR
+   */
+  netApy?: number;
 };
 
 /**

@@ -65,9 +65,8 @@ export type YieldRevenue = {
 };
 
 export type YieldItem = {
-  yield: Yield;
+  apy: number;
   value: number;
-  platformId: string;
 };
 
 export type YieldSummary = {
@@ -76,5 +75,4 @@ export type YieldSummary = {
     yield: Yield;
     revenue: YieldRevenue;
   };
-  items: YieldItem[];
 };

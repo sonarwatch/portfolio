@@ -45,9 +45,6 @@ async function main(owner: string, fetcherId: string) {
   console.log('Fetching...');
   const fetcherResult = await runFetcher(fOwner, fetcher, cache);
   console.log(util.inspect(fetcherResult.elements, false, null, true));
-  console.log(
-    util.inspect(calcYieldSummary(fetcherResult.elements), false, null, true)
-  );
   console.log(`Finished in: ${durationForHumans(fetcherResult.duration)}s`);
   await cache.dispose();
   await sleep(100);
