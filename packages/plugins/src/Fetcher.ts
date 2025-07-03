@@ -14,7 +14,7 @@ import {
 } from '@sonarwatch/portfolio-core';
 import { Cache } from './Cache';
 
-const runFetcherTimeout = 60000;
+const runFetcherTimeout = 55000;
 
 export type FetcherExecutor = (
   owner: string,
