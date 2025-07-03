@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.53](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.52...plugins-0.15.53) (2025-07-03)
+
+
+### Bug Fixes
+
+* **getJupiterPrices:** return empty map for empty mints list ([e2075cc](https://github.com/sonarwatch/portfolio/commit/e2075cc52a2f701b8dceb8c4dd4ccc455df3f15d))
+
+
+
 ## [0.15.52](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.51...plugins-0.15.52) (2025-07-03)
 
 
