@@ -25,6 +25,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-pricing-dbc`,
   executor,
-  labels: [NetworkId.solana, 'dbc'],
+  labels: [NetworkId.solana],
 };
 export default job;
