@@ -11,11 +11,13 @@ import { AssetTokenBuilder } from './AssetTokenBuilder';
 import {
   Params,
   PortfolioAssetGenericParams,
+  PortfolioAssetPricedTokenParams,
   PortfolioAssetTokenParams,
 } from './Params';
 import { AssetBuilder } from './AssetBuilder';
 import { AssetGenericBuilder } from './AssetGenericBuilder';
 import { TokenYieldMap } from '../../TokenYieldMap';
+import { AssetPricedTokenBuilder } from './AssetPricedTokenBuilder';
 
 export class ElementMultipleBuilder extends ElementBuilder {
   assets: AssetBuilder[];
@@ -27,6 +29,10 @@ export class ElementMultipleBuilder extends ElementBuilder {
 
   addAsset(params: PortfolioAssetTokenParams) {
     this.assets.push(new AssetTokenBuilder(params));
+  }
+
+  addPricedAsset(params: PortfolioAssetPricedTokenParams) {
+    this.assets.push(new AssetPricedTokenBuilder(params));
   }
 
   addGenericAsset(params: PortfolioAssetGenericParams) {

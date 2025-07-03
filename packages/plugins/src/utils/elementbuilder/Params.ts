@@ -86,6 +86,14 @@ export type PortfolioAssetTokenParams = {
   tokenYield?: TokenYield;
 };
 
+export type PortfolioAssetPricedTokenParams = {
+  address: string | PublicKey;
+  amount: number | BigNumber | string;
+  attributes?: PortfolioAssetAttributes;
+  price: number | BigNumber;
+  ref?: string | PublicKey;
+};
+
 export type TradeParams = {
   inputAsset: Omit<PortfolioAssetTokenParams, 'amount'> & {
     amount?: number | BigNumber | string;
