@@ -3,7 +3,6 @@ import {
   PortfolioElement,
   walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
-import { PublicKey } from '@solana/web3.js';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { Cache } from '../../../Cache';
 import { getLpTag } from '../helpers';
@@ -25,7 +24,6 @@ import { getRaydiumClmmPositions } from '../../raydium/clmmFetcher';
 import { getResizableNfts } from '../../metaplex/resizableNftFetcher';
 import { getClientSolana } from '../../../utils/clients';
 import { getByrealClmmPositions } from '../../byreal/constants';
-import { getJupiterPrices } from '../../jupiter/getJupiterPrices';
 
 export const getSolanaTokens =
   (simple?: boolean) =>
@@ -37,7 +35,7 @@ export const getSolanaTokens =
       NetworkId.solana
     );
 
-    const missingMints = tokenAccounts.flatMap((tokenAccount) => {
+    /* const missingMints = tokenAccounts.flatMap((tokenAccount) => {
       const address = tokenAccount.mint.toString();
       const tokenPrice = tokenPrices.get(address);
       if (!tokenPrice) {
@@ -45,7 +43,7 @@ export const getSolanaTokens =
       }
       return [];
     });
-    const missingPrices = await getJupiterPrices(missingMints);
+    const missingPrices = await getJupiterPrices(missingMints); */
 
     const elementRegistry = new ElementRegistry(
       NetworkId.solana,
@@ -60,7 +58,7 @@ export const getSolanaTokens =
     tokenAccounts.forEach((tokenAccount) => {
       const address = tokenAccount.mint.toString();
       const tokenPrice = tokenPrices.get(address);
-      const missingPrice = missingPrices.get(address);
+      // const missingPrice = missingPrices.get(address);
 
       if (tokenPrice) {
         const amount = tokenAccount.amount.shiftedBy(-tokenPrice.decimals);
@@ -107,7 +105,7 @@ export const getSolanaTokens =
 
           elementsLiquidity.set(tag, elementLiquidity);
         }
-      } else if (missingPrice) {
+      } /* else if (missingPrice) {
         if (missingPrice.usdPrice) {
           elementTokens.addPricedAsset({
             address,
@@ -116,7 +114,7 @@ export const getSolanaTokens =
             ref: tokenAccount.pubkey,
           });
         }
-      }
+      } */
     });
 
     return elementRegistry.getElements(cache);
