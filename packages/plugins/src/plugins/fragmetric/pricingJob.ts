@@ -100,6 +100,9 @@ const executor: JobExecutor = async (cache: Cache) => {
         reserveAccount.amount.dividedBy(10 ** tokenMintPrice.decimals)
       );
 
+    if (vault.receiptToken.toString() === '11111111111111111111111111111111')
+      continue;
+
     sources.push({
       address: vault.receiptToken,
       decimals: receiptTokenMintAccount.decimals,
@@ -154,6 +157,13 @@ const executor: JobExecutor = async (cache: Cache) => {
     );
 
     // Price source for the Wrapped Token (i.e wfragSOL)
+
+    if (
+      fundAccount.wrapped_token.toString() ===
+      '11111111111111111111111111111111'
+    )
+      continue;
+
     sources.push({
       address: fundAccount.wrapped_token.mint.toString(),
       decimals: fundAccount.wrapped_token.decimals,
