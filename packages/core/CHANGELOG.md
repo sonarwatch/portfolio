@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.18](https://github.com/sonarwatch/portfolio/compare/core-0.15.17...core-0.15.18) (2025-07-03)
+
+
+### Bug Fixes
+
+* **getAddressSystemFromNetworkId:** correct typo in parameter name ([bcb40a7](https://github.com/sonarwatch/portfolio/commit/bcb40a7a18242765e9d2b3f28cc7742c95e01ea1))
+
+
+### Features
+
+* **fetchers:** add error handling and validation in getFetchersResult and runFetcherSafe ([7086461](https://github.com/sonarwatch/portfolio/commit/7086461d8864bdaefe4d7dda9db83727924de409))
+
+
+
 ## [0.15.17](https://github.com/sonarwatch/portfolio/compare/core-0.15.16...core-0.15.17) (2025-06-27)
 
 
