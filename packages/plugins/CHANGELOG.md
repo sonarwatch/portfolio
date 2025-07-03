@@ -11,6 +11,15 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 
 
+## [0.15.49](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.48...plugins-0.15.49) (2025-07-03)
+
+
+### Reverts
+
+* Revert "fix(plugins) : filter out 111 tokens" ([f110a3b](https://github.com/sonarwatch/portfolio/commit/f110a3bbfab97ce17b6aed3627c54ddec3ea4d35))
+
+
+
 ## [0.15.48](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.47...plugins-0.15.48) (2025-07-02)
 
 
