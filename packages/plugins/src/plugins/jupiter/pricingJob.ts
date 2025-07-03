@@ -1,19 +1,12 @@
-import {
-  NetworkId,
-  TokenPriceSource,
-  jupiterSourceId,
-  walletTokensPlatformId,
-} from '@sonarwatch/portfolio-core';
+import { NetworkId } from '@sonarwatch/portfolio-core';
 import { PublicKey } from '@solana/web3.js';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
 import { platformId } from './exchange/constants';
-import { getMultipleDecimalsAsMap } from '../../utils/solana/getMultipleDecimalsAsMap';
-import { getClientSolana } from '../../utils/clients';
 import { TokenResponse } from './types';
 import { verifiedTokensCacheKey } from './constants';
 import { lstsKey, platformId as sanctumPlatformId } from '../sanctum/constants';
-import { getJupiterPrices } from './getJupiterPrices';
+import { setJupiterPrices } from './getJupiterPrices';
 import { lfntyMint, xLfntyMint } from '../lifinity/constants';
 
 const mints = [
@@ -28,8 +21,6 @@ const mints = [
 ];
 
 const executor: JobExecutor = async (cache: Cache) => {
-  const connection = getClientSolana();
-
   const [verifiedTokens, sanctumMints] = await Promise.all([
     cache.getItem<TokenResponse[]>(verifiedTokensCacheKey, {
       prefix: platformId,
@@ -47,37 +38,10 @@ const executor: JobExecutor = async (cache: Cache) => {
   const mintsPk: Set<PublicKey> = new Set([
     ...mints.map((m) => new PublicKey(m)),
     ...(sanctumMints || []).map((a) => new PublicKey(a)),
+    ...(verifiedTokens || []).map((token) => new PublicKey(token.address)),
   ]);
 
-  const decimalsMap = await getMultipleDecimalsAsMap(connection, [...mintsPk]);
-
-  (verifiedTokens || []).forEach((token) => {
-    mintsPk.add(new PublicKey(token.address));
-    decimalsMap.set(token.address, Number(token.decimals));
-  });
-
-  const assets = await getJupiterPrices([...mintsPk]);
-
-  const sources: TokenPriceSource[] = [];
-  assets.forEach((asset, mint) => {
-    const decimals = decimalsMap.get(mint);
-    if (!decimals) return;
-    const source: TokenPriceSource = {
-      address: mint,
-      decimals,
-      id: jupiterSourceId,
-      networkId: NetworkId.solana,
-      timestamp: Date.now(),
-      price: asset.usdPrice,
-      priceChange24h: asset.priceChange24h
-        ? asset.priceChange24h / 100
-        : undefined,
-      platformId: walletTokensPlatformId,
-      weight: 1,
-    };
-    sources.push(source);
-  });
-  await cache.setTokenPriceSources(sources);
+  await setJupiterPrices([...mintsPk], cache);
 };
 const job: Job = {
   id: `${platformId}-pricing`,

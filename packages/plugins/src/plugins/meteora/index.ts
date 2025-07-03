@@ -12,6 +12,7 @@ import stakeForFeeFetcher from './stake2earn/stakeForFeeFetcher';
 import stakeForFeeVaultsJob from './stake2earn/stakeForFeeVaultsJob';
 import dammV2Job from './cpamm/cpammV2Job';
 import dlmmJob from './dlmm/dlmmJob';
+import dbcJob from './dbc/dbcJob';
 
 export const jobs: Job[] = [
   vaultsJob,
@@ -22,6 +23,7 @@ export const jobs: Job[] = [
   dlmmVaultsJob,
   stakeForFeeVaultsJob,
   dammV2Job,
+  dbcJob,
 ];
 export const fetchers: Fetcher[] = [
   farmsFetcher,

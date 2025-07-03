@@ -6,6 +6,7 @@ export type JobLabel =
   | 'realtime'
   | 'normal'
   | 'slow'
+  | 'dbc'
   | 'coingecko'
   | 'evm'
   | NetworkIdType;
