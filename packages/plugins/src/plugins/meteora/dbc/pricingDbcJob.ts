@@ -23,7 +23,7 @@ const executor: JobExecutor = async (cache: Cache) => {
 };
 
 const job: Job = {
-  id: `${platformId}-dbc`,
+  id: `${platformId}-pricing-dbc`,
   executor,
   labels: [NetworkId.solana, 'dbc'],
 };
