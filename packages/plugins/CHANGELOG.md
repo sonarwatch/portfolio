@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.54](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.53...plugins-0.15.54) (2025-07-03)
+
+
+### Bug Fixes
+
+* **getJupiterPrices:** ensure loop exits cleanly for empty subMints ([aa47c68](https://github.com/sonarwatch/portfolio/commit/aa47c68996ceaa855a2e6564fba028fc5b344af6))
+
+
+
 ## [0.15.53](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.52...plugins-0.15.53) (2025-07-03)
 
 
