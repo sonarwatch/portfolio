@@ -80,7 +80,7 @@ const executor: JobExecutor = async (cache: Cache) => {
       price: xSolPrice,
       timestamp: Date.now(),
       weight: 0.5,
-      link: 'https://hylo.so/xsol',
+      link: 'https://hylo.so/leverage',
     });
   }
 
@@ -95,18 +95,12 @@ const executor: JobExecutor = async (cache: Cache) => {
       price: 1,
       timestamp: Date.now(),
       weight: 0.5,
-      link: 'https://hylo.so/hyusd',
+      link: 'https://hylo.so/stablecoin',
     });
   }
 
   // shyUSD
-  if (
-    shyUsdDecimals &&
-    shyUsdSupply.value.uiAmount &&
-    stakedHyUsd.value.uiAmount &&
-    stakedXSol.value.uiAmount &&
-    xSolPrice
-  ) {
+  if (shyUsdDecimals && shyUsdSupply.value.uiAmount && xSolPrice) {
     await cache.setTokenPriceSource({
       address: shyUsdMint,
       decimals: shyUsdDecimals,
@@ -114,11 +108,12 @@ const executor: JobExecutor = async (cache: Cache) => {
       platformId,
       networkId: NetworkId.solana,
       price:
-        (stakedHyUsd.value.uiAmount + stakedXSol.value.uiAmount * xSolPrice) /
+        ((stakedHyUsd.value.uiAmount || 0) +
+          (stakedXSol.value.uiAmount || 0) * xSolPrice) /
         shyUsdSupply.value.uiAmount,
       timestamp: Date.now(),
       weight: 0.5,
-      link: 'https://hylo.so/hyusd',
+      link: 'https://hylo.so/earn',
     });
 
     const epochsPerYear = 182.5;

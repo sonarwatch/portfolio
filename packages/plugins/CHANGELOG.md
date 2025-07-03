@@ -2,6 +2,68 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.15.54](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.53...plugins-0.15.54) (2025-07-03)
+
+
+### Bug Fixes
+
+* **getJupiterPrices:** ensure loop exits cleanly for empty subMints ([aa47c68](https://github.com/sonarwatch/portfolio/commit/aa47c68996ceaa855a2e6564fba028fc5b344af6))
+
+
+
+## [0.15.53](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.52...plugins-0.15.53) (2025-07-03)
+
+
+### Bug Fixes
+
+* **getJupiterPrices:** return empty map for empty mints list ([e2075cc](https://github.com/sonarwatch/portfolio/commit/e2075cc52a2f701b8dceb8c4dd4ccc455df3f15d))
+
+
+
+## [0.15.52](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.51...plugins-0.15.52) (2025-07-03)
+
+
+
+## [0.15.51](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.50...plugins-0.15.51) (2025-07-03)
+
+
+
+## [0.15.51](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.50...plugins-0.15.51) (2025-07-03)
+
+
+
+## [0.15.50](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.49...plugins-0.15.50) (2025-07-03)
+
+
+
+## [0.15.49](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.48...plugins-0.15.49) (2025-07-03)
+
+
+### Reverts
+
+* Revert "fix(plugins) : filter out 111 tokens" ([f110a3b](https://github.com/sonarwatch/portfolio/commit/f110a3bbfab97ce17b6aed3627c54ddec3ea4d35))
+
+
+
+## [0.15.49](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.48...plugins-0.15.49) (2025-07-03)
+
+
+### Reverts
+
+* Revert "fix(plugins) : filter out 111 tokens" ([f110a3b](https://github.com/sonarwatch/portfolio/commit/f110a3bbfab97ce17b6aed3627c54ddec3ea4d35))
+
+
+
+## [0.15.48](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.47...plugins-0.15.48) (2025-07-02)
+
+
+### Features
+
+* **plugins:** add voltr pricing job ([9c2a555](https://github.com/sonarwatch/portfolio/commit/9c2a5559c37083f2671c17c01bfeb2066ec19ae0))
+* **plugins:** fragmetric skip processing for default PublicKey in pricingJob ([5bcb646](https://github.com/sonarwatch/portfolio/commit/5bcb646b80fbe8b778c1d587e9b1f78bb18ae159))
+
+
+
 ## [0.15.47](https://github.com/sonarwatch/portfolio/compare/plugins-0.15.46...plugins-0.15.47) (2025-07-01)
 
 

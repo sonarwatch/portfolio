@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import axios, { AxiosResponse } from 'axios';
 import { NetworkId } from '@sonarwatch/portfolio-core';
 import {
-  airdropStatics,
+  airdropStaticsS1,
   airdropUrl,
   driftDecimals,
   driftMint,
@@ -13,7 +13,7 @@ import {
   getAirdropRaw,
 } from '../../AirdropFetcher';
 
-const driftFactor = new BigNumber(10 ** driftDecimals);
+export const driftFactor = new BigNumber(10 ** driftDecimals);
 type AirdropInfo = {
   merkle?: string;
   amount: number;
@@ -70,7 +70,7 @@ const fetchAirdropExecutor: AirdropFetcherExecutor = async (owner: string) => {
   const { isClaimed, amount } = airdropInfo;
 
   return getAirdropRaw({
-    statics: airdropStatics,
+    statics: airdropStaticsS1,
     items: [
       {
         amount,
@@ -83,7 +83,7 @@ const fetchAirdropExecutor: AirdropFetcherExecutor = async (owner: string) => {
 };
 
 export const airdropFetcher: AirdropFetcher = {
-  id: airdropStatics.id,
+  id: airdropStaticsS1.id,
   networkId: NetworkId.solana,
   executor: fetchAirdropExecutor,
 };

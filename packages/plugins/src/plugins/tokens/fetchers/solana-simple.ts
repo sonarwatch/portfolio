@@ -7,7 +7,11 @@ import { getSolanaTokens } from './solana';
 import { getClientSolana } from '../../../utils/clients';
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
-  const tokenAccounts = await getTokenAccountsByOwner(getClientSolana(), owner);
+  const tokenAccounts = await getTokenAccountsByOwner(
+    getClientSolana(),
+    owner,
+    false
+  );
 
   return getSolanaTokens(true)(tokenAccounts, cache);
 };

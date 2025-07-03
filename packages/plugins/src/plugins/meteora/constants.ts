@@ -34,3 +34,7 @@ export const stakeForFeeProgramId = new PublicKey(
 export const cpammProgramId = new PublicKey(
   'cpamdpZCGKUy5JxQXB4dcpGPiikHawvSWAd6mEn1sGG'
 );
+
+export const dbcProgramId = new PublicKey(
+  'dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN'
+);

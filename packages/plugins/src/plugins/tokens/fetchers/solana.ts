@@ -3,6 +3,7 @@ import {
   PortfolioElement,
   walletTokensPlatformId,
 } from '@sonarwatch/portfolio-core';
+import { PublicKey } from '@solana/web3.js';
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { Cache } from '../../../Cache';
 import { getLpTag } from '../helpers';
@@ -24,6 +25,7 @@ import { getRaydiumClmmPositions } from '../../raydium/clmmFetcher';
 import { getResizableNfts } from '../../metaplex/resizableNftFetcher';
 import { getClientSolana } from '../../../utils/clients';
 import { getByrealClmmPositions } from '../../byreal/constants';
+import { getJupiterPrices } from '../../jupiter/getJupiterPrices';
 
 export const getSolanaTokens =
   (simple?: boolean) =>
@@ -34,6 +36,16 @@ export const getSolanaTokens =
       fungibleAddresses,
       NetworkId.solana
     );
+
+    const missingMints = tokenAccounts.flatMap((tokenAccount) => {
+      const address = tokenAccount.mint.toString();
+      const tokenPrice = tokenPrices.get(address);
+      if (!tokenPrice) {
+        return [new PublicKey(address)];
+      }
+      return [];
+    });
+    const missingPrices = await getJupiterPrices(missingMints);
 
     const elementRegistry = new ElementRegistry(
       NetworkId.solana,
@@ -48,51 +60,62 @@ export const getSolanaTokens =
     tokenAccounts.forEach((tokenAccount) => {
       const address = tokenAccount.mint.toString();
       const tokenPrice = tokenPrices.get(address);
-      if (!tokenPrice) return;
+      const missingPrice = missingPrices.get(address);
 
-      const amount = tokenAccount.amount.shiftedBy(-tokenPrice.decimals);
+      if (tokenPrice) {
+        const amount = tokenAccount.amount.shiftedBy(-tokenPrice.decimals);
 
-      if (tokenPrice.platformId === walletTokensPlatformId) {
-        // it's a regular token
-        elementTokens.addAsset({
-          address,
-          amount,
-          alreadyShifted: true,
-          ref: tokenAccount.pubkey,
-          link: tokenPrice.link,
-          sourceRefs: tokenPrice.sourceRefs,
-        });
-      } else if (!simple) {
-        // it's an LP Token
-        const tag = getLpTag(
-          tokenPrice.platformId,
-          tokenPrice.elementName,
-          tokenPrice.label
-        );
+        if (tokenPrice.platformId === walletTokensPlatformId) {
+          // it's a regular token
+          elementTokens.addAsset({
+            address,
+            amount,
+            alreadyShifted: true,
+            ref: tokenAccount.pubkey,
+            link: tokenPrice.link,
+            sourceRefs: tokenPrice.sourceRefs,
+          });
+        } else if (!simple) {
+          // it's an LP Token
+          const tag = getLpTag(
+            tokenPrice.platformId,
+            tokenPrice.elementName,
+            tokenPrice.label
+          );
 
-        let elementLiquidity = elementsLiquidity.get(tag);
-        if (!elementLiquidity) {
-          elementLiquidity = elementRegistry.addElementLiquidity({
-            name: tokenPrice.elementName,
-            label: tokenPrice.label ?? 'LiquidityPool',
-            platformId: tokenPrice.platformId,
+          let elementLiquidity = elementsLiquidity.get(tag);
+          if (!elementLiquidity) {
+            elementLiquidity = elementRegistry.addElementLiquidity({
+              name: tokenPrice.elementName,
+              label: tokenPrice.label ?? 'LiquidityPool',
+              platformId: tokenPrice.platformId,
+            });
+          }
+
+          const liquidity = elementLiquidity.addLiquidity({
+            name: tokenPrice.liquidityName,
+            link: tokenPrice.link,
+            ref: tokenAccount.pubkey,
+            sourceRefs: tokenPrice.sourceRefs,
+          });
+
+          liquidity.addAsset({
+            address,
+            amount,
+            alreadyShifted: true,
+          });
+
+          elementsLiquidity.set(tag, elementLiquidity);
+        }
+      } else if (missingPrice) {
+        if (missingPrice.usdPrice) {
+          elementTokens.addPricedAsset({
+            address,
+            amount: tokenAccount.amount.shiftedBy(-missingPrice.decimals),
+            price: missingPrice.usdPrice,
+            ref: tokenAccount.pubkey,
           });
         }
-
-        const liquidity = elementLiquidity.addLiquidity({
-          name: tokenPrice.liquidityName,
-          link: tokenPrice.link,
-          ref: tokenAccount.pubkey,
-          sourceRefs: tokenPrice.sourceRefs,
-        });
-
-        liquidity.addAsset({
-          address,
-          amount,
-          alreadyShifted: true,
-        });
-
-        elementsLiquidity.set(tag, elementLiquidity);
       }
     });
 

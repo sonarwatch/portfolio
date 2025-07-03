@@ -16,7 +16,8 @@ import { metadataAccountStruct } from '../../plugins/metaplex/structs';
 
 export const getTokenAccountsByOwner = async (
   client: SolanaClient,
-  owner: string
+  owner: string,
+  withMetadata = true
 ): Promise<ParsedAccount<TokenAccountWithMetadata>[]> => {
   const tokenAccounts = await Promise.all([
     client
@@ -44,6 +45,8 @@ export const getTokenAccountsByOwner = async (
       isToken2022: boolean;
     }
   >[];
+
+  if (!withMetadata) return tokenAccountsInfo;
 
   const [metadataAccounts, token2022Accounts] = await Promise.all([
     getParsedMultipleAccountsInfo(
