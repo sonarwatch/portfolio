@@ -108,11 +108,7 @@ export const getSolanaTokens =
           elementsLiquidity.set(tag, elementLiquidity);
         }
       } else if (missingPrice) {
-        if (
-          missingPrice.usdPrice &&
-          missingPrice.circSupply &&
-          missingPrice.circSupply * missingPrice.usdPrice > 1000
-        ) {
+        if (missingPrice.usdPrice) {
           elementTokens.addPricedAsset({
             address,
             amount: tokenAccount.amount.shiftedBy(-missingPrice.decimals),
