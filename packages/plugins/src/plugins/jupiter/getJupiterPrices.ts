@@ -45,6 +45,8 @@ export async function getJupiterPrices(mints: PublicKey[]) {
   let end = maxIdsPerRequest;
   const endpoint = `${jupDatapiAssetsUrl}`;
 
+  if (!mints.length) return new Map();
+
   const uniqueMints = [...new Set(mints.map((m) => m.toString()))];
 
   do {
