@@ -6,7 +6,10 @@ import {
 import { Fetcher, FetcherExecutor } from '../../../Fetcher';
 import { Cache } from '../../../Cache';
 import { getLpTag } from '../helpers';
-import { getTokenAccountsByOwner } from '../../../utils/solana/getTokenAccountsByOwner';
+import {
+  getTokenAccountsByOwner,
+  MAX_SUPPORTED_TOKEN_ACCOUNTS,
+} from '../../../utils/solana/getTokenAccountsByOwner';
 import { ElementRegistry } from '../../../utils/elementbuilder/ElementRegistry';
 import { ElementLiquidityBuilder } from '../../../utils/elementbuilder/ElementLiquidityBuilder';
 import { ParsedAccount, TokenAccount } from '../../../utils/solana';
@@ -134,6 +137,9 @@ const tokensFetchers: TokenFetcher[] = [
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
   const tokenAccounts = await getTokenAccountsByOwner(getClientSolana(), owner);
+
+  if (tokenAccounts.length > MAX_SUPPORTED_TOKEN_ACCOUNTS)
+    return getSolanaTokens(false)(tokenAccounts, cache);
 
   const results: Promise<PortfolioElement[]>[] = [];
   for (const tokensFetcher of tokensFetchers) {

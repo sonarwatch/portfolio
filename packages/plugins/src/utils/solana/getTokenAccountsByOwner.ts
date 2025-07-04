@@ -14,6 +14,8 @@ import { getMetadataPubkey } from '../../plugins/metaplex/helpers';
 import { getParsedMultipleAccountsInfo } from './getParsedMultipleAccountsInfo';
 import { metadataAccountStruct } from '../../plugins/metaplex/structs';
 
+export const MAX_SUPPORTED_TOKEN_ACCOUNTS = 20000;
+
 export const getTokenAccountsByOwner = async (
   client: SolanaClient,
   owner: string,
@@ -46,7 +48,8 @@ export const getTokenAccountsByOwner = async (
     }
   >[];
 
-  if (!withMetadata) return tokenAccountsInfo;
+  if (!withMetadata || tokenAccountsInfo.length > MAX_SUPPORTED_TOKEN_ACCOUNTS)
+    return tokenAccountsInfo;
 
   const [metadataAccounts, token2022Accounts] = await Promise.all([
     getParsedMultipleAccountsInfo(
@@ -99,9 +102,9 @@ export const getTokenAccountsByOwner = async (
   });
 };
 
-const memoCollection = new MemoryCache<ParsedAccount<TokenAccount>[]>(
-  (owner: string) => getTokenAccountsByOwner(getClientSolana(), owner)
+const memo = new MemoryCache<ParsedAccount<TokenAccount>[]>((owner: string) =>
+  getTokenAccountsByOwner(getClientSolana(), owner)
 );
 
 export const getTokenAccountsByOwnerMemo = async (owner: string) =>
-  memoCollection.getItem(owner);
+  memo.getItem(owner);
