@@ -21,7 +21,7 @@ import { getHeliumPositions } from '../../helium/getHeliumPositions';
 import { getPicassoPositions } from '../../picasso/getPicassoPositions';
 import { getMeteoraCpammPositions } from '../../meteora/cpamm/cpammPositionsFetcher';
 import { getRaydiumClmmPositions } from '../../raydium/clmmFetcher';
-import { getResizableNfts } from '../../metaplex/resizableNftFetcher';
+// import { getResizableNfts } from '../../metaplex/resizableNftFetcher';
 import { getClientSolana } from '../../../utils/clients';
 import { getByrealClmmPositions } from '../../byreal/constants';
 
@@ -129,7 +129,7 @@ const tokensFetchers: TokenFetcher[] = [
   getHeliumPositions,
   getPicassoPositions,
   getSolanaTokens(false),
-  getResizableNfts,
+  // getResizableNfts,
 ];
 
 const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
