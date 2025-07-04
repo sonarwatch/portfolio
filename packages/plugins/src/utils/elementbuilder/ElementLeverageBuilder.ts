@@ -124,6 +124,7 @@ export class ElementLeverageBuilder extends ElementBuilder {
       networkId,
       platformId: this.platformId || platformId,
       value,
+      netApy: this.netApy,
     };
   }
 }

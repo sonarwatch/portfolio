@@ -1,5 +1,5 @@
 import util from 'node:util';
-import { assertNetworkId } from '@sonarwatch/portfolio-core';
+import { assertNetworkId, calcYieldSummary } from '@sonarwatch/portfolio-core';
 import { defaultFetchers, getCache } from '../src';
 import { runFetchersByNetworkId } from '../src/Fetcher';
 import sleep from '../src/utils/misc/sleep';
@@ -33,6 +33,9 @@ async function main() {
   );
   const duration = ((Date.now() - startDate) / 1000).toFixed(2);
   console.log(util.inspect(result, false, null, true));
+  console.log(
+    util.inspect(calcYieldSummary(result.elements), false, null, true)
+  );
   console.log(`Finished (${duration}s)`);
   await cache.dispose();
   await sleep(100);

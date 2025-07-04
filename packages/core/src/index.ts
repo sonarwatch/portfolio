@@ -15,3 +15,4 @@ export * from './TokenYield';
 export * from './Yield';
 export * from './BorrowLendRate';
 export * from './Transaction';
+export * from './FetcherResult';

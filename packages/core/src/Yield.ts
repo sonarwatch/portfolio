@@ -1,3 +1,5 @@
+import { UsdValue } from './UsdValue';
+
 /**
  * Calculates the Annual Percentage Yield (APY) based on the Annual Percentage Rate (APR).
  * @param apr The Annual Percentage Rate.
@@ -56,3 +58,21 @@ export const yieldFromApy = (apy: number): Yield => ({
   apr: apyToApr(apy),
   apy,
 });
+
+export type YieldRevenue = {
+  apr: UsdValue;
+  apy: UsdValue;
+};
+
+export type YieldItem = {
+  apy: number;
+  value: number;
+};
+
+export type YieldSummary = {
+  value: UsdValue;
+  yearly: {
+    yield: Yield;
+    revenue: YieldRevenue;
+  };
+};

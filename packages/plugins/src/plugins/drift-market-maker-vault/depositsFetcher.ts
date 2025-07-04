@@ -70,11 +70,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
     const element = elementRegistry.addElementMultiple({
       label: 'Deposit',
       platformId,
-      name: `${name}${
-        vaultInfo.apy90d
-          ? ` ${new BigNumber(vaultInfo.apy90d).shiftedBy(2).toFixed(2)}%`
-          : ''
-      }`,
+      name,
       link:
         link ?? `https://app.drift.trade/vaults/${vaultInfo.pubkey.toString()}`,
       sourceRefs: [
@@ -84,6 +80,7 @@ const executor: FetcherExecutor = async (owner: string, cache: Cache) => {
         },
       ],
       ref: depositAccount.pubkey,
+      netApy: vaultInfo.apy90d ? vaultInfo.apy90d / 100 : undefined,
     });
 
     const pricePerShare = new BigNumber(vaultInfo.totalTokens).dividedBy(

@@ -119,6 +119,7 @@ export class ElementTradeBuilder extends ElementBuilder {
         link: this.link,
       },
       value: getUsdValueSum([inputAsset?.value || 0, outputAsset?.value || 0]),
+      netApy: this.netApy,
     };
   }
 }

@@ -3,11 +3,14 @@ import {
   NetworkIdType,
   PortfolioAsset,
   PortfolioAssetGeneric,
+  PortfolioAssetType,
   PortfolioElementBorrowLend,
   PortfolioElementType,
+  reduceYieldItems,
   TokenPriceMap,
   UsdValue,
   Yield,
+  YieldItem,
 } from '@sonarwatch/portfolio-core';
 import BigNumber from 'bignumber.js';
 import { ElementBuilder } from './ElementBuilder';
@@ -203,6 +206,46 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
 
     if (!suppliedValue && !borrowedValue && !rewardValue) return null;
 
+    let netApy;
+    if (this.netApy) netApy = this.netApy;
+    else if (value) {
+      const yieldItems: YieldItem[] = [];
+
+      suppliedAssets.forEach((asset, i) => {
+        if (
+          asset.type === PortfolioAssetType.token &&
+          asset.data.yield &&
+          asset.value
+        ) {
+          yieldItems.push({
+            apy: asset.data.yield.apy,
+            value: asset.value,
+          });
+        }
+
+        if (
+          this.suppliedYields[i] &&
+          this.suppliedYields[i][0].apy > 0 &&
+          asset.value
+        ) {
+          yieldItems.push({
+            apy: this.suppliedYields[i][0].apy,
+            value: asset.value,
+          });
+        }
+      });
+      borrowedAssets.forEach((asset, i) => {
+        if (this.borrowedYields[i] && asset.value) {
+          yieldItems.push({
+            apy: this.borrowedYields[i][0].apy,
+            value: asset.value,
+          });
+        }
+      });
+
+      netApy = reduceYieldItems(yieldItems);
+    }
+
     return {
       type: PortfolioElementType.borrowlend,
       label: this.label,
@@ -229,6 +272,7 @@ export class ElementBorrowlendBuilder extends ElementBuilder {
         expireOn: this.fixedTerms?.expireOn,
       },
       value: this.fixedTerms ? fixedTermsValue : value,
+      netApy,
       name: this.name,
       tags: this.tags,
     };
