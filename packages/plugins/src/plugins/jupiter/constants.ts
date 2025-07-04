@@ -5,7 +5,8 @@ export const [jupDatapiHeaderKey, jupDatapiHeaderValue] = process.env[
   'PORTFOLIO_DATAPI_HEADER'
 ]
   ? process.env['PORTFOLIO_DATAPI_HEADER'].split(':')
-  : [];
+  : [undefined, undefined];
+
 export const jupDatapiTokensUrl =
   process.env['PORTFOLIO_JUP_DATAPI_TOKENS_URL'];
 
