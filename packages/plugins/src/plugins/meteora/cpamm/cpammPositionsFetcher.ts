@@ -23,7 +23,9 @@ export const getMeteoraCpammPositions = async (
   tokenAccounts: ParsedAccount<TokenAccountWithMetadata>[],
   cache: Cache
 ) => {
-  const nftAccounts = tokenAccounts.filter((x) => x.amount.isEqualTo(1));
+  const nftAccounts = tokenAccounts.filter(
+    (x) => x.amount.isEqualTo(1) && x.metadata?.name === 'Meteora Position NFT'
+  );
 
   if (!nftAccounts.length) return [];
 
