@@ -167,6 +167,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-pools`,
   executor,
-  labels: [NetworkId.solana, 'slow'],
+  labels: [NetworkId.solana, 'slow', 'manual'],
 };
 export default job;

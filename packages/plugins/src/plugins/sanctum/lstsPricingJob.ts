@@ -63,6 +63,6 @@ const executor: JobExecutor = async (cache: Cache) => {
 const job: Job = {
   id: `${platformId}-lsts-pricing`,
   executor,
-  labels: ['realtime', NetworkId.solana],
+  labels: ['manual', NetworkId.solana],
 };
 export default job;

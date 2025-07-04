@@ -3,6 +3,7 @@ import { Cache } from './Cache';
 
 export type JobExecutor = (cache: Cache) => Promise<void>;
 export type JobLabel =
+  | 'manual'
   | 'realtime'
   | 'normal'
   | 'slow'
