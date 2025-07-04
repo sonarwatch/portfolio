@@ -1,10 +1,10 @@
 {
   "name": "@sonarwatch/portfolio-plugins",
-  "version": "0.16.3",
+  "version": "0.16.4",
   "type": "commonjs",
   "types": "./src/index.d.ts",
   "peerDependencies": {
-    "@sonarwatch/portfolio-core": "^0.15.0"
+    "@sonarwatch/portfolio-core": "^0.16.0"
   },
   "dependencies": {
     "@aave/contract-helpers": "^1.28.2",
@@ -37,7 +37,6 @@
     "decimal.js": "^10.4.3",
     "dsa-connect": "^0.6.47",
     "ethers": "^5.7.2",
-    "graphql": "^16.8.1",
     "graphql-request": "^6.1.0",
     "ioredis": "^5.4.1",
     "js-sha256": "^0.11.0",
