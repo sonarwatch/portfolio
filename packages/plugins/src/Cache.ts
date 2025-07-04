@@ -205,27 +205,30 @@ export class Cache {
     addresses: string[] | Set<string>,
     networkId: NetworkIdType
   ): Promise<TokenPriceMap> {
-    const uniqueAddresses = new Set(
-      addresses instanceof Set ? addresses : addresses
+    const uniqueAddresses = Array.from(
+      addresses instanceof Set ? addresses : new Set(addresses)
     );
-    if (uniqueAddresses.size === 0) {
+
+    if (uniqueAddresses.length === 0) {
       return new TokenPriceMap(networkId, []);
     }
 
     const tokenPriceSources = await this.getTokenPricesSources(
-      [...uniqueAddresses],
+      uniqueAddresses,
       networkId
     );
 
-    const tokenPrices = tokenPriceSources
-      .map((sources) =>
-        sources?.length ? tokenPriceFromSources(sources) : undefined
-      )
-      .filter((price): price is TokenPrice => price !== undefined);
-
     return new TokenPriceMap(
       networkId,
-      tokenPrices.map((price) => [price.address, price])
+      tokenPriceSources.reduce<[string, TokenPrice][]>((acc, sources) => {
+        if (sources) {
+          const tokenPrice = tokenPriceFromSources(sources);
+          if (tokenPrice) {
+            acc.push([tokenPrice.address, tokenPrice]);
+          }
+        }
+        return acc;
+      }, [])
     );
   }
 
@@ -344,19 +347,21 @@ export class Cache {
     addresses: string[] | Set<string>,
     networkId: NetworkIdType
   ): Promise<TokenYieldMap> {
-    const tokenYields = await this.getItems<TokenYield>(
-      [...addresses].map((address) => formatTokenAddress(address, networkId)),
-      {
-        prefix: tokenYieldPrefix,
-        networkId: NetworkId.solana,
-      }
-    ).then(
-      (values) => values.filter((tokenYield) => tokenYield) as TokenYield[]
+    const uniqueAddresses = Array.from(
+      addresses instanceof Set ? addresses : new Set(addresses)
     );
+
+    const tokenYields = await this.getItems<TokenYield>(uniqueAddresses, {
+      prefix: tokenYieldPrefix,
+      networkId,
+    });
 
     return new TokenYieldMap(
       networkId,
-      tokenYields.map((tokenYield) => [tokenYield.address, tokenYield])
+      tokenYields.reduce<[string, TokenYield][]>((acc, y) => {
+        if (y) acc.push([y.address, y]);
+        return acc;
+      }, [])
     );
   }
 

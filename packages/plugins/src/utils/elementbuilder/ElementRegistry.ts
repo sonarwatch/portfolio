@@ -86,9 +86,12 @@ export class ElementRegistry {
   }
 
   async getElements(cache: Cache): Promise<PortfolioElement[]> {
-    const mints = this.elements.map((e) => e.tokenAddresses()).flat();
-    const tokenPrices = await cache.getTokenPricesAsMap(mints, this.networkId);
-    const tokenYields = await cache.getTokenYieldsAsMap(mints, this.networkId);
+    const mints = this.elements.flatMap((e) => e.tokenAddresses());
+
+    const [tokenPrices, tokenYields] = await Promise.all([
+      cache.getTokenPricesAsMap(mints, this.networkId),
+      cache.getTokenYieldsAsMap(mints, this.networkId),
+    ]);
 
     return this.elements
       .map((e) =>

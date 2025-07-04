@@ -1,4 +1,9 @@
-import { NetworkId, TokenPriceSource } from '@sonarwatch/portfolio-core';
+import {
+  NetworkId,
+  TokenPriceSource,
+  TokenYield,
+  yieldFromApy,
+} from '@sonarwatch/portfolio-core';
 import { Cache, getCacheConfig } from './Cache';
 import sleep from './utils/misc/sleep';
 
@@ -259,5 +264,55 @@ describe('Cache', () => {
     );
     expect(fasterTokenPrice).toBeDefined();
     expect(fasterTokenPrice?.price).toBe(1);
+  });
+
+  it('should return TokenPriceMap', async () => {
+    const config = getCacheConfig();
+    const cache = new Cache(config);
+
+    const address = '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R';
+
+    const sourceA: TokenPriceSource = {
+      address,
+      decimals: 9,
+      id: 'sourceA',
+      networkId: NetworkId.solana,
+      platformId: 'foo',
+      price: 1,
+      timestamp: Date.now(),
+      weight: 0.5,
+    };
+    await cache.setTokenPriceSource(sourceA);
+    const tokenPriceMap = await cache.getTokenPricesAsMap(
+      [address],
+      NetworkId.solana
+    );
+    expect(tokenPriceMap.size).toBe(1);
+    const tokenPrice = tokenPriceMap.get(address);
+    expect(tokenPrice).toBeDefined();
+    expect(tokenPrice?.price).toBe(1);
+  });
+
+  it('should return TokenYieldMap', async () => {
+    const config = getCacheConfig();
+    const cache = new Cache(config);
+
+    const address = '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R';
+
+    const sourceA: TokenYield = {
+      address,
+      networkId: NetworkId.solana,
+      yield: yieldFromApy(1),
+      timestamp: Date.now(),
+    };
+    await cache.setTokenYield(sourceA);
+    const tokenYieldMap = await cache.getTokenYieldsAsMap(
+      [address],
+      NetworkId.solana
+    );
+    expect(tokenYieldMap.size).toBe(1);
+    const tokenPrice = tokenYieldMap.get(address);
+    expect(tokenPrice).toBeDefined();
+    expect(tokenPrice?.yield.apy).toBe(1);
   });
 });
