@@ -35,7 +35,7 @@ export function getRaydiumClmmPositions(
     cache: Cache
   ) => {
     const potentialTokens = tokenAccounts.filter(
-      (x) => x.metadata?.name === positionsIdentifier
+      (x) => x.metadata?.name === positionsIdentifier && x.amount.isEqualTo(1)
     );
 
     if (!potentialTokens.length) return [];
