@@ -56,12 +56,12 @@ export const getTokenAccountsByOwner = async (
       client,
       metadataAccountStruct,
       tokenAccountsInfo
-        .filter((t) => !t.isToken2022)
+        .filter((t) => !t.isToken2022 && t.amount.isEqualTo(1))
         .map((t) => getMetadataPubkey(t.mint))
     ),
     Promise.all(
       tokenAccountsInfo
-        .filter((t) => t.isToken2022)
+        .filter((t) => t.isToken2022 && t.amount.isEqualTo(1))
         .map((t) => getTokenMetadata(client, t.mint))
     ),
   ]);
