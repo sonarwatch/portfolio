@@ -2,7 +2,8 @@ import axios from 'axios';
 import { apyToApr, NetworkId } from '@sonarwatch/portfolio-core';
 import { Cache } from '../../Cache';
 import { Job, JobExecutor } from '../../Job';
-import { lstsKey, platformId } from './constants';
+import { platformId } from './constants';
+import { setJupiterPrices } from '../jupiter/pricing/setJupiterPrices';
 
 const BATCH_SIZE = 100;
 
@@ -24,10 +25,8 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   if (rawMints) {
     const mints = rawMints.map((mint) => mint.replace('"', ''));
-    await cache.setItem(lstsKey, mints, {
-      prefix: platformId,
-      networkId: NetworkId.solana,
-    });
+
+    await setJupiterPrices(mints, cache);
 
     const chunks = chunkArray(mints, BATCH_SIZE);
     const allYields = [];
@@ -35,7 +34,7 @@ const executor: JobExecutor = async (cache: Cache) => {
     for (const chunk of chunks) {
       const params = new URLSearchParams();
       chunk.forEach((mint) => {
-        params.append('lst', mint);
+        params.append('lst', mint.toString());
       });
 
       const aprs = await axios.get<{
@@ -62,8 +61,8 @@ const executor: JobExecutor = async (cache: Cache) => {
   }
 };
 const job: Job = {
-  id: `${platformId}-lsts`,
+  id: `${platformId}-lsts-pricing`,
   executor,
-  labels: ['normal'],
+  labels: ['realtime', NetworkId.solana],
 };
 export default job;

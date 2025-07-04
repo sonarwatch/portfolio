@@ -8,7 +8,6 @@ import lockFetcher from './exchange/lockFetcher';
 import custodiesJob from './exchange/custodiesJob';
 
 import voteFetcher from './governance/voteFetcher';
-import pricingJob from './pricingJob';
 import { AirdropFetcher } from '../../AirdropFetcher';
 import {
   asr1AirdropFetcher,
@@ -19,9 +18,9 @@ import {
   asr5Fetcher,
 } from './governance';
 import { lfgAirdropFetchers, lfgFetchers } from './launchpad';
-import verifiedJob from './verifiedJob';
+import pricingJob from './pricing/pricingJob';
 
-export const jobs: Job[] = [custodiesJob, verifiedJob, pricingJob];
+export const jobs: Job[] = [custodiesJob, pricingJob];
 export const fetchers: Fetcher[] = [
   perpetualFetcher,
   valueAverageFetcher,

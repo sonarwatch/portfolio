@@ -4,7 +4,7 @@ import { Job, JobExecutor } from '../../../Job';
 import { getClientSolana } from '../../../utils/clients';
 import { dbcProgramId, platformId } from '../constants';
 import { virtualPoolStruct } from './structs';
-import { setJupiterPrices } from '../../jupiter/getJupiterPrices';
+import { setJupiterPrices } from '../../jupiter/pricing/setJupiterPrices';
 
 const executor: JobExecutor = async (cache: Cache) => {
   const client = getClientSolana();
@@ -16,14 +16,14 @@ const executor: JobExecutor = async (cache: Cache) => {
 
   const mintsPk = accounts.map((account) => {
     const virtualPool = virtualPoolStruct.deserialize(account.account.data)[0];
-    return virtualPool.base_mint;
+    return virtualPool.base_mint.toString();
   });
 
   await setJupiterPrices(mintsPk, cache);
 };
 
 const job: Job = {
-  id: `${platformId}-pricing-dbc`,
+  id: `${platformId}-dbc-pricing`,
   executor,
   labels: [NetworkId.solana],
 };

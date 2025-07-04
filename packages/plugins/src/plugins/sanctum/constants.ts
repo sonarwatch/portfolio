@@ -6,7 +6,6 @@ export const platformImage = 'https://sonar.watch/img/platforms/sanctum.webp';
 export const platformWebsite = 'https://www.sanctum.so/';
 export const cloudMint = 'CLoUDKc4Ane7HeQcPpE3YHnznRxhMimJ4MyaUqyHFzAu';
 export const sCloudMint = 'sc1dNAxRBj5CNWaGC26AR7PEW75R36Umzt1V8vuP8kZ';
-export const lstsKey = 'lsts';
 
 // If this API doesn't work anymore, you can find the tree.json inside our shared convo
 // with sanctum team
